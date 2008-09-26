@@ -37,7 +37,7 @@
 package net.sourceforge.pmd.ui.views.actions;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.ViolationOverview;
 
@@ -69,8 +69,8 @@ public class CollapseAllAction extends Action {
         this.treeViewer = view.getViewer();
 
         // we set Image and ToolTip for this
-        setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_COLLAPSE));
-        setToolTipText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_COLLAPSE_ALL));
+        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_COLLAPSE));
+        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_COLLAPSE_ALL));
     }
 
     /**

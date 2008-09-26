@@ -48,7 +48,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -222,7 +222,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
         for (int i = 0; i < markers.length; i++) {
             IMarker marker = markers[i];
             final String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
-            final Rule rule = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
+            final Rule rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
 
             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
             final FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);

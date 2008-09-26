@@ -45,7 +45,7 @@ import name.herlin.command.CommandException;
 import name.herlin.command.CommandProcessor;
 import name.herlin.command.Timer;
 import name.herlin.command.UnsetInputPropertiesException;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -106,9 +106,9 @@ public class JobCommandProcessor implements CommandProcessor {
                     Timer timer = new Timer();
                     aCommand.execute();
                     timer.stop();
-                    PMDRuntimePlugin.getDefault().logInformation("Command " + aCommand.getName() + " excecuted in " + timer.getDuration() + "ms");
+                    PMDPlugin.getDefault().logInformation("Command " + aCommand.getName() + " excecuted in " + timer.getDuration() + "ms");
                 } catch (CommandException e) {
-                    PMDRuntimePlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
+                    PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
                 }
                 
                 return Status.OK_STATUS;

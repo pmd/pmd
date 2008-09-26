@@ -50,7 +50,7 @@ import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
@@ -184,7 +184,7 @@ public class FileRecord extends AbstractPMDRecord {
 
             children = (AbstractPMDRecord[]) allMarkerMap.values().toArray(new MarkerRecord[allMarkerMap.size()]);
         } catch (CoreException e) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), e);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), e);
         }       
         
         return children; // no children so return an empty array, not null!
@@ -214,7 +214,7 @@ public class FileRecord extends AbstractPMDRecord {
                 markers = this.resource.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
             }
         } catch (CoreException ce) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
 
         return markers;
@@ -234,7 +234,7 @@ public class FileRecord extends AbstractPMDRecord {
                 markers = this.resource.findMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
             }
         } catch (CoreException ce) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
         
         return markers;
@@ -261,7 +261,7 @@ public class FileRecord extends AbstractPMDRecord {
                 }
             }
         } catch (CoreException ce) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
 
         // return an Array of the Markers
@@ -334,10 +334,10 @@ public class FileRecord extends AbstractPMDRecord {
                 fileContents.append(bReader.readLine()).append('\n');
             }
         } catch (FileNotFoundException fnfe) {
-            PMDUiPlugin.getDefault().logError(
+            PMDPlugin.getDefault().logError(
                     StringKeys.MSGKEY_ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), fnfe);
         } catch (IOException ioe) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
         } finally {
             if (bReader != null) {
                 try {
@@ -374,7 +374,7 @@ public class FileRecord extends AbstractPMDRecord {
                         }
                     }
                 } catch (JavaModelException jme) {
-                    PMDUiPlugin.getDefault().logError(
+                    PMDPlugin.getDefault().logError(
                             StringKeys.MSGKEY_ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
                 }
             }

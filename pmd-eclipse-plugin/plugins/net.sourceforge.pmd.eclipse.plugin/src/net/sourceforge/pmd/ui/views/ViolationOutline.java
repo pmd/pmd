@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.actions.PriorityFilterAction;
@@ -93,7 +93,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
         MessagePage page = new MessagePage();
         initPage(page);
         page.createControl(book);
-        page.setMessage(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_OUTLINE_DEFAULT_TEXT));
+        page.setMessage(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_OUTLINE_DEFAULT_TEXT));
         return page;
     }
 
@@ -140,7 +140,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
         List filterList = priorityFilter.getPriorityFilterList();
 
         // we add the PriorityFilter-Actions to this Menu
-        Integer[] priorities = PMDUiPlugin.getDefault().getPriorityValues();
+        Integer[] priorities = PMDPlugin.getDefault().getPriorityValues();
         for (int k = 0; k < priorities.length; k++) {
             Action filterAction = new PriorityFilterAction(priorities[k], this);
             if (filterList.contains(priorities[k]))

@@ -49,7 +49,7 @@ import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.runtime.properties.PropertiesException;
 
@@ -124,9 +124,9 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
             final List files = findFiles();
 
             if (files.size() == 0) {
-                PMDRuntimePlugin.getDefault().logInformation("No files found to specified language.");
+                PMDPlugin.getDefault().logInformation("No files found to specified language.");
             } else {
-                PMDRuntimePlugin.getDefault().logInformation("Found " + files.size() + " files to the specified language. Performing CPD.");
+                PMDPlugin.getDefault().logInformation("Found " + files.size() + " files to the specified language. Performing CPD.");
             }
             setStepsCount(files.size());
             beginTask("Finding suspect Cut And Paste", getStepsCount()*2);
@@ -174,7 +174,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         this.setReportName(null);
         this.setRenderer(null);
         this.setLanguage("java");
-        this.setMinTileSize(PMDRuntimePlugin.getDefault().loadPreferences().getMinTileSize());
+        this.setMinTileSize(PMDPlugin.getDefault().loadPreferences().getMinTileSize());
         this.setCreateReport(false);
         this.addPropertyListener(null);
         this.listenerList = new ArrayList();
@@ -248,7 +248,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      * @throws CoreException
      */
     private List findFiles() throws PropertiesException, CoreException {
-        final IProjectProperties properties = PMDRuntimePlugin.getDefault().loadProjectProperties(project);
+        final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
         final CPDVisitor visitor = new CPDVisitor();
         visitor.setWorkingSet(properties.getProjectWorkingSet());
         visitor.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());

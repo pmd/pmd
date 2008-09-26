@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -38,7 +38,7 @@ package net.sourceforge.pmd.core.ext;
 
 import net.sourceforge.pmd.core.IRuleSetManager;
 import net.sourceforge.pmd.core.IRuleSetsExtension;
-import net.sourceforge.pmd.core.PMDCorePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -49,10 +49,10 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * This class processes the AdditionalRuleSets extension point
- * 
+ *
  * @author Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.3  2006/06/20 21:04:24  phherlin
  * Enable PMD and fix error level violations
@@ -70,7 +70,7 @@ public class RuleSetsExtensionProcessor {
     private static final String EXTENTION_POINT = "net.sourceforge.pmd.eclipse.plugin.rulesets";
     private static final String CLASS_ATTRIBUTE = "class";
     final private IRuleSetManager ruleSetManager;
-    
+
     /**
      * Constructor
      * @param ruleSetManager the plugin RuleSetManager
@@ -78,7 +78,7 @@ public class RuleSetsExtensionProcessor {
     public RuleSetsExtensionProcessor(IRuleSetManager ruleSetManager) {
         this.ruleSetManager = ruleSetManager;
     }
-    
+
     /**
      * Process the extension point
      */
@@ -90,7 +90,7 @@ public class RuleSetsExtensionProcessor {
             processExecutableExtension(elements[i]);
         }
     }
-    
+
     /**
      * Process an extension
      * @param element the extension to process
@@ -99,12 +99,12 @@ public class RuleSetsExtensionProcessor {
         final Object object = element.createExecutableExtension(CLASS_ATTRIBUTE);
         if (object instanceof IRuleSetsExtension) {
             final IRuleSetsExtension extension = (IRuleSetsExtension) object;
-            
-            extension.registerRuleSets(this.ruleSetManager.getRegisteredRuleSets());            
+
+            extension.registerRuleSets(this.ruleSetManager.getRegisteredRuleSets());
             extension.registerDefaultRuleSets(this.ruleSetManager.getDefaultRuleSets());
-            
+
         } else {
-            PMDCorePlugin.getDefault().log(IStatus.ERROR, "Extension " + element.getName() + " is not an instance of IRuleSetsExtension", null);
+            PMDPlugin.getDefault().log(IStatus.ERROR, "Extension " + element.getName() + " is not an instance of IRuleSetsExtension", null);
         }
     }
 

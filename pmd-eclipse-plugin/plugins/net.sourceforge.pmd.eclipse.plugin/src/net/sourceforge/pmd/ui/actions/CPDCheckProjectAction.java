@@ -11,7 +11,7 @@ import net.sourceforge.pmd.cpd.XMLRenderer;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.runtime.cmd.DetectCutAndPasteCmd;
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.dialogs.CPDCheckDialog;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.CPDView;
@@ -162,7 +162,7 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
             detectCmd.addPropertyListener(view);
             detectCmd.performExecute();
         } catch (CommandException e) {
-            PMDUiPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
+            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
         }
     }
 
@@ -176,7 +176,7 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
             final IWorkbenchPage workbenchPage = targetPart.getSite().getPage();
             view = (CPDView) workbenchPage.showView(PMDUiConstants.ID_CPDVIEW);
         } catch (PartInitException pie) {
-            PMDUiPlugin.getDefault().logError(
+            PMDPlugin.getDefault().logError(
                 getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), pie);
         } 
         return view;
@@ -222,6 +222,6 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
      * @return requested message
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 }

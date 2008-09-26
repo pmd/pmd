@@ -3,9 +3,8 @@ package net.sourceforge.pmd.ui.preferences;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.apache.log4j.Level;
@@ -30,14 +29,14 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * Dummy page for PMD preference category
- * 
+ *
  * @see CPDPreferencePage
  * @see PMDPreferencePage
- * 
+ *
  * @author ?
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.2  2007/01/06 11:58:08  holobender
  * disabled the experimental option since it can now be enabled over the DataflowAnomalyAnalysis rule
@@ -55,9 +54,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * Integrating Sebastian Raffel's work
  * Revision 1.8 2003/08/14 16:10:41
  * phherlin Implementing Review feature (RFE#787086)
- * 
+ *
  * Revision 1.7 2003/03/18 23:28:36 phherlin *** keyword substitution change ***
- * 
+ *
  */
 public class GeneralPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
     private static final String[] LOG_LEVELS = { "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "ALL" };
@@ -76,17 +75,17 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     /**
      * Initialize the page
-     * 
+     *
      * @see PreferencePage#init
      */
     public void init(IWorkbench arg0) {
         setDescription(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TITLE));
-        this.preferences = PMDRuntimePlugin.getDefault().loadPreferences();
+        this.preferences = PMDPlugin.getDefault().loadPreferences();
     }
 
     /**
      * Create and initialize the controls of the page
-     * 
+     *
      * @see PreferencePage#createContents
      */
     protected Control createContents(Composite parent) {
@@ -101,11 +100,11 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Group generalGroup = buildGeneralGroup(composite);
         Group reviewGroup = buildReviewGroup(composite);
         Group logGroup = buildLoggingGroup(composite);
-        
+
         // Layout children
         generalGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         logGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
+
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
@@ -120,7 +119,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * @return the group widget
      */
     private Group buildGeneralGroup(final Composite parent) {
-        
+
         // build the group
         Group group = new Group(parent, SWT.SHADOW_IN);
         group.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_GENERAL));
@@ -131,7 +130,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         this.useProjectBuildPath = buildUseProjectBuildPathButton(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
         this.maxViolationsPerFilePerRule = buildMaxViolationsPerFilePerRuleText(group);
-        
+
         // layout children
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -142,27 +141,27 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         this.useProjectBuildPath.setLayoutData(data);
-        
+
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         separator.setLayoutData(data);
-        
+
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         this.maxViolationsPerFilePerRule.setLayoutData(data);
-        
+
         return group;
     }
-    
+
     /**
      * Build the group of review preferences
      * @param parent the parent composite
      * @return the group widget
      */
     private Group buildReviewGroup(final Composite parent) {
-        
+
         // build the group
         Group group = new Group(parent, SWT.SHADOW_IN);
         group.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_REVIEW));
@@ -176,7 +175,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         buildLabel(group, StringKeys.MSGKEY_PREF_GENERAL_LABEL_SAMPLE);
         this.sampleLabel = buildSampleLabel(group);
         updateSampleLabel();
-        
+
         // layout children
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -197,13 +196,13 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         sampleLabel.setLayoutData(data);
-        
+
         return group;
     }
 
     /**
      * Build the log group.
-     * Note that code is a cut & paste from the Eclipse Visual Editor 
+     * Note that code is a cut & paste from the Eclipse Visual Editor
      *
      */
     private Group buildLoggingGroup(Composite parent) {
@@ -223,20 +222,20 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         gridData.grabExcessHorizontalSpace = false;
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 3;
-        
+
         Group loggingGroup = new Group(parent, SWT.NONE);
         loggingGroup.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_LOGGING));
         loggingGroup.setLayout(gridLayout);
-        
+
         Label logFileNameLabel = new Label(loggingGroup, SWT.NONE);
         logFileNameLabel.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_LOG_FILE_NAME));
         logFileNameLabel.setLayoutData(gridData);
-        
+
         this.logFileNameText = new Text(loggingGroup, SWT.BORDER);
         this.logFileNameText.setText(this.preferences.getLogFileName());
         this.logFileNameText.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TOOLTIP_LOG_FILE_NAME));
         this.logFileNameText.setLayoutData(gridData1);
-        
+
         this.browseButton = new Button(loggingGroup, SWT.NONE);
         this.browseButton.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_BUTTON_BROWSE));
         this.browseButton.addSelectionListener(new SelectionListener() {
@@ -244,20 +243,20 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
                 browseLogFile();
             }
             public void widgetDefaultSelected(SelectionEvent event) {
-                // do nothing                
+                // do nothing
             }
         });
-        
+
         Label separator = new Label(loggingGroup, SWT.SEPARATOR | SWT.HORIZONTAL);
         separator.setLayoutData(gridData11);
-        
+
         Label logLevelLabel = new Label(loggingGroup, SWT.NONE);
         logLevelLabel.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_LOG_LEVEL));
-        
+
         this.logLevelValueLabel = new Label(loggingGroup, SWT.NONE);
         this.logLevelValueLabel.setText("");
         this.logLevelValueLabel.setLayoutData(gridData2);
-        
+
         this.logLevelScale = new Scale(loggingGroup, SWT.NONE);
         this.logLevelScale.setMaximum(6);
         this.logLevelScale.setPageIncrement(1);
@@ -267,16 +266,16 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
                 updateLogLevelValueLabel();
             }
             public void widgetDefaultSelected(SelectionEvent event) {
-                updateLogLevelValueLabel();                
+                updateLogLevelValueLabel();
             }
         });
-        
+
         this.logLevelScale.setSelection(intLogLevel(this.preferences.getLogLevel()));
         updateLogLevelValueLabel();
-        
+
         return loggingGroup;
     }
-    
+
     /**
      * Build a label
      */
@@ -296,7 +295,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     /**
      * Build the text for additional comment input
-     * 
+     *
      * @param parent
      * @return
      */
@@ -323,10 +322,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Button button = new Button(viewGroup, SWT.CHECK);
         button.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_SHOW_PERSPECTIVE));
         button.setSelection(this.preferences.isPmdPerspectiveEnabled());
-        
+
         return button;
     }
-    
+
     /**
      * Build the check box for enabling using Project Build Path
      * @param viewGroup the parent composite
@@ -340,7 +339,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     /**
      * Build the text for maximum violations per file per rule
-     * 
+     *
      * @param parent
      * @return
      */
@@ -358,7 +357,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         return text;
     }
-    
+
     /**
      * Build the check box for enabling PMD review style
      * @param viewGroup the parent composite
@@ -368,11 +367,11 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Button button = new Button(parent, SWT.CHECK);
         button.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_REVIEW_PMD_STYLE));
         button.setSelection(this.preferences.isReviewPmdStyleEnabled());
-        
+
         return button;
     }
 
-    
+
     /**
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
@@ -388,19 +387,19 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         if (this.useProjectBuildPath != null) {
             this.useProjectBuildPath.setSelection(IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
         }
-        
+
         if (this.maxViolationsPerFilePerRule != null) {
             this.maxViolationsPerFilePerRule.setText(String.valueOf(IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT));
         }
-        
+
         if (this.reviewPmdStyleBox !=null) {
             this.reviewPmdStyleBox.setSelection(IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
         }
-        
+
         if (this.logFileNameText != null) {
             this.logFileNameText.setText(IPreferences.LOG_FILENAME_DEFAULT);
         }
-        
+
         if (this.logLevelScale != null) {
             this.logLevelScale.setSelection(intLogLevel(IPreferences.LOG_LEVEL));
             updateLogLevelValueLabel();
@@ -424,7 +423,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             setValid(false);
         }
     }
-    
+
     /**
      * Check if the entry filed is a numeric value
      *
@@ -439,7 +438,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             setValid(false);
         }
     }
-    
+
     /**
      * Update the label of the log level to reflect the log level selected
      *
@@ -447,7 +446,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     protected void updateLogLevelValueLabel() {
         this.logLevelValueLabel.setText(LOG_LEVELS[this.logLevelScale.getSelection()]);
     }
-    
+
     /**
      * Display a file selection dialog in order to let the user select a log file
      *
@@ -476,7 +475,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         if (this.useProjectBuildPath != null) {
             this.preferences.setProjectBuildPathEnabled(this.useProjectBuildPath.getSelection());
         }
-        
+
         if (this.maxViolationsPerFilePerRule != null) {
             this.preferences.setMaxViolationsPerFilePerRule(Integer.valueOf(this.maxViolationsPerFilePerRule.getText()).intValue());
         }
@@ -484,27 +483,27 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         if (this.reviewPmdStyleBox != null) {
             this.preferences.setReviewPmdStyleEnabled(this.reviewPmdStyleBox.getSelection());
         }
-        
+
         if (this.logFileNameText != null) {
             this.preferences.setLogFileName(this.logFileNameText.getText());
         }
-        
+
         if (this.logLevelScale != null) {
             this.preferences.setLogLevel(Level.toLevel(LOG_LEVELS[this.logLevelScale.getSelection()]));
         }
-        
+
         this.preferences.sync();
-        PMDRuntimePlugin.getDefault().applyLogPreferences(this.preferences);
+        PMDPlugin.getDefault().applyLogPreferences(this.preferences);
 
         return true;
     }
-    
+
     /**
      * Return the selection index corresponding to the log level
      */
     private int intLogLevel(Level level) {
         int result = 0;
-        
+
         if (level.equals(Level.OFF)) {
             result = 0;
         } else if (level.equals(Level.FATAL)) {
@@ -520,9 +519,9 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         } else if (level.equals(Level.ALL)) {
             result = 6;
         }
-        
+
         return result;
-        
+
     }
 
     /**
@@ -531,7 +530,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * @return requested message
      */
     private String getMessage(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

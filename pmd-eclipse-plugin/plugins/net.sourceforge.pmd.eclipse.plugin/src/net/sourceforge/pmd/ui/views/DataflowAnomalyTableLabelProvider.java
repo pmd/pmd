@@ -3,7 +3,7 @@ package net.sourceforge.pmd.ui.views;
 import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.dfa.DaaRuleViolation;
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -22,7 +22,7 @@ public class DataflowAnomalyTableLabelProvider extends LabelProvider implements 
         // set the Image for the Anomaly
         Image image = null;
         if (columnIndex == 0) {
-            image = PMDUiPlugin.getDefault().getImage(KEY_IMAGE_DFA, PMDUiConstants.ICON_LABEL_ERR_DFA);
+            image = PMDPlugin.getDefault().getImage(KEY_IMAGE_DFA, PMDUiConstants.ICON_LABEL_ERR_DFA);
         }
         return image;
     }

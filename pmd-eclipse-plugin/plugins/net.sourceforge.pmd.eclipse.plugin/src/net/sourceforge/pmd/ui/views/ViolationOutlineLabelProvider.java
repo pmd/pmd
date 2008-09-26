@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.views;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
@@ -36,7 +36,7 @@ public class ViolationOutlineLabelProvider extends LabelProvider implements ITab
             try {
                 priority = (Integer) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
             } catch (CoreException ce) {
-                PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
+                PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
             }
 
             // set the Image by the Priority of the Error
@@ -86,7 +86,7 @@ public class ViolationOutlineLabelProvider extends LabelProvider implements ITab
      * @return
      */
     private Image getImage(String key, String iconPath) {
-        return PMDUiPlugin.getDefault().getImage(key, iconPath);
+        return PMDPlugin.getDefault().getImage(key, iconPath);
     }
 
 }

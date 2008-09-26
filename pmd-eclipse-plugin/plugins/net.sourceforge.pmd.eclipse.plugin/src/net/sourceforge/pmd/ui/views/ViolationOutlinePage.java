@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.views;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.actions.RemoveViolationAction;
@@ -185,7 +185,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                             prio2 = (Integer) marker2.getAttribute(IMarker.LINE_NUMBER);
                         }
                     } catch (CoreException ce) {
-                        PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, ce);
+                        PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, ce);
                     }
 
                     return prio1 == null ? 0 : prio1.compareTo(prio2) * sortOrder;
@@ -202,7 +202,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                         message1 = String.valueOf(((IMarker) e1).getAttribute(IMarker.MESSAGE));
                         message2 = String.valueOf(((IMarker) e2).getAttribute(IMarker.MESSAGE));
                     } catch (CoreException ce) {
-                        PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
+                        PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
                     }
 
                     return message1 == null ? 0 : message1.compareTo(message2) * sortOrder;
@@ -333,6 +333,6 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 }

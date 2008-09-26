@@ -36,7 +36,7 @@ package net.sourceforge.pmd.ui.actions;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.ViolationOverview;
@@ -123,7 +123,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                 log.warn("Cannot remove markers, action ID is not supported");
             }
         } catch (CoreException e) {
-            PMDUiPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
         }
     }
 
@@ -179,7 +179,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                 log.debug("This action is not supported on that part. This part type is: " + this.targetPart.getClass().getName());
             }
         } catch (CoreException e) {
-            PMDUiPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
         }
     }
     
@@ -212,7 +212,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

@@ -44,7 +44,7 @@ import name.herlin.command.CommandException;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.runtime.cmd.DeleteMarkersCommand;
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.model.FileToMarkerRecord;
@@ -506,7 +506,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
     /**
@@ -787,7 +787,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             try {
                 cmd.performExecute();
             } catch (CommandException e) {
-                PMDUiPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e.getCause());
+                PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e.getCause());
             }
         }
     }

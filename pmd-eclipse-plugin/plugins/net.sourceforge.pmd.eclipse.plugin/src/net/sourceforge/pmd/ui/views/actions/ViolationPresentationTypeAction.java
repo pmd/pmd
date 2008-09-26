@@ -37,7 +37,7 @@
 package net.sourceforge.pmd.ui.views.actions;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.ViolationOverview;
 
@@ -72,16 +72,16 @@ public class ViolationPresentationTypeAction extends Action {
         switch (type) {
         case ViolationOverview.SHOW_FILES_MARKERS:
             // we set Image and Text for the Action
-            setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILEMARKERS));
-            setText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_MENU_FILEMARKERS));
+            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILEMARKERS));
+            setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_MENU_FILEMARKERS));
             break;
         case ViolationOverview.SHOW_MARKERS_FILES:
-            setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_MARKERFILES));
-            setText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_MENU_MARKERFILES));
+            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_MARKERFILES));
+            setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_MENU_MARKERFILES));
             break;
         case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
-            setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PACKFILES));
-            setText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_MENU_PACKFILES));            
+            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PACKFILES));
+            setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_MENU_PACKFILES));            
             break;
         default:
             // do nothing

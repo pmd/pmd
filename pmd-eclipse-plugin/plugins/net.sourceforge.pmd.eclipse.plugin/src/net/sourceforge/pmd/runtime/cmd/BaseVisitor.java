@@ -43,7 +43,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.runtime.properties.PropertiesException;
@@ -364,7 +364,7 @@ public class BaseVisitor {
         final List reviewsList = findReviewedViolations(file);
         final Review review = new Review();
         final Iterator iter = context.getReport().iterator();
-        final IPreferences preferences = PMDRuntimePlugin.getDefault().loadPreferences();
+        final IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
         final int maxViolationsPerFilePerRule = preferences.getMaxViolationsPerFilePerRule();
         final Map violationsCounter = new HashMap();
         
@@ -466,9 +466,9 @@ public class BaseVisitor {
             // }
 
         } catch (CoreException e) {
-            PMDRuntimePlugin.getDefault().logError("Core Exception when searching reviewed violations", e);
+            PMDPlugin.getDefault().logError("Core Exception when searching reviewed violations", e);
         } catch (IOException e) {
-            PMDRuntimePlugin.getDefault().logError("IO Exception when searching reviewed violations", e);
+            PMDPlugin.getDefault().logError("IO Exception when searching reviewed violations", e);
         }
 
         return reviewsList;

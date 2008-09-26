@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.views;
 
 import net.sourceforge.pmd.IRuleViolation;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -206,6 +206,6 @@ public class DataflowAnomalyTableViewer extends TableViewer {
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 }

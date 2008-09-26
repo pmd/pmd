@@ -43,7 +43,7 @@ import java.util.List;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.jface.viewers.TreeNode;
@@ -157,7 +157,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
     /*

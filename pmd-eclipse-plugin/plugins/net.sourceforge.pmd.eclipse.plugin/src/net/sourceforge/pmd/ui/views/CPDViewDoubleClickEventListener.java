@@ -38,7 +38,7 @@ package net.sourceforge.pmd.ui.views;
 
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IFile;
@@ -124,10 +124,10 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
                         textEditor.selectAndReveal(offset, length); 
                     }                    
                 } catch (PartInitException pie) {
-                    PMDUiPlugin.getDefault().logError(
+                    PMDPlugin.getDefault().logError(
                             getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), pie);
                 } catch (BadLocationException ble) {
-                    PMDUiPlugin.getDefault().logError(
+                    PMDPlugin.getDefault().logError(
                             getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), ble);
                 }
             }
@@ -138,7 +138,7 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

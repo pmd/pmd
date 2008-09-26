@@ -37,7 +37,7 @@
 package net.sourceforge.pmd.ui.views;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.model.FileToMarkerRecord;
 import net.sourceforge.pmd.ui.model.MarkerRecord;
@@ -183,7 +183,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
             // open the corresponding File            
             IDE.openEditor(this.overview.getSite().getPage(), file);
         } catch (PartInitException pie) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), pie);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), pie);
         }
     }
     
@@ -214,7 +214,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
                 }
             }
         } catch (PartInitException pie) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), pie);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), pie);
         }            
     }
 }

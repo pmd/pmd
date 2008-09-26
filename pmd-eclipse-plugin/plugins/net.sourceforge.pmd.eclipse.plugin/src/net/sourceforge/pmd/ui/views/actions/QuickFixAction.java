@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.views.actions;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
@@ -28,9 +28,9 @@ public class QuickFixAction extends ViolationSelectionAction {
     public QuickFixAction(TableViewer viewer) {
         super(viewer);
 
-        setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_QUICKFIX));
-        setText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_ACTION_QUICKFIX));
-        setToolTipText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_QUICKFIX));
+        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_QUICKFIX));
+        setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_ACTION_QUICKFIX));
+        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_QUICKFIX));
     }
 
     /**

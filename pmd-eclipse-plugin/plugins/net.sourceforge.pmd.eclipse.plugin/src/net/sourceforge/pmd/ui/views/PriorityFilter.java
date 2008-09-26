@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.model.FileToMarkerRecord;
@@ -33,7 +33,7 @@ public class PriorityFilter extends ViewerFilter {
      */
     public PriorityFilter() {
         super();
-        priorityList = new ArrayList(Arrays.asList(PMDUiPlugin.getDefault().getPriorityValues()));
+        priorityList = new ArrayList(Arrays.asList(PMDPlugin.getDefault().getPriorityValues()));
     }
 
     /* @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
@@ -53,7 +53,7 @@ public class PriorityFilter extends ViewerFilter {
                 final Integer markerPrio = (Integer) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
                 select = isPriorityEnabled(markerPrio);
             } catch (CoreException ce) {
-                PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
+                PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
             }
         } else if (element instanceof MarkerRecord) {
             // ViolationOverview

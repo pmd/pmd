@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -52,8 +52,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.core.IRuleSetManager;
-import net.sourceforge.pmd.core.PMDCorePlugin;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.runtime.preferences.IPreferencesFactory;
 import net.sourceforge.pmd.runtime.preferences.IPreferencesManager;
@@ -71,10 +70,10 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * This class implements the preferences management services
- * 
+ *
  * @author Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
@@ -84,20 +83,20 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 class PreferencesManagerImpl implements IPreferencesManager {
     private static final Logger log = Logger.getLogger(PreferencesManagerImpl.class);
-    
-    private static final String PROJECT_BUILD_PATH_ENABLED = PMDRuntimePlugin.PLUGIN_ID + ".project_build_path_enabled";
-    private static final String PMD_PERSPECTIVE_ENABLED = PMDRuntimePlugin.PLUGIN_ID + ".pmd_perspective_enabled";
-    private static final String MAX_VIOLATIONS_PFPR = PMDRuntimePlugin.PLUGIN_ID + ".max_violations_pfpr";
-    private static final String REVIEW_ADDITIONAL_COMMENT = PMDRuntimePlugin.PLUGIN_ID + ".review_additional_comment";
-    private static final String REVIEW_PMD_STYLE_ENABLED = PMDRuntimePlugin.PLUGIN_ID + ".review_pmd_style_enabled";
-    private static final String MIN_TILE_SIZE = PMDRuntimePlugin.PLUGIN_ID + ".min_tile_size";
-    private static final String LOG_FILENAME = PMDRuntimePlugin.PLUGIN_ID + ".log_filename";
-    private static final String LOG_LEVEL = PMDRuntimePlugin.PLUGIN_ID + ".log_level";
+
+    private static final String PROJECT_BUILD_PATH_ENABLED = PMDPlugin.PLUGIN_ID + ".project_build_path_enabled";
+    private static final String PMD_PERSPECTIVE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_perspective_enabled";
+    private static final String MAX_VIOLATIONS_PFPR = PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
+    private static final String REVIEW_ADDITIONAL_COMMENT = PMDPlugin.PLUGIN_ID + ".review_additional_comment";
+    private static final String REVIEW_PMD_STYLE_ENABLED = PMDPlugin.PLUGIN_ID + ".review_pmd_style_enabled";
+    private static final String MIN_TILE_SIZE = PMDPlugin.PLUGIN_ID + ".min_tile_size";
+    private static final String LOG_FILENAME = PMDPlugin.PLUGIN_ID + ".log_filename";
+    private static final String LOG_LEVEL = PMDPlugin.PLUGIN_ID + ".log_level";
 
     private static final String PREFERENCE_RULESET_FILE = "/ruleset.xml";
-    
+
     private IPreferences preferences;
-    private IPreferenceStore preferencesStore = PMDRuntimePlugin.getDefault().getPreferenceStore();
+    private IPreferenceStore preferencesStore = PMDPlugin.getDefault().getPreferenceStore();
     private RuleSet ruleSet;
 
     /**
@@ -107,7 +106,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         if (this.preferences == null) {
             IPreferencesFactory factory = new PreferencesFactoryImpl();
             this.preferences = factory.newPreferences(this);
-            
+
             loadProjectBuildPathEnabled();
             loadPmdPerspectiveEnabled();
             loadMaxViolationsPerFilePerRule();
@@ -117,7 +116,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             loadLogFileName();
             loadLogLevel();
         }
-        
+
         return this.preferences;
     }
 
@@ -219,7 +218,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         this.preferencesStore.setDefault(LOG_FILENAME, IPreferences.LOG_FILENAME_DEFAULT);
         this.preferences.setLogFileName(this.preferencesStore.getString(LOG_FILENAME));
     }
-    
+
     /**
      * Read the log level
      *
@@ -275,7 +274,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private void storeMinTileSize() {
         this.preferencesStore.setValue(MIN_TILE_SIZE, this.preferences.getMinTileSize());
     }
-    
+
     /**
      * Write the log filename
      *
@@ -283,7 +282,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private void storeLogFileName() {
         this.preferencesStore.setValue(LOG_FILENAME, this.preferences.getLogFileName());
     }
-    
+
     /**
      * Write the log level
      *
@@ -300,7 +299,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         RuleSetFactory factory = new RuleSetFactory();
 
         // First find the ruleset file in the state location
-        IPath ruleSetLocation = PMDRuntimePlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
+        IPath ruleSetLocation = PMDPlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
         File ruleSetFile = new File(ruleSetLocation.toOSString());
         if (ruleSetFile.exists()) {
             try {
@@ -308,11 +307,11 @@ class PreferencesManagerImpl implements IPreferencesManager {
                 preferedRuleSet = factory.createRuleSet(in);
                 in.close();
             } catch (FileNotFoundException e) {
-                PMDRuntimePlugin.getDefault().logError("File Not Found Exception when loading state ruleset file", e);
+                PMDPlugin.getDefault().logError("File Not Found Exception when loading state ruleset file", e);
             } catch (IOException e) {
-                PMDRuntimePlugin.getDefault().logError("IO Exception when loading state ruleset file", e);
+                PMDPlugin.getDefault().logError("IO Exception when loading state ruleset file", e);
             } catch (RuntimeException e) {
-            	PMDRuntimePlugin.getDefault().logError("Runtime Exception when loading state ruleset file", e);
+            	PMDPlugin.getDefault().logError("Runtime Exception when loading state ruleset file", e);
             }
         }
 
@@ -321,8 +320,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
             preferedRuleSet = new RuleSet();
             preferedRuleSet.setName("pmd-eclipse");
             preferedRuleSet.setDescription("PMD Plugin preferences rule set");
-            
-            IRuleSetManager ruleSetManager = PMDCorePlugin.getDefault().getRuleSetManager();
+
+            IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
             Iterator i = ruleSetManager.getDefaultRuleSets().iterator();
             while (i.hasNext()) {
                 RuleSet ruleSet = (RuleSet) i.next();
@@ -370,7 +369,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
             if (projects[i].isAccessible()) {
                 try {
-                    IProjectProperties properties = PMDRuntimePlugin.getDefault().loadProjectProperties(projects[i]);
+                    IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(projects[i]);
                     RuleSet projectRuleSet = properties.getProjectRuleSet();
                     if (projectRuleSet != null) {
                         projectRuleSet.addRuleSet(addedRuleSet);
@@ -380,7 +379,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
                         properties.sync();
                     }
                 } catch (PropertiesException e) {
-                    PMDRuntimePlugin.getDefault().logError("Unable to add new rules for project: " + projects[i], e);
+                    PMDPlugin.getDefault().logError("Unable to add new rules for project: " + projects[i], e);
                 }
             }
         }
@@ -391,16 +390,16 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     private void storeRuleSetInStateLocation(RuleSet ruleSet) {
         try {
-            IPath ruleSetLocation = PMDRuntimePlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
+            IPath ruleSetLocation = PMDPlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
             OutputStream out = new FileOutputStream(ruleSetLocation.toOSString());
-            IRuleSetWriter writer = PMDRuntimePlugin.getDefault().getRuleSetWriter();
+            IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
             writer.write(out, ruleSet);
             out.flush();
             out.close();
         } catch (IOException e) {
-            PMDRuntimePlugin.getDefault().logError("IO Exception when storing ruleset in state location", e);
+            PMDPlugin.getDefault().logError("IO Exception when storing ruleset in state location", e);
         } catch (WriterException e) {
-            PMDRuntimePlugin.getDefault().logError("General PMD Eclipse Exception when storing ruleset in state location", e);
+            PMDPlugin.getDefault().logError("General PMD Eclipse Exception when storing ruleset in state location", e);
         }
     }
 }

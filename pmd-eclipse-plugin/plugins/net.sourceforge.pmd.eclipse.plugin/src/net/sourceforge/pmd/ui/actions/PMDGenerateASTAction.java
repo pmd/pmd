@@ -5,7 +5,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -18,7 +18,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -43,10 +43,9 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaCharStream;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.runtime.writer.WriterException;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.apache.log4j.Logger;
@@ -74,10 +73,10 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Process PMDGenerateAST action menu.
  * Generate a AST from the selected file.
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.2  2006/06/20 21:01:23  phherlin
  * Enable PMD and fix error level violations
@@ -131,7 +130,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
      */
     public void run(IAction action) {
         log.info("Generation AST action requested");
-        
+
         // If action is selected from a view, process the selection
         if (this.targetPart instanceof IViewPart) {
             ISelection sel = targetPart.getSite().getSelectionProvider().getSelection();
@@ -142,17 +141,17 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
                 try {
                     dialog.run(false, false, this);
                 } catch (InvocationTargetException e) {
-                    PMDUiPlugin.getDefault().showError(
+                    PMDPlugin.getDefault().showError(
                         getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION),
                         e);
                 } catch (InterruptedException e) {
-                    PMDUiPlugin.getDefault().showError(
+                    PMDPlugin.getDefault().showError(
                         getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION),
                         e);
                 }
             }
         }
-        
+
         // If action is selected from an editor, process the file currently edited
         if (this.targetPart instanceof IEditorPart) {
             IEditorInput editorInput = ((IEditorPart) this.targetPart).getEditorInput();
@@ -163,7 +162,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
                         + editorInput.getClass().getName());
             }
         }
-        
+
         // else this is not supported
         else {
             log.debug("This action is not supported on this kind of part. This part type is: " + this.targetPart.getClass().getName());
@@ -186,7 +185,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
             JavaParser parser = new JavaParser(new JavaCharStream(file.getContents()));
             ASTCompilationUnit compilationUnit = parser.CompilationUnit();
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            IAstWriter astWriter = PMDRuntimePlugin.getDefault().getAstWriter();
+            IAstWriter astWriter = PMDPlugin.getDefault().getAstWriter();
             astWriter.write(byteArrayOutputStream, compilationUnit);
             byteArrayOutputStream.flush();
 
@@ -211,13 +210,13 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
             }
 
         } catch (CoreException e) {
-            PMDUiPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
         } catch (ParseException e) {
-            PMDUiPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
         } catch (WriterException e) {
-            PMDUiPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
         } catch (IOException e) {
-            PMDUiPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_IO_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_IO_EXCEPTION), e);
         }
     }
 
@@ -245,12 +244,12 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
             }
         }
     }
-    
+
     /**
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

@@ -3,7 +3,7 @@ package net.sourceforge.pmd.runtime.builder;
 import java.util.Map;
 
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.cmd.ReviewCodeCmd;
 
 import org.apache.log4j.Logger;
@@ -82,7 +82,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
                 log.warn("This kind of build is not supported : " + kind);
             }
         } catch (CommandException e) {
-            throw new CoreException(new Status(IStatus.ERROR, PMDRuntimePlugin.getDefault().getBundle().getSymbolicName(), 0, e.getMessage(), e));
+            throw new CoreException(new Status(IStatus.ERROR, PMDPlugin.getDefault().getBundle().getSymbolicName(), 0, e.getMessage(), e));
         }
 
         log.info("Build done.");

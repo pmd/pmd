@@ -37,7 +37,7 @@ package net.sourceforge.pmd.ui.properties;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.runtime.properties.PropertiesException;
@@ -104,7 +104,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
      */
     public void execute() throws CommandException {
         try {
-            final IProjectProperties properties = PMDRuntimePlugin.getDefault().loadProjectProperties(this.project);
+            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
             properties.setPmdEnabled(this.pmdEnabled);
             properties.setProjectRuleSet(this.projectRuleSet);
             properties.setProjectWorkingSet(this.projectWorkingSet);

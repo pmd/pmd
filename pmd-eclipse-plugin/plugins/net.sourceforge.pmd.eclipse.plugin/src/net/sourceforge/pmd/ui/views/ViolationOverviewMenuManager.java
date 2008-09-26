@@ -48,7 +48,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.ProjectRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
@@ -86,7 +86,7 @@ public class ViolationOverviewMenuManager {
      * Setup the Actions for the ActionBars
      */
     public void setupActions() {
-        final Integer[] priorities = PMDUiPlugin.getDefault().getPriorityValues();
+        final Integer[] priorities = PMDPlugin.getDefault().getPriorityValues();
         this.priorityActions = new PriorityFilterAction[priorities.length];
     
         // create the Actions for the PriorityFilter
@@ -219,6 +219,6 @@ public class ViolationOverviewMenuManager {
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 }

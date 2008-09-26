@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.ui.views;
 
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
@@ -41,7 +41,7 @@ public class DataflowView extends PageBookView implements IResourceChangeListene
         MessagePage page = new MessagePage();
         initPage(page);
         page.createControl(book);
-        page.setMessage(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_DATAFLOW_DEFAULT_TEXT));
+        page.setMessage(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_DATAFLOW_DEFAULT_TEXT));
         return page;
     }
 
@@ -123,7 +123,7 @@ public class DataflowView extends PageBookView implements IResourceChangeListene
                 
             });
         } catch (CoreException e) {
-            PMDUiPlugin.getDefault().logError(
+            PMDPlugin.getDefault().logError(
                     StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         }
         

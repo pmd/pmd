@@ -36,7 +36,7 @@
 package net.sourceforge.pmd.runtime.cmd;
 
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.runtime.properties.PropertiesException;
 
@@ -104,7 +104,7 @@ public class BuildProjectCommand extends AbstractDefaultCommand {
         try {
             this.project.build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
 
-            final IProjectProperties properties = PMDRuntimePlugin.getDefault().loadProjectProperties(this.project);
+            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
             properties.setNeedRebuild(false);
         } catch (CoreException e) {
             throw new CommandException(e);

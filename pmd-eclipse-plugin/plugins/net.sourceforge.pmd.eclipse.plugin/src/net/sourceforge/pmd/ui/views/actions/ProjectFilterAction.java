@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.views.actions;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.ProjectFilter;
@@ -39,8 +39,8 @@ public class ProjectFilterAction extends Action {
         }
 
         // we set Image and Text for the Action
-        setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_PROJECT));
-        setText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_FILTER_PROJECT_PREFIX) + " "
+        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_PROJECT));
+        setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_FILTER_PROJECT_PREFIX) + " "
                 + projectRecord.getName());
     }
 

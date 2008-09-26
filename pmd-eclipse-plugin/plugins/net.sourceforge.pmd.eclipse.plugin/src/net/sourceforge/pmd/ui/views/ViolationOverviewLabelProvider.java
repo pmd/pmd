@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -41,10 +41,9 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.model.FileToMarkerRecord;
@@ -57,10 +56,10 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Provides the Violation Overview with Texts and Images
- * 
+ *
  * @author SebastianRaffel ( 09.05.2005 ), Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.5  2006/11/16 17:11:08  holobender
  * Some major changes:
@@ -80,12 +79,12 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
     private static final String KEY_IMAGE_ERR3 = "error3";
     private static final String KEY_IMAGE_ERR4 = "error4";
     private static final String KEY_IMAGE_ERR5 = "error5";
-    
+
     private final ViolationOverview violationView;
 
     /**
      * Constructor
-     * 
+     *
      * @param overview
      */
     public ViolationOverviewLabelProvider(ViolationOverview overview) {
@@ -104,7 +103,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
         if (columnIndex == 0) {
             if (element instanceof PackageRecord) {
                 image = getImage(KEY_IMAGE_PACKAGE, PMDUiConstants.ICON_PACKAGE);
-            } else if ((element instanceof FileRecord) || (element instanceof FileToMarkerRecord)) {
+            } else if (element instanceof FileRecord || element instanceof FileToMarkerRecord) {
                 image = getImage(KEY_IMAGE_JAVAFILE, PMDUiConstants.ICON_JAVACU);
             } else if (element instanceof MarkerRecord) {
                 final MarkerRecord markerRecord = (MarkerRecord)element;
@@ -127,13 +126,13 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
         switch (priority) {
         case 1:
             image = getImage(KEY_IMAGE_ERR1, PMDUiConstants.ICON_LABEL_ERR1);
-            break;                
+            break;
         case 2:
             image = getImage(KEY_IMAGE_ERR2, PMDUiConstants.ICON_LABEL_ERR2);
-            break;                
+            break;
         case 3:
             image = getImage(KEY_IMAGE_ERR3, PMDUiConstants.ICON_LABEL_ERR3);
-            break;                    
+            break;
         case 4:
             image = getImage(KEY_IMAGE_ERR4, PMDUiConstants.ICON_LABEL_ERR4);
             break;
@@ -143,7 +142,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
         default:
             // do nothing
         }
-        
+
         return image;
     }
 
@@ -157,32 +156,32 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
         if (element instanceof AbstractPMDRecord) {
             final AbstractPMDRecord record = (AbstractPMDRecord)element;
             switch (columnIndex) {
-    
+
             // show the Element's Name
             case 0:
                 result = getElementName(element);
                 break;
-    
+
             // show the Number of Violations
             case 1:
                 result = getNumberOfViolations(record);
                 break;
-    
+
             // show the Number of Violations per Line of Code
             case 2:
                 result = getViolationsPerLOC(record);
                 break;
-    
+
             // show the Number of Violations per Number of Methods
             case 3:
                 result = getViolationsPerMethod(record);
                 break;
-    
+
             // show the Project's Name
             case 4:
                 result = getProjectName(element);
                 break;
-    
+
             default:
                 // let the result be an empty string
             }
@@ -191,7 +190,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
     }
 
     /**
-     * Gets the number of violation to an element. 
+     * Gets the number of violation to an element.
      * @param element the record
      * @return number as string
      */
@@ -199,21 +198,21 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
         final int violations = this.violationView.getNumberOfFilteredViolations(element);
         String result = String.valueOf(violations);
 
-        if (element instanceof MarkerRecord 
+        if (element instanceof MarkerRecord
                 && violationView.getShowType() != ViolationOverview.SHOW_MARKERS_FILES) {
             final String ruleName = ((MarkerRecord)element).getName();
             final int maxViolations = getMaxViolations(ruleName);
 
             if (violations == maxViolations) {
-                result = "(max) " + result;                    
-            }   
+                result = "(max) " + result;
+            }
         } else if (element instanceof FileToMarkerRecord) {
             final String ruleName = ((FileToMarkerRecord)element).getParent().getName();
             final int maxViolations = getMaxViolations(ruleName);
 
             if (violations == maxViolations) {
-                result = "(max) " + result;                    
-            }   
+                result = "(max) " + result;
+            }
         }
 
         return result;
@@ -225,8 +224,8 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
      * @return maximum number
      */
     private int getMaxViolations(String ruleName) {
-        int maxViolations = PMDRuntimePlugin.getDefault().loadPreferences().getMaxViolationsPerFilePerRule(); 
-        final Rule rule = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
+        int maxViolations = PMDPlugin.getDefault().loadPreferences().getMaxViolationsPerFilePerRule();
+        final Rule rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
         if (rule != null && rule.hasProperty(PMDRuntimeConstants.RULE_PROPERTY_MAXVIOLATIONS)) {
              maxViolations = rule.getIntProperty(PMDRuntimeConstants.RULE_PROPERTY_MAXVIOLATIONS);
         }
@@ -235,7 +234,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
 
     /**
      * Return the name for the element column.
-     * 
+     *
      * @param element
      * @return
      */
@@ -256,7 +255,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
 
     /**
      * Return the label for the Violations per LOC column.
-     * 
+     *
      * @param element
      * @return
      */
@@ -277,14 +276,14 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
                 result = format.format(vioPerLoc) + " / 1000";
             }
         }
-         
+
         return result;
 
     }
 
     /**
      * Return the label for the Vioaltions per Method column.
-     * 
+     *
      * @param element
      * @return
      */
@@ -292,13 +291,13 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
         String result = "";
         final int vioCount2 = violationView.getNumberOfFilteredViolations(element);
         final int numMethods = violationView.getNumberOfMethods(element);
-        
+
         if (numMethods == 0) {
             result = "N/A";
         } else {
-            final double vioPerMethod = (double)vioCount2 / numMethods;  
-            
-            if ((vioPerMethod < 0.01) || (numMethods == 0)) {
+            final double vioPerMethod = (double)vioCount2 / numMethods;
+
+            if (vioPerMethod < 0.01 || numMethods == 0) {
                 result = "< 0.01";
             } else {
                 final DecimalFormat format = (DecimalFormat)NumberFormat.getInstance(Locale.US);
@@ -312,7 +311,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
 
     /**
      * Return the project name.
-     * 
+     *
      * @param element
      * @return
      */
@@ -336,12 +335,12 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
 
     /**
      * Helper method to get an image.
-     * 
+     *
      * @param key
      * @param iconPath
      * @return
      */
     private Image getImage(String key, String iconPath) {
-        return PMDUiPlugin.getDefault().getImage(key, iconPath);
+        return PMDPlugin.getDefault().getImage(key, iconPath);
     }
 }

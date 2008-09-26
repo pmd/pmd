@@ -42,7 +42,7 @@ import java.util.List;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
@@ -137,7 +137,7 @@ public class DataflowMethodRecord {
                 }
             }
         } catch (CoreException ce) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
 
         // return the Arraylist-Markers as an IMarker-Array

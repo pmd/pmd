@@ -1,6 +1,6 @@
 /*
  * Patterns Library - Implementation of various design patterns
- * Copyright (C) 2004 Philippe Herlin 
+ * Copyright (C) 2004 Philippe Herlin
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,14 +13,14 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Contact: philippe_herlin@yahoo.fr 
- * 
+ * Contact: philippe_herlin@yahoo.fr
+ *
  */
 package name.herlin.command;
 
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.apache.log4j.Logger;
 
@@ -34,11 +34,11 @@ public class DefaultCommandProcessor implements CommandProcessor {
 
     /**
      * Execute the command.
-     * 
+     *
      * @param aCommand
      *            the command to execute
      * @throws CommandException
-     *             if an unexpected condidition occurred.
+     *             if an unexpected condition occurred.
      */
     public void processCommand(final AbstractProcessableCommand aCommand) throws CommandException {
         log.debug("Beginning command " + aCommand.getName());
@@ -46,7 +46,7 @@ public class DefaultCommandProcessor implements CommandProcessor {
             Timer timer = new Timer();
             aCommand.execute();
             timer.stop();
-            PMDRuntimePlugin.getDefault().logInformation("Command " + aCommand.getName() + " excecuted in " + timer.getDuration() + "ms");
+            PMDPlugin.getDefault().logInformation("Command " + aCommand.getName() + " excecuted in " + timer.getDuration() + "ms");
         } else {
             throw new UnsetInputPropertiesException();
         }

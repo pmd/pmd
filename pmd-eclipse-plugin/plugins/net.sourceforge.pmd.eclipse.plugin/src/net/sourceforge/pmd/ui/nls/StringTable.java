@@ -41,7 +41,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -93,7 +93,7 @@ public class StringTable {
         try {
             if (this.table == null) {
                 this.table = new Properties();
-                final URL messageTableUrl = FileLocator.find(PMDUiPlugin.getDefault().getBundle(), new Path("$nl$/messages.properties"), null);
+                final URL messageTableUrl = FileLocator.find(PMDPlugin.getDefault().getBundle(), new Path("$nl$/messages.properties"), null);
                 if (messageTableUrl != null) {
                     final InputStream is = messageTableUrl.openStream();
                     this.table.load(is);

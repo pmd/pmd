@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.views.actions;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.PriorityFilter;
 import net.sourceforge.pmd.ui.views.ViolationOutline;
@@ -73,27 +73,27 @@ public class PriorityFilterAction extends Action {
         // depending on the Action's Priority
         switch (priority.intValue()) {
         case 1:
-            image = PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO1);
+            image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO1);
             text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_1);
             tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_1);
             break;
         case 2:
-            image = PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO2);
+            image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO2);
             text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_2);
             tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_2);
             break;
         case 3:
-            image = PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO3);
+            image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO3);
             text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_3);
             tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_3);
             break;
         case 4:
-            image = PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO4);
+            image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO4);
             text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_4);
             tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_4);
             break;
         case 5:
-            image = PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO5);
+            image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO5);
             text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_5);
             tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_5);
             break;
@@ -133,6 +133,6 @@ public class PriorityFilterAction extends Action {
      * Helper mehod to retreive an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 }

@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -36,8 +36,7 @@
 
 package net.sourceforge.pmd.ui.dialogs;
 
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -58,11 +57,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * 
- * 
+ *
+ *
  * @author Sven
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.3  2006/12/22 14:12:57  holobender
  * removed unused imports
@@ -86,7 +85,7 @@ public class CPDCheckDialog extends Dialog {
     private String selectedLanguage;
     private boolean createReport;
     private String tileSize;
-    
+
     private Group reportGroup = null;
     private Button createReportCheckbox = null;
     private Combo languageCombo = null;
@@ -103,8 +102,8 @@ public class CPDCheckDialog extends Dialog {
         this.selectedLanguage = languageCombo.getText();
         return super.close();
     }
-    
-    /* 
+
+    /*
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */
     protected Control createDialogArea(Composite parent) {
@@ -113,7 +112,7 @@ public class CPDCheckDialog extends Dialog {
         return container;
     }
 
-    /* 
+    /*
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
     protected void configureShell(Shell newShell) {
@@ -141,12 +140,12 @@ public class CPDCheckDialog extends Dialog {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
-            tilesize = PMDRuntimePlugin.getDefault().loadPreferences().getMinTileSize();
-            PMDRuntimePlugin.getDefault().logInformation("Invalid minimum tile-size: Setting to default value of " + tilesize);            
+            tilesize = PMDPlugin.getDefault().loadPreferences().getMinTileSize();
+            PMDPlugin.getDefault().logInformation("Invalid minimum tile-size: Setting to default value of " + tilesize);
         }
         return tilesize;
     }
-    
+
     /**
      * Gets the selected format
      * @return format as string
@@ -154,11 +153,11 @@ public class CPDCheckDialog extends Dialog {
     public String getSelectedFormat() {
         return formats[selectedFormat];
     }
-    
+
     public boolean isCreateReportSelected() {
         return createReport;
     }
-    
+
     /**
      * Initializes the container.
      * @param container
@@ -181,34 +180,34 @@ public class CPDCheckDialog extends Dialog {
         gridData4.verticalIndent = 5;
         gridData4.horizontalIndent = 5;
         gridData4.horizontalSpan = 2;
-        
+
         final GridLayout gridLayout1 = new GridLayout();
         gridLayout1.numColumns = 2;
         gridLayout1.makeColumnsEqualWidth = false;
         container.setLayout(gridLayout1);
-   
+
         final Label helpLabel = new Label(container,SWT.NONE);
         helpLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_HELP_LABEL));
         helpLabel.setLayoutData(gridData4);
-        
+
         final Label languageLabel = new Label(container, SWT.NONE);
         languageLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_LANGUAGE_LABEL));
         languageLabel.setLayoutData(gridData6);
-        
+
         createLanguageCombo(container);
-        
+
         final Label minimumTileSizeLabel = new Label(container, SWT.NONE);
         minimumTileSizeLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_MIN_TILESIZE_LABEL));
         minimumTileSizeLabel.setLayoutData(gridData7);
         minimumTileSizeText = new Text(container, SWT.BORDER);
         minimumTileSizeText.setLayoutData(gridData5);
         minimumTileSizeText.setToolTipText(getString(StringKeys.MSGKEY_DIALOG_TOOLTIP_CPD_MIN_TILESIZE));
-        final int minTileSize = PMDRuntimePlugin.getDefault().loadPreferences().getMinTileSize();
+        final int minTileSize = PMDPlugin.getDefault().loadPreferences().getMinTileSize();
         final String minTileSizeString = Integer.toString(minTileSize);
         this.tileSize = minTileSizeString;
         minimumTileSizeText.setText(minTileSizeString);
         minimumTileSizeText.setTextLimit(3);
-        
+
 
         minimumTileSizeText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -218,10 +217,10 @@ public class CPDCheckDialog extends Dialog {
 
         createReportGroup(container);
     }
-    
+
     /**
-     * This method initializes reportGroup  
-     * @param container 
+     * This method initializes reportGroup
+     * @param container
      *
      */
     private void createReportGroup(Composite container) {
@@ -265,8 +264,8 @@ public class CPDCheckDialog extends Dialog {
             public void widgetSelected(SelectionEvent e) {
                 formatCombo.setEnabled(createReportCheckbox.getSelection());
                 createReport = createReportCheckbox.getSelection();
-            }            
-        });        
+            }
+        });
         final Label formatLabel = new Label(reportGroup, SWT.NONE);
         formatLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_FORMAT_LABEL));
         formatLabel.setLayoutData(gridData7);
@@ -274,8 +273,8 @@ public class CPDCheckDialog extends Dialog {
     }
 
     /**
-     * This method initializes languageCombo    
-     * @param container 
+     * This method initializes languageCombo
+     * @param container
      *
      */
     private void createLanguageCombo(Composite container) {
@@ -293,7 +292,7 @@ public class CPDCheckDialog extends Dialog {
     }
 
     /**
-     * This method initializes formatCombo  
+     * This method initializes formatCombo
      *
      */
     private void createFormatCombo() {
@@ -301,7 +300,7 @@ public class CPDCheckDialog extends Dialog {
         gridData3.grabExcessHorizontalSpace = false;
         gridData3.widthHint = 150;
         gridData3.horizontalAlignment = GridData.BEGINNING;
-        gridData3.horizontalIndent = 10;        
+        gridData3.horizontalIndent = 10;
         gridData3.verticalAlignment = GridData.CENTER;
         formatCombo = new Combo(reportGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
         formatCombo.setLayoutData(gridData3);
@@ -317,13 +316,13 @@ public class CPDCheckDialog extends Dialog {
             }
         });
     }
-    
+
     /**
      * Helper method to shorten message access
      * @param key a message key
      * @return requested message
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 }

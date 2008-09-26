@@ -9,8 +9,7 @@ import java.util.TreeSet;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.core.PMDCorePlugin;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -30,10 +29,10 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Implements a dialog for the user to select a rule set to import
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/05/22 21:23:38  phherlin
  * Refactor the plug-in architecture to better support future evolutions
@@ -68,7 +67,7 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     public RuleSetSelectionDialog(Shell parent) {
         super(parent);
-        Set registeredRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        Set registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         SortedSet sortedRuleSets = new TreeSet(new Comparator() {
             public boolean equals(Object arg0) {
                 return false;
@@ -81,7 +80,7 @@ public class RuleSetSelectionDialog extends Dialog {
             }
         });
         sortedRuleSets.addAll(registeredRuleSets);
-        
+
         ruleSets = new RuleSet[sortedRuleSets.size()];
         ruleSetNames = new String[sortedRuleSets.size()];
         Iterator i = sortedRuleSets.iterator();
@@ -117,7 +116,7 @@ public class RuleSetSelectionDialog extends Dialog {
         data.horizontalSpan = 2;
         data.grabExcessHorizontalSpace = true;
         inputCombo.setLayoutData(data);
-        
+
         buildBrowseButton(dlgArea);
 
         referenceButton = buildReferenceButton(dlgArea);
@@ -220,14 +219,14 @@ public class RuleSetSelectionDialog extends Dialog {
     public String getImportedRuleSetName() {
         return this.importedRuleSetName;
     }
-    
+
     /**
      * @return the selected ruleSet
      */
     public RuleSet getSelectedRuleSet() {
         return this.selectedRuleSet;
     }
-    
+
     /**
      * @return import by reference
      */
@@ -247,13 +246,13 @@ public class RuleSetSelectionDialog extends Dialog {
                     final RuleSetFactory factory = new RuleSetFactory();
                     this.selectedRuleSet = factory.createRuleSets(this.importedRuleSetName).getAllRuleSets()[0];
                 } catch (RuleSetNotFoundException e) {
-                    PMDUiPlugin.getDefault().showError(getMessage(StringKeys.MSGKEY_ERROR_RULESET_NOT_FOUND), e);
+                    PMDPlugin.getDefault().showError(getMessage(StringKeys.MSGKEY_ERROR_RULESET_NOT_FOUND), e);
                 }
             }
         } else {
             this.selectedRuleSet = this.ruleSets[selectionIndex];
         }
-        
+
         super.okPressed();
     }
 
@@ -263,7 +262,7 @@ public class RuleSetSelectionDialog extends Dialog {
      * @return requested message
      */
     private String getMessage(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

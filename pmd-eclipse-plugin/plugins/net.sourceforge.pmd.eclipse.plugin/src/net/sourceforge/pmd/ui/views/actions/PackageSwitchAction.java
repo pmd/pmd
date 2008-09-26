@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.views.actions;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.ViolationOverview;
 
@@ -25,8 +25,8 @@ public class PackageSwitchAction extends Action {
         violationView = view;
 
         // se set Image and Tooltip-Text
-        setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILES));
-        setToolTipText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_PACKAGES_FILES));
+        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILES));
+        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_PACKAGES_FILES));
     }
 
     /**
@@ -58,9 +58,9 @@ public class PackageSwitchAction extends Action {
     public void setChecked(boolean checked) {
         // we use this Function to change the Images of the Action's Button
         if (checked == true) {
-            setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PACKFILES));
+            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PACKFILES));
         } else {
-            setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILES));
+            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILES));
         }
         super.setChecked(checked);
     }

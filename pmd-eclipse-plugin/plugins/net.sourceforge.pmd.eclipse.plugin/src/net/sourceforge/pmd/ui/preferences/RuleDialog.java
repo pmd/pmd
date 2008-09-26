@@ -7,7 +7,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleReference;
 import net.sourceforge.pmd.rules.XPathRule;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -466,7 +466,7 @@ public class RuleDialog extends Dialog {
      */
     private Combo buildPriorityCombo(Composite parent) {
         Combo combo = new Combo(parent, SWT.SINGLE | SWT.BORDER);
-    	String[] labels = PMDUiPlugin.getDefault().getPriorityLabels();
+    	String[] labels = PMDPlugin.getDefault().getPriorityLabels();
     	int index = 3-1;
 		if (editedRule != null && editedRule.getPriority() >= 0 && editedRule.getPriority() <= labels.length) {
 			index = editedRule.getPriority() - 1;
@@ -700,7 +700,7 @@ public class RuleDialog extends Dialog {
      * @return requested message
      */
     private String getMessage(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
     /**

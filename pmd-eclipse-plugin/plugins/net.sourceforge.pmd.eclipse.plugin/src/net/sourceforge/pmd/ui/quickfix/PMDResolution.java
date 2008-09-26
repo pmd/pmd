@@ -32,7 +32,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
 import net.sourceforge.pmd.quickfix.Fix;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.apache.log4j.Logger;
@@ -99,11 +99,11 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
                         .getShell());
                 dialog.run(false, false, this);
             } catch (InvocationTargetException e) {
-                PMDUiPlugin.getDefault().showError(
-                        PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+                PMDPlugin.getDefault().showError(
+                        PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
             } catch (InterruptedException e) {
-                PMDUiPlugin.getDefault().showError(
-                        PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
+                PMDPlugin.getDefault().showError(
+                        PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
             }
         }
 
@@ -134,11 +134,11 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
 
             monitor.worked(1);
         } catch (CoreException e) {
-            PMDUiPlugin.getDefault().showError(
-                    PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(
+                    PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
         } catch (IOException e) {
-            PMDUiPlugin.getDefault().showError(
-                    PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_IO_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(
+                    PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_IO_EXCEPTION), e);
         }
     }
 

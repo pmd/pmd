@@ -8,7 +8,7 @@ import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.runtime.cmd.RenderReportCmd;
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.apache.log4j.Logger;
@@ -80,8 +80,8 @@ public class GenerateReportAction implements IObjectActionDelegate {
                     cmd.performExecute();
                 }
             } catch (CommandException e) {
-                PMDUiPlugin.getDefault().showError(
-                        PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION),
+                PMDPlugin.getDefault().showError(
+                        PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION),
                     e);
             }
         }

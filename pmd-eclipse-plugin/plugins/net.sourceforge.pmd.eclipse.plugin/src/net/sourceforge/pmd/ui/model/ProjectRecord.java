@@ -40,7 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IFile;
@@ -188,7 +188,7 @@ public class ProjectRecord extends AbstractPMDRecord {
                 }
             });
         } catch (CoreException ce) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
         }
 
         // return the List as an Array of Packages
@@ -221,7 +221,7 @@ public class ProjectRecord extends AbstractPMDRecord {
                 }
             }
         } catch (JavaModelException jme) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
         }
 
         return packages;

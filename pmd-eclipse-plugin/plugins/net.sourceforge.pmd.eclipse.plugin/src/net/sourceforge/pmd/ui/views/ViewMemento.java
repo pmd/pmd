@@ -47,7 +47,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.runtime.IPath;
@@ -97,7 +97,7 @@ public class ViewMemento {
      * @param type, a String identifying the View, used for the File's Name
      */
     public ViewMemento(String type) {
-        this.path = PMDUiPlugin.getDefault().getStateLocation();
+        this.path = PMDPlugin.getDefault().getStateLocation();
         this.file = new File(this.path.toString(), type);
 
         // we check for an existing XML-File
@@ -112,9 +112,9 @@ public class ViewMemento {
             reader = new FileReader(file);
             this.memento = XMLMemento.createReadRoot(reader);
         } catch (WorkbenchException wbe) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), wbe);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), wbe);
         } catch (FileNotFoundException fnfe) {
-            PMDUiPlugin.getDefault().logError(
+            PMDPlugin.getDefault().logError(
                     StringKeys.MSGKEY_ERROR_FILE_NOT_FOUND + path.toString() + "/" + type + " in " + this.toString(), fnfe);
         } finally {
             if (reader != null) {
@@ -143,7 +143,7 @@ public class ViewMemento {
             writer = new FileWriter(file);
             writer.write(XML_PREFIX + "\n" + "<" + MEMENTO_PREFIX + "/>");
         } catch (IOException ioe) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
         } finally {
             if (writer != null) {
                 try {
@@ -176,10 +176,10 @@ public class ViewMemento {
                 }
             }
         } catch (FileNotFoundException fnfe) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FILE_NOT_FOUND + file.toString() + " in " + this.toString(),
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FILE_NOT_FOUND + file.toString() + " in " + this.toString(),
                     fnfe);
         } catch (IOException ioe) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
         } finally {
             if (contentReader != null) {
                 try {
@@ -205,7 +205,7 @@ public class ViewMemento {
                 writer = new FileWriter(this.file);
                 this.memento.save(writer);
             } catch (IOException ioe) {
-                PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+                PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
             } finally {
                 if (writer != null) {
                     try {

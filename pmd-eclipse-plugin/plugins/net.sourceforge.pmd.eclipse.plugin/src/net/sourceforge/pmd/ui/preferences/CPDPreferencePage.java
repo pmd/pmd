@@ -1,8 +1,7 @@
 package net.sourceforge.pmd.ui.preferences;
 
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.jface.preference.PreferencePage;
@@ -19,11 +18,11 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * Preference page for CPD properties
- * 
+ *
  * @author ?
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/05/22 21:23:39  phherlin
  * Refactor the plug-in architecture to better support future evolutions
@@ -43,7 +42,7 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      */
     public void init(IWorkbench workbench) {
         setDescription(getMessage(StringKeys.MSGKEY_PREF_CPD_TITLE));
-        this.preferences = PMDRuntimePlugin.getDefault().loadPreferences();
+        this.preferences = PMDPlugin.getDefault().loadPreferences();
     }
 
     /**
@@ -60,7 +59,7 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
         // Create children
         Group generalGroup = buildGeneralGroup(composite);
-        
+
         // Layout children
         generalGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -73,7 +72,7 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      * @return the group widget
      */
     private Group buildGeneralGroup(final Composite parent) {
-        
+
         // build the group
         Group group = new Group(parent, SWT.SHADOW_IN);
         group.setText(getMessage(StringKeys.MSGKEY_PREF_CPD_GROUP_GENERAL));
@@ -107,7 +106,7 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     public boolean performOk() {
         this.preferences.setMinTileSize(new Integer(this.minTileText.getText()).intValue());
         this.preferences.sync();
-        
+
         return super.performOk();
     }
 
@@ -117,7 +116,7 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      * @return requested message
      */
     private String getMessage(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

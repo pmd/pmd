@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IResource;
@@ -29,7 +29,7 @@ public class ReviewResourceAction extends Action {
      */
     public ReviewResourceAction(IResource resource) {
         super();
-        setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_REFRESH));
+        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_REFRESH));
         setToolTipText(getString(StringKeys.MSGKEY_VIEW_TOOLTIP_REFRESH));
         this.resource = resource;
     }
@@ -56,15 +56,15 @@ public class ReviewResourceAction extends Action {
                     try {
                         cmd.performExecute();
                     } catch (CommandException e) {
-                        PMDUiPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+                        PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
                     }
                     monitor.done();
                 }
             });
         } catch (InvocationTargetException e) {
-            PMDUiPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
         } catch (InterruptedException e) {
-            PMDUiPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
+            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
         }
     }
  
@@ -90,6 +90,6 @@ public class ReviewResourceAction extends Action {
      * Helper mehod to retreive an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 }

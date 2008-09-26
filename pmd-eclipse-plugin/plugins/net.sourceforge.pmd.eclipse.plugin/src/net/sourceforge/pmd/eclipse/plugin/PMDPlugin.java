@@ -46,18 +46,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class PMDActivator extends AbstractUIPlugin {
+public class PMDPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
 
 	// The shared instance
-	private static PMDActivator plugin;
+	private static PMDPlugin plugin;
 
 	/**
 	 * The constructor
 	 */
-	public PMDActivator() {
+	public PMDPlugin() {
 	}
 
 	/*
@@ -86,11 +86,11 @@ public class PMDActivator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static PMDActivator getDefault() {
+	public static PMDPlugin getDefault() {
 		return plugin;
 	}
 
-    private static final Logger log = Logger.getLogger(PMDActivator.class);
+    private static final Logger log = Logger.getLogger(PMDPlugin.class);
 
     private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
     private String[] priorityLabels; // NOPMD by Herlin on 11/10/06 00:22

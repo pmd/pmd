@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.preferences;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
@@ -90,7 +90,7 @@ public class RuleCellModifier implements ICellModifier {
         } catch (Throwable t) {
             // Bug in JFace for Eclipse 2.0x
             // Ignore exception
-            PMDUiPlugin.getDefault().logError(
+            PMDPlugin.getDefault().logError(
                 "Exception when notifying a modification in a cell of the rule table in the preference page",
                 t);
         }

@@ -52,7 +52,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.builder.PMDNature;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.runtime.properties.IProjectPropertiesManager;
@@ -168,7 +168,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 final File ruleSetFile = projectProperties.getResolvedRuleSetFile();
                 projectProperties.setProjectRuleSet(factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0]);
             } catch (RuleSetNotFoundException e) {
-                PMDRuntimePlugin.getDefault().logError(
+                PMDPlugin.getDefault().logError(
                         "Project RuleSet cannot be loaded for project " + projectProperties.getProject().getName()
                                 + " using RuleSet file name " + projectProperties.getRuleSetFile() + ". Using the rules from properties.", e);
             }
@@ -246,7 +246,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     private void setRuleSetFromProperties(IProjectProperties projectProperties, RuleSpecTO[] rules) throws PropertiesException {
         final RuleSet ruleSet = new RuleSet();
-        final RuleSet pluginRuleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
+        final RuleSet pluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
         int n = rules==null?0:rules.length;
         for (int i = 0; i < n; i++) {
             try {
@@ -342,7 +342,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     private boolean synchronizeRuleSet(IProjectProperties projectProperties) throws PropertiesException {
         log.debug("Synchronizing the project ruleset with the plugin ruleset");
-        final RuleSet pluginRuleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
+        final RuleSet pluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
         final RuleSet projectRuleSet = projectProperties.getProjectRuleSet();
         boolean flChanged = false;
 

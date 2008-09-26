@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.actions;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.jface.action.IAction;
@@ -31,7 +31,7 @@ public class ShowDataflowAction implements IObjectActionDelegate {
 			    this.workbenchPage.showView(PMDUiConstants.ID_DATAFLOWVIEW);
 
 			} catch (PartInitException pie) {
-				PMDUiPlugin.getDefault().logError(
+				PMDPlugin.getDefault().logError(
 					StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION +
 					this.toString(), pie);
 			}

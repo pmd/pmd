@@ -43,7 +43,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.apache.log4j.Logger;
@@ -130,9 +130,9 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
                 }
             });
         } catch (InvocationTargetException e) {
-            PMDUiPlugin.getDefault().logError("Invocation Target Exception when removing violations reviews", e.getTargetException());
+            PMDPlugin.getDefault().logError("Invocation Target Exception when removing violations reviews", e.getTargetException());
         } catch (InterruptedException e) {
-            PMDUiPlugin.getDefault().logError("Interrupted Exception when removing violations reviews", e);
+            PMDPlugin.getDefault().logError("Interrupted Exception when removing violations reviews", e);
         }
     }
 
@@ -239,7 +239,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
                         + this.targetPart.getClass().getName());
             }
         } catch (CoreException e) {
-            PMDUiPlugin.getDefault().logError("Core Exception when clearing violations reviews", e);
+            PMDPlugin.getDefault().logError("Core Exception when clearing violations reviews", e);
         }
     }
 
@@ -304,9 +304,9 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
             out.flush();
 
         } catch (CoreException e) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
         }
 
         return noChange ? null : baos.toString();
@@ -322,7 +322,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
         try {
             file.setContents(new ByteArrayInputStream(newContent.getBytes()), false, true, getMonitor());
         } catch (CoreException e) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         }
     }
 
@@ -341,7 +341,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

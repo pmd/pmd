@@ -47,7 +47,7 @@ import name.herlin.command.Timer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.runtime.properties.PropertiesException;
 
@@ -208,7 +208,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
             // Log performances information
             if (this.filesCount > 0 && this.rulesCount > 0) {
-                PMDRuntimePlugin.getDefault().logInformation(
+                PMDPlugin.getDefault().logInformation(
                         "Review code command terminated. " + this.rulesCount + " rules were executed against " + this.filesCount
                                 + " files. Actual PMD duration is about " + this.pmdDuration + "ms, that is about "
                                 + (float)this.pmdDuration / this.filesCount
@@ -219,7 +219,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                                 + " ms/filerule"
                                 );
             } else {
-                PMDRuntimePlugin.getDefault().logInformation(
+                PMDPlugin.getDefault().logInformation(
                         "Review code command terminated. " + this.rulesCount + " rules were executed against " + this.filesCount
                                 + " files. PMD was not executed.");
             }
@@ -339,7 +339,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private void processResource(IResource resource) throws CommandException {
         try {
             final IProject project = resource.getProject();
-            final IProjectProperties properties = PMDRuntimePlugin.getDefault().loadProjectProperties(project);
+            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             final RuleSet ruleSet = properties.getProjectRuleSet();
             final PMD pmdEngine = getPmdEngineForProject(project);
             setStepsCount(countResourceElement(resource));
@@ -412,7 +412,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private void processResourceDelta() throws CommandException {
         try {
             final IProject project = this.resourceDelta.getResource().getProject();
-            final IProjectProperties properties = PMDRuntimePlugin.getDefault().loadProjectProperties(project);
+            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             final RuleSet ruleSet = properties.getProjectRuleSet();
             final PMD pmdEngine = getPmdEngineForProject(project);
             this.setStepsCount(countDeltaElement(this.resourceDelta));
@@ -477,7 +477,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                                                                                                                     // NLS
         } finally {
             timer.stop();
-            PMDRuntimePlugin.getDefault().logInformation(
+            PMDPlugin.getDefault().logInformation(
                     "" + violationsCount + " markers applied on " + this.markers.size() + " files in " + timer.getDuration()
                             + "ms.");
             log.info("End of processing marker directives. " + violationsCount + " violations for " + this.markers.size()
@@ -498,7 +498,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         try {
             resource.accept(visitor);
         } catch (CoreException e) {
-            PMDRuntimePlugin.getDefault().logError("Exception when counting elements of a project", e);
+            PMDPlugin.getDefault().logError("Exception when counting elements of a project", e);
         }
 
         return visitor.count;
@@ -516,7 +516,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         try {
             delta.accept(visitor);
         } catch (CoreException e) {
-            PMDRuntimePlugin.getDefault().logError("Exception counting elemnts in a delta selection", e);
+            PMDPlugin.getDefault().logError("Exception counting elemnts in a delta selection", e);
         }
 
         return visitor.count;

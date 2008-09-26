@@ -40,7 +40,7 @@ import java.util.Comparator;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.preferences.PMDPreferencePage;
 import net.sourceforge.pmd.ui.preferences.RuleLabelProvider;
@@ -549,7 +549,7 @@ public class PMDPropertyPage extends PropertyPage {
      * @return requested message
      */
     private String getMessage(final String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
     /**
@@ -568,7 +568,7 @@ public class PMDPropertyPage extends PropertyPage {
             	}
             }
         } catch (ClassCastException e) {
-            PMDUiPlugin.getDefault().logError("Ignoring exception while refreshing table", e);
+            PMDPlugin.getDefault().logError("Ignoring exception while refreshing table", e);
         } finally {
         	availableRulesTableViewer.getControl().setRedraw(true);
         }

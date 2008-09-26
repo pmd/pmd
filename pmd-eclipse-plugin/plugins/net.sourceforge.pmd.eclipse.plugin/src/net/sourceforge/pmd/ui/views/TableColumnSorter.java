@@ -37,7 +37,7 @@
 package net.sourceforge.pmd.ui.views;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.graphics.Image;
@@ -105,9 +105,9 @@ public class TableColumnSorter extends ViewerSorter {
         Image image = null;
 
         if (order == 1) {
-            image = PMDUiPlugin.getDefault().getImage("arrow_up", PMDUiConstants.ICON_LABEL_ARRUP);
+            image = PMDPlugin.getDefault().getImage("arrow_up", PMDUiConstants.ICON_LABEL_ARRUP);
         } else if (order == -1) {
-            image = PMDUiPlugin.getDefault().getImage("arrow_dn", PMDUiConstants.ICON_LABEL_ARRDN);
+            image = PMDPlugin.getDefault().getImage("arrow_dn", PMDUiConstants.ICON_LABEL_ARRDN);
         }
         
         return image;

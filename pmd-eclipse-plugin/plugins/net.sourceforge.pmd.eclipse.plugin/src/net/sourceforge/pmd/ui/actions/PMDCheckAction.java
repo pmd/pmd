@@ -5,7 +5,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -18,7 +18,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -36,9 +36,8 @@ package net.sourceforge.pmd.ui.actions;
 import java.util.Iterator;
 
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.cmd.ReviewCodeCmd;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
@@ -60,10 +59,10 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Implements action on the "Check code with PMD" action menu on a file
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.2  2006/11/16 17:09:40  holobender
  * Some major changes:
@@ -78,29 +77,29 @@ import org.eclipse.ui.IWorkbenchPart;
  * Fix BUG#1365407 Problems with PMD in Eclipse/Issue 3
  * Revision 1.13 2005/12/30 16:22:31 phherlin Add a debug log to check what happens when this action
  * is launched in an editor pane
- * 
+ *
  * Revision 1.12 2005/10/24 22:39:00 phherlin Integrating Sebastian Raffel's work Refactor command processing Revision 1.11
  * 2005/05/07 13:32:06 phherlin Continuing refactoring Fix some PMD violations Fix Bug 1144793 Fix Bug 1190624 (at least try)
- * 
+ *
  * Revision 1.10 2003/11/30 22:57:37 phherlin Merging from eclipse-v2 development branch
- * 
+ *
  * Revision 1.8.2.2 2003/11/04 16:27:19 phherlin Refactor to use the adaptable framework instead of downcasting
- * 
+ *
  * Revision 1.8.2.1 2003/10/30 22:09:51 phherlin Simplify the code : moving the deep nested CountVisitor class as a first level
  * nested inner class. This also correct a rule violation from PMD.
- * 
+ *
  * Revision 1.8 2003/08/13 20:08:40 phherlin Refactoring private->protected to remove warning about non accessible member access in
  * enclosing types
- * 
+ *
  * Revision 1.7 2003/07/01 20:21:37 phherlin Correcting some PMD violations ! (empty if stmt)
- * 
+ *
  * Revision 1.6 2003/06/19 20:58:13 phherlin Improve progress indicator accuracy
- * 
+ *
  * Revision 1.5 2003/05/19 22:27:33 phherlin Refactoring to improve performance
- * 
+ *
  * Revision 1.4 2003/03/30 20:48:19 phherlin Adding logging Displaying error dialog in a thread safe way Adding support for folders
  * and package
- * 
+ *
  */
 public class PMDCheckAction implements IObjectActionDelegate {
     private static final Logger log = Logger.getLogger(PMDCheckAction.class);
@@ -150,7 +149,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
             }
 
         } catch (CommandException e) {
-            PMDUiPlugin.getDefault().showError(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
         }
 
     }
@@ -163,7 +162,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
 
     /**
      * Run the reviewCode command on a single resource
-     * 
+     *
      * @param resource
      * @throws CommandException
      */
@@ -172,14 +171,14 @@ public class PMDCheckAction implements IObjectActionDelegate {
         cmd.addResource(resource);
         cmd.setStepsCount(1);
         cmd.setTaskMarker(true);
-        cmd.setOpenPmdPerspective(PMDRuntimePlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
+        cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
         cmd.setUserInitiated(true);
         cmd.performExecute();
     }
 
     /**
      * Prepare and run the reviewCode command for all selected resources
-     * 
+     *
      * @param selection the selected resources
      */
     private void reviewSelectedResources(IStructuredSelection selection) throws CommandException {
@@ -214,7 +213,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
         // Run the command
         cmd.setStepsCount(countElement(selection));
         cmd.setTaskMarker(true);
-        cmd.setOpenPmdPerspective(PMDRuntimePlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
+        cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
         cmd.setUserInitiated(true);
         cmd.performExecute();
 
@@ -222,7 +221,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
 
     /**
      * Count the number of resources of a selection
-     * 
+     *
      * @param selection a selection
      * @return the element count
      */
@@ -248,7 +247,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
                 }
             } catch (CoreException e) {
                 // Ignore any exception
-                PMDUiPlugin.getDefault().logError(
+                PMDPlugin.getDefault().logError(
                         "Exception when counting the number of impacted elements when running PMD from menu", e);
             }
         }
@@ -264,7 +263,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
             boolean fVisitChildren = true;
             count++;
 
-            if ((resource instanceof IFile) && (((IFile) resource).getFileExtension() != null)
+            if (resource instanceof IFile && ((IFile) resource).getFileExtension() != null
                     && ((IFile) resource).getFileExtension().equals("java")) {
 
                 fVisitChildren = false;

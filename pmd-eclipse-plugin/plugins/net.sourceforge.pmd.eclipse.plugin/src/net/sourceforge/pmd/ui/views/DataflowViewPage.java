@@ -16,7 +16,7 @@ import net.sourceforge.pmd.dfa.DaaRule;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.runtime.cmd.ReviewResourceForRuleCommand;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.util.designer.DFAGraphRule;
@@ -213,7 +213,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
                             offset = getDocument().getLineOffset(startLine);
                             length = getDocument().getLineLength(startLine);
                         } catch (BadLocationException ble) {
-                            PMDUiPlugin.getDefault().logError(
+                            PMDPlugin.getDefault().logError(
                                     StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION + "Exception when selecting a line in the editor" , ble);
                         }
                         textEditor.selectAndReveal(offset, length);
@@ -271,7 +271,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
             // the Rule then can give us the Methods
             methodList.addAll(dfaGraphRule.getMethods());
         } catch (PMDException pmde) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION + this.toString(), pmde);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION + this.toString(), pmde);
         }
 
         return methodList;
@@ -316,7 +316,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
      * Helper method to return an NLS string from its key.
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
     
     /* @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent) */
@@ -336,7 +336,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
                         final int length = getDocument().getLineOffset(violation.getEndLine()) - offset;
                         this.textEditor.selectAndReveal(offset, length);
                     } catch (BadLocationException ble) {
-                        PMDUiPlugin.getDefault().logError(
+                        PMDPlugin.getDefault().logError(
                                 StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION + "Exception when selecting a line in the editor" , ble);
                     }
 
@@ -426,7 +426,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
             cmd.addPropertyListener(this);
             cmd.performExecute();
         } catch (CommandException e) {
-            PMDUiPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
+            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
         } 
     }
     

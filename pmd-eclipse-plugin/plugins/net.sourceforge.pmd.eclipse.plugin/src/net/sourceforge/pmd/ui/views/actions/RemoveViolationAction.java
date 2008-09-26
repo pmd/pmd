@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.views.actions;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
@@ -28,9 +28,9 @@ public class RemoveViolationAction extends ViolationSelectionAction {
         super(viewer);
 
         // set Image, Text and ToolTip-Text for this Action
-        setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_REMVIO));
-        setText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_ACTION_REMOVE_VIOLATION));
-        setToolTipText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION));
+        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_REMVIO));
+        setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_ACTION_REMOVE_VIOLATION));
+        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION));
 
     }
 
@@ -52,7 +52,7 @@ public class RemoveViolationAction extends ViolationSelectionAction {
                     }
                 }, null);
             } catch (CoreException ce) {
-                PMDUiPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), ce);
+                PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), ce);
             }
         }
     }
@@ -61,6 +61,6 @@ public class RemoveViolationAction extends ViolationSelectionAction {
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 }

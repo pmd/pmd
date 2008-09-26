@@ -3,7 +3,7 @@ package net.sourceforge.pmd.ui.views.actions;
 import java.lang.reflect.InvocationTargetException;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.PackageRecord;
@@ -25,8 +25,8 @@ public class CalculateStatisticsAction extends Action {
         violationView = view;
 
         // se set Image and Tooltip-Text
-        setImageDescriptor(PMDUiPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_CALCULATE));
-        setToolTipText(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS));
+        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_CALCULATE));
+        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS));
     }
     
     /**
@@ -66,9 +66,9 @@ public class CalculateStatisticsAction extends Action {
                 }
             });
         } catch (InvocationTargetException e) {
-            PMDUiPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
         } catch (InterruptedException e) {
-            PMDUiPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
+            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
         }
     }
     
@@ -97,6 +97,6 @@ public class CalculateStatisticsAction extends Action {
      * Helper method to return an NLS string from its key
      */
     private String getString(String key) {
-        return PMDUiPlugin.getDefault().getStringTable().getString(key);
+        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 }

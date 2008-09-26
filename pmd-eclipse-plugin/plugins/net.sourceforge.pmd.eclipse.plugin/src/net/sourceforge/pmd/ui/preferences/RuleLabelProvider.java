@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.ui.preferences;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
  * Implements a label provider for the rules item to be displayed in the
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.ui.PMDUiPlugin;
  */
 public class RuleLabelProvider extends AbstractTableLabelProvider {
     private static final String PRIORITY_ILLEGAL = "* illegal *";
-    private static final String[] PRIORITY_LABEL = PMDUiPlugin.getDefault().getPriorityLabels();
+    private static final String[] PRIORITY_LABEL = PMDPlugin.getDefault().getPriorityLabels();
 
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object, int)

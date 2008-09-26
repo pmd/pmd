@@ -39,7 +39,7 @@ package net.sourceforge.pmd.ui.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IResource;
@@ -120,7 +120,7 @@ public class PackageRecord extends AbstractPMDRecord {
         try {
             resource = this.packageFragment.getCorrespondingResource();
         } catch (JavaModelException jme) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
         }
         return resource;
     }
@@ -153,7 +153,7 @@ public class PackageRecord extends AbstractPMDRecord {
                 }
             }
         } catch (CoreException ce) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
         }
 
         return (AbstractPMDRecord[]) fileList.toArray(new AbstractPMDRecord[fileList.size()]);
@@ -218,7 +218,7 @@ public class PackageRecord extends AbstractPMDRecord {
 
         // for the default Package we return a String saying "default Package"
         if (this.packageFragment.isDefaultPackage()) {
-            name = PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_DEFAULT_PACKAGE);
+            name = PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_DEFAULT_PACKAGE);
         }
 
         return name;

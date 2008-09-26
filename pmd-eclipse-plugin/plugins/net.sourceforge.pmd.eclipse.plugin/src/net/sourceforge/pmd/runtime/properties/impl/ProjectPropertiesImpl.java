@@ -43,7 +43,7 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.runtime.properties.PropertiesException;
@@ -144,7 +144,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         super();
         this.project = project;
         this.projectPropertiesManager = projectPropertiesManager;
-        this.projectRuleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
+        this.projectRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
     }
 
     /**
@@ -304,7 +304,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     public void createDefaultRuleSetFile() throws PropertiesException {
         log.info("Create a default rule set file for project " + this.project.getName());
         try {
-            final IRuleSetWriter writer = PMDRuntimePlugin.getDefault().getRuleSetWriter();
+            final IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             writer.write(baos, this.projectRuleSet);
             baos.close();
