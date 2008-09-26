@@ -24,10 +24,10 @@ import org.eclipse.ui.IWorkbenchPart;
 /**
  * Process GenerateReport action menu.
  * Generate a HTML report on the current project.
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.2  2006/10/10 22:31:01  phherlin
  * Fix other PMD warnings
@@ -67,40 +67,17 @@ public class GenerateReportAction implements IObjectActionDelegate {
             try {
                 final IProject project = getProject((IStructuredSelection) sel);
                 if (project != null) {
-                    final RenderReportCmd cmd1 = new RenderReportCmd();
-                    cmd1.setProject(project);
-                    cmd1.setRenderer(new HTMLRenderer());
-                    cmd1.setReportName(PMDUiConstants.HTML_REPORT_NAME);
-                    cmd1.setUserInitiated(true);
-                    cmd1.performExecute();
-                    
-                    final RenderReportCmd cmd2 = new RenderReportCmd();                    
-                    cmd2.setProject(project);
-                    cmd2.setRenderer(new CSVRenderer());
-                    cmd2.setReportName(PMDUiConstants.CSV_REPORT_NAME);
-                    cmd1.setUserInitiated(true);
-                    cmd2.performExecute();
-                    
-                    final RenderReportCmd cmd3 = new RenderReportCmd();                    
-                    cmd3.setProject(project);
-                    cmd3.setRenderer(new XMLRenderer());
-                    cmd3.setReportName(PMDUiConstants.XML_REPORT_NAME);
-                    cmd1.setUserInitiated(true);
-                    cmd3.performExecute();
-                    
-                    final RenderReportCmd cmd4 = new RenderReportCmd();                    
-                    cmd4.setProject(project);
-                    cmd4.setRenderer(new TextRenderer());
-                    cmd4.setReportName(PMDUiConstants.TXT_REPORT_NAME);
-                    cmd1.setUserInitiated(true);
-                    cmd4.performExecute();
-                    
-                    final RenderReportCmd cmd5 = new RenderReportCmd();                    
-                    cmd5.setProject(project);
-                    cmd5.setRenderer(new VBHTMLRenderer());
-                    cmd5.setReportName(PMDUiConstants.VBHTML_REPORT_NAME);
-                    cmd5.setUserInitiated(true);
-                    cmd5.performExecute();
+                    final RenderReportCmd cmd = new RenderReportCmd();
+                    cmd.setProject(project);
+                    cmd.setUserInitiated(true);
+
+                    cmd.registerRenderer(new HTMLRenderer(), PMDUiConstants.HTML_REPORT_NAME);
+                    cmd.registerRenderer(new CSVRenderer(), PMDUiConstants.CSV_REPORT_NAME);
+                    cmd.registerRenderer(new XMLRenderer(), PMDUiConstants.XML_REPORT_NAME);
+                    cmd.registerRenderer(new TextRenderer(), PMDUiConstants.TXT_REPORT_NAME);
+                    cmd.registerRenderer(new VBHTMLRenderer(), PMDUiConstants.VBHTML_REPORT_NAME);
+
+                    cmd.performExecute();
                 }
             } catch (CommandException e) {
                 PMDUiPlugin.getDefault().showError(
@@ -116,7 +93,7 @@ public class GenerateReportAction implements IObjectActionDelegate {
     public final void selectionChanged(IAction action, ISelection selection) {
         // nothing to do
     }
-    
+
     /**
      * Get a project from a selection
      * @param selection
@@ -125,13 +102,13 @@ public class GenerateReportAction implements IObjectActionDelegate {
     private IProject getProject(final IStructuredSelection selection) {
         IProject project = null;
         final Object object = selection.getFirstElement();
-        if ((object != null) && (object instanceof IAdaptable)) {
-           final IResource resource = (IResource) ((IAdaptable) object).getAdapter(IResource.class);            
+        if (object != null && object instanceof IAdaptable) {
+           final IResource resource = (IResource) ((IAdaptable) object).getAdapter(IResource.class);
            if (resource != null) {
                project = resource.getProject();
            }
         }
-        
+
         return project;
     }
 

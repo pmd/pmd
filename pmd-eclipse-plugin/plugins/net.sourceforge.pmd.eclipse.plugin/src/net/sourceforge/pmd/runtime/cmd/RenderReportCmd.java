@@ -38,6 +38,10 @@ package net.sourceforge.pmd.runtime.cmd;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Report;
@@ -101,8 +105,11 @@ public class RenderReportCmd extends AbstractDefaultCommand {
 
     private static final Logger log = Logger.getLogger(RenderReportCmd.class);
     private IProject project;
-    private Renderer renderer;
-    private String reportName;
+
+    /**
+     * Table containing the renderers indexed by the file name.
+     */
+    private HashMap renderers = new HashMap();
 
     /**
      * Default Constructor
@@ -117,6 +124,16 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     }
 
     /**
+     * Register a renderer and its associated file for processing.
+     *
+     * @param renderer the renderer
+     * @param reportFile the file name where the report will be saved
+     */
+    public void registerRenderer(Renderer renderer, String reportFile) {
+        renderers.put(reportFile, renderer);
+    }
+
+    /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     public void execute() throws CommandException {
@@ -125,25 +142,39 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             log.debug("   Create a report object");
             final Report report = this.createReport(this.project);
 
-            log.debug("   Render the report");
-            final String reportString = this.renderer.render(report);
-
             log.debug("   Getting the report folder");
             final IFolder folder = this.project.getFolder(PMDRuntimeConstants.REPORT_FOLDER);
             if (!folder.exists()) {
                 folder.create(true, true, this.getMonitor());
             }
 
-            log.debug("   Creating the report file");
-            final IFile reportFile = folder.getFile(this.reportName);
-            final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
-            if (reportFile.exists()) {
-                reportFile.setContents(contentsStream, true, false, this.getMonitor());
-            } else {
-                reportFile.create(contentsStream, true, this.getMonitor());
+            Iterator i = renderers.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+
+                final String reportName = (String) entry.getKey();
+                final Renderer renderer = (Renderer) entry.getValue();
+
+                log.debug("   Render the report");
+                final StringWriter w = new StringWriter();
+                renderer.setWriter(w);
+                renderer.start();
+                renderer.renderFileReport(report);
+                renderer.end();
+
+                final String reportString = w.toString();
+
+                log.debug("   Creating the report file");
+                final IFile reportFile = folder.getFile(reportName);
+                final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
+                if (reportFile.exists()) {
+                    reportFile.setContents(contentsStream, true, false, this.getMonitor());
+                } else {
+                    reportFile.create(contentsStream, true, this.getMonitor());
+                }
+                reportFile.refreshLocal(IResource.DEPTH_INFINITE, this.getMonitor());
+                contentsStream.close();
             }
-            reportFile.refreshLocal(IResource.DEPTH_INFINITE, this.getMonitor());
-            contentsStream.close();
         } catch (CoreException e) {
             log.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
@@ -161,7 +192,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
      */
     public void reset() {
        this.setProject(null);
-       this.setRenderer(null);
+       this.renderers = new HashMap();
        this.setTerminated(false);
     }
 
@@ -173,24 +204,10 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * @param renderer The renderer to set.
-     */
-    public void setRenderer(final Renderer renderer) {
-        this.renderer = renderer;
-    }
-
-    /**
-     * @param reportName The reportName to set.
-     */
-    public void setReportName(final String reportName) {
-        this.reportName = reportName;
-    }
-
-    /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     public boolean isReadyToExecute() {
-        return this.project != null && this.renderer != null && this.reportName != null;
+        return this.project != null && !this.renderers.isEmpty();
     }
 
     /**
