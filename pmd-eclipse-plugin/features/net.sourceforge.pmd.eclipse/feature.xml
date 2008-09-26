@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="net.sourceforge.pmd.eclipse.feature"
+      id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="3.2.5.v200809252215"
+      version="3.2.5.v200809252340"
       provider-name="%feature.provider_name"
       image="pmd_logo_small.jpg">
 
@@ -35,7 +35,7 @@
          id="net.sourceforge.pmd.eclipse.plugin"
          download-size="0"
          install-size="0"
-         version="3.2.5.v200809252215"
+         version="3.2.5.v200809252340"
          unpack="false"
 	/>
 
