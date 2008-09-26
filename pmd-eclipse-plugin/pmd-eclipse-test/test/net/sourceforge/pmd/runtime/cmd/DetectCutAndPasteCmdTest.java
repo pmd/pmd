@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -43,7 +43,6 @@ import name.herlin.command.UnsetInputPropertiesException;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.runtime.cmd.DetectCutAndPasteCmd;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -53,10 +52,10 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * Test the CPD command
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.2  2006/11/16 17:14:34  holobender
  * Some major changes:
@@ -68,15 +67,15 @@ import org.eclipse.core.runtime.CoreException;
  * Begin refactoring the unit tests for the plugin
  * Revision 1.1 2005/06/15 21:14:57
  * phherlin Create the project for the Eclipse plugin unit tests
- * 
- * 
+ *
+ *
  */
 public class DetectCutAndPasteCmdTest extends TestCase {
     private IProject testProject;
 
     /**
      * Default constructor
-     * 
+     *
      * @param name
      */
     public DetectCutAndPasteCmdTest(String name) {
@@ -85,10 +84,9 @@ public class DetectCutAndPasteCmdTest extends TestCase {
 
     /**
      * Test the basic usage of the cpd command
-     * 
+     *
      */
     public void testDetectCutAndPasteCmdBasic1() throws CommandException, CoreException {
-        int i;
         DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(this.testProject);
         cmd.setRenderer(new SimpleRenderer());
@@ -113,10 +111,10 @@ public class DetectCutAndPasteCmdTest extends TestCase {
             reportFolder.delete(true, false, null);
         }
     }
-    
+
     /**
      * Test the basic usage of the cpd command
-     * 
+     *
      */
     public void testDetectCutAndPasteCmdBasic2() throws CommandException, CoreException {
         DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
@@ -133,14 +131,14 @@ public class DetectCutAndPasteCmdTest extends TestCase {
         IFile reportFile = reportFolder.getFile(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
         assertFalse(reportFile.exists());
     }
-    
+
     /**
      * Test robustness #1
-     * 
+     *
      * @throws CommandException
      */
     public void testDetectCutAndPasteCmdNullArg1() throws CommandException {
-        
+
         try {
             DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
             cmd.setProject(null);
@@ -155,7 +153,7 @@ public class DetectCutAndPasteCmdTest extends TestCase {
 
     /**
      * Test robustness #2
-     * 
+     *
      * @throws CommandException
      */
     public void testDetectCutAndPasteCmdNullArg2() throws CommandException {
@@ -173,7 +171,7 @@ public class DetectCutAndPasteCmdTest extends TestCase {
 
     /**
      * Test robustness #3
-     * 
+     *
      * @throws CommandException
      */
     public void testDetectCutAndPasteCmdNullArg3() throws CommandException {
@@ -191,7 +189,7 @@ public class DetectCutAndPasteCmdTest extends TestCase {
 
     /**
      * Test robustness #4
-     * 
+     *
      * @throws CommandException
      */
     public void testDetectCutAndPasteCmdNullArg4() throws CommandException {
@@ -209,7 +207,7 @@ public class DetectCutAndPasteCmdTest extends TestCase {
 
     /**
      * Test robustness #5
-     * 
+     *
      * @throws CommandException
      */
     public void testDetectCutAndPasteCmdNullArg5() throws CommandException {
@@ -227,7 +225,7 @@ public class DetectCutAndPasteCmdTest extends TestCase {
 
     /**
      * Test robustness #6
-     * 
+     *
      * @throws CommandException
      */
     public void testDetectCutAndPasteCmdNullArg6() throws CommandException {
@@ -245,7 +243,7 @@ public class DetectCutAndPasteCmdTest extends TestCase {
 
     /**
      * Test robustness #7
-     * 
+     *
      * @throws CommandException
      */
     public void testDetectCutAndPasteCmdNullArg7() throws CommandException {
@@ -269,7 +267,7 @@ public class DetectCutAndPasteCmdTest extends TestCase {
 
         // 1. Create a Java project
         this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
-        assertTrue("A test project cannot be created; the tests cannot be performed.", (this.testProject != null)
+        assertTrue("A test project cannot be created; the tests cannot be performed.", this.testProject != null
                 && this.testProject.exists() && this.testProject.isAccessible());
 
         // 2. Create a test source file inside that project
