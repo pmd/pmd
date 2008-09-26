@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -58,10 +58,10 @@ import org.eclipse.ui.XMLMemento;
 /**
  * Provides Functions to save the State of a View during a Session, even when the view is cloes and re-opened Saves the State in a
  * XML-File in the Plugins-Path (Standard: .metadata in the workspace)
- * 
+ *
  * @author SebastianRaffel ( 24.05.2005 ), Philippe Herlin, Sven Jacob
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.7  2007/01/18 21:03:56  phherlin
  * Fix several problems on memento usage
@@ -93,7 +93,7 @@ public class ViewMemento {
 
     /**
      * Constructor Searches for the XML-File, where the Memento should be saved and creates it if there is none
-     * 
+     *
      * @param type, a String identifying the View, used for the File's Name
      */
     public ViewMemento(String type) {
@@ -102,7 +102,7 @@ public class ViewMemento {
 
         // we check for an existing XML-File
         // and create one, if needed
-        if ((!this.file.exists()) || (!checkForXMLFile(this.file))) {
+        if (!this.file.exists() || !checkForXMLFile(this.file)) {
             createNewFile(this.file);
         }
 
@@ -125,7 +125,7 @@ public class ViewMemento {
                 }
             }
         }
-        
+
         // Validate that memento has correctly been build
         if (this.memento == null) {
             throw new IllegalStateException("Memento has not been built correctly. Check error log for details");
@@ -134,7 +134,7 @@ public class ViewMemento {
 
     /**
      * Creates a new XML-Structure in a given File
-     * 
+     *
      * @param file
      */
     protected final void createNewFile(File file) {
@@ -157,7 +157,7 @@ public class ViewMemento {
 
     /**
      * Checks for an XML-Structure in a File
-     * 
+     *
      * @param file
      * @return true, if the File is a XML-File we can use, false otherwise
      */
@@ -195,7 +195,7 @@ public class ViewMemento {
 
     /**
      * Saves the Memento into the File
-     * 
+     *
      * @param type
      */
     public void save(String type) {
@@ -207,7 +207,7 @@ public class ViewMemento {
             } catch (IOException ioe) {
                 PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
             } finally {
-                if (writer == null) {
+                if (writer != null) {
                     try {
                         writer.close();
                     } catch (IOException e) { // NOPMD by Herlin on 11/10/06 00:00
@@ -220,7 +220,7 @@ public class ViewMemento {
 
     /**
      * Returns a Mewmento with the given Attribute
-     * 
+     *
      * @param name
      * @return a Memento
      */
@@ -245,7 +245,7 @@ public class ViewMemento {
 
     /**
      * Puts a String into a Memento
-     * 
+     *
      * @param key
      * @param value
      */
@@ -256,7 +256,7 @@ public class ViewMemento {
 
     /**
      * Puts an Integer into a Memento
-     * 
+     *
      * @param key
      * @param value
      */
@@ -267,7 +267,7 @@ public class ViewMemento {
 
     /**
      * Puts a Float into a Memento
-     * 
+     *
      * @param key
      * @param value
      */
@@ -278,7 +278,7 @@ public class ViewMemento {
 
     /**
      * puts an ArrayList into a Memento, the List is changed into a seperated String
-     * 
+     *
      * @param key
      * @param valueList
      */
@@ -296,7 +296,7 @@ public class ViewMemento {
 
     /**
      * Gets a String from a Memento
-     * 
+     *
      * @param key
      * @return a String with the Value
      */
@@ -307,7 +307,7 @@ public class ViewMemento {
 
     /**
      * Gets an Integer From a Memento
-     * 
+     *
      * @param key
      * @return an Integer with the Value
      */
@@ -318,7 +318,7 @@ public class ViewMemento {
 
     /**
      * Returns a Float from a Memento
-     * 
+     *
      * @param key
      * @return a Float with the Value
      */
@@ -329,7 +329,7 @@ public class ViewMemento {
 
     /**
      * Returns an ArrayList of Integers from a Memento
-     * 
+     *
      * @param key
      * @return ArrayList of Integer-Values
      */
@@ -339,7 +339,7 @@ public class ViewMemento {
         if (valueString != null) {
             final String[] objects = valueString.split(LIST_SEPARATOR);
             for (int k = 0; k < objects.length; k++) {
-                if ((objects[k].trim().length() == 0) || ("null".equals(objects[k]))) {
+                if (objects[k].trim().length() == 0 || "null".equals(objects[k])) {
                     valuelist.add(new Integer(0)); // NOPMD by Herlin on 11/10/06 00:13
                 } else {
                     valuelist.add(new Integer(objects[k])); // NOPMD by Herlin on 11/10/06 00:14
@@ -351,7 +351,7 @@ public class ViewMemento {
 
     /**
      * Returns an ArrayList of Strings from a Memento
-     * 
+     *
      * @param key
      * @return a ArrayList of String values
      */

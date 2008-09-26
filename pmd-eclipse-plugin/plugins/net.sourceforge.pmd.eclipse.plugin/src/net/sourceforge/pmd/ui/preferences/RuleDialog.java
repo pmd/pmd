@@ -33,10 +33,10 @@ import org.eclipse.ui.browser.IWebBrowser;
  * Implements a dialog for adding or editing a rule. When editing, the rule is
  * automatically updated. The caller has no need to test if the dialog was OK or
  * not.
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.5  2007/06/24 15:10:26  phherlin
  * Integrate PMD v4.0rc1
@@ -49,18 +49,18 @@ import org.eclipse.ui.browser.IWebBrowser;
  * Improve rule dialog
  * Revision 1.2 2006/10/06 19:39:21 phherlin Fix 1470054 Violation Details
  * dlg has OK button which does nothing
- * 
+ *
  * Revision 1.1 2006/05/22 21:23:40 phherlin Refactor the plug-in architecture
  * to better support future evolutions
- * 
+ *
  * Revision 1.3 2003/08/13 20:09:06 phherlin Refactoring private->protected to
  * remove warning about non accessible member access in enclosing types
- * 
+ *
  * Revision 1.2 2003/07/07 19:25:36 phherlin Adding PMD violations view
- * 
+ *
  * Revision 1.1 2003/06/30 20:16:06 phherlin Redesigning plugin configuration
- * 
- * 
+ *
+ *
  */
 public class RuleDialog extends Dialog {
     private static final int MODE_ADD = 1;
@@ -89,7 +89,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Constructor for RuleDialog.
-     * 
+     *
      * @param parentdlgArea
      */
     public RuleDialog(Shell parent) {
@@ -99,7 +99,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Constructor for RuleDialog.
-     * 
+     *
      * @param parentdlgArea
      */
     public RuleDialog(Shell parent, Rule editedRule) {
@@ -110,7 +110,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Constructor for RuleDialog.
-     * 
+     *
      * @param parentdlgArea
      */
     public RuleDialog(Shell parent, Rule editedRule, boolean flEdit) {
@@ -272,10 +272,10 @@ public class RuleDialog extends Dialog {
         data.widthHint = 300;
         data.heightHint = 100;
         xpathText.setLayoutData(data);
-        
+
         // Set the window title
         getShell().setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE));
-        
+
         refreshOverridden();
 
         return dlgArea;
@@ -433,7 +433,7 @@ public class RuleDialog extends Dialog {
             text.setEditable(false);
             text.setText(editedRule.getRuleClass());
         }
-        
+
         if (mode == MODE_ADD) {
         	text.setText(XPathRule.class.getName());
             text.setEnabled(false);
@@ -603,7 +603,7 @@ public class RuleDialog extends Dialog {
 
         return button;
     }
-    
+
     /**
      * Build the example text
      */
@@ -628,12 +628,12 @@ public class RuleDialog extends Dialog {
     private Text buildXPathText(Composite parent) {
         Text text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         text.setFont(courierFont);
-        
+
         if (mode == MODE_ADD) {
             text.setEditable(true);
             text.setEnabled(true);
         }
-        
+
         if (mode == MODE_EDIT) {
         	if (this.editedRule.hasProperty("xpath")) {
                 text.setText(this.editedRule.getStringProperty("xpath").trim());
@@ -650,11 +650,11 @@ public class RuleDialog extends Dialog {
 
         return text;
     }
-    
+
     /**
      * Based on current settings of a RuleReference being edited, update the visual
      * indicators of whether an override of the underlying Rule is occurring
-     * or not. 
+     * or not.
      */
     protected void refreshOverridden() {
     	if (mode == MODE_EDIT || mode == MODE_VIEW) {
@@ -674,7 +674,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Helper method to shorten message access
-     * 
+     *
      * @param key a message key
      * @return requested message
      */
@@ -686,7 +686,7 @@ public class RuleDialog extends Dialog {
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     protected void okPressed() {
-        if (validateForm() && (this.mode != MODE_VIEW)) {
+        if (validateForm() && this.mode != MODE_VIEW) {
             super.okPressed();
         } else if (this.mode == MODE_VIEW) {
             cancelPressed();
@@ -756,7 +756,6 @@ public class RuleDialog extends Dialog {
     private boolean validateImplementationClass() {
         boolean flValid = true;
         boolean flClassError = false;
-        boolean flXPathError = false;
 
         // Instantiate the rule (add mode)
         if (mode == MODE_ADD) {
@@ -770,7 +769,6 @@ public class RuleDialog extends Dialog {
                     rule.setMessage(messageText.getText().trim());
                     rule.setDescription(descriptionText.getText());
                     rule.getExamples().add(exampleText.getText());
-                    rule.setInclude(false);
                     rule.setPriority(priorityCombo.getSelectionIndex()+1);
                     rule.setExternalInfoUrl(externalInfoUrlText.getText());
                     if (usesTypeResolutionButton.getSelection()) {
@@ -827,7 +825,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Returns the rule.
-     * 
+     *
      * @return Rule
      */
     public Rule getRule() {

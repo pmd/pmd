@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -36,19 +36,19 @@
 
 package net.sourceforge.pmd.runtime.cmd;
 
+import name.herlin.command.CommandException;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
-
-import name.herlin.command.CommandException;
 
 /**
  * Command to delete single markers.
  * This is useful if a large number of marker have to be deleted in order to run this in background.
  * For unknown reasons this took some time.
- * 
+ *
  * @author Sven
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/11/16 16:54:40  holobender
  * - changed command for the new cpd view
@@ -58,8 +58,11 @@ import name.herlin.command.CommandException;
  */
 
 public class DeleteMarkersCommand extends AbstractDefaultCommand {
+
+    private static final long serialVersionUID = 1L;
+
     private IMarker[] marker;
-    
+
     public DeleteMarkersCommand() {
         super();
         this.setDescription("Deletes a possible high number of markers");
@@ -70,15 +73,15 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
         this.setMarkers(null);
         this.setUserInitiated(false);
     }
-    
+
     public final void setMarkers(IMarker[] marker) { // NOPMD by Sven on 13.11.06 11:43
         this.marker = marker;
     }
-    
+
     public boolean isReadyToExecute() {
         return marker != null;
     }
-    
+
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.runtime.cmd.AbstractDefaultCommand#execute()
      */
@@ -90,7 +93,7 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
                 worked(1);
             }
         } catch (CoreException e) {
-            throw new CommandException(e);        
+            throw new CommandException(e);
         }
     }
 

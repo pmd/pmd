@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -64,10 +64,10 @@ import org.eclipse.ui.IPropertyListener;
 
 /**
  * This command produces a report of the Cut And Paste detector
- * 
+ *
  * @author Philippe Herlin, Sven Jacob
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.5  2006/12/22 14:20:32  holobender
  * fixed bug when pressing cancel
@@ -85,11 +85,14 @@ import org.eclipse.ui.IPropertyListener;
  * Revision 1.1  2006/05/22 21:37:34  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  * Revision 1.2 2006/05/02 18:34:23 phherlin Make CPD "working set aware"
- * 
+ *
  * Revision 1.1 2005/05/31 23:04:11 phherlin Fix Bug 1190624: refactor CPD integration
- * 
+ *
  */
 public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
+
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = Logger.getLogger(DetectCutAndPasteCmd.class);
     private IProject project;
     private Language language;
@@ -98,7 +101,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
     private String reportName;
     private boolean createReport;
     private List listenerList;
-    
+
     /**
      * Default Constructor
      */
@@ -125,20 +128,20 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
             } else {
                 PMDRuntimePlugin.getDefault().logInformation("Found " + files.size() + " files to the specified language. Performing CPD.");
             }
-            setStepsCount(files.size());               
+            setStepsCount(files.size());
             beginTask("Finding suspect Cut And Paste", getStepsCount()*2);
-                           
-            if (!isCanceled()) {                    
+
+            if (!isCanceled()) {
                 // detect cut and paste
-                final CPD cpd = detectCutAndPaste(files);           
-                        
+                final CPD cpd = detectCutAndPaste(files);
+
                 if (!isCanceled()) {
                     // if the command was not canceled
                     if (this.createReport) {
                         // create the report optionally
                         this.renderReport(cpd.getMatches());
                     }
-                    
+
                     // trigger event propertyChanged for all listeners
                     Display.getDefault().asyncExec(new Runnable() {
                         public void run() {
@@ -176,49 +179,49 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         this.addPropertyListener(null);
         this.listenerList = new ArrayList();
     }
-    
+
     /**
      * @param language The language to set.
      */
     public void setLanguage(final String language) {
         this.language = new LanguageFactory().createLanguage(language);
     }
-    
+
     /**
      * @param tilesize The tilesize to set.
      */
     public void setMinTileSize(final int tilesize) {
         this.minTileSize = tilesize;
     }
-    
+
     /**
      * @param project The project to set.
      */
     public void setProject(final IProject project) {
         this.project = project;
     }
-    
+
     /**
      * @param renderer The renderer to set.
      */
     public void setRenderer(final Renderer renderer) {
         this.renderer = renderer;
     }
-    
+
     /**
      * @param reportName The reportName to set.
      */
     public void setReportName(final String reportName) {
         this.reportName = reportName;
     }
-    
+
     /**
      * @param render render a report or not.
      */
     public void setCreateReport(final boolean render) {
         this.createReport = render;
     }
-    
+
     /**
      * Adds an object that wants to get an event after the command is finished.
      * @param listener the property listener to set.
@@ -226,15 +229,15 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
     public void addPropertyListener(IPropertyListener listener) {
         this.listenerList.add(listener);
     }
-    
+
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     public boolean isReadyToExecute() {
-        return (this.project != null)
-            && (this.language != null)
-            && (!this.createReport // need a renderer and reportname if a report should be created 
-                    || ((this.renderer != null) && (this.reportName != null)));            
+        return this.project != null
+            && this.language != null
+            && (!this.createReport // need a renderer and reportname if a report should be created
+                    || this.renderer != null && this.reportName != null);
     }
 
     /**
@@ -254,40 +257,40 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         this.project.accept(visitor);
         return visitor.getFiles();
     }
-    
+
     /**
-     * Run the cut and paste detector. At first all files have to be added 
-     * to the cpd. Then the CPD can be executed. 
+     * Run the cut and paste detector. At first all files have to be added
+     * to the cpd. Then the CPD can be executed.
      * @param files List of files to be checked.
      * @return the CPD itself for retrieving the matches.
      * @throws CoreException
      */
     private CPD detectCutAndPaste(final List files) {
-        log.debug("Searching for project files"); 
+        log.debug("Searching for project files");
         final CPD cpd = new CPD(minTileSize, language);
-        
+
         subTask("Adding files for the CPD");
         final Iterator fileIterator = files.iterator();
         while (fileIterator.hasNext() && !isCanceled()) {
             final File file = (File) fileIterator.next();
-            try {        
+            try {
                 cpd.add(file);
                 worked(1);
             } catch (IOException e) {
                 log.warn("IOException when adding file " + file.getName() + " to CPD. Continuing.", e);
             }
         }
-               
+
         if (!isCanceled()) {
             subTask("Performing CPD");
             log.debug("Performing CPD");
             cpd.go();
             worked(getStepsCount());
         }
-        
+
         return cpd;
     }
-    
+
     /**
      * Renders a report using the matches of the CPD. Creates a report folder
      * and report file.
@@ -299,14 +302,14 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
             log.debug("Rendering CPD report");
             subTask("Rendering CPD report");
             final String reportString = this.renderer.render(matches);
-    
+
             // Create the report folder if not already existing
             log.debug("Create the report folder");
             final IFolder folder = this.project.getFolder(PMDRuntimeConstants.REPORT_FOLDER);
             if (!folder.exists()) {
                 folder.create(true, true, this.getMonitor());
             }
-    
+
             // Create the report file
             log.debug("Create the report file");
             final IFile reportFile = folder.getFile(this.reportName);

@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -60,10 +60,10 @@ import org.eclipse.jdt.core.JavaCore;
 
 /**
  * This command produce a HTML report for a project
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/05/22 21:37:34  phherlin
  * Refactor the plug-in architecture to better support future evolutions
@@ -96,6 +96,9 @@ import org.eclipse.jdt.core.JavaCore;
  *
  */
 public class RenderReportCmd extends AbstractDefaultCommand {
+
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = Logger.getLogger(RenderReportCmd.class);
     private IProject project;
     private Renderer renderer;
@@ -112,7 +115,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
         this.setReadOnly(false);
         this.setTerminated(false);
     }
-    
+
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
@@ -121,7 +124,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             log.debug("Starting RenderReport command");
             log.debug("   Create a report object");
             final Report report = this.createReport(this.project);
-            
+
             log.debug("   Render the report");
             final String reportString = this.renderer.render(report);
 
@@ -130,10 +133,10 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             if (!folder.exists()) {
                 folder.create(true, true, this.getMonitor());
             }
-            
+
             log.debug("   Creating the report file");
             final IFile reportFile = folder.getFile(this.reportName);
-            final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes()); 
+            final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
             if (reportFile.exists()) {
                 reportFile.setContents(contentsStream, true, false, this.getMonitor());
             } else {
@@ -168,28 +171,28 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     public void setProject(final IProject project) {
         this.project = project;
     }
-    
+
     /**
      * @param renderer The renderer to set.
      */
     public void setRenderer(final Renderer renderer) {
         this.renderer = renderer;
     }
-    
+
     /**
      * @param reportName The reportName to set.
      */
     public void setReportName(final String reportName) {
         this.reportName = reportName;
     }
-    
+
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     public boolean isReadyToExecute() {
-        return (this.project != null) && (this.renderer != null) && (this.reportName != null);
+        return this.project != null && this.renderer != null && this.reportName != null;
     }
-    
+
     /**
      * Create a Report object from the markers of a project
      * @param project
@@ -197,13 +200,13 @@ public class RenderReportCmd extends AbstractDefaultCommand {
      */
     private Report createReport(final IProject project) throws CoreException {
         final Report report = new Report();
-        
+
         final IMarker[] markers = project.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
         for (int i = 0; i < markers.length; i++) {
             IMarker marker = markers[i];
             final String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
             final Rule rule = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
-            
+
             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
             final FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);
 
@@ -222,7 +225,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
                 } else {
                     ruleViolation.setPackageName("(default)");
                 }
-                
+
                 IType types[] = unit.getAllTypes();
                 if (types.length > 0) {
                     ruleViolation.setClassName(types[0].getElementName());
@@ -230,10 +233,10 @@ public class RenderReportCmd extends AbstractDefaultCommand {
                     ruleViolation.setClassName(marker.getResource().getName());
                 }
             }
-            
+
             report.addRuleViolation(ruleViolation);
         }
-        
+
         return report;
     }
 }

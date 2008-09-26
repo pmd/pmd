@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.Status;
 /**
  * Implements an incremental builder for PMD. Use ResourceVisitor and DeltaVisitor
  * to process each file of the project.
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
@@ -116,12 +116,10 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      * @throws CommandException
      */
     private void buildIncremental(IProgressMonitor monitor) throws CommandException {
-        IProject result[] = null;
-
         IProject currentProject = getProject();
         if (currentProject != null) {
             IResourceDelta resourceDelta = this.getDelta(currentProject);
-            if ((resourceDelta != null) && (resourceDelta.getAffectedChildren().length != 0)) {
+            if (resourceDelta != null && resourceDelta.getAffectedChildren().length != 0) {
                 ReviewCodeCmd cmd = new ReviewCodeCmd();
                 cmd.setResourceDelta(resourceDelta);
                 cmd.setTaskMarker(false);

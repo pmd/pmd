@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -47,32 +47,35 @@ import org.eclipse.ui.IWorkingSet;
 
 /**
  * Save updated project properties. This is a composite command.
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/05/22 21:23:57  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  * Revision 1.4 2006/04/26 21:16:06 phherlin Add the include derived files option
- * 
+ *
  * Revision 1.3 2005/06/07 18:38:13 phherlin Move classes to limit packages cycle dependencies
- * 
+ *
  * Revision 1.2 2005/05/31 20:33:01 phherlin Continuing refactoring
- * 
+ *
  * Revision 1.1 2005/05/07 13:32:05 phherlin Continuing refactoring Fix some PMD violations Fix Bug 1144793 Fix Bug 1190624 (at
  * least try)
- * 
+ *
  * Revision 1.3 2004/12/03 00:22:42 phherlin Continuing the refactoring experiment. Implement the Command framework. Refine the MVC
  * pattern usage.
- * 
+ *
  * Revision 1.2 2004/11/28 20:31:37 phherlin Continuing the refactoring experiment
- * 
+ *
  * Revision 1.1 2004/11/21 21:39:45 phherlin Applying Command and CommandProcessor patterns
- * 
- * 
+ *
+ *
  */
 public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
+
+    private static final long serialVersionUID = 1L;
+
     private IProject project;
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
@@ -85,7 +88,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
 
     /**
      * Default constructor. Initializes command attributes
-     * 
+     *
      */
     public UpdateProjectPropertiesCmd() {
         super();
@@ -111,7 +114,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
             properties.sync();
             this.needRebuild = properties.isNeedRebuild();
             this.ruleSetFileExists = !properties.isRuleSetFileExist();
-            
+
         } catch (PropertiesException e) {
             throw new CommandException(e.getMessage(), e);
         } finally {
@@ -199,6 +202,6 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     public boolean isReadyToExecute() {
-        return (this.project != null) && (this.projectRuleSet != null);
+        return this.project != null && this.projectRuleSet != null;
     }
 }

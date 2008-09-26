@@ -1,6 +1,6 @@
 /*
  * Patterns Library - Implementation of various design patterns
- * Copyright (C) 2004 Philippe Herlin 
+ * Copyright (C) 2004 Philippe Herlin
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,10 +13,10 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Contact: philippe_herlin@yahoo.fr 
- * 
+ * Contact: philippe_herlin@yahoo.fr
+ *
  */
 package name.herlin.command;
 
@@ -25,6 +25,8 @@ package name.herlin.command;
  */
 public class CommandException extends Exception {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * @param message A message for the exception
      * @param cause the root cause of that exception
@@ -32,26 +34,26 @@ public class CommandException extends Exception {
     public CommandException(String message, Throwable cause) {
         super(message, cause);
     }
-    
+
     /**
      * @param cause the root cause of that exception
      */
     public CommandException(Throwable cause) {
         super(cause);
     }
-    
+
     /**
      * Defaul constructor
      */
     public CommandException() {
         super();
     }
-    
+
     /**
      * @param message A message for the exception
      */
     public CommandException(String message) {
         super(message);
     }
-    
+
 }

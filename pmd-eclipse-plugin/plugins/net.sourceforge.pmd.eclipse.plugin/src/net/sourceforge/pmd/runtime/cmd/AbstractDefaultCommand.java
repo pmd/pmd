@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -51,10 +51,10 @@ import org.eclipse.jdt.core.JavaCore;
 /**
  * This is a base implementation for a command inside the PMD plugin.
  * This must be used as a root implementation for all the plugin commands.
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
@@ -82,6 +82,9 @@ import org.eclipse.jdt.core.JavaCore;
  *
  */
 public abstract class AbstractDefaultCommand extends AbstractProcessableCommand {
+
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = Logger.getLogger(AbstractDefaultCommand.class);
 
     private boolean readOnly;
@@ -169,14 +172,14 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     public int getStepsCount() {
         return stepsCount;
     }
-    
+
     /**
      * @param stepsCount The number of steps for that command
      */
     public void setStepsCount(final int stepsCount) {
         this.stepsCount = stepsCount;
     }
-    
+
     /**
      * @return Returns the userInitiated.
      */
@@ -197,14 +200,14 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     public IProgressMonitor getMonitor() {
         return this.monitor;
     }
-    
+
     /**
      * @param monitor The monitor to set.
      */
     public void setMonitor(final IProgressMonitor monitor) {
         this.monitor = monitor;
     }
-    
+
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
@@ -214,7 +217,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * @see name.herlin.command.Command#reset()
      */
     public abstract void reset();
-    
+
     /**
      * delegate method for monitor.beginTask
      * @see org.eclipse.core.runtime.IProgressMonitor#beginTask
@@ -224,7 +227,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
             this.monitor.beginTask(name, totalWork);
         }
     }
-    
+
     /**
      * delegate method to monitor.done()
      * @see org.eclipse.core.runtime.IProgressMonitor#done
@@ -233,10 +236,10 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         if (this.monitor != null) {
             this.monitor.done();
         }
-        
+
         this.setTerminated(true);
     }
-    
+
     /**
      * deletegate method for monitor.isCanceled()
      * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
@@ -244,7 +247,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     protected boolean isCanceled() {
         return this.monitor == null ? false : this.monitor.isCanceled();
     }
-    
+
     /**
      * delegate method for monitor.setTaskName()
      * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName
@@ -254,7 +257,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
             this.monitor.setTaskName(name);
         }
     }
-    
+
     /**
      * delegate method for monitor.subTask()
      * @see org.eclipse.core.runtime.IProgressMonitor#subTask
@@ -264,7 +267,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
             this.monitor.subTask(name);
         }
     }
-    
+
     /**
      * delegate method for monitor.worked()
      * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
@@ -274,11 +277,11 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
             this.monitor.worked(work);
         }
     }
-    
+
     /**
      * Return a PMD Engine for that project. The engine is parameterized
      * according to the target JDK of that project.
-     * 
+     *
      * @param project
      * @return
      */

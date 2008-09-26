@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -52,7 +52,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -62,10 +61,10 @@ import org.eclipse.ui.IPropertyListener;
 
 /**
  * This command reviews a resource - a file - for a specific rule.
- * 
+ *
  * @author Sven
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/11/16 16:54:40  holobender
  * - changed command for the new cpd view
@@ -75,12 +74,14 @@ import org.eclipse.ui.IPropertyListener;
  */
 
 public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
-    private static final Logger log = Logger.getLogger(ReviewResourceForRuleCommand.class);
+
+    private static final long serialVersionUID = 1L;
+
     private IResource resource;
     private RuleContext context;
-    private Rule rule; 
+    private Rule rule;
     private List listenerList;
-    
+
     public ReviewResourceForRuleCommand() {
         super();
         this.setDescription("Review a resource for a specific rule.");
@@ -90,15 +91,15 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         this.setTerminated(false);
         this.listenerList = new ArrayList();
     }
-    
+
     public void setResource(IResource resource) {
         this.resource = resource;
     }
-    
+
     public void setRule(Rule rule) {
         this.rule = rule;
     }
-    
+
     /**
      * Adds an object that wants to get an event after the command is finished.
      * @param listener the property listener to set.
@@ -106,9 +107,9 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
     public void addPropertyListener(IPropertyListener listener) {
         this.listenerList.add(listener);
     }
-          
+
     public boolean isReadyToExecute() {
-        return (resource != null) && (rule != null);
+        return resource != null && rule != null;
     }
 
     /* (non-Javadoc)
@@ -119,7 +120,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         setRule(null);
         this.listenerList = new ArrayList();
     }
-    
+
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.runtime.cmd.AbstractDefaultCommand#execute()
      */
@@ -127,10 +128,10 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         final IProject project = resource.getProject();
         final IFile file = (IFile) resource.getAdapter(IFile.class);
         beginTask("PMD Checking for specific rule...", 1);
-        
-        if ((file != null) 
-                && (file.getFileExtension() != null) 
-                && (file.getFileExtension().equals("java"))) {
+
+        if (file != null
+                && file.getFileExtension() != null
+                && file.getFileExtension().equals("java")) {
             final RuleSet ruleSet = new RuleSet();
             ruleSet.addRule(rule);
             final PMD pmdEngine = getPmdEngineForProject(project);
@@ -140,7 +141,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                 this.context.setSourceCodeFile(file.getFullPath().toFile());
                 this.context.setSourceCodeFilename(file.getName());
                 this.context.setReport(new Report());
-                
+
                 final Reader input = new InputStreamReader(file.getContents(), file.getCharset());
                 pmdEngine.processFile(input, ruleSet, this.context);
                 input.close();
@@ -151,7 +152,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
             } catch (IOException e) {
                 throw new CommandException(e);
             }
-                
+
             // trigger event propertyChanged for all listeners
             Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
@@ -163,5 +164,5 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                 }
             });
         }
-    }   
+    }
 }

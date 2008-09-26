@@ -1,6 +1,6 @@
 /*
  * Patterns Library - Implementation of various design patterns
- * Copyright (C) 2004 Philippe Herlin 
+ * Copyright (C) 2004 Philippe Herlin
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,10 +13,10 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Contact: philippe_herlin@yahoo.fr 
- * 
+ * Contact: philippe_herlin@yahoo.fr
+ *
  */
 package name.herlin.command;
 
@@ -30,6 +30,9 @@ import java.util.ResourceBundle;
  * @see name.herlin.command.CommandProcessor for more details on processor.
  */
 public abstract class AbstractProcessableCommand implements Command {
+
+    private static final long serialVersionUID = 1L;
+
     // @PMD:REVIEWED:SingularField: by Herlin on 10/05/05 23:24
     private CommandProcessor commandProcessor;
     private boolean terminated;
@@ -40,7 +43,7 @@ public abstract class AbstractProcessableCommand implements Command {
      * @throws CommandException
      */
     public abstract void execute() throws CommandException;
-    
+
     /**
      * @return whether the command has result properties
      */
@@ -50,16 +53,16 @@ public abstract class AbstractProcessableCommand implements Command {
      * Implement the execution of the command through a processor. Developer
      * of concrete command cannot override this method. They are expected to
      * implement the execute method instead.
-     */    
+     */
     public final void performExecute() throws CommandException {
         if (!isReadyToExecute()) {
             throw new UnsetInputPropertiesException();
         }
-        
+
         this.getCommandProcessor().processCommand(this);
-        
+
     }
-    
+
     /**
      * @see Command#join()
      */
@@ -76,7 +79,7 @@ public abstract class AbstractProcessableCommand implements Command {
     public CommandProcessor getPreferredCommandProcessor() {
         return null;
     }
-    
+
     /**
      * @see name.herlin.command.Command#getDescription()
      */
@@ -103,14 +106,14 @@ public abstract class AbstractProcessableCommand implements Command {
     public final boolean isTerminated() {
         return this.terminated;
     }
-    
+
     /**
      * @param terminated The terminated to set.
      */
     public final void setTerminated(final boolean terminated) {
         this.terminated = terminated;
     }
-    
+
     /**
      * @see name.herlin.command.Command#reset()
      */
@@ -123,7 +126,7 @@ public abstract class AbstractProcessableCommand implements Command {
      * the default strategy of the framework is returned. Developpers of
      * concrete commands may override this method to return a strategy of their
      * own without using the bundle. But in any case, the return of that method
-     * MUST NOT be null.  
+     * MUST NOT be null.
      */
     protected CommandProcessorStrategy getCommandProcessorStrategy() {
         CommandProcessorStrategy strategy = null;
@@ -131,9 +134,9 @@ public abstract class AbstractProcessableCommand implements Command {
             final ResourceBundle bundle = ResourceBundle.getBundle(CommandProcessorStrategy.COMMAND_PROCESSOR_STRATEGY_BUNDLE);
             final String strategyClassName = bundle.getString(CommandProcessorStrategy.STRATEGY_CLASS_KEY);
             final Class strategyClass = Class.forName(strategyClassName);
-            
+
             strategy = (CommandProcessorStrategy) strategyClass.newInstance();
-            
+
         } catch (ClassNotFoundException e) {
             // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 19:00
             // ignored
@@ -151,13 +154,13 @@ public abstract class AbstractProcessableCommand implements Command {
                 strategy = new DefaultCommandProcessorStrategy();
             }
         }
-        
+
         return strategy;
 
     }
-    
+
     /**
-     * @return the command processor for that command 
+     * @return the command processor for that command
      */
     protected CommandProcessor getCommandProcessor() throws CommandException {
         if (this.commandProcessor == null) {
@@ -167,7 +170,7 @@ public abstract class AbstractProcessableCommand implements Command {
                 throw new UnregisteredCommandException("Processor cannot be found for that command");
             }
         }
-        
+
         return this.commandProcessor;
     }
 }
