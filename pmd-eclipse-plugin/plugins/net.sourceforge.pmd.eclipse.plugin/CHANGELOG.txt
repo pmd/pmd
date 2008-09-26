@@ -4,6 +4,8 @@ v3.2.5
 
 . PMD updated to v4.2.3
 . plugin reorganization
+. code cleanup
+. all rule examples displayed in Rule Configuration panel
 
 ----------------------------------------------------------------------------------------
 v3.2.4 - April 11 2008

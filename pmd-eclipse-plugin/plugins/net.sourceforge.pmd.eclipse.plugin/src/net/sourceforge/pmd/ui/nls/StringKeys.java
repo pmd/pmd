@@ -190,7 +190,7 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_PRIORITY = "preference.ruleedit.label.priority";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_DESCRIPTION = "preference.ruleedit.label.description";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL = "preference.ruleedit.label.external_info_url";
-    public static final String MSGKEY_PREF_RULEEDIT_LABEL_EXAMPLE = "preference.ruleedit.label.example";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_EXAMPLES = "preference.ruleedit.label.examples";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_XPATH = "preference.ruleedit.label.xpath";
     public static final String MSGKEY_PREF_RULEEDIT_BUTTON_RULE_REFERENCE = "preference.ruleedit.button.rule_reference";
     public static final String MSGKEY_PREF_RULEEDIT_BUTTON_XPATH_RULE = "preference.ruleedit.button.xpath_rule";

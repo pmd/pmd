@@ -2,6 +2,7 @@ package net.sourceforge.pmd.ui.preferences;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleReference;
@@ -241,7 +242,7 @@ public class RuleDialog extends Dialog {
         data.grabExcessHorizontalSpace = true;
         externalInfoUrlText.setLayoutData(data);
 
-        Label exampleLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXAMPLE);
+        Label exampleLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXAMPLES);
         data = new GridData();
         data.horizontalSpan = 4;
         exampleLabel.setLayoutData(data);
@@ -605,18 +606,38 @@ public class RuleDialog extends Dialog {
     }
 
     /**
+     * Concatenate all the rule examples in one String.
+     *
+     * @return the concatenation of all example strings
+     */
+    private String getExamplesString() {
+        StringBuffer buffer = new StringBuffer();
+        Iterator i = this.editedRule.getExamples().iterator();
+        boolean first = true;
+        while (i.hasNext()) {
+            if (first) {
+                first = false;
+            } else {
+                buffer.append("\n\n");
+            }
+            buffer.append(((String)i.next()).trim());
+        }
+        return buffer.toString();
+    }
+
+    /**
      * Build the example text
      */
     private Text buildExampleText(Composite parent) {
         Text text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         text.setFont(courierFont);
         if (mode == MODE_EDIT) {
-            text.setText(this.editedRule.getExample().trim());
+            text.setText(getExamplesString());
         }
 
         if (mode == MODE_VIEW) {
             text.setEditable(false);
-            text.setText(this.editedRule.getExample().trim());
+            text.setText(getExamplesString());
         }
 
         return text;
