@@ -2,9 +2,8 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 v3.2.5
 
-Runtime
--------
 . PMD updated to v4.2.3
+. plugin reorganization
 
 ----------------------------------------------------------------------------------------
 v3.2.4 - April 11 2008
