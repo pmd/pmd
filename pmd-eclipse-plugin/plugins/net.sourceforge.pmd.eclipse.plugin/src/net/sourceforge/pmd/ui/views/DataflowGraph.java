@@ -352,7 +352,6 @@ public class DataflowGraph extends Composite {
 			}
 
 			int width = bounds.width-bounds.x;
-			int height = bounds.height-bounds.y;
 
 			if (index1 < index2) {
 				if (index2-index1 == 1) {

@@ -540,7 +540,6 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		if (lineColor == null) lineColor = DEFAULT_LINE_COLOR;
 		g.setForeground(lineColor);
 
-		int hSpace = ((GridLayout) bodyArea.getLayout()).horizontalSpacing;
 		int tableX = tablePosition.x;
 		int tableY = tablePosition.y;
 		if (rowHeight == null)
@@ -559,7 +558,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		}
 
 		// Create Lines for the Columns
-		// from Table's Heright to the Viewer's Height
+		// from Table's Height to the Viewer's Height
 		int viewHeight = bodyFrame.getSize().y;
 		if (viewHeight > tableSize.y) {
 			int yPos = tableY+tableSize.y;
