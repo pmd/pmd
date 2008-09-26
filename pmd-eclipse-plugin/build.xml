@@ -9,7 +9,23 @@
   <property name="eclipse.launcher.version" value="1.0.101.R34x_v20080819"/>
 
   <target name="clean">
-    <delete dir="${dir.build}" />
+    <antcall target="clean-features" />
+    <delete quiet="true">
+      <fileset dir="${dir.build}" />
+      <fileset dir="." includes="build.properties" />
+      <fileset dir="features/net.sourceforge.pmd.eclipse" includes="build.xml" />
+      <fileset dir="plugins/net.sourceforge.pmd.eclipse.plugin" includes="build.xml, javaCompiler.pmd-plugin.jar.args" />
+    </delete>
+  </target>
+
+  <target name="clean-features" depends="features.check" if="features.run">
+    <ant antfile="features/net.sourceforge.pmd.eclipse/build.xml" target="clean" inheritAll="false" />
+  </target>
+
+  <target name="features.check">
+    <condition property="features.run">
+      <available file="features/net.sourceforge.pmd.eclipse/build.xml"/>
+    </condition>
   </target>
 
   <target name="init">
@@ -23,7 +39,7 @@
   </target>
 
   <target name="plugin" depends="init">
-    <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_${eclipse.launcher.version}.jar" fork="true">
+    <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_${eclipse.launcher.version}.jar" fork="true" maxmemory="512M" failonerror="true">
       <arg value="-application"/>
       <arg value="org.eclipse.ant.core.antRunner"/>
       <arg value="-buildfile"/>
