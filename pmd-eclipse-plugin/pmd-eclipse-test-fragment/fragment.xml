@@ -5,7 +5,7 @@
    name="Pmd_eclipse_test_fragment Fragment"
    version="1.0.0"
 
-   plugin-id="net.sourceforge.pmd.core"
+   plugin-id="net.sourceforge.pmd.eclipse.plugin"
    plugin-version="1.0.0"
    match="greaterOrEqual">
 
@@ -17,7 +17,7 @@
    <extension
          id="rulesets"
          name="rule sets"
-         point="net.sourceforge.pmd.core.rulesets">
+         point="net.sourceforge.pmd.eclipse.plugin.rulesets">
       <rulesets class="test.RuleSetsExtension"/>
    </extension>
 

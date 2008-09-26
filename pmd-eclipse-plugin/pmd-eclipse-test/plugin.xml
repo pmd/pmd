@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse.test"
    name="PMD Eclipse Test Plug-in"
-   version="3.2.4.v200804111600"
+   version="3.2.5.v200809252215"
    provider-name="PMD Development Team">
 
    <runtime>
@@ -12,16 +12,13 @@
       </library>
    </runtime>
    <requires>
-      <import plugin="net.sourceforge.pmd.core"/>
-      <import plugin="net.sourceforge.pmd.eclipse"/>
+      <import plugin="net.sourceforge.pmd.eclipse.plugin"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="net.sourceforge.pmd.runtime"/>
-      <import plugin="net.sourceforge.pmd.ui"/>
    </requires>
 
 </plugin>
