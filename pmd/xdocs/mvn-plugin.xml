@@ -44,7 +44,7 @@
     		<p>
     			To specify a ruleset, simply edit the previous configuration:
     			<source>
-    				<![CDATA[[
+    				<![CDATA[
 <reporting>
 	<plugins>
 		<plugin>

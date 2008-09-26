@@ -1122,7 +1122,7 @@ public class Test {
             </property>
         </properties>
         <example>
-            <![CDATA[[
+            <![CDATA[
             // This is NOT appropriate !
             Statement stat = conn.createStatement();
             ResultSet rst = stat.executeQuery("SELECT name FROM person");
@@ -1178,7 +1178,7 @@ public class Test {
             </property>
         </properties>
         <example>
-            <![CDATA[[
+            <![CDATA[
             // These are typo bugs, or at best needlessly complex and confusing:
             int i = - -1;
             int j = + - +1;
