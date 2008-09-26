@@ -15,6 +15,9 @@
       <fileset dir="." includes="build.properties" />
       <fileset dir="features/net.sourceforge.pmd.eclipse" includes="build.xml" />
       <fileset dir="plugins/net.sourceforge.pmd.eclipse.plugin" includes="build.xml, javaCompiler.pmd-plugin.jar.args" />
+      <fileset dir="plugins/net.sourceforge.pmd.eclipse.plugin/bin" />
+      <fileset dir="pmd-eclipse-test/bin" />
+      <fileset dir="pmd-eclipse-test-fragment/bin" />
     </delete>
   </target>
 
