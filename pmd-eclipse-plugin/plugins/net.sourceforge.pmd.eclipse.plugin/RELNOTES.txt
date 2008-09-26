@@ -297,7 +297,7 @@ If you do not explicitly use the .ruleset file, you can delete it.
 
 NEW: Rulesets extension point
 -----------------------------
-The PMD core plugin now define the net.sourceforge.pmd.core.rulesets extension point.
+The PMD core plugin now define the net.sourceforge.pmd.eclipse.core.rulesets extension point.
 This extension point allows fragment developers to declare their customs rulesets so that
 they appears in the drop down list when you request to import rulesets.
 This extension point allows also to declare rulesets that will be automatically loaded
@@ -402,7 +402,7 @@ UPDATED : Changing the deployment structure of the plugin
 ---------------------------------------------------------
 The plugin has been refactored to follow the standard deployment (installation)
 procedures of Eclipse. PMD comes now into Eclipse as a "feature" and is composed
-of two plugins : one for encapsulating PMD (net.sourceforge.pmd.core) and one for
+of two plugins : one for encapsulating PMD (net.sourceforge.pmd.eclipse.core) and one for
 the UI integration (net.sourceforge.pmd.eclipse).
 A simple unzip doesn't work anymore, but using the update manager of Eclipse is required.
 Please, read the instructions included in the setup_readme.txt file of the package

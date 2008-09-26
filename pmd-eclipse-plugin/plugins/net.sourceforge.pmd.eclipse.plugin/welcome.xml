@@ -9,7 +9,7 @@
 	PMD is a tool intended to check the semantic of Java code. It helps developer to
 	build better code by alerting on bad constructs. Unlike other tools, PMD doesn't
 	check style, ie. naming, spaces, or javadoc, but deals only with syntax.
-	To learn more about PMD check <topic id="/net.sourceforge.pmd.core/toc.xml">PMD	documentation</topic>.
+	To learn more about PMD check <topic id="/net.sourceforge.pmd.eclipse.core/toc.xml">PMD	documentation</topic>.
 	</item>
 	
 	<item><b>Running PMD automatically or manually</b>
@@ -53,7 +53,7 @@
 	</item>
 
 	<item><b>To learn more</b>
-	Check the <topic id="/net.sourceforge.pmd.core/toc.xml">how to... section</topic> of the online help to learn more about the plugin.
+	Check the <topic id="/net.sourceforge.pmd.eclipse.core/toc.xml">how to... section</topic> of the online help to learn more about the plugin.
 	</item>
 
 </welcomePage>

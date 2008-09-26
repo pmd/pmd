@@ -11,7 +11,7 @@
 	développeurs à écrire un code de meilleur qualité en l'alertant sur des éventuels
 	mauvaises constructions. Contrairement à d'autres outils, PMD ne vérifie pas le
 	style du code source, ie. le nommage, les espaces ou la javadoc, mais travaille
-	au niveau de la syntaxe du code. Pour plus de détail, consulter <topic id="/net.sourceforge.pmd.core/toc.xml">la documentation.</topic>
+	au niveau de la syntaxe du code. Pour plus de détail, consulter <topic id="/net.sourceforge.pmd.eclipse.core/toc.xml">la documentation.</topic>
 	</item>
 	
 	<item><b>Lancer PMD automatiquement ou manuellement</b>
@@ -58,7 +58,7 @@
 	</item>
 
 	<item><b>Pour en savoir plus</b>
-	Lire la section <topic id="/net.sourceforge.pmd.core/toc.xml">how to...</topic> de la documentation en ligne.
+	Lire la section <topic id="/net.sourceforge.pmd.eclipse.core/toc.xml">how to...</topic> de la documentation en ligne.
 	</item>
 
 </welcomePage>

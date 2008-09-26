@@ -32,7 +32,7 @@
          name="%marker.task"
          point="org.eclipse.core.resources.markers">
       <super
-            type="net.sourceforge.pmd.runtime.pmdMarker">
+            type="net.sourceforge.pmd.eclipse.runtime.pmdMarker">
       </super>
       <super
             type="org.eclipse.core.resources.taskmarker">
@@ -56,7 +56,7 @@
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
-               class="net.sourceforge.pmd.runtime.builder.PMDBuilder">
+               class="net.sourceforge.pmd.eclipse.runtime.builder.PMDBuilder">
          </run>
       </builder>
    </extension>
@@ -67,11 +67,11 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="net.sourceforge.pmd.runtime.builder.PMDNature">
+               class="net.sourceforge.pmd.eclipse.runtime.builder.PMDNature">
          </run>
       </runtime>
       <builder
-            id="net.sourceforge.pmd.runtime.pmdBuilder">
+            id="net.sourceforge.pmd.eclipse.runtime.pmdBuilder">
       </builder>
       <requires-nature
             id="org.eclipse.jdt.core.javanature">
@@ -84,28 +84,28 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="%preferences.pmd"
-            class="net.sourceforge.pmd.ui.preferences.GeneralPreferencesPage"
-            id="net.sourceforge.pmd.ui.preferences.generalPreferencesPage">
+            class="net.sourceforge.pmd.eclipse.ui.preferences.GeneralPreferencesPage"
+            id="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage">
       </page>
       <page
             name="%preferences.rulesets"
-            category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage"
-            class="net.sourceforge.pmd.ui.preferences.PMDPreferencePage"
-            id="net.sourceforge.pmd.ui.preferences.pmdPreferencePage">
+            category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
+            class="net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage"
+            id="net.sourceforge.pmd.eclipse.ui.preferences.pmdPreferencePage">
       </page>
       <page
             name="%preferences.cpd"
-            category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage"
-            class="net.sourceforge.pmd.ui.preferences.CPDPreferencePage"
-            id="net.sourceforge.pmd.ui.preferences.cpdPreferencePage">
+            category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
+            class="net.sourceforge.pmd.eclipse.ui.preferences.CPDPreferencePage"
+            id="net.sourceforge.pmd.eclipse.ui.preferences.cpdPreferencePage">
       </page>
    </extension>
 
    <extension
          point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
-            markerType="net.sourceforge.pmd.runtime.pmdMarker"
-            class="net.sourceforge.pmd.ui.quickfix.PMDResolutionGenerator">
+            markerType="net.sourceforge.pmd.eclipse.runtime.pmdMarker"
+            class="net.sourceforge.pmd.eclipse.ui.quickfix.PMDResolutionGenerator">
       </markerResolutionGenerator>
    </extension>
 
@@ -118,8 +118,8 @@
             adaptable="true"
             name="%properties.pmd"
             nameFilter="*"
-            class="net.sourceforge.pmd.ui.properties.PMDPropertyPage"
-            id="net.sourceforge.pmd.ui.properties.pmdPropertyPage">
+            class="net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPage"
+            id="net.sourceforge.pmd.eclipse.ui.properties.pmdPropertyPage">
       </page>
    </extension>
 
@@ -131,7 +131,7 @@
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
             nameFilter="*"
-            id="net.sourceforge.pmd.ui.pmdProjectContribution">
+            id="net.sourceforge.pmd.eclipse.ui.pmdProjectContribution">
          <menu
                label="%menu.pmd"
                path="additions"
@@ -143,49 +143,49 @@
          <action
                label="%action.checkpmd"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDCheckAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdPopupCheckProjectAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdPopupCheckProjectAction">
          </action>
          <action
                label="%action.clearpmd"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDRemoveMarkersAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdRemoveMarkersAction">
          </action>
          <action
                label="%action.checkcpd"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.CPDCheckProjectAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.CPDCheckProjectAction"
                menubarPath="pmd.menu/group"
                enablesFor="1"
-               id="net.sourceforge.pmd.ui.cpdCheckProjectAction">
+               id="net.sourceforge.pmd.eclipse.ui.cpdCheckProjectAction">
          </action>
          <action
                label="%action.clearreviews"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.ClearReviewsAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.ClearReviewsAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdClearReviewsAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdClearReviewsAction">
          </action>
          <action
                label="%action.generatereport"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.GenerateReportAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.GenerateReportAction"
                menubarPath="pmd.menu/group"
                enablesFor="1"
-               id="net.sourceforge.pmd.ui.generateReportAction">
+               id="net.sourceforge.pmd.eclipse.ui.generateReportAction">
          </action>
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.core.resources.IFolder"
             adaptable="true"
             nameFilter="*"
-            id="net.sourceforge.pmd.ui.pmdFolderContribution">
+            id="net.sourceforge.pmd.eclipse.ui.pmdFolderContribution">
          <menu
                label="%menu.pmd"
                path="additions"
@@ -197,33 +197,33 @@
          <action
                label="%action.checkpmd"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDCheckAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdFolderCheckProjectAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdFolderCheckProjectAction">
          </action>
          <action
                label="%action.clearpmd"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDRemoveMarkersAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdRemoveMarkersAction">
          </action>
          <action
                label="%action.clearreviews"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.ClearReviewsAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.ClearReviewsAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdClearReviewsAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdClearReviewsAction">
          </action>
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
             adaptable="true"
             nameFilter="*.java"
-            id="net.sourceforge.pmd.ui.pmdFileContribution">
+            id="net.sourceforge.pmd.eclipse.ui.pmdFileContribution">
          <menu
                label="%menu.pmd"
                path="additions"
@@ -235,107 +235,107 @@
          <action
                label="%action.checkpmd"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDCheckAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdCheckFileAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdCheckFileAction">
          </action>
          <action
                label="%action.clearpmd"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDRemoveMarkersAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdRemoveMarkersAction">
          </action>
          <action
                label="%action.ast"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.PMDGenerateASTAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDGenerateASTAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdGenerateAstAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdGenerateAstAction">
          </action>
          <action
                label="%action.clearreviews"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.ClearReviewsAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.ClearReviewsAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdClearReviewsAction">
+               id="net.sourceforge.pmd.eclipse.ui.pmdClearReviewsAction">
          </action>
       </objectContribution>
       <viewerContribution
-            id="net.sourceforge.pmd.ui.pmdTaskListContribution"
+            id="net.sourceforge.pmd.eclipse.ui.pmdTaskListContribution"
             targetID="org.eclipse.ui.views.TaskList">
          <action
-               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDRemoveMarkersAction"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction"
+               id="net.sourceforge.pmd.eclipse.ui.pmdRemoveAllMarkersAction"
                label="%action.clearall"
                menubarPath="additions">
          </action>
       </viewerContribution>
       <viewerContribution
-            id="net.sourceforge.pmd.ui.pmdVioaltionViewContribution"
-            targetID="net.sourceforge.pmd.ui.views.ViolationView">
+            id="net.sourceforge.pmd.eclipse.ui.pmdVioaltionViewContribution"
+            targetID="net.sourceforge.pmd.eclipse.ui.views.ViolationView">
          <action
-               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDRemoveMarkersAction"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction"
+               id="net.sourceforge.pmd.eclipse.ui.pmdRemoveAllMarkersAction"
                label="%action.clearall"
                menubarPath="additions">
          </action>
       </viewerContribution>
       <viewerContribution
-            id="net.sourceforge.pmd.ui.pmdOutlineContribution"
-            targetID="net.sourceforge.pmd.ui.views.violationOutline">
+            id="net.sourceforge.pmd.eclipse.ui.pmdOutlineContribution"
+            targetID="net.sourceforge.pmd.eclipse.ui.views.violationOutline">
          <action
                label="%action.clearreviews"
                icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.ClearReviewsAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.ClearReviewsAction"
                menubarPath="additions"
-               id="net.sourceforge.pmd.ui.pmdClearReviewsAction"/>
+               id="net.sourceforge.pmd.eclipse.ui.pmdClearReviewsAction"/>
       </viewerContribution>
       <objectContribution
             adaptable="true"
             objectClass="org.eclipse.jdt.core.IMethod"
             nameFilter="*"
-            id="net.sourceforge.pmd.ui.pmdMethodContribution">
+            id="net.sourceforge.pmd.eclipse.ui.pmdMethodContribution">
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
-            objectClass="net.sourceforge.pmd.ui.model.AbstractPMDRecord">
+            id="net.sourceforge.pmd.eclipse.ui.pmdOverviewContribution"
+            objectClass="net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord">
          <action
-               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDRemoveMarkersAction"
                enablesFor="+"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction"
+               id="net.sourceforge.pmd.eclipse.ui.pmdRemoveMarkersAction"
                label="%action.clearpmd"
                menubarPath="additions"/>
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
-            objectClass="net.sourceforge.pmd.ui.model.PackageRecord">
+            id="net.sourceforge.pmd.eclipse.ui.pmdOverviewContribution"
+            objectClass="net.sourceforge.pmd.eclipse.ui.model.PackageRecord">
          <action
-               class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDCheckAction"
                enablesFor="+"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdPackageCheckProjectAction"
+               id="net.sourceforge.pmd.eclipse.ui.pmdPackageCheckProjectAction"
                label="%action.checkpmd"
                menubarPath="additions"/>
       </objectContribution>                 
       <objectContribution
             adaptable="false"
-            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
-            objectClass="net.sourceforge.pmd.ui.model.FileRecord">
+            id="net.sourceforge.pmd.eclipse.ui.pmdOverviewContribution"
+            objectClass="net.sourceforge.pmd.eclipse.ui.model.FileRecord">
          <action
-               class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDCheckAction"
                enablesFor="+"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdFileCheckProjectAction"
+               id="net.sourceforge.pmd.eclipse.ui.pmdFileCheckProjectAction"
                label="%action.checkpmd"
                menubarPath="additions"/>
       </objectContribution>                               
@@ -346,35 +346,35 @@
          point="org.eclipse.ui.views">
       <category
             name="%view.category"
-            id="net.sourceforge.pmd.ui.views">
+            id="net.sourceforge.pmd.eclipse.ui.views">
       </category>
       <view
             allowMultiple="false"
             icon="icons/icon_outline.gif"
-            class="net.sourceforge.pmd.ui.views.ViolationOutline"
-            category="net.sourceforge.pmd.ui.views"
+            class="net.sourceforge.pmd.eclipse.ui.views.ViolationOutline"
+            category="net.sourceforge.pmd.eclipse.ui.views"
             name="%view.outline"
-            id="net.sourceforge.pmd.ui.views.violationOutline"/>
+            id="net.sourceforge.pmd.eclipse.ui.views.violationOutline"/>
       <view
             allowMultiple="false"
             icon="icons/icon_overview.gif"
-            class="net.sourceforge.pmd.ui.views.ViolationOverview"
-            category="net.sourceforge.pmd.ui.views"
+            class="net.sourceforge.pmd.eclipse.ui.views.ViolationOverview"
+            category="net.sourceforge.pmd.eclipse.ui.views"
             name="%view.overview"
-            id="net.sourceforge.pmd.ui.views.violationOverview"/>
+            id="net.sourceforge.pmd.eclipse.ui.views.violationOverview"/>
       <view
             allowMultiple="false"
             icon="icons/pmd-icon-16.gif"
-            class="net.sourceforge.pmd.ui.views.DataflowView"
-            category="net.sourceforge.pmd.ui.views"
+            class="net.sourceforge.pmd.eclipse.ui.views.DataflowView"
+            category="net.sourceforge.pmd.eclipse.ui.views"
             name="%view.dataflowview"
-            id="net.sourceforge.pmd.ui.views.dataflowView"/>
+            id="net.sourceforge.pmd.eclipse.ui.views.dataflowView"/>
       <view
             allowMultiple="false"
-            category="net.sourceforge.pmd.ui.views"
-            class="net.sourceforge.pmd.ui.views.CPDView"
+            category="net.sourceforge.pmd.eclipse.ui.views"
+            class="net.sourceforge.pmd.eclipse.ui.views.CPDView"
             icon="icons/icon_cpd.gif"
-            id="net.sourceforge.pmd.ui.views.CPDView"
+            id="net.sourceforge.pmd.eclipse.ui.views.CPDView"
             name="%view.cpd"/>
    </extension>
 
@@ -382,9 +382,9 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             icon="icons/pmd-icon-16.gif"
-            class="net.sourceforge.pmd.ui.views.PMDPerspective"
+            class="net.sourceforge.pmd.eclipse.ui.views.PMDPerspective"
             name="%view.perspective"
-            id="net.sourceforge.pmd.ui.views.pmdPerspective"/>
+            id="net.sourceforge.pmd.eclipse.ui.views.pmdPerspective"/>
    </extension>
 
 </plugin>
