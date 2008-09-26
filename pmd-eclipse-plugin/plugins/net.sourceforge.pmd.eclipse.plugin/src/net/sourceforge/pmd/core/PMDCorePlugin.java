@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -35,25 +35,14 @@
  */
 package net.sourceforge.pmd.core;
 
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.core.ext.RuleSetsExtensionProcessor;
-import net.sourceforge.pmd.core.impl.RuleSetManagerImpl;
 import net.sourceforge.pmd.eclipse.plugin.PMDActivator;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
-import org.osgi.framework.Bundle;
 
 /**
  * The plugin class for the Core PMD Plugin.
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log: PMDCorePlugin.java,v $
  * Revision 1.6  2007/06/24 15:07:29  phherlin
  * Integrate PMD v4.0rc1
@@ -62,16 +51,16 @@ import org.osgi.framework.Bundle;
  * Integrate PMD v3.9
  * Revision 1.4 2006/06/20 21:04:49 phherlin Enable
  * PMD and fix error level violations
- * 
+ *
  * Revision 1.3 2006/04/10 20:58:18 phherlin Update to PMD 3.6
- * 
+ *
  * Revision 1.2 2005/07/02 14:33:05 phherlin Implement the RuleSets extension
  * point
- * 
+ *
  * Revision 1.1 2005/06/07 22:39:57 phherlin Implementing extra ruleset
  * declaration
- * 
- * 
+ *
+ *
  */
 public class PMDCorePlugin {
 

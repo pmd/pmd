@@ -1,27 +1,10 @@
 package net.sourceforge.pmd.eclipse.plugin;
 
+import java.io.IOException;
+
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.ui.nls.StringKeys;
-import net.sourceforge.pmd.ui.nls.StringTable;
-
-import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-
-import java.io.IOException;
-
 import net.sourceforge.pmd.core.IRuleSetManager;
 import net.sourceforge.pmd.core.PluginConstants;
 import net.sourceforge.pmd.core.ext.RuleSetsExtensionProcessor;
@@ -38,13 +21,27 @@ import net.sourceforge.pmd.runtime.properties.impl.PropertiesFactoryImpl;
 import net.sourceforge.pmd.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.runtime.writer.impl.WriterFactoryImpl;
+import net.sourceforge.pmd.ui.nls.StringKeys;
+import net.sourceforge.pmd.ui.nls.StringTable;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -56,7 +53,7 @@ public class PMDActivator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static PMDActivator plugin;
-	
+
 	/**
 	 * The constructor
 	 */
@@ -108,7 +105,7 @@ public class PMDActivator extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return AbstractUIPlugin.imageDescriptorFromPlugin("net.sourceforge.pmd.eclipse.plugin", path);
 	}
-    
+
     /**
      * Get an image corresponding to the severity
      */
@@ -128,7 +125,7 @@ public class PMDActivator extends AbstractUIPlugin {
 
     /**
      * Helper method to log error
-     * 
+     *
      * @see IStatus
      */
     public void logError(String message, Throwable t) {
@@ -140,7 +137,7 @@ public class PMDActivator extends AbstractUIPlugin {
 
     /**
      * Helper method to log error
-     * 
+     *
      * @see IStatus
      */
     public void logError(IStatus status) {
@@ -158,13 +155,13 @@ public class PMDActivator extends AbstractUIPlugin {
         Display.getDefault().syncExec(new Runnable() {
 
             public void run() {
-                
+
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), getStringTable().getString(StringKeys.MSGKEY_ERROR_TITLE), message
                         + String.valueOf(t));
             }
         });
     }
-    
+
     /**
      * @return an instance of the string table
      */
@@ -172,7 +169,7 @@ public class PMDActivator extends AbstractUIPlugin {
         if (this.stringTable == null) {
             this.stringTable = new StringTable();
         }
-        
+
         return this.stringTable;
     }
 
@@ -211,28 +208,28 @@ public class PMDActivator extends AbstractUIPlugin {
     private static final String PMD_ECLIPSE_APPENDER_NAME = "PMDEclipseAppender";
     private IPreferencesFactory preferencesFactory = new PreferencesFactoryImpl();
     private IPropertiesFactory propertiesFactory = new PropertiesFactoryImpl();
-    
+
     /**
      * Load the PMD plugin preferences
      */
     public IPreferences loadPreferences() {
         return getPreferencesManager().loadPreferences();
     }
-    
+
     /**
      * @return the plugin preferences manager
      */
     public IPreferencesManager getPreferencesManager() {
         return this.preferencesFactory.getPreferencesManager();
     }
-    
+
     /**
      * @return the plugin project properties manager
      */
     public IProjectPropertiesManager getPropertiesManager() {
         return this.propertiesFactory.getProjectPropertiesManager();
     }
-    
+
     /**
      * @param project a workspace project
      * @return the PMD properties for that project
@@ -243,27 +240,27 @@ public class PMDActivator extends AbstractUIPlugin {
 
     /**
      * Helper method to log information
-     * 
+     *
      * @see IStatus
      */
     public void logInformation(String message) {
         getLog().log(new Status(IStatus.INFO, getBundle().getSymbolicName(), 0, message, null));
     }
-    
+
     /**
      * @return an instance of an AST writer
      */
     public IAstWriter getAstWriter() {
         return new WriterFactoryImpl().getAstWriter();
     }
-    
+
     /**
      * @return an instance of a ruleset writer
      */
     public IRuleSetWriter getRuleSetWriter() {
         return new WriterFactoryImpl().getRuleSetWriter();
     }
-    
+
     /**
      * Apply the log preferencs
      */
@@ -286,17 +283,17 @@ public class PMDActivator extends AbstractUIPlugin {
     private void configureLogs(IPreferences preferences) {
         try {
             Layout layout = new PatternLayout("%d{yyyy/MM/dd HH:mm:ss,SSS} %-5p %-32c{1} %m%n");
-            
+
             RollingFileAppender appender = new RollingFileAppender(layout, preferences.getLogFileName());
             appender.setName(PMD_ECLIPSE_APPENDER_NAME);
             appender.setMaxBackupIndex(1);
             appender.setMaxFileSize("10MB");
-            
+
             Logger.getRootLogger().addAppender(new ConsoleAppender(layout));
             Logger.getRootLogger().setLevel(Level.WARN);
             Logger.getRootLogger().setAdditivity(false);
-            
-            Logger.getLogger(ROOT_LOG_ID).addAppender(appender);            
+
+            Logger.getLogger(ROOT_LOG_ID).addAppender(appender);
             Logger.getLogger(ROOT_LOG_ID).setLevel(preferences.getLogLevel());
             Logger.getLogger(ROOT_LOG_ID).setAdditivity(false);
 
@@ -316,7 +313,7 @@ public class PMDActivator extends AbstractUIPlugin {
 
     /**
      * Logs inside the Eclipse environment
-     * 
+     *
      * @param severity the severity of the log (IStatus code)
      * @param message the message to log
      * @param t a possible throwable, may be null
@@ -326,13 +323,13 @@ public class PMDActivator extends AbstractUIPlugin {
         if (bundle != null) {
             getLog().log(new Status(severity, bundle.getSymbolicName(), 0, message, t));
         }
-        
+
         // TODO : when bundle is not created yet (ie at startup), we cannot log ; find a way to log.
     }
 
     /**
      * Registering the standard rulesets
-     * 
+     *
      */
     private void registerStandardRuleSets() {
         final RuleSetFactory factory = new RuleSetFactory();
@@ -350,7 +347,7 @@ public class PMDActivator extends AbstractUIPlugin {
     /**
      * Register additional rulesets that may be provided by a fragment. Find
      * extension points implementation and call them
-     * 
+     *
      */
     private void registerAdditionalRuleSets() {
         try {

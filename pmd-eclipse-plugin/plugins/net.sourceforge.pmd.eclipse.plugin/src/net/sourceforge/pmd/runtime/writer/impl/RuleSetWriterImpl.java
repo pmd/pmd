@@ -2,39 +2,20 @@ package net.sourceforge.pmd.runtime.writer.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Properties;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.runtime.writer.WriterException;
-
-import org.apache.xml.serialize.DOMSerializer;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.w3c.dom.CDATASection;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 /**
  * Generate an XML rule set file from a rule set
  * This class is a rewritting of the original from PMD engine
  * that doesn't support xpath properties !
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.5  2007/06/24 16:41:31  phherlin
  * Integrate PMD v4.0rc1
@@ -80,9 +61,9 @@ import org.w3c.dom.Text;
  * Fix bug #810858.
  * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
  *
- * 
+ *
  * -- Renaming to RuleSetWriterImpl --
- * 
+ *
  * Revision 1.2  2003/10/14 21:26:32  phherlin
  * Upgrading to PMD 1.2.2
  *
