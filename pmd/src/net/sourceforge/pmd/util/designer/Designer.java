@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -45,6 +44,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -104,13 +104,10 @@ import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.Scope;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
-import org.jaxen.XPath;
 
 public class Designer implements ClipboardOwner {
 
@@ -125,7 +122,7 @@ public class Designer implements ClipboardOwner {
 	languageVersionHandler.getTypeResolutionFacade(null).start(node);
 	return node;
     }
-    
+
     private static LanguageVersion[] getSupportedLanguageVersions() {
 	List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
 	for (LanguageVersion languageVersion : LanguageVersion.values()) {
@@ -266,7 +263,7 @@ public class Designer implements ClipboardOwner {
 
 	public Scope getScope() {
 	    if (node instanceof JavaNode) {
-		return ((JavaNode)node).getScope();
+		return ((JavaNode) node).getScope();
 	    }
 	    return null;
 	}
@@ -485,23 +482,35 @@ public class Designer implements ClipboardOwner {
 	    }
 	    Node c = getCompilationUnit();
 	    try {
-		XPath xpath = new BaseXPath(xpathQueryArea.getText(), getLanguageVersionHandler().getXPathHandler().getNavigator());
-		for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
-		    Object obj = iter.next();
-		    if (obj instanceof String) {
-			System.out.println("Result was a string: " + (String) obj);
-		    } else if (!(obj instanceof Boolean)) {
-			// if it's a Boolean and it's 'false', what does that mean?
-			xpathResults.addElement(obj);
+		XPathRule xpathRule = new XPathRule() {
+		    @Override
+		    public void addViolation(Object data, Node node, String arg) {
+			xpathResults.addElement(node);
 		    }
-		}
+		};
+		xpathRule.setMessage("");
+		xpathRule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpathQueryArea.getText());
+		xpathRule.setProperty(XPathRule.VERSION_DESCRIPTOR, xpathVersionButtonGroup.getSelection().getActionCommand());
+		
+		RuleSet ruleSet = new RuleSet();
+		ruleSet.addRule(xpathRule);
+		ruleSet.setLanguage(getLanguageVersion().getLanguage());
+
+		RuleSets ruleSets = new RuleSets();
+		ruleSets.addRuleSet(ruleSet);
+
+		RuleContext ruleContext = new RuleContext();
+		ruleContext.setLanguageVersion(getLanguageVersion());
+		
+		List<Node> nodes = new ArrayList<Node>();
+		nodes.add(c);
+		ruleSets.apply(nodes, ruleContext, ruleSet.getLanguage());
+
 		if (xpathResults.isEmpty()) {
 		    xpathResults.addElement("No matching nodes " + System.currentTimeMillis());
 		}
 	    } catch (ParseException pe) {
 		xpathResults.addElement(pe.fillInStackTrace().getMessage());
-	    } catch (JaxenException je) {
-		xpathResults.addElement(je.fillInStackTrace().getMessage());
 	    }
 	    xpathResultList.repaint();
 	    xpathQueryArea.requestFocus();
@@ -646,6 +655,7 @@ public class Designer implements ClipboardOwner {
     private DefaultListModel xpathResults = new DefaultListModel();
     private final JList xpathResultList = new JList(xpathResults);
     private final JTextArea xpathQueryArea = new JTextArea(15, 30);
+    private final ButtonGroup xpathVersionButtonGroup = new ButtonGroup();
     private final TreeWidget symbolTableTreeWidget = new TreeWidget(new Object[0]);
     private final JFrame frame = new JFrame("PMD Rule Designer (v " + PMD.VERSION + ')');
     private final DFAPanel dfaPanel = new DFAPanel();
@@ -818,7 +828,12 @@ public class Designer implements ClipboardOwner {
 	scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 	final JButton b = createGoButton();
 
-	p.add(new JLabel("XPath Query (if any):"), BorderLayout.NORTH);
+	JPanel topPanel = new JPanel();
+	topPanel.setLayout(new BorderLayout());
+	topPanel.add(new JLabel("XPath Query (if any):"), BorderLayout.WEST);
+	topPanel.add(createXPathVersionPanel(), BorderLayout.EAST);
+
+	p.add(topPanel, BorderLayout.NORTH);
 	p.add(scrollPane, BorderLayout.CENTER);
 	p.add(b, BorderLayout.SOUTH);
 
@@ -828,6 +843,22 @@ public class Designer implements ClipboardOwner {
     private JComponent createSymbolTableResultPanel() {
 	symbolTableTreeWidget.setCellRenderer(createNoImageTreeCellRenderer());
 	return new JScrollPane(symbolTableTreeWidget);
+    }
+
+    private JPanel createXPathVersionPanel() {
+	JPanel p = new JPanel();
+	p.add(new JLabel("XPath Version:"));
+	for (Object[] values : XPathRule.VERSION_DESCRIPTOR.choices()) {
+	    JRadioButton b = new JRadioButton();
+	    b.setText((String) values[0]);
+	    b.setActionCommand(b.getText());
+	    if (values[0].equals(XPathRule.VERSION_DESCRIPTOR.defaultValue())) {
+		b.setSelected(true);
+	    }
+	    xpathVersionButtonGroup.add(b);
+	    p.add(b);
+	}
+	return p;
     }
 
     private JButton createGoButton() {
