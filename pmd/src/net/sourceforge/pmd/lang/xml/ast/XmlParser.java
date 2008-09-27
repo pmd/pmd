@@ -146,7 +146,7 @@ public class XmlParser {
 	    else {
 		if ("toString".equals(method.getName())) {
 		    String s = ((Node) node).getNodeName();
-		    s = s.replace('#', '');
+		    s = s.replace("#", "");
 		    return s;
 		}
 		Object result = method.invoke(node, args);
