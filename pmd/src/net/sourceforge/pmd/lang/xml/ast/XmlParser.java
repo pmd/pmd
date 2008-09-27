@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
@@ -146,9 +145,9 @@ public class XmlParser {
 	    // Delegate method
 	    else {
 		if ("toString".equals(method.getName())) {
-		    if (node instanceof Element) {
-			return ((Element) node).getNodeName();
-		    }
+		    String s = ((Node) node).getNodeName();
+		    s = s.replace('#', '');
+		    return s;
 		}
 		Object result = method.invoke(node, args);
 		return result;
