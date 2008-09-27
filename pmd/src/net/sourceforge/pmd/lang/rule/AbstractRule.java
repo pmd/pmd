@@ -402,7 +402,7 @@ public abstract class AbstractRule implements Rule {
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node)
      */
-    public final void addViolation(Object data, Node node) {
+    public void addViolation(Object data, Node node) {
 	RuleContext ruleContext = (RuleContext) data;
 	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
 		ruleContext, this, node);
@@ -411,7 +411,7 @@ public abstract class AbstractRule implements Rule {
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String)
      */
-    public final void addViolation(Object data, Node node, String arg) {
+    public void addViolation(Object data, Node node, String arg) {
 	RuleContext ruleContext = (RuleContext) data;
 	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
 		ruleContext, this, node, arg);
@@ -420,7 +420,7 @@ public abstract class AbstractRule implements Rule {
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, Object[])
      */
-    public final void addViolation(Object data, Node node, Object[] args) {
+    public void addViolation(Object data, Node node, Object[] args) {
 	RuleContext ruleContext = (RuleContext) data;
 	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
 		ruleContext, this, node, args);
@@ -429,7 +429,7 @@ public abstract class AbstractRule implements Rule {
     /**
      * @see RuleViolationFactory#addViolationWithMessage(RuleContext, Rule, Node, String)
      */
-    public final void addViolationWithMessage(Object data, Node node, String message) {
+    public void addViolationWithMessage(Object data, Node node, String message) {
 	RuleContext ruleContext = (RuleContext) data;
 	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolationWithMessage(
 		ruleContext, this, node, message);
@@ -438,7 +438,7 @@ public abstract class AbstractRule implements Rule {
     /**
      * @see RuleViolationFactory#addViolationWithMessage(RuleContext, Rule, Node, String, Object[])
      */
-    public final void addViolationWithMessage(Object data, Node node, String message, Object[] args) {
+    public void addViolationWithMessage(Object data, Node node, String message, Object[] args) {
 	RuleContext ruleContext = (RuleContext) data;
 	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolationWithMessage(
 		ruleContext, this, node, message, args);
