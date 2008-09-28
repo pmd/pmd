@@ -18,6 +18,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -30,6 +34,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -73,6 +78,9 @@ import javax.swing.tree.TreeSelectionModel;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -109,6 +117,11 @@ import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
 public class Designer implements ClipboardOwner {
 
     private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Arrays.asList(getSupportedLanguageVersions())
@@ -138,6 +151,19 @@ public class Designer implements ClipboardOwner {
 
     private LanguageVersion getLanguageVersion() {
 	return getSupportedLanguageVersions()[selectedLanguageVersionIndex()];
+    }
+
+    private void setLanguageVersion(LanguageVersion languageVersion) {
+	if (languageVersion != null) {
+	    LanguageVersion[] versions = getSupportedLanguageVersions();
+	    for (int i = 0; i < versions.length; i++) {
+		LanguageVersion version = versions[i];
+		if (languageVersion.equals(version)) {
+		    languageVersionMenuItems[i].setSelected(true);
+		    break;
+		}
+	    }
+	}
     }
 
     private int selectedLanguageVersionIndex() {
@@ -490,8 +516,9 @@ public class Designer implements ClipboardOwner {
 		};
 		xpathRule.setMessage("");
 		xpathRule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpathQueryArea.getText());
-		xpathRule.setProperty(XPathRule.VERSION_DESCRIPTOR, xpathVersionButtonGroup.getSelection().getActionCommand());
-		
+		xpathRule.setProperty(XPathRule.VERSION_DESCRIPTOR, xpathVersionButtonGroup.getSelection()
+			.getActionCommand());
+
 		RuleSet ruleSet = new RuleSet();
 		ruleSet.addRule(xpathRule);
 		ruleSet.setLanguage(getLanguageVersion().getLanguage());
@@ -501,7 +528,7 @@ public class Designer implements ClipboardOwner {
 
 		RuleContext ruleContext = new RuleContext();
 		ruleContext.setLanguageVersion(getLanguageVersion());
-		
+
 		List<Node> nodes = new ArrayList<Node>();
 		nodes.add(c);
 		ruleSets.apply(nodes, ruleContext, ruleSet.getLanguage());
@@ -725,6 +752,8 @@ public class Designer implements ClipboardOwner {
 	containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
 	astAndSymbolTablePane.setDividerLocation(astAndSymbolTablePane.getMaximumDividerLocation() / 3);
 	resultsSplitPane.setDividerLocation(horozontalMiddleLocation);
+
+	loadSettings();
     }
 
     private JMenuBar createMenuBar() {
@@ -865,9 +894,13 @@ public class Designer implements ClipboardOwner {
 	JButton b = new JButton("Go");
 	b.setMnemonic('g');
 	b.addActionListener(new ShowListener());
-	b.addActionListener(codeEditorPane);
 	b.addActionListener(new XPathListener());
 	b.addActionListener(new DFAListener());
+	b.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+		saveSettings();
+	    }
+	});
 	return b;
     }
 
@@ -937,18 +970,95 @@ public class Designer implements ClipboardOwner {
 	Result result = new StreamResult(writer);
 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	try {
-	    transformerFactory.setAttribute("indent-number", 4); //For java 5
+	    transformerFactory.setAttribute("indent-number", 3); //For java 5
 	} catch (IllegalArgumentException e) {
 	    //Running on Java 1.4 which does not support this attribute
 	}
 	Transformer xformer = transformerFactory.newTransformer();
 	xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	xformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "4"); //For java 1.4
+	xformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "3"); //For java 1.4
 	xformer.transform(source, result);
 
 	return writer.toString();
     }
 
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
+    }
+
+    private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
+	    + System.getProperty("file.separator") + ".pmd_designer.xml";
+
+    private void loadSettings() {
+	try {
+	    File file = new File(SETTINGS_FILE_NAME);
+	    if (file.exists()) {
+		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		Document document = builder.parse(new FileInputStream(file));
+		Element settingsElement = document.getDocumentElement();
+		Element codeElement = (Element) settingsElement.getElementsByTagName("code").item(0);
+		Element xpathElement = (Element) settingsElement.getElementsByTagName("xpath").item(0);
+
+		String code = codeElement.getTextContent();
+		String languageVersion = codeElement.getAttribute("language-version");
+		String xpath = xpathElement.getTextContent();
+		String xpathVersion = xpathElement.getAttribute("version");
+
+		codeEditorPane.setText(code);
+		setLanguageVersion(LanguageVersion.findByTerseName(languageVersion));
+		xpathQueryArea.setText(xpath);
+		for (Enumeration<AbstractButton> e = xpathVersionButtonGroup.getElements(); e.hasMoreElements();) {
+		    AbstractButton button = e.nextElement();
+		    if (xpathVersion.equals(button.getActionCommand())) {
+			button.setSelected(true);
+			break;
+		    }
+		}
+	    }
+	} catch (ParserConfigurationException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	} catch (SAXException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    private void saveSettings() {
+	try {
+	    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+	    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+	    Document document = documentBuilder.newDocument();
+
+	    Element settingsElement = document.createElement("settings");
+	    document.appendChild(settingsElement);
+
+	    Element codeElement = document.createElement("code");
+	    settingsElement.appendChild(codeElement);
+	    codeElement.setAttribute("language-version", getLanguageVersion().getTerseName());
+	    codeElement.appendChild(document.createCDATASection(codeEditorPane.getText()));
+
+	    Element xpathElement = document.createElement("xpath");
+	    settingsElement.appendChild(xpathElement);
+	    xpathElement.setAttribute("version", xpathVersionButtonGroup.getSelection().getActionCommand());
+	    xpathElement.appendChild(document.createCDATASection(xpathQueryArea.getText()));
+
+	    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	    Transformer transformer = transformerFactory.newTransformer();
+	    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+	    // This is as close to pretty printing as we'll get using standard Java APIs.
+	    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+	    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+	    Source source = new DOMSource(document);
+	    Result result = new StreamResult(new FileWriter(new File(SETTINGS_FILE_NAME)));
+	    transformer.transform(source, result);
+	} catch (ParserConfigurationException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	} catch (TransformerException e) {
+	    e.printStackTrace();
+	}
     }
 }
