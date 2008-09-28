@@ -120,6 +120,7 @@ import net.sourceforge.pmd.util.StringUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 public class Designer implements ClipboardOwner {
@@ -998,9 +999,9 @@ public class Designer implements ClipboardOwner {
 		Element codeElement = (Element) settingsElement.getElementsByTagName("code").item(0);
 		Element xpathElement = (Element) settingsElement.getElementsByTagName("xpath").item(0);
 
-		String code = codeElement.getTextContent();
+		String code = getTextContext(codeElement);
 		String languageVersion = codeElement.getAttribute("language-version");
-		String xpath = xpathElement.getTextContent();
+		String xpath = getTextContext(xpathElement);
 		String xpathVersion = xpathElement.getAttribute("version");
 
 		codeEditorPane.setText(code);
@@ -1060,5 +1061,16 @@ public class Designer implements ClipboardOwner {
 	} catch (TransformerException e) {
 	    e.printStackTrace();
 	}
+    }
+    
+    private String getTextContext(Element element) {
+	StringBuilder buf = new StringBuilder();
+	for (int i = 0; i < element.getChildNodes().getLength(); i++) {
+	    org.w3c.dom.Node child = element.getChildNodes().item(i);
+	    if (child instanceof Text) {
+		buf.append(((Text)child).getData());
+	    }
+	}
+	return buf.toString();
     }
 }
