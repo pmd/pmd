@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -74,10 +74,10 @@ import org.exolab.castor.xml.ValidationException;
 
 /**
  * This class manages the persistances of the ProjectProperies information structure
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.2  2006/10/06 16:41:57  phherlin
  * Continue refactoring of rullesets management
@@ -86,24 +86,24 @@ import org.exolab.castor.xml.ValidationException;
  * Refactor the plug-in architecture to better support future evolutions
  * Revision 1.1 2005/06/07 18:38:14 phherlin Move classes to limit packages cycle
  * dependencies
- * 
+ *
  * Revision 1.2 2005/05/31 20:44:40 phherlin Continuing refactoring
- * 
+ *
  * Revision 1.1 2005/05/31 20:33:01 phherlin Continuing refactoring
- * 
- * 
+ *
+ *
  */
 public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private static final Logger log = Logger.getLogger(ProjectPropertiesManagerImpl.class);
 
     private static final String PROPERTIES_FILE = ".pmd";
-    private static final String PROPERTIES_MAPPING = "/net.sourceforge.pmd.eclipse.runtime/properties/impl/mapping.xml";
+    private static final String PROPERTIES_MAPPING = "/net/sourceforge/pmd/eclipse/runtime/properties/impl/mapping.xml";
 
     private final Map projectsProperties = new HashMap();
 
     /**
      * Load a project properties
-     * 
+     *
      * @param project a project
      */
     public IProjectProperties loadProjectProperties(final IProject project) throws PropertiesException {
@@ -116,12 +116,12 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 fillProjectProperties(projectProperties, to);
                 this.projectsProperties.put(project, projectProperties);
             }
-            
+
             // if the ruleset is stored in the project always reload it
             if (projectProperties.isRuleSetStoredInProject()) {
                 loadRuleSetFromProject(projectProperties);
             }
-            
+
             // else resynchronize the ruleset
             else {
                 final boolean needRebuild = synchronizeRuleSet(projectProperties);
@@ -149,7 +149,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
             writeProjectProperties(projectProperties.getProject(), fillTransferObject(projectProperties));
             this.projectsProperties.put(projectProperties.getProject(), projectProperties);
-            
+
         } catch (CoreException e) {
             throw new PropertiesException("Core Exception when storing project properties for project " + projectProperties.getProject().getName(), e);
         }
@@ -158,7 +158,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
     /**
      * Load the project rule set from the project ruleset
-     * 
+     *
      */
     private void loadRuleSetFromProject(IProjectProperties projectProperties) throws PropertiesException {
         if (projectProperties.isRuleSetFileExist()) {
@@ -177,7 +177,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
     /**
      * Read a project properties from properties file
-     * 
+     *
      * @param project a project
      */
     private ProjectPropertiesTO readProjectProperties(final IProject project) throws PropertiesException {
@@ -212,7 +212,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
     /**
      * Fill a properties information structure from a transfer object
-     * 
+     *
      * @param projectProperties a project properties data structure
      * @param to a project properties transfer object
      */
@@ -241,7 +241,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
     /**
      * Set the rule set from rule specs found in properties file
-     * 
+     *
      * @param rules array of selected rules
      */
     private void setRuleSetFromProperties(IProjectProperties projectProperties, RuleSpecTO[] rules) throws PropertiesException {
@@ -264,7 +264,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
     /**
      * Save project properties
-     * 
+     *
      * @param project a project
      * @param projectProperties the project properties to save
      * @param monitor a progress monitor
@@ -307,7 +307,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
     /**
      * Fill in a transfer object from a project properties information structure
-     * 
+     *
      * @throws DAOException
      */
     private ProjectPropertiesTO fillTransferObject(IProjectProperties projectProperties) throws PropertiesException {
@@ -336,9 +336,9 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     /**
      * Check the project ruleset against the plugin ruleset and synchronize if
      * necessary
-     * 
+     *
      * @return true if the project ruleset has changed.
-     *  
+     *
      */
     private boolean synchronizeRuleSet(IProjectProperties projectProperties) throws PropertiesException {
         log.debug("Synchronizing the project ruleset with the plugin ruleset");
@@ -348,7 +348,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
         if (!projectRuleSet.getRules().equals(pluginRuleSet.getRules())) {
             log.debug("The project ruleset is different from the plugin ruleset ; synchronizing.");
-            
+
             // 1-If rules have been deleted from preferences
             // delete them also from the project ruleset
             final Iterator i = projectRuleSet.getRules().iterator();
@@ -375,7 +375,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 }
             }
 
-            if (!(ruleSet.getRules().equals(projectRuleSet.getRules()))) {
+            if (!ruleSet.getRules().equals(projectRuleSet.getRules())) {
                 log.info("Set the projet ruleset according to preferences.");
                 projectProperties.setProjectRuleSet(ruleSet);
                 flChanged = true;
