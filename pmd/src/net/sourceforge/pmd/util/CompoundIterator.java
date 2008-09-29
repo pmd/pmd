@@ -27,12 +27,7 @@ public class CompoundIterator<T> implements Iterator<T> {
      * {@inheritDoc}
      */
     public boolean hasNext() {
-	Iterator<T> iterator = getNextIterator();
-	if (iterator != null) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return getNextIterator() != null;
     }
 
     /**
