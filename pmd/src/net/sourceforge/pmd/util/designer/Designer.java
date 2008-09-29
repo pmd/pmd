@@ -265,10 +265,15 @@ public class Designer implements ClipboardOwner {
 	public ASTTreeNode(Node theNode) {
 	    node = theNode;
 
-	    Node prnt = node.jjtGetParent();
-	    if (prnt != null) {
-		parent = new ASTTreeNode(prnt);
+	    Node parent = node.jjtGetParent();
+	    if (parent != null) {
+		this.parent = new ASTTreeNode(parent);
 	    }
+	}
+
+	private ASTTreeNode(ASTTreeNode parent, Node theNode) {
+	    node = theNode;
+	    this.parent = parent;
 	}
 
 	public int getChildCount() {
@@ -319,7 +324,7 @@ public class Designer implements ClipboardOwner {
 	    if (kids == null) {
 		kids = new ASTTreeNode[node.jjtGetNumChildren()];
 		for (int i = 0; i < kids.length; i++) {
-		    kids[i] = new ASTTreeNode(node.jjtGetChild(i));
+		    kids[i] = new ASTTreeNode(this.parent, node.jjtGetChild(i));
 		}
 	    }
 	    return kids[childIndex];
