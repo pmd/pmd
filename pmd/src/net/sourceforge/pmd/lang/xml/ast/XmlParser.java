@@ -8,10 +8,13 @@ import java.io.Reader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +25,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.util.CompoundIterator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -111,8 +115,11 @@ public class XmlParser {
 			return null;
 		    }
 		} else if ("getAttributeIterator".equals(method.getName())) {
+		    List<Iterator<Attribute>> iterators = new ArrayList();
+
+		    // Expose DOM Attributes
 		    final NamedNodeMap attributes = node.getAttributes();
-		    return new Iterator<Attribute>() {
+		    iterators.add(new Iterator<Attribute>() {
 			private int index;
 
 			public boolean hasNext() {
@@ -128,7 +135,19 @@ public class XmlParser {
 			public void remove() {
 			    throw new UnsupportedOperationException();
 			}
-		    };
+		    });
+
+		    // Expose Text/CDATA nodes to have an 'Image' attribute like AST Nodes
+		    if (proxy instanceof Text) {
+			iterators.add(Collections.singletonList(
+				new Attribute((net.sourceforge.pmd.lang.ast.Node) proxy, "Image", ((Text) proxy)
+					.getData())).iterator());
+		    }
+
+		    // Expose Java Attributes
+		    // iterators.add(new AttributeAxisIterator((net.sourceforge.pmd.lang.ast.Node) p));
+
+		    return new CompoundIterator<Attribute>(iterators.toArray(new Iterator[iterators.size()]));
 		} else if ("getBeginLine".equals(method.getName())) {
 		    return Integer.valueOf(-1);
 		} else if ("getBeginColumn".equals(method.getName())) {
