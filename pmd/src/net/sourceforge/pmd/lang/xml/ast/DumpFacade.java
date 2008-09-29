@@ -60,19 +60,14 @@ public class DumpFacade {
 
 	// Special image handling (e.g. Nodes with normally null images)
 
-	// Replace some whitespace characters so they are visually apparent.
-	if (image != null) {
-	    image = image.replace("\n", "\\n");
-	    image = image.replace("\r", "\\r");
-	    image = image.replace("\t", "\\t");
-	}
+	image = escape(image);
 
 	// Extras
 	List<String> extras = new ArrayList<String>();
 	Iterator<Attribute> iterator = node.getAttributeIterator();
 	while (iterator.hasNext()) {
 	    Attribute attribute = iterator.next();
-	    extras.add(attribute.getName() + "=" + attribute.getValue());
+	    extras.add(attribute.getName() + "=" + escape(attribute.getValue()));
 	}
 
 	// Output image and extras
@@ -89,5 +84,17 @@ public class DumpFacade {
 	}
 
 	writer.println();
+    }
+
+    private static String escape(Object o) {
+	// Replace some whitespace characters so they are visually apparent.
+	if (o == null) {
+	    return null;
+	}
+	String s = String.valueOf(o);
+	s = s.replace("\n", "\\n");
+	s = s.replace("\r", "\\r");
+	s = s.replace("\t", "\\t");
+	return s;
     }
 }
