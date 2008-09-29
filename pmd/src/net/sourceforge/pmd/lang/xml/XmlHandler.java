@@ -12,13 +12,13 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.xml.ast.DumpFacade;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.lang.xml.rule.XmlRuleViolationFactory;
 
 import org.jaxen.Navigator;
-import org.jaxen.dom.DocumentNavigator;
 
 /**
  * Implementation of LanguageVersionHandler for the XML.
