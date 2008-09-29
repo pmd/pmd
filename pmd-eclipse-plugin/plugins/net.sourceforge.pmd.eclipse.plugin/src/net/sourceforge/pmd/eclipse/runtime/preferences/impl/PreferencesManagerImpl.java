@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
@@ -64,9 +66,11 @@ import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceStore;
 
 /**
  * This class implements the preferences management services
@@ -93,10 +97,16 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String LOG_FILENAME = PMDPlugin.PLUGIN_ID + ".log_filename";
     private static final String LOG_LEVEL = PMDPlugin.PLUGIN_ID + ".log_level";
 
+    private static final String OLD_PREFERENCE_PREFIX = "net.sourceforge.pmd.runtime";
+    private static final String OLD_PREFERENCE_LOCATION = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
+    private static final String NEW_PREFERENCE_LOCATION = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
+
     private static final String PREFERENCE_RULESET_FILE = "/ruleset.xml";
 
     private IPreferences preferences;
-    private IPreferenceStore preferencesStore = PMDPlugin.getDefault().getPreferenceStore();
+    private IPreferenceStore storePreferencesStore = PMDPlugin.getDefault().getPreferenceStore();
+    private IPreferenceStore loadPreferencesStore;
+
     private RuleSet ruleSet;
 
     /**
@@ -104,6 +114,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     public IPreferences loadPreferences() {
         if (this.preferences == null) {
+            initLoadPreferencesStore();
             IPreferencesFactory factory = new PreferencesFactoryImpl();
             this.preferences = factory.newPreferences(this);
 
@@ -118,6 +129,46 @@ class PreferencesManagerImpl implements IPreferencesManager {
         }
 
         return this.preferences;
+    }
+
+    /**
+     * Initialize 'loadPreferencesStore' to deal with backward compatibility issues.
+     * The old preferences use the net.sourceforge.pmd.runtime package instead of the
+     * new net.sourceforge.pmd.eclipse.plugin package.
+     */
+    private void initLoadPreferencesStore() {
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IPath path = root.getLocation();
+
+        File newPrefs = new File(path.append(NEW_PREFERENCE_LOCATION).toString());
+        File oldPrefs = new File(path.append(OLD_PREFERENCE_LOCATION).toString());
+
+        loadPreferencesStore = storePreferencesStore;
+
+        if (!newPrefs.exists() && oldPrefs.exists()) {
+            // only retrieve old style preferences if new file doesn't exist
+            try {
+                Properties props = new Properties();
+                FileInputStream in = new FileInputStream(oldPrefs);
+                props.load(in);
+                in.close();
+                loadPreferencesStore = new PreferenceStore();
+                Iterator i = props.entrySet().iterator();
+                while (i.hasNext()) {
+                    Map.Entry entry = (Map.Entry)i.next();
+                    String key = (String)entry.getKey();
+                    if (key.startsWith(OLD_PREFERENCE_PREFIX)) {
+                        key = key.replaceFirst(OLD_PREFERENCE_PREFIX, PMDPlugin.PLUGIN_ID);
+                    }
+                    loadPreferencesStore.putValue(key, (String)entry.getValue());
+                }
+            } catch (IOException ioe) {
+                PMDPlugin.getDefault().logError("IOException in loading old format preferences", ioe);
+
+                // ignore old preference file
+                loadPreferencesStore = storePreferencesStore;
+            }
+        }
     }
 
     /**
@@ -161,8 +212,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadProjectBuildPathEnabled() {
-        this.preferencesStore.setDefault(PROJECT_BUILD_PATH_ENABLED, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
-        this.preferences.setProjectBuildPathEnabled(this.preferencesStore.getBoolean(PROJECT_BUILD_PATH_ENABLED));
+        this.loadPreferencesStore.setDefault(PROJECT_BUILD_PATH_ENABLED, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
+        this.preferences.setProjectBuildPathEnabled(this.loadPreferencesStore.getBoolean(PROJECT_BUILD_PATH_ENABLED));
     }
 
     /**
@@ -170,8 +221,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadPmdPerspectiveEnabled() {
-        this.preferencesStore.setDefault(PMD_PERSPECTIVE_ENABLED, IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
-        this.preferences.setPmdPerspectiveEnabled(this.preferencesStore.getBoolean(PMD_PERSPECTIVE_ENABLED));
+        this.loadPreferencesStore.setDefault(PMD_PERSPECTIVE_ENABLED, IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
+        this.preferences.setPmdPerspectiveEnabled(this.loadPreferencesStore.getBoolean(PMD_PERSPECTIVE_ENABLED));
     }
 
     /**
@@ -179,8 +230,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadMaxViolationsPerFilePerRule() {
-        this.preferencesStore.setDefault(MAX_VIOLATIONS_PFPR, IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
-        this.preferences.setMaxViolationsPerFilePerRule(this.preferencesStore.getInt(MAX_VIOLATIONS_PFPR));
+        this.loadPreferencesStore.setDefault(MAX_VIOLATIONS_PFPR, IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
+        this.preferences.setMaxViolationsPerFilePerRule(this.loadPreferencesStore.getInt(MAX_VIOLATIONS_PFPR));
     }
 
     /**
@@ -188,8 +239,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadReviewAdditionalComment() {
-        this.preferencesStore.setDefault(REVIEW_ADDITIONAL_COMMENT, IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
-        this.preferences.setReviewAdditionalComment(this.preferencesStore.getString(REVIEW_ADDITIONAL_COMMENT));
+        this.loadPreferencesStore.setDefault(REVIEW_ADDITIONAL_COMMENT, IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
+        this.preferences.setReviewAdditionalComment(this.loadPreferencesStore.getString(REVIEW_ADDITIONAL_COMMENT));
     }
 
     /**
@@ -197,8 +248,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadReviewPmdStyleEnabled() {
-        this.preferencesStore.setDefault(REVIEW_PMD_STYLE_ENABLED, IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
-        this.preferences.setReviewPmdStyleEnabled(this.preferencesStore.getBoolean(REVIEW_PMD_STYLE_ENABLED));
+        this.loadPreferencesStore.setDefault(REVIEW_PMD_STYLE_ENABLED, IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
+        this.preferences.setReviewPmdStyleEnabled(this.loadPreferencesStore.getBoolean(REVIEW_PMD_STYLE_ENABLED));
     }
 
     /**
@@ -206,8 +257,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadMinTileSize() {
-        this.preferencesStore.setDefault(MIN_TILE_SIZE, IPreferences.MIN_TILE_SIZE_DEFAULT);
-        this.preferences.setMinTileSize(this.preferencesStore.getInt(MIN_TILE_SIZE));
+        this.loadPreferencesStore.setDefault(MIN_TILE_SIZE, IPreferences.MIN_TILE_SIZE_DEFAULT);
+        this.preferences.setMinTileSize(this.loadPreferencesStore.getInt(MIN_TILE_SIZE));
     }
 
     /**
@@ -215,8 +266,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadLogFileName() {
-        this.preferencesStore.setDefault(LOG_FILENAME, IPreferences.LOG_FILENAME_DEFAULT);
-        this.preferences.setLogFileName(this.preferencesStore.getString(LOG_FILENAME));
+        this.loadPreferencesStore.setDefault(LOG_FILENAME, IPreferences.LOG_FILENAME_DEFAULT);
+        this.preferences.setLogFileName(this.loadPreferencesStore.getString(LOG_FILENAME));
     }
 
     /**
@@ -224,15 +275,15 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadLogLevel() {
-        this.preferencesStore.setDefault(LOG_LEVEL, IPreferences.LOG_LEVEL.toString());
-        this.preferences.setLogLevel(Level.toLevel(this.preferencesStore.getString(LOG_LEVEL)));
+        this.loadPreferencesStore.setDefault(LOG_LEVEL, IPreferences.LOG_LEVEL.toString());
+        this.preferences.setLogLevel(Level.toLevel(this.loadPreferencesStore.getString(LOG_LEVEL)));
     }
 
     /**
      * Write the projectBuildPathEnabled flag
      */
     private void storeProjectBuildPathEnabled() {
-        this.preferencesStore.setValue(PROJECT_BUILD_PATH_ENABLED, this.preferences.isProjectBuildPathEnabled());
+        this.storePreferencesStore.setValue(PROJECT_BUILD_PATH_ENABLED, this.preferences.isProjectBuildPathEnabled());
     }
 
     /**
@@ -240,7 +291,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storePmdPerspectiveEnabled() {
-        this.preferencesStore.setValue(PMD_PERSPECTIVE_ENABLED, this.preferences.isPmdPerspectiveEnabled());
+        this.storePreferencesStore.setValue(PMD_PERSPECTIVE_ENABLED, this.preferences.isPmdPerspectiveEnabled());
     }
 
     /**
@@ -248,7 +299,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeMaxViolationsPerFilePerRule() {
-        this.preferencesStore.setValue(MAX_VIOLATIONS_PFPR, this.preferences.getMaxViolationsPerFilePerRule());
+        this.storePreferencesStore.setValue(MAX_VIOLATIONS_PFPR, this.preferences.getMaxViolationsPerFilePerRule());
     }
 
     /**
@@ -256,7 +307,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeReviewAdditionalComment() {
-        this.preferencesStore.setValue(REVIEW_ADDITIONAL_COMMENT, this.preferences.getReviewAdditionalComment());
+        this.storePreferencesStore.setValue(REVIEW_ADDITIONAL_COMMENT, this.preferences.getReviewAdditionalComment());
     }
 
     /**
@@ -264,7 +315,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeReviewPmdStyleEnabled() {
-        this.preferencesStore.setValue(REVIEW_PMD_STYLE_ENABLED, this.preferences.isReviewPmdStyleEnabled());
+        this.storePreferencesStore.setValue(REVIEW_PMD_STYLE_ENABLED, this.preferences.isReviewPmdStyleEnabled());
     }
 
     /**
@@ -272,7 +323,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeMinTileSize() {
-        this.preferencesStore.setValue(MIN_TILE_SIZE, this.preferences.getMinTileSize());
+        this.storePreferencesStore.setValue(MIN_TILE_SIZE, this.preferences.getMinTileSize());
     }
 
     /**
@@ -280,7 +331,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeLogFileName() {
-        this.preferencesStore.setValue(LOG_FILENAME, this.preferences.getLogFileName());
+        this.storePreferencesStore.setValue(LOG_FILENAME, this.preferences.getLogFileName());
     }
 
     /**
@@ -288,7 +339,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeLogLevel() {
-        this.preferencesStore.setValue(LOG_LEVEL, this.preferences.getLogLevel().toString());
+        this.storePreferencesStore.setValue(LOG_LEVEL, this.preferences.getLogLevel().toString());
     }
 
     /**
