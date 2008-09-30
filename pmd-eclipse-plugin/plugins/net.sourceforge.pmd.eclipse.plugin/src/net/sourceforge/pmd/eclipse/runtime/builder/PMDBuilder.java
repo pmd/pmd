@@ -60,7 +60,7 @@ import org.eclipse.core.runtime.Status;
  */
 public class PMDBuilder extends IncrementalProjectBuilder {
     public static final Logger log = Logger.getLogger(PMDBuilder.class);
-    public static final String PMD_BUILDER = "net.sourceforge.pmd.eclipse.runtime.pmdBuilder";
+    public static final String PMD_BUILDER = "net.sourceforge.pmd.eclipse.plugin.pmdBuilder";
 
     /**
      * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)

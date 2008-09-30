@@ -13,10 +13,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A project nature for PMD. Add a PMDBuilder to a project
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.2  2006/10/06 18:42:59  phherlin
  * Fix 1554639 Clear markers in Project JAVA-files and other bugs related to dataflows
@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  *
  */
 public class PMDNature implements IProjectNature {
-    public static final String PMD_NATURE = "net.sourceforge.pmd.eclipse.runtime.pmdNature";
+    public static final String PMD_NATURE = "net.sourceforge.pmd.eclipse.plugin.pmdNature";
     private IProject project;
 
     /**
@@ -90,14 +90,14 @@ public class PMDNature implements IProjectNature {
     /**
      * Add the PMD Nature to a project
      * @param project a project to set the PMD Nature
-     * @param monitor a progess monitor
+     * @param monitor a progress monitor
      * @return success true if the nature has been correctly set; false means
      * the project already had PMD nature.
      * @throws CoreException if any error occurs
      */
     public static boolean addPMDNature(final IProject project, final IProgressMonitor monitor) throws CoreException {
         boolean success = false;
-        
+
         if (!project.hasNature(PMD_NATURE)) {
             final IProjectDescription description = project.getDescription();
             final String[] natureIds = description.getNatureIds();
@@ -108,10 +108,10 @@ public class PMDNature implements IProjectNature {
             project.setDescription(description, monitor);
             success = true;
         }
-        
+
         return success;
     }
-    
+
     /**
      * Remove the PMD Nature from a project
      * @param project a project to remove the PMD Nature
@@ -122,7 +122,7 @@ public class PMDNature implements IProjectNature {
      */
     public static boolean removePMDNature(final IProject project, final IProgressMonitor monitor) throws CoreException {
        boolean success = false;
-       
+
        if (project.hasNature(PMD_NATURE)) {
            final IProjectDescription description = project.getDescription();
            final String[] natureIds = description.getNatureIds();
@@ -137,12 +137,12 @@ public class PMDNature implements IProjectNature {
            project.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
            project.deleteMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
        }
-       
+
        return success;
     }
 
     /**
-     * Check if PMD builder is allready in command list
+     * Check if PMD builder is already in command list
      * @param commands a command list
      */
     private boolean pmdBuilderFound(ICommand[] commands) {

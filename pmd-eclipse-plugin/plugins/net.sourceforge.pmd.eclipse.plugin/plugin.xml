@@ -32,7 +32,7 @@
          name="%marker.task"
          point="org.eclipse.core.resources.markers">
       <super
-            type="net.sourceforge.pmd.eclipse.runtime.pmdMarker">
+            type="net.sourceforge.pmd.eclipse.plugin.pmdMarker">
       </super>
       <super
             type="org.eclipse.core.resources.taskmarker">
@@ -71,7 +71,7 @@
          </run>
       </runtime>
       <builder
-            id="net.sourceforge.pmd.eclipse.runtime.pmdBuilder">
+            id="net.sourceforge.pmd.eclipse.plugin.pmdBuilder">
       </builder>
       <requires-nature
             id="org.eclipse.jdt.core.javanature">
@@ -104,7 +104,7 @@
    <extension
          point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
-            markerType="net.sourceforge.pmd.eclipse.runtime.pmdMarker"
+            markerType="net.sourceforge.pmd.eclipse.plugin.pmdMarker"
             class="net.sourceforge.pmd.eclipse.ui.quickfix.PMDResolutionGenerator">
       </markerResolutionGenerator>
    </extension>
