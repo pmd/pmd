@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
  */
 public class XPathRule extends AbstractRule {
 
-    public static final StringProperty XPATH_DESCRIPTOR = new StringProperty("xpath", "XPATH value", "", 1.0f);
+    public static final StringProperty XPATH_DESCRIPTOR = new StringProperty("xpath", "XPath expression", "", 1.0f);
     public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = new EnumeratedProperty<String>("version",
 	    "The XPath specification version.", new String[] { XPATH_1_0, XPATH_1_0_COMPATIBILITY, XPATH_2_0 },
 	    new String[] { XPATH_1_0, XPATH_1_0_COMPATIBILITY, XPATH_2_0 }, 0, 2.0f);
