@@ -77,7 +77,7 @@ public class XPathRule extends AbstractRule {
 	if (xpathRuleQuery == null) {
 	    String xpath = getProperty(XPATH_DESCRIPTOR);
 	    String version = (String) getProperty(VERSION_DESCRIPTOR);
-	    if ("1.0".equals(version)) {
+	    if (XPATH_1_0.equals(version)) {
 		xpathRuleQuery = new JaxenXPathRuleQuery();
 	    } else {
 		xpathRuleQuery = new SaxonXPathRuleQuery();
