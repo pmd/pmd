@@ -13,7 +13,8 @@ public class AttributeAxisIterator extends Navigator.BaseEnumeration {
     protected final net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator iterator;
 
     /**
-     * {@inheritDoc}
+     * Create an iterator over the Attribute axis for the given ElementNode.
+     * @see net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator
      */
     public AttributeAxisIterator(ElementNode startNodeInfo) {
 	this.startNodeInfo = startNodeInfo;
