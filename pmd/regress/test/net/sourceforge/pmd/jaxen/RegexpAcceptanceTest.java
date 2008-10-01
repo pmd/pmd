@@ -2,6 +2,7 @@
 package test.net.sourceforge.pmd.jaxen;
  
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
 import org.junit.Test;
@@ -13,7 +14,7 @@ public class RegexpAcceptanceTest extends SimpleAggregatorTst {
      @Test
      public void testSimple() throws Throwable {
          Rule r = new XPathRule();
-    //     r.addProperty("xpath", "//ClassOrInterfaceDeclaration[matches(@Image, 'F?o')]");
+         r.setLanguage(Language.JAVA);
          r.setProperty(XPathRule.XPATH_DESCRIPTOR, "//ClassOrInterfaceDeclaration[matches(@Image, 'F?o')]");
          r.setMessage("");
          runTests(r, "RegexpAcceptance");

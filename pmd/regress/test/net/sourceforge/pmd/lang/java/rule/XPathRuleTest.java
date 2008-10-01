@@ -11,6 +11,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
@@ -28,12 +29,12 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
      @Before
      public void setUp() {
          rule = new XPathRule();
+         rule.setLanguage(Language.JAVA);
          rule.setMessage("XPath Rule Failed");
      }
  
      @Test
      public void testPluginname() throws Throwable {
-         Rule rule = new XPathRule();
          rule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//VariableDeclaratorId[string-length(@Image) < 3]");
          rule.setMessage("{0}");
          PMD p = new PMD();
@@ -50,7 +51,6 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
  
      @Test
      public void testVariables() throws Throwable {
-         Rule rule = new XPathRule();
          rule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//VariableDeclaratorId[@Image=$var]");
          rule.setMessage("Avoid vars");
          StringProperty varDescriptor = new StringProperty("var", "Test var", null, 1.0f);

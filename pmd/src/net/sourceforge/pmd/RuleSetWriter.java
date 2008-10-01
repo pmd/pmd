@@ -88,10 +88,6 @@ public class RuleSetWriter {
 		"http://pmd.sf.net/ruleset_xml_schema.xsd");
 	ruleSetElement.setAttribute("name", ruleSet.getName());
 
-	if (ruleSet.getLanguage() != null) {
-	    ruleSetElement.setAttribute("language", ruleSet.getLanguage().getName());
-	}
-
 	Element descriptionElement = createDescriptionElement(ruleSet.getDescription());
 	ruleSetElement.appendChild(descriptionElement);
 

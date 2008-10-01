@@ -97,21 +97,6 @@ public class RuleSets {
     }
 
     /**
-     * Check if a source with given language should be checked by rules for a given
-     * language. This is the case if both languages are equal, or if the source is in
-     * java, and the language of the rules is unknown (for backward-compatibility
-     * reasons).
-     *
-     * @param languageOfSource language of a source; can not be null
-     * @param languageOfRule   language of a ruleset; can be null
-     * @return  boolean true if the rule applies, else false
-     */
-    public boolean applies(Language languageOfSource, Language languageOfRule) {
-	return languageOfSource.equals(languageOfRule) || languageOfSource.equals(Language.JAVA)
-		&& null == languageOfRule;
-    }
-
-    /**
      * Notify all rules of the start of processing.
      */
     public void start(RuleContext ctx) {
@@ -133,11 +118,8 @@ public class RuleSets {
     public void apply(List<Node> acuList, RuleContext ctx, Language language) {
 	ruleChain.apply(acuList, ctx, language);
 	for (RuleSet ruleSet : ruleSets) {
-	    if (applies(language, ruleSet.getLanguage())) {
-		// This is the finer RuleSet specific check
-		if (ruleSet.applies(ctx.getSourceCodeFile())) {
-		    ruleSet.apply(acuList, ctx);
-		}
+	    if (ruleSet.applies(ctx.getSourceCodeFile())) {
+		ruleSet.apply(acuList, ctx);
 	    }
 	}
     }
@@ -160,7 +142,7 @@ public class RuleSets {
      */
     public boolean usesDFA(Language language) {
 	for (RuleSet ruleSet : ruleSets) {
-	    if (applies(language, ruleSet.getLanguage()) && ruleSet.usesDFA()) {
+	    if (ruleSet.usesDFA(language)) {
 		return true;
 	    }
 	}
@@ -184,7 +166,7 @@ public class RuleSets {
 
     public boolean usesTypeResolution(Language language) {
 	for (RuleSet ruleSet : ruleSets) {
-	    if (applies(language, ruleSet.getLanguage()) && ruleSet.usesTypeResolution()) {
+	    if (ruleSet.usesTypeResolution(language)) {
 		return true;
 	    }
 	}

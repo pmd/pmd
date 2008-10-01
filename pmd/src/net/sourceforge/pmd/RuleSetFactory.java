@@ -212,7 +212,6 @@ public class RuleSetFactory {
 	    RuleSet ruleSet = new RuleSet();
 	    ruleSet.setFileName(fileName);
 	    ruleSet.setName(ruleSetElement.getAttribute("name"));
-	    ruleSet.setLanguage(Language.findByTerseName(ruleSetElement.getAttribute("language")));
 
 	    NodeList nodeList = ruleSetElement.getChildNodes();
 	    for (int i = 0; i < nodeList.getLength(); i++) {

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.Benchmark;
@@ -28,7 +29,6 @@ public class RuleSet {
     private String fileName;
     private String name = "";
     private String description = "";
-    private Language language;
     private List<String> excludePatterns = new ArrayList<String>(0);
     private List<String> includePatterns = new ArrayList<String>(0);
     private Filter<File> filter;
@@ -88,12 +88,17 @@ public class RuleSet {
     }
 
     /**
-     * @return true if any rule in the RuleSet needs the DFA layer
+     * Does any Rule for the given Language use the DFA layer?
+     * @param language The Language.
+     * @return <code>true</code> if a Rule for the Language uses the DFA layer,
+     * <code>false</code> otherwise.
      */
-    public boolean usesDFA() {
+    public boolean usesDFA(Language language) {
 	for (Rule r : rules) {
-	    if (r.usesDFA()) {
-		return true;
+	    if (r.getLanguage().equals(language)) {
+		if (r.usesDFA()) {
+		    return true;
+		}
 	    }
 	}
 	return false;
@@ -177,13 +182,29 @@ public class RuleSet {
     public void apply(List<? extends Node> acuList, RuleContext ctx) {
 	long start = System.nanoTime();
 	for (Rule rule : rules) {
-	    if (!rule.usesRuleChain()) {
+	    if (!rule.usesRuleChain() && applies(rule, ctx.getLanguageVersion())) {
 		rule.apply(acuList, ctx);
 		long end = System.nanoTime();
 		Benchmark.mark(Benchmark.TYPE_RULE, rule.getName(), end - start, 1);
 		start = end;
 	    }
 	}
+    }
+
+    /**
+     * Does the given Rule apply to the given LanguageVersion?  If so, the
+     * Language must be the same and be between the minimum and maximums
+     * versions on the Rule.
+     * 
+     * @param rule The rule.
+     * @param languageVersion The language version.
+     */
+    public boolean applies(Rule rule, LanguageVersion languageVersion) {
+	final LanguageVersion min = rule.getMinimumLanguageVersion();
+	final LanguageVersion max = rule.getMinimumLanguageVersion();
+	return rule.getLanguage().equals(languageVersion.getLanguage())
+		&& (min == null || min.compareTo(languageVersion) <= 0)
+		&& (max == null || max.compareTo(languageVersion) >= 0);
     }
 
     public void end(RuleContext ctx) {
@@ -215,14 +236,6 @@ public class RuleSet {
     @Override
     public int hashCode() {
 	return this.getName().hashCode() + 13 * this.getRules().hashCode();
-    }
-
-    public Language getLanguage() {
-	return language;
-    }
-
-    public void setLanguage(Language language) {
-	this.language = language;
     }
 
     public String getFileName() {
@@ -281,10 +294,18 @@ public class RuleSet {
 	this.includePatterns = includePatterns;
     }
 
-    public boolean usesTypeResolution() {
+    /**
+     * Does any Rule for the given Language use Type Resolution?
+     * @param language The Language.
+     * @return <code>true</code> if a Rule for the Language uses Type Resolution,
+     * <code>false</code> otherwise.
+     */
+    public boolean usesTypeResolution(Language language) {
 	for (Rule r : rules) {
-	    if (r.usesTypeResolution()) {
-		return true;
+	    if (r.getLanguage().equals(language)) {
+		if (r.usesTypeResolution()) {
+		    return true;
+		}
 	    }
 	}
 	return false;

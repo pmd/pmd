@@ -310,10 +310,7 @@ public class RuleSetFactoryTest {
 	for (String fileName : ruleSetFileNames) {
 	    RuleSet ruleSet = loadRuleSetByFileName(fileName);
 	    for (Rule rule : ruleSet.getRules()) {
-		Language language = ruleSet.getLanguage();
-		if (language == null) {
-		    language = Language.JAVA;
-		}
+		Language language = Language.JAVA;
 		String group = fileName.substring(fileName.indexOf('/') + 1);
 		group = group.substring(0, group.indexOf(".xml"));
 		if (group.indexOf('-') >= 0) {
@@ -485,7 +482,6 @@ public class RuleSetFactoryTest {
     private void assertEqualsRuleSet(String message, RuleSet ruleSet1, RuleSet ruleSet2) {
 	assertEquals(message + ", RuleSet name", ruleSet1.getName(), ruleSet2.getName());
 	assertEquals(message + ", RuleSet description", ruleSet1.getDescription(), ruleSet2.getDescription());
-	assertEquals(message + ", RuleSet language", ruleSet1.getLanguage(), ruleSet2.getLanguage());
 	assertEquals(message + ", RuleSet exclude patterns", ruleSet1.getExcludePatterns(), ruleSet2
 		.getExcludePatterns());
 	assertEquals(message + ", RuleSet include patterns", ruleSet1.getIncludePatterns(), ruleSet2

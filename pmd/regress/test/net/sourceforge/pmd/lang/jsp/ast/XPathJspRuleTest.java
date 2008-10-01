@@ -31,9 +31,9 @@ public class XPathJspRuleTest extends RuleTst {
         Rule rule = new XPathRule();
         rule.setProperty(XPathRule.XPATH_DESCRIPTOR, XPATH_EXPRESSION);
         rule.setMessage("Test");
+        rule.setLanguage(Language.JSP);
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
-        rules.setLanguage(Language.JSP);
 
         RuleContext ctx = new RuleContext();
         Report report = new Report();

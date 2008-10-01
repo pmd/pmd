@@ -64,6 +64,9 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
             int visits = 0;
             start = System.nanoTime();
             for (Rule rule: ruleSetRules.get(ruleSet)) {
+        	if (!ruleSet.applies(rule, ctx.getLanguageVersion())) {
+        	    continue;
+        	}
                 final List<String> nodeNames = rule.getRuleChainVisits();
                 for (int j = 0; j < nodeNames.size(); j++) {
                     List<Node> ns = nodeNameToNodes.get(nodeNames.get(j));

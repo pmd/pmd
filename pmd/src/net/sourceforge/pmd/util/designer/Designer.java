@@ -476,7 +476,6 @@ public class Designer implements ClipboardOwner {
 	    DFAGraphRule dfaGraphRule = new DFAGraphRule();
 	    RuleSet rs = new RuleSet();
 	    LanguageVersion languageVersion = getLanguageVersion();
-	    rs.setLanguage(languageVersion.getLanguage());
 	    if (languageVersion.getLanguage().equals(Language.JAVA)) {
 		rs.addRule(dfaGraphRule);
 	    }
@@ -520,13 +519,13 @@ public class Designer implements ClipboardOwner {
 		    }
 		};
 		xpathRule.setMessage("");
+		xpathRule.setLanguage(getLanguageVersion().getLanguage());
 		xpathRule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpathQueryArea.getText());
 		xpathRule.setProperty(XPathRule.VERSION_DESCRIPTOR, xpathVersionButtonGroup.getSelection()
 			.getActionCommand());
 
 		RuleSet ruleSet = new RuleSet();
 		ruleSet.addRule(xpathRule);
-		ruleSet.setLanguage(getLanguageVersion().getLanguage());
 
 		RuleSets ruleSets = new RuleSets();
 		ruleSets.addRuleSet(ruleSet);
@@ -536,7 +535,7 @@ public class Designer implements ClipboardOwner {
 
 		List<Node> nodes = new ArrayList<Node>();
 		nodes.add(c);
-		ruleSets.apply(nodes, ruleContext, ruleSet.getLanguage());
+		ruleSets.apply(nodes, ruleContext, xpathRule.getLanguage());
 
 		if (xpathResults.isEmpty()) {
 		    xpathResults.addElement("No matching nodes " + System.currentTimeMillis());

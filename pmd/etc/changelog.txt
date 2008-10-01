@@ -4,8 +4,6 @@
 	o SimpleNode.dump() needs to be implemented as a Visitor
 
 TODO - Release blockers - Must implement before this release can be finished
-   o Change RuleSets to not specify Language.  Rule's have already been modified
-     to specify language.
    o Additional changes to Rule organization withing RuleSets as discussed on
      this forum thread:
      http://sourceforge.net/forum/forum.php?thread_id=1323593&forum_id=188194
@@ -268,6 +266,9 @@ The following is relatively complete list of the major changes (this may not be
 	   Removed - Rule.addProperties(Properties)
 	   Removed - boolean Rule.hasProperty(String)
  	   Removed - RuleSet.applies(Language,Language)
+ 	   Removed - RuleSet.getLanguage()
+ 	   Removed - RuleSet.setLanguage(Language)
+ 	   Removed - RuleSets.applies(Language,Language)
       Changed - void Rule.setPriority(int) to void Rule.setPriority(RulePriority)
       Changed - int Rule.getPriority() to void RulePriority Rule.getPriority()
 	   Changed - XXX Rule.getXXXProperty(String) to <T> Rule.getProperty(PropertyDescriptor<T>)
@@ -277,6 +278,8 @@ The following is relatively complete list of the major changes (this may not be
 	   Changed - Rule.setProperty(PropertyDescriptor, Object[]) to Rule.setProperty(PropertyDescriptor<T>, T)
 	   Changed - Rule.propertyValuesByDescriptor() to Rule.getPropertiesByPropertyDescriptor()
 	   Changed - PropertyDescriptor Rule.propertyDescriptorFor(String) to PropertyDescriptor Rule.getPropertyDescriptor(String)
+	   Changed - boolean RuleSet.usesDFA() to boolean RuleSet.usesDFA(Language)
+	   Changed - boolean RuleSet.usesTypeResolution() to boolean RuleSet.usesTypeResolution(Language)
       Added - Rule.setLanguage(Language)
       Added - Language Rule.getLanguage()
       Added - Rule.setMinimumLanguageVersion(LanguageVersion)
@@ -287,6 +290,7 @@ The following is relatively complete list of the major changes (this may not be
       Added - boolean Rule.isDeprecated()
 	   Added - Rule.definePropertyDescriptor(PropertyDescriptor)
 	   Added - List<PropertyDescriptor> Rule.getPropertyDescriptors()
+ 	   Added - RuleSet.applies(Rule,LanguageVersion)
 
    API Change - Changes to PMD class
       Renamed - PMD.EXCLUDE_MARKER to PMD.SUPPRESS_MARKER
