@@ -24,100 +24,45 @@ public interface AccessNode {
 
 	boolean isPublic();
 
-	/**
-	 * @deprecated Use setPublic(boolean) instead.
-	 */
-	void setPublic();
-
 	void setPublic(boolean isPublic);
 
 	boolean isProtected();
-
-	/**
-	 * @deprecated Use setProtected(boolean) instead.
-	 */
-	void setProtected();
 
 	void setProtected(boolean isProtected);
 
 	boolean isPrivate();
 
-	/**
-	 * @deprecated Use setPrivate(boolean) instead.
-	 */
-	void setPrivate();
-
 	void setPrivate(boolean isPrivate);
 
 	boolean isAbstract();
-
-	/**
-	 * @deprecated Use setAbstract(boolean) instead.
-	 */
-	void setAbstract();
 
 	void setAbstract(boolean isAbstract);
 
 	boolean isStatic();
 
-	/**
-	 * @deprecated Use setStatic(boolean) instead.
-	 */
-	void setStatic();
-
 	void setStatic(boolean isStatic);
 
 	boolean isFinal();
-
-	/**
-	 * @deprecated Use setFinal(boolean) instead.
-	 */
-	void setFinal();
 
 	void setFinal(boolean isFinal);
 
 	boolean isSynchronized();
 
-	/**
-	 * @deprecated Use setSynchronized(boolean) instead.
-	 */
-	void setSynchronized();
-
 	void setSynchronized(boolean isSynchronized);
 
 	boolean isNative();
-
-	/**
-	 * @deprecated Use setNative(boolean) instead.
-	 */
-	void setNative();
 
 	void setNative(boolean isNative);
 
 	boolean isTransient();
 
-	/**
-	 * @deprecated Use setTransient(boolean) instead.
-	 */
-	void setTransient();
-
 	void setTransient(boolean isTransient);
 
 	boolean isVolatile();
 
-	/**
-	 * @deprecated Use setVolatile(boolean) instead.
-	 */
-	void setVolatile();
-
 	void setVolatile(boolean isVolatile);
 
 	boolean isStrictfp();
-
-	/**
-	 * @deprecated Use setStrictfp(boolean) instead.
-	 */
-	void setStrictfp();
 
 	void setStrictfp(boolean isStrictfp);
 

@@ -25,17 +25,6 @@ public class PMDException extends Exception {
         super(message, reason);
     }
 
-    /**
-     * Returns the cause of this exception or <code>null</code>
-     * 
-     * @return the cause of this exception or <code>null</code>
-     * @deprecated use {@link #getCause()} instead
-     */
-    @Deprecated
-    public Exception getReason() {
-        return (Exception) getCause();
-    }
-
     public void setSeverity(int severity) {
         this.severity = severity;
     }

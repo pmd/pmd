@@ -307,6 +307,12 @@ The following is relatively complete list of the major changes (this may not be
       Renamed - getAsXml() as getAsDocument()
       Added - findChildrenOfType(), non recursive version
       Added - getFirstChildOfType(), non recursive version
+      
+   API Change - Remove deprecated APIs
+      Removed - AccessNode.setXXX() methods, use AccessNode.setXXX(boolean) instead.
+      Removed - PMDException.getReason()
+      Removed - RuleSetFactory.createRuleSet(String,ClassLoaer), use RuleSetFactory.createRuleSets(String,ClassLoader) instead.
+      Removed - net.sourceforge.pmd.cpd.FileFinder use net.sourceforge.pmd.util.FileFinder instead.
 
 New features:
 

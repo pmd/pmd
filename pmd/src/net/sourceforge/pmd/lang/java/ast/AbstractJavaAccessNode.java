@@ -24,28 +24,12 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         return isModifier(PUBLIC);
     }
 
-    /**
-     * @deprecated Use setPublic(boolean) instead.
-     */
-    @Deprecated
-    public void setPublic() {
-        setPublic(true);
-    }
-
     public void setPublic(boolean isPublic) {
         setModifier(isPublic, PUBLIC);
     }
 
     public boolean isProtected() {
         return isModifier(PROTECTED);
-    }
-
-    /**
-     * @deprecated Use setProtected(boolean) instead.
-     */
-    @Deprecated
-    public void setProtected() {
-        setProtected(true);
     }
 
     public void setProtected(boolean isProtected) {
@@ -56,28 +40,12 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         return isModifier(PRIVATE);
     }
 
-    /**
-     * @deprecated Use setPrivate(boolean) instead.
-     */
-    @Deprecated
-    public void setPrivate() {
-        setPrivate(true);
-    }
-
     public void setPrivate(boolean isPrivate) {
         setModifier(isPrivate, PRIVATE);
     }
 
     public boolean isAbstract() {
         return isModifier(ABSTRACT);
-    }
-
-    /**
-     * @deprecated Use setAbstract(boolean) instead.
-     */
-    @Deprecated
-    public void setAbstract() {
-        setAbstract(true);
     }
 
     public void setAbstract(boolean isAbstract) {
@@ -88,28 +56,12 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         return isModifier(STATIC);
     }
 
-    /**
-     * @deprecated Use setStatic(boolean) instead.
-     */
-    @Deprecated
-    public void setStatic() {
-        setStatic(true);
-    }
-
     public void setStatic(boolean isStatic) {
         setModifier(isStatic, STATIC);
     }
 
     public boolean isFinal() {
         return isModifier(FINAL);
-    }
-
-    /**
-     * @deprecated Use setFinal(boolean) instead.
-     */
-    @Deprecated
-    public void setFinal() {
-        setFinal(true);
     }
 
     public void setFinal(boolean isFinal) {
@@ -120,28 +72,12 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         return isModifier(SYNCHRONIZED);
     }
 
-    /**
-     * @deprecated Use setSynchronized(boolean) instead.
-     */
-    @Deprecated
-    public void setSynchronized() {
-        setSynchronized(true);
-    }
-
     public void setSynchronized(boolean isSynchronized) {
         setModifier(isSynchronized, SYNCHRONIZED);
     }
 
     public boolean isNative() {
         return isModifier(NATIVE);
-    }
-
-    /**
-     * @deprecated Use setNative(boolean) instead.
-     */
-    @Deprecated
-    public void setNative() {
-        setNative(true);
     }
 
     public void setNative(boolean isNative) {
@@ -152,14 +88,6 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         return isModifier(TRANSIENT);
     }
 
-    /**
-     * @deprecated Use setTransient(boolean) instead.
-     */
-    @Deprecated
-    public void setTransient() {
-        setTransient(true);
-    }
-
     public void setTransient(boolean isTransient) {
         setModifier(isTransient, TRANSIENT);
     }
@@ -168,28 +96,12 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         return isModifier(VOLATILE);
     }
 
-    /**
-     * @deprecated Use setVolatile(boolean) instead.
-     */
-    @Deprecated
-    public void setVolatile() {
-        setVolatile(true);
-    }
-
     public void setVolatile(boolean isVolative) {
         setModifier(isVolative, VOLATILE);
     }
 
     public boolean isStrictfp() {
         return isModifier(STRICTFP);
-    }
-
-    /**
-     * @deprecated Use setStrictfp(boolean) instead.
-     */
-    @Deprecated
-    public void setStrictfp() {
-        setStrictfp(true);
     }
 
     public void setStrictfp(boolean isStrictfp) {

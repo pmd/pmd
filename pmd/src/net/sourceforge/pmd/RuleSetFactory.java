@@ -107,27 +107,6 @@ public class RuleSetFactory {
     }
 
     /**
-     * Create a ruleset from a name or from a list of names
-     *
-     * @param name        name of rule set file loaded as a resource
-     * @param classLoader the classloader used to load the ruleset and subsequent rules
-     * @return the new ruleset
-     * @throws RuleSetNotFoundException
-     * @deprecated Use createRuleSets instead, because this method puts all rules in one
-     *             single RuleSet object, and thus removes name and language of the
-     *             originating rule set files.
-     */
-    public RuleSet createRuleSet(String name, ClassLoader classLoader) throws RuleSetNotFoundException {
-	RuleSets ruleSets = createRuleSets(name, classLoader);
-	RuleSet result = new RuleSet();
-	RuleSet[] allRuleSets = ruleSets.getAllRuleSets();
-	for (RuleSet ruleSet : allRuleSets) {
-	    result.addRuleSet(ruleSet);
-	}
-	return result;
-    }
-
-    /**
      * Create a RuleSet from a file name resource.
      * The ClassLoader of the RuleSetFactory class is used.
      *
