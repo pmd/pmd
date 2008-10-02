@@ -1,6 +1,5 @@
 <!ELEMENT ruleset ( description, include-pattern*, exclude-pattern*, rule+ ) >
 <!ATTLIST ruleset name CDATA #REQUIRED >
-<!ATTLIST ruleset language CDATA #IMPLIED >
 <!ELEMENT description ( #PCDATA ) >
 <!ELEMENT exclude-pattern ( #PCDATA ) >
 <!ELEMENT include-pattern ( #PCDATA ) >

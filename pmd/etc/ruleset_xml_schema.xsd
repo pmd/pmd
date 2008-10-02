@@ -14,15 +14,6 @@
         <xs:element ref="rule" minOccurs="1" maxOccurs="unbounded" />
       </xs:sequence>
       <xs:attribute name="name" type="xs:string" use="required" />
-      <xs:attribute name="language" type="xs:string" use="optional">
-	    <xs:annotation>
-	      <xs:documentation source="version">1.0.0+</xs:documentation>
-	      <xs:documentation source="description">
-            Language on which this ruleset applies;
-            e.g. "java" (default), "jsp"
-	      </xs:documentation>
-	    </xs:annotation>
-      </xs:attribute>
     </xs:complexType>
   </xs:element>
 
