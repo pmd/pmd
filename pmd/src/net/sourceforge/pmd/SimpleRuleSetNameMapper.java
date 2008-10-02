@@ -42,6 +42,7 @@ public class SimpleRuleSetNameMapper {
     }
 
     private void populateNameMap() {
+	// TODO Can these non-Language suffixed short names still continue?  Would "java-basic" be more appropriate?
         nameMap.put("basic", "rulesets/basic.xml");
         nameMap.put("jsp", "rulesets/basic-jsp.xml");
         nameMap.put("jsf", "rulesets/basic-jsf.xml");
@@ -70,6 +71,7 @@ public class SimpleRuleSetNameMapper {
         nameMap.put("typeresolution", "rulesets/typeresolution.xml");
         nameMap.put("unusedcode", "rulesets/unusedcode.xml");
         nameMap.put("useless", "rulesets/useless.xml");
+        nameMap.put("xml-basic", "rulesets/xml/basic.xml");
         nameMap.put("33", "rulesets/releases/33.xml");
         nameMap.put("34", "rulesets/releases/34.xml");
         nameMap.put("35", "rulesets/releases/35.xml");
