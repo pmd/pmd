@@ -81,7 +81,7 @@ import org.exolab.castor.xml.ValidationException;
 
 public class RuleSetsManagerImpl implements IRuleSetsManager {
     private static final Log LOG = LogFactory.getLog(RuleSetsManagerImpl.class);
-    private static final String RULESETS_MAPPING = "/net.sourceforge.pmd.eclipse.core/rulesets/impl/mapping.xml";
+    private static final String RULESETS_MAPPING = "/net/sourceforge/pmd/eclipse/core/rulesets/impl/mapping.xml";
 
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.eclipse.core.rulesets.IRuleSetsManager#readFromXml(java.io.InputStream)
