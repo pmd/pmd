@@ -7,11 +7,11 @@ import net.sf.saxon.om.AxisIterator;
 import net.sf.saxon.om.DocumentInfo;
 import net.sf.saxon.om.FastStringBuffer;
 import net.sf.saxon.om.NamePool;
-import net.sf.saxon.om.Navigator;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.SiblingCountingNode;
 import net.sf.saxon.om.VirtualNode;
+import net.sf.saxon.om.Navigator.AxisFilter;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.Value;
@@ -20,7 +20,7 @@ import net.sf.saxon.value.Value;
  * This is a basic implementation of the Saxon NodeInfo and related interfaces.
  * Most methods are trivial implementations which immediately throw
  * {@link UnsupportedOperationException}.  A few of the methods actually have
- * useful implementations, such as {@link #iterateAxis(byte, NodeTest)} and 
+ * useful implementations, such as {@link #iterateAxis(byte, NodeTest)} and
  * {@link #isSameNodeInfo(NodeInfo)}.
  */
 public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
@@ -98,9 +98,10 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * This implementation considers to NodeInfo objects to be equal, if their
      * underlying nodes are equal.
-     * 
+     *
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object other) {
 	if (this == other) {
 	    return true;
@@ -162,7 +163,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
 
     /**
      * This implementation always returns 0.
-     * 
+     *
      * {@inheritDoc}
      */
     public int getDocumentNumber() {
@@ -284,7 +285,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * This implementation delegates to {@link #equals(Object)}, per the Saxon
      * documentation's description of this method's behavior.
-     * 
+     *
      * {@inheritDoc}
      */
     public boolean isSameNodeInfo(NodeInfo other) {
@@ -302,14 +303,14 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * This implementation calls {@link #iterateAxis(byte)} to get an
      * {@link AxisIterator} which is then optionally filtered using
-     * {@link Navigator.AxisFilter}.
-     * 
+     * {@link AxisFilter}.
+     *
      * {@inheritDoc}
      */
     public AxisIterator iterateAxis(byte axisNumber, NodeTest nodeTest) {
 	AxisIterator axisIterator = iterateAxis(axisNumber);
 	if (nodeTest != null) {
-	    axisIterator = new Navigator.AxisFilter(axisIterator, nodeTest);
+	    axisIterator = new AxisFilter(axisIterator, nodeTest);
 	}
 	return axisIterator;
     }
@@ -317,7 +318,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * Used to create a customized instance of UnsupportedOperationException.
      * The caller of this method is intended to <code>throw</code> the exception.
-     * 
+     *
      * @param name Method name that is not supported.
      * @return A UnsupportedOperationException indicated the method is not supported by the implementation class.
      */
