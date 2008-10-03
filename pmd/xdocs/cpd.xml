@@ -45,16 +45,51 @@
 </target>
 ]]>
        </source>
-       <p>There's a <code>ignoreLiterals="true"</code> option which makes CPD ignore literal
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">The character set encoding (e.g., UTF-8) to use when reading the source code files; defaults to locale setting.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">format</td>
+    <td valign="top">The format of the report (e.g. <code>csv</code>, <code>text</code>, <code>xml</code>); defaults to <code>text</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">ignoreLiterals</td>
+    <td valign="top">if <code>true</code>, CPD ignores literal
  value differences when evaluating a duplicate block.  This means that <code>foo=42;</code> and <code>foo=43;</code>
  will be seen as equivalent.  You may want to run PMD with this option off to start with and
-           then switch it on to see what it turns up.   There's also a <code>ignoreIdentifiers="true"</code> option
-           that does the same thing with identifiers; i.e., variable names, methods names, and so forth.
-           The same guidelines apply.  There's also an <code>encoding</code> option which allows the encoding used
-           when parsing files to  be specified; the default is based upon the locale.
-           Finally, there's an optional <code>language="cpp|java|php|ruby"</code> flag
-           to select the appropriate language; the default language is "java".
- </p>
+           then switch it on to see what it turns up; defaults to <code>false</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">ignoreIdentifiers</td>
+    <td valign="top">Similar to <code>ignoreLiterals</code> but for identifiers; i.e., variable names, methods names, and so forth; defaults to <code>false</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">language</td>
+    <td valign="top">Flag to select the appropriate language (e.g. <code>cpp</code>, <code>java</code>, <code>php</code>, <code>ruby</code>); defaults to <code>java</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">minimumtokencount</td>
+    <td valign="top">A positive integer indicating the minimum duplicate size.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">outputfile</td>
+    <td valign="top">The destination file for the report. If not specified the console will be used instead.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
        <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e.:</p>
   <source>
  ant -v -f mybuildfile.xml cpd
@@ -77,7 +112,7 @@ $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/
            <source>
 $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/source --language cpp
            </source>
-           <p>You may wish to check sources that are stored in differents directories:</p>
+           <p>You may wish to check sources that are stored in different directories:</p>
            <source>
 $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
            </source>
