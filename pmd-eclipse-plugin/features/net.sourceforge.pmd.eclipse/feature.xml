@@ -2,7 +2,7 @@
 <feature
       id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="3.2.5.v200809291800"
+      version="3.2.5.v200810021720"
       provider-name="%feature.provider_name"
       image="pmd_logo_small.jpg">
 
@@ -14,7 +14,7 @@
       %copyright.text
    </copyright>
 
-   <license>
+   <license url="%license.url">
       %license.text
    </license>
 
@@ -35,7 +35,7 @@
          id="net.sourceforge.pmd.eclipse.plugin"
          download-size="0"
          install-size="0"
-         version="3.2.5.v200809291800"
+         version="3.2.5.v200810021720"
          unpack="false"
 	/>
 
