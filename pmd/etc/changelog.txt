@@ -165,6 +165,7 @@ The following is relatively complete list of the major changes (this may not be
 	   Renamed - net.sourceforge.pmd.jsp.rules.* into net.sourceforge.pmd.lang.jsp.ast.rule.* and updated to follow conventions
 	   Deleted - net.sourceforge.pmd.cpd.cppast.* into net.sourceforge.pmd.lang.cpp.ast.*
 	   Deleted - net.sourceforge.pmd.CommonAbstractRule
+	   Deleted - net.sourceforge.pmd.SourceFileConstants
 	   Deleted - net.sourceforge.pmd.SourceType
 	   Deleted - net.sourceforge.pmd.SourceTypeDiscoverer
 	   Deleted - net.sourceforge.pmd.SourceTypeToRuleLanguageMapper
