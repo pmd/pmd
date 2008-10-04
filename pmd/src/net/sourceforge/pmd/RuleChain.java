@@ -38,8 +38,6 @@ public class RuleChain {
      *            The RuleSet to which the rule belongs.
      * @param rule
      *            The Rule to add.
-     * @param language
-     *            The Language used by the Rule.
      */
     private void add(RuleSet ruleSet, Rule rule) {
 	RuleChainVisitor visitor = getRuleChainVisitor(rule.getLanguage());
