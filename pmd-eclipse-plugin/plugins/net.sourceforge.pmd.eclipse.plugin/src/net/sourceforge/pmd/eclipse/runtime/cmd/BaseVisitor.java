@@ -288,7 +288,7 @@ public class BaseVisitor {
                     Timer timer = new Timer();
                     
                     final RuleContext context = new RuleContext();
-                    context.setSourceCodeFile(file.getFullPath().toFile());
+                    context.setSourceCodeFile(file.getRawLocation().toFile());
                     context.setSourceCodeFilename(file.getName());
                     context.setReport(new Report());
 
