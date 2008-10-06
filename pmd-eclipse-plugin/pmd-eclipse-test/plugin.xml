@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse.test"
    name="PMD Eclipse Test Plug-in"
-   version="3.2.5.v200810031455"
+   version="3.2.5.v200810061230"
    provider-name="PMD Development Team">
 
    <runtime>
