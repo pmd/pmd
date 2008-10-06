@@ -18,7 +18,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Renderer to XML format.
  */
-public class XMLRenderer extends OnTheFlyRenderer {
+public class XMLRenderer extends AbstractIncrementalRenderer {
 
     public static final String NAME = "xml";
 

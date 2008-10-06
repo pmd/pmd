@@ -15,7 +15,7 @@ import net.sourceforge.pmd.RuleViolation;
 /**
  * Renderer to simple text format.
  */
-public class TextRenderer extends OnTheFlyRenderer {
+public class TextRenderer extends AbstractIncrementalRenderer {
 
     public static final String NAME = "text";
 

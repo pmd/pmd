@@ -26,7 +26,7 @@ import net.sourceforge.pmd.RuleViolation;
  *
  * @author Jeff Epstein, based upon <a href="EmacsRenderer.html">EmacsRenderer</a>, Tuesday, September 23, 2003
  */
-public class TextPadRenderer extends OnTheFlyRenderer {
+public class TextPadRenderer extends AbstractIncrementalRenderer {
 
     public static final String NAME = "textpad";
 

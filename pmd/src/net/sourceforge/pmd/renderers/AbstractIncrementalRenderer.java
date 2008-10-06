@@ -25,7 +25,7 @@ import net.sourceforge.pmd.RuleViolation;
  * files.  These are intended to be processed in the {@link #end()} method.
  */
 // TODO Rename to AbstractIncrementalRenderer
-public abstract class OnTheFlyRenderer extends AbstractRenderer {
+public abstract class AbstractIncrementalRenderer extends AbstractRenderer {
 
     /**
      * Accumulated processing errors.
@@ -37,7 +37,7 @@ public abstract class OnTheFlyRenderer extends AbstractRenderer {
      */
     protected List<Report.SuppressedViolation> suppressed = new LinkedList<Report.SuppressedViolation>();
 
-    public OnTheFlyRenderer(String name, String description, Properties properties) {
+    public AbstractIncrementalRenderer(String name, String description, Properties properties) {
 	super(name, description, properties);
     }
 

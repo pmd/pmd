@@ -17,7 +17,7 @@ import net.sourceforge.pmd.RuleViolation;
 /**
  * Renderer for IntelliJ IDEA integration.
  */
-public class IDEAJRenderer extends OnTheFlyRenderer {
+public class IDEAJRenderer extends AbstractIncrementalRenderer {
 
     public static final String NAME = "ideaj";
 

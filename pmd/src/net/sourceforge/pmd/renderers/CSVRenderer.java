@@ -15,7 +15,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Renderer to comma separated format.
  */
-public class CSVRenderer extends OnTheFlyRenderer {
+public class CSVRenderer extends AbstractIncrementalRenderer {
 
     public static final String NAME = "csv";
 

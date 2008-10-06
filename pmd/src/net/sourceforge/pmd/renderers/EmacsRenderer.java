@@ -13,7 +13,7 @@ import net.sourceforge.pmd.RuleViolation;
 /**
  * Renderer to GNU Emacs parsable format.
  */
-public class EmacsRenderer extends OnTheFlyRenderer {
+public class EmacsRenderer extends AbstractIncrementalRenderer {
 
     public static final String NAME = "emacs";
 
