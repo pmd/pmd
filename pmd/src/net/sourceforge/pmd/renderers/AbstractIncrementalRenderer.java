@@ -24,7 +24,6 @@ import net.sourceforge.pmd.RuleViolation;
  * Only processing errors and suppressed violations are accumulated across all
  * files.  These are intended to be processed in the {@link #end()} method.
  */
-// TODO Rename to AbstractIncrementalRenderer
 public abstract class AbstractIncrementalRenderer extends AbstractRenderer {
 
     /**

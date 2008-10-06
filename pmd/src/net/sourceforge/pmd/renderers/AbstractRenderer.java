@@ -122,7 +122,7 @@ public abstract class AbstractRenderer implements Renderer {
      */
     public void start() throws IOException {
 	// default (and backward compatible) behavior is to build a full report.
-	// Optimized rendering is done in OnTheFlyRenderer and descendants
+	// Optimized rendering is done in AbstractIncrementalRenderer and descendants
 	mainReport = new Report();
     }
 
@@ -137,7 +137,7 @@ public abstract class AbstractRenderer implements Renderer {
      */
     public void renderFileReport(Report report) throws IOException {
 	// default (and backward compatible) behavior is to build a full report.
-	// Optimized rendering is done in OnTheFlyRenderer and descendants
+	// Optimized rendering is done in AbstractIncrementalRenderer and descendants
 	mainReport.merge(report);
     }
 
@@ -146,7 +146,7 @@ public abstract class AbstractRenderer implements Renderer {
      */
     public void end() throws IOException {
 	// default (and backward compatible) behavior is to build a full report.
-	// Optimized rendering is done in OnTheFlyRenderer and descendants
+	// Optimized rendering is done in AbstractIncrementalRenderer and descendants
 	render(writer, mainReport);
     }
 }
