@@ -75,42 +75,6 @@ import org.eclipse.ui.PlatformUI;
  * Generate a AST from the selected file.
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.2  2006/06/20 21:01:23  phherlin
- * Enable PMD and fix error level violations
- *
- * Revision 1.1  2006/05/22 21:23:56  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.10  2006/01/27 00:03:11  phherlin
- * Fix BUG#1365407 Problems with PMD in Eclipse/Issue 3
- *
- * Revision 1.9  2004/04/29 21:15:08  phherlin
- * Upgrading to PMD v1.7
- *
- * Revision 1.8  2003/12/18 23:58:37  phherlin
- * Fixing malformed UTF-8 characters in generated xml files
- *
- * Revision 1.7  2003/11/30 22:57:37  phherlin
- * Merging from eclipse-v2 development branch
- *
- * Revision 1.6.2.1  2003/11/04 16:27:19  phherlin
- * Refactor to use the adaptable framework instead of downcasting
- *
- * Revision 1.6  2003/10/27 20:14:13  phherlin
- * Refactoring AST generation. Using a IAstWriter.
- *
- * Revision 1.5  2003/06/19 20:59:45  phherlin
- * In the generated XML AST, put the image information on an image attribute instead of the tag body
- *
- * Revision 1.4  2003/05/19 22:27:33  phherlin
- * Refactoring to improve performance
- *
- * Revision 1.3  2003/03/30 20:48:59  phherlin
- * Adding logging
- * Displaying error dialog in a thread safe way
  *
  */
 public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWithProgress {

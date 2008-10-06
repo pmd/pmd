@@ -58,43 +58,6 @@ import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
  * This class implements the controler of the Property page
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:23:57  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.12  2006/04/26 21:16:06  phherlin
- * Add the include derived files option
- *
- * Revision 1.11  2006/04/19 22:40:20  phherlin
- * Reconfigure the rebuild command to better handle huge project (when changing PMD project properties, run the rebuild in background)
- *
- * Revision 1.10  2005/10/24 22:43:54  phherlin
- * Refactor command processing
- * Revision 1.9 2005/06/11 22:11:32
- * phherlin Fixing the project ruleset management
- *
- * Revision 1.8 2005/06/07 18:38:13 phherlin Move classes to limit packages
- * cycle dependencies
- *
- * Revision 1.7 2005/05/31 20:33:01 phherlin Continuing refactoring
- *
- * Revision 1.6 2005/05/10 21:49:29 phherlin Fix new violations detected by PMD
- * 3.1
- *
- * Revision 1.5 2005/05/07 13:32:05 phherlin Continuing refactoring Fix some PMD
- * violations Fix Bug 1144793 Fix Bug 1190624 (at least try) Revision 1.4
- * 2004/12/03 00:22:43 phherlin Continuing the refactoring experiment. Implement
- * the Command framework. Refine the MVC pattern usage.
- *
- * Revision 1.3 2004/11/28 20:31:39 phherlin Continuing the refactoring
- * experiment
- *
- * Revision 1.2 2004/11/21 21:38:43 phherlin Continue applying MVC. Revision 1.1
- * 2004/11/18 23:54:27 phherlin Refactoring to apply MVC. The goal is to test
- * the refactoring before a complete refactoring for all GUI
- *
  *
  */
 public class PMDPropertyPageController {

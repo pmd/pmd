@@ -66,16 +66,6 @@ import org.exolab.castor.xml.ValidationException;
  * The serialization is based on the usage of Castor.
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2006/10/06 16:42:46  phherlin
- * Continue refactoring of rullesets management
- *
- * Revision 1.1  2006/06/21 23:06:41  phherlin
- * Move the new rule sets management to the core plugin instead of the runtime.
- * Continue the development.
- *
  *
  */
 

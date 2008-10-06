@@ -45,18 +45,6 @@ import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
  * 
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.3  2006/06/20 21:04:49  phherlin
- * Enable PMD and fix error level violations
- *
- * Revision 1.2  2005/07/02 14:33:05  phherlin
- * Implement the RuleSets extension point
- *
- * Revision 1.1  2005/06/07 22:39:57  phherlin
- * Implementing extra ruleset declaration
- *
  *
  */
 public class RuleSetManagerImpl implements IRuleSetManager {

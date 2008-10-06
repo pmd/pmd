@@ -42,12 +42,6 @@ import java.util.Set;
  * This is the interface for implementors of the RuleSets extension point.
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2005/07/02 14:33:05  phherlin
- * Implement the RuleSets extension point
- *
  *
  */
 

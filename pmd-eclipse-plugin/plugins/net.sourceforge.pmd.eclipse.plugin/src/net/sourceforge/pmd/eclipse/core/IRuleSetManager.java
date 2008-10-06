@@ -43,15 +43,6 @@ import net.sourceforge.pmd.RuleSet;
  * Interface for a rule set manager. A RuleSetManager handle a set of rule sets.
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2005/07/02 14:33:05  phherlin
- * Implement the RuleSets extension point
- *
- * Revision 1.1  2005/06/07 22:39:57  phherlin
- * Implementing extra ruleset declaration
- *
  *
  */
 public interface IRuleSetManager {

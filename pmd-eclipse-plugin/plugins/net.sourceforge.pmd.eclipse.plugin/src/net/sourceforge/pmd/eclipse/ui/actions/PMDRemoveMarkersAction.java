@@ -61,37 +61,6 @@ import org.eclipse.ui.IWorkbenchPart;
  * Process "Delete PMD Markers" action menu
  * 
  * @author phherlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.5  2006/11/16 17:09:40  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.4  2006/10/10 22:31:01  phherlin
- * Fix other PMD warnings
- *
- * Revision 1.3  2006/10/06 18:42:30  phherlin
- * Fix 1554639 Clear markers in Project JAVA-files and other bugs related to dataflows
- *
- * Revision 1.2  2006/06/08 22:01:30  phherlin
- * Fix marker deletion issue following the architecture refactoring
- *
- * Revision 1.1  2006/05/22 21:23:56  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.6  2006/01/27 00:03:11  phherlin
- * Fix BUG#1365407 Problems with PMD in Eclipse/Issue 3
- * Revision 1.5 2003/11/30 22:57:37 phherlin Merging from eclipse-v2 development branch
- * 
- * Revision 1.4.2.1 2003/11/04 16:27:19 phherlin Refactor to use the adaptable framework instead of downcasting
- * 
- * Revision 1.4 2003/05/19 22:27:33 phherlin Refactoring to improve performance
- * 
- * Revision 1.3 2003/03/30 20:49:37 phherlin Adding logging Displaying error dialog in a thread safe way Adding support for folders
- * and package
  * 
  */
 public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActionDelegate {

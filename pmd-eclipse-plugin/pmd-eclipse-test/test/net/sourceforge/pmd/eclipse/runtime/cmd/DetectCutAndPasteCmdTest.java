@@ -54,20 +54,6 @@ import org.eclipse.core.runtime.CoreException;
  * Test the CPD command
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.2  2006/11/16 17:14:34  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.1  2006/06/18 22:29:51  phherlin
- * Begin refactoring the unit tests for the plugin
- * Revision 1.1 2005/06/15 21:14:57
- * phherlin Create the project for the Eclipse plugin unit tests
- *
  *
  */
 public class DetectCutAndPasteCmdTest extends TestCase {

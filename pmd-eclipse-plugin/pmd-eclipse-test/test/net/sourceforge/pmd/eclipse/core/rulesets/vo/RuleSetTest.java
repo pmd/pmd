@@ -43,15 +43,6 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
  * Unit tests for the RuleSet class
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/06/21 23:06:52  phherlin
- * Move the new rule sets management to the core plugin instead of the runtime.
- * Continue the development.
- * Revision 1.1 2006/06/18 22:29:50 phherlin Begin refactoring the unit
- * tests for the plugin
- * 
  * 
  */
 

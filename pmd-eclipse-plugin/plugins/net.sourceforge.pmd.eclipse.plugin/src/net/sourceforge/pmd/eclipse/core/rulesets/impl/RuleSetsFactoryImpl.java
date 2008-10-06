@@ -43,13 +43,6 @@ import net.sourceforge.pmd.eclipse.core.rulesets.IRuleSetsManager;
  * Default implementation of a IRuleSetsFactory.
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/06/21 23:06:41  phherlin
- * Move the new rule sets management to the core plugin instead of the runtime.
- * Continue the development.
- *
  *
  */
 

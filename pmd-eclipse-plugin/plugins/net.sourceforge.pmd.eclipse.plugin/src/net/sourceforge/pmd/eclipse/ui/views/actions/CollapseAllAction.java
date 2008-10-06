@@ -48,11 +48,6 @@ import org.eclipse.jface.viewers.TreeViewer;
  * Collapses the Violation Overview Tree
  * 
  * @author SebastianRaffel ( 22.05.2005 ), Philippe Herlin, Sven Jacob
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2006/10/09 13:26:40  phherlin
- * Review Sebastian code... and fix most PMD warnings
  *
  */
 public class CollapseAllAction extends Action {

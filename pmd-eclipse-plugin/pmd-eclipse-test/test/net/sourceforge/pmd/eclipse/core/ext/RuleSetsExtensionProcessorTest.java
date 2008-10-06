@@ -48,14 +48,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  * Test the ruleset extension
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/06/18 22:29:52  phherlin
- * Begin refactoring the unit tests for the plugin
- * Revision 1.1 2005/07/02 14:32:02 phherlin Implement the RuleSets
- * extension points new tests
- * 
  * 
  */
 public class RuleSetsExtensionProcessorTest extends TestCase {

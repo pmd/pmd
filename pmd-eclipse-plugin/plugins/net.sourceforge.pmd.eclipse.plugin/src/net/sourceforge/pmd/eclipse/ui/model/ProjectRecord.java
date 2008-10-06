@@ -58,33 +58,6 @@ import org.eclipse.jdt.core.JavaModelException;
  * AbstractPMDRecord for Projects creates Packages when instantiated
  * 
  * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.12  2007/02/28 20:56:04  hooperbloob
- * Optimization: new AbstractPMDRecord[0] -> AbstractPMDRecord.EMPTY_RECORDS (static final constant)
- *
- * Revision 1.11  2007/01/18 21:01:20  phherlin
- * Fix several cast and NPE exceptions
- * Revision 1.10 2006/12/22 14:15:09 holobender fixed bug
- * 
- * Revision 1.9 2006/11/20 14:53:27 holobender Fix: When Packages are in a src
- * folder and not in the root of the project, they are not shown in the
- * violation overview.
- * 
- * Revision 1.8 2006/11/16 17:11:08 holobender Some major changes: - new CPD
- * View - changed and refactored ViolationOverview - some minor changes to
- * dataflowview to work with PMD
- * 
- * Revision 1.7 2006/10/09 13:32:47 phherlin Fix mistake in CVS tags (double $$)
- * 
- * Revision 1.6 2006/10/08 23:11:06 phherlin Review Sebastian code... and fix
- * most PMD warnings
- * 
- * Revision 1.5 2006/10/08 22:19:34 phherlin Fix last Java warnings
- * 
- * Revision 1.4 2006/10/07 16:01:21 phherlin Integrate Sven updates
- * 
  * 
  */
 public class ProjectRecord extends AbstractPMDRecord {

@@ -41,20 +41,6 @@ import org.eclipse.ui.IMarkerResolutionGenerator;
  * of Eclipse to PMD
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.2  2006/10/06 16:51:02  phherlin
- * Fix NullPointer exception when searching for quickfixes on rules from a project ruleset.
- *
- * Revision 1.1  2006/05/22 21:23:59  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.2  2003/11/30 22:57:43  phherlin
- * Merging from eclipse-v2 development branch
- *
- * Revision 1.1.2.1  2003/11/04 23:32:21  phherlin
- * Previewing Quick Fixes
  *
  */
 public class PMDResolutionGenerator implements IMarkerResolutionGenerator {

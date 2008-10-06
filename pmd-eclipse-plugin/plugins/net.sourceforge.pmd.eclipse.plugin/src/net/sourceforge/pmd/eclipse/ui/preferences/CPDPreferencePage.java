@@ -21,14 +21,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  *
  * @author ?
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:23:39  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.8  2003/06/30 20:16:06  phherlin
- * Redesigning plugin configuration
  *
  */
 public class CPDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {

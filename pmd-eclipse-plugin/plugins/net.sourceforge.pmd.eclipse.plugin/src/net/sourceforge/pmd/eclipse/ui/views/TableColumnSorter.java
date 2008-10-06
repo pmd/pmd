@@ -48,11 +48,6 @@ import org.eclipse.swt.widgets.TreeColumn;
  * Displays an Arrow-Image in a TableColumn, that shows in which Direction the Column is sorted
  * 
  * @author SebastianRaffel ( 22.05.2005 ), Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2006/10/09 13:26:40  phherlin
- * Review Sebastian code... and fix most PMD warnings
  *
  */
 public class TableColumnSorter extends ViewerSorter {

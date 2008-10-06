@@ -63,13 +63,6 @@ import org.eclipse.ui.IPropertyListener;
  * This command reviews a resource - a file - for a specific rule.
  *
  * @author Sven
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/11/16 16:54:40  holobender
- * - changed command for the new cpd view
- * - possibility to set the number of maxviolations per file over the rule-properties
- *
  *
  */
 

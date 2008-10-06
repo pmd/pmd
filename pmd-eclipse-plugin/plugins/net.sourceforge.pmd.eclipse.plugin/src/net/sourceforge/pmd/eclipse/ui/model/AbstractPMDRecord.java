@@ -50,24 +50,6 @@ import org.eclipse.core.resources.IResource;
  * contains: the Root -> Project(s) -> Package(s) -> File(s)
  * 
  * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.4  2007/02/28 20:56:04  hooperbloob
- * Optimization: new AbstractPMDRecord[0] -> AbstractPMDRecord.EMPTY_RECORDS (static final constant)
- *
- * Revision 1.3  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.2  2006/10/09 13:26:41  phherlin
- * Review Sebastian code... and fix most PMD warnings
- *
- * Revision 1.1  2006/10/07 16:01:21  phherlin
- * Integrate Sven updates
- * 
  * 
  */
 public abstract class AbstractPMDRecord {

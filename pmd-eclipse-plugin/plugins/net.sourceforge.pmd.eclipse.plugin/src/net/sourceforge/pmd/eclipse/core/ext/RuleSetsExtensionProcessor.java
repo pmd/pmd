@@ -51,18 +51,6 @@ import org.eclipse.core.runtime.Platform;
  * This class processes the AdditionalRuleSets extension point
  *
  * @author Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.3  2006/06/20 21:04:24  phherlin
- * Enable PMD and fix error level violations
- *
- * Revision 1.2  2006/06/08 21:46:58  phherlin
- * Remove usage API unknown by RSA (no consequence as it was for logging only)
- *
- * Revision 1.1  2005/07/02 14:33:05  phherlin
- * Implement the RuleSets extension point
- *
  *
  */
 

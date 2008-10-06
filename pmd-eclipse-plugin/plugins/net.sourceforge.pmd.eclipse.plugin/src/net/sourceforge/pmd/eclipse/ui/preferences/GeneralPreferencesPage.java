@@ -35,27 +35,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  *
  * @author ?
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.2  2007/01/06 11:58:08  holobender
- * disabled the experimental option since it can now be enabled over the DataflowAnomalyAnalysis rule
- *
- * Revision 1.1  2006/05/22 21:23:40  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.11  2006/05/07 12:03:08  phherlin
- * Add the possibility to use the PMD violation review style
- *
- * Revision 1.10  2006/05/02 20:11:13  phherlin
- * Limit the number of reported violations per file and per rule
- *
- * Revision 1.9  2005/10/24 22:43:22  phherlin
- * Integrating Sebastian Raffel's work
- * Revision 1.8 2003/08/14 16:10:41
- * phherlin Implementing Review feature (RFE#787086)
- *
- * Revision 1.7 2003/03/18 23:28:36 phherlin *** keyword substitution change ***
  *
  */
 public class GeneralPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {

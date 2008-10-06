@@ -61,44 +61,6 @@ import org.eclipse.ui.IWorkbenchPart;
  * Implements action on the "Check code with PMD" action menu on a file
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.2  2006/11/16 17:09:40  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.1  2006/05/22 21:23:56  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.14  2006/01/27 00:03:11  phherlin
- * Fix BUG#1365407 Problems with PMD in Eclipse/Issue 3
- * Revision 1.13 2005/12/30 16:22:31 phherlin Add a debug log to check what happens when this action
- * is launched in an editor pane
- *
- * Revision 1.12 2005/10/24 22:39:00 phherlin Integrating Sebastian Raffel's work Refactor command processing Revision 1.11
- * 2005/05/07 13:32:06 phherlin Continuing refactoring Fix some PMD violations Fix Bug 1144793 Fix Bug 1190624 (at least try)
- *
- * Revision 1.10 2003/11/30 22:57:37 phherlin Merging from eclipse-v2 development branch
- *
- * Revision 1.8.2.2 2003/11/04 16:27:19 phherlin Refactor to use the adaptable framework instead of downcasting
- *
- * Revision 1.8.2.1 2003/10/30 22:09:51 phherlin Simplify the code : moving the deep nested CountVisitor class as a first level
- * nested inner class. This also correct a rule violation from PMD.
- *
- * Revision 1.8 2003/08/13 20:08:40 phherlin Refactoring private->protected to remove warning about non accessible member access in
- * enclosing types
- *
- * Revision 1.7 2003/07/01 20:21:37 phherlin Correcting some PMD violations ! (empty if stmt)
- *
- * Revision 1.6 2003/06/19 20:58:13 phherlin Improve progress indicator accuracy
- *
- * Revision 1.5 2003/05/19 22:27:33 phherlin Refactoring to improve performance
- *
- * Revision 1.4 2003/03/30 20:48:19 phherlin Adding logging Displaying error dialog in a thread safe way Adding support for folders
- * and package
  *
  */
 public class PMDCheckAction implements IObjectActionDelegate {

@@ -66,27 +66,6 @@ import org.eclipse.jdt.core.JavaModelException;
  * AbstractPMDRecord for Files
  * 
  * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.8  2007/02/28 20:56:04  hooperbloob
- * Optimization: new AbstractPMDRecord[0] -> AbstractPMDRecord.EMPTY_RECORDS (static final constant)
- *
- * Revision 1.7  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.6  2006/10/09 13:32:47  phherlin
- * Fix mistake in CVS tags (double $$)
- *
- * Revision 1.5  2006/10/08 22:19:34  phherlin
- * Fix last Java warnings
- * 
- * Revision 1.4  2006/10/07 16:01:21  phherlin
- * Integrate Sven updates
- * 
  * 
  */
 public class FileRecord extends AbstractPMDRecord {

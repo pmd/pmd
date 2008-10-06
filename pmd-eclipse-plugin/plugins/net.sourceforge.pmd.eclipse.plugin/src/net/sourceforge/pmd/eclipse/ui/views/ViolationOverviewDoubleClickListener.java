@@ -60,18 +60,6 @@ import org.eclipse.ui.ide.IDE;
  * DoubleClickListener for the violation-overview. 
  * 
  * @author Sven
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2007/01/18 21:03:56  phherlin
- * Fix several problems on memento usage
- *
- * Revision 1.1  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
  *
  */
 

@@ -61,51 +61,6 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * Factor some usefull features for visitors
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.3  2006/11/16 16:54:40  holobender
- * - changed command for the new cpd view
- * - possibility to set the number of maxviolations per file over the rule-properties
- *
- * Revision 1.2  2006/10/07 16:01:51  phherlin
- * Integrate Sven updates
- *
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.12  2006/05/07 12:03:09  phherlin
- * Add the possibility to use the PMD violation review style
- *
- * Revision 1.11  2006/05/02 20:10:26  phherlin
- * Limit the number of reported violations per file and per rule
- *
- * Revision 1.10  2006/04/26 21:15:02  phherlin
- * Add the include derived files option
- *
- * Revision 1.9  2006/04/24 19:35:01  phherlin
- * Add performance mesures on commands and on pmd execution
- *
- * Revision 1.8  2006/04/10 20:55:32  phherlin
- * Update to PMD 3.6
- *
- * Revision 1.7  2006/01/19 22:00:14  phherlin
- * Fix BUG#1357798 Source file utf-8 charset problem
- *
- * Revision 1.6  2005/12/30 17:30:21  phherlin
- * Upgrade to PMD v3.4 -> RuleViolation interface has changed!
- *
- * Revision 1.5  2005/10/24 22:40:33  phherlin
- * Integrating Sebastian Raffel's work
- * Revision 1.4 2005/07/04 21:00:52 phherlin Oops!
- * forgot to use properties model to get project working set Revision 1.3
- * 2005/05/31 20:44:41 phherlin Continuing refactoring
- * 
- * Revision 1.2 2005/05/10 21:49:26 phherlin Fix new violations detected by PMD
- * 3.1
- * 
- * Revision 1.1 2005/05/07 13:32:04 phherlin Continuing refactoring Fix some PMD
- * violations Fix Bug 1144793 Fix Bug 1190624 (at least try)
  * 
  */
 public class BaseVisitor {

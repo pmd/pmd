@@ -53,32 +53,6 @@ import org.eclipse.jdt.core.JavaCore;
  * This must be used as a root implementation for all the plugin commands.
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.3  2005/10/24 22:40:54  phherlin
- * Refactor command processing
- *
- * Revision 1.2  2005/05/31 20:44:41  phherlin
- * Continuing refactoring
- *
- * Revision 1.1  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
- * Revision 1.2  2004/12/03 00:22:42  phherlin
- * Continuing the refactoring experiment.
- * Implement the Command framework.
- * Refine the MVC pattern usage.
- *
- * Revision 1.1  2004/11/21 21:39:45  phherlin
- * Applying Command and CommandProcessor patterns
- *
  *
  */
 public abstract class AbstractDefaultCommand extends AbstractProcessableCommand {

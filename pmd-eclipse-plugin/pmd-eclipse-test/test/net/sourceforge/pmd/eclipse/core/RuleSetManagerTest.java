@@ -44,18 +44,6 @@ import junit.framework.TestCase;
  * Test the ruleset manager.
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/06/18 22:29:51  phherlin
- * Begin refactoring the unit tests for the plugin
- *
- * Revision 1.2  2005/07/02 14:32:01  phherlin
- * Implement the RuleSets extension points new tests
- *
- * Revision 1.1  2005/06/15 21:14:56  phherlin
- * Create the project for the Eclipse plugin unit tests
- *
  *
  */
 public class RuleSetManagerTest extends TestCase {

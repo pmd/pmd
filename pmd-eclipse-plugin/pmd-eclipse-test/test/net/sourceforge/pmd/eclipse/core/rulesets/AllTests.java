@@ -48,15 +48,7 @@ import junit.framework.TestSuite;
 
 /**
  * 
- * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/06/21 23:06:53  phherlin
- * Move the new rule sets management to the core plugin instead of the runtime.
- * Continue the development.
- *
  *
  */
 

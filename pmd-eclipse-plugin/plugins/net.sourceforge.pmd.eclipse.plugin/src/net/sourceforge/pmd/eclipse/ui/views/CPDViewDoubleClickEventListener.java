@@ -60,20 +60,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * 
- * 
  * @author Sven
- * @version $Revision$
- * 
- * $Log: CPDViewDoubleClickEventListener.java,v $
- * Revision 1.2  2007/06/24 16:36:24  phherlin
- * Fix 1737975 CPD view double-click selection&jump bug
- *
- * Revision 1.1  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
  *
  */
 

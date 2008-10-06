@@ -56,14 +56,6 @@ import org.eclipse.jdt.core.IMethod;
  * Dataflow Anomalies for it.
  * 
  * @author SebastianRaffel ( 07.06.2005 ), Philippe Herlin, Sven Jacob
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.3  2006/10/09 13:32:47  phherlin
- * Fix mistake in CVS tags (double $$)
- *
- * Revision 1.2  2006/10/07 16:01:21  phherlin
- * Integrate Sven updates
  * 
  */
 public class DataflowMethodRecord {

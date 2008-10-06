@@ -44,27 +44,6 @@ import org.eclipse.ui.IWorkingSet;
  * It acts as the model in the MVC paradigm. 
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:23:58  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.3  2006/04/26 21:16:06  phherlin
- * Add the include derived files option
- *
- * Revision 1.2  2005/05/07 13:32:05  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
- * Revision 1.1  2004/11/28 20:31:38  phherlin
- * Continuing the refactoring experiment
- *
- * Revision 1.1  2004/11/21 21:38:42  phherlin
- * Continue applying MVC.
- *
  *
  */
 public class PMDPropertyPageBean {

@@ -15,23 +15,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * A project nature for PMD. Add a PMDBuilder to a project
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.2  2006/10/06 18:42:59  phherlin
- * Fix 1554639 Clear markers in Project JAVA-files and other bugs related to dataflows
- *
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.4  2005/06/07 18:38:15  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.3  2005/05/31 20:33:03  phherlin
- * Continuing refactoring
- *
- * Revision 1.2  2003/03/18 23:28:37  phherlin
- * *** keyword substitution change ***
  *
  */
 public class PMDNature implements IProjectNature {

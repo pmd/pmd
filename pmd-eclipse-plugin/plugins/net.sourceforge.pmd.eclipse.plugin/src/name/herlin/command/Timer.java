@@ -40,15 +40,6 @@ package name.herlin.command;
  * This class lets mesure time
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:34  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.1  2006/04/24 19:34:18  phherlin
- * Add performance mesures on commands and on pmd execution
- *
  *
  */
 

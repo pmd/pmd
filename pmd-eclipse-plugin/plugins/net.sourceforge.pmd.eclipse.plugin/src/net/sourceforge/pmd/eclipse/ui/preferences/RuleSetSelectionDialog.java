@@ -31,24 +31,6 @@ import org.eclipse.swt.widgets.Shell;
  * Implements a dialog for the user to select a rule set to import
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:23:38  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.4  2006/04/10 20:57:16  phherlin
- * Update to PMD 3.6
- *
- * Revision 1.3  2005/06/07 22:40:06  phherlin
- * Implementing extra ruleset declaration
- *
- * Revision 1.2  2003/08/13 20:09:06  phherlin
- * Refactoring private->protected to remove warning about non accessible member access in enclosing types
- *
- * Revision 1.1  2003/06/30 20:16:06  phherlin
- * Redesigning plugin configuration
- *
  *
  */
 public class RuleSetSelectionDialog extends Dialog {

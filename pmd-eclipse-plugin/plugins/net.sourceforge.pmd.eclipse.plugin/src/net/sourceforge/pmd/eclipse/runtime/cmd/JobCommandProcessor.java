@@ -58,29 +58,6 @@ import org.eclipse.core.runtime.jobs.Job;
  * commands.
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.4  2006/04/24 19:35:01  phherlin
- * Add performance mesures on commands and on pmd execution
- *
- * Revision 1.3  2005/10/24 22:40:54  phherlin
- * Refactor command processing
- *
- * Revision 1.2  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
- * Revision 1.1  2004/12/03 00:22:42  phherlin
- * Continuing the refactoring experiment.
- * Implement the Command framework.
- * Refine the MVC pattern usage.
- *
  *
  */
 public class JobCommandProcessor implements CommandProcessor {

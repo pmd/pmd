@@ -11,20 +11,6 @@ import org.eclipse.core.resources.IResourceVisitor;
  * 
  * Any violations get tagged onto the file as problems in the tasks list.
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.2  2005/05/31 20:44:41  phherlin
- * Continuing refactoring
- *
- * Revision 1.1  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
  *
  */
 public class ResourceVisitor extends BaseVisitor implements IResourceVisitor {

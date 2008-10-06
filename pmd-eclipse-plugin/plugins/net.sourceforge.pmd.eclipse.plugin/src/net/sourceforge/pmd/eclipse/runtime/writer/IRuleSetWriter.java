@@ -31,24 +31,6 @@ import net.sourceforge.pmd.RuleSet;
  * a rule set.
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:36  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.5  2003/12/18 23:58:37  phherlin
- * Fixing malformed UTF-8 characters in generated xml files
- *
- * Revision 1.4  2003/10/16 22:29:23  phherlin
- * Oops. Writing comments.
- *
- * Revision 1.3  2003/10/16 22:26:37  phherlin
- * Fix bug #810858.
- * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
- * 
- * -- Old version renamed to RuleSetWriterImpl --
- * -- Now IRuleSetWriter is an interface        --
  *
  */
 public interface IRuleSetWriter {

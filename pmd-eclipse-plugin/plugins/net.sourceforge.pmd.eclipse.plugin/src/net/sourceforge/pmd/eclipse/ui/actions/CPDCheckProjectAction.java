@@ -37,39 +37,6 @@ import org.eclipse.ui.PartInitException;
  * @author Sven Jacob
  * @author David Craine
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.5  2006/11/18 14:47:13  holobender
- * some little improvements for cpd view
- *
- * Revision 1.4  2006/11/16 17:09:40  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.3  2006/10/10 22:31:01  phherlin
- * Fix other PMD warnings
- *
- * Revision 1.2  2006/06/20 21:01:23  phherlin
- * Enable PMD and fix error level violations
- *
- * Revision 1.1  2006/05/22 21:23:56  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- * Revision 1.2 2006/05/02 18:34:23 phherlin Make CPD "working set aware"
- * 
- * Revision 1.1 2005/05/31 23:04:11 phherlin Fix Bug 1190624: refactor CPD integration
- * 
- * Revision 1.8 2004/04/19 22:25:12 phherlin Upgrading to PMD v1.6
- * 
- * Revision 1.7 2003/11/30 22:57:37 phherlin Merging from eclipse-v2 development branch
- * 
- * Revision 1.6.2.1 2003/11/04 16:27:19 phherlin Refactor to use the adaptable framework instead of downcasting
- * 
- * Revision 1.6 2003/06/30 20:16:06 phherlin Redesigning plugin configuration
- * 
- * Revision 1.5 2003/05/19 22:26:07 phherlin Updating PMD engine to v1.05 Fixing CPD usage to conform to new engine implementation
  * 
  */
 public class CPDCheckProjectAction implements IObjectActionDelegate {

@@ -59,28 +59,6 @@ import org.eclipse.ui.IWorkingSet;
  * Test the project properties model.
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.3  2006/10/08 22:19:16  phherlin
- * Fix last Java warnings
- *
- * Revision 1.2  2006/10/06 16:42:03  phherlin
- * Continue refactoring of rullesets management
- *
- * Revision 1.1  2006/06/18 22:29:51  phherlin
- * Begin refactoring the unit tests for the plugin
- * Revision 1.4 2005/12/30 16:29:16
- * phherlin Implement a new preferences model and review some tests
- *
- * Revision 1.3 2005/07/02 14:31:11 phherlin Fixing equals assertion to test on
- * rules collection instead
- *
- * Revision 1.2 2005/07/01 00:06:38 phherlin Refactoring and writing more tests
- *
- * Revision 1.1 2005/06/15 21:14:56 phherlin Create the project for the Eclipse
- * plugin unit tests
- *
  *
  */
 public class ProjectPropertiesModelTest extends TestCase {

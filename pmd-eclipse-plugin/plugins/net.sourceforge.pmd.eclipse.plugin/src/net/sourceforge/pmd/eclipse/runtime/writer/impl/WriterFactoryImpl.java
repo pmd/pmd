@@ -31,12 +31,6 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IWriterFactory;
  * This class is the abstract base class for writer factories.
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
  *
  */
 public class WriterFactoryImpl implements IWriterFactory {

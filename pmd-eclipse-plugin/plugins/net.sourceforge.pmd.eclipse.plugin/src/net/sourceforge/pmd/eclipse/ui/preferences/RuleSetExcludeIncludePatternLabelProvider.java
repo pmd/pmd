@@ -4,9 +4,6 @@ package net.sourceforge.pmd.eclipse.ui.preferences;
  * Implements a label provider for the item of the ruleset exclude/include
  * pattern tables of the PMD Preference page.
  * 
- * @version $Revision$
- * 
- * $Log$
  */
 public class RuleSetExcludeIncludePatternLabelProvider extends AbstractTableLabelProvider {
 

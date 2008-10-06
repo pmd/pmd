@@ -8,9 +8,6 @@ import org.eclipse.swt.widgets.TableItem;
  * This class allows the modifications of the element of the ruleset exclude/include
  * pattern tables of the PMD Preference page
  * 
- * @version $Revision$
- * 
- * $Log$
  */
 public class RuleSetExcludeIncludePatternCellModifier implements ICellModifier {
 	private final TableViewer tableViewer;

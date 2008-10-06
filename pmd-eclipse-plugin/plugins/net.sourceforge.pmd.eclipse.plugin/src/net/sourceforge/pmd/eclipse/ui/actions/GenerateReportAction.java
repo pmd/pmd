@@ -26,24 +26,6 @@ import org.eclipse.ui.IWorkbenchPart;
  * Generate a HTML report on the current project.
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.2  2006/10/10 22:31:01  phherlin
- * Fix other PMD warnings
- *
- * Revision 1.1  2006/05/22 21:23:56  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.3  2006/04/11 21:01:17  phherlin
- * Add new VBHTML report
- *
- * Revision 1.2  2005/10/24 22:39:35  phherlin
- * Refactor command processing
- *
- * Revision 1.1  2005/04/20 23:15:53  phherlin
- * Implement reports generation RFE#1177802
- *
  *
  */
 public class GenerateReportAction implements IObjectActionDelegate {

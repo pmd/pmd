@@ -19,25 +19,6 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * 
  * @author David Craine
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.4  2006/12/22 14:19:39  holobender
- * removed unused variable
- *
- * Revision 1.3  2006/11/16 16:54:40  holobender
- * - changed command for the new cpd view
- * - possibility to set the number of maxviolations per file over the rule-properties
- *
- * Revision 1.2  2006/06/20 21:01:49  phherlin
- * Enable PMD and fix error level violations
- *
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- * Revision 1.2 2006/05/02 18:34:23 phherlin Make CPD "working set aware" Revision 1.1 2005/05/31 23:04:11
- * phherlin Fix Bug 1190624: refactor CPD integration
- * 
- * Revision 1.4 2003/05/19 22:26:07 phherlin Updating PMD engine to v1.05 Fixing CPD usage to conform to new engine implementation
  * 
  */
 public class CPDVisitor implements IResourceVisitor {

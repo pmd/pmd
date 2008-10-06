@@ -40,12 +40,6 @@ package net.sourceforge.pmd.eclipse.runtime.writer;
  * General exception thrown by objects of this package
  *
  * @author Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:37:36  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
  *
  */
 

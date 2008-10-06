@@ -52,18 +52,6 @@ import org.eclipse.core.runtime.Path;
  * This let the UI loads all displayed strings from national properties.
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.3  2006/10/08 22:19:33  phherlin
- * Fix last Java warnings
- *
- * Revision 1.2  2006/10/07 16:01:21  phherlin
- * Integrate Sven updates
- *
- * Revision 1.1  2006/05/22 21:23:55  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
  *
  */
 

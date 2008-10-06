@@ -9,9 +9,6 @@ import net.sourceforge.pmd.RuleSet;
  * This class implements a content provider for the ruleset exclude/include
  * pattern tables of the PMD Preference page
  * 
- * @version $Revision$
- * 
- * $Log$
  */
 public class RuleSetExcludeIncludePatternContentProvider extends AbstractStructuredContentProvider {
 

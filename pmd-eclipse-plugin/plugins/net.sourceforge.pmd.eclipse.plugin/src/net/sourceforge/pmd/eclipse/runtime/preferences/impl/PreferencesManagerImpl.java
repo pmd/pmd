@@ -76,12 +76,6 @@ import org.eclipse.jface.preference.PreferenceStore;
  * This class implements the preferences management services
  *
  * @author Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
  *
  */
 

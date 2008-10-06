@@ -66,37 +66,6 @@ import org.eclipse.jdt.core.JavaCore;
  * This command produce a HTML report for a project
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:37:34  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.7  2006/04/11 21:02:16  phherlin
- * Use the new IRuleViolation interface to generate reports
- * Fix default package issue
- *
- * Revision 1.6  2006/04/10 20:55:32  phherlin
- * Update to PMD 3.6
- *
- * Revision 1.5  2006/01/17 21:27:37  phherlin
- * Create a fake node instead of using SimpleNode
- *
- * Revision 1.4  2005/12/30 17:30:21  phherlin
- * Upgrade to PMD v3.4 -> RuleViolation interface has changed!
- *
- * Revision 1.3  2005/05/31 20:44:41  phherlin
- * Continuing refactoring
- *
- * Revision 1.2  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
- * Revision 1.1  2005/04/20 23:16:20  phherlin
- * Implement reports generation RFE#1177802
- *
  *
  */
 public class RenderReportCmd extends AbstractDefaultCommand {

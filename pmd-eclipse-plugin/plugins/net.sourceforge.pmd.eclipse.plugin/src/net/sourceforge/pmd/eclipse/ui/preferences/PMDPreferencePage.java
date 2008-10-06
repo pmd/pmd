@@ -57,51 +57,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * be accessed directly via the preference store.
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.3  2007/06/24 15:54:54  phherlin
- * Fix 1710977 Null Pointer Exception on click of Add Rule (remove button)
- *
- * Revision 1.2  2007/01/24 22:46:17  hooperbloob
- * Cleanup rule description formatting & sorting bug crasher
- *
- * Revision 1.1  2006/05/22 21:23:39  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.15  2005/07/12 16:38:25  phherlin
- * RFE#1231112-Make the rule table columns sortable (thanks to Brian R)
- * BUG#1231108-Fix the resizing issue
- *
- * Revision 1.14  2005/06/07 22:40:06  phherlin
- * Implementing extra ruleset declaration
- *
- * Revision 1.13  2003/12/18 23:58:37  phherlin
- * Fixing malformed UTF-8 characters in generated xml files
- *
- * Revision 1.12  2003/11/30 22:57:44  phherlin
- * Merging from eclipse-v2 development branch
- *
- * Revision 1.11.2.1  2003/11/07 14:30:08  phherlin
- * Fixing : ruleset description may be null
- *
- * Revision 1.11  2003/10/16 22:26:37  phherlin
- * Fix bug #810858.
- * Complete refactoring of rule set generation. Using a DOM tree and the Xerces 2 serializer.
- *
- * Revision 1.10  2003/08/13 20:09:06  phherlin
- * Refactoring private->protected to remove warning about non accessible member access in enclosing types
- *
- * Revision 1.9  2003/07/07 19:27:10  phherlin
- * Making rules selectable from projects
- * Various refactoring and cleaning
- *
- * Revision 1.8  2003/07/01 20:20:30  phherlin
- * Correcting some PMD violations ! (empty catch stmt)
- *
- * Revision 1.7  2003/06/30 20:16:06  phherlin
- * Redesigning plugin configuration
- *
  *
  */
 

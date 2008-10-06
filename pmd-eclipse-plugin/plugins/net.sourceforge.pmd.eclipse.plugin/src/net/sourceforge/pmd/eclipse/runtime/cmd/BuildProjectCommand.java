@@ -48,35 +48,6 @@ import org.eclipse.core.runtime.CoreException;
  * Rebuild a project to force PMD to be run on that project.
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.6  2005/06/07 18:38:14  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.5  2005/05/31 20:44:41  phherlin
- * Continuing refactoring
- *
- * Revision 1.4  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
- * Revision 1.3  2004/12/03 00:22:42  phherlin
- * Continuing the refactoring experiment.
- * Implement the Command framework.
- * Refine the MVC pattern usage.
- *
- * Revision 1.2  2004/11/28 20:31:37  phherlin
- * Continuing the refactoring experiment
- *
- * Revision 1.1  2004/11/21 21:39:45  phherlin
- * Applying Command and CommandProcessor patterns
- *
  *
  */
 public class BuildProjectCommand extends AbstractDefaultCommand {

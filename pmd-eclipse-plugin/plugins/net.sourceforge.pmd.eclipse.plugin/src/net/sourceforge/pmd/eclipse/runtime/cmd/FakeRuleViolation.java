@@ -45,16 +45,6 @@ import net.sourceforge.pmd.Rule;
  * This object is used to generate violation reports.
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.1  2006/04/11 21:02:16  phherlin
- * Use the new IRuleViolation interface to generate reports
- * Fix default package issue
- *
  *
  */
 

@@ -33,23 +33,6 @@ import org.eclipse.swt.widgets.Shell;
  * Mark a violation as reviewed
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:23:55  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- * Revision 1.2 2006/05/07 12:03:09 phherlin Add the possibility to use the PMD violation review style Revision 1.1 2005/10/24
- * 22:45:01 phherlin Integrating Sebastian Raffel's work
- *
- * Revision 1.5 2004/04/19 22:25:50 phherlin Fixing UTF-8 encoding
- *
- * Revision 1.4 2003/12/09 00:14:59 phherlin Merging from v2 development
- *
- * Revision 1.3 2003/11/30 22:57:43 phherlin Merging from eclipse-v2 development branch
- *
- * Revision 1.1.2.1 2003/11/30 21:16:16 phherlin Adapting to Eclipse v3
- *
- * Revision 1.1 2003/08/14 16:10:42 phherlin Implementing Review feature (RFE#787086)
  *
  */
 public class ReviewAction extends ViolationSelectionAction {

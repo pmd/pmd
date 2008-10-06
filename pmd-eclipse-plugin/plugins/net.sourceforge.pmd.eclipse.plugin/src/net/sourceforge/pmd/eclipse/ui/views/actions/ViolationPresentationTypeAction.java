@@ -45,17 +45,7 @@ import org.eclipse.jface.action.Action;
 
 /**
  * 
- * 
  * @author Sven
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
  *
  */
 

@@ -53,31 +53,6 @@ import org.w3c.dom.Element;
  * Implements a default AST Writer
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2006/06/20 21:01:49  phherlin
- * Enable PMD and fix error level violations
- *
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.5  2006/01/26 23:57:55  phherlin
- * Fix NullPointerException and InvocationTargetException
- *
- * Revision 1.4  2003/12/18 23:58:37  phherlin
- * Fixing malformed UTF-8 characters in generated xml files
- *
- * Revision 1.3  2003/11/30 22:57:43  phherlin
- * Merging from eclipse-v2 development branch
- *
- * Revision 1.1.2.1  2003/10/30 23:23:01  phherlin
- * Fixing bugs
- * #819518 : AST writes out method return types incorrectly
- * #820241 : VariableDeclaration doesn't show variable modifiers
- *
- * Revision 1.1  2003/10/27 20:14:13  phherlin
- * Refactoring AST generation. Using a IAstWriter.
  *
  */
 class AstWriterImpl implements IAstWriter {

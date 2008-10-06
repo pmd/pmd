@@ -60,23 +60,6 @@ import org.eclipse.ui.XMLMemento;
  * XML-File in the Plugins-Path (Standard: .metadata in the workspace)
  *
  * @author SebastianRaffel ( 24.05.2005 ), Philippe Herlin, Sven Jacob
- * @version $Revision$
- *
- * $Log$
- * Revision 1.7  2007/01/18 21:03:56  phherlin
- * Fix several problems on memento usage
- *
- * Revision 1.6  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.5  2006/10/10 22:19:59  phherlin
- * Review Sebastian code... and fix most PMD warnings
- *
- * Revision 1.4  2006/10/10 21:43:20  phherlin
- * Review Sebastian code... and fix most PMD warnings
  *
  */
 public class ViewMemento {

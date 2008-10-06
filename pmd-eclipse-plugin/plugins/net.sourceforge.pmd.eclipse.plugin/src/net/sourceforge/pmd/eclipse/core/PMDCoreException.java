@@ -40,12 +40,6 @@ package net.sourceforge.pmd.eclipse.core;
  * Root exception of the CORE plug-in
  *
  * @author Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/10/06 16:42:47  phherlin
- * Continue refactoring of rullesets management
- *
  *
  */
 

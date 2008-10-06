@@ -12,18 +12,6 @@ import org.eclipse.swt.widgets.TableItem;
  * of the PMD Preference page
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:23:39  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.2  2003/07/01 20:20:30  phherlin
- * Correcting some PMD violations ! (empty catch stmt)
- *
- * Revision 1.1  2003/06/30 20:16:06  phherlin
- * Redesigning plugin configuration
- *
  *
  */
 public class RuleCellModifier implements ICellModifier {

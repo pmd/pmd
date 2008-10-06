@@ -60,66 +60,6 @@ import org.eclipse.ui.IWorkingSet;
  * Implementation of a project properties information structure
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2007/06/24 16:42:13  phherlin
- * Fix 1703589 ConcurrentModificationException in RuleSet.apply
- *
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.14  2006/04/26 21:13:14  phherlin
- * Add the include derived files option
- *
- * Revision 1.13  2006/04/10 20:55:58  phherlin
- * Update to PMD 3.6
- *
- * Revision 1.12  2005/10/25 00:02:44  phherlin
- * Fix the update of the project rule set file.
- *
- * Revision 1.11  2005/10/24 23:53:51  phherlin
- * Fix "when enabling PMD, does not ask to rebuild or not the project".
- *
- * Revision 1.10  2005/10/24 23:19:58  phherlin
- * Fix never ending loop issue (finally..)
- *
- * Revision 1.9  2005/10/24 22:42:22  phherlin
- * Fix never ending loop issue
- *
- * Revision 1.8  2005/07/01 00:04:11  phherlin
- * Fix the bug of the rules that cannot be unselected
- *
- * Revision 1.7  2005/06/30 23:25:03  phherlin
- * Fix project rule set synchronization with the plugin rule set
- *
- * Revision 1.6  2005/06/11 22:11:31  phherlin
- * Fixing the project ruleset management
- *
- * Revision 1.5  2005/06/07 18:38:13  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.4  2005/06/05 19:28:13  phherlin
- * Decrease the complexity of isRuleSetEqual
- *
- * Revision 1.3  2005/05/31 23:02:20  phherlin
- * Refactor behaviour when project properties file does not exists.
- *
- * Revision 1.2  2005/05/31 20:44:40  phherlin
- * Continuing refactoring
- *
- * Revision 1.1  2005/05/31 20:33:01  phherlin
- * Continuing refactoring
- * Revision 1.3 2005/05/07 13:32:04
- * phherlin Continuing refactoring Fix some PMD violations Fix Bug 1144793 Fix
- * Bug 1190624 (at least try)
- * 
- * Revision 1.2 2004/12/03 00:22:43 phherlin Continuing the refactoring
- * experiment. Implement the Command framework. Refine the MVC pattern usage.
- * 
- * Revision 1.1 2004/11/28 20:31:38 phherlin Continuing the refactoring
- * experiment
- * 
  *  
  */
 public class ProjectPropertiesImpl implements IProjectProperties {

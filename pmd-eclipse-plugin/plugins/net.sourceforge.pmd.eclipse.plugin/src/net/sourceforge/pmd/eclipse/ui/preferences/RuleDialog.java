@@ -36,31 +36,6 @@ import org.eclipse.ui.browser.IWebBrowser;
  * not.
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.5  2007/06/24 15:10:26  phherlin
- * Integrate PMD v4.0rc1
- * Prepare release 3.2.2
- *
- * Revision 1.4  2007/01/18 22:37:05  phherlin
- * Fix 1583788 StackOverflowError in rule edit window
- *
- * Revision 1.3  2007/01/18 21:03:17  phherlin
- * Improve rule dialog
- * Revision 1.2 2006/10/06 19:39:21 phherlin Fix 1470054 Violation Details
- * dlg has OK button which does nothing
- *
- * Revision 1.1 2006/05/22 21:23:40 phherlin Refactor the plug-in architecture
- * to better support future evolutions
- *
- * Revision 1.3 2003/08/13 20:09:06 phherlin Refactoring private->protected to
- * remove warning about non accessible member access in enclosing types
- *
- * Revision 1.2 2003/07/07 19:25:36 phherlin Adding PMD violations view
- *
- * Revision 1.1 2003/06/30 20:16:06 phherlin Redesigning plugin configuration
- *
  *
  */
 public class RuleDialog extends Dialog {

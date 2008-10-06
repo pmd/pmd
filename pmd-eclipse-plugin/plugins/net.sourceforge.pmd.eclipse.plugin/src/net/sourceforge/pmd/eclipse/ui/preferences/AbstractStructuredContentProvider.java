@@ -8,9 +8,6 @@ import org.eclipse.jface.viewers.Viewer;
  * 
  * @see IStructuredContentProvider
  *
- * @version $Revision$
- * 
- * $Log$
  */
 public abstract class AbstractStructuredContentProvider implements IStructuredContentProvider {
 

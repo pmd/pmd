@@ -63,18 +63,6 @@ import org.eclipse.ui.part.ViewPart;
  * A class for showing the Copy / Paste Detection View.
  * 
  * @author Sven
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2006/12/01 11:11:44  holobender
- * show dialog box after cpd finished without results
- *
- * Revision 1.1  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
  *
  */
 

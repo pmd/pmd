@@ -55,17 +55,6 @@ import org.eclipse.core.runtime.CoreException;
  * Test the report rendering
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/06/18 22:29:51  phherlin
- * Begin refactoring the unit tests for the plugin
- * Revision 1.2 2005/12/30 16:29:15 phherlin
- * Implement a new preferences model and review some tests
- *
- * Revision 1.1 2005/06/15 21:14:57 phherlin Create the project for the Eclipse
- * plugin unit tests
- *
  *
  */
 public class RenderReportCmdTest extends TestCase {

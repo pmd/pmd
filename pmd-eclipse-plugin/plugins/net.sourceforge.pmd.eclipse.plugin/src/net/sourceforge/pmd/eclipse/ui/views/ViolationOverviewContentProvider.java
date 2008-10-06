@@ -68,29 +68,6 @@ import org.eclipse.jface.viewers.Viewer;
  * PackageRecords or FileRecords
  * 
  * @author SebastianRaffel ( 09.05.2005 ), Philppe Herlin, Sven Jacob
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.8  2007/06/24 15:10:26  phherlin
- * Integrate PMD v4.0rc1
- * Prepare release 3.2.2
- *
- * Revision 1.7  2007/01/14 21:03:49  holobender
- * violation overview was not updated in some cases... fixed
- *
- * Revision 1.6  2006/11/20 14:55:31  holobender
- * fix to minor refresh problems
- *
- * Revision 1.5  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.4  2006/10/10 21:43:20  phherlin
- * Review Sebastian code... and fix most PMD warnings
- * Revision 1.3 2006/10/09 13:26:40 phherlin Review Sebastian code... and
- * fix most PMD warnings
  * 
  */
 public class ViolationOverviewContentProvider implements ITreeContentProvider, IStructuredContentProvider, IResourceChangeListener {

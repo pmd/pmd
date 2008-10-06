@@ -6,18 +6,6 @@ import net.sourceforge.pmd.Rule;
  * Helper class to display rule properties in a table
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:23:41  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.2  2003/10/14 21:26:32  phherlin
- * Upgrading to PMD 1.2.2
- *
- * Revision 1.1  2003/06/30 20:16:06  phherlin
- * Redesigning plugin configuration
- *
  *
  */
 public class RuleProperty {

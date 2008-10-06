@@ -26,17 +26,6 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
  * This class is intended to hold informations for future marker creation.
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.2  2003/11/30 22:57:43  phherlin
- * Merging from eclipse-v2 development branch
- *
- * Revision 1.1.2.1  2003/11/03 14:40:17  phherlin
- * Refactoring to remove usage of Eclipse internal APIs
  *
  */
 public class MarkerInfo {

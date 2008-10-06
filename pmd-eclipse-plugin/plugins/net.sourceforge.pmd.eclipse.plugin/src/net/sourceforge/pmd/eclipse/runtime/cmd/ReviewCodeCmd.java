@@ -81,58 +81,6 @@ import org.eclipse.ui.PlatformUI;
  * This command executes the PMD engine on a specified resource
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.8  2007/01/18 21:00:23  phherlin
- * Add support for Java 6.0
- *
- * Revision 1.7  2006/11/16 16:47:42  holobender
- * division by zero fix
- *
- * Revision 1.6  2006/10/08 22:18:49  phherlin
- * Fix last Java warnings
- *
- * Revision 1.5  2006/10/06 18:42:59  phherlin
- * Fix 1554639 Clear markers in Project JAVA-files and other bugs related to dataflows
- *
- * Revision 1.4  2006/06/26 21:23:08  phherlin
- * Fix IllegalArgumentException issue when checking projects where root folder is source folder.
- *
- * Revision 1.3  2006/06/20 20:48:24  phherlin
- * Fix the issue where the whole project is processed instead of a single file.
- * Revision 1.2 2006/06/05 22:25:21 phherlin Use the 3.0 SchedulingRule
- * API to be compatible with Rational Products
- *
- * Revision 1.1 2006/05/22 21:37:35 phherlin Refactor the plug-in architecture
- * to better support future evolutions Revision 1.11 2006/04/26 21:15:02
- * phherlin Add the include derived files option
- *
- * Revision 1.10 2006/04/24 20:55:15 phherlin Batch markers update to try to
- * gain performance
- *
- * Revision 1.9 2006/04/24 19:35:01 phherlin Add performance mesures on commands
- * and on pmd execution Revision 1.8 2006/04/10 20:55:31 phherlin Update to PMD
- * 3.6
- *
- * Revision 1.7 2005/12/30 16:24:01 phherlin Adding a null resource is illegal.
- * Throw an IllegalArgumentException.
- *
- * Revision 1.6 2005/10/24 22:40:54 phherlin Refactor command processing
- *
- * Revision 1.5 2005/06/30 23:24:19 phherlin Add the JDK 1.5 support
- *
- * Revision 1.4 2005/06/07 18:38:14 phherlin Move classes to limit packages
- * cycle dependencies
- *
- * Revision 1.3 2005/05/31 20:44:41 phherlin Continuing refactoring
- *
- * Revision 1.2 2005/05/10 21:49:18 phherlin Fix new violations detected by PMD
- * 3.1
- *
- * Revision 1.1 2005/05/07 13:32:04 phherlin Continuing refactoring Fix some PMD
- * violations Fix Bug 1144793 Fix Bug 1190624 (at least try)
- *
  *
  */
 public class ReviewCodeCmd extends AbstractDefaultCommand {

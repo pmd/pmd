@@ -7,9 +7,6 @@ import net.sourceforge.pmd.RuleSet;
 /**
  * Helper class to display rule set exclude/include patterns in a table
  * 
- * @version $Revision$
- * 
- * $Log$
  */
 public class RuleSetExcludeIncludePattern {
 	private final RuleSet ruleSet;

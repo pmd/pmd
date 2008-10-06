@@ -46,22 +46,6 @@ import java.util.Iterator;
  * rules.
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2006/10/06 16:42:46  phherlin
- * Continue refactoring of rullesets management
- *
- * Revision 1.1  2006/06/21 23:06:41  phherlin
- * Move the new rule sets management to the core plugin instead of the runtime.
- * Continue the development.
- *
- * Revision 1.2  2006/06/20 21:26:42  phherlin
- * Fix/review PMD violations
- *
- * Revision 1.1  2006/06/18 22:33:02  phherlin
- * Begin to implement a new model for the plugin to handle rules and rulesets.
- *
  * 
  */
 

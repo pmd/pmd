@@ -47,33 +47,6 @@ import org.eclipse.ui.IWorkingSet;
  * properties
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:36  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.6  2006/04/26 21:13:14  phherlin
- * Add the include derived files option
- *
- * Revision 1.5  2005/06/11 22:11:31  phherlin
- * Fixing the project ruleset management
- *
- * Revision 1.4  2005/06/07 18:38:13  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.1  2005/05/31 20:33:01  phherlin
- * Continuing refactoring
- *
- * Revision 1.2  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
- * Revision 1.1  2004/11/28 20:31:38  phherlin
- * Continuing the refactoring experiment
- *
  *
  */
 public interface IProjectProperties {

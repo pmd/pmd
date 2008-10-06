@@ -8,21 +8,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  * rule table of the PMD Preference page
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.3  2007/01/24 22:46:17  hooperbloob
- * Cleanup rule description formatting & sorting bug crasher
- *
- * Revision 1.2  2007/01/18 21:03:17  phherlin
- * Improve rule dialog
- *
- * Revision 1.1  2006/05/22 21:23:38  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.1  2003/06/30 20:16:06  phherlin
- * Redesigning plugin configuration
- *
  *
  */
 public class RuleLabelProvider extends AbstractTableLabelProvider {

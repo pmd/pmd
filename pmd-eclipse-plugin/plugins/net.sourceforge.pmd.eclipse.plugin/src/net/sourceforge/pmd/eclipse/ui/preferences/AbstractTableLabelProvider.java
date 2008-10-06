@@ -9,9 +9,6 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @see ITableLabelProvider
  *
- * @version $Revision$
- * 
- * $Log$
  */
 public abstract class AbstractTableLabelProvider implements ITableLabelProvider {
 

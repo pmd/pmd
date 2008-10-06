@@ -20,42 +20,6 @@ import org.eclipse.core.runtime.Status;
  * to process each file of the project.
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.12  2006/04/24 19:35:01  phherlin
- * Add performance mesures on commands and on pmd execution
- *
- * Revision 1.11  2005/10/24 23:32:55  phherlin
- * Fix "markers not displayed if file editor is open"
- * Run the review code command synchronously
- *
- * Revision 1.10  2005/10/24 22:39:56  phherlin
- * Refactor command processing
- *
- * Revision 1.9  2005/05/07 13:32:06  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
- * Revision 1.8  2003/07/01 20:22:16  phherlin
- * Make rules selectable from projects
- *
- * Revision 1.7  2003/06/30 22:05:07  phherlin
- * Improving incremental building
- *
- * Revision 1.6  2003/06/19 20:58:33  phherlin
- * Improve progress indicator accuracy
- *
- * Revision 1.5  2003/05/19 22:27:33  phherlin
- * Refactoring to improve performance
- *
- * Revision 1.4  2003/03/30 20:51:08  phherlin
- * Adding logging
  *
  */
 public class PMDBuilder extends IncrementalProjectBuilder {

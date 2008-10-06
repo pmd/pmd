@@ -41,59 +41,6 @@ package net.sourceforge.pmd.eclipse.ui;
  * This interface groups all plugin constants
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.4  2006/11/16 17:09:24  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.3  2006/10/09 13:26:40  phherlin
- * Review Sebastian code... and fix most PMD warnings
- *
- * Revision 1.2  2006/10/07 16:01:21  phherlin
- * Integrate Sven updates
- *
- * Revision 1.1  2006/05/22 21:23:58  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.12  2006/05/07 12:01:50  phherlin
- * Add the possibility to use the PMD violation review style
- *
- * Revision 1.11  2006/05/02 20:10:49  phherlin
- * Limit the number of reported violations per file and per rule
- *
- * Revision 1.10  2006/05/02 18:49:51  phherlin
- * Remove dead code
- *
- * Revision 1.9  2006/04/24 21:18:11  phherlin
- * Rulesets list are now managed in the core plugin
- *
- * Revision 1.8  2006/04/11 21:00:58  phherlin
- * Add new VBHTML report
- *
- * Revision 1.7  2005/10/24 22:36:42  phherlin
- * Integrating Sebastian Raffel's work
- *
- * Revision 1.6  2005/05/31 23:04:10  phherlin
- * Fix Bug 1190624: refactor CPD integration
- *
- * Revision 1.5  2005/05/31 20:33:02  phherlin
- * Continuing refactoring
- *
- * Revision 1.4  2005/04/20 23:15:32  phherlin
- * Implement reports generation RFE#1177802
- *
- * Revision 1.3  2005/01/31 23:39:37  phherlin
- * Upgrading to PMD 2.2
- *
- * Revision 1.2  2005/01/16 22:52:17  phherlin
- * Upgrade to PMD 2.1: add new packaged rulesets
- *
- * Revision 1.1  2004/06/29 22:00:30  phherlin
- * Adapting the plugin to the new OSGi standards
  *
  */
 public class PMDUiConstants {

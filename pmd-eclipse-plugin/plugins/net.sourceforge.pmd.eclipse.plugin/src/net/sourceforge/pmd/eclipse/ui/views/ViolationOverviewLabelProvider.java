@@ -58,17 +58,6 @@ import org.eclipse.swt.graphics.Image;
  * Provides the Violation Overview with Texts and Images
  *
  * @author SebastianRaffel ( 09.05.2005 ), Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.5  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.4  2006/10/10 21:43:20  phherlin
- * Review Sebastian code... and fix most PMD warnings
  *
  */
 public class ViolationOverviewLabelProvider extends LabelProvider implements ITableLabelProvider {

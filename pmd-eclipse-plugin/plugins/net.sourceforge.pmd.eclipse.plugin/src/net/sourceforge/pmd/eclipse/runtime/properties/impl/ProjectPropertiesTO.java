@@ -41,24 +41,6 @@ package net.sourceforge.pmd.eclipse.runtime.properties.impl;
  * to an XML file (or any). 
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.2  2006/04/26 21:13:38  phherlin
- * Add the include derived files option
- *
- * Revision 1.1  2005/06/07 18:38:14  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.1  2005/05/31 20:44:40  phherlin
- * Continuing refactoring
- *
- * Revision 1.1  2005/05/31 20:33:01  phherlin
- * Continuing refactoring
- *
  *
  */
 public class ProjectPropertiesTO {

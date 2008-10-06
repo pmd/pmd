@@ -39,31 +39,6 @@ package net.sourceforge.pmd.eclipse.core;
  * This interface is a container for all the constants of that plugin
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.7  2007/01/18 20:58:27  phherlin
- * Integrate PMD v3.9
- *
- * Revision 1.6  2006/10/06 17:07:39  phherlin
- * Upgrade to PMD v3.8
- *
- * Revision 1.5  2006/06/20 21:04:49  phherlin
- * Enable PMD and fix error level violations
- *
- * Revision 1.4  2006/01/17 21:23:20  phherlin
- * Update the PMD 3.4 librairy.
- * Add jakarta ORO for Regexp support.
- *
- * Revision 1.3  2005/10/24 22:35:20  phherlin
- * Upgrading to PMD v3.3
- *
- * Revision 1.2  2005/07/02 14:33:05  phherlin
- * Implement the RuleSets extension point
- *
- * Revision 1.1  2005/06/07 22:39:57  phherlin
- * Implementing extra ruleset declaration
- *
  *
  */
 public class PluginConstants {

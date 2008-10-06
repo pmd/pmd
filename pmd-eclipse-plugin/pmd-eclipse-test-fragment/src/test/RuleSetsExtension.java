@@ -51,15 +51,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  * This will automatically registers our fragment rulesets into the core plugin.
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2006/04/27 20:06:32  phherlin
- * Fix the usage of PMD deprecated createRuleSet() method
- *
- * Revision 1.1  2005/07/02 14:32:25  phherlin
- * Implement the RuleSets extension points new tests
- *
  *
  */
 

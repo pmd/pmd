@@ -50,16 +50,6 @@ import org.eclipse.ui.PlatformUI;
  * This class adapt a PMD quickfix to an Eclipse resolution.
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:23:59  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- * Revision 1.2 2003/11/30 22:57:43 phherlin Merging from eclipse-v2 development branch
- * 
- * Revision 1.1.2.2 2003/11/30 21:15:18 phherlin Using Fix interface from PMD core
- * 
- * Revision 1.1.2.1 2003/11/04 23:32:21 phherlin Previewing Quick Fixes
  * 
  */
 public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {

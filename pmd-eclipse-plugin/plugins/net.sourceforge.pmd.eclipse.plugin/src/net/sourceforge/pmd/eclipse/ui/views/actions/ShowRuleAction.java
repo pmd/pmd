@@ -14,14 +14,6 @@ import org.eclipse.swt.widgets.Shell;
  * Implements the call of the rule dialog to show rule data
  *
  * @author Philippe Herlin
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/05/22 21:23:54  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- * Revision 1.1 2005/10/24 22:45:01 phherlin Integrating Sebastian Raffel's work
- *
- * Revision 1.1 2003/07/07 19:24:54 phherlin Adding PMD violations view
  *
  */
 public class ShowRuleAction extends ViolationSelectionAction {

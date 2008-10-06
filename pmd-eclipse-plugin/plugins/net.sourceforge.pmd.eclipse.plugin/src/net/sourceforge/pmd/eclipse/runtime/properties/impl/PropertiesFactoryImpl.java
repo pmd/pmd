@@ -46,12 +46,6 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IPropertiesFactory;
  * Implements a factory for the objects of the properties package
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
  *
  */
 

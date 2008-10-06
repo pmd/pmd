@@ -31,23 +31,6 @@ import org.eclipse.jface.text.Document;
  * Sample implementation of a fix that delete the line where the violation occurs.
  * 
  * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.2  2006/10/10 22:31:01  phherlin
- * Fix other PMD warnings
- *
- * Revision 1.1  2006/05/22 21:23:59  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.2  2003/11/30 22:57:43  phherlin
- * Merging from eclipse-v2 development branch
- *
- * Revision 1.1.2.2  2003/11/30 21:15:18  phherlin
- * Using Fix interface from PMD core
- *
- * Revision 1.1.2.1  2003/11/04 23:32:21  phherlin
- * Previewing Quick Fixes
  *
  */
 public class DeleteLineFix implements Fix {

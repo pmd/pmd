@@ -47,15 +47,6 @@ import org.eclipse.jface.viewers.ViewerSorter;
  * Sorter for the rule table in the PMD Preference page
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/05/22 21:23:39  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.1  2005/07/12 16:34:25  phherlin
- * RFE#1231112-Make the rule table columns sortable (thanks to Brian R)
- *
  *
  */
 

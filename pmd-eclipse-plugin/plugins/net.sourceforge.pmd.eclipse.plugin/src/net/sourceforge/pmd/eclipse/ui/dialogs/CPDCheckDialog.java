@@ -58,23 +58,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  *
- *
  * @author Sven
- * @version $Revision$
- *
- * $Log$
- * Revision 1.3  2006/12/22 14:12:57  holobender
- * removed unused imports
- *
- * Revision 1.2  2006/11/18 14:47:35  holobender
- * some little improvements for cpd view
- *
- * Revision 1.1  2006/11/16 17:10:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
  *
  */
 

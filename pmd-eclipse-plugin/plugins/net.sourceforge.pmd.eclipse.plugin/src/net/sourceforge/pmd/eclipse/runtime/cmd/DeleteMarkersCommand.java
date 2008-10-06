@@ -47,13 +47,6 @@ import org.eclipse.core.runtime.CoreException;
  * For unknown reasons this took some time.
  *
  * @author Sven
- * @version $Revision$
- *
- * $Log$
- * Revision 1.1  2006/11/16 16:54:40  holobender
- * - changed command for the new cpd view
- * - possibility to set the number of maxviolations per file over the rule-properties
- *
  *
  */
 

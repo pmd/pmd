@@ -41,19 +41,6 @@ package net.sourceforge.pmd.eclipse.core.rulesets.vo;
  * It holds a property definition, ie a name and a value pair.
  * 
  * @author Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.1  2006/06/21 23:06:41  phherlin
- * Move the new rule sets management to the core plugin instead of the runtime.
- * Continue the development.
- *
- * Revision 1.2  2006/06/20 21:26:42  phherlin
- * Fix/review PMD violations
- *
- * Revision 1.1  2006/06/18 22:33:02  phherlin
- * Begin to implement a new model for the plugin to handle rules and rulesets.
- *
  * 
  */
 

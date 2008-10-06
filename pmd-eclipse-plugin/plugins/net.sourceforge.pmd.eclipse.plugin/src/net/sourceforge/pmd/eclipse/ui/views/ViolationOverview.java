@@ -83,29 +83,6 @@ import org.eclipse.ui.part.ViewPart;
  * Information
  *
  * @author SebastianRaffel ( 08.05.2005 ), Philippe Herlin, Sven Jacob
- * @version $Revision$
- *
- * $Log$
- * Revision 1.8  2007/02/28 20:56:04  hooperbloob
- * Optimization: new AbstractPMDRecord[0] -> AbstractPMDRecord.EMPTY_RECORDS (static final constant)
- *
- * Revision 1.7  2007/01/28 18:19:19  holobender
- * Fixed default values for priorities
- *
- * Revision 1.6  2007/01/18 21:03:56  phherlin
- * Fix several problems on memento usage
- *
- * Revision 1.5  2006/11/20 14:55:31  holobender
- * fix to minor refresh problems
- *
- * Revision 1.4  2006/11/16 17:11:08  holobender
- * Some major changes:
- * - new CPD View
- * - changed and refactored ViolationOverview
- * - some minor changes to dataflowview to work with PMD
- *
- * Revision 1.3  2006/10/09 13:26:40  phherlin
- * Review Sebastian code... and fix most PMD warnings
  *
  */
 public class ViolationOverview extends ViewPart implements ISelectionProvider, ITreeViewerListener { // NOPMD by Sven on 13.11.06 11:45
