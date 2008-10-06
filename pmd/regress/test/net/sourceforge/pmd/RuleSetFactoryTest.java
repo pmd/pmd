@@ -43,27 +43,13 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.ResourceLoader;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
-
 public class RuleSetFactoryTest {
-
-    private boolean isJdk14;
-
-    @Before
-    public void setUp() {
-	try {
-	    Class.forName("java.lang.Appendable");
-	} catch (Throwable t) {
-	    isJdk14 = true;
-	}
-    }
 
     @Test
     public void testRuleSetFileName() throws RuleSetNotFoundException {
@@ -377,11 +363,6 @@ public class RuleSetFactoryTest {
     @Test
     public void testXmlSchema() throws IOException, RuleSetNotFoundException, ParserConfigurationException,
 	    SAXException {
-	if (isJdk14) {
-	    // ignore failure with jdk 1.4
-	    return;
-	}
-
 	boolean allValid = true;
 	List<String> ruleSetFileNames = getRuleSetFileNames();
 	for (String fileName : ruleSetFileNames) {
@@ -410,18 +391,6 @@ public class RuleSetFactoryTest {
 	for (String fileName : ruleSetFileNames) {
 	    testRuleSet(fileName);
 	}
-    }
-
-    @Test
-    public void testWindowsJdk14Bug() throws IOException, RuleSetNotFoundException, ParserConfigurationException,
-	    SAXException {
-
-	if (TestDescriptor.inRegressionTestMode()) {
-	    // skip this test if we're only running regression tests
-	    return;
-	}
-	// This fails only on Windows running the weaved pmd version
-	testRuleSet("regress/test/net/sourceforge/pmd/xml/j2ee.xml");
     }
 
     public void testRuleSet(String fileName) throws IOException, RuleSetNotFoundException,
@@ -460,12 +429,10 @@ public class RuleSetFactoryTest {
 	RuleSet ruleSet3 = ruleSetFactory.createRuleSet(new ByteArrayInputStream(outputStream2.toByteArray()));
 
 	// The 2 written XMLs should all be valid w.r.t Schema/DTD
-	if (!isJdk14) {
-	    assertTrue("1st roundtrip RuleSet XML is not valid against Schema",
-		    validateAgainstSchema(new ByteArrayInputStream(xml2.getBytes())));
-	    assertTrue("2nd roundtrip RuleSet XML is not valid against Schema",
-		    validateAgainstSchema(new ByteArrayInputStream(xml3.getBytes())));
-	}
+	assertTrue("1st roundtrip RuleSet XML is not valid against Schema",
+		validateAgainstSchema(new ByteArrayInputStream(xml2.getBytes())));
+	assertTrue("2nd roundtrip RuleSet XML is not valid against Schema",
+		validateAgainstSchema(new ByteArrayInputStream(xml3.getBytes())));
 	assertTrue("1st roundtrip RuleSet XML is not valid against DTD", validateAgainstDtd(new ByteArrayInputStream(
 		xml2.getBytes())));
 	assertTrue("2nd roundtrip RuleSet XML is not valid against DTD", validateAgainstDtd(new ByteArrayInputStream(

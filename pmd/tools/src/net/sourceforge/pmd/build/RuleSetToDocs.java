@@ -40,7 +40,6 @@ public class RuleSetToDocs implements PmdBuildTools {
 	private String rulesetToDocsXsl = Config.getString("pmd.build.config.xsl.rulesetToDocs"); 
 	private String mergeRulesetXsl = Config.getString("pmd.build.config.xsl.mergeRuleset"); 
 	private String generateIndexXsl = Config.getString("pmd.build.config.xsl.rulesIndex"); 
-	private String pomForjavaFourXsl = Config.getString("pmd.build.config.xsl.generatejdk4pom"); 
 
 	private String indexRuleSetFilename = Config.getString("pmd.build.config.index.filename"); 
 	private String mergedRuleSetFilename = Config.getString("pmd.build.config.mergedRuleset.filename");
@@ -114,20 +113,6 @@ public class RuleSetToDocs implements PmdBuildTools {
 	 */
 	public void setGenerateIndexXsl(String generateIndexXsl) {
 		this.generateIndexXsl = generateIndexXsl;
-	}
-
-	/**
-	 * @return the pomForjavaFourXsl
-	 */
-	public String getPomForjavaFourXsl() {
-		return pomForjavaFourXsl;
-	}
-
-	/**
-	 * @param pomForjavaFourXsl the pomForjavaFourXsl to set
-	 */
-	public void setPomForjavaFourXsl(String pomForjavaFourXsl) {
-		this.pomForjavaFourXsl = pomForjavaFourXsl;
 	}
 
 	/**
@@ -352,30 +337,6 @@ public class RuleSetToDocs implements PmdBuildTools {
 			out.write(buf, 0, len);
 		in.close();
 		out.close();
-	}
-
-	/* (non-Javadoc)
-	 * @see net.sourceforge.pmd.build.PmdBuildTools#createPomForJava4(java.lang.String, java.lang.String)
-	 */
-	public void createPomForJava4(String pom,String pom4java4) throws PmdBuildException {
-		try {
-			Transformer transformer = this.createTransformer(pomForjavaFourXsl);
-			StreamResult result = new StreamResult(new File(pom4java4));
-			// Loading pom file
-			DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document document =  parser.parse(pom);
-			transformer.transform(new DOMSource(document),result);
-		} catch (PmdBuildException e) {
-			throw new PmdBuildException(e);
-		} catch (SAXException e) {
-			throw new PmdBuildException(e);
-		} catch (IOException e) {
-			throw new PmdBuildException(e);
-		} catch (TransformerException e) {
-			throw new PmdBuildException(e);
-		} catch (ParserConfigurationException e) {
-			throw new PmdBuildException(e);
-		}
 	}
 
 	public void setMergedRulesetFilename(String mergedRulesetFilename) {

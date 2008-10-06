@@ -183,5 +183,17 @@
 	</rule>
 
 	<rule ref="rulesets/useless.xml"/>
+    
+	<!-- Don't let the Language specific APIs leak out -->
+	<!--
+	<rule name="LanguageLoosePackageCoupling" ref="rulesets/coupling.xml/LoosePackageCoupling">
+		<properties>
+			<property name="packages"><value>net.sourceforge.pmd.lang,net.sourceforge.pmd.lang.java,net.sourceforge.pmd.lang.jsp,net.sourceforge.pmd.lang.ecmascript,net.sourceforge.pmd.lang.cpp</value></property>
+			<property name="classes">
+				<value>net.sourceforge.pmd.lang.Language,net.sourceforge.pmd.lang.LanguageVersion,net.sourceforge.pmd.lang.LanguageVersionDiscoverer,net.sourceforge.pmd.lang.LanguageVersionHandler,net.sourceforge.pmd.lang.Parser,net.sourceforge.pmd.lang.ast.Node</value>
+			</property>
+		</properties>
+	</rule>
+	-->
 
 </ruleset>

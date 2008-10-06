@@ -25,11 +25,6 @@ update_VERSION_var $1 bin/designer.bat
 update_VERSION_var $1 bin/bgastviewer.bat
 update_VERSION_var $1 bin/cpdgui.bat
 update_VERSION_var $1 bin/pmd.bat
-update_VERSION_var $1 java14/bin/bgastviewer.sh
-update_VERSION_var $1 java14/bin/designer.bat
-update_VERSION_var $1 java14/bin/bgastviewer.bat
-update_VERSION_var $1 java14/bin/cpdgui.bat
-update_VERSION_var $1 java14/bin/pmd.bat
 
 update_regexp "property name=\\\"version\\\" value=\".*\"" "property name=\\\"version\\\" value=\\\"$1\\\"" build.xml
 update_regexp "VERSION = \".*\"" "VERSION = \\\"$1\\\"" src/net/sourceforge/pmd/PMD.java

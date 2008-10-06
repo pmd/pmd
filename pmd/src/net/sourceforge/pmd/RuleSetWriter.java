@@ -61,11 +61,11 @@ public class RuleSetWriter {
 	    document.appendChild(ruleSetElement);
 
 	    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	    transformerFactory.setAttribute("indent-number", 3);
 	    Transformer transformer = transformerFactory.newTransformer();
 	    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 	    // This is as close to pretty printing as we'll get using standard Java APIs.
 	    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
 	    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 	    transformer.transform(new DOMSource(document), new StreamResult(outputStream));
 	} catch (DOMException e) {

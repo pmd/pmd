@@ -18,8 +18,6 @@ if [ -z $option ]; then
 elif [ $option = "uploadcurrent" ]; then
 	echo "Generating and uploading maven artifacts"
 	mvn -Prelease -q source:jar javadoc:jar deploy
-	ant -f tools/ant/generate-jdk4-pom.xml
-	mvn -Prelease -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-${currentVersion}.jar -DpomFile=target/pmd-jdk14-pom.xml
   	echo "Generating xdocs and uploading"
 	mvn site 
 	tarball-docs 'pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/current/'
@@ -28,8 +26,6 @@ elif [ $option = "upload" ]; then
 	echo "Generating and uploading maven artifacts"
 	mvn -Prelease -q source:jar javadoc:jar deploy
 	mkdir -p target
-	ant -f tools/ant/generate-jdk4-pom.xml
-	mvn -Prelease -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-${currentVersion}.jar -DpomFile=target/pmd-jdk14-pom.xml
   	echo "Uploading xdocs"
 	tarball-docs 'pmd.sourceforge.net:/home/groups/p/pm/pmd/'
 	ssh pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ &&  rm -rf xref && rm -rf apidocs && ./update_docs.sh"

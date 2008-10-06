@@ -40,8 +40,6 @@ scp -r target/release/${version}-build-${buildnumber} ${remote_host}:${remote_di
 echo "Generating and uploading maven artifacts"
 
 mvn -q -DskipTests source:jar javadoc:jar deploy
-ant -f tools/ant/generate-jdk4-pom.xml
-mvn -q deploy:deploy-file -Durl=scp://${remote_host}${remote_dir_home}/maven2 -DrepositoryId=pmd-snapshot-repo -Dfile=java14/lib/pmd14-${version}.jar -DpomFile=pmd-jdk14-pom.xml
 
 echo "Uploading xdocs"
 

@@ -3,7 +3,6 @@
 	<property file="local.properties" />
 
 	<property name="dir.lib" value="${basedir}/lib" />
-	<property name="dir.lib14" value="${basedir}/java14/lib" />
 	<property name="dir.src" value="src" />
 	<property name="dir.build" value="build" />
 	<property name="dir.rulesets" value="rulesets" />
@@ -20,7 +19,6 @@
 	<property name="jaxen.version" value="1.1.1" />
 	<property name="saxon.version" value="9" />
 	<property name="junit.version" value="4.4" />
-	<property name="retroweaver.version" value="2.0.6" />
 	<property name="javacc-home.path" value="${dir.lib}" />
 
 	<!--Settings-->
@@ -41,9 +39,6 @@
 		<delete file="${dir.lib}/pmd-${version}.jar" />
 		<delete file="${dir.lib}/pmd-src-${version}.jar" />
 		<delete file="${dir.lib}/pmd-test-${version}.jar" />
-		<delete file="${dir.lib14}/pmd14-${version}.jar" />
-		<delete file="${dir.lib14}/pmd14-test-${version}.jar" />
-		<delete file="${dir.lib14}/junit.jar" />
 		<delete dir="${dir.api}" />
 		<mkdir dir="${dir.build}" />
 	</target>
@@ -96,58 +91,6 @@
 			includes="test/net/sourceforge/pmd/**/**"
 			excludes="test/net/sourceforge/pmd/testframework/**/**"
 			basedir="${dir.build}" />
-	</target>
-
-	<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
-		<classpath>
-			<pathelement location="${dir.lib14}/retroweaver-${retroweaver.version}.jar"/>
-			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
-			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
-			<pathelement location="${dir.lib14}/asm-commons-${asm.version}.jar"/>
-			<pathelement location="${dir.lib14}/asm-util-${asm.version}.jar"/>
-			<pathelement location="${dir.lib}/asm-${asm.version}.jar"/>
-		</classpath>
-	</taskdef>
-
-	<target name="weavejunit" depends="jar">
-		<path id="retroweaverclasspath">
-			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
-			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
-			<pathelement location="${dir.lib}/asm-${asm.version}.jar"/>
-			<pathelement location="${jvm14.runtime}" />
-			<pathelement location="${dir.lib14}/junit.jar" />
-		</path>
-
-		<retroweaver inputjar="${dir.lib}/junit-${junit.version}.jar" outputjar="${dir.lib14}/junit.jar" target="1.4" failonerror="true" verify="true">
-			<classpath refid="retroweaverclasspath" />
-		</retroweaver>
-	</target>
-
-	<target name="weave" depends="jar, weavejunit">
-		<fail unless="ant.jar" message="ant.jar location is not defined properly" />
-		<fail unless="jvm14.runtime" message="jvm14.runtime (i.e. rt.jar) location is not defined properly" />
-
-		<path id="retroweaverclasspath">
-			<pathelement location="${dir.lib14}/pmd14-${version}.jar" />
-			<pathelement location="${dir.lib14}/pmd14-test-${version}.jar" />
-			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
-			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
-			<pathelement location="${dir.lib}/asm-${asm.version}.jar"/>
-			<pathelement location="${jvm14.runtime}" />
-			<pathelement location="${dir.lib}/jaxen-${jaxen.version}.jar" />
-			<pathelement location="${dir.lib}/saxon${saxon.version}.jar" />
-			<pathelement location="${dir.lib14}/junit.jar" />
-			<pathelement location="${ant.jar}" />
-			<pathelement location="${ant-testutil.jar}" />
-		</path>
-
-		<retroweaver inputjar="${dir.lib}/pmd-${version}.jar" outputjar="${dir.lib14}/pmd14-${version}.jar" target="1.4" failonerror="true" verify="true">
-			<classpath refid="retroweaverclasspath" />
-		</retroweaver>
-
-		<retroweaver inputjar="${dir.lib}/pmd-test-${version}.jar" outputjar="${dir.lib14}/pmd14-test-${version}.jar" target="1.4" failonerror="true" verify="true">
-			<classpath refid="retroweaverclasspath" />
-		</retroweaver>
 	</target>
 
 	<target name="jarsrc" depends="copy,compile" description="Jars up the source directory">
@@ -311,45 +254,6 @@
 		<concat>
 			<filelist dir="${test.outputdir}" files="summary.txt"/>
 		</concat>
-	</target>
-
-	<path id="dependencies14.path">
-		<fileset dir="${dir.lib14}">
-			<include name="backport-util-concurrent.jar" />
-			<include name="pmd14-${version}.jar" />
-			<include name="pmd14-test-${version}.jar" />
-			<include name="retroweaver-rt-${retroweaver.version}.jar" />
-			<include name="junit.jar" />
-		</fileset>
-		<fileset dir="${dir.lib}">
-			<include name="jaxen-${jaxen.version}.jar" />
-			<include name="saxon${saxon.version}.jar" />
-			<include name="asm-${asm.version}.jar" />
-		</fileset>
-	</path>
-
-	<target name="test14" depends="requires-junit,compile,copy,weavejunit,weave" description="Runs the unit tests with 1.4 jvm">
-		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
-
-		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.reports}/test14"/>
-			<param name="test.jvm" value="${jvm14.exe}"/>
-			<param name="test.dependencies" value="dependencies14.path"/>
-			<param name="test.regression" value="false"/>
-			<param name="test.printsummary" value="true"/>
-		</antcall>
-	</target>
-
-	<target name="regress14" depends="requires-junit,compile,copy,weavejunit,weave" description="Runs the regression unit tests with 1.4 jvm">
-		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
-
-		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.reports}/regress14"/>
-			<param name="test.jvm" value="${jvm14.exe}"/>
-			<param name="test.dependencies" value="dependencies14.path"/>
-			<param name="test.regression" value="true"/>
-			<param name="test.printsummary" value="false"/>
-		</antcall>
 	</target>
 
 	<target name="symtabtest" depends="compile" description="Runs the unit tests for the symboltable package">
@@ -527,7 +431,7 @@ public class]]></replacevalue>
 
 	<target name="recompile" depends="clean,compile,copy" description="Does a complete recompile" />
 
-	<target name="dist" depends="recompile,jar,weave" description="Preps things for a release" />
+	<target name="dist" depends="recompile,jar" description="Preps things for a release" />
 
 	<target name="cpdjnlp" depends="dist" description="Uploads a new CPD JNLP thingy to the PMD web site">
 		<signjar jar="${dir.lib}/pmd-${version}.jar" storetype="${keystore.type}" alias="${keystore.alias}" keystore="${keystore.path}" storepass="${keystore.password}" />
@@ -582,6 +486,6 @@ public class]]></replacevalue>
 		</javadoc>
 	</target>
 
-	<target name="qa" depends="dist, regress, regress14, pmdOnPmd, cpdOnPmd, symtabtest, dfatest, cpdtest, javadoc" description="Runs all tests (used for continuous integration tests)"/>
+	<target name="qa" depends="dist, regress, pmdOnPmd, cpdOnPmd, symtabtest, dfatest, cpdtest, javadoc" description="Runs all tests (used for continuous integration tests)"/>
 
 </project>

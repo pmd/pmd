@@ -24,8 +24,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,7 +112,6 @@ import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.xpath.Initializer;
-import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.w3c.dom.Document;
@@ -712,28 +709,8 @@ public class Designer implements ClipboardOwner {
 	JTabbedPane tabbed = new JTabbedPane();
 	tabbed.addTab("Abstract Syntax Tree / XPath / Symbol Table", resultsSplitPane);
 	tabbed.addTab("Data Flow Analysis", dfaPanel);
-	try {
-	    // Remove when minimal runtime support is >= JDK 1.4
-	    Method setMnemonicAt = JTabbedPane.class.getMethod("setMnemonicAt", new Class[] { Integer.TYPE,
-		    Integer.TYPE });
-	    if (setMnemonicAt != null) {
-		//        // Compatible with >= JDK 1.4
-		//        tabbed.setMnemonicAt(0, KeyEvent.VK_A);
-		//        tabbed.setMnemonicAt(1, KeyEvent.VK_D);
-		setMnemonicAt.invoke(tabbed, new Object[] { NumericConstants.ZERO, KeyEvent.VK_A });
-		setMnemonicAt.invoke(tabbed, new Object[] { NumericConstants.ONE, KeyEvent.VK_D });
-	    }
-	} catch (NoSuchMethodException nsme) { // Runtime is < JDK 1.4
-	} catch (IllegalAccessException e) { // Runtime is >= JDK 1.4 but there was an error accessing the function
-	    e.printStackTrace();
-	    throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
-	} catch (IllegalArgumentException e) {
-	    e.printStackTrace();
-	    throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
-	} catch (InvocationTargetException e) { // Runtime is >= JDK 1.4 but there was an error accessing the function
-	    e.printStackTrace();
-	    throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
-	}
+	tabbed.setMnemonicAt(0, KeyEvent.VK_A);
+	tabbed.setMnemonicAt(1, KeyEvent.VK_D);
 
 	JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlSplitPane, tabbed);
 	containerSplitPane.setContinuousLayout(true);
@@ -973,14 +950,9 @@ public class Designer implements ClipboardOwner {
 	Source source = new DOMSource(node.getAsDocument());
 	Result result = new StreamResult(writer);
 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	try {
-	    transformerFactory.setAttribute("indent-number", 3); //For java 5
-	} catch (IllegalArgumentException e) {
-	    //Running on Java 1.4 which does not support this attribute
-	}
+	transformerFactory.setAttribute("indent-number", 3);
 	Transformer xformer = transformerFactory.newTransformer();
 	xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	xformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "3"); //For java 1.4
 	xformer.transform(source, result);
 
 	return writer.toString();

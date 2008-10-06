@@ -31,7 +31,4 @@ public interface PmdBuildTools {
      * @param targetDirectory the targetDirectory to set
      */
     public abstract void setTargetDirectory(String targetDirectory);
-
-    public abstract void createPomForJava4(String pom, String pom4java4) throws PmdBuildException;
-
 }

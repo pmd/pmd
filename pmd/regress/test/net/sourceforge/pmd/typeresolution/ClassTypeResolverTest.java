@@ -44,17 +44,6 @@ import test.net.sourceforge.pmd.typeresolution.testdata.Promotion;
 
 public class ClassTypeResolverTest {
 
-	private boolean isJdk14;
-
-	@Before
-	public void setUp() {
-		try {
-			Class.forName("java.lang.Appendable");
-		} catch (Throwable t) {
-			isJdk14 = true;
-		}
-	}
-
 	@Test
 	public void testClassNameExists() {
 		ClassTypeResolver classTypeResolver = new ClassTypeResolver();
@@ -248,14 +237,9 @@ public class ClassTypeResolverTest {
 		assertEquals(0, literals.get(index).jjtGetNumChildren());
 		assertEquals(Float.TYPE, literals.get(index++).getType());
 
-		// No hex floating point literals in Java 1.4
-		if (!isJdk14) {
-			// float float3 = 0x08.08p3f;
-			assertEquals(0, literals.get(index).jjtGetNumChildren());
-			assertEquals(Float.TYPE, literals.get(index++).getType());
-		} else {
-			index++;
-		}
+		// float float3 = 0x08.08p3f;
+		assertEquals(0, literals.get(index).jjtGetNumChildren());
+		assertEquals(Float.TYPE, literals.get(index++).getType());
 
 		// float float4 = 0xFF;
 		assertEquals(0, literals.get(index).jjtGetNumChildren());
@@ -273,14 +257,9 @@ public class ClassTypeResolverTest {
 		assertEquals(0, literals.get(index).jjtGetNumChildren());
 		assertEquals(Double.TYPE, literals.get(index++).getType());
 
-		// No hex floating point literals in Java 1.4
-		if (!isJdk14) {
-			// double double3 = 0x08.08p3;
-			assertEquals(0, literals.get(index).jjtGetNumChildren());
-			assertEquals(Double.TYPE, literals.get(index++).getType());
-		} else {
-			index++;
-		}
+		// double double3 = 0x08.08p3;
+		assertEquals(0, literals.get(index).jjtGetNumChildren());
+		assertEquals(Double.TYPE, literals.get(index++).getType());
 
 		// double double4 = 0xFF;
 		assertEquals(0, literals.get(index).jjtGetNumChildren());

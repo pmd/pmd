@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
-
 /**
  * This class contains the details for the runtime configuration of PMD.
  * There are several aspects to the configuration of PMD.
@@ -34,13 +33,12 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * The aspects related to Rules and Source files are:
  * <ul>
  * 	<li>A comma separated list of RuleSets URIs.</li>
- * 	<li>A minimum priority filter when loading Rules from RuleSets,
+ * 	<li>A minimum priority threshold when loading Rules from RuleSets,
  * 	    defaults to {@link RulePriority#LOW}.</li>
- * 	<li></li>
- *	<li></li>
- *	<li></li>
- *	<li></li>
- *	<li></li>
+ * 	<li>The character encoding of source files, defaults to the system default
+ * 	    as returned by <code>System.getProperty("file.encoding")</code>.</li>
+ *	<li>A comma separated list of input paths to process for source files.
+ *	    This may include files, directories, archives (e.g. ZIP files), etc.</li>
  * </ul>
  * <p>
  * The aspects related to Reporting are:
@@ -48,6 +46,8 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * 	<li></li>
  *	<li></li>
  *	<li></li>
+ *	<li>An indicator of whether to use File short names in Reports, defaults
+ *	    to <code>false</code>.</li>
  *	<li></li>
  *	<li></li>
  * </ul>
@@ -74,14 +74,14 @@ public class Configuration {
     // Rule and source file options
     private String ruleSets;
     private RulePriority minPriority = RulePriority.LOW;
-    private boolean shortNames;
-    private String inputPath;
     private String sourceEncoding = new InputStreamReader(System.in).getEncoding();
+    private String inputPaths;
 
     // Reporting options
     private String reportFormat;
     private String reportEncoding;
     private String reportFile;
+    private boolean shortNames;
     private String linePrefix;
     private String linkPrefix;
     private String xsltFilename;
@@ -243,5 +243,85 @@ public class Configuration {
 	    classLoader = new ClasspathClassLoader(classpath, classLoader);
 	}
 	return classLoader;
+    }
+
+    /**
+     * Get the comma separated list of RuleSets URIs.
+     * @return The RuleSet URIs.
+     */
+    public String getRuleSets() {
+	return ruleSets;
+    }
+
+    /**
+     * Set the command separated list of RuleSet URIs.
+     * @param ruleSets
+     */
+    public void setRuleSets(String ruleSets) {
+	this.ruleSets = ruleSets;
+    }
+
+    /**
+     * Get the minimum priority threshold when loading Rules from RuleSets.
+     * @return The minimum priority threshold.
+     */
+    public RulePriority getMinPriority() {
+	return minPriority;
+    }
+
+    /**
+     * Set the minimum priority threshold when loading Rules from RuleSets.
+     * @param minPriority The minimum priority.
+     */
+    public void setMinPriority(RulePriority minPriority) {
+	this.minPriority = minPriority;
+    }
+
+    /**
+     * Get the character encoding of source files.
+     * @return The character encoding.
+     */
+    public String getSourceEncoding() {
+	return sourceEncoding;
+    }
+
+    /**
+     * Set the character encoding of source files.
+     * @param sourceEncoding The character encoding.
+     */
+    public void setSourceEncoding(String sourceEncoding) {
+	this.sourceEncoding = sourceEncoding;
+    }
+
+    /**
+     * Get the comma separated list of input paths to process for source files.
+     * @return A comma separated list.
+     */
+    public String getInputPaths() {
+	return inputPaths;
+    }
+
+    /**
+     * Set the comma separated list of input paths to process for source files.
+     * @param inputPaths The comma separated list.
+     */
+    public void setInputPaths(String inputPaths) {
+	this.inputPaths = inputPaths;
+    }
+
+    /**
+     * Get whether to use File short names in Reports.
+     * @return <code>true</code> when using short names in reports.
+     */
+    public boolean isShortNames() {
+	return shortNames;
+    }
+
+    /**
+     * Set whether to use File short names in Reports.
+     * @param shortNames <code>true</code> when using short names in reports.
+     */
+    public void setShortNames(boolean shortNames) {
+	this.shortNames = shortNames;
     }
 }

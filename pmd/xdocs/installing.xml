@@ -45,16 +45,6 @@
           </p>
           <p>Note that the PMD jar file contains the <a href="cpd.html">CPD</a> utility as well.</p>
       </subsection>
-      <subsection name="Java JRE 1.4 support">
-        <p>
-        By default PMD requires a 1.5 JRE but thanks to <a href="http://retroweaver.sourceforge.net/">retroweaver</a>,
-        you can still use PMD with a 1.4 JRE.
-        </p><p>
-        You do not need to download any extra library or application as the PMD releases are self contained.
-        Instead of using the executables located in the "bin" directory, you should just use the equivalent
-        ones from the "java14/bin" directory instead.
-        </p>
-      </subsection>
     </section>
   </body>
 </document>

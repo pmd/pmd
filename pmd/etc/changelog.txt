@@ -437,7 +437,9 @@ Fixed false negative in UselessOverridingMethod
 Fixed handling of escape characters in UseIndexOfChar and AppendCharacterWithChar
 Fixed ClassCastException on generic method in BeanMembersShouldSerialize
 Fixed ClassCastException in symbol table code
-retroweaver updated to version 2.0.6.
+Support for Java 1.4 runtime dropped, PMD now requires Java 5 or higher.  PMD can still process Java 1.4 source files.
+
+java4,Javafour,1.4,weave,retro,jdk4
 
 New Java rules:
 

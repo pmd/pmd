@@ -26,20 +26,7 @@ public class PmdBuildTask extends Task {
     private String rulesIndex;
     private String indexFilename;
     private String mergedRulesetFilename;
-    private boolean shouldGenerateJavaFourPom = true;
     
-	/**
-	 * @return the shouldGenerateJavaFourPom
-	 */
-	public boolean isShouldGenerateJavaFourPom() {
-		return shouldGenerateJavaFourPom;
-	}
-	/**
-	 * @param shouldGenerateJavaFourPom the shouldGenerateJavaFourPom to set
-	 */
-	public void setShouldGenerateJavaFourPom(boolean shouldGenerateJavaFourPom) {
-		this.shouldGenerateJavaFourPom = shouldGenerateJavaFourPom;
-	}
 	/**
      * @return the rulesDirectory
      */
@@ -73,9 +60,6 @@ public class PmdBuildTask extends Task {
 		try {
 	        	tool.convertRulesets();
 	        	tool.generateRulesIndex();
-	        	if ( this.shouldGenerateJavaFourPom ) {
-	        		tool.createPomForJava4("pom.xml","pmd-jdk14-pom.xml");
-	        	}
 		}
 		catch ( PmdBuildException e) {
 		    throw new BuildException(e);
