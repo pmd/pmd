@@ -27,7 +27,7 @@ cd ../..
 # upload data
 # adapted from docs.sh "upload"
 
-remote_host=pmd.sourceforge.net
+remote_host=web.sourceforge.net
 remote_dir_home=/home/groups/p/pm/pmd/htdocs/snapshot
 
 echo "Uploading src and bin archives"
