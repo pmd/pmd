@@ -3,15 +3,17 @@
  */
 package test.net.sourceforge.pmd.renderers;
 
+import java.util.Properties;
+
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.renderers.AbstractRenderer;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextPadRenderer;
 
 
 public class TextPadRendererTest extends AbstractRendererTst{
 
-    public AbstractRenderer getRenderer() {
-        return new TextPadRenderer();
+    public Renderer getRenderer() {
+        return new TextPadRenderer(new Properties());
     }
 
     public String getExpected() {

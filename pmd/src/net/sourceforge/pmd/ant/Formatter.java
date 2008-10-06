@@ -3,78 +3,31 @@
  */
 package net.sourceforge.pmd.ant;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.renderers.EmacsRenderer;
-import net.sourceforge.pmd.renderers.HTMLRenderer;
-import net.sourceforge.pmd.renderers.PapariTextRenderer;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
-import net.sourceforge.pmd.renderers.TextRenderer;
-import net.sourceforge.pmd.renderers.VBHTMLRenderer;
-import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.renderers.XSLTRenderer;
-import net.sourceforge.pmd.renderers.YAHTMLRenderer;
-import net.sourceforge.pmd.renderers.CSVRenderer;
-import org.apache.tools.ant.BuildException;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.RendererFactory;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.Parameter;
 
 public class Formatter {
 
-    private interface RendererBuilder {
-        Renderer build(Object[] optionalArg);
-    } // factory template
-
     private File toFile;
-    private String linkPrefix;
-    private String linePrefix;
     private String type;
     private boolean toConsole;
     private boolean showSuppressed;
-
-    private static final Map<String, RendererBuilder> RENDERERS_BY_CODE = new HashMap<String, RendererBuilder>(8);
-
-    static {
-        RENDERERS_BY_CODE.put("xml", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new XMLRenderer(); }
-        });
-        RENDERERS_BY_CODE.put("betterhtml", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new XSLTRenderer(); }
-        });
-        RENDERERS_BY_CODE.put("html", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new HTMLRenderer((String) arg[0], (String) arg[1]); }
-        });
-        RENDERERS_BY_CODE.put("summaryhtml", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new SummaryHTMLRenderer((String) arg[0], (String) arg[1]); }
-        });
-        RENDERERS_BY_CODE.put("papari", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new PapariTextRenderer(); }
-        });
-        RENDERERS_BY_CODE.put("csv", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new CSVRenderer(); }
-        });
-        RENDERERS_BY_CODE.put("emacs", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new EmacsRenderer(); }
-        });
-        RENDERERS_BY_CODE.put("vbhtml", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new VBHTMLRenderer(); }
-        });
-        RENDERERS_BY_CODE.put("yahtml", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new YAHTMLRenderer(); }
-        });
-        RENDERERS_BY_CODE.put("text", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new TextRenderer(); }
-        });
-        // add additional codes & factories here
-    }
+    private List<Parameter> parameters = new ArrayList<Parameter>();
 
     public void setShowSuppressed(boolean value) {
         this.showSuppressed = value;
@@ -84,10 +37,6 @@ public class Formatter {
         this.type = type;
     }
 
-    public void setLinkPrefix(String linkPrefix) {
-        this.linkPrefix = linkPrefix;
-    }
-
     public void setToFile(File toFile) {
         this.toFile = toFile;
     }
@@ -95,9 +44,9 @@ public class Formatter {
     public void setToConsole(boolean toConsole) {
         this.toConsole = toConsole;
     }
-
-    public void setLinePrefix(String linePrefix) {
-        this.linePrefix = linePrefix;
+    
+    public void addConfiguredParam(Parameter parameter) {
+	this.parameters.add(parameter);
     }
 
     private Writer writer;
@@ -116,7 +65,7 @@ public class Formatter {
             if (toFile != null) {
                 writer = getToFileWriter(baseDir);
             }
-            renderer = getRenderer(toConsole);
+            renderer = createRenderer();
             renderer.setWriter(writer);
             renderer.start();
         } catch (IOException ioe) {
@@ -148,7 +97,7 @@ public class Formatter {
     }
 
     private static String[] validRendererCodes() {
-        return RENDERERS_BY_CODE.keySet().toArray(new String[RENDERERS_BY_CODE.size()]);
+        return RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet().toArray(new String[RendererFactory.REPORT_FORMAT_TO_RENDERER.size()]);
     }
 
     private static String unknownRendererMessage(String userSpecifiedType) {
@@ -164,23 +113,24 @@ public class Formatter {
         return sb.toString();
     }
 
-    private Renderer fromClassname(String rendererClassname) {
-        try {
-            return (Renderer) Class.forName(rendererClassname).newInstance();
-        } catch (Exception e) {
-            throw new BuildException(unknownRendererMessage(rendererClassname));
-        }
-    }
-
     // FIXME - hm, what about this consoleRenderer thing... need a test for this
-    private Renderer getRenderer(boolean consoleRenderer) {
+    private Renderer createRenderer() {
         if ("".equals(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
         }
-        RendererBuilder builder = RENDERERS_BY_CODE.get(type);
-        Renderer renderer = builder == null ? fromClassname(type) : builder.build(new String[]{linkPrefix, linePrefix});
-        renderer.showSuppressedViolations(showSuppressed);
+        
+        Properties properties = createProperties();
+        Renderer renderer = RendererFactory.createRenderer(type, properties);
+        renderer.setShowSuppressedViolations(showSuppressed);
         return renderer;
+    }
+    
+    private Properties createProperties() {
+	Properties properties = new Properties();
+	for (Parameter parameter : parameters) {
+	    properties.put(parameter.getName(), parameter.getValue());
+	}
+	return properties;
     }
 
     private Writer getToFileWriter(String baseDir) throws IOException {

@@ -254,7 +254,7 @@ public class PMDTask extends Task {
 
             final String inputPath = ds.getBasedir().getPath();
 
-            Renderer logRenderer = new AbstractRenderer() {
+            Renderer logRenderer = new AbstractRenderer("log", "Logging renderer", null) {
                 @Override
                 public void start() {}
 

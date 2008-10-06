@@ -3,15 +3,17 @@
  */
 package test.net.sourceforge.pmd.renderers;
 
+import java.util.Properties;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.CSVRenderer;
+import net.sourceforge.pmd.renderers.Renderer;
 
 public class CSVRendererTest extends AbstractRendererTst {
 
-    public AbstractRenderer getRenderer() {
-        return new CSVRenderer();
+    public Renderer getRenderer() {
+        return new CSVRenderer(new Properties());
     }
 
     public String getExpected() {

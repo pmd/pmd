@@ -1,102 +1,152 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
+ * Abstract base class for {@link Renderer} implementations.
  */
 public abstract class AbstractRenderer implements Renderer {
 
+    protected String name;
+    protected String description;
+    protected Map<String, String> propertyDefinitions = new LinkedHashMap<String, String>();
+    protected Properties properties;
     protected boolean showSuppressedViolations = true;
     private Writer writer;
     private Report mainReport;
 
-    /**
-     * Method showSuppressedViolations.
-     * @param show boolean
-     * @see net.sourceforge.pmd.renderers.Renderer#showSuppressedViolations(boolean)
-     */
-    public void showSuppressedViolations(boolean show) {
-        this.showSuppressedViolations = show;
+    public AbstractRenderer(String name, String description, java.util.Properties properties) {
+	this.name = name;
+	this.description = description;
+	this.properties = properties;
     }
 
     /**
-     * Method render.
-     * @param report Report
-     * @return String
-     * @see net.sourceforge.pmd.renderers.Renderer#render(Report)
+     * {@inheritDoc}
+     */
+    public String getName() {
+	return name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription() {
+	return description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDescription(String description) {
+	this.description = description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, String> getPropertyDefinitions() {
+	return propertyDefinitions;
+    }
+
+    /**
+     * Define a property.
+     * @param name The property name.
+     * @param description The description of the property.
+     */
+    protected void defineProperty(String name, String description) {
+	propertyDefinitions.put(name, description);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isShowSuppressedViolations() {
+	return showSuppressedViolations;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setShowSuppressedViolations(boolean showSuppressedViolations) {
+	this.showSuppressedViolations = showSuppressedViolations;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public String render(Report report) {
-        StringWriter w = new StringWriter();
-        try {
-            render(w, report);
-        } catch (IOException e) {
-            throw new Error("StringWriter doesn't throw IOException", e);
-        }
-        return w.toString();
+	StringWriter w = new StringWriter();
+	try {
+	    render(w, report);
+	} catch (IOException e) {
+	    throw new Error("StringWriter doesn't throw IOException", e);
+	}
+	return w.toString();
     }
 
-
     /**
-     * Method setWriter.
-     * @param writer Writer
-     * @see net.sourceforge.pmd.renderers.Renderer#setWriter(Writer)
+     * {@inheritDoc}
      */
     public void setWriter(Writer writer) {
-        this.writer = writer;
+	this.writer = writer;
     }
 
     /**
-     * Method getWriter.
-     * @return Writer
-     * @see net.sourceforge.pmd.renderers.Renderer#getWriter()
+     * {@inheritDoc}
      */
     public Writer getWriter() {
-        return writer;
+	return writer;
     }
 
     /**
-     * Method start.
-     * @throws IOException
-     * @see net.sourceforge.pmd.renderers.Renderer#start()
+     * {@inheritDoc}
      */
     public void start() throws IOException {
-        // default (and backward compatible) behavior is to build a full report.
-        // Optimized rendering is done in OnTheFlyRenderer and descendants
-        mainReport = new Report();
+	// default (and backward compatible) behavior is to build a full report.
+	// Optimized rendering is done in OnTheFlyRenderer and descendants
+	mainReport = new Report();
     }
 
     /**
-     * Method startFileAnalysis.
-     * @param dataSource DataSource
-     * @see net.sourceforge.pmd.renderers.Renderer#startFileAnalysis(DataSource)
+     * {@inheritDoc}
      */
-    public void startFileAnalysis(DataSource dataSource) {}
-    
+    public void startFileAnalysis(DataSource dataSource) {
+    }
+
     /**
-     * Method renderFileReport.
-     * @param report Report
-     * @throws IOException
-     * @see net.sourceforge.pmd.renderers.Renderer#renderFileReport(Report)
+     * {@inheritDoc}
      */
     public void renderFileReport(Report report) throws IOException {
-        // default (and backward compatible) behavior is to build a full report.
-        // Optimized rendering is done in OnTheFlyRenderer and descendants
-        mainReport.merge(report);
+	// default (and backward compatible) behavior is to build a full report.
+	// Optimized rendering is done in OnTheFlyRenderer and descendants
+	mainReport.merge(report);
     }
 
     /**
-     * Method end.
-     * @throws IOException
-     * @see net.sourceforge.pmd.renderers.Renderer#end()
+     * {@inheritDoc}
      */
     public void end() throws IOException {
-        // default (and backward compatible) behavior is to build a full report.
-        // Optimized rendering is done in OnTheFlyRenderer and descendants
-        render(writer, mainReport);
+	// default (and backward compatible) behavior is to build a full report.
+	// Optimized rendering is done in OnTheFlyRenderer and descendants
+	render(writer, mainReport);
     }
 }

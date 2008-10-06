@@ -3,24 +3,16 @@
  */
 package net.sourceforge.pmd;
 
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.renderers.CSVRenderer;
-import net.sourceforge.pmd.renderers.EmacsRenderer;
-import net.sourceforge.pmd.renderers.HTMLRenderer;
-import net.sourceforge.pmd.renderers.IDEAJRenderer;
-import net.sourceforge.pmd.renderers.PapariTextRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
-import net.sourceforge.pmd.renderers.TextRenderer;
-import net.sourceforge.pmd.renderers.VBHTMLRenderer;
-import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.renderers.XSLTRenderer;
-import net.sourceforge.pmd.renderers.YAHTMLRenderer;
-
-import java.io.InputStreamReader;
-import java.text.MessageFormat;
-import java.util.List;
+import net.sourceforge.pmd.renderers.RendererFactory;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class CommandLineOptions {
 
@@ -39,94 +31,79 @@ public class CommandLineOptions {
     private String inputPath;
     private String reportFormat;
     private String reportFile;
+    private boolean showSuppressedViolations = false;
+    private Properties properties = new Properties();
     private String ruleSets;
     private String encoding = new InputStreamReader(System.in).getEncoding();
-    private String linePrefix;
-    private String linkPrefix;
-    private String xsltFilename;
     private String auxClasspath;
 
     private String[] args;
+    private int optionEndIndex;
 
     private RulePriority minPriority = RulePriority.LOW;
 
     private Language language;
     private LanguageVersion version;
-   
-    
-    /**
-     * @return the language
-     */
-    public Language getLanguage() {
-        return language;
-    }
-
-    /**
-     * @param language the language to set
-     */
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
-    /**
-     * @return the version
-     */
-    public LanguageVersion getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version the version to set
-     */
-    public void setVersion(LanguageVersion version) {
-        this.version = version;
-    }
 
     public CommandLineOptions(String[] args) {
 
-        this.args = args; // needed by createRenderer
+        this.args = args;
         
         if (args == null || args.length < 3) {
             throw new IllegalArgumentException(usage());
         }
-        int optIndex = 0;
+        int mandatoryIndex = 0;
+        int optionStartIndex = 3;
+        optionEndIndex = args.length;
         if (args[0].charAt(0) == '-') {
-            optIndex = args.length - 3;
+            mandatoryIndex = args.length - 3;
+            optionStartIndex = 0;
+            optionEndIndex = args.length - 3;
         }
 
-        inputPath = args[optIndex];
-        reportFormat = args[optIndex+1];
-        ruleSets = new SimpleRuleSetNameMapper(args[optIndex+2]).getRuleSets();
+        inputPath = args[mandatoryIndex];
+        reportFormat = args[mandatoryIndex+1];
+        if (StringUtil.isEmpty(reportFormat)) {
+	    throw new IllegalArgumentException("Report renderer is required.");
+	}
+        ruleSets = new SimpleRuleSetNameMapper(args[mandatoryIndex+2]).getRuleSets();
 
-        for (int optionsIndex = 0; optionsIndex < args.length; optionsIndex++) {
-            if (args[optionsIndex].equals("-debug")) {
-                debugEnabled = true;
-            } else if (args[optionsIndex].equals("-stress")) {
-                stressTestEnabled = true;
-            } else if (args[optionsIndex].equals("-shortnames")) {
-                shortNamesEnabled = true;
-            } else if (args[optionsIndex].equals("-encoding")) {
-                encoding = args[++optionsIndex];
-            } else if (args[optionsIndex].equals("-cpus")) {
-        	checkCpuOptions(optionsIndex);
-            } else if (args[optionsIndex].equals("-suppressmarker")) {
-                suppressMarker = args[++optionsIndex];
-            } else if (args[optionsIndex].equals("-lang") ) { //We are waiting for 2 argument after this one
+        for (int optionsIndex = optionStartIndex; optionsIndex < optionEndIndex; optionsIndex++) {
+            String opt = args[optionsIndex];
+            if ("-debug".equals(opt)) {
+                this.debugEnabled = true;
+            } else if ("-stress".equals(opt)) {
+                this.stressTestEnabled = true;
+            } else if ("-shortnames".equals(opt)) {
+                this.shortNamesEnabled = true;
+            } else if ("-encoding".equals(opt)) {
+        	checkOption(opt, optionsIndex, 1);
+                this.encoding = args[++optionsIndex];
+            } else if ("-cpus".equals(opt)) {
+        	checkOption(opt, optionsIndex, 1);
+        	this.cpus = parseInt(opt, args[++optionsIndex]);
+            } else if ("-suppressmarker".equals(opt)) {
+        	checkOption(opt, optionsIndex, 1);
+                this.suppressMarker = args[++optionsIndex];
+            } else if ("-lang".equals(opt)) { //We are waiting for 2 argument after this one
         	this.extractLanguageSpecification(optionsIndex);        		
-            } else if (args[optionsIndex].equals("-lineprefix")) {
-                linePrefix = args[++optionsIndex];
-            } else if (args[optionsIndex].equals("-linkprefix")) {
-                linkPrefix = args[++optionsIndex];
-            } else if (args[optionsIndex].equals("-minimumpriority")) {
-        	checkingMinimunPriority(optionsIndex);
-            } else if (args[optionsIndex].equals("-reportfile")) {
-                reportFile = args[++optionsIndex];
-            } else if (args[optionsIndex].equals("-benchmark")) {
-                benchmark = true;
-            } else if ( args[optionsIndex].equals("-xslt") ) {
-        	settingXsltRendering(optionsIndex);
-            } else if (args[optionsIndex].equals("-auxclasspath")) {
-        	settingAuxClasspath(optionsIndex);
+        	optionsIndex += 2;
+            } else if ("-minimumpriority".equals(opt)) {
+        	checkOption(opt, optionsIndex, 1);
+        	this.minPriority = parseMinimunPriority(args[++optionsIndex]);
+            } else if ("-showsuppressed".equals(opt)) {
+        	this.showSuppressedViolations = true;
+            } else if ("-property".equals(opt)) {
+        	checkOption(opt, optionsIndex, 2);
+        	this.properties.put(args[++optionsIndex], args[++optionsIndex]);
+            } else if ("-reportfile".equals(opt)) {
+        	checkOption(opt, optionsIndex, 1);
+                this.reportFile = args[++optionsIndex];
+            } else if ("-benchmark".equals(opt)) {
+                this.benchmark = true;
+            } else if ("-auxclasspath".equals(opt)) {
+        	checkOption(opt, optionsIndex, 1);
+        	this.auxClasspath = args[++optionsIndex];
             }
         }
         // If no language has been specified, we fall back to default value
@@ -137,46 +114,46 @@ public class CommandLineOptions {
             version = LanguageVersion.getDefaultVersion();
         }
     }
+
+    private void checkOption(String opt, int index, int count) {
+	boolean valid = true;
+	if (index + count >= optionEndIndex) {
+	    valid = false;
+	} else {
+	    for (int i = 1; i <= count; i++) {
+		if (args[index + i].charAt(0) == '-') {
+		    valid = false;
+		    break;
+		}
+	    }
+	}
+	if (!valid) {
+	    throw new IllegalArgumentException(opt + " requires " + count + " parameters.\n\n" + usage());
+	}
+    }
+
+    private RulePriority parseMinimunPriority(String priority) {
+	try {
+	    return RulePriority.valueOf(Integer.parseInt(priority));
+	} catch (NumberFormatException e) {
+	    throw new IllegalArgumentException("Minimum priority must be a whole number between " + RulePriority.HIGH
+		    + " and " + RulePriority.LOW + ", " + priority + " received", e);
+	}
+    }
     
-    private void settingAuxClasspath(int optionsIndex) {
-	optionsIndex++;
-	if ( optionsIndex >= args.length ) {
-		throw new IllegalArgumentException(usage());
-       	}
-	this.auxClasspath = args[optionsIndex];  
-    }
-
-    private void settingXsltRendering(int optionsIndex) {
-    	optionsIndex++;
-    	if ( optionsIndex >= args.length ) {
-    		 throw new IllegalArgumentException(usage());
-    	}
-    	this.xsltFilename = args[optionsIndex];
-    }
-
-    private void checkingMinimunPriority(int optionsIndex) {
-        try {
-            minPriority = RulePriority.valueOf(Integer.parseInt(args[++optionsIndex]));
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(MessageFormat.format(
-                    "minimumpriority parameter must be a whole number between " + RulePriority.HIGH + " and " + RulePriority.LOW + ", {0} received", args[optionsIndex]),e);
-        }
-    }
-
-    private void checkCpuOptions(int optionsIndex) {
-        try {
-            cpus = Integer.parseInt(args[++optionsIndex]);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(MessageFormat.format(
-                    "cpus parameter must be a whole number, {0} received", args[optionsIndex]));
-        }
+    private int parseInt(String opt, String s) {
+	try {
+	    return Integer.parseInt(s);
+	} catch (NumberFormatException e) {
+	    throw new IllegalArgumentException(opt + " parameter must be a whole number, " + s + " received");
+	}
     }
 
     private void extractLanguageSpecification(int optionsIndex) {
 	String languageSpecified = args[optionsIndex + LANG_NAME_INDEX];
 	this.language = Language.findByTerseName(languageSpecified);
 	if ( language == null ) {
-	    throw new IllegalArgumentException("language '" + languageSpecified + "' is not recognized. Availaible language are : " + Language.commaSeparatedTerseNames(Language.findWithRuleSupport()));
+	    throw new IllegalArgumentException("language '" + languageSpecified + "' is not recognized. Available language are : " + Language.commaSeparatedTerseNames(Language.findWithRuleSupport()));
 	}
 	else {
 	    if ( args.length > (optionsIndex + LANG_VERSION_INDEX) ) {
@@ -199,38 +176,9 @@ public class CommandLineOptions {
     }
 
     public Renderer createRenderer() {
-        if (reportFormat.equals("xml")) {
-            return new XMLRenderer();
-        } else if (reportFormat.equals("ideaj")) {
-            return new IDEAJRenderer(args);
-        } else if (reportFormat.equals("papari")) {
-            return new PapariTextRenderer();
-        } else if (reportFormat.equals("text")) {
-            return new TextRenderer();
-        } else if (reportFormat.equals("emacs")) {
-            return new EmacsRenderer();
-        } else if (reportFormat.equals("csv")) {
-            return new CSVRenderer();
-        } else if (reportFormat.equals("html")) {
-            return new HTMLRenderer();
-        } else if (reportFormat.equals("nicehtml")) {
-            return new XSLTRenderer(this.xsltFilename);
-        } else if (reportFormat.equals("yahtml")) {
-            return new YAHTMLRenderer();
-        } else if (reportFormat.equals("summaryhtml")) {
-            return new SummaryHTMLRenderer(linkPrefix, linePrefix);
-        } else if (reportFormat.equals("vbhtml")) {
-            return new VBHTMLRenderer();
-        }
-        if (!reportFormat.equals("")) {
-            try {
-                return (Renderer) Class.forName(reportFormat).newInstance();
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Can't find the custom format " + reportFormat + ": " + e.getClass().getName());
-            }
-        }
-
-        throw new IllegalArgumentException("Can't create report with format of " + reportFormat);
+	Renderer renderer = RendererFactory.createRenderer(reportFormat, new Properties());
+	renderer.setShowSuppressedViolations(this.showSuppressedViolations);
+	return renderer;
     }
 
     public boolean containsCommaSeparatedFileList() {
@@ -288,6 +236,38 @@ public class CommandLineOptions {
     public String getAuxClasspath() {
     	return auxClasspath;
     }
+   
+    public boolean isShowSuppressedViolations() {
+        return showSuppressedViolations;
+    }
+
+    /**
+     * @return the language
+     */
+    public Language getLanguage() {
+        return language;
+    }
+
+    /**
+     * @param language the language to set
+     */
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
+    /**
+     * @return the version
+     */
+    public LanguageVersion getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    public void setVersion(LanguageVersion version) {
+        this.version = version;
+    }
 
     public String usage() {
         return PMD.EOL + PMD.EOL +
@@ -300,20 +280,22 @@ public class CommandLineOptions {
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html unusedcode" + PMD.EOL +
                 PMD.EOL +
                 "Optional arguments that may be put before or after the mandatory arguments: " + PMD.EOL +
-                "-lang name version: specifiy which version of which language PMD should looks for" + PMD.EOL + 
+                "-lang {name} {version}: specifiy version of a language PMD should use" + PMD.EOL + 
                 "-debug: prints debugging information" + PMD.EOL +
                 "-cpus: specifies the number of threads to create" + PMD.EOL +
                 "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
-                "-excludemarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +
+                "-suppressmarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +
-                "-linkprefix: path to HTML source, for summary html renderer only" + PMD.EOL +
-                "-lineprefix: custom anchor to affected line in the source file, for summary html renderer only" + PMD.EOL +
                 "-minimumpriority: rule priority threshold; rules with lower priority than they will not be used" + PMD.EOL +
+                "-showsuppressed: report should show suppressed rule violations" + PMD.EOL +
+                "-property {name} {value}: define a property for the report" + PMD.EOL +
                 "-reportfile: send report output to a file; default to System.out" + PMD.EOL +
                 "-benchmark: output a benchmark report upon completion; default to System.err" + PMD.EOL +
-                "-xslt: override default xslt for 'nicehtml' output." + PMD.EOL +
                 "-auxclasspath: specifies the classpath for libraries used by the source code (used by type resolution)" + PMD.EOL +
                 "   (alternatively, a 'file://' URL to a text file containing path elements on consecutive lines)" + PMD.EOL +
+                PMD.EOL +
+                "Available report formats and their configuration properties are:" + PMD.EOL +
+                getReports() +
                 PMD.EOL +
                 "For example on windows: " + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code text unusedcode,imports -lang java 1.5 -debug" + PMD.EOL +
@@ -326,6 +308,31 @@ public class CommandLineOptions {
                 "$ java -jar pmd-" + PMD.VERSION + ".jar /home/workspace/src/main/java/code nicehtml basic,design -xslt my-own.xsl" + PMD.EOL +
                 "$ java -jar pmd-" + PMD.VERSION + ".jar /home/workspace/src/main/java/code nicehtml typeresolution -auxclasspath commons-collections.jar:derby.jar" + PMD.EOL +
                 PMD.EOL;
+    }
+
+    private static String getReports() {
+	StringBuilder buf = new StringBuilder();
+	for (String reportName : RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()) {
+	    Renderer renderer = RendererFactory.createRenderer(reportName, new Properties());
+	    buf.append("   ");
+	    buf.append(reportName);
+	    buf.append(": ");
+	    if (!reportName.equals(renderer.getName())) {
+		buf.append(" Deprecated alias for '" + renderer.getName());
+		buf.append(PMD.EOL);
+		continue;
+	    }
+	    buf.append(renderer.getDescription());
+	    buf.append(PMD.EOL);
+	    for (Map.Entry<String, String> entry : renderer.getPropertyDefinitions().entrySet()) {
+		buf.append("       ");
+		buf.append(entry.getKey());
+		buf.append(" - ");
+		buf.append(entry.getValue());
+		buf.append(PMD.EOL);
+	    }
+	}
+	return buf.toString();
     }
 }
 

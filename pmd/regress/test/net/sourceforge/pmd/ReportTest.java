@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.PMD;
@@ -24,7 +25,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.rule.MockRule;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
@@ -161,7 +161,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         ctx.setSourceCodeFilename("bar");
         JavaNode s1 = getNode(10, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s1));
-        Renderer rend = new XMLRenderer();
+        Renderer rend = new XMLRenderer(new Properties());
         String result = rend.render(r);
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
     }
@@ -176,7 +176,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         ctx.setSourceCodeFilename("foo2");
         JavaNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(new MockRule("rule1", "rule1", "msg", "rulesetname"), ctx, s1));
-        Renderer rend = new XMLRenderer();
+        Renderer rend = new XMLRenderer(new Properties());
         String result = rend.render(r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
     }

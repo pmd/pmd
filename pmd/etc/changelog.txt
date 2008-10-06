@@ -302,18 +302,50 @@ The following is relatively complete list of the major changes (this may not be
       Moved - PMD.createClasspathClassLoader(String) to Configuration.createClasspathClassLoader(String)
 
    API Change - Changes to Node interface
-      Renamed - findChildrenOfType() as findDescendantsOfType()
-      Renamed - getFirstChildOfType() as getFirstDescendantOfType()
-      Renamed - containsChildOfType() as hasDescendantOfType()
-      Renamed - getAsXml() as getAsDocument()
-      Added - findChildrenOfType(), non recursive version
-      Added - getFirstChildOfType(), non recursive version
+      Renamed - Node.findChildrenOfType(Class) as Node.findDescendantsOfType(Class)
+      Renamed - Node.getFirstChildOfType(Class) as Node.getFirstDescendantOfType(Class)
+      Renamed - Node.containsChildOfType(Class) as Node.hasDescendantOfType(Class)
+      Renamed - Node.getAsXml() as Node.getAsDocument()
+      Added - Node.findChildrenOfType(Class), non recursive version
+      Added - Node.getFirstChildOfType(Class), non recursive version
       
    API Change - Remove deprecated APIs
       Removed - AccessNode.setXXX() methods, use AccessNode.setXXX(boolean) instead.
       Removed - PMDException.getReason()
       Removed - RuleSetFactory.createRuleSet(String,ClassLoaer), use RuleSetFactory.createRuleSets(String,ClassLoader) instead.
       Removed - net.sourceforge.pmd.cpd.FileFinder use net.sourceforge.pmd.util.FileFinder instead.
+
+   API Change - Changes to Renderer class, and Renderer implementations
+        Added - Renderer.getName()
+        Added - Renderer.setName(String)
+        Added - Renderer.getDescription()
+        Added - Renderer.setDescription(String)
+        Added - Renderer.getPropertyDefinitions()
+        Added - Renderer.isShowSuppressedViolations()
+      Renamed - Renderer.showSuppressedViolations(boolean) to Renderer.setShowSuppressedViolations(boolean)
+      Renamed - PapariTextRenderer to TextColorRenderer
+
+PMD command line changes:
+
+   Removed -lineprefix use -property linePrefix {value} instead
+   Removed -linkprefix use -property linkPrefix {value} instead
+   Removed -xslt use -property xsltFilename {value} instead
+   Removed -nojsp now obsolete
+   Removed -targetjdk use -lang {name} {version} instead
+   Added -lang {name} {version} to set language version to use
+   Added -property {name} {value} as generic way to pass properties to Renderers
+   Added -showsuppressed as a means to show suppressed rule violations (consistent with Ant task behavior)
+   Renamed 'nicehtml' report to 'xslt'
+   Renamed 'papari' report to 'textcolor'
+   Renamed -excludemarker option to -suppressmarker
+
+Ant changes:
+
+   Removed - <formatter> 'linkPrefix' attribute, use <param name="linkPrefix"> instead
+   Removed - <formatter> 'linePrefix' attribute, use <param name="linePrefix"> instead
+     Added - <param name="name" value="value"/> as generic way to pass properties to Renderers on <formatter>
+   Renamed - <pmd> 'excludeMarker' attribute to 'suppressMarker'
+
 
 New features:
 

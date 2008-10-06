@@ -44,6 +44,15 @@ public class PMDTaskTest extends BuildFileTest {
     }
 
     @Test
+    public void testFormatterWithProperties() {
+        executeTarget("testFormatterWithProperties");
+        assertOutputContaining("Position literals first in String comparisons");
+        assertOutputContaining("Too many fields");
+        assertOutputContaining("link_prefix");
+        assertOutputContaining("line_prefix");
+    }
+
+    @Test
     public void testAbstractNames() {
         executeTarget("testAbstractNames");
         assertOutputContaining("Position literals first in String comparisons");

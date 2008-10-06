@@ -3,49 +3,56 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.PMD;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.Properties;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.RuleViolation;
 
 /**
- * <P>A Renderer for running PMD via a TextPad 'tool'.  <a href="http://www.textpad.com">TextPad</a> is a text editor by Helios Software Solutions.</P>
+ * <p>A Renderer for running PMD via a TextPad 'tool'.  <a href="http://www.textpad.com">TextPad</a> is a text editor by Helios Software Solutions.</p>
  * <p/>
- * <P>Output lines are in the form:</P>
+ * <p>Output lines are in the form:</p>
  * <p/>
- * <P><CODE>pathtojavafile(line#, NameOfRule):&nbsp; Specific rule violation message</CODE></P>
+ * <p><CODE>pathtojavafile(line#, NameOfRule):&nbsp; Specific rule violation message</CODE></p>
  * <p/>
- * <P>For example:</P>
+ * <p>For example:</p>
  * <p/>
- * <P><CODE>D:\java\pmd\src\src\net\sourceforge\pmd\renderers\TextPadRenderer.java(24, AtLeastOneConstructor):&nbsp; Each class should declare at least one constructor
+ * <p><CODE>D:\java\pmd\src\src\net\sourceforge\pmd\renderers\TextPadRenderer.java(24, AtLeastOneConstructor):&nbsp; Each class should declare at least one constructor
  * <br>D:\java\pmd\src\src\net\sourceforge\pmd\renderers\TextPadRenderer.java(26, VariableNamingConventionsRule):&nbsp; Variables should start with a lowercase character
- * <br>D:\java\pmd\src\src\net\sourceforge\pmd\renderers\TextPadRenderer.java(31, ShortVariable):&nbsp; Avoid variables with short names</CODE></P>
+ * <br>D:\java\pmd\src\src\net\sourceforge\pmd\renderers\TextPadRenderer.java(31, ShortVariable):&nbsp; Avoid variables with short names</CODE></p>
  *
  * @author Jeff Epstein, based upon <a href="EmacsRenderer.html">EmacsRenderer</a>, Tuesday, September 23, 2003
  */
 public class TextPadRenderer extends OnTheFlyRenderer {
 
-    public void start() throws IOException {}
+    public static final String NAME = "textpad";
 
-    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
-        StringBuffer buf = new StringBuffer();
-        while (violations.hasNext()) {
-            RuleViolation rv = violations.next();
-            buf.setLength(0);
-            //Filename
-            buf.append(PMD.EOL).append(rv.getFilename() + "(");
-            //Line number
-            buf.append(Integer.toString(rv.getBeginLine())).append(",  ");
-            //Name of violated rule
-            buf.append(rv.getRule().getName()).append("):  ");
-            //Specific violation message
-            buf.append(rv.getDescription());
-            writer.write(buf.toString());
-        }
+    public TextPadRenderer(Properties properties) {
+	super(NAME, "TextPad integration.", properties);
     }
 
-    public void end() throws IOException {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
+	Writer writer = getWriter();
+	StringBuffer buf = new StringBuffer();
+	while (violations.hasNext()) {
+	    RuleViolation rv = violations.next();
+	    buf.setLength(0);
+	    //Filename
+	    buf.append(PMD.EOL).append(rv.getFilename() + "(");
+	    //Line number
+	    buf.append(Integer.toString(rv.getBeginLine())).append(",  ");
+	    //Name of violated rule
+	    buf.append(rv.getRule().getName()).append("):  ");
+	    //Specific violation message
+	    buf.append(rv.getDescription());
+	    writer.write(buf.toString());
+	}
+    }
 }

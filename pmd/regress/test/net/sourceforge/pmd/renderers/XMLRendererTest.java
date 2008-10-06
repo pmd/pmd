@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -118,7 +119,7 @@ public class XMLRendererTest extends RuleTst {
     }
 
     private Element parseRootElement(Report rpt) throws SAXException, IOException, ParserConfigurationException {
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(new XMLRenderer().render(rpt)))).getDocumentElement();
+        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(new XMLRenderer(new Properties()).render(rpt)))).getDocumentElement();
     }
 
     public static junit.framework.Test suite() {

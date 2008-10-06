@@ -41,6 +41,20 @@
 		</pmd>
 	</target>
 
+	<target name="testFormatterWithProperties">
+		<pmd>
+			<ruleset>${pmd.home}/rulesets/codesize.xml</ruleset>
+			<ruleset>${pmd.home}/rulesets/design.xml</ruleset>
+			<formatter type="summaryhtml" toConsole="true">
+				<param name="linkPrefix" value="link_prefix"/>
+				<param name="linePrefix" value="line_prefix"/>
+			</formatter>
+			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
 	<target name="testAbstractNames">
 		<pmd rulesetfiles="codesize,design">
 			<formatter type="text" toConsole="true"/>

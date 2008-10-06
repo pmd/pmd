@@ -4,27 +4,34 @@
 package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
+import java.io.InputStreamReader;
+
+import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.CommandLineOptions;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.IDEAJRenderer;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
+import net.sourceforge.pmd.renderers.TextColorRenderer;
+import net.sourceforge.pmd.renderers.TextPadRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.XSLTRenderer;
+import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
 import org.junit.Test;
-
-import java.io.InputStreamReader;
-
-import junit.framework.JUnit4TestAdapter;
 
 public class CommandLineOptionsTest {
 
     @Test
-    public void testTargetJDKVersion() {
+    public void testLang() {
 	// Testing command line default behavior (no -lang option, means Java 1.5)
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
         assertEquals("LanguageVersion[Java 1.5]", opt.getVersion().toString());
@@ -129,19 +136,44 @@ public class CommandLineOptionsTest {
     @Test
     public void testRenderer() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "xml", "basic"});
-        assertTrue(opt.createRenderer() instanceof XMLRenderer);
+        Renderer renderer = opt.createRenderer();
+        assertTrue(renderer instanceof XMLRenderer);
         opt = new CommandLineOptions(new String[]{"file", "html", "basic"});
-        assertTrue(opt.createRenderer() instanceof HTMLRenderer);
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof HTMLRenderer);
         opt = new CommandLineOptions(new String[]{"file", "text", "basic"});
-        assertTrue(opt.createRenderer() instanceof TextRenderer);
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof TextRenderer);
         opt = new CommandLineOptions(new String[]{"file", "emacs", "basic"});
-        assertTrue(opt.createRenderer() instanceof EmacsRenderer);
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof EmacsRenderer);
         opt = new CommandLineOptions(new String[]{"file", "csv", "basic"});
-        assertTrue(opt.createRenderer() instanceof CSVRenderer);
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof CSVRenderer);
         opt = new CommandLineOptions(new String[]{"file", "vbhtml", "basic"});
-        assertTrue(opt.createRenderer() instanceof VBHTMLRenderer);
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof VBHTMLRenderer);
+        opt = new CommandLineOptions(new String[]{"file", "yahtml", "basic"});
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof YAHTMLRenderer);
         opt = new CommandLineOptions(new String[]{"file", "ideaj", "basic"});
-        assertTrue(opt.createRenderer() instanceof IDEAJRenderer);
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof IDEAJRenderer);
+        opt = new CommandLineOptions(new String[]{"file", "summaryhtml", "basic"});
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof SummaryHTMLRenderer);
+        opt = new CommandLineOptions(new String[]{"file", "textcolor", "basic"});
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof TextColorRenderer);
+        opt = new CommandLineOptions(new String[]{"file", "textpad", "basic"});
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof TextPadRenderer);
+        opt = new CommandLineOptions(new String[]{"file", "xml", "basic"});
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof XMLRenderer);
+        opt = new CommandLineOptions(new String[]{"file", "xslt", "basic"});
+        renderer = opt.createRenderer();
+        assertTrue(renderer instanceof XSLTRenderer);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -176,6 +208,14 @@ public class CommandLineOptionsTest {
     public void testAuxilaryClasspathIllegal() {
 		new CommandLineOptions(new String[] { "file", "format", "basic", "-auxclasspath" });
 	}
+
+    @Test
+    public void testShowSuppressed() {
+        CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
+        assertFalse(opt.isShowSuppressedViolations());
+        opt = new CommandLineOptions(new String[]{"-showsuppressed", "file", "format", "basic"});
+        assertTrue(opt.isShowSuppressedViolations());
+    }
 
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(CommandLineOptionsTest.class);

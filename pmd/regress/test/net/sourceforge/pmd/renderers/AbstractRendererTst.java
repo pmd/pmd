@@ -9,7 +9,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.renderers.AbstractRenderer;
+import net.sourceforge.pmd.renderers.Renderer;
 
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public abstract class AbstractRendererTst extends RuleTst {
         }
     }
 
-    public abstract AbstractRenderer getRenderer();
+    public abstract Renderer getRenderer();
 
     public abstract String getExpected();
 

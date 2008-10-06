@@ -1,14 +1,19 @@
 package test.net.sourceforge.pmd.renderers;
 
+import java.util.Properties;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.renderers.AbstractRenderer;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTst {
 
-    public AbstractRenderer getRenderer() {
-        return new SummaryHTMLRenderer();
+    public Renderer getRenderer() {
+	Properties properties = new Properties();
+	properties.put(SummaryHTMLRenderer.LINK_PREFIX, "link_prefix");
+	properties.put(SummaryHTMLRenderer.LINE_PREFIX, "line_prefix");
+        return new SummaryHTMLRenderer(properties);
     }
 
     public String getExpected() {
@@ -18,7 +23,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
                 "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL + 
                 "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + 
                 "<td align=\"center\">1</td>" + PMD.EOL + 
-                "<td width=\"*%\">n/a</td>" + PMD.EOL + 
+                "<td width=\"*%\"><a href=\"link_prefixn/a.html#line_prefix1\">n/a</a></td>" + PMD.EOL + 
                 "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL + 
                 "<td width=\"*\">msg</td>" + PMD.EOL + 
                 "</tr>" + PMD.EOL + 
@@ -41,13 +46,13 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
         "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL + 
         "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + 
         "<td align=\"center\">1</td>" + PMD.EOL + 
-        "<td width=\"*%\">n/a</td>" + PMD.EOL + 
+        "<td width=\"*%\"><a href=\"link_prefixn/a.html#line_prefix1\">n/a</a></td>" + PMD.EOL + 
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL + 
         "<td width=\"*\">msg</td>" + PMD.EOL + 
         "</tr>" + PMD.EOL + 
         "<tr> " + PMD.EOL + 
         "<td align=\"center\">2</td>" + PMD.EOL + 
-        "<td width=\"*%\">n/a</td>" + PMD.EOL + 
+        "<td width=\"*%\"><a href=\"link_prefixn/a.html#line_prefix1\">n/a</a></td>" + PMD.EOL + 
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL + 
         "<td width=\"*\">msg</td>" + PMD.EOL + 
         "</tr>" + PMD.EOL + 
