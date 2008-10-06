@@ -18,7 +18,7 @@ public class TextRendererTest extends AbstractRendererTst {
     }
 
     public String getExpectedEmpty() {
-        return "No problems found!";
+        return "";
     }
 
     public String getExpectedMultiple() {

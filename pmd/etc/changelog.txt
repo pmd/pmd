@@ -438,8 +438,7 @@ Fixed handling of escape characters in UseIndexOfChar and AppendCharacterWithCha
 Fixed ClassCastException on generic method in BeanMembersShouldSerialize
 Fixed ClassCastException in symbol table code
 Support for Java 1.4 runtime dropped, PMD now requires Java 5 or higher.  PMD can still process Java 1.4 source files.
-
-java4,Javafour,1.4,weave,retro,jdk4
+Text renderer is now silent if there's no violation instead of displaying "No problems found!"
 
 New Java rules:
 

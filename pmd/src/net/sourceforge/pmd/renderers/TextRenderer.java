@@ -79,10 +79,6 @@ public class TextRenderer extends AbstractIncrementalRenderer {
 	    buf.append(" in ").append(excluded.getRuleViolation().getFilename());
 	    writer.write(buf.toString());
 	}
-
-	if (empty) {
-	    getWriter().write("No problems found!");
-	}
     }
 
 }
