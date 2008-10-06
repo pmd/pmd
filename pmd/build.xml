@@ -40,7 +40,6 @@
 		<delete file="${dir.lib}/pmd-src-${version}.jar" />
 		<delete file="${dir.lib}/pmd-test-${version}.jar" />
 		<delete dir="${dir.api}" />
-		<delete dir="${dir.reports}" />
 		<mkdir dir="${dir.build}" />
 	</target>
 
