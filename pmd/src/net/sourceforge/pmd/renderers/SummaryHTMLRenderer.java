@@ -4,17 +4,15 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
 
 /**
  * Renderer to a summarized HTML format.
  */
-public class SummaryHTMLRenderer extends AbstractRenderer {
+public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "summaryhtml";
 
@@ -32,9 +30,10 @@ public class SummaryHTMLRenderer extends AbstractRenderer {
     /**
      * {@inheritDoc}
      */
-    public void render(Writer writer, Report report) throws IOException {
+    @Override
+    public void end() throws IOException {
 	writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
-	renderSummary(writer, report);
+	renderSummary();
 	writer.write("<h2><center>Detail</h2></center>");
 	writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL);
 	new HTMLRenderer(properties).renderBody(writer, report);
@@ -44,11 +43,9 @@ public class SummaryHTMLRenderer extends AbstractRenderer {
     /**
      * Write a Summary HTML table.
      * 
-     * @param writer Writer to write to.
-     * @param report Report to write.
      * @throws IOException
      */
-    public void renderSummary(Writer writer, Report report) throws IOException {
+    public void renderSummary() throws IOException {
 	StringBuffer buf = new StringBuffer(500);
 	buf.append("<h2><center>Summary</h2></center>");
 	buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">");

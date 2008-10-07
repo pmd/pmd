@@ -15,11 +15,9 @@ import net.sourceforge.pmd.RuleViolation;
 /**
  * Renderer to simple text format.
  */
-public class TextRenderer extends AbstractIncrementalRenderer {
+public class TextRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "text";
-
-    private boolean empty;
 
     public TextRenderer(Properties properties) {
 	super(NAME, "Text format.", properties);
@@ -30,7 +28,6 @@ public class TextRenderer extends AbstractIncrementalRenderer {
      */
     @Override
     public void start() throws IOException {
-	empty = true;
     }
 
     /**
@@ -41,7 +38,6 @@ public class TextRenderer extends AbstractIncrementalRenderer {
 	Writer writer = getWriter();
 	StringBuffer buf = new StringBuffer();
 
-	empty = !violations.hasNext();
 	while (violations.hasNext()) {
 	    buf.setLength(0);
 	    RuleViolation rv = violations.next();
@@ -60,7 +56,6 @@ public class TextRenderer extends AbstractIncrementalRenderer {
 	Writer writer = getWriter();
 	StringBuffer buf = new StringBuffer(500);
 	if (!errors.isEmpty()) {
-	    empty = false;
 
 	    for (Report.ProcessingError error : errors) {
 		buf.setLength(0);

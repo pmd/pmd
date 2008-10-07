@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -255,15 +254,12 @@ public class PMDTask extends Task {
             final String inputPath = ds.getBasedir().getPath();
 
             Renderer logRenderer = new AbstractRenderer("log", "Logging renderer", null) {
-                @Override
                 public void start() {}
 
-                @Override
                 public void startFileAnalysis(DataSource dataSource) {
                     log("Processing file " + dataSource.getNiceFileName(false, inputPath), Project.MSG_VERBOSE);
                 }
 
-                @Override
                 public void renderFileReport(Report r) {
                     int size = r.size();
                     if (size > 0) {
@@ -271,10 +267,7 @@ public class PMDTask extends Task {
                     }
                 }
 
-                @Override
                 public void end() {}
-
-                public void render(Writer writer, Report r) {}
             };
             List<Renderer> renderers = new LinkedList<Renderer>();
             renderers.add(logRenderer);

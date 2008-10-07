@@ -322,9 +322,12 @@ The following is relatively complete list of the major changes (this may not be
         Added - Renderer.setDescription(String)
         Added - Renderer.getPropertyDefinitions()
         Added - Renderer.isShowSuppressedViolations()
+        Added - AbstractAccumulatingRenderer
+      Removed - Renderer.render(Report)
+      Removed - Renderer.render(Report, Writer)
       Renamed - Renderer.showSuppressedViolations(boolean) to Renderer.setShowSuppressedViolations(boolean)
       Renamed - PapariTextRenderer to TextColorRenderer
-      Renamed - OntheFlyRenderer to AbstractIncrementalRenderer
+      Renamed - OntheFlyRenderer to AbstractIncrementingRenderer
 
 PMD command line changes:
 

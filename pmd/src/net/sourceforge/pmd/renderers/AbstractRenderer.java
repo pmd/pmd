@@ -3,15 +3,10 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Abstract base class for {@link Renderer} implementations.
@@ -23,10 +18,9 @@ public abstract class AbstractRenderer implements Renderer {
     protected Map<String, String> propertyDefinitions = new LinkedHashMap<String, String>();
     protected Properties properties;
     protected boolean showSuppressedViolations = true;
-    private Writer writer;
-    private Report mainReport;
+    protected Writer writer;
 
-    public AbstractRenderer(String name, String description, java.util.Properties properties) {
+    public AbstractRenderer(String name, String description, Properties properties) {
 	this.name = name;
 	this.description = description;
 	this.properties = properties;
@@ -93,19 +87,6 @@ public abstract class AbstractRenderer implements Renderer {
     /**
      * {@inheritDoc}
      */
-    public String render(Report report) {
-	StringWriter w = new StringWriter();
-	try {
-	    render(w, report);
-	} catch (IOException e) {
-	    throw new Error("StringWriter doesn't throw IOException", e);
-	}
-	return w.toString();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void setWriter(Writer writer) {
 	this.writer = writer;
     }
@@ -115,38 +96,5 @@ public abstract class AbstractRenderer implements Renderer {
      */
     public Writer getWriter() {
 	return writer;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void start() throws IOException {
-	// default (and backward compatible) behavior is to build a full report.
-	// Optimized rendering is done in AbstractIncrementalRenderer and descendants
-	mainReport = new Report();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void startFileAnalysis(DataSource dataSource) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void renderFileReport(Report report) throws IOException {
-	// default (and backward compatible) behavior is to build a full report.
-	// Optimized rendering is done in AbstractIncrementalRenderer and descendants
-	mainReport.merge(report);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void end() throws IOException {
-	// default (and backward compatible) behavior is to build a full report.
-	// Optimized rendering is done in AbstractIncrementalRenderer and descendants
-	render(writer, mainReport);
     }
 }

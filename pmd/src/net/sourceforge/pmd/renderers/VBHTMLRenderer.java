@@ -16,7 +16,7 @@ import net.sourceforge.pmd.RuleViolation;
  * Renderer to another HTML format.
  * @author Vladimir
  */
-public class VBHTMLRenderer extends AbstractIncrementalRenderer {
+public class VBHTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "vbhtml";
 

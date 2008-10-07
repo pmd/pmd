@@ -17,7 +17,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Renderer to basic HTML format.
  */
-public class HTMLRenderer extends AbstractIncrementalRenderer {
+public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "html";
 

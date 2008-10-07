@@ -4,17 +4,15 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Properties;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.dfa.report.ReportHTMLPrintVisitor;
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 
 /**
  * Renderer to another HTML format.
  */
-public class YAHTMLRenderer extends AbstractRenderer {
+public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "yahtml";
 
@@ -33,7 +31,8 @@ public class YAHTMLRenderer extends AbstractRenderer {
     /**
      * {@inheritDoc}
      */
-    public void render(Writer writer, Report report) throws IOException {
+    @Override
+    public void end() throws IOException {
 	ReportTree tree = report.getViolationTree();
 	tree.getRootNode().accept(new ReportHTMLPrintVisitor(outputDir == null ? ".." : outputDir));
 	writer.write("<h3 align=\"center\">The HTML files are located "

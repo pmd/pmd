@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.Properties;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Abstract base class for {@link Renderer} implementations which can produce
@@ -24,7 +24,7 @@ import net.sourceforge.pmd.RuleViolation;
  * Only processing errors and suppressed violations are accumulated across all
  * files.  These are intended to be processed in the {@link #end()} method.
  */
-public abstract class AbstractIncrementalRenderer extends AbstractRenderer {
+public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
 
     /**
      * Accumulated processing errors.
@@ -36,24 +36,25 @@ public abstract class AbstractIncrementalRenderer extends AbstractRenderer {
      */
     protected List<Report.SuppressedViolation> suppressed = new LinkedList<Report.SuppressedViolation>();
 
-    public AbstractIncrementalRenderer(String name, String description, Properties properties) {
+    public AbstractIncrementingRenderer(String name, String description, Properties properties) {
 	super(name, description, properties);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void render(Writer writer, Report report) throws IOException {
-	setWriter(writer);
-	start();
-	renderFileReport(report);
-	end();
+    public void start() throws IOException {
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
+    public void startFileAnalysis(DataSource dataSource) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void renderFileReport(Report report) throws IOException {
 	Iterator<RuleViolation> violations = report.iterator();
 	if (violations.hasNext()) {
@@ -71,13 +72,6 @@ public abstract class AbstractIncrementalRenderer extends AbstractRenderer {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void start() throws IOException {
-    }
-
-    /**
      * Render a series of {@link RuleViolation}s.
      * @param violations The iterator of violations to render.
      * @throws IOException
@@ -87,7 +81,6 @@ public abstract class AbstractIncrementalRenderer extends AbstractRenderer {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void end() throws IOException {
     }
 }

@@ -77,29 +77,6 @@ public interface Renderer {
     void setShowSuppressedViolations(boolean showSuppressedViolations);
 
     /**
-     * 
-     * @deprecated This method consumes too much memory.
-     * Use the render method with the Writer argument instead.
-     * 
-     * @param report Report
-     * @return String
-     */
-    // TODO Remove this
-    String render(Report report);
-
-    /**
-     * 
-     * @deprecated This method consumes too much memory.
-     * Use the start, renderFileReport and end methods instead.
-     * 
-     * @param writer Writer
-     * @param report Report
-     * @throws IOException
-     */
-    // TODO Remove this
-    void render(Writer writer, Report report) throws IOException;
-
-    /**
      * Get the Writer for the Renderer.
      * @return The Writer.
      */

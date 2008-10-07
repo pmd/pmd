@@ -28,6 +28,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import test.net.sourceforge.pmd.ReportTest;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class XMLRendererTest extends RuleTst {
@@ -119,7 +120,8 @@ public class XMLRendererTest extends RuleTst {
     }
 
     private Element parseRootElement(Report rpt) throws SAXException, IOException, ParserConfigurationException {
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(new XMLRenderer(new Properties()).render(rpt)))).getDocumentElement();
+	String result = ReportTest.render(new XMLRenderer(new Properties()), rpt);
+        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(result))).getDocumentElement();
     }
 
     public static junit.framework.Test suite() {

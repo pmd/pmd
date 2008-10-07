@@ -6,6 +6,8 @@ package test.net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -152,7 +154,7 @@ public class ReportTest extends RuleTst implements ReportListener {
 
     // Files are grouped together now.
     @Test
-    public void testSortedReport_File() {
+    public void testSortedReport_File() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
@@ -162,12 +164,12 @@ public class ReportTest extends RuleTst implements ReportListener {
         JavaNode s1 = getNode(10, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s1));
         Renderer rend = new XMLRenderer(new Properties());
-        String result = rend.render(r);
+        String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
     }
 
     @Test
-    public void testSortedReport_Line() {
+    public void testSortedReport_Line() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
@@ -177,7 +179,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         JavaNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(new MockRule("rule1", "rule1", "msg", "rulesetname"), ctx, s1));
         Renderer rend = new XMLRenderer(new Properties());
-        String result = rend.render(r);
+        String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
     }
 
@@ -229,7 +231,16 @@ public class ReportTest extends RuleTst implements ReportListener {
         s.testingOnly__setBeginColumn(5);
         return s;
     }
-    
+
+    public static String render(Renderer renderer, Report report) throws IOException {
+        StringWriter writer = new StringWriter();
+        renderer.setWriter(writer);
+        renderer.start();
+        renderer.renderFileReport(null);
+        renderer.end();
+        return writer.toString();
+    }
+
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(ReportTest.class);
     }

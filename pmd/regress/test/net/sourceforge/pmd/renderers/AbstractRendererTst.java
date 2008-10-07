@@ -13,6 +13,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 
 import org.junit.Test;
 
+import test.net.sourceforge.pmd.ReportTest;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public abstract class AbstractRendererTst extends RuleTst {
@@ -52,22 +53,22 @@ public abstract class AbstractRendererTst extends RuleTst {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNullPassedIn() {
-        getRenderer().render(null);
+    public void testNullPassedIn() throws Throwable {
+	ReportTest.render(getRenderer(), null);
     }
 
     @Test
     public void testRenderer() throws Throwable {
         Report rep = new Report();
         runTestFromString(TEST1, new FooRule(), rep);
-        String actual = getRenderer().render(rep);
+        String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(getExpected(), actual);
     }
 
     @Test
     public void testRendererEmpty() throws Throwable {
         Report rep = new Report();
-        String actual = getRenderer().render(rep);
+        String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(getExpectedEmpty(), actual);
     }
 
@@ -75,7 +76,7 @@ public abstract class AbstractRendererTst extends RuleTst {
     public void testRendererMultiple() throws Throwable {
         Report rep = new Report();
         runTestFromString(TEST1, new FooRule2(), rep);
-        String actual = getRenderer().render(rep);
+        String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(getExpectedMultiple(), actual);
     }
 
@@ -84,7 +85,7 @@ public abstract class AbstractRendererTst extends RuleTst {
         Report rep = new Report();
         Report.ProcessingError err = new Report.ProcessingError("Error", "file");
         rep.addError(err);
-        String actual = getRenderer().render(rep);
+        String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(getExpectedError(err), actual);
     }
 

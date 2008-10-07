@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -48,7 +47,7 @@ import net.sourceforge.pmd.RuleViolation;
  * colorization is atm only supported under *nix terminals accepting ansi escape
  * sequences, such as xterm, rxvt et cetera.</p>
  */
-public class TextColorRenderer extends AbstractRenderer {
+public class TextColorRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "textcolor";
 
@@ -97,7 +96,8 @@ public class TextColorRenderer extends AbstractRenderer {
     /**
      * {@inheritDoc}
      */
-    public void render(Writer writer, Report report) throws IOException {
+    @Override
+    public void end() throws IOException {
 	StringBuffer buf = new StringBuffer(500);
 	buf.append(PMD.EOL);
 	initializeColorsIfSupported();
