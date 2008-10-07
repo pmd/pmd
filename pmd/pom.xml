@@ -395,12 +395,12 @@
     <repository>
       <id>pmd-snapshot-repo</id>
       <name>Default Repository</name>
-      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/snapshot/maven2</url>
+      <url>scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs/snapshot/maven2</url>
     </repository>
     <site>
       <id>pmd-snapshot-site</id>
       <name>Default Site</name>
-      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/snapshot</url>
+      <url>scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs/snapshot</url>
     </site>
   </distributionManagement>
 
@@ -508,12 +508,12 @@
         <repository>
           <id>pmd-repo</id>
           <name>Default Repository</name>
-          <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2</url>
+          <url>scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2</url>
         </repository>
         <site>
           <id>pmd-site</id>
           <name>Default Site</name>
-          <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs</url>
+          <url>scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs</url>
         </site>
       </distributionManagement>
     </profile>

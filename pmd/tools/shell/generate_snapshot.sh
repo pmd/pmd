@@ -41,14 +41,9 @@ echo "Generating and uploading maven artifacts"
 
 mvn -q -DskipTests source:jar javadoc:jar deploy
 
-echo "Uploading xdocs"
+echo "Uploading site"
 
-rsync -a -e ssh target/site/ ${remote_host}:${remote_dir_home}
-
-echo "Setting permissions on uploaded files @ sf.net"
-
-ssh ${remote_host} "chgrp -R pmd ${remote_dir_home}"
-ssh ${remote_host} "chmod -R g+wX ${remote_dir_home}"
+mvn -q site:deploy
 
 echo "Cleaning up"
 
