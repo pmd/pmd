@@ -129,6 +129,7 @@ public class Designer implements ClipboardOwner {
     private SimpleNode getCompilationUnit() {
     	SourceTypeHandler handler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(getSourceType());
     	Parser parser = handler.getParser();
+    	parser.setExcludeMarker(PMD.EXCLUDE_MARKER);
     	SimpleNode simpleNode = (SimpleNode)parser.parse(new StringReader(codeEditorPane.getText()));
     	handler.getSymbolFacade().start(simpleNode);
     	handler.getTypeResolutionFacade(null).start(simpleNode);
