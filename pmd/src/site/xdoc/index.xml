@@ -15,8 +15,14 @@
         <li>Duplicate code - copied/pasted code means copied/pasted bugs</li>
       </ul>
 
-      <h3>Download</h3>
-      <p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
+      <h3>Download (early access)</h3>
+      <p>A new snapshot of the 5.0 release is generated daily using a <a href="https://hudson.dev.java.net/">Hudson</a> continuous integration server.</p>
+      <p>Source and binary packages are available <a href="http://hudson.brittanysoftware.com/job/PMD-snapshot/">here</a> in the artifacts section in the center of the page. The packages for older builds can be accessed by navigating to the details page for a given build.</p>
+      <p>Maven packages are also generated daily and uploaded to the <a href="http://pmd.sourceforge.net/snapshot/maven2">snapshot repository</a>.</p>
+<!--
+      <p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>.</p>
+-->
+      <p>You can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
 
       <h3>Integrations</h3>
       <p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
