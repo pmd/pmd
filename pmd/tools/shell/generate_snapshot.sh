@@ -27,6 +27,7 @@ cd ../..
 # upload data
 # adapted from docs.sh "upload"
 
+remote_user=$USER,pmd
 remote_host=web.sourceforge.net
 remote_dir_home=/home/groups/p/pm/pmd/htdocs/snapshot
 
@@ -43,7 +44,7 @@ mvn -q -DskipTests source:jar javadoc:jar deploy
 
 echo "Uploading site"
 
-mvn -q site:deploy
+rsync -a -e ssh target/site/ ${remote_user}@${remote_host}:${remote_dir_home}
 
 echo "Cleaning up"
 
