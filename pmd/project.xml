@@ -37,6 +37,7 @@
 started on the main trunk (5.0 will not be backward compatible
 with PMD 4.x). We may release other 4.2.x versions with
 minor fixes if needed until 5.0 is released.</p>
+<p>A <a href="http://pmd.sourceforge.net/snapshot">snapshot</a> of the web site for the new version is generated daily by our continous integration server. Early access versions can also be downloaded from there.</p>
 	]]>
 	</description>
 	<shortDescription>Java Static Analysis Tool</shortDescription>
