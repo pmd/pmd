@@ -236,7 +236,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         StringWriter writer = new StringWriter();
         renderer.setWriter(writer);
         renderer.start();
-        renderer.renderFileReport(null);
+        renderer.renderFileReport(report);
         renderer.end();
         return writer.toString();
     }
