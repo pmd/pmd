@@ -392,11 +392,12 @@
   </dependencies>
 
   <distributionManagement>
-    <repository>
+    <snapshotRepository>
       <id>pmd-snapshot-repo</id>
-      <name>Default Repository</name>
+      <name>Snapshot Repository</name>
       <url>scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs/snapshot/maven2</url>
-    </repository>
+     <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
     <site>
       <id>pmd-snapshot-site</id>
       <name>Default Site</name>

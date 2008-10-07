@@ -36,7 +36,9 @@ echo "Uploading src and bin archives"
 mkdir target/release/${version}-build-${buildnumber}
 mv target/release/pmd-bin-${version}.zip target/release/${version}-build-${buildnumber}/pmd-bin-${version}-build-${buildnumber}.zip
 mv target/release/pmd-src-${version}.zip target/release/${version}-build-${buildnumber}/pmd-src-${version}-build-${buildnumber}.zip
-scp -r target/release/${version}-build-${buildnumber} ${remote_host}:${remote_dir_home}/files
+
+# src and bin packages are available in hudson setup, no need to upload to sf.net
+#scp -r target/release/${version}-build-${buildnumber} ${remote_host}:${remote_dir_home}/files
 
 echo "Generating and uploading maven artifacts"
 
