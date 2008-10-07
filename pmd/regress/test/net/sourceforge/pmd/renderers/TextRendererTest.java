@@ -9,24 +9,29 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 
 public class TextRendererTest extends AbstractRendererTst {
 
+    @Override
     public Renderer getRenderer() {
         return new TextRenderer(new Properties());
     }
 
+    @Override
     public String getExpected() {
-        return PMD.EOL + "n/a:1\tmsg";
+        return "n/a:1\tmsg" + PMD.EOL;
     }
 
+    @Override
     public String getExpectedEmpty() {
         return "";
     }
 
+    @Override
     public String getExpectedMultiple() {
-        return PMD.EOL + "n/a:1\tmsg" + PMD.EOL + "n/a:1\tmsg";
+        return "n/a:1\tmsg" + PMD.EOL + "n/a:1\tmsg" + PMD.EOL;
     }
 
+    @Override
     public String getExpectedError(ProcessingError error) {
-        return PMD.EOL + "file\t-\tError";
+        return "file\t-\tError" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {

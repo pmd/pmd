@@ -9,10 +9,12 @@ import net.sourceforge.pmd.renderers.Renderer;
 
 public class HTMLRendererTest extends AbstractRendererTst {
 
+    @Override
     public Renderer getRenderer() {
         return new HTMLRenderer(new Properties());
     }
 
+    @Override
     public String getExpected() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL +
         "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
@@ -21,16 +23,18 @@ public class HTMLRendererTest extends AbstractRendererTst {
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
         "<td width=\"*\">msg</td>" + PMD.EOL +
         "</tr>" + PMD.EOL +
-        "</table></body></html>";
+        "</table></body></html>" + PMD.EOL;
     }
 
+    @Override
     public String getExpectedEmpty() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL +
         "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
         "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL +
-        "</table></body></html>";
+        "</table></body></html>" + PMD.EOL;
     }
 
+    @Override
     public String getExpectedMultiple() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL +
         "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
@@ -43,9 +47,10 @@ public class HTMLRendererTest extends AbstractRendererTst {
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
         "<td width=\"*\">msg</td>" + PMD.EOL +
         "</tr>" + PMD.EOL +
-        "</table></body></html>";
+        "</table></body></html>" + PMD.EOL;
     }
-    
+
+    @Override
     public String getExpectedError(ProcessingError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL +
             "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
@@ -56,7 +61,7 @@ public class HTMLRendererTest extends AbstractRendererTst {
             "<td>file</td>" + PMD.EOL +
             "<td>Error</td>" + PMD.EOL +
             "</tr>" + PMD.EOL +
-            "</table></body></html>";        
+            "</table></body></html>" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {

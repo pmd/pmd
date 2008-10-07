@@ -39,7 +39,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     /**
      * Write the body of the main body of the HTML content.
-     * 
+     *
      * @param writer
      * @param report
      * @throws IOException
@@ -91,7 +91,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 	if (showSuppressedViolations) {
 	    glomSuppressions(writer, suppressed);
 	}
-	writer.write("</body></html>");
+	writer.write("</body></html>" + PMD.EOL);
     }
 
     private void glomRuleViolations(Writer writer, Iterator<RuleViolation> violations) throws IOException {

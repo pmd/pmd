@@ -208,7 +208,7 @@ public class PMD {
 	}
 	languageVersions.add(languageVersion);
 	LOG.fine("Using " + languageVersion.getShortName());
-	
+
 	// Setting up files filter
 	SourceFileSelector fileSelector = new SourceFileSelector(opts.getLanguage());
 	List<DataSource> files;
@@ -275,7 +275,6 @@ public class PMD {
 
 	    reportStart = System.nanoTime();
 	    renderer.end();
-	    w.write(EOL);
 	    w.flush();
 	    if (opts.getReportFile() != null) {
 		w.close();

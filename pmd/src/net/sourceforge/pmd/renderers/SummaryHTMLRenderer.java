@@ -37,12 +37,12 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
 	writer.write("<h2><center>Detail</h2></center>");
 	writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL);
 	new HTMLRenderer(properties).renderBody(writer, report);
-	writer.write("</table></body></html>");
+	writer.write("</table></body></html>" + PMD.EOL);
     }
 
     /**
      * Write a Summary HTML table.
-     * 
+     *
      * @throws IOException
      */
     public void renderSummary() throws IOException {

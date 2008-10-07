@@ -140,7 +140,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 	    }
 	}
 
-	writer.write("</pmd>");
+	writer.write("</pmd>" + PMD.EOL);
     }
 
     private void maybeAdd(String attr, String value, StringBuffer buf) {

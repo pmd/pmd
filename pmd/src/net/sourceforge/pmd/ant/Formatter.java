@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
@@ -44,7 +43,7 @@ public class Formatter {
     public void setToConsole(boolean toConsole) {
         this.toConsole = toConsole;
     }
-    
+
     public void addConfiguredParam(Parameter parameter) {
 	this.parameters.add(parameter);
     }
@@ -77,7 +76,6 @@ public class Formatter {
         try {
             renderer.renderFileReport(errorReport);
             renderer.end();
-            writer.write(PMD.EOL);
             if (toConsole) {
                 writer.flush();
             } else {
@@ -92,6 +90,7 @@ public class Formatter {
         return toFile == null && !toConsole;
     }
 
+    @Override
     public String toString() {
         return "file = " + toFile + "; renderer = " + type;
     }
@@ -118,13 +117,13 @@ public class Formatter {
         if ("".equals(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
         }
-        
+
         Properties properties = createProperties();
         Renderer renderer = RendererFactory.createRenderer(type, properties);
         renderer.setShowSuppressedViolations(showSuppressed);
         return renderer;
     }
-    
+
     private Properties createProperties() {
 	Properties properties = new Properties();
 	for (Parameter parameter : parameters) {

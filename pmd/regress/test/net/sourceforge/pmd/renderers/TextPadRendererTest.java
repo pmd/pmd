@@ -12,20 +12,24 @@ import net.sourceforge.pmd.renderers.TextPadRenderer;
 
 public class TextPadRendererTest extends AbstractRendererTst{
 
+    @Override
     public Renderer getRenderer() {
         return new TextPadRenderer(new Properties());
     }
 
+    @Override
     public String getExpected() {
-        return PMD.EOL + "n/a(1,  Foo):  msg";
+        return "n/a(1,  Foo):  msg" + PMD.EOL;
     }
 
+    @Override
     public String getExpectedEmpty() {
         return "";
     }
-    
+
+    @Override
     public String getExpectedMultiple() {
-        return PMD.EOL + "n/a(1,  Foo):  msg" + PMD.EOL + "n/a(1,  Foo):  msg";
+        return "n/a(1,  Foo):  msg" + PMD.EOL + "n/a(1,  Foo):  msg" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {

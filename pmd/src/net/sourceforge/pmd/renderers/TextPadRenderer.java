@@ -45,13 +45,13 @@ public class TextPadRenderer extends AbstractIncrementingRenderer {
 	    RuleViolation rv = violations.next();
 	    buf.setLength(0);
 	    //Filename
-	    buf.append(PMD.EOL).append(rv.getFilename() + "(");
+	    buf.append(rv.getFilename() + "(");
 	    //Line number
 	    buf.append(Integer.toString(rv.getBeginLine())).append(",  ");
 	    //Name of violated rule
 	    buf.append(rv.getRule().getName()).append("):  ");
 	    //Specific violation message
-	    buf.append(rv.getDescription());
+	    buf.append(rv.getDescription()).append(PMD.EOL);
 	    writer.write(buf.toString());
 	}
     }

@@ -33,9 +33,9 @@ public class EmacsRenderer extends AbstractIncrementingRenderer {
 	while (violations.hasNext()) {
 	    RuleViolation rv = violations.next();
 	    buf.setLength(0);
-	    buf.append(EOL).append(rv.getFilename());
+	    buf.append(rv.getFilename());
 	    buf.append(':').append(Integer.toString(rv.getBeginLine()));
-	    buf.append(": ").append(rv.getDescription());
+	    buf.append(": ").append(rv.getDescription()).append(EOL);
 	    writer.write(buf.toString());
 	}
     }
