@@ -120,5 +120,26 @@ import static Paul;
 import static Yoko; // Too much !
 		  ]]></example>
     </rule>
+    
+	<rule	name="UnnecessaryFullyQualifiedName"
+   		language="java"
+	      since="5.0"
+        	class="net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule"
+        	message="Unnecessary use of fully qualified name ''{0}'' due to existing import ''{1}''"
+       		externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnnecessaryFullyQualifiedName">
+       		<description><![CDATA[
+Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
+which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
+		 ]]></description>
+			<priority>4</priority>
+    	 	<example><![CDATA[
+import java.util.List;
+
+public class Foo {
+   private java.util.List list1; // Unnecessary FQN
+   private List list2; // More appropriate given import of 'java.util.List'
+}
+		  ]]></example>
+    </rule>
 
 </ruleset>

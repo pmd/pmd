@@ -451,6 +451,7 @@ New Java rules:
 	Naming ruleset: ShortClassName
 	Basic ruleset:	EmptyInitializer,EmptyStatementBlock,ExtendsObject,UselessParentheses,CheckSkipResult
 	Design ruleset: LogicInversion,UseVarargs
+	Import ruleset: UnnecessaryFullyQualifiedName
 
 New XML rules:
    Basic ruleset: MistypedCDATASection

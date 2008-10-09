@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+1, nothing wrong
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2, valid implements
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo implements List {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3, invalid implements
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo implements java.util.List {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+4, valid extends
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+public class Foo implements ArrayList {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+5, invalid extends
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+public class Foo implements java.util.ArrayList {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+6, valid field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+7, invalid field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private java.util.List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+8, valid return type
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private List list();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+9, invalid return type
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private java.util.List list();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+10, valid formal parameter
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private void list(List list);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+11, invalid formal parameter
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+   private void list(java.util.List list);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+12, valid static method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+public class Foo {
+   List list = Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+13, invalid static method call
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+public class Foo {
+   List list = java.util.Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+14, valid static import method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+15, invalid static import method call
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = java.util.Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+16, valid static import method call with class import
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+17, invalid static import method call with class import
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+18, on-demand, valid field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+   private List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+19, on-demand, invalid field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+   private java.util.List list;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+20, on-demand, valid static import method call 
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Arrays.asList;
+public class Foo {
+   List list = asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+21, on-demand, invalid static import method call
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static java.util.Arrays.*;
+public class Foo {
+   List list = java.util.Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+22, valid on-demand static import method call with class import
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+import static java.util.Arrays.*;
+public class Foo {
+   List list = asList("one");
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+23, invalid on-demand static import method call with class import
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+import static java.util.Arrays.*;
+public class Foo {
+   List list = Arrays.asList("one");
+}
+     ]]></code>
+    </test-code>
+</test-data>

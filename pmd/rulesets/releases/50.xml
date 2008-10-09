@@ -17,6 +17,7 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/design.xml/UseVarargs"/>
 	<rule ref="rulesets/naming.xml/ShortClassName"/>
 	<rule ref="rulesets/useless.xml/UselessParentheses"/>
+	<rule ref="rulesets/imports.xml/UnnecessaryFullyQualifiedName"/>
 
 </ruleset>
 

@@ -12,6 +12,7 @@ public class ImportsRulesTest extends SimpleAggregatorTst {
         addRule("imports", "DuplicateImports");
         addRule("imports", "ImportFromSamePackage");
         addRule("imports", "TooManyStaticImports");
+        addRule("imports", "UnnecessaryFullyQualifiedName");
         addRule("imports", "UnusedImports");
     }
 
