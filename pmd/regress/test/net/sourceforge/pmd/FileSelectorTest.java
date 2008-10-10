@@ -1,12 +1,14 @@
 package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.SourceFileSelector;
+import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 
 import org.junit.Test;
 
-import java.io.File;
 /**
  * Tests on FileSelector.
  *
@@ -19,11 +21,11 @@ public class FileSelectorTest {
      */
     @Test
     public void testWantedFile() {
-        SourceFileSelector fileSelector = new SourceFileSelector(Language.JAVA);
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(Language.JAVA);
 
         File javaFile = new File("/path/to/myFile.java");
 
-        boolean selected = fileSelector.isWantedFile(javaFile);
+        boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
         assertEquals("This file should be selected !",true, selected);
     }
 
@@ -33,11 +35,11 @@ public class FileSelectorTest {
      */
     @Test
     public void testUnwantedFile() {
-        SourceFileSelector fileSelector = new SourceFileSelector(Language.JAVA);
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(Language.JAVA);
 
         File javaFile = new File("/path/to/myFile.txt");
 
-        boolean selected = fileSelector.isWantedFile(javaFile);
+        boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
         assertEquals("Not-source file must not be selected!", false, selected);
     }
 
@@ -46,11 +48,11 @@ public class FileSelectorTest {
      */
     @Test
     public void testUnwantedJavaFile() {
-        SourceFileSelector fileSelector = new SourceFileSelector(Language.XML);
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(Language.XML);
 
         File javaFile = new File("/path/to/MyClass.java");
 
-        boolean selected = fileSelector.isWantedFile(javaFile);
+        boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
         assertEquals("Unwanted java file must not be selected!", false, selected);
     }
 

@@ -17,10 +17,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -31,25 +29,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
-import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.SourceFileSelector;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
-import net.sourceforge.pmd.util.FileFinder;
+import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.FileDataSource;
-import net.sourceforge.pmd.util.datasource.ZipDataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
@@ -211,13 +204,8 @@ public class PMD {
 	LOG.fine("Using " + languageVersion.getShortName());
 
 	// Setting up files filter
-	SourceFileSelector fileSelector = new SourceFileSelector(opts.getLanguage());
-	List<DataSource> files;
-	if (opts.containsCommaSeparatedFileList()) {
-	    files = collectFromCommaDelimitedString(opts.getInputPath(), fileSelector);
-	} else {
-	    files = collectFilesFromOneName(opts.getInputPath(), fileSelector);
-	}
+	LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(opts.getLanguage());
+	List<DataSource> files = FileUtil.collectFiles(opts.getInputPath(), fileSelector);
 	long endFiles = System.nanoTime();
 	Benchmark.mark(Benchmark.TYPE_COLLECT_FILES, endFiles - startFiles, 0);
 
@@ -686,75 +674,4 @@ public class PMD {
 	    }
 	}
     }
-
-    /**
-     * Collects the given file into a list.
-     *
-     * @param inputFileName a file name
-     * @param fileSelector  Filtering of wanted source files
-     * @return the list of files collected from the <code>inputFileName</code>
-     * @see #collect(String, SourceFileSelector)
-     */
-    private static List<DataSource> collectFilesFromOneName(String inputFileName, SourceFileSelector fileSelector) {
-	return collect(inputFileName, fileSelector);
-    }
-
-    /**
-     * Collects the files from the given comma-separated list.
-     *
-     * @param fileList     comma-separated list of filenames
-     * @param fileSelector Filtering of wanted source files
-     * @return list of files collected from the <code>fileList</code>
-     */
-    private static List<DataSource> collectFromCommaDelimitedString(String fileList, SourceFileSelector fileSelector) {
-	List<DataSource> files = new ArrayList<DataSource>();
-	for (StringTokenizer st = new StringTokenizer(fileList, ","); st.hasMoreTokens();) {
-	    files.addAll(collect(st.nextToken(), fileSelector));
-	}
-	return files;
-    }
-
-    /**
-     * Collects the files from the given <code>filename</code>.
-     *
-     * @param filename     the source from which to collect files
-     * @param fileSelector Filtering of wanted source files
-     * @return a list of files found at the given <code>filename</code>
-     * @throws RuntimeException if <code>filename</code> is not found
-     */
-    private static List<DataSource> collect(String filename, SourceFileSelector fileSelector) {
-	File inputFile = new File(filename);
-	if (!inputFile.exists()) {
-	    throw new RuntimeException("File " + inputFile.getName() + " doesn't exist");
-	}
-	List<DataSource> dataSources = new ArrayList<DataSource>();
-	if (!inputFile.isDirectory()) {
-	    if (filename.endsWith(".zip") || filename.endsWith(".jar")) {
-		ZipFile zipFile;
-		try {
-		    zipFile = new ZipFile(inputFile);
-		    Enumeration<? extends ZipEntry> e = zipFile.entries();
-		    while (e.hasMoreElements()) {
-			ZipEntry zipEntry = e.nextElement();
-			if (fileSelector.isWantedFile(zipEntry.getName())) {
-			    dataSources.add(new ZipDataSource(zipFile, zipEntry));
-			}
-		    }
-		} catch (IOException ze) {
-		    throw new RuntimeException("Zip file " + inputFile.getName() + " can't be opened");
-		}
-	    } else {
-		dataSources.add(new FileDataSource(inputFile));
-	    }
-	} else {
-	    FileFinder finder = new FileFinder();
-	    List<File> files = finder.findFilesFrom(inputFile.getAbsolutePath(), new SourceFileOrDirectoryFilter(
-		    fileSelector), true);
-	    for (File f : files) {
-		dataSources.add(new FileDataSource(f));
-	    }
-	}
-	return dataSources;
-    }
-
 }

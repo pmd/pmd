@@ -1,9 +1,8 @@
 package net.sourceforge.pmd.util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,11 +23,11 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
-import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.SourceFileSelector;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class Benchmark {
 
@@ -72,15 +71,15 @@ public class Benchmark {
 
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
 
-        String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
-        List<File> files = new FileFinder().findFilesFrom(srcDir, new SourceFileOrDirectoryFilter(new SourceFileSelector()), true);
-
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
         Language language = Language.JAVA;
         LanguageVersion languageVersion = language.getVersion(targetjdk);
         if (languageVersion == null) {
         	languageVersion = language.getDefaultVersion();
         }
+
+        String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
+        List<DataSource> dataSources = FileUtil.collectFiles(srcDir, new LanguageFilenameFilter(language));
 
         boolean debug = findBooleanSwitch(args, "--debug");
         boolean parseOnly = findBooleanSwitch(args, "--parse-only");
@@ -89,7 +88,7 @@ public class Benchmark {
             System.out.println("Using " +language.getName() + " " + languageVersion.getVersion());
         }
         if (parseOnly) {
-            parseStress(languageVersion, files);
+            parseStress(languageVersion, dataSources);
         } else {
             String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) {
@@ -99,11 +98,11 @@ public class Benchmark {
             RuleSetFactory factory = new RuleSetFactory();
             if (ruleset.length() > 0) {
                 SimpleRuleSetNameMapper mapper = new SimpleRuleSetNameMapper(ruleset);
-                stress(languageVersion, factory.createSingleRuleSet(mapper.getRuleSets()), files, results, debug);
+                stress(languageVersion, factory.createSingleRuleSet(mapper.getRuleSets()), dataSources, results, debug);
             } else {
                 Iterator<RuleSet> i = factory.getRegisteredRuleSets();
                 while (i.hasNext()) {
-                    stress(languageVersion, i.next(), files, results, debug);
+                    stress(languageVersion, i.next(), dataSources, results, debug);
                 }
             }
             System.out.println("=========================================================");
@@ -122,18 +121,18 @@ public class Benchmark {
         System.out.println("=========================================================");
     }
 
-    private static void parseStress(LanguageVersion languageVersion, List<File> files) throws FileNotFoundException {
+    private static void parseStress(LanguageVersion languageVersion, List<DataSource> dataSources) throws IOException {
         long start = System.currentTimeMillis();
-        for (File file: files) {
+        for (DataSource dataSource: dataSources) {
             LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-            languageVersionHandler.getParser().parse(file.getPath(), new FileReader(file));
+            languageVersionHandler.getParser().parse(dataSource.getNiceFileName(false, null), new InputStreamReader(dataSource.getInputStream()));
         }
         long end = System.currentTimeMillis();
         long elapsed = end - start;
         System.out.println("That took " + elapsed + " ms");
     }
 
-    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<File> files, Set<Result> results, boolean debug) throws PMDException, IOException {
+    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources, Set<Result> results, boolean debug) throws PMDException, IOException {
         Collection<Rule> rules = ruleSet.getRules();
         for (Rule rule: rules) {
             if (debug) {
@@ -149,9 +148,9 @@ public class Benchmark {
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
-            for (File file: files) {
-                FileReader reader = new FileReader(file);
-                ctx.setSourceCodeFilename(file.getName());
+            for (DataSource dataSource: dataSources) {
+                Reader reader = new InputStreamReader(dataSource.getInputStream());
+                ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
                 p.processFile(reader, ruleSets, ctx);
                 reader.close();
             }
