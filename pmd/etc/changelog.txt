@@ -141,6 +141,7 @@ The following is relatively complete list of the major changes (this may not be
 	   Renamed - net.sourceforge.pmd.AbstractJavaRule to net.sourceforge.pmd.lang.java.rule.AbstractJavaRule
 	   Renamed - net.sourceforge.pmd.AbstractRuleChainVisitor to net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor
 	   Renamed - net.sourceforge.pmd.RuleChainVisitor to net.sourceforge.pmd.lang.rule.RuleChainVisitor
+	   Renamed - net.sourceforge.pmd.SourceFileSelector to net.sourceforge.pmd.lang.rule.LanguageFileSelector
 	   Renamed - net.sourceforge.pmd.rule.XPathRule to net.sourceforge.pmd.lang.rule.XPathRule
 	   Renamed - net.sourceforge.pmd.jsp.rule.AbstractJspRule to net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule
 	   Renamed - net.sourceforge.pmd.ast.CompilationUnit to net.sourceforge.pmd.lang.ast.RootNode

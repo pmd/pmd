@@ -1,8 +1,7 @@
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang;
 
 import java.io.File;
 
-import net.sourceforge.pmd.lang.Language;
 
 /**
  * Filtering of wanted source files.

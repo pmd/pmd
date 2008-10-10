@@ -25,9 +25,9 @@ public class CommandLineOptions {
     private boolean benchmark;
     private boolean shortNamesEnabled;
 
-    private int cpus = Runtime.getRuntime().availableProcessors();
+    private int cpus = Runtime.getRuntime().availableProcessors(); //DONE
 
-    private String suppressMarker = PMD.SUPPRESS_MARKER;
+    private String suppressMarker = PMD.SUPPRESS_MARKER; // DONE
     private String inputPath;
     private String reportFormat;
     private String reportFile;

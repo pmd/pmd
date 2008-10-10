@@ -199,7 +199,7 @@ public class RuleSet {
      * @param rule The rule.
      * @param languageVersion The language version.
      */
-    public boolean applies(Rule rule, LanguageVersion languageVersion) {
+    public static boolean applies(Rule rule, LanguageVersion languageVersion) {
 	final LanguageVersion min = rule.getMinimumLanguageVersion();
 	final LanguageVersion max = rule.getMinimumLanguageVersion();
 	return rule.getLanguage().equals(languageVersion.getLanguage())

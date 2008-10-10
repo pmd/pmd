@@ -24,11 +24,11 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
-import net.sourceforge.pmd.SourceFileSelector;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.SourceFileSelector;
 
 public class Benchmark {
 

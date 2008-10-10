@@ -1,8 +1,8 @@
 package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.SourceFileSelector;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.SourceFileSelector;
 
 import org.junit.Test;
 

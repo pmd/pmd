@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.SourceFileSelector;
+import net.sourceforge.pmd.lang.SourceFileSelector;
 
 import java.io.File;
 import java.io.FilenameFilter;
