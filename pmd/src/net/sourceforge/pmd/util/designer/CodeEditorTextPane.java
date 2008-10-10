@@ -1,25 +1,22 @@
 package net.sourceforge.pmd.util.designer;
 
-import java.util.StringTokenizer;
-
 import javax.swing.JTextPane;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.LineGetter;
 
 public class CodeEditorTextPane extends JTextPane implements LineGetter {
-
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    
+    private String[] getLines() {
+	// Support files with line separators from various platforms
+        return getText().split("\r\n|\r|\n");
+    }
 
     public String getLine(int number) {
-        int count = 1;
-        for (StringTokenizer st = new StringTokenizer(getText(), "\n"); st.hasMoreTokens();) {
-            String tok = st.nextToken();
-            if (count == number) {
-                return tok;
-            }
-            count++;
-        }
+	String[] lines= getLines();
+	if (number < lines.length) {
+	    return lines[number];
+	}
         throw new RuntimeException("Line number " + number + " not found");
     }
 
@@ -46,7 +43,7 @@ public class CodeEditorTextPane extends JTextPane implements LineGetter {
     }
 
     public void select(Node node) {
-        String[] lines = getText().split(LINE_SEPARATOR);
+        String[] lines = getLines();
         if (node.getBeginLine() >= 0) {
 	    setSelectionStart(getPosition(lines, node.getBeginLine(), node.getBeginColumn()));
 	    setSelectionEnd(getPosition(lines, node.getEndLine(), node.getEndColumn()) + 1);
