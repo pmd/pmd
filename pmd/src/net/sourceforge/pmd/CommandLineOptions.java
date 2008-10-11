@@ -176,7 +176,7 @@ public class CommandLineOptions {
     }
 
     public Renderer createRenderer() {
-	Renderer renderer = RendererFactory.createRenderer(reportFormat, new Properties());
+	Renderer renderer = RendererFactory.createRenderer(reportFormat, this.properties);
 	renderer.setShowSuppressedViolations(this.showSuppressedViolations);
 	return renderer;
     }
