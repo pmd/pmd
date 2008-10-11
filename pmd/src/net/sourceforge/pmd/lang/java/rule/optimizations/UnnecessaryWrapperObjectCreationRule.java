@@ -25,6 +25,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
     });
 
     private static final Set<String> SUFFIX_SET = CollectionUtil.asSet(new String[] {
+        "toString",
         "byteValue",
         "shortValue",
         "intValue",
