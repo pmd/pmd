@@ -307,6 +307,9 @@ public int convert(String s) {
   i2 = Integer.valueOf(i).intValue(); // this wastes an object
   i2 = i; // this is better
 
+  String s3 = Integer.valueOf(i2).toString(); // this wastes an object
+  s3 = Integer.toString(i2); // this is better
+
   return i2;
 }
 ]]>

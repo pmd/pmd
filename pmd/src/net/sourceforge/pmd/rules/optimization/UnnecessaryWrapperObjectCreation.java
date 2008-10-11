@@ -25,6 +25,7 @@ public class UnnecessaryWrapperObjectCreation extends AbstractRule {
     });
 
     private static final Set<String> suffixSet = CollectionUtil.asSet(new String[] {
+        "toString",
         "byteValue",
         "shortValue",
         "intValue",
