@@ -14,4 +14,8 @@ public final class DirectoryFilter implements Filter<File> {
 	public boolean filter(File file) {
 		return file.isDirectory();
 	}
+	
+	public String toString() {
+	    return "is Directory";
+	}
 }

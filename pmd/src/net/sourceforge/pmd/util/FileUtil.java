@@ -72,7 +72,7 @@ public class FileUtil {
 	    // FUTURE Make the excluded directories be some configurable option
 	    Filter<File> filter = new OrFilter<File>(Filters.toFileFilter(filenameFilter), new AndFilter<File>(Filters
 		    .getDirectoryFilter(), Filters.toNormalizedFileFilter(Filters.buildRegexFilterExcludeOverInclude(
-		    Collections.singletonList("SCCS"), null))));
+		    null, Collections.singletonList("SCCS")))));
 	    FileFinder finder = new FileFinder();
 	    List<File> files = finder.findFilesFrom(file.getAbsolutePath(), Filters.toFilenameFilter(filter), true);
 	    for (File f : files) {
