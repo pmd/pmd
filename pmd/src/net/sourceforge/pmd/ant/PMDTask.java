@@ -178,13 +178,13 @@ public class PMDTask extends Task {
     private void doTask(){
         ruleSetFiles = new AntTaskNameMapper(ruleSetFiles).getRuleSets();
 
-        ClassLoader cl;
+        ClassLoader classLoader;
         if (classpath == null) {
             log("Using the normal ClassLoader", Project.MSG_VERBOSE);
-            cl = getClass().getClassLoader();
+            classLoader = getClass().getClassLoader();
         } else {
             log("Using the AntClassLoader", Project.MSG_VERBOSE);
-            cl = new AntClassLoader(getProject(), classpath);
+            classLoader = new AntClassLoader(getProject(), classpath);
         }
         /*
          * 'basedir' is added to the path to make sure that relative paths
@@ -197,18 +197,13 @@ public class PMDTask extends Task {
             extraPath = auxClasspath.toString() + File.pathSeparator + extraPath;
         }
         try {
-            cl = new ClasspathClassLoader(extraPath, cl);
+            classLoader = new ClasspathClassLoader(extraPath, classLoader);
         } catch (IOException ioe) {
             throw new BuildException(ioe.getMessage());
         }
 
-        final ClassLoader classLoader = cl;
-        RuleSetFactory ruleSetFactory = new RuleSetFactory() {
-            @Override
-            public RuleSets createRuleSets(String ruleSetFileNames) throws RuleSetNotFoundException {
-                return createRuleSets(ruleSetFiles, classLoader);
-            }
-        };
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.setClassLoader(classLoader);
         for (Formatter formatter: formatters) {
             log("Sending a report to " + formatter, Project.MSG_VERBOSE);
             formatter.start(getProject().getBaseDir().toString());
@@ -219,7 +214,7 @@ public class PMDTask extends Task {
             RuleSets rules;
             ruleSetFactory.setMinimumPriority(minPriority);
             ruleSetFactory.setWarnDeprecated(true);
-            rules = ruleSetFactory.createRuleSets(ruleSetFiles, classLoader);
+            rules = ruleSetFactory.createRuleSets(ruleSetFiles);
             ruleSetFactory.setWarnDeprecated(false);
             logRulesUsed(rules);
         } catch (RuleSetNotFoundException e) {

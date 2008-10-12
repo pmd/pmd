@@ -30,22 +30,34 @@ import org.xml.sax.SAXException;
 
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML content.
+ * By default Rules will be loaded using the ClassLoader for this class, using
+ * the {@link RulePriority#LOW} priority, with Rule deprecation warnings off.
  */
 public class RuleSetFactory {
 
     private static final Logger LOG = Logger.getLogger(RuleSetFactory.class.getName());
 
-    private RulePriority minPriority = RulePriority.LOW;
+    private ClassLoader classLoader = RuleSetFactory.class.getClassLoader();
+    private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = false;
+
+    /**
+     * Set the ClassLoader to use when loading Rules.
+     *
+     * @param classLoader The ClassLoader to use.
+     */
+    public void setClassLoader(ClassLoader classLoader) {
+	this.classLoader = classLoader;
+    }
 
     /**
      * Set the minimum rule priority threshold for all Rules which are loaded
      * from RuleSets via reference.
      * 
-     * @param minPriority The minimum priority.
+     * @param minimumPriority The minimum priority.
      */
-    public void setMinimumPriority(RulePriority minPriority) {
-	this.minPriority = minPriority;
+    public void setMinimumPriority(RulePriority minimumPriority) {
+	this.minimumPriority = minimumPriority;
     }
 
     /**
@@ -77,30 +89,16 @@ public class RuleSetFactory {
 
     /**
      * Create a RuleSets from a list of names.
-     * The ClassLoader of the RuleSetFactory class is used.
+     * The currently configured ClassLoader is used.
      *
      * @param ruleSetFileNames  A comma-separated list of rule set files.
      * @return The new RuleSets.
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
-    public RuleSets createRuleSets(String ruleSetFileNames) throws RuleSetNotFoundException {
-	// Warning: This method should not be used to implement the internals of RuleSetFactory, because it does not take an explicit ClassLoader.
-	return createRuleSets(ruleSetFileNames, getClass().getClassLoader());
-    }
-
-    /**
-     * Create a RuleSets from a list of names with a specified ClassLoader.
-     *
-     * @param ruleSetFileNames  A comma-separated list of rule set files.
-     * @param classLoader The ClassLoader to load Classes and resources.
-     * @return The new RuleSets.
-     * @throws RuleSetNotFoundException if unable to find a resource.
-     */
-    public synchronized RuleSets createRuleSets(String ruleSetFileNames, ClassLoader classLoader)
-	    throws RuleSetNotFoundException {
+    public synchronized RuleSets createRuleSets(String ruleSetFileNames) throws RuleSetNotFoundException {
 	RuleSets ruleSets = new RuleSets();
 	for (StringTokenizer st = new StringTokenizer(ruleSetFileNames, ","); st.hasMoreTokens();) {
-	    RuleSet ruleSet = createSingleRuleSet(st.nextToken().trim(), classLoader);
+	    RuleSet ruleSet = createRuleSet(st.nextToken().trim());
 	    ruleSets.addRuleSet(ruleSet);
 	}
 	return ruleSets;
@@ -108,63 +106,36 @@ public class RuleSetFactory {
 
     /**
      * Create a RuleSet from a file name resource.
-     * The ClassLoader of the RuleSetFactory class is used.
+     * The currently configured ClassLoader is used.
      *
      * @param ruleSetFileName The name of rule set file loaded as a resource.
      * @return A new RuleSet.
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
-    public RuleSet createSingleRuleSet(String ruleSetFileName) throws RuleSetNotFoundException {
-	// Warning: This method should not be used to implement the internals of RuleSetFactory, because it does not take an explicit ClassLoader.
-	return createSingleRuleSet(ruleSetFileName, getClass().getClassLoader());
-    }
-
-    /**
-     * Create a RuleSet from a file name resource with a specified ClassLoader.
-     *
-     * @param ruleSetFileName The name of rule set file loaded as a resource.
-     * @param classLoader The ClassLoader to load Classes and resources.
-     * @return A new RuleSet.
-     * @throws RuleSetNotFoundException if unable to find a resource.
-     */
-    private RuleSet createSingleRuleSet(String ruleSetFileName, ClassLoader classLoader)
-	    throws RuleSetNotFoundException {
-	return parseRuleSetNode(ruleSetFileName, tryToGetStreamTo(ruleSetFileName, classLoader), classLoader);
+    public synchronized RuleSet createRuleSet(String ruleSetFileName) throws RuleSetNotFoundException {
+	return parseRuleSetNode(ruleSetFileName, tryToGetStreamTo(ruleSetFileName));
     }
 
     /**
      * Create a RuleSet from an InputStream.
-     * The ClassLoader of the RuleSetFactory class is used.
+     * The currently configured ClassLoader is used.
      *
      * @param inputStream InputStream containing the RuleSet XML configuration.
      * @return A new RuleSet.
      */
     public RuleSet createRuleSet(InputStream inputStream) {
-	// Warning: This method should not be used to implement the internals of RuleSetFactory, because it does not take an explicit ClassLoader.
-	return createRuleSet(inputStream, getClass().getClassLoader());
-    }
-
-    /**
-     * Create a RuleSet from an InputStream with a specified ClassLoader.
-     *
-     * @param inputStream InputStream containing the RuleSet XML configuration.
-     * @param classLoader The ClassLoader to load Classes and resources.
-     * @return A new RuleSet.
-     */
-    public RuleSet createRuleSet(InputStream inputStream, ClassLoader classLoader) {
-	return parseRuleSetNode(null, inputStream, classLoader);
+	return parseRuleSetNode(null, inputStream);
     }
 
     /**
      * Try to load a resource with the specified class loader
      *
      * @param name A resource name (e.g. a RuleSet description).
-     * @param classLoader The ClassLoader to load Classes and resources.
      * @return An InputStream to that resource.
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
-    private InputStream tryToGetStreamTo(String name, ClassLoader classLoader) throws RuleSetNotFoundException {
-	InputStream in = ResourceLoader.loadResourceAsStream(name, classLoader);
+    private InputStream tryToGetStreamTo(String name) throws RuleSetNotFoundException {
+	InputStream in = ResourceLoader.loadResourceAsStream(name, this.classLoader);
 	if (in == null) {
 	    throw new RuleSetNotFoundException(
 		    "Can't find resource "
@@ -179,10 +150,9 @@ public class RuleSetFactory {
      * Parse a ruleset node to construct a RuleSet.
      * 
      * @param inputStream InputStream containing the RuleSet XML configuration.
-     * @param classLoader The ClassLoader to load Classes and resources.
      * @return The new RuleSet.
      */
-    private RuleSet parseRuleSetNode(String fileName, InputStream inputStream, ClassLoader classLoader) {
+    private RuleSet parseRuleSetNode(String fileName, InputStream inputStream) {
 	try {
 	    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 	    Document document = builder.parse(inputStream);
@@ -203,7 +173,7 @@ public class RuleSetFactory {
 		    } else if (node.getNodeName().equals("exclude-pattern")) {
 			ruleSet.addExcludePattern(parseTextNode(node));
 		    } else if (node.getNodeName().equals("rule")) {
-			parseRuleNode(ruleSet, node, classLoader);
+			parseRuleNode(ruleSet, node);
 		    } else {
 			throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
 				+ "> encountered as child of <ruleset> element.");
@@ -241,18 +211,17 @@ public class RuleSetFactory {
      *
      * @param ruleSet The RuleSet being constructed.
      * @param ruleNode Must be a rule element node.
-     * @param classLoader The ClassLoader to load Classes and resources.
      */
-    private void parseRuleNode(RuleSet ruleSet, Node ruleNode, ClassLoader classLoader) throws ClassNotFoundException,
-	    InstantiationException, IllegalAccessException, RuleSetNotFoundException {
+    private void parseRuleNode(RuleSet ruleSet, Node ruleNode) throws ClassNotFoundException, InstantiationException,
+	    IllegalAccessException, RuleSetNotFoundException {
 	Element ruleElement = (Element) ruleNode;
 	String ref = ruleElement.getAttribute("ref");
 	if (ref.endsWith("xml")) {
-	    parseRuleSetReferenceNode(ruleSet, ruleElement, ref, classLoader);
+	    parseRuleSetReferenceNode(ruleSet, ruleElement, ref);
 	} else if (ref.trim().length() == 0) {
-	    parseSingleRuleNode(ruleSet, ruleNode, classLoader);
+	    parseSingleRuleNode(ruleSet, ruleNode);
 	} else {
-	    parseRuleReferenceNode(ruleSet, ruleNode, ref, classLoader);
+	    parseRuleReferenceNode(ruleSet, ruleNode, ref);
 	}
     }
 
@@ -265,9 +234,8 @@ public class RuleSetFactory {
      * @param ruleSet The RuleSet being constructed.
      * @param ruleElement Must be a rule element node.
      * @param ref The RuleSet reference.
-     * @param classLoader The ClassLoader to load Classes and resources.
      */
-    private void parseRuleSetReferenceNode(RuleSet ruleSet, Element ruleElement, String ref, ClassLoader classLoader)
+    private void parseRuleSetReferenceNode(RuleSet ruleSet, Element ruleElement, String ref)
 	    throws RuleSetNotFoundException {
 
 	RuleSetReference ruleSetReference = new RuleSetReference();
@@ -283,10 +251,11 @@ public class RuleSetFactory {
 	}
 
 	RuleSetFactory ruleSetFactory = new RuleSetFactory();
-	RuleSet otherRuleSet = ruleSetFactory.createSingleRuleSet(ref, classLoader);
+	ruleSetFactory.setClassLoader(this.classLoader);
+	RuleSet otherRuleSet = ruleSetFactory.createRuleSet(ref);
 	for (Rule rule : otherRuleSet.getRules()) {
 	    if (!ruleSetReference.getExcludes().contains(rule.getName())
-		    && rule.getPriority().compareTo(minPriority) <= 0 && !rule.isDeprecated()) {
+		    && rule.getPriority().compareTo(minimumPriority) <= 0 && !rule.isDeprecated()) {
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRuleSetReference(ruleSetReference);
 		ruleReference.setRule(rule);
@@ -301,10 +270,9 @@ public class RuleSetFactory {
      *
      * @param ruleSet The RuleSet being constructed.
      * @param ruleNode Must be a rule element node.
-     * @param classLoader The ClassLoader to load Classes and resources.
      */
-    private void parseSingleRuleNode(RuleSet ruleSet, Node ruleNode, ClassLoader classLoader)
-	    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void parseSingleRuleNode(RuleSet ruleSet, Node ruleNode) throws ClassNotFoundException,
+	    InstantiationException, IllegalAccessException {
 	Element ruleElement = (Element) ruleNode;
 
 	String attribute = ruleElement.getAttribute("class");
@@ -395,7 +363,7 @@ public class RuleSetFactory {
 		}
 	    }
 	}
-	if (rule.getPriority().compareTo(minPriority) <= 0) {
+	if (rule.getPriority().compareTo(minimumPriority) <= 0) {
 	    ruleSet.addRule(rule);
 	}
     }
@@ -408,14 +376,13 @@ public class RuleSetFactory {
      * @param ruleSet The RuleSet being constructed.
      * @param ruleNode Must be a rule element node.
      * @param ref A reference to a Rule.
-     * @param classLoader The ClassLoader to load Classes and resources.
      */
-    private void parseRuleReferenceNode(RuleSet ruleSet, Node ruleNode, String ref, ClassLoader classLoader)
-	    throws RuleSetNotFoundException {
+    private void parseRuleReferenceNode(RuleSet ruleSet, Node ruleNode, String ref) throws RuleSetNotFoundException {
 	RuleSetFactory ruleSetFactory = new RuleSetFactory();
+	ruleSetFactory.setClassLoader(this.classLoader);
 
 	ExternalRuleID externalRuleID = new ExternalRuleID(ref);
-	RuleSet externalRuleSet = ruleSetFactory.createSingleRuleSet(externalRuleID.getFilename(), classLoader);
+	RuleSet externalRuleSet = ruleSetFactory.createRuleSet(externalRuleID.getFilename());
 	Rule externalRule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
 	if (externalRule == null) {
 	    throw new IllegalArgumentException("Unable to find rule " + externalRuleID.getRuleName()
@@ -478,7 +445,7 @@ public class RuleSetFactory {
 	    }
 	}
 
-	if (externalRule.getPriority().compareTo(minPriority) <= 0) {
+	if (externalRule.getPriority().compareTo(minimumPriority) <= 0) {
 	    ruleSet.addRule(ruleReference);
 	}
     }
@@ -536,7 +503,8 @@ public class RuleSetFactory {
 		rule.setProperty(propertyDescriptor, realValue);
 	    }
 	} else {
-	    PropertyDescriptor propertyDescriptor = PropertyDescriptorFactory.createPropertyDescriptor(name, description, type, delimiter, min, max, value);
+	    PropertyDescriptor propertyDescriptor = PropertyDescriptorFactory.createPropertyDescriptor(name,
+		    description, type, delimiter, min, max, value);
 	    rule.definePropertyDescriptor(propertyDescriptor);
 	}
     }

@@ -98,7 +98,7 @@ public class Benchmark {
             RuleSetFactory factory = new RuleSetFactory();
             if (ruleset.length() > 0) {
                 SimpleRuleSetNameMapper mapper = new SimpleRuleSetNameMapper(ruleset);
-                stress(languageVersion, factory.createSingleRuleSet(mapper.getRuleSets()), dataSources, results, debug);
+                stress(languageVersion, factory.createRuleSet(mapper.getRuleSets()), dataSources, results, debug);
             } else {
                 Iterator<RuleSet> i = factory.getRegisteredRuleSets();
                 while (i.hasNext()) {

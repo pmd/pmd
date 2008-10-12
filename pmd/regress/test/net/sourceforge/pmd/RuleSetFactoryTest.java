@@ -57,7 +57,7 @@ public class RuleSetFactoryTest {
 	assertNull("RuleSet file name not expected", rs.getFileName());
 
 	RuleSetFactory rsf = new RuleSetFactory();
-	rs = rsf.createSingleRuleSet("rulesets/basic.xml");
+	rs = rsf.createRuleSet("rulesets/basic.xml");
 	assertEquals("wrong RuleSet file name", rs.getFileName(), "rulesets/basic.xml");
     }
 
@@ -77,14 +77,14 @@ public class RuleSetFactoryTest {
 			    + System.getProperty("java.class.path"));
 	}
 	RuleSetFactory rsf = new RuleSetFactory();
-	RuleSet rs = rsf.createSingleRuleSet("rulesets/favorites.xml");
+	RuleSet rs = rsf.createRuleSet("rulesets/favorites.xml");
 	assertNotNull(rs.getRuleByName("WhileLoopsMustUseBraces"));
     }
 
     @Test(expected = RuleSetNotFoundException.class)
     public void testRuleSetNotFound() throws RuleSetNotFoundException {
 	RuleSetFactory rsf = new RuleSetFactory();
-	rsf.createSingleRuleSet("fooooo");
+	rsf.createRuleSet("fooooo");
     }
 
     @Test
@@ -814,7 +814,7 @@ public class RuleSetFactoryTest {
 
     private RuleSet loadRuleSetByFileName(String ruleSetFileName) throws RuleSetNotFoundException {
 	RuleSetFactory rsf = new RuleSetFactory();
-	return rsf.createSingleRuleSet(ruleSetFileName);
+	return rsf.createRuleSet(ruleSetFileName);
     }
 
     private RuleSet loadRuleSet(String ruleSetXml) {

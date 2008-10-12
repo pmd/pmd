@@ -314,8 +314,15 @@ The following is relatively complete list of the major changes (this may not be
    API Change - Remove deprecated APIs
       Removed - AccessNode.setXXX() methods, use AccessNode.setXXX(boolean) instead.
       Removed - PMDException.getReason()
-      Removed - RuleSetFactory.createRuleSet(String,ClassLoaer), use RuleSetFactory.createRuleSets(String,ClassLoader) instead.
+      Removed - RuleSetFactory.createRuleSet(String,ClassLoader), use RuleSetFactory.setClassLoader(ClassLoader) and RuleSetFactory.createRuleSets(String) instead.
       Removed - net.sourceforge.pmd.cpd.FileFinder use net.sourceforge.pmd.util.FileFinder instead.
+
+   API Change - RuleSetFactory
+        Added - RuleSetFactory.setClassLoader(ClassLoader)
+      Renamed - RuleSetFactory.createSingleRuleSet(String) to RuleSetFactory.createRuleSet(String);
+      Removed - RuleSetFactory.createRuleSets(String, ClassLoader), use RuleSetFactory.createRuleSets(String) instead.
+      Removed - RuleSetFactory.createSingleRuleSet(String, ClassLoader), use RuleSetFactory.createSingleRuleSet(String) instead.
+      Removed - RuleSetFactory.createRuleSet(InputStream, ClassLoader), use RuleSetFactory.createRuleSet(InputStream) instead.
 
    API Change - Changes to Renderer class, and Renderer implementations
         Added - Renderer.getName()
