@@ -20,7 +20,7 @@ elif [ $option = "all" ]; then
 elif [ $option = "uploadcurrent" ]; then
   echo "Generating and uploading maven artifacts"
   mvn -q source:jar javadoc:jar deploy
-  mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.2.4.jar -DpomFile=pmd-jdk14-pom.xml
+  mvn -q deploy:deploy-file -Durl=scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.2.4.jar -DpomFile=pmd-jdk14-pom.xml
   echo "Generating xdocs and uploading"
   ruby munge_rulesets.rb
   maven -qb pmd:rulesets-index xdoc:generate-from-pom 
@@ -30,26 +30,19 @@ elif [ $option = "uploadcurrent" ]; then
   maven -qb xdoc:transform 
   DOCS_FILE=docs.tar.gz
   cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
-  cd target
-  rm -f $DOCS_FILE
-  tar zcf $DOCS_FILE docs/
-  scp $DOCS_FILE pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/current/
-  cd ../
-  ssh pmd.sourceforge.net "cd /home/groups/p/pm/pmd/htdocs/current/ && tar -zxf docs.tar.gz && cp -R docs/* . && rm -rf docs && rm docs.tar.gz"
+  cd target/docs
+  rsync -a -e ssh * $USER,pmd@web.sourceforge.net:/home/groups/p/pm/pmd/htdocs
+  cd ../..
 elif [ $option = "upload" ]; then
   echo "Generating and uploading maven artifacts"
   mvn -q source:jar javadoc:jar deploy
-  mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.2.4.jar -DpomFile=pmd-jdk14-pom.xml
+  mvn -q deploy:deploy-file -Durl=scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.2.4.jar -DpomFile=pmd-jdk14-pom.xml
   echo "Uploading xdocs"
   DOCS_FILE=docs.tar.gz
   cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
-  cd target
-  rm -f $DOCS_FILE
-  tar zcf $DOCS_FILE docs/
-    echo "Starting secure copy"
-  scp $DOCS_FILE pmd.sourceforge.net:/home/groups/p/pm/pmd/
-  cd ../
-  ssh pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ &&  rm -rf xref && rm -rf apidocs && ./update_docs.sh"
+  cd target/docs
+  rsync -a -e ssh * $USER,pmd@web.sourceforge.net:/home/groups/p/pm/pmd/htdocs
+  cd ../..
 fi
 if [ -e velocity.log ]; then
   rm velocity.log

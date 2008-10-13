@@ -427,11 +427,11 @@
 	<target name="cpdjnlp" depends="dist" description="Uploads a new CPD JNLP thingy to the PMD web site">
 		<signjar jar="${dir.lib}/pmd-${version}.jar" storetype="${keystore.type}" alias="${keystore.alias}" keystore="${keystore.path}" storepass="${keystore.password}" />
 		<exec executable="scp" os="Linux">
-			<arg line=" ${dir.lib}/pmd-${version}.jar pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
+			<arg line=" ${dir.lib}/pmd-${version}.jar ${user.name},pmd@web.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
 		</exec>
 		<echo message="Uploading cpd.jnlp" />
 		<exec executable="scp" os="Linux">
-			<arg line=" etc/cpd.jnlp pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
+			<arg line=" etc/cpd.jnlp ${user.name},pmd@web.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
 		</exec>
 	</target>
 
