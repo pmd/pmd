@@ -1,9 +1,9 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
-v3.2.5
-------------------
+v3.2.5 - October 13 2008
+------------------------
 
-PMD to 4.2.3
+PMD to 4.2.4
 
 plugin reorganization
 

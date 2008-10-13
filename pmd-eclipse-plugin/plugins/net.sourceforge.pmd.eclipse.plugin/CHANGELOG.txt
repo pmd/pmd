@@ -1,8 +1,8 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
-v3.2.5
+v3.2.5 - October 13 2008
 
-. PMD updated to v4.2.3
+. PMD updated to v4.2.4
 . plugin reorganization
 . code cleanup
 . all rule examples displayed in Rule Configuration panel
