@@ -37,10 +37,10 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import name.herlin.command.AbstractProcessableCommand;
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -73,6 +73,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the readOnly.
      */
+    @Override
     public boolean isReadOnly() {
         return readOnly;
     }
@@ -87,6 +88,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the description.
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -101,6 +103,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the name.
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -122,6 +125,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the outputProperties.
      */
+    @Override
     public boolean hasOutputProperties() {
         return outputProperties;
     }
@@ -129,6 +133,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the readyToExecute.
      */
+    @Override
     public boolean isReadyToExecute() {
         return readyToExecute;
     }
@@ -185,11 +190,13 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
+    @Override
     public abstract void execute() throws CommandException;
 
     /**
      * @see name.herlin.command.Command#reset()
      */
+    @Override
     public abstract void reset();
 
     /**
@@ -259,19 +266,20 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * @param project
      * @return
      */
-    protected PMD getPmdEngineForProject(final IProject project) throws CommandException {
+    protected PMDEngine getPmdEngineForProject(final IProject project) throws CommandException {
         final IJavaProject javaProject = JavaCore.create(project);
-        final PMD pmdEngine = new PMD();
+        final PMDEngine pmdEngine = new PMDEngine();
 
         if (javaProject.exists()) {
             final String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
             log.debug("compilerCompliance = " + compilerCompliance);
-            final SourceType s = SourceType.getSourceTypeForId("java " + compilerCompliance);
-            if (s != null) {
-                pmdEngine.setJavaVersion(s);
-            } else {
-                throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO NLS
+
+            LanguageVersion languageVersion = Language.JAVA.getVersion(compilerCompliance);
+            if ( languageVersion == null ) {
+                throw new CommandException("The target JDK, " + compilerCompliance + " is not supported"); // TODO NLS
             }
+            pmdEngine.setLanguageVersion(languageVersion);
+
             final IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
             if (preferences.isProjectBuildPathEnabled()) {
             	pmdEngine.setClassLoader(new JavaProjectClassLoader(pmdEngine.getClassLoader(), javaProject));

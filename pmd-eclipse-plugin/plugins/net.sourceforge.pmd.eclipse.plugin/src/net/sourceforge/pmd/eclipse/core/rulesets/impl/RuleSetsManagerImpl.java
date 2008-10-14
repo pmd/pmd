@@ -42,7 +42,6 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -97,12 +96,12 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
         try {
             final RuleSet ruleSet = new RuleSet();
 
-            for (int i = 0; i < ruleSetUrls.length; i++) {
+            for (String ruleSetUrl : ruleSetUrls) {
                 final RuleSetFactory factory = new RuleSetFactory(); // NOPMD by Herlin on 21/06/06 23:25
-                final Collection<net.sourceforge.pmd.Rule> rules = factory.createSingleRuleSet(ruleSetUrls[i]).getRules();
+                final Collection<net.sourceforge.pmd.Rule> rules = factory.createRuleSet(ruleSetUrl).getRules();
                 for (final net.sourceforge.pmd.Rule pmdRule: rules) {
                     final Rule rule = new Rule(); // NOPMD by Herlin on 21/06/06 23:29
-                    rule.setRef(ruleSetUrls[i] + '/' + pmdRule.getName());
+                    rule.setRef(ruleSetUrl + '/' + pmdRule.getName());
                     rule.setPmdRule(pmdRule);
                     ruleSet.addRule(rule);
                 }

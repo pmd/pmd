@@ -22,7 +22,7 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
 	public Object[] getElements(Object inputElement) {
         Object[] result = new Object[0];
 	    if (inputElement instanceof Iterator) {
-            final Iterator<DaaRuleViolation> violationsIterator = (Iterator)inputElement;
+            final Iterator<DaaRuleViolation> violationsIterator = (Iterator<DaaRuleViolation>)inputElement;
             final List<DaaRuleViolation> violations = new ArrayList<DaaRuleViolation>();
             for (int count = 0; violationsIterator.hasNext() && count < MAX_ROWS; count++) {
                 final DaaRuleViolation violation = violationsIterator.next();

@@ -44,7 +44,6 @@ import java.util.Set;
 
 import name.herlin.command.CommandException;
 import name.herlin.command.Timer;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -112,6 +111,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
+    @Override
     public void execute() throws CommandException {
         log.info("ReviewCode command starting.");
         try {
@@ -227,6 +227,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * @see name.herlin.command.Command#reset()
      */
+    @Override
     public void reset() {
         this.resources.clear();
         this.markers = new HashMap<IFile, Set<MarkerInfo>>();
@@ -237,6 +238,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
+    @Override
     public boolean isReadyToExecute() {
         return this.resources.size() != 0 || this.resourceDelta != null;
     }
@@ -289,7 +291,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final IProject project = resource.getProject();
             final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             final RuleSet ruleSet = properties.getProjectRuleSet();
-            final PMD pmdEngine = getPmdEngineForProject(project);
+            final PMDEngine pmdEngine = getPmdEngineForProject(project);
             setStepsCount(countResourceElement(resource));
             log.debug("Visiting resource " + resource.getName() + " : " + getStepsCount());
 
@@ -328,8 +330,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
             final IJavaProject javaProject = JavaCore.create(project);
             final IClasspathEntry[] entries = javaProject.getRawClasspath();
-            for (int i = 0; i < entries.length; i++) {
-                if (entries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+            for (IClasspathEntry entrie : entries) {
+                if (entrie.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 
                     // phherlin note: this code is ugly but I don't how to do otherwise.
                     // The IWorkspaceRoot getContainerLocation(IPath) always return null.
@@ -337,12 +339,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     // to know if the entry is a folder or a project !
                     IContainer sourceContainer = null;
                     try {
-                        sourceContainer = ResourcesPlugin.getWorkspace().getRoot().getFolder(entries[i].getPath());
+                        sourceContainer = ResourcesPlugin.getWorkspace().getRoot().getFolder(entrie.getPath());
                     } catch (IllegalArgumentException e) {
-                        sourceContainer = ResourcesPlugin.getWorkspace().getRoot().getProject(entries[i].getPath().toString());
+                        sourceContainer = ResourcesPlugin.getWorkspace().getRoot().getProject(entrie.getPath().toString());
                     }
                     if (sourceContainer == null) {
-                        log.warn("Source container " + entries[i].getPath() + " for project " + project.getName() + " is not valid");
+                        log.warn("Source container " + entrie.getPath() + " for project " + project.getName() + " is not valid");
                     } else {
                         processResource(sourceContainer);
                     }
@@ -362,7 +364,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final IProject project = this.resourceDelta.getResource().getProject();
             final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             final RuleSet ruleSet = properties.getProjectRuleSet();
-            final PMD pmdEngine = getPmdEngineForProject(project);
+            final PMDEngine pmdEngine = getPmdEngineForProject(project);
             this.setStepsCount(countDeltaElement(this.resourceDelta));
             log.debug("Visit of resource delta : " + getStepsCount());
 

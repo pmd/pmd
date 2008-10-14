@@ -7,15 +7,14 @@ import java.util.List;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.dfa.DaaRule;
-import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.java.rule.controversial.DataflowAnomalyAnalysisRule;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewResourceForRuleCommand;
+import net.sourceforge.pmd.eclipse.runtime.cmd.PMDEngine;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -271,7 +270,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
 
             // run PMD using the DFAGraphRule
             // and the Text of the Resource
-            new PMD().processFile(reader, rs, ctx);
+            new PMDEngine().processFile(reader, rs, ctx);
 
             // the Rule then can give us the Methods
             methodList.addAll(dfaGraphRule.getMethods());
@@ -423,7 +422,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
         this.isTableRefreshed = true;
         try {
             final ReviewResourceForRuleCommand cmd = new ReviewResourceForRuleCommand();
-            final DaaRule rule = new DaaRule();
+            final DataflowAnomalyAnalysisRule rule = new DataflowAnomalyAnalysisRule();
             rule.setUsesDFA();
             cmd.setUserInitiated(false);
             cmd.setRule(rule);

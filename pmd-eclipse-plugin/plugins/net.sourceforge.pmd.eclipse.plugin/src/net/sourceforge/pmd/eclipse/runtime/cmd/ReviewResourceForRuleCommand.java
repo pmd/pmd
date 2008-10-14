@@ -40,11 +40,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -130,7 +128,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                 && file.getFileExtension().equals("java")) {
             final RuleSet ruleSet = new RuleSet();
             ruleSet.addRule(rule);
-            final PMD pmdEngine = getPmdEngineForProject(project);
+            final PMDEngine pmdEngine = getPmdEngineForProject(project);
 
             try {
                 this.context = new RuleContext();

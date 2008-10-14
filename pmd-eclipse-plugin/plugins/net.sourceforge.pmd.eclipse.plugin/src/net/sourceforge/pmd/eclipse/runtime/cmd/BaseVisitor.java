@@ -69,7 +69,7 @@ public class BaseVisitor {
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo>> accumulator;
-    private PMD pmdEngine;
+    private PMDEngine pmdEngine;
     private RuleSet ruleSet;
     private int filesCount;
     private long pmdDuration;
@@ -173,7 +173,7 @@ public class BaseVisitor {
     /**
      * @return Returns the pmdEngine.
      */
-    public PMD getPmdEngine() {
+    public PMDEngine getPmdEngine() {
         return this.pmdEngine;
     }
 
@@ -181,7 +181,7 @@ public class BaseVisitor {
      * @param pmdEngine
      *            The pmdEngine to set.
      */
-    public void setPmdEngine(final PMD pmdEngine) {
+    public void setPmdEngine(final PMDEngine pmdEngine) {
         this.pmdEngine = pmdEngine;
     }
 
