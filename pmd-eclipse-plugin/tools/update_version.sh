@@ -13,7 +13,7 @@ if [ $# != 1 ]; then
   exit 1
 fi
 
-version=$1.v`date +%Y%m%d%H%M`
+version=$1.v`date --utc +%Y%m%d%H%M`
 
 echo
 echo Updating version to $version
