@@ -38,8 +38,8 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
                 result = rule.getSince();
                 result = (result == null) ? "n/a" : result;
             } else if (columnIndex == 3) {
-                if ((rule.getPriority() <= PRIORITY_LABEL.length) && (rule.getPriority() > 0)) {
-                    result = PRIORITY_LABEL[rule.getPriority() - 1];
+                if ((rule.getPriority().getPriority() <= PRIORITY_LABEL.length) && (rule.getPriority().getPriority() > 0)) {
+                    result = PRIORITY_LABEL[rule.getPriority().getPriority() - 1];
                 } else {
                     result = PRIORITY_ILLEGAL;
                 }

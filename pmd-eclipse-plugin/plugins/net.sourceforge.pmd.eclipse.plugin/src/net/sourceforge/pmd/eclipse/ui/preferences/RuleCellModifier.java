@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.eclipse.jface.viewers.ICellModifier;
@@ -45,7 +46,7 @@ public class RuleCellModifier implements ICellModifier {
             } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_RULE_NAME)) {
                 result = rule.getName();
             } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_PRIORITY)) {
-                result = new Integer(rule.getPriority() - 1);
+                result = new Integer(rule.getPriority().getPriority() - 1);
             } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_DESCRIPTION)) {
                 result = rule.getDescription();
             }
@@ -64,7 +65,7 @@ public class RuleCellModifier implements ICellModifier {
             if (item.getData() instanceof Rule) {
                 Rule rule = (Rule) item.getData();
                 if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_PRIORITY)) {
-                    rule.setPriority(((Integer) value).intValue() + 1);
+                    rule.setPriority(RulePriority.valueOf(((Integer) value).intValue() + 1));
                     PMDPreferencePage.getActiveInstance().setModified(true);
                     //tableViewer.update(rule, new String[] { "priority" });
                     tableViewer.refresh();

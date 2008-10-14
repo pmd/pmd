@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.dfa.DaaRuleViolation;
+import net.sourceforge.pmd.lang.java.rule.controversial.DaaRuleViolation;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;

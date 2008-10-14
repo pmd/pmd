@@ -97,7 +97,7 @@ public class RuleTableViewerSorter extends ViewerSorter {
      */
     public static final Comparator RULE_PRIORITY_COMPARATOR = new Comparator() {
         public int compare(Object e1, Object e2) {
-            return ((Rule) e1).getPriority() - (((Rule) e2).getPriority());
+            return ((Rule) e1).getPriority().getPriority() - (((Rule) e2).getPriority().getPriority());
         }
     };   
 

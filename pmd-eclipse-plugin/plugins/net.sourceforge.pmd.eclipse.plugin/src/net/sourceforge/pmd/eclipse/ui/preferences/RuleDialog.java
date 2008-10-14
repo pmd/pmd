@@ -5,8 +5,9 @@ import java.net.URL;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleReference;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
@@ -443,8 +444,8 @@ public class RuleDialog extends Dialog {
         Combo combo = new Combo(parent, SWT.SINGLE | SWT.BORDER);
     	String[] labels = PMDPlugin.getDefault().getPriorityLabels();
     	int index = 3-1;
-		if (editedRule != null && editedRule.getPriority() >= 0 && editedRule.getPriority() <= labels.length) {
-			index = editedRule.getPriority() - 1;
+		if (editedRule != null && editedRule.getPriority().getPriority() >= 0 && editedRule.getPriority().getPriority() <= labels.length) {
+			index = editedRule.getPriority().getPriority() - 1;
 		}
     	for (int i = 0; i < labels.length; i++) {
     		String label = labels[i];
@@ -765,7 +766,7 @@ public class RuleDialog extends Dialog {
                     rule.setMessage(messageText.getText().trim());
                     rule.setDescription(descriptionText.getText());
                     rule.getExamples().add(exampleText.getText());
-                    rule.setPriority(priorityCombo.getSelectionIndex()+1);
+                    rule.setPriority(RulePriority.valueOf(priorityCombo.getSelectionIndex()+1));
                     rule.setExternalInfoUrl(externalInfoUrlText.getText());
                     if (usesTypeResolutionButton.getSelection()) {
                     	rule.setUsesTypeResolution();
@@ -798,7 +799,7 @@ public class RuleDialog extends Dialog {
         // else only modify appropriate fields (edit mode)
         else {
             editedRule.setMessage(messageText.getText().trim());
-            editedRule.setPriority(priorityCombo.getSelectionIndex() + 1);
+            editedRule.setPriority(RulePriority.valueOf(priorityCombo.getSelectionIndex() + 1));
             editedRule.setDescription(descriptionText.getText());
             editedRule.setExternalInfoUrl(externalInfoUrlText.getText());
             editedRule.addExample(this.exampleText.getText());

@@ -39,7 +39,7 @@ package net.sourceforge.pmd.eclipse.ui.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -60,7 +60,7 @@ import org.eclipse.jdt.core.IMethod;
  */
 public class DataflowMethodRecord {
     private final IMethod method;
-    private final SimpleNode node;
+    private final Node node;
 
     /**
      * Constructor
@@ -68,7 +68,7 @@ public class DataflowMethodRecord {
      * @param javaMethod, the Method of the JavaModel
      * @param pmdMethod, the corresponding PMD-SimpleNode / ASTMethodDeclaration
      */
-    public DataflowMethodRecord(IMethod javaMethod, SimpleNode pmdMethod) {
+    public DataflowMethodRecord(IMethod javaMethod, Node pmdMethod) {
         if (javaMethod == null) {
             throw new IllegalArgumentException("javaMethod cannot be null");
         }
@@ -84,7 +84,7 @@ public class DataflowMethodRecord {
     /**
      * @return the PMD-Method
      */
-    public SimpleNode getPMDMethod() {
+    public Node getPMDMethod() {
         return this.node;
     }
 

@@ -6,14 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.dfa.DaaRule;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewResourceForRuleCommand;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -206,7 +206,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
                         final int row = (int)((double)e.y / DataflowGraphViewer.ROW_HEIGHT);
                         graphViewer.getGraph().demark();
                         graphViewer.getGraph().markNode(row);
-                        final int startLine = ((IDataFlowNode)pmdMethod.getDataFlowNode().getFlow().get(row)).getLine()-1;
+                        final int startLine = ((DataFlowNode)pmdMethod.getDataFlowNode().getFlow().get(row)).getLine()-1;
                         int offset = 0;
                         int length = 0;
                         try {
@@ -227,9 +227,9 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
     
     /**
      * Shows the method that belongs to a violation (to a line).
-     * @param violation IRuleViolation
+     * @param violation RuleViolation
      */
-    private void showMethodToViolation(IRuleViolation violation) {
+    private void showMethodToViolation(RuleViolation violation) {
         final int beginLine = violation.getBeginLine();
         
         for (int i = 0; i < pmdMethodList.size(); i++) {
@@ -324,8 +324,8 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
         // get the Selection
         if (event.getSelection() instanceof IStructuredSelection) {
             final Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
-            if (element instanceof IRuleViolation) {
-                final IRuleViolation violation = (IRuleViolation) element;
+            if (element instanceof RuleViolation) {
+                final RuleViolation violation = (RuleViolation) element;
                 final String varName = violation.getVariableName();
                 final int beginLine = violation.getBeginLine();
                 final int endLine = violation.getEndLine();

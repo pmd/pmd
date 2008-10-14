@@ -36,7 +36,7 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Rule;
 
 /**
@@ -48,7 +48,7 @@ import net.sourceforge.pmd.Rule;
  *
  */
 
-public class FakeRuleViolation implements IRuleViolation {
+public class FakeRuleViolation implements RuleViolation {
     private String filename = "";
     private int beginLine;
     private int beginColumn;

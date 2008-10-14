@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -51,7 +51,7 @@ public class DataflowGraph extends Composite {
 	 */
 	private class NodeCanvas extends Canvas implements PaintListener {
 
-		private IDataFlowNode node;
+		private DataFlowNode node;
 		private int radius;
 		private Color bgColor;
 		private Color nodeColor;
@@ -69,7 +69,7 @@ public class DataflowGraph extends Composite {
 		 * @param coordinates, where to put the Label
 		 * @param nodeRadius, radius of the Node
 		 */
-		public NodeCanvas(Composite parent, IDataFlowNode inode,
+		public NodeCanvas(Composite parent, DataFlowNode inode,
 				Point coordinates, int nodeRadius) {
 			super(parent, SWT.NONE);
 
@@ -149,7 +149,7 @@ public class DataflowGraph extends Composite {
 		/**
 		 * @return the DataFlowNode
 		 */
-		public IDataFlowNode getINode() {
+		public DataFlowNode getINode() {
 			return node;
 		}
 
@@ -433,7 +433,7 @@ public class DataflowGraph extends Composite {
 	 * @param radius
 	 * @param length
 	 */
-	public DataflowGraph(Composite parent, SimpleNode node,
+	public DataflowGraph(Composite parent, Node node,
 			int radius, int length, int height) {
 		super(parent, SWT.NONE);
 
@@ -497,13 +497,13 @@ public class DataflowGraph extends Composite {
 	 *
 	 * @param node
 	 */
-	private void createDataflowGraph(SimpleNode node) {
+	private void createDataflowGraph(Node node) {
 		List flow = node.getDataFlowNode().getFlow();
 
 		// the Data-Flow gives us all the Nodes
 		// every Node has children, for which we can build Paths
 		for (int i=0; i<flow.size(); i++) {
-			IDataFlowNode inode = (IDataFlowNode) flow.get(i);
+			DataFlowNode inode = (DataFlowNode) flow.get(i);
 
 			// create a new Node and add it to the List
 			Point location = new Point(
@@ -516,7 +516,7 @@ public class DataflowGraph extends Composite {
 			// get the Nodes children and build Paths between them
 			List children = inode.getChildren();
 			for (int j=0; j<children.size(); j++) {
-				IDataFlowNode n = (IDataFlowNode) children.get(j);
+				DataFlowNode n = (DataFlowNode) children.get(j);
 
 				// create a new Path and add it to the List
 				int x = (getSize().x-2*nodeRadius)/2;
@@ -633,7 +633,7 @@ public class DataflowGraph extends Composite {
 		// an Anomaly can have multiple starting Points
 		// but - so we say here - only one ending Point
 		ArrayList startNodes = new ArrayList();
-		IDataFlowNode endNode = null;
+		DataFlowNode endNode = null;
 
 		for (int i=0; i<nodes.size(); i++) {
 			// first we clear all Nodes not needed
@@ -668,7 +668,7 @@ public class DataflowGraph extends Composite {
 		// ... to mark some of them again
 		ArrayList pathsToMark = new ArrayList();
 		for (int j=0; j<startNodes.size(); j++) {
-			IDataFlowNode start = (IDataFlowNode) startNodes.get(j);
+			DataFlowNode start = (DataFlowNode) startNodes.get(j);
 
 			// from every starting Node we search
 			// for a Path to the ending node
@@ -719,7 +719,7 @@ public class DataflowGraph extends Composite {
 	 * @return an ArrayList of PathCanvas, that build up the Path from
 	 * Start-Node to End-Node or null, if there no such Path could be found
 	 */
-	protected ArrayList findPath(IDataFlowNode start, IDataFlowNode end,
+	protected ArrayList findPath(DataFlowNode start, DataFlowNode end,
 			ArrayList visited) {
 
 		// this is the break-Condition for the Recursion
@@ -736,7 +736,7 @@ public class DataflowGraph extends Composite {
 			// this is the Search
 			List children = start.getChildren();
 			for (int k=0; k<children.size(); k++) {
-				IDataFlowNode node = (IDataFlowNode) children.get(k);
+				DataFlowNode node = (DataFlowNode) children.get(k);
 
 				// here we avoid Loops by checking the visited Nodes
 				if (visited.contains(node))

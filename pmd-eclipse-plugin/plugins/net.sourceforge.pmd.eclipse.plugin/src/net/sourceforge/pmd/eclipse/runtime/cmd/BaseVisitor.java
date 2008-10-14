@@ -459,9 +459,9 @@ public class BaseVisitor {
         values.add(violation.getRule().getName());
 
         attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_PRIORITY);
-        values.add(new Integer(violation.getRule().getPriority()));
+        values.add(new Integer(violation.getRule().getPriority().getPriority()));
 
-        switch (violation.getRule().getPriority()) {
+        switch (violation.getRule().getPriority().getPriority()) {
         case 1:
             attributeNames.add(IMarker.PRIORITY);
             values.add(new Integer(IMarker.PRIORITY_HIGH));

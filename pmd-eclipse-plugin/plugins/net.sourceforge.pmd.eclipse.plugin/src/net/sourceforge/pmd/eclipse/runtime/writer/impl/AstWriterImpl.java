@@ -35,9 +35,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 
@@ -92,7 +91,7 @@ class AstWriterImpl implements IAstWriter {
      * @param simpleNode a ast node
      * @return a xml element
      */
-    private Element getElement(Document doc, SimpleNode simpleNode) {
+    private Element getElement(Document doc, Node simpleNode) {
         log.debug("creating element " + simpleNode);
         Element simpleNodeElement = doc.createElement(simpleNode.toString());
 
@@ -100,7 +99,7 @@ class AstWriterImpl implements IAstWriter {
 
         for (int i = 0; i < simpleNode.jjtGetNumChildren(); i++) {
             Node child = simpleNode.jjtGetChild(i);
-            Element element = getElement(doc, (SimpleNode) child);
+            Element element = getElement(doc, (Node) child);
             simpleNodeElement.appendChild(element);
         }
 
@@ -113,7 +112,7 @@ class AstWriterImpl implements IAstWriter {
      * @param element a xml element
      * @param simpleNode a ast node
      */
-    private void addAttributes(Element element, SimpleNode simpleNode) {
+    private void addAttributes(Element element, Node simpleNode) {
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(simpleNode.getClass());
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();

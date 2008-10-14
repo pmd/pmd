@@ -21,7 +21,7 @@ package net.sourceforge.pmd.eclipse.runtime.writer;
 
 import java.io.OutputStream;
 
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 
 /**
  * Interface of an AST Writer. An IAstWriter is an object used to "serialize" an

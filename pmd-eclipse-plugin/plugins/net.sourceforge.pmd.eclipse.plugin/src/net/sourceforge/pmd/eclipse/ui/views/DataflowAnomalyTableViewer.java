@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
@@ -119,9 +119,9 @@ public class DataflowAnomalyTableViewer extends TableViewer {
             sorter = new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     int result = 0;
-                    if (e1 instanceof IRuleViolation && e2 instanceof IRuleViolation) {
-                        final IRuleViolation violation1 = (IRuleViolation) e1;
-                        final IRuleViolation violation2 = (IRuleViolation) e2;
+                    if (e1 instanceof RuleViolation && e2 instanceof RuleViolation) {
+                        final RuleViolation violation1 = (RuleViolation) e1;
+                        final RuleViolation violation2 = (RuleViolation) e2;
                         final String message1 = violation1.getDescription();
                         final String message2 = violation2.getDescription();
 
@@ -149,9 +149,9 @@ public class DataflowAnomalyTableViewer extends TableViewer {
             sorter = new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     int result = 0;
-                    if (e1 instanceof IRuleViolation && e2 instanceof IRuleViolation) {
-                        final IRuleViolation violation1 = (IRuleViolation) e1;
-                        final IRuleViolation violation2 = (IRuleViolation) e2;
+                    if (e1 instanceof RuleViolation && e2 instanceof RuleViolation) {
+                        final RuleViolation violation1 = (RuleViolation) e1;
+                        final RuleViolation violation2 = (RuleViolation) e2;
 
                         final int m1_l1 = violation1.getBeginLine();
                         final int m1_l2 = violation2.getBeginLine();
@@ -172,9 +172,9 @@ public class DataflowAnomalyTableViewer extends TableViewer {
             sorter =  new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     int result = 0;
-                    if (e1 instanceof IRuleViolation && e2 instanceof IRuleViolation) {
-                        final IRuleViolation violation1 = (IRuleViolation) e1;
-                        final IRuleViolation violation2 = (IRuleViolation) e2;
+                    if (e1 instanceof RuleViolation && e2 instanceof RuleViolation) {
+                        final RuleViolation violation1 = (RuleViolation) e1;
+                        final RuleViolation violation2 = (RuleViolation) e2;
     
                         final String var1 = violation1.getVariableName();
                         final String var2 = violation2.getVariableName();

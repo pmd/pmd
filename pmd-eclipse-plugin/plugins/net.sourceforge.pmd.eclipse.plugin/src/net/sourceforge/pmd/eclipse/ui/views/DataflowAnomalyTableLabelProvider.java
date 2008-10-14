@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import net.sourceforge.pmd.IRuleViolation;
-import net.sourceforge.pmd.dfa.DaaRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.java.rule.controversial.DaaRuleViolation;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
@@ -30,8 +30,8 @@ public class DataflowAnomalyTableLabelProvider extends LabelProvider implements 
     /* @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int) */
     public String getColumnText(Object element, int columnIndex) {
         String columnText = "";
-        if (element instanceof IRuleViolation) {
-            final IRuleViolation violation = (IRuleViolation) element;
+        if (element instanceof RuleViolation) {
+            final RuleViolation violation = (RuleViolation) element;
             switch (columnIndex) {
             case 0:
                 // show the Type of Anomalym which is saved as Message here

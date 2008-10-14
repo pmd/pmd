@@ -22,8 +22,6 @@
  */ 
 package net.sourceforge.pmd.eclipse.ui.quickfix;
 
-import net.sourceforge.pmd.quickfix.Fix;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 

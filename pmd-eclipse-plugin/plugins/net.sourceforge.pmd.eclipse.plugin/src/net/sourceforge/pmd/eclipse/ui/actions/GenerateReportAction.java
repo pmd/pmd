@@ -21,6 +21,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
+import java.util.Properties;
+
 /**
  * Process GenerateReport action menu.
  * Generate a HTML report on the current project.
@@ -53,11 +55,13 @@ public class GenerateReportAction implements IObjectActionDelegate {
                     cmd.setProject(project);
                     cmd.setUserInitiated(true);
 
-                    cmd.registerRenderer(new HTMLRenderer(), PMDUiConstants.HTML_REPORT_NAME);
-                    cmd.registerRenderer(new CSVRenderer(), PMDUiConstants.CSV_REPORT_NAME);
-                    cmd.registerRenderer(new XMLRenderer(), PMDUiConstants.XML_REPORT_NAME);
-                    cmd.registerRenderer(new TextRenderer(), PMDUiConstants.TXT_REPORT_NAME);
-                    cmd.registerRenderer(new VBHTMLRenderer(), PMDUiConstants.VBHTML_REPORT_NAME);
+                    // FIXME PMD 5.0
+                    Properties props = new Properties();
+                    cmd.registerRenderer(new HTMLRenderer(props), PMDUiConstants.HTML_REPORT_NAME);
+                    cmd.registerRenderer(new CSVRenderer(props), PMDUiConstants.CSV_REPORT_NAME);
+                    cmd.registerRenderer(new XMLRenderer(props), PMDUiConstants.XML_REPORT_NAME);
+                    cmd.registerRenderer(new TextRenderer(props), PMDUiConstants.TXT_REPORT_NAME);
+                    cmd.registerRenderer(new VBHTMLRenderer(props), PMDUiConstants.VBHTML_REPORT_NAME);
 
                     cmd.performExecute();
                 }

@@ -6,9 +6,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class DataflowGraphViewer extends Composite {
 
-    private SimpleNode method;
+    private Node method;
     private String resourceString;
     private DataflowGraphTable table;
     private DataflowGraph graph;
@@ -97,7 +97,7 @@ public class DataflowGraphViewer extends Composite {
      * @param node 
      * @param resString the Node's Resource as String
      */
-    public void setData(SimpleNode node, String resString) {
+    public void setData(Node node, String resString) {
         if (method != null) {
             table.dispose();
             table = initTable(this, SWT.NONE);
@@ -128,7 +128,7 @@ public class DataflowGraphViewer extends Composite {
      * @param node
      * @return the DataflowGraphTable's Input-ArrayList
      */
-    protected ArrayList createDataFields(SimpleNode node) {
+    protected ArrayList createDataFields(Node node) {
         List flow = node.getDataFlowNode().getFlow();
 
         // the whole TableData
@@ -139,7 +139,7 @@ public class DataflowGraphViewer extends Composite {
             ArrayList rowData = new ArrayList();
 
             // 1. The Nodes Line
-            IDataFlowNode inode = (IDataFlowNode) flow.get(i);
+            DataFlowNode inode = (DataFlowNode) flow.get(i);
             rowData.add(new DataflowGraphTableData(String.valueOf(inode.getLine()), SWT.CENTER));
 
             // 2. empty, because the Graph is shown in this Column
@@ -148,7 +148,7 @@ public class DataflowGraphViewer extends Composite {
             // 3. the Numbers of the next Nodes
             String nextNodes = "";
             for (int j = 0; j < inode.getChildren().size(); j++) {
-                IDataFlowNode n = (IDataFlowNode) inode.getChildren().get(j);
+                DataFlowNode n = (DataFlowNode) inode.getChildren().get(j);
                 if (j > 0)
                     nextNodes += ", ";
                 nextNodes += String.valueOf(n.getIndex());

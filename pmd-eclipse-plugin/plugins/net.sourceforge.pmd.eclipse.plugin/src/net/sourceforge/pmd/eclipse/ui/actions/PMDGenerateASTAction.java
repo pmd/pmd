@@ -39,10 +39,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.JavaCharStream;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.ast.JavaCharStream;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
