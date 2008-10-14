@@ -13,17 +13,15 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.ui.ide,
  org.eclipse.help
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: %plugin.provider
 Bundle-ClassPath: lib/asm-3.1.jar,
- lib/backport-util-concurrent.jar,
  lib/castor-1.1.2.1-xml.jar,
  lib/commons-logging-1.1.1.jar,
  lib/jaxen-1.1.1.jar,
  lib/junit.jar,
  lib/log4j-1.2.15.jar,
- lib/pmd14-4.2.4.jar,
- lib/retroweaver-rt-2.0.5.jar,
+ lib/pmd-5.0.jar,
  lib/xercesImpl-2.6.2.jar,
  lib/xmlParserAPIs-2.6.2.jar,
  pmd-plugin.jar
