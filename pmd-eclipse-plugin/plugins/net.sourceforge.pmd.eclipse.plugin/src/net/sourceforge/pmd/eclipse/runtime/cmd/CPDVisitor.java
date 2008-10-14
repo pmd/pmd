@@ -16,17 +16,17 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
 
 /**
  * A visitor to process IFile resource against CPD
- * 
+ *
  * @author David Craine
  * @author Philippe Herlin
- * 
+ *
  */
 public class CPDVisitor implements IResourceVisitor {
     private static final Logger log = Logger.getLogger(CPDVisitor.class);
     private boolean includeDerivedFiles;
     private ResourceWorkingSetFilter workingSetFilter;
     private Language language;
-    private List files;
+    private List<File> files;
 
     /**
      * @param includeDerivedFiles The includeDerivedFiles to set.
@@ -34,7 +34,7 @@ public class CPDVisitor implements IResourceVisitor {
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         this.includeDerivedFiles = includeDerivedFiles;
     }
-    
+
     /**
      * @param workingSet WorkingSet of the visited project.
      */
@@ -42,28 +42,28 @@ public class CPDVisitor implements IResourceVisitor {
         this.workingSetFilter = new ResourceWorkingSetFilter();
         this.workingSetFilter.setWorkingSet(workingSet);
     }
-    
+
     /**
      * @param language Only add files with that language
      */
     public void setLanguage(Language language) {
-        this.language = language;   
+        this.language = language;
     }
-    
+
     /**
      * @return the list of files
      */
-    public List getFiles() {
+    public List<File> getFiles() {
         return this.files;
     }
-    
+
     /**
      * @param files the list of files to set
      */
-    public void setFiles(List files) {
+    public void setFiles(List<File> files) {
         this.files = files;
     }
-    
+
     /**
      * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource) Add java files into the CPD object
      */
@@ -75,11 +75,11 @@ public class CPDVisitor implements IResourceVisitor {
             final IFile file = (IFile) resource;
             final File ioFile = ((IFile) resource).getLocation().toFile();
             try {
-                if ((((IFile) resource).getFileExtension() != null)                        
-                        && (this.language.getFileFilter().accept(ioFile, file.getName()))
-                        && (isFileInWorkingSet(file) 
-                                && (this.includeDerivedFiles 
-                                        || (!this.includeDerivedFiles && !file.isDerived())))) {
+                if (((IFile) resource).getFileExtension() != null
+                        && this.language.getFileFilter().accept(ioFile, file.getName())
+                        && isFileInWorkingSet(file)
+                                && (this.includeDerivedFiles
+                                        || !this.includeDerivedFiles && !file.isDerived())) {
                     log.debug("Add file " + resource.getName());
                     this.files.add(ioFile);
                     result = false;
@@ -95,13 +95,13 @@ public class CPDVisitor implements IResourceVisitor {
 
     /**
      * Test if a file is in the PMD working set
-     * 
+     *
      * @param file
      * @return true if the file should be checked
      */
     private boolean isFileInWorkingSet(final IFile file) throws PropertiesException {
         boolean fileInWorkingSet = true;
-        
+
         if (this.workingSetFilter != null) {
             fileInWorkingSet = this.workingSetFilter.select(null, null, file);
         }

@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import name.herlin.command.CommandException;
@@ -78,7 +77,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     /**
      * Table containing the renderers indexed by the file name.
      */
-    private HashMap renderers = new HashMap();
+    private HashMap<String, Renderer> renderers = new HashMap<String, Renderer>();
 
     /**
      * Default Constructor
@@ -105,6 +104,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
+    @Override
     public void execute() throws CommandException {
         try {
             log.debug("Starting RenderReport command");
@@ -117,12 +117,9 @@ public class RenderReportCmd extends AbstractDefaultCommand {
                 folder.create(true, true, this.getMonitor());
             }
 
-            Iterator i = renderers.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-
-                final String reportName = (String) entry.getKey();
-                final Renderer renderer = (Renderer) entry.getValue();
+            for (Map.Entry<String, Renderer> entry: renderers.entrySet()) {
+                final String reportName = entry.getKey();
+                final Renderer renderer = entry.getValue();
 
                 log.debug("   Render the report");
                 final StringWriter w = new StringWriter();
@@ -159,9 +156,10 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     /**
      * @see name.herlin.command.Command#reset()
      */
+    @Override
     public void reset() {
        this.setProject(null);
-       this.renderers = new HashMap();
+       this.renderers = new HashMap<String, Renderer>();
        this.setTerminated(false);
     }
 
@@ -175,6 +173,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
+    @Override
     public boolean isReadyToExecute() {
         return this.project != null && !this.renderers.isEmpty();
     }
@@ -188,8 +187,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
         final Report report = new Report();
 
         final IMarker[] markers = project.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-        for (int i = 0; i < markers.length; i++) {
-            IMarker marker = markers[i];
+        for (IMarker marker : markers) {
             final String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
             final Rule rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
 
@@ -203,8 +201,8 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             ruleViolation.setFilename(marker.getResource().getProjectRelativePath().toString());
             ruleViolation.setDescription(marker.getAttribute(IMarker.MESSAGE, rule.getMessage()));
 
-            if (markers[i].getResource() instanceof IFile) {
-                final ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) markers[i].getResource());
+            if (marker.getResource() instanceof IFile) {
+                final ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) marker.getResource());
                 final IPackageDeclaration packages[] = unit.getPackageDeclarations();
                 if (packages.length > 0) {
                     ruleViolation.setPackageName(packages[0].getElementName());

@@ -5,7 +5,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -18,7 +18,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -72,9 +72,9 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Implements the clear reviews action
- * 
+ *
  * @author Philippe Herlin
- * 
+ *
  */
 public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisitor, IViewActionDelegate {
     private static final Logger log = Logger.getLogger(ClearReviewsAction.class);
@@ -124,7 +124,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * Get the monitor
-     * 
+     *
      * @return
      */
     protected IProgressMonitor getMonitor() {
@@ -133,7 +133,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * Set the monitor
-     * 
+     *
      * @param monitor
      */
     protected void setMonitor(IProgressMonitor monitor) {
@@ -151,7 +151,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * Set a substask
-     * 
+     *
      * @param message
      */
     protected void monitorSubTask(String message) {
@@ -170,15 +170,15 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
             if (this.targetPart instanceof IViewPart) {
                 ISelection selection = targetPart.getSite().getSelectionProvider().getSelection();
 
-                if ((selection != null) && (selection instanceof IStructuredSelection)) {
+                if (selection != null && selection instanceof IStructuredSelection) {
                     IStructuredSelection structuredSelection = (IStructuredSelection) selection;
                     if (getMonitor() != null) {
                         getMonitor().beginTask(getString(StringKeys.MSGKEY_MONITOR_REMOVE_REVIEWS),
                                 IProgressMonitor.UNKNOWN);
 
-                        Iterator i = structuredSelection.iterator();
+                        Iterator<Object> i = structuredSelection.iterator();
                         while (i.hasNext()) {
-                            Object object = (Object) i.next();
+                            Object object = i.next();
                             IResource resource = null;
 
                             if (object instanceof IMarker) {
@@ -225,7 +225,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * Clear reviews for a file
-     * 
+     *
      * @param file
      */
     private void clearReviews(IFile file) {
@@ -241,7 +241,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * remove reviews from file content
-     * 
+     *
      * @param file
      * @return
      */
@@ -262,18 +262,18 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
                 String line = origLine.trim();
                 int index = origLine.indexOf(PMDRuntimeConstants.PMD_STYLE_REVIEW_COMMENT);
                 int quoteIndex = origLine.indexOf('"');
-                
+
                 if (line.startsWith("/*")) {
                     if (line.indexOf("*/") == -1) {
                         comment = true;
                     }
                     out.println(origLine);
-                } else if (comment && (line.indexOf("*/") != -1)) {
+                } else if (comment && line.indexOf("*/") != -1) {
                     comment = false;
                     out.println(origLine);
                 } else if (!comment && line.startsWith(PMDRuntimeConstants.PLUGIN_STYLE_REVIEW_COMMENT)) {
                     noChange = false;
-                } else if (!comment && (index != -1) && !(quoteIndex != -1 && quoteIndex < index && index < origLine.lastIndexOf('"'))) {
+                } else if (!comment && index != -1 && !(quoteIndex != -1 && quoteIndex < index && index < origLine.lastIndexOf('"'))) {
                     noChange = false;
                     out.println(origLine.substring(0, index));
                 } else {
@@ -294,7 +294,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * Save the file
-     * 
+     *
      * @param file
      * @param newContent
      */
@@ -314,9 +314,9 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
             clearReviews((IFile) resource);
         }
 
-        return (resource instanceof IProject) || (resource instanceof IFolder);
+        return resource instanceof IProject || resource instanceof IFolder;
     }
-    
+
     /**
      * Helper method to return an NLS string from its key
      */

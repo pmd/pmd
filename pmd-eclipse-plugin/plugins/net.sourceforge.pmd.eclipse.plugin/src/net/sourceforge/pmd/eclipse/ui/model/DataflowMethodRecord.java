@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -54,9 +54,9 @@ import org.eclipse.jdt.core.IMethod;
  * This class holds information for use with the dataflow view. It contains a
  * Java-Method and the corresponding PMD-Method (SimpleNode) and can return
  * Dataflow Anomalies for it.
- * 
+ *
  * @author SebastianRaffel ( 07.06.2005 ), Philippe Herlin, Sven Jacob
- * 
+ *
  */
 public class DataflowMethodRecord {
     private final IMethod method;
@@ -64,7 +64,7 @@ public class DataflowMethodRecord {
 
     /**
      * Constructor
-     * 
+     *
      * @param javaMethod, the Method of the JavaModel
      * @param pmdMethod, the corresponding PMD-SimpleNode / ASTMethodDeclaration
      */
@@ -104,11 +104,11 @@ public class DataflowMethodRecord {
 
     /**
      * Finds Dataflow-Anomalies for a Method
-     * 
+     *
      * @return a List of Anomalies
      */
     public IMarker[] getMarkers() {
-        final List markers = new ArrayList();
+        final List<IMarker> markers = new ArrayList<IMarker>();
         try {
             if (this.method.getResource().isAccessible()) {
 
@@ -123,7 +123,7 @@ public class DataflowMethodRecord {
                     // the Marker should have valid Information in it
                     // ... and we don't want it twice, so we check,
                     // if the Marker already exists
-                    if (markerIsValid(allMarkers[i]) && (!markerIsInList(allMarkers[i], markers))) {
+                    if (markerIsValid(allMarkers[i]) && !markerIsInList(allMarkers[i], markers)) {
                         markers.add(allMarkers[i]);
                     }
                 }
@@ -142,7 +142,7 @@ public class DataflowMethodRecord {
      * Returns a list of Attributes for a Dataflow Marker, (1.) the Error
      * Message, (2.) the beginning Line of the Error, (3.) the ending Line and
      * (4.) the Variable (Marker Attribute)
-     * 
+     *
      * @param marker
      * @return an Array of Attributes
      */
@@ -176,32 +176,32 @@ public class DataflowMethodRecord {
     /**
      * Checks, if a Marker is valid, meaning that it (1.) is set for this Method
      * (between Begin and End-Line) and (2.) has a Variable and Message set
-     * 
+     *
      * @param marker
      * @return true if the Marker is valid, false otherwise
      */
     private boolean markerIsValid(IMarker marker) {
         boolean isValid = false;
 
-        // get the Markers atrributes
+        // get the Markers attributes
         final Object[] values = getMarkerAttributes(marker);
         final int line1 = ((Integer) values[1]).intValue();
         final int line2 = ((Integer) values[2]).intValue();
 
         // the Marker has to be in this Method
-        if ((line1 >= this.node.getBeginLine()) && (line2 <= this.node.getEndLine())) {
+        if (line1 >= this.node.getBeginLine() && line2 <= this.node.getEndLine()) {
             isValid = true;
-            for (int k = 0; (k < values.length) && isValid; k++) {
+            for (int k = 0; k < values.length && isValid; k++) {
 
                 // if it is a String, it has to be the Variable
                 // or Message, which shouldn't be empty
-                if ((values[k] instanceof String) && (((String) values[k]).equals(""))) {
+                if (values[k] instanceof String && ((String) values[k]).equals("")) {
                     isValid = false;
                 }
 
                 // else it is one of the Lines (Line, Line2)
                 // and they also should not be 0
-                else if ((values[k] instanceof Integer) && (((Integer) values[k]).intValue() == 0)) {
+                else if (values[k] instanceof Integer && ((Integer) values[k]).intValue() == 0) {
                     isValid = false;
                 }
             }
@@ -213,33 +213,33 @@ public class DataflowMethodRecord {
 
     /**
      * Checks if a Marker is already in a List
-     * 
+     *
      * @param marker
      * @param list
-     * @return true, is the marker exists in thelist, false otherwise
+     * @return true, is the marker exists in the list, false otherwise
      */
-    private boolean markerIsInList(IMarker marker, List list) {
+    private boolean markerIsInList(IMarker marker, List<IMarker> list) {
         boolean inList = false;
 
-        if ((list != null) && (!list.isEmpty())) {
+        if (list != null && !list.isEmpty()) {
 
             // here we can't simply compare Objects, because the Dataflow
             // Anomaly Calculation sets different Markers for the same Error
 
             // get the Markers Attributes and compare with all other Markers
             final Object[] markerAttr = getMarkerAttributes(marker);
-            for (int i = 0; (i < list.size()) && !inList; i++) {
+            for (int i = 0; i < list.size() && !inList; i++) {
                 // get the Marker from the List and its Attributes
-                final Object[] listAttr = getMarkerAttributes((IMarker) list.get(i));
+                final Object[] listAttr = getMarkerAttributes(list.get(i));
 
                 boolean markersAreEqual = true;
                 for (int j = 0; j < listAttr.length; j++) {
                     // compare the String- and Integer-Values
-                    if ((markerAttr[j] instanceof String) && (!((String) markerAttr[j]).equalsIgnoreCase((String) listAttr[j]))) {
+                    if (markerAttr[j] instanceof String && !((String) markerAttr[j]).equalsIgnoreCase((String) listAttr[j])) {
                         markersAreEqual = false;
                     }
 
-                    else if ((markerAttr[j] instanceof Integer) && (!((Integer) markerAttr[j]).equals((Integer) listAttr[j]))) {
+                    else if (markerAttr[j] instanceof Integer && !((Integer) markerAttr[j]).equals(listAttr[j])) {
                         markersAreEqual = false;
                     }
                 }

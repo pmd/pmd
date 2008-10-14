@@ -47,6 +47,7 @@ import name.herlin.command.CommandException;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
+import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -79,7 +80,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
     private Renderer renderer;
     private String reportName;
     private boolean createReport;
-    private List listenerList;
+    private List<IPropertyListener> listenerList;
 
     /**
      * Default Constructor
@@ -91,16 +92,17 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         this.setOutputProperties(true);
         this.setReadOnly(false);
         this.setTerminated(false);
-        this.listenerList = new ArrayList();
+        this.listenerList = new ArrayList<IPropertyListener>();
     }
 
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
+    @Override
     public void execute() throws CommandException {
         try {
             // find the files
-            final List files = findFiles();
+            final List<File> files = findFiles();
 
             if (files.size() == 0) {
                 PMDPlugin.getDefault().logInformation("No files found to specified language.");
@@ -124,9 +126,9 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
                     // trigger event propertyChanged for all listeners
                     Display.getDefault().asyncExec(new Runnable() {
                         public void run() {
-                            final Iterator listenerIterator = listenerList.iterator();
+                            final Iterator<IPropertyListener> listenerIterator = listenerList.iterator();
                             while (listenerIterator.hasNext()) {
-                                final IPropertyListener listener = (IPropertyListener) listenerIterator.next();
+                                final IPropertyListener listener = listenerIterator.next();
                                 listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
                             }
                         }
@@ -147,6 +149,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
     /**
      * @see name.herlin.command.Command#reset()
      */
+    @Override
     public void reset() {
         this.setProject(null);
         this.setTerminated(false);
@@ -156,7 +159,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         this.setMinTileSize(PMDPlugin.getDefault().loadPreferences().getMinTileSize());
         this.setCreateReport(false);
         this.addPropertyListener(null);
-        this.listenerList = new ArrayList();
+        this.listenerList = new ArrayList<IPropertyListener>();
     }
 
     /**
@@ -212,10 +215,11 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
+    @Override
     public boolean isReadyToExecute() {
         return this.project != null
             && this.language != null
-            && (!this.createReport // need a renderer and reportname if a report should be created
+            && (!this.createReport // need a renderer and reportName if a report should be created
                     || this.renderer != null && this.reportName != null);
     }
 
@@ -226,13 +230,13 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      * @throws PropertiesException
      * @throws CoreException
      */
-    private List findFiles() throws PropertiesException, CoreException {
+    private List<File> findFiles() throws PropertiesException, CoreException {
         final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
         final CPDVisitor visitor = new CPDVisitor();
         visitor.setWorkingSet(properties.getProjectWorkingSet());
         visitor.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());
         visitor.setLanguage(language);
-        visitor.setFiles(new ArrayList());
+        visitor.setFiles(new ArrayList<File>());
         this.project.accept(visitor);
         return visitor.getFiles();
     }
@@ -244,14 +248,14 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      * @return the CPD itself for retrieving the matches.
      * @throws CoreException
      */
-    private CPD detectCutAndPaste(final List files) {
+    private CPD detectCutAndPaste(final List<File> files) {
         log.debug("Searching for project files");
         final CPD cpd = new CPD(minTileSize, language);
 
         subTask("Adding files for the CPD");
-        final Iterator fileIterator = files.iterator();
+        final Iterator<File> fileIterator = files.iterator();
         while (fileIterator.hasNext() && !isCanceled()) {
-            final File file = (File) fileIterator.next();
+            final File file = fileIterator.next();
             try {
                 cpd.add(file);
                 worked(1);
@@ -276,7 +280,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      * @param matches matches of the CPD
      * @throws CommandException
      */
-    private void renderReport(Iterator matches) throws CommandException {
+    private void renderReport(Iterator<Match> matches) throws CommandException {
         try {
             log.debug("Rendering CPD report");
             subTask("Rendering CPD report");

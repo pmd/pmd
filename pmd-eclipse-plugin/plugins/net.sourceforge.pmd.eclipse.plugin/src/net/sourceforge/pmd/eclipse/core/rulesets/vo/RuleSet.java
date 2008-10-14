@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -38,15 +38,14 @@ package net.sourceforge.pmd.eclipse.core.rulesets.vo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * This class is a value objet which composes the structure of a rulesets object.
  * It holds the definition of a rule set which is actually a named collection of
  * rules.
- * 
+ *
  * @author Herlin
- * 
+ *
  */
 
 public class RuleSet {
@@ -64,11 +63,11 @@ public class RuleSet {
     private String description = "";
     private String language = LANGUAGE_JAVA;
     final private net.sourceforge.pmd.RuleSet pmdRuleSet = new net.sourceforge.pmd.RuleSet();
-    final private Collection rules = new ArrayList();
+    final private Collection<Rule> rules = new ArrayList<Rule>();
 
     /**
      * Getter for the description attribute. May be empty but never null.
-     * 
+     *
      * @return Returns the description.
      */
     public String getDescription() {
@@ -77,7 +76,7 @@ public class RuleSet {
 
     /**
      * Setter of the description attribute. Cannot be null but can be empty.
-     * 
+     *
      * @param description The description to set.
      */
     public void setDescription(String description) {
@@ -91,7 +90,7 @@ public class RuleSet {
     /**
      * Getter for the name attribute. Cannot be null. May be empty if the object
      * has not been initialized.
-     * 
+     *
      * @return Returns the name.
      */
     public String getName() {
@@ -100,7 +99,7 @@ public class RuleSet {
 
     /**
      * Setter for the name attribute. Cannot be null nor empty
-     * 
+     *
      * @param name The name to set.
      */
     public void setName(String name) {
@@ -117,16 +116,16 @@ public class RuleSet {
     /**
      * Getter for the rules collection attribute. Cannot be null, but may be
      * empty.
-     * 
+     *
      * @return Returns the rules.
      */
-    public Collection getRules() {
+    public Collection<Rule> getRules() {
         return this.rules;
     }
 
     /**
      * Add a rule to the rule set.
-     * 
+     *
      * @param rule The rule to add. Cannot be null
      */
     public void addRule(Rule rule) {
@@ -140,7 +139,7 @@ public class RuleSet {
 
     /**
      * Getter of the language attribute. Is one of the LANGUAGE_xxx constants.
-     * 
+     *
      * @return Returns the language.
      */
     public String getLanguage() {
@@ -150,7 +149,7 @@ public class RuleSet {
     /**
      * Setter of the language constant. Must be one of the LANGUAGE_xxx
      * constant.
-     * 
+     *
      * @param language The language to set.
      */
     public void setLanguage(String language) {
@@ -164,6 +163,7 @@ public class RuleSet {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object arg0) {
         boolean equal = false;
 
@@ -178,6 +178,7 @@ public class RuleSet {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return this.name.hashCode() + this.rules.hashCode() * 21 * 21 + this.language.hashCode() * 13 * 13;
     }
@@ -185,11 +186,12 @@ public class RuleSet {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer("RuleSet name=" + this.name + " description=" + " language=" + this.language
                 + " rules=");
-        for (final Iterator i = this.rules.iterator(); i.hasNext();) {
-            buffer.append(' ').append(i.next());
+        for (Rule rule : this.rules) {
+            buffer.append(' ').append(rule);
         }
 
         return buffer.toString();
@@ -199,7 +201,7 @@ public class RuleSet {
      * Getter for a PMD RuleSet object.
      * This object is a native PMD Rule Set composed of all rules of this
      * rule set.
-     * 
+     *
      * @return Returns the pmdRuleSet.
      */
     public net.sourceforge.pmd.RuleSet getPmdRuleSet() {

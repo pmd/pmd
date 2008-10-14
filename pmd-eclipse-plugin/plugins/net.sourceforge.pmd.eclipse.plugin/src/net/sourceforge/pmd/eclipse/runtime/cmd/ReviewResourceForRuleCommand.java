@@ -73,7 +73,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
     private IResource resource;
     private RuleContext context;
     private Rule rule;
-    private List listenerList;
+    private List<IPropertyListener> listenerList;
 
     public ReviewResourceForRuleCommand() {
         super();
@@ -82,7 +82,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         this.setOutputProperties(true);
         this.setReadOnly(true);
         this.setTerminated(false);
-        this.listenerList = new ArrayList();
+        this.listenerList = new ArrayList<IPropertyListener>();
     }
 
     public void setResource(IResource resource) {
@@ -101,6 +101,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         this.listenerList.add(listener);
     }
 
+    @Override
     public boolean isReadyToExecute() {
         return resource != null && rule != null;
     }
@@ -108,15 +109,17 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand#reset()
      */
+    @Override
     public void reset() {
         setResource(null);
         setRule(null);
-        this.listenerList = new ArrayList();
+        this.listenerList = new ArrayList<IPropertyListener>();
     }
 
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand#execute()
      */
+    @Override
     public void execute() throws CommandException {
         final IProject project = resource.getProject();
         final IFile file = (IFile) resource.getAdapter(IFile.class);
@@ -149,9 +152,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
             // trigger event propertyChanged for all listeners
             Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
-                    final Iterator listenerIterator = listenerList.iterator();
-                    while (listenerIterator.hasNext()) {
-                        final IPropertyListener listener = (IPropertyListener) listenerIterator.next();
+                    for (IPropertyListener listener: listenerList) {
                         listener.propertyChanged(context.getReport().iterator(), PMDRuntimeConstants.PROPERTY_REVIEW);
                     }
                 }

@@ -49,15 +49,14 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     public RuleSetSelectionDialog(Shell parent) {
         super(parent);
-        Set registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
-        SortedSet sortedRuleSets = new TreeSet(new Comparator() {
+        Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        SortedSet<RuleSet> sortedRuleSets = new TreeSet<RuleSet>(new Comparator<RuleSet>() {
+            @Override
             public boolean equals(Object arg0) {
                 return false;
             }
 
-            public int compare(Object arg0, Object arg1) {
-                RuleSet ruleSet1 = (RuleSet) arg0;
-                RuleSet ruleSet2 = (RuleSet) arg1;
+            public int compare(RuleSet ruleSet1, RuleSet ruleSet2) {
                 return ruleSet1.getName().compareToIgnoreCase(ruleSet2.getName());
             }
         });
@@ -65,10 +64,10 @@ public class RuleSetSelectionDialog extends Dialog {
 
         ruleSets = new RuleSet[sortedRuleSets.size()];
         ruleSetNames = new String[sortedRuleSets.size()];
-        Iterator i = sortedRuleSets.iterator();
+        Iterator<RuleSet> i = sortedRuleSets.iterator();
         int index = 0;
         while (i.hasNext()) {
-            ruleSets[index] = (RuleSet) i.next();
+            ruleSets[index] = i.next();
             ruleSetNames[index] = ruleSets[index].getName();
             index++;
         }
@@ -77,6 +76,7 @@ public class RuleSetSelectionDialog extends Dialog {
     /**
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(Composite)
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
         Composite dlgArea = new Composite(parent, SWT.NULL);
 
@@ -168,6 +168,7 @@ public class RuleSetSelectionDialog extends Dialog {
         button.setSelection(true);
         importByReference = true;
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
             	copyButton.setSelection(false);
             	importByReference = true;
@@ -185,6 +186,7 @@ public class RuleSetSelectionDialog extends Dialog {
         button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_BUTTON_COPY));
         button.setSelection(false);
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
             	referenceButton.setSelection(false);
             	importByReference = false;
@@ -219,6 +221,7 @@ public class RuleSetSelectionDialog extends Dialog {
     /**
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
+    @Override
     protected void okPressed() {
         int selectionIndex = this.inputCombo.getSelectionIndex();
         if (selectionIndex == -1) {

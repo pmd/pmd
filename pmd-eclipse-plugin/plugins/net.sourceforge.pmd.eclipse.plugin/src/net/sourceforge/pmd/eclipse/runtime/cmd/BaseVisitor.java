@@ -1,23 +1,23 @@
-/*  
- * <copyright>  
+/*
+ * <copyright>
  *  Copyright 1997-2003 PMD for Eclipse Development team
- *  under sponsorship of the Defense Advanced Research Projects  
- *  Agency (DARPA).  
- *   
- *  This program is free software; you can redistribute it and/or modify  
- *  it under the terms of the Cougaar Open Source License as published by  
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).   
- *   
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS   
- *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR   
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF   
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT   
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT   
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL   
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,   
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR   
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.   
- *   
+ *  under sponsorship of the Defense Advanced Research Projects
+ *  Agency (DARPA).
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the Cougaar Open Source License as published by
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
+ *
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ *
  * </copyright>
  */
 package net.sourceforge.pmd.eclipse.runtime.cmd;
@@ -39,6 +39,7 @@ import name.herlin.command.Timer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
@@ -58,16 +59,16 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.ResourceWorkingSetFilter;
 
 /**
- * Factor some usefull features for visitors
- * 
+ * Factor some useful features for visitors
+ *
  * @author Philippe Herlin
- * 
+ *
  */
 public class BaseVisitor {
     private static final Logger log = Logger.getLogger(BaseVisitor.class);
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
-    private Map accumulator;
+    private Map<IFile, Set<MarkerInfo>> accumulator;
     private PMD pmdEngine;
     private RuleSet ruleSet;
     private int filesCount;
@@ -76,8 +77,8 @@ public class BaseVisitor {
     protected RuleSet hiddenRules;
 
     /**
-     * The constructor is protected to avoid illegal instanciation
-     * 
+     * The constructor is protected to avoid illegal instantiation
+     *
      */
     protected BaseVisitor() {
         super();
@@ -87,7 +88,7 @@ public class BaseVisitor {
 
     /**
      * Returns the useTaskMarker.
-     * 
+     *
      * @return boolean
      */
     public boolean isUseTaskMarker() {
@@ -96,7 +97,7 @@ public class BaseVisitor {
 
     /**
      * Sets the useTaskMarker.
-     * 
+     *
      * @param useTaskMarker
      *            The useTaskMarker to set
      */
@@ -106,20 +107,20 @@ public class BaseVisitor {
 
     /**
      * Returns the accumulator.
-     * 
+     *
      * @return Map
      */
-    public Map getAccumulator() {
+    public Map<IFile, Set<MarkerInfo>> getAccumulator() {
         return this.accumulator;
     }
 
     /**
      * Sets the accumulator.
-     * 
+     *
      * @param accumulator
      *            The accumulator to set
      */
-    public void setAccumulator(final Map accumulator) {
+    public void setAccumulator(final Map<IFile, Set<MarkerInfo>> accumulator) {
         this.accumulator = accumulator;
     }
 
@@ -139,7 +140,7 @@ public class BaseVisitor {
 
     /**
      * Tell whether the user has required to cancel the operation
-     * 
+     *
      * @return
      */
     public boolean isCanceled() {
@@ -148,7 +149,7 @@ public class BaseVisitor {
 
     /**
      * Begin a subtask
-     * 
+     *
      * @param name
      *            the task name
      */
@@ -160,7 +161,7 @@ public class BaseVisitor {
 
     /**
      * Inform of the work progress
-     * 
+     *
      * @param work
      */
     public void worked(final int work) {
@@ -199,21 +200,21 @@ public class BaseVisitor {
         ruleSet.addRuleSet(hiddenRules);
         this.ruleSet = ruleSet;
     }
-    
+
     /**
      * @return the number of files that has been processed
      */
     public int getProcessedFilesCount() {
         return this.filesCount;
     }
-    
+
     /**
      * @return actual PMD duration
      */
     public long getActualPmdDuration() {
         return this.pmdDuration;
     }
-    
+
     /**
      * Set the project properties (note that visitor is expected to be called one project at a time
      */
@@ -223,25 +224,25 @@ public class BaseVisitor {
 
     /**
      * Run PMD against a resource
-     * 
+     *
      * @param resource
      *            the resource to process
      */
     protected final void reviewResource(final IResource resource) {
         final IFile file = (IFile) resource.getAdapter(IFile.class);
-        if ((file != null) && (file.getFileExtension() != null) && (file.getFileExtension().equals("java"))) {
+        if (file != null && file.getFileExtension() != null && file.getFileExtension().equals("java")) {
 
             try {
-                boolean included = (this.projectProperties.isIncludeDerivedFiles() || (!this.projectProperties.isIncludeDerivedFiles() && !file.isDerived()));
+                boolean included = this.projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived();
                 log.debug("Derived files included: " + this.projectProperties.isIncludeDerivedFiles());
                 log.debug("file " + file.getName() + " is derived: " + file.isDerived());
                 log.debug("file checked: " + included);
 
-                if (isFileInWorkingSet(file) && (this.projectProperties.isIncludeDerivedFiles() || (!this.projectProperties.isIncludeDerivedFiles() && !file.isDerived()))) {
+                if (isFileInWorkingSet(file) && (this.projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived())) {
                     subTask("PMD Checking file " + file.getName());
 
                     Timer timer = new Timer();
-                    
+
                     final RuleContext context = new RuleContext();
                     context.setSourceCodeFile(file.getRawLocation().toFile());
                     context.setSourceCodeFilename(file.getName());
@@ -250,7 +251,7 @@ public class BaseVisitor {
                     final Reader input = new InputStreamReader(file.getContents(), file.getCharset());
                     getPmdEngine().processFile(input, getRuleSet(), context);
                     input.close();
-                    
+
                     timer.stop();
                     this.pmdDuration += timer.getDuration();
 
@@ -285,7 +286,7 @@ public class BaseVisitor {
 
     /**
      * Test if a file is in the PMD working set
-     * 
+     *
      * @param file
      * @return true if the file should be checked
      */
@@ -303,7 +304,7 @@ public class BaseVisitor {
 
     /**
      * Update markers list for the specified file
-     * 
+     *
      * @param file
      *            the file for which markes are to be updated
      * @param context
@@ -313,18 +314,18 @@ public class BaseVisitor {
      * @param accumulator
      *            a map that contains impacted file and marker informations
      */
-    private void updateMarkers(final IFile file, final RuleContext context, final boolean fTask, final Map accumulator)
+    private void updateMarkers(final IFile file, final RuleContext context, final boolean fTask, final Map<IFile, Set<MarkerInfo>> accumulator)
             throws CoreException {
-        final Set markerSet = new HashSet();
-        final List reviewsList = findReviewedViolations(file);
+        final Set<MarkerInfo> markerSet = new HashSet<MarkerInfo>();
+        final List<Review> reviewsList = findReviewedViolations(file);
         final Review review = new Review();
-        final Iterator iter = context.getReport().iterator();
+        final Iterator<RuleViolation> iter = context.getReport().iterator();
         final IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
         final int maxViolationsPerFilePerRule = preferences.getMaxViolationsPerFilePerRule();
-        final Map violationsCounter = new HashMap();
-        
+        final Map<Rule, Integer> violationsCounter = new HashMap<Rule, Integer>();
+
         while (iter.hasNext()) {
-            final RuleViolation violation = (RuleViolation) iter.next();
+            final RuleViolation violation = iter.next();
             review.ruleName = violation.getRule().getName();
             review.lineNumber = violation.getBeginLine();
 
@@ -332,13 +333,13 @@ public class BaseVisitor {
                 log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getBeginLine()
                         + " because of a review.");
             } else {
-                Integer counter = (Integer) violationsCounter.get(violation.getRule());
+                Integer counter = violationsCounter.get(violation.getRule());
                 if (counter == null) {
                     counter = new Integer(0);
                     violationsCounter.put(violation.getRule(), counter);
                 }
-        
-                
+
+
                 int maxViolations = maxViolationsPerFilePerRule;
                 if (violation.getRule().hasProperty(PMDRuntimeConstants.RULE_PROPERTY_MAXVIOLATIONS)) {
                     maxViolations = violation.getRule().getIntProperty(PMDRuntimeConstants.RULE_PROPERTY_MAXVIOLATIONS);
@@ -361,7 +362,7 @@ public class BaseVisitor {
                     log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getBeginLine()
                             + " because maximum violations has been reached for file " + file.getName());
                 }
-                
+
             }
         }
 
@@ -373,16 +374,16 @@ public class BaseVisitor {
 
     /**
      * Search for reviewed violations in that file
-     * 
+     *
      * @param file
      */
-    private List findReviewedViolations(final IFile file) {
-        final List reviewsList = new ArrayList();
+    private List<Review> findReviewedViolations(final IFile file) {
+        final List<Review> reviewsList = new ArrayList<Review>();
         try {
             int lineNumber = 0;
             boolean findLine = false;
             boolean comment = false;
-            final Stack pendingReviews = new Stack();
+            final Stack<String> pendingReviews = new Stack<String>();
             final BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
             while (reader.ready()) {
                 String line = reader.readLine();
@@ -391,7 +392,7 @@ public class BaseVisitor {
                     lineNumber++;
                     if (line.startsWith("/*")) {
                         comment = line.indexOf("*/") == -1;
-                    } else if (comment && (line.indexOf("*/") != -1)) {
+                    } else if (comment && line.indexOf("*/") != -1) {
                         comment = false;
                     } else if (!comment && line.startsWith(PMDRuntimeConstants.PLUGIN_STYLE_REVIEW_COMMENT)) {
                         final String tail = line.substring(17);
@@ -404,7 +405,7 @@ public class BaseVisitor {
                             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops:
                             // by Herlin on 01/05/05 18:36
                             final Review review = new Review();
-                            review.ruleName = (String) pendingReviews.pop();
+                            review.ruleName = pendingReviews.pop();
                             review.lineNumber = lineNumber;
                             reviewsList.add(review);
                         }
@@ -431,7 +432,7 @@ public class BaseVisitor {
 
     /**
      * Create a marker info object from a violation
-     * 
+     *
      * @param violation
      *            a PMD violation
      * @param type
@@ -443,8 +444,8 @@ public class BaseVisitor {
 
         markerInfo.setType(type);
 
-        final List attributeNames = new ArrayList();
-        final List values = new ArrayList();
+        final List<String> attributeNames = new ArrayList<String>();
+        final List<Object> values = new ArrayList<Object>();
 
         attributeNames.add(IMarker.MESSAGE);
         values.add(violation.getDescription());
@@ -485,7 +486,7 @@ public class BaseVisitor {
             break;
         }
 
-        markerInfo.setAttributeNames((String[]) attributeNames.toArray(new String[attributeNames.size()]));
+        markerInfo.setAttributeNames(attributeNames.toArray(new String[attributeNames.size()]));
         markerInfo.setAttributeValues(values.toArray());
 
         return markerInfo;
@@ -498,15 +499,17 @@ public class BaseVisitor {
         public String ruleName;
         public int lineNumber;
 
+        @Override
         public boolean equals(final Object obj) {
             boolean result = false;
             if (obj instanceof Review) {
                 final Review reviewObj = (Review) obj;
-                result = (this.ruleName.equals(reviewObj.ruleName)) && (this.lineNumber == reviewObj.lineNumber);
+                result = this.ruleName.equals(reviewObj.ruleName) && this.lineNumber == reviewObj.lineNumber;
             }
             return result;
         }
 
+        @Override
         public int hashCode() {
             return ruleName.hashCode() + lineNumber * lineNumber;
         }

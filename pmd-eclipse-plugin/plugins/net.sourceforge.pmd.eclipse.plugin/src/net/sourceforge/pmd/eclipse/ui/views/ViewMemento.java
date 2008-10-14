@@ -211,10 +211,10 @@ public class ViewMemento {
         final IMemento[] mementos = this.memento.getChildren(ATTRIBUTE_PREFIX);
         IMemento mem = null;
 
-        for (int k = 0; k < mementos.length; k++) {
-            final String attrName = mementos[k].getString(ATTR_NAME);
+        for (IMemento memento2 : mementos) {
+            final String attrName = memento2.getString(ATTR_NAME);
             if (name.equalsIgnoreCase(attrName)) {
-                mem = mementos[k];
+                mem = memento2;
             }
         }
 
@@ -260,12 +260,12 @@ public class ViewMemento {
     }
 
     /**
-     * puts an ArrayList into a Memento, the List is changed into a seperated String
+     * puts an ArrayList into a Memento, the List is changed into a separated String
      *
      * @param key
      * @param valueList
      */
-    public void putList(String key, List valueList) {
+    public void putList(String key, List<Object> valueList) {
         final StringBuffer valueString = new StringBuffer();
         for (int k = 0; k < valueList.size(); k++) {
             if (k > 0) {
@@ -316,16 +316,16 @@ public class ViewMemento {
      * @param key
      * @return ArrayList of Integer-Values
      */
-    public List getIntegerList(String key) {
-        final ArrayList valuelist = new ArrayList();
+    public List<Integer> getIntegerList(String key) {
+        final ArrayList<Integer> valuelist = new ArrayList<Integer>();
         final String valueString = getString(key);
         if (valueString != null) {
             final String[] objects = valueString.split(LIST_SEPARATOR);
-            for (int k = 0; k < objects.length; k++) {
-                if (objects[k].trim().length() == 0 || "null".equals(objects[k])) {
+            for (String object : objects) {
+                if (object.trim().length() == 0 || "null".equals(object)) {
                     valuelist.add(new Integer(0)); // NOPMD by Herlin on 11/10/06 00:13
                 } else {
-                    valuelist.add(new Integer(objects[k])); // NOPMD by Herlin on 11/10/06 00:14
+                    valuelist.add(new Integer(object)); // NOPMD by Herlin on 11/10/06 00:14
                 }
             }
         }
@@ -338,11 +338,11 @@ public class ViewMemento {
      * @param key
      * @return a ArrayList of String values
      */
-    public List getStringList(String key) {
-        List valuelist = Collections.EMPTY_LIST;
+    public List<String> getStringList(String key) {
+        List<String> valuelist = Collections.emptyList();
         final String valueString = getString(key);
         if (valueString != null) {
-            valuelist = new ArrayList(Arrays.asList(valueString.split(LIST_SEPARATOR)));
+            valuelist = new ArrayList<String>(Arrays.asList(valueString.split(LIST_SEPARATOR)));
         }
 
         return valuelist;

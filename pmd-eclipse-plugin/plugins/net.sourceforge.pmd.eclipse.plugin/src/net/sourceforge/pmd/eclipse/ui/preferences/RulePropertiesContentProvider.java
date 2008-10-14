@@ -9,7 +9,7 @@ import net.sourceforge.pmd.Rule;
 /**
  * This class implements a content provider for the rule properties table of
  * the PMD Preference page
- * 
+ *
  * @author Philippe Herlin
  *
  */
@@ -20,17 +20,17 @@ public class RulePropertiesContentProvider extends AbstractStructuredContentProv
      */
     public Object[] getElements(Object inputElement) {
         Object[] result = new Object[0];
-        
+
         if (inputElement instanceof Rule) {
             Rule rule = (Rule) inputElement;
-            Enumeration keys = rule.getProperties().keys();
-            List propertyList = new ArrayList();
+            Enumeration<String> keys = rule.getProperties().keys();
+            List<RuleProperty> propertyList = new ArrayList<RuleProperty>();
             while (keys.hasMoreElements()) {
-                propertyList.add(new RuleProperty(rule, (String) keys.nextElement()));
+                propertyList.add(new RuleProperty(rule, keys.nextElement()));
             }
             result = propertyList.toArray();
         }
-        
+
         return result;
     }
 }

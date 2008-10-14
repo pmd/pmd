@@ -99,6 +99,7 @@ public class RuleDialog extends Dialog {
     /**
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(Composite)
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
         courierFont = new Font(getShell().getDisplay(), "Courier New", 10, SWT.NORMAL);
 
@@ -370,6 +371,7 @@ public class RuleDialog extends Dialog {
             }
 
             button.addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent event) {
                     if (button.getSelection()) {
                         implementationClassText.setText(XPathRule.class.getName());
@@ -447,8 +449,7 @@ public class RuleDialog extends Dialog {
 		if (editedRule != null && editedRule.getPriority().getPriority() >= 0 && editedRule.getPriority().getPriority() <= labels.length) {
 			index = editedRule.getPriority().getPriority() - 1;
 		}
-    	for (int i = 0; i < labels.length; i++) {
-    		String label = labels[i];
+    	for (String label : labels) {
     		combo.add(label);
     	}
     	combo.select(index);
@@ -561,6 +562,7 @@ public class RuleDialog extends Dialog {
         button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL));
 
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
             	String url = externalInfoUrlText.getText().trim();
             	if (url.length() > 0) {
@@ -588,7 +590,7 @@ public class RuleDialog extends Dialog {
      */
     private String getExamplesString() {
         StringBuffer buffer = new StringBuffer();
-        Iterator i = this.editedRule.getExamples().iterator();
+        Iterator<String> i = this.editedRule.getExamples().iterator();
         boolean first = true;
         while (i.hasNext()) {
             if (first) {
@@ -596,7 +598,7 @@ public class RuleDialog extends Dialog {
             } else {
                 buffer.append("\n\n");
             }
-            buffer.append(((String)i.next()).trim());
+            buffer.append(i.next().trim());
         }
         return buffer.toString();
     }
@@ -682,6 +684,7 @@ public class RuleDialog extends Dialog {
     /**
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
+    @Override
     protected void okPressed() {
         if (validateForm() && this.mode != MODE_VIEW) {
             super.okPressed();
@@ -757,7 +760,7 @@ public class RuleDialog extends Dialog {
         // Instantiate the rule (add mode)
         if (mode == MODE_ADD) {
             try {
-                Class ruleClass = Class.forName(implementationClassText.getText());
+                Class<?> ruleClass = Class.forName(implementationClassText.getText());
                 Object instance = ruleClass.newInstance();
                 if (instance instanceof Rule) {
                     rule = (Rule) ruleClass.newInstance();
@@ -832,6 +835,7 @@ public class RuleDialog extends Dialog {
     /**
      * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
      */
+    @Override
     protected void cancelPressed() {
         courierFont.dispose();
         super.cancelPressed();

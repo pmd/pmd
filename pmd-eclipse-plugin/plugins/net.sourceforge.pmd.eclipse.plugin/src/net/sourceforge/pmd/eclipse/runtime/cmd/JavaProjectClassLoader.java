@@ -21,14 +21,14 @@ import org.eclipse.jdt.core.JavaModelException;
 public class JavaProjectClassLoader extends URLClassLoader {
 	private static final Logger log = Logger.getLogger(JavaProjectClassLoader.class);
 
-	private Set javaProjects = new HashSet();
+	private Set<IJavaProject> javaProjects = new HashSet<IJavaProject>();
 	private IWorkspaceRoot workspaceRoot;
 
 	public JavaProjectClassLoader(ClassLoader parent, IJavaProject javaProject) {
 		super(new URL[0], parent);
 		workspaceRoot = javaProject.getProject().getWorkspace().getRoot();
 		addURLs(javaProject, false);
-		
+
 		// No longer need these things, drop references
 		javaProjects = null;
 		workspaceRoot = null;
@@ -44,8 +44,7 @@ public class JavaProjectClassLoader extends URLClassLoader {
 
 				// Add each classpath entry
 				IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
-				for (int i = 0; i < classpathEntries.length; i++) {
-					IClasspathEntry classpathEntry = classpathEntries[i];
+				for (IClasspathEntry classpathEntry : classpathEntries) {
 					if (classpathEntry.isExported() || !exportsOnly) {
 						switch (classpathEntry.getEntryKind()) {
 

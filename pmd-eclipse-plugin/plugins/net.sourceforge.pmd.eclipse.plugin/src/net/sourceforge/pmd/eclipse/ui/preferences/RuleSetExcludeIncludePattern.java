@@ -6,7 +6,7 @@ import net.sourceforge.pmd.RuleSet;
 
 /**
  * Helper class to display rule set exclude/include patterns in a table
- * 
+ *
  */
 public class RuleSetExcludeIncludePattern {
 	private final RuleSet ruleSet;
@@ -27,8 +27,8 @@ public class RuleSetExcludeIncludePattern {
 	 * @return String
 	 */
 	public String getPattern() {
-		List patterns = getPatterns();
-		return (String)patterns.get(index);
+		List<String> patterns = getPatterns();
+		return patterns.get(index);
 	}
 
 	/**
@@ -36,11 +36,11 @@ public class RuleSetExcludeIncludePattern {
 	 * @param value The value to set
 	 */
 	public void setPattern(String value) {
-		List patterns = getPatterns();
+		List<String> patterns = getPatterns();
 		patterns.set(index, value);
 	}
 
-	private List getPatterns() {
+	private List<String> getPatterns() {
 		return exclude ? ruleSet.getExcludePatterns() : ruleSet.getIncludePatterns();
 	}
 }

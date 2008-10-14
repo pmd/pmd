@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -44,7 +44,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 
 /**
- * 
+ *
  * @author Sven
  *
  */
@@ -54,11 +54,11 @@ public class MarkerRecord extends AbstractPMDRecord {
     private final FileRecord parent;
     private final String ruleName;
     private final int priority;
-    private final List markers;
-    
+    private final List<IMarker> markers;
+
     /**
      * Constructor.
-     * 
+     *
      * @param javaResource the given File
      */
     public MarkerRecord(FileRecord parent, String ruleName, int priority) {
@@ -66,21 +66,22 @@ public class MarkerRecord extends AbstractPMDRecord {
         this.parent = parent;
         this.ruleName = ruleName;
         this.priority = priority;
-        this.markers = new ArrayList();
+        this.markers = new ArrayList<IMarker>();
         this.children = AbstractPMDRecord.EMPTY_RECORDS;
     }
-    
+
     public void addViolation(IMarker marker) {
         this.markers.add(marker);
     }
-    
+
     public int getViolationsCounted() {
         return markers.size();
     }
-    
+
     /*
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
      */
+    @Override
     public AbstractPMDRecord addResource(IResource resource) {
         return null;
     }
@@ -88,27 +89,29 @@ public class MarkerRecord extends AbstractPMDRecord {
     public void updateChildren() {
         this.children = createChildren();
     }
-    
+
     /*
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#createChildren()
      */
+    @Override
     public final AbstractPMDRecord[] createChildren() {
-        final List children = new ArrayList();
-        
-        final List markers = parent.getParent().findResourcesByName(this.ruleName, TYPE_MARKER);
-        final Iterator markerIterator = markers.iterator();
-            
+        final List<AbstractPMDRecord> children = new ArrayList<AbstractPMDRecord>();
+
+        final List<AbstractPMDRecord> markers = parent.getParent().findResourcesByName(this.ruleName, TYPE_MARKER);
+        final Iterator<AbstractPMDRecord> markerIterator = markers.iterator();
+
         while (markerIterator.hasNext()) {
             final MarkerRecord marker = (MarkerRecord) markerIterator.next();
             children.add(new FileToMarkerRecord(marker)); // NOPMD by Sven on 13.11.06 12:05
         }
-        
-        return (AbstractPMDRecord[]) children.toArray(new AbstractPMDRecord[children.size()]);
+
+        return children.toArray(new AbstractPMDRecord[children.size()]);
     }
 
     /*
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getChildren()
      */
+    @Override
     public AbstractPMDRecord[] getChildren() {
         return children; // NOPMD by Sven on 13.11.06 12:05
     }
@@ -116,10 +119,11 @@ public class MarkerRecord extends AbstractPMDRecord {
     /*
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getName()
      */
+    @Override
     public String getName() {
         return ruleName;
     }
-    
+
     public int getPriority() {
         return priority;
     }
@@ -127,6 +131,7 @@ public class MarkerRecord extends AbstractPMDRecord {
     /*
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getParent()
      */
+    @Override
     public AbstractPMDRecord getParent() {
         return parent;
     }
@@ -134,6 +139,7 @@ public class MarkerRecord extends AbstractPMDRecord {
     /*
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResource()
      */
+    @Override
     public IResource getResource() {
         return parent.getResource();
     }
@@ -141,6 +147,7 @@ public class MarkerRecord extends AbstractPMDRecord {
     /*
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
      */
+    @Override
     public int getResourceType() {
         return TYPE_MARKER;
     }
@@ -148,31 +155,35 @@ public class MarkerRecord extends AbstractPMDRecord {
     /*
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
      */
+    @Override
     public AbstractPMDRecord removeResource(IResource resource) {
         return null;
     }
 
+    @Override
     public boolean hasMarkers() {
         return markers.size() > 0;
     }
 
+    @Override
     public IMarker[] findMarkers() {
-        return (IMarker[]) markers.toArray(new IMarker[markers.size()]);
+        return markers.toArray(new IMarker[markers.size()]);
     }
-   
+
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int)
      */
-    public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {        
+    @Override
+    public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
         int number = 0;
-        if (prio == priority) {          
+        if (prio == priority) {
             if (invertMarkerAndFileRecords) {
-                for (int i=0; i<children.length; i++) {            
-                    number += children[i].getNumberOfViolationsToPriority(prio, false);
-                }                
+                for (AbstractPMDRecord element : children) {
+                    number += element.getNumberOfViolationsToPriority(prio, false);
+                }
             } else {
                 number = getViolationsCounted();
-            }            
+            }
         }
         return number;
     }
@@ -180,6 +191,7 @@ public class MarkerRecord extends AbstractPMDRecord {
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getLOC()
      */
+    @Override
     public int getLOC() {
         return parent.getLOC();
     }
@@ -187,6 +199,7 @@ public class MarkerRecord extends AbstractPMDRecord {
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfMethods()
      */
+    @Override
     public int getNumberOfMethods() {
         return parent.getNumberOfMethods();
     }

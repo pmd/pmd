@@ -43,9 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -147,9 +145,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
                 props.load(in);
                 in.close();
                 loadPreferencesStore = new PreferenceStore();
-                Iterator i = props.entrySet().iterator();
-                while (i.hasNext()) {
-                    Map.Entry entry = (Map.Entry)i.next();
+                for (Map.Entry<Object, Object> entry: props.entrySet()) {
                     String key = (String)entry.getKey();
                     if (key.startsWith(OLD_PREFERENCE_PREFIX)) {
                         key = key.replaceFirst(OLD_PREFERENCE_PREFIX, PMDPlugin.PLUGIN_ID);
@@ -367,9 +363,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             preferedRuleSet.setDescription("PMD Plugin preferences rule set");
 
             IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
-            Iterator i = ruleSetManager.getDefaultRuleSets().iterator();
-            while (i.hasNext()) {
-                RuleSet ruleSet = (RuleSet) i.next();
+            for (RuleSet ruleSet: ruleSetManager.getDefaultRuleSets()) {
                 preferedRuleSet.addRuleSetByReference(ruleSet, false);
             }
         }
@@ -381,12 +375,9 @@ class PreferencesManagerImpl implements IPreferencesManager {
     /**
      * Find if rules has been added
      */
-    private Set getNewRules(RuleSet newRuleSet) {
-        Set addedRules = new HashSet();
-        Collection newRules = newRuleSet.getRules();
-        Iterator i = newRules.iterator();
-        while (i.hasNext()) {
-            Rule rule = (Rule) i.next();
+    private Set<Rule> getNewRules(RuleSet newRuleSet) {
+        Set<Rule> addedRules = new HashSet<Rule>();
+        for (Rule rule: newRuleSet.getRules()) {
             if (this.ruleSet.getRuleByName(rule.getName()) == null) {
                 addedRules.add(rule);
             }
@@ -401,30 +392,27 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private void updateConfiguredProjects(RuleSet updatedRuleSet) {
     	log.debug("Updating configured projects");
         RuleSet addedRuleSet = new RuleSet();
-        Set newRules = getNewRules(updatedRuleSet);
-        Iterator ruleIterator = newRules.iterator();
-        while (ruleIterator.hasNext()) {
-            Rule rule = (Rule) ruleIterator.next();
+        for (Rule rule: getNewRules(updatedRuleSet)) {
             addedRuleSet.addRule(rule);
         }
 
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 
-        for (int i = 0; i < projects.length; i++) {
+        for (IProject project : projects) {
 
-            if (projects[i].isAccessible()) {
+            if (project.isAccessible()) {
                 try {
-                    IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(projects[i]);
+                    IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
                     RuleSet projectRuleSet = properties.getProjectRuleSet();
                     if (projectRuleSet != null) {
                         projectRuleSet.addRuleSet(addedRuleSet);
-                        projectRuleSet.setExcludePatterns(new ArrayList(updatedRuleSet.getExcludePatterns()));
-                        projectRuleSet.setIncludePatterns(new ArrayList(updatedRuleSet.getIncludePatterns()));
+                        projectRuleSet.setExcludePatterns(new ArrayList<String>(updatedRuleSet.getExcludePatterns()));
+                        projectRuleSet.setIncludePatterns(new ArrayList<String>(updatedRuleSet.getIncludePatterns()));
                         properties.setProjectRuleSet(projectRuleSet);
                         properties.sync();
                     }
                 } catch (PropertiesException e) {
-                    PMDPlugin.getDefault().logError("Unable to add new rules for project: " + projects[i], e);
+                    PMDPlugin.getDefault().logError("Unable to add new rules for project: " + project, e);
                 }
             }
         }

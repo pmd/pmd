@@ -1,6 +1,4 @@
 /*
- * Created on 8 juil. 2005
- *
  * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
  *
@@ -14,7 +12,7 @@
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * The end-user documentation included with the redistribution, if
- *       any, must include the following acknowledgement:
+ *       any, must include the following acknowledgment:
  *       "This product includes software developed in part by support from
  *        the Defense Advanced Research Project Agency (DARPA)"
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
@@ -55,11 +53,11 @@ public class RuleTableViewerSorter extends ViewerSorter {
     /**
      * Default Rule comparator for tabular display of Rules.
      */
-    public static final Comparator RULE_DEFAULT_COMPARATOR = new Comparator() {
-        public int compare(Object e1, Object e2) {
-        	int cmp = RULE_RULESET_NAME_COMPARATOR.compare(e1, e2);
+    public static final Comparator<Rule> RULE_DEFAULT_COMPARATOR = new Comparator<Rule>() {
+        public int compare(Rule r1, Rule r2) {
+        	int cmp = RULE_RULESET_NAME_COMPARATOR.compare(r1, r2);
         	if (cmp == 0) {
-        		cmp = RULE_NAME_COMPARATOR.compare(e1, e2);
+        		cmp = RULE_NAME_COMPARATOR.compare(r1, r2);
         	}
         	return cmp;
         }
@@ -68,56 +66,56 @@ public class RuleTableViewerSorter extends ViewerSorter {
     /**
      * Rule Name comparator for tabular display of Rules.
      */
-    public static final Comparator RULE_RULESET_NAME_COMPARATOR = new Comparator() {
-        public int compare(Object e1, Object e2) {
-        	return compareStrings(((Rule)e1).getRuleSetName(), ((Rule)e2).getRuleSetName());
+    public static final Comparator<Rule> RULE_RULESET_NAME_COMPARATOR = new Comparator<Rule>() {
+        public int compare(Rule r1, Rule r2) {
+        	return compareStrings(r1.getRuleSetName(), r2.getRuleSetName());
         }
     };
 
     /**
      * Rule Name comparator for tabular display of Rules.
      */
-    public static final Comparator RULE_NAME_COMPARATOR = new Comparator() {
-        public int compare(Object e1, Object e2) {
-        	return compareStrings(((Rule)e1).getName(), ((Rule)e2).getName());
+    public static final Comparator<Rule> RULE_NAME_COMPARATOR = new Comparator<Rule>() {
+        public int compare(Rule r1, Rule r2) {
+        	return compareStrings(r1.getName(), r2.getName());
         }
     };
 
     /**
      * Rule Since comparator for tabular display of Rules.
      */
-    public static final Comparator RULE_SINCE_COMPARATOR = new Comparator() {
-        public int compare(Object e1, Object e2) {
-        	return compareStrings(((Rule)e1).getSince(), ((Rule)e2).getSince());
+    public static final Comparator<Rule> RULE_SINCE_COMPARATOR = new Comparator<Rule>() {
+        public int compare(Rule r1, Rule r2) {
+        	return compareStrings(r1.getSince(), r2.getSince());
         }
     };   
 
     /**
      * Rule Priority comparator for tabular display of Rules.
      */
-    public static final Comparator RULE_PRIORITY_COMPARATOR = new Comparator() {
-        public int compare(Object e1, Object e2) {
-            return ((Rule) e1).getPriority().getPriority() - (((Rule) e2).getPriority().getPriority());
+    public static final Comparator<Rule> RULE_PRIORITY_COMPARATOR = new Comparator<Rule>() {
+        public int compare(Rule r1, Rule r2) {
+            return r1.getPriority().getPriority() - r2.getPriority().getPriority();
         }
     };   
 
     /**
      * Rule Description comparator for tabular display of Rules.
      */
-    public static final Comparator RULE_DESCRIPTION_COMPARATOR = new Comparator() {
-        public int compare(Object e1, Object e2) {
-        	return compareStrings(((Rule)e1).getDescription(), ((Rule)e2).getDescription());
+    public static final Comparator<Rule> RULE_DESCRIPTION_COMPARATOR = new Comparator<Rule>() {
+        public int compare(Rule r1, Rule r2) {
+        	return compareStrings(r1.getDescription(), r2.getDescription());
             }
     };
 
-    private Comparator comparator;
+    private Comparator<Rule> comparator;
     private boolean sortDescending = false;
     
     /**
      * Constructor
      * @param comparator the initial comparator
      */
-    public RuleTableViewerSorter(Comparator comparator) {
+    public RuleTableViewerSorter(Comparator<Rule> comparator) {
         this.comparator = comparator;
     }
     
@@ -138,7 +136,7 @@ public class RuleTableViewerSorter extends ViewerSorter {
     /**
      * @return Returns the comparator.
      */
-    public Comparator getComparator() {
+    public Comparator<Rule> getComparator() {
         return this.comparator;
     }
     
@@ -147,7 +145,7 @@ public class RuleTableViewerSorter extends ViewerSorter {
      * the sorting order.
      * @param comparator The comparator to set.
      */
-    public void setComparator(Comparator comparator) {
+    public void setComparator(Comparator<Rule> comparator) {
         if (this.comparator != comparator) {
             this.comparator = comparator;
         } else {
@@ -159,7 +157,7 @@ public class RuleTableViewerSorter extends ViewerSorter {
      * @see org.eclipse.jface.viewers.ViewerSorter#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
      */
     public int compare(Viewer viewer, Object e1, Object e2) {
-        int result = this.comparator.compare(e1,e2);
+        int result = this.comparator.compare((Rule)e1,(Rule)e2);
         return this.sortDescending ? 0 - result : result;
     }
 

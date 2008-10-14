@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -64,9 +64,9 @@ import org.eclipse.jdt.core.JavaModelException;
 
 /**
  * AbstractPMDRecord for Files
- * 
+ *
  * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
- * 
+ *
  */
 public class FileRecord extends AbstractPMDRecord {
     private AbstractPMDRecord[] children;
@@ -74,10 +74,10 @@ public class FileRecord extends AbstractPMDRecord {
     private PackageRecord parent;
     private int numberOfLOC;
     private int numberOfMethods;
-    
+
     /**
      * Constructor (not for use with the Model, no PackageRecord is provided here)
-     * 
+     *
      * @param javaResource the given File
      */
     public FileRecord(IResource javaResource) {
@@ -86,17 +86,17 @@ public class FileRecord extends AbstractPMDRecord {
 
     /**
      * Constructor (for use with the Model)
-     * 
+     *
      * @param javaResource
      * @param record
      */
     public FileRecord(IResource javaResource, PackageRecord record) {
         super();
-        
+
         if (javaResource == null) {
             throw new IllegalArgumentException("javaResouce cannot be null");
         }
-        
+
         this.resource = javaResource;
         this.parent = record;
         this.numberOfLOC = 0;
@@ -107,6 +107,7 @@ public class FileRecord extends AbstractPMDRecord {
     /**
      *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getParent()
      */
+    @Override
     public AbstractPMDRecord getParent() {
         return this.parent;
     }
@@ -114,6 +115,7 @@ public class FileRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getChildren()
      */
+    @Override
     public AbstractPMDRecord[] getChildren() {
         return children;  // NOPMD by Sven on 13.11.06 11:57
     }
@@ -121,6 +123,7 @@ public class FileRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResource()
      */
+    @Override
     public IResource getResource() {
         return this.resource;
     }
@@ -132,22 +135,23 @@ public class FileRecord extends AbstractPMDRecord {
     public void updateChildren() {
         this.children = createChildren();
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#createChildren()
      */
+    @Override
     protected final AbstractPMDRecord[] createChildren() {
         AbstractPMDRecord[] children = AbstractPMDRecord.EMPTY_RECORDS;
 
-        try {           
+        try {
             // get all markers
-            final List markers = Arrays.asList(this.findMarkers());
-            final Iterator markerIterator = markers.iterator();
-            
+            final List<IMarker> markers = Arrays.asList(this.findMarkers());
+            final Iterator<IMarker> markerIterator = markers.iterator();
+
             // put all markers in a map with key = rulename
             final Map allMarkerMap = new HashMap();
             while (markerIterator.hasNext()) {
-                final IMarker marker = (IMarker) markerIterator.next();
+                final IMarker marker = markerIterator.next();
 
                 MarkerRecord markerRecord = (MarkerRecord) allMarkerMap.get(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME));
                 if (markerRecord == null) {
@@ -164,26 +168,28 @@ public class FileRecord extends AbstractPMDRecord {
             children = (AbstractPMDRecord[]) allMarkerMap.values().toArray(new MarkerRecord[allMarkerMap.size()]);
         } catch (CoreException e) {
             PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), e);
-        }       
-        
+        }
+
         return children; // no children so return an empty array, not null!
     }
 
     /**
      * Checks the File for PMD-Markers
-     * 
+     *
      * @return true if the File has PMD-Markers, false otherwise
      */
+    @Override
     public boolean hasMarkers() {
         final IMarker[] markers = findMarkers();
-        return ((markers != null) && (markers.length > 0));
+        return markers != null && markers.length > 0;
     }
 
     /**
      * Finds PMD-Markers in the File
-     * 
+     *
      * @return an Array of markers
      */
+    @Override
     public final IMarker[] findMarkers() {
         IMarker[] markers = new IMarker[0]; // to avoid returning null
         try {
@@ -198,10 +204,10 @@ public class FileRecord extends AbstractPMDRecord {
 
         return markers;
     }
-    
+
     /**
      * Finds PMD PDFA Markers in the File
-     * 
+     *
      * @return an Array of markers
      */
     public IMarker[] findDFAMarkers() {
@@ -215,28 +221,29 @@ public class FileRecord extends AbstractPMDRecord {
         } catch (CoreException ce) {
             PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
-        
+
         return markers;
     }
-    
+
     /**
      * Finds Markers, that have a given Attribute with a given Value
-     * 
+     *
      * @param attributeName
      * @param value
      * @return an Array of markers matching these Attribute and Value
      */
+    @Override
     public IMarker[] findMarkersByAttribute(String attributeName, Object value) {
         final IMarker[] markers = findMarkers();
-        final List attributeMarkers = new ArrayList();
+        final List<IMarker> attributeMarkers = new ArrayList<IMarker>();
         try {
-            // we get all Markers and cath the ones that matches our criteria
-            for (int i = 0; i < markers.length; i++) {
-                final Object val = markers[i].getAttribute(attributeName);
+            // we get all Markers and catch the ones that matches our criteria
+            for (IMarker marker : markers) {
+                final Object val = marker.getAttribute(attributeName);
 
                 // if the value is null, the Attribute doesn't exist
-                if ((val != null) && (val.equals(value))) {
-                    attributeMarkers.add(markers[i]);
+                if (val != null && val.equals(value)) {
+                    attributeMarkers.add(marker);
                 }
             }
         } catch (CoreException ce) {
@@ -244,14 +251,14 @@ public class FileRecord extends AbstractPMDRecord {
         }
 
         // return an Array of the Markers
-        return (IMarker[]) attributeMarkers.toArray(new IMarker[attributeMarkers.size()]);
+        return attributeMarkers.toArray(new IMarker[attributeMarkers.size()]);
     }
 
     /**
      * Calculates the Number of Code-Lines this File has.
      * The Function is adapted from the Eclipse Metrics-Plugin available at:
      * http://www.sourceforge.net/projects/metrics
-     * 
+     *
      * @return the Lines of Code
      */
     public void calculateLinesOfCode() {
@@ -267,7 +274,7 @@ public class FileRecord extends AbstractPMDRecord {
                 final StringTokenizer lines = new StringTokenizer(body, "\n");
                 while(lines.hasMoreTokens()) {
                     String trimmed = lines.nextToken().trim();
-                    if ((trimmed.length() > 0) && (trimmed.startsWith("/*"))) {
+                    if (trimmed.length() > 0 && trimmed.startsWith("/*")) {
                         while (trimmed.indexOf("*/") == -1) {
                             trimmed = lines.nextToken().trim();
                         }
@@ -275,29 +282,30 @@ public class FileRecord extends AbstractPMDRecord {
                             trimmed = lines.nextToken().trim();
                         }
                     }
-                    
+
                     if (!trimmed.startsWith("//")) {
-                        loc++;                          
+                        loc++;
                     }
                 }
             }
-            
+
             this.numberOfLOC = loc;
         }
     }
-    
+
     /**
      * Gets the Number of Code-Lines this File has.
-     * 
+     *
      * @return the Lines of Code
      */
+    @Override
     public int getLOC() {
         return this.numberOfLOC;
     }
 
     /**
      * Reads a Resource's File and return the Code as String.
-     * 
+     *
      * @param resource a resource to read ; the resource must be accessible.
      * @return a String which is the Files Content
      */
@@ -339,17 +347,17 @@ public class FileRecord extends AbstractPMDRecord {
             // we need to change the Resource into a Java-File
             final IJavaElement element = JavaCore.create(this.resource);
             final List methods = new ArrayList();
-                 
+
             if (element instanceof ICompilationUnit) {
                 try {
                     // ITypes can be Package Declarations or other Java Stuff too
                     final IType[] types = ((ICompilationUnit) element).getTypes();
-                    for (int i=0; i<types.length; i++) {
-                        if (types[i] instanceof IType) {
+                    for (IType type : types) {
+                        if (type instanceof IType) {
                             // only if it is an IType itself, it's a Class
-                            // from which we can get it's Methods
+                            // from which we can get its Methods
                             methods.addAll( Arrays.asList(
-                                    ((IType) types[i]).getMethods() ));
+                                    type.getMethods() ));
                         }
                     }
                 } catch (JavaModelException jme) {
@@ -362,12 +370,13 @@ public class FileRecord extends AbstractPMDRecord {
             }
         }
     }
-    
+
     /**
      * Gets the Number of Methods, this class contains.
-     * 
+     *
      * @return the Number of Methods
      */
+    @Override
     public int getNumberOfMethods() {
         return this.numberOfMethods; // deactivate this method for now
     }
@@ -375,6 +384,7 @@ public class FileRecord extends AbstractPMDRecord {
     /**
      *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
      */
+    @Override
     public AbstractPMDRecord addResource(IResource resource) {
         return null;
     }
@@ -382,6 +392,7 @@ public class FileRecord extends AbstractPMDRecord {
     /**
      *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
      */
+    @Override
     public AbstractPMDRecord removeResource(IResource resource) {
         return null;
     }
@@ -389,6 +400,7 @@ public class FileRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getName()
      */
+    @Override
     public String getName() {
         return this.resource.getName();
     }
@@ -396,18 +408,20 @@ public class FileRecord extends AbstractPMDRecord {
     /**
      *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
      */
+    @Override
     public int getResourceType() {
         return AbstractPMDRecord.TYPE_FILE;
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int)
      */
+    @Override
     public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
         int number = 0;
-        
-        for (int i=0; i<children.length; i++) {            
-            number += children[i].getNumberOfViolationsToPriority(prio, false);
+
+        for (AbstractPMDRecord element : children) {
+            number += element.getNumberOfViolationsToPriority(prio, false);
         }
         return number;
     }

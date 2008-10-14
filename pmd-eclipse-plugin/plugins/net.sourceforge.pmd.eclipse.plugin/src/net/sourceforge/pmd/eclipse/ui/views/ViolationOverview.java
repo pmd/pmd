@@ -125,6 +125,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     /**
      * @see org.eclipse.ui.ViewPart#init(org.eclipse.ui.IViewSite)
      */
+    @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
 
@@ -151,6 +152,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     /**
      * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */
+    @Override
     public void createPartControl(Composite parent) {
         this.treeViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         this.treeViewer.setUseHashlookup(true);
@@ -186,28 +188,29 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     /**
      * @see org.eclipse.ui.IWorkbenchPart#dispose()
      */
+    @Override
     public void dispose() {
         this.memento.putList(PRIORITY_LIST, this.priorityFilter.getPriorityFilterList());
 
         // on Dispose of the View we save its State into a Memento
 
         // we save the filtered Projects
-        final List projects = this.projectFilter.getProjectFilterList();
-        final List projectNames = new ArrayList();
+        final List<AbstractPMDRecord> projects = this.projectFilter.getProjectFilterList();
+        final List<String> projectNames = new ArrayList<String>();
         for (int k = 0; k < projects.size(); k++) {
-            final AbstractPMDRecord project = (AbstractPMDRecord) projects.get(k);
+            final AbstractPMDRecord project = projects.get(k);
             projectNames.add(project.getName());
         }
         this.memento.putList(PROJECT_LIST, projectNames);
 
         // ... the Columns Widths
-        final List widthList = Arrays.asList(columnWidths);
+        final List<Integer> widthList = Arrays.asList(columnWidths);
         this.memento.putList(COLUMN_WIDTHS, widthList);
 
         // ... what Element is sorted in what way
         final Integer[] sorterProps = new Integer[] { new Integer(currentSortedColumn),
                 new Integer(columnSortOrder[currentSortedColumn]) };
-        final List sorterList = Arrays.asList(sorterProps);
+        final List<Integer> sorterList = Arrays.asList(sorterProps);
         memento.putList(COLUMN_SORTER, sorterList);
 
         // ... and how we should display the Elements
@@ -339,9 +342,9 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     public int getNumberOfFilteredViolations(AbstractPMDRecord record) {
         int number = 0;
 
-        final List filterList = this.priorityFilter.getPriorityFilterList();
+        final List<Integer> filterList = this.priorityFilter.getPriorityFilterList();
         for (int i = 0; i < filterList.size(); i++) {
-            final Integer priority = (Integer) filterList.get(i);
+            final Integer priority = filterList.get(i);
             number += record.getNumberOfViolationsToPriority(
                     priority.intValue(), getShowType() == SHOW_MARKERS_FILES);
         }
@@ -370,7 +373,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * Delegate method for {@link ProjectFilter#getProjectFilterList()}.
      * @return project filter list
      */
-    public List getProjectFilterList() {
+    public List<AbstractPMDRecord> getProjectFilterList() {
         return this.projectFilter.getProjectFilterList();
     }
 
@@ -378,7 +381,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * Delegate method for {@link ProjectFilter#getProjectFilterList()}.
      * @return project filter list
      */
-    public List getPriorityFilterList() {
+    public List<Integer> getPriorityFilterList() {
         return this.priorityFilter.getPriorityFilterList();
     }
 
@@ -415,6 +418,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     /**
      * @see org.eclipse.ui.IWorkbenchPart#setFocus()
      */
+    @Override
     public void setFocus() {
         this.treeViewer.getTree().setFocus();
     }
@@ -494,14 +498,14 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private void rememberFilterSettings() {
 
         // Provide the Filters with their last State
-        final List priorityList = this.memento.getIntegerList(PRIORITY_LIST);
+        final List<Integer> priorityList = this.memento.getIntegerList(PRIORITY_LIST);
         if (!priorityList.isEmpty()) {
             this.priorityFilter.setPriorityFilterList(priorityList);
         }
 
-        final List projectNames = this.memento.getStringList(PROJECT_LIST);
+        final List<String> projectNames = this.memento.getStringList(PROJECT_LIST);
         if (!projectNames.isEmpty()) {
-            final List projectList = new ArrayList();
+            final List<AbstractPMDRecord> projectList = new ArrayList<AbstractPMDRecord>();
             for (int k = 0; k < projectNames.size(); k++) {
                 final AbstractPMDRecord project = this.root.findResourceByName(projectNames.get(k).toString(),
                         AbstractPMDRecord.TYPE_PROJECT);
@@ -527,14 +531,14 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private void rememberTreeSettings() {
 
         // the Memento sets the Widths of Columns
-        final List widthList = this.memento.getIntegerList(COLUMN_WIDTHS);
+        final List<Integer> widthList = this.memento.getIntegerList(COLUMN_WIDTHS);
         if (!widthList.isEmpty()) {
             widthList.toArray(this.columnWidths);
             setColumnWidths();
         }
 
         // ... and also the Sorter
-        final List sorterList = this.memento.getIntegerList(COLUMN_SORTER);
+        final List<Integer> sorterList = this.memento.getIntegerList(COLUMN_SORTER);
         if (!sorterList.isEmpty()) {
             final Integer[] sorterProps = new Integer[sorterList.size()];
             sorterList.toArray(sorterProps);
@@ -551,6 +555,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     private ViewerSorter newPackagesSorter(TreeColumn column, final int sortOrder) {
         return new TableColumnSorter(column, sortOrder) {
+            @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
                 String name1 = "";
                 String name2 = "";
@@ -577,6 +582,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     private ViewerSorter newViolationsCountSorter(TreeColumn column, final int sortOrder) { // NOPMD by Sven on 13.11.06 11:45
         return new TableColumnSorter(column, sortOrder) {
+            @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
                 int vio1 = 0;
                 int vio2 = 0;
@@ -601,6 +607,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     private ViewerSorter newViolationsPerLOCSorter(TreeColumn column, final int sortOrder) { // NOPMD by Sven on 13.11.06 11:45
         return new TableColumnSorter(column, sortOrder) {
+            @Override
             public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD by Sven on 13.11.06 11:45
                 Float vioPerLoc1 = new Float(0.0f);
                 Float vioPerLoc2 = new Float(0.0f);
@@ -636,6 +643,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     private ViewerSorter newViolationsPerMethodsCount(TreeColumn column, final int sortOrder) { // NOPMD by Sven on 13.11.06 11:45
         return new TableColumnSorter(column, sortOrder) {
+            @Override
             public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD by Sven on 13.11.06 11:45
 
                 Float vioPerMethod1 = new Float(0.0f);
@@ -670,6 +678,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     private ViewerSorter newProjectNameSorter(TreeColumn column, final int sortOrder) {
         return new TableColumnSorter(column, sortOrder) {
+            @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
                 AbstractPMDRecord project1 = null;
                 AbstractPMDRecord project2 = null;
@@ -702,9 +711,9 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         if (object instanceof PackageRecord) {
             final PackageRecord record = (PackageRecord) object;
             final AbstractPMDRecord[] children = record.getChildren();
-            for (int j=0; j<children.length; j++) {
-                if (children[j] instanceof FileRecord) {
-                    final FileRecord fileRecord = (FileRecord) children[j];
+            for (AbstractPMDRecord element : children) {
+                if (element instanceof FileRecord) {
+                    final FileRecord fileRecord = (FileRecord) element;
                     fileRecord.calculateLinesOfCode();
                     fileRecord.calculateNumberOfMethods();
                 }
@@ -811,6 +820,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             this.column = column;
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             columnSortOrder[this.column] *= -1;
             treeViewer.setSorter(getViewerSorter(this.column));
@@ -828,6 +838,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             this.column = column;
         }
 
+        @Override
         public void controlResized(ControlEvent e) {
             columnWidths[this.column] = new Integer(treeViewer.getTree().getColumn(this.column).getWidth());
         }

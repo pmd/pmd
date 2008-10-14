@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -66,9 +66,9 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * Provides the Violation Overview with Content Elements can be
  * PackageRecords or FileRecords
- * 
+ *
  * @author SebastianRaffel ( 09.05.2005 ), Philppe Herlin, Sven Jacob
- * 
+ *
  */
 public class ViolationOverviewContentProvider implements ITreeContentProvider, IStructuredContentProvider, IResourceChangeListener {
     private static final Log LOG = LogFactory.getLog(ViolationOverviewContentProvider.class);
@@ -82,7 +82,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
 
     /**
      * Constructor
-     * 
+     *
      * @param view
      */
     public ViolationOverviewContentProvider(ViolationOverview view) {
@@ -115,10 +115,10 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
     public Object[] getChildren(Object parentElement) {
         Object[] children = NO_CHILDREN;
 
-        if ((parentElement instanceof IWorkspaceRoot) || (parentElement instanceof RootRecord)) {
+        if (parentElement instanceof IWorkspaceRoot || parentElement instanceof RootRecord) {
             children = getChildrenOfRoot();
         } else if (parentElement instanceof PackageRecord) {
-            children = getChildrenOfPackage((PackageRecord)parentElement);            
+            children = getChildrenOfPackage((PackageRecord)parentElement);
         } else if (parentElement instanceof FileRecord) {
             children = getChildrenOfFile((FileRecord)parentElement);
         } else if (parentElement instanceof MarkerRecord) {
@@ -149,30 +149,30 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
     /**
      * Gets the children of a PackageRecord.
      * If the presentation type is {@link ViolationOverview#SHOW_MARKERS_FILES} the children (MarkerRecord)
-     * of the children (FileRecord) will be get. 
-     * 
+     * of the children (FileRecord) will be get.
+     *
      * @param record PackageRecord
      * @return children as array
      */
     private Object[] getChildrenOfPackage(PackageRecord record) {
         Object[] children = NO_CHILDREN;
-        
+
         if (this.violationView.getShowType() == ViolationOverview.SHOW_MARKERS_FILES) {
-            final Map markers = new HashMap();
-            final List files = record.getChildrenAsList();
+            final Map<String, AbstractPMDRecord> markers = new HashMap<String, AbstractPMDRecord>();
+            final List<AbstractPMDRecord> files = record.getChildrenAsList();
             for (int i = 0; i < files.size(); i++) {
-                final AbstractPMDRecord fileRec = (AbstractPMDRecord) files.get(i);
-                final List newMarkers = fileRec.getChildrenAsList();
-                
+                final AbstractPMDRecord fileRec = files.get(i);
+                final List<AbstractPMDRecord> newMarkers = fileRec.getChildrenAsList();
+
                 for (int j = 0; j < newMarkers.size(); j++) {
-                    final AbstractPMDRecord markerRec = (AbstractPMDRecord) newMarkers.get(j);
+                    final AbstractPMDRecord markerRec = newMarkers.get(j);
                     markers.put(markerRec.getName(), markerRec);
-                }                
+                }
             }
-            
+
             children = markers.values().toArray(new MarkerRecord[markers.size()]);
         } else {
-            children = record.getChildren();    
+            children = record.getChildren();
         }
         return children;
     }
@@ -183,41 +183,41 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      */
     private Object[] getChildrenOfRoot() {
         Object[] children = NO_CHILDREN;
-        
+
         // ... we care about its Project's
-        final List projects = root.getChildrenAsList();
+        final List<AbstractPMDRecord> projects = root.getChildrenAsList();
         final ProjectRecord[] projectArray = new ProjectRecord[projects.size()];
         projects.toArray(projectArray);
 
         // we make a List of all Packages
-        final List packages = new ArrayList();
-        for (int i = 0; i < projectArray.length; i++) {
-            if (projectArray[i].isProjectOpen()) {
-                packages.addAll(projectArray[i].getChildrenAsList());
+        final List<AbstractPMDRecord> packages = new ArrayList<AbstractPMDRecord>();
+        for (ProjectRecord element : projectArray) {
+            if (element.isProjectOpen()) {
+                packages.addAll(element.getChildrenAsList());
             }
         }
-       
+
         switch (this.violationView.getShowType()) {
         case ViolationOverview.SHOW_MARKERS_FILES:
         case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
             // show packages
             children = packages.toArray();
-            break;               
-            
+            break;
+
         case ViolationOverview.SHOW_FILES_MARKERS:
             // show files
-            final List files = new ArrayList();
+            final List<AbstractPMDRecord> files = new ArrayList<AbstractPMDRecord>();
             for (int j = 0; j < packages.size(); j++) {
-                final AbstractPMDRecord packageRec = (AbstractPMDRecord) packages.get(j);
+                final AbstractPMDRecord packageRec = packages.get(j);
                 files.addAll(packageRec.getChildrenAsList());
             }
-            
+
             children = files.toArray();
             break;
-                    
+
         default:
             // do nothing
-        }             
+        }
         return children;
     }
 
@@ -227,7 +227,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
     public Object getParent(Object element) {
         Object parent = null;
         final AbstractPMDRecord record = (AbstractPMDRecord) element;
-        
+
         switch (violationView.getShowType()) {
         case ViolationOverview.SHOW_FILES_MARKERS:
             if (element instanceof FileRecord) {
@@ -244,7 +244,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
             } else if (element instanceof MarkerRecord) {
                 parent = record.getParent().getParent();
             }
-            
+
             break;
         case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
             if (element instanceof PackageRecord) {
@@ -266,7 +266,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      */
     public boolean hasChildren(Object element) {
         boolean hasChildren = true;
-        
+
         // find out if this is the last level in the tree (to avaoid recursion)
         switch (violationView.getShowType()) {
         case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
@@ -279,7 +279,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
         default:
             // do nothing
         }
-        
+
         if (hasChildren) {
             hasChildren = getChildren(element).length > 0;
         }
@@ -331,10 +331,10 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
 
         // first we get a List of changes to Files and Projects
         // so we won't need updating everything
-        final List changedFiles = new ArrayList();
-        final List changedProjects = new ArrayList();
-        for (int i = 0; i < markerDeltas.length; i++) {
-            final IResource resource = markerDeltas[i].getResource();
+        final List<IResource> changedFiles = new ArrayList<IResource>();
+        final List<IProject> changedProjects = new ArrayList<IProject>();
+        for (IMarkerDelta markerDelta : markerDeltas) {
+            final IResource resource = markerDelta.getResource();
             final IProject project = resource.getProject();
 
             // the lists should not contain
@@ -353,13 +353,13 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
 
         // we can add, change or remove Resources
         // all this changes are given to the viewer later
-        final List additions = new ArrayList();
-        final List removals = new ArrayList();
-        final List changes = new ArrayList();
+        final List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
+        final List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
+        final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
 
         // we got through the changed Projects
         for (int i = 0; i < changedProjects.size(); i++) {
-            final IProject project = (IProject) changedProjects.get(i);
+            final IProject project = changedProjects.get(i);
             LOG.debug("Processing changes for project " + project.getName());
             ProjectRecord projectRec = (ProjectRecord) this.root.findResource(project);
 
@@ -367,7 +367,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
             // we also delete it from the Model and go on
             if (!(project.isOpen() && project.isAccessible())) { // NOPMD by Sven on 09.11.06 22:17
                 LOG.debug("The project is not open or not accessible. Remove it");
-                final List[] array = updateFiles(project, changedFiles);
+                final List<AbstractPMDRecord>[] array = updateFiles(project, changedFiles);
                 removals.addAll(array[1]);
                 this.root.removeResource(project);
             }
@@ -380,13 +380,13 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
             }
 
             // then we can update the Files for the new or updated Project
-            final List[] array = updateFiles(project, changedFiles);
+            final List<AbstractPMDRecord>[] array = updateFiles(project, changedFiles);
             additions.addAll(array[0]);
             removals.addAll(array[1]);
             changes.addAll(array[2]);
         }
 
-        // the addtions, removals and changes are given to the viewer
+        // the additions, removals and changes are given to the viewer
         // so that it can update itself
         // updating the table MUST be in sync
         this.treeViewer.getControl().getDisplay().syncExec(new Runnable() {
@@ -398,30 +398,30 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
 
     /**
      * Updates the Files for a given Project
-     * 
+     *
      * @param project
      * @param changedFiles, a List of all changed Files
-     * @return an ArrayList of ArrayLists containing additons [0], removals [1]
+     * @return an ArrayList of ArrayLists containing additions [0], removals [1]
      *         and changes [2] (Array-Position in Brackets)
      */
-    protected List[] updateFiles(IProject project, List changedFiles) {
-        final List additions = new ArrayList();
-        final List removals = new ArrayList();
-        final List changes = new ArrayList();
-        List[] updatedFiles = new List[] { additions, removals, changes };
+    protected List<AbstractPMDRecord>[] updateFiles(IProject project, List<IResource> changedFiles) {
+        final List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
+        final List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
+        final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
+        List<AbstractPMDRecord>[] updatedFiles = new List[] { additions, removals, changes };
 
         // we search for the ProjectRecord to the Project
         // if it doesn't exist, we return nothing
         final ProjectRecord projectRec = (ProjectRecord) this.root.findResource(project);
 
         // we got through all files
-        if ((projectRec != null) && (project.isAccessible())) {
+        if (projectRec != null && project.isAccessible()) {
             updatedFiles = searchProjectForModifications(projectRec, changedFiles);
         }
 
         // if the project is deleted or closed
         else if (projectRec != null) {
-            final List packages = projectRec.getChildrenAsList();
+            final List<AbstractPMDRecord> packages = projectRec.getChildrenAsList();
             // ... we add all Packages to the removals
             // so they are not shown anymore
             removals.addAll(packages);
@@ -436,31 +436,31 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
     }
 
     /**
-     * Analyses the modification inside a single project and compute the list of additions, updates and removals.
-     * 
+     * Analyzes the modification inside a single project and compute the list of additions, updates and removals.
+     *
      * @param projectRec
      * @param changedFiles
      * @return
      */
-    private List[] searchProjectForModifications(ProjectRecord projectRec, List changedFiles) {
-        final List additions = new ArrayList();
-        final List removals = new ArrayList();
-        final List changes = new ArrayList();
+    private List<AbstractPMDRecord>[] searchProjectForModifications(ProjectRecord projectRec, List<IResource> changedFiles) {
+        final List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
+        final List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
+        final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
         final IProject project = (IProject) projectRec.getResource();
-        
+
         LOG.debug("Analyses project " + project.getName());
 
         for (int i = 0; i < changedFiles.size(); i++) {
-            final IResource resource = (IResource) changedFiles.get(i);
+            final IResource resource = changedFiles.get(i);
             LOG.debug("Analyses resource " + resource.getName());
 
             // ... and first check, if the project is the right one
             if (project.equals(resource.getProject())) {
                 final AbstractPMDRecord rec = projectRec.findResource(resource);
-                if ((rec != null) && (rec.getResourceType() == IResource.FILE)) {
+                if (rec != null && rec.getResourceType() == IResource.FILE) {
                     final FileRecord fileRec = (FileRecord) rec;
                     fileRec.updateChildren();
-                    if ((fileRec.getResource().isAccessible()) && (fileRec.hasMarkers())) {
+                    if (fileRec.getResource().isAccessible() && fileRec.hasMarkers()) {
                         LOG.debug("The file has changed");
                         changes.add(fileRec);
                     } else {
@@ -474,7 +474,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
                             projectRec.removeResource(fileRec.getParent().getResource());
                             removals.add(packageRec);
                         }
-                    } 
+                    }
                 } else if (rec == null) {
                     LOG.debug("This is a new file.");
                     final AbstractPMDRecord fileRec = projectRec.addResource(resource);
@@ -492,12 +492,12 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
 
     /**
      * Applies found updates on the table, adapted from Philippe Herlin
-     * 
+     *
      * @param additions
      * @param removals
      * @param changes
      */
-    protected void updateViewer(List additions, List removals, List changes) {
+    protected void updateViewer(List<AbstractPMDRecord> additions, List<AbstractPMDRecord> removals, List<AbstractPMDRecord> changes) {
 
         // perform removals
         if (removals.size() > 0) {
@@ -508,7 +508,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
         // perform additions
         if (additions.size() > 0) {
             for (int i = 0; i < additions.size(); i++) {
-                final AbstractPMDRecord addedRec = (AbstractPMDRecord) additions.get(i);
+                final AbstractPMDRecord addedRec = additions.get(i);
                 if (addedRec instanceof FileRecord) {
                     this.treeViewer.add(addedRec.getParent(), addedRec);
                 } else {

@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -41,7 +41,7 @@ import net.sourceforge.pmd.RuleSet;
 
 /**
  * Interface for a rule set manager. A RuleSetManager handle a set of rule sets.
- * 
+ *
  * @author Philippe Herlin
  *
  */
@@ -51,24 +51,24 @@ public interface IRuleSetManager {
      * @param ruleSet the ruleset to register
      */
     void registerRuleSet(RuleSet ruleSet);
-    
+
     /**
      * Unregister a rule set
      * @param ruleSet the ruleset to unregister
      */
     void unregisterRuleSet(RuleSet ruleSet);
-    
+
     /**
      * @return a set of registered ruleset; this can be empty but never null
      */
-    Set getRegisteredRuleSets();
-        
+    Set<RuleSet> getRegisteredRuleSets();
+
     /**
      * Register a rule set for the default set
      * @param ruleSet the ruleset to register
      */
     void registerDefaultRuleSet(RuleSet ruleSet);
-    
+
     /**
      * Unregister a rule set from the default set
      * @param ruleSet the ruleset to unregister
@@ -78,5 +78,5 @@ public interface IRuleSetManager {
     /**
      * @return the plugin default ruleset set
      */
-    Set getDefaultRuleSets();
+    Set<RuleSet> getDefaultRuleSets();
 }

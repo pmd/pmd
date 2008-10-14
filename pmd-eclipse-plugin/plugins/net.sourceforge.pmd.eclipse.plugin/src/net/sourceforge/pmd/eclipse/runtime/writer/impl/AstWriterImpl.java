@@ -1,23 +1,23 @@
-/*  
- * <copyright>  
+/*
+ * <copyright>
  *  Copyright 1997-2003 PMD for Eclipse Development team
- *  under sponsorship of the Defense Advanced Research Projects  
- *  Agency (DARPA).  
- *   
- *  This program is free software; you can redistribute it and/or modify  
- *  it under the terms of the Cougaar Open Source License as published by  
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).   
- *   
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS   
- *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR   
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF   
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT   
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT   
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL   
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,   
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR   
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.   
- *   
+ *  under sponsorship of the Defense Advanced Research Projects
+ *  Agency (DARPA).
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the Cougaar Open Source License as published by
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
+ *
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ *
  * </copyright>
  */
 package net.sourceforge.pmd.eclipse.runtime.writer.impl;
@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implements a default AST Writer
- * 
+ *
  * @author Philippe Herlin
  *
  */
@@ -99,7 +99,7 @@ class AstWriterImpl implements IAstWriter {
 
         for (int i = 0; i < simpleNode.jjtGetNumChildren(); i++) {
             Node child = simpleNode.jjtGetChild(i);
-            Element element = getElement(doc, (Node) child);
+            Element element = getElement(doc, child);
             simpleNodeElement.appendChild(element);
         }
 
@@ -108,7 +108,7 @@ class AstWriterImpl implements IAstWriter {
 
     /**
      * Add attributes to element by introspecting the node. This way, the abstract
-     * tree can evolve indepently from the way it is persisted
+     * tree can evolve independently from the way it is persisted
      * @param element a xml element
      * @param simpleNode a ast node
      */
@@ -116,17 +116,17 @@ class AstWriterImpl implements IAstWriter {
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(simpleNode.getClass());
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-            for (int i = 0; i < descriptors.length; i++) {
-                String attributeName = descriptors[i].getName();
+            for (PropertyDescriptor descriptor : descriptors) {
+                String attributeName = descriptor.getName();
                 if (!attributeName.equals("class") && !attributeName.equals("scope")) {
-                    log.debug("   processing attribute " + descriptors[i].getName());
-                    Method getter = descriptors[i].getReadMethod();
+                    log.debug("   processing attribute " + descriptor.getName());
+                    Method getter = descriptor.getReadMethod();
                     if (getter != null) {
                         try {
-                            Object result = getter.invoke(simpleNode, null);
+                            Object result = getter.invoke(simpleNode, (Object)null);
                             if (result != null) {
                                 log.debug("      added");
-                                element.setAttribute(descriptors[i].getName(), result.toString());
+                                element.setAttribute(descriptor.getName(), result.toString());
                             } else {
                                 log.debug("      not added attribute is null");
                             }

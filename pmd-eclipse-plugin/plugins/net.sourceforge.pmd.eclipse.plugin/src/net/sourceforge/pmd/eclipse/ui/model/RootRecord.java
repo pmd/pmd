@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -46,9 +46,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 /**
  * AbstractPMDRecord for the WorkspaceRoot creates ProjectRecords when
  * instantiated
- * 
+ *
  * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
- * 
+ *
  */
 public class RootRecord extends AbstractPMDRecord {
     final private IWorkspaceRoot workspaceRoot;
@@ -56,7 +56,7 @@ public class RootRecord extends AbstractPMDRecord {
 
     /**
      * Constructor
-     * 
+     *
      * @param root, the WorkspaceRoot
      */
     public RootRecord(IWorkspaceRoot root) {
@@ -73,6 +73,7 @@ public class RootRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getParent()
      */
+    @Override
     public AbstractPMDRecord getParent() {
         return this;
     }
@@ -80,6 +81,7 @@ public class RootRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getChildren()
      */
+    @Override
     public AbstractPMDRecord[] getChildren() {
         return this.children; // NOPMD by Herlin on 09/10/06 00:56
     }
@@ -87,6 +89,7 @@ public class RootRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResource()
      */
+    @Override
     public IResource getResource() {
         return this.workspaceRoot;
     }
@@ -94,26 +97,28 @@ public class RootRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#createChildren()
      */
+    @Override
     protected final AbstractPMDRecord[] createChildren() {
         // get the projects
         final IProject[] projects = this.workspaceRoot.getProjects();
-        final List projectList = new ArrayList();
+        final List<AbstractPMDRecord> projectList = new ArrayList<AbstractPMDRecord>();
 
         // ... and create Records for them
-        for (int i = 0; i < projects.length; i++) {
-            projectList.add(new ProjectRecord(projects[i], this)); // NOPMD by
+        for (IProject project : projects) {
+            projectList.add(new ProjectRecord(project, this)); // NOPMD by
                                                                     // Herlin on
                                                                     // 09/10/06
                                                                     // 00:57
         }
 
         // return the Array of children
-        return (AbstractPMDRecord[]) projectList.toArray(new AbstractPMDRecord[projectList.size()]);
+        return projectList.toArray(new AbstractPMDRecord[projectList.size()]);
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
      */
+    @Override
     public AbstractPMDRecord addResource(IResource resource) {
         return resource instanceof IProject ? addProject((IProject) resource) : null; // NOPMD
                                                                                         // by
@@ -126,6 +131,7 @@ public class RootRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
      */
+    @Override
     public AbstractPMDRecord removeResource(IResource resource) {
         return resource instanceof IProject ? removeProject((IProject) resource) : null; // NOPMD
                                                                                             // by
@@ -138,6 +144,7 @@ public class RootRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getName()
      */
+    @Override
     public String getName() {
         return this.workspaceRoot.getName();
     }
@@ -145,13 +152,14 @@ public class RootRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
      */
+    @Override
     public int getResourceType() {
         return AbstractPMDRecord.TYPE_ROOT;
     }
 
     /**
      * Creates a new ProjectRecord and adds it to the List of ProjectRecords
-     * 
+     *
      * @param project
      * @return the ProjectRecord created for the Project or null, if the Project
      *         is not open
@@ -159,7 +167,7 @@ public class RootRecord extends AbstractPMDRecord {
     private ProjectRecord addProject(IProject project) {
         ProjectRecord addedProject = null;
         if (project.isOpen()) {
-            final List projects = getChildrenAsList();
+            final List<AbstractPMDRecord> projects = getChildrenAsList();
             final ProjectRecord projectRec = new ProjectRecord(project, this);
             projects.add(projectRec);
 
@@ -173,15 +181,15 @@ public class RootRecord extends AbstractPMDRecord {
     /**
      * Searches with a given Project for a Record containing this Project;
      * removes and returns this ProjectRecord
-     * 
+     *
      * @param project
      * @return the removed ProjectRecord
      */
     private ProjectRecord removeProject(IProject project) {
         ProjectRecord removedProject = null;
 
-        final List projects = getChildrenAsList();
-        for (int k = 0; (k < projects.size()) && (removedProject == null); k++) {
+        final List<AbstractPMDRecord> projects = getChildrenAsList();
+        for (int k = 0; k < projects.size() && removedProject == null; k++) {
             final ProjectRecord projectRec = (ProjectRecord) projects.get(k);
             final IProject proj = (IProject) projectRec.getResource();
 
@@ -202,40 +210,43 @@ public class RootRecord extends AbstractPMDRecord {
 
         return removedProject;
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int)
      */
+    @Override
     public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
         int number = 0;
-        for (int i=0; i<children.length; i++) {
-            number += children[i].getNumberOfViolationsToPriority(prio, invertMarkerAndFileRecords);
+        for (AbstractPMDRecord element : children) {
+            number += element.getNumberOfViolationsToPriority(prio, invertMarkerAndFileRecords);
         }
-        
+
         return number;
     }
 
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getLOC()
      */
+    @Override
     public int getLOC() {
         int number = 0;
-        for (int i=0; i<children.length; i++) {
-            number += children[i].getLOC();
+        for (AbstractPMDRecord element : children) {
+            number += element.getLOC();
         }
-        
+
         return number;
     }
-    
+
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfMethods()
      */
+    @Override
     public int getNumberOfMethods() {
         int number = 0;
-        for (int i=0; i<children.length; i++) {
-            number += children[i].getNumberOfMethods();
+        for (AbstractPMDRecord element : children) {
+            number += element.getNumberOfMethods();
         }
-        
+
         return number;
     }
 }

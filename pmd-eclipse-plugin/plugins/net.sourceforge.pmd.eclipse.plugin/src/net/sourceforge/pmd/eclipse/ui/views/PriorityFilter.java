@@ -20,35 +20,36 @@ import org.eclipse.jface.viewers.ViewerFilter;
 
 /**
  * The ViewerFilter for Priorities
- * 
+ *
  * @author SebastianRaffel ( 17.05.2005 )
  */
 public class PriorityFilter extends ViewerFilter {
-    private List priorityList;
+    private List<Integer> priorityList;
 
     /**
      * Constructor
-     * 
+     *
      * @author SebastianRaffel ( 29.06.2005 )
      */
     public PriorityFilter() {
         super();
-        priorityList = new ArrayList(Arrays.asList(PMDPlugin.getDefault().getPriorityValues()));
+        priorityList = new ArrayList<Integer>(Arrays.asList(PMDPlugin.getDefault().getPriorityValues()));
     }
 
     /* @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
+    @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
         boolean select = false;
-        
+
         if (element instanceof PackageRecord) {
             // ViolationOverview
             select = hasMarkersToShow((PackageRecord)element);
         } else if (element instanceof FileRecord) {
-            // ViolationOverview            
+            // ViolationOverview
             select = hasMarkersToShow((FileRecord)element);
-        } else if (element instanceof IMarker) {           
+        } else if (element instanceof IMarker) {
             // ViolationOutline
-            try {                
+            try {
                 final IMarker marker = (IMarker) element;
                 final Integer markerPrio = (Integer) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
                 select = isPriorityEnabled(markerPrio);
@@ -59,7 +60,7 @@ public class PriorityFilter extends ViewerFilter {
             // ViolationOverview
             final MarkerRecord markerRec = (MarkerRecord) element;
             for (int i = 0; i < priorityList.size(); i++) {
-                final Integer priority = (Integer) priorityList.get(i);
+                final Integer priority = priorityList.get(i);
 
                 if (markerRec.getPriority() == priority.intValue()) {
                     select = true;
@@ -77,7 +78,7 @@ public class PriorityFilter extends ViewerFilter {
         // for some unknown reasons markerPrio may be null.
         if (markerPrio != null) {
             for (int i = 0; i < priorityList.size(); i++) {
-                final Integer priority = (Integer) priorityList.get(i);
+                final Integer priority = priorityList.get(i);
                 if (markerPrio.equals(priority)) {
                     isEnabled = true;
                     break;
@@ -90,7 +91,7 @@ public class PriorityFilter extends ViewerFilter {
     private boolean hasMarkersToShow(AbstractPMDRecord record) {
         boolean hasMarkers = false;
         for (int i = 0; i < priorityList.size(); i++) {
-            final Integer priority = (Integer) priorityList.get(i);
+            final Integer priority = priorityList.get(i);
             final IMarker[] markers = record.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, priority);
             if (markers.length > 0) {
                 hasMarkers = true;
@@ -103,25 +104,25 @@ public class PriorityFilter extends ViewerFilter {
 
     /**
      * Sets the List of Priorities to filter
-     * 
+     *
      * @param newList, an ArrayLust of Integers
      */
-    public void setPriorityFilterList(List newList) {
+    public void setPriorityFilterList(List<Integer> newList) {
         this.priorityList = newList;
     }
 
     /**
      * Gets the FilterList with the Priorities
-     * 
+     *
      * @return an ArrayList of Integers
      */
-    public List getPriorityFilterList() {
+    public List<Integer> getPriorityFilterList() {
         return this.priorityList;
     }
 
     /**
      * Adds a Priority to The List
-     * 
+     *
      * @param priority
      */
     public void addPriorityToList(Integer priority) {
@@ -130,7 +131,7 @@ public class PriorityFilter extends ViewerFilter {
 
     /**
      * Removes a Priority From the List
-     * 
+     *
      * @param priority
      */
     public void removePriorityFromList(Integer priority) {
@@ -138,20 +139,20 @@ public class PriorityFilter extends ViewerFilter {
     }
 
     /**
-     * Loads a Priorityist out of a String, e.g. from "1,2,3" it builds up the List {1,2,3} (for use with Mementos)
-     * 
+     * Loads a PriorityList out of a String, e.g. from "1,2,3" it builds up the List {1,2,3} (for use with Mementos)
+     *
      * @param newList, the List-String
      * @param splitter, the List splitter (in general ",")
      */
     public void setPriorityFilterListFromString(String newList, String splitter) {
         if (newList != null) {
             final String[] newArray = newList.split(splitter);
-            final ArrayList priorities = new ArrayList();
-    
-            for (int i = 0; i < newArray.length; i++) {
-                priorities.add(new Integer(newArray[i])); // NOPMD by Sven on 13.11.06 11:53
+            final ArrayList<Integer> priorities = new ArrayList<Integer>();
+
+            for (String element : newArray) {
+                priorities.add(new Integer(element)); // NOPMD by Sven on 13.11.06 11:53
             }
-    
+
             priorityList = priorities;
         }
     }
@@ -159,7 +160,7 @@ public class PriorityFilter extends ViewerFilter {
     /**
      * Returns the FilterList as String with the given splitter, e.g. with "," the Priorities {1,4,5} would look like "1,4,5" (for
      * use with Mementos)
-     * 
+     *
      * @param splitter, The String splitter (in general ",")
      * @return the List-String
      */

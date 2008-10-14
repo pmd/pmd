@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -56,13 +56,13 @@ import org.eclipse.core.runtime.jobs.Job;
 /**
  * This is a particular processor for Eclipse in order to handle long running
  * commands.
- * 
+ *
  * @author Philippe Herlin
  *
  */
 public class JobCommandProcessor implements CommandProcessor {
     private static final Logger log = Logger.getLogger(JobCommandProcessor.class);
-    private final Map jobs = Collections.synchronizedMap(new HashMap());
+    private final Map<AbstractProcessableCommand, Job> jobs = Collections.synchronizedMap(new HashMap<AbstractProcessableCommand, Job>());
 
     /**
      * @see name.herlin.command.CommandProcessor#processCommand(name.herlin.command.AbstractProcessableCommand)
@@ -73,8 +73,9 @@ public class JobCommandProcessor implements CommandProcessor {
         if (!aCommand.isReadyToExecute()) {
             throw new UnsetInputPropertiesException();
         }
-        
+
         final Job job = new Job(aCommand.getName()) {
+            @Override
             protected IStatus run(IProgressMonitor monitor) {
                 try {
                     if (aCommand instanceof AbstractDefaultCommand) {
@@ -87,11 +88,11 @@ public class JobCommandProcessor implements CommandProcessor {
                 } catch (CommandException e) {
                     PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
                 }
-                
+
                 return Status.OK_STATUS;
             }
         };
-        
+
         if (aCommand instanceof AbstractDefaultCommand) {
             job.setUser(((AbstractDefaultCommand) aCommand).isUserInitiated());
         }
@@ -105,7 +106,7 @@ public class JobCommandProcessor implements CommandProcessor {
      * @see name.herlin.command.CommandProcessor#waitCommandToFinish(name.herlin.command.AbstractProcessableCommand)
      */
     public void waitCommandToFinish(final AbstractProcessableCommand aCommand) throws CommandException {
-        final Job job = (Job) this.jobs.get(aCommand);
+        final Job job = this.jobs.get(aCommand);
         if (job != null) {
             try {
                 job.join();
@@ -115,21 +116,21 @@ public class JobCommandProcessor implements CommandProcessor {
         }
 
     }
-    
+
     /**
      * Add a job to the map. Also, clear all finished jobs
-     * @param command for which to keep the job 
+     * @param command for which to keep the job
      * @param job a job to keep until it is finished
      */
     private void addJob(final AbstractProcessableCommand command, final Job job) {
         this.jobs.put(command, job);
-        
+
         // clear terminated command
-        final Iterator i = this.jobs.keySet().iterator();
+        final Iterator<AbstractProcessableCommand> i = this.jobs.keySet().iterator();
         while (i.hasNext()) {
-            final AbstractProcessableCommand aCommand = (AbstractProcessableCommand) i.next();
-            final Job aJob = (Job) this.jobs.get(aCommand);
-            if ((aJob == null) || (aJob.getResult() != null)) {
+            final AbstractProcessableCommand aCommand = i.next();
+            final Job aJob = this.jobs.get(aCommand);
+            if (aJob == null || aJob.getResult() != null) {
                 this.jobs.remove(aCommand);
             }
         }

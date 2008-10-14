@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -64,7 +64,7 @@ import org.exolab.castor.xml.ValidationException;
 /**
  * Implementation of an IRuleSetsManager.
  * The serialization is based on the usage of Castor.
- * 
+ *
  * @author Herlin
  *
  */
@@ -82,7 +82,7 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
     }
 
     /**
-     * @throws RuleSetNotFoundException 
+     * @throws RuleSetNotFoundException
      * @see net.sourceforge.pmd.eclipse.core.rulesets.IRuleSetsManager#valueOf(java.lang.String[])
      */
     public RuleSet valueOf(String[] ruleSetUrls) throws PMDCoreException {
@@ -96,19 +96,18 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
 
         try {
             final RuleSet ruleSet = new RuleSet();
-            
+
             for (int i = 0; i < ruleSetUrls.length; i++) {
                 final RuleSetFactory factory = new RuleSetFactory(); // NOPMD by Herlin on 21/06/06 23:25
-                final Collection rules = factory.createSingleRuleSet(ruleSetUrls[i]).getRules();
-                for (final Iterator j = rules.iterator(); j.hasNext();) {
-                    final net.sourceforge.pmd.Rule pmdRule = (net.sourceforge.pmd.Rule) j.next();
+                final Collection<net.sourceforge.pmd.Rule> rules = factory.createSingleRuleSet(ruleSetUrls[i]).getRules();
+                for (final net.sourceforge.pmd.Rule pmdRule: rules) {
                     final Rule rule = new Rule(); // NOPMD by Herlin on 21/06/06 23:29
                     rule.setRef(ruleSetUrls[i] + '/' + pmdRule.getName());
                     rule.setPmdRule(pmdRule);
                     ruleSet.addRule(rule);
                 }
             }
-            
+
             return ruleSet;
 
         } catch (RuleSetNotFoundException e) {
@@ -135,7 +134,7 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
             marshaller.marshal(ruleSets);
             writer.flush();
             writer.close();
-            
+
             output.write(writer.getBuffer().toString().getBytes());
             output.flush();
 

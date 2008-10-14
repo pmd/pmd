@@ -133,7 +133,7 @@ public abstract class AbstractProcessableCommand implements Command {
         try {
             final ResourceBundle bundle = ResourceBundle.getBundle(CommandProcessorStrategy.COMMAND_PROCESSOR_STRATEGY_BUNDLE);
             final String strategyClassName = bundle.getString(CommandProcessorStrategy.STRATEGY_CLASS_KEY);
-            final Class strategyClass = Class.forName(strategyClassName);
+            final Class<?> strategyClass = Class.forName(strategyClassName);
 
             strategy = (CommandProcessorStrategy) strategyClass.newInstance();
 

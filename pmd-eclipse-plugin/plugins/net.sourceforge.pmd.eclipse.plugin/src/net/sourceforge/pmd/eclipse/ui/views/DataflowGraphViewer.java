@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Viewer for the DataFlowGraph, contains the DataflowGraphTable
- * 
+ *
  * @author SebastianRaffel ( 30.05.2005 )
  */
 public class DataflowGraphViewer extends Composite {
@@ -41,7 +41,7 @@ public class DataflowGraphViewer extends Composite {
 
     /**
      * Constructor
-     * 
+     *
      * @param parent the parent Composite
      * @param style the SWT Style
      */
@@ -56,7 +56,8 @@ public class DataflowGraphViewer extends Composite {
         mainLayout.horizontalSpacing = mainLayout.verticalSpacing = 0;
         setLayout(mainLayout);
     }
-    
+
+    @Override
     public void addMouseListener(MouseListener mouseListener) {
         if (graph != null) {
             graph.addMouseListener(mouseListener);
@@ -65,7 +66,7 @@ public class DataflowGraphViewer extends Composite {
 
     /**
      * Inits the Table.
-     * 
+     *
      * @param parent
      * @param style
      * @return the DataflowGraphTable
@@ -93,8 +94,8 @@ public class DataflowGraphViewer extends Composite {
 
     /**
      * Sets the data for this Viewer, gives the Table Data to show.
-     * 
-     * @param node 
+     *
+     * @param node
      * @param resString the Node's Resource as String
      */
     public void setData(Node node, String resString) {
@@ -124,22 +125,22 @@ public class DataflowGraphViewer extends Composite {
 
     /**
      * Creates an ArrayList (#Rows) of ArrayList (#Columns) with TableData in it, provides the Input for the Table
-     * 
+     *
      * @param node
      * @return the DataflowGraphTable's Input-ArrayList
      */
-    protected ArrayList createDataFields(Node node) {
-        List flow = node.getDataFlowNode().getFlow();
+    protected ArrayList<ArrayList<DataflowGraphTableData>> createDataFields(Node node) {
+        List<DataFlowNode> flow = node.getDataFlowNode().getFlow();
 
         // the whole TableData
-        ArrayList tableData = new ArrayList();
+        ArrayList<ArrayList<DataflowGraphTableData>> tableData = new ArrayList<ArrayList<DataflowGraphTableData>>();
 
         for (int i = 0; i < flow.size(); i++) {
             // one Data-List for a Row
-            ArrayList rowData = new ArrayList();
+            ArrayList<DataflowGraphTableData> rowData = new ArrayList<DataflowGraphTableData>();
 
             // 1. The Nodes Line
-            DataFlowNode inode = (DataFlowNode) flow.get(i);
+            DataFlowNode inode = flow.get(i);
             rowData.add(new DataflowGraphTableData(String.valueOf(inode.getLine()), SWT.CENTER));
 
             // 2. empty, because the Graph is shown in this Column
@@ -148,22 +149,22 @@ public class DataflowGraphViewer extends Composite {
             // 3. the Numbers of the next Nodes
             String nextNodes = "";
             for (int j = 0; j < inode.getChildren().size(); j++) {
-                DataFlowNode n = (DataFlowNode) inode.getChildren().get(j);
+                DataFlowNode n = inode.getChildren().get(j);
                 if (j > 0)
                     nextNodes += ", ";
                 nextNodes += String.valueOf(n.getIndex());
             }
             rowData.add(new DataflowGraphTableData(nextNodes, SWT.LEFT | SWT.WRAP));
 
-            // 4. The Dataflow occurencies (definiton, undefinition,
+            // 4. The Dataflow occurrences (definition, undefinition,
             // reference) in this Line of Code
-            List access = inode.getVariableAccess();
+            List<VariableAccess> access = inode.getVariableAccess();
             if (access != null) {
                 StringBuffer exp = new StringBuffer();
                 for (int k = 0; k < access.size(); k++) {
                     if (k > 0)
                         exp.append(", ");
-                    VariableAccess va = (VariableAccess) access.get(k);
+                    VariableAccess va = access.get(k);
                     switch (va.getAccessType()) {
                     case VariableAccess.DEFINITION:
                         exp.append("d(");
@@ -201,7 +202,7 @@ public class DataflowGraphViewer extends Composite {
 
     /**
      * Simply returns the given Line from the String
-     * 
+     *
      * @param code, in general a Text representing a Java-File
      * @param line, the Line of Code to return
      * @return the Line of Code or null, if not found

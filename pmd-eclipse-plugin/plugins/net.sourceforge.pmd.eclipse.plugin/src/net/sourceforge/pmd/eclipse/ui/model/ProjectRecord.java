@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -56,9 +56,9 @@ import org.eclipse.jdt.core.JavaModelException;
 
 /**
  * AbstractPMDRecord for Projects creates Packages when instantiated
- * 
+ *
  * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
- * 
+ *
  */
 public class ProjectRecord extends AbstractPMDRecord {
     final private IProject project;
@@ -67,7 +67,7 @@ public class ProjectRecord extends AbstractPMDRecord {
 
     /**
      * Constructor
-     * 
+     *
      * @param proj, the Project
      * @param record, the RootRecord
      */
@@ -97,6 +97,7 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getParent()
      */
+    @Override
     public AbstractPMDRecord getParent() {
         return this.parent;
     }
@@ -104,6 +105,7 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getChildren()
      */
+    @Override
     public AbstractPMDRecord[] getChildren() {
         return this.children; // NOPMD by Herlin on 09/10/06 00:43
     }
@@ -111,6 +113,7 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResource()
      */
+    @Override
     public IResource getResource() {
         return this.project;
     }
@@ -118,8 +121,9 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#createChildren()
      */
+    @Override
     protected final AbstractPMDRecord[] createChildren() {
-        final Set packages = new HashSet();
+        final Set<PackageRecord> packages = new HashSet<PackageRecord>();
         try {
             // search for Packages
             this.project.accept(new IResourceVisitor() {
@@ -141,8 +145,8 @@ public class ProjectRecord extends AbstractPMDRecord {
                                 // "org.eclipse.core" the root is
                                 // "org.eclipse.core")
                                 packages.addAll(createPackagesFromFragmentRoot((IPackageFragmentRoot) javaMember));
-                            } else if ((javaMember instanceof IPackageFragment)
-                                    && (javaMember.getParent() instanceof IPackageFragmentRoot)) {
+                            } else if (javaMember instanceof IPackageFragment
+                                    && javaMember.getParent() instanceof IPackageFragmentRoot) {
                                 // if the Element is a Package get its Root and
                                 // do the same as above
                                 final IPackageFragment fragment = (IPackageFragment) javaMember;
@@ -165,27 +169,27 @@ public class ProjectRecord extends AbstractPMDRecord {
         }
 
         // return the List as an Array of Packages
-        return (AbstractPMDRecord[]) packages.toArray(new AbstractPMDRecord[packages.size()]);
+        return packages.toArray(new AbstractPMDRecord[packages.size()]);
     }
 
     /**
      * Search for the Packages to a given FragmentRoot (Package-Root) and create
      * PackageRecords for them
-     * 
+     *
      * @param root
      * @return
      */
-    protected final Set createPackagesFromFragmentRoot(IPackageFragmentRoot root) {
-        final Set packages = new HashSet();
+    protected final Set<PackageRecord> createPackagesFromFragmentRoot(IPackageFragmentRoot root) {
+        final Set<PackageRecord> packages = new HashSet<PackageRecord>();
         IJavaElement[] fragments = null;
         try {
             // search for all children
             fragments = root.getChildren();
-            for (int k = 0; k < fragments.length; k++) {
-                if (fragments[k] instanceof IPackageFragment) {
+            for (IJavaElement fragment : fragments) {
+                if (fragment instanceof IPackageFragment) {
                     // create a PackageRecord for the Fragment
                     // and add it to the list
-                    packages.add(new PackageRecord((IPackageFragment) fragments[k], this)); // NOPMD
+                    packages.add(new PackageRecord((IPackageFragment) fragment, this)); // NOPMD
                                                                                             // by
                                                                                             // Herlin
                                                                                             // on
@@ -203,13 +207,14 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getName()
      */
+    @Override
     public String getName() {
         return this.project.getName();
     }
 
     /**
      * Checks, if the underlying Project is open
-     * 
+     *
      * @return true, if the Project is open, false otherwise
      */
     public boolean isProjectOpen() {
@@ -219,6 +224,7 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
      */
+    @Override
     public int getResourceType() {
         return AbstractPMDRecord.TYPE_PROJECT;
     }
@@ -226,6 +232,7 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
      */
+    @Override
     public AbstractPMDRecord addResource(IResource resource) {
         AbstractPMDRecord addedResource = null;
 
@@ -240,7 +247,7 @@ public class ProjectRecord extends AbstractPMDRecord {
 
             // we search int the children Packages for the File's Package
             // by comparing their Fragments
-            for (int k = 0; (k < this.children.length) && (addedResource == null); k++) {
+            for (int k = 0; k < this.children.length && addedResource == null; k++) {
                 final PackageRecord packageRec = (PackageRecord) children[k];
                 if (packageRec.getFragment().equals(fragment)) {
                     // if the Package exists
@@ -252,7 +259,7 @@ public class ProjectRecord extends AbstractPMDRecord {
             // ... else we create a new Record for the new Package
             if (addedResource == null) {
                 final PackageRecord packageRec = new PackageRecord(fragment, this);
-                final List packages = getChildrenAsList();
+                final List<AbstractPMDRecord> packages = getChildrenAsList();
                 packages.add(packageRec);
 
                 // ... and we add a new FileRecord to it
@@ -268,6 +275,7 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
      */
+    @Override
     public AbstractPMDRecord removeResource(IResource resource) {
         AbstractPMDRecord removedResource = null;
 
@@ -284,7 +292,7 @@ public class ProjectRecord extends AbstractPMDRecord {
             PackageRecord packageRec;
 
             // like above we compare Fragments to find the right Package
-            for (int k = 0; (k < this.children.length) && (removedResource == null); k++) {
+            for (int k = 0; k < this.children.length && removedResource == null; k++) {
                 packageRec = (PackageRecord) this.children[k];
                 if (packageRec.getFragment().equals(fragment)) {
 
@@ -293,7 +301,7 @@ public class ProjectRecord extends AbstractPMDRecord {
                     if (packageRec.getChildren().length == 0) {
                         // ... and if the Package is empty too
                         // we also remove it
-                        final List packages = getChildrenAsList();
+                        final List<AbstractPMDRecord> packages = getChildrenAsList();
                         packages.remove(packageRec);
 
                         this.children = new AbstractPMDRecord[packages.size()]; // NOPMD
@@ -316,10 +324,11 @@ public class ProjectRecord extends AbstractPMDRecord {
     /**
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int)
      */
+    @Override
     public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
         int number = 0;
-        for (int i = 0; i < children.length; i++) {
-            number += children[i].getNumberOfViolationsToPriority(prio, invertMarkerAndFileRecords);
+        for (AbstractPMDRecord element : children) {
+            number += element.getNumberOfViolationsToPriority(prio, invertMarkerAndFileRecords);
         }
 
         return number;
@@ -327,13 +336,14 @@ public class ProjectRecord extends AbstractPMDRecord {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getLOC()
      */
+    @Override
     public int getLOC() {
         int number = 0;
-        for (int i = 0; i < children.length; i++) {
-            number += children[i].getLOC();
+        for (AbstractPMDRecord element : children) {
+            number += element.getLOC();
         }
 
         return number;
@@ -341,13 +351,14 @@ public class ProjectRecord extends AbstractPMDRecord {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getNumberOfMethods()
      */
+    @Override
     public int getNumberOfMethods() {
         int number = 0;
-        for (int i = 0; i < children.length; i++) {
-            number += children[i].getNumberOfMethods();
+        for (AbstractPMDRecord element : children) {
+            number += element.getNumberOfMethods();
         }
 
         return number;

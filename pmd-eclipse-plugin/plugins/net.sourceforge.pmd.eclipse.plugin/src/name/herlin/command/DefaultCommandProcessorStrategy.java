@@ -1,6 +1,6 @@
 /*
  * Patterns Library - Implementation of various design patterns
- * Copyright (C) 2004 Philippe Herlin 
+ * Copyright (C) 2004 Philippe Herlin
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,10 +13,10 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Contact: philippe_herlin@yahoo.fr 
- * 
+ * Contact: philippe_herlin@yahoo.fr
+ *
  */
 package name.herlin.command;
 
@@ -33,7 +33,7 @@ import java.util.ResourceBundle;
  */
 public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy {
     private static final CommandProcessor DEFAULT_COMMAND_PROCESSOR = new DefaultCommandProcessor();
-    private final Map registeredCommandProcessors = new Hashtable();
+    private final Map<String, String> registeredCommandProcessors = new Hashtable<String, String>();
 
     /**
      * Default constructor. Load registered command from bundle.
@@ -48,7 +48,7 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
      * @return a processor for the specified command according to the strategy.
      */
     public CommandProcessor getCommandProcessor(final AbstractProcessableCommand aCommand) {
-        CommandProcessor aProcessor = getRegisteredCommandProcessor(aCommand); 
+        CommandProcessor aProcessor = getRegisteredCommandProcessor(aCommand);
 
         if (aProcessor == null) {
             aProcessor = aCommand.getPreferredCommandProcessor();
@@ -70,9 +70,9 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
         CommandProcessor aProcessor = null;
 
         try {
-            final String processorClassName = (String) this.registeredCommandProcessors.get(aCommand.getName());
+            final String processorClassName = this.registeredCommandProcessors.get(aCommand.getName());
             if (processorClassName != null) {
-                final Class clazz = Class.forName(processorClassName);
+                final Class<?> clazz = Class.forName(processorClassName);
                 aProcessor = (CommandProcessor) clazz.newInstance();
             }
         } catch (ClassNotFoundException e) {
@@ -97,9 +97,9 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
     private void loadBundle() {
         try {
             final ResourceBundle bundle = ResourceBundle.getBundle(COMMAND_PROCESSOR_STRATEGY_BUNDLE);
-            final Enumeration e = bundle.getKeys();
+            final Enumeration<String> e = bundle.getKeys();
             while (e.hasMoreElements()) {
-                final String key = (String) e.nextElement();
+                final String key = e.nextElement();
                 final String value = bundle.getString(key);
                 this.registeredCommandProcessors.put(key, value);
             }

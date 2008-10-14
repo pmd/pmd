@@ -8,7 +8,7 @@ import net.sourceforge.pmd.RuleSet;
 /**
  * This class implements a content provider for the ruleset exclude/include
  * pattern tables of the PMD Preference page
- * 
+ *
  */
 public class RuleSetExcludeIncludePatternContentProvider extends AbstractStructuredContentProvider {
 
@@ -21,17 +21,17 @@ public class RuleSetExcludeIncludePatternContentProvider extends AbstractStructu
 	/**
 	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)
 	 */
-	public Object[] getElements(Object inputElement) {
-		Object[] result = new Object[0];
+	public RuleSetExcludeIncludePattern[] getElements(Object inputElement) {
+	    RuleSetExcludeIncludePattern[] result = new RuleSetExcludeIncludePattern[0];
 
 		if (inputElement instanceof RuleSet) {
 			RuleSet ruleSet = (RuleSet)inputElement;
-			List patterns = exclude ? ruleSet.getExcludePatterns() : ruleSet.getIncludePatterns();
-			List patternList = new ArrayList();
+			List<String> patterns = exclude ? ruleSet.getExcludePatterns() : ruleSet.getIncludePatterns();
+			List<RuleSetExcludeIncludePattern> patternList = new ArrayList<RuleSetExcludeIncludePattern>();
 			for (int i = 0; i < patterns.size(); i++) {
 				patternList.add(new RuleSetExcludeIncludePattern(ruleSet, exclude, i));
 			}
-			result = patternList.toArray();
+			result = patternList.toArray(result);
 		}
 
 		return result;

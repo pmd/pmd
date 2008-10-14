@@ -25,17 +25,19 @@ import org.eclipse.ui.part.PageBookView;
 
 /**
  * A View that shows DataflowGraph and -Table as well as the Anomaly-List
- * 
+ *
  * @author SebastianRaffel ( 26.05.2005 ), Sven Jacob ( 19.09.2006 )
  */
 public class DataflowView extends PageBookView implements IResourceChangeListener {
-    
+
     /* @see org.eclipse.ui.part.PageBookView#createPartControl(org.eclipse.ui.part.PageBook) */
-    public void createPartControl(Composite parent) {      
+    @Override
+    public void createPartControl(Composite parent) {
         super.createPartControl(parent);
     }
-   
+
     /* @see org.eclipse.ui.part.PageBookView#createDefaultPage(org.eclipse.ui.part.PageBook) */
+    @Override
     protected IPage createDefaultPage(PageBook book) {
         // builds a message page showing a text
         MessagePage page = new MessagePage();
@@ -46,34 +48,37 @@ public class DataflowView extends PageBookView implements IResourceChangeListene
     }
 
     /* @see org.eclipse.ui.part.PageBookView#doCreatePage(org.eclipse.ui.IWorkbenchPart) */
+    @Override
     protected PageRec doCreatePage(IWorkbenchPart part) {
         FileRecord resourceRecord = getFileRecordFromWorkbenchPart(part);
         if (resourceRecord != null) {
             resourceRecord.getResource().getWorkspace().addResourceChangeListener(
                     this, IResourceChangeEvent.POST_CHANGE);
-            
+
             // creates a new DataflowViewPage, when a Resource exists
             DataflowViewPage page = new DataflowViewPage(part, resourceRecord);
             initPage(page);
             page.createControl(getPageBook());
-            
+
             return new PageRec(part, page);
         }
         return null;
     }
 
     /* @see org.eclipse.ui.part.PageBookView#doDestroyPage(org.eclipse.ui.IWorkbenchPart, org.eclipse.ui.part.PageBookView.PageRec) */
-    protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {      
+    @Override
+    protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
         DataflowViewPage page = (DataflowViewPage) pageRecord.page;
-        
+
         if (page != null) {
             page.dispose();
         }
 
         pageRecord.dispose();
     }
-    
+
     /* @see org.eclipse.ui.part.PageBookView#getBootstrapPart() */
+    @Override
     protected IWorkbenchPart getBootstrapPart() {
         IWorkbenchPage page = getSite().getPage();
         if (page != null)
@@ -83,13 +88,15 @@ public class DataflowView extends PageBookView implements IResourceChangeListene
     }
 
     /* @see org.eclipse.ui.part.PageBookView#isImportant(org.eclipse.ui.IWorkbenchPart) */
+    @Override
     protected boolean isImportant(IWorkbenchPart part) {
         // We only care about the editor
-        return (part instanceof IEditorPart);
+        return part instanceof IEditorPart;
     }
-    
+
 
     /* @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IPartListener) */
+    @Override
     public void partActivated(IWorkbenchPart part) {
         IWorkbenchPart activePart = getSite().getPage().getActivePart();
         if (activePart == null)
@@ -98,12 +105,13 @@ public class DataflowView extends PageBookView implements IResourceChangeListene
     }
 
     /* @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IPartListener) */
+    @Override
     public void partBroughtToTop(IWorkbenchPart part) {
         partActivated(part);
     }
-    
+
     /* @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent) */
-    public void resourceChanged(IResourceChangeEvent event) {        
+    public void resourceChanged(IResourceChangeEvent event) {
         try {
             event.getDelta().accept(new IResourceDeltaVisitor() {
                 public boolean visit(final IResourceDelta delta) throws CoreException {
@@ -115,20 +123,20 @@ public class DataflowView extends PageBookView implements IResourceChangeListene
                                 refresh(delta.getResource());
                             }
                         });
-                        
+
                         return false;
                     }
                     return true;
                 }
-                
+
             });
         } catch (CoreException e) {
             PMDPlugin.getDefault().logError(
                     StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         }
-        
+
     }
-     
+
     /**
      * @return the currently displayed Page
      */
@@ -149,7 +157,7 @@ public class DataflowView extends PageBookView implements IResourceChangeListene
         if (part instanceof IEditorPart) {
             // If there is a file opened in the editor, we create a record for it
             IEditorInput input = ((IEditorPart) part).getEditorInput();
-            if ((input != null) && (input instanceof IFileEditorInput)) {
+            if (input != null && input instanceof IFileEditorInput) {
                 IResource res = ((IFileEditorInput) input).getFile();
                 if (res.getFileExtension().equalsIgnoreCase("java"))
                     return new FileRecord(res);
@@ -161,14 +169,14 @@ public class DataflowView extends PageBookView implements IResourceChangeListene
             // so we pretend, that the editor has been activated
             IEditorPart editorPart = getSite().getPage().getActiveEditor();
             if (editorPart != null) {
-                return getFileRecordFromWorkbenchPart((IWorkbenchPart) editorPart);
+                return getFileRecordFromWorkbenchPart(editorPart);
             }
         }
         return null;
     }
-  
+
     /**
-     * Refreshs, reloads the View with a given new resource.
+     * Refresh, reloads the View with a given new resource.
      * @param newResource new resource for the current active page.
      */
     private void refresh(IResource newResource) {

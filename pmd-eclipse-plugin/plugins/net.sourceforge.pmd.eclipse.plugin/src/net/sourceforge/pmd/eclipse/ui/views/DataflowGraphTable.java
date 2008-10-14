@@ -80,7 +80,8 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		bodyFrame.addPaintListener(this);
 		bodyArea.addPaintListener(this);
 		bodyFrame.addControlListener(new ControlAdapter() {
-			public void controlResized(ControlEvent event) {
+			@Override
+            public void controlResized(ControlEvent event) {
 				// redraw the whole thing when resized
 				redraw();
 			}
@@ -279,7 +280,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	 *
 	 * @param data
 	 */
-	public void setTableData(ArrayList data) {
+	public void setTableData(ArrayList<ArrayList<DataflowGraphTableData>> data) {
 		buildTableData(bodyArea, data);
 
 		redraw();
@@ -297,7 +298,8 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	/**
 	 * Redraws this Table
 	 */
-	public void redraw() {
+	@Override
+    public void redraw() {
 		Point bodySize = bodyFrame.getSize();
 		Point parentSize = getParent().getSize();
 		Point empty = new Point(0,0);
@@ -320,13 +322,15 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	private void initScrollBars(Composite parent) {
 		ScrollBar horizontal = parent.getHorizontalBar();
 		horizontal.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				scrollHorizontally((ScrollBar) event.widget);
 			}
 		});
 		ScrollBar vertical = parent.getVerticalBar();
 		vertical.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				scrollVertically((ScrollBar) event.widget);
 			}
 		});
@@ -586,7 +590,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	 * @param table
 	 * @param tableData
 	 */
-	private void buildTableData(Composite table, ArrayList tableData) {
+	private void buildTableData(Composite table, ArrayList<ArrayList<DataflowGraphTableData>> tableData) {
 		if (bgColor == null) bgColor = DEFAULT_BG_COLOR;
 		if (fgColor == null) fgColor = DEFAULT_FG_COLOR;
 
@@ -594,13 +598,12 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		int vSpace = ((GridLayout) table.getLayout()).verticalSpacing;
 
 		for (int i=0; i<tableData.size(); i++) {
-			ArrayList rowData = (ArrayList) tableData.get(i);
+			ArrayList<DataflowGraphTableData> rowData = tableData.get(i);
 			int xPos = 0;
 			int width = 0;
 			int height = 0;
 			for (int j=0; j<numCols; j++) {
-				DataflowGraphTableData data =
-					(DataflowGraphTableData) rowData.get(j);
+				DataflowGraphTableData data = rowData.get(j);
 
 				// check, if Style and Data are correct
 				String text = "";

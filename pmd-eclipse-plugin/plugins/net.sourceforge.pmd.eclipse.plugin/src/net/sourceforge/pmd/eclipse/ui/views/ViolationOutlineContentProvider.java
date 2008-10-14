@@ -18,30 +18,30 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Provides the ViolationOutlinePages with Content
- * 
+ *
  * @author SebastianRaffel  ( 08.05.2005 )
  */
 public class ViolationOutlineContentProvider implements
 		IStructuredContentProvider, IResourceChangeListener {
-	
+
 	protected static final Object[] NO_ELEMENTS = new Object[0];
-	
+
 	private ViolationOutlinePage outlinePage;
 	private TableViewer tableViewer;
 	private FileRecord resource;
-	
-	
+
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param page
 	 */
 	public ViolationOutlineContentProvider(ViolationOutlinePage page) {
 		outlinePage = page;
 		tableViewer = page.getTableViewer();
 	}
-	
-	
+
+
 	/* @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object) */
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof FileRecord) {
@@ -49,46 +49,46 @@ public class ViolationOutlineContentProvider implements
 		}
 		return NO_ELEMENTS;
 	}
-	
-	
+
+
 	/* @see org.eclipse.jface.viewers.IContentProvider#dispose() */
 	public void dispose() {
 	}
-	
-	
+
+
 	/* @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (resource != null) {
 			resource.getResource().getWorkspace()
 				.removeResourceChangeListener(this);
 		}
-		
+
 		// we create a new FileRecord
 		resource = (FileRecord) newInput;
 		if (resource != null) {
 			resource.getResource().getWorkspace()
-				.addResourceChangeListener(this, 
+				.addResourceChangeListener(this,
 				IResourceChangeEvent.POST_CHANGE);
 		}
 		tableViewer = (TableViewer) viewer;
 	}
-	
-	
+
+
 	/* @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent) */
 	public void resourceChanged(IResourceChangeEvent event) {
-        IMarkerDelta[] markerDeltas = 
+        IMarkerDelta[] markerDeltas =
         	event.findMarkerDeltas(PMDRuntimeConstants.PMD_MARKER, true);
-        
-		if ((!resource.getResource().exists())
-				|| (resource == null)
-				|| (markerDeltas == null))
+
+		if (!resource.getResource().exists()
+				|| resource == null
+				|| markerDeltas == null)
 			return;
-		
+
 		// we search for removed, added or changed Markers
-        final List additions = new ArrayList();
-        final List removals = new ArrayList();
-        final List changes = new ArrayList();
-        
+        final List<IMarker> additions = new ArrayList<IMarker>();
+        final List<IMarker> removals = new ArrayList<IMarker>();
+        final List<IMarker> changes = new ArrayList<IMarker>();
+
         for (int i=0; i<markerDeltas.length; i++) {
         	if (!markerDeltas[i].getResource().equals(resource.getResource()))
         		continue;
@@ -105,7 +105,7 @@ public class ViolationOutlineContentProvider implements
     				break;
         	}
         }
-        
+
         // updating the table MUST be in sync
         tableViewer.getControl().getDisplay().syncExec(new Runnable() {
         	public void run() {
@@ -113,16 +113,16 @@ public class ViolationOutlineContentProvider implements
         	}
         });
 	}
-	
+
 	/**
-     * Applies found updates on the table, 
+     * Applies found updates on the table,
      * adapted from Philippe Herlin
-	 * 
+	 *
 	 * @param additions
 	 * @param removals
 	 * @param changes
 	 */
-    protected void updateViewer(List additions, List removals, List changes) {
+    protected void updateViewer(List<IMarker> additions, List<IMarker> removals, List<IMarker> changes) {
         // perform removals
         if (removals.size() > 0) {
             tableViewer.cancelEditing();
@@ -138,7 +138,7 @@ public class ViolationOutlineContentProvider implements
         if (changes.size() > 0) {
             tableViewer.update(changes.toArray(), null);
         }
-        
+
         outlinePage.refresh();
     }
 }

@@ -88,9 +88,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = Logger.getLogger(ReviewCodeCmd.class);
-    final private List resources = new ArrayList();
+    final private List<ISchedulingRule> resources = new ArrayList<ISchedulingRule>();
     private IResourceDelta resourceDelta;
-    private Map markers = new HashMap();
+    private Map<IFile, Set<MarkerInfo>> markers = new HashMap<IFile, Set<MarkerInfo>>();
     private boolean taskMarker = false;
     private boolean openPmdPerspective = false;
     private int rulesCount;
@@ -177,14 +177,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * @return Returns the file markers
      */
-    public Map getMarkers() {
+    public Map<IFile, Set<MarkerInfo>> getMarkers() {
         return this.markers;
     }
 
     /**
      * @param resource The resource to set.
      */
-    public void setResources(final List resources) {
+    public void setResources(final List<ISchedulingRule> resources) {
         this.resources.clear();
         this.resources.addAll(resources);
     }
@@ -229,7 +229,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     public void reset() {
         this.resources.clear();
-        this.markers = new HashMap();
+        this.markers = new HashMap<IFile, Set<MarkerInfo>>();
         this.setTerminated(false);
         this.openPmdPerspective = false;
     }
@@ -256,7 +256,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             for (int i = 0; i < rules.length; i++) {
                 rules[i] = ruleFactory.markerRule((IResource) this.resources.get(i));
             }
-            rule = new MultiRule((ISchedulingRule[]) this.resources.toArray(rules));
+            rule = new MultiRule(this.resources.toArray(rules));
         }
 
         return rule;
@@ -268,7 +268,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @throws CommandException
      */
     private void processResources() throws CommandException {
-        final Iterator i = this.resources.iterator();
+        final Iterator<ISchedulingRule> i = this.resources.iterator();
         while (i.hasNext()) {
             final IResource resource = (IResource) i.next();
 
@@ -397,21 +397,21 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
         String currentFile = ""; // for logging
         try {
-            final Set filesSet = this.markers.keySet();
-            final Iterator i = filesSet.iterator();
+            final Set<IFile> filesSet = this.markers.keySet();
+            final Iterator<IFile> i = filesSet.iterator();
 
             beginTask("PMD Applying markers", filesSet.size());
 
             while (i.hasNext() && !isCanceled()) {
-                final IFile file = (IFile) i.next();
+                final IFile file = i.next();
                 currentFile = file.getName();
 
-                final Set markerInfoSet = (Set) this.markers.get(file);
+                final Set<MarkerInfo> markerInfoSet = this.markers.get(file);
                 file.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
                 file.deleteMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
-                final Iterator j = markerInfoSet.iterator();
+                final Iterator<MarkerInfo> j = markerInfoSet.iterator();
                 while (j.hasNext()) {
-                    final MarkerInfo markerInfo = (MarkerInfo) j.next();
+                    final MarkerInfo markerInfo = j.next();
                     final IMarker marker = file.createMarker(markerInfo.getType());
                     marker.setAttributes(markerInfo.getAttributeNames(), markerInfo.getAttributeValues());
                     violationsCount++;

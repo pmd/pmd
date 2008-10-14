@@ -43,7 +43,7 @@ import org.eclipse.ui.part.PageBookView;
 
 /**
  * A View to show a List of PMD-Violations for a File
- * 
+ *
  * @author SebastianRaffel ( 08.05.2005 )
  */
 public class ViolationOutline extends PageBookView implements ISelectionProvider {
@@ -57,6 +57,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
     protected final static String COLUMN_SORTER = "tableColumnSorter";
 
     /* @see org.eclipse.ui.part.PageBookView#createPartControl(org.eclipse.ui.part.PageBook) */
+    @Override
     public void createPartControl(Composite parent) {
         createDropDownMenu();
         super.createPartControl(parent);
@@ -64,6 +65,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
     }
 
     /* @see org.eclipse.ui.part.ViewPart#init(org.eclipse.ui.IViewSite) */
+    @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
 
@@ -71,7 +73,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
         memento = new ViewMemento(PMDUiConstants.MEMENTO_OUTLINE_FILE);
         priorityFilter = new PriorityFilter();
         if (memento != null) {
-            List priorityList = memento.getIntegerList(PRIORITY_LIST);
+            List<Integer> priorityList = memento.getIntegerList(PRIORITY_LIST);
             if (!priorityList.isEmpty()) {
                 // set the loaded List for the Priority Filter
                 priorityFilter.setPriorityFilterList(priorityList);
@@ -79,6 +81,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
         }
     }
 
+    @Override
     public void dispose() {
         // save the current State in a Memento
         memento.putList(PRIORITY_LIST, priorityFilter.getPriorityFilterList());
@@ -88,6 +91,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
     }
 
     /* @see org.eclipse.ui.part.PageBookView#createDefaultPage(org.eclipse.ui.part.PageBook) */
+    @Override
     protected IPage createDefaultPage(PageBook book) {
         // builds a message page showing a text
         MessagePage page = new MessagePage();
@@ -98,12 +102,13 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
     }
 
     /* @see org.eclipse.ui.part.PageBookView#doCreatePage(org.eclipse.ui.IWorkbenchPart) */
+    @Override
     protected PageRec doCreatePage(IWorkbenchPart part) {
         if (resourceRecord != null) {
             // creates a new ViolationOutlinePage, when a Resource exists
             ViolationOutlinePage page = new ViolationOutlinePage(resourceRecord, this);
             if (page instanceof IPageBookViewPage)
-                initPage((IPageBookViewPage) page);
+                initPage(page);
             page.createControl(getPageBook());
             return new PageRec(part, page);
         }
@@ -111,18 +116,19 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
     }
 
     /* @see org.eclipse.ui.part.PageBookView#doDestroyPage(org.eclipse.ui.IWorkbenchPart, org.eclipse.ui.part.PageBookView.PageRec) */
+    @Override
     protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
         ViolationOutlinePage page = (ViolationOutlinePage) pageRecord.page;
 
-        // get the State of the destroyed Page for laoding it into the
+        // get the State of the destroyed Page for loading it into the
         // next Page -> different Pages look like one
         if (page != null) {
             Integer[] widthArray = page.getColumnWidths();
-            ArrayList widthList = new ArrayList(Arrays.asList(widthArray));
+            ArrayList<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
             memento.putList(COLUMN_WIDTHS, widthList);
 
             Integer[] sorterProps = page.getSorterProperties();
-            ArrayList sorterList = new ArrayList(Arrays.asList(sorterProps));
+            ArrayList<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
             memento.putList(COLUMN_SORTER, sorterList);
 
             memento.save(PMDUiConstants.ID_OUTLINE);
@@ -137,13 +143,13 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
      */
     private void createDropDownMenu() {
         IMenuManager manager = getViewSite().getActionBars().getMenuManager();
-        List filterList = priorityFilter.getPriorityFilterList();
+        List<Integer> filterList = priorityFilter.getPriorityFilterList();
 
         // we add the PriorityFilter-Actions to this Menu
         Integer[] priorities = PMDPlugin.getDefault().getPriorityValues();
-        for (int k = 0; k < priorities.length; k++) {
-            Action filterAction = new PriorityFilterAction(priorities[k], this);
-            if (filterList.contains(priorities[k]))
+        for (Integer prioritie : priorities) {
+            Action filterAction = new PriorityFilterAction(prioritie, this);
+            if (filterList.contains(prioritie))
                 filterAction.setChecked(true);
 
             manager.add(filterAction);
@@ -152,7 +158,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
 
     /**
      * Creates a Context Menu for the View
-     * 
+     *
      * @param viewer
      */
     public void createContextMenu(final TableViewer viewer) {
@@ -190,6 +196,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
     }
 
     /* @see org.eclipse.ui.part.PageBookView#getBootstrapPart() */
+    @Override
     protected IWorkbenchPart getBootstrapPart() {
         IWorkbenchPage page = getSite().getPage();
         if (page != null)
@@ -199,18 +206,20 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
     }
 
     /* @see org.eclipse.ui.part.PageBookView#isImportant(org.eclipse.ui.IWorkbenchPart) */
+    @Override
     protected boolean isImportant(IWorkbenchPart part) {
         // We only care about the editor
-        return (part instanceof IEditorPart);
+        return part instanceof IEditorPart;
     }
 
     /* @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IPartListener) */
+    @Override
     public void partActivated(IWorkbenchPart part) {
         // We only care about the editor
         if (part instanceof IEditorPart) {
             // If there is a file opened in the editor, we create a record for it
             IEditorInput input = ((IEditorPart) part).getEditorInput();
-            if ((input != null) && (input instanceof IFileEditorInput)) {
+            if (input != null && input instanceof IFileEditorInput) {
                 IResource res = ((IFileEditorInput) input).getFile();
                 if (res.getFileExtension().equalsIgnoreCase("java"))
                     resourceRecord = new FileRecord(res);
@@ -222,7 +231,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
             // so we pretend, that the editor has been activated
             IEditorPart editorPart = getSite().getPage().getActiveEditor();
             if (editorPart != null) {
-                partActivated((IWorkbenchPart) editorPart);
+                partActivated(editorPart);
             }
         }
 
@@ -234,11 +243,13 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
     }
 
     /* @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IPartListener) */
+    @Override
     public void partBroughtToTop(IWorkbenchPart part) {
         partActivated(part);
     }
 
     /* @see org.eclipse.ui.part.PageBookView#showPageRec(org.eclipse.ui.part.PageBookView.PageRec) */
+    @Override
     protected void showPageRec(PageRec pageRec) {
         ViolationOutlinePage oldPage = getCurrentOutlinePage();
         ViolationOutlinePage newPage = null;
@@ -252,25 +263,25 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
             if (oldPage != null) {
                 // we care about the Widths of the Columns
                 Integer[] widthArray = oldPage.getColumnWidths();
-                ArrayList widthList = new ArrayList(Arrays.asList(widthArray));
+                ArrayList<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
                 memento.putList(COLUMN_WIDTHS, widthList);
 
                 // ... and what Element is sorted, and in which way
                 Integer[] sorterProps = oldPage.getSorterProperties();
-                ArrayList sorterList = new ArrayList(Arrays.asList(sorterProps));
+                ArrayList<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
                 memento.putList(COLUMN_SORTER, sorterList);
             }
 
             // we load the stuff into the new Page
             if (newPage != null) {
-                List widthList = memento.getIntegerList(COLUMN_WIDTHS);
+                List<Integer> widthList = memento.getIntegerList(COLUMN_WIDTHS);
                 if (!widthList.isEmpty()) {
                     Integer[] widthArray = new Integer[3];
                     widthList.toArray(widthArray);
                     newPage.setColumnWidths(widthArray);
                 }
 
-                List sorterList = memento.getIntegerList(COLUMN_SORTER);
+                List<Integer> sorterList = memento.getIntegerList(COLUMN_SORTER);
                 if (!sorterList.isEmpty()) {
                     Integer[] sorterProps = new Integer[sorterList.size()];
                     sorterList.toArray(sorterProps);

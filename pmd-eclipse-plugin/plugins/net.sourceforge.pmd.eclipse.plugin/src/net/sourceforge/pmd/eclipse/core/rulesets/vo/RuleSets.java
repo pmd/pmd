@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -37,27 +37,26 @@
 package net.sourceforge.pmd.eclipse.core.rulesets.vo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * This class is a value objet that is the root of the structure of a rulesets
  * object. It holds the different configurations the user may define and use in
  * each project.
- * 
+ *
  * @author Herlin
- * 
+ *
  */
 
 public class RuleSets {
     private RuleSet defaultRuleSet;
-    private List ruleSetsList = new ArrayList();
+    private List<RuleSet> ruleSetsList = new ArrayList<RuleSet>();
 
     /**
      * Getter for the defaultRuleSet attribute. The default rule set is the one
      * loaded by the "getRuleSet(void)" operation from the preferences manager.
      * Also, the default rule set is the one selected on each new Java project.
-     * 
+     *
      * @return Returns the defaultRuleSet.
      */
     public RuleSet getDefaultRuleSet() {
@@ -67,7 +66,7 @@ public class RuleSets {
     /**
      * Setter for the defaultRuleSet attribute. The rule set must belong to the
      * rule sets list.
-     * 
+     *
      * @param defaultRuleSet The defaultRuleSet to set.
      */
     public void setDefaultRuleSet(RuleSet defaultRuleSet) {
@@ -84,19 +83,19 @@ public class RuleSets {
 
     /**
      * Getter of the rule sets list attribute.
-     * 
+     *
      * @return Returns the ruleSet list.
      */
-    public List getRuleSets() {
+    public List<RuleSet> getRuleSets() {
         return this.ruleSetsList;
     }
 
     /**
      * Setter of the rule sets list attribute.
-     * 
+     *
      * @param ruleSetsSet The ruleSetsSet to set.
      */
-    public void setRuleSets(List ruleSets) {
+    public void setRuleSets(List<RuleSet> ruleSets) {
         if (ruleSets == null) {
             throw new IllegalArgumentException("ruleSets cannot be null");
         }
@@ -106,7 +105,7 @@ public class RuleSets {
         }
         this.ruleSetsList = ruleSets;
     }
-    
+
     /**
      * Return the name of the default ruleset
      * @return the name of the default ruleset
@@ -114,9 +113,9 @@ public class RuleSets {
     public String getDefaultRuleSetName() {
         return this.defaultRuleSet.getName();
     }
-    
+
     /**
-     * Sets the default ruleset by its name. If the ruleset does not exist, 
+     * Sets the default ruleset by its name. If the ruleset does not exist,
      * the default ruleset is not set.
      * @param ruleSetName a name of an already defined ruleset.
      */
@@ -124,9 +123,9 @@ public class RuleSets {
         if (ruleSetName == null) {
             throw new IllegalArgumentException("The default ruleset name must not ne null");
         }
-        
-        for (final Iterator i = this.ruleSetsList.iterator(); i.hasNext();) {
-            final RuleSet ruleSet = (RuleSet) i.next();
+
+        for (RuleSet ruleSet2 : this.ruleSetsList) {
+            final RuleSet ruleSet = ruleSet2;
             if (ruleSet.getName().equals(ruleSetName)) {
                 setDefaultRuleSet(ruleSet);
                 break;
@@ -137,15 +136,16 @@ public class RuleSets {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer("RuleSets defaultRuleSet=");
         buffer.append(this.defaultRuleSet.getName());
         buffer.append(" ruleSetsList=");
-        
-        for (final Iterator i = this.ruleSetsList.iterator(); i.hasNext();) {
-            buffer.append(i.next());
+
+        for (RuleSet ruleSet : this.ruleSetsList) {
+            buffer.append(ruleSet);
         }
-        
+
         return buffer.toString();
     }
 }

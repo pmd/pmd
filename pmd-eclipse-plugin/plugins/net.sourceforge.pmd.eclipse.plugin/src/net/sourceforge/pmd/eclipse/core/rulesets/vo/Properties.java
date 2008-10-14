@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -41,11 +41,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * This class is a value objet that composes the structure of a rulesets object.
+ * This class is a value object that composes the structure of a rulesets object.
  * It holds a collection of Property objects.
- * 
+ *
  * @author Herlin
- * 
+ *
  */
 
 public class Properties {
@@ -53,7 +53,7 @@ public class Properties {
 
     /**
      * Getter for the propertiesSet.
-     * 
+     *
      * @return Returns the propertiesSet.
      */
     public Set getProperties() {
@@ -62,7 +62,7 @@ public class Properties {
 
     /**
      * Setter for the propertiesSet
-     * 
+     *
      * @param propertiesSet The propertiesSet to set.
      */
     public void setProperties(Set properties) {
@@ -76,20 +76,22 @@ public class Properties {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object arg0) {
         boolean equal = false;
-        
+
         if (arg0 instanceof Properties) {
             final Properties p = (Properties) arg0;
             equal = this.propertiesSet.equals(p.propertiesSet);
         }
-        
+
         return equal;
     }
 
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return this.propertiesSet.hashCode();
     }
@@ -97,6 +99,7 @@ public class Properties {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer("Properties");
         for (final Iterator i = this.propertiesSet.iterator(); i.hasNext();) {
@@ -104,7 +107,7 @@ public class Properties {
             buffer.append(' ');
             buffer.append(p);
         }
-        
+
         return buffer.toString();
     }
 

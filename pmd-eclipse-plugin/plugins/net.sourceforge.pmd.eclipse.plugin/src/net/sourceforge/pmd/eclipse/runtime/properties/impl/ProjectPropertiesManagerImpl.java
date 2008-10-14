@@ -73,7 +73,7 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 
 /**
- * This class manages the persistances of the ProjectProperies information structure
+ * This class manages the persistence of the ProjectProperies information structure
  *
  * @author Philippe Herlin
  *
@@ -84,7 +84,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private static final String PROPERTIES_FILE = ".pmd";
     private static final String PROPERTIES_MAPPING = "/net/sourceforge/pmd/eclipse/runtime/properties/impl/mapping.xml";
 
-    private final Map projectsProperties = new HashMap();
+    private final Map<IProject, IProjectProperties> projectsProperties = new HashMap<IProject, IProjectProperties>();
 
     /**
      * Load a project properties
@@ -94,7 +94,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     public IProjectProperties loadProjectProperties(final IProject project) throws PropertiesException {
         log.debug("Loading project properties for project " + project.getName());
         try {
-            IProjectProperties projectProperties = (IProjectProperties) this.projectsProperties.get(project);
+            IProjectProperties projectProperties = this.projectsProperties.get(project);
             if (projectProperties == null) {
                 projectProperties = new PropertiesFactoryImpl().newProjectProperties(project, this);
                 final ProjectPropertiesTO to = readProjectProperties(project);
@@ -304,15 +304,13 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
         if (!projectProperties.isRuleSetStoredInProject()) {
         	final RuleSet ruleSet = projectProperties.getProjectRuleSet();
-            final List rules = new ArrayList();
-            final Iterator i = ruleSet.getRules().iterator();
-            while (i.hasNext()) {
-                final Rule rule = (Rule) i.next();
+            final List<RuleSpecTO> rules = new ArrayList<RuleSpecTO>();
+            for (Rule rule: ruleSet.getRules()) {
                 rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
             }
-            bean.setRules((RuleSpecTO[]) rules.toArray(new RuleSpecTO[rules.size()]));
-            bean.setExcludePatterns((String[])ruleSet.getExcludePatterns().toArray(new String[ruleSet.getExcludePatterns().size()]));
-            bean.setIncludePatterns((String[])ruleSet.getIncludePatterns().toArray(new String[ruleSet.getIncludePatterns().size()]));
+            bean.setRules(rules.toArray(new RuleSpecTO[rules.size()]));
+            bean.setExcludePatterns(ruleSet.getExcludePatterns().toArray(new String[ruleSet.getExcludePatterns().size()]));
+            bean.setIncludePatterns(ruleSet.getIncludePatterns().toArray(new String[ruleSet.getIncludePatterns().size()]));
         }
 
         return bean;
@@ -336,9 +334,9 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
             // 1-If rules have been deleted from preferences
             // delete them also from the project ruleset
-            final Iterator i = projectRuleSet.getRules().iterator();
+            final Iterator<Rule> i = projectRuleSet.getRules().iterator();
             while (i.hasNext()) {
-                final Rule projectRule = (Rule) i.next();
+                final Rule projectRule = i.next();
                 final Rule pluginRule = pluginRuleSet.getRuleByName(projectRule.getName());
                 if (pluginRule == null) {
                     log.debug("The rule " + projectRule.getName() + " is no more defined in the plugin ruleset. Remove it.");
@@ -347,12 +345,10 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             }
 
             // 2-For all other rules, replace the current one by the plugin one
-            final Iterator k = projectRuleSet.getRules().iterator();
             final RuleSet ruleSet = new RuleSet();
             ruleSet.setDescription(projectRuleSet.getDescription());
             ruleSet.setName(projectRuleSet.getName());
-            while (k.hasNext()) {
-                final Rule projectRule = (Rule) k.next();
+            for (Rule projectRule: projectRuleSet.getRules()) {
                 final Rule pluginRule = pluginRuleSet.getRuleByName(projectRule.getName());
                 if (pluginRule != null) {
                     // log.debug("Keeping rule " + projectRule.getName());

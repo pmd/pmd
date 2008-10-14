@@ -47,7 +47,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * A page for the dataflow - view.
- * 
+ *
  * @author Sven Jacob
  *
  */
@@ -55,21 +55,21 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
     private Composite dfaFrame;
     private CCombo methodSelection;
     private Button switchButton;
-    
+
     protected Composite titleArea;
     protected DataflowGraphViewer graphViewer;
     protected DataflowAnomalyTableViewer tableViewer;
-    
-    private List pmdMethodList;
+
+    private List<ASTMethodDeclaration> pmdMethodList;
     private FileRecord resourceRecord;
     private ITextEditor textEditor; // NOPMD by Sven on 09.11.06 22:18
-    
+
     private boolean isTableShown;
     private boolean isTableRefreshed;
-    
+
     /**
      * Constructor
-     * @param part 
+     * @param part
      * @param record the FileRecord
      */
     public DataflowViewPage(IWorkbenchPart part, FileRecord record) {
@@ -79,8 +79,9 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
             textEditor = (ITextEditor) part;
         }
     }
-    
+
     /* @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite) */
+    @Override
     public void createControl(Composite parent) {
         dfaFrame = new Composite(parent, SWT.NONE);
 
@@ -90,24 +91,24 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
         titleArea = new Composite(dfaFrame, SWT.NONE);
         final GridData tableData = new GridData(GridData.FILL_HORIZONTAL);
         tableData.horizontalSpan = 2;
-        titleArea.setLayoutData(tableData);        
+        titleArea.setLayoutData(tableData);
         titleArea.setLayout(new GridLayout(3, false));
-        
+
         // the drop down box for showing all methods of the given ressource
         methodSelection = new CCombo(titleArea, SWT.LEFT | SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
         refreshPMDMethods();
         methodSelection.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_CHOOSE_METHOD));
-        methodSelection.setLayoutData(new GridData(200, SWT.DEFAULT));                
+        methodSelection.setLayoutData(new GridData(200, SWT.DEFAULT));
         methodSelection.addSelectionListener(this);
 
         // a label for the spacing
         final Label label = new Label(titleArea, SWT.NONE);
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
+
         // the Button for showing or hiding the Anomaly-List
         switchButton = new Button(titleArea, SWT.RIGHT);
         switchButton.setLayoutData(new GridData(130, 20));
-        switchButton.addSelectionListener(this);   
+        switchButton.addSelectionListener(this);
         switchButton.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_SWITCHBUTTON_SHOW));
 
         // //////////////////////////////////////////////////
@@ -122,18 +123,19 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
         tableViewer.setContentProvider(new DataflowAnomalyTableContentProvider());
         tableViewer.setLabelProvider(new DataflowAnomalyTableLabelProvider());
         this.isTableRefreshed = false;
-        
+
         final GridLayout mainLayout = new GridLayout(2, true);
         mainLayout.horizontalSpacing = mainLayout.verticalSpacing = 7;
         mainLayout.marginWidth = 3; mainLayout.marginHeight = 3;
         dfaFrame.setLayout(mainLayout);
-        
+
         // hide the table
         showTableArea(false);
     }
-    
-    
+
+
     /* @see org.eclipse.ui.part.Page#dispose() */
+    @Override
     public void dispose() {
     }
 
@@ -145,9 +147,9 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
         pmdMethodList = getPMDMethods();
         methodSelection.removeAll();
         for (int i = 0; i < pmdMethodList.size(); i++) {
-            final ASTMethodDeclaration pmdMethod = (ASTMethodDeclaration) pmdMethodList.get(i);
+            final ASTMethodDeclaration pmdMethod = pmdMethodList.get(i);
             methodSelection.add(getMethodLabel(pmdMethod), i);
-        }    
+        }
     }
 
     /**
@@ -160,37 +162,39 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
     }
 
     /* @see org.eclipse.ui.part.IPage#getControl() */
+    @Override
     public Control getControl() {
         return dfaFrame;
     }
 
     /* @see org.eclipse.ui.part.WorkbenchPart#setFocus() */
+    @Override
     public void setFocus() {
         methodSelection.setFocus();
     }
-    
+
     /**
      * @return the underlying FileRecord
      */
     public FileRecord getFileRecord() {
         return resourceRecord;
     }
-    
+
     /**
      * Confort method to show a method.
      * @param index index position of the combobox
      */
     private void showMethod(final int index) {
         if (index >= 0 && index < pmdMethodList.size() ) {
-            final ASTMethodDeclaration method = (ASTMethodDeclaration) pmdMethodList.get(index);
+            final ASTMethodDeclaration method = pmdMethodList.get(index);
             showMethod(method);
         }
     }
-    
+
     /**
      * Shows the DataflowGraph (and Dataflow-Anomalies) for a Method.
-     * 
-     * @param pmdMethod Method to show in the graph 
+     *
+     * @param pmdMethod Method to show in the graph
      */
     private void showMethod(final ASTMethodDeclaration pmdMethod) {
         if (pmdMethod != null) {
@@ -201,12 +205,13 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
             graphViewer.setData(pmdMethod, resourceString);
             graphViewer.addMouseListener(new MouseAdapter() {
 
+                @Override
                 public void mouseDown(MouseEvent e) {
                     if (textEditor != null) {
                         final int row = (int)((double)e.y / DataflowGraphViewer.ROW_HEIGHT);
                         graphViewer.getGraph().demark();
                         graphViewer.getGraph().markNode(row);
-                        final int startLine = ((DataFlowNode)pmdMethod.getDataFlowNode().getFlow().get(row)).getLine()-1;
+                        final int startLine = pmdMethod.getDataFlowNode().getFlow().get(row).getLine()-1;
                         int offset = 0;
                         int length = 0;
                         try {
@@ -224,17 +229,17 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
             showTableArea(isTableShown);
         }
     }
-    
+
     /**
      * Shows the method that belongs to a violation (to a line).
      * @param violation RuleViolation
      */
     private void showMethodToViolation(RuleViolation violation) {
         final int beginLine = violation.getBeginLine();
-        
+
         for (int i = 0; i < pmdMethodList.size(); i++) {
-            final ASTMethodDeclaration pmdMethod = (ASTMethodDeclaration) pmdMethodList.get(i);
-            if (beginLine >= pmdMethod.getBeginLine() 
+            final ASTMethodDeclaration pmdMethod = pmdMethodList.get(i);
+            if (beginLine >= pmdMethod.getBeginLine()
                     && beginLine <= pmdMethod.getEndLine()) {
                 showMethod(pmdMethod);
                 // select the method in the combobox
@@ -246,11 +251,11 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
 
     /**
      * Gets a List of all PMD-Methods.
-     * 
+     *
      * @return an ArrayList of ASTMethodDeclarations
      */
-    private List getPMDMethods() {
-        final List methodList = new ArrayList();
+    private List<ASTMethodDeclaration> getPMDMethods() {
+        final List<ASTMethodDeclaration> methodList = new ArrayList<ASTMethodDeclaration>();
 
         // we need PMD to run over the given Resource
         // with the DFAGraphRule to get the Methods;
@@ -266,7 +271,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
 
             // run PMD using the DFAGraphRule
             // and the Text of the Resource
-            (new PMD()).processFile(reader, rs, ctx);
+            new PMD().processFile(reader, rs, ctx);
 
             // the Rule then can give us the Methods
             methodList.addAll(dfaGraphRule.getMethods());
@@ -284,10 +289,10 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
     public IDocument getDocument() {
         return textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
     }
-    
+
     /**
      * Shows or hides the DataflowAnomalyTable, set the right text for the button.
-     * 
+     *
      * @param isShown, true if the Table should be visible, false otherwise
      */
     private void showTableArea(boolean isShown) {
@@ -318,7 +323,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);
     }
-    
+
     /* @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent) */
     public void selectionChanged(SelectionChangedEvent event) {
         // get the Selection
@@ -330,7 +335,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
                 final int beginLine = violation.getBeginLine();
                 final int endLine = violation.getEndLine();
 
-                if ((beginLine != 0) && (endLine != 0) && (!"".equals(varName))) {
+                if (beginLine != 0 && endLine != 0 && !"".equals(varName)) {
                     try {
                         final int offset = getDocument().getLineOffset(violation.getBeginLine()-1);
                         final int length = getDocument().getLineOffset(violation.getEndLine()) - offset;
@@ -367,12 +372,12 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
             // the event can be catched from the switchbutton ...
             isTableShown = !isTableShown;
             showTableArea(isTableShown);
-    
+
             if (!isTableShown) {
-                if ((graphViewer == null) || (graphViewer.getGraph() == null)) {
+                if (graphViewer == null || graphViewer.getGraph() == null) {
                     return;
                 }
-    
+
                 final DataflowGraph graph = graphViewer.getGraph();
                 if (graph.isMarked()) {
                     graph.demark();
@@ -395,13 +400,13 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
             // set a new filerecord
             resourceRecord = new FileRecord(newResource);
         }
-        
+
         if (isTableShown) {
             refreshDFATable(newResource);
         } else {
             this.isTableRefreshed = false;
         }
-        
+
         // refresh the methods and select the old selected method
         final int index = methodSelection.getSelectionIndex();
         refreshPMDMethods();
@@ -410,13 +415,13 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
     }
 
     /**
-     * Executes a command to refresh the dfa table. 
+     * Executes a command to refresh the dfa table.
      * After execution {@link #refresh(IResource)} will be called.
      * @param newResource the new resource
      */
     public void refreshDFATable(IResource newResource) {
         this.isTableRefreshed = true;
-        try {            
+        try {
             final ReviewResourceForRuleCommand cmd = new ReviewResourceForRuleCommand();
             final DaaRule rule = new DaaRule();
             rule.setUsesDFA();
@@ -427,14 +432,14 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
             cmd.performExecute();
         } catch (CommandException e) {
             PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
-        } 
+        }
     }
-    
+
     /**
      * If the review is ready propertyChanged with the results will be called.
      */
     public void propertyChanged(Object source, int propId) {
-        if (source instanceof Iterator 
+        if (source instanceof Iterator
                 && propId == PMDRuntimeConstants.PROPERTY_REVIEW) {
             tableViewer.setInput(source);
         }

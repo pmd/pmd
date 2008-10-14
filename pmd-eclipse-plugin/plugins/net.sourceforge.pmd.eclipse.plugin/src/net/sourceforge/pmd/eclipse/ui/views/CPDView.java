@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -61,7 +61,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * A class for showing the Copy / Paste Detection View.
- * 
+ *
  * @author Sven
  *
  */
@@ -73,10 +73,11 @@ public class CPDView extends ViewPart implements IPropertyListener {
     private CPDViewDoubleClickEventListener doubleClickListener;
     private CPDViewTooltipListener tooltipListener;
     private static final int MAX_MATCHES = 100;
-    
+
     /*
      * @see org.eclipse.ui.ViewPart#init(org.eclipse.ui.IViewSite)
      */
+    @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
         this.contentProvider = new TreeNodeContentProvider();
@@ -84,17 +85,18 @@ public class CPDView extends ViewPart implements IPropertyListener {
         this.doubleClickListener = new CPDViewDoubleClickEventListener(this);
         this.tooltipListener = new CPDViewTooltipListener(this);
     }
-    
+
     /*
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */
+    @Override
     public void createPartControl(Composite parent) {
         final int treeStyle = SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
         this.treeViewer = new TreeViewer(parent, treeStyle);
         this.treeViewer.setUseHashlookup(true);
         this.treeViewer.getTree().setHeaderVisible(true);
         this.treeViewer.getTree().setLinesVisible(true);
-        
+
         this.treeViewer.setContentProvider(contentProvider);
         this.treeViewer.setLabelProvider(labelProvider);
         this.treeViewer.addDoubleClickListener(this.doubleClickListener);
@@ -103,12 +105,12 @@ public class CPDView extends ViewPart implements IPropertyListener {
         this.treeViewer.getTree().addListener(SWT.Dispose, this.tooltipListener);
         this.treeViewer.getTree().addListener(SWT.KeyDown, this.tooltipListener);
         this.treeViewer.getTree().addListener(SWT.MouseMove, this.tooltipListener);
-        this.treeViewer.getTree().addListener(SWT.MouseHover, this.tooltipListener);        
+        this.treeViewer.getTree().addListener(SWT.MouseHover, this.tooltipListener);
         createColumns(treeViewer.getTree());
     }
 
     /**
-     * Creates the columns of the tree. 
+     * Creates the columns of the tree.
      * @param tree Tree from the treeViewer
      */
     private void createColumns(Tree tree) {
@@ -126,11 +128,11 @@ public class CPDView extends ViewPart implements IPropertyListener {
         final TreeColumn messageColumn = new TreeColumn(tree, SWT.LEFT);
         messageColumn.setText(getString(StringKeys.MSGKEY_VIEW_COLUMN_MESSAGE));
         messageColumn.setWidth(300);
-        
+
         // shows the class
         final TreeColumn classColumn = new TreeColumn(tree, SWT.LEFT);
         classColumn.setText(getString(StringKeys.MSGKEY_VIEW_COLUMN_CLASS));
-        classColumn.setWidth(300);      
+        classColumn.setWidth(300);
 
     }
 
@@ -140,7 +142,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
     public TreeViewer getTreeViewer() {
         return this.treeViewer;
     }
-    
+
     /**
      * Helper method to return an NLS string from its key
      */
@@ -151,6 +153,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
     /*
      * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
      */
+    @Override
     public void setFocus() {
         this.treeViewer.getTree().setFocus();
     }
@@ -159,30 +162,30 @@ public class CPDView extends ViewPart implements IPropertyListener {
      * Sets input for the table.
      * @param matches CPD Command that contain the matches from the CPD
      */
-    public void setData(Iterator matches) {
-        final List elements = new ArrayList();
+    public void setData(Iterator<Match> matches) {
+        final List<TreeNode> elements = new ArrayList<TreeNode>();
         if (matches != null) {
             // iterate the matches
             for (int count = 0; matches.hasNext() && count < MAX_MATCHES; count++) {
-                final Match match = (Match) matches.next();
-                
+                final Match match = matches.next();
+
                 // create a treenode for the match and add to the list
                 final TreeNode matchNode = new TreeNode(match); // NOPMD by Sven on 02.11.06 11:27
                 elements.add(matchNode);
-                
+
                 // create the children of the match
                 final TreeNode[] children = new TreeNode[match.getMarkCount()]; // NOPMD by Sven on 02.11.06 11:28
-                final Iterator entryIterator = match.getMarkSet().iterator();
+                final Iterator<TokenEntry> entryIterator = match.getMarkSet().iterator();
                 for (int j=0; entryIterator.hasNext(); j++) {
-                    final TokenEntry entry = (TokenEntry) entryIterator.next();
+                    final TokenEntry entry = entryIterator.next();
                     children[j] = new TreeNode(entry); // NOPMD by Sven on 02.11.06 11:28
                     children[j].setParent(matchNode);
                 }
                 matchNode.setChildren(children);
             }
         }
-        
-        // set the children of the rootnode: the matches    
+
+        // set the children of the rootnode: the matches
         this.treeViewer.setInput(elements.toArray(new TreeNode[elements.size()]));
     }
 
@@ -192,9 +195,9 @@ public class CPDView extends ViewPart implements IPropertyListener {
     public void propertyChanged(Object source, int propId) {
         if (propId == PMDRuntimeConstants.PROPERTY_CPD
                 && source instanceof Iterator) {
-            final Iterator iter = (Iterator) source;
+            final Iterator<Match> iter = (Iterator<Match>) source;
             // after setdata(iter) iter.hasNext will always return false
-            final boolean hasResults = iter.hasNext();  
+            final boolean hasResults = iter.hasNext();
             setData(iter);
             if (!hasResults) {
                 // no entries

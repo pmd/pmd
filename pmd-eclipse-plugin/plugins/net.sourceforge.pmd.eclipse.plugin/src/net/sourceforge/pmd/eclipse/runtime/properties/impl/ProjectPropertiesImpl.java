@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -39,7 +39,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -58,9 +57,9 @@ import org.eclipse.ui.IWorkingSet;
 
 /**
  * Implementation of a project properties information structure
- * 
+ *
  * @author Philippe Herlin
- *  
+ *
  */
 public class ProjectPropertiesImpl implements IProjectProperties {
     private static final Logger log = Logger.getLogger(ProjectPropertiesImpl.class);
@@ -146,7 +145,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         log.debug("Set rule set stored in project for project " + this.project.getName() + ": " + ruleSetStoredInProject);
         this.needRebuild |= this.ruleSetStoredInProject != ruleSetStoredInProject;
         this.ruleSetStoredInProject = ruleSetStoredInProject;
-        if ((this.ruleSetStoredInProject) && (!isRuleSetFileExist())) {
+        if (this.ruleSetStoredInProject && !isRuleSetFileExist()) {
             throw new PropertiesException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
         }
     }
@@ -169,7 +168,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         log.debug("Set rule set file for project " + this.project.getName() + ": " + ruleSetFile);
         this.needRebuild |= this.ruleSetFile == null || !ruleSetFile.equals(ruleSetFile);
         this.ruleSetFile = ruleSetFile;
-        if ((this.ruleSetStoredInProject) && (!isRuleSetFileExist())) {
+        if (this.ruleSetStoredInProject && !isRuleSetFileExist()) {
             throw new PropertiesException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
         }
 	}
@@ -188,7 +187,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         log.debug("Set working set for project " + this.project.getName() + ": "
                 + (projectWorkingSet == null ? "none" : projectWorkingSet.getName()));
 
-        this.needRebuild |= (this.projectWorkingSet == null)?(projectWorkingSet != null):!this.projectWorkingSet.equals(projectWorkingSet);
+        this.needRebuild |= this.projectWorkingSet == null?projectWorkingSet != null:!this.projectWorkingSet.equals(projectWorkingSet);
         this.projectWorkingSet = projectWorkingSet;
     }
 
@@ -236,7 +235,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         }
         return f;
     }
-    
+
     /**
      * Create a project ruleset file from the current configured rules
      *
@@ -248,12 +247,12 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             writer.write(baos, this.projectRuleSet);
             baos.close();
-            
+
             final IFile file = this.project.getFile(PROJECT_RULESET_FILE);
             if (file.exists() && file.isAccessible()) {
                 throw new PropertiesException("Project ruleset file already exists");
             } else {
-                final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());            
+                final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
                 file.create(bais, true, null);
                 bais.close();
             }
@@ -264,7 +263,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         } catch (CoreException e) {
             throw new PropertiesException(e);
         }
-        
+
     }
 
     /**
@@ -280,7 +279,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         log.debug("Set if derived files should be included: " + includeDerivedFiles);
         this.needRebuild |= this.includeDerivedFiles != includeDerivedFiles;
-        this.includeDerivedFiles = includeDerivedFiles;        
+        this.includeDerivedFiles = includeDerivedFiles;
     }
 
     /**
@@ -290,21 +289,20 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         log.info("Commit properties for project " + this.project.getName());
         this.projectPropertiesManager.storeProjectProperties(this);
     }
-    
+
     /**
      * Clone the PMD ruleset.
      * @return a pmd ruleSetClone.
      */
     private RuleSet cloneRuleSet() {
         final RuleSet clonedRuleSet = new RuleSet();
-        
-        for (final Iterator i = this.projectRuleSet.getRules().iterator(); i.hasNext();) {
-            final Rule rule = (Rule) i.next();
+
+        for (Rule rule: this.projectRuleSet.getRules()) {
             clonedRuleSet.addRule(rule);
         }
         clonedRuleSet.addExcludePatterns(this.projectRuleSet.getExcludePatterns());
         clonedRuleSet.addIncludePatterns(this.projectRuleSet.getIncludePatterns());
-        
+
         return clonedRuleSet;
     }
 

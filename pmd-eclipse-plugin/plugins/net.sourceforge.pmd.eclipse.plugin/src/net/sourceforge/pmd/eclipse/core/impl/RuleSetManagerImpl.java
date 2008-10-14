@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -42,22 +42,22 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 
 /**
- * 
- * 
+ *
+ *
  * @author Philippe Herlin
  *
  */
 public class RuleSetManagerImpl implements IRuleSetManager {
-    private final Set ruleSets = new HashSet();
-    private final Set defaultRuleSets = new HashSet();
+    private final Set<RuleSet> ruleSets = new HashSet<RuleSet>();
+    private final Set<RuleSet> defaultRuleSets = new HashSet<RuleSet>();
 
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#getRegisteredRuleSets()
      */
-    public Set getRegisteredRuleSets() {
+    public Set<RuleSet> getRegisteredRuleSets() {
         return this.ruleSets;
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#registerRuleSet(net.sourceforge.pmd.RuleSet)
      */
@@ -65,10 +65,10 @@ public class RuleSetManagerImpl implements IRuleSetManager {
         if (ruleSet == null) {
             throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS // NOPMD by Herlin on 20/06/06 22:56
         }
-        
+
         this.ruleSets.add(ruleSet);
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#unregisterRuleSet(net.sourceforge.pmd.RuleSet)
      */
@@ -76,17 +76,17 @@ public class RuleSetManagerImpl implements IRuleSetManager {
         if (ruleSet == null) {
             throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
         }
-        
+
         this.ruleSets.remove(ruleSet);
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#getDefaultRuleSets()
      */
-    public Set getDefaultRuleSets() {
+    public Set<RuleSet> getDefaultRuleSets() {
         return this.defaultRuleSets;
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#registerDefaultRuleSet(net.sourceforge.pmd.RuleSet)
      */
@@ -94,10 +94,10 @@ public class RuleSetManagerImpl implements IRuleSetManager {
         if (ruleSet == null) {
             throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
         }
-        
+
         this.defaultRuleSets.add(ruleSet);
     }
-    
+
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#unregisterDefaultRuleSet(net.sourceforge.pmd.RuleSet)
      */
@@ -105,7 +105,7 @@ public class RuleSetManagerImpl implements IRuleSetManager {
         if (ruleSet == null) {
             throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
         }
-        
+
         this.defaultRuleSets.remove(ruleSet);
     }
 }

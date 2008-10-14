@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -59,8 +59,8 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.ProjectFilterAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.ViolationPresentationTypeAction;
 
 /**
- * 
- * 
+ *
+ *
  * @author Sven
  *
  */
@@ -68,7 +68,7 @@ import net.sourceforge.pmd.eclipse.ui.views.actions.ViolationPresentationTypeAct
 public class ViolationOverviewMenuManager {
     private final ViolationOverview overview;
     private PriorityFilterAction[] priorityActions;
-    
+
     public ViolationOverviewMenuManager(ViolationOverview overview) {
         this.overview = overview;
     }
@@ -79,12 +79,12 @@ public class ViolationOverviewMenuManager {
     public void setupActions() {
         final Integer[] priorities = PMDPlugin.getDefault().getPriorityValues();
         this.priorityActions = new PriorityFilterAction[priorities.length];
-    
+
         // create the Actions for the PriorityFilter
         for (int i = 0; i < priorities.length; i++) {
-            this.priorityActions[i] = new PriorityFilterAction(priorities[i], overview); // NOPMD by Herlin on 09/10/06 15:02            
+            this.priorityActions[i] = new PriorityFilterAction(priorities[i], overview); // NOPMD by Herlin on 09/10/06 15:02
             final boolean check = this.overview.getPriorityFilterList().contains(priorities[i]);
-            this.priorityActions[i].setChecked(check);            
+            this.priorityActions[i].setChecked(check);
         }
     }
 
@@ -96,10 +96,10 @@ public class ViolationOverviewMenuManager {
         final Action calculateStats = new CalculateStatisticsAction(this.overview);
         manager.add(calculateStats);
         manager.add(new Separator());
-        
+
         // the PriorityFilter-Actions
-        for (int i = 0; i < this.priorityActions.length; i++) {
-            manager.add(this.priorityActions[i]);
+        for (PriorityFilterAction priorityAction : this.priorityActions) {
+            manager.add(priorityAction);
         }
         manager.add(new Separator());
 
@@ -107,7 +107,7 @@ public class ViolationOverviewMenuManager {
         final Action collapseAllAction = new CollapseAllAction(this.overview);
         manager.add(collapseAllAction);
     }
-    
+
     /**
      * Creates the DropDownMenu
      */
@@ -119,7 +119,7 @@ public class ViolationOverviewMenuManager {
         createProjectFilterMenu(manager);
         createShowTypeSubmenu(manager);
     }
-    
+
 
 
     /**
@@ -139,8 +139,8 @@ public class ViolationOverviewMenuManager {
 
                 // ... another one for filtering Priorities
                 submenuManager = new MenuManager(getString(StringKeys.MSGKEY_VIEW_MENU_PRIORITY_FILTER));
-                for (int i = 0; i < priorityActions.length; i++) {
-                    submenuManager.add(priorityActions[i]);
+                for (PriorityFilterAction priorityAction : priorityActions) {
+                    submenuManager.add(priorityAction);
                 }
                 manager.add(submenuManager);
 
@@ -161,15 +161,15 @@ public class ViolationOverviewMenuManager {
 
         this.overview.getSite().registerContextMenu(manager, this.overview.getViewer());
     }
-    
+
     /**
      * Create the Menu for filtering Projects
-     * 
+     *
      * @param manager, the MenuManager
      */
     private void createProjectFilterMenu(IMenuManager manager) {
-        final List projectFilterList = this.overview.getProjectFilterList();
-        final List projectList = new ArrayList();
+        final List<AbstractPMDRecord> projectFilterList = this.overview.getProjectFilterList();
+        final List<ProjectRecord> projectList = new ArrayList<ProjectRecord>();
 
         // We get a List of all Projects
         final AbstractPMDRecord[] projects = this.overview.getAllProjects();
@@ -205,7 +205,7 @@ public class ViolationOverviewMenuManager {
         manager.add(typeAction2);
         manager.add(typeAction3);
     }
-        
+
     /**
      * Helper method to return an NLS string from its key
      */

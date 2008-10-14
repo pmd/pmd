@@ -49,7 +49,7 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
      * @see org.eclipse.ui.IMarkerResolutionGenerator#getResolutions(org.eclipse.core.resources.IMarker)
      */
     public IMarkerResolution[] getResolutions(IMarker marker) {
-        final List markerResolutionList = new ArrayList();
+        final List<PMDResolution> markerResolutionList = new ArrayList<PMDResolution>();
         try {
             final String ruleName = (String) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME);
             if (ruleName != null) {
@@ -67,7 +67,7 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
             PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION), e);
         }
 
-        return (IMarkerResolution[]) markerResolutionList.toArray(new IMarkerResolution[markerResolutionList.size()]);
+        return markerResolutionList.toArray(new IMarkerResolution[markerResolutionList.size()]);
     }
 
 }

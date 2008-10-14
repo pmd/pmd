@@ -99,7 +99,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
-	protected void performDefaults() {
+	@Override
+    protected void performDefaults() {
 		populateRuleTable();
 		populateExcludePatternTable();
 		populateIncludePatternTable();
@@ -109,7 +110,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
 	 */
-	public boolean performOk() {
+	@Override
+    public boolean performOk() {
 		if (modified) {
 			updateRuleSet();
 			rebuildProjects();
@@ -121,7 +123,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#createContents(Composite)
 	 */
-	protected Control createContents(Composite parent) {
+	@Override
+    protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		layoutControls(composite);
 		return composite;
@@ -305,7 +308,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * Helper method to add new table columns
 	 */
 	private void addColumnTo(Table table, int alignment, boolean resizable, String text, int width,
-			final Comparator comparator) {
+			final Comparator<Rule> comparator) {
 
 		TableColumn newColumn = new TableColumn(table, alignment);
 		newColumn.setResizable(resizable);
@@ -313,7 +316,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		newColumn.setWidth(width);
 		if (comparator != null) {
 			newColumn.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
+				@Override
+                public void widgetSelected(SelectionEvent e) {
 					ruleTableViewerSorter.setComparator(comparator);
 					refresh();
 				}
@@ -410,7 +414,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_REMOVERULE));
 		button.setEnabled(false);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				IStructuredSelection selection = (IStructuredSelection)ruleTableViewer.getSelection();
 				Rule selectedRule = (Rule)selection.getFirstElement();
 				ruleSet.getRules().remove(selectedRule);
@@ -434,7 +439,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setEnabled(false);
 
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				IStructuredSelection selection = (IStructuredSelection)ruleTableViewer.getSelection();
 				Rule rule = (Rule)selection.getFirstElement();
 
@@ -463,7 +469,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setEnabled(true);
 
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				RuleDialog dialog = new RuleDialog(getShell());
 				int result = dialog.open();
 				if (result == RuleDialog.OK) {
@@ -497,7 +504,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_IMPORTRULESET));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(getShell());
 				dialog.open();
 				if (dialog.getReturnCode() == RuleSetSelectionDialog.OK) {
@@ -507,9 +515,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 							ruleSet.addRuleSetByReference(selectedRuleSet, false);
 						} else {
 							// Set pmd-eclipse as new RuleSet name and add the Rule
-							Iterator iter = selectedRuleSet.getRules().iterator();
-							while (iter.hasNext()) {
-								Rule rule = (Rule)iter.next();
+							for (Rule rule: selectedRuleSet.getRules()) {
 								rule.setRuleSetName("pmd-eclipse");
 								ruleSet.addRule(rule);
 							}
@@ -538,7 +544,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_EXPORTRULESET));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
 				String fileName = dialog.open();
 				if (fileName != null) {
@@ -590,7 +597,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_CLEARALL));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				if (MessageDialog.openConfirm(getShell(), getMessage(StringKeys.MSGKEY_CONFIRM_TITLE),
 						getMessage(StringKeys.MSGKEY_CONFIRM_CLEAR_RULESET))) {
 					ruleSet.getRules().clear();
@@ -615,7 +623,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_RULEDESIGNER));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				// TODO Is this cool from Eclipse?  Is there a nicer way to spawn a J2SE Application?
 				new Thread(new Runnable() {
 					public void run() {
@@ -636,7 +645,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADDPROPERTY));
 		button.setEnabled(false);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				InputDialog input = new InputDialog(getShell(),
 						getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE),
 						getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_PROPERTY_NAME), "", null);
@@ -734,7 +744,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADD_EXCLUDE_PATTERN));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				ruleSet.addExcludePattern(".*/PATTERN/.*");
 				setModified(true);
 				excludePatternTableViewer.refresh();
@@ -751,7 +762,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADD_INCLUDE_PATTERN));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				ruleSet.addIncludePattern(".*/PATTERN/.*");
 				setModified(true);
 				includePatternTableViewer.refresh();
@@ -818,7 +830,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
 	 */
-	protected IPreferenceStore doGetPreferenceStore() {
+	@Override
+    protected IPreferenceStore doGetPreferenceStore() {
 		return PMDPlugin.getDefault().getPreferenceStore();
 	}
 
@@ -914,10 +927,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	protected void selectAndShowRule(Rule rule) {
 		Table table = ruleTableViewer.getTable();
 		TableItem[] items = table.getItems();
-		for (int i = 0; i < items.length; i++) {
-			Rule itemRule = (Rule)items[i].getData();
+		for (TableItem item : items) {
+			Rule itemRule = (Rule)item.getData();
 			if (itemRule.equals(rule)) {
-				table.setSelection(table.indexOf(items[i]));
+				table.setSelection(table.indexOf(item));
 				table.showSelection();
 				break;
 			}
