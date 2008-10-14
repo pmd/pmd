@@ -87,9 +87,9 @@ public class PMDCorePluginTest extends TestCase {
         assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
-        for (int i = 0; i < PluginConstants.PMD_RULESETS.length; i++) {
-            RuleSet ruleSet = factory.createSingleRuleSet(PluginConstants.PMD_RULESETS[i]);
-            assertTrue("RuleSet \"" + PluginConstants.PMD_RULESETS[i] + "\" has not been registered", ruleSetRegistered(ruleSet,
+        for (String element : PluginConstants.PMD_RULESETS) {
+            RuleSet ruleSet = factory.createRuleSet(element);
+            assertTrue("RuleSet \"" + element + "\" has not been registered", ruleSetRegistered(ruleSet,
                     registeredRuleSets));
         }
     }
@@ -104,9 +104,9 @@ public class PMDCorePluginTest extends TestCase {
         assertFalse("No registered default rulesets!", defaultRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
-        for (int i = 0; i < PluginConstants.PMD_RULESETS.length; i++) {
-            RuleSet ruleSet = factory.createSingleRuleSet(PluginConstants.PMD_RULESETS[i]);
-            assertTrue("RuleSet \"" + PluginConstants.PMD_RULESETS[i] + "\" has not been registered", ruleSetRegistered(ruleSet,
+        for (String element : PluginConstants.PMD_RULESETS) {
+            RuleSet ruleSet = factory.createRuleSet(element);
+            assertTrue("RuleSet \"" + element + "\" has not been registered", ruleSetRegistered(ruleSet,
                     defaultRuleSets));
         }
     }

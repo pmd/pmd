@@ -134,7 +134,7 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         // use the basic ruleset because it should be included in the plugin
         // ruleset.
-        RuleSet basicRuleSet = factory.createSingleRuleSet("rulesets/basic.xml");
+        RuleSet basicRuleSet = factory.createRuleSet("rulesets/basic.xml");
 
         // First set the project ruleset
         model.setProjectRuleSet(basicRuleSet);
@@ -269,7 +269,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSetFactory factory = new RuleSetFactory();
-        RuleSet basicRuleSet = factory.createSingleRuleSet("rulesets/basic.xml");
+        RuleSet basicRuleSet = factory.createRuleSet("rulesets/basic.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);
         model.setProjectWorkingSet(null);
@@ -282,7 +282,7 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         boolean b = model.isRuleSetStoredInProject();
         IFile file = this.testProject.getFile(".ruleset");
-        RuleSet projectRuleSet = factory.createSingleRuleSet(file.getLocation().toOSString());
+        RuleSet projectRuleSet = factory.createRuleSet(file.getLocation().toOSString());
         assertTrue("the ruleset should be stored in the project", b);
         assertEquals("The project ruleset must be equals to the one found in the project", model.getProjectRuleSet(),
                 projectRuleSet);
@@ -298,7 +298,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSetFactory factory = new RuleSetFactory();
-        RuleSet basicRuleSet = factory.createSingleRuleSet("rulesets/basic.xml");
+        RuleSet basicRuleSet = factory.createRuleSet("rulesets/basic.xml");
         model.setPmdEnabled(true);
         model.setRuleSetStoredInProject(false);
         model.setProjectWorkingSet(null);

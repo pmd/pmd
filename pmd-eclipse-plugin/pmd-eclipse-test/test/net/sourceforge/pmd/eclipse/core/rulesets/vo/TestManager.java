@@ -63,7 +63,7 @@ public class TestManager {
 
     public static RuleSet getRuleSet() throws RuleSetNotFoundException {
         if (basicRuleSet == null) {
-            basicRuleSet = new RuleSetFactory().createSingleRuleSet("rulesets/basic.xml");
+            basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/basic.xml");
             Iterator<Rule> i = getRuleSet().getRules().iterator();
             rules = new Rule[4];
             for (int j = 0; j < 4; j++) {

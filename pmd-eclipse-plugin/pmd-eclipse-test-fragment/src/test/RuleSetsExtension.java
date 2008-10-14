@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -38,18 +38,18 @@ package test;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.IStatus;
-
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.core.IRuleSetsExtension;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * Sample of an RuleSets extension.
  * This will automatically registers our fragment rulesets into the core plugin.
- * 
+ *
  * @author Herlin
  *
  */
@@ -62,17 +62,17 @@ public class RuleSetsExtension implements IRuleSetsExtension {
      * Replace the core plugin fragment with our own rulesets
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetsExtension#registerRuleSets(java.util.Set)
      */
-    public void registerRuleSets(Set registeredRuleSets) {
+    public void registerRuleSets(Set<RuleSet> registeredRuleSets) {
         try {
             RuleSet ruleSet1 = getRuleSet1();
             RuleSet ruleSet2 = getRuleSet2();
-            
+
             // registeredRuleSets.clear(); // to remove all rulesets already registered
             registeredRuleSets.add(ruleSet1);
             registeredRuleSets.add(ruleSet2);
         } catch (RuleSetNotFoundException e) {
             PMDPlugin.getDefault().log(IStatus.ERROR, "Unable to load rulesets", e);
-        }        
+        }
     }
 
     /**
@@ -80,19 +80,19 @@ public class RuleSetsExtension implements IRuleSetsExtension {
      * (for instance when creating a new workspace)
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetsExtension#registerDefaultRuleSets(java.util.Set)
      */
-    public void registerDefaultRuleSets(Set defaultRuleSets) {
+    public void registerDefaultRuleSets(Set<RuleSet> defaultRuleSets) {
         try {
             RuleSet ruleSet1 = getRuleSet1();
             RuleSet ruleSet2 = getRuleSet2();
-            
+
             // registeredRuleSets.clear(); // to remove all rulesets already registered
             defaultRuleSets.add(ruleSet1);
             defaultRuleSets.add(ruleSet2);
         } catch (RuleSetNotFoundException e) {
             PMDPlugin.getDefault().log(IStatus.ERROR, "Unable to load rulesets", e);
-        }        
+        }
     }
-    
+
     /**
      * Load the 1st ruleset
      * @return the 1st ruleset
@@ -103,7 +103,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
             RuleSetFactory factory = new RuleSetFactory();
             this.ruleSet1 = factory.createRuleSets("rulesets/extra1.xml").getAllRuleSets()[0];
         }
-        
+
         return this.ruleSet1;
     }
 
@@ -117,7 +117,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
             RuleSetFactory factory = new RuleSetFactory();
             this.ruleSet2 = factory.createRuleSets("rulesets/extra2.xml").getAllRuleSets()[0];
         }
-        
+
         return this.ruleSet2;
     }
 

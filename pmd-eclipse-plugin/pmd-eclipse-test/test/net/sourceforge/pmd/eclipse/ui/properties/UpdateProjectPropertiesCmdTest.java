@@ -12,7 +12,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.eclipse.ui.properties.UpdateProjectPropertiesCmd;
 
 import org.eclipse.core.resources.IProject;
 
@@ -20,15 +19,17 @@ import org.eclipse.core.resources.IProject;
 public class UpdateProjectPropertiesCmdTest extends TestCase {
     private IProject testProject;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         // 1. Create a Java project
         this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
-        assertTrue("A test project cannot be created; the tests cannot be performed.", (this.testProject != null)
+        assertTrue("A test project cannot be created; the tests cannot be performed.", this.testProject != null
                 && this.testProject.exists() && this.testProject.isAccessible());
     }
 
+    @Override
     protected void tearDown() throws Exception {
         try {
             // 1. Delete the test project
@@ -64,8 +65,8 @@ public class UpdateProjectPropertiesCmdTest extends TestCase {
         // 2. remove the first rule (keep its name for assertion)
         RuleSet newRuleSet = new RuleSet();
         newRuleSet.addRuleSet(projectRuleSet);
-        Iterator i = newRuleSet.getRules().iterator();
-        Rule removedRule = (Rule) i.next();
+        Iterator<Rule> i = newRuleSet.getRules().iterator();
+        Rule removedRule = i.next();
         i.remove();
 
         UpdateProjectPropertiesCmd cmd = new UpdateProjectPropertiesCmd();

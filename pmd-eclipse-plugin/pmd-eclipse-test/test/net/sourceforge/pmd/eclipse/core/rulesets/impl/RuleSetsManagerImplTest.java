@@ -73,7 +73,7 @@ public class RuleSetsManagerImplTest extends TestCase {
         RuleSet ruleSet = rsm.valueOf(new String[] { "rulesets/basic.xml" });
 
         Collection<Rule> pmdRules = ruleSet.getPmdRuleSet().getRules();
-        Collection<Rule> basicRules = new RuleSetFactory().createSingleRuleSet("rulesets/basic.xml").getRules();
+        Collection<Rule> basicRules = new RuleSetFactory().createRuleSet("rulesets/basic.xml").getRules();
 
         // dump("PMD Rules", pmdRules);
         // dump("Basic Rules", basicRules);

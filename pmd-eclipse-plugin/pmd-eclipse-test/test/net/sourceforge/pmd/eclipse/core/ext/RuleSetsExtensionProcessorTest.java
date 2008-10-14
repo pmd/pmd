@@ -62,10 +62,10 @@ public class RuleSetsExtensionProcessorTest extends TestCase {
         assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
-        RuleSet ruleSet = factory.createSingleRuleSet("rulesets/extra1.xml");
+        RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
         assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
 
-        ruleSet = factory.createSingleRuleSet("rulesets/extra2.xml");
+        ruleSet = factory.createRuleSet("rulesets/extra2.xml");
         assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
     }
 
@@ -79,10 +79,10 @@ public class RuleSetsExtensionProcessorTest extends TestCase {
         assertFalse("No registered default rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
-        RuleSet ruleSet = factory.createSingleRuleSet("rulesets/extra1.xml");
+        RuleSet ruleSet = factory.createRuleSet("rulesets/extra1.xml");
         assertTrue("RuleSet \"rulesets/extra1.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
 
-        ruleSet = factory.createSingleRuleSet("rulesets/extra2.xml");
+        ruleSet = factory.createRuleSet("rulesets/extra2.xml");
         assertTrue("RuleSet \"rulesets/extra2.xml\" has not been registered", ruleSetRegistered(ruleSet, registeredRuleSets));
     }
 

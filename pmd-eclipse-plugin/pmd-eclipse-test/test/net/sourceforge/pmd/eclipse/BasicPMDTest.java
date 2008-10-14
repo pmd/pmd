@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -40,7 +40,6 @@ import java.io.StringReader;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
@@ -48,20 +47,21 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.eclipse.core.PluginConstants;
+import net.sourceforge.pmd.eclipse.runtime.cmd.PMDEngine;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
  * Test if PMD can be run correctly
- * 
+ *
  * @author Philippe Herlin
- * 
+ *
  */
 public class BasicPMDTest extends TestCase {
 
     /**
      * Test case constructor
-     * 
+     *
      * @param name of the test case
      */
     public BasicPMDTest(String name) {
@@ -70,13 +70,13 @@ public class BasicPMDTest extends TestCase {
 
     /**
      * One first thing the plugin must be able to do is to run PMD
-     * 
+     *
      */
     public void testRunPmdJdk13() {
 
         try {
-            PMD pmd = new PMD();
-            pmd.setJavaVersion(SourceType.JAVA_13);
+            PMDEngine pmd = new PMDEngine();
+            pmd.setLanguageVersion(LanguageVersion.JAVA_13);
 
             String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
             Reader input = new StringReader(sourceCode);
@@ -85,13 +85,13 @@ public class BasicPMDTest extends TestCase {
             context.setSourceCodeFilename("foo.java");
             context.setReport(new Report());
 
-            RuleSet basicRuleSet = new RuleSetFactory().createSingleRuleSet("rulesets/basic.xml");
+            RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/basic.xml");
             pmd.processFile(input, basicRuleSet, context);
 
-            Iterator iter = context.getReport().iterator();
+            Iterator<RuleViolation> iter = context.getReport().iterator();
             assertTrue("There should be at least one violation", iter.hasNext());
 
-            RuleViolation violation = (RuleViolation) iter.next();
+            RuleViolation violation = iter.next();
             assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
             assertEquals(3, violation.getBeginLine());
 
@@ -106,13 +106,13 @@ public class BasicPMDTest extends TestCase {
 
     /**
      * Let see with Java 1.4
-     * 
+     *
      */
     public void testRunPmdJdk14() {
 
         try {
-            PMD pmd = new PMD();
-            pmd.setJavaVersion(SourceType.JAVA_14);
+            PMDEngine pmd = new PMDEngine();
+            pmd.setLanguageVersion(LanguageVersion.JAVA_14);
 
             String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
             Reader input = new StringReader(sourceCode);
@@ -121,13 +121,13 @@ public class BasicPMDTest extends TestCase {
             context.setSourceCodeFilename("foo.java");
             context.setReport(new Report());
 
-            RuleSet basicRuleSet = new RuleSetFactory().createSingleRuleSet("rulesets/basic.xml");
+            RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/basic.xml");
             pmd.processFile(input, basicRuleSet, context);
 
-            Iterator iter = context.getReport().iterator();
+            Iterator<RuleViolation> iter = context.getReport().iterator();
             assertTrue("There should be at least one violation", iter.hasNext());
 
-            RuleViolation violation = (RuleViolation) iter.next();
+            RuleViolation violation = iter.next();
             assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
             assertEquals(3, violation.getBeginLine());
 
@@ -142,13 +142,13 @@ public class BasicPMDTest extends TestCase {
 
     /**
      * Let see with Java 1.5
-     * 
+     *
      */
     public void testRunPmdJdk15() {
 
         try {
-            PMD pmd = new PMD();
-            pmd.setJavaVersion(SourceType.JAVA_15);
+            PMDEngine pmd = new PMDEngine();
+            pmd.setLanguageVersion(LanguageVersion.JAVA_15);
 
             String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
             Reader input = new StringReader(sourceCode);
@@ -157,13 +157,13 @@ public class BasicPMDTest extends TestCase {
             context.setSourceCodeFilename("foo.java");
             context.setReport(new Report());
 
-            RuleSet basicRuleSet = new RuleSetFactory().createSingleRuleSet("rulesets/basic.xml");
+            RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/basic.xml");
             pmd.processFile(input, basicRuleSet, context);
 
-            Iterator iter = context.getReport().iterator();
+            Iterator<RuleViolation> iter = context.getReport().iterator();
             assertTrue("There should be at least one violation", iter.hasNext());
 
-            RuleViolation violation = (RuleViolation) iter.next();
+            RuleViolation violation = iter.next();
             assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
             assertEquals(3, violation.getBeginLine());
 
@@ -178,17 +178,17 @@ public class BasicPMDTest extends TestCase {
 
     /**
      * Try to load all the plugin known rulesets
-     * 
+     *
      */
     public void testDefaulltRuleSets() {
         RuleSetFactory factory = new RuleSetFactory();
         String allRuleSets[] = PluginConstants.PMD_RULESETS;
-        for (int i = 0; i < allRuleSets.length; i++) {
+        for (String allRuleSet : allRuleSets) {
             try {
-                RuleSet ruleSet = factory.createSingleRuleSet(allRuleSets[i]);
+                RuleSet ruleSet = factory.createRuleSet(allRuleSet);
             } catch (RuleSetNotFoundException e) {
                 e.printStackTrace();
-                fail("unable to load ruleset " + allRuleSets[i]);
+                fail("unable to load ruleset " + allRuleSet);
             }
         }
     }
