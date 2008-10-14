@@ -36,20 +36,20 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.InputStream;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 import name.herlin.command.CommandException;
 import name.herlin.command.UnsetInputPropertiesException;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
-import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.renderers.HTMLRenderer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-
 
 /**
  * Test the report rendering
@@ -80,7 +80,7 @@ public class RenderReportCmdTest extends TestCase {
 
         RenderReportCmd cmd = new RenderReportCmd();
         cmd.setProject(this.testProject);
-        cmd.registerRenderer(new HTMLRenderer(), PMDRuntimeConstants.HTML_REPORT_NAME);
+        cmd.registerRenderer(new HTMLRenderer(new Properties()), PMDRuntimeConstants.HTML_REPORT_NAME);
         cmd.performExecute();
         cmd.join();
 
@@ -110,7 +110,7 @@ public class RenderReportCmdTest extends TestCase {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(null);
-            cmd.registerRenderer(new HTMLRenderer(), PMDRuntimeConstants.HTML_REPORT_NAME);
+            cmd.registerRenderer(new HTMLRenderer(new Properties()), PMDRuntimeConstants.HTML_REPORT_NAME);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -144,7 +144,7 @@ public class RenderReportCmdTest extends TestCase {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(this.testProject);
-            cmd.registerRenderer(new HTMLRenderer(), null);
+            cmd.registerRenderer(new HTMLRenderer(new Properties()), null);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -178,7 +178,7 @@ public class RenderReportCmdTest extends TestCase {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(null);
-            cmd.registerRenderer(new HTMLRenderer(), null);
+            cmd.registerRenderer(new HTMLRenderer(new Properties()), null);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -223,6 +223,7 @@ public class RenderReportCmdTest extends TestCase {
     /**
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -242,6 +243,7 @@ public class RenderReportCmdTest extends TestCase {
     /**
      * @see junit.framework.TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         if (this.testProject != null) {
             if (this.testProject.exists() && this.testProject.isAccessible()) {

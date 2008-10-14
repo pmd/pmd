@@ -43,7 +43,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -73,8 +72,8 @@ public class RuleSetsManagerImplTest extends TestCase {
         IRuleSetsManager rsm = new RuleSetsManagerImpl();
         RuleSet ruleSet = rsm.valueOf(new String[] { "rulesets/basic.xml" });
 
-        Collection pmdRules = ruleSet.getPmdRuleSet().getRules();
-        Collection basicRules = new RuleSetFactory().createSingleRuleSet("rulesets/basic.xml").getRules();
+        Collection<Rule> pmdRules = ruleSet.getPmdRuleSet().getRules();
+        Collection<Rule> basicRules = new RuleSetFactory().createSingleRuleSet("rulesets/basic.xml").getRules();
 
         // dump("PMD Rules", pmdRules);
         // dump("Basic Rules", basicRules);
@@ -95,7 +94,7 @@ public class RuleSetsManagerImplTest extends TestCase {
             RuleSet ruleSet = rsm.valueOf(null);
             fail("Getting a rule set from a null array is not allowed");
         } catch (IllegalArgumentException e) {
-            // Sucess
+            // Success
         }
     }
 
@@ -141,7 +140,7 @@ public class RuleSetsManagerImplTest extends TestCase {
             ruleSet.setName("basic");
             ruleSet.setLanguage(RuleSet.LANGUAGE_JAVA);
 
-            List ruleSetsList = new ArrayList();
+            List<RuleSet> ruleSetsList = new ArrayList<RuleSet>();
             ruleSetsList.add(ruleSet);
 
             RuleSets ruleSets = new RuleSets();
@@ -170,10 +169,9 @@ public class RuleSetsManagerImplTest extends TestCase {
      * @param message
      * @param rules
      */
-    private void dump(String message, Collection rules) {
+    private void dump(String message, Collection<Rule> rules) {
         System.out.println("Dump " + message);
-        for (Iterator i = rules.iterator(); i.hasNext();) {
-            Rule rule = (Rule) i.next();
+        for (Rule rule : rules) {
             System.out.println(rule.getName());
         }
         System.out.println();

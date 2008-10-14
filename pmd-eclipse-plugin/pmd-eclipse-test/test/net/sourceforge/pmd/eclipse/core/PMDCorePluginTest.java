@@ -79,11 +79,11 @@ public class PMDCorePluginTest extends TestCase {
 
     /**
      * Test all the known PMD rulesets has been registered For this test to
-     * work, no fragement or only the test plugin fragment should be installed.
+     * work, no fragment or only the test plugin fragment should be installed.
      *
      */
     public void testStandardPMDRuleSetsRegistered() throws RuleSetNotFoundException {
-        Set registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -96,11 +96,11 @@ public class PMDCorePluginTest extends TestCase {
 
     /**
      * Test the default rulesets has been registered For this test to work, no
-     * fragement or only the test plugin fragment should be installed.
+     * Fragment or only the test plugin fragment should be installed.
      *
      */
     public void testDefaultPMDRuleSetsRegistered() throws RuleSetNotFoundException {
-        Set defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        Set<RuleSet> defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         assertFalse("No registered default rulesets!", defaultRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -116,14 +116,14 @@ public class PMDCorePluginTest extends TestCase {
      *
      * @param ruleSet
      * @param set
-     * @return true if ok
+     * @return true if OK
      */
-    private boolean ruleSetRegistered(RuleSet ruleSet, Set set) {
+    private boolean ruleSetRegistered(RuleSet ruleSet, Set<RuleSet> set) {
         boolean registered = false;
 
-        Iterator i = set.iterator();
+        Iterator<RuleSet> i = set.iterator();
         while (i.hasNext() && !registered) {
-            RuleSet registeredRuleSet = (RuleSet) i.next();
+            RuleSet registeredRuleSet = i.next();
             registered = registeredRuleSet.getName().equals(ruleSet.getName());
         }
 

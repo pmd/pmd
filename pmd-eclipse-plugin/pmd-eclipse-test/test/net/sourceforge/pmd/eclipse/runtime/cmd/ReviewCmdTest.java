@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -37,12 +37,12 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.TestCase;
 import name.herlin.command.CommandException;
 import name.herlin.command.UnsetInputPropertiesException;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
-import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -51,16 +51,16 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * This tests the PMD Processor command
- * 
+ *
  * @author Philippe Herlin
- *  
+ *
  */
 public class ReviewCmdTest extends TestCase {
     private IProject testProject;
 
     /**
      * Test case constructor
-     * 
+     *
      * @param name
      *            of the test case
      */
@@ -70,22 +70,22 @@ public class ReviewCmdTest extends TestCase {
 
     /**
      * Test the basic usage of the processor command
-     *  
+     *
      */
     public void testReviewCmdBasic() throws CommandException, CoreException {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(this.testProject);
         cmd.performExecute();
         cmd.join();
-        Map markers = cmd.getMarkers();
-        
+        Map<IFile, Set<MarkerInfo>> markers = cmd.getMarkers();
+
         // We do not test PMD, only a non-empty report is enough
         assertNotNull(markers);
         assertTrue("Report size = " + markers.size(), markers.size() > 0);
     }
 
     /**
-     * The ReviewCodeCmd must also work on a ResourceDelta 
+     * The ReviewCodeCmd must also work on a ResourceDelta
      * @throws CommandException
      */
     public void testReviewCmdDelta() throws CommandException {
@@ -93,7 +93,7 @@ public class ReviewCmdTest extends TestCase {
         // How to instantiate a ResourceDelta ?
         // Let's comment for now
     }
-    
+
     /**
      * Normally a null resource and a null resource delta is not acceptable.
      * @throws CommandException
@@ -111,16 +111,17 @@ public class ReviewCmdTest extends TestCase {
             ; // cool, success
         }
     }
-    
+
     /**
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         // 1. Create a Java project
         this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
-        assertTrue("A test project cannot be created; the tests cannot be performed.", (this.testProject != null)
+        assertTrue("A test project cannot be created; the tests cannot be performed.", this.testProject != null
                 && this.testProject.exists() && this.testProject.isAccessible());
 
         // 2. Create a test source file inside that project
@@ -134,6 +135,7 @@ public class ReviewCmdTest extends TestCase {
     /**
      * @see junit.framework.TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         try {
             if (this.testProject != null) {

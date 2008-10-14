@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -44,7 +44,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
 /**
- * 
+ *
  * @author Herlin
  *
  */
@@ -52,25 +52,25 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 public class TestManager {
     private static RuleSet basicRuleSet;
     private static Rule[] rules;
-    
+
     public static Rule getRule(int i) throws RuleSetNotFoundException {
         if (rules == null) {
             getRuleSet();
         }
-        
+
         return rules[i];
     }
-    
+
     public static RuleSet getRuleSet() throws RuleSetNotFoundException {
         if (basicRuleSet == null) {
             basicRuleSet = new RuleSetFactory().createSingleRuleSet("rulesets/basic.xml");
-            Iterator i = getRuleSet().getRules().iterator();
+            Iterator<Rule> i = getRuleSet().getRules().iterator();
             rules = new Rule[4];
             for (int j = 0; j < 4; j++) {
-                rules[j] = (Rule) i.next();
+                rules[j] = i.next();
             }
         }
-        
+
         return basicRuleSet;
     }
 

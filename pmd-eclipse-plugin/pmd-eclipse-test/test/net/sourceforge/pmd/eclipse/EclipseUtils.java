@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -57,15 +57,15 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 /**
- * This is a utility classe for Eclipse various operations
- * 
+ * This is a utility class for Eclipse various operations
+ *
  * @author Philippe Herlin
- * 
+ *
  */
 public class EclipseUtils {
 
     /**
-     * Because this class is a utility class, it cannot be instanciated
+     * Because this class is a utility class, it cannot be instantiated
      */
     private EclipseUtils() {
         super();
@@ -73,7 +73,7 @@ public class EclipseUtils {
 
     /**
      * Create a new java project
-     * 
+     *
      * @param projectName a project name
      * @return newProject a new project resource handle
      */
@@ -99,7 +99,7 @@ public class EclipseUtils {
 
     /**
      * Create a test source file
-     * 
+     *
      * @param project a project where to create that file; this project is
      *            expected to be empty
      */
@@ -123,7 +123,7 @@ public class EclipseUtils {
 
     /**
      * Get the content of a project resource.
-     * 
+     *
      * @param project a project reference
      * @param resourceName the name of the resource (@see IProject)
      * @return the resource content as an InputStream or null
@@ -131,12 +131,12 @@ public class EclipseUtils {
      */
     public static InputStream getResourceStream(IProject project, String resourceName) throws CoreException {
         IFile file = project.getFile(resourceName);
-        return (file != null) && file.exists() && file.isAccessible() ? file.getContents(true) : null;
+        return file != null && file.exists() && file.isAccessible() ? file.getContents(true) : null;
     }
 
     /**
      * Remove the PMD Nature from a project
-     * 
+     *
      * @param project a project to remove the PMD Nature
      * @param monitor a progress monitor
      * @return success true if the nature has been removed; false means the
@@ -170,24 +170,24 @@ public class EclipseUtils {
 
     /**
      * Test if 2 sets of rules are equals
-     * 
+     *
      * @param ruleSet1
      * @param ruleSet2
      * @return
      */
-    public static boolean assertRuleSetEquals(Collection ruleSet1, Collection ruleSet2) {
+    public static boolean assertRuleSetEquals(Collection<Rule> ruleSet1, Collection<Rule> ruleSet2) {
         boolean equals = true;
 
-        for (Iterator i = ruleSet1.iterator(); i.hasNext() && equals;) {
-            Rule rule = (Rule) i.next();
+        for (Iterator<Rule> i = ruleSet1.iterator(); i.hasNext() && equals;) {
+            Rule rule = i.next();
             if (!searchRule(rule, ruleSet2)) {
                 equals = false;
                 System.out.println("Rule " + rule.getName() + " is not in the second ruleset");
             }
         }
 
-        for (Iterator i = ruleSet2.iterator(); i.hasNext() && equals;) {
-            Rule rule = (Rule) i.next();
+        for (Iterator<Rule> i = ruleSet2.iterator(); i.hasNext() && equals;) {
+            Rule rule = i.next();
             if (!searchRule(rule, ruleSet1)) {
                 equals = false;
                 System.out.println("Rule " + rule.getName() + " is not in the first ruleset");
@@ -199,7 +199,7 @@ public class EclipseUtils {
 
     /**
      * Add a Java Nature to a project when creating
-     * 
+     *
      * @param project
      * @throws CoreException
      */
@@ -217,20 +217,20 @@ public class EclipseUtils {
 
     /**
      * Search a rule in a set of rules
-     * 
+     *
      * @param rule
      * @param set
      * @return
      */
-    private static boolean searchRule(Rule rule, Collection set) {
+    private static boolean searchRule(Rule rule, Collection<Rule> set) {
         boolean found = false;
 
-        for (Iterator i = set.iterator(); i.hasNext() && !found;) {
-            Rule r = (Rule) i.next();
+        for (Iterator<Rule> i = set.iterator(); i.hasNext() && !found;) {
+            Rule r = i.next();
             if (r.getClass().getName().equals(rule.getClass().getName())) {
                 found = r.getName().equals(rule.getName()) && r.getProperties().equals(rule.getProperties())
-                        && (r.getPriority() == rule.getPriority());
-                if ((!found) && (r.getName().equals(rule.getName()))) {
+                        && r.getPriority() == rule.getPriority();
+                if (!found && r.getName().equals(rule.getName())) {
                     System.out.println("Rules " + r.getName() + " are different because:");
                     System.out.println("Priorities are different: " + (r.getPriority() != rule.getPriority()));
                     System.out.println("Properties are different: " + !r.getProperties().equals(rule.getProperties()));
@@ -250,16 +250,15 @@ public class EclipseUtils {
 
     /**
      * Print rule details
-     * 
+     *
      * @param rule
      */
     private static void dumpRule(Rule rule) {
         System.out.println("Rule: " + rule.getName());
         System.out.println("Priority: " + rule.getPriority());
         Properties p = rule.getProperties();
-        Set keys = p.keySet();
-        for (Iterator i = keys.iterator(); i.hasNext();) {
-            String key = (String) i.next();
+        Set<String> keys = p.keySet();
+        for (String key : keys) {
             System.out.println("   " + key + " = " + p.getProperty(key));
         }
     }

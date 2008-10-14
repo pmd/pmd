@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -46,19 +46,19 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
  * Test the ruleset extension
- * 
+ *
  * @author Philippe Herlin
- * 
+ *
  */
 public class RuleSetsExtensionProcessorTest extends TestCase {
 
     /**
      * Tests the additional rulesets has been registered. For this test to work,
      * the test plugin fragment must be installed.
-     * 
+     *
      */
     public void testAdditionalRuleSetsRegistered() throws RuleSetNotFoundException {
-        Set registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -72,10 +72,10 @@ public class RuleSetsExtensionProcessorTest extends TestCase {
     /**
      * Tests the additional default rulesets has been registered. For this test
      * to work, the test plugin fragment must be installed.
-     * 
+     *
      */
     public void testAdditionalDefaultRuleSetsRegistered() throws RuleSetNotFoundException {
-        Set registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+        Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
         assertFalse("No registered default rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -88,17 +88,17 @@ public class RuleSetsExtensionProcessorTest extends TestCase {
 
     /**
      * test if a ruleset is registered
-     * 
+     *
      * @param ruleSet
      * @param set
-     * @return true if ok
+     * @return true if OK
      */
-    private boolean ruleSetRegistered(RuleSet ruleSet, Set set) {
+    private boolean ruleSetRegistered(RuleSet ruleSet, Set<RuleSet> set) {
         boolean registered = false;
 
-        Iterator i = set.iterator();
+        Iterator<RuleSet> i = set.iterator();
         while (i.hasNext() && !registered) {
-            RuleSet registeredRuleSet = (RuleSet) i.next();
+            RuleSet registeredRuleSet = i.next();
             registered = registeredRuleSet.getName().equals(ruleSet.getName());
         }
 

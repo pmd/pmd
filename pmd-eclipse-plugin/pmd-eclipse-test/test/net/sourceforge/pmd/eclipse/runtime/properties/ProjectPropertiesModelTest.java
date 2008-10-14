@@ -39,7 +39,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -48,6 +47,7 @@ import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -194,6 +194,7 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         // 2. add a rule to the plugin rule set
         Rule myRule = new AbstractJavaRule() {
+            @Override
             public String getName() {
                 return "MyRule";
             }
@@ -230,8 +231,8 @@ public class ProjectPropertiesModelTest extends TestCase {
         // 2. remove the first rule (keep its name for assertion)
         RuleSet newRuleSet = new RuleSet();
         newRuleSet.addRuleSet(projectRuleSet);
-        Iterator i = newRuleSet.getRules().iterator();
-        Rule removedRule = (Rule) i.next();
+        Iterator<Rule> i = newRuleSet.getRules().iterator();
+        Rule removedRule = i.next();
         i.remove();
 
         model.setProjectRuleSet(newRuleSet);
@@ -378,6 +379,7 @@ public class ProjectPropertiesModelTest extends TestCase {
     /**
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -389,15 +391,16 @@ public class ProjectPropertiesModelTest extends TestCase {
         // 2. Keep the plugin ruleset
         this.initialPluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
         this.initialPluginRuleSet.getRules().clear();
-        Set defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
-        for (Iterator i = defaultRuleSets.iterator(); i.hasNext();) {
-            this.initialPluginRuleSet.addRuleSet((RuleSet) i.next());
+        Set<RuleSet> defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+        for (RuleSet ruleSet : defaultRuleSets) {
+            this.initialPluginRuleSet.addRuleSet(ruleSet);
         }
     }
 
     /**
      * @see junit.framework.TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         // 1. Delete the test project
         if (this.testProject != null) {
@@ -415,9 +418,7 @@ public class ProjectPropertiesModelTest extends TestCase {
 
     private void dumpRuleSet(RuleSet ruleSet) {
         System.out.println("Dumping rule set:" + ruleSet.getName());
-        Iterator i = ruleSet.getRules().iterator();
-        while (i.hasNext()) {
-            Rule rule = (Rule) i.next();
+        for (Rule rule: ruleSet.getRules()) {
             System.out.println(rule.getName());
         }
         System.out.println();
