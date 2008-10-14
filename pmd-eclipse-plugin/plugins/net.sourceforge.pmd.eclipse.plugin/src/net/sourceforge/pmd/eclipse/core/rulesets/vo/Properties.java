@@ -37,7 +37,6 @@
 package net.sourceforge.pmd.eclipse.core.rulesets.vo;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -49,14 +48,14 @@ import java.util.Set;
  */
 
 public class Properties {
-    private Set propertiesSet = new HashSet();
+    private Set<Property> propertiesSet = new HashSet<Property>();
 
     /**
      * Getter for the propertiesSet.
      *
      * @return Returns the propertiesSet.
      */
-    public Set getProperties() {
+    public Set<Property> getProperties() {
         return this.propertiesSet;
     }
 
@@ -65,7 +64,7 @@ public class Properties {
      *
      * @param propertiesSet The propertiesSet to set.
      */
-    public void setProperties(Set properties) {
+    public void setProperties(Set<Property> properties) {
         if (properties == null) {
             throw new IllegalArgumentException("propertiesSet cannot be null");
         }
@@ -102,8 +101,8 @@ public class Properties {
     @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer("Properties");
-        for (final Iterator i = this.propertiesSet.iterator(); i.hasNext();) {
-            final Property p = (Property) i.next();
+        for (Property property : this.propertiesSet) {
+            final Property p = property;
             buffer.append(' ');
             buffer.append(p);
         }

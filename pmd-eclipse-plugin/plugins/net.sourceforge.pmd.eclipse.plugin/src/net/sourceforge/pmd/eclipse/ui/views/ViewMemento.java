@@ -265,7 +265,7 @@ public class ViewMemento {
      * @param key
      * @param valueList
      */
-    public void putList(String key, List<Object> valueList) {
+    public <T extends Object> void putList(String key, List<T> valueList) {
         final StringBuffer valueString = new StringBuffer();
         for (int k = 0; k < valueList.size(); k++) {
             if (k > 0) {

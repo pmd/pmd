@@ -149,23 +149,24 @@ public class FileRecord extends AbstractPMDRecord {
             final Iterator<IMarker> markerIterator = markers.iterator();
 
             // put all markers in a map with key = rulename
-            final Map allMarkerMap = new HashMap();
+            final Map<String, MarkerRecord> allMarkerMap = new HashMap<String, MarkerRecord>();
             while (markerIterator.hasNext()) {
                 final IMarker marker = markerIterator.next();
 
-                MarkerRecord markerRecord = (MarkerRecord) allMarkerMap.get(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME));
+                MarkerRecord markerRecord = allMarkerMap.get(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME));
                 if (markerRecord == null) {
+                    String ruleName = (String)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME);
                     markerRecord = new MarkerRecord(this,  // NOPMD by Sven on 13.11.06 11:57
-                            (String)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME),
+                            ruleName,
                             ((Integer)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY)).intValue());
                     markerRecord.addViolation(marker);
-                    allMarkerMap.put(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME), markerRecord);
+                    allMarkerMap.put(ruleName, markerRecord);
                 } else {
                     markerRecord.addViolation(marker);
                 }
             }
 
-            children = (AbstractPMDRecord[]) allMarkerMap.values().toArray(new MarkerRecord[allMarkerMap.size()]);
+            children = allMarkerMap.values().toArray(new MarkerRecord[allMarkerMap.size()]);
         } catch (CoreException e) {
             PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), e);
         }
@@ -346,19 +347,16 @@ public class FileRecord extends AbstractPMDRecord {
 
             // we need to change the Resource into a Java-File
             final IJavaElement element = JavaCore.create(this.resource);
-            final List methods = new ArrayList();
+            final List<Object> methods = new ArrayList<Object>();
 
             if (element instanceof ICompilationUnit) {
                 try {
                     // ITypes can be Package Declarations or other Java Stuff too
                     final IType[] types = ((ICompilationUnit) element).getTypes();
                     for (IType type : types) {
-                        if (type instanceof IType) {
-                            // only if it is an IType itself, it's a Class
-                            // from which we can get its Methods
-                            methods.addAll( Arrays.asList(
-                                    type.getMethods() ));
-                        }
+                        // only if it is an IType itself, it's a Class
+                        // from which we can get its Methods
+                        methods.addAll( Arrays.asList(type.getMethods() ));
                     }
                 } catch (JavaModelException jme) {
                     PMDPlugin.getDefault().logError(

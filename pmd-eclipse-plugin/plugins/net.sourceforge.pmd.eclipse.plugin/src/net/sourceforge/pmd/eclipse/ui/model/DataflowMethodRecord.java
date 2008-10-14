@@ -147,7 +147,7 @@ public class DataflowMethodRecord {
      * @return an Array of Attributes
      */
     private Object[] getMarkerAttributes(IMarker marker) {
-        final List values = new ArrayList();
+        final List<Object> values = new ArrayList<Object>();
 
         // add Message, default ""
         values.add(marker.getAttribute(IMarker.MESSAGE, ""));
