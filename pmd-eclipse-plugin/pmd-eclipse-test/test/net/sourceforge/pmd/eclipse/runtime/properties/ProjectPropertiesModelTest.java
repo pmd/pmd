@@ -144,7 +144,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         RuleSet projectRuleSet = model.getProjectRuleSet();
         assertNotNull("Project ruleset has not been set", projectRuleSet);
         assertTrue("The project ruleset is not the basic ruleset", EclipseUtils.assertRuleSetEquals(basicRuleSet.getRules(),
-                projectRuleSet.getRules()));
+                projectRuleSet.getRules(), System.out));
     }
 
     /**

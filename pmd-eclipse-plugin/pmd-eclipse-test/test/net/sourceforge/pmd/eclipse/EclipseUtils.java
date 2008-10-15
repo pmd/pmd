@@ -37,11 +37,14 @@ package net.sourceforge.pmd.eclipse;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Properties;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
@@ -60,7 +63,7 @@ import org.eclipse.jdt.core.JavaModelException;
  * This is a utility class for Eclipse various operations
  *
  * @author Philippe Herlin
- *
+ * @author Brian Remedios
  */
 public class EclipseUtils {
 
@@ -175,12 +178,12 @@ public class EclipseUtils {
      * @param ruleSet2
      * @return
      */
-    public static boolean assertRuleSetEquals(Collection<Rule> ruleSet1, Collection<Rule> ruleSet2) {
+    public static boolean assertRuleSetEquals(Collection<Rule> ruleSet1, Collection<Rule> ruleSet2, PrintStream out) {
         boolean equals = true;
 
         for (Iterator<Rule> i = ruleSet1.iterator(); i.hasNext() && equals;) {
             Rule rule = i.next();
-            if (!searchRule(rule, ruleSet2)) {
+            if (!searchRule(rule, ruleSet2, out)) {
                 equals = false;
                 System.out.println("Rule " + rule.getName() + " is not in the second ruleset");
             }
@@ -188,7 +191,7 @@ public class EclipseUtils {
 
         for (Iterator<Rule> i = ruleSet2.iterator(); i.hasNext() && equals;) {
             Rule rule = i.next();
-            if (!searchRule(rule, ruleSet1)) {
+            if (!searchRule(rule, ruleSet1, out)) {
                 equals = false;
                 System.out.println("Rule " + rule.getName() + " is not in the first ruleset");
             }
@@ -222,25 +225,24 @@ public class EclipseUtils {
      * @param set
      * @return
      */
-    private static boolean searchRule(Rule rule, Collection<Rule> set) {
+    private static boolean searchRule(Rule rule, Collection<Rule> set, PrintStream out) {
         boolean found = false;
 
         for (Iterator<Rule> i = set.iterator(); i.hasNext() && !found;) {
             Rule r = i.next();
             if (r.getClass().getName().equals(rule.getClass().getName())) {
-                found = r.getName().equals(rule.getName()) && r.getProperties().equals(rule.getProperties())
-                        && r.getPriority() == rule.getPriority();
+                found = r.getName().equals(rule.getName()) && propertiesMatchFor(r, rule) && r.getPriority() == rule.getPriority();
                 if (!found && r.getName().equals(rule.getName())) {
-                    System.out.println("Rules " + r.getName() + " are different because:");
-                    System.out.println("Priorities are different: " + (r.getPriority() != rule.getPriority()));
-                    System.out.println("Properties are different: " + !r.getProperties().equals(rule.getProperties()));
-                    System.out.println();
-                    System.out.println("Rule to search");
-                    dumpRule(rule);
-                    System.out.println();
-                    System.out.println("Rule from set");
-                    dumpRule(r);
-                    System.out.println();
+                    out.println("Rules " + r.getName() + " are different because:");
+                    out.println("Priorities are different: " + (r.getPriority() != rule.getPriority()));
+                    out.println("Properties are different: " + !propertiesMatchFor(r, rule));
+                    out.println();
+                    out.println("Rule to search");
+                    dumpRule(rule, out);
+                    out.println();
+                    out.println("Rule from set");
+                    dumpRule(r, out);
+                    out.println();
                 }
             }
         }
@@ -248,18 +250,23 @@ public class EclipseUtils {
         return found;
     }
 
+    private static boolean propertiesMatchFor(Rule ruleA, Rule ruleB) {
+    	
+    	return ruleA.getPropertiesByPropertyDescriptor().equals(ruleB.getPropertiesByPropertyDescriptor());
+    }
+    
     /**
      * Print rule details
      *
      * @param rule
      */
-    private static void dumpRule(Rule rule) {
-        System.out.println("Rule: " + rule.getName());
-        System.out.println("Priority: " + rule.getPriority());
-        Properties p = rule.getProperties();
-        Set<String> keys = p.keySet();
-        for (String key : keys) {
-            System.out.println("   " + key + " = " + p.getProperty(key));
+    private static void dumpRule(Rule rule, PrintStream out) {
+        out.println("Rule: " + rule.getName());
+        out.println("Priority: " + rule.getPriority());
+        Map<PropertyDescriptor<?>, Object> properties= rule.getPropertiesByPropertyDescriptor();
+        Set<Entry<PropertyDescriptor<?>, Object>> keys = properties.entrySet();
+        for (Entry<PropertyDescriptor<?>, Object> entry : keys) {
+            out.println("   " + entry.getKey().name() + " = " + entry.getValue());
         }
     }
 
