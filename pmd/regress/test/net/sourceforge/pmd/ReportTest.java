@@ -4,6 +4,7 @@
 package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -75,19 +76,19 @@ public class ReportTest extends RuleTst implements ReportListener {
     public void testBasic() throws Throwable {
         Report r = new Report();
         runTestFromString(TEST1, new FooRule(), r);
-        assertTrue(!r.isEmpty());
+        assertFalse(r.isEmpty());
     }
 
     @Test
     public void testMetric0() {
         Report r = new Report();
-        assertTrue("Default report shouldn't contain metrics", !r.hasMetrics());
+        assertFalse("Default report shouldn't contain metrics", r.hasMetrics());
     }
 
     @Test
     public void testMetric1() {
         Report r = new Report();
-        assertTrue("Default report shouldn't contain metrics", !r.hasMetrics());
+        assertFalse("Default report shouldn't contain metrics", r.hasMetrics());
 
         r.addMetric(new Metric("m1", 0, 0.0, 1.0, 2.0, 3.0, 4.0));
         assertTrue("Expected metrics weren't there", r.hasMetrics());

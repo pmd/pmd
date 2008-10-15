@@ -1,5 +1,6 @@
 package test.net.sourceforge.pmd.ast;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -21,7 +22,7 @@ public class ASTLiteralTest extends ParserTst {
     @Test
     public void testIsNotStringLiteral() throws Throwable {
         Set literals = getNodes(ASTLiteral.class, TEST2);
-        assertTrue(!((ASTLiteral)(literals.iterator().next())).isStringLiteral());
+        assertFalse(((ASTLiteral)(literals.iterator().next())).isStringLiteral());
     }
 
     @Test

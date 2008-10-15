@@ -1,5 +1,6 @@
 package test.net.sourceforge.pmd.ast;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
@@ -15,7 +16,7 @@ public class ASTAssignmentOperatorTest extends ParserTst {
     @Test
     public void testSimpleAssignmentRecognized() throws Throwable {
         Set ops = super.getNodes(ASTAssignmentOperator.class, TEST1);
-        assertTrue(!((ASTAssignmentOperator) (ops.iterator().next())).isCompound());
+        assertFalse(((ASTAssignmentOperator) (ops.iterator().next())).isCompound());
     }
 
     @Test
