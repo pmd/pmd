@@ -106,6 +106,13 @@
 				<include name="**/*.java" />
 			</fileset>
 		</pmd>
+		<pmd rulesetfiles="${dir.rulesets}/internal/regress-dogfood.xml" shortFilenames="true" minimumpriority="5" failonruleviolation="true" failonerror="true">
+			<version>java 1.5</version>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${dir.regress}">
+				<include name="**/*.java" />
+			</fileset>
+		</pmd>
 	</target>
 
 	<target name="reports" description="Runs various reports on PMD" depends="checkstyle, pmd-dogfood-goal, clover"/>
@@ -128,6 +135,13 @@
 			<version>java 1.5</version>
 			<formatter type="xml" toFile="${dir.reports}/pmd-dogfood-goal.xml"/>
 			<fileset dir="${dir.src}">
+				<include name="**/*.java" />
+			</fileset>
+		</pmd>
+		<pmd rulesetfiles="${dir.rulesets}/internal/regress-dogfood-goal.xml" shortFilenames="false" minimumpriority="5" failonruleviolation="false" failonerror="true">
+			<version>java 1.5</version>
+			<formatter type="xml" toFile="${dir.reports}/pmd-regress-dogfood-goal.xml"/>
+			<fileset dir="${dir.regress}">
 				<include name="**/*.java" />
 			</fileset>
 		</pmd>
