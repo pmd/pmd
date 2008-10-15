@@ -1,5 +1,6 @@
 package test.net.sourceforge.pmd.properties;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
@@ -47,7 +48,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 					MethodProperty.CLASS_METHOD_DELIMITER,
 					MethodProperty.METHOD_ARG_DELIMITER
 					);
-			assertTrue("Unable to identify method: " + methodSignatures[i], method != null);
+			assertNotNull("Unable to identify method: " + methodSignatures[i], method);
 			}
 	}
 	
@@ -62,7 +63,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 					MethodProperty.CLASS_METHOD_DELIMITER,
 					MethodProperty.METHOD_ARG_DELIMITER
 					);
-			assertTrue("Unable to identify method: " + methodSignatures[i], methods[i] != null);
+			assertNotNull("Unable to identify method: " + methodSignatures[i], methods[i]);
 			}
 				
 		String translatedMethod = null;

@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -174,8 +175,8 @@ public class AbstractRuleTest {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         r2.setMessage("another message");
-        assertTrue("Rules with different messages are still equal", r1.equals(r2));
-        assertTrue("Rules that are equal must have the same hashcode", r1.hashCode() == r2.hashCode());
+        assertEquals("Rules with different messages are still equal", r1, r2);
+        assertSame("Rules that are equal must have the same hashcode", r1.hashCode(), r2.hashCode());
     }
 
 

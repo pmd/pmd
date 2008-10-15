@@ -4,6 +4,7 @@
 package test.net.sourceforge.pmd.lang.java.rule.codesize;
  
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -34,7 +35,7 @@ import java.util.Iterator;
          runTestFromString(tests[0].getCode(), rule, report);
          Iterator i = report.iterator();
          RuleViolation rv = (RuleViolation) i.next();
-         assertTrue(rv.getDescription().indexOf("Highest = 1") != -1);
+         assertNotSame(rv.getDescription().indexOf("Highest = 1"), -1);
      }
  
      @Test
@@ -44,7 +45,7 @@ import java.util.Iterator;
          runTestFromString(tests[1].getCode(), rule, report);
          Iterator i = report.iterator();
          RuleViolation rv = (RuleViolation) i.next();
-         assertTrue(rv.getDescription().indexOf("Highest = 11") != -1);
+         assertNotSame(rv.getDescription().indexOf("Highest = 11"), -1);
      }
  
      @Test
@@ -54,7 +55,7 @@ import java.util.Iterator;
          runTestFromString(tests[2].getCode(), rule, report);
          Iterator i = report.iterator();
          RuleViolation rv = (RuleViolation) i.next();
-         assertTrue(rv.getDescription().indexOf("Highest = 1") != -1);
+         assertNotSame(rv.getDescription().indexOf("Highest = 1"), -1);
      }
  
      @Test

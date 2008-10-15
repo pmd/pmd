@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -54,12 +55,12 @@ public class RuleContextTest {
 		boolean set = ctx1.setAttribute("attribute", obj1);
 		assertTrue("attribute should have been set", set);
 		assertNotNull("attribute should not be null", ctx1.getAttribute("attribute"));
-		assertTrue("attribute should be expected instance", ctx1.getAttribute("attribute") == obj1);
+		assertSame("attribute should be expected instance", ctx1.getAttribute("attribute"), obj1);
 		set = ctx1.setAttribute("attribute", obj2);
 		assertFalse("attribute should not have been set", set);
-		assertTrue("attribute should be expected instance", ctx1.getAttribute("attribute") == obj1);
+		assertSame("attribute should be expected instance", ctx1.getAttribute("attribute"), obj1);
 		Object value = ctx1.removeAttribute("attribute");
-		assertTrue("attribute value should be expected instance", value == obj1);
+		assertSame("attribute value should be expected instance", value, obj1);
 		assertNull("attribute should be null", ctx1.getAttribute("attribute"));
 	}
 
@@ -76,10 +77,10 @@ public class RuleContextTest {
 		assertNotNull("attribute should not be null", ctx1.getAttribute("attribute2"));
 		assertNotNull("attribute should not be null", ctx2.getAttribute("attribute1"));
 		assertNotNull("attribute should not be null", ctx2.getAttribute("attribute2"));
-		assertTrue("attribute should be expected instance", ctx1.getAttribute("attribute1") == obj1);
-		assertTrue("attribute should be expected instance", ctx1.getAttribute("attribute2") == obj2);
-		assertTrue("attribute should be expected instance", ctx2.getAttribute("attribute1") == obj1);
-		assertTrue("attribute should be expected instance", ctx2.getAttribute("attribute2") == obj2);
+		assertSame("attribute should be expected instance", ctx1.getAttribute("attribute1"), obj1);
+		assertSame("attribute should be expected instance", ctx1.getAttribute("attribute2"), obj2);
+		assertSame("attribute should be expected instance", ctx2.getAttribute("attribute1"), obj1);
+		assertSame("attribute should be expected instance", ctx2.getAttribute("attribute2"), obj2);
 
 		ctx1.removeAttribute("attribute1");
 		assertNull("attribute should be null", ctx1.getAttribute("attribute1"));

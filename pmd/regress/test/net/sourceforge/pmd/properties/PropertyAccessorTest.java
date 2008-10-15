@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -32,7 +33,7 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
     @Test
     public void testIntegers() {
     	rule.setProperty(NonRuleWithAllPropertyTypes.singleInt, NumericConstants.ZERO);
-        assertTrue(rule.getProperty(NonRuleWithAllPropertyTypes.singleInt) == 0);
+        assertSame(rule.getProperty(NonRuleWithAllPropertyTypes.singleInt), 0);
         
     	rule.setProperty(NonRuleWithAllPropertyTypes.multiInt, new Integer[] {NumericConstants.ZERO, NumericConstants.ONE});
         assertTrue(Arrays.equals(rule.getProperty(NonRuleWithAllPropertyTypes.multiInt), new Integer[]{0, 1}));

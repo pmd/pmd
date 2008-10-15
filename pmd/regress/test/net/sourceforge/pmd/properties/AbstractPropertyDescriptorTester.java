@@ -1,5 +1,7 @@
 package test.net.sourceforge.pmd.properties;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import junit.framework.Assert;
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -62,7 +64,7 @@ public abstract class AbstractPropertyDescriptorTester {
 	public void testConstructors() {
 		
 		PropertyDescriptor desc = createProperty(false);
-		assertTrue(desc != null);
+		assertNotNull(desc);
 		
 		try {
 			createBadProperty(false);
@@ -107,12 +109,12 @@ public abstract class AbstractPropertyDescriptorTester {
 		Object testValue = createValue(1);
 		PropertyDescriptor pmdProp = createProperty(false);		// plain vanilla property & valid test value
 		String errorMsg = pmdProp.errorFor(testValue);
-		assertTrue(errorMsg, errorMsg == null);			
+		assertNull(errorMsg, errorMsg);			
 		
 		testValue = createValue(multiValueCount);				// multi-value property, all valid test values
 		pmdProp = createProperty(true);
 		errorMsg = pmdProp.errorFor(testValue);
-		assertTrue(errorMsg, errorMsg == null);
+		assertNull(errorMsg, errorMsg);
 		
     }
     
@@ -139,7 +141,7 @@ public abstract class AbstractPropertyDescriptorTester {
 		
 		PropertyDescriptor pmdProp = createProperty(false);
 
-		assertTrue(pmdProp.type() != null);
+		assertNotNull(pmdProp.type());
 	}
 	
     public static boolean randomBool() {

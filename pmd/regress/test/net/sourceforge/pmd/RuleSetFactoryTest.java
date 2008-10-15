@@ -6,6 +6,7 @@ package test.net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -130,7 +131,7 @@ public class RuleSetFactoryTest {
     	assertTrue(r.getProperty((PropertyDescriptor<Boolean>)r.getPropertyDescriptor("fooBoolean")));
     	assertEquals(1.0, r.getProperty((PropertyDescriptor<Double>)r.getPropertyDescriptor("fooDouble")), 0.05);
     	assertNull(r.getPropertyDescriptor("BuggleFish"));
-    	assertTrue(r.getDescription().indexOf("testdesc2") != -1);
+    	assertNotSame(r.getDescription().indexOf("testdesc2"), -1);
     }
 
     @Test
@@ -139,7 +140,7 @@ public class RuleSetFactoryTest {
 	Rule r = loadFirstRule(XPATH);
 	PropertyDescriptor<String> xpathProperty = (PropertyDescriptor<String>)r.getPropertyDescriptor("xpath");
 	assertNotNull("xpath property descriptor", xpathProperty);
-	assertTrue(r.getProperty(xpathProperty).indexOf(" //Block ") != -1);
+	assertNotSame(r.getProperty(xpathProperty).indexOf(" //Block "), -1);
     }
 
     @Test
