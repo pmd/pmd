@@ -7,8 +7,9 @@ The Braces Ruleset contains a collection of braces rules.
   </description>
 
    <rule name="IfStmtsMustUseBraces"
+         language="java"
          message="Avoid using if statements without curly braces"
-         class="net.sourceforge.pmd.rules.XPathRule">
+         class="net.sourceforge.pmd.lang.rule.XPathRule">
      <description>
      Avoid using if statements without using curly braces
      </description>
@@ -36,8 +37,9 @@ The Braces Ruleset contains a collection of braces rules.
      </rule>
 
     <rule name="WhileLoopsMustUseBraces"
+          language="java"
           message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
       Avoid using 'while' statements without using curly braces
       </description>
@@ -63,8 +65,9 @@ The Braces Ruleset contains a collection of braces rules.
     </rule>
 
       <rule name="IfElseStmtsMustUseBraces"
+            language="java"
            message="Avoid using 'if...else' statements without curly braces"
-           class="net.sourceforge.pmd.rules.XPathRule">
+           class="net.sourceforge.pmd.lang.rule.XPathRule">
        <description>
        Avoid using if..else statements without using curly braces
        </description>
@@ -100,8 +103,9 @@ The Braces Ruleset contains a collection of braces rules.
      </rule>
 
      <rule name="ForLoopsMustUseBraces"
+           language="java"
            message="Avoid using 'for' statements without curly braces"
-           class="net.sourceforge.pmd.rules.XPathRule">
+           class="net.sourceforge.pmd.lang.rule.XPathRule">
        <description>
        Avoid using 'for' statements without using curly braces
        </description>
