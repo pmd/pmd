@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.CommandLineOptions;
@@ -78,11 +79,11 @@ public class CommandLineOptionsTest {
     @Test
     public void testEncoding() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
-        assertTrue(opt.getConfiguration().getSourceEncoding().equals(new InputStreamReader(System.in).getEncoding()));
+        assertEquals(Charset.forName(opt.getConfiguration().getSourceEncoding()), Charset.forName(new InputStreamReader(System.in).getEncoding()));
         opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-encoding", "UTF-8"});
-        assertTrue(opt.getConfiguration().getSourceEncoding().equals("UTF-8"));
+        assertEquals(opt.getConfiguration().getSourceEncoding(), "UTF-8");
         opt = new CommandLineOptions(new String[]{"-encoding", "UTF-8", "file", "format", "ruleset"});
-        assertTrue(opt.getConfiguration().getSourceEncoding().equals("UTF-8"));
+        assertEquals(opt.getConfiguration().getSourceEncoding(), "UTF-8");
     }
 
     @Test
