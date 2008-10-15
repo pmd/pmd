@@ -39,15 +39,15 @@ public class PMDTaskTest extends BuildFileTest {
     @Test
     public void testNestedRuleset() {
         executeTarget("testNestedRuleset");
-        assertOutputContaining("Position literals first in String comparisons");
-        assertOutputContaining("Too many fields");
+        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Deeply nested if");
     }
 
     @Test
     public void testFormatterWithProperties() {
         executeTarget("testFormatterWithProperties");
-        assertOutputContaining("Position literals first in String comparisons");
-        assertOutputContaining("Too many fields");
+        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Deeply nested if");
         assertOutputContaining("link_prefix");
         assertOutputContaining("line_prefix");
     }
@@ -55,36 +55,36 @@ public class PMDTaskTest extends BuildFileTest {
     @Test
     public void testAbstractNames() {
         executeTarget("testAbstractNames");
-        assertOutputContaining("Position literals first in String comparisons");
-        assertOutputContaining("Too many fields");
+        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Deeply nested if");
     }
 
     @Test
     public void testAbstractNamesInNestedRuleset() {
         executeTarget("testAbstractNamesInNestedRuleset");
-        assertOutputContaining("Position literals first in String comparisons");
-        assertOutputContaining("Too many fields");
+        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Deeply nested if");
     }
 
     @Test
     public void testCommaInRulesetfiles() {
         executeTarget("testCommaInRulesetfiles");
-        assertOutputContaining("Position literals first in String comparisons");
-        assertOutputContaining("Too many fields");
+        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Deeply nested if");
     }
 
     @Test
     public void testRelativeRulesets() {
         executeTarget("testRelativeRulesets");
-        assertOutputContaining("Position literals first in String comparisons");
-        assertOutputContaining("Too many fields");
+        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Deeply nested if");
     }
 
     @Test
     public void testRelativeRulesetsInRulesetfiles() {
         executeTarget("testRelativeRulesetsInRulesetfiles");
-        assertOutputContaining("Position literals first in String comparisons");
-        assertOutputContaining("Too many fields");
+        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Deeply nested if");
     }
 
     @Test
@@ -93,8 +93,8 @@ public class PMDTaskTest extends BuildFileTest {
     }
 
     @Test
-    public void testInvalidJDK() {
-        expectBuildExceptionContaining("testInvalidJDK", "Fail requested.", "The targetjdk attribute, if used, must be one of ");
+    public void testInvalidLanguageVersion() {
+        expectBuildExceptionContaining("testInvalidLanguageVersion", "Fail requested.", "The <version> element, if used, must be one of 'java 1.3', 'java 1.4', 'java 1.5', 'java 1.6', 'java 1.7'.");
     }
 
     public static junit.framework.Test suite() {

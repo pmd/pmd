@@ -26,7 +26,7 @@ public class Formatter {
     private String type;
     private boolean toConsole;
     private boolean showSuppressed;
-    private List<Parameter> parameters = new ArrayList<Parameter>();
+    private final List<Parameter> parameters = new ArrayList<Parameter>();
 
     public void setShowSuppressed(boolean value) {
         this.showSuppressed = value;
@@ -68,7 +68,7 @@ public class Formatter {
             renderer.setWriter(writer);
             renderer.start();
         } catch (IOException ioe) {
-            throw new BuildException(ioe.getMessage());
+            throw new BuildException(ioe.getMessage(), ioe);
         }
     }
 
@@ -82,7 +82,7 @@ public class Formatter {
                 writer.close();
             }
         } catch (IOException ioe) {
-            throw new BuildException(ioe.getMessage());
+            throw new BuildException(ioe.getMessage(), ioe);
         }
     }
 

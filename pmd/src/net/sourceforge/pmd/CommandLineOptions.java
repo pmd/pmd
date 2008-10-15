@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd;
 
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -14,105 +14,88 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
+/**
+ * Command line options parser class.  Produces a Configuration instance to
+ * use with PMD processing.
+ */
 public class CommandLineOptions {
 
-    private final static int LANG_NAME_INDEX = 1;
-    private final static int LANG_VERSION_INDEX = 2;
-    
-    
-    private boolean debugEnabled;
-    private boolean stressTestEnabled;
-    private boolean benchmark;
-    private boolean shortNamesEnabled;
+    private final static int LANGUAGE_NAME_INDEX = 1;
+    private final static int LANGUAGE_VERSION_INDEX = 2;
 
-    private int cpus = Runtime.getRuntime().availableProcessors(); //DONE
-
-    private String suppressMarker = PMD.SUPPRESS_MARKER; // DONE
-    private String inputPath;
-    private String reportFormat;
-    private String reportFile;
-    private boolean showSuppressedViolations = false;
-    private Properties properties = new Properties();
-    private String ruleSets;
-    private String encoding = new InputStreamReader(System.in).getEncoding();
-    private String auxClasspath;
+    private final Configuration configuration = new Configuration();
 
     private String[] args;
     private int optionEndIndex;
 
-    private RulePriority minPriority = RulePriority.LOW;
-
-    private Language language;
-    private LanguageVersion version;
-
     public CommandLineOptions(String[] args) {
 
-        this.args = args;
-        
-        if (args == null || args.length < 3) {
-            throw new IllegalArgumentException(usage());
-        }
-        int mandatoryIndex = 0;
-        int optionStartIndex = 3;
-        optionEndIndex = args.length;
-        if (args[0].charAt(0) == '-') {
-            mandatoryIndex = args.length - 3;
-            optionStartIndex = 0;
-            optionEndIndex = args.length - 3;
-        }
+	this.args = args;
 
-        inputPath = args[mandatoryIndex];
-        reportFormat = args[mandatoryIndex+1];
-        if (StringUtil.isEmpty(reportFormat)) {
+	if (args == null || args.length < 3) {
+	    throw new IllegalArgumentException(usage());
+	}
+	int mandatoryIndex = 0;
+	int optionStartIndex = 3;
+	optionEndIndex = args.length;
+	if (args[0].charAt(0) == '-') {
+	    mandatoryIndex = args.length - 3;
+	    optionStartIndex = 0;
+	    optionEndIndex = args.length - 3;
+	}
+
+	configuration.setInputPaths(args[mandatoryIndex]);
+	configuration.setReportFormat(args[mandatoryIndex + 1]);
+	if (StringUtil.isEmpty(configuration.getReportFormat())) {
 	    throw new IllegalArgumentException("Report renderer is required.");
 	}
-        ruleSets = new SimpleRuleSetNameMapper(args[mandatoryIndex+2]).getRuleSets();
+	configuration.setRuleSets(new SimpleRuleSetNameMapper(args[mandatoryIndex + 2]).getRuleSets());
 
-        for (int optionsIndex = optionStartIndex; optionsIndex < optionEndIndex; optionsIndex++) {
-            String opt = args[optionsIndex];
-            if ("-debug".equals(opt)) {
-                this.debugEnabled = true;
-            } else if ("-stress".equals(opt)) {
-                this.stressTestEnabled = true;
-            } else if ("-shortnames".equals(opt)) {
-                this.shortNamesEnabled = true;
-            } else if ("-encoding".equals(opt)) {
-        	checkOption(opt, optionsIndex, 1);
-                this.encoding = args[++optionsIndex];
-            } else if ("-cpus".equals(opt)) {
-        	checkOption(opt, optionsIndex, 1);
-        	this.cpus = parseInt(opt, args[++optionsIndex]);
-            } else if ("-suppressmarker".equals(opt)) {
-        	checkOption(opt, optionsIndex, 1);
-                this.suppressMarker = args[++optionsIndex];
-            } else if ("-lang".equals(opt)) { //We are waiting for 2 argument after this one
-        	this.extractLanguageSpecification(optionsIndex);        		
-        	optionsIndex += 2;
-            } else if ("-minimumpriority".equals(opt)) {
-        	checkOption(opt, optionsIndex, 1);
-        	this.minPriority = parseMinimunPriority(args[++optionsIndex]);
-            } else if ("-showsuppressed".equals(opt)) {
-        	this.showSuppressedViolations = true;
-            } else if ("-property".equals(opt)) {
-        	checkOption(opt, optionsIndex, 2);
-        	this.properties.put(args[++optionsIndex], args[++optionsIndex]);
-            } else if ("-reportfile".equals(opt)) {
-        	checkOption(opt, optionsIndex, 1);
-                this.reportFile = args[++optionsIndex];
-            } else if ("-benchmark".equals(opt)) {
-                this.benchmark = true;
-            } else if ("-auxclasspath".equals(opt)) {
-        	checkOption(opt, optionsIndex, 1);
-        	this.auxClasspath = args[++optionsIndex];
-            }
-        }
-        // If no language has been specified, we fall back to default value
-        if ( language == null )	{
-            language = Language.getDefaultLanguage();
-        }
-        if ( version == null )	{
-            version = LanguageVersion.getDefaultVersion();
-        }
+	for (int optionsIndex = optionStartIndex; optionsIndex < optionEndIndex; optionsIndex++) {
+	    String opt = args[optionsIndex];
+	    if ("-debug".equals(opt)) {
+		configuration.setDebug(true);
+	    } else if ("-stress".equals(opt)) {
+		configuration.setStressTest(true);
+	    } else if ("-shortnames".equals(opt)) {
+		configuration.setReportShortNames(true);
+	    } else if ("-encoding".equals(opt)) {
+		checkOption(opt, optionsIndex, 1);
+		configuration.setSourceEncoding(args[++optionsIndex]);
+	    } else if ("-threads".equals(opt)) {
+		checkOption(opt, optionsIndex, 1);
+		configuration.setThreads(parseInt(opt, args[++optionsIndex]));
+	    } else if ("-suppressmarker".equals(opt)) {
+		checkOption(opt, optionsIndex, 1);
+		configuration.setSuppressMarker(args[++optionsIndex]);
+	    } else if ("-version".equals(opt)) {
+		checkOption(opt, optionsIndex, 2);
+		configuration.setDefaultLanguageVersion(parseLanguageVersion(optionsIndex));
+		optionsIndex += 2;
+	    } else if ("-minimumpriority".equals(opt)) {
+		checkOption(opt, optionsIndex, 1);
+		configuration.setMinimumPriority(parseMinimunPriority(args[++optionsIndex]));
+	    } else if ("-showsuppressed".equals(opt)) {
+		configuration.setShowSuppressedViolations(true);
+	    } else if ("-property".equals(opt)) {
+		checkOption(opt, optionsIndex, 2);
+		configuration.getReportProperties().put(args[++optionsIndex], args[++optionsIndex]);
+	    } else if ("-reportfile".equals(opt)) {
+		checkOption(opt, optionsIndex, 1);
+		configuration.setReportFile(args[++optionsIndex]);
+	    } else if ("-benchmark".equals(opt)) {
+		configuration.setBenchmark(true);
+	    } else if ("-auxclasspath".equals(opt)) {
+		checkOption(opt, optionsIndex, 1);
+		try {
+		    configuration.prependClasspath(args[++optionsIndex]);
+		} catch (IOException e) {
+		    throw new IllegalArgumentException("Invalid auxiliary classpath: " + e.getMessage(), e);
+		}
+	    } else {
+		throw new IllegalArgumentException("Unexpected command line argument: " + opt);
+	    }
+	}
     }
 
     private void checkOption(String opt, int index, int count) {
@@ -140,7 +123,7 @@ public class CommandLineOptions {
 		    + " and " + RulePriority.LOW + ", " + priority + " received", e);
 	}
     }
-    
+
     private int parseInt(String opt, String s) {
 	try {
 	    return Integer.parseInt(s);
@@ -149,127 +132,39 @@ public class CommandLineOptions {
 	}
     }
 
-    private void extractLanguageSpecification(int optionsIndex) {
-	String languageSpecified = args[optionsIndex + LANG_NAME_INDEX];
-	this.language = Language.findByTerseName(languageSpecified);
-	if ( language == null ) {
-	    throw new IllegalArgumentException("language '" + languageSpecified + "' is not recognized. Available language are : " + Language.commaSeparatedTerseNames(Language.findWithRuleSupport()));
-	}
-	else {
-	    if ( args.length > (optionsIndex + LANG_VERSION_INDEX) ) {
-        	    String specifiedVersion = args[optionsIndex + LANG_VERSION_INDEX];
-        	    List<LanguageVersion> versions = LanguageVersion.findVersionsForLanguageTerseName(language.getTerseName());
-        	    // If there is versions for this language, it should be a valid one...
-        	    if ( ! versions.isEmpty() ) {
-        		for (LanguageVersion version : versions ) {
-                	    	if ( specifiedVersion.equals( version.getVersion() ) ) {
-                	    	    this.version = version;
-                	    	}
-            	    	}
-            	    	if ( version == null ) {
-            	    	    throw new IllegalArgumentException("version '" + languageSpecified + "' is not availaible for " + language.getName() + "\nAvailable version are :" + LanguageVersion.commaSeparatedTerseNames(versions) );        		
-                	}
-        	    }
-        	    // ... otherwise, version stays 'null'
+    private LanguageVersion parseLanguageVersion(int optionsIndex) {
+	String languageName = args[optionsIndex + LANGUAGE_NAME_INDEX];
+	Language language = Language.findByTerseName(languageName);
+	if (language == null) {
+	    throw new IllegalArgumentException("Unknown Language '" + languageName + "'.  Available Languages are : "
+		    + Language.commaSeparatedTerseNames(Language.findWithRuleSupport()));
+	} else {
+	    if (args.length > (optionsIndex + LANGUAGE_VERSION_INDEX)) {
+		String version = args[optionsIndex + LANGUAGE_VERSION_INDEX];
+		List<LanguageVersion> languageVersions = LanguageVersion.findVersionsForLanguageTerseName(language
+			.getTerseName());
+		// If there is versions for this language, it should be a valid one...
+		if (!languageVersions.isEmpty()) {
+		    for (LanguageVersion languageVersion : languageVersions) {
+			if (version.equals(languageVersion.getVersion())) {
+			    return languageVersion;
+			}
+		    }
+		    throw new IllegalArgumentException("Language version '" + version
+			    + "' is not availaible for Language '" + language.getName()
+			    + "'.\nAvailable versions are :"
+			    + LanguageVersion.commaSeparatedTerseNames(languageVersions));
+		}
 	    }
+	    return language.getDefaultVersion();
 	}
     }
 
-    public Renderer createRenderer() {
-	Renderer renderer = RendererFactory.createRenderer(reportFormat, this.properties);
-	renderer.setShowSuppressedViolations(this.showSuppressedViolations);
-	return renderer;
+    public Configuration getConfiguration() {
+	return configuration;
     }
 
-    public boolean containsCommaSeparatedFileList() {
-        return inputPath.indexOf(',') != -1;
-    }
-
-    public String getInputPath() {
-        return this.inputPath;
-    }
-
-    public String getEncoding() {
-        return this.encoding;
-    }
-
-    public String getReportFormat() {
-        return this.reportFormat;
-    }
-
-    public String getReportFile() {
-        return this.reportFile;
-    }
-
-    public String getRulesets() {
-        return this.ruleSets;
-    }
-
-    public String getSuppressMarker() {
-        return this.suppressMarker;
-    }
-
-    public boolean debugEnabled() {
-        return debugEnabled;
-    }
-
-    public boolean stressTestEnabled() {
-        return stressTestEnabled;
-    }
-
-    public int getCpus() {
-        return cpus;
-    }
-
-    public boolean shortNamesEnabled() {
-        return shortNamesEnabled;
-    }
-
-    public RulePriority getMinPriority() {
-        return minPriority;
-    }
-
-    public boolean benchmark() {
-        return benchmark;
-    }
-
-    public String getAuxClasspath() {
-    	return auxClasspath;
-    }
-   
-    public boolean isShowSuppressedViolations() {
-        return showSuppressedViolations;
-    }
-
-    /**
-     * @return the language
-     */
-    public Language getLanguage() {
-        return language;
-    }
-
-    /**
-     * @param language the language to set
-     */
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
-    /**
-     * @return the version
-     */
-    public LanguageVersion getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version the version to set
-     */
-    public void setVersion(LanguageVersion version) {
-        this.version = version;
-    }
-
-    public String usage() {
+    public static String usage() {
         return PMD.EOL + PMD.EOL +
                 "Mandatory arguments:" + PMD.EOL +
                 "1) A java source code filename or directory" + PMD.EOL +
@@ -280,9 +175,9 @@ public class CommandLineOptions {
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html unusedcode" + PMD.EOL +
                 PMD.EOL +
                 "Optional arguments that may be put before or after the mandatory arguments: " + PMD.EOL +
-                "-lang {name} {version}: specifiy version of a language PMD should use" + PMD.EOL + 
+                "-version {name} {version}: specify version of a language PMD should use" + PMD.EOL + 
                 "-debug: prints debugging information" + PMD.EOL +
-                "-cpus: specifies the number of threads to create" + PMD.EOL +
+                "-threads: specifies the number of threads to create" + PMD.EOL +
                 "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
                 "-suppressmarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +
@@ -298,7 +193,7 @@ public class CommandLineOptions {
                 getReports() +
                 PMD.EOL +
                 "For example on windows: " + PMD.EOL +
-                "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code text unusedcode,imports -lang java 1.5 -debug" + PMD.EOL +
+                "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code text unusedcode,imports -version java 1.5 -debug" + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code xml basic,design -encoding UTF-8" + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL +                
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html typeresolution -auxclasspath file:///C:/my/classpathfile" + PMD.EOL +
@@ -335,7 +230,3 @@ public class CommandLineOptions {
 	return buf.toString();
     }
 }
-
-
-
-

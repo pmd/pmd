@@ -6,7 +6,7 @@
 Custom ruleset
   </description>
 
-  <rule ref="rulesets/codesize.xml/TooManyFields"/>
+  <rule ref="rulesets/codesize.xml/ExcessiveMethodLength"/>
 
 </ruleset>
   

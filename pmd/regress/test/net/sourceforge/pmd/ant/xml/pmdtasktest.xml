@@ -10,14 +10,16 @@
 
 	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.path"/>
 
-	<target name="all" depends="testBasic, testNestedRuleset, testAbstractNames, testAbstractNamesInNestedRuleset, testCommaInRulesetfiles, testRelativeRulesets, testRelativeRulesetsInRulesetfiles, testNoFormattersValidation"/>
+	<target name="all" depends="testBasic, testInvalidLanguageVersion, testFormatterWithNoToFileAttribute, testNoRuleSets, testNestedRuleset, testFormatterWithProperties, testCommaInRulesetfiles, testRelativeRulesets, testRelativeRulesetsInRulesetfiles, testNoFormattersValidation"/>
 
 	<target name="testBasic">
 		<pmd rulesetfiles="${pmd.home}/rulesets/basic.xml"/>
 	</target>
 
-	<target name="testInvalidJDK">
-		<pmd rulesetfiles="${pmd.home}/rulesets/design.xml" targetjdk="42"/>
+	<target name="testInvalidLanguageVersion">
+		<pmd rulesetfiles="${pmd.home}/rulesets/design.xml">
+			<version>42</version>
+		</pmd>
 	</target>
 
 	<target name="testFormatterWithNoToFileAttribute">

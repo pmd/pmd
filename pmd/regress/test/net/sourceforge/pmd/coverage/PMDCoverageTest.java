@@ -24,7 +24,7 @@ public class PMDCoverageTest {
      */
     @Test
     public void testPmdOptions() {
-	runPmd("src/net/sourceforge/pmd/lang/java/rule/design text rulesets/internal/all-java.xml -targetjdk 1.5 -stress -benchmark");
+	runPmd("src/net/sourceforge/pmd/lang/java/rule/design text rulesets/internal/all-java.xml -version java 1.5 -stress -benchmark");
     }
 
     /**

@@ -40,20 +40,65 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.Benchmark;
-import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
+/**
+ * This is the main class for interacting with PMD.  The primary flow of
+ * all Rule process is controlled via interactions with this class.  A command
+ * line interface is supported, as well as a programmatic API for integrating
+ * PMD with other software such as IDEs and Ant.
+ */
 public class PMD {
+
+    private static final Logger LOG = Logger.getLogger(PMD.class.getName());
+
     public static final String EOL = System.getProperty("line.separator", "\n");
     public static final String VERSION = "5.0-SNAPSHOT";
     public static final String SUPPRESS_MARKER = "NOPMD";
 
-    private static final Logger LOG = Logger.getLogger(PMD.class.getName());
+    /**
+     * Do we have proper permissions to use multithreading?
+     */
+    // FUTURE Move this into the SystemUtils
+    private static final boolean MT_SUPPORTED;
 
-    private Configuration configuration = new Configuration();
+    static {
+	boolean error = false;
+	try {
+	    /*
+	     * ant task ran from Eclipse with jdk 1.5.0 raises an AccessControlException
+	     * when shutdown is called. Standalone pmd or ant from command line are fine.
+	     *
+	     * With jdk 1.6.0, ant task from Eclipse also works.
+	     */
+	    ExecutorService executor = Executors.newFixedThreadPool(1);
+	    executor.shutdown();
+	} catch (RuntimeException e) {
+	    error = true;
+	}
+	MT_SUPPORTED = !error;
+    }
+
+    protected final Configuration configuration;
+
+    /**
+     * Create a PMD instance using a default Configuration.  Changes to the
+     * configuration may be required.
+     */
+    public PMD() {
+	this(new Configuration());
+    }
+
+    /**
+     * Create a PMD instance using the specified Configuration.
+     * @param configuration The runtime Configuration of PMD to use.
+     */
+    public PMD(Configuration configuration) {
+	this.configuration = configuration;
+    }
 
     /**
      * Get the runtime configuration.  The configuration can be modified
@@ -66,31 +111,18 @@ public class PMD {
     }
 
     /**
-     * Set the runtime configuration.
-     * @see Configuration
-     */
-    public void setConfiguration(Configuration configuration) {
-	this.configuration = configuration;
-    }
-
-    /**
      * Processes the input stream against a rule set using the given input encoding.
      *
      * @param inputStream The InputStream to analyze.
-     * @param encoding The InputStream encoded.  If <code>null</code>, then the System default encoding will be used.
      * @param ruleSets The collection of rules to process against the file.
      * @param ctx The context in which PMD is operating.
      * @throws PMDException if the input encoding is unsupported, the input stream could
      *                      not be parsed, or other error is encountered.
      * @see #processFile(Reader, RuleSets, RuleContext)
      */
-    public void processFile(InputStream inputStream, String encoding, RuleSets ruleSets, RuleContext ctx)
-	    throws PMDException {
+    public void processFile(InputStream inputStream, RuleSets ruleSets, RuleContext ctx) throws PMDException {
 	try {
-	    if (encoding == null) {
-		encoding = System.getProperty("file.encoding");
-	    }
-	    processFile(new InputStreamReader(inputStream, encoding), ruleSets, ctx);
+	    processFile(new InputStreamReader(inputStream, configuration.getSourceEncoding()), ruleSets, ctx);
 	} catch (UnsupportedEncodingException uee) {
 	    throw new PMDException("Unsupported encoding exception: " + uee.getMessage());
 	}
@@ -106,7 +138,6 @@ public class PMD {
      * @param ctx The context in which PMD is operating.
      * @throws PMDException if the input encoding is unsupported, the input stream could
      *                      not be parsed, or other error is encountered.
-     * @see #processFile(Reader, RuleSets, RuleContext)
      */
     public void processFile(Reader reader, RuleSets ruleSets, RuleContext ctx) throws PMDException {
 	// If LanguageVersion of the source file is not known, make a determination
@@ -115,8 +146,8 @@ public class PMD {
 	    ctx.setLanguageVersion(languageVersion);
 	}
 
-        // make sure custom XPath functions are initialized
-        Initializer.initialize();
+	// make sure custom XPath functions are initialized
+	Initializer.initialize();
 
 	try {
 	    // Coarse check to see if any RuleSet applies to files, will need to do a finer RuleSet specific check later
@@ -168,56 +199,47 @@ public class PMD {
 	}
     }
 
-    /**
-     * Create a ClassLoader which loads classes using a CLASSPATH like String.
-     * If the String looks like a URL to a file (e.g. starts with <code>file://</code>)
-     * the file will be read with each line representing an entry on the classpath.
-     * <p>
-     * The ClassLoader used to load the <code>net.sourceforge.pmd.PMD</code> class
-     * will be used as the parent ClassLoader of the created ClassLoader.
-     *
-     * @param classpath The classpath String.
-     * @return A ClassLoader
-     * @throws IOException
-     * @see ClasspathClassLoader
-     */
-    public static ClassLoader createClasspathClassLoader(String classpath) throws IOException {
-	ClassLoader classLoader = PMD.class.getClassLoader();
-	if (classpath != null) {
-	    classLoader = new ClasspathClassLoader(classpath, classLoader);
-	}
-	return classLoader;
-    }
+    // This method is the main entry point for command line usage.
+    private static void doPMD(Configuration configuration) {
 
-    private static void doPMD(CommandLineOptions opts) {
-	long startFiles = System.nanoTime();
-	// Language & version of the analyses code
-	List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
-	Language language = opts.getLanguage();
-	LanguageVersion languageVersion = opts.getVersion();
-	if ( language == null )
-	{
-	    language = Language.getDefaultLanguage();
-	    languageVersion = language.getDefaultVersion();
-	}
-	languageVersions.add(languageVersion);
-	LOG.fine("Using " + languageVersion.getShortName());
+	// Load the RuleSets
+	long startLoadRules = System.nanoTime();
+	RuleSetFactory ruleSetFactory = new RuleSetFactory();
+	ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
+	ruleSetFactory.setWarnDeprecated(true);
+	RuleSets ruleSets;
 
-	// Setting up files filter
-	LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(opts.getLanguage());
-	List<DataSource> files = FileUtil.collectFiles(opts.getInputPath(), fileSelector);
-	long endFiles = System.nanoTime();
-	Benchmark.mark(Benchmark.TYPE_COLLECT_FILES, endFiles - startFiles, 0);
-
-	// Setting up appropriate classloader....
-	final ClassLoader classLoader;
 	try {
-	    classLoader = createClasspathClassLoader(opts.getAuxClasspath());
-	} catch (IOException e) {
-	    LOG.log(Level.SEVERE, "Bad -auxclasspath argument", e);
-	    System.out.println(opts.usage());
+	    ruleSets = ruleSetFactory.createRuleSets(configuration.getRuleSets());
+	    ruleSetFactory.setWarnDeprecated(false);
+	    printRuleNamesInDebug(ruleSets);
+	    long endLoadRules = System.nanoTime();
+	    Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);
+	} catch (RuleSetNotFoundException rsnfe) {
+	    LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
+	    System.out.println(CommandLineOptions.usage());
 	    return;
 	}
+
+	// Determine applicable Languages
+	List<Language> languages = new ArrayList<Language>();
+	for (Rule rule : ruleSets.getAllRules()) {
+	    Language language = rule.getLanguage();
+	    if (!languages.contains(language)) {
+		if (RuleSet.applies(rule, configuration.getLanguageVersionDiscoverer().getDefaultLanguageVersion(
+			language))) {
+		    languages.add(language);
+		    LOG.fine("Using " + language.getShortName());
+		}
+	    }
+	}
+
+	// Find all files applicable to these Languages
+	long startFiles = System.nanoTime();
+	LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
+	List<DataSource> files = FileUtil.collectFiles(configuration.getInputPaths(), fileSelector);
+	long endFiles = System.nanoTime();
+	Benchmark.mark(Benchmark.TYPE_COLLECT_FILES, endFiles - startFiles, 0);
 
 	long reportStart;
 	long reportEnd;
@@ -226,11 +248,11 @@ public class PMD {
 
 	reportStart = System.nanoTime();
 	try {
-	    renderer = opts.createRenderer();
+	    renderer = configuration.createRenderer();
 	    List<Renderer> renderers = new LinkedList<Renderer>();
 	    renderers.add(renderer);
-	    if (opts.getReportFile() != null) {
-		w = new BufferedWriter(new FileWriter(opts.getReportFile()));
+	    if (configuration.getReportFile() != null) {
+		w = new BufferedWriter(new FileWriter(configuration.getReportFile()));
 	    } else {
 		w = new OutputStreamWriter(System.out);
 	    }
@@ -242,30 +264,12 @@ public class PMD {
 
 	    RuleContext ctx = new RuleContext();
 
-	    try {
-		long startLoadRules = System.nanoTime();
-		RuleSetFactory ruleSetFactory = new RuleSetFactory();
-		ruleSetFactory.setMinimumPriority(opts.getMinPriority());
-
-		ruleSetFactory.setWarnDeprecated(true);
-		RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
-		ruleSetFactory.setWarnDeprecated(false);
-		printRuleNamesInDebug(rulesets);
-		long endLoadRules = System.nanoTime();
-		Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);
-
-		processFiles(opts.getCpus(), ruleSetFactory, languageVersions, files, ctx, renderers, opts
-			.stressTestEnabled(), opts.getRulesets(), opts.shortNamesEnabled(), opts.getInputPath(), opts
-			.getEncoding(), opts.getSuppressMarker(), classLoader);
-	    } catch (RuleSetNotFoundException rsnfe) {
-		LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
-		System.out.println(opts.usage());
-	    }
+	    processFiles(configuration, ruleSetFactory, files, ctx, renderers);
 
 	    reportStart = System.nanoTime();
 	    renderer.end();
 	    w.flush();
-	    if (opts.getReportFile() != null) {
+	    if (configuration.getReportFile() != null) {
 		w.close();
 		w = null;
 	    }
@@ -279,9 +283,9 @@ public class PMD {
 
 	    LOG.log(Level.FINE, "Exception during processing", e); //Only displayed when debug logging is on
 
-	    LOG.info(opts.usage());
+	    LOG.info(CommandLineOptions.usage());
 	} finally {
-	    if (opts.getReportFile() != null && w != null) {
+	    if (configuration.getReportFile() != null && w != null) {
 		try {
 		    w.close();
 		} catch (Exception e) {
@@ -296,18 +300,19 @@ public class PMD {
     public static void main(String[] args) {
 	long start = System.nanoTime();
 	final CommandLineOptions opts = new CommandLineOptions(args);
+	final Configuration configuration = opts.getConfiguration();
 
-	final Level logLevel = opts.debugEnabled() ? Level.FINER : Level.INFO;
+	final Level logLevel = configuration.isDebug() ? Level.FINER : Level.INFO;
 	final Handler logHandler = new ConsoleLogHandler();
 	final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, logHandler);
 	final Level oldLogLevel = LOG.getLevel();
 	LOG.setLevel(logLevel); //Need to do this, since the static logger has already been initialized at this point
 	try {
-	    doPMD(opts);
+	    doPMD(opts.getConfiguration());
 	} finally {
 	    logHandlerManager.close();
 	    LOG.setLevel(oldLogLevel);
-	    if (opts.benchmark()) {
+	    if (configuration.isBenchmark()) {
 		long end = System.nanoTime();
 		Benchmark.mark(Benchmark.TYPE_TOTAL_PMD, end - start, 0);
 		System.err.println(Benchmark.report());
@@ -319,30 +324,22 @@ public class PMD {
 	private final ExecutorService executor;
 	private final DataSource dataSource;
 	private final String fileName;
-	private final String encoding;
-	private final String rulesets;
 	private final List<Renderer> renderers;
 
-	public PmdRunnable(ExecutorService executor, DataSource dataSource, String fileName,
-		List<LanguageVersion> languageVersions, List<Renderer> renderers, String encoding, String rulesets,
-		String suppressMarker, ClassLoader classLoader) {
+	public PmdRunnable(ExecutorService executor, Configuration configuration, DataSource dataSource,
+		String fileName, List<Renderer> renderers) {
+	    super(configuration);
 	    this.executor = executor;
 	    this.dataSource = dataSource;
 	    this.fileName = fileName;
-	    this.encoding = encoding;
-	    this.rulesets = rulesets;
 	    this.renderers = renderers;
-
-	    getConfiguration().setDefaultLanguageVersions(languageVersions);
-	    getConfiguration().setSuppressMarker(suppressMarker);
-	    getConfiguration().setClassLoader(classLoader);
 	}
 
 	public Report call() {
 	    PmdThread thread = (PmdThread) Thread.currentThread();
 
 	    RuleContext ctx = thread.getRuleContext();
-	    RuleSets rs = thread.getRuleSets(rulesets);
+	    RuleSets rs = thread.getRuleSets(configuration.getRuleSets());
 
 	    Report report = new Report();
 	    ctx.setReport(report);
@@ -358,7 +355,7 @@ public class PMD {
 
 	    try {
 		InputStream stream = new BufferedInputStream(dataSource.getInputStream());
-		processFile(stream, encoding, rs, ctx);
+		processFile(stream, rs, ctx);
 	    } catch (PMDException pmde) {
 		LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
 
@@ -437,65 +434,32 @@ public class PMD {
 	public String toString() {
 	    return "PmdThread " + id;
 	}
-
-    }
-
-    /**
-     * Do we have proper permissions to use multithreading?
-     */
-    private static final boolean MT_SUPPORTED;
-
-    static {
-	boolean error = false;
-	try {
-	    /*
-	     * ant task ran from Eclipse with jdk 1.5.0 raises an AccessControlException
-	     * when shutdown is called. Standalone pmd or ant from command line are fine.
-	     *
-	     * With jdk 1.6.0, ant task from Eclipse also works.
-	     */
-	    ExecutorService executor = Executors.newFixedThreadPool(1);
-	    executor.shutdown();
-	} catch (RuntimeException e) {
-	    error = true;
-	}
-	MT_SUPPORTED = !error;
     }
 
     /**
      * Run PMD on a list of files using multiple threads.
      */
-    public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory,
-	    List<LanguageVersion> languageVersions, List<DataSource> files, RuleContext ctx, List<Renderer> renderers,
-	    String rulesets, final boolean shortNamesEnabled, final String inputPath, String encoding,
-	    String suppressMarker, ClassLoader classLoader) {
-	processFiles(threadCount, ruleSetFactory, languageVersions, files, ctx, renderers, false, rulesets,
-		shortNamesEnabled, inputPath, encoding, suppressMarker, classLoader);
-    }
+    public static void processFiles(final Configuration configuration, final RuleSetFactory ruleSetFactory,
+	    final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
 
-    /**
-     * Run PMD on a list of files using multiple threads.
-     */
-    public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory,
-	    List<LanguageVersion> languageVersions, List<DataSource> files, RuleContext ctx, List<Renderer> renderers,
-	    boolean stressTestEnabled, String rulesets, final boolean shortNamesEnabled, final String inputPath,
-	    String encoding, String suppressMarker, ClassLoader classLoader) {
+	final boolean reportShortNames = configuration.isReportShortNames();
+	final String inputPaths = configuration.getInputPaths();
 
 	/*
 	 * Check if multithreaded is supported.
 	 * ExecutorService can also be disabled if threadCount is not positive, e.g. using the
-	 * "-cpus 0" command line option.
+	 * "-threads 0" command line option.
 	 */
-	boolean useMT = MT_SUPPORTED && threadCount > 0;
+	boolean useMT = MT_SUPPORTED && configuration.getThreads() > 0;
 
-	if (stressTestEnabled) {
+	if (configuration.isStressTest()) {
 	    // randomize processing order
 	    Collections.shuffle(files);
 	} else {
 	    Collections.sort(files, new Comparator<DataSource>() {
 		public int compare(DataSource d1, DataSource d2) {
-		    String s1 = d1.getNiceFileName(shortNamesEnabled, inputPath);
-		    String s2 = d2.getNiceFileName(shortNamesEnabled, inputPath);
+		    String s1 = d1.getNiceFileName(reportShortNames, inputPaths);
+		    String s2 = d2.getNiceFileName(reportShortNames, inputPaths);
 		    return s1.compareTo(s2);
 		}
 	    });
@@ -504,22 +468,19 @@ public class PMD {
 	if (useMT) {
 	    RuleSets rs = null;
 	    try {
-		rs = ruleSetFactory.createRuleSets(rulesets);
+		rs = ruleSetFactory.createRuleSets(configuration.getRuleSets());
 	    } catch (RuleSetNotFoundException rsnfe) {
 		// should not happen: parent already created a ruleset
 	    }
 	    rs.start(ctx);
 
 	    PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
-	    ExecutorService executor = Executors.newFixedThreadPool(threadCount, factory);
+	    ExecutorService executor = Executors.newFixedThreadPool(configuration.getThreads(), factory);
 	    List<Future<Report>> tasks = new LinkedList<Future<Report>>();
 
 	    for (DataSource dataSource : files) {
-		String niceFileName = dataSource.getNiceFileName(shortNamesEnabled, inputPath);
-
-		PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, languageVersions, renderers,
-			encoding, rulesets, suppressMarker, classLoader);
-
+		String niceFileName = dataSource.getNiceFileName(reportShortNames, inputPaths);
+		PmdRunnable r = new PmdRunnable(executor, configuration, dataSource, niceFileName, renderers);
 		Future<Report> future = executor.submit(r);
 		tasks.add(future);
 	    }
@@ -568,19 +529,16 @@ public class PMD {
 
 	} else {
 	    // single threaded execution
-
-	    PMD pmd = new PMD();
-	    pmd.getConfiguration().setDefaultLanguageVersions(languageVersions);
-	    pmd.getConfiguration().setSuppressMarker(suppressMarker);
+	    PMD pmd = new PMD(configuration);
 
 	    RuleSets rs = null;
 	    try {
-		rs = ruleSetFactory.createRuleSets(rulesets);
+		rs = ruleSetFactory.createRuleSets(configuration.getRuleSets());
 	    } catch (RuleSetNotFoundException rsnfe) {
 		// should not happen: parent already created a ruleset
 	    }
 	    for (DataSource dataSource : files) {
-		String niceFileName = dataSource.getNiceFileName(shortNamesEnabled, inputPath);
+		String niceFileName = dataSource.getNiceFileName(reportShortNames, inputPaths);
 
 		Report report = new Report();
 		ctx.setReport(report);
@@ -598,7 +556,7 @@ public class PMD {
 
 		try {
 		    InputStream stream = new BufferedInputStream(dataSource.getInputStream());
-		    pmd.processFile(stream, encoding, rs, ctx);
+		    pmd.processFile(stream, rs, ctx);
 		} catch (PMDException pmde) {
 		    LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
 
@@ -653,7 +611,7 @@ public class PMD {
 
 	    try {
 		InputStream stream = new BufferedInputStream(dataSource.getInputStream());
-		processFile(stream, encoding, rulesets, ctx);
+		processFile(stream, rulesets, ctx);
 	    } catch (PMDException pmde) {
 		LOG.log(Level.FINE, "Error while processing files", pmde.getCause());
 

@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
+import net.sourceforge.pmd.Configuration;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -30,7 +31,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -49,31 +49,21 @@ public class PMDTask extends Task {
 
     private Path classpath;
     private Path auxClasspath;
-    private List<Formatter> formatters = new ArrayList<Formatter>();
-    private List<FileSet> filesets = new ArrayList<FileSet>();
-    private RulePriority minPriority = RulePriority.LOW;
-    private boolean shortFilenames;
-    private String ruleSetFiles;
-    private String encoding = System.getProperty("file.encoding");
+    private final List<Formatter> formatters = new ArrayList<Formatter>();
+    private final List<FileSet> filesets = new ArrayList<FileSet>();
+    private final Configuration configuration = new Configuration();
     private boolean failOnError;
     private boolean failOnRuleViolation;
     private int maxRuleViolations = 0;
-    private String targetJDK = "1.5";
     private String failuresPropertyName;
-    private String suppressMarker = PMD.SUPPRESS_MARKER;
-    private int cpus = Runtime.getRuntime().availableProcessors();
     private final Collection<RuleSetWrapper> nestedRules = new ArrayList<RuleSetWrapper>();
 
-    public void setShortFilenames(boolean value) {
-	this.shortFilenames = value;
+    public void setShortFilenames(boolean reportShortNames) {
+	configuration.setReportShortNames(reportShortNames);
     }
 
-    public void setTargetJDK(String value) {
-	this.targetJDK = value;
-    }
-
-    public void setSuppressMarker(String value) {
-	this.suppressMarker = value;
+    public void setSuppressMarker(String suppressMarker) {
+	configuration.setSuppressMarker(suppressMarker);
     }
 
     public void setFailOnError(boolean fail) {
@@ -91,16 +81,16 @@ public class PMDTask extends Task {
 	}
     }
 
-    public void setRuleSetFiles(String ruleSetFiles) {
-	this.ruleSetFiles = ruleSetFiles;
+    public void setRuleSetFiles(String ruleSets) {
+	configuration.setRuleSets(ruleSets);
     }
 
-    public void setEncoding(String encoding) {
-	this.encoding = encoding;
+    public void setEncoding(String sourceEncoding) {
+	configuration.setSourceEncoding(sourceEncoding);
     }
 
-    public void setCpus(int cpus) {
-	this.cpus = cpus;
+    public void setThreads(int threads) {
+	configuration.setThreads(threads);
     }
 
     public void setFailuresPropertyName(String failuresPropertyName) {
@@ -108,7 +98,7 @@ public class PMDTask extends Task {
     }
 
     public void setMinimumPriority(int minPriority) {
-	this.minPriority = RulePriority.valueOf(minPriority);
+	configuration.setMinimumPriority(RulePriority.valueOf(minPriority));
     }
 
     public void addFileset(FileSet set) {
@@ -117,6 +107,31 @@ public class PMDTask extends Task {
 
     public void addFormatter(Formatter f) {
 	formatters.add(f);
+    }
+
+    public void addConfiguredVersion(Version version) {
+	LanguageVersion languageVersion = LanguageVersion.findByTerseName(version.getTerseName());
+	if (languageVersion == null) {
+	    StringBuilder buf = new StringBuilder();
+	    buf.append("The <version> element, if used, must be one of ");
+	    boolean first = true;
+	    for (Language language : Language.values()) {
+		if (language.getVersions().size() > 2) {
+		    for (LanguageVersion v : language.getVersions()) {
+			if (!first) {
+			    buf.append(", ");
+			}
+			buf.append('\'');
+			buf.append(v.getTerseName());
+			buf.append('\'');
+			first = false;
+		    }
+		}
+	    }
+	    buf.append('.');
+	    throw new BuildException(buf.toString());
+	}
+	configuration.setDefaultLanguageVersion(languageVersion);
     }
 
     public void setClasspath(Path classpath) {
@@ -135,7 +150,7 @@ public class PMDTask extends Task {
     }
 
     public void setClasspathRef(Reference r) {
-	createLongClasspath().setRefid(r);
+	createClasspath().setRefid(r);
     }
 
     public void setAuxClasspath(Path auxClasspath) {
@@ -154,85 +169,66 @@ public class PMDTask extends Task {
     }
 
     public void setAuxClasspathRef(Reference r) {
-	createLongAuxClasspath().setRefid(r);
-    }
-
-    private class AntTaskNameMapper extends SimpleRuleSetNameMapper {
-	public AntTaskNameMapper(String s) {
-	    super(s);
-	}
-
-	@Override
-	protected void check(String name) {
-	    if (name.indexOf("rulesets") == -1 && nameMap.containsKey(name)) {
-		append(nameMap.get(name));
-	    } else {
-		// substitute env variables/properties
-		append(getProject().replaceProperties(name));
-	    }
-	}
-
+	createAuxClasspath().setRefid(r);
     }
 
     private void doTask() {
-	ruleSetFiles = new AntTaskNameMapper(ruleSetFiles).getRuleSets();
-
-	ClassLoader classLoader;
+	// Setup ClassLoader
 	if (classpath == null) {
 	    log("Using the normal ClassLoader", Project.MSG_VERBOSE);
-	    classLoader = getClass().getClassLoader();
 	} else {
 	    log("Using the AntClassLoader", Project.MSG_VERBOSE);
-	    classLoader = new AntClassLoader(getProject(), classpath);
-	}
-	/*
-	 * 'basedir' is added to the path to make sure that relative paths
-	 * such as "<ruleset>resources/custom_ruleset.xml</ruleset>" still
-	 * work when ant is invoked from a different directory using "-f"
-	 */
-	String extraPath = getProject().getBaseDir().toString();
-	if (auxClasspath != null) {
-	    log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
-	    extraPath = auxClasspath.toString() + File.pathSeparator + extraPath;
+	    configuration.setClassLoader(new AntClassLoader(getProject(), classpath));
 	}
 	try {
-	    classLoader = new ClasspathClassLoader(extraPath, classLoader);
+	    /*
+	     * 'basedir' is added to the path to make sure that relative paths
+	     * such as "<ruleset>resources/custom_ruleset.xml</ruleset>" still
+	     * work when ant is invoked from a different directory using "-f"
+	     */
+	    configuration.prependClasspath(getProject().getBaseDir().toString());
+	    if (auxClasspath != null) {
+		log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
+		configuration.prependClasspath(auxClasspath.toString());
+	    }
 	} catch (IOException ioe) {
-	    throw new BuildException(ioe.getMessage());
+	    throw new BuildException(ioe.getMessage(), ioe);
 	}
 
+	// Setup RuleSetFactory and validate RuleSets
 	RuleSetFactory ruleSetFactory = new RuleSetFactory();
-	ruleSetFactory.setClassLoader(classLoader);
+	ruleSetFactory.setClassLoader(configuration.getClassLoader());
+	try {
+	    // This is just used to validate and display rules. Each thread will create its own ruleset
+	    RuleSets rules;
+	    ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
+	    ruleSetFactory.setWarnDeprecated(true);
+	    String ruleSets = configuration.getRuleSets();
+	    if (ruleSets != null) {
+		// Substitute env variables/properties
+		configuration.setRuleSets(getProject().replaceProperties(ruleSets));
+		configuration.setRuleSets(new SimpleRuleSetNameMapper(configuration.getRuleSets()).getRuleSets());
+	    }
+	    rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
+	    ruleSetFactory.setWarnDeprecated(false);
+	    logRulesUsed(rules);
+	} catch (RuleSetNotFoundException e) {
+	    throw new BuildException(e.getMessage(), e);
+	}
+
+	if (configuration.getSuppressMarker() != null) {
+	    log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
+	}
+
+	// Start the Formatters
 	for (Formatter formatter : formatters) {
 	    log("Sending a report to " + formatter, Project.MSG_VERBOSE);
 	    formatter.start(getProject().getBaseDir().toString());
 	}
 
-	try {
-	    // This is just used to validate and display rules. Each thread will create its own ruleset
-	    RuleSets rules;
-	    ruleSetFactory.setMinimumPriority(minPriority);
-	    ruleSetFactory.setWarnDeprecated(true);
-	    rules = ruleSetFactory.createRuleSets(ruleSetFiles);
-	    ruleSetFactory.setWarnDeprecated(false);
-	    logRulesUsed(rules);
-	} catch (RuleSetNotFoundException e) {
-	    throw new BuildException(e.getMessage());
-	}
+	//log("Setting Language Version " + languageVersion.getShortName(), Project.MSG_VERBOSE);
 
-	List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
-	Language language = Language.JAVA;
-	LanguageVersion languageVersion = language.getVersion(targetJDK);
-	if (languageVersion == null) {
-	    languageVersion = language.getDefaultVersion();
-	}
-	languageVersions.add(languageVersion);
-	log("Targeting " + languageVersion.getShortName(), Project.MSG_VERBOSE);
-
-	if (suppressMarker != null) {
-	    log("Setting suppress marker to be " + suppressMarker, Project.MSG_VERBOSE);
-	}
-
+	// TODO Do we really need all this in a loop over each FileSet?  Seems like a lot of redundancy
 	RuleContext ctx = new RuleContext();
 	Report errorReport = new Report();
 	final AtomicInteger reportSize = new AtomicInteger();
@@ -245,14 +241,16 @@ public class PMDTask extends Task {
 		files.add(new FileDataSource(file));
 	    }
 
-	    final String inputPath = ds.getBasedir().getPath();
+	    final String inputPaths = ds.getBasedir().getPath();
+	    configuration.setInputPaths(inputPaths);
 
 	    Renderer logRenderer = new AbstractRenderer("log", "Logging renderer", null) {
 		public void start() {
+		    // Nothing to do
 		}
 
 		public void startFileAnalysis(DataSource dataSource) {
-		    log("Processing file " + dataSource.getNiceFileName(false, inputPath), Project.MSG_VERBOSE);
+		    log("Processing file " + dataSource.getNiceFileName(false, inputPaths), Project.MSG_VERBOSE);
 		}
 
 		public void renderFileReport(Report r) {
@@ -263,6 +261,7 @@ public class PMDTask extends Task {
 		}
 
 		public void end() {
+		    // Nothing to do
 		}
 	    };
 	    List<Renderer> renderers = new LinkedList<Renderer>();
@@ -271,8 +270,7 @@ public class PMDTask extends Task {
 		renderers.add(formatter.getRenderer());
 	    }
 	    try {
-		PMD.processFiles(cpus, ruleSetFactory, languageVersions, files, ctx, renderers, ruleSetFiles,
-			shortFilenames, inputPath, encoding, suppressMarker, classLoader);
+		PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);
 	    } catch (RuntimeException pmde) {
 		pmde.printStackTrace();
 		log(pmde.toString(), Project.MSG_VERBOSE);
@@ -322,7 +320,7 @@ public class PMDTask extends Task {
     }
 
     private void logRulesUsed(RuleSets rules) {
-	log("Using these rulesets: " + ruleSetFiles, Project.MSG_VERBOSE);
+	log("Using these rulesets: " + configuration.getRuleSets(), Project.MSG_VERBOSE);
 
 	RuleSet[] ruleSets = rules.getAllRuleSets();
 	for (RuleSet ruleSet : ruleSets) {
@@ -340,22 +338,11 @@ public class PMDTask extends Task {
 	    }
 	}
 
-	if (ruleSetFiles == null) {
+	if (configuration.getRuleSets() == null) {
 	    if (nestedRules.isEmpty()) {
 		throw new BuildException("No rulesets specified");
 	    }
-	    ruleSetFiles = getNestedRuleSetFiles();
-	}
-
-	LanguageVersion languageVersion = Language.JAVA.getVersion(targetJDK);
-	if (languageVersion == null && !targetJDK.equals("jsp")) {
-	    StringBuilder sb = new StringBuilder();
-	    sb.append("The targetjdk attribute, if used, must be one of ");
-	    for (LanguageVersion v : Language.JAVA.getVersions()) {
-		sb.append('\'').append(v.getVersion()).append("', ");
-	    }
-	    sb.append("'jsp'.");
-	    throw new BuildException(sb.toString());
+	    configuration.setRuleSets(getNestedRuleSetFiles());
 	}
     }
 
@@ -369,20 +356,6 @@ public class PMDTask extends Task {
 	    }
 	}
 	return sb.toString();
-    }
-
-    private Path createLongClasspath() {
-	if (classpath == null) {
-	    classpath = new Path(getProject());
-	}
-	return classpath.createPath();
-    }
-
-    private Path createLongAuxClasspath() {
-	if (auxClasspath == null) {
-	    auxClasspath = new Path(getProject());
-	}
-	return auxClasspath.createPath();
     }
 
     public void addRuleset(RuleSetWrapper r) {

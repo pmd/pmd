@@ -99,7 +99,8 @@
 
 	<target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
-		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood.xml" shortFilenames="true" targetjdk="1.5" minimumpriority="5" failonruleviolation="true" failonerror="true">
+		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood.xml" shortFilenames="true" minimumpriority="5" failonruleviolation="true" failonerror="true">
+			<version>java 1.5</version>
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${dir.src}">
 				<include name="**/*.java" />
@@ -123,7 +124,8 @@
 	<target name="pmd-dogfood-goal" description="Runs pmd-dogfood-goal.xml on PMD" depends="copy, compile">
 		<mkdir dir="${dir.reports}" />
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
-		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood-goal.xml" shortFilenames="false" targetjdk="1.5" minimumpriority="5" failonruleviolation="false" failonerror="true">
+		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood-goal.xml" shortFilenames="false" minimumpriority="5" failonruleviolation="false" failonerror="true">
+			<version>java 1.5</version>
 			<formatter type="xml" toFile="${dir.reports}/pmd-dogfood-goal.xml"/>
 			<fileset dir="${dir.src}">
 				<include name="**/*.java" />

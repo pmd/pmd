@@ -7,9 +7,6 @@ TODO - Release blockers - Must implement before this release can be finished
    o Additional changes to Rule organization withing RuleSets as discussed on
      this forum thread:
      http://sourceforge.net/forum/forum.php?thread_id=1323593&forum_id=188194
-   o Adapt PMD command line to have multiple -lang options  (should be cummulative). 
-   	 Change PMD AntTask options to allow specifying both language and if
-     relevant language version. (assigned to rpelisse)
    o CPD needs work on use of Language.  It currently is hardcoded to only
      handled Java 1.4.  Integrate CPD needs into core PMD where appropriate.
      Otherwise, drive CPD behavior based off of core PMD, instead of duplicating
@@ -32,10 +29,8 @@ TODO - Release blockers - Must implement before this release can be finished
      File/String to a LanguageVersion of a specific Language, one could imaging
      using a 'magic' system like Unix uses to tell different versions of files
      apart based on actual content.
-   o Some cleanup needs to be done on the PMD class.  There are 9! processFile(s)
-     methods, and multiple places which deal with stateful operations
-     (e.g. calling PMD.setExcludeMarker(), PMD.setClassLoader(), RuleSets.start()),
-     further the Benchmarking stuff really only can work for commandline PMD
+   o Some cleanup needs to be done on the PMD class.  
+     The Benchmarking stuff really only can work for commandline PMD
      usage, and the RuleSets.start()/end() stuff isn't working for all entry
      points into the PMD class.  Things need to be simplified and centralized.
      There should be a clear definition of a lifecycle/sequence of events for
@@ -81,18 +76,6 @@ TODO - Release blockers - Must implement before this release can be finished
      Should we provide backwards compatibility mode?  I'm not inclined to, we
      can keep the 4.2.x branch going for a long while, and just keep the 5.x.y
      line marching forward.  People will just have to switch at some point.
-   o Add a Configuration class, to capture the data gathered by both PMD command
-     line and Ant usages.  Figure out a way to unify the treatment/processing of
-     the commmand line and Ant usages, there's fair bit of duplication at the
-     moment.  It's expected there will be command line/Ant specific behaviors,
-     but these should be minimal.  Also move some of the settings currently done
-     on the PMD class (suppress marker, ClassLoader, LanguageVersionDiscoverer)
-     onto the configuration class.  This Configuration class should be the
-     be all and end all means for telling PMD how to process files (singly or
-     in groups).  Further, the Configuration as well as the RuleContext can be
-     passed down into the RuleSets/RuleSet code to allow easier means of making
-     decisions at that level based upon global configuration settings (e.g.
-     changes to default LanguageVersions can be checked at the Rule level now).
    o Figure out a way to allow Rules to deal with parentheses and blocks, which
      introduce certain repetitive (and generally ignorable for most Rules)
      structures into the AST tree.  Some rules are making special effort
@@ -344,20 +327,23 @@ PMD command line changes:
    Removed -linkprefix use -property linkPrefix {value} instead
    Removed -xslt use -property xsltFilename {value} instead
    Removed -nojsp now obsolete
-   Removed -targetjdk use -lang {name} {version} instead
-   Added -lang {name} {version} to set language version to use
+   Removed -targetjdk use -version {name} {version} instead
+   Added -version {name} {version} to set language version to use for a given language
    Added -property {name} {value} as generic way to pass properties to Renderers
    Added -showsuppressed as a means to show suppressed rule violations (consistent with Ant task behavior)
    Renamed 'nicehtml' report to 'xslt'
    Renamed 'papari' report to 'textcolor'
    Renamed -excludemarker option to -suppressmarker
+   Renamed -cpus option to -threads
 
 Ant changes:
 
    Removed - <formatter> 'linkPrefix' attribute, use <param name="linkPrefix"> instead
    Removed - <formatter> 'linePrefix' attribute, use <param name="linePrefix"> instead
+   Removed - <pmd> 'targetJDK' attribute to <version>lang version</version> instead
      Added - <param name="name" value="value"/> as generic way to pass properties to Renderers on <formatter>
    Renamed - <pmd> 'excludeMarker' attribute to 'suppressMarker'
+   Renamed - <pmd> 'cpus' attribute to 'threads'
 
 
 New features:
