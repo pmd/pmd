@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="">
     <description/>
-    <rule name="ExplicitCallToFinalize" message="Explicit call of finalize method" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="ExplicitCallToFinalize" message="Explicit call of finalize method" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        An explicit call was made to a finalize method.  Finalize methods        are meant to be executed at most once (by the garbage collector).        Calling it explicitly could result in the method being executed        twice for that object (once by you, once by the garbage collector).        </description>
         <example><![CDATA[
    
@@ -60,7 +60,7 @@ public class Foo {
             <property name="maximum" value="10"/>
         </properties>
     </rule>
-    <rule name="DontImportJavaLang" message="Avoid importing anything from the package 'java.lang'" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="DontImportJavaLang" message="Avoid importing anything from the package 'java.lang'" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>     Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).     </description>
         <example><![CDATA[
 
@@ -108,7 +108,7 @@ public class Foo {}
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="AbstractNaming" message="Abstract classes should be named 'AbstractXXX'" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AbstractNaming" message="Abstract classes should be named 'AbstractXXX'" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Abstract classes should be named 'AbstractXXX'.        </description>
         <example><![CDATA[
 
@@ -129,7 +129,7 @@ public abstract class Foo { // should be AbstractFoo
             </property>
         </properties>
     </rule>
-    <rule name="InstantiationToGetClass" message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="InstantiationToGetClass" message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description> Avoid instantiating an object just to call getClass() on it; use the .class public member instead       </description>
         <example><![CDATA[
     
@@ -188,7 +188,7 @@ public MyClass() {}
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="CallSuperInConstructor" message="It is a good practice to call super() in a constructor" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="CallSuperInConstructor" message="It is a good practice to call super() in a constructor" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       It is a good practice to call super() in a constructor. If super() is not called       but another constructor, such as an overloaded constructor, of the class is called, this rule       will not report it.       </description>
         <example><![CDATA[
 
@@ -220,7 +220,7 @@ count(.//ExplicitConstructorInvocation)=0
             </property>
         </properties>
     </rule>
-    <rule name="UseLocaleWithCaseConversions" message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UseLocaleWithCaseConversions" message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description> When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids           problems with certain locales, i.e. Turkish.       </description>
         <example><![CDATA[
     
@@ -283,7 +283,7 @@ class Foo {
             <property name="minimum" value="45"/>
         </properties>
     </rule>
-    <rule name="AvoidDollarSigns" message="Avoid using dollar signs in variable/method/class/interface names" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AvoidDollarSigns" message="Avoid using dollar signs in variable/method/class/interface names" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        Avoid using dollar signs in variable/method/class/interface names.        </description>
         <example><![CDATA[
    
@@ -306,7 +306,7 @@ class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="ForLoopsMustUseBraces" message="Avoid using 'for' statements without curly braces" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="ForLoopsMustUseBraces" message="Avoid using 'for' statements without curly braces" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        Avoid using 'for' statements without using curly braces        </description>
         <example><![CDATA[
    
@@ -327,7 +327,7 @@ class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="SuspiciousEqualsMethodName" message="The method name and parameter number are suspiciously close to equals(Object)" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="SuspiciousEqualsMethodName" message="The method name and parameter number are suspiciously close to equals(Object)" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>               The method name and parameter number are suspiciously close to      equals(Object), which may mean you are trying (and failing) to override the equals(Object)         method.         </description>
         <example><![CDATA[
         
@@ -402,7 +402,7 @@ try {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="FinalFieldCouldBeStatic" message="This final field could be made static" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="FinalFieldCouldBeStatic" message="This final field could be made static" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       If a final field is assigned to a compile-time constant, it could be           made static, thus saving overhead in each object       </description>
         <example><![CDATA[
   
@@ -426,7 +426,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="SuspiciousHashcodeMethodName" message="The method name and return type are suspiciously close to hashCode()" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="SuspiciousHashcodeMethodName" message="The method name and return type are suspiciously close to hashCode()" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        The method name and return type are suspiciously close to hashCode(), which        may mean you are trying (and failing) to override the hashCode() method.        </description>
         <example><![CDATA[
     
@@ -454,7 +454,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="UnusedModifier" message="Avoid modifiers which are implied by the context" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UnusedModifier" message="Avoid modifiers which are implied by the context" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>      Fields in interfaces are automatically public static final, and      methods are public abstract.      Classes or interfaces nested in an interface are automatically public      and static (all nested interfaces are automatically static).      For historical reasons, modifiers which are implied by the context      are accepted by the compiler, but are superfluous.      </description>
         <example><![CDATA[
  
@@ -514,7 +514,7 @@ public class Foo {
         <priority>2</priority>
         <properties/>
     </rule>
-    <rule name="AbstractClassWithoutAbstractMethod" message="This abstract class does not have any abstract methods" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AbstractClassWithoutAbstractMethod" message="This abstract class does not have any abstract methods" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       The abstract class does not contain any abstract methods. An abstract class suggests       an incomplete implementation, which is to be completed by subclasses implementing the       abstract methods. If the class is intended to be used as a base class only (not to be instantiated       direcly) a protected constructor can be provided prevent direct instantiation.       </description>
         <example><![CDATA[
 
@@ -539,7 +539,7 @@ public abstract class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="NonStaticInitializer" message="Non-static initializers are confusing" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="NonStaticInitializer" message="Non-static initializers are confusing" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        A nonstatic initializer block will be called any time a constructor        is invoked (just prior to invoking the constructor).  While this        is a valid language construct, it is rarely used and is confusing.        </description>
         <example><![CDATA[
    
@@ -628,7 +628,7 @@ try {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="EmptyFinallyBlock" message="Avoid empty finally blocks" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptyFinallyBlock" message="Avoid empty finally blocks" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Avoid empty finally blocks - these can be deleted.       </description>
         <example><![CDATA[
   // this is bad
@@ -649,7 +649,7 @@ try {
             </property>
         </properties>
     </rule>
-    <rule name="MoreThanOneLogger" message="Class contains more than one Logger" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="MoreThanOneLogger" message="Class contains more than one Logger" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>      Normally only one logger is used in each class.      </description>
         <example><![CDATA[
  
@@ -675,7 +675,7 @@ class Foo{
             </property>
         </properties>
     </rule>
-    <rule name="ReturnFromFinallyBlock" message="Avoid returning from a finally block" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="ReturnFromFinallyBlock" message="Avoid returning from a finally block" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Avoid returning from a finally block - this can discard exceptions.       </description>
         <example><![CDATA[
   public class Bar {
@@ -783,7 +783,7 @@ public class Foo {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="AvoidInstanceofChecksInCatchClause" message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type." class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AvoidInstanceofChecksInCatchClause" message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type." class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Each caught exception type should be handled in its own catch clause.       </description>
         <example><![CDATA[
 
@@ -834,7 +834,7 @@ public class Foo {}
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="EmptyTryBlock" message="Avoid empty try blocks" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptyTryBlock" message="Avoid empty try blocks" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Avoid empty try blocks - what's the point?       </description>
         <example><![CDATA[
   // this is bad
@@ -854,7 +854,7 @@ public class Foo {}
             </property>
         </properties>
     </rule>
-    <rule name="CloneMethodMustImplementCloneable" message="clone() method should be implemented only if implementing Cloneable interface" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="CloneMethodMustImplementCloneable" message="clone() method should be implemented only if implementing Cloneable interface" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        The method clone() should only be implemented if the class implements Cloneable interface         </description>
         <example><![CDATA[
             
@@ -881,7 +881,7 @@ public class MyClass  {
             </property>
         </properties>
     </rule>
-    <rule name="EmptyStatementNotInLoop" message="An empty statement (semicolon) not part of a loop" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptyStatementNotInLoop" message="An empty statement (semicolon) not part of a loop" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        An empty statement (aka a semicolon by itself) that is not used        as the sole body of a for loop or while loop is probably a bug.  It        could also be a double semicolon, which is useless and should be        removed.        </description>
         <example><![CDATA[
 public class MyClass {
@@ -914,7 +914,7 @@ public class MyClass {
             </property>
         </properties>
     </rule>
-    <rule name="UnnecessaryParentheses" message="This return statement may have some unnecessary parentheses" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UnnecessaryParentheses" message="This return statement may have some unnecessary parentheses" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>
       Sometimes return statement expressions are wrapped in unnecessary parentheses,
  making them look like a function call.
@@ -957,7 +957,7 @@ public class Foo {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="DefaultLabelNotLastInSwitchStmt" message="The default label should be the last label in a switch statement" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="DefaultLabelNotLastInSwitchStmt" message="The default label should be the last label in a switch statement" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        The default label in a switch statement should be the last label, by convention.        Most programmers will expect the default label (if present) to be the last one.        </description>
         <example><![CDATA[
    
@@ -987,7 +987,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="AvoidSynchronizedAtMethodLevel" message="Use block level rather than method level synchronization" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AvoidSynchronizedAtMethodLevel" message="Use block level rather than method level synchronization" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Method level synchronization can backfire when new code is added to the method.  Block-level   synchronization helps to ensure that only the code that needs synchronization gets it.       </description>
         <example><![CDATA[
 
@@ -1108,7 +1108,7 @@ public class Foo {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="MissingStaticMethodInNonInstantiatableClass" message="Class cannot be instantiated and does not provide any static methods" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="MissingStaticMethodInNonInstantiatableClass" message="Class cannot be instantiated and does not provide any static methods" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   A class that has private constructors and does not have any static method cannot be used.       </description>
         <example><![CDATA[
 
@@ -1260,7 +1260,7 @@ public class Foo {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="OverrideBothEqualsAndHashcode" message="Ensure you override both equals() and hashCode()" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="OverrideBothEqualsAndHashcode" message="Ensure you override both equals() and hashCode()" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.       </description>
         <example><![CDATA[
   // this is bad
@@ -1330,7 +1330,7 @@ public class Foo {}
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="UnnecessaryConversionTemporary" message="Avoid unnecessary temporaries when converting primitives to Strings" class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporary">
+    <rule name="UnnecessaryConversionTemporary" message="Avoid unnecessary temporaries when converting primitives to Strings" class="net.sourceforge.pmd.lang.java.rule.basic.UnnecessaryConversionTemporaryRule">
         <description>       Avoid unnecessary temporaries when converting primitives to Strings       </description>
         <example><![CDATA[
   public String convert(int x) {
@@ -1343,7 +1343,7 @@ public class Foo {}
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="CloneThrowsCloneNotSupportedException" message="clone() method should throw CloneNotSupportedException" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="CloneThrowsCloneNotSupportedException" message="clone() method should throw CloneNotSupportedException" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>         The method clone() should throw a CloneNotSupportedException          </description>
         <example><![CDATA[
              
@@ -1394,7 +1394,7 @@ and count(NameList/Name[contains
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="NonCaseLabelInSwitchStatement" message="A non-case label was present in a switch statement" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="NonCaseLabelInSwitchStatement" message="A non-case label was present in a switch statement" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        A non-case label (e.g. a named break/continue label) was present in a switch statement.        This legal, but confusing. It is easy to mix up the case labels and the non-case labels.        </description>
         <example><![CDATA[
    
@@ -1425,7 +1425,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="MissingBreakInSwitch" message="A switch statement does not contain a break" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="MissingBreakInSwitch" message="A switch statement does not contain a break" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   A switch statement without an enclosed break statement may be a bug.       </description>
         <example><![CDATA[
 
@@ -1452,7 +1452,7 @@ switch(status) {
             </property>
         </properties>
     </rule>
-    <rule name="UseStringBufferForStringAppends" message="Prefer StringBuffer over += for concatenating strings" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UseStringBufferForStringAppends" message="Prefer StringBuffer over += for concatenating strings" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>
       Finds usages of += for appending strings.
            </description>
@@ -1484,7 +1484,7 @@ switch(status) {
             </property>
         </properties>
     </rule>
-    <rule name="AssignmentInOperand" message="Avoid assigments in operands" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AssignmentInOperand" message="Avoid assigments in operands" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Avoid assigments in operands; this can make code more complicated and harder to read.   </description>
         <example><![CDATA[
   
@@ -1513,7 +1513,7 @@ return 3;
             </property>
         </properties>
     </rule>
-    <rule name="SimplifyBooleanExpressions" message="Avoid unnecessary comparisons in boolean expressions" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="SimplifyBooleanExpressions" message="Avoid unnecessary comparisons in boolean expressions" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Avoid unnecessary comparisons in boolean expressions - this makes simple code seem complicated.       </description>
         <example><![CDATA[
   
@@ -1537,7 +1537,7 @@ public class Bar {
             </property>
         </properties>
     </rule>
-    <rule name="UnnecessaryConstructor" message="Avoid unnecessary constructors - the compiler will generate these for you" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UnnecessaryConstructor" message="Avoid unnecessary constructors - the compiler will generate these for you" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Unnecessary constructor detects when a constructor is not necessary; i.e., when there's only one constructor,   it's public, has an empty body, and takes no arguments.       </description>
         <example><![CDATA[
   
@@ -1584,7 +1584,7 @@ public class Foo {
             <property name="minimum" value="1000"/>
         </properties>
     </rule>
-    <rule name="ProperCloneImplementation" message="Object clone() should be implemented with super.clone()" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="ProperCloneImplementation" message="Object clone() should be implemented with super.clone()" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>      Object clone() should be implemented with super.clone()      </description>
         <example><![CDATA[
  
@@ -1614,7 +1614,7 @@ ClassOrInterfaceDeclaration[position()=last()]/@Image)
             </property>
         </properties>
     </rule>
-    <rule name="FinalizeShouldBeProtected" message="If you override finalize(), make it protected" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="FinalizeShouldBeProtected" message="If you override finalize(), make it protected" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       If you override finalize(), make it protected.  Otherwise, subclasses           may not called your implementation of finalize.       </description>
         <example><![CDATA[
   
@@ -1638,7 +1638,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="SimplifyConditional" message="No need to check for null before an instanceof" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="SimplifyConditional" message="No need to check for null before an instanceof" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>
       No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
            </description>
@@ -1711,7 +1711,7 @@ public class Foo {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="UnnecessaryReturn" message="Avoid unnecessary return statements" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UnnecessaryReturn" message="Avoid unnecessary return statements" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Avoid unnecessary return statements       </description>
         <example><![CDATA[
   // this is bad
@@ -1736,7 +1736,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="LoggerIsNotStaticFinal" message="The Logger variable declaration does not contain the static and final modifiers" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="LoggerIsNotStaticFinal" message="The Logger variable declaration does not contain the static and final modifiers" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>      In most cases, the Logger can be declared static and final.      </description>
         <example><![CDATA[
  
@@ -1762,7 +1762,7 @@ class Foo{
             </property>
         </properties>
     </rule>
-    <rule name="DontImportSun" message="Avoid importing anything from the 'sun.*' packages" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="DontImportSun" message="Avoid importing anything from the 'sun.*' packages" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>           Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.        </description>
         <example><![CDATA[
 
@@ -1817,7 +1817,7 @@ public class Foo {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="EmptyCatchBlock" message="Avoid empty catch blocks" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptyCatchBlock" message="Avoid empty catch blocks" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Empty Catch Block finds instances where an exception is caught,   but nothing is done.  In most circumstances, this swallows an exception   which should either be acted on or reported.       </description>
         <example><![CDATA[
   public void doSomething() {
@@ -1846,7 +1846,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="ForLoopShouldBeWhileLoop" message="This for loop could be simplified to a while loop" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="ForLoopShouldBeWhileLoop" message="This for loop could be simplified to a while loop" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       Some for loops can be simplified to while loops - this makes them more concise.       </description>
         <example><![CDATA[
   public class Foo {
@@ -1864,7 +1864,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="UseArrayListInsteadOfVector" message="Use ArrayList instead of Vector" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UseArrayListInsteadOfVector" message="Use ArrayList instead of Vector" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>           ArrayList is a much better Collection implementation than Vector.       </description>
         <example><![CDATA[
 
@@ -1902,7 +1902,7 @@ public class Foo {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="SuspiciousConstantFieldName" message="The field name indicates a constants but its modifiers don't" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="SuspiciousConstantFieldName" message="The field name indicates a constants but its modifiers don't" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        A field name is all in uppercase characters, which in sun's java naming         conventions indicate a constant. However, the field is not final.        </description>
         <example><![CDATA[
     
@@ -1962,7 +1962,7 @@ public class Something {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="EmptyStaticInitializer" message="Empty static initializer was found" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptyStaticInitializer" message="Empty static initializer was found" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        An empty static initializer was found.        </description>
         <example><![CDATA[
    public class Foo {
@@ -1979,7 +1979,7 @@ public class Something {
             </property>
         </properties>
     </rule>
-    <rule name="FinalizeOnlyCallsSuperFinalize" message="Finalize should do something besides just calling super.finalize()" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="FinalizeOnlyCallsSuperFinalize" message="Finalize should do something besides just calling super.finalize()" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        If the finalize() is implemented, it should do something besides just calling        super.finalize().        </description>
         <example><![CDATA[
            
@@ -2004,7 +2004,7 @@ public class Something {
             </property>
         </properties>
     </rule>
-    <rule name="OptimizableToArrayCall" message="This call to Collection.toArray() may be optimizable" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="OptimizableToArrayCall" message="This call to Collection.toArray() may be optimizable" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   A call to Collection.toArray can use the Collection's size vs an empty Array of the desired type.       </description>
         <example><![CDATA[
   
@@ -2037,7 +2037,7 @@ PrimarySuffix/Arguments/ArgumentList/Expression
             </property>
         </properties>
     </rule>
-    <rule name="IfStmtsMustUseBraces" message="Avoid using if statements without curly braces" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="IfStmtsMustUseBraces" message="Avoid using if statements without curly braces" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>      Avoid using if statements without using curly braces      </description>
         <example><![CDATA[
  
@@ -2060,7 +2060,7 @@ PrimarySuffix/Arguments/ArgumentList/Expression
             </property>
         </properties>
     </rule>
-    <rule name="EmptyWhileStmt" message="Avoid empty 'while' statements" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptyWhileStmt" message="Avoid empty 'while' statements" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Empty While Statement finds all instances where a while statement   does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if   it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.        </description>
         <example><![CDATA[
   while (a == b) {
@@ -2078,7 +2078,7 @@ PrimarySuffix/Arguments/ArgumentList/Expression
             </property>
         </properties>
     </rule>
-    <rule name="EmptyFinalizer" message="Avoid empty finalize methods" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptyFinalizer" message="Avoid empty finalize methods" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        If the finalize() method is empty, then it does not need to exist.        </description>
         <example><![CDATA[
 
@@ -2099,7 +2099,7 @@ PrimarySuffix/Arguments/ArgumentList/Expression
             </property>
         </properties>
     </rule>
-    <rule name="EmptySwitchStatements" message="Avoid empty switch statements" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptySwitchStatements" message="Avoid empty switch statements" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       Avoid empty switch statements.       </description>
         <example><![CDATA[
   public class Foo {
@@ -2121,7 +2121,7 @@ PrimarySuffix/Arguments/ArgumentList/Expression
             </property>
         </properties>
     </rule>
-    <rule name="BooleanInstantiation" message="Avoid instantiating Boolean objects; you can usually invoke Boolean.valueOf() instead." class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="BooleanInstantiation" message="Avoid instantiating Boolean objects; you can usually invoke Boolean.valueOf() instead." class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>    Avoid instantiating Boolean objects, instead use Boolean.valueOf().    </description>
         <example><![CDATA[
    
@@ -2145,7 +2145,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="JumbledIncrementer" message="Avoid modifying an outer loop incrementer in an inner loop for update expression" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="JumbledIncrementer" message="Avoid modifying an outer loop incrementer in an inner loop for update expression" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>      Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.      </description>
         <example><![CDATA[
  public class JumbledIncrementerRule1 {
@@ -2189,7 +2189,7 @@ public class MaybeASingleton {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="SimpleDateFormatNeedsLocale" message="When instantiating a SimpleDateFormat object, specify a Locale" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="SimpleDateFormatNeedsLocale" message="When instantiating a SimpleDateFormat object, specify a Locale" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>             Be sure to specify a Locale when creating a new instance of SimpleDateFormat.         </description>
         <example><![CDATA[
         
@@ -2225,7 +2225,7 @@ public class Foo {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="UnconditionalIfStatement" message="Do not use 'if' statements that are always true or always false" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UnconditionalIfStatement" message="Do not use 'if' statements that are always true or always false" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       Do not use "if" statements that are always true or always false.       </description>
         <example><![CDATA[
   public class Foo {
@@ -2247,7 +2247,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="AvoidCallingFinalize" message="Avoid calling finalize() explicitly" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AvoidCallingFinalize" message="Avoid calling finalize() explicitly" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   finalize() is called by the garbage collector on an object when garbage collection determines   that there are no more references to the object.       </description>
         <example><![CDATA[
 
@@ -2278,7 +2278,7 @@ or @Image='finalize'
             </property>
         </properties>
     </rule>
-    <rule name="AvoidProtectedFieldInFinalClass" message="Avoid protected fields in a final class.  Change to private or package access." class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AvoidProtectedFieldInFinalClass" message="Avoid protected fields in a final class.  Change to private or package access." class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>      Do not use protected fields in final classes since they cannot be subclassed.     Clarify your intent by using private or package access modifiers instead.          </description>
         <example><![CDATA[
      public final class Bar {
@@ -2298,7 +2298,7 @@ or @Image='finalize'
             </property>
         </properties>
     </rule>
-    <rule name="AvoidThrowingCertainExceptionTypes" message="Avoid throwing certain exception types." class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AvoidThrowingCertainExceptionTypes" message="Avoid throwing certain exception types." class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>  1) Avoid throwing certain exception types.  Rather than throw a raw RuntimeException, Throwable,  Exception, or Error, use a subclassed exception or error instead.  2) Avoid throwing a NullPointerException - it's confusing because most people will assume that the  VM threw NPE.  Consider using InvalidArgumentException("Null parameter") which will be clearly seen as a programmer initiated exception..  Use IllegalArgumentException or IllegalStateException instead.     </description>
         <example><![CDATA[
       
@@ -2335,7 +2335,7 @@ throw new Exception();
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="AvoidCatchingNPE" message="Avoid catching NullPointerException; consider removing the cause of the NPE." class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="AvoidCatchingNPE" message="Avoid catching NullPointerException; consider removing the cause of the NPE." class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       Code should never throw NPE under normal circumstances.  A catch block may hide the original error, causing other more subtle errors in its wake.     </description>
         <example><![CDATA[  
 try {
@@ -2382,7 +2382,7 @@ public class Foo {
             <property name="problemDepth" value="5"/>
         </properties>
     </rule>
-    <rule name="SimplifyStartsWith" message="This call to String.startsWith can be rewritten using String.charAt(0)" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="SimplifyStartsWith" message="This call to String.startsWith can be rewritten using String.charAt(0)" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>
       Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
       </description>
@@ -2465,7 +2465,7 @@ public void addData(
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="IfElseStmtsMustUseBraces" message="Avoid using 'if...else' statements without curly braces" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="IfElseStmtsMustUseBraces" message="Avoid using 'if...else' statements without curly braces" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        Avoid using if..else statements without using curly braces        </description>
         <example><![CDATA[
    
@@ -2496,7 +2496,7 @@ public void addData(
             </property>
         </properties>
     </rule>
-    <rule name="StringInstantiation" message="Avoid instantiating String objects; this is usually unnecessary." class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="StringInstantiation" message="Avoid instantiating String objects; this is usually unnecessary." class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>     Avoid instantiating String objects; this is usually unnecessary.     </description>
         <example><![CDATA[
 
@@ -2516,7 +2516,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="EmptyIfStmt" message="Avoid empty 'if' statements" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptyIfStmt" message="Avoid empty 'if' statements" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Empty If Statement finds instances where a condition is checked but nothing is done about it.     </description>
         <example><![CDATA[
     if (foo == 0) {
@@ -2532,7 +2532,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="WhileLoopsMustUseBraces" message="Avoid using 'while' statements without curly braces" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="WhileLoopsMustUseBraces" message="Avoid using 'while' statements without curly braces" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       Avoid using 'while' statements without using curly braces       </description>
         <example><![CDATA[
   
@@ -2553,7 +2553,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="EqualsNull" message="Don't use equals() to compare against null" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EqualsNull" message="Don't use equals() to compare against null" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>          Newbie programmers sometimes get the comparison concepts confused          and use equals() to compare to null.         </description>
         <example><![CDATA[
        
@@ -2602,7 +2602,7 @@ public class Foo {
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="BadComparison" message="Avoid equality comparisons with Double.NaN" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="BadComparison" message="Avoid equality comparisons with Double.NaN" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Avoid equality comparisons with Double.NaN - these are likely to be logic errors.       </description>
         <example><![CDATA[
   
@@ -2624,7 +2624,7 @@ int x = (y == Double.NaN);
             </property>
         </properties>
     </rule>
-    <rule name="LongVariable" message="Avoid excessively long variable names like {0}" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="LongVariable" message="Avoid excessively long variable names like {0}" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description> Detects when a field, formal or local variable is declared with a long name.     </description>
         <example><![CDATA[
 
@@ -2661,7 +2661,7 @@ public class Foo {}
         <priority>2</priority>
         <properties/>
     </rule>
-    <rule name="DoubleCheckedLocking" message="Double checked locking is not thread safe in Java." class="net.sourceforge.pmd.rules.DoubleCheckedLocking">
+    <rule name="DoubleCheckedLocking" message="Double checked locking is not thread safe in Java." class="net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule">
         <description>       Partially created objects can be returned by the Double Checked Locking pattern when used in Java.       An optimizing JRE may assign a reference to the baz variable before it creates the object the           reference is intended to point to.  For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html.       </description>
         <example><![CDATA[
   public class Foo {
@@ -2681,7 +2681,7 @@ public class Foo {}
         <priority>2</priority>
         <properties/>
     </rule>
-    <rule name="CollapsibleIfStatements" message="These nested if statements could be combined" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="CollapsibleIfStatements" message="These nested if statements could be combined" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>
       Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
       </description>
@@ -2711,7 +2711,7 @@ public class Foo {}
             </property>
         </properties>
     </rule>
-    <rule name="UseNotifyAllInsteadOfNotify" message="Call Thread.notifyAll() rather than Thread.notify()" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UseNotifyAllInsteadOfNotify" message="Call Thread.notifyAll() rather than Thread.notify()" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>       notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only       one is chosen.  The thread chosen is arbitrary; thus it's usually safer to call notifyAll() instead.       </description>
         <example><![CDATA[
 
@@ -2755,7 +2755,7 @@ or (  ./AllocationExpression
         <priority>4</priority>
         <properties/>
     </rule>
-    <rule name="ShortMethodName" message="Avoid using short method names" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="ShortMethodName" message="Avoid using short method names" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description> Detects when very short method names are used.      </description>
         <example><![CDATA[
 
@@ -2794,7 +2794,7 @@ sb.append(System.getProperty("java.io.tmpdir"));
         <priority>2</priority>
         <properties/>
     </rule>
-    <rule name="SystemPrintln" message="System.out.println is used" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="SystemPrintln" message="System.out.println is used" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>      System.(out|err).println is used, consider using a logger.      </description>
         <example><![CDATA[
  
@@ -2825,7 +2825,7 @@ child:://Name[
             </property>
         </properties>
     </rule>
-    <rule name="FinalizeDoesNotCallSuperFinalize" message="Last statement in finalize method should be a call to super.finalize()" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="FinalizeDoesNotCallSuperFinalize" message="Last statement in finalize method should be a call to super.finalize()" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>        If the finalize() is implemented, its last action should be to call super.finalize        </description>
         <example><![CDATA[
 
@@ -2855,7 +2855,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="EmptySynchronizedBlock" message="Avoid empty synchronized blocks" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="EmptySynchronizedBlock" message="Avoid empty synchronized blocks" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   Avoid empty synchronized blocks - they're useless.       </description>
         <example><![CDATA[
   // this is bad
@@ -2872,7 +2872,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="UnnecessaryFinalModifier" message="Unnecessary final modifier in final class" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="UnnecessaryFinalModifier" message="Unnecessary final modifier in final class" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>   When a class has the final modifier, all the methods are marked finally.       </description>
         <example><![CDATA[
 
@@ -2899,7 +2899,7 @@ public final class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="SwitchStmtsShouldHaveDefault" message="Switch statements should have a default label" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="SwitchStmtsShouldHaveDefault" message="Switch statements should have a default label" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>     Switch statements should have a default label.     </description>
         <example><![CDATA[
 
@@ -2924,7 +2924,7 @@ public class Foo {
             </property>
         </properties>
     </rule>
-    <rule name="FinalizeOverloaded" message="Finalize methods should not be overloaded" class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="FinalizeOverloaded" message="Finalize methods should not be overloaded" class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>    Methods named finalize() should not have parameters.  It is    confusing and probably a bug to overload finalize().  It will    not be called by the VM.    </description>
         <example><![CDATA[
 
