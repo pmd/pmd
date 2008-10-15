@@ -169,6 +169,7 @@ public class RuleSetTest extends RuleTst {
     }
 
     @Test
+    @SuppressWarnings("PMD.UseAssertEqualsInsteadOfAssertTrue")
     public void testEquals2() {
 	RuleSet s = new RuleSet();
 	assertTrue("A rulset must be equals to itself", s.equals(s));
