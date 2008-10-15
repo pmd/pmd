@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.runtime;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 
 /**
@@ -15,8 +16,8 @@ public class PMDRuntimeConstants {
     public static final String PMD_DFA_MARKER = PMDPlugin.PLUGIN_ID + ".pmdDFAMarker";
     public static final String PMD_TASKMARKER = PMDPlugin.PLUGIN_ID + ".pmdTaskMarker";
 
-    public static final String RULE_PROPERTY_MAXVIOLATIONS = "maxviolations";
-
+    public static final IntegerProperty MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty("maxviolations", "Max allowable violations", 1, Integer.MAX_VALUE-1, 1000, 0f);
+    
     public static final String ID_PERSPECTIVE = "net.sourceforge.pmd.eclipse.ui.views.pmdPerspective";
 
     public static final String KEY_MARKERATT_RULENAME = "rulename";

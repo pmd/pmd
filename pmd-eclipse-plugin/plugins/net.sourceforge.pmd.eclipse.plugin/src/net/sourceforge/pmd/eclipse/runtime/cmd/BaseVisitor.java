@@ -321,7 +321,7 @@ public class BaseVisitor {
         final Review review = new Review();
         final Iterator<RuleViolation> iter = context.getReport().iterator();
         final IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
-        final int maxViolationsPerFilePerRule = preferences.getMaxViolationsPerFilePerRule();
+//        final int maxViolationsPerFilePerRule = preferences.getMaxViolationsPerFilePerRule();
         final Map<Rule, Integer> violationsCounter = new HashMap<Rule, Integer>();
 
         while (iter.hasNext()) {
@@ -339,11 +339,8 @@ public class BaseVisitor {
                     violationsCounter.put(violation.getRule(), counter);
                 }
 
+                int maxViolations = violation.getRule().getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR);
 
-                int maxViolations = maxViolationsPerFilePerRule;
-                if (violation.getRule().hasProperty(PMDRuntimeConstants.RULE_PROPERTY_MAXVIOLATIONS)) {
-                    maxViolations = violation.getRule().getIntProperty(PMDRuntimeConstants.RULE_PROPERTY_MAXVIOLATIONS);
-                }
                 if (counter.intValue() < maxViolations) {
                 	// Ryan Gustafson 02/16/2008 - Always use PMD_MARKER, as people get confused as to why PMD problems don't always show up on Problems view like they do when you do build.
                     // markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
