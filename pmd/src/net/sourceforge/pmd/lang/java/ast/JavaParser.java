@@ -870,11 +870,12 @@ jjtn000.setModifiers(modifiers);
 
   final public void TypeParameter() throws ParseException {
  /*@bgen(jjtree) TypeParameter */
-  ASTTypeParameter jjtn000 = new ASTTypeParameter(this, JJTTYPEPARAMETER);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+ ASTTypeParameter jjtn000 = new ASTTypeParameter(this, JJTTYPEPARAMETER);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);Token t;
     try {
-      jj_consume_token(IDENTIFIER);
+      t = jj_consume_token(IDENTIFIER);
+                   jjtn000.setImage(t.image);
       switch (jj_nt.kind) {
       case EXTENDS:
         TypeBound();
@@ -7155,6 +7156,11 @@ jjtn000.setModifiers(modifiers);
     return false;
   }
 
+  private boolean jj_3R_202() {
+    if (jj_3R_212()) return true;
+    return false;
+  }
+
   private boolean jj_3R_157() {
     if (jj_3R_198()) return true;
     return false;
@@ -7387,11 +7393,6 @@ jjtn000.setModifiers(modifiers);
       if (jj_3R_65()) { jj_scanpos = xsp; break; }
     }
     if (jj_3R_66()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_202() {
-    if (jj_3R_212()) return true;
     return false;
   }
 

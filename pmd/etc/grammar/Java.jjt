@@ -1217,9 +1217,9 @@ void TypeParameters():
 }
 
 void TypeParameter():
-{}
+{Token t;}
 {
-   <IDENTIFIER> [ TypeBound() ]
+   t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ TypeBound() ]
 }
 
 void TypeBound():
