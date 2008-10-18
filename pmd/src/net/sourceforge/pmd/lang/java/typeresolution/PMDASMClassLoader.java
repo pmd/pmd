@@ -50,7 +50,7 @@ public class PMDASMClassLoader extends ClassLoader {
             return asmVisitor.getPackages();
         } catch (IOException e) {
             dontBother.add(name);
-            throw new ClassNotFoundException(name);
+            throw new ClassNotFoundException(name, e);
         }
     }
 }
