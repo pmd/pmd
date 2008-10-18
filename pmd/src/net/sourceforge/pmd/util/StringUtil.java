@@ -41,6 +41,22 @@ public class StringUtil {
     	return true;
     }
     
+    /**
+     * Returns true if both strings are effectively null or whitespace,
+     * returns false otherwise if they have actual text that differs.
+     * 
+     * @param a
+     * @param b
+     * @return boolean
+     */
+	public static boolean areSemanticEquals(String a, String b) {
+		
+		if (a==null) return isEmpty(b);
+		if (b==null) return isEmpty(a);
+		
+		return a.equals(b);
+	}
+    
     public static String replaceString(String original, char oldChar, String newString) {
         
     	String fixedNew = newString == null ? "" : newString;
