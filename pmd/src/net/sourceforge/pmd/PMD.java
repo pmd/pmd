@@ -131,7 +131,12 @@ public class PMD {
     /**
      * Processes the input stream against a rule set using the given input encoding.
      * If the LanguageVersion is <code>null</code>  on the RuleContext, it will
-     * be automatically determined.
+     * be automatically determined.  Any code which wishes to process files for
+     * different Languages, will need to be sure to either properly set the
+     * Language on the RuleContext, or set it to <code>null</code> first.
+     * 
+     * @see RuleContext#setLanguageVersion(LanguageVersion)
+     * @see Configuration#getLanguageVersionOfFile(String)
      *
      * @param reader The Reader to analyze.
      * @param ruleSets The collection of rules to process against the file.
@@ -355,6 +360,7 @@ public class PMD {
 
 	    try {
 		InputStream stream = new BufferedInputStream(dataSource.getInputStream());
+		ctx.setLanguageVersion(null);
 		processFile(stream, rs, ctx);
 	    } catch (PMDException pmde) {
 		LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
@@ -556,6 +562,7 @@ public class PMD {
 
 		try {
 		    InputStream stream = new BufferedInputStream(dataSource.getInputStream());
+		    ctx.setLanguageVersion(null);
 		    pmd.processFile(stream, rs, ctx);
 		} catch (PMDException pmde) {
 		    LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
@@ -584,38 +591,6 @@ public class PMD {
 		    Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
 		} catch (IOException ioe) {
 		}
-	    }
-	}
-    }
-
-    /**
-     * Run PMD on a list of files.
-     *
-     * @param files             the List of DataSource instances.
-     * @param ctx               the context in which PMD is operating. This contains the Report and
-     *                          whatnot
-     * @param rulesets          the RuleSets
-     * @param debugEnabled
-     * @param shortNamesEnabled
-     * @param inputPath
-     * @param encoding
-     * @throws IOException If one of the files could not be read
-     */
-    public void processFiles(List<DataSource> files, RuleContext ctx, RuleSets rulesets, boolean debugEnabled,
-	    boolean shortNamesEnabled, String inputPath, String encoding) throws IOException {
-	for (DataSource dataSource : files) {
-	    String niceFileName = dataSource.getNiceFileName(shortNamesEnabled, inputPath);
-	    ctx.setSourceCodeFilename(niceFileName);
-	    ctx.setSourceCodeFile(new File(niceFileName));
-	    LOG.fine("Processing " + ctx.getSourceCodeFilename());
-
-	    try {
-		InputStream stream = new BufferedInputStream(dataSource.getInputStream());
-		processFile(stream, rulesets, ctx);
-	    } catch (PMDException pmde) {
-		LOG.log(Level.FINE, "Error while processing files", pmde.getCause());
-
-		ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), niceFileName));
 	    }
 	}
     }
