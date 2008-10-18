@@ -51,8 +51,8 @@ public class StringUtil {
      */
 	public static boolean areSemanticEquals(String a, String b) {
 		
-		if (a==null) return isEmpty(b);
-		if (b==null) return isEmpty(a);
+		if (a==null) { return isEmpty(b); }
+		if (b==null) { return isEmpty(a); }
 		
 		return a.equals(b);
 	}
@@ -227,9 +227,7 @@ public class StringUtil {
 	 */
 	public static void asStringOn(StringBuffer sb, Iterator iter, String separator) {
 		
-	    if (!iter.hasNext()) {
-		return;
-	    }
+	    if (!iter.hasNext()) { return;  }
 	    
 	    sb.append(iter.next());
 	    
@@ -364,4 +362,26 @@ public class StringUtil {
 			return ignoreCase ? s1.equalsIgnoreCase(s2) : s1.equals(s2);
 		}
     }
+    
+	/**
+	 * Formats all items onto a string with separators if more than one
+	 * exists, return an empty string if the items are null or empty.
+	 * 
+	 * @param items Object[]
+	 * @param separator String
+	 * @return String
+	 */
+	public static String asString(Object[] items, String separator) {
+		
+		if (items == null || items.length == 0) { return ""; }
+		if (items.length == 1) { return items[0].toString(); }
+		
+		StringBuilder sb = new StringBuilder(items[0].toString());
+		for (int i=1; i<items.length; i++) {
+			sb.append(separator);
+			sb.append(items[i]);
+		}
+		
+		return sb.toString();
+	}
 }
