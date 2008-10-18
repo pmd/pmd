@@ -5,12 +5,14 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class CloneRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-clone";
 
     @Before
     public void setUp() {
-        addRule("clone", "CloneMethodMustImplementCloneable");
-        addRule("clone", "CloneThrowsCloneNotSupportedException");
-        addRule("clone", "ProperCloneImplementation");
+        addRule(RULESET, "CloneMethodMustImplementCloneable");
+        addRule(RULESET, "CloneThrowsCloneNotSupportedException");
+        addRule(RULESET, "ProperCloneImplementation");
     }
 
     public static junit.framework.Test suite() {

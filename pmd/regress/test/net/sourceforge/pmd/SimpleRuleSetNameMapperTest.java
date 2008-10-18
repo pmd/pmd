@@ -10,45 +10,51 @@ import junit.framework.JUnit4TestAdapter;
 public class SimpleRuleSetNameMapperTest {
 
     @Test
-    public void testMultipleSimple() {
-        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("unusedcode,basic");
-        assertEquals("rulesets/unusedcode.xml,rulesets/basic.xml", s.getRuleSets());
-    }
-
-    @Test
     public void testOneSimple() {
-        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("basic");
-        assertEquals("rulesets/basic.xml", s.getRuleSets());
+        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("java-basic");
+        assertEquals("rulesets/java/basic.xml", s.getRuleSets());
     }
 
     @Test
-    public void testMultipleRegular() {
-        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("rulesets/unusedcode.xml,rulesets/basic.xml");
-        assertEquals("rulesets/unusedcode.xml,rulesets/basic.xml", s.getRuleSets());
+    public void testMultipleSimple() {
+        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("java-unusedcode,java-basic");
+        assertEquals("rulesets/java/unusedcode.xml,rulesets/java/basic.xml", s.getRuleSets());
+    }
+
+    @Test
+    public void testOneRelease() {
+        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("50");
+        assertEquals("rulesets/50.xml", s.getRuleSets());
     }
 
     @Test
     public void testOneRegular() {
-        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("rulesets/unusedcode.xml");
-        assertEquals("rulesets/unusedcode.xml", s.getRuleSets());
+        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("rulesets/java/unusedcode.xml");
+        assertEquals("rulesets/java/unusedcode.xml", s.getRuleSets());
+    }
+
+    @Test
+    public void testMultipleRegular() {
+        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("rulesets/java/unusedcode.xml,rulesets/java/basic.xml");
+        assertEquals("rulesets/java/unusedcode.xml,rulesets/java/basic.xml", s.getRuleSets());
     }
 
     @Test
     public void testMix() {
-        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("rulesets/unusedcode.xml,basic");
-        assertEquals("rulesets/unusedcode.xml,rulesets/basic.xml", s.getRuleSets());
+        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("rulesets/java/unusedcode.xml,xml-basic");
+        assertEquals("rulesets/java/unusedcode.xml,rulesets/xml/basic.xml", s.getRuleSets());
     }
 
     @Test
     public void testUnknown() {
-        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("favorites.xml");
-        assertEquals("favorites.xml", s.getRuleSets());
+        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("nonexistant.xml");
+        assertEquals("nonexistant.xml", s.getRuleSets());
     }
 
     @Test
     public void testUnknownAndSimple() {
-        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("basic,favorites.xml");
-        assertEquals("rulesets/basic.xml,favorites.xml", s.getRuleSets());
+        SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("jsp-basic,nonexistant.xml");
+        assertEquals("rulesets/jsp/basic.xml,nonexistant.xml", s.getRuleSets());
     }
 
     public static junit.framework.Test suite() {

@@ -21,21 +21,17 @@
                 <ul>
                 <j:forEach var="rs" items="${ruleset}">
                     <j:set var="rulesetName" value='${rs.attributeValue("name")}'/>
-                    <j:if test="${rulesetName != 'scratchpad' &amp;&amp; rulesetName != 'Favorites' &amp;&amp; rulesetName != 'my-rules'}">
-                        <j:set var="rulesetDesc" value='${rs.element("description").getText()}'/>
-                        <li><a href="#${rulesetName}">${rulesetName}</a>: ${rulesetDesc}</li>
-                    </j:if>
+                    <j:set var="rulesetDesc" value='${rs.element("description").getText()}'/>
+                    <li><a href="#${rulesetName}">${rulesetName}</a>: ${rulesetDesc}</li>
                 </j:forEach>
                 </ul>
                 <j:forEach var="rs" items="${ruleset}">
                     <j:set var="rn" value="${rs.attributeValue('name')}"/>
-                    <j:if test="${rn != 'scratchpad' &amp;&amp; rn != 'Favorites' &amp;&amp; rn != 'my-rules'}">
-                        <subsection name="${rn}">
-                            <j:forEach var="r" items="${rs.elements('rule')}">
-                                <li> ${r.attributeValue("name")}: ${r.element("description").getText()}</li>
-                            </j:forEach>
-                        </subsection>
-                    </j:if>
+                    <subsection name="${rn}">
+                        <j:forEach var="r" items="${rs.elements('rule')}">
+                            <li> ${r.attributeValue("name")}: ${r.element("description").getText()}</li>
+                        </j:forEach>
+                    </subsection>
                 </j:forEach>
 
 			</section>

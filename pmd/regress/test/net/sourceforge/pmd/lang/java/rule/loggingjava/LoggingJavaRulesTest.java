@@ -5,13 +5,15 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class LoggingJavaRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-logging-java";
 
     @Before
     public void setUp() {
-        addRule("logging-java", "AvoidPrintStackTrace");
-        addRule("logging-java", "LoggerIsNotStaticFinal");
-        addRule("logging-java", "MoreThanOneLogger");
-        addRule("logging-java", "SystemPrintln");
+        addRule(RULESET, "AvoidPrintStackTrace");
+        addRule(RULESET, "LoggerIsNotStaticFinal");
+        addRule(RULESET, "MoreThanOneLogger");
+        addRule(RULESET, "SystemPrintln");
     }
 
     public static junit.framework.Test suite() {

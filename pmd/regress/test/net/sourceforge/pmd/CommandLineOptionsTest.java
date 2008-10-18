@@ -100,8 +100,8 @@ public class CommandLineOptionsTest {
 
     @Test
     public void testRulesets() {
-        CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
-        assertEquals("rulesets/basic.xml", opt.getConfiguration().getRuleSets());
+        CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "java-basic"});
+        assertEquals("rulesets/java/basic.xml", opt.getConfiguration().getRuleSets());
     }
 
     @Test
@@ -195,11 +195,11 @@ public class CommandLineOptionsTest {
     
     @Test
     public void testOptionsFirst(){
-		CommandLineOptions opt = new CommandLineOptions(new String[] { "-threads", "2", "-debug", "file", "format", "basic" });
+		CommandLineOptions opt = new CommandLineOptions(new String[] { "-threads", "2", "-debug", "file", "format", "java-basic" });
 		assertEquals(2, opt.getConfiguration().getThreads());
         assertEquals("file", opt.getConfiguration().getInputPaths());
         assertEquals("format", opt.getConfiguration().getReportFormat());
-        assertEquals("rulesets/basic.xml", opt.getConfiguration().getRuleSets());
+        assertEquals("rulesets/java/basic.xml", opt.getConfiguration().getRuleSets());
         assertTrue(opt.getConfiguration().isDebug());
     }
 

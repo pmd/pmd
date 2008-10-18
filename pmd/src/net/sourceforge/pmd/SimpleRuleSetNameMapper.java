@@ -1,87 +1,74 @@
 package net.sourceforge.pmd;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
-public class SimpleRuleSetNameMapper {
+/**
+ * Provides a mapping from simple RuleSet names to RuleSet resource name.
+ * The general form of a RuleSet resource is
+ * <code>/rulesets/[language]/[name].xml</code>.  The simple name form of this
+ * RuleSet is <code>[language]-[name]</code>.
+ * <p>
+ * The general form of a PMD release RuleSets is
+ * <code>/rulesets/releases/[release].xml</code>.  The simple name form of this
+ * RuleSet is <code>[release]</code>.
+ */
+public final class SimpleRuleSetNameMapper {
+
+    private static final Logger LOG = Logger.getLogger(SimpleRuleSetNameMapper.class.getName());
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
-    private StringBuffer rulesets = new StringBuffer();
-    protected Map<String, String> nameMap = new HashMap<String, String>();
+    private final StringBuilder rulesets = new StringBuilder();
 
     public SimpleRuleSetNameMapper(String ruleString) {
-        populateNameMap();
-        if (ruleString.indexOf(',') == -1) {
-            check(ruleString);
-            return;
-        }
-        for (StringTokenizer st = new StringTokenizer(ruleString, ","); st.hasMoreTokens();) {
-            String tok = st.nextToken();
-            check(tok);
-        }
+	if (ruleString.indexOf(',') == -1) {
+	    check(ruleString);
+	    return;
+	}
+	for (String name : ruleString.split(",")) {
+	    check(name);
+	}
     }
 
     public String getRuleSets() {
-        return rulesets.toString();
+	return rulesets.toString();
     }
 
     protected void check(String name) {
-        if (name.indexOf("rulesets") == -1 && nameMap.containsKey(name)) {
-            append(nameMap.get(name));
-        } else {
-            append(name);
-        }
+	// Short names never contain the 'rulesets' in them.
+	final String resourceName;
+	if (name.indexOf("rulesets") == -1) {
+	    // No path separators or periods, assume it as a short name
+	    if (name.indexOf('/') < 0 && name.indexOf('\\') < 0 && name.indexOf('.') < 0) {
+		// Contains a '-' character?
+		int index = name.indexOf('-');
+		if (index >= 0) {
+		    // Standard short name
+		    resourceName = "rulesets/" + name.substring(0, index) + "/" + name.substring(index + 1) + ".xml";
+		} else {
+		    // A release RuleSet?
+		    if (name.matches("[0-9]+.*")) {
+			resourceName = "rulesets/" + name + ".xml";
+		    } else {
+			// Appears to be a RuleSet resource name
+			resourceName = name;
+		    }
+		}
+	    } else {
+		// Appears to be a RuleSet resource name
+		resourceName = name;
+	    }
+	} else {
+	    // Appears to be a RuleSet resource name
+	    resourceName = name;
+	}
+
+	append(resourceName);
     }
 
     protected void append(String name) {
-        if (rulesets.length() > 0) {
-            rulesets.append(',');
-        }
-        rulesets.append(name);
-    }
-
-    private void populateNameMap() {
-	// TODO Can these non-Language suffixed short names still continue?  Would "java-basic" be more appropriate?
-        nameMap.put("basic", "rulesets/basic.xml");
-        nameMap.put("jsp", "rulesets/basic-jsp.xml");
-        nameMap.put("jsf", "rulesets/basic-jsf.xml");
-        nameMap.put("braces", "rulesets/braces.xml");
-        nameMap.put("clone", "rulesets/clone.xml");
-        nameMap.put("codesize", "rulesets/codesize.xml");
-        nameMap.put("controversial", "rulesets/controversial.xml");
-        nameMap.put("coupling", "rulesets/coupling.xml");
-        nameMap.put("design", "rulesets/design.xml");
-        nameMap.put("empty", "rulesets/empty.xml");
-        nameMap.put("finalizers", "rulesets/finalizers.xml");
-        nameMap.put("imports", "rulesets/imports.xml");
-        nameMap.put("j2ee", "rulesets/j2ee.xml");
-        nameMap.put("junit", "rulesets/junit.xml");
-        nameMap.put("javabeans", "rulesets/javabeans.xml");
-        nameMap.put("logging-java", "rulesets/logging-java.xml");
-        nameMap.put("logging-jakarta", "rulesets/logging-jakarta-commons.xml");
-        nameMap.put("logging-jakarta-commons", "rulesets/logging-jakarta-commons.xml");
-        nameMap.put("migrating", "rulesets/migrating.xml");
-        nameMap.put("naming", "rulesets/naming.xml");
-        nameMap.put("optimizations", "rulesets/optimizations.xml");
-        nameMap.put("scratchpad", "rulesets/scratchpad.xml");
-        nameMap.put("strictexception", "rulesets/strictexception.xml");
-        nameMap.put("strings", "rulesets/strings.xml");
-        nameMap.put("sunsecure", "rulesets/sunsecure.xml");
-        nameMap.put("typeresolution", "rulesets/typeresolution.xml");
-        nameMap.put("unusedcode", "rulesets/unusedcode.xml");
-        nameMap.put("useless", "rulesets/useless.xml");
-        nameMap.put("xml-basic", "rulesets/xml/basic.xml");
-        nameMap.put("33", "rulesets/releases/33.xml");
-        nameMap.put("34", "rulesets/releases/34.xml");
-        nameMap.put("35", "rulesets/releases/35.xml");
-        nameMap.put("36", "rulesets/releases/36.xml");
-        nameMap.put("37", "rulesets/releases/37.xml");
-        nameMap.put("38", "rulesets/releases/38.xml");
-        nameMap.put("39", "rulesets/releases/39.xml");
-        nameMap.put("40rc1", "rulesets/releases/40rc1.xml");
-        nameMap.put("41", "rulesets/releases/41.xml");
-        nameMap.put("42", "rulesets/releases/42.xml");
-        nameMap.put("50", "rulesets/releases/50.xml");
+	if (rulesets.length() > 0) {
+	    rulesets.append(',');
+	}
+	rulesets.append(name);
     }
 }

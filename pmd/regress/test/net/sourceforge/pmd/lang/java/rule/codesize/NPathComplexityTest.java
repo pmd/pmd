@@ -24,7 +24,7 @@ public class NPathComplexityTest extends RuleTst {
 
     @Before
     public void setUp() {
-	rule = findRule("codesize", "NPathComplexity");
+	rule = findRule("java-codesize", "NPathComplexity");
 	tests = extractTestsFromXml(rule);
     }
 

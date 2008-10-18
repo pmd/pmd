@@ -20,7 +20,7 @@ import test.net.sourceforge.pmd.testframework.TestDescriptor;
  
      @Before
      public void setUp() {
-         rule = findRule("design", "UncommentedEmptyConstructor");
+         rule = findRule("java-design", "UncommentedEmptyConstructor");
          tests = extractTestsFromXml(rule);
      }
  

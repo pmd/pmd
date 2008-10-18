@@ -13,17 +13,17 @@
 	<target name="all" depends="testBasic, testInvalidLanguageVersion, testFormatterWithNoToFileAttribute, testNoRuleSets, testNestedRuleset, testFormatterWithProperties, testCommaInRulesetfiles, testRelativeRulesets, testRelativeRulesetsInRulesetfiles, testNoFormattersValidation"/>
 
 	<target name="testBasic">
-		<pmd rulesetfiles="${pmd.home}/rulesets/basic.xml"/>
+		<pmd rulesetfiles="${pmd.home}/rulesets/java/basic.xml"/>
 	</target>
 
 	<target name="testInvalidLanguageVersion">
-		<pmd rulesetfiles="${pmd.home}/rulesets/design.xml">
+		<pmd rulesetfiles="${pmd.home}/rulesets/java/design.xml">
 			<version>42</version>
 		</pmd>
 	</target>
 
 	<target name="testFormatterWithNoToFileAttribute">
-		<pmd rulesetfiles="${pmd.home}/rulesets/design.xml">
+		<pmd rulesetfiles="${pmd.home}/rulesets/java/design.xml">
 			<formatter/>
 		</pmd>
 	</target>
@@ -34,8 +34,8 @@
 
 	<target name="testNestedRuleset">
 		<pmd>
-			<ruleset>${pmd.home}/rulesets/codesize.xml</ruleset>
-			<ruleset>${pmd.home}/rulesets/design.xml</ruleset>
+			<ruleset>${pmd.home}/rulesets/java/codesize.xml</ruleset>
+			<ruleset>${pmd.home}/rulesets/java/design.xml</ruleset>
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
 				<include name="*.java"/>
@@ -45,8 +45,8 @@
 
 	<target name="testFormatterWithProperties">
 		<pmd>
-			<ruleset>${pmd.home}/rulesets/codesize.xml</ruleset>
-			<ruleset>${pmd.home}/rulesets/design.xml</ruleset>
+			<ruleset>${pmd.home}/rulesets/java/codesize.xml</ruleset>
+			<ruleset>${pmd.home}/rulesets/java/design.xml</ruleset>
 			<formatter type="summaryhtml" toConsole="true">
 				<param name="linkPrefix" value="link_prefix"/>
 				<param name="linePrefix" value="line_prefix"/>
@@ -58,7 +58,7 @@
 	</target>
 
 	<target name="testAbstractNames">
-		<pmd rulesetfiles="codesize,design">
+		<pmd rulesetfiles="java-codesize,java-design">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
 				<include name="*.java"/>
@@ -68,8 +68,8 @@
 
 	<target name="testAbstractNamesInNestedRuleset">
 		<pmd>
-			<ruleset>codesize</ruleset>
-			<ruleset>design</ruleset>
+			<ruleset>java-codesize</ruleset>
+			<ruleset>java-design</ruleset>
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
 				<include name="*.java"/>
@@ -78,7 +78,7 @@
 	</target>
 
 	<target name="testCommaInRulesetfiles">
-		<pmd rulesetfiles="${pmd.home}/rulesets/codesize.xml,${pmd.home}/rulesets/design.xml">
+		<pmd rulesetfiles="${pmd.home}/rulesets/java/codesize.xml,${pmd.home}/rulesets/java/design.xml">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
 				<include name="*.java"/>
@@ -89,7 +89,7 @@
 	<target name="testRelativeRulesets">
 		<pmd>
 			<ruleset>custom_ruleset.xml</ruleset>
-			<ruleset>rulesets/design.xml</ruleset>
+			<ruleset>rulesets/java/design.xml</ruleset>
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
 				<include name="*.java"/>
@@ -98,7 +98,7 @@
 	</target>
 
 	<target name="testRelativeRulesetsInRulesetfiles">
-		<pmd rulesetfiles="custom_ruleset.xml,rulesets/design.xml">
+		<pmd rulesetfiles="custom_ruleset.xml,rulesets/java/design.xml">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
 				<include name="*.java"/>
@@ -107,7 +107,7 @@
 	</target>
 
 	<target name="testNoFormattersValidation">
-		<pmd rulesetfiles="${pmd.home}/rulesets/design.xml">
+		<pmd rulesetfiles="${pmd.home}/rulesets/java/design.xml">
 		</pmd>
 	</target>
 

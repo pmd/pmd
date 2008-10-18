@@ -5,18 +5,20 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class StrictExceptionRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-strictexception";
 
     @Before
     public void setUp() {
-        addRule("strictexception", "AvoidCatchingNPE");
-        addRule("strictexception", "AvoidCatchingThrowable");
-        addRule("strictexception", "AvoidRethrowingException");
-        addRule("strictexception", "AvoidThrowingNullPointerException");
-        addRule("strictexception", "AvoidThrowingRawExceptionTypes");
-        addRule("strictexception", "DoNotExtendJavaLangError");
-        addRule("strictexception", "ExceptionAsFlowControl");
-        addRule("strictexception", "SignatureDeclareThrowsException");
-        addRule("strictexception", "DoNotThrowExceptionInFinally");
+        addRule(RULESET, "AvoidCatchingNPE");
+        addRule(RULESET, "AvoidCatchingThrowable");
+        addRule(RULESET, "AvoidRethrowingException");
+        addRule(RULESET, "AvoidThrowingNullPointerException");
+        addRule(RULESET, "AvoidThrowingRawExceptionTypes");
+        addRule(RULESET, "DoNotExtendJavaLangError");
+        addRule(RULESET, "ExceptionAsFlowControl");
+        addRule(RULESET, "SignatureDeclareThrowsException");
+        addRule(RULESET, "DoNotThrowExceptionInFinally");
     }
 
     public static junit.framework.Test suite() {

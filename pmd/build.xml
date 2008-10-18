@@ -99,6 +99,7 @@
 
 	<target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
+		<echo message="Running dogfood..."/>
 		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood.xml" shortFilenames="true" minimumpriority="5" failonruleviolation="true" failonerror="true">
 			<version>java 1.5</version>
 			<formatter type="text" toConsole="true"/>
@@ -106,6 +107,7 @@
 				<include name="**/*.java" />
 			</fileset>
 		</pmd>
+		<echo message="Running regress-dogfood..."/>
 		<pmd rulesetfiles="${dir.rulesets}/internal/regress-dogfood.xml" shortFilenames="true" minimumpriority="5" failonruleviolation="true" failonerror="true">
 			<version>java 1.5</version>
 			<formatter type="text" toConsole="true"/>

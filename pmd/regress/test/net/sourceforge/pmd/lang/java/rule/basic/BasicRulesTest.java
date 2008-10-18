@@ -8,29 +8,31 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class BasicRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-basic";
 
     @Before
     public void setUp() {
-        addRule("basic", "AvoidDecimalLiteralsInBigDecimalConstructor");
-    	addRule("basic", "AvoidMultipleUnaryOperators");
-        addRule("basic", "AvoidThreadGroup");
-        addRule("basic", "AvoidUsingHardCodedIP");
-//        addRule("basic", "AvoidUsingHardCodedURL");
-        addRule("basic", "AvoidUsingOctalValues");
-        addRule("basic", "BigIntegerInstantiation");
-        addRule("basic", "BooleanInstantiation");
-        addRule("basic", "BrokenNullCheck");
-        addRule("basic", "CheckResultSet");
-        addRule("basic", "CheckSkipResult");
-        addRule("basic", "ClassCastExceptionWithToArray");
-        addRule("basic", "CollapsibleIfStatements");
-        addRule("basic", "DoubleCheckedLocking");
-	addRule("basic", "ExtendsObject");
-        addRule("basic", "ForLoopShouldBeWhileLoop");
-        addRule("basic", "JumbledIncrementer");
-        addRule("basic", "MisplacedNullCheck");
-        addRule("basic", "OverrideBothEqualsAndHashcode");
-        addRule("basic", "ReturnFromFinallyBlock");
+        addRule(RULESET, "AvoidDecimalLiteralsInBigDecimalConstructor");
+    	addRule(RULESET, "AvoidMultipleUnaryOperators");
+        addRule(RULESET, "AvoidThreadGroup");
+        addRule(RULESET, "AvoidUsingHardCodedIP");
+//        addRule(RULESET, "AvoidUsingHardCodedURL");
+        addRule(RULESET, "AvoidUsingOctalValues");
+        addRule(RULESET, "BigIntegerInstantiation");
+        addRule(RULESET, "BooleanInstantiation");
+        addRule(RULESET, "BrokenNullCheck");
+        addRule(RULESET, "CheckResultSet");
+        addRule(RULESET, "CheckSkipResult");
+        addRule(RULESET, "ClassCastExceptionWithToArray");
+        addRule(RULESET, "CollapsibleIfStatements");
+        addRule(RULESET, "DoubleCheckedLocking");
+	addRule(RULESET, "ExtendsObject");
+        addRule(RULESET, "ForLoopShouldBeWhileLoop");
+        addRule(RULESET, "JumbledIncrementer");
+        addRule(RULESET, "MisplacedNullCheck");
+        addRule(RULESET, "OverrideBothEqualsAndHashcode");
+        addRule(RULESET, "ReturnFromFinallyBlock");
     }
 
     public static junit.framework.Test suite() {

@@ -58,8 +58,8 @@ public class RuleSetFactoryTest {
 	assertNull("RuleSet file name not expected", rs.getFileName());
 
 	RuleSetFactory rsf = new RuleSetFactory();
-	rs = rsf.createRuleSet("rulesets/basic.xml");
-	assertEquals("wrong RuleSet file name", rs.getFileName(), "rulesets/basic.xml");
+	rs = rsf.createRuleSet("rulesets/java/basic.xml");
+	assertEquals("wrong RuleSet file name", rs.getFileName(), "rulesets/java/basic.xml");
     }
 
     @Test
@@ -71,15 +71,15 @@ public class RuleSetFactoryTest {
     @Test
     public void testRefs() throws Throwable {
 	InputStream in = ResourceLoader
-		.loadResourceAsStream("rulesets/favorites.xml", this.getClass().getClassLoader());
+		.loadResourceAsStream("rulesets/java/migrating_to_15.xml", this.getClass().getClassLoader());
 	if (in == null) {
 	    throw new RuleSetNotFoundException(
 		    "Can't find resource   Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: "
 			    + System.getProperty("java.class.path"));
 	}
 	RuleSetFactory rsf = new RuleSetFactory();
-	RuleSet rs = rsf.createRuleSet("rulesets/favorites.xml");
-	assertNotNull(rs.getRuleByName("WhileLoopsMustUseBraces"));
+	RuleSet rs = rsf.createRuleSet("rulesets/java/migrating_to_15.xml");
+	assertNotNull(rs.getRuleByName("AvoidEnumAsIdentifier"));
     }
 
     @Test(expected = RuleSetNotFoundException.class)
@@ -297,8 +297,14 @@ public class RuleSetFactoryTest {
 	for (String fileName : ruleSetFileNames) {
 	    RuleSet ruleSet = loadRuleSetByFileName(fileName);
 	    for (Rule rule : ruleSet.getRules()) {
+		
+		//  Skip references
+		if (rule instanceof RuleReference) {
+		    continue;
+		}
+		
 		Language language = Language.JAVA;
-		String group = fileName.substring(fileName.indexOf('/') + 1);
+		String group = fileName.substring(fileName.lastIndexOf('/') + 1);
 		group = group.substring(0, group.indexOf(".xml"));
 		if (group.indexOf('-') >= 0) {
 		    group = group.substring(0, group.indexOf('-'));
@@ -595,8 +601,8 @@ public class RuleSetFactoryTest {
     // Gets all test PMD Ruleset XML files
     private List<String> getRuleSetFileNames() throws IOException, RuleSetNotFoundException {
 	Properties properties = new Properties();
-	properties.load(ResourceLoader.loadResourceAsStream("rulesets/rulesets.properties"));
-	String fileNames = properties.getProperty("rulesets.testnames");
+	properties.load(ResourceLoader.loadResourceAsStream("rulesets/java/rulesets.properties"));
+	String fileNames = properties.getProperty("rulesets.filenames");
 	StringTokenizer st = new StringTokenizer(fileNames, ",");
 	List<String> ruleSetFileNames = new ArrayList<String>();
 	while (st.hasMoreTokens()) {
@@ -667,22 +673,22 @@ public class RuleSetFactoryTest {
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>" + PMD.EOL
 	    + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + " <rule "
-	    + PMD.EOL + "  ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" message=\"TestMessageOverride\"> "
+	    + PMD.EOL + "  ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\" message=\"TestMessageOverride\"> "
 	    + PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
 
     private static final String REF_MISPELLED_XREF = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
 	    + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + " <rule " + PMD.EOL
-	    + "  ref=\"rulesets/unusedcode.xml/FooUnusedLocalVariable\"> " + PMD.EOL + " </rule>" + PMD.EOL
+	    + "  ref=\"rulesets/java/unusedcode.xml/FooUnusedLocalVariable\"> " + PMD.EOL + " </rule>" + PMD.EOL
 	    + "</ruleset>";
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME_ONE_ELEM = "<?xml version=\"1.0\"?>" + PMD.EOL
 	    + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL
-	    + " <rule ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" message=\"TestMessageOverride\"/> " + PMD.EOL
+	    + " <rule ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\" message=\"TestMessageOverride\"/> " + PMD.EOL
 	    + "</ruleset>";
 
     private static final String REF_OVERRIDE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
 	    + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + " <rule " + PMD.EOL
-	    + "  ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\" " + PMD.EOL + "  name=\"TestNameOverride\" "
+	    + "  ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\" " + PMD.EOL + "  name=\"TestNameOverride\" "
 	    + PMD.EOL + "  message=\"Test message override\"> " + PMD.EOL
 	    + "  <description>Test description override</description>" + PMD.EOL
 	    + "  <example>Test example override</example>" + PMD.EOL + "  <priority>3</priority>" + PMD.EOL
@@ -777,7 +783,7 @@ public class RuleSetFactoryTest {
 	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" deprecated=\"true\">" + PMD.EOL + "</rule></ruleset>";
 
     // Note: Update this RuleSet name to a different RuleSet with deprecated Rules when the Rules are finally removed.
-    private static final String DEPRECATED_RULE_RULESET_NAME = "rulesets/basic.xml";
+    private static final String DEPRECATED_RULE_RULESET_NAME = "rulesets/java/basic.xml";
 
     // Note: Update this Rule name to a different deprecated Rule when the one listed here is finally removed.
     private static final String DEPRECATED_RULE_NAME = "EmptyCatchBlock";
@@ -806,7 +812,7 @@ public class RuleSetFactoryTest {
 
     private static final String EXTERNAL_REFERENCE_RULE_SET = "<?xml version=\"1.0\"?>" + PMD.EOL
 	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL
-	    + "<rule ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL + "</ruleset>";
+	    + "<rule ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL + "</ruleset>";
 
     private Rule loadFirstRule(String ruleSetXml) {
 	RuleSet rs = loadRuleSet(ruleSetXml);

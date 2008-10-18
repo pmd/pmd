@@ -1,0 +1,365 @@
+<?xml version="1.0"?>
+
+<ruleset name="Optimization Rules"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+  <description>
+These rules deal with different optimizations that generally apply to performance best practices.
+  </description>
+
+    <rule name="LocalVariableCouldBeFinal"
+    	 since="2.2"
+	    message="Local variable ''{0}'' could be declared final"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#LocalVariableCouldBeFinal">
+      <description>
+A local variable assigned only once can be declared final.
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+public class Bar {
+ public void foo () {
+  String a = "a"; //if a will not be assigned again it is better to do this:
+  final String b = "b";
+ }
+}
+  ]]>
+      </example>
+      </rule>
+
+    <rule name="MethodArgumentCouldBeFinal"
+    		 since="2.2"
+          message="Parameter ''{0}'' is not assigned and could be declared final"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.MethodArgumentCouldBeFinalRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#MethodArgumentCouldBeFinal">
+      <description>
+A method argument that is never assigned can be declared final.
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+public void foo (String param) {
+  // do stuff with param never assigning it
+  // better: public void foo (final String param) {
+}
+  ]]>
+      </example>
+      </rule>
+
+  <rule name="AvoidInstantiatingObjectsInLoops"
+  		  since="2.2"
+        message="Avoid instantiating new objects inside loops"
+        class="net.sourceforge.pmd.lang.java.rule.optimizations.AvoidInstantiatingObjectsInLoopsRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AvoidInstantiatingObjectsInLoops">
+    <description>
+Detects when a new object is created inside a loop
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[
+public class Something {
+  public static void main( String as[] ) {  
+    for (int i = 0; i < 10; i++) {
+      Foo f = new Foo(); //Avoid this whenever you can it's really expensive
+    }
+  }
+}
+]]>
+    </example>
+  </rule>
+  
+    <rule name="UseArrayListInsteadOfVector"
+   		language="java"
+    		 since="3.0"
+          message="Use ArrayList instead of Vector"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseArrayListInsteadOfVector">
+      <description>
+ArrayList is a much better Collection implementation than Vector.
+      </description>
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//AllocationExpression
+ /ClassOrInterfaceType[@Image='Vector' or @Image='java.util.Vector']
+]]>
+              </value>
+          </property>
+      </properties>
+      <example>
+<![CDATA[
+public class SimpleTest extends TestCase {
+ public void testX() {
+  Collection c = new Vector();
+  // This achieves the same with much better performance
+  // Collection c = new ArrayList();
+ }
+}
+]]>
+          </example>
+    </rule>
+
+    <rule name="SimplifyStartsWith"
+   		language="java"
+    		 since="3.1"
+          message="This call to String.startsWith can be rewritten using String.charAt(0)"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#SimplifyStartsWith">
+      <description>
+Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
+      </description>
+      <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//PrimaryExpression
+ [PrimaryPrefix/Name
+  [ends-with(@Image, '.startsWith')]]
+ [PrimarySuffix/Arguments/ArgumentList
+  /Expression/PrimaryExpression/PrimaryPrefix
+  /Literal
+   [string-length(@Image)=3]
+   [starts-with(@Image, '"')]
+   [ends-with(@Image, '"')]
+ ]
+ ]]>
+            </value>
+        </property>
+    </properties>
+      <example>
+  <![CDATA[
+public class Foo {
+  boolean checkIt(String x) {
+      return x.startsWith("a");
+  }
+}
+]]>
+      </example>
+    </rule>
+
+    <rule name="UseStringBufferForStringAppends"
+    		 since="3.1"
+          message="Prefer StringBuffer over += for concatenating strings"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.UseStringBufferForStringAppendsRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseStringBufferForStringAppends">
+           <description>
+Finds usages of += for appending strings.
+           </description>
+            <priority>3</priority>
+           <example>
+      <![CDATA[
+public class Foo {
+ void bar() {
+  String a;
+  a = "foo";
+  a += " bar";
+  // better would be:
+  // StringBuffer a = new StringBuffer("foo");
+  // a.append(" bar);
+ }
+}
+      ]]>
+           </example>
+        </rule>
+
+  <rule name="UseArraysAsList"
+   		language="java"
+     since="3.5"
+     message="Use asList instead of tight loops"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseArraysAsList">
+     <description>
+   The class java.util.Arrays has a "asList" method that
+   should be use when you want to create a new List from
+   an array of objects. It is faster than executing a loop to
+   cpy all the elements of the array one by one
+     </description>
+     <priority>3</priority>
+     <properties>
+       <property name="xpath">
+       <value>
+   <![CDATA[
+//Statement[
+    (ForStatement) and (count(.//IfStatement)=0)
+   ]
+   //StatementExpression[
+    PrimaryExpression/PrimaryPrefix/Name[
+	 substring-before(@Image,'.add') = ancestor::MethodDeclaration//LocalVariableDeclaration[
+      ./Type//ClassOrInterfaceType[
+       @Image = 'Collection' or 
+       @Image = 'List' or @Image='ArrayList'
+      ]
+     ]
+     /VariableDeclarator/VariableDeclaratorId[
+      count(..//AllocationExpression/ClassOrInterfaceType[
+       @Image="ArrayList"
+      ]
+      )=1
+     ]/@Image
+    ]
+   and
+   PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
+   [@Image = ancestor::MethodDeclaration//LocalVariableDeclaration
+   [@Array="true"]/VariableDeclarator/VariableDeclaratorId/@Image]
+   /../..[count(.//PrimarySuffix)
+   =1]/PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix
+   /Name
+   ]
+   ]]>
+       </value>
+       </property>
+     </properties>
+     <example>
+   <![CDATA[
+   public class Test {
+    public void foo(Integer[] ints) {
+    // could just use Arrays.asList(ints)
+     List l= new ArrayList(10);
+     for (int i=0; i< 100; i++) {
+      l.add(ints[i]);
+     }
+     for (int i=0; i< 100; i++) {
+      l.add(a[i].toString()); // won't trigger the rule
+     }
+    }
+   }
+   ]]>
+     </example>
+   </rule>
+
+
+    <rule name="AvoidArrayLoops"
+   		language="java"
+      since="3.5"
+      message="System.arraycopy is more efficient"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AvoidArrayLoops">
+      <description>
+    Instead of copying data between two arrays, use
+    System.arraycopy method
+      </description>
+      <priority>3</priority>
+      <properties>
+        <property name="xpath">
+        <value>
+    <![CDATA[
+//Statement[(ForStatement or WhileStatement) and
+count(*//AssignmentOperator[@Image = '='])=1
+and
+*/Statement
+[
+./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
+/PrimaryPrefix/Name/../../PrimarySuffix/Expression
+[(PrimaryExpression or AdditiveExpression) and count
+(.//PrimaryPrefix/Name)=1]//PrimaryPrefix/Name/@Image
+and
+./Block/BlockStatement/Statement/StatementExpression/Expression/PrimaryExpression
+/PrimaryPrefix/Name/../../PrimarySuffix[count
+(..//PrimarySuffix)=1]/Expression[(PrimaryExpression
+or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
+//PrimaryPrefix/Name/@Image
+]]
+    ]]>
+        </value>
+        </property>
+      </properties>
+      <example>
+    <![CDATA[
+public class Test {
+ public void bar() {
+  int[] a = new int[10];
+  int[] b = new int[10];
+  for (int i=0;i<10;i++) {
+   b[i]=a[i];
+  }
+ }
+}
+            // this will trigger the rule
+            for (int i=0;i<10;i++) {
+             b[i]=a[c[i]];
+            }
+
+        }
+    }
+    ]]>
+      </example>
+    </rule>
+
+    <rule name="UnnecessaryWrapperObjectCreation"
+          since="3.8"
+          message="Unnecessary wrapper object creation"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.UnnecessaryWrapperObjectCreationRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UnnecessaryWrapperObjectCreation">
+      <description>
+Parsing method should be called directy instead.
+      </description>
+      <priority>3</priority>
+      <example>
+<![CDATA[
+public int convert(String s) {
+  int i, i2;
+
+  i = Integer.valueOf(s).intValue(); // this wastes an object
+  i = Integer.parseInt(s); // this is better
+
+  i2 = Integer.valueOf(i).intValue(); // this wastes an object
+  i2 = i; // this is better
+
+  String s3 = Integer.valueOf(i2).toString(); // this wastes an object
+  s3 = Integer.toString(i2); // this is better
+
+  return i2;
+}
+]]>
+          </example>
+    </rule>
+
+    <rule name="AddEmptyString"
+   		language="java"
+        since="4.0"
+        message="Do not add empty strings"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AddEmptyString">
+        <description>
+Finds empty string literals which are being added. This is an inefficient way 
+to convert any type to a String.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[ 
+//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']
+                ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[ 
+        String s = "" + 123; // bad 
+        String t = Integer.toString(456); // ok 
+            ]]>
+        </example>
+    </rule>
+
+
+    <!--
+    other optimization should be like avoiding
+    "" + int
+    or "" + (int) i
+    and String.valueOf(int)
+    
+    and using Integer.toString(int)
+
+    IntegerToStringShouldBeUsed
+    LongToStringShouldBeUsed
+    BooleanToStringShouldBeUsed    
+    -->
+
+</ruleset>

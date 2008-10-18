@@ -5,10 +5,12 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class ConfusingTernaryRuleTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-design";
 
     @Before
     public void setUp() {
-        addRule("design", "ConfusingTernary");
+        addRule(RULESET, "ConfusingTernary");
     }
 
     /*

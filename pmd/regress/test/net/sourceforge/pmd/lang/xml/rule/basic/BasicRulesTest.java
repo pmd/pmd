@@ -8,10 +8,12 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class BasicRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "xml-basic";
 
     @Before
     public void setUp() {
-        addRule("xml-basic", "MistypedCDATASection");
+        addRule(RULESET, "MistypedCDATASection");
     }
 
     public static junit.framework.Test suite() {

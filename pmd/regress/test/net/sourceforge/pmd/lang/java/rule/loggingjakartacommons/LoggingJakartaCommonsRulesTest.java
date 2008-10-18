@@ -5,11 +5,13 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class LoggingJakartaCommonsRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-logging-jakarta-commons";
 
     @Before
     public void setUp() {
-        addRule("logging-jakarta-commons", "ProperLogger");
-        addRule("logging-jakarta-commons", "UseCorrectExceptionLogging");
+        addRule(RULESET, "ProperLogger");
+        addRule(RULESET, "UseCorrectExceptionLogging");
     }
 
     public static junit.framework.Test suite() {

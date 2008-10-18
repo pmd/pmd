@@ -5,7 +5,9 @@ package test.net.sourceforge.pmd.lang.java.rule.codesize;
  
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
@@ -17,14 +19,12 @@ import org.junit.Test;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-import java.util.Iterator;
-
  public class CyclomaticComplexityTest extends RuleTst {
      private Rule rule;
      private TestDescriptor[] tests;
  
      @Before public void setUp() {
-         rule = findRule("codesize", "CyclomaticComplexity");
+         rule = findRule("java-codesize", "CyclomaticComplexity");
          tests = extractTestsFromXml(rule);
      }
  

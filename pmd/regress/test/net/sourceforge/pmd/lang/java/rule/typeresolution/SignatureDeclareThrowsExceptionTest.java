@@ -5,10 +5,12 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class SignatureDeclareThrowsExceptionTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-typeresolution";
 
     @Before
     public void setUp() {
-        addRule("typeresolution", "SignatureDeclareThrowsException");
+        addRule(RULESET, "SignatureDeclareThrowsException");
     }
 
     public static junit.framework.Test suite() {

@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+
+<ruleset name="Java Logging Rules"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+  <description>
+The Java Logging ruleset contains a collection of rules that find questionable usages of the logger.
+  </description>
+
+    <rule name="MoreThanOneLogger"
+    	   since="2.0"
+         message="Class contains more than one logger."
+         class="net.sourceforge.pmd.lang.java.rule.logging.MoreThanOneLoggerRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#MoreThanOneLogger">
+     <description>
+Normally only one logger is used in each class.
+     </description>
+        <priority>2</priority>
+     <example>
+ <![CDATA[
+class Foo{
+    Logger log = Logger.getLogger(Foo.class.getName());
+    // It is very rare to see two loggers on a class, normally
+    // log information is multiplexed by levels
+    Logger log2= Logger.getLogger(Foo.class.getName());
+}
+]]>
+     </example>
+     </rule>
+
+     <rule name="LoggerIsNotStaticFinal"
+   		language="java"
+     		since="2.0"
+         message="The Logger variable declaration does not contain the static and final modifiers"
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#LoggerIsNotStaticFinal">
+     <description>
+In most cases, the Logger can be declared static and final.
+     </description>
+     <priority>2</priority>
+     <properties>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+//VariableDeclarator
+ [parent::FieldDeclaration]
+ [../Type/ReferenceType
+  /ClassOrInterfaceType[@Image='Logger']
+   and
+  (..[@Final='false'] or ..[@Static = 'false'] ) ]
+                ]]>
+             </value>
+         </property>
+     </properties>
+     <example>
+ <![CDATA[
+class Foo{
+    Logger log = Logger.getLogger(Foo.class.getName());
+    // It is much better to declare the logger as follows 
+    // static final Logger log = Logger.getLogger(Foo.class.getName());
+}
+]]>
+     </example>
+     </rule>
+    
+<!-- This rule will probably be implemented in a java class, since we need to search the logger name 
+first -->
+<!--
+     <rule name="LogBlockWithoutIf"
+         message="There is log block not surrounded by if"
+         class="net.sourceforge.pmd.lang.rule.XPathRule">
+     <description>
+     When many log statements are used, it is conveninent to surround them with an if statement.
+     </description>
+     <properties>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+                ]]>
+             </value>
+         </property>
+     </properties>
+        <priority>2</priority>
+
+     <example>
+ <![CDATA[
+
+ 	// Add this for performance
+	// if (log.isLoggable(Level.FINE)) { ...
+ 	log.fine("This happens");
+	log.fine("Value of x:"+x);
+	log.fine("Value of y:"+y);
+	log.fine("Value of z:"+z);
+	log.fine("Value of w:"+w);
+ 
+]]>
+     </example>
+     </rule>
+    -->
+
+
+    <rule name="SystemPrintln"
+   		language="java"
+    		since="2.1"
+         message="System.out.print is used"
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#SystemPrintln">
+     <description>
+System.(out|err).print is used, consider using a logger.
+     </description>
+     <priority>2</priority>
+     <properties>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+//Name[
+    starts-with(@Image, 'System.out.print')
+    or
+    starts-with(@Image, 'System.err.print')
+    ]
+                ]]>
+             </value>
+         </property>
+     </properties>
+     <example>
+ <![CDATA[
+class Foo{
+    Logger log = Logger.getLogger(Foo.class.getName());
+    public void testA () {
+        System.out.println("Entering test");
+        // Better use this
+        log.fine("Entering test");
+    }
+}
+]]>
+     </example>
+     </rule>
+
+    <rule  name="AvoidPrintStackTrace"
+   		language="java"
+    		  since="3.2"
+           message="Avoid printStackTrace(); use a logger call instead."
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
+		   externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#AvoidPrintStackTrace">
+           <description>
+Avoid printStackTrace(); use a logger call instead.
+           </description>
+           <priority>3</priority>
+           <properties>
+             <property name="xpath">
+             <value>
+<![CDATA[
+//PrimaryExpression
+ [PrimaryPrefix/Name[contains(@Image,'printStackTrace')]]
+ [PrimarySuffix[not(boolean(Arguments/ArgumentList/Expression))]]
+]]>
+             </value>
+             </property>
+           </properties>
+           <example>
+<![CDATA[
+class Foo {
+ void bar() {
+  try {
+   // do something
+  } catch (Exception e) {
+   e.printStackTrace();
+  }
+ }
+}
+]]>
+           </example>
+    </rule>
+    
+</ruleset>
+

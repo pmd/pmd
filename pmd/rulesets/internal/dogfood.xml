@@ -22,20 +22,20 @@
 
 	<rule ref="rulesets/internal/pmdspecific.xml"/>
 
-	<rule ref="rulesets/basic.xml">
+	<rule ref="rulesets/java/basic.xml">
     	<exclude name="CollapsibleIfStatements"/>
 	</rule>
 
-	<rule ref="rulesets/braces.xml"/>
+	<rule ref="rulesets/java/braces.xml"/>
 
-	<rule ref="rulesets/clone.xml"/>
+	<rule ref="rulesets/java/clone.xml"/>
 
 	<!-- Nothing here applies to PMD
-	<rule ref="rulesets/codesize.xml"/>
+	<rule ref="rulesets/java/codesize.xml"/>
 	</rule>
 	-->
 	
-	<rule ref="rulesets/controversial.xml">
+	<rule ref="rulesets/java/controversial.xml">
 		<exclude name="OnlyOneReturn"/>
 		<exclude name="AtLeastOneConstructor"/>
 		<exclude name="CallSuperInConstructor"/>
@@ -47,18 +47,18 @@
 		<exclude name="AssignmentInOperand"/>
 		<exclude name="NullAssignment"/>
 	</rule>
-	<rule ref="rulesets/controversial.xml/AssignmentInOperand">
+	<rule ref="rulesets/java/controversial.xml/AssignmentInOperand">
 		<properties>
 			<property name="allowWhile" value="true"/>
 		</properties>
 	</rule>
 
-	<rule ref="rulesets/coupling.xml">
+	<rule ref="rulesets/java/coupling.xml">
 		<exclude name="CouplingBetweenObjects"/>
 		<exclude name="ExcessiveImports"/>
 	</rule>
 
-	<rule ref="rulesets/design.xml">
+	<rule ref="rulesets/java/design.xml">
 		<exclude name="UseSingleton"/>
 		<exclude name="AvoidDeeplyNestedIfStmts"/>
 		<exclude name="AvoidReassigningParameters"/>
@@ -86,55 +86,55 @@
 		<exclude name="UseVarargs"/>
 	</rule>
 
-	<rule ref="rulesets/empty.xml">
+	<rule ref="rulesets/java/empty.xml">
 		<exclude name="EmptyCatchBlock" />
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="EmptyIfStmt" />
 	</rule>
 	<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 	<!--
-	<rule ref="rulesets/empty.xml/EmptyCatchBlock">
+	<rule ref="rulesets/java/empty.xml/EmptyCatchBlock">
 		<properties>
 			<property name="allowCommentedBlocks" value="true" />
 		</properties>
 	</rule>
 	-->
 
-	<rule ref="rulesets/finalizers.xml"/>
+	<rule ref="rulesets/java/finalizers.xml"/>
 
-	<rule ref="rulesets/imports.xml"/>
+	<rule ref="rulesets/java/imports.xml"/>
 
 	<!-- Nothing here applies to PMD
-	<rule ref="rulesets/j2ee.xml"/>
+	<rule ref="rulesets/java/j2ee.xml"/>
 	</rule>
 	-->
 
 	<!-- Nothing here applies to PMD
-	<rule ref="rulesets/javabeans.xml"/>
+	<rule ref="rulesets/java/javabeans.xml"/>
 	</rule>
 	-->
 
 	<!-- Nothing here applies to PMD
-	<rule ref="rulesets/logging-jakarta-commons.xml"/>
+	<rule ref="rulesets/java/logging-jakarta-commons.xml"/>
 	</rule>
 	-->
 
-	<rule ref="rulesets/logging-java.xml">
+	<rule ref="rulesets/java/logging-java.xml">
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="SystemPrintln"/>
 		<exclude name="AvoidPrintStackTrace"/>
 	</rule>
 
 	<!-- Specifically reference via other referencing RuleSets to test Reference to Reference -->
-	<rule ref="rulesets/migrating_to_13.xml"/>
-	<rule ref="rulesets/migrating_to_14.xml"/>
-	<rule ref="rulesets/migrating_to_15.xml"/>
-	<rule ref="rulesets/migrating_to_junit4.xml">
+	<rule ref="rulesets/java/migrating_to_13.xml"/>
+	<rule ref="rulesets/java/migrating_to_14.xml"/>
+	<rule ref="rulesets/java/migrating_to_15.xml"/>
+	<rule ref="rulesets/java/migrating_to_junit4.xml">
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="JUnit4TestShouldUseTestAnnotation"/>
 	</rule>
 
-	<rule ref="rulesets/naming.xml">
+	<rule ref="rulesets/java/naming.xml">
 		<exclude name="ShortVariable"/>
 		<exclude name="LongVariable"/>
 		<exclude name="ShortMethodName"/>
@@ -147,7 +147,7 @@
 		<exclude name="BooleanGetMethodName"/>
 	</rule>
 
-	<rule ref="rulesets/optimizations.xml">
+	<rule ref="rulesets/java/optimizations.xml">
 		<exclude name="MethodArgumentCouldBeFinal"/>
 		<exclude name="LocalVariableCouldBeFinal"/>
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
@@ -155,7 +155,7 @@
 		<exclude name="UseStringBufferForStringAppends"/>
 	</rule>
 
-	<rule ref="rulesets/strictexception.xml">
+	<rule ref="rulesets/java/strictexception.xml">
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="AvoidThrowingRawExceptionTypes"/>
 		<exclude name="SignatureDeclareThrowsException"/>
@@ -163,7 +163,7 @@
 		<exclude name="AvoidCatchingThrowable"/>
 	</rule>
 
-	<rule ref="rulesets/strings.xml">
+	<rule ref="rulesets/java/strings.xml">
 		<exclude name="AvoidDuplicateLiterals"/>
 		<exclude name="InefficientEmptyStringCheck"/>
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
@@ -173,20 +173,20 @@
 
 	<!-- TODO should we apply these? -->
 	<!--
-	<rule ref="rulesets/sunsecure.xml"/>
+	<rule ref="rulesets/java/sunsecure.xml"/>
 	-->
     
-	<rule ref="rulesets/unusedcode.xml">
+	<rule ref="rulesets/java/unnecessary.xml"/>
+
+	<rule ref="rulesets/java/unusedcode.xml">
 		<exclude name="UnusedFormalParameter"/>
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="UnusedPrivateField"/>
 	</rule>
-
-	<rule ref="rulesets/useless.xml"/>
     
 	<!-- Don't let the Language specific APIs leak out -->
 	<!--
-	<rule name="LanguageLoosePackageCoupling" ref="rulesets/coupling.xml/LoosePackageCoupling">
+	<rule name="LanguageLoosePackageCoupling" ref="rulesets/java/coupling.xml/LoosePackageCoupling">
 		<properties>
 			<property name="packages"><value>net.sourceforge.pmd.lang,net.sourceforge.pmd.lang.java,net.sourceforge.pmd.lang.jsp,net.sourceforge.pmd.lang.ecmascript,net.sourceforge.pmd.lang.cpp</value></property>
 			<property name="classes">

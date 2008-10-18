@@ -18,7 +18,7 @@ import java.util.Set;
      
      @Test
      public void testAll() {
-         Rule rule = findRule("strings", "AvoidDuplicateLiterals");
+         Rule rule = findRule("java-strings", "AvoidDuplicateLiterals");
          rule.setProperty(AvoidDuplicateLiteralsRule.THRESHOLD_DESCRIPTOR, 2);
          runTests(rule);
      }

@@ -5,11 +5,13 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class JavabeansRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-javabeans";
 
     @Before
     public void setUp() {
-        addRule("javabeans", "BeanMembersShouldSerialize");
-        addRule("javabeans", "MissingSerialVersionUID");
+        addRule(RULESET, "BeanMembersShouldSerialize");
+        addRule(RULESET, "MissingSerialVersionUID");
     }
 
     public static junit.framework.Test suite() {

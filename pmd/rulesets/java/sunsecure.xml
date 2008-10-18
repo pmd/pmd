@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<ruleset name="Security Code Guidelines"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+  <description>
+These rules check the security guidelines from Sun, published at http://java.sun.com/security/seccodeguide.html#gcg
+  </description>
+
+    <rule name="MethodReturnsInternalArray"
+    	    since="2.2"
+          message="Returning ''{0}'' may expose an internal array."
+          class="net.sourceforge.pmd.lang.java.rule.sunsecure.MethodReturnsInternalArrayRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/sunsecure.html#MethodReturnsInternalArray">
+      <description>
+Exposing internal arrays directly allows the user to modify some code that could be critical.
+It is safer to return a copy of the array.
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+public class SecureSystem {
+  UserData [] ud;
+  public UserData [] getUserData() {
+      // Don't return directly the internal array, return a copy
+      return ud;
+  }
+}
+  ]]>
+      </example>
+      </rule>
+
+    <rule name="ArrayIsStoredDirectly"
+    	  since="2.2"
+        message="The user-supplied array ''{0}'' is stored directly."
+          class="net.sourceforge.pmd.lang.java.rule.sunsecure.ArrayIsStoredDirectlyRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/sunsecure.html#ArrayIsStoredDirectly">
+      <description>
+Constructors and methods receiving arrays should clone objects and store the copy.
+This prevents that future changes from the user affect the internal functionality.
+      </description>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+public class Foo {
+ private String [] x;
+  public void foo (String [] param) {
+      // Don't do this, make a copy of the array at least
+      this.x=param;
+  }
+}
+  ]]>
+      </example>
+      </rule>
+    
+</ruleset>
+
+
+
+                                             

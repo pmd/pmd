@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+
+<ruleset name="JavaBean Rules"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+  <description>
+The JavaBeans Ruleset catches instances of bean rules not being followed.
+  </description>
+
+
+  <rule name="BeanMembersShouldSerialize"
+  		  since="1.1"
+        message="Found non-transient, non-static member. Please mark as transient or provide accessors."
+        class="net.sourceforge.pmd.lang.java.rule.javabeans.BeanMembersShouldSerializeRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/javabeans.html#BeanMembersShouldSerialize">
+    <description>
+If a class is a bean, or is referenced by a bean directly or indirectly
+it needs to be serializable. Member variables need to be marked as transient,
+static, or have accessor methods in the class. Marking variables
+as transient is the safest and easiest modification. Accessor methods should
+follow the Java naming conventions, i.e.if you have a variable foo, you should
+provide getFoo and setFoo methods.
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[
+  private transient int someFoo;//good, it's transient
+  private static int otherFoo;// also OK
+  private int moreFoo;// OK, has proper accessors, see below
+  private int badFoo;//bad, should be marked transient
+
+
+  private void setMoreFoo(int moreFoo){
+        this.moreFoo = moreFoo;
+  }
+
+  private int getMoreFoo(){
+        return this.moreFoo;
+  }
+
+]]>
+    </example>
+  </rule>
+
+    <rule name="MissingSerialVersionUID"
+   		language="java"
+    		 since="3.0"
+          message="Classes implementing Serializable should set a serialVersionUID"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/javabeans.html#MissingSerialVersionUID">
+      <description>
+Classes that are serializable should provide a serialVersionUID field.
+      </description>
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//ClassOrInterfaceDeclaration
+ [
+  count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+   /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0
+and
+  count(ImplementsList
+   [ClassOrInterfaceType/@Image='Serializable'
+   or ClassOrInterfaceType/@Image='java.io.Serializable']) =1
+and
+   @Abstract = 'false'
+]
+]]>
+              </value>
+          </property>
+      </properties>
+      <example>
+<![CDATA[
+public class Foo implements java.io.Serializable {
+ String name;
+ // Define serialization id to avoid serialization related bugs
+ // i.e., public static final long serialVersionUID = 4328743;
+}
+
+]]>
+          </example>
+    </rule>
+
+</ruleset>

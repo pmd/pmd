@@ -5,19 +5,21 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class CodesizeRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-codesize";
 
     @Before
     public void setUp() {
-        addRule("codesize", "ExcessivePublicCount");
-        addRule("codesize", "ExcessiveClassLength");
-        addRule("codesize", "ExcessiveParameterList");
-        addRule("codesize", "ExcessiveMethodLength");
-        addRule("codesize", "NcssConstructorCount");
-        addRule("codesize", "NcssMethodCount");
-        addRule("codesize", "NcssTypeCount");
-        addRule("codesize", "NPathComplexity");
-        addRule("codesize", "TooManyFields");
-        addRule("codesize", "TooManyMethods");
+        addRule(RULESET, "ExcessivePublicCount");
+        addRule(RULESET, "ExcessiveClassLength");
+        addRule(RULESET, "ExcessiveParameterList");
+        addRule(RULESET, "ExcessiveMethodLength");
+        addRule(RULESET, "NcssConstructorCount");
+        addRule(RULESET, "NcssMethodCount");
+        addRule(RULESET, "NcssTypeCount");
+        addRule(RULESET, "NPathComplexity");
+        addRule(RULESET, "TooManyFields");
+        addRule(RULESET, "TooManyMethods");
     }
 
     public static junit.framework.Test suite() {

@@ -5,13 +5,15 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class CouplingRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-coupling";
 
     @Before
     public void setUp() {
-        addRule("coupling", "CouplingBetweenObjects");
-        addRule("coupling", "ExcessiveImports");
-        addRule("coupling", "LooseCoupling");
-        addRule("coupling", "LoosePackageCoupling");
+        addRule(RULESET, "CouplingBetweenObjects");
+        addRule(RULESET, "ExcessiveImports");
+        addRule(RULESET, "LooseCoupling");
+        addRule(RULESET, "LoosePackageCoupling");
     }
 
     public static junit.framework.Test suite() {

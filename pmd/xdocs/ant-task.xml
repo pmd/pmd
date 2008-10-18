@@ -110,7 +110,7 @@
 <target name="pmd">
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
  <pmd shortFilenames="true">
-  <ruleset>rulesets/favorites.xml</ruleset>
+  <ruleset>rulesets/design.xml</ruleset>
   <ruleset>basic</ruleset>
   <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
   <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
@@ -184,7 +184,7 @@
 <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
 
 <target name="pmd">
-    <pmd rulesetfiles="rulesets/favorites.xml">
+    <pmd rulesetfiles="rulesets/design.xml">
         <formatter type="com.mycompany.MyRenderer" toFile="foo.html"/>
         <fileset dir="/path/to/java/src">
             <include name="**/*.java"/>
@@ -207,7 +207,7 @@
 <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
 
 <target name="pmd">
-      <pmd rulesetfiles="rulesets/favorites.xml">
+      <pmd rulesetfiles="rulesets/design.xml">
           <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
           <fileset dir="/path/to/java/src">
               <include name="**/*.java"/>

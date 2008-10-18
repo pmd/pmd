@@ -70,19 +70,28 @@ public class RuleSetFactory {
 
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from the
-     * "rulesets.properties" resource.
+     * "rulesets.properties" resource for each Languages with Rule support.
      *
      * @return An Iterator of RuleSet objects.
      */
     public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
+	String rulesetsProperties = null;
 	try {
-	    Properties props = new Properties();
-	    props.load(ResourceLoader.loadResourceAsStream("rulesets/rulesets.properties"));
-	    String rulesetFilenames = props.getProperty("rulesets.filenames");
-	    return createRuleSets(rulesetFilenames).getRuleSetsIterator();
+	    StringBuilder allRulesetFilenames = new StringBuilder();
+	    for (Language language : Language.findWithRuleSupport()) {
+		    Properties props = new Properties();
+		    rulesetsProperties = "rulesets/" + language.getTerseName() + "/rulesets.properties";
+		    props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
+		    String rulesetFilenames = props.getProperty("rulesets.filenames");
+		    if (allRulesetFilenames.length() > 0) {
+			allRulesetFilenames.append(",");
+		    }
+		    allRulesetFilenames.append(rulesetFilenames);
+	    }
+	    return createRuleSets(allRulesetFilenames.toString()).getRuleSetsIterator();
 	} catch (IOException ioe) {
 	    throw new RuntimeException(
-		    "Couldn't find rulesets.properties; please ensure that the rulesets directory is on the classpath.  Here's the current classpath: "
+		    "Couldn't find " + rulesetsProperties + "; please ensure that the rulesets directory is on the classpath.  Here's the current classpath: "
 			    + System.getProperty("java.class.path"));
 	}
     }

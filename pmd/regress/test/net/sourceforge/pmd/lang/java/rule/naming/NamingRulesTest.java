@@ -5,28 +5,30 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class NamingRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-naming";
 
     @Before
     public void setUp() {
-        addRule("naming", "AbstractNaming");
-        addRule("naming", "AvoidDollarSigns");
-        addRule("naming", "AvoidFieldNameMatchingMethodName");
-        addRule("naming", "AvoidFieldNameMatchingTypeName");
-        addRule("naming", "BooleanGetMethodName");
-        addRule("naming", "ClassNamingConventions");
-        addRule("naming", "LongVariable");
-        addRule("naming", "MethodNamingConventions");
-        addRule("naming", "MethodWithSameNameAsEnclosingClass");
-        addRule("naming", "MisleadingVariableName");
-        addRule("naming", "NoPackage");
-        addRule("naming", "PackageCase");
-        addRule("naming", "ShortMethodName");
-        addRule("naming", "ShortClassName");
-        addRule("naming", "ShortVariable");
-        addRule("naming", "SuspiciousConstantFieldName");
-        addRule("naming", "SuspiciousEqualsMethodName");
-        addRule("naming", "SuspiciousHashcodeMethodName");
-        addRule("naming", "VariableNamingConventions");
+        addRule(RULESET, "AbstractNaming");
+        addRule(RULESET, "AvoidDollarSigns");
+        addRule(RULESET, "AvoidFieldNameMatchingMethodName");
+        addRule(RULESET, "AvoidFieldNameMatchingTypeName");
+        addRule(RULESET, "BooleanGetMethodName");
+        addRule(RULESET, "ClassNamingConventions");
+        addRule(RULESET, "LongVariable");
+        addRule(RULESET, "MethodNamingConventions");
+        addRule(RULESET, "MethodWithSameNameAsEnclosingClass");
+        addRule(RULESET, "MisleadingVariableName");
+        addRule(RULESET, "NoPackage");
+        addRule(RULESET, "PackageCase");
+        addRule(RULESET, "ShortMethodName");
+        addRule(RULESET, "ShortClassName");
+        addRule(RULESET, "ShortVariable");
+        addRule(RULESET, "SuspiciousConstantFieldName");
+        addRule(RULESET, "SuspiciousEqualsMethodName");
+        addRule(RULESET, "SuspiciousHashcodeMethodName");
+        addRule(RULESET, "VariableNamingConventions");
     }
 
     public static junit.framework.Test suite() {

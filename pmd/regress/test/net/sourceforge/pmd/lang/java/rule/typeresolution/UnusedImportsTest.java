@@ -8,10 +8,12 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class UnusedImportsTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-typeresolution";
 
     @Before
     public void setUp() {
-        addRule("typeresolution", "UnusedImports");
+        addRule(RULESET, "UnusedImports");
     }
 
     public static junit.framework.Test suite() {

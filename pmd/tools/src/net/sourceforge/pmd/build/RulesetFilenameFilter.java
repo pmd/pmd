@@ -16,10 +16,9 @@ public class RulesetFilenameFilter implements FilenameFilter {
 	 * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
 	 */
 	public boolean accept(File file, String name) {
-	    if ( ! name.startsWith("migrating_") && ! name.startsWith("scratchpad") && ! name.startsWith("Favorites") )
+	    if ( ! name.startsWith("migrating_"))
 	    	return (name.endsWith(".xml"));
 	    else
 		return false;
 	}
-
 }

@@ -8,20 +8,22 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class EmptyRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-empty";
 
     @Before
     public void setUp() {
-        addRule("empty", "EmptyCatchBlock");
-        addRule("empty", "EmptyFinallyBlock");
-        addRule("empty", "EmptyIfStmt");
-        addRule("empty", "EmptyInitializer");
-        addRule("empty", "EmptyStatementBlock");
-        addRule("empty", "EmptyStatementNotInLoop");
-        addRule("empty", "EmptyStaticInitializer");
-        addRule("empty", "EmptySwitchStatements");
-        addRule("empty", "EmptySynchronizedBlock");
-        addRule("empty", "EmptyTryBlock");
-        addRule("empty", "EmptyWhileStmt");
+        addRule(RULESET, "EmptyCatchBlock");
+        addRule(RULESET, "EmptyFinallyBlock");
+        addRule(RULESET, "EmptyIfStmt");
+        addRule(RULESET, "EmptyInitializer");
+        addRule(RULESET, "EmptyStatementBlock");
+        addRule(RULESET, "EmptyStatementNotInLoop");
+        addRule(RULESET, "EmptyStaticInitializer");
+        addRule(RULESET, "EmptySwitchStatements");
+        addRule(RULESET, "EmptySynchronizedBlock");
+        addRule(RULESET, "EmptyTryBlock");
+        addRule(RULESET, "EmptyWhileStmt");
     }
 
     public static junit.framework.Test suite() {

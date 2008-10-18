@@ -1,0 +1,543 @@
+<?xml version="1.0"?>
+
+<ruleset name="Naming Rules"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+  <description>
+The Naming Ruleset contains a collection of rules about names - too long, too short, and so forth.
+  </description>
+
+
+  <rule name="ShortVariable"
+   		language="java"
+  		  since="0.3"
+        message="Avoid variables with short names like {0}"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#ShortVariable">
+    <description>
+Detects when a field, local, or parameter has a very short name.
+    </description>
+    <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+//VariableDeclaratorId[string-length(@Image) < 3]
+ [not(ancestor::ForInit)]
+ [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+                  ]]>
+              </value>
+          </property>
+      </properties>
+    <example>
+<![CDATA[
+public class Something {
+  private int q = 15; // VIOLATION - Field
+  public static void main( String as[] ) {  // VIOLATION - Formal
+    int r = 20 + q; // VIOLATION - Local
+    for (int i = 0; i < 10; i++) { // Not a Violation (inside FOR)
+      r += q;
+    }
+  }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="LongVariable"
+   		language="java"
+  		  since="0.3"
+        message="Avoid excessively long variable names like {0}"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#LongVariable">
+    <description>
+Detects when a field, formal or local variable is declared with a long name.
+    </description>
+      <priority>3</priority>
+      <properties>
+          <property name="minimum" type="Integer" description="The variable length reporting threshold" min="1" max="100" value="17"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+//VariableDeclaratorId[string-length(@Image) > $minimum]
+                  ]]>
+              </value>
+          </property>
+      </properties>
+    <example>
+<![CDATA[
+public class Something {
+  int reallyLongIntName = -3;  // VIOLATION - Field
+  public static void main( String argumentsList[] ) { // VIOLATION - Formal
+    int otherReallyLongName = -5; // VIOLATION - Local
+    for (int interestingIntIndex = 0;  // VIOLATION - For
+             interestingIntIndex < 10;
+             interestingIntIndex ++ ) {
+    }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="ShortMethodName"
+   		language="java"
+  		  since="0.3"
+        message="Avoid using short method names"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#ShortMethodName">
+     <description>
+Detects when very short method names are used.
+     </description>
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+//MethodDeclarator[string-length(@Image) < 3]
+                  ]]>
+              </value>
+          </property>
+      </properties>
+     <example>
+<![CDATA[
+public class ShortMethod {
+  public void a( int i ) { // Violation
+  }
+}
+]]>
+     </example>
+  </rule>
+
+
+    <rule name="VariableNamingConventions"
+    since="1.2"
+    message="{0} variable {1} should begin with {2}"
+    class="net.sourceforge.pmd.lang.java.rule.naming.VariableNamingConventionsRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#VariableNamingConventions">
+        <description>
+A variable naming conventions rule - customize this to your liking.  Currently, it
+ checks for final variables that should be fully capitalized and non-final variables
+ that should not include underscores.
+        </description>
+        <priority>1</priority>
+        <example>
+<![CDATA[
+public class Foo {
+ public static final int MY_NUM = 0;
+ public String myTest = "";
+ DataModule dmTest = new DataModule();
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MethodNamingConventions"
+    			  since="1.2"
+              message="Method name does not begin with a lower case character."
+              class="net.sourceforge.pmd.lang.java.rule.naming.MethodNamingConventionsRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#MethodNamingConventions">
+          <description>
+Method names should always begin with a lower case character, and should not contain underscores.
+          </description>
+          <priority>1</priority>
+          <example>
+<![CDATA[
+public class Foo {
+ public void fooStuff() {
+ }
+}
+]]>
+          </example>
+        </rule>
+
+    <rule name="ClassNamingConventions"
+    		 since="1.2"
+          message="Class names should begin with an uppercase character"
+          class="net.sourceforge.pmd.lang.java.rule.naming.ClassNamingConventionsRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#ClassNamingConventions">
+      <description>
+Class names should always begin with an upper case character.
+      </description>
+      <priority>1</priority>
+      <example>
+<![CDATA[
+public class Foo {}
+]]>
+      </example>
+    </rule>
+
+    <rule name="AbstractNaming"
+   		language="java"
+    		 since="1.4"
+          message="Abstract classes should be named 'AbstractXXX'"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#AbstractNaming">
+       <description>
+Abstract classes should be named 'AbstractXXX'.
+       </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration
+ [@Abstract='true' and @Interface='false']
+ [not (starts-with(@Image,'Abstract'))]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+       <example>
+<![CDATA[
+public abstract class Foo { // should be AbstractFoo
+}
+]]>
+       </example>
+    </rule>
+
+    <rule name="AvoidDollarSigns"
+    		  since="1.5"
+           message="Avoid using dollar signs in variable/method/class/interface names"
+           class="net.sourceforge.pmd.lang.java.rule.naming.AvoidDollarSignsRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#AvoidDollarSigns">
+       <description>
+Avoid using dollar signs in variable/method/class/interface names.
+       </description>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+ public class Fo$o {  // yikes!
+ }
+   ]]>
+       </example>
+     </rule>
+
+    <rule name="MethodWithSameNameAsEnclosingClass"
+    		 since="1.5"
+          message="Classes should not have non-constructor methods with the same name as the class"
+          class="net.sourceforge.pmd.lang.java.rule.naming.MethodWithSameNameAsEnclosingClassRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#MethodWithSameNameAsEnclosingClass">
+       <description>
+Non-constructor methods should not have the same name as the enclosing class.
+       </description>
+        <priority>3</priority>
+       <example>
+    <![CDATA[
+public class MyClass {
+ // this is bad because it is a method
+ public void MyClass() {}
+ // this is OK because it is a constructor
+ public MyClass() {}
+}
+    ]]>
+       </example>
+     </rule>
+
+    <rule name="SuspiciousHashcodeMethodName"
+    		 since="1.5"
+          message="The method name and return type are suspiciously close to hashCode()"
+          class="net.sourceforge.pmd.lang.java.rule.naming.SuspiciousHashcodeMethodNameRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#SuspiciousHashcodeMethodName">
+       <description>
+The method name and return type are suspiciously close to hashCode(), which
+may mean you are intending to override the hashCode() method.
+       </description>
+        <priority>3</priority>
+       <example>
+    <![CDATA[
+public class Foo {
+ public int hashcode() {
+ // oops, this probably was supposed to be hashCode
+ }
+}
+    ]]>
+       </example>
+     </rule>
+
+    <rule name="SuspiciousConstantFieldName"
+   		language="java"
+    		 since="2.0"
+          message="The field name indicates a constant but its modifiers do not"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#SuspiciousConstantFieldName">
+       <description>
+A field name is all in uppercase characters, which in Sun's Java naming
+conventions indicate a constant. However, the field is not final.
+       </description>
+       <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[@Interface='false']
+ /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+  [@Final='false']
+  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
+ ]]>
+                </value>
+            </property>
+        </properties>
+       <example>
+    <![CDATA[
+public class Foo {
+ // this is bad, since someone could accidentally
+ // do PI = 2.71828; which is actualy e
+ // final double PI = 3.16; is ok
+ double PI = 3.16;
+}
+    ]]>
+       </example>
+     </rule>
+
+    <rule
+        name="SuspiciousEqualsMethodName"
+   		language="java"
+        since="2.0"
+        message="The method name and parameter number are suspiciously close to equals(Object)"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#SuspiciousEqualsMethodName">
+        <description>
+The method name and parameter number are suspiciously close to
+equals(Object), which may mean you are intending to override the equals(Object)
+method.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+        <![CDATA[
+//MethodDeclarator[
+(
+@Image = 'equals'
+  and count(FormalParameters/*) = 1
+  and not (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+   [@Image = 'Object' or @Image = 'java.lang.Object'])
+)
+or
+@Image='equal'
+ and count(FormalParameters/*) = 1
+ and (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+  [@Image = 'Object' or @Image = 'java.lang.Object'])
+
+]
+        ]]>
+                    </value>
+                 </property>
+              </properties>
+        <example>
+        <![CDATA[
+public class Foo {
+ public int equals(Object o) {
+ // oops, this probably was supposed to be boolean equals
+ }
+ public boolean equals(String s) {
+ // oops, this probably was supposed to be equals(Object)
+ }
+}
+        ]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidFieldNameMatchingTypeName"
+    		 since="3.0"
+          message="It is somewhat confusing to have a field name matching the declaring class name"
+          class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingTypeNameRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#AvoidFieldNameMatchingTypeName">
+      <description>
+It is somewhat confusing to have a field name matching the declaring class name.
+This probably means that type and or field names could be more precise.
+      </description>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class Foo extends Bar {
+ // There's probably a better name for foo
+ int foo;
+}
+]]>
+      </example>
+    </rule>
+
+    <rule name="AvoidFieldNameMatchingMethodName"
+    		 since="3.0"
+          message="Field {0} has the same name as a method"
+          class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingMethodNameRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#AvoidFieldNameMatchingMethodName">
+      <description>
+It is somewhat confusing to have a field name with the same name as a method.
+While this is totally legal, having information (field) and actions (method) is
+not clear naming.
+      </description>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class Foo {
+	Object bar;
+	// bar is data or an action or both?
+	void bar() {
+	}
+}
+]]>
+      </example>
+    </rule>
+
+
+
+    <rule name="NoPackage"
+   		language="java"
+        since="3.3"
+        message="All classes and interfaces must belong to a named package"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#NoPackage">
+    <description>
+Detects when a class or interface does not have a package definition.
+    </description>
+    <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+//ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]
+                  ]]>
+              </value>
+          </property>
+      </properties>
+    <example>
+<![CDATA[
+// no package declaration
+public class ClassInDefaultPackage {
+}
+]]>
+    </example>
+  </rule>
+
+    <rule name="PackageCase"
+   		language="java"
+            since="3.3"
+            message="Package name contains upper case characters"
+            class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#PackageCase">
+        <description>
+    Detects when a package definition contains upper case characters.
+        </description>
+        <priority>3</priority>
+          <properties>
+              <property name="xpath">
+                  <value>
+                      <![CDATA[
+//PackageDeclaration/Name[lower-case(@Image)!=@Image]
+                      ]]>
+                  </value>
+              </property>
+          </properties>
+        <example>
+    <![CDATA[
+package com.MyCompany;  // <- should be lower case name
+public class SomeClass {
+}
+    ]]>
+        </example>
+      </rule>
+
+    <rule name="MisleadingVariableName"
+   		language="java"
+          since="3.4"
+          message="Avoid naming non-fields with the prefix 'm_'"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#MisleadingVariableName">
+      <description>
+Detects when a non-field has a name starting with 'm_'.  This usually
+indicates a field and thus is confusing.
+      </description>
+      <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//VariableDeclaratorId
+[starts-with(@Image, 'm_')]
+[not (../../../FieldDeclaration)]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+      <example>
+  <![CDATA[
+  public class Foo {
+    private int m_foo; // OK
+    public void bar(String m_baz) {  // Bad
+      int m_boz = 42; // Bad
+    }
+  }
+  ]]>
+      </example>
+    </rule>
+
+    <rule name="BooleanGetMethodName"
+   		language="java"
+        since="4.0"
+        message="A 'getX()' method which returns a boolean should be named 'isX()'"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#BooleanGetMethodName">
+        <description>
+Looks for methods named 'getX()' with 'boolean' as the return type. The convention
+is to name these methods 'isX()'.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[
+MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
+                [starts-with(@Image, 'get')]
+and
+ResultType/Type/PrimitiveType[@Image = 'boolean']
+]
+]]>
+                </value>
+            </property>
+            <property name="checkParameterizedMethods" type="Boolean" description="Check parameterized methods">
+                <value>false</value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public boolean getFoo(); // bad
+public boolean isFoo(); // ok
+public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
+     ]]></example>
+    </rule>
+
+    <rule 	name="ShortClassName"
+   		language="java"
+            since="5.0"
+            message="A Classname should have, at least, 5 characters"
+            class="net.sourceforge.pmd.lang.rule.XPathRule"
+          	externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#ShortClassName">
+        <description>
+        	<![CDATA[
+Detects if a classname if lower than 5 characters.
+			]]>
+        </description>
+        <priority>4</priority>
+          <properties>
+              <property name="xpath">
+                  <value>
+                      <![CDATA[
+//ClassOrInterfaceDeclaration[string-length(@Image) < 5]
+                      ]]>
+                  </value>
+              </property>
+          </properties>
+        <example>
+    <![CDATA[
+public class Foo {
+}
+    ]]>
+        </example>
+      </rule>
+
+</ruleset>

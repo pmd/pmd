@@ -5,19 +5,21 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class JunitRulesTest extends SimpleAggregatorTst {
+    
+    private static final String RULESET = "java-junit";
 
     @Before
     public void setUp() {
-        addRule("junit", "JUnitAssertionsShouldIncludeMessage");
-        addRule("junit", "JUnitSpelling");
-        addRule("junit", "JUnitStaticSuite");
-        addRule("junit", "JUnitTestsShouldIncludeAssert");
-        addRule("junit", "SimplifyBooleanAssertion");
-        addRule("junit", "TestClassWithoutTestCases");
-        addRule("junit", "UnnecessaryBooleanAssertion");
-        addRule("junit", "UseAssertEqualsInsteadOfAssertTrue");
-        addRule("junit", "UseAssertNullInsteadOfAssertTrue");
-        addRule("junit", "UseAssertSameInsteadOfAssertTrue");
+        addRule(RULESET, "JUnitAssertionsShouldIncludeMessage");
+        addRule(RULESET, "JUnitSpelling");
+        addRule(RULESET, "JUnitStaticSuite");
+        addRule(RULESET, "JUnitTestsShouldIncludeAssert");
+        addRule(RULESET, "SimplifyBooleanAssertion");
+        addRule(RULESET, "TestClassWithoutTestCases");
+        addRule(RULESET, "UnnecessaryBooleanAssertion");
+        addRule(RULESET, "UseAssertEqualsInsteadOfAssertTrue");
+        addRule(RULESET, "UseAssertNullInsteadOfAssertTrue");
+        addRule(RULESET, "UseAssertSameInsteadOfAssertTrue");
     }
 
     public static junit.framework.Test suite() {

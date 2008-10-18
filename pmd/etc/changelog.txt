@@ -19,8 +19,6 @@ TODO - Release blockers - Must implement before this release can be finished
    o Need a JUnit test to check for "dead" Rules, that is those not used by any RuleSet.
    o Rule JUnit tests should verify the Test class follows expected naming
      conventions just like the Rules need to.
-   o Need to organize the ruleset XML files based upon Language.  Need to come
-     up with a solution for the "rulesets.properties" files.
    o Need a more flexible and powerful scheme for classifying files to various
      Languages.  At a minimum, should have the ability to specify which
      file extensions you want to be used for a language (e.g. not everyone uses
@@ -89,6 +87,10 @@ TODO - Release blockers - Must implement before this release can be finished
    o Need to enhance documentation to cover Global and Language specific
      function namespaces required for XPath 2.0 use (e.g. pmd:matches
      and pmd-java:typeof).
+   o Need to get ECMAScript language in.  This will make it clear that PMD 5.0
+     is really about multiple language support.  The XML language is nice, but
+     it's really just there because it wasn't too hard to do, and some might
+     fine it useful.
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
@@ -384,7 +386,7 @@ Creating an Empty Code Ruleset and moved the following rules from Basic ruleset:
         * EmptyStatementBlock
         * EmptyStaticInitializer
 	Basic rulesets still includes a reference to those rules.
-Creating a useless Code Ruleset and moved the following rules from Basic ruleset:
+Creating a unnecessary Code Ruleset and moved the following rules from Basic ruleset:
         * UnnecessaryConversionTemporary
         * UnnecessaryReturn
         * UnnecessaryFinalModifier
@@ -438,6 +440,8 @@ Fixed ClassCastException on generic method in BeanMembersShouldSerialize
 Fixed ClassCastException in symbol table code
 Support for Java 1.4 runtime dropped, PMD now requires Java 5 or higher.  PMD can still process Java 1.4 source files.
 Text renderer is now silent if there's no violation instead of displaying "No problems found!"
+RuleSet short names now require a language prefix, 'basic' is now 'java-basic', and 'rulesets/basic.xml' is now 'rulesets/java/basic.xml'
+The JSP RuleSets are now in the 'jsp' language, and are 'jsp-basic', 'jsp-basic-jsf', 'rulesets/jsp/basic.xml' and 'rulesets/jsp/basic-jsp.xml'
 
 New Java rules:
 

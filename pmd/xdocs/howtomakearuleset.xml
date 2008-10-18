@@ -111,7 +111,7 @@ Say you want to pick specific rules from various rule sets and customize them.  
             <subsection name="Reference it in your Ant task">
                 <p>You can specify the full path to your custom ruleset name alongside
         of the built-in PMD rulesets - like this:</p>
-                <source><![CDATA[<pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/favorites.xml,rulesets/unusedcode.xml">
+                <source><![CDATA[<pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/design.xml,rulesets/unusedcode.xml">
   <formatter type="xml" toFile="foo.xml"/>
   <fileset dir="/home/tom/data/pmd/pmd/src">
     <include name="**/*.java"/>

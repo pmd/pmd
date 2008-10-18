@@ -9,6 +9,6 @@
 
 	<exclude-pattern>.*/xml/.*.java</exclude-pattern>
 
-	<rule ref="rulesets/junit.xml"/>
+	<rule ref="rulesets/java/junit.xml"/>
 
 </ruleset>
