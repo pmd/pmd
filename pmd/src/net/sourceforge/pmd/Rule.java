@@ -222,6 +222,13 @@ public interface Rule {
     Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor();
 
     /**
+     * Returns whether the descriptor is present on the receiver.
+     * 
+     * @param descriptor
+     * @return boolean
+     */
+    boolean hasDescriptor(PropertyDescriptor<?> descriptor);
+    /**
      * Sets whether this Rule uses Data Flow Analysis.
      */
     // FUTURE Use JavaBean conventions for boolean attributes

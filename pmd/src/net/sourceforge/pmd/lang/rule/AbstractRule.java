@@ -266,6 +266,18 @@ public abstract class AbstractRule implements Rule {
     }
 
     /**
+     * @see Rule#hasDescriptor(PropertyDescriptor)
+     */
+    public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
+    	
+    	if (propertyValuesByDescriptor.isEmpty()) {
+    		getPropertiesByPropertyDescriptor();	// compute it
+    	}
+    	
+    	return propertyValuesByDescriptor.containsKey(descriptor);
+    }
+    
+    /**
      * @see Rule#getPropertyDescriptors()
      */
     public List<PropertyDescriptor<?>> getPropertyDescriptors() {
