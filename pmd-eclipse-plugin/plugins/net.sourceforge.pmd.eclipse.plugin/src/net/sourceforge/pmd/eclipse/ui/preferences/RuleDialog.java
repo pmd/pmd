@@ -634,16 +634,16 @@ public class RuleDialog extends Dialog {
         }
 
         if (mode == MODE_EDIT) {
-        	if (this.editedRule.hasProperty("xpath")) {
-                text.setText(this.editedRule.getStringProperty("xpath").trim());
+        	if (this.editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+                text.setText(this.editedRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
                 text.setEditable(true);
         	}
         }
 
         if (mode == MODE_VIEW) {
             text.setEditable(false);
-        	if (this.editedRule.hasProperty("xpath")) {
-                text.setText(this.editedRule.getStringProperty("xpath").trim());
+        	if (this.editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+                text.setText(this.editedRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
         	}
         }
 
@@ -666,7 +666,7 @@ public class RuleDialog extends Dialog {
     			descriptionText.setBackground(ruleReference.getOverriddenDescription() != null ? lightBlue: null);
     			externalInfoUrlText.setBackground(ruleReference.getOverriddenExternalInfoUrl() != null ? lightBlue: null);
     			exampleText.setBackground(ruleReference.getOverriddenExamples() != null ? lightBlue: null);
-    			xpathText.setBackground(ruleReference.getOverriddenProperties() != null && ruleReference.getOverriddenProperties().containsKey("xpath") ? lightBlue: null);
+    			xpathText.setBackground(ruleReference.hasOverriddenProperty(XPathRule.XPATH_DESCRIPTOR) ? lightBlue: null);
     		}
     	}
     }
@@ -780,7 +780,7 @@ public class RuleDialog extends Dialog {
                     if (rule instanceof XPathRule) {
                     	String xpath = xpathText.getText().trim();
                     	if (xpath.length() != 0) {
-                            rule.addProperty("xpath", xpath);
+                            rule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpath);
                     	} else {
                             MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
                                     getMessage(StringKeys.MSGKEY_WARNING_XPATH_MANDATORY));
@@ -808,7 +808,7 @@ public class RuleDialog extends Dialog {
             editedRule.addExample(this.exampleText.getText());
             String xpath = xpathText.getText().trim();
             if (xpath.length() > 0) {
-            	editedRule.addProperty("xpath", xpath);
+            	editedRule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpath);
             }
         }
 

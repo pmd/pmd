@@ -128,7 +128,7 @@ public class PMDUiConstants {
     public static final String SIMPLE_CPDREPORT_NAME = "cpd-report.txt";
     
     /**
-     * This class is not meant to be instanciated
+     * This class is not meant to be instantiated
      *
      */
     private PMDUiConstants() {

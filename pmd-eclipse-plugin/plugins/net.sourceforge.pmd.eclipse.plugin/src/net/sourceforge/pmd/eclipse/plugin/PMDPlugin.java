@@ -54,6 +54,14 @@ public class PMDPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static PMDPlugin plugin;
 
+	private static final Integer[] priorityValues = new Integer[] {
+        Integer.valueOf(1),
+        Integer.valueOf(2),
+        Integer.valueOf(3),
+        Integer.valueOf(4),
+        Integer.valueOf(5)
+	    };
+	
 	/**
 	 * The constructor
 	 */
@@ -177,13 +185,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      * @return the priority values
      */
     public Integer[] getPriorityValues() {
-        return new Integer[] {
-                new Integer(1),
-                new Integer(2),
-                new Integer(3),
-                new Integer(4),
-                new Integer(5)
-        };
+        return priorityValues;
     }
 
     /**
@@ -333,13 +335,13 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     private void registerStandardRuleSets() {
         final RuleSetFactory factory = new RuleSetFactory();
-        for (int i = 0; i < PluginConstants.PMD_RULESETS.length; i++) {
+        for (int i = 0; i < PluginConstants.PMD_JAVA_RULESETS.length; i++) {
             try {
-                final RuleSet ruleSet = factory.createRuleSets(PluginConstants.PMD_RULESETS[i]).getAllRuleSets()[0];
+                final RuleSet ruleSet = factory.createRuleSets(PluginConstants.PMD_JAVA_RULESETS[i]).getAllRuleSets()[0];
                 getRuleSetManager().registerRuleSet(ruleSet);
                 getRuleSetManager().registerDefaultRuleSet(ruleSet);
             } catch (RuleSetNotFoundException e) {
-                this.log(IStatus.WARNING, "The RuleSet \"" + PluginConstants.PMD_RULESETS[i] + "\" cannot be found", e);
+                this.log(IStatus.WARNING, "The RuleSet \"" + PluginConstants.PMD_JAVA_RULESETS[i] + "\" cannot be found", e);
             }
         }
     }

@@ -74,30 +74,30 @@ import org.eclipse.jface.preference.PreferenceStore;
  * This class implements the preferences management services
  *
  * @author Herlin
- *
  */
 
 class PreferencesManagerImpl implements IPreferencesManager {
+    
     private static final Logger log = Logger.getLogger(PreferencesManagerImpl.class);
 
-    private static final String PROJECT_BUILD_PATH_ENABLED = PMDPlugin.PLUGIN_ID + ".project_build_path_enabled";
-    private static final String PMD_PERSPECTIVE_ENABLED = PMDPlugin.PLUGIN_ID + ".pmd_perspective_enabled";
-    private static final String MAX_VIOLATIONS_PFPR = PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
-    private static final String REVIEW_ADDITIONAL_COMMENT = PMDPlugin.PLUGIN_ID + ".review_additional_comment";
-    private static final String REVIEW_PMD_STYLE_ENABLED = PMDPlugin.PLUGIN_ID + ".review_pmd_style_enabled";
-    private static final String MIN_TILE_SIZE = PMDPlugin.PLUGIN_ID + ".min_tile_size";
-    private static final String LOG_FILENAME = PMDPlugin.PLUGIN_ID + ".log_filename";
-    private static final String LOG_LEVEL = PMDPlugin.PLUGIN_ID + ".log_level";
+    private static final String PROJECT_BUILD_PATH_ENABLED  = PMDPlugin.PLUGIN_ID + ".project_build_path_enabled";
+    private static final String PMD_PERSPECTIVE_ENABLED     = PMDPlugin.PLUGIN_ID + ".pmd_perspective_enabled";
+    private static final String MAX_VIOLATIONS_PFPR         = PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
+    private static final String REVIEW_ADDITIONAL_COMMENT 	= PMDPlugin.PLUGIN_ID + ".review_additional_comment";
+    private static final String REVIEW_PMD_STYLE_ENABLED    = PMDPlugin.PLUGIN_ID + ".review_pmd_style_enabled";
+    private static final String MIN_TILE_SIZE               = PMDPlugin.PLUGIN_ID + ".min_tile_size";
+    private static final String LOG_FILENAME                = PMDPlugin.PLUGIN_ID + ".log_filename";
+    private static final String LOG_LEVEL                   = PMDPlugin.PLUGIN_ID + ".log_level";
 
-    private static final String OLD_PREFERENCE_PREFIX = "net.sourceforge.pmd.runtime";
-    private static final String OLD_PREFERENCE_LOCATION = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
-    private static final String NEW_PREFERENCE_LOCATION = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
+    private static final String OLD_PREFERENCE_PREFIX       = "net.sourceforge.pmd.runtime";
+    private static final String OLD_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
+    private static final String NEW_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
 
-    private static final String PREFERENCE_RULESET_FILE = "/ruleset.xml";
+    private static final String PREFERENCE_RULESET_FILE     = "/ruleset.xml";
 
-    private IPreferences preferences;
-    private IPreferenceStore storePreferencesStore = PMDPlugin.getDefault().getPreferenceStore();
-    private IPreferenceStore loadPreferencesStore;
+    private IPreferences        preferences;
+    private IPreferenceStore    storePreferencesStore = PMDPlugin.getDefault().getPreferenceStore();
+    private IPreferenceStore    loadPreferencesStore;
 
     private RuleSet ruleSet;
 
@@ -181,10 +181,10 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager#getRuleSet()
      */
     public RuleSet getRuleSet() {
+        
         if (this.ruleSet == null) {
             this.ruleSet = getRuleSetFromStateLocation();
         }
-
         return this.ruleSet;
     }
 

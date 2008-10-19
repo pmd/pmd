@@ -42,29 +42,33 @@ package net.sourceforge.pmd.eclipse.core;
  *
  */
 public class PluginConstants {
-    public static final String[] PMD_RULESETS = {
-            "rulesets/basic.xml", 
-            "rulesets/braces.xml", 
-            "rulesets/clone.xml",
-            "rulesets/codesize.xml",
-            "rulesets/controversial.xml", 
-            "rulesets/coupling.xml", 
-            "rulesets/design.xml", 
-            "rulesets/finalizers.xml",
-            "rulesets/imports.xml",
-            "rulesets/j2ee.xml",
-            "rulesets/javabeans.xml",
-            "rulesets/junit.xml",
-            "rulesets/logging-jakarta-commons.xml",
-            "rulesets/logging-java.xml",
-            "rulesets/migrating.xml", 
-            "rulesets/naming.xml",
-            "rulesets/optimizations.xml",
-            "rulesets/strictexception.xml",
-            "rulesets/strings.xml",
-            "rulesets/sunsecure.xml",
-            "rulesets/typeresolution.xml",
-            "rulesets/unusedcode.xml"};
+    
+    private static final String PMD_JAVA_RULESET_PATH = "rulesets/java/";
+    
+    public static final String[] PMD_JAVA_RULESETS = {
+        PMD_JAVA_RULESET_PATH + "basic.xml", 
+        PMD_JAVA_RULESET_PATH + "braces.xml", 
+        PMD_JAVA_RULESET_PATH + "clone.xml",
+        PMD_JAVA_RULESET_PATH + "codesize.xml",
+        PMD_JAVA_RULESET_PATH + "controversial.xml", 
+        PMD_JAVA_RULESET_PATH + "rulesets/coupling.xml", 
+        PMD_JAVA_RULESET_PATH + "design.xml", 
+        PMD_JAVA_RULESET_PATH + "finalizers.xml",
+        PMD_JAVA_RULESET_PATH + "imports.xml",
+        PMD_JAVA_RULESET_PATH + "j2ee.xml",
+        PMD_JAVA_RULESET_PATH + "javabeans.xml",
+        PMD_JAVA_RULESET_PATH + "junit.xml",
+        PMD_JAVA_RULESET_PATH + "logging-jakarta-commons.xml",
+        PMD_JAVA_RULESET_PATH + "logging-java.xml",
+        PMD_JAVA_RULESET_PATH + "migrating.xml", 
+        PMD_JAVA_RULESET_PATH + "naming.xml",
+        PMD_JAVA_RULESET_PATH + "optimizations.xml",
+        PMD_JAVA_RULESET_PATH + "strictexception.xml",
+        PMD_JAVA_RULESET_PATH + "strings.xml",
+        PMD_JAVA_RULESET_PATH + "sunsecure.xml",
+        PMD_JAVA_RULESET_PATH + "typeresolution.xml",
+        PMD_JAVA_RULESET_PATH + "unusedcode.xml"
+        };
     
     /**
      * This class is not meant to be instanciated
