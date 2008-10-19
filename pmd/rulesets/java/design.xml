@@ -1557,7 +1557,7 @@ public class Foo {
    		language="java"
          since="4.2"
         	class="net.sourceforge.pmd.lang.rule.XPathRule"
-        	message="No abstract method which means that the  keyword is most likely used to prevent instantiation. use a private or protected constructor instead."
+        	message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
         	externalInfoUrl="http://pmd.sourceforge.net/rules/java/design.html#AbstractClassWithoutAnyMethod">
         <description><![CDATA[If the abstract class does not provides any methods, it may be just a data container that is not to be instantiated. In this case, it's probably
 			better to use a private or a protected constructor in order to prevent instantiation than make the class misleadingly abstract.
@@ -1590,11 +1590,11 @@ public class abstract Example {
    		language="java"
             	since="4.2"
 	        class="net.sourceforge.pmd.lang.rule.XPathRule"
-	        message="A switch with less than 3 branches is inefficient, use a if statement instead."
+	        message="A switch with less than three branches is inefficient, use a 'if statement' instead."
 	        externalInfoUrl="http://pmd.sourceforge.net/rules/java/design.html#TooFewBranchesForASwitchStatement">
         <description>
             <![CDATA[
-				Swith are designed complex branches, and allow branches to share treatement. Using a switch for only a few 
+				Switch are designed complex branches, and allow branches to share treatement. Using a switch for only a few 
 				branches is ill advised, as switches are not as easy to understand as if. In this case, it's most likely
 				is a good idea to use a if statement instead, at least to increase code readability.
             ]]>
@@ -1706,9 +1706,8 @@ public class Foo {
       		externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#TooManyHttpFilter">
 		<description>
 			<![CDATA[
-The Http Filter are generally used to create session for the Object Relation Mapping tools and for security purpose or logging. Too many of them may
-lead to a complex architecture where everything is by "intercepting" the http request (pretty like aspect programming object). It can be elegant but
-far too complex.
+The Http filters are generally used to create sessions for object-relational mapping tools or for security/logging considerations. Too many of them may
+lead to a complex architecture where everything is "intercepted" the http request (akin to aspect-oriented programming). It can be elegant but far too complex.
 			]]>
 		</description>
 		<priority>4</priority>

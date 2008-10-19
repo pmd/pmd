@@ -13,8 +13,7 @@
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoLongScripts">
 		<description>
-			Scripts should be part of Tag Libraries, rather than part of
-			JSP pages.
+Scripts should be part of Tag Libraries, rather than part of JSP pages.
 		</description>
 		<priority>2</priority>
 		<properties>
@@ -58,8 +57,7 @@ onload=calcDays;
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoScriptlets">
 		<description>
-			Scriptlets should be factored into Tag Libraries or JSP
-			declarations, rather than being part of JSP pages.
+Scriptlets should be factored into Tag Libraries or JSP	declarations, rather than being part of JSP pages.
 		</description>
 		<priority>3</priority>
 		<properties>
@@ -93,8 +91,8 @@ response.setHeader("Pragma", "No-cache");
 		message="Avoid having style information in JSP files."
 		class="net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoInlineStyleInformation">
-		<description><![CDATA[ Style information should be put in CSS files, not in JSPs.
-			Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'". ]]>
+		<description><![CDATA[ 
+Style information should be put in CSS files, not in JSPs. Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'". ]]>
 		</description>
 		<priority>3</priority>
 		<example>
@@ -110,8 +108,7 @@ response.setHeader("Pragma", "No-cache");
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoClassAttribute">
 		<description>
-			Do not use an attribute called 'class'. Use "styleclass" for
-			CSS styles.
+Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 		</description>
 		<priority>2</priority>
 		<properties>
@@ -135,7 +132,7 @@ response.setHeader("Pragma", "No-cache");
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoJspForward">
 		<description>
-			Do not do a forward from within a JSP file.
+Do not do a forward from within a JSP file.
 		</description>
 		<priority>3</priority>
 		<properties>
@@ -157,10 +154,8 @@ response.setHeader("Pragma", "No-cache");
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#IframeMissingSrcAttribute">
 		<description>
-			IFrames which are missing a src element can cause security
-			information popups in IE if you are accessing the page
-			through SSL. See
-			http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
+IFrames which are missing a src element can cause security information popups in IE if you are accessing the page
+through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 		</description>
 		<priority>2</priority>
 		<properties>
