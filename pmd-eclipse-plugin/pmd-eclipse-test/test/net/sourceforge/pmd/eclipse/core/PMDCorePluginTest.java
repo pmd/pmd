@@ -87,7 +87,7 @@ public class PMDCorePluginTest extends TestCase {
         assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
-        for (String element : PluginConstants.PMD_RULESETS) {
+        for (String element : PluginConstants.PMD_JAVA_RULESETS) {
             RuleSet ruleSet = factory.createRuleSet(element);
             assertTrue("RuleSet \"" + element + "\" has not been registered", ruleSetRegistered(ruleSet,
                     registeredRuleSets));
@@ -104,7 +104,7 @@ public class PMDCorePluginTest extends TestCase {
         assertFalse("No registered default rulesets!", defaultRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
-        for (String element : PluginConstants.PMD_RULESETS) {
+        for (String element : PluginConstants.PMD_JAVA_RULESETS) {
             RuleSet ruleSet = factory.createRuleSet(element);
             assertTrue("RuleSet \"" + element + "\" has not been registered", ruleSetRegistered(ruleSet,
                     defaultRuleSets));

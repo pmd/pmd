@@ -182,7 +182,7 @@ public class BasicPMDTest extends TestCase {
      */
     public void testDefaulltRuleSets() {
         RuleSetFactory factory = new RuleSetFactory();
-        String allRuleSets[] = PluginConstants.PMD_RULESETS;
+        String allRuleSets[] = PluginConstants.PMD_JAVA_RULESETS;
         for (String allRuleSet : allRuleSets) {
             try {
                 RuleSet ruleSet = factory.createRuleSet(allRuleSet);
