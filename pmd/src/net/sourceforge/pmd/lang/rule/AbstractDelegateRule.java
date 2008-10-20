@@ -200,5 +200,11 @@ public abstract class AbstractDelegateRule implements Rule {
 	 public void end(RuleContext ctx) {
 		 rule.end(ctx);
 	 }
-
+	 
+    /**
+     * @see Rule#hasDescriptor(PropertyDescriptor)
+     */
+    public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {    	    	
+    	return rule.hasDescriptor(descriptor);
+    }
 }

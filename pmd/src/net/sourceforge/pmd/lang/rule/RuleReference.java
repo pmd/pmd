@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.Language;
@@ -247,16 +246,8 @@ public class RuleReference extends AbstractDelegateRule {
 		}
 		return false;
 	}
-
-    /**
-     * @see Rule#hasDescriptor(PropertyDescriptor)
-     */
-    public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
-    	
-    	if (propertyValues.isEmpty()) {
-    		getPropertiesByPropertyDescriptor();	// compute it
-    	}
-    	
-    	return propertyValues.containsKey(descriptor);
-    }
+	
+	public boolean hasOverriddenProperty(PropertyDescriptor<?> descriptor) {
+		return propertyValues != null && propertyValues.containsKey(descriptor);
+	}
 }

@@ -121,6 +121,6 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 
     @Override
     public String toString() {
-	return getFilename() + ":" + getRule() + ":" + getDescription() + ":" + beginLine;
+        return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + beginLine;
     }
 }
