@@ -21,11 +21,8 @@ public class PMDEngine {
 
     private Configuration configuration = new Configuration();
 
-    // FIXME: PMD 5.0
-    private LanguageVersion languageVersion;
-
     public void setLanguageVersion(LanguageVersion languageVersion) {
-        this.languageVersion = languageVersion;
+        configuration.setDefaultLanguageVersion(languageVersion);
     }
 
     public void setClassLoader(ClassLoader classLoader) {
@@ -40,8 +37,7 @@ public class PMDEngine {
         RuleSets set = new RuleSets();
         set.addRuleSet(ruleSet);
 
-        PMD pmd = new PMD();
-        pmd.setConfiguration(configuration);
+        PMD pmd = new PMD(configuration);
         pmd.processFile(input, set, context);
     }
 
