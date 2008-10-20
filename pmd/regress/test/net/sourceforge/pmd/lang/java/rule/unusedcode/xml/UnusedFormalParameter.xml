@@ -64,7 +64,7 @@ don't flag public methods by default
         <description><![CDATA[
 flag public methods if checkall property is set
      ]]></description>
-        <rule-property name="checkall">true</rule-property>
+        <rule-property name="checkAll">true</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="public methods"/>
     </test-code>
@@ -161,10 +161,10 @@ class Foo {
     <test-code reinitializeRule="true">
 	<description>
 		<![CDATA[
-			False - ! if "checkall" property is not set
+			False - ! if "checkAll" property is not set
 		]]>
 	</description>
-	<rule-property name="checkall">true</rule-property>
+	<rule-property name="checkAll">true</rule-property>
 	<expected-problems>1</expected-problems>
 	<code>
 	<![CDATA[

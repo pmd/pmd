@@ -97,7 +97,7 @@ public class Foo {
 exception list property
      ]]></description>
         <expected-problems>0</expected-problems>
-        <rule-property name="exceptionlist">Howdy,foo</rule-property>
+        <rule-property name="exceptionList">Howdy,foo</rule-property>
         <code><![CDATA[
 public class Foo {
  private void bar() {
@@ -112,7 +112,7 @@ public class Foo {
 exception list and separator properties
      ]]></description>
         <expected-problems>0</expected-problems>
-        <rule-property name="exceptionlist">Howdy:foo</rule-property>
+        <rule-property name="exceptionList">Howdy:foo</rule-property>
         <rule-property name="separator">:</rule-property>
         <code><![CDATA[
 public class Foo {
