@@ -40,28 +40,28 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 	    "Check constructor and method parameter variables", true, 3.0f);
 
     private static final StringMultiProperty STATIC_PREFIXES_DESCRIPTOR = new StringMultiProperty("staticPrefix",
-	    "A prefix for static variables", new String[] { "" }, 4.0f, ',');
+	    "Static variable prefixes", new String[] { "" }, 4.0f, ',');
 
     private static final StringMultiProperty STATIC_SUFFIXES_DESCRIPTOR = new StringMultiProperty("staticSuffix",
-	    "A suffix for static variables", new String[] { "" }, 5.0f, ',');
+	    "Static variable suffixes", new String[] { "" }, 5.0f, ',');
 
     private static final StringMultiProperty MEMBER_PREFIXES_DESCRIPTOR = new StringMultiProperty("memberPrefix",
-	    "A prefix for member variables", new String[] { "" }, 6.0f, ',');
+	    "Member variable prefixes", new String[] { "" }, 6.0f, ',');
 
     private static final StringMultiProperty MEMBER_SUFFIXES_DESCRIPTOR = new StringMultiProperty("memberSuffix",
-	    "A suffix for member variables", new String[] { "" }, 7.0f, ',');
+	    "Member variable suffixes", new String[] { "" }, 7.0f, ',');
 
     private static final StringMultiProperty LOCAL_PREFIXES_DESCRIPTOR = new StringMultiProperty("localPrefix",
-	    "A prefix for local variables", new String[] { "" }, 8.0f, ',');
+	    "Local variable prefixes", new String[] { "" }, 8.0f, ',');
 
     private static final StringMultiProperty LOCAL_SUFFIXES_DESCRIPTOR = new StringMultiProperty("localSuffix",
-	    "A suffix for local variables", new String[] { "" }, 9.0f, ',');
+	    "Local variable suffixes", new String[] { "" }, 9.0f, ',');
 
     private static final StringMultiProperty PARAMETER_PREFIXES_DESCRIPTOR = new StringMultiProperty("parameterPrefix",
-	    "A prefix for method parameter variables", new String[] { "" }, 10.0f, ',');
+	    "Method parameter variable prefixes", new String[] { "" }, 10.0f, ',');
 
     private static final StringMultiProperty PARAMETER_SUFFIXES_DESCRIPTOR = new StringMultiProperty("parameterSuffix",
-	    "A suffix for method parameter variables", new String[] { "" }, 11.0f, ',');
+	    "Method parameter variable suffixes", new String[] { "" }, 11.0f, ',');
 
     public VariableNamingConventionsRule() {
 	definePropertyDescriptor(CHECK_MEMBERS_DESCRIPTOR);

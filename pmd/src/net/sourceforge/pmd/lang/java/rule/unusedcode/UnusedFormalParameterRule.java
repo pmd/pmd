@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 public class UnusedFormalParameterRule extends AbstractJavaRule {
     
-    private static final BooleanProperty CHECKALL_DESCRIPTOR = new BooleanProperty("checkall", "Check all methods, including non-private methods.", false, 1.0f);
+    private static final BooleanProperty CHECKALL_DESCRIPTOR = new BooleanProperty("checkAll", "Check all methods, including non-private ones", false, 1.0f);
     
     public UnusedFormalParameterRule() {
 	definePropertyDescriptor(CHECKALL_DESCRIPTOR);

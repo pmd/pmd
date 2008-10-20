@@ -15,17 +15,17 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 public class AssignmentInOperandRule extends AbstractJavaRule {
 
     private static final BooleanProperty ALLOW_IF_DESCRIPTOR = new BooleanProperty("allowIf",
-	    "Allows assignment within the conditional expression of an if statement.", false, 1.0f);
+	    "Allow assignment within the conditional expression of an if statement", false, 1.0f);
 
     private static final BooleanProperty ALLOW_FOR_DESCRIPTOR = new BooleanProperty("allowFor",
-	    "Allows assignment within the conditional expression of a for statement.", false, 2.0f);
+	    "Allow assignment within the conditional expression of a for statement", false, 2.0f);
 
     private static final BooleanProperty ALLOW_WHILE_DESCRIPTOR = new BooleanProperty("allowWhile",
-	    "Allows assignment within the conditional expression of a while statement.", false, 3.0f);
+	    "Allow assignment within the conditional expression of a while statement", false, 3.0f);
 
     private static final BooleanProperty ALLOW_INCREMENT_DECREMENT_DESCRIPTOR = new BooleanProperty(
 	    "allowIncrementDecrement",
-	    "Allows increment or decrement operators within the conditional expression of an if, for, or while statement.",
+	    "Allow increment or decrement operators within the conditional expression of an if, for, or while statement",
 	    false, 4.0f);
     
     public AssignmentInOperandRule() {

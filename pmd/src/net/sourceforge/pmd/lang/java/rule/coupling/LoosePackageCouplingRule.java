@@ -32,10 +32,10 @@ import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
  */
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
-    private static final StringMultiProperty PACKAGES_DESCRIPTOR = new StringMultiProperty("packages", "Restricted Packages",
+    private static final StringMultiProperty PACKAGES_DESCRIPTOR = new StringMultiProperty("packages", "Restricted packages",
 	    new String[] {}, 1.0f, ',');
 
-    private static final StringMultiProperty CLASSES_DESCRIPTOR = new StringMultiProperty("classes", "Allowed Classes",
+    private static final StringMultiProperty CLASSES_DESCRIPTOR = new StringMultiProperty("classes", "Allowed classes",
 	    new String[] {}, 2.0f, ',');
 
     // The package of this source file

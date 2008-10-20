@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 public class SignatureDeclareThrowsException extends AbstractJavaRule {
 	
     private static final BooleanProperty IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty("IgnoreJUnitCompletely",
-        "If true, all methods in a JUnit testcase may throw Exception", false, 1.0f);
+        "Allow all methods in a JUnit testcase to throw Exceptions", false, 1.0f);
 
     //Set to true when the class is determined to be a JUnit testcase
     private boolean junitImported = false;

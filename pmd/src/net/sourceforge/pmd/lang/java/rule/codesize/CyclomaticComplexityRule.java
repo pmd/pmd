@@ -35,13 +35,13 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 public class CyclomaticComplexityRule extends AbstractJavaRule {
 
     public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty("reportLevel",
-	    "The Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
+	    "Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
 
     public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showClassesComplexity",
-	"Indicate if class average violation should be added to the report", true, 2.0f);
+	"Add class average violations to the report", true, 2.0f);
 
     public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showMethodsComplexity",
-	"Indicate if class average violation should be added to the report", true, 3.0f);
+	"Add method average violations to the report", true, 3.0f);
 
   private int reportLevel;
   private boolean showClassesComplexity = true;

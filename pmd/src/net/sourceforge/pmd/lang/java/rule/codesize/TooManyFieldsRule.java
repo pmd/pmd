@@ -24,11 +24,8 @@ public class TooManyFieldsRule extends AbstractJavaRule {
     private Map<String, ASTClassOrInterfaceDeclaration> nodes;
 
     private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty(
-    		"maxfields",
-    		"The field count reporting threshold",
-    		1, 300,
-    		DEFAULT_MAXFIELDS,
-    		1.0f
+    		"maxfields", "Max allowable fields",
+    		1, 300, DEFAULT_MAXFIELDS, 1.0f
     		);
     
     public TooManyFieldsRule() {

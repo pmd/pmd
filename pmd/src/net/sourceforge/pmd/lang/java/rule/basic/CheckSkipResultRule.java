@@ -20,7 +20,7 @@ public class CheckSkipResultRule extends AbstractJavaRule {
         }
         for (NameOccurrence occ: node.getUsages()) {
             NameOccurrence qualifier = occ.getNameForWhichThisIsAQualifier();
-            if (qualifier != null && qualifier.getImage().equals("skip")) {
+            if (qualifier != null && "skip".equals(qualifier.getImage())) {
                 JavaNode loc = occ.getLocation();
                 if ( loc != null ) {
                     ASTPrimaryExpression exp = loc.getFirstParentOfType(ASTPrimaryExpression.class);

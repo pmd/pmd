@@ -52,7 +52,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             "Methods which may close this resource", new String[]{}, 1.0f, ',');
 
     private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types",
-            "Types that are affected by this rule", new String[]{"Connection","Statement","ResultSet"}, 2.0f, ',');
+            "Affected types", new String[]{"Connection","Statement","ResultSet"}, 2.0f, ',');
     
     public CloseResourceRule() {
 	definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);

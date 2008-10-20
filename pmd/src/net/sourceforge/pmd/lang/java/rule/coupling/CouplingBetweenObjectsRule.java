@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 /**
  * CouplingBetweenObjects attempts to capture all unique Class attributes,
  * local variables, and return types to determine how many objects a class is
- * coupled to. This is only a guage and isn't a hard and fast rule. The threshold
+ * coupled to. This is only a gauge and isn't a hard and fast rule. The threshold
  * value is configurable and should be determined accordingly
  *
  * @author aglover
@@ -37,7 +37,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     private Set<String> typesFoundSoFar;
 
     private static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty(
-    	"threshold", "The unique type reporting threshold", 2, 10, 2, 1.0f
+    	"threshold", "Unique type reporting threshold", 2, 10, 2, 1.0f
     	);
 
     public CouplingBetweenObjectsRule() {
