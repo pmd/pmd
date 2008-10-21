@@ -9,7 +9,7 @@
         <gallery>
             <name>net.sourceforge.pmd.jdeveloper.Plugin</name>
             <description>PMD JDeveloper Extension</description>
-            <help>Provides integrated support for PMD 4.2 in JDeveloper 10.1.2.</help>
+            <help>Provides integrated support for PMD 4.2.4 in JDeveloper 10.1.2.</help>
             <category>General</category>
             <folder>PMD</folder>
         </gallery>
