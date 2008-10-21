@@ -46,8 +46,11 @@ public class SelectedRules {
                 return rule;
             }
         }
-        throw new RuntimeException("Couldn't find a rule that mapped to the passed in JCheckBox " + 
-                                   candidate);
+        final SettingsException exc = 
+            new SettingsException("Couldn't find a rule that mapped to the passed in JCheckBox " + 
+                                  candidate);
+        Util.showError(exc, Plugin.PMD_TITLE);
+        return null;
     }
 
     public JCheckBox get(final Object key) {
@@ -77,12 +80,14 @@ public class SelectedRules {
         return newRuleSet;
     }
 
-    private JCheckBox createCheckBox(final String name, final SettingsStorage settings) {
+    private JCheckBox createCheckBox(final String name, 
+                                     final SettingsStorage settings) {
         final JCheckBox box = new JCheckBox(name);
         try {
             box.setSelected(load(settings, name));
         } catch (SettingsException se) {
-            System.out.println("Can't load settings so this rule will not be enabled");
+            Util.logMessage(se.getStackTrace());
+            Util.showError(se, Plugin.PMD_TITLE);
         }
         return box;
     }

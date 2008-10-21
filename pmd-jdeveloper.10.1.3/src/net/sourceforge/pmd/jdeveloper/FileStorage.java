@@ -2,7 +2,9 @@ package net.sourceforge.pmd.jdeveloper;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -38,9 +40,12 @@ public class FileStorage implements SettingsStorage {
             savedProperties.store(fos, 
                                   "PMD-JDeveloper rule selections " + new Date());
             fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SettingsException(e.getMessage());
+        } catch (FileNotFoundException e) {
+            Util.logMessage(e.getStackTrace());
+            Util.showError(e, Plugin.PMD_TITLE);
+        } catch (IOException e) {
+            Util.logMessage(e.getStackTrace());
+            Util.showError(e, Plugin.PMD_TITLE);
         }
     }
 
@@ -53,11 +58,11 @@ public class FileStorage implements SettingsStorage {
                 fis.close();
                 return properties.getProperty(key);
             }
-            return "false";
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SettingsException(e.getMessage());
+        } catch (IOException e) {
+            Util.logMessage(e.getStackTrace());
+            Util.showError(e, Plugin.PMD_TITLE);
         }
+        return "false";
     }
 
 }

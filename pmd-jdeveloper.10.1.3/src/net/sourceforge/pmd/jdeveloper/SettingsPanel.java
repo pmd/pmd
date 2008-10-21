@@ -37,7 +37,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.jdeveloper.RuleSetWriter;
+import net.sourceforge.pmd.RuleSetWriter;
 
 import oracle.ide.panels.DefaultTraversablePanel;
 import oracle.ide.panels.TraversableContext;
@@ -163,7 +163,8 @@ public class SettingsPanel extends DefaultTraversablePanel {
         try {
             rules = new SelectedRules(createSettingsStorage());
         } catch (RuleSetNotFoundException rsne) {
-            rsne.printStackTrace();
+            Util.logMessage(rsne.getStackTrace());
+            Util.showError(rsne, Plugin.PMD_TITLE);
         }
 
         final JPanel mainPanel = new JPanel(new BorderLayout());
@@ -237,11 +238,11 @@ public class SettingsPanel extends DefaultTraversablePanel {
         try {
             ruleSets = factory.createRuleSets(fileLocation);
         } catch (RuleSetNotFoundException e) {
-            System.err.println("Error during reading ruleset : " + 
-                               e.getMessage());
+            Util.logMessage(e.getStackTrace());
+            Util.showError(e, Plugin.PMD_TITLE);
         }
         if (ruleSets == null) {
-            System.out.println("No rules to import");
+            Util.logMessage("No rules to import");
         } else {
             final ListModel model = rulesList.getModel();
             final Set<Rule> allRules = ruleSets.getAllRules();
@@ -271,26 +272,20 @@ public class SettingsPanel extends DefaultTraversablePanel {
         RuleSetWriter ruleSetWriter = null;
         try {
             outputStream = new FileOutputStream(fileLocation);
-            ruleSetWriter = new RuleSetWriter(outputStream);
+            ruleSetWriter = new RuleSetWriter(outputStream, false);
             ruleSetWriter.write(selectedRules);
             outputStream.flush();
-//        } catch (RuntimeException e) {
-//            JOptionPane.showMessageDialog(null, 
-//                                          "Can't save selected rules to the file " + 
-//                                          e.getMessage(), 
-//                                          "Can't save settings", 
-//                                          JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
-            System.err.println("Error during file transfer : " + 
-                               e.getMessage());
+            Util.logMessage(e.getStackTrace());
+            Util.showError(e, Plugin.PMD_TITLE);
         } finally {
             if (outputStream != null) {
                 try {
                     ruleSetWriter.close();
                     outputStream.close();
                 } catch (IOException e) {
-                    System.err.println("Error during file transfer closing : " + 
-                                       e.getMessage());
+                    Util.logMessage(e.getStackTrace());
+                    Util.showError(e, Plugin.PMD_TITLE);
                 }
             }
         }
