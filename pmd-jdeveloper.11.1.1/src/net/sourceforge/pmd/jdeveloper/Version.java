@@ -7,23 +7,25 @@ import oracle.ide.Context;
 
 import oracle.jdeveloper.compiler.BuildSystemConfiguration;
 
-class Version {
-    public static void setJavaVersion(Context context, PMD pmd) {
-        BuildSystemConfiguration config = BuildSystemConfiguration.getInstance(context.getProject());
-        String source = config.getSource();
-        if (source.equals("1.6")) {
+final class Version {
+    private Version() {
+    }
+    public static void setJavaVersion(final Context context, final PMD pmd) {
+        final BuildSystemConfiguration config = BuildSystemConfiguration.getInstance(context.getProject());
+        final String source = config.getSource();
+        if ("1.6".equals(source)) {
             pmd.setJavaVersion(SourceType.JAVA_16);
-        } else if (source.equals("1.5")) {
+        } else if ("1.5".equals(source)) {
             pmd.setJavaVersion(SourceType.JAVA_15);
-        } else if (source.equals("1.4")) {
+        } else if ("1.4".equals(source)) {
             pmd.setJavaVersion(SourceType.JAVA_14);
-        } else if (source.equals("1.3")) {
+        } else if ("1.3".equals(source)) {
             pmd.setJavaVersion(SourceType.JAVA_13);
         }
     }
 
     public static String version() {
-        return "4.1.3.0.0";
+        return "4.2.4.3.0";
     }
 
 }

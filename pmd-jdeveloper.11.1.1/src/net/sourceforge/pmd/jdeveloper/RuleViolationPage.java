@@ -1,8 +1,9 @@
 package net.sourceforge.pmd.jdeveloper;
 
+import java.util.List;
+
 import oracle.jdeveloper.compiler.CompilerPage;
 
-import java.util.List;
 
 public class RuleViolationPage extends CompilerPage {
 
@@ -10,7 +11,7 @@ public class RuleViolationPage extends CompilerPage {
         super(Plugin.PMD_TITLE, Plugin.PMD_TITLE, null);
     }
 
-    public void add(List list) {
+    public void add(final List list) {
         super.logMsg(list);
     }
 }

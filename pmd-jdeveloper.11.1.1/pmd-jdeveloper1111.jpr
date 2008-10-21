@@ -2,16 +2,19 @@
 <jpr:project xmlns:jpr="http://xmlns.oracle.com/ide/project">
    <hash n="component-versions">
       <value n="oracle.adf.dt.migration.ProjectMigrator" v="10.1.3.3.0"/>
+      <value n="oracle.adfdt.controller.adfc.source.migration.AdfControllerSchemaMigrator" v="11.1.1.0.0"/>
       <value n="oracle.adfdt.controller.adfc.source.migration.MoveMetadataResourcesAgainMigrator" v="11.1.1.0.0"/>
+      <value n="oracle.adfdt.controller.common.migrator.ProjectMigrator" v="11.1.1.0.0"/>
       <value n="oracle.adfdt.controller.jsf.addin.JSFProjectMigrator" v="10.1.3.3.0"/>
       <value n="oracle.adfdt.controller.jsf2.diagram.migrate.JsfNodeMigratorHelper" v="11.1.1.0.0"/>
       <value n="oracle.adfdt.controller.struts.addin.db.ADFStrutsProjectMigrator" v="10.1.3.3.0;11.1.1.0.0"/>
       <value n="oracle.adfdt.controller.struts.addin.StrutsProjectMigrator" v="10.1.3.3.0;11.1.1.0.0"/>
       <value n="oracle.adfdtinternal.dvt.datapresdt.migration.JspProjectMigrator" v="11.1.1.0.0"/>
-      <value n="oracle.adfdtinternal.model.ide.migration.ProjectMigrator" v="11.1.1.0.0"/>
+      <value n="oracle.adfdtinternal.model.ide.migration.ProjectMigrator" v="11.1.1.0.0;11.1.1.0.0.11;11.1.1.0.0.11.1"/>
       <value n="oracle.adfdtinternal.model.ide.xmled.migration.ADFNodeMigrator" v="11.1.1.46.84"/>
+      <value n="oracle.adfdtinternal.model.ide.xmled.migration.PageDefinitionParameterValueMigrator" v="11.1.1.0.0.5"/>
       <value n="oracle.adfdtinternal.model.portlet.migration.WebCenterProjectMigrator" v="10.1.3.3.0"/>
-      <value n="oracle.adfdtinternal.view.common.migration.wizards.MigrationHelper" v="11.1.1.0.0"/>
+      <value n="oracle.adfdtinternal.view.common.migration.wizards.MigrationHelper" v="11.1.1.0.0;11.1.1.0.0.3"/>
       <value n="oracle.adfdtinternal.view.faces.addin.ADFFacesLibraryMigrator" v="10.1.3.3.0"/>
       <value n="oracle.adfdtinternal.view.rich.binding.migration.JarResourceMigrator" v="11.1.1.0.0"/>
       <value n="oracle.bm.commonIde.ProjectUpgrader" v="10.1.3.3.0;11.1.1.0.0"/>
@@ -19,23 +22,31 @@
       <value n="oracle.ide.model.Project" v="10.1.3.3.0;11.1.1.0.0"/>
       <value n="oracle.ide.model.ResourcePathsMigrator" v="10.1.3.3.0;11.1.1.0.0"/>
       <value n="oracle.jbo.dt.jclient.migrator.JCProjectMigrator" v="10.1.3.3.0;11.1.1.0.0"/>
+      <value n="oracle.jbo.dt.jdevx.deployment.JbdProjectMigrator" v="11.1.1.0.0"/>
       <value n="oracle.jbo.dt.jdevx.ui.appnav.APProjectMigrator" v="10.1.3.3.0;11.1.1.46.84"/>
+      <value n="oracle.jbo.dt.migrate.ResourceBundlePathMigrator" v="11.1.1.0.0.5"/>
+      <value n="oracle.jbo.dt.migration.ServiceInterfaceMigrator" v="11.1.1.0.0"/>
       <value n="oracle.jdeveloper.dbmodeler.migration.ProjectMigratorHelper" v="10.1.3.3.0"/>
       <value n="oracle.jdeveloper.ejb.EjbMigrator" v="10.1.3.3.0;11.1.1.0.0"/>
       <value n="oracle.jdeveloper.library.ProjectLibraryMigrator" v="11.1.1.0.0"/>
+      <value n="oracle.jdeveloper.model.OutputDirectoryMigrator" v="11.1.1.0.0"/>
       <value n="oracle.jdeveloper.offlinedb.migration.OfflineDBProjectMigrator" v="10.1.3.3.0"/>
       <value n="oracle.jdevimpl.deploy.DeploymentProfilesMigrator" v="11.1.1.0.0.1"/>
+      <value n="oracle.jdevimpl.deploy.jps.JpsDataMigrator" v="11.1.1.0.0"/>
       <value n="oracle.jdevimpl.jsp.JsfLibraryMigrator" v="10.1.3.3.0"/>
       <value n="oracle.jdevimpl.jsp.JspMigrator" v="10.1.3.1.0;11.1.1.0.0"/>
       <value n="oracle.jdevimpl.offlinedb.migration.OfflineDBProjectMigrator" v="11.1.1.0.0"/>
+      <value n="oracle.jdevimpl.offlinedb.migration.OfflineTransferMigrator" v="11.1.1.0.0"/>
       <value n="oracle.jdevimpl.resourcebundle.XliffAddin$XliffMigratorHelper" v="11.1.1.0.0"/>
       <value n="oracle.jdevimpl.runner.RunConfigurationsMigrator" v="10.1.3.3.0;11.1.1.0.0"/>
-      <value n="oracle.jdevimpl.webapp.jsp.libraries.JspLibraryMigrator" v="11.1.1.0.0"/>
+      <value n="oracle.jdevimpl.webapp.jsp.libraries.JspLibraryMigrator" v="11.1.1.0.0;11.1.1.1.3"/>
       <value n="oracle.jdevimpl.webapp.WebAppNodeMigratorHelper" v="11.1.1.0.0"/>
       <value n="oracle.jdevimpl.webservices.WebServicesMigratorHelper" v="10.1.3.3.0;11.1.1.0.0"/>
+      <value n="oracle.jdevimpl.xml.wl.WeblogicMigratorHelper" v="11.1.1.0.0"/>
       <value n="oracle.modeler.bmmigrate.dif.MigrateToDIF" v="11.1.1.0.0"/>
       <value n="oracle.tip.tools.ide.pm.addin.PMProjectMigrator" v="10.1.3.3.0"/>
       <value n="oracle.toplink.addin.migration.TopLinkProjectMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.toplink.workbench.addin.migration.PersistenceProjectMigrator" v="11.1.1.0.0.1"/>
       <value n="oracle.toplink.workbench.addin.migration.TopLinkProjectMigrator" v="11.1.1.0.0"/>
    </hash>
    <list n="contentSets">
@@ -141,9 +152,16 @@
             <value n="name" v="Default"/>
             <url n="targetURL" path="../../../../../../../Oracle/10gJD10132/jdev/bin/jdev.conf"/>
          </hash>
+         <hash n="Verbose">
+            <value n="custom" v="false"/>
+            <value n="javaOptions" v="-verbose:class"/>
+            <value n="name" v="Verbose"/>
+            <url n="targetURL" path="../../../../../../../Oracle/11gJD11110_P4/jdev/bin/jdev.conf"/>
+         </hash>
       </hash>
       <list n="runConfigurationList">
          <string v="Default"/>
+         <string v="Verbose"/>
       </list>
    </hash>
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
@@ -152,11 +170,19 @@
             <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.0.20.46.84/o.jdeveloper/Extension SDK Doc.library"/>
             <value n="isJDK" v="false"/>
          </hash>
+         <hash>
+            <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.0.22.49.49/o.jdeveloper/pmd-4.2.4.library"/>
+            <value n="isJDK" v="false"/>
+         </hash>
       </list>
       <hash n="internalDefinitions"/>
       <list n="libraryReferences">
          <hash>
             <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.0.20.46.84/o.jdeveloper/Extension SDK Doc.library"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.0.22.49.49/o.jdeveloper/pmd-4.2.4.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
