@@ -175,19 +175,58 @@ public final class CollectionUtil {
      */
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public static boolean areEqual(Object value, Object otherValue) {
-	if (value == otherValue) {
-	    return true;
-	}
-	if (value == null) {
-	    return false;
-	}
-	if (otherValue == null) {
-	    return false;
-	}
+    	if (value == otherValue) {
+    	    return true;
+    	}
+    	if (value == null) {
+    	    return false;
+    	}
+    	if (otherValue == null) {
+    	    return false;
+    	}
 
-	if (value.getClass().getComponentType() != null) {
-	    return arraysAreEqual(value, otherValue);
-	}
-	return value.equals(otherValue);
+    	if (value.getClass().getComponentType() != null) {
+    	    return arraysAreEqual(value, otherValue);
+    	    }
+	    return value.equals(otherValue);
+    }
+    
+    /**
+     * Factory method for a set that uses an array for initial data
+     * 
+     * @param <T>
+     * @param items
+     * @return
+     */
+    public static <T> Set<T> newSet(T[] items) {
+        
+        Set<T> results = new HashSet<T>(items.length);
+        for (int i=0; i<items.length; i++) results.add(items[i]);
+        return results;
+    }
+    
+    /**
+     * Returns whether the items array is null or has zero length.
+     * @param items
+     * @return boolean
+     */
+    public static boolean isEmpty(Object[] items) {        
+        return items == null || items.length == 0;
+    }
+    
+    /**
+     * Returns true if both arrays are if both are null or have zero-length, 
+     * otherwise return the .equals() result on the pair.
+     * 
+     * @param <T>
+     * @param a
+     * @param b
+     * @return boolean
+     */
+    public static <T> boolean areSemanticEquals(T[] a, T[] b) {
+        
+        if (a == null) return isEmpty(b);
+        if (b == null) return isEmpty(a);       
+        return a.equals(b);
     }
 }

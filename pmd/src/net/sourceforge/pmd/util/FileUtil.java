@@ -23,6 +23,24 @@ import net.sourceforge.pmd.util.filter.OrFilter;
  */
 public class FileUtil {
 
+    private FileUtil() {}
+    
+    /**
+     * Helper method to get a filename without its extension
+     * @param fileName String
+     * @return String
+     */
+    public static String getFileNameWithoutExtension(String fileName) {
+        String name = fileName;
+
+        int index = fileName.lastIndexOf('.');
+        if (index != -1) {
+            name = fileName.substring(0, index);
+        }
+
+        return name;
+    }
+    
     /**
      * Collects a list of DataSources using a comma separated list of input file
      * locations to process.  If a file location is a directory, the directory
