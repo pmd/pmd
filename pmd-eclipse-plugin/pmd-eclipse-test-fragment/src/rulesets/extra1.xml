@@ -11,8 +11,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           message="Avoid empty catch blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-  Empty Catch Block finds instances where an exception is caught,
-  but nothing is done.  In most circumstances, this swallows an exception
+  Empty Catch Block finds instances where an exception is caught, but nothing is done.  In most circumstances, this swallows an exception
   which should either be acted on or reported.
       </description>
       <properties>
@@ -69,8 +68,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           message="Avoid empty 'while' statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
        <description>
-  Empty While Statement finds all instances where a while statement
-  does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
+  Empty While Statement finds all instances where a while statement does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
   it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
        </description>
       <properties>
@@ -97,7 +95,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           message="Avoid empty try blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-  Avoid empty try blocks - what's the point?
+Avoid empty try blocks, they serve no purpose.
       </description>
       <properties>
           <property name="xpath">
@@ -124,7 +122,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           message="Avoid empty finally blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-  Avoid empty finally blocks - these can be deleted.
+Avoid empty finally blocks, these can be deleted.
       </description>
       <properties>
           <property name="xpath">
@@ -154,7 +152,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           message="Avoid empty switch statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-      Avoid empty switch statements.
+Avoid empty switch statements.
       </description>
       <properties>
           <property name="xpath">
@@ -184,7 +182,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
          class="net.sourceforge.pmd.lang.rule.XPathRule">
      <description>
-     Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
+Avoid jumbled loop incrementers as these are usually a mistake and can make code maintenance difficult.
      </description>
      <properties>
          <property name="xpath">
@@ -219,7 +217,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           message="This for loop could be simplified to a while loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-      Some for loops can be simplified to while loops - this makes them more concise.
+Some for loops can be simplified to while loops - this makes them more concise.
       </description>
     <properties>
         <property name="xpath">
@@ -247,9 +245,9 @@ The Basic Ruleset contains a collection of good practices which everyone should 
 
     <rule name="UnnecessaryConversionTemporary"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
-          class="net.sourceforge.pmd.lang.java.rule.basic.UnnecessaryConversionTemporaryRule">
+          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryConversionTemporaryRule">
       <description>
-      Avoid unnecessary temporaries when converting primitives to Strings
+Avoid unnecessary temporaries when converting primitives to Strings
       </description>
         <priority>3</priority>
       <example>
@@ -267,7 +265,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           message="Ensure you override both equals() and hashCode()"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-  Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
       </description>
       <properties>
           <property name="xpath">
@@ -322,9 +320,9 @@ not
           message="Double checked locking is not thread safe in Java."
           class="net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule">
       <description>
-      Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
-      An optimizing JRE may assign a reference to the baz variable before it creates the object the
-          reference is intended to point to.  For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html.
+Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
+An optimizing JRE may assign a reference to the baz variable before it creates the object the reference is intended to point to.  
+For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html.
       </description>
         <priority>1</priority>
       <example>
@@ -349,7 +347,7 @@ not
           message="Avoid returning from a finally block"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-  Avoid returning from a finally block - this can discard exceptions.
+ Avoid returning from a finally block, this can discard exceptions.
       </description>
       <properties>
           <property name="xpath">
@@ -382,7 +380,7 @@ not
           message="Avoid empty synchronized blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-  Avoid empty synchronized blocks - they're useless.
+Avoid empty synchronized blocks as they do nothing.
       </description>
       <properties>
           <property name="xpath">
@@ -406,7 +404,7 @@ not
           message="Avoid unnecessary return statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-  Avoid unnecessary return statements
+Avoid unnecessary return statements.
       </description>
       <properties>
           <property name="xpath">
@@ -462,7 +460,7 @@ not
        message="Do not use 'if' statements that are always true or always false"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-      Do not use "if" statements that are always true or always false.
+Do not use "if" statements that are always true or always false.
       </description>
         <properties>
             <property name="xpath">
@@ -490,10 +488,8 @@ not
           message="An empty statement (semicolon) not part of a loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
        <description>
-       An empty statement (aka a semicolon by itself) that is not used
-       as the sole body of a for loop or while loop is probably a bug.  It
-       could also be a double semicolon, which is useless and should be
-       removed.
+An empty statement (aka a semicolon by itself) that is not used as the sole body of a for loop or while loop is probably a bug.  It
+could also be a double semicolon, which is useless and should be removed.
        </description>
         <properties>
             <property name="xpath">
@@ -532,7 +528,7 @@ not
        message="Avoid instantiating Boolean objects; you can usually invoke Boolean.TRUE instead."
        class="net.sourceforge.pmd.lang.rule.XPathRule">
    <description>
-   Avoid instantiating Boolean objects, instead use Boolean.TRUE or Boolean.FALSE.
+Avoid instantiating Boolean objects, instead use Boolean.TRUE or Boolean.FALSE.
    </description>
       <properties>
           <property name="xpath">
@@ -601,7 +597,7 @@ public final class Foo {
           message="These nested if statements could be combined"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-      Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
       </description>
     <properties>
         <property name="xpath">

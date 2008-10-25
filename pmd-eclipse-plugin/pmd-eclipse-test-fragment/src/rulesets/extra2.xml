@@ -11,7 +11,7 @@ The Braces Ruleset contains a collection of braces rules.
          message="Avoid using if statements without curly braces"
          class="net.sourceforge.pmd.lang.rule.XPathRule">
      <description>
-     Avoid using if statements without using curly braces
+Avoid using if statements without using curly braces
      </description>
        <properties>
            <property name="xpath">
@@ -41,7 +41,7 @@ The Braces Ruleset contains a collection of braces rules.
           message="Avoid using 'while' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
       <description>
-      Avoid using 'while' statements without using curly braces
+Avoid using 'while' statements without using curly braces
       </description>
         <properties>
             <property name="xpath">
@@ -69,7 +69,7 @@ The Braces Ruleset contains a collection of braces rules.
            message="Avoid using 'if...else' statements without curly braces"
            class="net.sourceforge.pmd.lang.rule.XPathRule">
        <description>
-       Avoid using if..else statements without using curly braces
+Avoid using if..else statements without using curly braces
        </description>
          <properties>
              <property name="xpath">
@@ -107,7 +107,7 @@ The Braces Ruleset contains a collection of braces rules.
            message="Avoid using 'for' statements without curly braces"
            class="net.sourceforge.pmd.lang.rule.XPathRule">
        <description>
-       Avoid using 'for' statements without using curly braces
+Avoid using 'for' statements without using curly braces
        </description>
          <properties>
              <property name="xpath">
