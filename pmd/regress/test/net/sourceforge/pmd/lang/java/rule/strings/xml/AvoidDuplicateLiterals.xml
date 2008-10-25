@@ -82,7 +82,7 @@ public class Foo {
 threshold property
      ]]></description>
         <expected-problems>1</expected-problems>
-        <rule-property name="threshold">2</rule-property>
+        <rule-property name="maxDuplicateLiterals">2</rule-property>
         <code><![CDATA[
 public class Foo {
  private void bar() {
