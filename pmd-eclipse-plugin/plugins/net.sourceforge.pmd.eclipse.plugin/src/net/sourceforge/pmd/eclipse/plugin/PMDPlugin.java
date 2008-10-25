@@ -264,7 +264,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Apply the log preferencs
+     * Apply the log preferences
      */
     public void applyLogPreferences(IPreferences preferences) {
         Logger log = Logger.getLogger(ROOT_LOG_ID);
