@@ -26,20 +26,20 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
-    public static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty("threshold",
-            "Number of duplicate literals threshold", 1, 20, 4, 1.0f);
+    public static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty("maxDuplicateLiterals",
+            "Max duplicate literals", 1, 20, 4, 1.0f);
 
     public static final IntegerProperty MINIMUM_LENGTH_DESCRIPTOR = new IntegerProperty("minimumLength",
-            "The minimum string length to check", 1, Integer.MAX_VALUE, 3, 1.5f);
+            "Minimum string length to check", 1, Integer.MAX_VALUE, 3, 1.5f);
 
     public static final BooleanProperty SKIP_ANNOTATIONS_DESCRIPTOR = new BooleanProperty("skipAnnotations",
-            "Skip literals within Annotations", false, 2.0f);
+            "Skip literals within annotations", false, 2.0f);
 
     public static final StringProperty EXCEPTION_LIST_DESCRIPTOR = new StringProperty("exceptionList",
             "Strings in that list are skipped", null, 3.0f);
 
     public static final CharacterProperty SEPARATOR_DESCRIPTOR = new CharacterProperty("separator",
-            "Separator used in the exceptionlist", ',', 4.0f);
+            "Exception list separator", ',', 4.0f);
 
     public static final StringProperty EXCEPTION_FILE_DESCRIPTOR = new StringProperty("exceptionfile",
             "File containing strings to skip (one string per line), only used if exceptionlist is not set", null, 5.0f);

@@ -28,7 +28,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  * 
  * @author Brian Remedios
  */
-class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
+public class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
 
     private static final Method stringLength = ClassUtil.methodFor(String.class, "length", ClassUtil.EMPTY_CLASS_ARRAY);
     private static final Method stringToLowerCase = ClassUtil.methodFor(String.class, "toLowerCase", ClassUtil.EMPTY_CLASS_ARRAY);
