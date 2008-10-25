@@ -93,6 +93,10 @@
             class="net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage"
             id="net.sourceforge.pmd.eclipse.ui.preferences.pmdPreferencePage">
       </page>
+         
+      <page name="Ruleset preferences - BR" category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage" class="net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage" id="net.sourceforge.pmd.ui.preferences.pmdPreferencePage">
+      </page>
+      
       <page
             name="%preferences.cpd"
             category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
