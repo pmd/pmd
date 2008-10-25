@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
+import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.util.ClassUtil;
 
 

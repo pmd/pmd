@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 import org.eclipse.swt.SWT;

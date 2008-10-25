@@ -20,6 +20,7 @@ import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
+import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.designer.Designer;
