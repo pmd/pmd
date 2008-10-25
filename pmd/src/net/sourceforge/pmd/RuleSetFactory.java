@@ -84,7 +84,7 @@ public class RuleSetFactory {
 		    props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
 		    String rulesetFilenames = props.getProperty("rulesets.filenames");
 		    if (allRulesetFilenames.length() > 0) {
-			allRulesetFilenames.append(",");
+			allRulesetFilenames.append(',');
 		    }
 		    allRulesetFilenames.append(rulesetFilenames);
 	    }
@@ -227,7 +227,7 @@ public class RuleSetFactory {
 	String ref = ruleElement.getAttribute("ref");
 	if (ref.endsWith("xml")) {
 	    parseRuleSetReferenceNode(ruleSet, ruleElement, ref);
-	} else if (ref.trim().length() == 0) {
+	} else if (StringUtil.isEmpty(ref)) {
 	    parseSingleRuleNode(ruleSet, ruleNode);
 	} else {
 	    parseRuleReferenceNode(ruleSet, ruleNode, ref);
@@ -492,7 +492,7 @@ public class RuleSetFactory {
 	String value = propertyElement.getAttribute("value");
 
 	// If value not provided, get from child <value> element.
-	if (value.trim().length() == 0) {
+	if (StringUtil.isEmpty(value)) {
 	    for (int i = 0; i < propertyNode.getChildNodes().getLength(); i++) {
 		Node node = propertyNode.getChildNodes().item(i);
 		if ((node.getNodeType() == Node.ELEMENT_NODE) && node.getNodeName().equals("value")) {
