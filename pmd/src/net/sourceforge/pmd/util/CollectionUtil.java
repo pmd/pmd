@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,7 +8,7 @@ import java.util.Set;
 
 /**
  * Generic collection and array-related utility functions.
- * 
+ *
  * @author Brian Remedios
  * @version $Revision$
  */
@@ -27,7 +28,7 @@ public final class CollectionUtil {
 
     /**
      * Returns the collection type if we recognize it by its short name.
-     * 
+     *
      * @param shortName String
      * @return Class
      */
@@ -43,7 +44,7 @@ public final class CollectionUtil {
     /**
      * Return whether we can identify the typeName as a java.util collection class
      * or interface as specified.
-     * 
+     *
      * @param typeName String
      * @param includeInterfaces boolean
      * @return boolean
@@ -60,7 +61,7 @@ public final class CollectionUtil {
     /**
      * Return whether we can identify the typeName as a java.util collection class
      * or interface as specified.
-     * 
+     *
      * @param clazzType Class
      * @param includeInterfaces boolean
      * @return boolean
@@ -76,23 +77,19 @@ public final class CollectionUtil {
 
     /**
      * Returns the items as a populated set.
-     * 
+     *
      * @param items Object[]
      * @return Set
      */
     public static <T> Set<T> asSet(T[] items) {
 
-	Set<T> set = new HashSet<T>(items.length);
-	for (T element : items) {
-	    set.add(element);
-	}
-	return set;
+	return new HashSet<T>(Arrays.asList(items));
     }
 
     /**
      * Creates and returns a map populated with the keyValuesSets where
      * the value held by the tuples are they key and value in that order.
-     * 
+     *
      * @param keys K[]
      * @param values V[]
      * @return Map
@@ -110,7 +107,7 @@ public final class CollectionUtil {
 
     /**
      * Returns a map based on the source but with the key & values swapped.
-     * 
+     *
      * @param source Map
      * @return Map
      */
@@ -125,7 +122,7 @@ public final class CollectionUtil {
     /**
      * Returns true if the objects are array instances and each of their elements compares
      * via equals as well.
-     * 
+     *
      * @param value Object
      * @param otherValue Object
      * @return boolean
@@ -143,7 +140,7 @@ public final class CollectionUtil {
     /**
      * Returns whether the arrays are equal by examining each of their elements, even if they are
      * arrays themselves.
-     * 
+     *
      * @param thisArray Object[]
      * @param thatArray Object[]
      * @return boolean
@@ -168,7 +165,7 @@ public final class CollectionUtil {
 
     /**
      * A comprehensive isEqual method that handles nulls and arrays safely.
-     * 
+     *
      * @param value Object
      * @param otherValue Object
      * @return boolean
@@ -190,43 +187,29 @@ public final class CollectionUtil {
     	    }
 	    return value.equals(otherValue);
     }
-    
-    /**
-     * Factory method for a set that uses an array for initial data
-     * 
-     * @param <T>
-     * @param items
-     * @return
-     */
-    public static <T> Set<T> newSet(T[] items) {
-        
-        Set<T> results = new HashSet<T>(items.length);
-        for (int i=0; i<items.length; i++) { results.add(items[i]); }
-        return results;
-    }
-    
+
     /**
      * Returns whether the items array is null or has zero length.
      * @param items
      * @return boolean
      */
-    public static boolean isEmpty(Object[] items) {        
+    public static boolean isEmpty(Object[] items) {
         return items == null || items.length == 0;
     }
-    
+
     /**
-     * Returns true if both arrays are if both are null or have zero-length, 
+     * Returns true if both arrays are if both are null or have zero-length,
      * otherwise return the .equals() result on the pair.
-     * 
+     *
      * @param <T>
      * @param a
      * @param b
      * @return boolean
      */
     public static <T> boolean areSemanticEquals(T[] a, T[] b) {
-        
+
         if (a == null) { return isEmpty(b); }
-        if (b == null) { return isEmpty(a); }     
+        if (b == null) { return isEmpty(a); }
         return a.equals(b);
     }
 }
