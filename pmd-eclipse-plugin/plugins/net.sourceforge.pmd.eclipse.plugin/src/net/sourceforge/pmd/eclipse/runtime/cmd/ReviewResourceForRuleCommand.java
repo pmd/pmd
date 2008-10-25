@@ -123,9 +123,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         final IFile file = (IFile) resource.getAdapter(IFile.class);
         beginTask("PMD Checking for specific rule...", 1);
 
-        if (file != null
-                && file.getFileExtension() != null
-                && file.getFileExtension().equals("java")) {
+        if (file != null && "java".equals(file.getFileExtension())) {
             final RuleSet ruleSet = new RuleSet();
             ruleSet.addRule(rule);
             final PMDEngine pmdEngine = getPmdEngineForProject(project);

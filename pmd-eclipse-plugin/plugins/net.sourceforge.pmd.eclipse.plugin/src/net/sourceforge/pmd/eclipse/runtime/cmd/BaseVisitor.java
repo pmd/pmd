@@ -48,6 +48,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.util.NumericConstants;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -335,7 +336,7 @@ public class BaseVisitor {
             } else {
                 Integer counter = violationsCounter.get(violation.getRule());
                 if (counter == null) {
-                    counter = new Integer(0);
+                    counter = NumericConstants.ZERO;
                     violationsCounter.put(violation.getRule(), counter);
                 }
 
@@ -352,7 +353,7 @@ public class BaseVisitor {
                         markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
                     }
                     */
-                    violationsCounter.put(violation.getRule(), new Integer(counter.intValue() + 1));
+                    violationsCounter.put(violation.getRule(), Integer.valueOf(counter.intValue() + 1));
 
                     log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getBeginLine());
                 } else {
@@ -448,38 +449,38 @@ public class BaseVisitor {
         values.add(violation.getDescription());
 
         attributeNames.add(IMarker.LINE_NUMBER);
-        values.add(new Integer(violation.getBeginLine()));
+        values.add(Integer.valueOf(violation.getBeginLine()));
 
         attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_LINE2);
-        values.add(new Integer(violation.getEndLine()));
+        values.add(Integer.valueOf(violation.getEndLine()));
 
         attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_RULENAME);
         values.add(violation.getRule().getName());
 
         attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_PRIORITY);
-        values.add(new Integer(violation.getRule().getPriority().getPriority()));
+        values.add(Integer.valueOf(violation.getRule().getPriority().getPriority()));
 
         switch (violation.getRule().getPriority().getPriority()) {
         case 1:
             attributeNames.add(IMarker.PRIORITY);
-            values.add(new Integer(IMarker.PRIORITY_HIGH));
+            values.add(Integer.valueOf(IMarker.PRIORITY_HIGH));
         case 2:
             attributeNames.add(IMarker.SEVERITY);
-            values.add(new Integer(IMarker.SEVERITY_ERROR));
+            values.add(Integer.valueOf(IMarker.SEVERITY_ERROR));
             break;
 
         case 5:
             attributeNames.add(IMarker.SEVERITY);
-            values.add(new Integer(IMarker.SEVERITY_INFO));
+            values.add(Integer.valueOf(IMarker.SEVERITY_INFO));
             break;
 
         case 3:
             attributeNames.add(IMarker.PRIORITY);
-            values.add(new Integer(IMarker.PRIORITY_HIGH));
+            values.add(Integer.valueOf(IMarker.PRIORITY_HIGH));
         case 4:
         default:
             attributeNames.add(IMarker.SEVERITY);
-            values.add(new Integer(IMarker.SEVERITY_WARNING));
+            values.add(Integer.valueOf(IMarker.SEVERITY_WARNING));
             break;
         }
 

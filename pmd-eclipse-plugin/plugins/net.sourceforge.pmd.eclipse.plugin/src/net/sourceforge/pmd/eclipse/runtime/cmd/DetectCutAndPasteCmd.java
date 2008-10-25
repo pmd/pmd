@@ -105,9 +105,9 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
             final List<File> files = findFiles();
 
             if (files.size() == 0) {
-                PMDPlugin.getDefault().logInformation("No files found to specified language.");
+                PMDPlugin.getDefault().logInformation("No files found for specified language.");
             } else {
-                PMDPlugin.getDefault().logInformation("Found " + files.size() + " files to the specified language. Performing CPD.");
+                PMDPlugin.getDefault().logInformation("Found " + files.size() + " files for the specified language. Performing CPD.");
             }
             setStepsCount(files.size());
             beginTask("Finding suspect Cut And Paste", getStepsCount()*2);

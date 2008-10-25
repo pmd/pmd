@@ -222,7 +222,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     }
 
     /**
-     * deletegate method for monitor.isCanceled()
+     * delegate method for monitor.isCanceled()
      * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
      */
     protected boolean isCanceled() {

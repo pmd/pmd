@@ -77,7 +77,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     /**
      * Table containing the renderers indexed by the file name.
      */
-    private HashMap<String, Renderer> renderers = new HashMap<String, Renderer>();
+    private Map<String, Renderer> renderers = new HashMap<String, Renderer>();
 
     /**
      * Default Constructor

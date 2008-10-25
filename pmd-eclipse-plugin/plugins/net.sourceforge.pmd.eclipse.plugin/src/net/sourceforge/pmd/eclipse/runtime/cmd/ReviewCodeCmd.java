@@ -120,7 +120,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             this.pmdDuration = 0;
 
             // Lancer PMD
-            if (this.resources.size() == 0) {
+            if (this.resources.isEmpty()) {
                 beginTask("PMD Checking...", getStepsCount());
                 processResourceDelta();
             } else {
@@ -251,7 +251,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
         ISchedulingRule rule = null;
 
-        if (this.resources.size() == 0) {
+        if (this.resources.isEmpty()) {
             rule = ruleFactory.markerRule(this.resourceDelta.getResource().getProject());
         } else {
             ISchedulingRule rules[] = new ISchedulingRule[this.resources.size()];
