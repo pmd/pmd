@@ -123,7 +123,7 @@ public class ReviewAction extends ViolationSelectionAction {
                 } else {
                     MessageDialog.openError(Display.getCurrent().getActiveShell(), getString(StringKeys.MSGKEY_ERROR_TITLE),
                             "The file " + file.getName()
-                                    + " doesn't exists ! Review aborted. Try to refresh the workspace and retry.");
+                                    + " doesn't exist, review aborted. Try to refresh the workspace and retry.");
                 }
 
             }
@@ -136,7 +136,7 @@ public class ReviewAction extends ViolationSelectionAction {
                 log.debug("   severity : " + status.getSeverity());
                 IJavaElement[] elements = status.getElements();
                 for (int i = 0; i < elements.length; i++) {
-                    log.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ")");
+                    log.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ')');
                 }
             }
         } catch (CoreException e) {

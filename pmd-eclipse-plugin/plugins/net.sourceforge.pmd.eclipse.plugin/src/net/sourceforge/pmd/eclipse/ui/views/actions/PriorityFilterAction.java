@@ -130,7 +130,7 @@ public class PriorityFilterAction extends Action {
     }
 
     /**
-     * Helper mehod to retreive an NLS string from its key
+     * Helper method to retrieve an NLS string from its key
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);

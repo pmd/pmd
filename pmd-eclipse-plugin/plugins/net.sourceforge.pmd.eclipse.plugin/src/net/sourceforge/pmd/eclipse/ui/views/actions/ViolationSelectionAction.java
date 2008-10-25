@@ -2,6 +2,8 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
@@ -35,15 +37,13 @@ public class ViolationSelectionAction extends Action {
 	 * @return the Marker(s) currently selected
 	 */
     public IMarker[] getSelectedViolations() {
-        IMarker[] markers = null;
+
 		ISelection selection = tableViewer.getSelection();
-        if (selection != null &&
-        		selection instanceof IStructuredSelection) {
+        if (selection != null && selection instanceof IStructuredSelection) {
 
-            IStructuredSelection structuredSelection =
-            	(IStructuredSelection) selection;
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
-            markers = new IMarker[structuredSelection.size()];
+            IMarker[] markers = new IMarker[structuredSelection.size()];
             Iterator<IMarker> i = structuredSelection.iterator();
             int index = 0;
             while (i.hasNext()) {
@@ -51,6 +51,6 @@ public class ViolationSelectionAction extends Action {
             }
         }
 
-        return markers;
+        return ViolationOverview.emptyMarkers;
     }
 }

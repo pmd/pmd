@@ -150,7 +150,7 @@ public class PriorityFilter extends ViewerFilter {
             final ArrayList<Integer> priorities = new ArrayList<Integer>();
 
             for (String element : newArray) {
-                priorities.add(new Integer(element)); // NOPMD by Sven on 13.11.06 11:53
+                priorities.add(Integer.valueOf(element)); // NOPMD by Sven on 13.11.06 11:53
             }
 
             priorityList = priorities;

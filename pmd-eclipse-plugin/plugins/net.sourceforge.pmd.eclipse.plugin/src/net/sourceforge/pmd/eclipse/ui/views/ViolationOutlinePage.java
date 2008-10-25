@@ -5,6 +5,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
+import net.sourceforge.pmd.util.NumericConstants;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -47,7 +48,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     private ViewerFilter viewerFilter;
     private FileRecord resource;
 
-    protected final Integer[] columnWidths = {new Integer(20), new Integer(170), new Integer(40)};
+    protected final Integer[] columnWidths = {Integer.valueOf(20), Integer.valueOf(170), Integer.valueOf(40)};
     protected final int[] columnSortOrder = { 1, 1, 1 };
     protected int currentSortedColumn;
 
@@ -125,7 +126,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         TableColumn[] columns = table.getColumns();
 
         for (int k = 0; k < columns.length; k++) {
-            columnWidths[k] = new Integer(columns[k].getWidth());
+            columnWidths[k] = Integer.valueOf(columns[k].getWidth());
             final int i = k;
             // the Sorter
             columns[k].addSelectionListener(new SelectionAdapter() {
@@ -138,7 +139,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
             // the Resizing
             columns[k].addControlListener(new ControlAdapter() {
                 public void controlResized(ControlEvent e) {
-                    columnWidths[i] = new Integer(tableViewer.getTable().getColumn(i).getWidth());
+                    columnWidths[i] = Integer.valueOf(tableViewer.getTable().getColumn(i).getWidth());
                 }
             });
         }
@@ -173,8 +174,8 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                     IMarker marker1 = (IMarker) e1;
                     IMarker marker2 = (IMarker) e2;
 
-                    Integer prio1 = new Integer(0);
-                    Integer prio2 = new Integer(0);
+                    Integer prio1 = NumericConstants.ZERO;
+                    Integer prio2 = NumericConstants.ZERO;
 
                     try {
                         prio1 = (Integer) marker1.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
@@ -264,7 +265,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         TableColumn[] columns = tableViewer.getTable().getColumns();
         for (int k = 0; k < widths.length; k++) {
             if (widths[k] == null) {
-                widths[k] = k == 0 ? new Integer(20) : k == 1 ? new Integer(170) : new Integer(40);
+                widths[k] = k == 0 ? Integer.valueOf(20) : k == 1 ? Integer.valueOf(170) : Integer.valueOf(40);
             }
             columns[k].setWidth(widths[k].intValue());
         }
@@ -296,7 +297,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
      * @return the properties to sort by
      */
     public Integer[] getSorterProperties() {
-        return new Integer[] { new Integer(currentSortedColumn), new Integer(columnSortOrder[currentSortedColumn]) };
+        return new Integer[] { Integer.valueOf(currentSortedColumn), Integer.valueOf(columnSortOrder[currentSortedColumn]) };
     }
 
     /**

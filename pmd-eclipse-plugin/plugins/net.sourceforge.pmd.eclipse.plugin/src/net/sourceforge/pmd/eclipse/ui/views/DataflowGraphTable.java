@@ -175,7 +175,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		// ceate an Integer-Arr out of the int-Array
 		colWidths = new Integer[numCols];
 		for (int i=0; i<widths.length; i++) {
-			colWidths[i] = new Integer(widths[i]);
+			colWidths[i] = Integer.valueOf(widths[i]);
 		}
 
 		// check and (if correct) set the Graph's Column
@@ -252,7 +252,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	 */
 	public void setRows(int count, int height) {
 		numRows = count;
-		rowHeight = new Integer(height);
+		rowHeight = Integer.valueOf(height);
 		tableSize.y = numRows*height;
 		redraw();
 	}
@@ -511,7 +511,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		// create the Lines for each Row
 		// from 0 to the Table's Width
 		if (rowHeight == null)
-			rowHeight = new Integer(DEFAULT_ROW_HEIGHT);
+			rowHeight = Integer.valueOf(DEFAULT_ROW_HEIGHT);
 		int rowWidth = tableSize.x;
 		for (int i=0; i<=numRows; i++) {
 			g.drawLine(0, i*rowHeight.intValue(),
@@ -547,7 +547,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		int tableX = tablePosition.x;
 		int tableY = tablePosition.y;
 		if (rowHeight == null)
-			rowHeight = new Integer(DEFAULT_ROW_HEIGHT);
+			rowHeight = Integer.valueOf(DEFAULT_ROW_HEIGHT);
 
 		// create the filling Lines
 		// from the Table's Width to the Viewer's Width

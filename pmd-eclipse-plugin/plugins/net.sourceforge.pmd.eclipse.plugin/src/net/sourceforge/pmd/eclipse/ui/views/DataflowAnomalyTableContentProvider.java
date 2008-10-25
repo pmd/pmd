@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.java.rule.controversial.DaaRuleViolation;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -20,7 +21,7 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
 
 	/* @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object) */
 	public Object[] getElements(Object inputElement) {
-        Object[] result = new Object[0];
+
 	    if (inputElement instanceof Iterator) {
             final Iterator<DaaRuleViolation> violationsIterator = (Iterator<DaaRuleViolation>)inputElement;
             final List<DaaRuleViolation> violations = new ArrayList<DaaRuleViolation>();
@@ -31,9 +32,9 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
                 }
             }
 
-            result = violations.toArray(new DaaRuleViolation[violations.size()]);
+            return violations.toArray(new DaaRuleViolation[violations.size()]);
         }
-        return result;
+        return Util.EMPTY_ARRAY;
 	}
 
 	/* @see org.eclipse.jface.viewers.IContentProvider#dispose() */

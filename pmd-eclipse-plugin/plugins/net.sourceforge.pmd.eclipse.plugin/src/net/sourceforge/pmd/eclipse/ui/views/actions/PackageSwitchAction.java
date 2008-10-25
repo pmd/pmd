@@ -24,7 +24,7 @@ public class PackageSwitchAction extends Action {
     public PackageSwitchAction(ViolationOverview view) {
         violationView = view;
 
-        // se set Image and Tooltip-Text
+        // set Image and Tooltip-Text
         setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILES));
         setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_PACKAGES_FILES));
     }

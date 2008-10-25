@@ -149,7 +149,7 @@ public class ViolationOverviewMenuManager {
                 createShowTypeSubmenu(submenuManager);
                 manager.add(submenuManager);
 
-                // addtions Action: Clear PMD Violations
+                // additions Action: Clear PMD Violations
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
 

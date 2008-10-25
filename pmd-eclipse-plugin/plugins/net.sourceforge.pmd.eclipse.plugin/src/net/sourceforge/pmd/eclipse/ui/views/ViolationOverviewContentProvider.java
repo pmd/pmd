@@ -49,6 +49,7 @@ import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 import net.sourceforge.pmd.eclipse.ui.model.ProjectRecord;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
+import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,8 +72,8 @@ import org.eclipse.jface.viewers.Viewer;
  *
  */
 public class ViolationOverviewContentProvider implements ITreeContentProvider, IStructuredContentProvider, IResourceChangeListener {
+    
     private static final Log LOG = LogFactory.getLog(ViolationOverviewContentProvider.class);
-    protected static final Object[] NO_CHILDREN = new Object[0];
     protected boolean filterPackages;
 
     final private ViolationOverview violationView;
@@ -113,18 +114,17 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
      */
     public Object[] getChildren(Object parentElement) {
-        Object[] children = NO_CHILDREN;
-
+       
         if (parentElement instanceof IWorkspaceRoot || parentElement instanceof RootRecord) {
-            children = getChildrenOfRoot();
+            return getChildrenOfRoot();
         } else if (parentElement instanceof PackageRecord) {
-            children = getChildrenOfPackage((PackageRecord)parentElement);
+            return getChildrenOfPackage((PackageRecord)parentElement);
         } else if (parentElement instanceof FileRecord) {
-            children = getChildrenOfFile((FileRecord)parentElement);
+            return getChildrenOfFile((FileRecord)parentElement);
         } else if (parentElement instanceof MarkerRecord) {
-            children = getChildrenOfMarker((MarkerRecord)parentElement);
+            return getChildrenOfMarker((MarkerRecord)parentElement);
         }
-        return children;
+        return Util.EMPTY_ARRAY;
     }
 
     /**
@@ -155,8 +155,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      * @return children as array
      */
     private Object[] getChildrenOfPackage(PackageRecord record) {
-        Object[] children = NO_CHILDREN;
-
+   
         if (this.violationView.getShowType() == ViolationOverview.SHOW_MARKERS_FILES) {
             final Map<String, AbstractPMDRecord> markers = new HashMap<String, AbstractPMDRecord>();
             final List<AbstractPMDRecord> files = record.getChildrenAsList();
@@ -170,11 +169,10 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
                 }
             }
 
-            children = markers.values().toArray(new MarkerRecord[markers.size()]);
+            return markers.values().toArray(new MarkerRecord[markers.size()]);
         } else {
-            children = record.getChildren();
+            return record.getChildren();
         }
-        return children;
     }
 
     /**
@@ -182,7 +180,6 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      * @return children
      */
     private Object[] getChildrenOfRoot() {
-        Object[] children = NO_CHILDREN;
 
         // ... we care about its Project's
         final List<AbstractPMDRecord> projects = root.getChildrenAsList();
@@ -201,8 +198,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
         case ViolationOverview.SHOW_MARKERS_FILES:
         case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
             // show packages
-            children = packages.toArray();
-            break;
+            return packages.toArray();
 
         case ViolationOverview.SHOW_FILES_MARKERS:
             // show files
@@ -212,13 +208,12 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
                 files.addAll(packageRec.getChildrenAsList());
             }
 
-            children = files.toArray();
-            break;
+            return files.toArray();
 
         default:
             // do nothing
         }
-        return children;
+        return Util.EMPTY_ARRAY;
     }
 
      /**
@@ -480,10 +475,10 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
                     final AbstractPMDRecord fileRec = projectRec.addResource(resource);
                     additions.add(fileRec);
                 } else {
-                    LOG.debug("The found resource is not a file ! type found : " + rec.getResourceType());
+                    LOG.debug("The resource found is not a file! type found : " + rec.getResourceType());
                 }
             } else {
-                LOG.debug("The project resource is not the same ! (" + resource.getProject().getName() + ")");
+                LOG.debug("The project resource is not the same! (" + resource.getProject().getName() + ')');
             }
         }
 

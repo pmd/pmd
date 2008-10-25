@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
@@ -24,8 +25,6 @@ import org.eclipse.jface.viewers.Viewer;
 public class ViolationOutlineContentProvider implements
 		IStructuredContentProvider, IResourceChangeListener {
 
-	protected static final Object[] NO_ELEMENTS = new Object[0];
-
 	private ViolationOutlinePage outlinePage;
 	private TableViewer tableViewer;
 	private FileRecord resource;
@@ -44,10 +43,11 @@ public class ViolationOutlineContentProvider implements
 
 	/* @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object) */
 	public Object[] getElements(Object inputElement) {
+	    
 		if (inputElement instanceof FileRecord) {
 			return ((FileRecord) inputElement).findMarkers();
 		}
-		return NO_ELEMENTS;
+		return Util.EMPTY_ARRAY;
 	}
 
 

@@ -49,6 +49,8 @@ import java.util.List;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IMemento;
@@ -266,15 +268,18 @@ public class ViewMemento {
      * @param valueList
      */
     public <T extends Object> void putList(String key, List<T> valueList) {
-        final StringBuffer valueString = new StringBuffer();
+        
+        if (valueList.isEmpty()) {
+            putString(key, ""); // even necessary?
+            return;
+        }
+        
+        final StringBuilder sb = new StringBuilder(String.valueOf(valueList.get(0)));
         for (int k = 0; k < valueList.size(); k++) {
-            if (k > 0) {
-                valueString.append(LIST_SEPARATOR);
-            }
-            valueString.append(valueList.get(k));
+            sb.append(LIST_SEPARATOR).append(valueList.get(k));
         }
 
-        putString(key, valueString.toString());
+        putString(key, sb.toString());
     }
 
     /**
@@ -317,15 +322,15 @@ public class ViewMemento {
      * @return ArrayList of Integer-Values
      */
     public List<Integer> getIntegerList(String key) {
-        final ArrayList<Integer> valuelist = new ArrayList<Integer>();
+        final List<Integer> valuelist = new ArrayList<Integer>();
         final String valueString = getString(key);
         if (valueString != null) {
             final String[] objects = valueString.split(LIST_SEPARATOR);
             for (String object : objects) {
-                if (object.trim().length() == 0 || "null".equals(object)) {
-                    valuelist.add(new Integer(0)); // NOPMD by Herlin on 11/10/06 00:13
+                if (StringUtil.isEmpty(object) || "null".equals(object)) {
+                    valuelist.add(NumericConstants.ZERO); // NOPMD by Herlin on 11/10/06 00:13
                 } else {
-                    valuelist.add(new Integer(object)); // NOPMD by Herlin on 11/10/06 00:14
+                    valuelist.add(Integer.valueOf(object)); // NOPMD by Herlin on 11/10/06 00:14
                 }
             }
         }

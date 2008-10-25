@@ -5,7 +5,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.Util;
+import net.sourceforge.pmd.eclipse.util.Util;
 
 /**
  * This class implements a content provider for the rule properties table of

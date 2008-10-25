@@ -24,7 +24,7 @@ public class CalculateStatisticsAction extends Action {
         super();
         violationView = view;
 
-        // se set Image and Tooltip-Text
+        // set Image and Tooltip-Text
         setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_CALCULATE));
         setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS));
     }

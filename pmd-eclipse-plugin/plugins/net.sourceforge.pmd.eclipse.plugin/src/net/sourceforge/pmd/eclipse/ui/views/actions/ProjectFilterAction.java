@@ -31,7 +31,7 @@ public class ProjectFilterAction extends Action {
         violationView = view;
         project = projectRecord;
 
-        // we need to get the viewes Filter
+        // we need to get the views Filter
         ViewerFilter[] filters = view.getViewer().getFilters();
         for (int i = 0; i < filters.length; i++) {
             if (filters[i] instanceof ProjectFilter)

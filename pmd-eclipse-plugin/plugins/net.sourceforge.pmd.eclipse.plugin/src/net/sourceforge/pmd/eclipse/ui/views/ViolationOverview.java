@@ -41,10 +41,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import name.herlin.command.CommandException;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.DeleteMarkersCommand;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
@@ -52,6 +52,7 @@ import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.util.NumericConstants;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -108,6 +109,8 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     protected final static String PROJECT_LIST = "projectFilterList";
     protected final static String COLUMN_WIDTHS = "tableColumnWidths";
     protected final static String COLUMN_SORTER = "tableColumnSorter";
+
+    public static final IMarker[] emptyMarkers = new IMarker[0];
 
     /**
      * Shows packages -> files -> markers.
@@ -208,8 +211,8 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         this.memento.putList(COLUMN_WIDTHS, widthList);
 
         // ... what Element is sorted in what way
-        final Integer[] sorterProps = new Integer[] { new Integer(currentSortedColumn),
-                new Integer(columnSortOrder[currentSortedColumn]) };
+        final Integer[] sorterProps = new Integer[] { Integer.valueOf(currentSortedColumn),
+                Integer.valueOf(columnSortOrder[currentSortedColumn]) };
         final List<Integer> sorterList = Arrays.asList(sorterProps);
         memento.putList(COLUMN_SORTER, sorterList);
 
@@ -276,7 +279,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         final TreeColumn[] columns = tree.getColumns();
 
         for (int k = 0; k < columns.length; k++) {
-            this.columnWidths[k] = new Integer(columns[k].getWidth()); // NOPMD by Herlin on 09/10/06 15:02
+            this.columnWidths[k] = Integer.valueOf(columns[k].getWidth()); // NOPMD by Herlin on 09/10/06 15:02
 
             // each Column gets a SelectionAdapter
             // on Selection the Column is sorted
@@ -393,7 +396,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             final TreeColumn[] columns = this.treeViewer.getTree().getColumns();
             for (int k = 0; k < this.columnWidths.length; k++) {
                 if (this.columnWidths[k] == null) {
-                    this.columnWidths[k] = new Integer(75);
+                    this.columnWidths[k] = Integer.valueOf(75);
                 }
                 columns[k].setWidth(this.columnWidths[k].intValue());
             }
@@ -593,7 +596,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
                     vio1 = getNumberOfFilteredViolations((AbstractPMDRecord)e1);
                     vio2 = getNumberOfFilteredViolations((AbstractPMDRecord)e2);
                 }
-                return new Integer(vio1).compareTo(new Integer(vio2)) * sortOrder;
+                return Integer.valueOf(vio1).compareTo(Integer.valueOf(vio2)) * sortOrder;
             }
         };
     }
@@ -606,11 +609,12 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @return
      */
     private ViewerSorter newViolationsPerLOCSorter(TreeColumn column, final int sortOrder) { // NOPMD by Sven on 13.11.06 11:45
+       
         return new TableColumnSorter(column, sortOrder) {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD by Sven on 13.11.06 11:45
-                Float vioPerLoc1 = new Float(0.0f);
-                Float vioPerLoc2 = new Float(0.0f);
+                Float vioPerLoc1 = NumericConstants.floatZERO;
+                Float vioPerLoc2 = NumericConstants.floatZERO;
                 if (e1 instanceof PackageRecord && e2 instanceof PackageRecord
                         || e1 instanceof FileRecord && e2 instanceof FileRecord
                         || e1 instanceof MarkerRecord && e2 instanceof MarkerRecord
@@ -620,10 +624,10 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
                     final int loc1 = getLOC((AbstractPMDRecord)e1);
                     final int loc2 = getLOC((AbstractPMDRecord)e2);
                     if (loc1 > 0) {
-                        vioPerLoc1 = new Float((float) vio1 / loc1);
+                        vioPerLoc1 = Float.valueOf((float) vio1 / loc1);
                     }
                     if (loc2 > 0) {
-                        vioPerLoc2 = new Float((float) vio2 / loc2);
+                        vioPerLoc2 = Float.valueOf((float) vio2 / loc2);
                     }
                 }
 
@@ -646,8 +650,8 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD by Sven on 13.11.06 11:45
 
-                Float vioPerMethod1 = new Float(0.0f);
-                Float vioPerMethod2 = new Float(0.0f);
+                Float vioPerMethod1 = NumericConstants.floatZERO;
+                Float vioPerMethod2 = NumericConstants.floatZERO;
                 if (e1 instanceof PackageRecord && e2 instanceof PackageRecord
                         || e1 instanceof FileRecord && e2 instanceof FileRecord
                         || e1 instanceof MarkerRecord && e2 instanceof MarkerRecord
@@ -657,10 +661,10 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
                     final int numMethods1 = getNumberOfMethods((AbstractPMDRecord) e1);
                     final int numMethods2 = getNumberOfMethods((AbstractPMDRecord) e2);
                     if (numMethods1 > 0) {
-                        vioPerMethod1 = new Float((float) vio1 / numMethods1);
+                        vioPerMethod1 = Float.valueOf((float) vio1 / numMethods1);
                     }
                     if (numMethods2 > 0) {
-                        vioPerMethod2 = new Float((float) vio2 / numMethods2);
+                        vioPerMethod2 = Float.valueOf((float) vio2 / numMethods2);
                     }
                 }
 
@@ -738,12 +742,12 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     public void deleteMarkers(AbstractPMDRecord element) throws CoreException {
         if (element instanceof MarkerRecord) {
             final MarkerRecord record = (MarkerRecord) element;
-            IMarker[] markers = new IMarker[0];
+            IMarker[] markers = emptyMarkers;
 
             switch (getShowType()) {
             case SHOW_PACKAGES_FILES_MARKERS:
             case SHOW_FILES_MARKERS:
-                // simply get the markers of the markerrecord
+                // simply get the markers of the marker record
                 markers = record.findMarkers();
                 break;
             case SHOW_MARKERS_FILES:
@@ -756,8 +760,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             deleteMarkers(markers);
         } else if (element instanceof FileToMarkerRecord) {
             final FileToMarkerRecord record = (FileToMarkerRecord) element;
-            IMarker[] markers = new IMarker[0];
-            markers = record.findMarkers();
+            IMarker[] markers = record.findMarkers();
             deleteMarkers(markers);
         } else if (element instanceof AbstractPMDRecord) {
             // simply delete markers from resource
@@ -840,7 +843,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
 
         @Override
         public void controlResized(ControlEvent e) {
-            columnWidths[this.column] = new Integer(treeViewer.getTree().getColumn(this.column).getWidth());
+            columnWidths[this.column] = Integer.valueOf(treeViewer.getTree().getColumn(this.column).getWidth());
         }
     }
 

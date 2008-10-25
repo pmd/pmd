@@ -85,7 +85,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         columnWidths = new Integer[columns.length];
 
         for (int k = 0; k < columns.length; k++) {
-            columnWidths[k] = new Integer(columns[k].getWidth());
+            columnWidths[k] = Integer.valueOf(columns[k].getWidth());
             final int i = k;
             columns[k].addSelectionListener(new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
@@ -96,7 +96,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
             });
             columns[k].addControlListener(new ControlAdapter() {
                 public void controlResized(ControlEvent e) {
-                    columnWidths[i] = new Integer(getTable().getColumn(i).getWidth());
+                    columnWidths[i] = Integer.valueOf(getTable().getColumn(i).getWidth());
                 }
             });
         }
@@ -131,8 +131,8 @@ public class DataflowAnomalyTableViewer extends TableViewer {
                             final int m2_l1 = violation1.getEndLine();
                             final int m2_l2 = violation2.getEndLine();
 
-                            final Integer line1 = new Integer((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
-                            final Integer line2 = new Integer((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
+                            final Integer line1 = Integer.valueOf((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
+                            final Integer line2 = Integer.valueOf((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
 
                             result = line1.compareTo(line2) * sortOrder;
                         } else {
@@ -158,8 +158,8 @@ public class DataflowAnomalyTableViewer extends TableViewer {
                         final int m2_l1 = violation1.getEndLine();
                         final int m2_l2 = violation2.getEndLine();
     
-                        final Integer line1 = new Integer((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
-                        final Integer line2 = new Integer((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
+                        final Integer line1 = Integer.valueOf((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
+                        final Integer line2 = Integer.valueOf((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
                         result = line1.compareTo(line2) * sortOrder;
                     }
                     return result;
