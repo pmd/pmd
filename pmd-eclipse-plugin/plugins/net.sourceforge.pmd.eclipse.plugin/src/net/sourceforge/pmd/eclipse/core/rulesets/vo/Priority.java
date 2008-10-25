@@ -37,7 +37,7 @@
 package net.sourceforge.pmd.eclipse.core.rulesets.vo;
 
 /**
- * This class is a value objet that composes the structure of a rulesets object.
+ * This class is a value object that composes the structure of a rulesets object.
  * It holds a priorityValue definition, ie a integer value that describes the level
  * of a rule. This class if fundamentally an enumeration that is implemented as
  * a type safe enumeration, but with constraints of Java Beans to allow
@@ -109,21 +109,20 @@ public class Priority {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object arg0) {
-        boolean equal = false;
-
+       
         if (arg0 instanceof Priority) {
             final Priority p = (Priority) arg0;
-            equal = p.priorityValue == this.priorityValue;
+            return p.priorityValue == this.priorityValue;
         }
 
-        return equal;
+        return false;
     }
 
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return new Integer(this.priorityValue).hashCode();
+        return Integer.valueOf(this.priorityValue).hashCode();
     }
 
     /**

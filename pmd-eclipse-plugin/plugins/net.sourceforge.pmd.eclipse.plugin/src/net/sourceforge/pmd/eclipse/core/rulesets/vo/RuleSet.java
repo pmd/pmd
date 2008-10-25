@@ -39,8 +39,10 @@ package net.sourceforge.pmd.eclipse.core.rulesets.vo;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
- * This class is a value objet which composes the structure of a rulesets object.
+ * This class is a value object which composes the structure of a rulesets object.
  * It holds the definition of a rule set which is actually a named collection of
  * rules.
  *
@@ -103,11 +105,8 @@ public class RuleSet {
      * @param name The name to set.
      */
     public void setName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("name cannot be null");
-        }
-        if (name.trim().length() == 0) { // NOPMD by Herlin on 20/06/06 23:25
-            throw new IllegalArgumentException("name cannot be empty");
+        if (StringUtil.isEmpty(name)) { // NOPMD by Herlin on 20/06/06 23:25
+            throw new IllegalArgumentException("name cannot be null or empty");
         }
 
         this.name = name;
@@ -165,14 +164,13 @@ public class RuleSet {
      */
     @Override
     public boolean equals(Object arg0) {
-        boolean equal = false;
-
+      
         if (arg0 instanceof RuleSet) {
             final RuleSet rs = (RuleSet) arg0;
-            equal = this.name.equals(rs.name) && this.rules.equals(rs.rules) && this.language.equals(rs.language);
+            return this.name.equals(rs.name) && this.rules.equals(rs.rules) && this.language.equals(rs.language);
         }
 
-        return equal;
+        return false;
     }
 
     /**
@@ -188,7 +186,7 @@ public class RuleSet {
      */
     @Override
     public String toString() {
-        final StringBuffer buffer = new StringBuffer("RuleSet name=" + this.name + " description=" + " language=" + this.language
+        final StringBuilder buffer = new StringBuilder("RuleSet name=" + this.name + " description=" + " language=" + this.language
                 + " rules=");
         for (Rule rule : this.rules) {
             buffer.append(' ').append(rule);

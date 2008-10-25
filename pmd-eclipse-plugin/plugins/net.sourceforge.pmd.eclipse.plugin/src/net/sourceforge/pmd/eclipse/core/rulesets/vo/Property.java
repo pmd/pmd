@@ -37,7 +37,7 @@
 package net.sourceforge.pmd.eclipse.core.rulesets.vo;
 
 /**
- * This class is a value objet that composes the structure of a rulesets object.
+ * This class is a value object that composes the structure of a rulesets object.
  * It holds a property definition, ie a name and a value pair.
  * 
  * @author Herlin

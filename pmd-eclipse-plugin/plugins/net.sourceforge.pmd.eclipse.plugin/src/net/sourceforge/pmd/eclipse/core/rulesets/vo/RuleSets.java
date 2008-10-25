@@ -39,8 +39,10 @@ package net.sourceforge.pmd.eclipse.core.rulesets.vo;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
- * This class is a value objet that is the root of the structure of a rulesets
+ * This class is a value object that is the root of the structure of a rulesets
  * object. It holds the different configurations the user may define and use in
  * each project.
  *
@@ -96,11 +98,8 @@ public class RuleSets {
      * @param ruleSetsSet The ruleSetsSet to set.
      */
     public void setRuleSets(List<RuleSet> ruleSets) {
-        if (ruleSets == null) {
-            throw new IllegalArgumentException("ruleSets cannot be null");
-        }
-        if (ruleSets.size() == 0) {
-            throw new IllegalArgumentException("The rule sets list should not be empty");
+        if (ruleSets == null || ruleSets.isEmpty()) {
+            throw new IllegalArgumentException("The rule set list should not be null or empty");
 
         }
         this.ruleSetsList = ruleSets;
@@ -120,8 +119,8 @@ public class RuleSets {
      * @param ruleSetName a name of an already defined ruleset.
      */
     public void setDefaultRuleSetName(String ruleSetName) {
-        if (ruleSetName == null) {
-            throw new IllegalArgumentException("The default ruleset name must not ne null");
+        if (StringUtil.isEmpty(ruleSetName)) {
+            throw new IllegalArgumentException("The default ruleset name must not be null or empty");
         }
 
         for (RuleSet ruleSet2 : this.ruleSetsList) {
@@ -138,7 +137,7 @@ public class RuleSets {
      */
     @Override
     public String toString() {
-        final StringBuffer buffer = new StringBuffer("RuleSets defaultRuleSet=");
+        final StringBuilder buffer = new StringBuilder("RuleSets defaultRuleSet=");
         buffer.append(this.defaultRuleSet.getName());
         buffer.append(" ruleSetsList=");
 

@@ -100,11 +100,10 @@ public class Properties {
      */
     @Override
     public String toString() {
-        final StringBuffer buffer = new StringBuffer("Properties");
+        final StringBuilder buffer = new StringBuilder("Properties");
         for (Property property : this.propertiesSet) {
             final Property p = property;
-            buffer.append(' ');
-            buffer.append(p);
+            buffer.append(' ').append(p);
         }
 
         return buffer.toString();

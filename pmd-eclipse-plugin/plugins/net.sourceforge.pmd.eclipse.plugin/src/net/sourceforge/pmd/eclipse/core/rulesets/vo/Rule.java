@@ -36,10 +36,12 @@
 
 package net.sourceforge.pmd.eclipse.core.rulesets.vo;
 
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
- * This class is a value objet that composes the structure of a rulesets object.
+ * This class is a value object that composes the structure of a rulesets object.
  * It holds the definition of a rule which is actually a reference to a known
- * ruleset with some overriden information such as properties and message.
+ * ruleset with some overridden information such as properties and message.
  * 
  * @author Herlin
  * 
@@ -54,7 +56,7 @@ public class Rule {
 
     /**
      * Getter for the message attribute. A null value means the message is not
-     * overriden.
+     * overridden.
      * 
      * @return Returns the message.
      */
@@ -73,7 +75,7 @@ public class Rule {
 
     /**
      * Getter for the priority attribute. A null value means it is not
-     * overriden.
+     * overridden.
      * 
      * @return Returns the priority.
      */
@@ -92,7 +94,7 @@ public class Rule {
 
     /**
      * Getter for the properties attribute. A null value or an empty set means
-     * no property is overriden.
+     * no property is overridden.
      * 
      * @return Returns the properties.
      */
@@ -127,11 +129,9 @@ public class Rule {
      * @param ref The ref to set.
      */
     public void setRef(String ref) {
-        if (ref == null) {
-            throw new IllegalArgumentException("ref cannot be null");
-        }
-        if (ref.trim().length() == 0) { // NOPMD by Herlin on 20/06/06 23:25
-            throw new IllegalArgumentException("ref cannot be an empty string");
+        
+        if (StringUtil.isEmpty(ref)) { // NOPMD by Herlin on 20/06/06 23:25
+            throw new IllegalArgumentException("ref cannot be null or an blank string");
         }
 
         this.ref = ref;
