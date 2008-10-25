@@ -69,11 +69,14 @@ import org.eclipse.jdt.core.JavaModelException;
  *
  */
 public class FileRecord extends AbstractPMDRecord {
+    
     private AbstractPMDRecord[] children;
     private IResource resource;
     private PackageRecord parent;
     private int numberOfLOC;
     private int numberOfMethods;
+    
+    public static final IMarker[] emptyMarkers = new IMarker[0];
 
     /**
      * Constructor (not for use with the Model, no PackageRecord is provided here)
@@ -192,18 +195,18 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     public final IMarker[] findMarkers() {
-        IMarker[] markers = new IMarker[0]; // to avoid returning null
+        
         try {
             // this is the overwritten Function from AbstractPMDRecord
             // we simply call the IResource-function to find Markers
             if (this.resource.isAccessible()) {
-                markers = this.resource.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                return this.resource.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
             }
         } catch (CoreException ce) {
             PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
 
-        return markers;
+        return emptyMarkers;
     }
 
     /**
@@ -212,18 +215,18 @@ public class FileRecord extends AbstractPMDRecord {
      * @return an Array of markers
      */
     public IMarker[] findDFAMarkers() {
-        IMarker[] markers = new IMarker[0];
+        
         try {
             // we can only find Markers for a file
             // we use the DFA-Marker-ID set for Dataflow Anomalies
             if (this.resource.isAccessible()) {
-                markers = this.resource.findMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
+                return this.resource.findMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
             }
         } catch (CoreException ce) {
             PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
 
-        return markers;
+        return emptyMarkers;
     }
 
     /**

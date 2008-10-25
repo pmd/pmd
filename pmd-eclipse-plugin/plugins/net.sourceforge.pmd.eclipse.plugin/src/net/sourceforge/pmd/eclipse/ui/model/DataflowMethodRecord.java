@@ -164,8 +164,8 @@ public class DataflowMethodRecord {
             line2 = temp;
         }
 
-        values.add(new Integer(line1));
-        values.add(new Integer(line2));
+        values.add(Integer.valueOf(line1));
+        values.add(Integer.valueOf(line2));
 
         // add the Variable
         values.add(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_VARIABLE, ""));
