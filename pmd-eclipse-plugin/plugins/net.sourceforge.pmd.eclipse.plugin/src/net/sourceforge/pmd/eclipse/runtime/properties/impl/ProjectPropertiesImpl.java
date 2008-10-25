@@ -48,6 +48,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -154,11 +155,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getRuleSetFile()
      */
     public String getRuleSetFile() {
-    	if (this.ruleSetFile == null || this.ruleSetFile.trim().length() == 0) {
-    		return PROJECT_RULESET_FILE;
-    	} else {
-    		return this.ruleSetFile;
-    	}
+    	
+        return StringUtil.isEmpty(ruleSetFile) ? PROJECT_RULESET_FILE : ruleSetFile;
 	}
 
     /**

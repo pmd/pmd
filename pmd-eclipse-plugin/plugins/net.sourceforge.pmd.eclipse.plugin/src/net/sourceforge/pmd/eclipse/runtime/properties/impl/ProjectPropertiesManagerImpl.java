@@ -330,7 +330,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         boolean flChanged = false;
 
         if (!projectRuleSet.getRules().equals(pluginRuleSet.getRules())) {
-            log.debug("The project ruleset is different from the plugin ruleset ; synchronizing.");
+            log.debug("The project ruleset is different from the plugin ruleset; synchronizing.");
 
             // 1-If rules have been deleted from preferences
             // delete them also from the project ruleset
@@ -339,7 +339,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 final Rule projectRule = i.next();
                 final Rule pluginRule = pluginRuleSet.getRuleByName(projectRule.getName());
                 if (pluginRule == null) {
-                    log.debug("The rule " + projectRule.getName() + " is no more defined in the plugin ruleset. Remove it.");
+                    log.debug("The rule " + projectRule.getName() + " is not defined in the plugin ruleset. Remove it.");
                     i.remove();
                 }
             }
@@ -357,7 +357,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             }
 
             if (!ruleSet.getRules().equals(projectRuleSet.getRules())) {
-                log.info("Set the projet ruleset according to preferences.");
+                log.info("Set the project ruleset according to preferences.");
                 projectProperties.setProjectRuleSet(ruleSet);
                 flChanged = true;
             }
