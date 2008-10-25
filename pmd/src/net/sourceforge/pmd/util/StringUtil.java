@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class StringUtil {
+public final class StringUtil {
 
 	public static final String[] EMPTY_STRINGS = new String[0];
     private static final boolean SUPPORTS_UTF8 = System.getProperty("net.sourceforge.pmd.supportUTF8", "no").equals("yes");
@@ -20,6 +20,8 @@ public class StringUtil {
         }
     }
 
+    private StringUtil() {}
+    
     /**
      * Returns true if the value arg is either null, empty, or full of whitespace characters.
      * More efficient that calling (string).trim().length() == 0

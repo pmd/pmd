@@ -21,7 +21,7 @@ import net.sourceforge.pmd.util.filter.OrFilter;
 /**
  * This is a utility class for working with Files.
  */
-public class FileUtil {
+public final class FileUtil {
 
     private FileUtil() {}
     

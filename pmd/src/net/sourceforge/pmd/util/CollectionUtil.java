@@ -201,7 +201,7 @@ public final class CollectionUtil {
     public static <T> Set<T> newSet(T[] items) {
         
         Set<T> results = new HashSet<T>(items.length);
-        for (int i=0; i<items.length; i++) results.add(items[i]);
+        for (int i=0; i<items.length; i++) { results.add(items[i]); }
         return results;
     }
     
@@ -225,8 +225,8 @@ public final class CollectionUtil {
      */
     public static <T> boolean areSemanticEquals(T[] a, T[] b) {
         
-        if (a == null) return isEmpty(b);
-        if (b == null) return isEmpty(a);       
+        if (a == null) { return isEmpty(b); }
+        if (b == null) { return isEmpty(a); }     
         return a.equals(b);
     }
 }
