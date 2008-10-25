@@ -5,5 +5,5 @@ public interface NumericConstants {
 	Integer ZERO	= 0;
 	Integer ONE		= 1;
 	
-	Float floatZERO = new Float(0.0f);
+	Float FLOAT_ZERO = new Float(0.0f);
 }
