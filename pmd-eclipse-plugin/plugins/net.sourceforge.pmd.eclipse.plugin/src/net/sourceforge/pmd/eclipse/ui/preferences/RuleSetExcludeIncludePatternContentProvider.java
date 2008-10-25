@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleSet;
@@ -14,6 +13,9 @@ public class RuleSetExcludeIncludePatternContentProvider extends AbstractStructu
 
 	private final boolean exclude;
 
+	private static final RuleSetExcludeIncludePattern[] emptyRuleSetPattern = new RuleSetExcludeIncludePattern[0];
+
+	
 	public RuleSetExcludeIncludePatternContentProvider(boolean exclude) {
 		this.exclude = exclude;
 	}
@@ -22,18 +24,17 @@ public class RuleSetExcludeIncludePatternContentProvider extends AbstractStructu
 	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)
 	 */
 	public RuleSetExcludeIncludePattern[] getElements(Object inputElement) {
-	    RuleSetExcludeIncludePattern[] result = new RuleSetExcludeIncludePattern[0];
-
+	    
 		if (inputElement instanceof RuleSet) {
 			RuleSet ruleSet = (RuleSet)inputElement;
 			List<String> patterns = exclude ? ruleSet.getExcludePatterns() : ruleSet.getIncludePatterns();
-			List<RuleSetExcludeIncludePattern> patternList = new ArrayList<RuleSetExcludeIncludePattern>();
-			for (int i = 0; i < patterns.size(); i++) {
-				patternList.add(new RuleSetExcludeIncludePattern(ruleSet, exclude, i));
+			RuleSetExcludeIncludePattern[] patternList = new RuleSetExcludeIncludePattern[patterns.size()];
+			for (int i = 0; i < patternList.length; i++) {
+				patternList[i] = new RuleSetExcludeIncludePattern(ruleSet, exclude, i);
 			}
-			result = patternList.toArray(result);
+			return patternList;
 		}
 
-		return result;
+		return emptyRuleSetPattern;
 	}
 }

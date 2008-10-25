@@ -96,7 +96,7 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
     public boolean performOk() {
-        this.preferences.setMinTileSize(new Integer(this.minTileText.getText()).intValue());
+        this.preferences.setMinTileSize(Integer.valueOf(this.minTileText.getText()).intValue());
         this.preferences.sync();
 
         return super.performOk();

@@ -46,7 +46,7 @@ public class RuleCellModifier implements ICellModifier {
             } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_RULE_NAME)) {
                 result = rule.getName();
             } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_PRIORITY)) {
-                result = new Integer(rule.getPriority().getPriority() - 1);
+                result = Integer.valueOf(rule.getPriority().getPriority() - 1);
             } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_DESCRIPTION)) {
                 result = rule.getDescription();
             }

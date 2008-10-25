@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.Util;
 
 /**
  * This class implements a content provider for the rule table of
@@ -15,13 +16,12 @@ public class RuleSetContentProvider extends AbstractStructuredContentProvider {
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)
      */
     public Object[] getElements(Object inputElement) {
-        Object[] elements = new Object[0];
         
         if (inputElement instanceof RuleSet) {
             RuleSet ruleSet = (RuleSet) inputElement;
-            elements = ruleSet.getRules().toArray();
+            return ruleSet.getRules().toArray();
         }
         
-        return elements;
+        return Util.EMPTY_ARRAY;
     }
 }

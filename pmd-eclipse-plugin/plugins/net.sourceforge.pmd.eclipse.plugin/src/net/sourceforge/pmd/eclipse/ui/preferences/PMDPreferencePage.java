@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
-import java.util.Iterator;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -79,7 +78,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	protected Button addRuleButton;
 	protected Button removeRuleButton;
 	protected Button editRuleButton;
-	protected Button addPropertyButton;
+//	protected Button addPropertyButton;
 	protected Button addExcludePatternButton;
 	protected Button addIncludePatternButton;
 	protected RuleSet ruleSet;
@@ -290,7 +289,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		rowLayout.pack = false;
 		composite.setLayout(rowLayout);
 
-		addPropertyButton = buildAddPropertyButton(composite);
+//		addPropertyButton = buildAddPropertyButton(composite);
 
 		return composite;
 	}
@@ -360,7 +359,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 				rulePropertiesTableViewer.setInput(selectedRule);
 				removeRuleButton.setEnabled(selectedRule != null);
 				editRuleButton.setEnabled(selectedRule != null);
-				addPropertyButton.setEnabled(selectedRule != null);
+//				addPropertyButton.setEnabled(selectedRule != null);
 			}
 		});
 
@@ -640,28 +639,28 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * Build the add property button
 	 */
-	private Button buildAddPropertyButton(Composite parent) {
-		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADDPROPERTY));
-		button.setEnabled(false);
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-            public void widgetSelected(SelectionEvent event) {
-				InputDialog input = new InputDialog(getShell(),
-						getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE),
-						getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_PROPERTY_NAME), "", null);
-				int result = input.open();
-				if (result == InputDialog.OK) {
-					IStructuredSelection selection = (IStructuredSelection)ruleTableViewer.getSelection();
-					Rule selectedRule = (Rule)selection.getFirstElement();
-					selectedRule.addProperty(input.getValue(), "");
-					setModified(true);
-					rulePropertiesTableViewer.refresh();
-				}
-			}
-		});
-		return button;
-	}
+//	private Button buildAddPropertyButton(Composite parent) {
+//		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
+//		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADDPROPERTY));
+//		button.setEnabled(false);
+//		button.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//            public void widgetSelected(SelectionEvent event) {
+//				InputDialog input = new InputDialog(getShell(),
+//						getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE),
+//						getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_PROPERTY_NAME), "", null);
+//				int result = input.open();
+//				if (result == InputDialog.OK) {
+//					IStructuredSelection selection = (IStructuredSelection)ruleTableViewer.getSelection();
+//					Rule selectedRule = (Rule)selection.getFirstElement();
+////					selectedRule.addProperty(input.getValue(), "");
+//					setModified(true);
+//					rulePropertiesTableViewer.refresh();
+//				}
+//			}
+//		});
+//		return button;
+//	}
 
 	/**
 	 * Build the exclude pattern table viewer

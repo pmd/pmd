@@ -8,6 +8,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
@@ -707,7 +708,7 @@ public class RuleDialog extends Dialog {
         boolean flValid = true;
 
         String name = nameText.getText();
-        if (name.trim().length() == 0) {
+        if (StringUtil.isEmpty(name)) {
             MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
                     getMessage(StringKeys.MSGKEY_WARNING_NAME_MANDATORY));
             nameText.setFocus();
@@ -740,7 +741,7 @@ public class RuleDialog extends Dialog {
         boolean flValid = true;
 
         String message = messageText.getText();
-        if (message.trim().length() == 0) {
+        if (StringUtil.isEmpty(message)) {
             MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
                     getMessage(StringKeys.MSGKEY_WARNING_MESSAGE_MANDATORY));
             messageText.setFocus();

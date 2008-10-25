@@ -6,7 +6,7 @@ import net.sourceforge.pmd.Rule;
  * Helper class to display rule properties in a table
  * 
  * @author Philippe Herlin
- *
+ * @deprecated
  */
 public class RuleProperty {
     private Rule rule;
