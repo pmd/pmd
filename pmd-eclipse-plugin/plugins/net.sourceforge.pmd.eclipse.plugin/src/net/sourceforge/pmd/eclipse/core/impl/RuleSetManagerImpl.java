@@ -48,6 +48,7 @@ import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
  *
  */
 public class RuleSetManagerImpl implements IRuleSetManager {
+    
     private final Set<RuleSet> ruleSets = new HashSet<RuleSet>();
     private final Set<RuleSet> defaultRuleSets = new HashSet<RuleSet>();
 
@@ -62,9 +63,7 @@ public class RuleSetManagerImpl implements IRuleSetManager {
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#registerRuleSet(net.sourceforge.pmd.RuleSet)
      */
     public void registerRuleSet(final RuleSet ruleSet) {
-        if (ruleSet == null) {
-            throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS // NOPMD by Herlin on 20/06/06 22:56
-        }
+        checkForNull(ruleSet);
 
         this.ruleSets.add(ruleSet);
     }
@@ -73,9 +72,7 @@ public class RuleSetManagerImpl implements IRuleSetManager {
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#unregisterRuleSet(net.sourceforge.pmd.RuleSet)
      */
     public void unregisterRuleSet(final RuleSet ruleSet) {
-        if (ruleSet == null) {
-            throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
-        }
+        checkForNull(ruleSet);
 
         this.ruleSets.remove(ruleSet);
     }
@@ -91,9 +88,7 @@ public class RuleSetManagerImpl implements IRuleSetManager {
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#registerDefaultRuleSet(net.sourceforge.pmd.RuleSet)
      */
     public void registerDefaultRuleSet(final RuleSet ruleSet) {
-        if (ruleSet == null) {
-            throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
-        }
+        checkForNull(ruleSet);
 
         this.defaultRuleSets.add(ruleSet);
     }
@@ -102,10 +97,14 @@ public class RuleSetManagerImpl implements IRuleSetManager {
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#unregisterDefaultRuleSet(net.sourceforge.pmd.RuleSet)
      */
     public void unregisterDefaultRuleSet(final RuleSet ruleSet) {
+        checkForNull(ruleSet);
+
+        this.defaultRuleSets.remove(ruleSet);
+    }
+    
+    private void checkForNull(RuleSet ruleSet) {
         if (ruleSet == null) {
             throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
         }
-
-        this.defaultRuleSets.remove(ruleSet);
     }
 }

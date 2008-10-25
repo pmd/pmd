@@ -44,7 +44,7 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
     }
 
     /**
-     * @param aCommand a command for which to finf a processor
+     * @param aCommand a command for finding a processor
      * @return a processor for the specified command according to the strategy.
      */
     public CommandProcessor getCommandProcessor(final AbstractProcessableCommand aCommand) {

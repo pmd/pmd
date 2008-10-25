@@ -36,10 +36,9 @@
 package net.sourceforge.pmd.eclipse.core;
 
 /**
- * This interface is a container for all the constants of that plugin
+ * This interface is a container for all the constants of the plugin
  * 
  * @author Philippe Herlin
- *
  */
 public class PluginConstants {
     
@@ -71,7 +70,7 @@ public class PluginConstants {
         };
     
     /**
-     * This class is not meant to be instanciated
+     * This class is not meant to be instantiated
      *
      */
     private PluginConstants() {

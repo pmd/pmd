@@ -38,7 +38,7 @@ public abstract class AbstractProcessableCommand implements Command {
     private boolean terminated;
 
     /**
-     * Impementation method of a processable command. Developers of concrete
+     * Implementation method of a processable command. Developers of concrete
      * commands are expected to implement the command logic there.
      * @throws CommandException
      */
@@ -72,7 +72,7 @@ public abstract class AbstractProcessableCommand implements Command {
 
     /**
      * @return the command preferred processor. The default is to return null
-     * which means the command doesn't have a preferred processor. Developpers
+     * which means the command doesn't have a preferred processor. Developers
      * of concrete commands may override this methods to return a concrete
      * command processor of their own.
      */
