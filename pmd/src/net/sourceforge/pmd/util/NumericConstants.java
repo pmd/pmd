@@ -1,9 +1,11 @@
 package net.sourceforge.pmd.util;
 
-public interface NumericConstants {
+public class NumericConstants {
 
-	Integer ZERO	= 0;
-	Integer ONE		= 1;
-	
-	Float FLOAT_ZERO = new Float(0.0f);
+    public static final Integer ZERO = 0;
+
+    public static final Integer ONE = 1;
+
+    public static final Float FLOAT_ZERO = new Float(0.0f);
+
 }

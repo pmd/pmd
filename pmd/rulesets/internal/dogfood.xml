@@ -80,7 +80,6 @@
 		<exclude name="UncommentedEmptyMethod"/>
 		<exclude name="UnnecessaryLocalBeforeReturn"/>
 		<exclude name="AbstractClassWithoutAbstractMethod"/>
-		<exclude name="AvoidConstantsInterface"/>
 		<exclude name="AccessorClassGeneration"/>
 		<exclude name="SimplifyBooleanExpressions"/>
 		<exclude name="UseVarargs"/>

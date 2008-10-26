@@ -29,12 +29,11 @@ import net.sourceforge.pmd.util.viewer.util.NLS;
  * viewer's main frame
  *
  * @author Boris Gruschko ( boris at gruschko.org )
- * @version $Id$
  */
 
 public class MainFrame
         extends JFrame
-        implements ActionListener, ActionCommands, ViewerModelListener {
+        implements ActionListener, ViewerModelListener {
     private ViewerModel model;
     private SourceCodePanel sourcePanel;
     private XPathPanel xPathPanel;
@@ -68,10 +67,10 @@ public class MainFrame
         interactionsPane.add(editingPane, BorderLayout.CENTER);
         getContentPane().add(interactionsPane, BorderLayout.CENTER);
         JButton compileBtn = new JButton(NLS.nls("MAIN.FRAME.COMPILE_BUTTON.TITLE"));
-        compileBtn.setActionCommand(COMPILE_ACTION);
+        compileBtn.setActionCommand(ActionCommands.COMPILE_ACTION);
         compileBtn.addActionListener(this);
         evalBtn = new JButton(NLS.nls("MAIN.FRAME.EVALUATE_BUTTON.TITLE"));
-        evalBtn.setActionCommand(EVALUATE_ACTION);
+        evalBtn.setActionCommand(ActionCommands.EVALUATE_ACTION);
         evalBtn.addActionListener(this);
         evalBtn.setEnabled(false);
         statusLbl = new JLabel();
@@ -134,7 +133,7 @@ public class MainFrame
         String command = e.getActionCommand();
         long t0;
         long t1;
-        if (command.equals(COMPILE_ACTION)) {
+        if (ActionCommands.COMPILE_ACTION.equals(command)) {
             try {
                 t0 = System.currentTimeMillis();
                 model.commitSource(sourcePanel.getSourceCode(), getLanguageVersion());
@@ -144,7 +143,7 @@ public class MainFrame
                 setStatus(NLS.nls("MAIN.FRAME.COMPILATION.PROBLEM") + " " + exc.toString());
                 new ParseExceptionHandler(this, exc);
             }
-        } else if (command.equals(EVALUATE_ACTION)) {
+        } else if (ActionCommands.EVALUATE_ACTION.equals(command)) {
             try {
                 t0 = System.currentTimeMillis();
                 model.evaluateXPathExpression(xPathPanel.getXPathExpression(), this);
