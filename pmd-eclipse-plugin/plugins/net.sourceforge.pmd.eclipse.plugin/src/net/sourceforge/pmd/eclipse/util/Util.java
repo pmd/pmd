@@ -35,22 +35,6 @@ public class Util {
         return a.equals(b);
     }
     
-    /**
-     * Helper method to get a filename without its extension
-     * @param fileName String
-     * @return String
-     */
-    public static String getFileNameWithoutExtension(String fileName) {
-        String name = fileName;
-
-        int index = fileName.lastIndexOf('.');
-        if (index != -1) {
-            name = fileName.substring(0, index);
-        }
-
-        return name;
-    }
-    
 	public static Comparator comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
 		
 		return new Comparator() {

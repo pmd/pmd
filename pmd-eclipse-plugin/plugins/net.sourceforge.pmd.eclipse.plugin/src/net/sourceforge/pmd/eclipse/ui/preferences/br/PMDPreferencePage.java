@@ -23,6 +23,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.designer.Designer;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -797,7 +798,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 						}
 
 						if (flContinue) {
-							ruleSet.setName(Util.getFileNameWithoutExtension(file.getName()));
+							ruleSet.setName(FileUtil.getFileNameWithoutExtension(file.getName()));
 							ruleSet.setDescription(input.getValue());
 							OutputStream out = new FileOutputStream(fileName);
 							IRuleSetWriter writer = plugin.getRuleSetWriter();
