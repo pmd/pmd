@@ -609,12 +609,12 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @return
      */
     private ViewerSorter newViolationsPerLOCSorter(TreeColumn column, final int sortOrder) { // NOPMD by Sven on 13.11.06 11:45
-       
+
         return new TableColumnSorter(column, sortOrder) {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD by Sven on 13.11.06 11:45
-                Float vioPerLoc1 = NumericConstants.floatZERO;
-                Float vioPerLoc2 = NumericConstants.floatZERO;
+                Float vioPerLoc1 = NumericConstants.FLOAT_ZERO;
+                Float vioPerLoc2 = NumericConstants.FLOAT_ZERO;
                 if (e1 instanceof PackageRecord && e2 instanceof PackageRecord
                         || e1 instanceof FileRecord && e2 instanceof FileRecord
                         || e1 instanceof MarkerRecord && e2 instanceof MarkerRecord
@@ -650,8 +650,8 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD by Sven on 13.11.06 11:45
 
-                Float vioPerMethod1 = NumericConstants.floatZERO;
-                Float vioPerMethod2 = NumericConstants.floatZERO;
+                Float vioPerMethod1 = NumericConstants.FLOAT_ZERO;
+                Float vioPerMethod2 = NumericConstants.FLOAT_ZERO;
                 if (e1 instanceof PackageRecord && e2 instanceof PackageRecord
                         || e1 instanceof FileRecord && e2 instanceof FileRecord
                         || e1 instanceof MarkerRecord && e2 instanceof MarkerRecord
