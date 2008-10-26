@@ -25,6 +25,8 @@ public final class ClassUtil {
             Short.class, Float.class, Double.class, Character.class, Boolean.class, BigDecimal.class, String.class,
             Object.class, });
 
+    private static Map<Class, String> SHORT_NAMES_BY_TYPE = computeClassShortNames();
+    
     /**
      * Returns the type(class) for the name specified or null if not found.
      *
@@ -41,13 +43,18 @@ public final class ClassUtil {
      *
      * @return Map<Class, String>
      */
-    public static Map<Class, String> getClassShortNames() {
+    private static Map<Class, String> computeClassShortNames() {
+        
         Map<Class, String> map = new HashMap<Class, String>();
         map.putAll(PRIMITIVE_TYPE_NAMES.asInverseWithShortName());
         map.putAll(TYPES_BY_NAME.asInverseWithShortName());
         return map;
     }
 
+    public static Map<Class, String> getClassShortNames() {
+        return SHORT_NAMES_BY_TYPE;
+    }
+    
     /**
      * Attempt to determine the actual class given the short name.
      *
@@ -68,6 +75,19 @@ public final class ClassUtil {
         return CollectionUtil.getCollectionTypeFor(shortName);
     }
 
+    /**
+     * Return the name of the type in its short form if its known to us
+     * otherwise return its name fully packaged.
+     * 
+     * @param type
+     * @return String
+     */
+    public static String asShortestName(Class type) {
+        
+        String name = SHORT_NAMES_BY_TYPE.get(type);
+        return name == null ? type.getName() : name;
+    }
+    
     /**
      * Returns the abbreviated name of the type, without the package name
      *
