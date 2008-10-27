@@ -25,7 +25,7 @@ public final class ClassUtil {
             Short.class, Float.class, Double.class, Character.class, Boolean.class, BigDecimal.class, String.class,
             Object.class, });
 
-    private static Map<Class, String> SHORT_NAMES_BY_TYPE = computeClassShortNames();
+    private static final Map<Class, String> SHORT_NAMES_BY_TYPE = computeClassShortNames();
     
     /**
      * Returns the type(class) for the name specified or null if not found.
