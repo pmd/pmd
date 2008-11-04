@@ -22,6 +22,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * current underlying value do not override.
  */
 public class RuleReference extends AbstractDelegateRule {
+    
 	private Language language;
 	private LanguageVersion minimumLanguageVersion;
 	private LanguageVersion maximumLanguageVersion;
@@ -36,6 +37,8 @@ public class RuleReference extends AbstractDelegateRule {
 	private RulePriority priority;
 	private RuleSetReference ruleSetReference;
 
+	private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = new ArrayList<PropertyDescriptor<?>>(0);
+	
 	public Language getOverriddenLanguage() {
 		return language;
 	}
@@ -184,7 +187,10 @@ public class RuleReference extends AbstractDelegateRule {
 	}
 	
     public List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
-	return propertyDescriptors;
+        
+	   return propertyDescriptors == null ? 
+	           EMPTY_DESCRIPTORS : 
+	           propertyDescriptors;
     }
 
     @Override
