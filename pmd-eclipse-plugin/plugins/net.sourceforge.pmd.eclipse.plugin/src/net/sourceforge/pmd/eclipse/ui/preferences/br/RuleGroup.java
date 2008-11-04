@@ -21,7 +21,7 @@ public class RuleGroup implements Comparable<RuleGroup> {
 	 * @param theId Object
 	 * @param theDescription String
 	 */
-	public RuleGroup(Comparable theId, String theLabel, String theDescription) {
+	public RuleGroup(Comparable<?> theId, String theLabel, String theDescription) {
 		id = theId;
 		label = theLabel;
 		description = theDescription;

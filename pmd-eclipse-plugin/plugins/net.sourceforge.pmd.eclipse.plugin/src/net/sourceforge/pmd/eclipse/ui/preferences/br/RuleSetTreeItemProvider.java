@@ -21,13 +21,13 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 
 	private RuleFieldAccessor 	fieldAccessor;
 	private String 				groupDescription;
-	private Comparator 			comparator;
+	private Comparator			comparator;
 	/**
 	 * Constructor for RuleSetTreeItemProvider.
 	 * @param accessor RuleFieldAccessor
 	 * @param description String
 	 */
-	public RuleSetTreeItemProvider(RuleFieldAccessor accessor, String description, Comparator theComparator) {
+	public RuleSetTreeItemProvider(RuleFieldAccessor accessor, String description, Comparator<?> theComparator) {
 		fieldAccessor = accessor;
 		groupDescription = description;
 		comparator = theComparator;
@@ -85,7 +85,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 		while (iter.hasNext()) {
 			Rule rule = iter.next();
 			
-			Comparable groupId = fieldAccessor.valueFor(rule);
+			Comparable<?> groupId = fieldAccessor.valueFor(rule);
 			
 			RuleGroup group = ruleGroups.get(groupId);
 			if (group != null) {

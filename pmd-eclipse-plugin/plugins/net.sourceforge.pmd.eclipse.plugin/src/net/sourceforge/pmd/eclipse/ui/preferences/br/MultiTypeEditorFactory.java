@@ -26,7 +26,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
 				
 	private MultiTypeEditorFactory() { }
 	
-	public static String[] shortNamesFor(Class[] types) {
+	public static String[] shortNamesFor(Class<?>[] types) {
 	    String[] typeNames = new String[types.length];
         for (int i=0; i<typeNames.length; i++) {
             typeNames[i] = ClassUtil.asShortestName(types[i]);
@@ -36,7 +36,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
 	
     protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
         
-        Class[] values = (Class[])rule.getProperty(desc);
+        Class<?>[] values = (Class[])rule.getProperty(desc);
         if (values == null) {
             textWidget.setText("");
             return;
@@ -47,15 +47,15 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         textWidget.setText(values == null ? "" : StringUtil.asString(typeNames, delimiter + ' '));
     }
 	
-	private Class[] currentTypes(Text textWidget) {
+	private Class<?>[] currentTypes(Text textWidget) {
 	    
 	    String[] typeNames = textWidgetValues(textWidget);
 	    if (typeNames.length == 0) return ClassUtil.EMPTY_CLASS_ARRAY;
 	    
-	    List<Class> types = new ArrayList<Class>(typeNames.length);
+	    List<Class<?>> types = new ArrayList<Class<?>>(typeNames.length);
 	    
 	    for (int i=0; i<typeNames.length; i++) {
-	        Class newType = TypeEditorFactory.typeFor(typeNames[i]);
+	        Class<?> newType = TypeEditorFactory.typeFor(typeNames[i]);
 	        if (newType != null) types.add(newType);
 	    }
 	    return (Class[]) types.toArray(new Class[types.size()]);
@@ -76,8 +76,8 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
-                Class[] newValue = currentTypes(textWidget);               
-                Class[] existingValue = rule.getProperty(tmp);             
+                Class<?>[] newValue = currentTypes(textWidget);               
+                Class<?>[] existingValue = rule.getProperty(tmp);             
                 if (Util.areSemanticEquals(existingValue, newValue)) return;                
                 
                 rule.setProperty(tmp, newValue);

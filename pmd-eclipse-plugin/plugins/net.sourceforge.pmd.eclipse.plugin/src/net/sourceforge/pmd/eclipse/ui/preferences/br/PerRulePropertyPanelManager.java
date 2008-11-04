@@ -19,10 +19,10 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager {
     private Composite       composite;
     private FormArranger    formArranger;
 
-    private static final Map<Class, EditorFactory> editorFactoriesByPropertyType;
+    private static final Map<Class<?>, EditorFactory> editorFactoriesByPropertyType;
     
     static {
-        editorFactoriesByPropertyType = new HashMap<Class, EditorFactory>();        
+        editorFactoriesByPropertyType = new HashMap<Class<?>, EditorFactory>();        
 
         editorFactoriesByPropertyType.put(Boolean.class,    BooleanEditorFactory.instance);
         editorFactoriesByPropertyType.put(String.class,     StringEditorFactory.instance);

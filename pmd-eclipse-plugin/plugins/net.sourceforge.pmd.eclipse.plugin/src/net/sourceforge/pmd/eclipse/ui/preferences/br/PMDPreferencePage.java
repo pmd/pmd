@@ -107,7 +107,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		XPathRule.VERSION_DESCRIPTOR,
 		};
 		
-	private static final Map<Class, ValueFormatter> formattersByType = new HashMap<Class, ValueFormatter>();
+	private static final Map<Class<?>, ValueFormatter> formattersByType = new HashMap<Class<?>, ValueFormatter>();
 	
 	static {
 	    formattersByType.put(String.class,      ValueFormatter.StringFormatter);

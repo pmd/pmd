@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Control;
 public class FormArranger {
 
 	private final Composite parent;
-	private final Map<Class, EditorFactory>	editorFactoriesByValueType;
+	private final Map<Class<?>, EditorFactory>	editorFactoriesByValueType;
 	private final ValueChangeListener changeListener;
 	private Rule  rule;
 
@@ -27,7 +27,7 @@ public class FormArranger {
 	 * @param theParent Composite
 	 * @param factories Map<Class,EditorFactory>
 	 */
-	public FormArranger(Composite theParent, Map<Class, EditorFactory> factories, ValueChangeListener listener) {
+	public FormArranger(Composite theParent, Map<Class<?>, EditorFactory> factories, ValueChangeListener listener) {
 		parent = theParent;
 		editorFactoriesByValueType = factories;
 		changeListener = listener;

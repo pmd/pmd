@@ -34,14 +34,14 @@ public interface ValueFormatter {
     
     ValueFormatter TypeFormatter = new ValueFormatter() {
         public void format(Object value, StringBuilder target) {    
-            target.append(value == null ? "" : ClassUtil.asShortestName((Class)value));
+            target.append(value == null ? "" : ClassUtil.asShortestName((Class<?>)value));
         }
     };
     
     ValueFormatter MultiTypeFormatter = new ValueFormatter() {
         public void format(Object value, StringBuilder target) {
             target.append('[');
-            Util.asString(MultiTypeEditorFactory.shortNamesFor((Class[])value), ", ", target);
+            Util.asString(MultiTypeEditorFactory.shortNamesFor((Class<?>[])value), ", ", target);
             target.append(']');
         }
     };

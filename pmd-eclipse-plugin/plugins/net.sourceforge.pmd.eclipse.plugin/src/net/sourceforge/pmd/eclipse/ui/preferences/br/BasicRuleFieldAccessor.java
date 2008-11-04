@@ -12,11 +12,11 @@ public class BasicRuleFieldAccessor implements RuleFieldAccessor {
     }
 
     public String labelFor(Rule rule) {
-       Comparable value = valueFor(rule);
+       Comparable<?> value = valueFor(rule);
        return value == null ? "" : value.toString();
     }
 
-    public Comparable valueFor(Rule rule) {
+    public Comparable<?> valueFor(Rule rule) {
         throw new RuntimeException("unimplemented method");
     }
 }

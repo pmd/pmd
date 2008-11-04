@@ -24,9 +24,9 @@ public class TypeEditorFactory extends AbstractEditorFactory {
 
 	private TypeEditorFactory() { }
 
-	public static Class typeFor(String typeName) {
+	public static Class<?> typeFor(String typeName) {
 	        
-	    Class newType = ClassUtil.getTypeFor(typeName);    // try for well-known types first
+	    Class<?> newType = ClassUtil.getTypeFor(typeName);    // try for well-known types first
 	    if (newType != null) return newType;
 
 	    try {
@@ -38,11 +38,11 @@ public class TypeEditorFactory extends AbstractEditorFactory {
 	   
 	protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
 		
-		Class type = (Class)rule.getProperty(desc);
+		Class<?> type = (Class<?>)rule.getProperty(desc);
 		textWidget.setText(type == null ? "" : ClassUtil.asShortestName(type));
 	}
 	
-	private Class currentType(Text textWidget) {
+	private Class<?> currentType(Text textWidget) {
 	    
 	    String typeName = textWidget.getText().trim();
 	    if (typeName.length() == 0) return null;
@@ -87,8 +87,8 @@ public class TypeEditorFactory extends AbstractEditorFactory {
             
             text.addListener(SWT.FocusOut, new Listener() {
                 public void handleEvent(Event event) {
-                    Class newValue = currentType(text);                    
-                    Class existingValue = rule.getProperty(tp);                
+                    Class<?> newValue = currentType(text);                    
+                    Class<?> existingValue = rule.getProperty(tp);                
                     if (existingValue == newValue) return;              
                     
                     rule.setProperty(tp, newValue);
