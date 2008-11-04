@@ -21,15 +21,15 @@ public class RulePropertiesContentProvider extends AbstractStructuredContentProv
      */
     public Object[] getElements(Object inputElement) {
       
-        if (inputElement instanceof Rule) {
-            Rule rule = (Rule) inputElement;
-            Enumeration<String> keys = rule.getProperties().keys();
-            List<RuleProperty> propertyList = new ArrayList<RuleProperty>();
-            while (keys.hasMoreElements()) {
-                propertyList.add(new RuleProperty(rule, keys.nextElement()));
-            }
-            return propertyList.toArray();
-        }
+//        if (inputElement instanceof Rule) {
+//            Rule rule = (Rule) inputElement;
+//            Enumeration<String> keys = rule.getProperties().keys();
+//            List<RuleProperty> propertyList = new ArrayList<RuleProperty>();
+//            while (keys.hasMoreElements()) {
+//                propertyList.add(new RuleProperty(rule, keys.nextElement()));
+//            }
+//            return propertyList.toArray();
+//        }
 
         return Util.EMPTY_ARRAY;
     }

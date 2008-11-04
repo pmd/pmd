@@ -21,30 +21,6 @@ public class RuleProperty {
     }
     
     /**
-     * Returns the booleanValue.
-     * @return boolean
-     */
-    public boolean isBooleanValue() {
-        return rule.getBooleanProperty(property);
-    }
-
-    /**
-     * Returns the doubleValue.
-     * @return double
-     */
-    public double getDoubleValue() {
-        return rule.getDoubleProperty(property);
-    }
-
-    /**
-     * Returns the integerValue.
-     * @return int
-     */
-    public int getIntegerValue() {
-        return rule.getIntProperty(property);
-    }
-
-    /**
      * Returns the property.
      * @return String
      */
@@ -57,31 +33,7 @@ public class RuleProperty {
      * @return String
      */
     public String getValue() {
-        return rule.getStringProperty(property);
-    }
-
-    /**
-     * Sets the booleanValue.
-     * @param booleanValue The booleanValue to set
-     */
-    public void setBooleanValue(boolean booleanValue) {
-        rule.getProperties().setProperty(property, String.valueOf(booleanValue));
-    }
-
-    /**
-     * Sets the doubleValue.
-     * @param doubleValue The doubleValue to set
-     */
-    public void setDoubleValue(double doubleValue) {
-        rule.getProperties().setProperty(property, String.valueOf(doubleValue));
-    }
-
-    /**
-     * Sets the integerValue.
-     * @param integerValue The integerValue to set
-     */
-    public void setIntegerValue(int integerValue) {
-        rule.getProperties().setProperty(property, String.valueOf(integerValue));
+        return "void"; //rule.getProperty(property);
     }
 
     /**
@@ -89,7 +41,7 @@ public class RuleProperty {
      * @param value The value to set
      */
     public void setValue(String value) {
-        rule.getProperties().setProperty(property, value);
+       // rule.getProperties().setProperty(property, value);
     }
 
 }
