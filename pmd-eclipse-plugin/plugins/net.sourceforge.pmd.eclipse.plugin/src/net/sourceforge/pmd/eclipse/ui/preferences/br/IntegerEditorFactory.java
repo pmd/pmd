@@ -22,6 +22,15 @@ public class IntegerEditorFactory extends AbstractEditorFactory {
 	
 	private IntegerEditorFactory() { }
 
+	
+	private static IntegerProperty intPropertyFrom(PropertyDescriptor<?> desc) {
+	    
+	    if (desc instanceof PropertyDescriptorWrapper) {
+           return (IntegerProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
+        } else {
+            return (IntegerProperty)desc;
+        }
+	}
 	/**
 	 *
 	 * @param parent Composite
@@ -38,15 +47,8 @@ public class IntegerEditorFactory extends AbstractEditorFactory {
 		if (columnIndex == 1) {		    
 
             final Spinner spinner =  new Spinner(parent, SWT.SINGLE | SWT.BORDER);
-			
-            if (desc instanceof PropertyDescriptorWrapper) {
-                
-                // TODO
-                return spinner;
-            }
             
-            
-			final IntegerProperty ip = (IntegerProperty)desc;	// TODO - do I really have to do this?			
+			final IntegerProperty ip = intPropertyFrom(desc);	// TODO - do I really have to do this?			
 
 			int val = ((Number)rule.getProperty(desc)).intValue();
 			

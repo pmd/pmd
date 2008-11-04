@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 import org.eclipse.swt.SWT;
@@ -16,13 +17,22 @@ import org.eclipse.swt.widgets.Text;
  */
 public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
 
-	public static final MultiStringEditorFactory instance = new MultiStringEditorFactory();
+    public static final MultiStringEditorFactory instance = new MultiStringEditorFactory();
 		
 	private MultiStringEditorFactory() { }
 	
+    private static StringMultiProperty multiStringPropertyFrom(PropertyDescriptor<?> desc) {
+	        
+        if (desc instanceof PropertyDescriptorWrapper) {
+           return (StringMultiProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
+        } else {
+            return (StringMultiProperty)desc;
+        }
+    }
+	
     protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
                 
-        final StringMultiProperty smp = (StringMultiProperty)desc;	// TODO - really necessary?
+        final StringMultiProperty smp = multiStringPropertyFrom(desc);
         
         textWidget.addListener(SWT.FocusOut, new Listener() {
         	public void handleEvent(Event event) {

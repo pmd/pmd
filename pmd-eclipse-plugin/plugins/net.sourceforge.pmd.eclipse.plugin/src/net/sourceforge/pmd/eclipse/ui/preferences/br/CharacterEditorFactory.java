@@ -39,6 +39,15 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
         return Character.valueOf(newValue.charAt(0));
     }
     
+    private static CharacterProperty characterPropertyFrom(PropertyDescriptor<?> desc) {
+        
+        if (desc instanceof PropertyDescriptorWrapper) {
+           return (CharacterProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
+        } else {
+            return (CharacterProperty)desc;
+        }
+    }
+    
     public Control newEditorOn(Composite parent, int columnIndex, PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
        
         if (columnIndex == 0) return addLabel(parent, desc);    
@@ -48,26 +57,8 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
             final Text text =  new Text(parent, SWT.SINGLE | SWT.BORDER);
 
             fillWidget(text, desc, rule);
-            
-            if (desc instanceof PropertyDescriptorWrapper) {
-                
-                final PropertyDescriptorWrapper descWrapper = (PropertyDescriptorWrapper)desc;
-                
-                text.addListener(SWT.FocusOut, new Listener() {
-                    public void handleEvent(Event event) {
-                        Character newValue = charValueIn(text);
-                        Character existingValue = (Character)rule.getProperty(descWrapper);                
-                        if (existingValue.equals(newValue)) return;              
                         
-                        rule.setProperty(descWrapper, newValue);
-                        listener.changed(descWrapper, newValue);
-                    }
-                });               
-                
-                return text;
-            }
-            
-            final CharacterProperty cp = (CharacterProperty)desc; // TODO - really necessary?
+            final CharacterProperty cp = characterPropertyFrom(desc); // TODO - really necessary?
             
             text.addListener(SWT.FocusOut, new Listener() {
                 public void handleEvent(Event event) {

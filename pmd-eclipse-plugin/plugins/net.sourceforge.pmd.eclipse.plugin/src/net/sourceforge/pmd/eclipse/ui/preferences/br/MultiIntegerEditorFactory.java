@@ -7,6 +7,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
@@ -41,9 +43,18 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
         return (Integer[]) ints.toArray(new Integer[ints.size()]);
     }
     
+    private static IntegerMultiProperty multiIntegerPropertyFrom(PropertyDescriptor<?> desc) {
+        
+        if (desc instanceof PropertyDescriptorWrapper) {
+           return (IntegerMultiProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
+        } else {
+            return (IntegerMultiProperty)desc;
+        }
+    }
+    
     protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
                 
-        final IntegerMultiProperty tmp = (IntegerMultiProperty)desc;  // TODO - really necessary?
+        final IntegerMultiProperty tmp = multiIntegerPropertyFrom(desc);
         
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {

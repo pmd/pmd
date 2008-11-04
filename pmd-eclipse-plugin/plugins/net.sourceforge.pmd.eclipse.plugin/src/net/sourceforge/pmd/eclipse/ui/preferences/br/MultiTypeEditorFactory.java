@@ -6,6 +6,7 @@ import java.util.List;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
 import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -60,9 +61,18 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
 	    return (Class[]) types.toArray(new Class[types.size()]);
 	}
 	
+   private static TypeMultiProperty multiTypePropertyFrom(PropertyDescriptor<?> desc) {
+	        
+        if (desc instanceof PropertyDescriptorWrapper) {
+           return (TypeMultiProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
+        } else {
+            return (TypeMultiProperty)desc;
+        }
+    }
+	
     protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
                 
-        final TypeMultiProperty tmp = (TypeMultiProperty)desc;  // TODO - really necessary?
+        final TypeMultiProperty tmp = multiTypePropertyFrom(desc);  // TODO - really necessary?
         
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {

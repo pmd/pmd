@@ -50,6 +50,15 @@ public class TypeEditorFactory extends AbstractEditorFactory {
 	    return typeFor(typeName);
 	}
 	
+    private static TypeProperty typePropertyFrom(PropertyDescriptor<?> desc) {
+        
+        if (desc instanceof PropertyDescriptorWrapper) {
+           return (TypeProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
+        } else {
+            return (TypeProperty)desc;
+        }
+    }
+	
     /**
      * 
      * @param parent Composite
@@ -73,27 +82,8 @@ public class TypeEditorFactory extends AbstractEditorFactory {
             text.setLayoutData(gridData);
 
             fillWidget(text, desc, rule);
-            
-            if (desc instanceof PropertyDescriptorWrapper) {
-                
-                final PropertyDescriptorWrapper descWrapper = (PropertyDescriptorWrapper)desc;
-                
-                text.addListener(SWT.FocusOut, new Listener() {
-                    public void handleEvent(Event event) {
-                        Class newValue = currentType(text);                    
-                        Class existingValue = (Class)rule.getProperty(descWrapper);                
-                        if (existingValue == newValue) return;             
                         
-                        rule.setProperty(descWrapper, newValue);
-                        fillWidget(text, desc, rule);       // redraw 
-                        listener.changed(desc, newValue);
-                    }
-                });               
-                
-                return text;
-            }
-            
-            final TypeProperty tp = (TypeProperty)desc; // TODO - really necessary?
+            final TypeProperty tp = typePropertyFrom(desc);
             
             text.addListener(SWT.FocusOut, new Listener() {
                 public void handleEvent(Event event) {

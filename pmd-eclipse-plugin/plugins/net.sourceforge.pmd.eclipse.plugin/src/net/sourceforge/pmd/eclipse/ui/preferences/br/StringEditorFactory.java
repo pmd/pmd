@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
@@ -35,6 +36,15 @@ public class StringEditorFactory extends AbstractEditorFactory {
 		textWidget.setText(val == null ? "" : val);
 	}
 		
+	private static StringProperty stringPropertyFrom(PropertyDescriptor<?> desc) {
+	        
+	    if (desc instanceof PropertyDescriptorWrapper) {
+	       return (StringProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
+	       } else {
+	        return (StringProperty)desc;
+	     }
+	}
+	
 	/**
 	 * 
 	 * @param parent Composite
@@ -58,27 +68,8 @@ public class StringEditorFactory extends AbstractEditorFactory {
 	        text.setLayoutData(gridData);
 
             fillWidget(text, desc, rule);
-            
-            if (desc instanceof PropertyDescriptorWrapper) {
-                
-                final PropertyDescriptorWrapper descWrapper = (PropertyDescriptorWrapper)desc;
-                
-                text.addListener(SWT.FocusOut, new Listener() {
-                    public void handleEvent(Event event) {
-                        String newValue = text.getText().trim();                    
-                        String existingValue = (String)rule.getProperty(descWrapper);                
-                        if (StringUtil.areSemanticEquals(existingValue, newValue)) return;             
                         
-                        rule.setProperty(descWrapper, newValue);
-                        fillWidget(text, desc, rule);       // redraw 
-                        listener.changed(desc, newValue);
-                    }
-                });               
-                
-                return text;
-            }
-            
-			final StringProperty sp = (StringProperty)desc;	// TODO - really necessary?
+			final StringProperty sp = stringPropertyFrom(desc);	// TODO - really necessary?
 			
 			text.addListener(SWT.FocusOut, new Listener() {
 				public void handleEvent(Event event) {

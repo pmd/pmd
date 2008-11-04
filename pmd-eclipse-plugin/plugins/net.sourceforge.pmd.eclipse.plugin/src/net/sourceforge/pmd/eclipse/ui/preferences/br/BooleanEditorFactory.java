@@ -4,6 +4,7 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -22,6 +23,15 @@ public class BooleanEditorFactory extends AbstractEditorFactory {
 	
 	private BooleanEditorFactory() { }
 	
+    private static BooleanProperty booleanPropertyFrom(PropertyDescriptor<?> desc) {
+        
+        if (desc instanceof PropertyDescriptorWrapper) {
+           return (BooleanProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
+           } else {
+            return (BooleanProperty)desc;
+         }
+    }    
+	
 	/**
 	 * Method newEditorOn.
 	 * @param parent Composite
@@ -39,14 +49,8 @@ public class BooleanEditorFactory extends AbstractEditorFactory {
     		    
     		final Button butt =  new Button(parent, SWT.CHECK);
             butt.setText("");
-            
-            if (desc instanceof PropertyDescriptorWrapper) {
-                
-                // TODO
-                return butt;
-            }
-    		
-    		final BooleanProperty bp = (BooleanProperty)desc;	// TODO - do I really have to do this?
+                		
+    		final BooleanProperty bp = booleanPropertyFrom(desc);	// TODO - do I really have to do this?
     		
     		boolean set = ((Boolean)rule.getProperty(desc)).booleanValue();
     		butt.setSelection(set);

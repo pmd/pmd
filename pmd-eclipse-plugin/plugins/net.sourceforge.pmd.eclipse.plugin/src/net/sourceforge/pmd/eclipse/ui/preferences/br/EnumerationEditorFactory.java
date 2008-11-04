@@ -29,6 +29,15 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
         return labels;
     }
     
+    private static EnumeratedProperty enumerationPropertyFrom(PropertyDescriptor<?> desc) {
+        
+        if (desc instanceof PropertyDescriptorWrapper) {
+           return (EnumeratedProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
+        } else {
+            return (EnumeratedProperty)desc;
+        }
+    }
+    
     public Control newEditorOn(Composite parent, int columnIndex, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener) {
         
         if (columnIndex == 0) return addLabel(parent, desc);
@@ -42,7 +51,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
                 return combo;
             }
             
-            final EnumeratedProperty ep = (EnumeratedProperty)desc;
+            final EnumeratedProperty ep = enumerationPropertyFrom(desc);
             
             combo.setItems(labelsIn(ep.choices()));
             
