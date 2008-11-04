@@ -8,7 +8,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
-import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
