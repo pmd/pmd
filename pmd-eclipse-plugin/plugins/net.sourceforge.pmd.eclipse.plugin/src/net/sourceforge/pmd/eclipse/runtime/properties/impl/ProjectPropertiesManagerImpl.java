@@ -209,8 +209,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             final IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
             projectProperties.setProjectWorkingSet(workingSetManager.getWorkingSet(to.getWorkingSetName()));
 
-            projectProperties.setRuleSetStoredInProject(to.isRuleSetStoredInProject());
             projectProperties.setRuleSetFile(to.getRuleSetFile());
+            projectProperties.setRuleSetStoredInProject(to.isRuleSetStoredInProject());
             projectProperties.setPmdEnabled(projectProperties.getProject().hasNature(PMDNature.PMD_NATURE));
             projectProperties.setIncludeDerivedFiles(to.isIncludeDerivedFiles());
 
