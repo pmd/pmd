@@ -26,3 +26,10 @@ Bundle-ClassPath: lib/asm-3.1.jar,
  lib/xmlParserAPIs-2.6.2.jar,
  pmd-plugin.jar
 Bundle-Localization: plugin
+Export-Package: net.sourceforge.pmd,
+ rulesets,
+ net.sourceforge.pmd.eclipse.plugin,
+ net.sourceforge.pmd.eclipse.runtime,
+ net.sourceforge.pmd.eclipse.runtime.builder,
+ net.sourceforge.pmd.eclipse.runtime.properties,
+ net.sourceforge.pmd.eclipse.runtime.writer
