@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import name.herlin.command.Timer;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;

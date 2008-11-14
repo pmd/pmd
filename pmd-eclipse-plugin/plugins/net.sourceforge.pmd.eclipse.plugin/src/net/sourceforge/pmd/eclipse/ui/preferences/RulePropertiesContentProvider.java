@@ -1,10 +1,5 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 /**
@@ -14,13 +9,14 @@ import net.sourceforge.pmd.eclipse.util.Util;
  * @author Philippe Herlin
  * @deprecated
  */
+@Deprecated
 public class RulePropertiesContentProvider extends AbstractStructuredContentProvider {
 
     /**
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)
      */
     public Object[] getElements(Object inputElement) {
-      
+
 //        if (inputElement instanceof Rule) {
 //            Rule rule = (Rule) inputElement;
 //            Enumeration<String> keys = rule.getProperties().keys();

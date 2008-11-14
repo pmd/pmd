@@ -68,27 +68,27 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 /**
  * This page is used to modify preferences only. They are stored in the preference store that belongs to
  * the main plug-in class. That way, preferences can be accessed directly via the preference store.
- * 
+ *
  * @author Philippe Herlin
  * @author Brian Remedios
  */
 
 public class PMDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage, ValueChangeListener, RuleSortListener {
-	
+
 	public static PMDPreferencePage activeInstance = null;
 
 	// columns shown in the rule treetable in the desired order
 	private static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
 		RuleColumnDescriptor.name,
-		RuleColumnDescriptor.priorityName,			
+		RuleColumnDescriptor.priorityName,
 		RuleColumnDescriptor.since,
 		RuleColumnDescriptor.ruleSetName,
 		RuleColumnDescriptor.ruleType,
 		RuleColumnDescriptor.minLangVers,
 		RuleColumnDescriptor.properties
-		};	
+		};
 	private static final Set<RuleColumnDescriptor> availableColumnSet = CollectionUtil.asSet(availableColumns);
-	
+
 	// last item in this list is the grouping used at startup
 	private static final Object[][] groupingChoices = new Object[][] {
 		{ RuleColumnDescriptor.ruleSetName,       "Rule set" },
@@ -98,17 +98,17 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         { RuleColumnDescriptor.filterExpression,  "Regex filter" },
 		{ null, "<no grouping>" }
 		};
-	
+
 	// properties that should not be shown in the PerRuleProperty page
-	private static final PropertyDescriptor<?>[] excludedRuleProperties = new PropertyDescriptor<?>[] {		
+	private static final PropertyDescriptor<?>[] excludedRuleProperties = new PropertyDescriptor<?>[] {
 		Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR,
 		Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR,
 		XPathRule.XPATH_DESCRIPTOR,
 		XPathRule.VERSION_DESCRIPTOR,
 		};
-		
+
 	private static final Map<Class<?>, ValueFormatter> formattersByType = new HashMap<Class<?>, ValueFormatter>();
-	
+
 	static {
 	    formattersByType.put(String.class,      ValueFormatter.StringFormatter);
         formattersByType.put(String[].class,    ValueFormatter.MultiStringFormatter);
@@ -119,7 +119,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         formattersByType.put(Class.class,       ValueFormatter.TypeFormatter);
         formattersByType.put(Class[].class,     ValueFormatter.MultiTypeFormatter);
 	}
-	
+
 	private CheckboxTreeViewer   ruleTreeViewer;
 	private Button			     addRuleButton;
 	private Button 			     removeRuleButton;
@@ -127,16 +127,16 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private RuleSet 			 ruleSet;       // TODO - what is this used for?  - br
 	private TabFolder 		     tabFolder;
 	private Set 				 checkedRules = new HashSet();
-	
+
 	private RulePropertyManager[]   rulePropertyManagers;
-	
+
 	private boolean					sortDescending;
 	private RuleFieldAccessor 		columnSorter = RuleFieldAccessor.name;	// initial sort
 	private RuleColumnDescriptor  	groupingColumn;
-	
+
 	private boolean 			modified = false;
 	private static PMDPlugin	plugin = PMDPlugin.getDefault();
-	
+
 	/**
 	 * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
@@ -148,7 +148,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
-	protected void performDefaults() {
+	@Override
+    protected void performDefaults() {
 		populateRuleTable();
 		super.performDefaults();
 	}
@@ -156,7 +157,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
 	 */
-	public boolean performOk() {
+	@Override
+    public boolean performOk() {
 		if (modified) {
 			updateRuleSet();
 			rebuildProjects();
@@ -168,7 +170,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#createContents(Composite)
 	 */
-	protected Control createContents(Composite parent) {
+	@Override
+    protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		layoutControls(composite);
 		return composite;
@@ -182,10 +185,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		// Create the controls (order is important !)
 		Composite groupCombo = buildGroupCombo(parent, "Rules grouped by ");
-		
+
 		Tree ruleTree = buildRuleTreeViewer(parent);
 		groupBy(null);
-				
+
 		Composite ruleTableButtons = buildRuleTableButtons(parent);
 		TabFolder tabFolder = buildTabFolder(parent);
 		Composite rulePropertiesTableButton = buildRulePropertiesTableButtons(parent);
@@ -197,7 +200,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		GridData data = new GridData();
 		data.horizontalSpan = 3;
 		groupCombo.setLayoutData(data);
-		
+
 		data = new GridData();
 		data.heightHint = 200;
 		data.widthHint = 350;
@@ -207,7 +210,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		data.grabExcessHorizontalSpace = true;
 		data.grabExcessVerticalSpace = true;
 		ruleTree.setLayoutData(data);
-				
+
 		data = new GridData();
 		data.horizontalSpan = 1;
 		data.horizontalAlignment = GridData.FILL;
@@ -231,44 +234,44 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 
 	public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(Rule rule) {
-		
+
 		Map<PropertyDescriptor<?>, Object> valuesByProp = rule.getPropertiesByPropertyDescriptor();
-		
-		for (int i=0; i<excludedRuleProperties.length; i++) {
-			valuesByProp.remove(excludedRuleProperties[i]);
+
+		for (PropertyDescriptor<?> excludedRulePropertie : excludedRuleProperties) {
+			valuesByProp.remove(excludedRulePropertie);
 		}
-		
+
 		return valuesByProp;
 	}
-	
+
 	public static void formatValueOn(StringBuilder target, Object value, Class<?> datatype) {
-		
+
 	    ValueFormatter formatter = formattersByType.get(datatype);
 	    if (formatter != null) {
 	        formatter.format(value, target);
 	        return;
 	    }
-				
+
 		target.append(value);     // should not get here..breakpoint here
 	}
-	
+
 	/**
 	 * @param rule Rule
 	 * @return String
 	 */
 	public static String propertyStringFrom(Rule rule) {
-		
+
 		Map<PropertyDescriptor<?>, Object> valuesByProp = filteredPropertiesOf(rule);
-				
+
 		if (valuesByProp.isEmpty()) return "";
 		StringBuilder sb = new StringBuilder();
-		
+
 		Iterator<PropertyDescriptor<?>> iter = valuesByProp.keySet().iterator();
-		
+
 		PropertyDescriptor<?> desc = iter.next();
 		sb.append(desc.name()).append(": ");
 		sb.append(rule.getProperty(desc));
-		
+
 		while (iter.hasNext()) {
 			desc = iter.next();
 			sb.append(", ").append(desc.name()).append(": ");
@@ -276,70 +279,72 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		}
 		return sb.toString();
 	}
-	
+
 	public static String ruleSetNameFrom(Rule rule) {
-		
+
 		String name = rule.getRuleSetName();
 		int pos = name.toUpperCase().indexOf("RULES");
-		return pos < 0 ? name : name.substring(0, pos-1);		
+		return pos < 0 ? name : name.substring(0, pos-1);
 	}
-	
+
 	private void redrawTable() {
 		groupBy(groupingColumn);
 	}
-	
+
 	/**
 	 * @param parent Composite
 	 * @return Combo
 	 */
 	private Composite buildGroupCombo(Composite parent, String comboLabel) {
-		
+
 		final Composite panel = new Composite(parent, 0);
 		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 		panel.setLayout(layout);
-		
+
 		Label label = new Label(panel, 0);
 		label.setText(comboLabel);
-		
-		
+
+
 		final ComboViewer viewer = new ComboViewer(panel, SWT.DROP_DOWN);
 		viewer.setLabelProvider(new LabelProvider() {
-			public String getText(Object element) { return ((Object[])element)[1].toString(); }
+			@Override
+            public String getText(Object element) { return ((Object[])element)[1].toString(); }
 		});
 		viewer.add(groupingChoices);
 		viewer.setSelection(new StructuredSelection(groupingChoices[groupingChoices.length-1]), true);
-		
+
 		final Combo combo = viewer.getCombo();
-		
+
 		combo.addSelectionListener( new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				int pos = combo.getSelectionIndex();
-				Object[] choice = groupingChoices[pos];	
+				Object[] choice = groupingChoices[pos];
 				groupingColumn = (RuleColumnDescriptor)choice[0];
 				redrawTable();
-			}			
+			}
 		});
-		
+
 		return panel;
 	}
-	
+
 	/**
 	 * Method buildTabFolder.
 	 * @param parent Composite
 	 * @return TabFolder
 	 */
 	private TabFolder buildTabFolder(Composite parent) {
-		
+
 		tabFolder = new TabFolder(parent, SWT.TOP);
-	
+
 //		buildPropertyTab(tabFolder, 0);
-				
+
 		rulePropertyManagers = new RulePropertyManager[] {
 		    buildPropertyTab(tabFolder, 0),
 		    buildDescriptionTab(tabFolder, 1),
 		    buildUsageTab(tabFolder, 2)
 		};
-		
+
 		tabFolder.pack();
 		return tabFolder;
 	}
@@ -349,54 +354,54 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @param index int
 	 */
 	private RulePropertyManager buildPropertyTab(TabFolder parent, int index) {
-		
+
 	    TabItem propertyTab = new TabItem(parent, 0, index);
-		propertyTab.setText("Properties");	
-		
+		propertyTab.setText("Properties");
+
 		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(this);
 		propertyTab.setControl(
 		    manager.setupOn(parent, this)
 		    );
 		return manager;
 	}
-	
+
 	/**
 	 * @param parent TabFolder
 	 * @param index int
 	 */
 	private RulePropertyManager buildDescriptionTab(TabFolder parent, int index) {
-		
+
 		TabItem tab = new TabItem(parent, 0, index);
 		tab.setText("Description");
-		        
+
         DescriptionPanelManager manager = new DescriptionPanelManager(this);
         tab.setControl(
             manager.setupOn(parent)
             );
         return manager;
 	}
-	
+
 	/**
 	 * Method buildUsageTab.
 	 * @param parent TabFolder
 	 * @param index int
 	 */
 	private RulePropertyManager buildUsageTab(TabFolder parent, int index) {
-		
+
 		TabItem tab = new TabItem(parent, 0, index);
-		tab.setText("Usage");			
-		
+		tab.setText("Usage");
+
 		ExclusionPanelManager manager = new ExclusionPanelManager(this);
 		tab.setControl(
 			manager.setupOn(
-					parent, 
-					"Exclusion regular expression", 
+					parent,
+					"Exclusion regular expression",
 					"XPath exclusion expression"
 					)
 			);
 		return manager;
 	}
-	
+
 	/**
 	 * Create buttons for rule table management
 	 * @param parent Composite
@@ -472,22 +477,22 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @return Tree
 	 */
 	private Tree buildRuleTreeViewer(Composite parent) {
-		
+
 		int treeStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION | SWT.CHECK;
 		ruleTreeViewer = new CheckboxTreeViewer(parent, treeStyle);
 
 		Tree ruleTree = ruleTreeViewer.getTree();
 		ruleTree.setLinesVisible(true);
 		ruleTree.setHeaderVisible(true);
-		
+
 		ruleTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				Object item = selection.getFirstElement();			
-				selectedRule((item instanceof Rule) ? (Rule)item : null);
+				Object item = selection.getFirstElement();
+				selectedRule(item instanceof Rule ? (Rule)item : null);
 			}
-		});	
-		
+		});
+
 		ruleTree.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event event) {
 	            if (event.detail == SWT.CHECK) {
@@ -499,9 +504,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	         //   if (!checkedRules.isEmpty()) System.out.println(checkedRules.iterator().next());
 	        }
 	    });
-		
+
 		//	ruleTreeViewer.setSorter(this.ruleTableViewerSorter);
-		
+
 		return ruleTree;
 	}
 
@@ -509,70 +514,71 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @param rule Rule
 	 */
 	private void selectedRule(Rule rule) {
-		
+
 		for (RulePropertyManager manager : rulePropertyManagers) manager.showRule(rule);
-				
+
 		removeRuleButton.setEnabled(rule != null);
 		editRuleButton.setEnabled(rule != null);
-		
+
 	//	updatePropertyEditorFor(rule);
 	}
-		
+
 	/**
 	 * Method groupBy.
 	 * @param chosenColumn RuleColumnDescriptor
 	 */
 	private void groupBy(RuleColumnDescriptor chosenColumn) {
-	
+
 		if (chosenColumn == null) {
 			setupTreeColumns(availableColumns, null);
 			return;
 		}
-		
+
 		RuleColumnDescriptor[] remainingCols = availableColumns;
-		
+
 		if (availableColumnSet.contains(chosenColumn)) {
     		remainingCols = new RuleColumnDescriptor[availableColumns.length-1];
     		int j=0;
-    		for (int i=0; i<availableColumns.length; i++) {
-    			if (availableColumns[i] == chosenColumn) continue;
-    			remainingCols[j++] = availableColumns[i];
+    		for (RuleColumnDescriptor availableColumn : availableColumns) {
+    			if (availableColumn == chosenColumn) continue;
+    			remainingCols[j++] = availableColumn;
     		}
 		}
-		
+
 		setupTreeColumns(remainingCols, chosenColumn.accessor());
 	}
-	
+
 	/**
 	 * Method setupTreeColumns.
 	 * @param columnDescs RuleColumnDescriptor[]
 	 * @param groupingField RuleFieldAccessor
 	 */
 	private void setupTreeColumns(RuleColumnDescriptor[] columnDescs, RuleFieldAccessor groupingField) {
-		
+
 		Tree ruleTree = ruleTreeViewer.getTree();
-		
+
 		ruleTree.clearAll(true);
 		for(;ruleTree.getColumns().length>0;) ruleTree.getColumns()[0].dispose();
-	    
+
 		for (int i = 0; i<columnDescs.length; i++) columnDescs[i].newTreeColumnFor(ruleTree, i, this);
-		
+
 		ruleTreeViewer.setLabelProvider(new RuleLabelProvider(columnDescs));
 		ruleTreeViewer.setContentProvider(
 				new RuleSetTreeItemProvider(groupingField, "??", Util.comparatorFrom(columnSorter, sortDescending))
 				);
-				
+
 	//	ruleTreeViewer.setCellModifier(new RuleCellModifier(ruleTreeViewer));
 //		ruleTreeViewer.setCellEditors(new CellEditor[] { null, null, null,
 //				new ComboBoxCellEditor(ruleTree, PMDUiPlugin.getDefault().getPriorityLabels()),
 //				new TextCellEditor(ruleTree) });
 
 		populateRuleTable();
-		
+
 		TreeColumn[] columns = ruleTree.getColumns();
-		for(int i=0; i<columns.length; i++) columns[i].pack();		   
+		for (TreeColumn column : columns)
+            column.pack();
 	}
-	
+
 	/**
 	 * Method checkPath.
 	 * @param item TreeItem
@@ -608,8 +614,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    item.setGrayed(false);
 	    check(item, checked);
 	    TreeItem[] items = item.getItems();
-	    for (int i = 0; i < items.length; i++) {
-	        checkItems(items[i], checked);
+	    for (TreeItem item2 : items) {
+	        checkItems(item2, checked);
 	    }
 	}
 
@@ -618,17 +624,17 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @param checked boolean
 	 */
 	private void check(TreeItem item, boolean checked) {
-		
+
 		item.setChecked(checked);
 		if (item.getData() instanceof RuleGroup) return;
-		
+
 		if (checked) {
 			checkedRules.add(item.getData());
 		} else {
 			checkedRules.remove(item.getData());
 		}
 	}
-		
+
 	/**
 	 * Build the remove rule button
 	 * @param parent Composite
@@ -639,7 +645,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_REMOVERULE));
 		button.setEnabled(false);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				IStructuredSelection selection = (IStructuredSelection)ruleTreeViewer.getSelection();
 				Rule selectedRule = (Rule)selection.getFirstElement();
 				ruleSet.getRules().remove(selectedRule);
@@ -665,7 +672,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setEnabled(false);
 
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				IStructuredSelection selection = (IStructuredSelection)ruleTreeViewer.getSelection();
 				Rule rule = (Rule)selection.getFirstElement();
 
@@ -696,7 +704,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setEnabled(true);
 
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				RuleDialog dialog = new RuleDialog(getShell());
 				int result = dialog.open();
 				if (result == RuleDialog.OK) {
@@ -732,7 +741,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_IMPORTRULESET));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(getShell());
 				dialog.open();
 				if (dialog.getReturnCode() == RuleSetSelectionDialog.OK) {
@@ -744,7 +754,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 							// Set pmd-eclipse as new RuleSet name and add the Rule
 							Iterator<Rule> iter = selectedRuleSet.getRules().iterator();
 							while (iter.hasNext()) {
-								Rule rule = (Rule)iter.next();
+								Rule rule = iter.next();
 								rule.setRuleSetName("pmd-eclipse");
 								ruleSet.addRule(rule);
 							}
@@ -775,7 +785,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_EXPORTRULESET));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
 				String fileName = dialog.open();
 				if (fileName != null) {
@@ -829,7 +840,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_CLEARALL));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				if (MessageDialog.openConfirm(getShell(), getMessage(StringKeys.MSGKEY_CONFIRM_TITLE),
 						getMessage(StringKeys.MSGKEY_CONFIRM_CLEAR_RULESET))) {
 					ruleSet.getRules().clear();
@@ -856,7 +868,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_RULEDESIGNER));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
 				// TODO Is this cool from Eclipse?  Is there a nicer way to spawn a J2SE Application?
 				new Thread(new Runnable() {
 					public void run() {
@@ -881,14 +894,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		ruleSet.addExcludePatterns(defaultRuleSet.getExcludePatterns());
 		ruleSet.addIncludePatterns(defaultRuleSet.getIncludePatterns());
 		ruleTreeViewer.setInput(ruleSet);
-		
+
 		checkSelections();
 	}
 
-	private void checkSelections() {		
+	private void checkSelections() {
 		ruleTreeViewer.setCheckedElements(checkedRules.toArray());
 	}
-	
+
 	/**
 	 * Helper method to shorten message access
 	 * @param key a message key
@@ -901,7 +914,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
 	 */
-	protected IPreferenceStore doGetPreferenceStore() {
+	@Override
+    protected IPreferenceStore doGetPreferenceStore() {
 		return plugin.getPreferenceStore();
 	}
 
@@ -995,8 +1009,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	protected void selectAndShowRule(Rule rule) {
 		Tree tree = ruleTreeViewer.getTree();
 		TreeItem[] items = tree.getItems();
-		for (int i = 0; i < items.length; i++) {
-			Rule itemRule = (Rule)items[i].getData();
+		for (TreeItem item : items) {
+			Rule itemRule = (Rule)item.getData();
 			if (itemRule.equals(rule)) {
 	//			tree.setSelection(tree.indexOf(items[i]));
 				tree.showSelection();
@@ -1012,7 +1026,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 
 	public void sortBy(RuleFieldAccessor accessor) {
-		
+
 		if (columnSorter == accessor) {
 			sortDescending = !sortDescending;
 		} else {
