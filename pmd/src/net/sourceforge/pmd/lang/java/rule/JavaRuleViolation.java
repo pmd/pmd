@@ -11,6 +11,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -81,6 +82,9 @@ public class JavaRuleViolation extends AbstractRuleViolation {
 	    parentTypes.addAll(node.getParentsOfType(ASTClassOrInterfaceBodyDeclaration.class));
 	    parentTypes.addAll(node.getParentsOfType(ASTFormalParameter.class));
 	    parentTypes.addAll(node.getParentsOfType(ASTLocalVariableDeclaration.class));
+	    if (node instanceof ASTCompilationUnit) {
+	        parentTypes.addAll(node.findChildrenOfType(ASTTypeDeclaration.class));
+	    }
 	    for (Node parentType : parentTypes) {
 		CanSuppressWarnings t = (CanSuppressWarnings) parentType;
 		if (t.hasSuppressWarningsAnnotationFor(getRule())) {
