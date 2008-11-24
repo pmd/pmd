@@ -126,8 +126,8 @@ public class SourceCode {
     public String getSlice(int startLine, int endLine) {
         StringBuffer sb = new StringBuffer();
         List lines = cl.getCode();
-        for (int i = startLine - 1; i < endLine && i < lines.size(); i++) {
-            if (sb.length() != 0) {
+	for (int i = (startLine == 0 ? startLine :startLine - 1); i < endLine && i < lines.size(); i++) {
+		if (sb.length() != 0) {
                 sb.append(PMD.EOL);
             }
             sb.append((String) lines.get(i));
