@@ -6,6 +6,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.SourceType;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
@@ -32,6 +33,24 @@ import junit.framework.JUnit4TestAdapter;
          }
      }
  
+     private static class BarRule extends AbstractRule {
+        @Override
+        public Object visit(ASTCompilationUnit cu, Object ctx) {
+            // Convoluted rule to make sure the violation is reported for the ASTCompilationUnit node
+            for (ASTClassOrInterfaceDeclaration c : cu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class)) {
+                if (c.getImage().equalsIgnoreCase("bar")) {
+                    addViolation(ctx, cu);
+                }
+            }
+            return super.visit(cu, ctx);
+        }
+
+        @Override
+        public String getName() {
+            return "NoBar";
+        }
+     }
+
      @Test
      public void testClassLevelSuppression() throws Throwable {
          Report rpt = new Report();
@@ -108,6 +127,13 @@ import junit.framework.JUnit4TestAdapter;
      public void testSuppressAll() throws Throwable {
          Report rpt = new Report();
          runTestFromString(TEST12, new FooRule(), rpt, SourceType.JAVA_15);
+         assertEquals(0, rpt.size());
+     }
+
+     @Test
+     public void testSpecificSuppressionAtTopLevel() throws Throwable {
+         Report rpt = new Report();
+         runTestFromString(TEST13, new BarRule(), rpt, SourceType.JAVA_15);
          assertEquals(0, rpt.size());
      }
 
@@ -199,6 +225,11 @@ import junit.framework.JUnit4TestAdapter;
      private static final String TEST12 =
              "public class Bar {" + PMD.EOL +
              " @SuppressWarnings(\"all\") int foo;" + PMD.EOL +
+             "}";
+
+     private static final String TEST13 =
+             "@SuppressWarnings(\"PMD.NoBar\")" + PMD.EOL +
+             "public class Bar {" + PMD.EOL +
              "}";
 
     public static junit.framework.Test suite() {

@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
@@ -41,7 +42,7 @@ public class RuleViolation implements IRuleViolation {
             if (r1.getBeginLine() == r2.getBeginLine()) {
                 return 1;
             }
-            
+
             // line number diff maps nicely to compare()
             return r1.getBeginLine() - r2.getBeginLine();
         }
@@ -123,6 +124,14 @@ public class RuleViolation implements IRuleViolation {
 	        if (node instanceof ASTLocalVariableDeclaration) {
 	            parentTypes.add(node);
 	        }
+	        if (node instanceof ASTCompilationUnit) {
+	            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+	                SimpleNode n = (SimpleNode) node.jjtGetChild(i);
+	                if (n instanceof ASTTypeDeclaration) {
+	                    parentTypes.add(n);
+	                }
+	            }
+	        }
 	        for (SimpleNode parentType : parentTypes) {
 	            CanSuppressWarnings t = (CanSuppressWarnings) parentType;
 	            if (t.hasSuppressWarningsAnnotationFor(getRule())) {
@@ -138,14 +147,14 @@ public class RuleViolation implements IRuleViolation {
     }
 
     private void setVariableNameIfExists(SimpleNode node) {
-        variableName = (node.getClass().equals(ASTFieldDeclaration.class))
+        variableName = node.getClass().equals(ASTFieldDeclaration.class)
                 ? ((ASTFieldDeclaration) node).getVariableName() : "";
         if ("".equals(variableName)) {
-            variableName = (node.getClass().equals(ASTLocalVariableDeclaration.class))
+            variableName = node.getClass().equals(ASTLocalVariableDeclaration.class)
                     ? ((ASTLocalVariableDeclaration) node).getVariableName() : "";
         }
         if ("".equals(variableName)) {
-            variableName = (node.getClass().equals(ASTVariableDeclaratorId.class))
+            variableName = node.getClass().equals(ASTVariableDeclaratorId.class)
                     ? node.getImage() : "";
         }
     }
@@ -198,6 +207,7 @@ public class RuleViolation implements IRuleViolation {
         return variableName;
     }
 
+    @Override
     public String toString() {
         return getFilename() + ":" + getRule() + ":" + getDescription() + ":" + beginLine;
     }
