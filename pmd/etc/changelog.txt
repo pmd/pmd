@@ -3,6 +3,7 @@
 Enhanced logging in the ClassTypeResolver to provide more detailed messaging.
 Fixed bug 2338341 - ArrayIndexOutOfBoundsException in cpd on rails project
 Fixed bug 2315623 - @SuppressWarnings("PMD.UseSingleton") has no effect
+Fixed bug 2230809 - False +: ClassWithOnlyPrivateConstructorsShouldBeFinal  
 
 October 12, 2008 - 4.2.4:
 
