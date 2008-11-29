@@ -119,7 +119,7 @@ single-line comment is not OK
         <expected-problems>1</expected-problems>
         <code-ref id="single-line comment"/>
     </test-code>
-    <test-code reinitializeRule="1">
+    <test-code>
         <description><![CDATA[
 single-line comment is OK
      ]]></description>
@@ -142,7 +142,7 @@ multiple-line comment is not OK
         <expected-problems>1</expected-problems>
         <code-ref id="multiple-line comment"/>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
     <description><![CDATA[
 multiple-line comment is OK
      ]]></description>

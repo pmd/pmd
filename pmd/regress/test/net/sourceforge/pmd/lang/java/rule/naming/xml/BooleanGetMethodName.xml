@@ -33,7 +33,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 Should match on multiple parameters when checkParameterizedMethods = true
      ]]></description>

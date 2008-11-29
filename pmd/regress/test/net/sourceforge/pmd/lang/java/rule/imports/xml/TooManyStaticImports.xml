@@ -27,7 +27,7 @@ import static Paul;
 public class Beatles {}
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 ok, we allow five now
      ]]></description>

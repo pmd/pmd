@@ -158,7 +158,7 @@ class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
 	<description>
 		<![CDATA[
 			False - ! if "checkAll" property is not set
@@ -177,7 +177,7 @@ class Foo {
 	]]>
 	</code>
 	</test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
 	<description>
 		<![CDATA[
 			violation suppression regex works
@@ -196,7 +196,7 @@ class Foo {
 	]]>
 	</code>
 	</test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
 	<description>
 		<![CDATA[
 			violation suppression xpath works, by name
@@ -215,7 +215,7 @@ class Foo {
 	]]>
 	</code>
 	</test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
 	<description>
 		<![CDATA[
 			violation suppression xpath works, by type

@@ -57,7 +57,7 @@ public class Bar {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 ok, implements interface in same package which extends Cloneable
      ]]></description>
@@ -69,7 +69,7 @@ public class FooX extends MyInterface {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 ok, implements interface imported implicitly which extends Cloneable
      ]]></description>

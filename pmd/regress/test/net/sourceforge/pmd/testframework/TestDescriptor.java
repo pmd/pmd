@@ -18,7 +18,7 @@ public class TestDescriptor {
     private int numberOfProblemsExpected;
     private String code;
     private LanguageVersion languageVersion;
-    private boolean reinitializeRule = false;   //default
+    private boolean reinitializeRule = true;   //default, avoids unintentional mixing of state between test cases
     private boolean isRegressionTest = true;
 
     // Empty descriptor added to please mvn surefire plugin

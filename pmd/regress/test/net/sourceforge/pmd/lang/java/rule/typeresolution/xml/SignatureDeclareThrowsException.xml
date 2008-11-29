@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 method throws Exception
      ]]></description>
@@ -11,7 +11,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 ok
      ]]></description>
@@ -22,7 +22,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 constructor throws Exception
      ]]></description>
@@ -33,7 +33,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 JUnit 4 testcase
      ]]></description>
@@ -46,7 +46,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 skip method in class that extends TestCase
      ]]></description>
@@ -58,7 +58,7 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 Don't skip other methods
      ]]></description>
@@ -70,7 +70,7 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 Unless 
      ]]></description>
@@ -83,7 +83,7 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 skip junit setUp method where the superclass is TestCase
      ]]></description>
@@ -94,7 +94,7 @@ public class Foo extends test.net.sourceforge.pmd.lang.java.rule.typeresolution.
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 skip junit setUp method where the superclass is TestCase, imported explicitly
      ]]></description>
@@ -106,7 +106,7 @@ public class Foo extends MyTestCase {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 skip junit setUp method where the superclass is TestCase, but is imported implicitly
      ]]></description>
@@ -118,7 +118,7 @@ public class Foo extends MyTestCase {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 skip junit setUp method where the superclass is TestCase  and is in the same package
      ]]></description>
@@ -131,7 +131,7 @@ public class Foo extends MyTestCase {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code>
         <description><![CDATA[
 Generics
      ]]></description>
