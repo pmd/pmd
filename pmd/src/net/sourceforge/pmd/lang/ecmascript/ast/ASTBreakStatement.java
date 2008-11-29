@@ -11,7 +11,7 @@ public class ASTBreakStatement extends AbstractEcmascriptNode<BreakStatement> {
 	super.setImage(breakStatement.getBreakLabel() != null ? breakStatement.getBreakLabel().getIdentifier() : null);
     }
 
-    public boolean isHasLabel() {
+    public boolean hasLabel() {
 	return node.getBreakLabel() != null;
     }
 

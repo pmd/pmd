@@ -10,7 +10,7 @@ public class ASTIfStatement extends AbstractEcmascriptNode<IfStatement> {
 	super(ifStatement);
     }
 
-    public boolean isHasElse() {
+    public boolean hasElse() {
 	return node.getElsePart() != null;
     }
 

@@ -22,11 +22,11 @@ public class ASTNewExpression extends AbstractEcmascriptNode<NewExpression> {
 	return (EcmascriptNode) jjtGetChild(index + 1);
     }
 
-    public boolean isHasArguments() {
+    public boolean hasArguments() {
 	return getNumArguments() != 0;
     }
 
-    public boolean isHasInitializer() {
+    public boolean hasInitializer() {
 	return node.getInitializer() != null;
     }
 

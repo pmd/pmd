@@ -11,7 +11,7 @@ public class ASTExpressionStatement extends AbstractEcmascriptNode<ExpressionSta
 	super(expressionStatement);
     }
 
-    public boolean isHasResult() {
+    public boolean hasResult() {
 	return node.getType() == Token.EXPR_RESULT;
     }
 }

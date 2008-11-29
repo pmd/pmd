@@ -73,7 +73,7 @@ public class DumpFacade {
 
 	// Other extras
 	if (node instanceof ASTBreakStatement) {
-	    if (((ASTBreakStatement) node).isHasLabel()) {
+	    if (((ASTBreakStatement) node).hasLabel()) {
 		extras.add("has label");
 	    }
 	} else if (node instanceof ASTCatchClause) {
@@ -81,11 +81,11 @@ public class DumpFacade {
 		extras.add("if");
 	    }
 	} else if (node instanceof ASTContinueStatement) {
-	    if (((ASTContinueStatement) node).isHasLabel()) {
+	    if (((ASTContinueStatement) node).hasLabel()) {
 		extras.add("has label");
 	    }
 	} else if (node instanceof ASTExpressionStatement) {
-	    if (((ASTExpressionStatement) node).isHasResult()) {
+	    if (((ASTExpressionStatement) node).hasResult()) {
 		extras.add("has result");
 	    }
 	} else if (node instanceof ASTForInLoop) {
@@ -93,7 +93,7 @@ public class DumpFacade {
 		extras.add("for each");
 	    }
 	} else if (node instanceof ASTFunctionCall) {
-	    if (((ASTFunctionCall) node).isHasArguments()) {
+	    if (((ASTFunctionCall) node).hasArguments()) {
 		extras.add("has arguments");
 	    }
 	} else if (node instanceof ASTFunctionNode) {
@@ -107,7 +107,7 @@ public class DumpFacade {
 		extras.add("setter");
 	    }
 	} else if (node instanceof ASTIfStatement) {
-	    if (((ASTIfStatement) node).isHasElse()) {
+	    if (((ASTIfStatement) node).hasElse()) {
 		extras.add("has else");
 	    }
 	} else if (node instanceof ASTKeywordLiteral) {
@@ -122,10 +122,10 @@ public class DumpFacade {
 		extras.add("global");
 	    }
 	} else if (node instanceof ASTNewExpression) {
-	    if (((ASTNewExpression) node).isHasArguments()) {
+	    if (((ASTNewExpression) node).hasArguments()) {
 		extras.add("has arguments");
 	    }
-	    if (((ASTNewExpression) node).isHasInitializer()) {
+	    if (((ASTNewExpression) node).hasInitializer()) {
 		extras.add("has initializer");
 	    }
 	} else if (node instanceof ASTNumberLiteral) {
@@ -141,7 +141,7 @@ public class DumpFacade {
 	} else if (node instanceof ASTRegExpLiteral) {
 	    extras.add("Flags=" + ((ASTRegExpLiteral) node).getFlags());
 	} else if (node instanceof ASTReturnStatement) {
-	    if (((ASTReturnStatement) node).isHasResult()) {
+	    if (((ASTReturnStatement) node).hasResult()) {
 		extras.add("has result");
 	    }
 	} else if (node instanceof ASTStringLiteral) {
@@ -172,7 +172,7 @@ public class DumpFacade {
 	}
 
 	// Standard EcmascriptNode extras
-	if (node.isHasSideEffects()) {
+	if (node.hasSideEffects()) {
 	    extras.add("has side effects");
 	}
 

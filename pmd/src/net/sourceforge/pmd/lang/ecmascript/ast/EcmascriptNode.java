@@ -17,5 +17,5 @@ public interface EcmascriptNode extends Node {
      */
     public Object childrenAccept(EcmascriptParserVisitor visitor, Object data);
 
-    boolean isHasSideEffects();
+    boolean hasSideEffects();
 }

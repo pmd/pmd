@@ -40,7 +40,7 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
 	return data;
     }
 
-    public boolean isHasSideEffects() {
+    public boolean hasSideEffects() {
 	return node.hasSideEffects();
     }
 

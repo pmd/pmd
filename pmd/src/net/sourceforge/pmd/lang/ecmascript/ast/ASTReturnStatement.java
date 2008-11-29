@@ -10,7 +10,7 @@ public class ASTReturnStatement extends AbstractEcmascriptNode<ReturnStatement> 
 	super(returnStatement);
     }
 
-    public boolean isHasResult() {
+    public boolean hasResult() {
 	return node.getReturnValue() != null;
     }
 }

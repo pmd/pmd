@@ -22,7 +22,7 @@ public class ASTFunctionCall extends AbstractEcmascriptNode<FunctionCall> {
 	return (EcmascriptNode) jjtGetChild(index + 1);
     }
 
-    public boolean isHasArguments() {
+    public boolean hasArguments() {
 	return getNumArguments() != 0;
     }
 }

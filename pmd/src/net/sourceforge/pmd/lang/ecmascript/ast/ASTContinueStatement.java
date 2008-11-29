@@ -11,7 +11,7 @@ public class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStateme
 	super.setImage(continueStatement.getLabel() != null ? continueStatement.getLabel().getIdentifier() : null);
     }
 
-    public boolean isHasLabel() {
+    public boolean hasLabel() {
 	return node.getLabel() != null;
     }
 
