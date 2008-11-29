@@ -7,6 +7,49 @@
 	xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
 
 	<description>Rules concerning basic ECMAScript guidelines.</description>
+
+    <rule name="UnreachableCode"
+    		 language="ecmascript"
+    		  since="5.0"
+       message="A ''return'', ''break'', ''continue'', or ''throw'' statement should be the last in a block."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/basic.html#UnreachableCode">
+      <description>
+A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
+will never execute.  This is a bug, or extremely poor style.
+      </description>
+      <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+ <![CDATA[
+	//ReturnStatement[following-sibling::node()]
+|
+	//ContinueStatement[following-sibling::node()]
+|
+	//BreakStatement[following-sibling::node()]
+|
+	//ThrowStatement[following-sibling::node()]
+]]>
+                </value>
+            </property>
+        </properties>
+      <example>
+  <![CDATA[
+// Ok
+function foo() {
+   return 1;
+}
+// Bad
+function bar() {
+   var x = 1;
+   return x;
+   x = 2;
+}
+]]>
+      </example>
+    </rule>
+
     <rule name="InnaccurateNumericLiteral"
     		 language="ecmascript"
     		  since="5.0"
