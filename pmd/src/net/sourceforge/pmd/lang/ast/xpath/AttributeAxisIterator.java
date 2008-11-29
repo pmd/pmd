@@ -96,8 +96,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
 	String methodName = method.getName();
 
-	return (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType() || String.class == method
-		.getReturnType())
+	return (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType()
+		|| Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
 		&& method.getParameterTypes().length == 0
 		&& Void.TYPE != method.getReturnType()
 		&& !methodName.startsWith("jjt")
