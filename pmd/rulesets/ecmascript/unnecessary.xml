@@ -28,7 +28,9 @@ The Unnecessary Ruleset contains a collection of rules for unnecessary code.
     </properties>
     <example>
     <![CDATA[
-    TODO
+var x = 1; // Ok
+var y = (1 + 1); // Ok
+var z = ((1 + 1)); // Bad
     ]]>
     </example>
   </rule>
@@ -65,7 +67,14 @@ descendant-or-self::node()
     </properties>
     <example>
     <![CDATA[
-    TODO
+if (foo) {
+   // Ok
+}
+if (bar) {
+   {
+      // Bad
+   }
+}
     ]]>
     </example>
   </rule>

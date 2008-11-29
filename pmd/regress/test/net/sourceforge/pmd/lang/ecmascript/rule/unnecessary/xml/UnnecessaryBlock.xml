@@ -18,6 +18,8 @@ Ok, if
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 if (true) {
+} else if (true) {
+} else {
 }
      ]]></code>
         <source-type>ecmascript 3</source-type>
@@ -120,9 +122,15 @@ function foo() {
         <description><![CDATA[
 Bad, if
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 if (true) {
+   {
+   }
+} else if (true) {
+   {
+   }
+} else {
    {
    }
 }
