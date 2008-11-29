@@ -8,5 +8,6 @@
     <description>Every ECMAScript Rule in PMD</description>
 
     <rule ref="rulesets/ecmascript/basic.xml"/>
+    <rule ref="rulesets/ecmascript/braces.xml"/>
     <rule ref="rulesets/ecmascript/unnecessary.xml"/>
 </ruleset>

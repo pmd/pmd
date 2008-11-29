@@ -455,11 +455,12 @@ New Java rules:
 	Import ruleset: UnnecessaryFullyQualifiedName
 
 New ECMAScript rules:
-   Basic ruleset: InnaccurateNumericLiteral
-   Unnecessary ruleset: UnnecessaryParentheses,UnnecessaryBlock
+	Basic ruleset: InnaccurateNumericLiteral
+	Braces ruleset: ForLoopsMustUseBraces,IfStmtsMustUseBraces,IfElseStmtsMustUseBraces,WhileLoopsMustUseBraces
+	Unnecessary ruleset: UnnecessaryParentheses,UnnecessaryBlock
 
 New XML rules:
-   Basic ruleset: MistypedCDATASection
+	Basic ruleset: MistypedCDATASection
 
 March 25, 2008 - 4.2:
 
