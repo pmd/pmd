@@ -1,0 +1,21 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+package net.sourceforge.pmd.lang.ecmascript.ast;
+
+import org.mozilla.javascript.ast.ContinueStatement;
+
+public class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStatement> {
+    public ASTContinueStatement(ContinueStatement continueStatement) {
+	super(continueStatement);
+	super.setImage(continueStatement.getLabel() != null ? continueStatement.getLabel().getIdentifier() : null);
+    }
+
+    public boolean isHasLabel() {
+	return node.getLabel() != null;
+    }
+
+    public ASTName getLabel() {
+	return (ASTName) jjtGetChild(0);
+    }
+}

@@ -227,7 +227,7 @@ public class RuleSetTest extends RuleTst {
 	RuleSet ruleSet = new RuleSet();
 	Rule rule = new MockRule();
 
-	rule.setLanguage(Language.EMCASCRIPT);
+	rule.setLanguage(Language.ECMASCRIPT);
 	assertFalse("Different languages should not apply", ruleSet.applies(rule, LanguageVersion.JAVA_15));
 
 	rule.setLanguage(Language.JAVA);

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.cpp.CppHandler;
+import net.sourceforge.pmd.lang.ecmascript.Ecmascript3Handler;
 import net.sourceforge.pmd.lang.java.Java13Handler;
 import net.sourceforge.pmd.lang.java.Java14Handler;
 import net.sourceforge.pmd.lang.java.Java15Handler;
@@ -42,7 +43,7 @@ public enum LanguageVersion {
     //UNKNOWN(Language.UNKNOWN, "", null, true),
     CPP(Language.CPP, "", new CppHandler(), true),
     FORTRAN(Language.FORTRAN, "", null, true),
-    EMCASCRIPT(Language.EMCASCRIPT, "", null, true),
+    ECMASCRIPT(Language.ECMASCRIPT, "3", new Ecmascript3Handler(), true),
     JAVA_13(Language.JAVA, "1.3", new Java13Handler(), false),
     JAVA_14(Language.JAVA, "1.4", new Java14Handler(), false),
     JAVA_15(Language.JAVA, "1.5", new Java15Handler(), true),

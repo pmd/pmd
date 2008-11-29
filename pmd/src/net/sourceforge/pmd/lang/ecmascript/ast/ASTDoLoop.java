@@ -1,0 +1,20 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+package net.sourceforge.pmd.lang.ecmascript.ast;
+
+import org.mozilla.javascript.ast.DoLoop;
+
+public class ASTDoLoop extends AbstractEcmascriptNode<DoLoop> {
+    public ASTDoLoop(DoLoop doLoop) {
+	super(doLoop);
+    }
+
+    public EcmascriptNode getBody() {
+	return (EcmascriptNode) jjtGetChild(0);
+    }
+
+    public EcmascriptNode getCondition() {
+	return (EcmascriptNode) jjtGetChild(1);
+    }
+}

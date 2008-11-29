@@ -19,6 +19,7 @@
 	<property name="jaxen.version" value="1.1.1" />
 	<property name="saxon.version" value="9" />
 	<property name="junit.version" value="4.4" />
+	<property name="rhino.version" value="cvs-11282008" />
 	<property name="javacc-home.path" value="${dir.lib}" />
 
 	<!--Settings-->
@@ -31,6 +32,7 @@
 			<include name="saxon${saxon.version}.jar" />
 			<include name="asm-${asm.version}.jar" />
 			<include name="junit-${junit.version}.jar" />
+			<include name="js-${rhino.version}.jar" />
 		</fileset>
 	</path>
 
@@ -83,7 +85,7 @@
 			<zipfileset dir="etc" includes="ruleset.dtd,ruleset_xml_schema.xsd" prefix="rulesets"/>
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
-				<attribute name="Class-Path" value="jaxen-${jaxen.version}.jar saxon${saxon.version}.jar asm-${asm.version}.jar" />
+				<attribute name="Class-Path" value="jaxen-${jaxen.version}.jar saxon${saxon.version}.jar js-${rhino.version}.jar asm-${asm.version}.jar" />
 			</manifest>
 		</jar>
 

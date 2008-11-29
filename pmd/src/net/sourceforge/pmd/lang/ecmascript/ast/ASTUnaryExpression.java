@@ -1,0 +1,22 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+package net.sourceforge.pmd.lang.ecmascript.ast;
+
+import org.mozilla.javascript.ast.AstRoot;
+import org.mozilla.javascript.ast.UnaryExpression;
+
+public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
+    public ASTUnaryExpression(UnaryExpression unaryExpression) {
+	super(unaryExpression);
+	super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
+    }
+
+    public boolean isPrefix() {
+	return node.isPrefix();
+    }
+
+    public boolean isPostfix() {
+	return node.isPostfix();
+    }
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<ruleset name="Basic Ecmascript rules"
+	xmlns="http://pmd.sf.net/ruleset/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+	xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+	<description>Rules concerning basic ECMAScript guidelines.</description>
+    <rule name="InnaccurateNumericLiteral"
+    		 language="ecmascript"
+    		  since="5.0"
+       message="The numeric literal ''{0}'' will have at different value at runtime."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/basic.html#InnaccurateNumericLiteral">
+      <description>
+The numeric literal will have at different value at runtime, which can happen if you provide too much
+precision in a floating point number.  This may result in numeric calculations being in error.
+      </description>
+      <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+ <![CDATA[
+//NumberLiteral[
+	@Image != @Number
+	and translate(@Image, "e", "E") != @Number
+	and concat(@Image, ".0") != @Number
+	and @Image != substring-before(translate(@Number, ".", ""), "E")]
+]]>
+                </value>
+            </property>
+        </properties>
+      <example>
+  <![CDATA[
+var a = 9; // Ok
+var b = 999999999999999; // Ok
+var c = 999999999999999999999; // Not good
+var w = 1.12e-4; // Ok
+var x = 1.12; // Ok
+var y = 1.1234567890123; // Ok
+var z = 1.12345678901234567; // Not good
+]]>
+      </example>
+    </rule>
+
+</ruleset>

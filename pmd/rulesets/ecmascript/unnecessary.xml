@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<ruleset name="Unnecessary Rules"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+  <description>
+The Unnecessary Ruleset contains a collection of rules for unnecessary code.
+  </description>
+
+  <rule name="UnnecessaryParentheses"
+  		language="ecmascript"
+        since="5.0"
+        message="Unnecessary parentheses."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/unnecessary.html#UnnecessaryParentheses">
+    <description>Unnecessary parentheses should be removed.</description>
+    <priority>4</priority>
+    <properties>
+       <property name="xpath">
+          <value>
+          <![CDATA[
+//ParenthesizedExpression/ParenthesizedExpression
+          ]]>
+          </value>
+       </property>
+    </properties>
+    <example>
+    <![CDATA[
+    TODO
+    ]]>
+    </example>
+  </rule>
+
+  <rule name="UnnecessaryBlock"
+  		language="ecmascript"
+        since="5.0"
+        message="Unnecessary block."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/unnecessary.html#UnnecessaryParentheses">
+    <description>An unnecessary Block is present.  Such Blocks are often used in other languages to
+    introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
+    be misleading.  Considering removing this unnecessary Block.</description>
+    <priority>3</priority>
+    <properties>
+       <property name="xpath">
+          <value>
+          <![CDATA[
+descendant-or-self::node()
+	[self::Block or self::Scope]
+	[not(
+		parent::FunctionNode
+		or parent::IfStatement
+		or parent::ForLoop
+		or parent::ForInLoop
+		or parent::WhileLoop
+		or parent::DoLoop
+		or parent::TryStatement
+		or parent::CatchClause
+	)]
+          ]]>
+          </value>
+       </property>
+    </properties>
+    <example>
+    <![CDATA[
+    TODO
+    ]]>
+    </example>
+  </rule>
+
+</ruleset>

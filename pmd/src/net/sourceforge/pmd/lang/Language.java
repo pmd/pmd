@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleChainVisitor;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleChainVisitor;
 import net.sourceforge.pmd.lang.jsp.rule.JspRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
@@ -39,7 +40,7 @@ public enum Language {
     //UNKNOWN("Unknown", null, "unknown", null, (String)null),
     CPP("C++", null, "cpp", null, "h", "c", "cpp", "cxx", "cc", "C"),
     FORTRAN("Fortran", null, "fortran", null, "for"),
-    EMCASCRIPT("Ecmascript", null, "ecmascript", null, "js"),
+    ECMASCRIPT("Ecmascript", null, "ecmascript", EcmascriptRuleChainVisitor.class, "js"),
     JAVA("Java", null, "java", JavaRuleChainVisitor.class, "java"),
     JSP("Java Server Pages", "JSP", "jsp", JspRuleChainVisitor.class, "jsp"),
     PHP("PHP: Hypertext Preprocessor", "PHP", "php", null, "php", "class"),
