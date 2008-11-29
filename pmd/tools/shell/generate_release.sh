@@ -44,6 +44,9 @@ export MAVEN_OPTS="-Xmx512m -Xms192m"
 #making sure saxon9.jar is available as it's not in standard repositories
 mvn install:install-file -Dfile=lib/saxon9.jar -DgroupId=net.sf.saxon -DartifactId=saxon -Dversion=9.1.0.2b -Dpackaging=jar
 
+#making sure correct rhino jar is available
+mvn install:install-file -Dfile=lib/js-cvs-11282008.jar -DgroupId=rhino -DartifactId=js -Dversion=cvs-11282008 -Dpackaging=jar
+
 mvn clean site
 
 cd etc
