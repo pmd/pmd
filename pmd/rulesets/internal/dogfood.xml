@@ -8,11 +8,18 @@
 	and exclude those which we know are explicitly decided as not applicable to PMD itself.
 	This is the most encompassing form of RuleSet.</description>
 
+    <!-- Exclude JavaCC generated artifacts -->
 	<exclude-pattern>.*net/sourceforge/pmd/lang/ast/JavaCharStream.java</exclude-pattern>
 	<exclude-pattern>.*net/sourceforge/pmd/lang/ast/SimpleCharStream.java</exclude-pattern>
 	<exclude-pattern>.*net/sourceforge/pmd/lang/ast/TokenMgrError.java</exclude-pattern>
-	<exclude-pattern>.*lang/.*/ast/.*.java</exclude-pattern>
-	<exclude-pattern>.*cppast/.*.java</exclude-pattern>
+	<exclude-pattern>.*lang/(java|jsp|cpp)/ast/.*Parser.java</exclude-pattern>
+	<exclude-pattern>.*lang/(java|jsp|cpp)/ast/.*ParserConstants.java</exclude-pattern>
+	<exclude-pattern>.*lang/(java|jsp|cpp)/ast/.*ParserTokenManager.java</exclude-pattern>
+	<exclude-pattern>.*lang/(java|jsp|cpp)/ast/.*ParserTreeConstants.java</exclude-pattern>
+	<exclude-pattern>.*lang/(java|jsp|cpp)/ast/.*ParserVisitor.java</exclude-pattern>
+	<exclude-pattern>.*lang/(java|jsp|cpp)/ast/JJT.*ParserState.java</exclude-pattern>
+	<exclude-pattern>.*lang/(java|jsp|cpp)/ast/ParseException.java</exclude-pattern>
+	<exclude-pattern>.*lang/(java|jsp|cpp)/ast/Token.java</exclude-pattern>
 
 	<!-- TODO First step is to re-enable these Rules from the original dogfood, as these are subjectively most important:
 	   UnusedPrivateField
