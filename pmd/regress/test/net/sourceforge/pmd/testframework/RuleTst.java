@@ -201,13 +201,13 @@ public abstract class RuleTst {
         for (int i = 0; i < testCodes.getLength(); i++) {
             Element testCode = (Element)testCodes.item(i);
 
-            boolean reinitializeRule = false;
+            boolean reinitializeRule = true;
             Node reinitializeRuleAttribute = testCode.getAttributes().getNamedItem("reinitializeRule");
             if (reinitializeRuleAttribute != null) {
                 String reinitializeRuleValue = reinitializeRuleAttribute.getNodeValue();
-                if ("true".equalsIgnoreCase(reinitializeRuleValue) ||
-                        "1".equalsIgnoreCase(reinitializeRuleValue)) {
-                    reinitializeRule = true;
+                if ("false".equalsIgnoreCase(reinitializeRuleValue) ||
+                        "0".equalsIgnoreCase(reinitializeRuleValue)) {
+                    reinitializeRule = false;
                 }
             }
 

@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
  
 public class RegexpAcceptanceTest extends SimpleAggregatorTst {
 
@@ -17,7 +18,11 @@ public class RegexpAcceptanceTest extends SimpleAggregatorTst {
          r.setLanguage(Language.JAVA);
          r.setProperty(XPathRule.XPATH_DESCRIPTOR, "//ClassOrInterfaceDeclaration[matches(@Image, 'F?o')]");
          r.setMessage("");
-         runTests(r, "RegexpAcceptance");
+         TestDescriptor[] testDescriptors = extractTestsFromXml(r, "RegexpAcceptance");
+         for (TestDescriptor testDescriptor: testDescriptors) {
+             testDescriptor.setReinitializeRule(false);
+         }
+         runTests(testDescriptors);
      }
 
     public static junit.framework.Test suite() {
