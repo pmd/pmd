@@ -83,6 +83,14 @@ public class EcmascriptParserVisitorAdapter implements EcmascriptParserVisitor {
 	return visit((EcmascriptNode) node, data);
     }
 
+    public Object visit(ASTLabel node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTLabeledStatement node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
     public Object visit(ASTName node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }

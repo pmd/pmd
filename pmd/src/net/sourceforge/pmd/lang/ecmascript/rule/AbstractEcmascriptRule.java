@@ -27,6 +27,8 @@ import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTKeywordLiteral;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTLabel;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTName;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTNewExpression;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTNumberLiteral;
@@ -152,6 +154,14 @@ public abstract class AbstractEcmascriptRule extends AbstractRule implements Ecm
     }
 
     public Object visit(ASTKeywordLiteral node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTLabel node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTLabeledStatement node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }
 

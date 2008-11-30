@@ -31,6 +31,8 @@ import org.mozilla.javascript.ast.FunctionNode;
 import org.mozilla.javascript.ast.IfStatement;
 import org.mozilla.javascript.ast.InfixExpression;
 import org.mozilla.javascript.ast.KeywordLiteral;
+import org.mozilla.javascript.ast.Label;
+import org.mozilla.javascript.ast.LabeledStatement;
 import org.mozilla.javascript.ast.Name;
 import org.mozilla.javascript.ast.NewExpression;
 import org.mozilla.javascript.ast.NodeVisitor;
@@ -75,6 +77,8 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	register(IfStatement.class, ASTIfStatement.class);
 	register(InfixExpression.class, ASTInfixExpression.class);
 	register(KeywordLiteral.class, ASTKeywordLiteral.class);
+	register(Label.class, ASTLabel.class);
+	register(LabeledStatement.class, ASTLabeledStatement.class);
 	register(Name.class, ASTName.class);
 	register(NewExpression.class, ASTNewExpression.class);
 	register(NumberLiteral.class, ASTNumberLiteral.class);

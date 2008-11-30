@@ -41,6 +41,10 @@ public interface EcmascriptParserVisitor {
 
     Object visit(ASTKeywordLiteral node, Object data);
 
+    Object visit(ASTLabel node, Object data);
+
+    Object visit(ASTLabeledStatement node, Object data);
+
     Object visit(ASTName node, Object data);
 
     Object visit(ASTNewExpression node, Object data);
