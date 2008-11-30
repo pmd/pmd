@@ -8,6 +8,51 @@
 
 	<description>Rules concerning basic ECMAScript guidelines.</description>
 
+    <rule name="AssignmentInOperand"
+      language="ecmascript"
+      since="5.0"
+      message="Avoid assignments in operands"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/controversial.html#AssignmentInOperand">
+<description>
+Avoid assignments in operands; this can make code more complicated and harder to read.  This is sometime
+indicative of the bug where the assignment operator '=' was used instead of the equality operator '=='.
+  </description>
+    <priority>2</priority>
+    <properties>
+       <property name="xpath">
+          <value>
+ <![CDATA[
+	//IfStatement[$allowIf = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+	//WhileLoop[$allowWhile = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+	//DoLoop[$allowWhile = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+	//ForLoop[$allowFor = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+]]>
+          </value>
+       </property>
+       <property name="allowIf" type="Boolean" value="false" description="Allow assignment within the conditional expression of an if statement" />
+       <property name="allowFor" type="Boolean" value="false" description="Allow assignment within the conditional expression of a for statement" />
+       <property name="allowWhile" type="Boolean" value="false" description="Allow assignment within the conditional expression of a while statement" />
+       <property name="allowIncrementDecrement" type="Boolean" value="false" description="Allow increment or decrement operators within the conditional expression of an if, for, or while statement" />
+    </properties>
+  <example>
+  <![CDATA[
+var x = 2;
+// Bad
+if ((x = getX()) == 3) {
+   alert('3!');
+}
+
+function getX() {
+  return 3;
+}
+  ]]>
+  </example>
+</rule>
+
     <rule name="UnreachableCode"
     		 language="ecmascript"
     		  since="5.0"

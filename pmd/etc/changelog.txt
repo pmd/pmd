@@ -455,7 +455,7 @@ New Java rules:
 	Import ruleset: UnnecessaryFullyQualifiedName
 
 New ECMAScript rules:
-	Basic ruleset: InnaccurateNumericLiteral,UnreachableCode
+	Basic ruleset: AssignmentInOperand,InnaccurateNumericLiteral,UnreachableCode
 	Braces ruleset: ForLoopsMustUseBraces,IfStmtsMustUseBraces,IfElseStmtsMustUseBraces,WhileLoopsMustUseBraces
 	Unnecessary ruleset: UnnecessaryParentheses,UnnecessaryBlock
 
