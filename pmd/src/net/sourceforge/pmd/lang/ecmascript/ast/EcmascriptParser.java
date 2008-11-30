@@ -24,6 +24,7 @@ public class EcmascriptParser {
     protected AstRoot parseEcmascript(final Reader reader) throws ParseException {
 	// TODO Fix hardcode
 	final CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+	compilerEnvirons.setRecordingComments(true);
 	//compilerEnvirons.setLanguageVersion(Context.VERSION_1_0);
 	// TODO Fix hardcode
 	final ErrorReporter errorReporter = new ErrorCollector();

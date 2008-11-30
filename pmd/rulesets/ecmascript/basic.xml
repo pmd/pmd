@@ -132,4 +132,36 @@ var z = 1.12345678901234567; // Not good
       </example>
     </rule>
 
+    <rule name="ConsistentReturn"
+    		  since="5.0"
+       message="A function should not mix 'return' statements with and without a result."
+          class="net.sourceforge.pmd.lang.ecmascript.rule.basic.ConsistentReturnRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/basic.html#ConsistentReturn">
+      <description>
+ECMAScript does provide for return types on functions, and therefore there is no solid rule as to their usage.
+However, when a function does use returns they should all have a value, or all with no value.  Mixed return
+usage is likely a bug, or at best poor style.
+      </description>
+      <priority>2</priority>
+      <example>
+  <![CDATA[
+// Ok
+function foo() {
+   if (condition1) {
+      return true;
+   }
+   return false;
+}
+
+// Bad
+function bar() {
+   if (condition1) {
+      return;
+   }
+   return false;
+}
+]]>
+      </example>
+    </rule>
+
 </ruleset>
