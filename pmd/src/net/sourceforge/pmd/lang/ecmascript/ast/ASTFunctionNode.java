@@ -22,6 +22,13 @@ public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
 	return node.getParams().size();
     }
 
+    public ASTName getFunctionName() {
+	if (node.getFunctionName() != null) {
+	    return (ASTName) jjtGetChild(0);
+	}
+	return null;
+    }
+
     public EcmascriptNode getParam(int index) {
 	if (node.getFunctionName() != null) {
 	    index++;
