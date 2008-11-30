@@ -10,6 +10,13 @@ public class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
 	super(switchCase);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public boolean isDefault() {
 	return node.isDefault();
     }

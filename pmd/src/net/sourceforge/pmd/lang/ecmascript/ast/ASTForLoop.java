@@ -10,6 +10,13 @@ public class ASTForLoop extends AbstractEcmascriptNode<ForLoop> {
 	super(forLoop);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public EcmascriptNode getInitializer() {
 	return (EcmascriptNode) jjtGetChild(0);
     }

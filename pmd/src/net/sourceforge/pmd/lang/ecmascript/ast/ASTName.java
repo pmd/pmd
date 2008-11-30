@@ -11,6 +11,13 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
 	super.setImage(name.getIdentifier());
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public boolean isLocalName() {
 	return node.isLocalName();
     }

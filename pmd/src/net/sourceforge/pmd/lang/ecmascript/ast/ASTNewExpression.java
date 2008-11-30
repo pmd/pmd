@@ -10,6 +10,13 @@ public class ASTNewExpression extends AbstractEcmascriptNode<NewExpression> {
 	super(newExpression);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public EcmascriptNode getTarget() {
 	return (EcmascriptNode) jjtGetChild(0);
     }

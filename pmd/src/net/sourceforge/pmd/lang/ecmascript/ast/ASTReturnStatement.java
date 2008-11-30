@@ -10,6 +10,13 @@ public class ASTReturnStatement extends AbstractEcmascriptNode<ReturnStatement> 
 	super(returnStatement);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public boolean hasResult() {
 	return node.getReturnValue() != null;
     }

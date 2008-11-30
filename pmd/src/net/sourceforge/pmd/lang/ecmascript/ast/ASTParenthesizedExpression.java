@@ -9,4 +9,11 @@ public class ASTParenthesizedExpression extends AbstractEcmascriptNode<Parenthes
     public ASTParenthesizedExpression(ParenthesizedExpression parenthesizedExpression) {
 	super(parenthesizedExpression);
     }
+
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
 }

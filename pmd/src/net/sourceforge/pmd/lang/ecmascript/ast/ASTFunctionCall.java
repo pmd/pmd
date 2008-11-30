@@ -10,6 +10,13 @@ public class ASTFunctionCall extends AbstractEcmascriptNode<FunctionCall> {
 	super(functionCall);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public EcmascriptNode getTarget() {
 	return (EcmascriptNode) jjtGetChild(0);
     }

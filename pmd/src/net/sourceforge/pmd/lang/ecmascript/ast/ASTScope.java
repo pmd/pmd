@@ -10,6 +10,13 @@ public class ASTScope extends AbstractEcmascriptNode<Scope> {
 	super(scope);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     @Override
     public String toString() {
 	// Note: Rather see these as 'Block' elements in XPath

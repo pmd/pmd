@@ -10,6 +10,13 @@ public class ASTSwitchStatement extends AbstractEcmascriptNode<SwitchStatement> 
 	super(switchStatement);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public EcmascriptNode getExpression() {
 	return (EcmascriptNode) jjtGetChild(0);
     }

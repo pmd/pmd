@@ -10,4 +10,11 @@ public class ASTPropertyGet extends AbstractInfixEcmascriptNode<PropertyGet> {
 	super(propertyGet, false);
 	super.setImage(".");
     }
+
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
 }

@@ -12,6 +12,13 @@ public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> 
 	super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public boolean isPrefix() {
 	return node.isPrefix();
     }

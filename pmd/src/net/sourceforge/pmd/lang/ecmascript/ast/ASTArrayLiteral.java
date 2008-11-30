@@ -10,6 +10,13 @@ public class ASTArrayLiteral extends AbstractEcmascriptNode<ArrayLiteral> implem
 	super(arrayLiteral);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public boolean isDestructuring() {
 	return node.isDestructuring();
     }

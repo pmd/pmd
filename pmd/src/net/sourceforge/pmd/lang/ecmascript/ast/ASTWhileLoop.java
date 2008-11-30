@@ -10,6 +10,13 @@ public class ASTWhileLoop extends AbstractEcmascriptNode<WhileLoop> {
 	super(whileLoop);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public EcmascriptNode getCondition() {
 	return (EcmascriptNode) jjtGetChild(0);
     }

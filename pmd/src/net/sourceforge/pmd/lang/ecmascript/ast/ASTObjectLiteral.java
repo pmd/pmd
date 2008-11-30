@@ -10,6 +10,13 @@ public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral> impl
 	super(objectLiteral);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public ASTObjectProperty getObjectProperty(int index) {
 	return (ASTObjectProperty) jjtGetChild(index);
     }

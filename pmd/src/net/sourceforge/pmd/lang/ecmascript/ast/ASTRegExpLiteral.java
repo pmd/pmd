@@ -11,6 +11,13 @@ public class ASTRegExpLiteral extends AbstractEcmascriptNode<RegExpLiteral> {
 	super.setImage(regExpLiteral.getValue());
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public String getFlags() {
 	return node.getFlags();
     }

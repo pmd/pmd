@@ -11,6 +11,13 @@ public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
 	super.setImage(functionNode.getName());
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public int getNumParams() {
 	return node.getParams().size();
     }

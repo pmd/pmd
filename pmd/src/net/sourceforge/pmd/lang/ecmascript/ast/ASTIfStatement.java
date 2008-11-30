@@ -10,6 +10,13 @@ public class ASTIfStatement extends AbstractEcmascriptNode<IfStatement> {
 	super(ifStatement);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public boolean hasElse() {
 	return node.getElsePart() != null;
     }

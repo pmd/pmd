@@ -3,11 +3,19 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import org.mozilla.javascript.ast.ArrayLiteral;
 import org.mozilla.javascript.ast.CatchClause;
 
 public class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
     public ASTCatchClause(CatchClause catchClause) {
 	super(catchClause);
+    }
+
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
     }
 
     public ASTName getVariableName() {

@@ -3,11 +3,19 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import org.mozilla.javascript.ast.ArrayLiteral;
 import org.mozilla.javascript.ast.DoLoop;
 
 public class ASTDoLoop extends AbstractEcmascriptNode<DoLoop> {
     public ASTDoLoop(DoLoop doLoop) {
 	super(doLoop);
+    }
+
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
     }
 
     public EcmascriptNode getBody() {

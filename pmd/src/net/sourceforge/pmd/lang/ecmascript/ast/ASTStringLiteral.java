@@ -11,6 +11,13 @@ public class ASTStringLiteral extends AbstractEcmascriptNode<StringLiteral> {
 	super.setImage(stringLiteral.getValue());
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public char getQuoteCharacter() {
 	return node.getQuoteCharacter();
     }

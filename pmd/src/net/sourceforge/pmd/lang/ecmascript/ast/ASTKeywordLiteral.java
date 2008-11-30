@@ -12,6 +12,13 @@ public class ASTKeywordLiteral extends AbstractEcmascriptNode<KeywordLiteral> {
 	super.setImage(Token.typeToName(keywordLiteral.getType()).toLowerCase());
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public boolean isBoolean() {
 	return node.isBooleanLiteral();
     }

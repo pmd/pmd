@@ -12,6 +12,13 @@ public class ASTVariableDeclaration extends AbstractEcmascriptNode<VariableDecla
 	super.setImage(Token.typeToName(variableDeclaration.getType()).toLowerCase());
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public ASTVariableInitializer getVariableInitializer(int index) {
 	return (ASTVariableInitializer) jjtGetChild(index);
     }

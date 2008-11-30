@@ -10,6 +10,13 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
 	super(tryStatement);
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public EcmascriptNode getTryBlock() {
 	return (EcmascriptNode) jjtGetChild(0);
     }

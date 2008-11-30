@@ -3,11 +3,19 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import org.mozilla.javascript.ast.ArrayLiteral;
 import org.mozilla.javascript.ast.ConditionalExpression;
 
 public class ASTConditionalExpression extends AbstractEcmascriptNode<ConditionalExpression> {
     public ASTConditionalExpression(ConditionalExpression conditionalExpression) {
 	super(conditionalExpression);
+    }
+
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
     }
 
     public EcmascriptNode getTestExpression() {

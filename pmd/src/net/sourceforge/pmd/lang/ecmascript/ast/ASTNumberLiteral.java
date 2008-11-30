@@ -12,6 +12,13 @@ public class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral> {
 	super.setImage(numberLiteral.getValue());
     }
 
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
     public String getNormalizedImage() {
 	// TODO Implement
 	return super.getImage();

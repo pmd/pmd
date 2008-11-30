@@ -3,10 +3,18 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import org.mozilla.javascript.ast.ArrayLiteral;
 import org.mozilla.javascript.ast.EmptyExpression;
 
 public class ASTEmptyExpression extends AbstractEcmascriptNode<EmptyExpression> {
     public ASTEmptyExpression(EmptyExpression emptyExpression) {
 	super(emptyExpression);
+    }
+
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
     }
 }

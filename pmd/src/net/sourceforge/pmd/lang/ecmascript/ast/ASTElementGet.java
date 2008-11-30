@@ -3,11 +3,19 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import org.mozilla.javascript.ast.ArrayLiteral;
 import org.mozilla.javascript.ast.ElementGet;
 
 public class ASTElementGet extends AbstractEcmascriptNode<ElementGet> {
     public ASTElementGet(ElementGet elementGet) {
 	super(elementGet);
+    }
+
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
     }
 
     public EcmascriptNode getTarget() {
