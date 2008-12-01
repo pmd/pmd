@@ -11,5 +11,5 @@ public interface JspNode extends Node {
     /**
      * Accept the visitor. *
      */
-    public Object childrenAccept(JspParserVisitor visitor, Object data);
+    Object childrenAccept(JspParserVisitor visitor, Object data);
 }

@@ -8,12 +8,12 @@ public interface JavaNode extends Node {
     /**
      * Accept the visitor. *
      */
-    public Object jjtAccept(JavaParserVisitor visitor, Object data);
+    Object jjtAccept(JavaParserVisitor visitor, Object data);
 
     /**
      * Accept the visitor. *
      */
-    public Object childrenAccept(JavaParserVisitor visitor, Object data);
+    Object childrenAccept(JavaParserVisitor visitor, Object data);
 
     Scope getScope();
 

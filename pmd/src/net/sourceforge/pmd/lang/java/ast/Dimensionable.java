@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public interface Dimensionable {
-    public boolean isArray();
+    boolean isArray();
 
-    public int getArrayDepth();
+    int getArrayDepth();
 }
