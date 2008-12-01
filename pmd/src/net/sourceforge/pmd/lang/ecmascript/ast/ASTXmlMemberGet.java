@@ -13,5 +13,4 @@ public class ASTXmlMemberGet extends AbstractInfixEcmascriptNode<XmlMemberGet> {
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
 	return visitor.visit(this, data);
     }
-
 }

@@ -14,5 +14,4 @@ public class ASTXmlString extends AbstractEcmascriptNode<XmlString> {
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
 	return visitor.visit(this, data);
     }
-
 }

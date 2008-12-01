@@ -72,7 +72,11 @@ public class DumpFacade {
 	}
 
 	// Other extras
-	if (node instanceof ASTBreakStatement) {
+	if (node instanceof ASTArrayComprehension) {
+	    if (((ASTArrayComprehension) node).hasFilter()) {
+		extras.add("has filter");
+	    }
+	} else if (node instanceof ASTBreakStatement) {
 	    if (((ASTBreakStatement) node).hasLabel()) {
 		extras.add("has label");
 	    }
@@ -113,6 +117,10 @@ public class DumpFacade {
 	} else if (node instanceof ASTKeywordLiteral) {
 	    if (((ASTKeywordLiteral) node).isBoolean()) {
 		extras.add("boolean");
+	    }
+	} else if (node instanceof ASTLetNode) {
+	    if (((ASTLetNode) node).hasBody()) {
+		extras.add("has body");
 	    }
 	} else if (node instanceof ASTName) {
 	    if (((ASTName) node).isLocalName()) {
