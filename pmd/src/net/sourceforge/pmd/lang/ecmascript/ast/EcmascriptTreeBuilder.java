@@ -56,7 +56,7 @@ import org.mozilla.javascript.ast.WhileLoop;
 
 public class EcmascriptTreeBuilder implements NodeVisitor {
 
-    protected static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode>> nodeTypeToNodeAdapterType = new HashMap<Class<? extends AstNode>, Constructor<? extends EcmascriptNode>>();
+    protected static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<Class<? extends AstNode>, Constructor<? extends EcmascriptNode>>();
     static {
 	register(ArrayLiteral.class, ASTArrayLiteral.class);
 	register(Assignment.class, ASTAssignment.class);
@@ -102,7 +102,7 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 
     protected static void register(Class<? extends AstNode> nodeType, Class<? extends EcmascriptNode> nodeAdapterType) {
 	try {
-	    nodeTypeToNodeAdapterType.put(nodeType, nodeAdapterType.getConstructor(nodeType));
+	    NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
 	} catch (SecurityException e) {
 	    throw new RuntimeException(e);
 	} catch (NoSuchMethodException e) {
@@ -118,7 +118,7 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 
     protected EcmascriptNode createNodeAdapter(AstNode node) {
 	try {
-	    Constructor<? extends EcmascriptNode> constructor = nodeTypeToNodeAdapterType.get(node.getClass());
+	    Constructor<? extends EcmascriptNode> constructor = NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(node.getClass());
 	    if (constructor == null) {
 		throw new IllegalArgumentException("There is no Node adapter class registered for the Node class: "
 			+ node.getClass());
