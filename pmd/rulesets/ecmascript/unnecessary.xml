@@ -49,18 +49,11 @@ var z = ((1 + 1)); // Bad
        <property name="xpath">
           <value>
           <![CDATA[
-descendant-or-self::node()
-	[self::Block or self::Scope]
-	[not(
-		parent::FunctionNode
-		or parent::IfStatement
-		or parent::ForLoop
-		or parent::ForInLoop
-		or parent::WhileLoop
-		or parent::DoLoop
-		or parent::TryStatement
-		or parent::CatchClause
-	)]
+	//Block[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
+			or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+|
+	//Scope[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
+			or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
           ]]>
           </value>
        </property>
