@@ -20,23 +20,23 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
     public EcmascriptNode getTryBlock() {
 	return (EcmascriptNode) jjtGetChild(0);
     }
-    
+
     public boolean isCatch() {
 	return getNumCatchClause() != 0;
     }
-    
+
     public int getNumCatchClause() {
 	return node.getCatchClauses().size();
     }
-    
+
     public ASTCatchClause getCatchClause(int index) {
-	return (ASTCatchClause)jjtGetChild(index-1);
+	return (ASTCatchClause) jjtGetChild(index - 1);
     }
-   
+
     public boolean isFinally() {
 	return node.getFinallyBlock() != null;
     }
-    
+
     public EcmascriptNode getFinallyBlock() {
 	return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
     }

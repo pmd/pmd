@@ -17,4 +17,12 @@ public class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> {
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
 	return visitor.visit(this, data);
     }
+
+    public int getNumComments() {
+	return node.getComments() != null ? node.getComments().size() : 0;
+    }
+
+    public ASTComment getComment(int index) {
+	return (ASTComment) jjtGetChild(jjtGetNumChildren() - 1 - getNumComments() + index);
+    }
 }
