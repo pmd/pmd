@@ -11,6 +11,8 @@ import java.util.Stack;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
+import org.mozilla.javascript.ast.ArrayComprehension;
+import org.mozilla.javascript.ast.ArrayComprehensionLoop;
 import org.mozilla.javascript.ast.ArrayLiteral;
 import org.mozilla.javascript.ast.Assignment;
 import org.mozilla.javascript.ast.AstNode;
@@ -18,6 +20,7 @@ import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.Block;
 import org.mozilla.javascript.ast.BreakStatement;
 import org.mozilla.javascript.ast.CatchClause;
+import org.mozilla.javascript.ast.Comment;
 import org.mozilla.javascript.ast.ConditionalExpression;
 import org.mozilla.javascript.ast.ContinueStatement;
 import org.mozilla.javascript.ast.DoLoop;
@@ -33,6 +36,7 @@ import org.mozilla.javascript.ast.InfixExpression;
 import org.mozilla.javascript.ast.KeywordLiteral;
 import org.mozilla.javascript.ast.Label;
 import org.mozilla.javascript.ast.LabeledStatement;
+import org.mozilla.javascript.ast.LetNode;
 import org.mozilla.javascript.ast.Name;
 import org.mozilla.javascript.ast.NewExpression;
 import org.mozilla.javascript.ast.NodeVisitor;
@@ -53,17 +57,25 @@ import org.mozilla.javascript.ast.UnaryExpression;
 import org.mozilla.javascript.ast.VariableDeclaration;
 import org.mozilla.javascript.ast.VariableInitializer;
 import org.mozilla.javascript.ast.WhileLoop;
+import org.mozilla.javascript.ast.WithStatement;
+import org.mozilla.javascript.ast.XmlDotQuery;
+import org.mozilla.javascript.ast.XmlExpression;
+import org.mozilla.javascript.ast.XmlMemberGet;
+import org.mozilla.javascript.ast.XmlString;
 
 public class EcmascriptTreeBuilder implements NodeVisitor {
 
     protected static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<Class<? extends AstNode>, Constructor<? extends EcmascriptNode>>();
     static {
+	register(ArrayComprehension.class, ASTArrayComprehension.class);
+	register(ArrayComprehensionLoop.class, ASTArrayComprehensionLoop.class);
 	register(ArrayLiteral.class, ASTArrayLiteral.class);
 	register(Assignment.class, ASTAssignment.class);
 	register(AstRoot.class, ASTAstRoot.class);
 	register(Block.class, ASTBlock.class);
 	register(BreakStatement.class, ASTBreakStatement.class);
 	register(CatchClause.class, ASTCatchClause.class);
+	register(Comment.class, ASTComment.class);
 	register(ConditionalExpression.class, ASTConditionalExpression.class);
 	register(ContinueStatement.class, ASTContinueStatement.class);
 	register(DoLoop.class, ASTDoLoop.class);
@@ -79,6 +91,7 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	register(KeywordLiteral.class, ASTKeywordLiteral.class);
 	register(Label.class, ASTLabel.class);
 	register(LabeledStatement.class, ASTLabeledStatement.class);
+	register(LetNode.class, ASTLetNode.class);
 	register(Name.class, ASTName.class);
 	register(NewExpression.class, ASTNewExpression.class);
 	register(NumberLiteral.class, ASTNumberLiteral.class);
@@ -98,6 +111,11 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	register(VariableDeclaration.class, ASTVariableDeclaration.class);
 	register(VariableInitializer.class, ASTVariableInitializer.class);
 	register(WhileLoop.class, ASTWhileLoop.class);
+	register(WithStatement.class, ASTWithStatement.class);
+	register(XmlDotQuery.class, ASTXmlDotQuery.class);
+	register(XmlExpression.class, ASTXmlExpression.class);
+	register(XmlMemberGet.class, ASTXmlMemberGet.class);
+	register(XmlString.class, ASTXmlString.class);
     }
 
     protected static void register(Class<? extends AstNode> nodeType, Class<? extends EcmascriptNode> nodeAdapterType) {

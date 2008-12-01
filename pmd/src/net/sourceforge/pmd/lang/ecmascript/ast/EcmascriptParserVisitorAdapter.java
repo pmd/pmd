@@ -7,6 +7,14 @@ public class EcmascriptParserVisitorAdapter implements EcmascriptParserVisitor {
 	return null;
     }
 
+    public Object visit(ASTArrayComprehension node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTArrayComprehensionLoop node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
     public Object visit(ASTArrayLiteral node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }
@@ -28,6 +36,10 @@ public class EcmascriptParserVisitorAdapter implements EcmascriptParserVisitor {
     }
 
     public Object visit(ASTCatchClause node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTComment node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }
 
@@ -88,6 +100,10 @@ public class EcmascriptParserVisitorAdapter implements EcmascriptParserVisitor {
     }
 
     public Object visit(ASTLabeledStatement node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTLetNode node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }
 
@@ -164,6 +180,26 @@ public class EcmascriptParserVisitorAdapter implements EcmascriptParserVisitor {
     }
 
     public Object visit(ASTWhileLoop node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTWithStatement node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTXmlDotQuery node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTXmlExpression node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTXmlMemberGet node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTXmlString node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }
 }

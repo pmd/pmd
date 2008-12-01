@@ -3,6 +3,10 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 public interface EcmascriptParserVisitor {
     Object visit(EcmascriptNode node, Object data);
 
+    Object visit(ASTArrayComprehension node, Object data);
+
+    Object visit(ASTArrayComprehensionLoop node, Object data);
+
     Object visit(ASTArrayLiteral node, Object data);
 
     Object visit(ASTAssignment node, Object data);
@@ -14,6 +18,8 @@ public interface EcmascriptParserVisitor {
     Object visit(ASTBreakStatement node, Object data);
 
     Object visit(ASTCatchClause node, Object data);
+
+    Object visit(ASTComment node, Object data);
 
     Object visit(ASTConditionalExpression node, Object data);
 
@@ -44,6 +50,8 @@ public interface EcmascriptParserVisitor {
     Object visit(ASTLabel node, Object data);
 
     Object visit(ASTLabeledStatement node, Object data);
+
+    Object visit(ASTLetNode node, Object data);
 
     Object visit(ASTName node, Object data);
 
@@ -82,4 +90,14 @@ public interface EcmascriptParserVisitor {
     Object visit(ASTVariableInitializer node, Object data);
 
     Object visit(ASTWhileLoop node, Object data);
+
+    Object visit(ASTWithStatement node, Object data);
+
+    Object visit(ASTXmlDotQuery node, Object data);
+
+    Object visit(ASTXmlExpression node, Object data);
+
+    Object visit(ASTXmlMemberGet node, Object data);
+
+    Object visit(ASTXmlString node, Object data);
 }

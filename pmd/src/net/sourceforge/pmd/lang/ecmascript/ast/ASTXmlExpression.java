@@ -1,0 +1,24 @@
+package net.sourceforge.pmd.lang.ecmascript.ast;
+
+import org.mozilla.javascript.ast.XmlExpression;
+
+public class ASTXmlExpression extends AbstractEcmascriptNode<XmlExpression> {
+    public ASTXmlExpression(XmlExpression xmlExpression) {
+	super(xmlExpression);
+    }
+
+    /**
+     * Accept the visitor.
+     */
+    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+	return visitor.visit(this, data);
+    }
+
+    public EcmascriptNode getExpression() {
+	return (EcmascriptNode) jjtGetChild(0);
+    }
+
+    public boolean isXmlAttribute() {
+	return node.isXmlAttribute();
+    }
+}

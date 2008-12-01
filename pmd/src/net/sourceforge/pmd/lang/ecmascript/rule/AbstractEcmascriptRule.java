@@ -8,12 +8,15 @@ import java.util.List;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayComprehension;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayComprehensionLoop;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayLiteral;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTAssignment;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTAstRoot;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTBlock;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTComment;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTDoLoop;
@@ -29,6 +32,7 @@ import net.sourceforge.pmd.lang.ecmascript.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTKeywordLiteral;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTLabel;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTLetNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTName;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTNewExpression;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTNumberLiteral;
@@ -48,6 +52,11 @@ import net.sourceforge.pmd.lang.ecmascript.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTWhileLoop;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTWithStatement;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTXmlDotQuery;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTXmlExpression;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTXmlMemberGet;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTXmlString;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -81,6 +90,14 @@ public abstract class AbstractEcmascriptRule extends AbstractRule implements Ecm
 	return null;
     }
 
+    public Object visit(ASTArrayComprehension node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTArrayComprehensionLoop node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
     public Object visit(ASTArrayLiteral node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }
@@ -102,6 +119,10 @@ public abstract class AbstractEcmascriptRule extends AbstractRule implements Ecm
     }
 
     public Object visit(ASTCatchClause node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTComment node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }
 
@@ -162,6 +183,10 @@ public abstract class AbstractEcmascriptRule extends AbstractRule implements Ecm
     }
 
     public Object visit(ASTLabeledStatement node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTLetNode node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }
 
@@ -238,6 +263,26 @@ public abstract class AbstractEcmascriptRule extends AbstractRule implements Ecm
     }
 
     public Object visit(ASTWhileLoop node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTWithStatement node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTXmlDotQuery node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTXmlExpression node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTXmlMemberGet node, Object data) {
+	return visit((EcmascriptNode) node, data);
+    }
+
+    public Object visit(ASTXmlString node, Object data) {
 	return visit((EcmascriptNode) node, data);
     }
 }
