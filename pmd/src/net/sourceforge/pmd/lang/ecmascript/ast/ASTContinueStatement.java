@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import org.mozilla.javascript.ast.ArrayLiteral;
 import org.mozilla.javascript.ast.ContinueStatement;
 
 public class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStatement> {
@@ -15,6 +14,7 @@ public class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStateme
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
 	return visitor.visit(this, data);
     }

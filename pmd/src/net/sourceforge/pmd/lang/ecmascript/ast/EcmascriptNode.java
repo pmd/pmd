@@ -10,12 +10,12 @@ public interface EcmascriptNode extends Node {
     /**
      * Accept the visitor. *
      */
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data);
+    Object jjtAccept(EcmascriptParserVisitor visitor, Object data);
 
     /**
      * Accept the visitor. *
      */
-    public Object childrenAccept(EcmascriptParserVisitor visitor, Object data);
+    Object childrenAccept(EcmascriptParserVisitor visitor, Object data);
 
     boolean hasSideEffects();
 }

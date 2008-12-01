@@ -14,6 +14,7 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
 	return visitor.visit(this, data);
     }
@@ -32,8 +33,8 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
      * <code>false</code> otherwise.
      */
     public boolean isFunctionNodeName() {
-	return (jjtGetParent() instanceof ASTFunctionNode)
-		&& (((ASTFunctionNode) jjtGetParent()).getFunctionName() == this);
+	return jjtGetParent() instanceof ASTFunctionNode
+		&& ((ASTFunctionNode) jjtGetParent()).getFunctionName() == this;
     }
 
     /**
@@ -42,7 +43,7 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
      * <code>false</code> otherwise.
      */
     public boolean isFunctionNodeParameter() {
-	if ((jjtGetParent() instanceof ASTFunctionNode)) {
+	if (jjtGetParent() instanceof ASTFunctionNode) {
 	    ASTFunctionNode functionNode = (ASTFunctionNode) jjtGetParent();
 	    for (int i = 0; i < functionNode.getNumParams(); i++) {
 		if (functionNode.getParam(i) == this) {
@@ -59,7 +60,7 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
      * <code>false</code> otherwise.
      */
     public boolean isFunctionCallName() {
-	return (jjtGetParent() instanceof ASTFunctionCall) && (((ASTFunctionCall) jjtGetParent()).getTarget() == this);
+	return jjtGetParent() instanceof ASTFunctionCall && ((ASTFunctionCall) jjtGetParent()).getTarget() == this;
     }
 
     /**
@@ -68,7 +69,7 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
      * <code>false</code> otherwise.
      */
     public boolean isVariableDeclaration() {
-	return (jjtGetParent() instanceof ASTVariableInitializer)
-		&& (((ASTVariableInitializer) jjtGetParent()).getTarget() == this);
+	return jjtGetParent() instanceof ASTVariableInitializer
+		&& ((ASTVariableInitializer) jjtGetParent()).getTarget() == this;
     }
 }

@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import org.mozilla.javascript.ast.ArrayLiteral;
 import org.mozilla.javascript.ast.AstRoot;
 
 public class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> {
@@ -14,6 +13,7 @@ public class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> {
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
 	return visitor.visit(this, data);
     }
