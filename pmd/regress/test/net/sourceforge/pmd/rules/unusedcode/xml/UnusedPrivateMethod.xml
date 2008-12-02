@@ -341,7 +341,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code>
+    <test-code regressionTest="false">
 	    <description><![CDATA[
 Reproducing bug [ 1955852 ] false positives for UnusedPrivateMethod & UnusedLocalField. The following valid Java code is reported with false positives for UnusedPrivateMethod and UnusedLocalVariable. It looks like the rule does not recognise explicit type arguments to generic methods.]]></description>
 	    <expected-problems>0</expected-problems>
