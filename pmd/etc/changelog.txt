@@ -5,6 +5,7 @@ Fixed bug 2338341 - ArrayIndexOutOfBoundsException in cpd on rails project
 Fixed bug 2315623 - @SuppressWarnings("PMD.UseSingleton") has no effect
 Fixed bug 2230809 - False +: ClassWithOnlyPrivateConstructorsShouldBeFinal  
 Fixed bug 2338341 - ArrayIndexOutOfBoundsException in CPD (on Ruby)
+Fixed bug 2315599 - False +: UseSingleton with class containing constructor
 
 October 12, 2008 - 4.2.4:
 

@@ -50,9 +50,12 @@ public class UseSingleton extends AbstractRule {
     }
 
     public Object visit(ASTMethodDeclaration decl, Object data) {
-        methodCount++;
+        // Private method does no count
+	if ( ! decl.isPrivate() ) {
+		methodCount++;
+	}
 
-        if (!isOK && !decl.isStatic()) {
+        if (!isOK && !decl.isStatic()  ) {
             isOK = true;
         }
 
