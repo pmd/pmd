@@ -63,7 +63,7 @@
             <li>Caroline Rioux - Reported bug in ImmutableField</li>
             <li>Miroslav Å ulc - Reported bug in CloneMethodMustImplementCloneable</li>
             <li>Thomas Steininger - Noticed redundant rule</li>
-            <li>Thomas Leplus - Rewrote UselessStringValueOf, nice patch for ClassCastExceptionWithToArray</li>
+            <li>Thomas Leplus - Contributed new rules LogicInversion,ExtendsObject,UselessParentheses,EmptyInitializer,EmptyStatementBlock,CheckSkipResult.Rewrote UselessStringValueOf, nice patch for ClassCastExceptionWithToArray</li>
             <li>Paul Sundling - A nice documentation patch for ruleset links</li>
             <li>Matt Koch - Added more detail to PMD XML report</li>
             <li>Richard Hands - Fixed CPD symlink confusion</li>
