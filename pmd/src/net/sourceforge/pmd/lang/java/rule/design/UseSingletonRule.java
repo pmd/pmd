@@ -55,8 +55,9 @@ public class UseSingletonRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration decl, Object data) {
-        methodCount++;
-
+        if ( !  decl.isPrivate()) {
+		methodCount++;
+	}
         if (!isOK && !decl.isStatic()) {
             isOK = true;
         }

@@ -116,4 +116,24 @@ public class FooTest {
 }
      ]]></code>
     </test-code>
+    
+    <test-code>
+	    <description><![CDATA[
+Reproducing bug [ 2315599 ] False +: UseSingleton with class containing constructor: Although there is a static method, the class also has a non-private constructor. This is a common design for custom exceptions which contain a private static method to format error message strings.
+]]></description>
+	    <expected-problems>0</expected-problems>
+	    <code><![CDATA[
+public class UseSingleton extends Exception {
+	UseSingleton(final String string) {
+		super(foo(string));
+	}
+	
+	private static String foo(final String string) {
+		return string;
+	}
+}
+			   ]]></code>
+    </test-code>    
+    
+    
 </test-data>
