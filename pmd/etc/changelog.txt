@@ -412,6 +412,8 @@ Fixed patch 2075906 - Add toString() to the rule UnnecessaryWrapperObjectCreatio
 Fixed bug 2338341 - ArrayIndexOutOfBoundsException in cpd on rails project
 Fixed bug 2315623 - @SuppressWarnings("PMD.UseSingleton") has no effect
 Fixed bug 2230809 - False +: ClassWithOnlyPrivateConstructorsShouldBeFinal
+Fixed bug 2338341 - ArrayIndexOutOfBoundsException in CPD (on Ruby)
+
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 bin and java14/bin scripts:
 	retroweaver version was not correct in java14/bin scripts
