@@ -36,6 +36,7 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -123,36 +124,38 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         final IFile file = (IFile) resource.getAdapter(IFile.class);
         beginTask("PMD Checking for specific rule...", 1);
 
-        if (file != null && "java".equals(file.getFileExtension())) {
+        if (file != null) {
             final RuleSet ruleSet = new RuleSet();
             ruleSet.addRule(rule);
             final PMDEngine pmdEngine = getPmdEngineForProject(project);
-
-            try {
-                this.context = new RuleContext();
-                this.context.setSourceCodeFile(file.getFullPath().toFile());
-                this.context.setSourceCodeFilename(file.getName());
-                this.context.setReport(new Report());
-
-                final Reader input = new InputStreamReader(file.getContents(), file.getCharset());
-                pmdEngine.processFile(input, ruleSet, this.context);
-                input.close();
-            } catch (CoreException e) {
-                throw new CommandException(e);
-            } catch (PMDException e) {
-                throw new CommandException(e);
-            } catch (IOException e) {
-                throw new CommandException(e);
-            }
-
-            // trigger event propertyChanged for all listeners
-            Display.getDefault().asyncExec(new Runnable() {
-                public void run() {
-                    for (IPropertyListener listener: listenerList) {
-                        listener.propertyChanged(context.getReport().iterator(), PMDRuntimeConstants.PROPERTY_REVIEW);
-                    }
+            final File sourceCodeFile = file.getFullPath().toFile();
+            if (pmdEngine.applies(sourceCodeFile, ruleSet)) {
+                try {
+                    this.context = new RuleContext();
+                    this.context.setSourceCodeFile(sourceCodeFile);
+                    this.context.setSourceCodeFilename(file.getName());
+                    this.context.setReport(new Report());
+    
+                    final Reader input = new InputStreamReader(file.getContents(), file.getCharset());
+                    pmdEngine.processFile(input, ruleSet, this.context);
+                    input.close();
+                } catch (CoreException e) {
+                    throw new CommandException(e);
+                } catch (PMDException e) {
+                    throw new CommandException(e);
+                } catch (IOException e) {
+                    throw new CommandException(e);
                 }
-            });
+    
+                // trigger event propertyChanged for all listeners
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() {
+                        for (IPropertyListener listener: listenerList) {
+                            listener.propertyChanged(context.getReport().iterator(), PMDRuntimeConstants.PROPERTY_REVIEW);
+                        }
+                    }
+                });
+            }
         }
     }
 }

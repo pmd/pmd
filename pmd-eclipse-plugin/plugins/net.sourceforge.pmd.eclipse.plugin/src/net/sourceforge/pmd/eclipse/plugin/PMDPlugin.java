@@ -1,12 +1,12 @@
 package net.sourceforge.pmd.eclipse.plugin;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
-import net.sourceforge.pmd.eclipse.core.PluginConstants;
 import net.sourceforge.pmd.eclipse.core.ext.RuleSetsExtensionProcessor;
 import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
@@ -335,14 +335,15 @@ public class PMDPlugin extends AbstractUIPlugin {
      */
     private void registerStandardRuleSets() {
         final RuleSetFactory factory = new RuleSetFactory();
-        for (int i = 0; i < PluginConstants.PMD_JAVA_RULESETS.length; i++) {
-            try {
-                final RuleSet ruleSet = factory.createRuleSets(PluginConstants.PMD_JAVA_RULESETS[i]).getAllRuleSets()[0];
+        try {
+            Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
+            while (iterator.hasNext()) {
+        	final RuleSet ruleSet = iterator.next();
                 getRuleSetManager().registerRuleSet(ruleSet);
                 getRuleSetManager().registerDefaultRuleSet(ruleSet);
-            } catch (RuleSetNotFoundException e) {
-                this.log(IStatus.WARNING, "The RuleSet \"" + PluginConstants.PMD_JAVA_RULESETS[i] + "\" cannot be found", e);
             }
+        } catch (RuleSetNotFoundException e) {
+            this.log(IStatus.WARNING, "Problem getting all registered PMD RuleSets", e);
         }
     }
 

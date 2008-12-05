@@ -151,11 +151,12 @@ public class PackageRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord addResource(IResource resource) {
-        final ICompilationUnit unit = this.packageFragment.getCompilationUnit(resource.getName());
+        //final ICompilationUnit unit = this.packageFragment.getCompilationUnit(resource.getName());
         FileRecord file = null;
 
+        // TODO This should be more question of whether PMD is interested in the File!
         // we want the File to be a java-File
-        if (unit != null) {
+//        if (unit != null) {
             // we create a new FileRecord and add it to the List
             file = new FileRecord(resource, this);
             final List<AbstractPMDRecord> files = getChildrenAsList();
@@ -163,7 +164,7 @@ public class PackageRecord extends AbstractPMDRecord {
 
             this.children = new AbstractPMDRecord[files.size()];
             files.toArray(this.children);
-        }
+//        }
 
         return file;
     }

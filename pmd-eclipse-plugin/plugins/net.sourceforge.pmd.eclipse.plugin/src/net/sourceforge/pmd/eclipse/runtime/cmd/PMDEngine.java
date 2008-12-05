@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
+import java.io.File;
 import java.io.Reader;
 
 import net.sourceforge.pmd.Configuration;
@@ -31,6 +32,10 @@ public class PMDEngine {
 
     public ClassLoader getClassLoader() {
         return configuration.getClassLoader();
+    }
+
+    public boolean applies(File file, RuleSet ruleSet) {
+	return ruleSet.applies(file);
     }
 
     public void processFile(Reader input, RuleSet ruleSet, RuleContext context) throws PMDException {

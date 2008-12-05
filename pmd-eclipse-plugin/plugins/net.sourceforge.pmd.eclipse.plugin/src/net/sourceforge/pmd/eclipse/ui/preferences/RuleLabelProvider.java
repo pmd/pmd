@@ -22,6 +22,8 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
         if (element instanceof Rule) {
             Rule rule = (Rule) element;
             if (columnIndex == 0) {
+                result = rule.getLanguage().getShortName();
+            } else if (columnIndex == 1) {
                 result = rule.getRuleSetName();
                 /*
                 if (rule instanceof RuleReference) {
@@ -32,18 +34,18 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
                 	}
                 }
                 */
-            } else if (columnIndex == 1) {
-                result = rule.getName();
             } else if (columnIndex == 2) {
+                result = rule.getName();
+            } else if (columnIndex == 3) {
                 result = rule.getSince();
                 result = (result == null) ? "n/a" : result;
-            } else if (columnIndex == 3) {
+            } else if (columnIndex == 4) {
                 if ((rule.getPriority().getPriority() <= PRIORITY_LABEL.length) && (rule.getPriority().getPriority() > 0)) {
                     result = PRIORITY_LABEL[rule.getPriority().getPriority() - 1];
                 } else {
                     result = PRIORITY_ILLEGAL;
                 }
-            } else if (columnIndex == 4) {
+            } else if (columnIndex == 5) {
                 result = rule.getDescription();
                 result = (result == null) ? "" : result.trim();
             }

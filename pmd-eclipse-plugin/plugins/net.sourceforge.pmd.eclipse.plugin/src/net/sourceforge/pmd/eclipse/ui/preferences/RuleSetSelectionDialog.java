@@ -69,6 +69,9 @@ public class RuleSetSelectionDialog extends Dialog {
         while (i.hasNext()) {
             ruleSets[index] = i.next();
             ruleSetNames[index] = ruleSets[index].getName();
+            if (!ruleSets[index].getRules().isEmpty()) {
+                ruleSetNames[index] = ruleSets[index].getRules().iterator().next().getLanguage().getShortName() + " - " + ruleSetNames[index];
+            }
             index++;
         }
     }

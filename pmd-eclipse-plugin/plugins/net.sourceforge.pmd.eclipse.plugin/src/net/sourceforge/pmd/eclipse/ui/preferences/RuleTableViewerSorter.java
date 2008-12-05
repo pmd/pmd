@@ -64,7 +64,16 @@ public class RuleTableViewerSorter extends ViewerSorter {
     };
 
     /**
-     * Rule Name comparator for tabular display of Rules.
+     * Rule Language comparator for tabular display of Rules.
+     */
+    public static final Comparator<Rule> RULE_LANGUAGE_COMPARATOR = new Comparator<Rule>() {
+        public int compare(Rule r1, Rule r2) {
+        	return r1.getLanguage().compareTo(r2.getLanguage());
+        }
+    };
+
+    /**
+     * RuleSet Name comparator for tabular display of Rules.
      */
     public static final Comparator<Rule> RULE_RULESET_NAME_COMPARATOR = new Comparator<Rule>() {
         public int compare(Rule r1, Rule r2) {

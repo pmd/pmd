@@ -296,9 +296,10 @@ public class PMDPropertyPage extends PropertyPage {
 
         final Table ruleTable = availableRulesTableViewer.getTable();
 
+        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE), 70 + 20, RuleTableViewerSorter.RULE_LANGUAGE_COMPARATOR);
         addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME), 110, RuleTableViewerSorter.RULE_RULESET_NAME_COMPARATOR);
         addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_NAME), 170, RuleTableViewerSorter.RULE_NAME_COMPARATOR);
-		addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_SINCE), 40, RuleTableViewerSorter.RULE_SINCE_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_SINCE), 40, RuleTableViewerSorter.RULE_SINCE_COMPARATOR);
         addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY), 80, RuleTableViewerSorter.RULE_PRIORITY_COMPARATOR);
         addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION), 300, RuleTableViewerSorter.RULE_DESCRIPTION_COMPARATOR);
 
@@ -310,6 +311,7 @@ public class PMDPropertyPage extends PropertyPage {
         this.availableRulesTableViewer.setSorter(this.availableRuleTableViewerSorter);
         this.availableRulesTableViewer.setColumnProperties(
             new String[] {
+                PMDPreferencePage.PROPERTY_LANGUAGE,
                 PMDPreferencePage.PROPERTY_RULESET_NAME,
                 PMDPreferencePage.PROPERTY_RULE_NAME,
                 PMDPreferencePage.PROPERTY_SINCE,

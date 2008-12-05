@@ -60,6 +60,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 
 public class PMDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+	public static final String PROPERTY_LANGUAGE = "language";
 	public static final String PROPERTY_RULESET_NAME = "ruleSetname";
 	public static final String PROPERTY_RULE_NAME = "ruleName";
 	public static final String PROPERTY_SINCE = "since";
@@ -332,6 +333,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		ruleTableViewer = new TableViewer(parent, tableStyle);
 
 		Table ruleTable = ruleTableViewer.getTable();
+		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE), 70,
+				RuleTableViewerSorter.RULE_LANGUAGE_COMPARATOR);
 		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME), 110,
 				RuleTableViewerSorter.RULE_RULESET_NAME_COMPARATOR);
 		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_NAME), 170,
@@ -363,10 +366,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			}
 		});
 
-		ruleTableViewer.setColumnProperties(new String[] { PROPERTY_RULESET_NAME, PROPERTY_RULE_NAME, PROPERTY_SINCE,
+		ruleTableViewer.setColumnProperties(new String[] { PROPERTY_LANGUAGE, PROPERTY_RULESET_NAME, PROPERTY_RULE_NAME, PROPERTY_SINCE,
 				PROPERTY_PRIORITY, PROPERTY_DESCRIPTION });
 		ruleTableViewer.setCellModifier(new RuleCellModifier(ruleTableViewer));
-		ruleTableViewer.setCellEditors(new CellEditor[] { null, null, null,
+		ruleTableViewer.setCellEditors(new CellEditor[] { null, null, null, null,
 				new ComboBoxCellEditor(ruleTable, PMDPlugin.getDefault().getPriorityLabels()),
 				new TextCellEditor(ruleTable) });
 

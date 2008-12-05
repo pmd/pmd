@@ -82,6 +82,7 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESET_LABEL_RULEPROPSTABLE = "preference.ruleset.label.rulepropstable";
     public static final String MSGKEY_PREF_RULESET_LABEL_EXCLUDE_PATTERNS_TABLE = "preference.ruleset.label.exclude_patterns_table";
     public static final String MSGKEY_PREF_RULESET_LABEL_INCLUDE_PATTERNS_TABLE = "preference.ruleset.label.include_patterns_table";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_LANGUAGE = "preference.ruleset.column.language";
     public static final String MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME = "preference.ruleset.column.ruleset_name";
     public static final String MSGKEY_PREF_RULESET_COLUMN_RULE_NAME = "preference.ruleset.column.rule_name";
     public static final String MSGKEY_PREF_RULESET_COLUMN_SINCE = "preference.ruleset.column.since";

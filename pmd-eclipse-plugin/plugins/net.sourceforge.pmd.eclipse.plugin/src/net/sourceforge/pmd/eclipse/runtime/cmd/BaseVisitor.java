@@ -23,6 +23,7 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -230,7 +231,7 @@ public class BaseVisitor {
      */
     protected final void reviewResource(final IResource resource) {
         final IFile file = (IFile) resource.getAdapter(IFile.class);
-        if (file != null && file.getFileExtension() != null && file.getFileExtension().equals("java")) {
+        if (file != null && file.getFileExtension() != null) {
 
             try {
                 boolean included = this.projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived();
@@ -238,13 +239,14 @@ public class BaseVisitor {
                 log.debug("file " + file.getName() + " is derived: " + file.isDerived());
                 log.debug("file checked: " + included);
 
-                if (isFileInWorkingSet(file) && (this.projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived())) {
+                final File sourceCodeFile = file.getRawLocation().toFile();
+                if (getPmdEngine().applies(sourceCodeFile, getRuleSet()) && isFileInWorkingSet(file) && (this.projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived())) {
                     subTask("PMD Checking file " + file.getName());
 
                     Timer timer = new Timer();
 
                     final RuleContext context = new RuleContext();
-                    context.setSourceCodeFile(file.getRawLocation().toFile());
+                    context.setSourceCodeFile(sourceCodeFile);
                     context.setSourceCodeFilename(file.getName());
                     context.setReport(new Report());
 
@@ -339,7 +341,10 @@ public class BaseVisitor {
                     violationsCounter.put(violation.getRule(), counter);
                 }
 
-                int maxViolations = violation.getRule().getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR);
+                int maxViolations = PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
+                if (violation.getRule().hasDescriptor(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR)) {
+                    maxViolations = violation.getRule().getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR);
+                }
 
                 if (counter.intValue() < maxViolations) {
                 	// Ryan Gustafson 02/16/2008 - Always use PMD_MARKER, as people get confused as to why PMD problems don't always show up on Problems view like they do when you do build.

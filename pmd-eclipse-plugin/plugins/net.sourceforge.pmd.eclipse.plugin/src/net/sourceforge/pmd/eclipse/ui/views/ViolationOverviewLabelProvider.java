@@ -216,7 +216,11 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
         int maxViolations = PMDPlugin.getDefault().loadPreferences().getMaxViolationsPerFilePerRule();
         final Rule rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
         if (rule != null) {
+            if (rule.hasDescriptor(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR)) {
         	return rule.getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR);
+            } else {
+        	return PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
+            }
         }
 
         return maxViolations;

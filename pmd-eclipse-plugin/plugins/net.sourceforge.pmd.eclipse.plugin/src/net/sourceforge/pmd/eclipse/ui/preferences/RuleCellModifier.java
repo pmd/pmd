@@ -41,7 +41,9 @@ public class RuleCellModifier implements ICellModifier {
 
         if (element instanceof Rule) {
             Rule rule = (Rule) element;
-            if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_RULESET_NAME)) {
+            if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_LANGUAGE)) {
+                result = rule.getLanguage().getShortName();
+            } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_RULESET_NAME)) {
                 result = rule.getRuleSetName();
             } else if (property.equalsIgnoreCase(PMDPreferencePage.PROPERTY_RULE_NAME)) {
                 result = rule.getName();

@@ -226,7 +226,7 @@
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
             adaptable="true"
-            nameFilter="*.java"
+            nameFilter="*"
             id="net.sourceforge.pmd.eclipse.ui.pmdFileContribution">
          <menu
                label="%menu.pmd"
