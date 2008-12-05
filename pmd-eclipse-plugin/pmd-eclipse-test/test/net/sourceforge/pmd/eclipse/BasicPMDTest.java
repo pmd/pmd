@@ -47,7 +47,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.eclipse.core.PluginConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.PMDEngine;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -181,15 +180,15 @@ public class BasicPMDTest extends TestCase {
      *
      */
     public void testDefaulltRuleSets() {
-        RuleSetFactory factory = new RuleSetFactory();
-        String allRuleSets[] = PluginConstants.PMD_JAVA_RULESETS;
-        for (String allRuleSet : allRuleSets) {
-            try {
-                RuleSet ruleSet = factory.createRuleSet(allRuleSet);
-            } catch (RuleSetNotFoundException e) {
-                e.printStackTrace();
-                fail("unable to load ruleset " + allRuleSet);
+        try {
+            RuleSetFactory factory = new RuleSetFactory();
+            Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
+            while (iterator.hasNext()) {
+                iterator.next();
             }
+        } catch (RuleSetNotFoundException e) {
+            e.printStackTrace();
+            fail("unable to load registered rulesets ");
         }
     }
 }
