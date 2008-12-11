@@ -342,7 +342,7 @@ public class Foo {
      ]]></code>
     </test-code>
     
-        <test-code regressionTest="false">
+        <test-code>
         <description><![CDATA[
 Reproducing bug #1955852: false positives for UnusedPrivateMethod & UnusedLocalField
      ]]></description>

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
@@ -44,12 +45,16 @@ public class NameFinder {
                 add(new NameOccurrence(grandchild, st.nextToken()));
             }
         }
-        if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
-            NameOccurrence occurrence = names.get(names.size() - 1);
-            occurrence.setIsMethodOrConstructorInvocation();
-            ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
-            occurrence.setArgumentCount(args.getArgumentCount());
-
+        if (node instanceof ASTPrimarySuffix) {
+            ASTPrimarySuffix suffix = (ASTPrimarySuffix) node;
+            if (suffix.isArguments()) {
+                NameOccurrence occurrence = names.get(names.size() - 1);
+                occurrence.setIsMethodOrConstructorInvocation();
+                ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
+                occurrence.setArgumentCount(args.getArgumentCount());
+            } else if (suffix.jjtGetNumChildren() == 1 && suffix.jjtGetChild(0) instanceof ASTMemberSelector) {
+                add(new NameOccurrence((JavaNode)suffix.jjtGetChild(0), suffix.jjtGetChild(0).getImage()));
+            }
         }
     }
 
@@ -62,6 +67,7 @@ public class NameFinder {
     }
 
 
+    @Override
     public String toString() {
         StringBuffer result = new StringBuffer();
         for (NameOccurrence occ: names) {
