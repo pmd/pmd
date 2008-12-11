@@ -414,6 +414,7 @@ Fixed bug 2230809 - False +: ClassWithOnlyPrivateConstructorsShouldBeFinal
 Fixed bug 2338341 - ArrayIndexOutOfBoundsException in CPD (on Ruby)
 Fixed bug 2315599 - False +: UseSingleton with class containing constructor
 Fixed bug 1955852 - false positives for UnusedPrivateMethod & UnusedLocalVariable
+Fixed bug 2404700 - UseSingleton should not act on enums
 
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 bin and java14/bin scripts:

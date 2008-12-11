@@ -3,9 +3,10 @@
  */
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -14,64 +15,55 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class UseSingletonRule extends AbstractJavaRule {
 
-    private boolean isOK;
-    private int methodCount;
-
     @Override
-    public Object visit(ASTCompilationUnit cu, Object data) {
-        methodCount = 0;
-        isOK = false;
-        Object result = cu.childrenAccept(this, data);
-        if (!isOK && methodCount > 0) {
-            addViolation(data, cu);
-        }
+    public Object visit(ASTClassOrInterfaceBody decl, Object data) {
+        if (decl.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) decl.jjtGetParent();
+            if (parent.isAbstract() || parent.isInterface()) {
+                return super.visit(decl, data);
+            }
+            int i = decl.jjtGetNumChildren();
+            int methodCount = 0;
+            boolean isOK = false;
+            while (i > 0) {
+                Node n = decl.jjtGetChild(--i).jjtGetChild(0);
+                if (n instanceof ASTFieldDeclaration) {
+                    if (!((ASTFieldDeclaration) n).isStatic()) {
+                        isOK = true;
+                        break;
+                    }
+                } else if (n instanceof ASTConstructorDeclaration) {
+                    if (((ASTConstructorDeclaration) n).isPrivate()) {
+                        isOK = true;
+                        break;
+                    }
+                } else if (n instanceof ASTMethodDeclaration) {
+                    ASTMethodDeclaration m = (ASTMethodDeclaration) n;
+                    if (!m.isPrivate()) {
+                        methodCount++;
+                    }
+                    if (!m.isStatic()) {
+                        isOK = true;
+                        break;
+                    }
 
-        return result;
-    }
+                    // TODO use symbol table
+                    if (m.getMethodName().equals("suite")) {
+                        ASTResultType res = m.getResultType();
+                        ASTClassOrInterfaceType c = res.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+                        if (c != null && c.hasImageEqualTo("Test")) {
+                            isOK = true;
+                            break;
+                        }
+                    }
 
-    @Override
-    public Object visit(ASTFieldDeclaration decl, Object data) {
-        if (!decl.isStatic()) {
-            isOK = true;
-        }
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTConstructorDeclaration decl, Object data) {
-        if (decl.isPrivate()) {
-            isOK = true;
-        }
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration decl, Object data) {
-        if (decl.isAbstract()) {
-            isOK = true;
-        }
-        return super.visit(decl, data);
-    }
-
-    @Override
-    public Object visit(ASTMethodDeclaration decl, Object data) {
-        if ( !  decl.isPrivate()) {
-		methodCount++;
-	}
-        if (!isOK && !decl.isStatic()) {
-            isOK = true;
-        }
-
-        // TODO use symbol table
-        if (decl.getMethodName().equals("suite")) {
-            ASTResultType res = decl.getResultType();
-            ASTClassOrInterfaceType c = res.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-            if (c != null && c.hasImageEqualTo("Test")) {
-                isOK = true;
+                }
+            }
+            if (!isOK && methodCount > 0) {
+                addViolation(data, decl);
             }
         }
-
-        return data;
+        return super.visit(decl, data);
     }
 
 }
