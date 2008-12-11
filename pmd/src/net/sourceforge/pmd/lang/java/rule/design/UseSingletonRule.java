@@ -28,7 +28,7 @@ public class UseSingletonRule extends AbstractJavaRule {
             while (i > 0) {
                 Node n = decl.jjtGetChild(--i);
                 if (n.jjtGetNumChildren() != 1) {
-                    break;
+                    continue;
                 }
                 n = n.jjtGetChild(0);
                 if (n instanceof ASTFieldDeclaration) {
