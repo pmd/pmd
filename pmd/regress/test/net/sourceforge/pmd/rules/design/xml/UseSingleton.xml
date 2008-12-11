@@ -134,6 +134,36 @@ public class UseSingleton extends Exception {
 }
 			   ]]></code>
     </test-code>    
-    
-    
+    <test-code>
+        <description><![CDATA[
+inner should be singleton since all static, public constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static class Bar {
+   public Bar() { }
+   public static void doSomething() {}
+ }
+ public void doSomething() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+[ 2404700 ] UseSingleton should not act on enums
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum EnumTest {
+	A, B;
+
+	EnumTest() { }
+
+	public static void main(String[] args) {
+		System.out.println(EnumTest.A);
+	}
+}
+     ]]></code>
+    </test-code>
 </test-data>
