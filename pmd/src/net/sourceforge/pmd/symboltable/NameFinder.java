@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.ASTArguments;
+import net.sourceforge.pmd.ast.ASTMemberSelector;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
@@ -44,12 +45,16 @@ public class NameFinder {
                 add(new NameOccurrence(grandchild, st.nextToken()));
             }
         }
-        if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
-            NameOccurrence occurrence = names.getLast();
-            occurrence.setIsMethodOrConstructorInvocation();
-            ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
-            occurrence.setArgumentCount(args.getArgumentCount());
-
+        if (node instanceof ASTPrimarySuffix) {
+            ASTPrimarySuffix suffix = (ASTPrimarySuffix) node;                                
+            if (suffix.isArguments()) {                              
+                NameOccurrence occurrence = names.getLast();
+                occurrence.setIsMethodOrConstructorInvocation();
+                ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
+                occurrence.setArgumentCount(args.getArgumentCount());
+            } else if (suffix.jjtGetNumChildren() == 1 && suffix.jjtGetChild(0) instanceof ASTMemberSelector) {
+                add(new NameOccurrence((SimpleNode)suffix.jjtGetChild(0), ((SimpleNode)suffix.jjtGetChild(0)).getImage()));    
+            }
         }
     }
 
