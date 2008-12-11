@@ -26,7 +26,11 @@ public class UseSingletonRule extends AbstractJavaRule {
             int methodCount = 0;
             boolean isOK = false;
             while (i > 0) {
-                Node n = decl.jjtGetChild(--i).jjtGetChild(0);
+                Node n = decl.jjtGetChild(--i);
+                if (n.jjtGetNumChildren() != 1) {
+                    break;
+                }
+                n = n.jjtGetChild(0);
                 if (n instanceof ASTFieldDeclaration) {
                     if (!((ASTFieldDeclaration) n).isStatic()) {
                         isOK = true;
