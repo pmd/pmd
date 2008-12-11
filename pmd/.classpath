@@ -3,10 +3,10 @@
 	<classpathentry kind="src" path="regress"/>
 	<classpathentry kind="src" path="rulesets"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="var" path="JRE_LIB"/>
 	<classpathentry kind="var" path="ANT_HOME/ant.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
 	<classpathentry kind="lib" path="lib/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/asm-3.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
