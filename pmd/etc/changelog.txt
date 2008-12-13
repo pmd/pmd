@@ -7,6 +7,7 @@ Fixed bug 2338341 - ArrayIndexOutOfBoundsException in CPD (on Ruby)
 Fixed bug 2315599 - False +: UseSingleton with class containing constructor
 Fixed bug 1955852 - false positives for UnusedPrivateMethod & UnusedLocalVariable
 Fixed bug 2404700 - UseSingleton should not act on enums
+Fixed bug - JUnitTestsShouldIncludeAssert now detects Junit 4 Assert.assert...  constructs
 
 October 12, 2008 - 4.2.4:
 

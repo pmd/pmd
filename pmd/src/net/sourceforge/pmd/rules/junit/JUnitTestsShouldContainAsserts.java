@@ -59,8 +59,8 @@ public class JUnitTestsShouldContainAsserts extends AbstractJUnitRule {
             if (pe.jjtGetNumChildren()> 0 && pe.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
                 ASTPrimaryPrefix pp = (ASTPrimaryPrefix) pe.jjtGetChild(0);
                 if (pp.jjtGetNumChildren()>0 && pp.jjtGetChild(0) instanceof ASTName) {
-                    ASTName n = (ASTName) pp.jjtGetChild(0);
-                    if (n.getImage()!=null && (n.getImage().startsWith("assert") || n.getImage().startsWith("fail") )) {
+                    String img = ((ASTName) pp.jjtGetChild(0)).getImage();                                              
+                    if (img != null && (img.startsWith("assert") || img.startsWith("fail") || img.startsWith("Assert.assert") || img.startsWith("Assert.fail") )) {                  
                         return true;
                     }
                 }
