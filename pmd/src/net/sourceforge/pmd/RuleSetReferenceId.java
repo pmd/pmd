@@ -34,14 +34,39 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * <i>ruleName</i> should exist in the current RuleSet.
  * 
  * <table>
+ *    <caption>Examples</caption>
  *    <thead>
  *       <tr>
- *    	    <th>Full</th>
+ *    	    <th>String</th>
+ *    	    <th>RuleSet file name</th>
+ *    	    <th>Rule</th>
  *       </tr>
  *    </thead>
  *    <tbody>
  *       <tr>
- *    	    <th></th>
+ *    	    <td>rulesets/java/basic.xml</td>
+ *    	    <td>rulesets/java/basic.xml</td>
+ *    	    <td>all</td>
+ *       </tr>
+ *       <tr>
+ *    	    <td>java-basic</td>
+ *    	    <td>rulesets/java/basic.xml</td>
+ *    	    <td>all</td>
+ *       </tr>
+ *       <tr>
+ *    	    <td>50</td>
+ *    	    <td>rulesets/releases/50.xml</td>
+ *    	    <td>all</td>
+ *       </tr>
+ *       <tr>
+ *    	    <td>rulesets/java/basic.xml/EmptyCatchBlock</td>
+ *    	    <td>rulesets/java/basic.xml</td>
+ *    	    <td>EmptyCatchBlock</td>
+ *       </tr>
+ *       <tr>
+ *    	    <td>EmptyCatchBlock</td>
+ *    	    <td>null</td>
+ *    	    <td>EmptyCatchBlock</td>
  *       </tr>
  *    </tbody>
  * </table>
