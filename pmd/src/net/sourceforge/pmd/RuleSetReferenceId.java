@@ -1,0 +1,214 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+package net.sourceforge.pmd;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sourceforge.pmd.util.ResourceLoader;
+
+/**
+ * This class is used to parse a RuleSet reference value.  Most commonly used for specifying a
+ * RuleSet to process, or in a Rule 'ref' attribute value in the RuleSet XML.  The RuleSet reference
+ * can refer to either an external RuleSet or the current RuleSet when used as a Rule 'ref'
+ * attribute value.  An individual Rule in the RuleSet can be indicated.
+ * 
+ * For an external RuleSet, referring to the entire RuleSet, the format is <i>ruleSetName</i>,
+ * where the RuleSet name is either a resource file path to a RuleSet that ends with
+ * <code>'.xml'</code>.</li>, or a simple RuleSet name.
+ * 
+ * A simple RuleSet name, is one which contains no path separators, and either contains a '-' or is
+ * entirely numeric release number.  A simple name of the form <code>[language]-[name]</code> is
+ * short for the full RuleSet name <code>rulesets/[language]/[name].xml</code>.  A numeric release
+ * simple name of the form <code>[release]</code> is short for the full PMD Release RuleSet name
+ * <code>rulesets/releases/[release].xml</code>.
+ * 
+ * For an external RuleSet, referring to a single Rule, the format is <i>ruleSetName/ruleName</i>,
+ * where the RuleSet name is as described above.  A Rule with the <i>ruleName</i> should exist
+ * in this external RuleSet.
+ * 
+ * For the current RuleSet, the format is <i>ruleName</i>, where the Rule name is not RuleSet name
+ * (i.e. contains no path separators, '-' or '.xml' in it, and is not all numeric).  A Rule with the
+ * <i>ruleName</i> should exist in the current RuleSet.
+ * 
+ * <table>
+ *    <thead>
+ *       <tr>
+ *    	    <th>Full</th>
+ *       </tr>
+ *    </thead>
+ *    <tbody>
+ *       <tr>
+ *    	    <th></th>
+ *       </tr>
+ *    </tbody>
+ * </table>
+ */
+public class RuleSetReferenceId {
+    private final boolean external;
+    private final String ruleSetFileName;
+    private final boolean allRules;
+    private final String ruleName;
+
+    public RuleSetReferenceId(String id) {
+	// TODO Damn this parsing sucks, but my brain is just not working to let me write a simpler scheme.
+	if (isFullRuleSetName(id)) {
+	    // A full RuleSet name
+	    external = true;
+	    ruleSetFileName = id;
+	    allRules = true;
+	    ruleName = null;
+	} else {
+	    // Find last path separator if it exists...
+	    final int separatorIndex = Math.max(id.lastIndexOf('/'), id.lastIndexOf('\\'));
+	    if (separatorIndex >= 0 && separatorIndex != id.length() - 1) {
+		final String name = id.substring(0, separatorIndex);
+		external = true;
+		if (isFullRuleSetName(name)) {
+		    // A full RuleSet name
+		    ruleSetFileName = name;
+		} else {
+		    // Likely a simple RuleSet name
+		    int index = name.indexOf('-');
+		    if (index >= 0) {
+			// Standard short name
+			ruleSetFileName = "rulesets/" + name.substring(0, index) + "/" + name.substring(index + 1)
+				+ ".xml";
+		    } else {
+			// A release RuleSet?
+			if (name.matches("[0-9]+.*")) {
+			    ruleSetFileName = "rulesets/releases/" + name + ".xml";
+			} else {
+			    // Appears to be a non-standard RuleSet name
+			    ruleSetFileName = name;
+			}
+		    }
+		}
+
+		// Everything left should be a Rule name
+		allRules = false;
+		ruleName = id.substring(separatorIndex + 1);
+	    } else {
+		// Likely a simple RuleSet name
+		int index = id.indexOf('-');
+		if (index >= 0) {
+		    // Standard short name
+		    external = true;
+		    ruleSetFileName = "rulesets/" + id.substring(0, index) + "/" + id.substring(index + 1) + ".xml";
+		    allRules = true;
+		    ruleName = null;
+		} else {
+		    // A release RuleSet?
+		    if (id.matches("[0-9]+.*")) {
+			external = true;
+			ruleSetFileName = "rulesets/releases/" + id + ".xml";
+			allRules = true;
+			ruleName = null;
+		    } else {
+			// Must be a Rule name
+			external = false;
+			ruleSetFileName = null;
+			allRules = false;
+			ruleName = id;
+		    }
+		}
+	    }
+	}
+    }
+
+    private static boolean isFullRuleSetName(String name) {
+	return name.endsWith(".xml");
+    }
+
+    /**
+     * Parse a String comma separated list of RuleSet reference IDs into a List of
+     * RuleReferenceId instances.
+     * @param ruleString A comma separated list of RuleSet reference IDs.
+     * @return The corresponding List of RuleSetReferenceId instances.
+     */
+    public static List<RuleSetReferenceId> parse(String ruleString) {
+	List<RuleSetReferenceId> references = new ArrayList<RuleSetReferenceId>();
+	if (ruleString.indexOf(',') == -1) {
+	    references.add(new RuleSetReferenceId(ruleString));
+	} else {
+	    for (String name : ruleString.split(",")) {
+		references.add(new RuleSetReferenceId(name));
+	    }
+	}
+	return references;
+    }
+
+    /**
+     * Is this an external RuleSet reference?
+     * @return <code>true</code> if this is an external reference, <code>false</code> otherwise.
+     */
+    public boolean isExternal() {
+	return external;
+    }
+
+    /**
+     * Is this a reference to all Rules in a RuleSet, or a single Rule? 
+     * @return <code>true</code> if this is a reference to all Rules, <code>false</code> otherwise.
+     */
+    public boolean isAllRules() {
+	return allRules;
+    }
+
+    /**
+     * Get the RuleSet file name.
+     * @return The RuleSet file name if this is an external reference, <code>null</code> otherwise.
+     */
+    public String getRuleSetFileName() {
+	return ruleSetFileName;
+    }
+
+    /**
+     * Get the Rule name.
+     * @return The Rule name.
+     * The Rule name.
+     */
+    public String getRuleName() {
+	return ruleName;
+    }
+
+    /**
+     * Try to load the RuleSet resource with the specified ClassLoader.  Multiple attempts to get
+     * independent InputStream instances may be made, so subclasses must ensure they support this
+     * behavior.
+     *
+     * @param name A resource name (e.g. a RuleSet description).
+     * @return An InputStream to that resource.
+     * @throws RuleSetNotFoundException if unable to find a resource.
+     */
+    public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+	InputStream in = ResourceLoader.loadResourceAsStream(ruleSetFileName, classLoader);
+	if (in == null) {
+	    throw new RuleSetNotFoundException(
+		    "Can't find resource "
+			    + ruleSetFileName
+			    + ".  Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: "
+			    + System.getProperty("java.class.path"));
+	}
+	return in;
+    }
+
+    /**
+     * Return the String form of this Rule reference.
+     * @return Return the String form of this Rule reference, which is <i>ruleSetFileName</i> for
+     * all Rule external references, <i>ruleSetFileName/ruleName</i>, for a single Rule
+     * external references, or <i>ruleName</i> otherwise.
+     */
+    public String toString() {
+	if (external) {
+	    if (allRules) {
+		return ruleSetFileName;
+	    } else {
+		return ruleSetFileName + "/" + ruleName;
+	    }
+	} else {
+	    return ruleName;
+	}
+    }
+}
