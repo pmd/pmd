@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This class is used to parse a RuleSet reference value.  Most commonly used for specifying a
@@ -76,10 +77,40 @@ public class RuleSetReferenceId {
     private final String ruleSetFileName;
     private final boolean allRules;
     private final String ruleName;
+    private final RuleSetReferenceId externalRuleSetReferenceId;
 
-    public RuleSetReferenceId(String id) {
-	// TODO Damn this parsing sucks, but my brain is just not working to let me write a simpler scheme.
-	if (isFullRuleSetName(id)) {
+    /**
+     * Construct a RuleSetReferenceId for the given single ID string.
+     * @param id The id string.
+     * @throws IllegalArgumentException If the ID contains a comma character.
+     */
+    public RuleSetReferenceId(final String id) {
+	this(id, null);
+    }
+
+    /**
+     * Construct a RuleSetReferenceId for the given single ID string.
+     * If an external RuleSetReferenceId is given, the ID must refer to a non-external Rule.  The
+     * external RuleSetReferenceId will be responsible for producing the InputStream containing
+     * the Rule.
+     * 
+     * @param id The id string.
+     * @param externalRuleSetReferenceId A RuleSetReferenceId to associate with this new instance.
+     * @throws IllegalArgumentException If the ID contains a comma character.
+     * @throws IllegalArgumentException If external RuleSetReferenceId is not external.
+     * @throws IllegalArgumentException If the ID is not Rule reference when there is an external RuleSetReferenceId.
+     */
+    public RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
+	if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
+	    throw new IllegalArgumentException("Cannot pair with non-external <" + externalRuleSetReferenceId + ">.");
+	}
+	if (id != null && id.indexOf(',') >= 0) {
+	    throw new IllegalArgumentException("A single RuleSetReferenceId cannot contain ',' (comma) characters: "
+		    + id);
+	}
+
+	// Damn this parsing sucks, but my brain is just not working to let me write a simpler scheme.
+	if (StringUtil.isEmpty(id) || isFullRuleSetName(id)) {
 	    // A full RuleSet name
 	    external = true;
 	    ruleSetFileName = id;
@@ -133,14 +164,21 @@ public class RuleSetReferenceId {
 			ruleName = null;
 		    } else {
 			// Must be a Rule name
-			external = false;
-			ruleSetFileName = null;
+			external = externalRuleSetReferenceId != null ? true : false;
+			ruleSetFileName = externalRuleSetReferenceId != null ? externalRuleSetReferenceId
+				.getRuleSetFileName() : null;
 			allRules = false;
 			ruleName = id;
 		    }
 		}
 	    }
 	}
+
+	if (this.external && this.ruleName != null && !this.ruleName.equals(id) && externalRuleSetReferenceId != null) {
+	    throw new IllegalArgumentException("Cannot pair external <" + this + "> with external <"
+		    + externalRuleSetReferenceId + ">.");
+	}
+	this.externalRuleSetReferenceId = externalRuleSetReferenceId;
     }
 
     private static boolean isFullRuleSetName(String name) {
@@ -201,22 +239,28 @@ public class RuleSetReferenceId {
     /**
      * Try to load the RuleSet resource with the specified ClassLoader.  Multiple attempts to get
      * independent InputStream instances may be made, so subclasses must ensure they support this
-     * behavior.
+     * behavior.  Delegates to an external RuleSetReferenceId if there is one associated with this
+     * instance.
      *
-     * @param name A resource name (e.g. a RuleSet description).
+     * @param classLoader The ClassLoader to use.
      * @return An InputStream to that resource.
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
     public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
-	InputStream in = ResourceLoader.loadResourceAsStream(ruleSetFileName, classLoader);
-	if (in == null) {
-	    throw new RuleSetNotFoundException(
-		    "Can't find resource "
-			    + ruleSetFileName
-			    + ".  Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: "
-			    + System.getProperty("java.class.path"));
+	if (externalRuleSetReferenceId == null) {
+	    InputStream in = StringUtil.isEmpty(ruleSetFileName) ? null : ResourceLoader.loadResourceAsStream(
+		    ruleSetFileName, classLoader);
+	    if (in == null) {
+		throw new RuleSetNotFoundException(
+			"Can't find resource "
+				+ ruleSetFileName
+				+ ".  Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: "
+				+ System.getProperty("java.class.path"));
+	    }
+	    return in;
+	} else {
+	    return externalRuleSetReferenceId.getInputStream(classLoader);
 	}
-	return in;
     }
 
     /**
@@ -226,14 +270,19 @@ public class RuleSetReferenceId {
      * external references, or <i>ruleName</i> otherwise.
      */
     public String toString() {
-	if (external) {
+	if (ruleSetFileName != null) {
 	    if (allRules) {
 		return ruleSetFileName;
 	    } else {
 		return ruleSetFileName + "/" + ruleName;
 	    }
+
 	} else {
-	    return ruleName;
+	    if (allRules) {
+		return "anonymous all Rule";
+	    } else {
+		return ruleName;
+	    }
 	}
     }
 }
