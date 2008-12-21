@@ -72,40 +72,51 @@ public class NameOccurrence {
         return node instanceof ASTExpression && node.jjtGetNumChildren() == 3;
     }
 
-
+    /**
+     * <p>A handy method to assert if the name is on the right hand side or the left hand side of
+     * an expression. One basic example:
+     *     <code>
+     *         obj.getMethod(); // Name "getMethod()" returns false, "obj" returns true
+     *     </code>
+     * </p> 
+     * @return
+     */
     public boolean isOnLeftHandSide() {
         // I detest this method with every atom of my being
-        SimpleNode primaryExpression;
+        // FIXME: I didn't wrote the previous comment, but based on it i added a FIXME !
+    	SimpleNode parentOfPrimaryExpression;
         if (location.jjtGetParent() instanceof ASTPrimaryExpression) {
-            primaryExpression = (SimpleNode) location.jjtGetParent().jjtGetParent();
+            parentOfPrimaryExpression = (SimpleNode) location.jjtGetParent().jjtGetParent();
         } else if (location.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
-            primaryExpression = (SimpleNode) location.jjtGetParent().jjtGetParent().jjtGetParent();
+            parentOfPrimaryExpression = (SimpleNode) location.jjtGetParent().jjtGetParent().jjtGetParent();
         } else {
             throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
 
-        if (isStandAlonePostfix(primaryExpression)) {
+        if (isStandAlonePostfix(parentOfPrimaryExpression)) {
             return true;
         }
-
-        if (primaryExpression.jjtGetNumChildren() <= 1) {
+        // 
+        if (parentOfPrimaryExpression.jjtGetNumChildren() <= 1) {
             return false;
         }
-
-        if (!(primaryExpression.jjtGetChild(1) instanceof ASTAssignmentOperator)) {
+        
+        if (!(parentOfPrimaryExpression.jjtGetChild(1) instanceof ASTAssignmentOperator)) {
             return false;
         }
+        
 
         if (isPartOfQualifiedName() /* or is an array type */) {
             return false;
         }
 
-        if (isCompoundAssignment(primaryExpression)) {
+        if (isCompoundAssignment(parentOfPrimaryExpression)) {
             return false;
         }
 
         return true;
     }
+    
 
     private boolean isCompoundAssignment(SimpleNode primaryExpression) {
         return ((ASTAssignmentOperator) (primaryExpression.jjtGetChild(1))).isCompound();

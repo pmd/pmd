@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.symboltable.NameFinder;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -43,6 +44,25 @@ public class NameOccurrencesTest extends STBBaseTst {
     }
 
     @Test
+    @Ignore("Not really sure about should be assert or not")
+    public void testIsOnLeftHandSide() {
+        parseCode(TEST7);
+        List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
+        NameFinder occs = new NameFinder((ASTPrimaryExpression) nodes.get(0));
+        assertEquals("t", occs.getNames().get(0).getImage());
+        assertEquals("x", occs.getNames().get(1).getImage());
+        assertEquals("t", occs.getNames().get(2).getImage());
+        //FIXME: Is this how Symbol table should behave ?
+        // Should it detect an other t occurences ?
+        assertEquals("t", occs.getNames().get(1).getImage());
+        NameOccurrence t =  occs.getNames().get(0);
+        NameOccurrence x = occs.getNames().get(1);
+        NameOccurrence otherTSymbol =  occs.getNames().get(2);
+        assertTrue(t.isOnLeftHandSide());
+        
+    }
+
+    @Test
     public void testSimpleVariableOccurrence() {
         parseCode(TEST3);
         List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
@@ -53,6 +73,8 @@ public class NameOccurrencesTest extends STBBaseTst {
         assertTrue(occs.getNames().get(0).isOnLeftHandSide());
     }
 
+    
+    
     @Test
     public void testQualifiedOccurrence() {
         parseCode(TEST4);
@@ -131,6 +153,16 @@ public class NameOccurrencesTest extends STBBaseTst {
         "    }" + PMD.EOL +
         "}";
 
+    public static final String TEST7 =
+        "public class Foo {" + PMD.EOL +
+        "    private Bar t;" + PMD.EOL +
+        "    void foo() {" + PMD.EOL +
+        "        t.x = 2;" + PMD.EOL +
+        "        t.t.x = 2;" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
+    
+    
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(NameOccurrencesTest.class);
     }
