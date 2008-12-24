@@ -70,7 +70,7 @@ public class RuleSetFactory {
 
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from the
-     * "rulesets.properties" resource for each Languages with Rule support.
+     * "rulesets.properties" resource for each Language with Rule support.
      *
      * @return An Iterator of RuleSet objects.
      */
@@ -81,17 +81,22 @@ public class RuleSetFactory {
 	    for (Language language : Language.findWithRuleSupport()) {
 		    Properties props = new Properties();
 		    rulesetsProperties = "rulesets/" + language.getTerseName() + "/rulesets.properties";
-		    props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
+		    try {
+		        props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
+		    } catch (RuleSetNotFoundException ex) {
+		        LOG.warning("Unable to load rules for: " + language.getTerseName());
+		        continue;
+		        }
 		    String rulesetFilenames = props.getProperty("rulesets.filenames");
 		    if (allRulesetFilenames.length() > 0) {
-			allRulesetFilenames.append(',');
+			   allRulesetFilenames.append(',');
 		    }
 		    allRulesetFilenames.append(rulesetFilenames);
 	    }
 	    return createRuleSets(allRulesetFilenames.toString()).getRuleSetsIterator();
 	} catch (IOException ioe) {
 	    throw new RuntimeException(
-		    "Couldn't find " + rulesetsProperties + "; please ensure that the rulesets directory is on the classpath.  Here's the current classpath: "
+		    "Couldn't find " + rulesetsProperties + "; please ensure that the rulesets directory is on the classpath. The current classpath is: "
 			    + System.getProperty("java.class.path"));
 	}
     }
@@ -192,27 +197,25 @@ public class RuleSetFactory {
 
 	    return ruleSet;
 	} catch (ClassNotFoundException cnfe) {
-	    cnfe.printStackTrace();
-	    throw new RuntimeException("Couldn't find that class " + cnfe.getMessage());
+	    return classNotFoundProblem(cnfe);
 	} catch (InstantiationException ie) {
-	    ie.printStackTrace();
-	    throw new RuntimeException("Couldn't find that class " + ie.getMessage());
+	    return classNotFoundProblem(ie);
 	} catch (IllegalAccessException iae) {
-	    iae.printStackTrace();
-	    throw new RuntimeException("Couldn't find that class " + iae.getMessage());
+	    return classNotFoundProblem(iae);
 	} catch (ParserConfigurationException pce) {
-	    pce.printStackTrace();
-	    throw new RuntimeException("Couldn't find that class " + pce.getMessage());
+	    return classNotFoundProblem(pce);
 	} catch (RuleSetNotFoundException rsnfe) {
-	    rsnfe.printStackTrace();
-	    throw new RuntimeException("Couldn't find that class " + rsnfe.getMessage());
+	    return classNotFoundProblem(rsnfe);
 	} catch (IOException ioe) {
-	    ioe.printStackTrace();
-	    throw new RuntimeException("Couldn't find that class " + ioe.getMessage());
+	    return classNotFoundProblem(ioe);
 	} catch (SAXException se) {
-	    se.printStackTrace();
-	    throw new RuntimeException("Couldn't find that class " + se.getMessage());
+	    return classNotFoundProblem(se);
 	}
+    }
+    
+    private static RuleSet classNotFoundProblem(Exception ex) throws RuntimeException {
+        ex.printStackTrace();
+        throw new RuntimeException("Couldn't find the class " + ex.getMessage());
     }
 
     /**

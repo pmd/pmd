@@ -228,6 +228,12 @@ public interface Rule {
      * @return boolean
      */
     boolean hasDescriptor(PropertyDescriptor<?> descriptor);
+    
+    /**
+     * Returns whether the rule uses the default operating parameters.
+     * @return boolean
+     */
+    boolean usesDefaultValues();
     /**
      * Sets whether this Rule uses Data Flow Analysis.
      */

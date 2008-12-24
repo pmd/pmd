@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule
@@ -336,6 +338,27 @@ public abstract class AbstractRule implements Rule {
 	return propertiesByPropertyDescriptor;
     }
 
+    /**
+     * @see Rule#usesDefaultValues()
+     */
+    public boolean usesDefaultValues() {
+        
+        Map<PropertyDescriptor<?>, Object> valuesByProperty = getPropertiesByPropertyDescriptor();
+        if (valuesByProperty.isEmpty()) {
+        	return true;
+        	}
+        
+        Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProperty.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
+            if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
+            	return false;
+           		}
+        }
+        
+        return true;
+    }
+    
     /**
      * @see Rule#setUsesDFA()
      */

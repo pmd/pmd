@@ -256,4 +256,24 @@ public class RuleReference extends AbstractDelegateRule {
 	public boolean hasOverriddenProperty(PropertyDescriptor<?> descriptor) {
 		return propertyValues != null && propertyValues.containsKey(descriptor);
 	}
+	
+	public boolean usesDefaultValues() {
+	    
+	    if (!getRule().usesDefaultValues()) {
+	        return false;
+	    }
+	    
+	    List<PropertyDescriptor<?>> descriptors = getOverriddenPropertyDescriptors();
+	    if (!descriptors.isEmpty()) {
+	        return false;
+	    }
+	    
+	    for (PropertyDescriptor<?> desc : descriptors) {
+	        if (!isSame(desc.defaultValue(), getProperty(desc))) {
+	            return false;
+	        }
+	    }
+	    
+	    return true;
+	}
 }
