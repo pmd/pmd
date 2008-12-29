@@ -46,7 +46,7 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
         if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
         
         currentRule.setProperty(property, cleanValue);
-        changeListener.changed(property, cleanValue);
+        changeListener.changed(currentRule, property, cleanValue);
     }
     
     protected void shutdown(Text control) {

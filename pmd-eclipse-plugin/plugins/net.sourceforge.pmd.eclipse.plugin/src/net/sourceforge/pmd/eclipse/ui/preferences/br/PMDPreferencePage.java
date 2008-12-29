@@ -8,11 +8,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
@@ -46,6 +48,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -57,6 +60,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Tree;
@@ -85,13 +90,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		RuleColumnDescriptor.ruleSetName,
 		RuleColumnDescriptor.ruleType,
 		RuleColumnDescriptor.minLangVers,
-		RuleColumnDescriptor.properties
+		RuleColumnDescriptor.properties,
+//		RuleColumnDescriptor.filterExpression    regex text -> compact color dots (for comparison), needs a bit more polish
 		};
 	private static final Set<RuleColumnDescriptor> availableColumnSet = CollectionUtil.asSet(availableColumns);
 
 	// last item in this list is the grouping used at startup
 	private static final Object[][] groupingChoices = new Object[][] {
-		{ RuleColumnDescriptor.ruleSetName,       "Rule set" },
+		{ RuleColumnDescriptor.ruleSetName,       "Rule set" },   // TODO internationalize
 		{ RuleColumnDescriptor.since,             "PMD version" },
 		{ RuleColumnDescriptor.priorityName,      "Priority" },
 		{ RuleColumnDescriptor.ruleType,          "Type" },
@@ -109,7 +115,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 	private static final Map<Class<?>, ValueFormatter> formattersByType = new HashMap<Class<?>, ValueFormatter>();
 
-	static {
+	static {   // used to render property values in short form in main table
 	    formattersByType.put(String.class,      ValueFormatter.StringFormatter);
         formattersByType.put(String[].class,    ValueFormatter.MultiStringFormatter);
         formattersByType.put(Boolean.class,     ValueFormatter.BooleanFormatter);
@@ -127,16 +133,27 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private RuleSet 			 ruleSet;       // TODO - what is this used for?  - br
 	private TabFolder 		     tabFolder;
 	private Set 				 checkedRules = new HashSet();
-
-	private RulePropertyManager[]   rulePropertyManagers;
+	private Menu                 ruleListMenu;
+	
+	private RulePropertyManager[]   rulePropertyManagers;  // TODO make multi-rule capable
 
 	private boolean					sortDescending;
 	private RuleFieldAccessor 		columnSorter = RuleFieldAccessor.name;	// initial sort
 	private RuleColumnDescriptor  	groupingColumn;
 
+    private Map<Integer, List<Listener>> paintListeners = new HashMap<Integer, List<Listener>>();
+	
+	private RuleSelection           ruleSelection; // may hold rules and/or group nodes
+	private Map<RulePriority, MenuItem> priorityMenusByPriority;
+	
 	private boolean 			modified = false;
 	private static PMDPlugin	plugin = PMDPlugin.getDefault();
-
+	
+    private static String stringFor(String key) {
+        return plugin.getStringTable().getString(key);
+    }
+    
+	
 	/**
 	 * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
@@ -270,7 +287,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		PropertyDescriptor<?> desc = iter.next();
 		sb.append(desc.name()).append(": ");
-		sb.append(rule.getProperty(desc));
+		formatValueOn(sb, rule.getProperty(desc), desc.type());
 
 		while (iter.hasNext()) {
 			desc = iter.next();
@@ -372,7 +389,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private RulePropertyManager buildDescriptionTab(TabFolder parent, int index) {
 
 		TabItem tab = new TabItem(parent, 0, index);
-		tab.setText("Description");
+		tab.setText(stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION));
 
         DescriptionPanelManager manager = new DescriptionPanelManager(this);
         tab.setControl(
@@ -382,7 +399,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 
 	/**
-	 * Method buildUsageTab.
+	 *
 	 * @param parent TabFolder
 	 * @param index int
 	 */
@@ -478,7 +495,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Tree buildRuleTreeViewer(Composite parent) {
 
-		int treeStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION | SWT.CHECK;
+		int treeStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK;
 		ruleTreeViewer = new CheckboxTreeViewer(parent, treeStyle);
 
 		Tree ruleTree = ruleTreeViewer.getTree();
@@ -488,11 +505,18 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		ruleTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				Object item = selection.getFirstElement();
-				selectedRule(item instanceof Rule ? (Rule)item : null);
+				selectedItems(selection.toArray());
 			}
 		});
 
+		ruleListMenu = createMenuFor(ruleTree);
+		ruleTree.setMenu(ruleListMenu);
+		ruleTree.addListener(SWT.MenuDetect, new Listener () {		    
+	        public void handleEvent (Event event) {
+	            popupRuleSelectionMenu(event);
+	        }
+	    });		
+		
 		ruleTree.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event event) {
 	            if (event.detail == SWT.CHECK) {
@@ -509,20 +533,121 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		return ruleTree;
 	}
+	
+	private Menu createMenuFor(Control control) {
+	    
+	    Menu menu = new Menu(control);
 
+	    MenuItem item2 = new MenuItem (menu, SWT.CASCADE);
+	    item2.setText(stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
+	    Menu subMenu = new Menu (menu);
+	    item2.setMenu (subMenu);
+	    priorityMenusByPriority = new HashMap<RulePriority, MenuItem>();
+	    
+	    for (RulePriority priority : RulePriority.values()) {
+    	    MenuItem priorityItem = new MenuItem (subMenu, SWT.RADIO);
+    	    priorityMenusByPriority.put(priority, priorityItem);
+    	    priorityItem.setText(priority.getName());  // TODO need to internationalize?
+    	    final RulePriority pri = priority;
+    	    priorityItem.addSelectionListener( new SelectionListener() {    	        
+                public void widgetSelected(SelectionEvent e) { 
+                    setPriority(pri); 
+                    }
+                public void widgetDefaultSelected(SelectionEvent e) {  }}
+    	    );
+	    }
+	    
+	    MenuItem removeItem = new MenuItem(menu, SWT.PUSH);
+	    removeItem.setText("Remove");
+	    removeItem.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                removeSelectedRules();
+            }
+        });
+	    
+        MenuItem useDefaultsItem = new MenuItem(menu, SWT.PUSH);
+        useDefaultsItem.setText("Use defaults");
+        useDefaultsItem.setEnabled(false);  //TODO
+        useDefaultsItem.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+           //     useDefaultValues();
+            }
+        });
+	    
+	    
+        menu.addListener (SWT.Selection, new Listener () {
+            public void handleEvent (Event e) {
+                System.out.println ("Item Selected");
+            }
+        });
+                
+        return menu;
+	}
+	
+	private void popupRuleSelectionMenu(Event event) {
+	    
+        RulePriority priority = ruleSelection.commonPriority();
+	    Iterator<Map.Entry<RulePriority, MenuItem>> iter = priorityMenusByPriority.entrySet().iterator();
+	   
+	    while (iter.hasNext()) {
+	        Map.Entry<RulePriority, MenuItem> entry = iter.next();
+	        MenuItem item = entry.getValue();
+	        if (entry.getKey() == priority) {
+	            item.setSelection(true);
+	            item.setEnabled(false);
+	        } else {
+	            item.setSelection(false);
+	            item.setEnabled(true);
+	            }
+	    }
+	    ruleListMenu.setLocation(event.x, event.y);
+        ruleListMenu.setVisible(true);
+	}
+	
+	private boolean hasPriorityGrouping() {
+	    return 
+	        groupingColumn == RuleColumnDescriptor.priorityName || 
+	        groupingColumn == RuleColumnDescriptor.priority;
+	}
+	
+	private void setPriority(RulePriority priority) {
+	    
+	    ruleSelection.setPriority(priority);
+	    
+	    if (hasPriorityGrouping()) {
+	        redrawTable();
+	    } else {
+	        ruleTreeViewer.update(ruleSelection.allRules().toArray(), null);
+	    }
+	}
+		
 	/**
-	 * @param rule Rule
+	 * @param item Object[]
 	 */
-	private void selectedRule(Rule rule) {
+	private void selectedItems(Object[] items) {
 
-		for (RulePropertyManager manager : rulePropertyManagers) manager.showRule(rule);
+	    ruleSelection = new RuleSelection(items);
+	    
+	    if (!ruleSelection.hasOneRule()) {
+	        adjustEditorsFor(null);
+	        return;
+	    }
 
+	    Rule rule = ruleSelection.soleRule();
+	    
+	    adjustEditorsFor(rule);
 		removeRuleButton.setEnabled(rule != null);
-		editRuleButton.setEnabled(rule != null);
+		editRuleButton.setEnabled(rule != null && ruleSelection.hasOneRule());
 
 	//	updatePropertyEditorFor(rule);
 	}
-
+	
+	private void adjustEditorsFor(Rule rule) {
+	    for (RulePropertyManager manager : rulePropertyManagers) manager.showRule(rule);
+	}
+	
 	/**
 	 * Method groupBy.
 	 * @param chosenColumn RuleColumnDescriptor
@@ -536,7 +661,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		RuleColumnDescriptor[] remainingCols = availableColumns;
 
-		if (availableColumnSet.contains(chosenColumn)) {
+		if (availableColumnSet.contains(chosenColumn)) {  // remove, its redundant
     		remainingCols = new RuleColumnDescriptor[availableColumns.length-1];
     		int j=0;
     		for (RuleColumnDescriptor availableColumn : availableColumns) {
@@ -549,34 +674,53 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 
 	/**
+	 * Remove all rows, columns, and column painters in preparation
+	 * for new columns.
+	 * 
+	 * @return Tree
+	 */
+	private Tree cleanupRuleTree() {
+	    
+	    Tree ruleTree = ruleTreeViewer.getTree();
+
+        ruleTree.clearAll(true);
+        for(;ruleTree.getColumns().length>0;) { // TODO also dispose any heading icons?
+            ruleTree.getColumns()[0].dispose();
+        }
+
+        // ensure we don't have any previous per-column painters left over
+        for (Map.Entry<Integer, List<Listener>> entry : paintListeners.entrySet()) {
+            int eventCode = entry.getKey().intValue();
+            List<Listener> listeners = entry.getValue();
+            for (Listener listener : listeners) {
+                ruleTree.removeListener(eventCode, listener);
+            }
+            listeners.clear();
+        }
+        
+        return ruleTree;
+	}
+	
+	/**
 	 * Method setupTreeColumns.
 	 * @param columnDescs RuleColumnDescriptor[]
 	 * @param groupingField RuleFieldAccessor
 	 */
 	private void setupTreeColumns(RuleColumnDescriptor[] columnDescs, RuleFieldAccessor groupingField) {
 
-		Tree ruleTree = ruleTreeViewer.getTree();
-
-		ruleTree.clearAll(true);
-		for(;ruleTree.getColumns().length>0;) ruleTree.getColumns()[0].dispose();
-
-		for (int i = 0; i<columnDescs.length; i++) columnDescs[i].newTreeColumnFor(ruleTree, i, this);
+		Tree ruleTree = cleanupRuleTree();
+		
+		for (int i=0; i<columnDescs.length; i++) columnDescs[i].newTreeColumnFor(ruleTree, i, this, paintListeners);
 
 		ruleTreeViewer.setLabelProvider(new RuleLabelProvider(columnDescs));
 		ruleTreeViewer.setContentProvider(
 				new RuleSetTreeItemProvider(groupingField, "??", Util.comparatorFrom(columnSorter, sortDescending))
 				);
 
-	//	ruleTreeViewer.setCellModifier(new RuleCellModifier(ruleTreeViewer));
-//		ruleTreeViewer.setCellEditors(new CellEditor[] { null, null, null,
-//				new ComboBoxCellEditor(ruleTree, PMDUiPlugin.getDefault().getPriorityLabels()),
-//				new TextCellEditor(ruleTree) });
-
 		populateRuleTable();
 
 		TreeColumn[] columns = ruleTree.getColumns();
-		for (TreeColumn column : columns)
-            column.pack();
+		for (TreeColumn column : columns) column.pack();
 	}
 
 	/**
@@ -635,6 +779,20 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		}
 	}
 
+	private void removeSelectedRules() {
+	    
+	    int removeCount = ruleSelection.removeAllFrom(ruleSet);
+	    if (removeCount == 0) return;
+	    	    
+        setModified(true);
+        
+        try {
+            refresh();
+        } catch (Throwable t) {
+            ruleTreeViewer.setSelection(null);
+        }
+	}
+	
 	/**
 	 * Build the remove rule button
 	 * @param parent Composite
@@ -647,15 +805,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
             public void widgetSelected(SelectionEvent event) {
-				IStructuredSelection selection = (IStructuredSelection)ruleTreeViewer.getSelection();
-				Rule selectedRule = (Rule)selection.getFirstElement();
-				ruleSet.getRules().remove(selectedRule);
-				setModified(true);
-				try {
-					refresh();
-				} catch (Throwable t) {
-					ruleTreeViewer.setSelection(null);
-				}
+				removeSelectedRules();
 			}
 		});
 		return button;
@@ -1018,11 +1168,11 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			}
 		}
 	}
-
-	public void changed(PropertyDescriptor<?> desc, Object newValue) {
+	
+	public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
 		// TODO enhance to recognize default values
-		modified = true;
-		ruleTreeViewer.refresh();
+		modified = true;				
+		ruleTreeViewer.update(rule, null);
 	}
 
 	public void sortBy(RuleFieldAccessor accessor) {

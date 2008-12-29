@@ -49,7 +49,7 @@ public class RealNumberEditorFactory extends AbstractEditorFactory {
 					String newValue = text.getText();
 					
 					rule.setProperty(fp, Float.valueOf(newValue));
-					listener.changed(fp, Float.valueOf(newValue));
+					listener.changed(rule, fp, Float.valueOf(newValue));
 				}
 			});
 			

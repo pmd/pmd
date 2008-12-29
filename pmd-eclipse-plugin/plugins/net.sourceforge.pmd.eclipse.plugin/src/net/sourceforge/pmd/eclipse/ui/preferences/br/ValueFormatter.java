@@ -3,7 +3,10 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.util.ClassUtil;
 
-
+/**
+ * 
+ * @author Brian Remedios
+ */
 public interface ValueFormatter {
 
     void format(Object value, StringBuilder target);
@@ -16,7 +19,9 @@ public interface ValueFormatter {
     
     ValueFormatter MultiStringFormatter = new ValueFormatter() {
         public void format(Object value, StringBuilder target) {
+            target.append('[');
             Util.asString((Object[])value, ", ", target);
+            target.append(']');
         }
     };
     

@@ -93,7 +93,7 @@ public class TypeEditorFactory extends AbstractEditorFactory {
                     
                     rule.setProperty(tp, newValue);
                     fillWidget(text, desc, rule);     // redraw
-                    listener.changed(desc, newValue);
+                    listener.changed(rule, desc, newValue);
                 }
             });
 

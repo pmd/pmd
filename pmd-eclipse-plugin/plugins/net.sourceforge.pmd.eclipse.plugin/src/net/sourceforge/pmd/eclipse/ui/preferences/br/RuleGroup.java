@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 
 /**
  * Holds a collection of rules as assembled by the tree widget manager.
@@ -27,6 +28,16 @@ public class RuleGroup implements Comparable<RuleGroup> {
 		description = theDescription;
 	}
 
+	/**
+	 * If the receiver holds just a single rule then return
+	 * it, otherwise return null.
+	 * 
+	 * @return Rule
+	 */
+	public Rule soleRule() {
+	    return rules.size() == 1 ? rules.get(0) : null;
+	}
+	
 	/**
 	 * @return Comparable
 	 */
@@ -61,6 +72,37 @@ public class RuleGroup implements Comparable<RuleGroup> {
 	 */
 	public Rule[] rules() { 
 		return rules.toArray(new Rule[rules.size()]); 
+	}
+	
+	public void setPriority(RulePriority priority) {	    
+	    for (Rule rule : rules) rule.setPriority(priority);
+	}
+	
+	
+	public boolean allRulesUseDefaultValues() {
+	    
+	    for (Rule rule : rules) {
+	        if (!rule.usesDefaultValues()) return false;
+	    }
+	    
+	    return true;
+	}
+	
+	/**
+	 * Returns the priority level common to all rules held
+	 * by the receiver, returns null if they differ.
+	 * 
+	 * @return RulePriority
+	 */
+	public RulePriority commonPriority() {
+	    
+	    if (rules.isEmpty()) return null;
+	    
+	    RulePriority priority = rules.get(0).getPriority();
+	    for (int i=1; i<rules.size(); i++) {
+	        if (rules.get(i).getPriority() != priority) return null;
+	    }
+	    return priority;
 	}
 	
 	/**

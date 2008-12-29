@@ -59,8 +59,9 @@ public class BooleanEditorFactory extends AbstractEditorFactory {
     				boolean selected = butt.getSelection();
     				if (selected == rule.getProperty(bp)) return;
     				
+    	//			adjustRendering(butt, selected == bp.defaultValue().booleanValue());
     				rule.setProperty(bp, Boolean.valueOf(selected));
-    				listener.changed(desc, Boolean.valueOf(selected));
+    				listener.changed(rule, desc, Boolean.valueOf(selected));
     			}
     		});
     		

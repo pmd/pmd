@@ -21,7 +21,6 @@ public class IntegerEditorFactory extends AbstractEditorFactory {
 	public static final IntegerEditorFactory instance = new IntegerEditorFactory();
 	
 	private IntegerEditorFactory() { }
-
 	
 	private static IntegerProperty intPropertyFrom(PropertyDescriptor<?> desc) {
 	    
@@ -61,8 +60,9 @@ public class IntegerEditorFactory extends AbstractEditorFactory {
 					int newValue = spinner.getSelection();
 					if (newValue == rule.getProperty(ip)) return;
 					
+			//		adjustRendering(spinner, newValue == ip.defaultValue().intValue());
 					rule.setProperty(ip, Integer.valueOf(newValue));
-					listener.changed(desc, Integer.valueOf(newValue));
+					listener.changed(rule, desc, Integer.valueOf(newValue));
 				}
 			});		
 						

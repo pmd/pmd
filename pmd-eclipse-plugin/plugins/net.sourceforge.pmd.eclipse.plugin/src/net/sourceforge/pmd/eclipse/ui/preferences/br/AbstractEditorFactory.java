@@ -4,6 +4,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 /**
@@ -42,6 +44,22 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 	 */
 	protected String asString(Object value) {
 		return value == null ? "" : value.toString();
+	}
+	
+	/**
+	 * Adjust the display of the control to denote whether it holds 
+	 * onto the default value or not.
+	 * 
+	 * @param control
+	 * @param hasDefaultValue
+	 */
+	protected void adjustRendering(Control control, boolean hasDefaultValue) {
+	    
+	    Display display = control.getDisplay();
+	    
+	    control.setBackground( 
+	       display.getSystemColor(hasDefaultValue ? SWT.COLOR_WHITE : SWT.COLOR_CYAN) 
+	       );
 	}
 	
 	/**

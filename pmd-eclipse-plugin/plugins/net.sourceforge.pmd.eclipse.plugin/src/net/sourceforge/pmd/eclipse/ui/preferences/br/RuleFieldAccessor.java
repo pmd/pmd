@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
  * Value returned are typed as comparable to facilitate sorting. Never return null, 
  * return an empty string instead.
  * 
- * TODO - move this to PMD proper.
+ * TODO - move this to PMD proper, nothing UI-specific here
  * 
  * @author Brian Remedios
  */
@@ -27,13 +27,7 @@ public interface RuleFieldAccessor {
 	 */
 	Comparable<?> valueFor(Rule rule);
 	String labelFor(Rule rule);
-	
-	RuleFieldAccessor ruleSetName = new BasicRuleFieldAccessor() {
-		public Comparable<?> valueFor(Rule rule) {
-			return PMDPreferencePage.ruleSetNameFrom(rule);
-		}
-	};
-	
+		
 	RuleFieldAccessor since = new BasicRuleFieldAccessor() {
 		public Comparable<?> valueFor(Rule rule) {
 			return rule.getSince();
@@ -81,13 +75,7 @@ public interface RuleFieldAccessor {
 			return rule.getExternalInfoUrl();
 		}
 	};
-	
-	RuleFieldAccessor properties = new BasicRuleFieldAccessor() {
-		public Comparable<?> valueFor(Rule rule) {
-			return PMDPreferencePage.propertyStringFrom(rule);
-		}
-	};
-	
+		
 	RuleFieldAccessor exampleCount = new BasicRuleFieldAccessor() {
 		public Comparable<?> valueFor(Rule rule) {			
 			int count = rule.getExamples().size();

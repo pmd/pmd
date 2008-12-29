@@ -1,17 +1,22 @@
 package net.sourceforge.pmd.eclipse.util;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ColourManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -35,9 +40,9 @@ public class Util {
         return a.equals(b);
     }
     
-	public static Comparator comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
+	public static Comparator<?> comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
 		
-		return new Comparator() {
+		return new Comparator<?>() {
 
 			public int compare(Object a, Object b) {
 				Comparable ca = accessor.valueFor((Rule) a);
@@ -61,11 +66,79 @@ public class Util {
 		return original == null ? "" : original.trim();
 	}
 	
+	
+	public static CellPainterBuilder regexBuilderFor(final int width, final int height) {
+	    
+	   
+	    return new CellPainterBuilder() {
+
+	        private ColourManager colorManager;
+	        
+	        private ColourManager colorManagerFor(Display display) {
+	            if (colorManager != null) return colorManager;
+	            colorManager = new ColourManager(display);
+	            return colorManager;
+	        }
+	        
+	        private String getterTextIn(TreeItem tItem, RuleFieldAccessor getter) {
+	            
+	            Object item = tItem.getData();
+	            if (!(item instanceof Rule)) return null;
+	            String text = (String)getter.valueFor((Rule) item);
+                return StringUtil.isEmpty(text) ? null : text;
+	        }
+	        
+            public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> listenersByEventCode) {
+                
+                Listener paintListener = new Listener() {
+                    public void handleEvent(Event event) {
+                        if (event.index != columnIndex) return;
+                        
+                        String text = getterTextIn((TreeItem)event.item, getter);
+                        if (text == null) return;
+                        
+                        Color original = event.gc.getBackground();
+                        
+                        Color clr = colorManagerFor(event.display).colourFor(text);
+                        event.gc.setBackground(clr);
+                        event.gc.fillRoundRectangle(event.x +1, event.y+2, width, height, 3, 3);
+                        
+                        event.gc.setBackground(original);
+                    }
+                };
+                                   
+                Listener measureListener = new Listener() {
+                    public void handleEvent(Event e) {
+                        if (e.index != columnIndex) return;
+                        e.width = width + 2;
+                        e.height = height + 2;
+                    }
+                };
+                
+                addListener(tree, SWT.PaintItem, paintListener, listenersByEventCode);
+                addListener(tree, SWT.MeasureItem, measureListener, listenersByEventCode);
+            }
+            
+	    };
+	}
+	
+    private static void addListener(Control control, int eventType, Listener listener, Map<Integer, List<Listener>> listenersByEventCode) {
+        
+        Integer eventCode = Integer.valueOf(eventType);
+        
+        control.addListener(eventType, listener);
+        if (!listenersByEventCode.containsKey(eventCode)) {
+            listenersByEventCode.put(eventCode, new ArrayList<Listener>());
+            }
+        
+        listenersByEventCode.get(eventCode).add(listener);
+    }
+    
 	public static CellPainterBuilder backgroundBuilderFor(final int systemColourIndex) {
 	    
 	    return new CellPainterBuilder() {
 
-	        public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter) {
+	        public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> paintListeners) {
 	            
 	            final Display display = tree.getDisplay();
 	            
@@ -117,7 +190,7 @@ public class Util {
 	        
 	        return new CellPainterBuilder() {
 
-	            public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter) {
+	            public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> paintListeners) {
 	                
 	                final Display display = tree.getDisplay();
 

@@ -78,7 +78,7 @@ public class StringEditorFactory extends AbstractEditorFactory {
 					
 					rule.setProperty(sp, newValue);
 		            fillWidget(text, desc, rule);     // redraw
-					listener.changed(desc, newValue);
+					listener.changed(rule, desc, newValue);
 				}
 			});
 

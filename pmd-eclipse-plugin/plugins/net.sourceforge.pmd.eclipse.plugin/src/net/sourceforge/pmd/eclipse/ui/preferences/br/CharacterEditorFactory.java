@@ -67,7 +67,7 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
                     if (existingValue.equals(newValue)) return;              
                     
                     rule.setProperty(cp, newValue);
-                    listener.changed(cp, newValue);
+                    listener.changed(rule, cp, newValue);
                 }
             });
 

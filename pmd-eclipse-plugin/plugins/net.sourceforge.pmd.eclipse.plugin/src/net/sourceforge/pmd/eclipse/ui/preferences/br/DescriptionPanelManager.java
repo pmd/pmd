@@ -37,7 +37,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
                 if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
                 
                 currentRule.setDescription(cleanValue);
-                changeListener.changed(null, cleanValue);                
+                changeListener.changed(currentRule, null, cleanValue);                
             }
         }); 
         

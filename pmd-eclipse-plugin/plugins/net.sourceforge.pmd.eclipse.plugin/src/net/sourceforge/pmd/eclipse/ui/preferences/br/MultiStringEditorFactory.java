@@ -42,7 +42,7 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         		
         		rule.setProperty(smp, newValues);        		
         		fillWidget(textWidget, desc, rule);    // reload with latest scrubbed values        		
-        		listener.changed(desc, newValues);
+        		listener.changed(rule, desc, newValues);
         	}
         });
     }

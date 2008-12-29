@@ -56,7 +56,11 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * be accessed directly via the preference store.
  *
  * @author Philippe Herlin
- *
+ * 
+ * @deprecated - this page is for reference/comparison only and will be 
+ *               removed soon - it has no ability to manage the new property
+ *               types. Any modifications are to be done on the class of the 
+ *               same name in the .br package for now.
  */
 
 public class PMDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {

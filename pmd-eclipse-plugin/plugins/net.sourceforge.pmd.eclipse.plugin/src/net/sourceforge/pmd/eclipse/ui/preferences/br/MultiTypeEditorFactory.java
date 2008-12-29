@@ -82,7 +82,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
                 
                 rule.setProperty(tmp, newValue);
                 fillWidget(textWidget, desc, rule);   // display the accepted values
-                listener.changed(desc, newValue);
+                listener.changed(rule, desc, newValue);
             }
         });
     }
