@@ -51,6 +51,7 @@ import java.util.Set;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
@@ -344,16 +345,12 @@ class PreferencesManagerImpl implements IPreferencesManager {
         File ruleSetFile = new File(ruleSetLocation.toOSString());
         if (ruleSetFile.exists()) {
             try {
-                FileInputStream in = new FileInputStream(ruleSetLocation.toOSString());
-                preferedRuleSet = factory.createRuleSet(in);
-                in.close();
-            } catch (FileNotFoundException e) {
-                PMDPlugin.getDefault().logError("File Not Found Exception when loading state ruleset file", e);
-            } catch (IOException e) {
-                PMDPlugin.getDefault().logError("IO Exception when loading state ruleset file", e);
+                preferedRuleSet = factory.createRuleSet(ruleSetLocation.toOSString());
             } catch (RuntimeException e) {
             	PMDPlugin.getDefault().logError("Runtime Exception when loading state ruleset file", e);
-            }
+            } catch (RuleSetNotFoundException e) {
+            	PMDPlugin.getDefault().logError("RuleSet Not Found Exception when loading state ruleset file", e);
+	    }
         }
 
         // Finally, build a default ruleset
