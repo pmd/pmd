@@ -111,4 +111,13 @@
 		</pmd>
 	</target>
 
+	<target name="testExplicitRuleInRuleSet">
+		<pmd rulesetfiles="rulesets/java/codesize.xml/ExcessiveMethodLength">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
 </project>

@@ -188,15 +188,15 @@ public class RuleSetReferenceId {
     /**
      * Parse a String comma separated list of RuleSet reference IDs into a List of
      * RuleReferenceId instances.
-     * @param ruleString A comma separated list of RuleSet reference IDs.
+     * @param referenceString A comma separated list of RuleSet reference IDs.
      * @return The corresponding List of RuleSetReferenceId instances.
      */
-    public static List<RuleSetReferenceId> parse(String ruleString) {
+    public static List<RuleSetReferenceId> parse(String referenceString) {
 	List<RuleSetReferenceId> references = new ArrayList<RuleSetReferenceId>();
-	if (ruleString.indexOf(',') == -1) {
-	    references.add(new RuleSetReferenceId(ruleString));
+	if (referenceString.indexOf(',') == -1) {
+	    references.add(new RuleSetReferenceId(referenceString));
 	} else {
-	    for (String name : ruleString.split(",")) {
+	    for (String name : referenceString.split(",")) {
 		references.add(new RuleSetReferenceId(name));
 	    }
 	}

@@ -26,7 +26,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
@@ -207,7 +206,6 @@ public class PMDTask extends Task {
 	    if (ruleSets != null) {
 		// Substitute env variables/properties
 		configuration.setRuleSets(getProject().replaceProperties(ruleSets));
-		configuration.setRuleSets(new SimpleRuleSetNameMapper(configuration.getRuleSets()).getRuleSets());
 	    }
 	    rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
 	    ruleSetFactory.setWarnDeprecated(false);

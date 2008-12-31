@@ -22,7 +22,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -97,8 +96,7 @@ public class Benchmark {
             Set<Result> results = new TreeSet<Result>();
             RuleSetFactory factory = new RuleSetFactory();
             if (ruleset.length() > 0) {
-                SimpleRuleSetNameMapper mapper = new SimpleRuleSetNameMapper(ruleset);
-                stress(languageVersion, factory.createRuleSet(mapper.getRuleSets()), dataSources, results, debug);
+                stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
             } else {
                 Iterator<RuleSet> i = factory.getRegisteredRuleSets();
                 while (i.hasNext()) {

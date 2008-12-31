@@ -49,7 +49,8 @@ public class CommandLineOptions {
 	if (StringUtil.isEmpty(configuration.getReportFormat())) {
 	    throw new IllegalArgumentException("Report renderer is required.");
 	}
-	configuration.setRuleSets(new SimpleRuleSetNameMapper(args[mandatoryIndex + 2]).getRuleSets());
+	configuration.setRuleSets(StringUtil
+		.asString(RuleSetReferenceId.parse(args[mandatoryIndex + 2]).toArray(), ","));
 
 	for (int optionsIndex = optionStartIndex; optionsIndex < optionEndIndex; optionsIndex++) {
 	    String opt = args[optionsIndex];

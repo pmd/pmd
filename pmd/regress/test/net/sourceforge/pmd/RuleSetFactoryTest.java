@@ -3,7 +3,7 @@
  */
 package test.net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -36,6 +36,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSetReferenceId;
 import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -63,7 +64,7 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testNoRuleSetFileName() {
+    public void testNoRuleSetFileName() throws RuleSetNotFoundException {
 	RuleSet rs = loadRuleSet(EMPTY_RULESET);
 	assertNull("RuleSet file name not expected", rs.getFileName());
     }
@@ -89,14 +90,14 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testCreateEmptyRuleSet() {
+    public void testCreateEmptyRuleSet() throws RuleSetNotFoundException {
 	RuleSet rs = loadRuleSet(EMPTY_RULESET);
 	assertEquals("test", rs.getName());
 	assertEquals(0, rs.size());
     }
 
     @Test
-    public void testSingleRule() {
+    public void testSingleRule() throws RuleSetNotFoundException {
 	RuleSet rs = loadRuleSet(SINGLE_RULE);
 	assertEquals(1, rs.size());
 	Rule r = rs.getRules().iterator().next();
@@ -106,7 +107,7 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testMultipleRules() {
+    public void testMultipleRules() throws RuleSetNotFoundException {
 	RuleSet rs = loadRuleSet(MULTIPLE_RULES);
 	assertEquals(2, rs.size());
 	Set<String> expected = new HashSet<String>();
@@ -118,13 +119,13 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testSingleRuleWithPriority() {
+    public void testSingleRuleWithPriority() throws RuleSetNotFoundException {
 	assertEquals(RulePriority.MEDIUM, loadFirstRule(PRIORITY).getPriority());
     }
 
         @Test
         @SuppressWarnings("unchecked")
-    public void testProps() {
+    public void testProps() throws RuleSetNotFoundException {
     	Rule r = loadFirstRule(PROPERTIES);
     	assertEquals("bar", r.getProperty((PropertyDescriptor<String>)r.getPropertyDescriptor("foo")));
     	assertEquals(new Integer(2), r.getProperty((PropertyDescriptor<Integer>)r.getPropertyDescriptor("fooint")));
@@ -136,7 +137,7 @@ public class RuleSetFactoryTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testXPath() {
+    public void testXPath() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(XPATH);
 	PropertyDescriptor<String> xpathProperty = (PropertyDescriptor<String>)r.getPropertyDescriptor("xpath");
 	assertNotNull("xpath property descriptor", xpathProperty);
@@ -144,18 +145,18 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testFacadesOffByDefault() {
+    public void testFacadesOffByDefault() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(XPATH);
 	assertFalse(r.usesDFA());
     }
 
     @Test
-    public void testDFAFlag() {
+    public void testDFAFlag() throws RuleSetNotFoundException {
 	assertTrue(loadFirstRule(DFA).usesDFA());
     }
 
     @Test
-    public void testExternalReferenceOverride() {
+    public void testExternalReferenceOverride() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(REF_OVERRIDE);
 	assertEquals("TestNameOverride", r.getName());
 	assertEquals("Test message override", r.getMessage());
@@ -175,77 +176,168 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testOverrideMessage() {
+    public void testReferenceInternalToInternal() throws RuleSetNotFoundException {
+	RuleSet ruleSet = loadRuleSet(REF_INTERNAL_TO_INTERNAL);
+	
+	Rule rule = ruleSet.getRuleByName("MockRuleName");
+	assertNotNull("Could not find Rule MockRuleName", rule);
+
+	Rule ruleRef = ruleSet.getRuleByName("MockRuleNameRef");
+	assertNotNull("Could not find Rule MockRuleNameRef", ruleRef);
+    }
+
+    @Test
+    public void testReferenceInternalToInternalChain() throws RuleSetNotFoundException {
+	RuleSet ruleSet = loadRuleSet(REF_INTERNAL_TO_INTERNAL_CHAIN);
+	
+	Rule rule = ruleSet.getRuleByName("MockRuleName");
+	assertNotNull("Could not find Rule MockRuleName", rule);
+
+	Rule ruleRef = ruleSet.getRuleByName("MockRuleNameRef");
+	assertNotNull("Could not find Rule MockRuleNameRef", ruleRef);
+
+	Rule ruleRefRef = ruleSet.getRuleByName("MockRuleNameRefRef");
+	assertNotNull("Could not find Rule MockRuleNameRefRef", ruleRefRef);
+    }
+
+    @Test
+    public void testReferenceInternalToExternal() throws RuleSetNotFoundException {
+	RuleSet ruleSet = loadRuleSet(REF_INTERNAL_TO_EXTERNAL);
+	
+	Rule rule = ruleSet.getRuleByName("ExternalRefRuleName");
+	assertNotNull("Could not find Rule ExternalRefRuleName", rule);
+
+	Rule ruleRef = ruleSet.getRuleByName("ExternalRefRuleNameRef");
+	assertNotNull("Could not find Rule ExternalRefRuleNameRef", ruleRef);
+    }
+
+    @Test
+    public void testReferenceInternalToExternalChain() throws RuleSetNotFoundException {
+	RuleSet ruleSet = loadRuleSet(REF_INTERNAL_TO_EXTERNAL_CHAIN);
+	
+	Rule rule = ruleSet.getRuleByName("ExternalRefRuleName");
+	assertNotNull("Could not find Rule ExternalRefRuleName", rule);
+
+	Rule ruleRef = ruleSet.getRuleByName("ExternalRefRuleNameRef");
+	assertNotNull("Could not find Rule ExternalRefRuleNameRef", ruleRef);
+
+	Rule ruleRefRef = ruleSet.getRuleByName("ExternalRefRuleNameRefRef");
+	assertNotNull("Could not find Rule ExternalRefRuleNameRefRef", ruleRefRef);
+    }
+
+    @Test
+    public void testReferencePriority() throws RuleSetNotFoundException {
+	RuleSetFactory rsf = new RuleSetFactory();
+
+	rsf.setMinimumPriority(RulePriority.LOW);
+	RuleSet ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
+	assertEquals("Number of Rules", 3, ruleSet.getRules().size());
+	assertNotNull(ruleSet.getRuleByName("MockRuleName"));
+	assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
+	assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
+
+	rsf.setMinimumPriority(RulePriority.MEDIUM_HIGH);
+	ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
+	assertEquals("Number of Rules", 2, ruleSet.getRules().size());
+	assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
+	assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
+
+	rsf.setMinimumPriority(RulePriority.HIGH);
+	ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_INTERNAL_CHAIN));
+	assertEquals("Number of Rules", 1, ruleSet.getRules().size());
+	assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
+
+	rsf.setMinimumPriority(RulePriority.LOW);
+	ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
+	assertEquals("Number of Rules", 3, ruleSet.getRules().size());
+	assertNotNull(ruleSet.getRuleByName("ExternalRefRuleName"));
+	assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
+	assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
+
+	rsf.setMinimumPriority(RulePriority.MEDIUM_HIGH);
+	ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
+	assertEquals("Number of Rules", 2, ruleSet.getRules().size());
+	assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
+	assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
+
+	rsf.setMinimumPriority(RulePriority.HIGH);
+	ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
+	assertEquals("Number of Rules", 1, ruleSet.getRules().size());
+	assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
+    }
+
+    @Test
+    public void testOverrideMessage() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(REF_OVERRIDE_ORIGINAL_NAME);
 	assertEquals("TestMessageOverride", r.getMessage());
     }
 
     @Test
-    public void testOverrideMessageOneElem() {
+    public void testOverrideMessageOneElem() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(REF_OVERRIDE_ORIGINAL_NAME_ONE_ELEM);
 	assertEquals("TestMessageOverride", r.getMessage());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIncorrectExternalRef() throws IllegalArgumentException {
+    public void testIncorrectExternalRef() throws IllegalArgumentException, RuleSetNotFoundException {
 	loadFirstRule(REF_MISPELLED_XREF);
     }
 
     @Test
-    public void testSetPriority() {
+    public void testSetPriority() throws RuleSetNotFoundException {
 	RuleSetFactory rsf = new RuleSetFactory();
 	rsf.setMinimumPriority(RulePriority.MEDIUM_HIGH);
-	assertEquals(0, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
+	assertEquals(0, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
 	rsf.setMinimumPriority(RulePriority.MEDIUM_LOW);
-	assertEquals(1, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
+	assertEquals(1, rsf.createRuleSet(createRuleSetReferenceId(SINGLE_RULE)).size());
     }
 
     @Test
-    public void testLanguage() {
+    public void testLanguage() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(LANGUAGE);
 	assertEquals(Language.JAVA, r.getLanguage());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIncorrectLanguage() {
+    public void testIncorrectLanguage() throws RuleSetNotFoundException {
 	loadFirstRule(INCORRECT_LANGUAGE);
     }
 
     @Test
-    public void testMinimumLanugageVersion() {
+    public void testMinimumLanugageVersion() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(MINIMUM_LANGUAGE_VERSION);
 	assertEquals(LanguageVersion.JAVA_14, r.getMinimumLanguageVersion());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIncorrectMinimumLanugageVersion() {
+    public void testIncorrectMinimumLanugageVersion() throws RuleSetNotFoundException {
 	loadFirstRule(INCORRECT_MINIMUM_LANGUAGE_VERSION);
     }
 
     @Test
-    public void testMaximumLanugageVersion() {
+    public void testMaximumLanugageVersion() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(MAXIMUM_LANGUAGE_VERSION);
 	assertEquals(LanguageVersion.JAVA_17, r.getMaximumLanguageVersion());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIncorrectMaximumLanugageVersion() {
+    public void testIncorrectMaximumLanugageVersion() throws RuleSetNotFoundException {
 	loadFirstRule(INCORRECT_MAXIMUM_LANGUAGE_VERSION);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testInvertedMinimumMaximumLanugageVersions() {
+    public void testInvertedMinimumMaximumLanugageVersions() throws RuleSetNotFoundException {
 	loadFirstRule(INVERTED_MINIMUM_MAXIMUM_LANGUAGE_VERSIONS);
     }
 
     @Test
-    public void testDirectDeprecatedRule() {
+    public void testDirectDeprecatedRule() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(DIRECT_DEPRECATED_RULE);
 	assertNotNull("Direct Deprecated Rule", r);
     }
 
     @Test
-    public void testReferenceToDeprecatedRule() {
+    public void testReferenceToDeprecatedRule() throws RuleSetNotFoundException {
 	Rule r = loadFirstRule(REFERENCE_TO_DEPRECATED_RULE);
 	assertNotNull("Reference to Deprecated Rule", r);
 	assertTrue("Rule Reference", r instanceof RuleReference);
@@ -255,7 +347,7 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testRuleSetReferenceWithDeprecatedRule() {
+    public void testRuleSetReferenceWithDeprecatedRule() throws RuleSetNotFoundException {
 	RuleSet ruleSet = loadRuleSet(REFERENCE_TO_RULESET_WITH_DEPRECATED_RULE);
 	assertNotNull("RuleSet", ruleSet);
 	assertFalse("RuleSet empty", ruleSet.getRules().isEmpty());
@@ -268,7 +360,14 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testIncludeExcludePatterns() {
+    public void testExternalReferences() throws RuleSetNotFoundException {
+	RuleSet rs = loadRuleSet(EXTERNAL_REFERENCE_RULE_SET);
+	assertEquals(1, rs.size());
+	assertEquals(UnusedLocalVariableRule.class.getName(), rs.getRuleByName("UnusedLocalVariable").getRuleClass());
+    }
+
+    @Test
+    public void testIncludeExcludePatterns() throws RuleSetNotFoundException {
 	RuleSet ruleSet = loadRuleSet(INCLUDE_EXCLUDE_RULESET);
 
 	assertNotNull("Include patterns", ruleSet.getIncludePatterns());
@@ -420,7 +519,7 @@ public class RuleSetFactoryTest {
 
 	// Read RuleSet from XML, first time
 	RuleSetFactory ruleSetFactory = new RuleSetFactory();
-	RuleSet ruleSet2 = ruleSetFactory.createRuleSet(new ByteArrayInputStream(outputStream1.toByteArray()));
+	RuleSet ruleSet2 = ruleSetFactory.createRuleSet(createRuleSetReferenceId(new String(outputStream1.toByteArray())));
 
 	// Do write/read a 2nd time, just to be sure
 
@@ -433,7 +532,7 @@ public class RuleSetFactoryTest {
 	//System.out.println("xml3: " + xml3);
 
 	// Read RuleSet from XML, second time
-	RuleSet ruleSet3 = ruleSetFactory.createRuleSet(new ByteArrayInputStream(outputStream2.toByteArray()));
+	RuleSet ruleSet3 = ruleSetFactory.createRuleSet(createRuleSetReferenceId(new String(outputStream2.toByteArray())));
 
 	// The 2 written XMLs should all be valid w.r.t Schema/DTD
 	assertTrue("1st roundtrip RuleSet XML is not valid against Schema",
@@ -697,6 +796,38 @@ public class RuleSetFactoryTest {
 	    + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>" + PMD.EOL + "  </properties>" + PMD.EOL
 	    + " </rule>" + PMD.EOL + "</ruleset>";
 
+    private static final String REF_INTERNAL_TO_INTERNAL = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL
+	    + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
+	    + "message=\"avoid the mock rule\" " + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">" + PMD.EOL + "</rule>"
+	    + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"/> " + PMD.EOL
+	    + "</ruleset>";
+
+    private static final String REF_INTERNAL_TO_INTERNAL_CHAIN = "<?xml version=\"1.0\"?>" + PMD.EOL
+            + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL
+            + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
+            + "message=\"avoid the mock rule\" " + PMD.EOL
+            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">" + PMD.EOL + "</rule>"
+            + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"><priority>2</priority></rule> " + PMD.EOL
+            + " <rule ref=\"MockRuleNameRef\" name=\"MockRuleNameRefRef\"><priority>1</priority></rule> " + PMD.EOL
+            + "</ruleset>";
+
+    private static final String REF_INTERNAL_TO_EXTERNAL = "<?xml version=\"1.0\"?>" + PMD.EOL
+            + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL
+            + "<rule " + PMD.EOL + "name=\"ExternalRefRuleName\" " + PMD.EOL
+            + "ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL
+            + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"/> " + PMD.EOL
+            + "</ruleset>";
+
+    private static final String REF_INTERNAL_TO_EXTERNAL_CHAIN = "<?xml version=\"1.0\"?>" + PMD.EOL
+            + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL
+            + "<rule " + PMD.EOL + "name=\"ExternalRefRuleName\" " + PMD.EOL
+            + "ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL
+            + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"><priority>2</priority></rule> " + PMD.EOL
+            + " <rule ref=\"ExternalRefRuleNameRef\" name=\"ExternalRefRuleNameRefRef\"><priority>1</priority></rule> " + PMD.EOL
+            + "</ruleset>";
+
     private static final String EMPTY_RULESET = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
 	    + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "</ruleset>";
 
@@ -814,7 +945,7 @@ public class RuleSetFactoryTest {
 	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL
 	    + "<rule ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL + "</ruleset>";
 
-    private Rule loadFirstRule(String ruleSetXml) {
+    private Rule loadFirstRule(String ruleSetXml) throws RuleSetNotFoundException {
 	RuleSet rs = loadRuleSet(ruleSetXml);
 	return rs.getRules().iterator().next();
     }
@@ -824,16 +955,17 @@ public class RuleSetFactoryTest {
 	return rsf.createRuleSet(ruleSetFileName);
     }
 
-    private RuleSet loadRuleSet(String ruleSetXml) {
+    private RuleSet loadRuleSet(String ruleSetXml) throws RuleSetNotFoundException {
 	RuleSetFactory rsf = new RuleSetFactory();
-	return rsf.createRuleSet(new ByteArrayInputStream(ruleSetXml.getBytes()));
+	return rsf.createRuleSet(createRuleSetReferenceId(ruleSetXml));
     }
 
-    @Test
-    public void testExternalReferences() {
-	RuleSet rs = loadRuleSet(EXTERNAL_REFERENCE_RULE_SET);
-	assertEquals(1, rs.size());
-	assertEquals(UnusedLocalVariableRule.class.getName(), rs.getRuleByName("UnusedLocalVariable").getRuleClass());
+    private static RuleSetReferenceId createRuleSetReferenceId(final String ruleSetXml) {
+	return new RuleSetReferenceId(null) {
+	    public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+		return new ByteArrayInputStream(ruleSetXml.getBytes());
+	    }
+	};
     }
 
     public static junit.framework.Test suite() {

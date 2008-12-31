@@ -96,6 +96,12 @@ public class PMDTaskTest extends BuildFileTest {
     public void testInvalidLanguageVersion() {
         expectBuildExceptionContaining("testInvalidLanguageVersion", "Fail requested.", "The <version> element, if used, must be one of 'java 1.3', 'java 1.4', 'java 1.5', 'java 1.6', 'java 1.7'.");
     }
+    
+    @Test
+    public void testExplicitRuleInRuleSet() {
+        executeTarget("testExplicitRuleInRuleSet");
+        assertOutputContaining("Avoid really long methods");
+    }
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(PMDTaskTest.class);

@@ -1,10 +1,10 @@
-??? ??, 2008 - 5.0:
+??? ??, 2009 - 5.0:
 
 // TODO Refactor AST
 	o SimpleNode.dump() needs to be implemented as a Visitor
 
 TODO - Release blockers - Must implement before this release can be finished
-   o Additional changes to Rule organization withing RuleSets as discussed on
+   o Additional changes to Rule organization within RuleSets as discussed on
      this forum thread:
      http://sourceforge.net/forum/forum.php?thread_id=1323593&forum_id=188194
    o CPD needs work on use of Language.  It currently is hardcoded to only
@@ -48,7 +48,6 @@ TODO - Release blockers - Must implement before this release can be finished
      Languages (too Java centric at the moment).  Then, need start adding tests
      for the new XML language.
    o Rework RuleReference to be done via Rule.isReference() instead of instanceof RuleReference?
-   o Do something with ExternalRuleID, this should be inner class of RuleSetFactory?
    o Rule documentation should be automatically generated
      from the descriptors, be they defined in code or XML, I think the code based
      descriptors are not getting seen.
@@ -87,6 +86,9 @@ TODO - Release blockers - Must implement before this release can be finished
    o Need to enhance documentation to cover Global and Language specific
      function namespaces required for XPath 2.0 use (e.g. pmd:matches
      and pmd-java:typeof).
+   o Expand documentation examples which demonstrate use of new RuleSetReferenceId
+     capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
+     of a Rule reference in places not previously possible (e.g. CMD and Ant). 
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
@@ -300,10 +302,16 @@ The following is relatively complete list of the major changes (this may not be
 
    API Change - RuleSetFactory
         Added - RuleSetFactory.setClassLoader(ClassLoader)
+        Added - RuleSetFactory.createRuleSets(List<RuleSetReferenceId>)
+        Added - RuleSetFactory.createRuleSet(RuleSetReferenceId)
+        Added - RuleSetFactory.setClassLoader(ClassLoader)
+        Added - RuleSetReferenceId class to handle parsing of RuleSet strings, see RuleSetReferenceId.parse(String)
       Renamed - RuleSetFactory.createSingleRuleSet(String) to RuleSetFactory.createRuleSet(String);
       Removed - RuleSetFactory.createRuleSets(String, ClassLoader), use RuleSetFactory.createRuleSets(String) instead.
       Removed - RuleSetFactory.createSingleRuleSet(String, ClassLoader), use RuleSetFactory.createSingleRuleSet(String) instead.
-      Removed - RuleSetFactory.createRuleSet(InputStream, ClassLoader), use RuleSetFactory.createRuleSet(InputStream) instead.
+      Removed - RuleSetFactory.createRuleSet(InputStream, ClassLoader), use RuleSetFactory.createRuleSet(RuleSetReferenceId) instead.
+      Removed - ExternalRuleID, use RuleSetReferenceId instead
+      Removed - SimpleRuleSetNameMapper, use RuleSetReferenceId instead
 
    API Change - Changes to Renderer class, and Renderer implementations
         Added - Renderer.getName()

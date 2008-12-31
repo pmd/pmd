@@ -27,7 +27,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -48,8 +47,7 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            String rules = new SimpleRuleSetNameMapper(ruleSet).getRuleSets();
-            Rule rule = new RuleSetFactory().createRuleSets(rules).getRuleByName(ruleName);
+            Rule rule = new RuleSetFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             }
