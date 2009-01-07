@@ -157,9 +157,9 @@
 			<target name="clean"/>
 			<target name="with.clover"/>
 			<target name="regress"/>
-			<target name="clean"/>
 			<target name="clover.reports"/>
 		</antcall>
+		<antcall target="clean"/>
 	</target>
 
 	<target name="clover.setup">
