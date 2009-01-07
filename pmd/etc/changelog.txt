@@ -464,7 +464,7 @@ New Java rules:
 	Controversial ruleset: OneDeclarationByLine
 	Naming ruleset: ShortClassName
 	Basic ruleset:	EmptyInitializer,EmptyStatementBlock,ExtendsObject,UselessParentheses,CheckSkipResult
-	Design ruleset: LogicInversion,UseVarargs
+	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass
 	Import ruleset: UnnecessaryFullyQualifiedName
 
 New ECMAScript rules:

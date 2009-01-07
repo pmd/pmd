@@ -28,6 +28,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "EmptyMethodInAbstractClassShouldBeAbstract");
         addRule(RULESET, "EqualsNull");
         addRule(RULESET, "FinalFieldCouldBeStatic");
+        addRule(RULESET, "FieldDeclarationsShouldBeAtStartOfClass");
         addRule(RULESET, "IdempotentOperations");
         addRule(RULESET, "ImmutableField");
         addRule(RULESET, "InstantiationToGetClass");

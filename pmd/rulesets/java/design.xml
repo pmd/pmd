@@ -1697,7 +1697,47 @@ public class Foo {
 }
         ]]></example>
     </rule>
-    
+   
+  <rule name="FieldDeclarationsShouldBeAtStartOfClass"
+      language="java"
+      since="5.0"
+      message="Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes."
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/java/design.html#FieldDeclarationsShouldBeAtStartOfClass">
+    <description>
+      <![CDATA[
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+      ]]>
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
+//ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+ [count(../preceding-sibling::ClassOrInterfaceBodyDeclaration/child::*[1][name() != 'FieldDeclaration' and name() != 'Annotation']) > 0]
+          ]]>
+        </value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
+public class HelloWorldBean {
+
+  // Field declared before methods / inner classes - OK
+  private String _thing;
+
+  public String getMessage() {
+    return "Hello World!";
+  }
+
+  // Field declared after methods / inner classes - avoid this
+  private String _fieldInWrongLocation;
+}
+      ]]>
+    </example>
+  </rule>
+ 	 
 <!--
 	<rule 	name="TooManyHttpFilter"
 	         since="4.2"
