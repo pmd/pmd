@@ -90,6 +90,7 @@
 		<exclude name="AccessorClassGeneration"/>
 		<exclude name="SimplifyBooleanExpressions"/>
 		<exclude name="UseVarargs"/>
+		<exclude name="FieldDeclarationsShouldBeAtStartOfClass"/>
 	</rule>
 
 	<rule ref="rulesets/java/empty.xml">
