@@ -57,4 +57,21 @@ public class HelloWorldBean {
       ]]>
     </code>
   </test-code>
+  <test-code>
+    <description>
+      <![CDATA[
+Initial report where rule was introduced, [ 2487971 ] False positive with field-level annotations
+      ]]></description>
+    <expected-problems>0</expected-problems>
+    <code>
+      <![CDATA[
+public class MyTest extends AbstractJUnit4SpringContextTests {
+@Autowired
+protected String _first;
+@Autowired
+protected String _second;
+}
+      ]]>
+    </code>
+  </test-code>
 </test-data>
