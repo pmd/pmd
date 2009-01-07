@@ -355,6 +355,22 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>com.atlassian.maven.plugins</groupId>
+          <artifactId>maven-clover2-plugin</artifactId>
+          <configuration>
+          <jdk>1.5</jdk>
+          <licenseLocation>tools/config/clover2.license</licenseLocation>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>instrument</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
     </plugins>
   </build>
@@ -504,6 +520,13 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <artifactId>maven-clover2-plugin</artifactId>
+        <configuration>
+          <licenseLocation>tools/config/clover2.license</licenseLocation>
+        </configuration>
+      </plugin>
     </plugins>
   </reporting>
 
@@ -522,57 +545,6 @@
           <url>scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs</url>
         </site>
       </distributionManagement>
-    </profile>
-    <profile>
-      <id>clover</id>
-      <activation>
-        <activeByDefault>true</activeByDefault> 
-      </activation>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>atlassian-m2-repository</id>
-          <name>Atlassian Maven 2.x Repository</name>
-          <url>http://repository.atlassian.com/maven2</url>
-        </pluginRepository>
-      </pluginRepositories>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-clover-plugin</artifactId>
-            <groupId>com.atlassian.maven.plugins</groupId>
-            <configuration>
-              <jdk>1.5</jdk>
-              <licenseLocation>tools/config/clover2.license</licenseLocation>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>com.cenqua.clover</groupId>
-                <artifactId>clover</artifactId>
-                <version>2.4.2</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <phase>pre-site</phase>
-                <goals>
-                  <goal>instrument</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <reporting>
-        <plugins>
-          <plugin>
-            <artifactId>maven-clover-plugin</artifactId>
-            <groupId>com.atlassian.maven.plugins</groupId>
-            <configuration>
-              <licenseLocation>tools/config/clover2.license</licenseLocation>
-            </configuration>
-          </plugin>
-        </plugins>
-      </reporting>
     </profile>
   </profiles>
 
