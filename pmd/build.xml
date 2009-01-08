@@ -207,17 +207,11 @@
 		</cpd>
 	</target>
 
-	<!-- FUTURE: Not really working for me... -->
-	<target name="requires-junit" description="Ensures JUnit is available">
-		<available classname="org.junit.Assert" property="junit.available" classpathref="dependencies.path" />
-		<fail unless="junit.available" message="Could not find JUnit 4... please place a junit.jar file in the CLASSPATH." />
-	</target>
-
 	<condition property="testResultsToFile">
 		<istrue value="${outputTestResultsToFile}"/>
 	</condition>
 
-	<target name="test" depends="requires-junit,compile,copy" description="Runs the unit tests">
+	<target name="test" depends="compile,copy" description="Runs the unit tests">
 		<antcall target="test-execute">
 			<param name="test.outputdir" value="${dir.reports}/test"/>
 			<param name="test.jvm" value="java"/>
@@ -227,7 +221,7 @@
 		</antcall>
 	</target>
 
-	<target name="regress" depends="requires-junit,compile,copy" description="Runs the regression unit tests">
+	<target name="regress" depends="compile,copy" description="Runs the regression unit tests">
 		<antcall target="test-execute">
 			<param name="test.outputdir" value="${dir.reports}/regress"/>
 			<param name="test.jvm" value="java"/>
