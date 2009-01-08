@@ -465,21 +465,6 @@ public class]]></replacevalue>
 		</exec>
 	</target>
 
-	<!-- FUTURE: Externalize this stuff in tools/ant ? -->
-	<target name="tomserver" depends="recompile,jar" description="Uploads the current PMD jar file to Tom's web site">
-		<echo message="Uploading jar file" />
-		<exec executable="scp" os="Linux">
-			<arg line=" ${dir.lib}/pmd-${version}.jar tom@infoether.com:public_html/" />
-		</exec>
-	</target>
-
-	<target name="win32tomserver" depends="dist" description="Uploads the current PMD jar file to Tom's web site">
-		<echo message="Uploading jar file" />
-		<exec executable="pscp" os="Windows">
-			<arg line=" ${dir.lib}/pmd-${version}.jar tom@infoether.com:public_html/" />
-		</exec>
-	</target>
-
 	<target name="javadoc" description="Generates Javadocs">
 		<mkdir dir="${dir.api}" />
 
