@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
+import org.eclipse.swt.graphics.Image;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.AbstractTableLabelProvider;
 
@@ -40,6 +42,24 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
         }
 
         return "??";
+    }
+    
+    /**
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(Object, int)
+     */
+    public Image getColumnImage(Object element, int columnIndex) {
+       
+        if (element instanceof RuleGroup) {
+            return null;
+        }
+                
+        if (element instanceof Rule) {
+            Rule rule = (Rule) element;         
+            Object value = columnDescriptors[columnIndex].accessor().valueFor(rule);
+            return value == null ? null : columnDescriptors[columnIndex].imageFor(value);
+        }
+
+        return null;
     }
     
     /**

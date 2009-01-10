@@ -6,10 +6,11 @@ import java.util.Map;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
@@ -22,7 +23,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 public class RuleColumnDescriptor {
 
 	private String             label;
-	private ImageDescriptor    imageDesc;
+	private String             imagePath;
 	private int                alignment;
 	private int                width;
 	private RuleFieldAccessor  accessor;
@@ -82,7 +83,7 @@ public class RuleColumnDescriptor {
      */
     public RuleColumnDescriptor(String labelKey, String theImagePath, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, CellPainterBuilder thePainterBuilder) {
         label = stringFor(labelKey);
-        imageDesc = theImagePath != null ? PMDPlugin.getImageDescriptor(theImagePath) : null;
+        imagePath = theImagePath;
         alignment = theAlignment;
         width = theWidth;
         accessor = theAccessor;
@@ -99,8 +100,8 @@ public class RuleColumnDescriptor {
         tc.setText(label);
         tc.setWidth(width);
         tc.setResizable(isResizeable);
-        if (imageDesc != null) {
-            tc.setImage(imageDesc.createImage());
+        if (imagePath != null) {
+            tc.setImage(ResourceManager.imageFor(imagePath));
         }
         tc.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event e) {
@@ -124,4 +125,8 @@ public class RuleColumnDescriptor {
 	 * @return RuleFieldAccessor
 	 */
 	public RuleFieldAccessor accessor() { return accessor; }
+	
+	public Image imageFor(Object value) {
+	    return null;       // TODO
+	}
 }

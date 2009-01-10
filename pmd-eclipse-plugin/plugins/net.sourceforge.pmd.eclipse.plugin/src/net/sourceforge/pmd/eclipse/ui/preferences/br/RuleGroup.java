@@ -5,6 +5,8 @@ import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Holds a collection of rules as assembled by the tree widget manager.
@@ -89,21 +91,38 @@ public class RuleGroup implements Comparable<RuleGroup> {
 	}
 	
 	/**
-	 * Returns the priority level common to all rules held
-	 * by the receiver, returns null if they differ.
+	 * Returns the name of the ruleset common to all rules
+	 * held by the receiver, returns null if they differ.
 	 * 
-	 * @return RulePriority
+	 * @return String
 	 */
-	public RulePriority commonPriority() {
+	public String commonRuleset() {
 	    
 	    if (rules.isEmpty()) return null;
 	    
-	    RulePriority priority = rules.get(0).getPriority();
+	    String rulesetName = rules.get(0).getRuleSetName();
 	    for (int i=1; i<rules.size(); i++) {
-	        if (rules.get(i).getPriority() != priority) return null;
+	        if (!StringUtil.areSemanticEquals(rules.get(i).getRuleSetName(), rulesetName)) return null;
 	    }
-	    return priority;
+	    return rulesetName;
 	}
+	
+	   /**
+     * Returns the priority level common to all rules held
+     * by the receiver, returns null if they differ.
+     * 
+     * @return RulePriority
+     */
+    public RulePriority commonPriority() {
+        
+        if (rules.isEmpty()) return null;
+        
+        RulePriority priority = rules.get(0).getPriority();
+        for (int i=1; i<rules.size(); i++) {
+            if (rules.get(i).getPriority() != priority) return null;
+        }
+        return priority;
+    }
 	
 	/**
 	 * @return boolean

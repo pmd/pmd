@@ -7,6 +7,7 @@ import java.util.List;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -50,6 +51,13 @@ public class RuleSelection {
         return item instanceof Rule ?
                 ((Rule)item).getPriority() :
                 ((RuleGroup)item).commonPriority();
+    }
+    
+    private String commonRulesetFor(Object item) {
+        
+        return item instanceof Rule ?
+                ((Rule)item).getRuleSetName() :
+                ((RuleGroup)item).commonRuleset();
     }
     
     public void setPriority(RulePriority priority) {
@@ -116,4 +124,21 @@ public class RuleSelection {
        return priority;
     }
     
+    /**
+     *  Iterates through the currently selected rules and returns
+     *  their common ruleset name or null if they differ.
+     */
+    public String commonRuleset() {
+        
+        if (ruleItems == null || ruleItems.length == 0) return null;
+        
+        String rulesetName = commonRulesetFor(ruleItems[0]);
+        if (StringUtil.isEmpty(rulesetName)) return null;
+        
+        for (int i=1; i<ruleItems.length; i++) {
+            if (StringUtil.areSemanticEquals(rulesetName, commonRulesetFor(ruleItems[i]))) return null;
+        }
+        
+       return rulesetName;
+    }
 }

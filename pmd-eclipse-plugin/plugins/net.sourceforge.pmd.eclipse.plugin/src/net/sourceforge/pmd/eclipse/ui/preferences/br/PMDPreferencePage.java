@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,13 +20,16 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
+import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.designer.Designer;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -49,6 +53,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -143,9 +148,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
     private Map<Integer, List<Listener>> paintListeners = new HashMap<Integer, List<Listener>>();
 	
-	private RuleSelection           ruleSelection; // may hold rules and/or group nodes
+	private RuleSelection               ruleSelection; // may hold rules and/or group nodes
 	private Map<RulePriority, MenuItem> priorityMenusByPriority;
-	
+	private Map<String, MenuItem>       rulesetMenusByName;
+    
 	private boolean 			modified = false;
 	private static PMDPlugin	plugin = PMDPlugin.getDefault();
 	
@@ -299,11 +305,15 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 	public static String ruleSetNameFrom(Rule rule) {
 
-		String name = rule.getRuleSetName();
-		int pos = name.toUpperCase().indexOf("RULES");
-		return pos < 0 ? name : name.substring(0, pos-1);
+		return ruleSetNameFrom( rule.getRuleSetName() );
 	}
 
+    public static String ruleSetNameFrom(String rulesetName) {
+
+        int pos = rulesetName.toUpperCase().indexOf("RULES");
+        return pos < 0 ? rulesetName : rulesetName.substring(0, pos-1);
+    }
+	
 	private void redrawTable() {
 		groupBy(groupingColumn);
 	}
@@ -534,20 +544,26 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return ruleTree;
 	}
 	
+	public static Image imageFor(RulePriority priority) {
+	    String codePath = PMDUiConstants.buttonCodePathFor(priority);
+	    return ResourceManager.imageFor(codePath);
+	}
+	
 	private Menu createMenuFor(Control control) {
 	    
 	    Menu menu = new Menu(control);
 
-	    MenuItem item2 = new MenuItem (menu, SWT.CASCADE);
-	    item2.setText(stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
-	    Menu subMenu = new Menu (menu);
-	    item2.setMenu (subMenu);
+	    MenuItem priorityMenu = new MenuItem (menu, SWT.CASCADE);
+	    priorityMenu.setText(stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
+	    Menu subMenu = new Menu(menu);
+	    priorityMenu.setMenu (subMenu);
 	    priorityMenusByPriority = new HashMap<RulePriority, MenuItem>();
 	    
 	    for (RulePriority priority : RulePriority.values()) {
     	    MenuItem priorityItem = new MenuItem (subMenu, SWT.RADIO);
     	    priorityMenusByPriority.put(priority, priorityItem);
     	    priorityItem.setText(priority.getName());  // TODO need to internationalize?
+    	 //   priorityItem.setImage(imageFor(priority));  not visible with radiobuttons
     	    final RulePriority pri = priority;
     	    priorityItem.addSelectionListener( new SelectionListener() {    	        
                 public void widgetSelected(SelectionEvent e) { 
@@ -586,8 +602,63 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         return menu;
 	}
 	
+	private void addRulesetMenuOptions(Menu menu) {
+	    
+        MenuItem rulesetMenu = new MenuItem (menu, SWT.CASCADE);
+        rulesetMenu.setText("Ruleset");
+        Menu rulesetSubMenu = new Menu(menu);
+        rulesetMenu.setMenu(rulesetSubMenu);
+        rulesetMenusByName = new HashMap<String, MenuItem>();
+            
+        MenuItem demoItem = new MenuItem(rulesetSubMenu, SWT.PUSH);
+        demoItem.setText("---demo only---");
+        
+        for (String rulesetName : rulesetNames()) {
+            MenuItem rulesetItem = new MenuItem(rulesetSubMenu, SWT.RADIO);
+            rulesetMenusByName.put(rulesetName, rulesetItem);
+            rulesetItem.setText(rulesetName);
+            final String rulesetStr = rulesetName;
+            rulesetItem.addSelectionListener( new SelectionListener() {                
+                public void widgetSelected(SelectionEvent e) { 
+                    setRuleset(rulesetStr); 
+                    }
+                public void widgetDefaultSelected(SelectionEvent e) {  }}
+            );
+         }  
+	}
 	private void popupRuleSelectionMenu(Event event) {
 	    
+	    // have to do it here or else the ruleset var is null in the menu setup - timing issue
+	    if (rulesetMenusByName == null) {
+	        addRulesetMenuOptions(ruleListMenu);
+	    }
+	    
+        adjustMenuPrioritySettings();
+        adjustMenuRulesetSettings();
+	    ruleListMenu.setLocation(event.x, event.y);
+        ruleListMenu.setVisible(true);
+	}
+
+    private void adjustMenuRulesetSettings() {
+        
+        String rulesetName = ruleSetNameFrom(ruleSelection.commonRuleset());
+        Iterator<Map.Entry<String, MenuItem>> iter = rulesetMenusByName.entrySet().iterator();
+       
+        while (iter.hasNext()) {
+            Map.Entry<String, MenuItem> entry = iter.next();
+            MenuItem item = entry.getValue();
+            if (StringUtil.areSemanticEquals(entry.getKey(), rulesetName)) {
+                item.setSelection(true);
+                item.setEnabled(false);
+            } else {
+                item.setSelection(false);
+                item.setEnabled(true);
+                }
+        }
+    }
+
+    private void adjustMenuPrioritySettings() {
+        
         RulePriority priority = ruleSelection.commonPriority();
 	    Iterator<Map.Entry<RulePriority, MenuItem>> iter = priorityMenusByPriority.entrySet().iterator();
 	   
@@ -602,9 +673,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	            item.setEnabled(true);
 	            }
 	    }
-	    ruleListMenu.setLocation(event.x, event.y);
-        ruleListMenu.setVisible(true);
-	}
+    }
 	
 	private boolean hasPriorityGrouping() {
 	    return 
@@ -621,6 +690,19 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    } else {
 	        ruleTreeViewer.update(ruleSelection.allRules().toArray(), null);
 	    }
+	}
+	
+	private String[] rulesetNames() {
+	    
+	    Set<String> names = new HashSet<String>();
+	    for (Rule rule : ruleSet.getRules()) {
+	        names.add(ruleSetNameFrom(rule));  // if we strip out the 'Rules' portions then we don't get matches...need to rename rulesets
+	    }
+	    return names.toArray(new String[names.size()]);
+	}
+	
+	private void setRuleset(String rulesetName) {
+	    // TODO
 	}
 		
 	/**
