@@ -36,6 +36,8 @@
 
 package net.sourceforge.pmd.eclipse.ui;
 
+import net.sourceforge.pmd.RulePriority;
+
 
 /**
  * This interface groups all plugin constants
@@ -133,6 +135,17 @@ public class PMDUiConstants {
      */
     private PMDUiConstants() {
         super();
+    }    
+    
+    public static String buttonCodePathFor(RulePriority priority) {
+        
+        switch (priority.getPriority()) {
+            case 1: return ICON_BUTTON_PRIO1;
+            case 2: return ICON_BUTTON_PRIO2;
+            case 3: return ICON_BUTTON_PRIO3;
+            case 4: return ICON_BUTTON_PRIO4;
+            case 5: return ICON_BUTTON_PRIO5;
+            default : throw new RuntimeException("unknown priority level");
+        }
     }
-
 }
