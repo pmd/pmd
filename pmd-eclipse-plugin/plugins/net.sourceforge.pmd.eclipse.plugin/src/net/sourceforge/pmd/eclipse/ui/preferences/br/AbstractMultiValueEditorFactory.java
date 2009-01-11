@@ -43,19 +43,26 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         
         if (columnIndex == 1) {
             
-            Composite panel = new Composite(parent, SWT.NONE);
-            panel.setLayout(new GridLayout(2, false));
+//            Composite panel = new Composite(parent, SWT.NONE);
+//            panel.setLayout(new GridLayout(2, false));
+//            
+//            Text textWidget =  new Text(panel, SWT.SINGLE | SWT.BORDER);
+//  //          final Button butt =  new Button(panel, SWT.BORDER);
+//  //          butt.setText("...");
+//            
+//            textWidget.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             
-            Text textWidget =  new Text(panel, SWT.SINGLE | SWT.BORDER);
-  //          final Button butt =  new Button(panel, SWT.BORDER);
-  //          butt.setText("...");
-            
-            textWidget.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            final Text textWidget =  new Text(parent, SWT.SINGLE | SWT.BORDER);
+            GridData gridData = new GridData();
+            gridData.horizontalAlignment = SWT.FILL;
+            gridData.grabExcessHorizontalSpace = true;
+            textWidget.setLayoutData(gridData);
             
             fillWidget(textWidget, desc, rule);
             configure(textWidget, desc, rule, listener);
 
-            return panel;
+//            return panel;
+            return textWidget;
         }
         
         return null;

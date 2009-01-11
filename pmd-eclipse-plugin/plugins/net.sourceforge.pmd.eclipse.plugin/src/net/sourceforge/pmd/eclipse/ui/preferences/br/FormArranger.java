@@ -42,9 +42,11 @@ public class FormArranger {
 		return editorFactoriesByValueType.get(desc.type());
 	}
 
-	private void clearChildren() {
+	public void clearChildren() {
 		Control[] kids = parent.getChildren();
 		for (int i=0; i<kids.length; i++) kids[i].dispose();
+        parent.pack();
+        rule = null;
 	}
 
 	/**
@@ -56,6 +58,7 @@ public class FormArranger {
 	    if (rule == theRule) return;
 	    
 		clearChildren();
+		
 		rule = theRule;
 		
 		if (rule == null) return;

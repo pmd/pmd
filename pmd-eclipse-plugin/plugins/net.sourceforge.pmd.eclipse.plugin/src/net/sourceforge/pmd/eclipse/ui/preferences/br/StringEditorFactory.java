@@ -7,6 +7,11 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -30,7 +35,7 @@ public class StringEditorFactory extends AbstractEditorFactory {
 	 * @param desc PropertyDescriptor<?>
 	 * @param rule Rule
 	 */
-	protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
+	protected void fillWidget(final Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
 		String val = (String)rule.getProperty(desc);
 		textWidget.setText(val == null ? "" : val);
 	}

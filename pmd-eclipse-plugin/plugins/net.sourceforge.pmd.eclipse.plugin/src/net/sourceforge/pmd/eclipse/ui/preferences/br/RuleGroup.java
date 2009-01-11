@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -15,10 +15,10 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class RuleGroup implements Comparable<RuleGroup> {
 
-	private Comparable id;
-	private String     label;
-	private String     description;
-	private List<Rule> rules = new ArrayList<Rule>();
+	private Comparable     id;
+	private String         label;
+	private String         description;
+	private List<Rule>     rules = new ArrayList<Rule>();
 	
 	/**
 	 * @param theId Object
@@ -43,7 +43,7 @@ public class RuleGroup implements Comparable<RuleGroup> {
 	/**
 	 * @return Comparable
 	 */
-	public Comparable id() { return id; }
+	public Comparable<?> id() { return id; }
 	
 	/**
 	 * @return String
@@ -107,7 +107,7 @@ public class RuleGroup implements Comparable<RuleGroup> {
 	    return rulesetName;
 	}
 	
-	   /**
+   /**
      * Returns the priority level common to all rules held
      * by the receiver, returns null if they differ.
      * 
@@ -124,6 +124,25 @@ public class RuleGroup implements Comparable<RuleGroup> {
         return priority;
     }
 	
+    /**
+     * Returns the value of the string property of all rules held
+     * by the receiver, returns null if the values differ.
+     * 
+     * 
+     * @return String
+     */
+    // TODO make this into a Generic method
+    public String commonStringProperty(StringProperty desc) {
+        
+        if (rules.isEmpty()) return null;
+        
+        String value = rules.get(0).getProperty(desc);
+        for (int i=1; i<rules.size(); i++) {
+            if (!StringUtil.areSemanticEquals(rules.get(i).getProperty(desc), value)) return null;
+        }
+        return value;
+    }
+    
 	/**
 	 * @return boolean
 	 */
@@ -139,4 +158,8 @@ public class RuleGroup implements Comparable<RuleGroup> {
 		
 		return id.compareTo(otherGroup.id());
 	};
+	
+	public void setProperty(StringProperty desc, String value) {
+	    for (Rule rule : rules) rule.setProperty(desc, value);
+	}
 }

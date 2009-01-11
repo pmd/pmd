@@ -22,6 +22,12 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         super(theListener);
     }
 
+    protected boolean canManageMultipleRules() { return false; }
+    
+    protected void clearControls() {
+        descriptionBox.setText("");
+    }
+    
     public Control setupOn(Composite parent) {
         
         descriptionBox = buildDescriptionBox(parent);       
@@ -29,15 +35,15 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         descriptionBox.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                                
-                if (currentRule == null) return;
+                Rule soleRule = soleRule();
                 
                 String cleanValue = descriptionBox.getText().trim();
-                String existingValue = currentRule.getDescription();
+                String existingValue = soleRule.getDescription();
                 
                 if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
                 
-                currentRule.setDescription(cleanValue);
-                changeListener.changed(currentRule, null, cleanValue);                
+                soleRule.setDescription(cleanValue);
+                changeListener.changed(rules, null, cleanValue);                
             }
         }); 
         
@@ -54,14 +60,14 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         return new Text(parent, SWT.BORDER | SWT.WRAP | SWT.MULTI);
     }
     
-    public void showRule(Rule rule) {
+    protected void adapt() {
         
-        currentRule = rule;
+        Rule soleRule = soleRule();
         
-        if (rule == null) {
+        if (soleRule == null) {
             shutdown(descriptionBox);
         } else {
-            show(descriptionBox, rule.getDescription().trim());
+            show(descriptionBox, soleRule.getDescription().trim());
         }
     }
 

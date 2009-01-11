@@ -3,9 +3,8 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.Rule;
-
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TabFolder;
@@ -16,8 +15,7 @@ import org.eclipse.swt.widgets.TabFolder;
  */
 public class PerRulePropertyPanelManager extends AbstractRulePanelManager {
 
-    private Composite       composite;
-    private FormArranger    formArranger;
+    private FormArranger formArranger;
 
     private static final Map<Class<?>, EditorFactory> editorFactoriesByPropertyType;
     
@@ -42,19 +40,30 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager {
         super(theListener);
     }
 
-    public Control setupOn(TabFolder parent, ValueChangeListener changeListener) {
-                      
-        composite = new Composite(parent, SWT.NONE);   
-
-        formArranger = new FormArranger(composite, editorFactoriesByPropertyType, changeListener);
-        
-        return composite;
+    protected boolean canManageMultipleRules() { return false; }
+    
+    protected void clearControls() {
+        formArranger.clearChildren();
     }
     
-    public void showRule(Rule rule) {
-     
-        currentRule = rule;
-                       
-        formArranger.arrangeFor(rule);
+    public Control setupOn(TabFolder parent, ValueChangeListener changeListener) {
+                      
+        ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        
+        Composite composite = new Composite(sc, SWT.NONE);   
+
+        sc.setContent(composite);
+        sc.setExpandHorizontal(true);
+        sc.setExpandVertical(true);
+        sc.setMinSize(composite.computeSize(500, 250)); //TODO a best guess..could be made adaptive?
+        
+        formArranger = new FormArranger(composite, editorFactoriesByPropertyType, changeListener);
+        
+        return sc;
+    }
+    
+    protected void adapt() {
+                            
+        formArranger.arrangeFor(soleRule());
     }
 }

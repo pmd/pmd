@@ -34,6 +34,14 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 		super(listener);
 	}
 	
+	protected boolean canManageMultipleRules() { return true; }
+	 
+    
+    protected void clearControls() {
+        excludeWidget.setText("");
+        xpathWidget.setText("");
+    }
+	
 	private void addListeners(final Text control, final StringProperty desc, final Control colourWindow) {
 		
 		addTextListeners(control, desc);
@@ -100,22 +108,16 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 		return panel;
 	}
 	
-	/**
-	 * Method showRule.
-	 * @param rule Rule
-	 */
-	public void showRule(Rule rule) {
-		
-		currentRule = rule;
-		
-		if (rule == null) {
+	protected void adapt() {
+				
+		if (rules == null) {
 			shutdown(excludeWidget);
 			shutdown(xpathWidget);
 			return;
 		}
 		
-		show(excludeWidget, rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR));
-		show(xpathWidget, rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR));
+		show(excludeWidget, rules.commonStringValue(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR));
+		show(xpathWidget, rules.commonStringValue(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR));
 	}
 }
 

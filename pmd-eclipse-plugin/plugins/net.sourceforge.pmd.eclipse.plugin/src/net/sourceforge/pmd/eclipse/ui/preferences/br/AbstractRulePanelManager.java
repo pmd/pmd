@@ -16,13 +16,28 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class AbstractRulePanelManager implements RulePropertyManager {
 
-    protected Rule                      currentRule;
+    protected RuleSelection             rules;
     final protected ValueChangeListener changeListener;
     
     public AbstractRulePanelManager(ValueChangeListener theListener) {
         changeListener = theListener;
     }
 
+    public void manage(RuleSelection theRules) {
+        rules = theRules;
+        
+        if (rules.hasMultipleRules() && !canManageMultipleRules()) {
+            hide();
+            return;
+        }
+        
+        adapt();
+    }
+    
+    private void hide() {
+        clearControls();
+    }
+    
     protected void addTextListeners(final Text control, final StringProperty desc) {
         
         control.addListener(SWT.FocusOut, new Listener() {
@@ -32,21 +47,31 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
         });
     }
     
+    protected abstract boolean canManageMultipleRules();
+    
+    protected abstract void adapt();
+    
+    protected abstract void clearControls();
+    
+    protected Rule soleRule() {
+        return rules.soleRule();
+    }
+    
     /**
      * @param property StringProperty
      * @param newValue String
      */
     protected void changed(StringProperty property, String newValue) {
         
-        if (currentRule == null) return;
+        if (rules == null) return;
         
         String cleanValue = newValue.trim();
-        String existingValue = currentRule.getProperty(property);
+        String existingValue = rules.commonStringValue(property);
         
         if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
         
-        currentRule.setProperty(property, cleanValue);
-        changeListener.changed(currentRule, property, cleanValue);
+        rules.setValue(property, cleanValue);
+        changeListener.changed(rules, property, cleanValue);
     }
     
     protected void shutdown(Text control) {

@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -54,6 +53,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -67,6 +69,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Tree;
@@ -137,10 +140,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private Button 			     editRuleButton;
 	private RuleSet 			 ruleSet;       // TODO - what is this used for?  - br
 	private TabFolder 		     tabFolder;
-	private Set 				 checkedRules = new HashSet();
+	private Set<Object> 		 checkedRules = new HashSet<Object>();
 	private Menu                 ruleListMenu;
 	
-	private RulePropertyManager[]   rulePropertyManagers;  // TODO make multi-rule capable
+	private RulePropertyManager[]   rulePropertyManagers;
 
 	private boolean					sortDescending;
 	private RuleFieldAccessor 		columnSorter = RuleFieldAccessor.name;	// initial sort
@@ -157,8 +160,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	
     private static String stringFor(String key) {
         return plugin.getStringTable().getString(key);
-    }
-    
+    }    
 	
 	/**
 	 * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
@@ -200,61 +202,88 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return composite;
 	}
 
-	/**
-	 * Main layout
-	 * @param parent Composite
-	 */
-	private void layoutControls(Composite parent) {
+	private Composite createRuleSection(Composite parent) {
+	    
+	    Composite ruleSection = new Composite(parent, SWT.NULL);
+	    
+	    // Create the controls (order is important !)
+        Composite groupCombo = buildGroupCombo(ruleSection, "Rules grouped by ");
 
-		// Create the controls (order is important !)
-		Composite groupCombo = buildGroupCombo(parent, "Rules grouped by ");
+        Tree ruleTree = buildRuleTreeViewer(ruleSection);
+        groupBy(null);
 
-		Tree ruleTree = buildRuleTreeViewer(parent);
-		groupBy(null);
+        Composite ruleTableButtons = buildRuleTableButtons(ruleSection);
+        Composite rulePropertiesTableButtons = buildRulePropertiesTableButtons(ruleSection);
 
-		Composite ruleTableButtons = buildRuleTableButtons(parent);
-		TabFolder tabFolder = buildTabFolder(parent);
-		Composite rulePropertiesTableButton = buildRulePropertiesTableButtons(parent);
+        // Place controls on the layout
+        GridLayout gridLayout = new GridLayout(3, false);
+        ruleSection.setLayout(gridLayout);
 
-		// Place controls on the layout
-		GridLayout gridLayout = new GridLayout(3, false);
-		parent.setLayout(gridLayout);
+        GridData data = new GridData();
+        data.horizontalSpan = 3;
+        groupCombo.setLayoutData(data);
 
-		GridData data = new GridData();
-		data.horizontalSpan = 3;
-		groupCombo.setLayoutData(data);
+        data = new GridData();
+        data.heightHint = 200;                          data.widthHint = 350;
+        data.horizontalSpan = 1;
+        data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;          data.grabExcessVerticalSpace = true;
+        ruleTree.setLayoutData(data);
 
-		data = new GridData();
-		data.heightHint = 200;
-		data.widthHint = 350;
-		data.horizontalSpan = 1;
-		data.horizontalAlignment = GridData.FILL;
-		data.verticalAlignment = GridData.FILL;
-		data.grabExcessHorizontalSpace = true;
-		data.grabExcessVerticalSpace = true;
-		ruleTree.setLayoutData(data);
+        data = new GridData();
+        data.horizontalSpan = 1;
+        data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
+        ruleTableButtons.setLayoutData(data);
 
-		data = new GridData();
-		data.horizontalSpan = 1;
-		data.horizontalAlignment = GridData.FILL;
-		data.verticalAlignment = GridData.FILL;
-		ruleTableButtons.setLayoutData(data);
-
-		data = new GridData();
-		data.horizontalSpan = 2;
-		data.horizontalAlignment = GridData.FILL;
-		data.verticalAlignment = GridData.FILL;
-		data.grabExcessHorizontalSpace = true;
-		data.heightHint = 150;
-		data.widthHint = 500;
-		tabFolder.setLayoutData(data);
-
-		data = new GridData();
-		data.horizontalSpan = 1;
-		data.horizontalAlignment = GridData.FILL;
-		data.verticalAlignment = GridData.FILL;
-		rulePropertiesTableButton.setLayoutData(data);
+        data = new GridData();
+        data.horizontalSpan = 1;
+        data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
+        rulePropertiesTableButtons.setLayoutData(data);
+        
+        return ruleSection;
 	}
+		
+	   /**
+     * Main layout
+     * @param parent Composite
+     */
+    private void layoutControls(Composite parent) {
+
+        parent.setLayout(new FormLayout());
+
+        // Create the sash first, so the other controls can be attached to it.
+        final Sash sash = new Sash(parent, SWT.HORIZONTAL);
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);       // attach to left
+        data.right = new FormAttachment(100, 0);    // attach to right
+        data.top = new FormAttachment(50, 0);       // attach halfway down
+        sash.setLayoutData(data);
+        sash.addSelectionListener(new SelectionAdapter() {
+          public void widgetSelected(SelectionEvent event) {
+            // Re-attach to the top edge, and we use the y value of the event to determine the offset from the top
+            ((FormData)sash.getLayoutData()).top = new FormAttachment(0, event.y);
+            sash.getParent().layout();
+          }
+        });
+
+        // Create the first text box and attach its bottom edge to the sash
+        Composite ruleSection = createRuleSection(parent);
+        data = new FormData();
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(sash, 0);
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        ruleSection.setLayoutData(data);
+
+        // Create the second text box and attach its top edge to the sash
+        TabFolder propertySection = buildTabFolder(parent);
+        data = new FormData();
+        data.top = new FormAttachment(sash, 0);
+        data.bottom = new FormAttachment(100, 0);
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        propertySection.setLayoutData(data);
+    }
 
 	public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(Rule rule) {
 
@@ -304,7 +333,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 
 	public static String ruleSetNameFrom(Rule rule) {
-
 		return ruleSetNameFrom( rule.getRuleSetName() );
 	}
 
@@ -330,7 +358,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		Label label = new Label(panel, 0);
 		label.setText(comboLabel);
-
 
 		final ComboViewer viewer = new ComboViewer(panel, SWT.DROP_DOWN);
 		viewer.setLabelProvider(new LabelProvider() {
@@ -364,12 +391,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		tabFolder = new TabFolder(parent, SWT.TOP);
 
-//		buildPropertyTab(tabFolder, 0);
-
 		rulePropertyManagers = new RulePropertyManager[] {
-		    buildPropertyTab(tabFolder, 0),
-		    buildDescriptionTab(tabFolder, 1),
-		    buildUsageTab(tabFolder, 2)
+		    buildPropertyTab(tabFolder,    0, "Properties"),
+		    buildDescriptionTab(tabFolder, 1, stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION)),
+		    buildUsageTab(tabFolder,       2, "Usage")
 		};
 
 		tabFolder.pack();
@@ -380,10 +405,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @param parent TabFolder
 	 * @param index int
 	 */
-	private RulePropertyManager buildPropertyTab(TabFolder parent, int index) {
+	private RulePropertyManager buildPropertyTab(TabFolder parent, int index, String title) {
 
 	    TabItem propertyTab = new TabItem(parent, 0, index);
-		propertyTab.setText("Properties");
+		propertyTab.setText(title);
 
 		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(this);
 		propertyTab.setControl(
@@ -396,10 +421,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @param parent TabFolder
 	 * @param index int
 	 */
-	private RulePropertyManager buildDescriptionTab(TabFolder parent, int index) {
+	private RulePropertyManager buildDescriptionTab(TabFolder parent, int index, String title) {
 
 		TabItem tab = new TabItem(parent, 0, index);
-		tab.setText(stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION));
+		tab.setText(title);
 
         DescriptionPanelManager manager = new DescriptionPanelManager(this);
         tab.setControl(
@@ -413,10 +438,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @param parent TabFolder
 	 * @param index int
 	 */
-	private RulePropertyManager buildUsageTab(TabFolder parent, int index) {
+	private RulePropertyManager buildUsageTab(TabFolder parent, int index, String title) {
 
 		TabItem tab = new TabItem(parent, 0, index);
-		tab.setText("Usage");
+		tab.setText(title);
 
 		ExclusionPanelManager manager = new ExclusionPanelManager(this);
 		tab.setControl(
@@ -711,23 +736,12 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private void selectedItems(Object[] items) {
 
 	    ruleSelection = new RuleSelection(items);
-	    
-	    if (!ruleSelection.hasOneRule()) {
-	        adjustEditorsFor(null);
-	        return;
-	    }
-
+	    for (RulePropertyManager manager : rulePropertyManagers) manager.manage(ruleSelection);
+        
 	    Rule rule = ruleSelection.soleRule();
 	    
-	    adjustEditorsFor(rule);
 		removeRuleButton.setEnabled(rule != null);
 		editRuleButton.setEnabled(rule != null && ruleSelection.hasOneRule());
-
-	//	updatePropertyEditorFor(rule);
-	}
-	
-	private void adjustEditorsFor(Rule rule) {
-	    for (RulePropertyManager manager : rulePropertyManagers) manager.showRule(rule);
 	}
 	
 	/**
@@ -1250,11 +1264,17 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			}
 		}
 	}
+
+   public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
+        // TODO enhance to recognize default values
+        modified = true;                
+        ruleTreeViewer.update(rule, null);
+    }
 	
-	public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
+	public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
 		// TODO enhance to recognize default values
 		modified = true;				
-		ruleTreeViewer.update(rule, null);
+		for (Rule rule : selection.allRules()) ruleTreeViewer.update(rule, null);
 	}
 
 	public void sortBy(RuleFieldAccessor accessor) {
