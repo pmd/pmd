@@ -75,6 +75,8 @@ public class PMDUiConstants {
     public static final String ICON_LABEL_ERR_DFA = "icons/lab_errdfa.gif";
     public static final String ICON_LABEL_ARRUP = "icons/lab_arrup.gif";
     public static final String ICON_LABEL_ARRDN = "icons/lab_arrdn.gif";
+    
+    public static final String ICON_FILTER = "icons/filter.gif";
 
     public static final String ICON_PROJECT = "icons/obj_project.gif";
     public static final String ICON_PACKAGE = "icons/obj_package.gif";

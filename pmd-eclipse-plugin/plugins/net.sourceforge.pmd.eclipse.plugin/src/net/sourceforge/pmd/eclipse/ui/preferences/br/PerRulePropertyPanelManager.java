@@ -3,6 +3,17 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.BooleanEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.CharacterEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.IntegerEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiIntegerEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiStringEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiTypeEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.RealNumberEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.StringEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeEditorFactory;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
@@ -15,8 +26,12 @@ import org.eclipse.swt.widgets.TabFolder;
  */
 public class PerRulePropertyPanelManager extends AbstractRulePanelManager {
 
-    private FormArranger formArranger;
-
+    private FormArranger        formArranger;
+    private Composite           composite;
+    private ScrolledComposite   sComposite;
+    
+    private static final int MaxWidgetHeight = 32;  // pixels
+    
     private static final Map<Class<?>, EditorFactory> editorFactoriesByPropertyType;
     
     static {
@@ -48,22 +63,23 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager {
     
     public Control setupOn(TabFolder parent, ValueChangeListener changeListener) {
                       
-        ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        
-        Composite composite = new Composite(sc, SWT.NONE);   
+        sComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);        
+        composite = new Composite(sComposite, SWT.NONE);   
 
-        sc.setContent(composite);
-        sc.setExpandHorizontal(true);
-        sc.setExpandVertical(true);
-        sc.setMinSize(composite.computeSize(500, 250)); //TODO a best guess..could be made adaptive?
+        sComposite.setContent(composite);
+        sComposite.setExpandHorizontal(true);
+        sComposite.setExpandVertical(true);
         
         formArranger = new FormArranger(composite, editorFactoriesByPropertyType, changeListener);
         
-        return sc;
+        return sComposite;
     }
     
     protected void adapt() {
                             
-        formArranger.arrangeFor(soleRule());
+        int widgetRowCount = formArranger.arrangeFor(soleRule());
+        if (widgetRowCount < 0) return;
+        
+        sComposite.setMinSize(composite.computeSize(500, widgetRowCount * MaxWidgetHeight));
     }
 }

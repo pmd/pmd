@@ -92,24 +92,24 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 	// columns shown in the rule treetable in the desired order
 	private static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
-		RuleColumnDescriptor.name,
-		RuleColumnDescriptor.priorityName,
-		RuleColumnDescriptor.since,
-		RuleColumnDescriptor.ruleSetName,
-		RuleColumnDescriptor.ruleType,
-		RuleColumnDescriptor.minLangVers,
-		RuleColumnDescriptor.properties,
-//		RuleColumnDescriptor.filterExpression    regex text -> compact color dots (for comparison), needs a bit more polish
+		TextColumnDescriptor.name,
+		TextColumnDescriptor.priorityName,
+	//	TextColumnDescriptor.since,
+		TextColumnDescriptor.ruleSetName,
+		TextColumnDescriptor.ruleType,
+	//	TextColumnDescriptor.minLangVers,		
+		ImageColumnDescriptor.filterExpression,    // regex text -> compact color dots (for comparison)
+		TextColumnDescriptor.properties,
 		};
 	private static final Set<RuleColumnDescriptor> availableColumnSet = CollectionUtil.asSet(availableColumns);
 
 	// last item in this list is the grouping used at startup
 	private static final Object[][] groupingChoices = new Object[][] {
-		{ RuleColumnDescriptor.ruleSetName,       "Rule set" },   // TODO internationalize
-		{ RuleColumnDescriptor.since,             "PMD version" },
-		{ RuleColumnDescriptor.priorityName,      "Priority" },
-		{ RuleColumnDescriptor.ruleType,          "Type" },
-        { RuleColumnDescriptor.filterExpression,  "Regex filter" },
+		{ TextColumnDescriptor.ruleSetName,       "Rule set" },   // TODO i18l
+		{ TextColumnDescriptor.since,             "PMD version" },
+		{ TextColumnDescriptor.priorityName,      "Priority" },
+		{ TextColumnDescriptor.ruleType,          "Type" },
+        { ImageColumnDescriptor.filterExpression,  "Regex filter" },
 		{ null, "<no grouping>" }
 		};
 
@@ -121,6 +121,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		XPathRule.VERSION_DESCRIPTOR,
 		};
 
+	private static final int RuleTableFraction = 55;       // percent of screen height vs property tabs
 	private static final Map<Class<?>, ValueFormatter> formattersByType = new HashMap<Class<?>, ValueFormatter>();
 
 	static {   // used to render property values in short form in main table
@@ -243,7 +244,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         return ruleSection;
 	}
 		
-	   /**
+	/**
      * Main layout
      * @param parent Composite
      */
@@ -254,9 +255,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         // Create the sash first, so the other controls can be attached to it.
         final Sash sash = new Sash(parent, SWT.HORIZONTAL);
         FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);       // attach to left
-        data.right = new FormAttachment(100, 0);    // attach to right
-        data.top = new FormAttachment(50, 0);       // attach halfway down
+        data.left = new FormAttachment(0, 0);                   // attach to left
+        data.right = new FormAttachment(100, 0);                // attach to right
+        data.top = new FormAttachment(RuleTableFraction, 0);
         sash.setLayoutData(data);
         sash.addSelectionListener(new SelectionAdapter() {
           public void widgetSelected(SelectionEvent event) {
@@ -702,8 +703,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	
 	private boolean hasPriorityGrouping() {
 	    return 
-	        groupingColumn == RuleColumnDescriptor.priorityName || 
-	        groupingColumn == RuleColumnDescriptor.priority;
+	        groupingColumn == TextColumnDescriptor.priorityName || 
+	        groupingColumn == TextColumnDescriptor.priority;
 	}
 	
 	private void setPriority(RulePriority priority) {
@@ -1287,4 +1288,5 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		redrawTable();
 	}
 
+	
 }

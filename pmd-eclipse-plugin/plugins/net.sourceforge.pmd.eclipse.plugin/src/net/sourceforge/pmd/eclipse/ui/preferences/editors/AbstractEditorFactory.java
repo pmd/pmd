@@ -1,6 +1,7 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;

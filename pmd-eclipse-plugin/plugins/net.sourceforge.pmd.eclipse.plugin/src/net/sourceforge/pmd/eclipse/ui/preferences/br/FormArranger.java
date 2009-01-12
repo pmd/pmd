@@ -53,18 +53,18 @@ public class FormArranger {
 	 * Method arrangeFor.
 	 * @param theRule Rule
 	 */
-	public void arrangeFor(Rule theRule) {
+	public int arrangeFor(Rule theRule) {
 
-	    if (rule == theRule) return;
+	    if (rule == theRule) return -1;
 	    
 		clearChildren();
 		
 		rule = theRule;
 		
-		if (rule == null) return;
+		if (rule == null) return -1;
 		
 		Map<PropertyDescriptor<?>, Object> valuesByDescriptor = PMDPreferencePage.filteredPropertiesOf(rule);
-		if (valuesByDescriptor.isEmpty()) return;
+		if (valuesByDescriptor.isEmpty()) return 0;
 		
 		PropertyDescriptor<?>[] orderedDescs = (PropertyDescriptor[])valuesByDescriptor.keySet().toArray(new PropertyDescriptor[valuesByDescriptor.size()]);
 				
@@ -85,7 +85,7 @@ public class FormArranger {
         parent.setLayout(layout);
 		
 		widgets = new Control[rowCount][maxColumns];
-		if (maxColumns < 1) return;
+		if (maxColumns < 1) return 0;
 		
 		int rowsAdded = 0;
 		for (int i=0; i<orderedDescs.length; i++) {
@@ -95,6 +95,8 @@ public class FormArranger {
 		if (rowsAdded > 0) {
 		    parent.pack();
 			}
+		
+		return rowsAdded;
 	}
 
 	/**

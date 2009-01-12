@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -13,7 +14,7 @@ import org.eclipse.swt.graphics.Image;
 public class ResourceManager {
 
 
-    private Map<String, Image> imagesByCode;
+    private Map<String, Image> imagesByCode = new HashMap<String, Image>();
     
     private static ResourceManager instance = new ResourceManager();
     

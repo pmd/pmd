@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 import org.eclipse.swt.SWT;

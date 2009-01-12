@@ -7,7 +7,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ColourManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -101,7 +100,7 @@ public class Util {
                         
                         Color clr = colorManagerFor(event.display).colourFor(text);
                         event.gc.setBackground(clr);
-                        event.gc.fillRoundRectangle(event.x +1, event.y+2, width, height, 3, 3);
+                        event.gc.fillRectangle(event.x+1, event.y+2, width, height);
                         
                         event.gc.setBackground(original);
                     }

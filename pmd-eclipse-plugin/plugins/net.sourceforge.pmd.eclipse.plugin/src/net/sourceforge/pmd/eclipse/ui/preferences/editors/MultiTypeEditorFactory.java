@@ -1,10 +1,11 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;

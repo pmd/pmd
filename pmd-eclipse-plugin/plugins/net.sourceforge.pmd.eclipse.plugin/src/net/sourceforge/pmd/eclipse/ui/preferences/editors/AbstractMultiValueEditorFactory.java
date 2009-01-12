@@ -1,15 +1,15 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;

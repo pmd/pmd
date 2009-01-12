@@ -37,8 +37,7 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
                 
         if (element instanceof Rule) {
         	Rule rule = (Rule) element;        	
-        	Object value = columnDescriptors[columnIndex].accessor().valueFor(rule);
-        	return value == null ? "" : value.toString();        
+        	return columnDescriptors[columnIndex].stringValueFor(rule);      
         }
 
         return "??";
@@ -54,9 +53,8 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
         }
                 
         if (element instanceof Rule) {
-            Rule rule = (Rule) element;         
-            Object value = columnDescriptors[columnIndex].accessor().valueFor(rule);
-            return value == null ? null : columnDescriptors[columnIndex].imageFor(value);
+            Rule rule = (Rule) element;
+            return columnDescriptors[columnIndex].imageFor(rule);
         }
 
         return null;

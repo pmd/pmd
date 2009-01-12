@@ -1,17 +1,13 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;

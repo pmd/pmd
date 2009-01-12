@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.util;
 
 import java.util.HashMap;
 import java.util.Iterator;
