@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,11 +10,12 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.DoubleEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.FloatEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.IntegerEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiIntegerEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiStringEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiTypeEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.StringEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeEditorFactory2;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -32,7 +34,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     private ScrolledComposite   sComposite;
     private int                 widgetRowCount;
     
-    private static final int MaxWidgetHeight = 32;  // TODO derive this instead
+    private static final int MaxWidgetHeight = 30;  // TODO derive this instead
     
     private static final Map<Class<?>, EditorFactory> editorFactoriesByPropertyType;
     
@@ -47,8 +49,9 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         editorFactoriesByPropertyType.put(Object.class,     EnumerationEditorFactory.instance);
         editorFactoriesByPropertyType.put(Character.class,  CharacterEditorFactory.instance);
         
-        editorFactoriesByPropertyType.put(Class.class,      TypeEditorFactory.instance);
+        editorFactoriesByPropertyType.put(Class.class,      TypeEditorFactory2.instance);
         editorFactoriesByPropertyType.put(Class[].class,    MultiTypeEditorFactory.instance);
+        editorFactoriesByPropertyType.put(Method.class,     MethodEditorFactory.instance);
         editorFactoriesByPropertyType.put(String[].class,   MultiStringEditorFactory.instance);
         editorFactoriesByPropertyType.put(Integer[].class,  MultiIntegerEditorFactory.instance);
     }

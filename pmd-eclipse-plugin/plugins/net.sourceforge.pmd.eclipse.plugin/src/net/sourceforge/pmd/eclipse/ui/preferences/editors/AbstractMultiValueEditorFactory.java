@@ -82,6 +82,8 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
             final Composite panel = new Composite(parent, SWT.NONE);
             GridLayout layout = new GridLayout(3, false);
             layout.verticalSpacing = 0;
+            layout.marginHeight = 0;
+            layout.marginWidth = 0;
             panel.setLayout(layout);
             
             final Text textWidget = new Text(panel, SWT.SINGLE | SWT.BORDER);

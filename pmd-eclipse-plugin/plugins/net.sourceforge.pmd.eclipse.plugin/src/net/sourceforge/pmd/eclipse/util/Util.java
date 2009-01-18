@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.util;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
+import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
@@ -50,6 +52,53 @@ public class Util {
         for (int i=0; i<values.length; i++) largerOne[i] = values[i];
         largerOne[values.length] = newValue;
         return largerOne;        
+    }
+    
+    public static String signatureFor(Method method, String[] unwantedPrefixes) {
+
+        StringBuilder sb = new StringBuilder();
+        Class<?> returnType = method.getReturnType();
+        if (returnType.getName().equals("void")) {  // TODO is there a better way?
+            sb.append("void ");
+        } else {
+            signatureFor(returnType, unwantedPrefixes, sb);
+            sb.append(' ');
+        }
+        Class<?>[] types = method.getParameterTypes();
+        if (types.length == 0) {
+            sb.append(method.getName());
+            sb.append("()");
+            return sb.toString();
+        }
+        
+        sb.append(method.getName()).append('(');
+        signatureFor(types[0], unwantedPrefixes, sb);
+        for (int i=1; i<types.length; i++) {
+            sb.append(',');
+            signatureFor(types[i], unwantedPrefixes, sb);
+        }
+        sb.append(')');
+        return sb.toString();
+    }
+  
+    private static String filteredPrefixFrom(String paramType, String[] unwantedPrefixes) {
+        for (String prefix : unwantedPrefixes) {
+            if (paramType.startsWith(prefix)) {
+                return paramType.substring(prefix.length());
+            }
+        }
+        return paramType;
+    }
+    
+    private static void signatureFor(Class<?> type, String[] unwantedPrefixes, StringBuilder sb) {        
+        
+        String typeName = ClassUtil.asShortestName(
+                type.isArray() ? type.getComponentType() : type
+                );
+        typeName = filteredPrefixFrom(typeName, unwantedPrefixes);
+        
+        sb.append(typeName);
+        if (type.isArray()) sb.append("[]");
     }
     
     public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
