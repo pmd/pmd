@@ -39,6 +39,7 @@
       <fileset dir="." includes="custom_build.properties"/>
     </concat>
     <replace file="build.properties" token="buildDirectory=buildDir" value="buildDirectory=${basedir}"/>
+    <replace file="build.properties" token="baseLocation=${base}/eclipse" value="baseLocation=${eclipse.home}"/>
   </target>
 
   <target name="plugin" depends="init">
