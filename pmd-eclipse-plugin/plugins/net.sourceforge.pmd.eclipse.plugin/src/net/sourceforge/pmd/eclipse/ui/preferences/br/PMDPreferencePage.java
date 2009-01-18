@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -143,7 +144,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         formattersByType.put(Character.class,   ValueFormatter.ObjectFormatter);
         formattersByType.put(Character[].class, ValueFormatter.ObjectArrayFormatter);
         formattersByType.put(Class.class,       ValueFormatter.TypeFormatter);
-        formattersByType.put(Class[].class,     ValueFormatter.MultiTypeFormatter);
+        formattersByType.put(Class[].class,     ValueFormatter.MultiTypeFormatter);        
+        formattersByType.put(Method.class,      ValueFormatter.MethodFormatter);
+        formattersByType.put(Method[].class,    ValueFormatter.MultiMethodFormatter);
 	}
 
 	private CheckboxTreeViewer   ruleTreeViewer;
@@ -366,6 +369,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		final Composite panel = new Composite(parent, 0);
 		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
+		layout.marginTop = 0;
 		panel.setLayout(layout);
 
 		Label label = new Label(panel, 0);

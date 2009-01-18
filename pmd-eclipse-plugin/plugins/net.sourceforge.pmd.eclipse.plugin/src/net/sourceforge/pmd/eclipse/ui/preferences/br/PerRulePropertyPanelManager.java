@@ -12,6 +12,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.FloatEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.IntegerEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiIntegerEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiMethodEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiStringEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiTypeEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.StringEditorFactory;
@@ -52,6 +53,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         editorFactoriesByPropertyType.put(Class.class,      TypeEditorFactory2.instance);
         editorFactoriesByPropertyType.put(Class[].class,    MultiTypeEditorFactory.instance);
         editorFactoriesByPropertyType.put(Method.class,     MethodEditorFactory.instance);
+        editorFactoriesByPropertyType.put(Method[].class,   MultiMethodEditorFactory.instance);
         editorFactoriesByPropertyType.put(String[].class,   MultiStringEditorFactory.instance);
         editorFactoriesByPropertyType.put(Integer[].class,  MultiIntegerEditorFactory.instance);
     }

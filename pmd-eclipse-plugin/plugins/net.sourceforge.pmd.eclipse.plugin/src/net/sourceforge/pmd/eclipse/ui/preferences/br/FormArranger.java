@@ -84,6 +84,7 @@ public class FormArranger {
 			
         GridLayout layout = new GridLayout(maxColumns, false);
         layout.verticalSpacing = 2;
+        layout.marginTop = 1;
         parent.setLayout(layout);
 		
 		widgets = new Control[rowCount][maxColumns];

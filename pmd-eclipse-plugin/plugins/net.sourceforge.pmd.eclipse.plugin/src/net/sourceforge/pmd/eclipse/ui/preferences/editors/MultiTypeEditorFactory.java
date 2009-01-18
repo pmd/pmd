@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 /**
+ * TODO - use new TypeText widget
  * 
  * @author Brian Remedios
  */

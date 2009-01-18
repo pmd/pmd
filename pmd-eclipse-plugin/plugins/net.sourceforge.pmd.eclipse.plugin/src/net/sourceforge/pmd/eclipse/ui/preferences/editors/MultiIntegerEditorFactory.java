@@ -58,16 +58,8 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
     
     protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
        
-        final Spinner spinner =  new Spinner(parent, SWT.SINGLE | SWT.BORDER);
-        
-        final NumericPropertyDescriptor<?> ip = numericPropertyFrom(desc);   // TODO - do I really have to do this?          
-
-        spinner.setMinimum(ip.lowerLimit().intValue());
-        spinner.setMaximum(ip.upperLimit().intValue());
-        
-        setValue(spinner, value);
-        
-        return spinner;
+        NumericPropertyDescriptor<?> ip = numericPropertyFrom(desc);   // TODO - do I really have to do this?       
+        return IntegerEditorFactory.newSpinner(parent, ip, value);
     }  
     
     protected void setValue(Control widget, Object valueIn) {

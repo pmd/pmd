@@ -31,6 +31,12 @@ public class Util {
 
     public static final Object[] EMPTY_ARRAY = new Object[0];
     
+    public static final Comparator<Method> MethodNameComparator = new Comparator<Method>() {
+        public int compare(Method a, Method b) {            
+            return a.getName().compareTo(b.getName());
+        }
+    };
+    
     private Util() {};
         
     public static boolean isEmpty(Object[] items) {        

@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Control;
 public class MethodEditorFactory extends AbstractEditorFactory {
 
 	public static final MethodEditorFactory instance = new MethodEditorFactory();
-	private static final String[] unwantedPrefixes = new String[] {
+	public static final String[] UnwantedPrefixes = new String[] {
 	        "java.lang.",
 	        "java.util."
 	        };
@@ -62,7 +62,7 @@ public class MethodEditorFactory extends AbstractEditorFactory {
         
         if (columnIndex == 1) {
             
-            final MethodPicker picker = new MethodPicker(parent, SWT.SINGLE | SWT.BORDER, unwantedPrefixes);
+            final MethodPicker picker = new MethodPicker(parent, SWT.SINGLE | SWT.BORDER, UnwantedPrefixes);
             picker.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
             fillWidget(picker, desc, rule);

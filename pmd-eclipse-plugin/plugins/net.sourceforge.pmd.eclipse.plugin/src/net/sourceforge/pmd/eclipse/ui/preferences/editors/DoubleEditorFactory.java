@@ -61,6 +61,7 @@ public class DoubleEditorFactory extends AbstractEditorFactory {
 			text.addListener(SWT.FocusOut, new Listener() {
                 public void handleEvent(Event event) {
 					Double newValue = doubleFrom(text);
+					if (newValue == null) return;
 					if (newValue.equals(rule.getProperty(dp))) return;
 					
 					rule.setProperty(dp, newValue);

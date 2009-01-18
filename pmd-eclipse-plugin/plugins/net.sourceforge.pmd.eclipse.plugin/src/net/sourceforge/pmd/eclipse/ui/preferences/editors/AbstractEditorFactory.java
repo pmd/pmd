@@ -4,6 +4,7 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -33,6 +34,10 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 		
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(desc.description());
+		GridData data = new GridData();
+		data.horizontalAlignment = SWT.LEFT;
+		data.verticalAlignment = SWT.TOP;
+		label.setLayoutData(data);
 		return label;
 	}
 	

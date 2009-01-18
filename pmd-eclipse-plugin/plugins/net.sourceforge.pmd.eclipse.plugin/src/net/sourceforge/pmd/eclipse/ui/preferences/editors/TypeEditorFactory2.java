@@ -6,7 +6,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
-import net.sourceforge.pmd.util.ClassUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -14,7 +13,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
 
 /**
@@ -58,7 +56,7 @@ public class TypeEditorFactory2 extends AbstractEditorFactory {
         
         if (columnIndex == 1) {
             
-            final TypeText typeText = new TypeText(parent, SWT.SINGLE | SWT.BORDER);
+            final TypeText typeText = new TypeText(parent, SWT.SINGLE | SWT.BORDER, true);
             typeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
             fillWidget(typeText, desc, rule);
@@ -74,7 +72,6 @@ public class TypeEditorFactory2 extends AbstractEditorFactory {
                     if (existingValue == newValue) return;              
                     
                     rule.setProperty(tp, newValue);
-                    fillWidget(typeText, desc, rule);     // redraw
                     listener.changed(rule, desc, newValue);
                 }
             });

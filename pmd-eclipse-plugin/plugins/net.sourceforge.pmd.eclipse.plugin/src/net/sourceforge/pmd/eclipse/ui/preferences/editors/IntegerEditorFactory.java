@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
+import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
@@ -33,6 +34,16 @@ public class IntegerEditorFactory extends AbstractEditorFactory {
         }
 	}
 	
+	public static Spinner newSpinner(Composite parent, NumericPropertyDescriptor<?> desc, Object valueIn) {
+	    final Spinner spinner = new Spinner(parent, SWT.SINGLE | SWT.BORDER);
+        spinner.setMinimum(desc.lowerLimit().intValue());
+        spinner.setMaximum(desc.upperLimit().intValue());
+        
+        int value = valueIn == null ? spinner.getMinimum() : ((Number)valueIn).intValue();
+        spinner.setSelection(value);
+        return spinner;
+	}
+	
 	/**
 	 *
 	 * @param parent Composite
@@ -47,17 +58,11 @@ public class IntegerEditorFactory extends AbstractEditorFactory {
 		if (columnIndex == 0) return addLabel(parent, desc);
 		
 		if (columnIndex == 1) {		    
-
-            final Spinner spinner =  new Spinner(parent, SWT.SINGLE | SWT.BORDER);
             
 			final IntegerProperty ip = intPropertyFrom(desc);	// TODO - do I really have to do this?			
 
-			int val = ((Number)rule.getProperty(desc)).intValue();
+            final Spinner spinner = newSpinner(parent, ip, rule.getProperty(desc));
 			
-			spinner.setMinimum(ip.lowerLimit().intValue());
-			spinner.setMaximum(ip.upperLimit().intValue());
-			spinner.setSelection(val);
-		
 			spinner.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent event) {
 					int newValue = spinner.getSelection();

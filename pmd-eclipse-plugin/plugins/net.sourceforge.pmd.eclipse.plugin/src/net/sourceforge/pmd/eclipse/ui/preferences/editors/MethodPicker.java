@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.util.StringUtil;
@@ -43,7 +44,7 @@ public class MethodPicker extends Composite {
         layout.marginHeight = 0;        layout.marginWidth = 0;
         this.setLayout(layout);
         
-        typeText = new TypeText(this, style);
+        typeText = new TypeText(this, style, false);
         typeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         typeText.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
@@ -64,6 +65,7 @@ public class MethodPicker extends Composite {
         
         methodList.setEnabled(true);
         methods = cls.getMethods();
+        Arrays.sort(methods, Util.MethodNameComparator);
         String[] items = new String[methods.length];
         for (int i=0; i<methods.length; i++) items[i] = Util.signatureFor(methods[i], unwantedPrefixes);
         
@@ -104,7 +106,12 @@ public class MethodPicker extends Composite {
         return -1;
     }
     
-    public void setMethod(Method method) {;
+    public void setMethod(Method method) {
+        
+        if (method == null) {
+            typeText.setType(null);
+            return;
+        }
         Class<?> cls = method.getDeclaringClass();
         typeText.setType(cls);
         reviseMethodListFor(cls);
