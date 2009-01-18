@@ -1,9 +1,12 @@
 package net.sourceforge.pmd.eclipse.util;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
@@ -39,6 +42,32 @@ public class Util {
         return a.equals(b);
     }
     
+    public static <T> T[] addWithoutDuplicates(T[] values, T newValue) {
+               
+        for (T value : values) if (value.equals(newValue)) return values;
+        
+        T[] largerOne = (T[])Array.newInstance(values.getClass().getComponentType(), values.length + 1);
+        for (int i=0; i<values.length; i++) largerOne[i] = values[i];
+        largerOne[values.length] = newValue;
+        return largerOne;        
+    }
+    
+    public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
+
+        Set<T> originals = new HashSet<T>(values.length); 
+        for (T value : values) originals.add(value);
+        List<T> newOnes = new ArrayList<T>(newValues.length);
+        for (T value : newValues) {
+            if (originals.contains(value)) continue;
+            newOnes.add(value);
+        }
+        
+        T[] largerOne = (T[])Array.newInstance(values.getClass().getComponentType(), values.length + newOnes.size());
+        for (int i=0; i<values.length; i++) largerOne[i] = values[i];
+        for (int i=values.length; i<largerOne.length; i++) largerOne[i] = newOnes.get(i-values.length);
+        return largerOne;        
+    }
+    
 	public static Comparator<?> comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
 		
 		return new Comparator<?>() {
@@ -55,6 +84,12 @@ public class Util {
 			}			
 		};
 	}
+	
+    public static void removeListeners(Control widget, int listenerType) {
+        for (Listener listener : widget.getListeners(listenerType)) {
+            widget.removeListener(listenerType, listener);
+        }
+    }
 	
 	/**
 	 * Method asCleanString.
@@ -266,8 +301,7 @@ public class Util {
     public static void asString(Object[] items, String separator, StringBuilder target) {
         
         if (items == null || items.length==0) return;
-        if (items.length == 1) target.append(items[0]);
-        
+         
         target.append(items[0]);
         for (int i=1; i<items.length; i++) {
             target.append(separator).append(items[i]);

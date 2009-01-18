@@ -15,22 +15,23 @@ import org.eclipse.swt.widgets.Control;
  */
 public class FormArranger {
 
-	private final Composite parent;
+	private final Composite                     parent;
 	private final Map<Class<?>, EditorFactory>	editorFactoriesByValueType;
-	private final ValueChangeListener changeListener;
-	private Rule  rule;
-
-	private Control[][] widgets;
+	private final ValueChangeListener           changeListener;
+	private final SizeChangeListener            sizeChangeListener;
+	private Rule                                rule;
+	private Control[][]                         widgets;
 	
 	/**
 	 * Constructor for FormArranger.
 	 * @param theParent Composite
 	 * @param factories Map<Class,EditorFactory>
 	 */
-	public FormArranger(Composite theParent, Map<Class<?>, EditorFactory> factories, ValueChangeListener listener) {
+	public FormArranger(Composite theParent, Map<Class<?>, EditorFactory> factories, ValueChangeListener listener, SizeChangeListener sizeListener) {
 		parent = theParent;
 		editorFactoriesByValueType = factories;
 		changeListener = listener;
+		sizeChangeListener = sizeListener;
 	}
 
 	/**
@@ -82,6 +83,7 @@ public class FormArranger {
 		}
 			
         GridLayout layout = new GridLayout(maxColumns, false);
+        layout.verticalSpacing = 2;
         parent.setLayout(layout);
 		
 		widgets = new Control[rowCount][maxColumns];
@@ -111,7 +113,7 @@ public class FormArranger {
 		
 		int columns = factory.columnsRequired();
 		for (int i=0; i<columns; i++) {	// add all the labels & controls necessary on each row
-			widgets[rowIndex][i] = factory.newEditorOn(parent, i, desc, rule, changeListener);
+			widgets[rowIndex][i] = factory.newEditorOn(parent, i, desc, rule, changeListener, sizeChangeListener);
 		}
 		
 		return true;

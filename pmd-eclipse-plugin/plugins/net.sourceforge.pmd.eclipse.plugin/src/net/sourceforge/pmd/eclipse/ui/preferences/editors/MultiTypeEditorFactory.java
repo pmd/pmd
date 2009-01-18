@@ -13,6 +13,8 @@ import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -71,6 +73,17 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         }
     }
 	
+    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
+        Text textWidget = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        setValue(textWidget, value);
+        return textWidget;
+    }
+    
+    protected void setValue(Control widget, Object value) {
+        String strValue = value == null ? "" : ClassUtil.asShortestName((Class<?>)value);
+        ((Text)widget).setText(strValue);
+    }
+   
     protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
                 
         final TypeMultiProperty tmp = multiTypePropertyFrom(desc);  // TODO - really necessary?
@@ -86,5 +99,23 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
                 listener.changed(rule, desc, newValue);
             }
         });
+    }
+    
+    protected void update(Rule rule, PropertyDescriptor<?> desc, List<Object> newValues) {
+        rule.setProperty((TypeMultiProperty)desc, newValues.toArray(new Class[newValues.size()]));
+    }
+    
+    @Override
+    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule) {
+        
+        Class<?>[] enteredValues = currentTypes((Text) widget);
+        if (enteredValues.length == 0) return null;
+        
+        Class<?>[] currentValues = (Class[])rule.getProperty(desc);
+        Class<?>[] newValues = Util.addWithoutDuplicates(currentValues, enteredValues);
+        if (currentValues.length == newValues.length) return null;
+        
+        rule.setProperty((TypeMultiProperty)desc, newValues);
+        return newValues;
     }
 }

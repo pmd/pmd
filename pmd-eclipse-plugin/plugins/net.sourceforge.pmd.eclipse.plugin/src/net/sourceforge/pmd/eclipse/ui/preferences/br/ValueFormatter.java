@@ -52,15 +52,17 @@ public interface ValueFormatter {
         }
     };
     
-    ValueFormatter ObjectArrayFormatter = new ValueFormatter() {
-        public void format(Object value, StringBuilder target) {           
-           Util.asString((Object[])value, ", ", target);
+    ValueFormatter ObjectFormatter = new ValueFormatter() {
+        public void format(Object value, StringBuilder target) {         
+          target.append(value == null ? "" : value);
         }
     };
     
-    ValueFormatter ObjectFormatter = new ValueFormatter() {
-        public void format(Object value, StringBuilder target) {           
-          target.append(value == null ? "" : value);
+    ValueFormatter ObjectArrayFormatter = new ValueFormatter() {
+        public void format(Object value, StringBuilder target) { 
+           target.append('[');
+           Util.asString((Object[])value, ", ", target);
+           target.append(']');
         }
     };
 }

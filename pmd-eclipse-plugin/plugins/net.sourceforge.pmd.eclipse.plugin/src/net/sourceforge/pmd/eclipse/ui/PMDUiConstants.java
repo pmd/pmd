@@ -139,14 +139,14 @@ public class PMDUiConstants {
         super();
     }    
     
-    public static String buttonCodePathFor(RulePriority priority) {
+    public static String buttonCodePathFor(RulePriority priority, boolean asButton) {
         
         switch (priority.getPriority()) {
-            case 1: return ICON_BUTTON_PRIO1;
-            case 2: return ICON_BUTTON_PRIO2;
-            case 3: return ICON_BUTTON_PRIO3;
-            case 4: return ICON_BUTTON_PRIO4;
-            case 5: return ICON_BUTTON_PRIO5;
+            case 1: return asButton ? ICON_BUTTON_PRIO1 : ICON_PRIO1;
+            case 2: return asButton ? ICON_BUTTON_PRIO2 : ICON_PRIO2;
+            case 3: return asButton ? ICON_BUTTON_PRIO3 : ICON_PRIO3;
+            case 4: return asButton ? ICON_BUTTON_PRIO4 : ICON_PRIO4;
+            case 5: return asButton ? ICON_BUTTON_PRIO5 : ICON_PRIO5;
             default : throw new RuntimeException("unknown priority level");
         }
     }

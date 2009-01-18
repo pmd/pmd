@@ -26,6 +26,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -119,6 +120,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR,
 		XPathRule.XPATH_DESCRIPTOR,
 		XPathRule.VERSION_DESCRIPTOR,
+		StatisticalRule.SIGMA_DESCRIPTOR,
+		StatisticalRule.TOP_SCORE_DESCRIPTOR
 		};
 
 	private static final int RuleTableFraction = 55;       // percent of screen height vs property tabs
@@ -128,9 +131,17 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    formattersByType.put(String.class,      ValueFormatter.StringFormatter);
         formattersByType.put(String[].class,    ValueFormatter.MultiStringFormatter);
         formattersByType.put(Boolean.class,     ValueFormatter.BooleanFormatter);
+        formattersByType.put(Boolean[].class,   ValueFormatter.ObjectArrayFormatter);
         formattersByType.put(Integer.class,     ValueFormatter.NumberFormatter);
+        formattersByType.put(Integer[].class,   ValueFormatter.ObjectArrayFormatter);
+        formattersByType.put(Long.class,        ValueFormatter.NumberFormatter);
+        formattersByType.put(Long[].class,      ValueFormatter.ObjectArrayFormatter);
+        formattersByType.put(Float.class,       ValueFormatter.NumberFormatter);
+        formattersByType.put(Float[].class,     ValueFormatter.ObjectArrayFormatter);
         formattersByType.put(Double.class,      ValueFormatter.NumberFormatter);
+        formattersByType.put(Double[].class,    ValueFormatter.ObjectArrayFormatter);
         formattersByType.put(Character.class,   ValueFormatter.ObjectFormatter);
+        formattersByType.put(Character[].class, ValueFormatter.ObjectArrayFormatter);
         formattersByType.put(Class.class,       ValueFormatter.TypeFormatter);
         formattersByType.put(Class[].class,     ValueFormatter.MultiTypeFormatter);
 	}
@@ -571,7 +582,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 	
 	public static Image imageFor(RulePriority priority) {
-	    String codePath = PMDUiConstants.buttonCodePathFor(priority);
+	    String codePath = PMDUiConstants.buttonCodePathFor(priority, false);
 	    return ResourceManager.imageFor(codePath);
 	}
 	

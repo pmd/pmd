@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
@@ -70,17 +71,14 @@ public class TypeEditorFactory extends AbstractEditorFactory {
      * @return Control
      * @see net.sourceforge.pmd.ui.preferences.br.EditorFactory#newEditorOn(Composite, int, PropertyDescriptor, Rule)
      */
-    public Control newEditorOn(Composite parent, int columnIndex, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
+    public Control newEditorOn(Composite parent, int columnIndex, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
         
         if (columnIndex == 0) return addLabel(parent, desc);
         
         if (columnIndex == 1) {
             
             final Text text =  new Text(parent, SWT.SINGLE | SWT.BORDER);
-            GridData gridData = new GridData();
-            gridData.horizontalAlignment = SWT.FILL;
-            gridData.grabExcessHorizontalSpace = true;
-            text.setLayoutData(gridData);
+            text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
             fillWidget(text, desc, rule);
                         

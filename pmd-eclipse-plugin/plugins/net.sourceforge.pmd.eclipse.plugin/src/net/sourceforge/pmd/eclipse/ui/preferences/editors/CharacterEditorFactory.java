@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
@@ -49,7 +50,7 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
         }
     }
     
-    public Control newEditorOn(Composite parent, int columnIndex, PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
+    public Control newEditorOn(Composite parent, int columnIndex, PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
        
         if (columnIndex == 0) return addLabel(parent, desc);    
         

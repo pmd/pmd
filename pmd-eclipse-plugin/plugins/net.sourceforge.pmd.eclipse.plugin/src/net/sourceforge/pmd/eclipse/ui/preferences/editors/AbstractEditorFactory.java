@@ -43,7 +43,7 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 	 * @param value Object
 	 * @return String
 	 */
-	protected String asString(Object value) {
+	protected static String asString(Object value) {
 		return value == null ? "" : value.toString();
 	}
 	
@@ -70,7 +70,7 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(Object)
 	 */
-	public String asDelimitedString(Object values, char delimiter) {
+	public static String asDelimitedString(Object values, char delimiter) {
 		
 		if (values == null) {
 		    return "";

@@ -143,12 +143,8 @@ public class RuleGroup implements Comparable<RuleGroup> {
         return value;
     }
     
-	/**
-	 * @return boolean
-	 */
 	public boolean hasRules() { return !rules.isEmpty(); }
-	
-	
+		
 	public String toString() { return label() + " rules: " + ruleCount(); }
 
 	public int compareTo(RuleGroup otherGroup) {
@@ -159,6 +155,7 @@ public class RuleGroup implements Comparable<RuleGroup> {
 		return id.compareTo(otherGroup.id());
 	};
 	
+	// TODO make this into a Generic method
 	public void setProperty(StringProperty desc, String value) {
 	    for (Rule rule : rules) rule.setProperty(desc, value);
 	}

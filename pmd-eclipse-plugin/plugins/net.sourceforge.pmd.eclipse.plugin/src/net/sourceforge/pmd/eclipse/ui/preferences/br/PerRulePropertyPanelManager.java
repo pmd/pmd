@@ -5,12 +5,13 @@ import java.util.Map;
 
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.BooleanEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.CharacterEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.DoubleEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.FloatEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.IntegerEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiIntegerEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiStringEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiTypeEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.RealNumberEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.StringEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeEditorFactory;
 
@@ -24,13 +25,14 @@ import org.eclipse.swt.widgets.TabFolder;
  * 
  * @author Brian Remedios
  */
-public class PerRulePropertyPanelManager extends AbstractRulePanelManager {
+public class PerRulePropertyPanelManager extends AbstractRulePanelManager implements SizeChangeListener {
 
     private FormArranger        formArranger;
     private Composite           composite;
     private ScrolledComposite   sComposite;
+    private int                 widgetRowCount;
     
-    private static final int MaxWidgetHeight = 32;  // pixels
+    private static final int MaxWidgetHeight = 32;  // TODO derive this instead
     
     private static final Map<Class<?>, EditorFactory> editorFactoriesByPropertyType;
     
@@ -40,8 +42,8 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager {
         editorFactoriesByPropertyType.put(Boolean.class,    BooleanEditorFactory.instance);
         editorFactoriesByPropertyType.put(String.class,     StringEditorFactory.instance);
         editorFactoriesByPropertyType.put(Integer.class,    IntegerEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Float.class,      RealNumberEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Double.class,     RealNumberEditorFactory.instance);
+        editorFactoriesByPropertyType.put(Float.class,      FloatEditorFactory.instance);
+        editorFactoriesByPropertyType.put(Double.class,     DoubleEditorFactory.instance);
         editorFactoriesByPropertyType.put(Object.class,     EnumerationEditorFactory.instance);
         editorFactoriesByPropertyType.put(Character.class,  CharacterEditorFactory.instance);
         
@@ -70,16 +72,25 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager {
         sComposite.setExpandHorizontal(true);
         sComposite.setExpandVertical(true);
         
-        formArranger = new FormArranger(composite, editorFactoriesByPropertyType, changeListener);
+        formArranger = new FormArranger(composite, editorFactoriesByPropertyType, changeListener, this);
         
         return sComposite;
+    }
+        
+    public void addedRows(int rowCountDelta) {
+        widgetRowCount += rowCountDelta;
+        adjustMinimumHeight();
+    }
+    
+    private void adjustMinimumHeight() {
+        sComposite.setMinSize(composite.computeSize(500, widgetRowCount * MaxWidgetHeight));
     }
     
     protected void adapt() {
                             
-        int widgetRowCount = formArranger.arrangeFor(soleRule());
+        widgetRowCount = formArranger.arrangeFor(soleRule());
         if (widgetRowCount < 0) return;
         
-        sComposite.setMinSize(composite.computeSize(500, widgetRowCount * MaxWidgetHeight));
+        adjustMinimumHeight();
     }
 }

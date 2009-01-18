@@ -30,5 +30,5 @@ public interface EditorFactory {
 	 * @param listener ValueChangeListener
 	 * @return Control
 	 */
-	Control newEditorOn(Composite parent, int columnIndex, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener);
+	Control newEditorOn(Composite parent, int columnIndex, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener, SizeChangeListener sizeListener);
 }

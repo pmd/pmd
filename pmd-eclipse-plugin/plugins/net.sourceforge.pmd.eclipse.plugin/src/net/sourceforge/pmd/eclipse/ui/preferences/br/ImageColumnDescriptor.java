@@ -39,9 +39,8 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
     public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, final RuleSortListener sortListener, Map<Integer, List<Listener>> paintListeners) {
         TreeColumn tc = buildTreeColumn(parent, sortListener);
         tc.setToolTipText(label());       
-        if (imagePath != null) tc.setImage(ResourceManager.imageFor(imagePath));  
-        
-        painterBuilder.addPainterFor(tc.getParent(), columnIndex, accessor(), paintListeners);        
+        if (imagePath != null) tc.setImage(ResourceManager.imageFor(imagePath));        
+        if (painterBuilder != null) painterBuilder.addPainterFor(tc.getParent(), columnIndex, accessor(), paintListeners);        
         return tc;
     }
 
@@ -50,7 +49,6 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
     }
     
     public Image imageFor(Rule rule) {
-        // TODO Auto-generated method stub
         return null;
     }
 }
