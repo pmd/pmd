@@ -172,10 +172,10 @@ public class Foo {
       class="net.sourceforge.pmd.rules.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArraysAsList">
      <description>
-   The class java.util.Arrays has a "asList" method that
-   should be use when you want to create a new List from
+   The java.util.Arrays class has a "asList" method that
+   should be used when you want to create a new List from
    an array of objects. It is faster than executing a loop to
-   cpy all the elements of the array one by one
+   copy all the elements of the array one by one
      </description>
      <priority>3</priority>
      <properties>
