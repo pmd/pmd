@@ -37,13 +37,14 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     private Set<String> typesFoundSoFar;
 
     private static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty(
-    	"threshold", "Unique type reporting threshold", 2, 10, 2, 1.0f
+    	"threshold", "Unique type reporting threshold", 2, 100, 20, 1.0f
     	);
 
     public CouplingBetweenObjectsRule() {
 	definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
     }
-    
+
+    @Override
     public Object visit(ASTCompilationUnit cu, Object data) {
         typesFoundSoFar = new HashSet<String>();
         couplingCount = 0;
@@ -57,6 +58,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         return returnObj;
     }
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;
@@ -64,6 +66,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTResultType node, Object data) {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {
             Node tNode = node.jjtGetChild(x);
@@ -81,16 +84,19 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         handleASTTypeChildren(node);
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTFormalParameter node, Object data) {
         handleASTTypeChildren(node);
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         for (int x = 0; x < node.jjtGetNumChildren(); ++x) {
             Node firstStmt = node.jjtGetChild(x);
@@ -132,7 +138,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         //if the field is of any type other than the class type
         //increment the count
         ClassScope clzScope = ((JavaNode)nameNode).getScope().getEnclosingClassScope();
-        if (!clzScope.getClassName().equals(variableType) && (!this.filterTypes(variableType)) && !this.typesFoundSoFar.contains(variableType)) {
+        if (!clzScope.getClassName().equals(variableType) && !this.filterTypes(variableType) && !this.typesFoundSoFar.contains(variableType)) {
             couplingCount++;
             typesFoundSoFar.add(variableType);
         }
@@ -146,7 +152,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @return boolean true if variableType is not what we care about
      */
     private boolean filterTypes(String variableType) {
-        return variableType != null && (variableType.startsWith("java.lang.") || (variableType.equals("String")) || filterPrimitivesAndWrappers(variableType));
+        return variableType != null && (variableType.startsWith("java.lang.") || variableType.equals("String") || filterPrimitivesAndWrappers(variableType));
     }
 
     /**
