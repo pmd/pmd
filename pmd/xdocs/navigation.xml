@@ -48,6 +48,7 @@
     </menu>
     <menu name="Rule Sets">
         <item name="Index"  href="/rules/index.html"/>
+        <item name="Android" href="/rules/android.html" />
         <item name="Basic" href="/rules/basic.html" />
         <item name="Braces" href="/rules/braces.html" />
         <item name="Code Size" href="/rules/codesize.html" />

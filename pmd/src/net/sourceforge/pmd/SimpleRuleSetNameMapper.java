@@ -41,6 +41,7 @@ public class SimpleRuleSetNameMapper {
     }
 
     private void populateNameMap() {
+        nameMap.put("android", "rulesets/android.xml");
         nameMap.put("basic", "rulesets/basic.xml");
         nameMap.put("jsp", "rulesets/basic-jsp.xml");
         nameMap.put("jsf", "rulesets/basic-jsf.xml");
