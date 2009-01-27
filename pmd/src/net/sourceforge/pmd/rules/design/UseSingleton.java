@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.ast.ASTAnnotation;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
@@ -26,11 +27,14 @@ public class UseSingleton extends AbstractRule {
             int methodCount = 0;
             boolean isOK = false;
             while (i > 0) {
-                Node n = decl.jjtGetChild(--i);
-                if (n.jjtGetNumChildren() != 1) {
+                Node p = decl.jjtGetChild(--i);
+                if (p.jjtGetNumChildren() == 0) {
                     continue;
                 }
-                n = n.jjtGetChild(0);
+                Node n = p.jjtGetChild(0);
+                if (n instanceof ASTAnnotation) {
+                    n = p.jjtGetChild(1);
+                }
                 if (n instanceof ASTFieldDeclaration) {
                     if (!((ASTFieldDeclaration) n).isStatic()) {
                         isOK = true;
