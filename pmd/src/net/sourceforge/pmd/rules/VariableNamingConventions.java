@@ -8,9 +8,10 @@ import java.util.Map;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTReferenceType;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
@@ -71,9 +72,14 @@ public class VariableNamingConventions extends AbstractRule {
     private Object checkNames(ASTFieldDeclaration node, Object data) {
         ASTType childNodeType = (ASTType) node.jjtGetChild(0);
         String varType = "";
-        if (childNodeType.jjtGetChild(0) instanceof ASTName) {
-            varType = ((ASTName) childNodeType.jjtGetChild(0)).getImage();
-        } else if (childNodeType.jjtGetChild(0) instanceof ASTPrimitiveType) {
+        if (childNodeType.jjtGetChild(0) instanceof ASTReferenceType ) {
+            ASTReferenceType refType = ((ASTReferenceType) childNodeType.jjtGetChild(0));
+	    if ( refType.jjtGetChild(0) instanceof ASTClassOrInterfaceType ) {
+	    	varType = ((ASTClassOrInterfaceType)refType.jjtGetChild(0)).getImage();
+	    } else {
+	    	varType = "";
+	    }
+	} else if (childNodeType.jjtGetChild(0) instanceof ASTPrimitiveType) {
             varType = ((ASTPrimitiveType) childNodeType.jjtGetChild(0)).getImage();
         }
         if (varType != null && varType.length() > 0) {
