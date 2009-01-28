@@ -6,22 +6,22 @@
 This ruleset contains links to rules that are new in PMD v4.0rc1
   </description>
 
-  <rule ref="rulesets/migrating.xml/LongInstantiation"/>
-  <rule ref="rulesets/migrating.xml/ShortInstantiation"/>
-  <rule ref="rulesets/migrating.xml/ByteInstantiation"/>
-  <rule ref="rulesets/migrating.xml/JUnit4TestShouldUseBeforeAnnotation"/>
-  <rule ref="rulesets/migrating.xml/JUnit4TestShouldUseTestAnnotation"/>
-  <rule ref="rulesets/migrating.xml/JUnit4TestShouldUseAfterAnnotation"/>
-  <rule ref="rulesets/migrating.xml/JUnit4SuitesShouldUseSuiteAnnotation"/>
-  <rule ref="rulesets/migrating.xml/JUnitUseExpected"/>
-  <rule ref="rulesets/strictexception.xml/DoNotExtendJavaLangError"/>
-  <rule ref="rulesets/j2ee.xml/MDBAndSessionBeanNamingConvention"/>
-  <rule ref="rulesets/j2ee.xml/RemoteSessionInterfaceNamingConvention"/>
-  <rule ref="rulesets/j2ee.xml/LocalInterfaceSessionNamingConvention"/>
-  <rule ref="rulesets/j2ee.xml/LocalHomeNamingConvention"/>
-  <rule ref="rulesets/j2ee.xml/RemoteInterfaceNamingConvention"/>
-  <rule ref="rulesets/optimizations.xml/AddEmptyString"/>
-  <rule ref="rulesets/naming.xml/BooleanGetMethodName"/>
+  <rule ref="rulesets/java/migrating.xml/LongInstantiation"/>
+  <rule ref="rulesets/java/migrating.xml/ShortInstantiation"/>
+  <rule ref="rulesets/java/migrating.xml/ByteInstantiation"/>
+  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseBeforeAnnotation"/>
+  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseTestAnnotation"/>
+  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseAfterAnnotation"/>
+  <rule ref="rulesets/java/migrating.xml/JUnit4SuitesShouldUseSuiteAnnotation"/>
+  <rule ref="rulesets/java/migrating.xml/JUnitUseExpected"/>
+  <rule ref="rulesets/java/strictexception.xml/DoNotExtendJavaLangError"/>
+  <rule ref="rulesets/java/j2ee.xml/MDBAndSessionBeanNamingConvention"/>
+  <rule ref="rulesets/java/j2ee.xml/RemoteSessionInterfaceNamingConvention"/>
+  <rule ref="rulesets/java/j2ee.xml/LocalInterfaceSessionNamingConvention"/>
+  <rule ref="rulesets/java/j2ee.xml/LocalHomeNamingConvention"/>
+  <rule ref="rulesets/java/j2ee.xml/RemoteInterfaceNamingConvention"/>
+  <rule ref="rulesets/java/optimizations.xml/AddEmptyString"/>
+  <rule ref="rulesets/java/naming.xml/BooleanGetMethodName"/>
 
 </ruleset>
   

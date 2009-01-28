@@ -6,19 +6,19 @@
 This ruleset contains links to rules that are new in PMD v5.0
   </description>
 
-	<rule ref="rulesets/android.xml"/>
-	<rule ref="rulesets/basic.xml/CheckSkipResult"/>
-	<rule ref="rulesets/empty.xml/EmptyInitializer"/>
-	<rule ref="rulesets/empty.xml/EmptyStatementBlock"/>
-	<rule ref="rulesets/basic.xml/ExtendsObject"/>
-	<rule ref="rulesets/controversial.xml/AvoidPrefixingMethodParameters"/>
-	<rule ref="rulesets/controversial.xml/OneDeclarationPerLine"/>
-  	<rule ref="rulesets/coupling.xml/LoosePackageCoupling"/>
-	<rule ref="rulesets/design.xml/LogicInversion"/>
-	<rule ref="rulesets/design.xml/UseVarargs"/>
-	<rule ref="rulesets/naming.xml/ShortClassName"/>
-	<rule ref="rulesets/unnecessary.xml/UselessParentheses"/>
-	<rule ref="rulesets/imports.xml/UnnecessaryFullyQualifiedName"/>
+	<rule ref="rulesets/java/android.xml"/>
+	<rule ref="rulesets/java/basic.xml/CheckSkipResult"/>
+	<rule ref="rulesets/java/empty.xml/EmptyInitializer"/>
+	<rule ref="rulesets/java/empty.xml/EmptyStatementBlock"/>
+	<rule ref="rulesets/java/basic.xml/ExtendsObject"/>
+	<rule ref="rulesets/java/controversial.xml/AvoidPrefixingMethodParameters"/>
+	<rule ref="rulesets/java/controversial.xml/OneDeclarationPerLine"/>
+  	<rule ref="rulesets/java/coupling.xml/LoosePackageCoupling"/>
+	<rule ref="rulesets/java/design.xml/LogicInversion"/>
+	<rule ref="rulesets/java/design.xml/UseVarargs"/>
+	<rule ref="rulesets/java/naming.xml/ShortClassName"/>
+	<rule ref="rulesets/java/unnecessary.xml/UselessParentheses"/>
+	<rule ref="rulesets/java/imports.xml/UnnecessaryFullyQualifiedName"/>
 
 </ruleset>
 

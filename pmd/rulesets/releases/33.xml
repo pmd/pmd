@@ -6,17 +6,17 @@
 This ruleset contains links to rules that are new in PMD v3.3
   </description>
 
-  <rule ref="rulesets/design.xml/PositionLiteralsFirstInComparisons"/>
-  <rule ref="rulesets/design.xml/UnnecessaryLocalBeforeReturn"/>
+  <rule ref="rulesets/java/design.xml/PositionLiteralsFirstInComparisons"/>
+  <rule ref="rulesets/java/design.xml/UnnecessaryLocalBeforeReturn"/>
 
-  <rule ref="rulesets/logging-jakarta-commons.xml/ProperLogger"/>
+  <rule ref="rulesets/java/logging-jakarta-commons.xml/ProperLogger"/>
 
-  <rule ref="rulesets/basic.xml/UselessOverridingMethod"/>
+  <rule ref="rulesets/java/unnecessary.xml/UselessOverridingMethod"/>
 
-  <rule ref="rulesets/naming.xml/PackageCase"/>
-  <rule ref="rulesets/naming.xml/NoPackage"/>
+  <rule ref="rulesets/java/naming.xml/PackageCase"/>
+  <rule ref="rulesets/java/naming.xml/NoPackage"/>
 
-  <rule ref="rulesets/strings.xml/UnnecessaryCaseChange"/>
+  <rule ref="rulesets/java/strings.xml/UnnecessaryCaseChange"/>
 </ruleset>
 
 

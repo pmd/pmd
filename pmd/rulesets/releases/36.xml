@@ -6,19 +6,19 @@
 This ruleset contains links to rules that are new in PMD v3.6
   </description>
 
-  <rule ref="rulesets/strings.xml/InefficientEmptyStringCheck"/>
-  <rule ref="rulesets/design.xml/UnsynchronizedStaticDateFormatter"/>
-  <rule ref="rulesets/strings.xml/InsufficientStringBufferDeclaration"/>
-  <rule ref="rulesets/junit.xml/SimplifyBooleanAssertion"/>
-  <rule ref="rulesets/basic.xml/AvoidThreadGroup"/>
-  <rule ref="rulesets/basic-jsf.xml/DontNestJsfInJstlIteration"/>
-  <rule ref="rulesets/basic-jsp.xml/NoLongScripts"/>
-  <rule ref="rulesets/basic-jsp.xml/NoScriptlets"/>
-  <rule ref="rulesets/basic-jsp.xml/NoInlineStyleInformation"/>
-  <rule ref="rulesets/basic-jsp.xml/NoJspForward"/>
-  <rule ref="rulesets/basic-jsp.xml/NoClassAttribute"/>
-  <rule ref="rulesets/basic-jsp.xml/IframeMissingSrcAttribute"/>
-  <rule ref="rulesets/basic-jsp.xml/NoHtmlComments"/>
+  <rule ref="rulesets/java/strings.xml/InefficientEmptyStringCheck"/>
+  <rule ref="rulesets/java/design.xml/UnsynchronizedStaticDateFormatter"/>
+  <rule ref="rulesets/java/strings.xml/InsufficientStringBufferDeclaration"/>
+  <rule ref="rulesets/java/junit.xml/SimplifyBooleanAssertion"/>
+  <rule ref="rulesets/java/basic.xml/AvoidThreadGroup"/>
+  <rule ref="rulesets/jsp/basic-jsf.xml/DontNestJsfInJstlIteration"/>
+  <rule ref="rulesets/jsp/basic.xml/NoLongScripts"/>
+  <rule ref="rulesets/jsp/basic.xml/NoScriptlets"/>
+  <rule ref="rulesets/jsp/basic.xml/NoInlineStyleInformation"/>
+  <rule ref="rulesets/jsp/basic.xml/NoJspForward"/>
+  <rule ref="rulesets/jsp/basic.xml/NoClassAttribute"/>
+  <rule ref="rulesets/jsp/basic.xml/IframeMissingSrcAttribute"/>
+  <rule ref="rulesets/jsp/basic.xml/NoHtmlComments"/>
 </ruleset>
 
 

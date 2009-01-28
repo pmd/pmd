@@ -6,8 +6,8 @@
 This ruleset contains links to rules that are new in PMD v3.7
   </description>
 
-  <rule ref="rulesets/design.xml/PreserveStackTrace"/>
-  <rule ref="rulesets/j2ee.xml/UseProperClassLoader"/>
+  <rule ref="rulesets/java/design.xml/PreserveStackTrace"/>
+  <rule ref="rulesets/java/j2ee.xml/UseProperClassLoader"/>
 </ruleset>
 
 

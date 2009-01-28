@@ -6,9 +6,9 @@
 This ruleset contains links to rules that are new in PMD v3.8
   </description>
 
-  <rule ref="rulesets/basic.xml/BrokenNullCheck"/>
-  <rule ref="rulesets/strictexception.xml/AvoidRethrowingException"/>
-  <rule ref="rulesets/optimizations.xml/UnnecessaryWrapperObjectCreation"/>
-  <rule ref="rulesets/strings.xml/UselessStringValueOf"/>
+  <rule ref="rulesets/java/basic.xml/BrokenNullCheck"/>
+  <rule ref="rulesets/java/strictexception.xml/AvoidRethrowingException"/>
+  <rule ref="rulesets/java/optimizations.xml/UnnecessaryWrapperObjectCreation"/>
+  <rule ref="rulesets/java/strings.xml/UselessStringValueOf"/>
 </ruleset>
 

@@ -6,14 +6,14 @@
 This ruleset contains links to rules that are new in PMD v4.2
   </description>
 
-  	<rule ref="rulesets/basic.xml/AvoidMultipleUnaryOperators"/>
-  	<rule ref="rulesets/codesize.xml/TooManyMethods"/>
-  	<rule ref="rulesets/controversial.xml/DoNotCallGarbageCollectionExplicitly"/>
-  	<rule ref="rulesets/design.xml/ReturnEmptyArrayRatherThanNull"/>
-  	<rule ref="rulesets/design.xml/AbstractClassWithoutAnyMethod"/>
-  	<rule ref="rulesets/design.xml/TooFewBranchesForASwitchStatement"/>
-  	<rule ref="rulesets/strictexception.xml/DoNotThrowExceptionInFinally"/>
-	<rule ref="rulesets/strings.xml/AvoidStringBufferField"/>
+  	<rule ref="rulesets/java/basic.xml/AvoidMultipleUnaryOperators"/>
+  	<rule ref="rulesets/java/codesize.xml/TooManyMethods"/>
+  	<rule ref="rulesets/java/controversial.xml/DoNotCallGarbageCollectionExplicitly"/>
+  	<rule ref="rulesets/java/design.xml/ReturnEmptyArrayRatherThanNull"/>
+  	<rule ref="rulesets/java/design.xml/AbstractClassWithoutAnyMethod"/>
+  	<rule ref="rulesets/java/design.xml/TooFewBranchesForASwitchStatement"/>
+  	<rule ref="rulesets/java/strictexception.xml/DoNotThrowExceptionInFinally"/>
+	<rule ref="rulesets/java/strings.xml/AvoidStringBufferField"/>
 
 </ruleset>
 

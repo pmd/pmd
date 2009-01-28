@@ -6,24 +6,24 @@
 This ruleset contains links to rules that are new in PMD v3.5
   </description>
 
-  <rule ref="rulesets/basic.xml/UselessOperationOnImmutable"/>
-  <rule ref="rulesets/basic.xml/MisplacedNullCheck"/>
-  <rule ref="rulesets/basic.xml/UnusedNullCheckInEquals"/>
+  <rule ref="rulesets/java/unnecessary.xml/UselessOperationOnImmutable"/>
+  <rule ref="rulesets/java/basic.xml/MisplacedNullCheck"/>
+  <rule ref="rulesets/java/unnecessary.xml/UnusedNullCheckInEquals"/>
 
-  <rule ref="rulesets/strings.xml/AppendCharacterWithChar"/>
-  <rule ref="rulesets/strings.xml/ConsecutiveLiteralAppends"/>
-  <rule ref="rulesets/strings.xml/UseIndexOfChar"/>
+  <rule ref="rulesets/java/strings.xml/AppendCharacterWithChar"/>
+  <rule ref="rulesets/java/strings.xml/ConsecutiveLiteralAppends"/>
+  <rule ref="rulesets/java/strings.xml/UseIndexOfChar"/>
 
-  <rule ref="rulesets/migrating.xml/IntegerInstantiation"/>
+  <rule ref="rulesets/java/migrating.xml/IntegerInstantiation"/>
 
-  <rule ref="rulesets/junit.xml/UseAssertNullInsteadOfAssertTrue"/>
+  <rule ref="rulesets/java/junit.xml/UseAssertNullInsteadOfAssertTrue"/>
 
-  <rule ref="rulesets/design.xml/AvoidConstantsInterface"/>
+  <rule ref="rulesets/java/design.xml/AvoidConstantsInterface"/>
 
-  <rule ref="rulesets/optimizations.xml/UseArraysAsList"/>
-  <rule ref="rulesets/optimizations.xml/AvoidArrayLoops"/>
+  <rule ref="rulesets/java/optimizations.xml/UseArraysAsList"/>
+  <rule ref="rulesets/java/optimizations.xml/AvoidArrayLoops"/>
 
-  <rule ref="rulesets/controversial.xml/BooleanInversion"/>
+  <rule ref="rulesets/java/controversial.xml/BooleanInversion"/>
 
 </ruleset>
 

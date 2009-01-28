@@ -6,7 +6,7 @@
 This ruleset contains links to JSP rules that are new in PMD v3.7
   </description>
 
-  <rule ref="rulesets/basic-jsp.xml/DuplicateJspImports"/>
+  <rule ref="rulesets/jsp/basic.xml/DuplicateJspImports"/>
 </ruleset>
 
 
