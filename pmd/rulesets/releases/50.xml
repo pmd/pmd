@@ -6,6 +6,7 @@
 This ruleset contains links to rules that are new in PMD v5.0
   </description>
 
+	<rule ref="rulesets/android.xml"/>
 	<rule ref="rulesets/basic.xml/CheckSkipResult"/>
 	<rule ref="rulesets/empty.xml/EmptyInitializer"/>
 	<rule ref="rulesets/empty.xml/EmptyStatementBlock"/>
