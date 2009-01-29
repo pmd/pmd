@@ -127,4 +127,17 @@ public class Foo {
 }
      ]]></code>
     </test-code-->
+        <test-code regressionTest="false">
+        <description><![CDATA[
+[1622281 ] Loop scoping dodgy
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+for (byte[] buf = new byte[256];;) {
+ break;
+}
+     ]]></code>
+    </test-code>
+
+    
 </test-data>
