@@ -161,5 +161,26 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    
+    <test-code regressionTest="false">
+        <description><![CDATA[
+[1732744] False + : basic/UselessOperationOnImmutable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public BigDecimal myMethod(Object pObj)
+{
+  BigDecimal cout = null;
 
+  //...
+
+  cout = (cout == null ? pObj.getABigDecimal() : cout.add(
+  pObj.getABigDecimal() ) );
+
+  //...
+
+  return cout;
+}
+     ]]></code>
+    </test-code>
 </test-data>
