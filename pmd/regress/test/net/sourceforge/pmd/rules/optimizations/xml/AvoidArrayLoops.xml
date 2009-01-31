@@ -123,4 +123,20 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+        <test-code regressionTest="false">
+        <description><![CDATA[
+[2115761] False +: System.arraycopy is more efficient
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public void xxxx(byte[] ayInputChannelNumber)
+{
+  int[] aiInputChannelNumber = new int[ayInputChannelNumber.length];
+  for (int i = 0; i < aiInputChannelNumber.length; i++)
+  {
+    aiInputChannelNumber[i] = ayInputChannelNumber[i];
+  }
+} 
+     ]]></code>
+    </test-code>
 </test-data>
