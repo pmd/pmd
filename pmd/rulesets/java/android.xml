@@ -12,10 +12,10 @@ To get better results, make sure that the auxclasspath is defined for type resol
 
   <rule name="CallSuperFirst"
       since="4.2.5" language="java"
-      message="super must be called at the start of the method"
+      message="super should be called at the start of the method"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/android.html#CallSuperFirst">
-    <description>Super must be called at the start of the method</description>
+    <description>Super should be called at the start of the method</description>
     <priority>3</priority>
     <properties>
       <property name="xpath">
@@ -30,8 +30,14 @@ To get better results, make sure that the auxclasspath is defined for type resol
   @Image='onResume' or
   @Image='onStart'
   ]]
-    /Block/BlockStatement[1]
-      [not(Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])]
+    /Block[not(
+      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]) or
+      ((BlockStatement[1]/Statement/IfStatement/Expression[
+  PrimaryExpression/PrimaryPrefix/Name[@Image='Config.LOGD' or @Image='Config.LOGV']
+  or
+  ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Name[@Image='Config.LOGD' or @Image='Config.LOGV']
+         ]) and
+      (BlockStatement[2]/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])))]
 [ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[
   typeof(@Image, 'android.app.Activity', 'Activity') or
   typeof(@Image, 'android.app.Application', 'Application') or
@@ -54,10 +60,10 @@ To get better results, make sure that the auxclasspath is defined for type resol
 
   <rule name="CallSuperLast"
       since="4.2.5" language="java"
-      message="super must be called at the end of the method"
+      message="super should be called at the end of the method"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/android.html#CallSuperLast">
-    <description>Super must be called at the end of the method</description>
+    <description>Super should be called at the end of the method</description>
     <priority>3</priority>
     <properties>
       <property name="xpath">
@@ -95,10 +101,10 @@ To get better results, make sure that the auxclasspath is defined for type resol
 
   <rule name="ProtectLogD"
       since="4.2.5" language="java"
-      message="Log.d must be protected by checking Config.LOGD"
+      message="Log.d calls should be protected by checking Config.LOGD first"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/android.html#ProtectLogD">
-    <description>Log.d must be protected by checking Config.LOGD</description>
+    <description>Log.d calls should be protected by checking Config.LOGD first</description>
     <priority>3</priority>
     <properties>
       <property name="xpath">
@@ -131,10 +137,10 @@ To get better results, make sure that the auxclasspath is defined for type resol
 
   <rule name="ProtectLogV"
       since="4.2.5" language="java"
-      message="Log.v must be protected by checking Config.LOGV"
+      message="Log.v calls should be protected by checking Config.LOGV first"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/android.html#ProtectLogV">
-    <description>Log.v must be protected by checking Config.LOGV</description>
+    <description>Log.v calls should be protected by checking Config.LOGV first</description>
     <priority>3</priority>
     <properties>
       <property name="xpath">

@@ -17,6 +17,34 @@ public class MyActivity extends Activity {
   </test-code>
   <test-code>
     <description><![CDATA[
+Success, first statement is enclosed in Config.LOGD or LOGV
+    ]]></description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MyActivity extends Activity {
+  @Override
+  protected void onCreate(final Bundle state) {
+    if (Config.LOGD) { Log.d("Tag", "msg 1"); }
+    super.onCreate(state);
+    foo();
+  }
+  @Override
+  protected void onResume() {
+    if (Config.LOGV) { Log.v("Tag", "msg 1"); }
+    super.onResume();
+    foo();
+  }
+  @Override
+  protected void onStart() {
+    if (booleanValue && Config.LOGD) { Log.d("Tag", "msg 1"); }
+    super.onStart();
+    foo();
+  }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description><![CDATA[
 Failure
     ]]></description>
     <expected-problems>1</expected-problems>
