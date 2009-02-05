@@ -10,6 +10,9 @@ Fixed bug 2404700 - UseSingleton should not act on enums
 Fixed bug 2225474 - VariableNamingConventions does not work with nonprimitives
 Fixed bug - JUnitTestsShouldIncludeAssert now detects Junit 4 Assert.assert...  constructs
 
+New rule:
+	StrictExceptions : AvoidThrowingNewInstanceOfSameException
+
 October 12, 2008 - 4.2.4:
 
 Fixed bug 1481051 - false + UnusedNullCheckInEquals (and other false positives too)

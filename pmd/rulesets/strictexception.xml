@@ -287,7 +287,48 @@ public class Foo {
 				}
 	    	]]>
     	</example>
-	</rule>
+    </rule>
 
+  <rule name="AvoidThrowingNewInstanceOfSameException"
+    since="4.2.5"
+    message="A catch statement that catches an exception only to wrap it in a new instance of the same type of exception and throw it should be avoided"
+    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidThrowingNewInstanceOfSameException"
+    class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+     Catch blocks that merely rethrow a caught exception wrapped inside a new instance of the same type only add to code size and runtime complexity.
+    </description>
+    <priority>3</priority>
+    <properties>
+    <property name="xpath">
+      <value>
+        <![CDATA[
+//CatchStatement[
+  count(Block/BlockStatement/Statement) = 1
+  and
+  FormalParameter/Type/ReferenceType/ClassOrInterfaceType/@Image = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType/@Image
+  and
+  count(Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/Arguments/ArgumentList/Expression) = 1
+  and
+  FormalParameter/VariableDeclaratorId = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
+  ]
+ ]]>
+      </value>
+    </property>
+    </properties>    
+    <example>  <![CDATA[
+    public class Foo {
+     void bar() {
+      try {
+       // do something
+      }  catch (SomeException se) {
+         // harmless comment      
+           throw new SomeException(se);
+      }
+     }
+    }
+  ]]>
+    </example>
+  </rule>
 
 </ruleset>
+ 	  	 
