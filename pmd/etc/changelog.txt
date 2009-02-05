@@ -466,6 +466,7 @@ New Java rules:
 	Basic ruleset:	EmptyInitializer,EmptyStatementBlock,ExtendsObject,UselessParentheses,CheckSkipResult
 	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass
 	Import ruleset: UnnecessaryFullyQualifiedName
+	StrictException : AvoidThrowingNewInstanceOfSameException
 
 New ECMAScript rules:
 	Basic ruleset: AssignmentInOperand,InnaccurateNumericLiteral,UnreachableCode

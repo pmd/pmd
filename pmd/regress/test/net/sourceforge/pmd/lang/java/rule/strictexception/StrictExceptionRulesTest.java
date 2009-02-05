@@ -13,6 +13,7 @@ public class StrictExceptionRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidCatchingNPE");
         addRule(RULESET, "AvoidCatchingThrowable");
         addRule(RULESET, "AvoidRethrowingException");
+        addRule(RULESET, "AvoidThrowingNewInstanceOfSameException");
         addRule(RULESET, "AvoidThrowingNullPointerException");
         addRule(RULESET, "AvoidThrowingRawExceptionTypes");
         addRule(RULESET, "DoNotExtendJavaLangError");
