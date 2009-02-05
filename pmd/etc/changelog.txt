@@ -8,6 +8,7 @@ Fixed bug 2315599 - False +: UseSingleton with class containing constructor
 Fixed bug 1955852 - false positives for UnusedPrivateMethod & UnusedLocalVariable
 Fixed bug 2404700 - UseSingleton should not act on enums
 Fixed bug 2225474 - VariableNamingConventions does not work with nonprimitives
+Fixed bug 1609038 - Xslt report generators break if path contains "java"
 Fixed bug - JUnitTestsShouldIncludeAssert now detects Junit 4 Assert.assert...  constructs
 
 New rule:

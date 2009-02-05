@@ -73,7 +73,7 @@
     <xsl:for-each select="file[violation/@priority=4]">
         <xsl:sort data-type="number" order="descending" select="count(violation[@priority = 5])"/>
         <xsl:variable name="filename" select="@name"/>
-        <H3><xsl:value-of disable-output-escaping="yes" select="substring-before(translate(@name,'/','.'),'.java')"/></H3>
+        <h3><xsl:value-of disable-output-escaping="yes" select="translate(substring-before(@name,'.java'),'/','.')"/></h3>
         <table border="0" width="100%" class="footcollapse"><xsl:attribute name="id">sortable_id_<xsl:value-of select="position()"/></xsl:attribute>
             <thead>
 				<tr>
