@@ -5,8 +5,11 @@ package net.sourceforge.pmd.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.ast.ASTAnnotation;
 import net.sourceforge.pmd.ast.ASTArgumentList;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTBlock;
@@ -15,6 +18,7 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTFormalParameters;
 import net.sourceforge.pmd.ast.ASTImplementsList;
+import net.sourceforge.pmd.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTName;
@@ -27,6 +31,7 @@ import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.properties.BooleanProperty;
 
 import org.jaxen.JaxenException;
 
@@ -34,25 +39,39 @@ import org.jaxen.JaxenException;
  * @author Romain Pelisse, bugfix for [ 1522517 ] False +: UselessOverridingMethod
  */
 public class UselessOverridingMethod extends AbstractRule {
-	private List<String> exceptions;
-	private static final String CLONE = "clone";
-	private static final String OBJECT = "Object";
 
-	public UselessOverridingMethod()
-	{
+    private final List<String> exceptions;
+    private boolean ignoreAnnotations;
+    private static final String CLONE = "clone";
+    private static final String OBJECT = "Object";
+
+    private static final PropertyDescriptor ignoreAnnotationsDescriptor = new BooleanProperty(
+            "ignoreAnnotations", "Ignore annotations", false, 1.0f);
+
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { ignoreAnnotationsDescriptor });
+
+    @Override
+    protected Map<String, PropertyDescriptor> propertiesByName() {
+        return propertyDescriptorsByName;
+    }
+
+    public UselessOverridingMethod() {
         exceptions = new ArrayList<String>(1);
         exceptions.add("CloneNotSupportedException");
-	}
+    }
 
-	public Object visit(ASTImplementsList clz, Object data)
+	@Override
+    public Object visit(ASTImplementsList clz, Object data)
 	{
 		return super.visit(clz,data);
 	}
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration clz, Object data) {
         if (clz.isInterface()) {
             return data;
         }
+        ignoreAnnotations = getBooleanProperty(ignoreAnnotationsDescriptor);
         return super.visit(clz, data);
     }
 
@@ -106,6 +125,7 @@ public class UselessOverridingMethod extends AbstractRule {
 		return result;
 	}
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         // Can skip abstract methods and methods whose only purpose is to
         // guarantee that the inherited method is not changed by finalizing
@@ -114,7 +134,7 @@ public class UselessOverridingMethod extends AbstractRule {
             return super.visit(node, data);
         }
         // We can also skip the 'clone' method as they are generally
-        // 'useless' but as it is considered a 'good practise' to
+        // 'useless' but as it is considered a 'good practice' to
         // implement them anyway ( see bug 1522517)
         if ( CLONE.equals(node.getMethodName()) && node.isPublic() &&
         	 ! this.hasArguments(node) &&
@@ -167,6 +187,22 @@ public class UselessOverridingMethod extends AbstractRule {
         ASTFormalParameters formalParameters = (ASTFormalParameters) methodDeclarator.jjtGetChild(0);
         if (formalParameters.jjtGetNumChildren() != arguments.jjtGetNumChildren())
             return super.visit(node, data);
+
+        if (!ignoreAnnotations) {
+            ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.jjtGetParent();
+            for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
+                Node n = parent.jjtGetChild(i);
+                if (n instanceof ASTAnnotation) {
+                    if (n.jjtGetChild(0) instanceof ASTMarkerAnnotation) {
+                        // @Override is ignored
+                        if ("Override".equals(((ASTName) n.jjtGetChild(0).jjtGetChild(0)).getImage())) {
+                            continue;
+                        }
+                    }
+                    return super.visit(node, data);
+                }
+            }
+        }
 
         if (arguments.jjtGetNumChildren() == 0) //No arguments to check
             addViolation(data, node, getMessage());

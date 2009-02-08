@@ -668,6 +668,9 @@ public class Foo {
 The overriding method merely calls the same method defined in a superclass
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="ignoreAnnotations" description="Ignore annotations" value="false"/>
+        </properties>
         <example><![CDATA[
 public void foo(String bar) {
     super.foo(bar);      //Why bother overriding?
@@ -676,6 +679,12 @@ public void foo(String bar) {
         <example><![CDATA[
 public String foo() {
     return super.foo();  //Why bother overriding?
+}
+        ]]></example>
+        <example><![CDATA[
+@Id
+public Long getId() {
+    return super.getId();  //OK if 'ignoreAnnotations' is false, which is the default behavior
 }
         ]]></example>
     </rule>
