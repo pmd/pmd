@@ -35,4 +35,20 @@ public final class MyClass {
 }
 	 ]]></code>
     </test-code>
+        <test-code>
+        <description><![CDATA[
+Bug 2027626, False + : AvoidFinalLocalVariable
+	]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+public class A {
+  public String myMethod(final String str) {
+    final String foo = "foo";
+    final String bar = str.toLowerCase(Locale.getDefault());
+    final StringBuilder thing = new StringBuilder(128);
+  }
+}
+	 ]]></code>
+    </test-code>
 </test-data>
