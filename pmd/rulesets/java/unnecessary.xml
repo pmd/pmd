@@ -108,6 +108,12 @@ public String foo() {
     return super.foo();  //Why bother overriding?
 }
         ]]></example>
+        <example><![CDATA[
+@Id
+public Long getId() {
+    return super.getId();  //OK if 'ignoreAnnotations' is false, which is the default behavior
+}
+        ]]></example>
     </rule>
 
     <rule  name="UselessOperationOnImmutable"

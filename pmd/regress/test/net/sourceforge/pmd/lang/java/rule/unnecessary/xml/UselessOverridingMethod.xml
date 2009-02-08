@@ -232,6 +232,20 @@ public Object clone() throws CloneNotSupportedException {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+clone method with arguments should not be ignored
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo extends Bar
+{
+public Object clone(Object o) throws CloneNotSupportedException {
+	return super.clone(o);
+}
+}
+     ]]></code>
+    </test-code>
     <test-code regressionTest="false">
         <description>
         	<![CDATA[
@@ -288,4 +302,67 @@ class Bar {
 }
      ]]></code>
     </test-code>
+    <test-code reinitializeRule="1">
+        <description>
+        	<![CDATA[
+[ 2142986 ] UselessOverridingMethod doesn't consider annotations, ignoreAnnotations property set to true
+     		]]>
+     	</description>
+        <rule-property name="ignoreAnnotations">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+class PersistentObject {
+  public Long getId() { return 1L; } 
+}
+
+public class Example extends PersistentObject {
+  @Override
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public Long getId() { return super.getId(); }
+}
+     ]]></code>
+    </test-code>
+    <test-code reinitializeRule="1">
+        <description>
+        	<![CDATA[
+[ 2142986 ] UselessOverridingMethod doesn't consider annotations
+     		]]>
+     	</description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+class PersistentObject {
+  public Long getId() { return 1L; } 
+}
+
+public class Example extends PersistentObject {
+  @Override
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public Long getId() { return super.getId(); }
+}
+     ]]></code>
+    </test-code>
+    <test-code reinitializeRule="1">
+        <description>
+        	<![CDATA[
+[ 2142986 ] UselessOverridingMethod doesn't consider annotations, @Override only
+     		]]>
+     	</description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+class PersistentObject {
+  public Long getId() { return 1L; } 
+}
+
+public class Example extends PersistentObject {
+  @Override
+  public Long getId() { return super.getId(); }
+}
+     ]]></code>
+    </test-code>
+
 </test-data>

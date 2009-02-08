@@ -7,14 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
+import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -26,18 +29,35 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 /**
  * @author Romain Pelisse, bugfix for [ 1522517 ] False +: UselessOverridingMethod
  */
 public class UselessOverridingMethodRule extends AbstractJavaRule {
-    private List<String> exceptions;
+    private final List<String> exceptions;
+    private boolean ignoreAnnotations;
     private static final String CLONE = "clone";
     private static final String OBJECT = "Object";
 
+    private static final BooleanProperty IGNORE_ANNOTATIONS_DESCRIPTOR = new BooleanProperty(
+                "ignoreAnnotations", "Ignore annotations", false, 1.0f);
+
     public UselessOverridingMethodRule() {
+        definePropertyDescriptor(IGNORE_ANNOTATIONS_DESCRIPTOR);
+
         exceptions = new ArrayList<String>(1);
         exceptions.add("CloneNotSupportedException");
+    }
+
+    @Override
+    public Object visit(ASTCompilationUnit node, Object data) {
+        init();
+        return super.visit(node, data);
+    }
+
+    private void init() {
+        ignoreAnnotations = getProperty(IGNORE_ANNOTATIONS_DESCRIPTOR);
     }
 
     @Override
@@ -151,6 +171,22 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         ASTFormalParameters formalParameters = (ASTFormalParameters) methodDeclarator.jjtGetChild(0);
         if (formalParameters.jjtGetNumChildren() != arguments.jjtGetNumChildren()) {
             return super.visit(node, data);
+        }
+
+        if (!ignoreAnnotations) {
+            ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.jjtGetParent();
+            for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
+                Node n = parent.jjtGetChild(i);
+                if (n instanceof ASTAnnotation) {
+                    if (n.jjtGetChild(0) instanceof ASTMarkerAnnotation) {
+                        // @Override is ignored
+                        if ("Override".equals(((ASTName) n.jjtGetChild(0).jjtGetChild(0)).getImage())) {
+                            continue;
+                        }
+                    }
+                    return super.visit(node, data);
+                }
+            }
         }
 
         if (arguments.jjtGetNumChildren() == 0) {
