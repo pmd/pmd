@@ -309,7 +309,7 @@
 				<minimumTokens>100</minimumTokens>
 				<targetJdk>1.5</targetJdk>
 				<rulesets>
-            		<ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
+            		<ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x/rulesets/internal/dogfood.xml</ruleset>
 				</rulesets>
         	</configuration>
       </plugin>
