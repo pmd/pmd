@@ -408,8 +408,16 @@ Avoid using final local variables, turn them into fields.
 	        <properties>
 	            <property name="xpath">
 	                <value><![CDATA[
-//LocalVariableDeclaration[@Final = 'true']
-	             ]]></value>
+//LocalVariableDeclaration[
+	@Final = 'true' 
+	and
+	(
+		(count(VariableDeclarator/VariableInitializer) = 0) 
+		or
+		(VariableDeclarator/VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal)
+	)
+]
+			]]></value>
 	            </property>
 	        </properties>
 	        <example><![CDATA[
