@@ -11,6 +11,7 @@ Fixed bug 2225474 - VariableNamingConventions does not work with nonprimitives
 Fixed bug 1609038 - Xslt report generators break if path contains "java"
 Fixed bug - JUnitTestsShouldIncludeAssert now detects Junit 4 Assert.assert...  constructs
 Fixed bug 2142986 - UselessOverridingMethod doesn't consider annotations
+Fixed bug 2027626 - False + : AvoidFinalLocalVariable
 
 New rule:
 	StrictExceptions : AvoidThrowingNewInstanceOfSameException
