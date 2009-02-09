@@ -426,6 +426,7 @@ Fixed bug 2404700 - UseSingleton should not act on enums
 Fixed bug - JUnitTestsShouldIncludeAssert now detects Junit 4 Assert.assert...  constructs
 Fixed bug 1609038 - Xslt report generators break if path contains "java"
 Fixed bug 2142986 - UselessOverridingMethod doesn't consider annotations
+Fixed bug 2027626 - False + : AvoidFinalLocalVariable
 
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 bin and java14/bin scripts:
