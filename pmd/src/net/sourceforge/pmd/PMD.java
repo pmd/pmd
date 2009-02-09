@@ -48,7 +48,7 @@ import net.sourceforge.pmd.util.FileFinder;
 
 public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");
-    public static final String VERSION = "4.2.5-SNAPSHOT";
+    public static final String VERSION = "4.2.5";
     public static final String EXCLUDE_MARKER = "NOPMD";
 
     private static final Logger LOG = Logger.getLogger(PMD.class.getName());

@@ -1,4 +1,4 @@
-???? - 4.2.5:
+February 08, 2009 - 4.2.5:
 
 Enhanced logging in the ClassTypeResolver to provide more detailed messaging.
 Fixed bug 2315623 - @SuppressWarnings("PMD.UseSingleton") has no effect
