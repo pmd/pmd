@@ -28,6 +28,7 @@
 
 <h3>Recent releases</h3>
 <p><ul>
+<li>2009-02-08 PMD 4.2.5: bug fixes, new rule, new Android ruleset (<a href="http://sourceforge.net/project/shownotes.php?release_id=659603&amp;group_id=56262">Changelog</a>)</li>
 <li>2008-10-12 PMD 4.2.4: bug fixes (<a href="http://sourceforge.net/project/shownotes.php?release_id=632850&amp;group_id=56262">Changelog</a>)</li>
 <li>2008-08-31 PMD 4.2.3: yet more bug fixes (<a href="http://sourceforge.net/project/shownotes.php?release_id=623284&amp;group_id=56262">Changelog</a>)</li>
 <li>2008-05-20 PMD 4.2.2: more bug fixes on the 4.2 branch (<a href="http://sourceforge.net/project/shownotes.php?release_id=600660&amp;group_id=56262">Changelog</a>)</li>
