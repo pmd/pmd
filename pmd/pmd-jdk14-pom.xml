@@ -289,12 +289,12 @@
     <repository>
       <id>pmd-repo</id>
       <name>Default Repository</name>
-      <url>scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2</url>
+      <url>scp://shell.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2</url>
     </repository>
     <site>
       <id>pmd-site</id>
       <name>Default Site</name>
-      <url>scp://web.sourceforge.net/home/groups/p/pm/pmd/htdocs</url>
+      <url>scp://shell.sourceforge.net/home/groups/p/pm/pmd/htdocs</url>
     </site>
   </distributionManagement>
 
