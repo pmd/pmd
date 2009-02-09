@@ -471,6 +471,9 @@ New Java rules:
 	Import ruleset: UnnecessaryFullyQualifiedName
 	StrictException : AvoidThrowingNewInstanceOfSameException
 
+New Java ruleset:
+	android.xml: new rules specific to the Android platform
+
 New ECMAScript rules:
 	Basic ruleset: AssignmentInOperand,InnaccurateNumericLiteral,UnreachableCode
 	Braces ruleset: ForLoopsMustUseBraces,IfStmtsMustUseBraces,IfElseStmtsMustUseBraces,WhileLoopsMustUseBraces
