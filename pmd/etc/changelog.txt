@@ -1,5 +1,7 @@
 ???? - 4.2.6:
 
+New rule:
+	StrictExceptions : AvoidCatchingGenericException
 
 February 08, 2009 - 4.2.5:
 

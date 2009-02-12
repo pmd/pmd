@@ -330,5 +330,48 @@ public class Foo {
     </example>
   </rule>
 
+  <rule  name="AvoidCatchingGenericException"
+    since="4.2.5"
+    message="Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block"
+    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidCatchingGenericException"
+    class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+      Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+      <value>
+      <![CDATA[
+        //CatchStatement/FormalParameter/Type/ReferenceType/ClassOrInterfaceType[
+          @Image='NullPointerException' or
+          @Image='Exception' or
+          @Image='RuntimeException']
+      ]]>
+      </value>
+      </property>
+    </properties>
+    <example>
+    <![CDATA[
+package com.igate.primitive;
+    
+public class PrimitiveType {
+    
+  public void downCastPrimitiveType() {
+    try {
+      System.out.println(" i [" + i + "]");
+    } catch(Exception e) {
+      e.printStackTrace();
+    } catch(RuntimeException e) {
+      e.printStackTrace();
+    } catch(NullPointerException e) {
+      e.printStackTrace();
+    }
+  } 
+}
+    ]]>
+    </example>
+  </rule>
+
 </ruleset>
- 	  	 
+
