@@ -331,7 +331,7 @@ public class Foo {
   </rule>
 
   <rule  name="AvoidCatchingGenericException"
-    since="4.2.5"
+    since="4.2.6"
     message="Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block"
     externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidCatchingGenericException"
     class="net.sourceforge.pmd.rules.XPathRule">
