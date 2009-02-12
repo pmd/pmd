@@ -10,6 +10,7 @@ public class StrictExceptionRulesTest extends SimpleAggregatorTst {
 
     @Before
     public void setUp() {
+        addRule(RULESET, "AvoidCatchingGenericException");
         addRule(RULESET, "AvoidCatchingNPE");
         addRule(RULESET, "AvoidCatchingThrowable");
         addRule(RULESET, "AvoidRethrowingException");

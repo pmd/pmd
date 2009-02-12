@@ -469,7 +469,7 @@ New Java rules:
 	Basic ruleset:	EmptyInitializer,EmptyStatementBlock,ExtendsObject,UselessParentheses,CheckSkipResult
 	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass
 	Import ruleset: UnnecessaryFullyQualifiedName
-	StrictException : AvoidThrowingNewInstanceOfSameException
+	StrictException : AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException
 
 New Java ruleset:
 	android.xml: new rules specific to the Android platform

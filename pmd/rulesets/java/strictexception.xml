@@ -335,5 +335,48 @@ Throwing exception within a 'finally block' is confusing as it may mask exceptio
     </example>
   </rule>
 
+  <rule  name="AvoidCatchingGenericException"
+    since="4.2.6" language="java"
+    message="Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block"
+    externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidCatchingGenericException"
+    class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <description>
+      Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+      <value>
+      <![CDATA[
+        //CatchStatement/FormalParameter/Type/ReferenceType/ClassOrInterfaceType[
+          @Image='NullPointerException' or
+          @Image='Exception' or
+          @Image='RuntimeException']
+      ]]>
+      </value>
+      </property>
+    </properties>
+    <example>
+    <![CDATA[
+package com.igate.primitive;
+    
+public class PrimitiveType {
+    
+  public void downCastPrimitiveType() {
+    try {
+      System.out.println(" i [" + i + "]");
+    } catch(Exception e) {
+      e.printStackTrace();
+    } catch(RuntimeException e) {
+      e.printStackTrace();
+    } catch(NullPointerException e) {
+      e.printStackTrace();
+    }
+  } 
+}
+    ]]>
+    </example>
+  </rule>
+
 </ruleset>
 
