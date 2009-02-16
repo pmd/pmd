@@ -1,5 +1,7 @@
 ???? - 4.2.6:
 
+Fixed bug 2590258 - NPE with nicerhtml output
+
 New rule:
 	StrictExceptions : AvoidCatchingGenericException
 
