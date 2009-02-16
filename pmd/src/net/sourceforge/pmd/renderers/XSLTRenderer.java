@@ -45,9 +45,11 @@ public class XSLTRenderer extends XMLRenderer {
 	 * @param xsltFilename
 	 */
 	public XSLTRenderer(String xsltFilename) {
-		File file = new File(xsltFilename);
-		if ( xsltFilename != null && file.exists() && file.canRead() ) {
-			this.xsltFilename = xsltFilename;
+		if ( xsltFilename != null ) {
+			File file = new File(xsltFilename);
+			if ( file.exists() && file.canRead() ) {
+				this.xsltFilename = xsltFilename;
+			}
 		}
 	}
 
