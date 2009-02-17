@@ -205,7 +205,7 @@ public class Foo {
      ]]></code>
     </test-code>
     
-    <test-code regressionTest="false">
+    <test-code>
 	  <description><![CDATA[
 Bug 2606609 : False "UnusedImports" positive in package-info.java
 	 ]]></description>
