@@ -204,11 +204,11 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    
-    <test-code>
-	  <description><![CDATA[
+
+    <test-code regressionTest="false">
+         <description><![CDATA[
 Bug 2606609 : False "UnusedImports" positive in package-info.java
-	 ]]></description>
+        ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 @DefaultAnnotation(NonNull.class)
@@ -216,5 +216,8 @@ package net.sourceforge.pmd.test;
 
 public class Bug {}
      ]]></code>
-    </test-code>    
+    </test-code>
+</test-data>
+
+
 </test-data>
