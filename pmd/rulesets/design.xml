@@ -1061,7 +1061,7 @@ ConditionalAndExpression
  and
 InstanceOfExpression
  [PrimaryExpression[count(PrimarySuffix[@ArrayDereference='true'])=0]
-  //Name/@Image = ancestor::ConditionalAndExpression
+  //Name[not(contains(@Image,'.'))]/@Image = ancestor::ConditionalAndExpression
    /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name/@Image]]]
  ]]>
                   </value>
