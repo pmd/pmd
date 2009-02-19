@@ -78,32 +78,8 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-        <test-code>
-        <description><![CDATA[
-Bug [1843273] False -
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Bug1843273
-{
-	public boolean isTrue(Boolean value)
-	   {
-	       boolean result = true;
-
-	       if (value.booleanValue())
-	       {
-	           return result;
-	       }
-	       else
-	       {
-	           return ! result;
-	       }
-	   }
-   }
-     ]]></code>
-    </test-code>
-
-    <test-code regressionTest="false">
+    
+    <test-code>
         <description><![CDATA[
 Bug 2317099 : False + in SimplifyConditional
      ]]></description>
