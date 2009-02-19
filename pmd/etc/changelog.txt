@@ -1,6 +1,7 @@
 ???? - 4.2.6:
 
 Fixed bug 2590258 - NPE with nicerhtml output
+Fixed bug 2317099 - False + in SimplifyCondition
 
 New rule:
 	StrictExceptions : AvoidCatchingGenericException
