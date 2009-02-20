@@ -115,7 +115,6 @@ public class Bug2317099
     if (env != null && env.getContext() != null &&
       env.getContext().getContextObject() instanceof PageContext) {
     }
-
  }
 }
      ]]></code>
