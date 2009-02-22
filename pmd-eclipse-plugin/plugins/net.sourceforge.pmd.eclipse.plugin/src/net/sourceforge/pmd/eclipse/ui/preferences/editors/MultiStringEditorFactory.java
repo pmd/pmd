@@ -5,9 +5,9 @@ import java.util.List;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
@@ -54,7 +54,7 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         	public void handleEvent(Event event) {
         		String[] newValues = textWidgetValues(textWidget);					
         		String[] existingValues = rule.getProperty(smp);				
-        		if (Util.areSemanticEquals(existingValues, newValues)) return;				
+        		if (CollectionUtil.areSemanticEquals(existingValues, newValues)) return;				
         		
         		rule.setProperty(smp, newValues);        		
         		fillWidget(textWidget, desc, rule);    // reload with latest scrubbed values        		
@@ -75,7 +75,7 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         if (StringUtil.isEmpty(newValue)) return null;
         
         String[] currentValues = (String[])rule.getProperty(desc);
-        String[] newValues = Util.addWithoutDuplicates(currentValues, newValue);
+        String[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
         if (currentValues.length == newValues.length) return null;
         
         rule.setProperty((StringMultiProperty)desc, newValues);

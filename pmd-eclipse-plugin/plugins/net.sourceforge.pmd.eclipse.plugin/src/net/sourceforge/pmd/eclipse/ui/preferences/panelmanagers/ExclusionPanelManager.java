@@ -1,6 +1,7 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
@@ -43,6 +44,11 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         xpathWidget.setText("");
     }
 	
+    protected void setVisible(boolean flag) {
+        excludeWidget.setVisible(flag);
+        xpathWidget.setVisible(flag);
+    }
+    
 	private void addListeners(final Text control, final StringProperty desc, final Control colourWindow) {
 		
 		addTextListeners(control, desc);
@@ -52,8 +58,33 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 				colourWindow.setBackground(
 					colourManager.colourFor(control.getText())
 					);
+
+                changeListener.changed(rules, null, null); 
 			}			
 		});
+	}
+	
+	private Composite newColourPanel(Composite parent, String label) {
+	    
+	    Composite panel = new Composite(parent, SWT.None);
+	    
+        GridLayout layout = new GridLayout(2, false);
+        layout.verticalSpacing = 0;     layout.horizontalSpacing = 0;
+        layout.marginHeight = 0;        layout.marginWidth = 0;
+        panel.setLayout(layout);
+	    
+	    Label labelWidget = new Label(panel, SWT.None);
+	    labelWidget.setText(label);
+	    
+	    Composite clrPanel = new Composite(panel, SWT.BORDER);
+        GridData gridData = new GridData();
+        gridData.horizontalSpan = 1;
+        gridData.heightHint = 15;
+        gridData.widthHint = 15;
+        gridData.grabExcessHorizontalSpace = false;
+        clrPanel.setLayoutData(gridData);
+        
+        return clrPanel;
 	}
 	
 	/**
@@ -75,33 +106,34 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 		Label labelA = new Label(panel, 0);
 		labelA.setText(regexExclusionLabel);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
-	    gridData.horizontalSpan = 2;
+	    gridData.horizontalSpan = 1;
+        gridData.grabExcessHorizontalSpace = true;
 	    labelA.setLayoutData(gridData);
 	    
-	    gridData.grabExcessHorizontalSpace = true;
+        excludeColour = newColourPanel(panel, "Color code  ");
+               
 		excludeWidget = new Text(panel, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		gridData = new GridData(GridData.FILL_BOTH);
 	    gridData.grabExcessHorizontalSpace = true;
-	    gridData.horizontalSpan = 1;
+	    gridData.horizontalSpan = 2;
 		excludeWidget.setLayoutData(gridData);
 				
-		excludeColour = new Composite(panel, SWT.BORDER);
 		addListeners(excludeWidget, Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, excludeColour);
 				
 		Label labelB = new Label(panel, 0);
 		labelB.setText(xpathExclusionLabel);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
-	    gridData.horizontalSpan = 2;
+	    gridData.horizontalSpan = 1;
 	    labelB.setLayoutData(gridData);
+
+        xPathColour = newColourPanel(panel, "Color code  ");
 	    
 		gridData = new GridData(GridData.FILL_BOTH);
-		gridData.horizontalSpan = 1;
+		gridData.horizontalSpan = 2;
 	    gridData.grabExcessHorizontalSpace = true;
 		xpathWidget = new Text(panel, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		xpathWidget.setLayoutData(gridData);
 		
-		xPathColour = new Composite(panel, SWT.BORDER);
-		xPathColour.setSize(1,1);
 		addListeners(xpathWidget, Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, xPathColour);
 		
 		panel.pack();

@@ -7,9 +7,9 @@ import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -36,9 +36,9 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
         
         Integer intrg = null;
         
-        for (int i=0; i<numberStrings.length; i++) {
+        for (String numString : numberStrings) {
             try {
-                intrg = Integer.parseInt(numberStrings[i]);
+                intrg = Integer.parseInt(numString);
             } catch (Exception e) {
                // just eat it for now
             }
@@ -77,7 +77,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
             public void handleEvent(Event event) {
                 Integer[] newValue = currentIntegers(textWidget);               
                 Integer[] existingValue = rule.getProperty(tmp);             
-                if (Util.areSemanticEquals(existingValue, newValue)) return;                
+                if (CollectionUtil.areSemanticEquals(existingValue, newValue)) return;                
                 
                 rule.setProperty(tmp, newValue);
                 fillWidget(textWidget, desc, rule);   // display the accepted values
@@ -96,7 +96,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
         Integer newValue= Integer.valueOf(((Spinner)widget).getSelection());
         
         Integer[] currentValues = (Integer[])rule.getProperty(desc);
-        Integer[] newValues = Util.addWithoutDuplicates(currentValues, newValue);
+        Integer[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
         if (currentValues.length == newValues.length) return null;
         
         rule.setProperty((IntegerMultiProperty)desc, newValues);

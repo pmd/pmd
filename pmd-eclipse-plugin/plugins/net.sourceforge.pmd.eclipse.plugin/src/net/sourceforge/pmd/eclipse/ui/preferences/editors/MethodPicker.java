@@ -32,7 +32,7 @@ public class MethodPicker extends Composite {
     private Combo       methodList;    
     private Method[]    methods;    
     private String[]    unwantedPrefixes;
-    
+       
     public MethodPicker(Composite parent, int style, String[] theUnwantedPrefixes) {
         super(parent, SWT.None);
         
@@ -44,13 +44,20 @@ public class MethodPicker extends Composite {
         layout.marginHeight = 0;        layout.marginWidth = 0;
         this.setLayout(layout);
         
-        typeText = new TypeText(this, style, false);
+        typeText = new TypeText(this, style, false, "Enter a type name");
         typeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         typeText.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 reviseMethodListFor(typeText.getType(true));
             }
         });
+        
+        typeText.addListener(SWT.Modify, new Listener() {
+            public void handleEvent(Event event) {
+                reviseMethodListFor(typeText.getType(false));   // no cleanup, avoid event loop & overflow
+            }
+        });
+        
         methodList = new Combo(this, style);
         methodList.setLayoutData(new GridData(GridData.FILL_BOTH));
     }

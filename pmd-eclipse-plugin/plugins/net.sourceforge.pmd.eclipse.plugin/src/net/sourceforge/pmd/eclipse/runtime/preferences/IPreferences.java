@@ -147,7 +147,7 @@ public interface IPreferences {
     Level getLogLevel();
     
     /**
-     * Set le log level
+     * Set the log level
      */
     void setLogLevel(Level level);
     

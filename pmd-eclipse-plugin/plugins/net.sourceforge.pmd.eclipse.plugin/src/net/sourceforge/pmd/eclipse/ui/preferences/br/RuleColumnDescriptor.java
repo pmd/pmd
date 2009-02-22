@@ -10,8 +10,13 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
+/**
+ * 
+ * @author Brian Remedios
+ */
 public interface RuleColumnDescriptor {
 
+    String label();
     RuleFieldAccessor accessor();
     Image imageFor(Rule rule);
     String stringValueFor(Rule rule);

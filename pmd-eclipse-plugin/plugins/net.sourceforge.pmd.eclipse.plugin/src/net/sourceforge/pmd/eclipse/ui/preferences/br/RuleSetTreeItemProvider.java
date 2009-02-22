@@ -100,8 +100,12 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 				ruleGroups.put(groupId, group);
 				}
 		}
-				
-		 RuleGroup[] groups = ruleGroups.values().toArray(new RuleGroup[ruleGroups.size()]);
+		
+        RuleGroup[] groups = ruleGroups.values().toArray(new RuleGroup[ruleGroups.size()]);
+        
+		// TODO sort within groups
+		for (RuleGroup group : groups) group.sortBy(comparator);
+		
 		 Arrays.sort(groups);
 		 return groups;
 	}

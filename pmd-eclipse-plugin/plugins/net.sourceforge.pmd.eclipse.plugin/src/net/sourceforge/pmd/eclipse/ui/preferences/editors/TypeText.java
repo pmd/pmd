@@ -4,6 +4,8 @@ import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -17,27 +19,54 @@ import org.eclipse.swt.widgets.Text;
  * re-rendered with its full package name. If it isn't recognized or is a disallowed
  * primitive then the entry is cleared.
  * 
+ * TODO - add a grey prompt within the field when it is empty, remove when user starts typing
+ * 
  * @author Brian Remedios
  */
 public class TypeText extends Composite {
 
     private Text    text;
     private boolean acceptPrimitives;
+    private String  promptText;
     
-    public TypeText(Composite parent, int style, boolean primitivesOK) {
+    public TypeText(Composite parent, int style, boolean primitivesOK, String thePromptText) {
         super(parent, SWT.None);
+        
+        promptText = thePromptText;
         
         GridLayout layout = new GridLayout(1, false);
         layout.verticalSpacing = 0;     layout.horizontalSpacing = 0;
         layout.marginHeight = 0;        layout.marginWidth = 0;
-        this.setLayout(layout);
+        setLayout(layout);
         
         text = new Text(this, style);
         text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
+        text.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {             
+                // adjust to remove prompt text if necessary
+                //TODO
+            }           
+        });
+                
         acceptPrimitives = primitivesOK;
     }
         
+    private boolean hasRealText() {
+        String textValue = text.getText();
+        if (StringUtil.isEmpty(textValue)) return false;
+        if (text.equals(promptText)) return false;
+        
+        return true;
+    }
+    
+    private void adjustFieldContents() {
+        
+       // text.setForeground(
+       //    hasRealText() ? Color.
+       //    );
+    }
+    
     public void addListener(int eventType, Listener listener) {
         text.addListener(eventType, listener);
     }
@@ -83,7 +112,7 @@ public class TypeText extends Composite {
         }
         
         Class<?> cls = ClassUtil.getTypeFor(typeStr);
-        if (cls.isPrimitive() && !acceptPrimitives) {
+        if (cls != null && cls.isPrimitive() && !acceptPrimitives) {
             cls = null;
         }
         

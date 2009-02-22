@@ -6,10 +6,10 @@ import java.util.List;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
 import net.sourceforge.pmd.util.ClassUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
@@ -46,11 +46,14 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
             return;
         }
         
-        String[] typeNames = shortNamesFor(values);
-
-        textWidget.setText(values == null ? "" : StringUtil.asString(typeNames, delimiter + ' '));
+        textWidget.setText(values == null ? "" : asString(values));
     }
 	
+    private String asString(Class<?>[] types) {
+        String[] typeNames = shortNamesFor(types);
+        return StringUtil.asString(typeNames, delimiter + ' ');
+    }
+    
 	private Class<?>[] currentTypes(Text textWidget) {
 	    
 	    String[] typeNames = textWidgetValues(textWidget);
@@ -58,8 +61,8 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
 	    
 	    List<Class<?>> types = new ArrayList<Class<?>>(typeNames.length);
 	    
-	    for (int i=0; i<typeNames.length; i++) {
-	        Class<?> newType = TypeEditorFactory.typeFor(typeNames[i]);
+	    for (String typeName : typeNames) {
+	        Class<?> newType = TypeEditorFactory.typeFor(typeName);
 	        if (newType != null) types.add(newType);
 	    }
 	    return (Class[]) types.toArray(new Class[types.size()]);
@@ -75,14 +78,15 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
     }
 	
     protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
-        Text textWidget = new Text(parent, SWT.SINGLE | SWT.BORDER);
-        setValue(textWidget, value);
-        return textWidget;
+        TypeText typeWidget = new TypeText(parent, SWT.SINGLE | SWT.BORDER, true, "Enter type name");
+        setValue(typeWidget, value);
+        return typeWidget;
     }
     
     protected void setValue(Control widget, Object value) {
-        String strValue = value == null ? "" : ClassUtil.asShortestName((Class<?>)value);
-        ((Text)widget).setText(strValue);
+        
+        Class<?> type = (Class<?>)value;                 
+        ((TypeText)widget).setType(type);
     }
    
     protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
@@ -93,7 +97,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
             public void handleEvent(Event event) {
                 Class<?>[] newValue = currentTypes(textWidget);               
                 Class<?>[] existingValue = rule.getProperty(tmp);             
-                if (Util.areSemanticEquals(existingValue, newValue)) return;                
+                if (CollectionUtil.areSemanticEquals(existingValue, newValue)) return;                
                 
                 rule.setProperty(tmp, newValue);
                 fillWidget(textWidget, desc, rule);   // display the accepted values
@@ -109,14 +113,14 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
     @Override
     protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule) {
         
-        Class<?>[] enteredValues = currentTypes((Text) widget);
-        if (enteredValues.length == 0) return null;
+        Class<?> enteredValue = ((TypeText) widget).getType(true);
+        if (enteredValue == null) return null;
         
         Class<?>[] currentValues = (Class[])rule.getProperty(desc);
-        Class<?>[] newValues = Util.addWithoutDuplicates(currentValues, enteredValues);
+        Class<?>[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, enteredValue);
         if (currentValues.length == newValues.length) return null;
         
         rule.setProperty((TypeMultiProperty)desc, newValues);
-        return newValues;
+        return enteredValue;
     }
 }

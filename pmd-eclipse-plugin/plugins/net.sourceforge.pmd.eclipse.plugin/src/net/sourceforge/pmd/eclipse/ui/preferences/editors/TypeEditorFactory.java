@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
+
 
 /**
  * 
@@ -27,31 +27,23 @@ public class TypeEditorFactory extends AbstractEditorFactory {
 	private TypeEditorFactory() { }
 
 	public static Class<?> typeFor(String typeName) {
-	        
-	    Class<?> newType = ClassUtil.getTypeFor(typeName);    // try for well-known types first
-	    if (newType != null) return newType;
+        
+        Class<?> newType = ClassUtil.getTypeFor(typeName);    // try for well-known types first
+        if (newType != null) return newType;
 
-	    try {
-	        return Class.forName(typeName);
-	        } catch (ClassNotFoundException e) {
-	           return null;
-	        }
-	}
-	   
-	protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
+        try {
+            return Class.forName(typeName);
+            } catch (ClassNotFoundException e) {
+               return null;
+            }
+    }
+    
+	protected void fillWidget(TypeText textWidget, PropertyDescriptor<?> desc, Rule rule) {
 		
 		Class<?> type = (Class<?>)rule.getProperty(desc);
-		textWidget.setText(type == null ? "" : ClassUtil.asShortestName(type));
+		textWidget.setType(type);
 	}
-	
-	private Class<?> currentType(Text textWidget) {
-	    
-	    String typeName = textWidget.getText().trim();
-	    if (typeName.length() == 0) return null;
-	    
-	    return typeFor(typeName);
-	}
-	
+		
     private static TypeProperty typePropertyFrom(PropertyDescriptor<?> desc) {
         
         if (desc instanceof PropertyDescriptorWrapper) {
@@ -77,26 +69,27 @@ public class TypeEditorFactory extends AbstractEditorFactory {
         
         if (columnIndex == 1) {
             
-            final Text text =  new Text(parent, SWT.SINGLE | SWT.BORDER);
-            text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            final TypeText typeText = new TypeText(parent, SWT.SINGLE | SWT.BORDER, true, "Enter a type name");
+            typeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-            fillWidget(text, desc, rule);
+            fillWidget(typeText, desc, rule);
                         
             final TypeProperty tp = typePropertyFrom(desc);
             
-            text.addListener(SWT.FocusOut, new Listener() {
+            typeText.addListener(SWT.FocusOut, new Listener() {
                 public void handleEvent(Event event) {
-                    Class<?> newValue = currentType(text);                    
+                    Class<?> newValue = typeText.getType(true);
+                    if (newValue == null) return;
+                    
                     Class<?> existingValue = rule.getProperty(tp);                
                     if (existingValue == newValue) return;              
                     
                     rule.setProperty(tp, newValue);
-                    fillWidget(text, desc, rule);     // redraw
                     listener.changed(rule, desc, newValue);
                 }
             });
 
-            return text;
+            return typeText;
         }
         
         return null;

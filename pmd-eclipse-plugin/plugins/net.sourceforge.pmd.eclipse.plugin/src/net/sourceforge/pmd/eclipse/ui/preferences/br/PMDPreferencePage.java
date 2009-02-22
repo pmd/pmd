@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,11 +25,16 @@ import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
-import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.designer.Designer;
@@ -44,12 +50,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -96,14 +99,13 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
 		TextColumnDescriptor.name,
 		TextColumnDescriptor.priorityName,
-	//	TextColumnDescriptor.since,
+		TextColumnDescriptor.since,
 		TextColumnDescriptor.ruleSetName,
 		TextColumnDescriptor.ruleType,
-	//	TextColumnDescriptor.minLangVers,		
+		TextColumnDescriptor.minLangVers,		
 		ImageColumnDescriptor.filterExpression,    // regex text -> compact color dots (for comparison)
 		TextColumnDescriptor.properties,
 		};
-	private static final Set<RuleColumnDescriptor> availableColumnSet = CollectionUtil.asSet(availableColumns);
 
 	// last item in this list is the grouping used at startup
 	private static final Object[][] groupingChoices = new Object[][] {
@@ -157,6 +159,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private TabFolder 		     tabFolder;
 	private Set<Object> 		 checkedRules = new HashSet<Object>();
 	private Menu                 ruleListMenu;
+	private Set<String>          hiddenColumnNames = new HashSet<String>();
 	
 	private RulePropertyManager[]   rulePropertyManagers;
 
@@ -183,6 +186,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	public void init(IWorkbench workbench) {
 		setDescription(getMessage(StringKeys.MSGKEY_PREF_RULESET_TITLE));
 		activeInstance = this;
+		
+		// TODO retrieve the hidden column names from preference settings
+		hiddenColumnNames.add(TextColumnDescriptor.since.label());
+		hiddenColumnNames.add(TextColumnDescriptor.minLangVers.label());
 	}
 
 	/**
@@ -361,43 +368,35 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		groupBy(groupingColumn);
 	}
 
-	/**
-	 * @param parent Composite
-	 * @return Combo
-	 */
 	private Composite buildGroupCombo(Composite parent, String comboLabel) {
 
-		final Composite panel = new Composite(parent, 0);
-		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
-		layout.marginTop = 0;
-		panel.setLayout(layout);
+	     Composite panel = new Composite(parent, 0);
+	     GridLayout layout = new GridLayout(2, false);
+	     panel.setLayout(layout);
 
-		Label label = new Label(panel, 0);
-		label.setText(comboLabel);
-
-		final ComboViewer viewer = new ComboViewer(panel, SWT.DROP_DOWN);
-		viewer.setLabelProvider(new LabelProvider() {
-			@Override
-            public String getText(Object element) { return ((Object[])element)[1].toString(); }
-		});
-		viewer.add(groupingChoices);
-		viewer.setSelection(new StructuredSelection(groupingChoices[groupingChoices.length-1]), true);
-
-		final Combo combo = viewer.getCombo();
-
-		combo.addSelectionListener( new SelectionAdapter() {
-			@Override
-            public void widgetSelected(SelectionEvent e) {
-				int pos = combo.getSelectionIndex();
-				Object[] choice = groupingChoices[pos];
-				groupingColumn = (RuleColumnDescriptor)choice[0];
-				redrawTable();
-			}
-		});
-
-		return panel;
-	}
-
+	     Label label = new Label(panel, 0);
+	     GridData data = new GridData();
+	     data.horizontalAlignment = SWT.LEFT;
+	     data.verticalAlignment = SWT.CENTER;
+	     label.setLayoutData(data);
+	     label.setText(comboLabel);
+	        
+         final Combo combo = new Combo(panel, SWT.READ_ONLY);
+         combo.setItems(SWTUtil.labelsIn(groupingChoices,1));            
+         combo.select(groupingChoices.length - 1);
+            
+         combo.addSelectionListener(new SelectionAdapter() {
+             public void widgetSelected(SelectionEvent e) {
+                 int selectionIdx = combo.getSelectionIndex();
+                 Object[] choice = groupingChoices[selectionIdx];
+                 groupingColumn = (RuleColumnDescriptor)choice[0];
+                 redrawTable();
+             }
+           });  
+	        
+	     return panel;
+	 }
+	
 	/**
 	 * Method buildTabFolder.
 	 * @param parent Composite
@@ -410,8 +409,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		rulePropertyManagers = new RulePropertyManager[] {
 		    buildPropertyTab(tabFolder,    0, "Properties"),
 		    buildDescriptionTab(tabFolder, 1, stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION)),
-		    buildUsageTab(tabFolder,       2, "Usage")
-		};
+		    buildUsageTab(tabFolder,       2, "Usage"),
+		    buildExampleTab(tabFolder,     3, "Examples")
+		    };
 
 		tabFolder.pack();
 		return tabFolder;
@@ -449,6 +449,22 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         return manager;
 	}
 
+	   /**
+     * @param parent TabFolder
+     * @param index int
+     */
+    private RulePropertyManager buildExampleTab(TabFolder parent, int index, String title) {
+
+        TabItem tab = new TabItem(parent, 0, index);
+        tab.setText(title);
+
+        ExamplePanelManager manager = new ExamplePanelManager(this);
+        tab.setControl(
+            manager.setupOn(parent)
+            );
+        return manager;
+    }
+	
 	/**
 	 *
 	 * @param parent TabFolder
@@ -632,38 +648,71 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
            //     useDefaultValues();
             }
         });
-	    
-	    
-        menu.addListener (SWT.Selection, new Listener () {
-            public void handleEvent (Event e) {
-                System.out.println ("Item Selected");
-            }
-        });
-                
+	   	                   
         return menu;
+	}
+	
+	private void addColumnSelectionOptions(Menu menu) {
+	    
+	    MenuItem showMenu = new MenuItem(menu, SWT.CASCADE);
+	    showMenu.setText("Show");
+        Menu columnsSubMenu = new Menu(menu);
+        showMenu.setMenu(columnsSubMenu);
+         
+        for (String columnLabel : columnLabels()) {
+            MenuItem columnItem = new MenuItem(columnsSubMenu, SWT.CHECK);
+            columnItem.setSelection(!hiddenColumnNames.contains(columnLabel));
+            columnItem.setText(columnLabel);
+            final String nameStr = columnLabel;
+            columnItem.addSelectionListener( new SelectionAdapter() {                
+                public void widgetSelected(SelectionEvent e) { 
+                    toggleColumnVisiblity(nameStr); 
+                    }
+                }
+            );
+         }  
+	}
+	
+	private static String[] columnLabels() {
+	    String[] names = new String[availableColumns.length];
+	    for (int i=0; i<availableColumns.length; i++) {
+	        names[i] = availableColumns[i].label();
+	    }
+	    return names;
+	}
+	
+	private void toggleColumnVisiblity(String columnName) {
+	    
+	    if (hiddenColumnNames.contains(columnName)) {
+	        hiddenColumnNames.remove(columnName);
+	    } else {
+	        hiddenColumnNames.add(columnName);
+	    }
+	    
+	    redrawTable();
 	}
 	
 	private void addRulesetMenuOptions(Menu menu) {
 	    
-        MenuItem rulesetMenu = new MenuItem (menu, SWT.CASCADE);
+        MenuItem rulesetMenu = new MenuItem(menu, SWT.CASCADE);
         rulesetMenu.setText("Ruleset");
         Menu rulesetSubMenu = new Menu(menu);
         rulesetMenu.setMenu(rulesetSubMenu);
         rulesetMenusByName = new HashMap<String, MenuItem>();
             
         MenuItem demoItem = new MenuItem(rulesetSubMenu, SWT.PUSH);
-        demoItem.setText("---demo only---");
+        demoItem.setText("---demo only---");    // NO API to re-parent rules to other rulesets (yet)
         
         for (String rulesetName : rulesetNames()) {
             MenuItem rulesetItem = new MenuItem(rulesetSubMenu, SWT.RADIO);
             rulesetMenusByName.put(rulesetName, rulesetItem);
             rulesetItem.setText(rulesetName);
             final String rulesetStr = rulesetName;
-            rulesetItem.addSelectionListener( new SelectionListener() {                
+            rulesetItem.addSelectionListener( new SelectionAdapter() {                
                 public void widgetSelected(SelectionEvent e) { 
                     setRuleset(rulesetStr); 
                     }
-                public void widgetDefaultSelected(SelectionEvent e) {  }}
+                }
             );
          }  
 	}
@@ -672,6 +721,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    // have to do it here or else the ruleset var is null in the menu setup - timing issue
 	    if (rulesetMenusByName == null) {
 	        addRulesetMenuOptions(ruleListMenu);
+	        new MenuItem(ruleListMenu, SWT.SEPARATOR);
+            addColumnSelectionOptions(ruleListMenu);
 	    }
 	    
         adjustMenuPrioritySettings();
@@ -680,6 +731,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         ruleListMenu.setVisible(true);
 	}
 
+	// if all the selected rules/ruleGroups reference a common ruleset name
+	// then check that item and disable it, do the reverse for all others.
     private void adjustMenuRulesetSettings() {
         
         String rulesetName = ruleSetNameFrom(ruleSelection.commonRuleset());
@@ -765,24 +818,18 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @param chosenColumn RuleColumnDescriptor
 	 */
 	private void groupBy(RuleColumnDescriptor chosenColumn) {
-
-		if (chosenColumn == null) {
-			setupTreeColumns(availableColumns, null);
-			return;
+		
+		List<RuleColumnDescriptor> visibleColumns = new ArrayList<RuleColumnDescriptor>(availableColumns.length);
+		for (RuleColumnDescriptor desc : availableColumns) {
+		    if (desc == chosenColumn) continue;   // redundant, don't include it
+		    if (hiddenColumnNames.contains(desc.label())) continue;
+		    visibleColumns.add(desc);
 		}
-
-		RuleColumnDescriptor[] remainingCols = availableColumns;
-
-		if (availableColumnSet.contains(chosenColumn)) {  // remove, its redundant
-    		remainingCols = new RuleColumnDescriptor[availableColumns.length-1];
-    		int j=0;
-    		for (RuleColumnDescriptor availableColumn : availableColumns) {
-    			if (availableColumn == chosenColumn) continue;
-    			remainingCols[j++] = availableColumn;
-    		}
-		}
-
-		setupTreeColumns(remainingCols, chosenColumn.accessor());
+		
+		setupTreeColumns(
+		    visibleColumns.toArray(new RuleColumnDescriptor[visibleColumns.size()]), 
+		    chosenColumn == null ? null : chosenColumn.accessor()
+		    );
 	}
 
 	/**

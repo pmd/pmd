@@ -1,9 +1,12 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.BooleanEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.CharacterEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.DoubleEditorFactory;
@@ -16,7 +19,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiMethodEditorFacto
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiStringEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiTypeEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.StringEditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeEditorFactory2;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeEditorFactory;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -50,7 +53,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         editorFactoriesByPropertyType.put(Object.class,     EnumerationEditorFactory.instance);
         editorFactoriesByPropertyType.put(Character.class,  CharacterEditorFactory.instance);
         
-        editorFactoriesByPropertyType.put(Class.class,      TypeEditorFactory2.instance);
+        editorFactoriesByPropertyType.put(Class.class,      TypeEditorFactory.instance);
         editorFactoriesByPropertyType.put(Class[].class,    MultiTypeEditorFactory.instance);
         editorFactoriesByPropertyType.put(Method.class,     MethodEditorFactory.instance);
         editorFactoriesByPropertyType.put(Method[].class,   MultiMethodEditorFactory.instance);
@@ -66,6 +69,10 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     
     protected void clearControls() {
         formArranger.clearChildren();
+    }
+    
+    protected void setVisible(boolean flag) {
+        clearControls();
     }
     
     public Control setupOn(TabFolder parent, ValueChangeListener changeListener) {

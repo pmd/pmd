@@ -23,13 +23,6 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
     public static final EnumerationEditorFactory instance = new EnumerationEditorFactory();
 
     private EnumerationEditorFactory() { }
-
-    private static String[] labelsIn(Object[][] items) {
-        
-        String[] labels = new String[items.length];
-        for (int i=0; i<labels.length; i++) labels[i] = items[i][0].toString();
-        return labels;
-    }
     
     private static EnumeratedProperty<?> enumerationPropertyFrom(PropertyDescriptor<?> desc) {
         
@@ -54,7 +47,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
                         
             final EnumeratedProperty<?> ep = enumerationPropertyFrom(desc);
             Object value = rule.getProperty(desc);
-            combo.setItems(labelsIn(ep.choices()));
+            combo.setItems(SWTUtil.labelsIn(ep.choices(), 0));
             int selectionIdx = indexOf(value, ep.choices());
             if (selectionIdx >= 0) combo.select(selectionIdx);
             

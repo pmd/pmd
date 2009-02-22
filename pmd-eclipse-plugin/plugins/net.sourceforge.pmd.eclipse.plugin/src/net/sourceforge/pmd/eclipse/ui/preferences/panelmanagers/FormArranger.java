@@ -1,9 +1,13 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -45,7 +49,8 @@ public class FormArranger {
 
 	public void clearChildren() {
 		Control[] kids = parent.getChildren();
-		for (int i=0; i<kids.length; i++) kids[i].dispose();
+		for (int i=0; i<kids.length; i++) 
+		    kids[i].dispose();
         parent.pack();
         rule = null;
 	}

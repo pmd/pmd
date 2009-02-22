@@ -1,6 +1,8 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
@@ -57,6 +59,17 @@ public class RuleGroup implements Comparable<RuleGroup> {
 		
 	    if (label != null) return label;
 		return id == null ? "" : id.toString();
+	}
+	
+	public void sortBy(Comparator ruleComparator) {
+	    
+	    if (!hasRules()) return;
+	    
+	    Object[] sortedRules = rules.toArray();
+	    
+	    Arrays.sort(sortedRules, ruleComparator);
+	    rules.clear();
+	    for (int i=0;i<sortedRules.length; i++) rules.add((Rule)sortedRules[i]);
 	}
 	
 	/**

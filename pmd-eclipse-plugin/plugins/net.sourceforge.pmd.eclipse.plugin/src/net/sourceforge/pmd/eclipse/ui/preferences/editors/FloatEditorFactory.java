@@ -18,13 +18,10 @@ import org.eclipse.swt.widgets.Spinner;
  * 
  * @author Brian Remedios
  */
-public class FloatEditorFactory extends AbstractEditorFactory {
+public class FloatEditorFactory extends AbstractNumericEditorFactory {
 
 	public static final FloatEditorFactory instance = new FloatEditorFactory();
-	
-	private static final int digits = 3;
-	private static final double scale = Math.pow(10, digits);
-	
+		
 	private FloatEditorFactory() { }
 
     private static FloatProperty floatPropertyFrom(PropertyDescriptor<?> desc) {
@@ -41,18 +38,10 @@ public class FloatEditorFactory extends AbstractEditorFactory {
 		if (columnIndex == 0) return addLabel(parent, desc);
 		
 		if (columnIndex == 1) {
-			
-		    final Spinner spinner = new Spinner(parent, SWT.SINGLE | SWT.BORDER);
-	           	         			
-			double value = ((Number)rule.getProperty(desc)).doubleValue();
 
-			final FloatProperty fp = floatPropertyFrom(desc);
-			
-			spinner.setDigits(digits);
-			spinner.setMinimum((int)(fp.lowerLimit().doubleValue() * scale));
-            spinner.setMaximum((int)(fp.upperLimit().doubleValue() * scale));
-            spinner.setSelection((int)(value * scale));
-			
+            final FloatProperty fp = floatPropertyFrom(desc);
+		    final Spinner spinner = newSpinnerFor(parent, rule, fp);
+		    
 			spinner.addListener(SWT.FocusOut, new Listener() {
                 public void handleEvent(Event event) {
 					float newValue = (float)(spinner.getSelection() / scale);

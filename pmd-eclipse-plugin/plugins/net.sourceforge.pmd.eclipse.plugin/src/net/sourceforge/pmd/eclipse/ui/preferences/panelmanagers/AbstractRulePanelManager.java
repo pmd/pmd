@@ -1,14 +1,16 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-
 
 /**
  * 
@@ -27,15 +29,13 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
         rules = theRules;
         
         if (rules.hasMultipleRules() && !canManageMultipleRules()) {
-            hide();
+            setVisible(false);
+            clearControls();
             return;
         }
         
+        setVisible(true);
         adapt();
-    }
-    
-    private void hide() {
-        clearControls();
     }
     
     protected void addTextListeners(final Text control, final StringProperty desc) {
@@ -52,6 +52,8 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
     protected abstract void adapt();
     
     protected abstract void clearControls();
+    
+    protected abstract void setVisible(boolean flag);
     
     protected Rule soleRule() {
         return rules.soleRule();
@@ -78,8 +80,18 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
         control.setText("");
         control.setEnabled(false);
     }
+  
+    protected void shutdown(Link control) {
+        control.setText("");
+        control.setEnabled(false);
+    }
     
     protected void show(Text control, String value) {
+        control.setText(value == null ? "" : value);
+        control.setEnabled(true);
+    }
+    
+    protected void show(Link control, String value) {
         control.setText(value == null ? "" : value);
         control.setEnabled(true);
     }

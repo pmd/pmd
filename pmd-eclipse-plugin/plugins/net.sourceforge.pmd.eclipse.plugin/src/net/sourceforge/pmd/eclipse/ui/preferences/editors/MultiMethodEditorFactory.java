@@ -1,14 +1,18 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.properties.MethodMultiProperty;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.ClassUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -33,6 +37,41 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         return typeNames;
 	}
 	
+	private static String asString(Map<String, List<Method>> methodGroups) {
+	    
+	    if (methodGroups.isEmpty()) return "";
+	    
+	    StringBuilder sb = new StringBuilder();
+	    Iterator<Entry<String, List<Method>>> iter = methodGroups.entrySet().iterator();
+	    Entry<String, List<Method>> entry = iter.next();
+	    
+	    sb.append(entry.getKey()).append('[');
+	    allSignaturesOn(sb, entry.getValue(), ",");
+	    sb.append(']');
+	    
+	    while (iter.hasNext()) {
+	        entry = iter.next();
+	        sb.append("  ").append(entry.getKey()).append('[');
+	        allSignaturesOn(sb, entry.getValue(), ", ");
+	        sb.append(']'); 
+	    }
+	    
+	    return sb.toString();
+	}
+	
+	private static void allSignaturesOn(StringBuilder sb, List<Method> methods, String delimiter) {
+	    
+	    sb.append(
+	        Util.signatureFor(methods.get(0), MethodEditorFactory.UnwantedPrefixes)
+	        );
+	    
+	    for (int i=1; i<methods.size(); i++) {
+	        sb.append(delimiter).append(
+	            Util.signatureFor(methods.get(i), MethodEditorFactory.UnwantedPrefixes)
+	            );
+	    }
+	}
+	
     protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
         
         Method[] values = (Method[])rule.getProperty(desc);
@@ -41,33 +80,10 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
             return;
         }
         
-        String[] methodSigs = signaturesFor(values);
-        textWidget.setText(values == null ? "" : StringUtil.asString(methodSigs, delimiter + ' '));
+        Map<String, List<Method>> methodMap = ClassUtil.asMethodGroupsByTypeName(values);        
+        textWidget.setText(values == null ? "" : asString(methodMap));
     }
-	
-//	private Class<?>[] currentTypes(Text textWidget) {
-//	    
-//	    String[] typeNames = textWidgetValues(textWidget);
-//	    if (typeNames.length == 0) return ClassUtil.EMPTY_CLASS_ARRAY;
-//	    
-//	    List<Class<?>> types = new ArrayList<Class<?>>(typeNames.length);
-//	    
-//	    for (int i=0; i<typeNames.length; i++) {
-//	        Class<?> newType = TypeEditorFactory.typeFor(typeNames[i]);
-//	        if (newType != null) types.add(newType);
-//	    }
-//	    return (Class[]) types.toArray(new Class[types.size()]);
-//	}
-	
-//   private static MethodMultiProperty multiTypePropertyFrom(PropertyDescriptor<?> desc) {
-//	        
-//        if (desc instanceof PropertyDescriptorWrapper) {
-//           return (MethodMultiProperty) ((PropertyDescriptorWrapper<?>)desc).getPropertyDescriptor();
-//        } else {
-//            return (MethodMultiProperty)desc;
-//        }
-//    }
-	
+		
     protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
         MethodPicker widget = new MethodPicker(parent, SWT.SINGLE | SWT.BORDER, MethodEditorFactory.UnwantedPrefixes);
         setValue(widget, value);
@@ -94,7 +110,7 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         if (newValue == null) return null;
         
         Method[] currentValues = (Method[])rule.getProperty(desc);
-        Method[] newValues = Util.addWithoutDuplicates(currentValues, newValue);
+        Method[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
         if (currentValues.length == newValues.length) return null;  // nothing changed
         
         rule.setProperty((MethodMultiProperty)desc, newValues);

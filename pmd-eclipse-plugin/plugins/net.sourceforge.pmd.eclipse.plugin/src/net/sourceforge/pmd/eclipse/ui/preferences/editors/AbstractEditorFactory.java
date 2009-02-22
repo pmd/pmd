@@ -36,7 +36,7 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 		label.setText(desc.description());
 		GridData data = new GridData();
 		data.horizontalAlignment = SWT.LEFT;
-		data.verticalAlignment = SWT.TOP;
+		data.verticalAlignment = SWT.CENTER;  // CENTER is preferred only when showing a single row value widget...hmm
 		label.setLayoutData(data);
 		return label;
 	}

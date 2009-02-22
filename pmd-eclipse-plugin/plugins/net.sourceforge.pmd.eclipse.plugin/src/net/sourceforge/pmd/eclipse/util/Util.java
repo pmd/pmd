@@ -38,27 +38,6 @@ public class Util {
     };
     
     private Util() {};
-        
-    public static boolean isEmpty(Object[] items) {        
-        return items == null || items.length == 0;
-    }
-    
-    public static boolean areSemanticEquals(Object[] a, Object[] b) {
-        
-        if (a == null) return isEmpty(b);
-        if (b == null) return isEmpty(a);       
-        return a.equals(b);
-    }
-    
-    public static <T> T[] addWithoutDuplicates(T[] values, T newValue) {
-               
-        for (T value : values) if (value.equals(newValue)) return values;
-        
-        T[] largerOne = (T[])Array.newInstance(values.getClass().getComponentType(), values.length + 1);
-        for (int i=0; i<values.length; i++) largerOne[i] = values[i];
-        largerOne[values.length] = newValue;
-        return largerOne;        
-    }
     
     public static String signatureFor(Method method, String[] unwantedPrefixes) {
 
@@ -105,22 +84,6 @@ public class Util {
         
         sb.append(typeName);
         if (type.isArray()) sb.append("[]");
-    }
-    
-    public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
-
-        Set<T> originals = new HashSet<T>(values.length); 
-        for (T value : values) originals.add(value);
-        List<T> newOnes = new ArrayList<T>(newValues.length);
-        for (T value : newValues) {
-            if (originals.contains(value)) continue;
-            newOnes.add(value);
-        }
-        
-        T[] largerOne = (T[])Array.newInstance(values.getClass().getComponentType(), values.length + newOnes.size());
-        for (int i=0; i<values.length; i++) largerOne[i] = values[i];
-        for (int i=values.length; i<largerOne.length; i++) largerOne[i] = newOnes.get(i-values.length);
-        return largerOne;        
     }
     
 	public static Comparator<?> comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
@@ -190,7 +153,8 @@ public class Util {
                         
                         Color clr = colorManagerFor(event.display).colourFor(text);
                         event.gc.setBackground(clr);
-                        event.gc.fillRectangle(event.x+1, event.y+2, width, height);
+                        event.gc.fillRectangle(event.x+1, event.y+2, width, height);    // fill it
+                        event.gc.drawRectangle(event.x+1, event.y+2, width, height);    // then the border on top
                         
                         event.gc.setBackground(original);
                     }
@@ -206,8 +170,7 @@ public class Util {
                 
                 addListener(tree, SWT.PaintItem, paintListener, listenersByEventCode);
                 addListener(tree, SWT.MeasureItem, measureListener, listenersByEventCode);
-            }
-            
+            }            
 	    };
 	}
 	

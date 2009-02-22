@@ -197,7 +197,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
                convertToDelete(butt, newValue, parent, newControls, desc, rule, parentWidget, number, widget, changeListener, sizeListener);
                widget.setEnabled(false);
                setValue(widget, newValue);
-               
+                 
                renumberLabelsIn(newControls);
                fillWidget(parentWidget, desc, rule);
                sizeListener.addedRows(1);
@@ -245,8 +245,8 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         String[] valueSet = values.split(delimiter);
         List<String> valueList = new ArrayList<String>(valueSet.length);
         
-        for (int i=0; i<valueSet.length; i++) {
-            String str = valueSet[i].trim();
+        for (String value : valueSet) {
+            String str = value.trim();
             if (str.length() > 0) valueList.add(str);
         }
         

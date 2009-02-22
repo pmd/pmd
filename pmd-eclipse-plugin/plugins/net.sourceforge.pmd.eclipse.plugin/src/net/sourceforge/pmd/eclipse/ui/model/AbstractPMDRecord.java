@@ -169,7 +169,7 @@ public abstract class AbstractPMDRecord {
         boolean result = false;
 
         for (int i = 0; i < children.length && !result; i++) {
-            // recusively check children elements
+            // recursively check children elements
             if (children[i].hasMarkers()) {
                 result = true;
             }
