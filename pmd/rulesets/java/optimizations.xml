@@ -21,10 +21,10 @@ A local variable assigned only once can be declared final.
       <example>
   <![CDATA[
 public class Bar {
- public void foo () {
-  String a = "a"; //if a will not be assigned again it is better to do this:
-  final String b = "b";
- }
+  public void foo () {
+    String a = "a"; //if a will not be assigned again it is better to do this:
+    final String b = "b";
+  }
 }
   ]]>
       </example>
@@ -78,7 +78,7 @@ public class Something {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseArrayListInsteadOfVector">
       <description>
-ArrayList is a much better Collection implementation than Vector.
+ArrayList is a much better Collection implementation than Vector if you don't require thread-safe operation.
       </description>
       <priority>3</priority>
       <properties>
@@ -94,11 +94,11 @@ ArrayList is a much better Collection implementation than Vector.
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
- public void testX() {
-  Collection c = new Vector();
-  // This achieves the same with much better performance
-  // Collection c = new ArrayList();
- }
+  public void testX() {
+    Collection c = new Vector();
+    // This achieves the same with much better performance
+    // Collection c = new ArrayList();
+   }
 }
 ]]>
           </example>
@@ -155,14 +155,14 @@ Finds usages of += for appending strings.
            <example>
       <![CDATA[
 public class Foo {
- void bar() {
-  String a;
-  a = "foo";
-  a += " bar";
-  // better would be:
-  // StringBuffer a = new StringBuffer("foo");
-  // a.append(" bar);
- }
+  void bar() {
+    String a;
+    a = "foo";
+    a += " bar";
+   // better would be:
+   // StringBuffer a = new StringBuffer("foo");
+   // a.append(" bar);
+  }
 }
       ]]>
            </example>
@@ -175,10 +175,8 @@ public class Foo {
       class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseArraysAsList">
      <description>
-   The java.util.Arrays class has a "asList" method that
-   should be used when you want to create a new List from
-   an array of objects. It is faster than executing a loop to
-   copy all the elements of the array one by one
+The java.util.Arrays class has a "asList" method that should be used when you want to create a new List from
+an array of objects. It is faster than executing a loop to copy all the elements of the array one by one
      </description>
      <priority>3</priority>
      <properties>
@@ -217,18 +215,18 @@ public class Foo {
      </properties>
      <example>
    <![CDATA[
-   public class Test {
-    public void foo(Integer[] ints) {
+public class Test {
+  public void foo(Integer[] ints) {
     // could just use Arrays.asList(ints)
      List l= new ArrayList(10);
      for (int i=0; i< 100; i++) {
-      l.add(ints[i]);
+       l.add(ints[i]);
      }
      for (int i=0; i< 100; i++) {
-      l.add(a[i].toString()); // won't trigger the rule
+       l.add(a[i].toString()); // won't trigger the rule
      }
-    }
-   }
+  }
+}
    ]]>
      </example>
    </rule>
@@ -241,8 +239,7 @@ public class Foo {
       class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AvoidArrayLoops">
       <description>
-    Instead of copying data between two arrays, use
-    System.arraycopy method
+Instead of copying data between two arrays, use System.arraycopy method
       </description>
       <priority>3</priority>
       <properties>
@@ -272,21 +269,21 @@ or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
       <example>
     <![CDATA[
 public class Test {
- public void bar() {
-  int[] a = new int[10];
-  int[] b = new int[10];
-  for (int i=0;i<10;i++) {
-   b[i]=a[i];
-  }
- }
-}
-            // this will trigger the rule
-            for (int i=0;i<10;i++) {
-             b[i]=a[c[i]];
-            }
-
-        }
+  public void bar() {
+    int[] a = new int[10];
+    int[] b = new int[10];
+    for (int i=0;i<10;i++) {
+      b[i]=a[i];
     }
+  }
+}
+     // this will trigger the rule
+     for (int i=0;i<10;i++) {
+       b[i]=a[c[i]];
+     }
+
+  }
+}
     ]]>
       </example>
     </rule>
@@ -327,8 +324,7 @@ public int convert(String s) {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AddEmptyString">
         <description>
-Finds empty string literals which are being added. This is an inefficient way 
-to convert any type to a String.
+Finds empty string literals which are being added. This is an inefficient way to convert any type to a String.
         </description>
         <priority>3</priority>
         <properties>
@@ -342,8 +338,8 @@ to convert any type to a String.
         </properties>
         <example>
             <![CDATA[ 
-        String s = "" + 123; // bad 
-        String t = Integer.toString(456); // ok 
+String s = "" + 123; // bad 
+String t = Integer.toString(456); // ok 
             ]]>
         </example>
     </rule>
