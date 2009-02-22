@@ -2,7 +2,9 @@ package net.sourceforge.pmd.util;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,7 +84,7 @@ public final class ClassUtil {
      * @param type
      * @return String
      */
-    public static String asShortestName(Class type) {
+    public static String asShortestName(Class<?> type) {
         
         String name = SHORT_NAMES_BY_TYPE.get(type);
         return name == null ? type.getName() : name;
@@ -110,9 +112,9 @@ public final class ClassUtil {
      * @param paramTypes Class[]
      * @return Method
      */
-    public static Method methodFor(Class clasz, String methodName, Class[] paramTypes) {
+    public static Method methodFor(Class<?> clasz, String methodName, Class<?>[] paramTypes) {
         Method method = null;
-        Class current = clasz;
+        Class<?> current = clasz;
         while (current != Object.class) {
             try {
                 method = current.getDeclaredMethod(methodName, paramTypes);
@@ -124,5 +126,25 @@ public final class ClassUtil {
             }
         }
         return null;
+    }
+    
+    /**
+     * Return the methods as a map keyed by their common declaration types.
+     * 
+     * @param methods
+     * @return Map<String, List<Method>>
+     */
+    public static Map<String, List<Method>> asMethodGroupsByTypeName(Method[] methods) {
+        
+        Map<String, List<Method>> methodGroups = new HashMap<String, List<Method>>(methods.length);
+        
+        for (int i=0; i<methods.length; i++) {
+            String clsName = ClassUtil.asShortestName(methods[i].getDeclaringClass());
+            if (!methodGroups.containsKey(clsName)) {
+                methodGroups.put(clsName, new ArrayList<Method>());
+            }
+            methodGroups.get(clsName).add(methods[i]);
+        }
+        return methodGroups;
     }
 }

@@ -1,8 +1,11 @@
 package net.sourceforge.pmd.util;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -211,5 +214,53 @@ public final class CollectionUtil {
         if (a == null) { return isEmpty(b); }
         if (b == null) { return isEmpty(a); }
         return a.equals(b);
+    }
+    
+    /**
+     * If the newValue is already held within the values array then the values array
+     * is returned, otherwise a new array is created appending the newValue to the
+     * end.
+     * 
+     * @param <T>
+     * @param values
+     * @param newValue
+     * @return
+     */
+    public static <T> T[] addWithoutDuplicates(T[] values, T newValue) {
+        
+        for (T value : values) {
+            if (value.equals(newValue)) {
+                return values;
+            }
+        }
+        
+        T[] largerOne = (T[])Array.newInstance(values.getClass().getComponentType(), values.length + 1);
+        System.arraycopy(values, 0, largerOne, 0, values.length);
+        largerOne[values.length] = newValue;
+        return largerOne;        
+    }
+    
+    /**
+     * Returns an array of values as a union set of the two input arrays.
+     * 
+     * @param <T>
+     * @param values
+     * @param newValues
+     * @return
+     */
+    public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
+
+        Set<T> originals = new HashSet<T>(values.length); 
+        for (T value : values) { originals.add(value); }
+        List<T> newOnes = new ArrayList<T>(newValues.length);
+        for (T value : newValues) {
+            if (originals.contains(value)) { continue; }
+            newOnes.add(value);
+        }
+        
+        T[] largerOne = (T[])Array.newInstance(values.getClass().getComponentType(), values.length + newOnes.size());
+        System.arraycopy(values, 0, largerOne, 0, values.length);
+        for (int i=values.length; i<largerOne.length; i++) { largerOne[i] = newOnes.get(i-values.length); }
+        return largerOne;        
     }
 }
