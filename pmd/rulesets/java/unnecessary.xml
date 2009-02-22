@@ -45,10 +45,10 @@ Avoid unnecessary return statements
       <example>
 		<![CDATA[
 public class Foo {
- public void bar() {
-  int x = 42;
-  return;
- }
+  public void bar() {
+    int x = 42;
+    return;
+  }
 }
 		]]>
       </example>
@@ -100,18 +100,18 @@ The overriding method merely calls the same method defined in a superclass
         <priority>3</priority>
         <example><![CDATA[
 public void foo(String bar) {
-    super.foo(bar);      //Why bother overriding?
+  super.foo(bar);      //Why bother overriding?
 }
         ]]></example>
         <example><![CDATA[
 public String foo() {
-    return super.foo();  //Why bother overriding?
+  return super.foo();  //Why bother overriding?
 }
         ]]></example>
         <example><![CDATA[
 @Id
 public Long getId() {
-    return super.getId();  //OK if 'ignoreAnnotations' is false, which is the default behavior
+  return super.getId();  //OK if 'ignoreAnnotations' is false, which is the default behavior
 }
         ]]></example>
     </rule>
@@ -122,22 +122,23 @@ public Long getId() {
            class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOperationOnImmutableRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UselessOperationOnImmutable">
       <description>
-	An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
-    result of the operation is a new object. Therefore, ignoring the operation result is an error.
+An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
+result of the operation is a new object. Therefore, ignoring the operation result is an error.
       </description>
       <priority>3</priority>
       <example>
     <![CDATA[
 import java.math.*;
+
 class Test {
- void method1() {
-  BigDecimal bd=new BigDecimal(10);
-  bd.add(new BigDecimal(5)); // this will trigger the rule
- }
- void method2() {
-  BigDecimal bd=new BigDecimal(10);
-  bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
- }
+  void method1() {
+    BigDecimal bd=new BigDecimal(10);
+    bd.add(new BigDecimal(5)); // this will trigger the rule
+  }
+  void method2() {
+    BigDecimal bd=new BigDecimal(10);
+    bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
+  }
 }
     ]]>
       </example>
@@ -150,7 +151,7 @@ class Test {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UnusedNullCheckInEquals">
     <description>
-    After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
+After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
     </description>
 	<priority>3</priority>
     <properties>
@@ -172,43 +173,37 @@ class Test {
 		<![CDATA[
 public class Test {
 
-public String method1() { return "ok";}
-public String method2() { return null;}
+  public String method1() { return "ok";}
+  public String method2() { return null;}
 
-public void method(String a) {
-String b;
-/*
-I don't know it method1() can be "null"
-but I know "a" is not null..
-I'd better write a.equals(method1())
-*/
-if (a!=null && method1().equals(a)) { // will
-trigger the rule
-//whatever
-}
-
-if (method1().equals(a) && a != null) { //
-won't trigger the rule
-//whatever
-}
-
-if (a!=null && method1().equals(b)) { // won't
-trigger the rule
-//whatever
-}
-
-if (a!=null && "LITERAL".equals(a)) { // won't
-trigger the rule
-//whatever
-}
-
-if (a!=null && !a.equals("go")) { // won't
-trigger the rule
-a=method2();
-if (method1().equals(a)) {
-//whatever
-}
-}
+  public void method(String a) {
+    String b;
+	// I don't know it method1() can be "null"
+	// but I know "a" is not null..
+	// I'd better write a.equals(method1())
+	
+	if (a!=null && method1().equals(a)) { // will trigger the rule
+	//whatever
+	}
+	
+	if (method1().equals(a) && a != null) { // won't trigger the rule
+	//whatever
+	}
+	
+	if (a!=null && method1().equals(b)) { // won't trigger the rule
+	//whatever
+	}
+	
+	if (a!=null && "LITERAL".equals(a)) { // won't trigger the rule
+	//whatever
+	}
+	
+	if (a!=null && !a.equals("go")) { // won't trigger the rule
+	a=method2();
+	if (method1().equals(a)) {
+	//whatever
+	}
+  }
 }
 }
 				]]>
