@@ -39,8 +39,9 @@ Avoid importing anything from the package 'java.lang'.  These classes are automa
       <priority>4</priority>
     <example>
 <![CDATA[
-// this is bad
+// this is unnecessary
 import java.lang.String;
+
 public class Foo {}
 
 // --- in another source code file...
@@ -59,7 +60,7 @@ public class Foo {}
         class="net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#UnusedImports">
     <description>
-    Avoid unused import statements.
+Avoid unused import statements.
     </description>
       <priority>4</priority>
     <example>
@@ -77,14 +78,16 @@ public class Foo {}
          class="net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#ImportFromSamePackage">
      <description>
- No need to import a type that lives in the same package.
+No need to import a type that lives in the same package.
      </description>
         <priority>3</priority>
      <example>
  <![CDATA[
  package foo;
+ 
  import foo.Buz; // no need for this
  import foo.*; // or this
+ 
  public class Bar{}
  ]]>
      </example>

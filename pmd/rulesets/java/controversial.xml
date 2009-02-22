@@ -7,7 +7,7 @@
     xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
 
   <description>
-The Controversial Ruleset contains rules that, for whatever reason, are considered controversial.  They
+The Controversial ruleset contains rules that, for whatever reason, are considered controversial.  They
 are separated out here to allow people to include as they see fit via custom rulesets.  This ruleset was
 initially created in response to discussions over UnnecessaryConstructorRule which Tom likes but
 most people really dislike :-)
@@ -42,7 +42,7 @@ it's public, has an empty body, and takes no arguments.
       <example>
   <![CDATA[
 public class Foo {
- public Foo() {}
+  public Foo() {}
 }
   ]]>
       </example>
@@ -56,11 +56,9 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#NullAssignment">
       <description>
- Assigning a "null" to a variable (outside of its declaration) is usually
- bad form.  Some times, the assignment is an indication that the programmer doesn't
- completely understand what is going on in the code.  NOTE: This sort of assignment
- may in rare cases be useful to encourage garbage collection.  If that's what you're using
- it for, by all means, disregard this rule :-)
+ Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, the assignment is an indication that the programmer doesn't
+ completely understand what is going on in the code.  NOTE: This sort of assignment may in rare cases be useful to encourage garbage collection.  
+ If that's what you're using it for, by all means, disregard this rule :-)
       </description>
         <priority>3</priority>
       <example>
@@ -90,14 +88,14 @@ A method should have only one exit point, and that should be the last statement 
         <priority>3</priority>
      <example>
  <![CDATA[
- public class OneReturnOnly1 {
+public class OneReturnOnly1 {
   public void foo(int x) {
-   if (x > 0) {
-    return "hey";   // oops, multiple exit points!
-   }
-   return "hi";
+    if (x > 0) {
+      return "hey";   // oops, multiple exit points!
+    }
+    return "hi";
   }
- }
+}
  ]]>
      </example>
      </rule>
@@ -114,15 +112,16 @@ Avoid assignments in operands; this can make code more complicated and harder to
   <example>
   <![CDATA[
 public class Foo {
- public void bar() {
-  int x = 2;
-  if ((x = getX()) == 3) {
-   System.out.println("3!");
+  public void bar() {
+    int x = 2;
+    if ((x = getX()) == 3) {
+      System.out.println("3!");
+    }
   }
- }
- private int getX() {
-  return 3;
- }
+  
+  private int getX() {
+    return 3;
+  }
 }
   ]]>
   </example>
@@ -218,7 +217,7 @@ public class Foo {
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#CallSuperInConstructor">
       <description>
 It is a good practice to call super() in a constructor. If super() is not called but
- another constructor (such as an overloaded constructor) is called, this rule will not report it.
+another constructor (such as an overloaded constructor) is called, this rule will not report it.
       </description>
       <priority>3</priority>
       <properties>
@@ -236,15 +235,15 @@ It is a good practice to call super() in a constructor. If super() is not called
       <example>
 <![CDATA[
 public class Foo extends Bar{
- public Foo() {
-  // call the constructor of Bar
-  super();
- }
+  public Foo() {
+   // call the constructor of Bar
+   super();
+  }
  public Foo(int code) {
   // do something with code
-  this();
-  // no problem with this
- }
+   this();
+   // no problem with this
+  }
 }
 ]]>
       </example>
@@ -257,8 +256,7 @@ public class Foo extends Bar{
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#UnnecessaryParentheses">
       <description>
-Sometimes expressions are wrapped in unnecessary parentheses,
-making them look like a function call.
+Sometimes expressions are wrapped in unnecessary parentheses, making them look like a function call.
       </description>
       <priority>3</priority>
       <properties>
@@ -275,11 +273,13 @@ making them look like a function call.
           </property>
       </properties>
       <example>
-  <![CDATA[public class Foo {
-      boolean bar() {
-          return (true);
+  <![CDATA[
+public class Foo {
+   boolean bar() {
+      return (true);
       }
-  }]]>
+}
+  ]]>
       </example>
     </rule>
 
@@ -331,11 +331,11 @@ See http://www.javaspecialists.co.za/archive/newsletter.do?issue=042&amp;locale=
       <example>
   <![CDATA[
 public class Foo {
- public void main(bar) {
-  boolean b = true;
-  b = !b; // slow
-  b ^= true; // fast
- }
+  public void main(bar) {
+   boolean b = true;
+   b = !b; // slow
+   b ^= true; // fast
+   }
 }
 ]]>
       </example>
@@ -358,12 +358,12 @@ From those informations there can be found various problems.
           <example>
 <![CDATA[
 public class Foo {
-    public void foo() {
+   public void foo() {
 	 int buz = 5;
 	 buz = 6; // redefinition of buz -> dd-anomaly
 	 foo(buz);
 	 buz = 2;
-    } // buz is undefined when leaving scope -> du-anomaly
+   } // buz is undefined when leaving scope -> du-anomaly
 }
 ]]>
           </example>
@@ -412,9 +412,9 @@ public class MyClass {
     	externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#AvoidUsingShortType">
         <description>
             <![CDATA[
-            Java uses the 'short' type to reduce memory usage, not to optimize calculation. In fact, the jvm does not have any
-            arithmetic capabilities for the short type: the jvm must convert the short into an int, do the proper caculation
-            and convert the int back to a short. So, the use of the 'short' type may have a greater impact than memory usage.
+Java uses the 'short' type to reduce memory usage, not to optimize calculation. In fact, the JVM does not have any
+arithmetic capabilities for the short type: the JVM must convert the short into an int, do the proper calculation
+and convert the int back to a short. So, the use of the 'short' type may have a greater impact than memory usage.
             ]]>
         </description>
         <priority>1</priority>
@@ -429,15 +429,14 @@ public class MyClass {
         </properties>
         <example>
             <![CDATA[
-    public class UsingShort
-    {
-        private short doNotUseShort = 0;
+public class UsingShort {
+   private short doNotUseShort = 0;
 
-		public UsingShort() {
-			short shouldNotBeUsed = 1;
-			doNotUseShort += shouldNotBeUsed;
-		}
- 	}
+   public UsingShort() {
+		short shouldNotBeUsed = 1;
+		doNotUseShort += shouldNotBeUsed;
+	}
+}
  			]]>
  		</example>
  	</rule>
@@ -471,10 +470,10 @@ the volatile keyword should not be used for maintenance purpose and portability.
         </properties>
 		<example>
 			<![CDATA[
-				public class ThrDeux {
-					private volatile String var;
+public class ThrDeux {
+	private volatile String var;
 
-				}
+}
 			]]>
 		</example>
 	</rule>
@@ -489,10 +488,10 @@ the volatile keyword should not be used for maintenance purpose and portability.
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#AvoidUsingNativeCode">
         <description>
             <![CDATA[
-                As JVM and Java language offer already many help in creating application, it should be
-                very rare to have to rely on non-java code. Even though, it is rare to actually have to
-                use Java Native Interface (JNI). As the use of JNI make application less portable, and
-                harder to maintain, it is not recommended.
+As JVM and Java language offer already many help in creating application, it should be
+very rare to have to rely on non-java code. Even though, it is rare to actually have to
+use Java Native Interface (JNI). As the use of JNI make application less portable, and
+harder to maintain, it is not recommended.
             ]]>
         </description>
         <priority>2</priority>
@@ -507,19 +506,20 @@ the volatile keyword should not be used for maintenance purpose and portability.
         </properties>
         <example>
             <![CDATA[
-                public class SomeJNIClass {
-                        public SomeJNIClass() {
-                                System.loadLibrary("nativelib");
-                        }
+public class SomeJNIClass {
 
-                        static {
-                             System.loadLibrary("nativelib");
-                        }
+     public SomeJNIClass() {
+         System.loadLibrary("nativelib");
+     }
 
-                        public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-                                System.loadLibrary("nativelib");
-                        }
-                }
+     static {
+         System.loadLibrary("nativelib");
+         }
+
+     public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
+         System.loadLibrary("nativelib");
+     }
+}
             ]]>
         </example>
     </rule>
@@ -533,10 +533,10 @@ the volatile keyword should not be used for maintenance purpose and portability.
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#AvoidAccessibilityAlteration">
         <description>
             <![CDATA[
-            Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
-            as the interface PrivilegedAction, allow to alter, at runtime, the visilibilty of variable, classes, or
-            methods, even if they are private. Obviously, no one should do so, as such behavior is against everything
-            encapsulation principal stands for.
+Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
+as the interface PrivilegedAction, allow to alter, at runtime, the visilibilty of variable, classes, or
+methods, even if they are private. Obviously, no one should do so, as such behavior is against everything
+encapsulation principal stands for.
             ]]>
         </description>
         <priority>3</priority>
@@ -573,34 +573,33 @@ the volatile keyword should not be used for maintenance purpose and portability.
         <example>
             <![CDATA[
 
-			import java.lang.reflect.AccessibleObject;
-			import java.lang.reflect.Method;
-			import java.security.PrivilegedAction;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+import java.security.PrivilegedAction;
 
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					// Possible call to forbidden getDeclaredConstructors
-					Class[] arrayOfClass = new Class[1];
-					this.getClass().getDeclaredConstructors();
-					this.getClass().getDeclaredConstructor(arrayOfClass);
-					Class clazz = this.getClass();
-					clazz.getDeclaredConstructor(arrayOfClass);
-					clazz.getDeclaredConstructors();
+public class Violation {
+	public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
+		// Possible call to forbidden getDeclaredConstructors
+		Class[] arrayOfClass = new Class[1];
+		this.getClass().getDeclaredConstructors();
+		this.getClass().getDeclaredConstructor(arrayOfClass);
+		Class clazz = this.getClass();
+		clazz.getDeclaredConstructor(arrayOfClass);
+		clazz.getDeclaredConstructors();
+			// Possible call to forbidden setAccessible
+		clazz.getMethod("", arrayOfClass).setAccessible(false);
+		AccessibleObject.setAccessible(null, false);
+		Method.setAccessible(null, false);
+		Method[] methodsArray = clazz.getMethods();
+		int nbMethod;
+		for ( nbMethod = 0; nbMethod < methodsArray.length; nbMethod++ ) {
+			methodsArray[nbMethod].setAccessible(false);
+		}
 
-					// Possible call to forbidden setAccessible
-					clazz.getMethod("", arrayOfClass).setAccessible(false);
-					AccessibleObject.setAccessible(null, false);
-					Method.setAccessible(null, false);
-					Method[] methodsArray = clazz.getMethods();
-					int nbMethod;
-					for ( nbMethod = 0; nbMethod < methodsArray.length; nbMethod++ ) {
-						methodsArray[nbMethod].setAccessible(false);
-					}
-
-					// Possible call to forbidden PrivilegedAction
-					PrivilegedAction priv = (PrivilegedAction) new Object(); priv.run();
-				}
-			}
+			// Possible call to forbidden PrivilegedAction
+		PrivilegedAction priv = (PrivilegedAction) new Object(); priv.run();
+	}
+}
 					]]>
 			</example>
 		</rule>
@@ -613,10 +612,10 @@ the volatile keyword should not be used for maintenance purpose and portability.
 	        	externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#DoNotCallGarbageCollectionExplicitly">
         <description>
 	        <![CDATA[
-		        Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
-		        same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
-		        Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
-			leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
+Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
+same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
+Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
+leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
 			]]>
         </description>
         <priority>2</priority>
@@ -639,15 +638,13 @@ starts-with(@Image,'Runtime.getRuntime') and
         </properties>
         <example>
             <![CDATA[
-            public class GCCall
-            {
-     	public GCCall()
-                	{
-                        // Explicit gc call !
-                        System.gc();
-                	}
-	public void doSomething()
-	 {
+public class GCCall {
+    public GCCall()	{
+        // Explicit gc call !
+        System.gc();
+    }
+    
+	public void doSomething() {
 		// Explicit gc call !
 		Runtime.getRuntime().gc();
 	}
@@ -655,7 +652,6 @@ starts-with(@Image,'Runtime.getRuntime') and
 public explicitGCcall() { // Explicit gc call ! System.gc(); }
 
 public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } }
-
 
 			]]>
 		</example>
@@ -753,5 +749,3 @@ public class Foo {
 	</rule>
 
 </ruleset>
-
-

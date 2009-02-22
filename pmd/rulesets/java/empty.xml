@@ -92,8 +92,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyWhileStmt">
        <description>
-Empty While Statement finds all instances where a while statement
-does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
+Empty While Statement finds all instances where a while statement does nothing.  
+If it is a timing loop, then you should use Thread.sleep() for it; if
 it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
        </description>
        <priority>3</priority>
@@ -160,7 +160,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyFinallyBlock">
       <description>
-Avoid empty finally blocks - these can be deleted.
+Avoid empty finally blocks, these can be deleted.
       </description>
       <priority>3</priority>
       <properties>
@@ -261,10 +261,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyStatementNotInLoop">
        <description>
-An empty statement (aka a semicolon by itself) that is not used
-as the sole body of a for loop or while loop is probably a bug.  It
-could also be a double semicolon, which is useless and should be
-removed.
+An empty statement (aka a semicolon by itself) that is not used as the sole body of a for loop or while loop is probably a bug.  
+It could also be a double semicolon, which is useless and should be removed.
        </description>
        <priority>3</priority>
         <properties>
@@ -374,7 +372,7 @@ public class Foo {
            class="net.sourceforge.pmd.lang.rule.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyStaticInitializer">
        <description>
-An empty static initializer was found.
+An empty static initializer provides no value, remove it.
        </description>
        <priority>3</priority>
          <properties>

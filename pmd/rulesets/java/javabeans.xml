@@ -17,29 +17,25 @@ The JavaBeans Ruleset catches instances of bean rules not being followed.
         class="net.sourceforge.pmd.lang.java.rule.javabeans.BeanMembersShouldSerializeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/javabeans.html#BeanMembersShouldSerialize">
     <description>
-If a class is a bean, or is referenced by a bean directly or indirectly
-it needs to be serializable. Member variables need to be marked as transient,
-static, or have accessor methods in the class. Marking variables
-as transient is the safest and easiest modification. Accessor methods should
-follow the Java naming conventions, i.e.if you have a variable foo, you should
-provide getFoo and setFoo methods.
+If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. Member variables need to be marked as transient,
+static, or have accessor methods in the class. Marking variables as transient is the safest and easiest modification. Accessor methods should
+follow the Java naming conventions, i.e.if you have a variable foo, you should provide getFoo and setFoo methods.
     </description>
       <priority>3</priority>
     <example>
 <![CDATA[
-  private transient int someFoo;//good, it's transient
-  private static int otherFoo;// also OK
-  private int moreFoo;// OK, has proper accessors, see below
-  private int badFoo;//bad, should be marked transient
+private transient int someFoo;  // good, it's transient
+private static int otherFoo;    // also OK
+private int moreFoo;            // OK, has proper accessors, see below
+private int badFoo;             // bad, should be marked transient
 
+private void setMoreFoo(int moreFoo){
+      this.moreFoo = moreFoo;
+}
 
-  private void setMoreFoo(int moreFoo){
-        this.moreFoo = moreFoo;
-  }
-
-  private int getMoreFoo(){
-        return this.moreFoo;
-  }
+private int getMoreFoo(){
+      return this.moreFoo;
+}
 
 ]]>
     </example>

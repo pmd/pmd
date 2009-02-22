@@ -70,14 +70,14 @@ public class Foo {
         </properties>
         <example>
             <![CDATA[
-            /* Proper name */
-            public class SomeBean implements SessionBean{}
+    /* Proper name */
+public class SomeBean implements SessionBean{}
             ]]>
         </example>
         <example>
             <![CDATA[
-            /* Bad name */
-            public class MissingTheProperSuffix implements SessionBean {}
+  /* Poor name */
+public class MissingTheProperSuffix implements SessionBean {}
             ]]>
         </example>
     </rule>
@@ -158,14 +158,14 @@ public class Foo {
         </properties>
         <example>
             <![CDATA[
-            /* Proper name */
-            public interface MyLocal extends javax.ejb.EJBLocalObject {}
+  /* Proper name */
+ public interface MyLocal extends javax.ejb.EJBLocalObject {}
             ]]>
         </example>
         <example>
             <![CDATA[
-            /* Bad name */
-            public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}
+ /* Poor name */
+ public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}
             ]]>
         </example>
     </rule>
@@ -202,14 +202,14 @@ public class Foo {
         </properties>
         <example>
             <![CDATA[
-            /* Proper name */
-            public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}
+  /* Proper name */
+ public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}
             ]]>
         </example>
         <example>
             <![CDATA[
-            /* Bad name */
-            public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}
+  /* Poor name */
+ public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}
             ]]>
         </example>
     </rule>
@@ -249,20 +249,20 @@ public class Foo {
         </properties>
         <example>
             <![CDATA[
-            /* Bad Session suffix */
-            public interface BadSuffixSession extends javax.ejb.EJBObject {}
+ /* Poor Session suffix */
+ public interface BadSuffixSession extends javax.ejb.EJBObject {}
             ]]>
         </example>
         <example>
             <![CDATA[
-            /* Bad EJB suffix */
-            public interface BadSuffixEJB extends javax.ejb.EJBObject {}
+ /* Poor EJB suffix */
+ public interface BadSuffixEJB extends javax.ejb.EJBObject {}
             ]]>
         </example>
         <example>
             <![CDATA[
-            /* Bad Bean suffix */
-            public interface BadSuffixBean extends javax.ejb.EJBObject {}
+ /* Poor Bean suffix */
+ public interface BadSuffixBean extends javax.ejb.EJBObject {}
             ]]>
         </example>
     </rule>
@@ -350,7 +350,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
     	externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#DoNotUseThreads">
         <description>
             <![CDATA[
-                The J2EE specification explicitly forbid use of threads.
+The J2EE specification explicitly forbid use of threads.
             ]]>
         </description>
         <priority>3</priority>
@@ -366,16 +366,16 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
         <example>
             	<![CDATA[
             // This is not allowed
-            public class UsingThread extends Thread {
+public class UsingThread extends Thread {
 
-            }
-			// Neither this,
-			public class OtherThread implements Runnable {
-				// Nor this ...
-				public void methode() {
-					Runnable thread = new Thread(); thread.run();
-				}
-			}
+ }
+	// Neither this,
+public class OtherThread implements Runnable {
+	// Nor this ...
+	public void methode() {
+			Runnable thread = new Thread(); thread.run();
+	}
+}
 				]]>
 		</example>
 	</rule>

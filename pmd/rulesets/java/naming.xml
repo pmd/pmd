@@ -125,9 +125,9 @@ A variable naming conventions rule - customize this to your liking.  Currently, 
         <example>
 <![CDATA[
 public class Foo {
- public static final int MY_NUM = 0;
- public String myTest = "";
- DataModule dmTest = new DataModule();
+   public static final int MY_NUM = 0;
+   public String myTest = "";
+   DataModule dmTest = new DataModule();
 }
 ]]>
         </example>
@@ -227,7 +227,7 @@ Non-constructor methods should not have the same name as the enclosing class.
     <![CDATA[
 public class MyClass {
  // this is bad because it is a method
- public void MyClass() {}
+public void MyClass() {}
  // this is OK because it is a constructor
  public MyClass() {}
 }
@@ -263,8 +263,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#SuspiciousConstantFieldName">
        <description>
-A field name is all in uppercase characters, which in Sun's Java naming
-conventions indicate a constant. However, the field is not final.
+A field name is all in uppercase characters, which in Sun's Java naming  conventions indicate a constant. However, the field is not final.
        </description>
        <priority>3</priority>
         <properties>
@@ -283,9 +282,9 @@ conventions indicate a constant. However, the field is not final.
     <![CDATA[
 public class Foo {
  // this is bad, since someone could accidentally
- // do PI = 2.71828; which is actualy e
+ // do PI = 2.71828; which is actually e
  // final double PI = 3.16; is ok
- double PI = 3.16;
+  double PI = 3.16;
 }
     ]]>
        </example>
@@ -299,9 +298,7 @@ public class Foo {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#SuspiciousEqualsMethodName">
         <description>
-The method name and parameter number are suspiciously close to
-equals(Object), which may mean you are intending to override the equals(Object)
-method.
+The method name and parameter number are suspiciously close to equals(Object), which may mean you are intending to override the equals(Object) method.
         </description>
         <priority>2</priority>
         <properties>
@@ -329,12 +326,12 @@ or
         <example>
         <![CDATA[
 public class Foo {
- public int equals(Object o) {
- // oops, this probably was supposed to be boolean equals
- }
- public boolean equals(String s) {
- // oops, this probably was supposed to be equals(Object)
- }
+   public int equals(Object o) {
+   // oops, this probably was supposed to be boolean equals
+   }
+   public boolean equals(String s) {
+   // oops, this probably was supposed to be equals(Object)
+   }
 }
         ]]>
         </example>
@@ -420,7 +417,7 @@ public class ClassInDefaultPackage {
             class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#PackageCase">
         <description>
-    Detects when a package definition contains upper case characters.
+Detects when a package definition contains upper case characters.
         </description>
         <priority>3</priority>
           <properties>
@@ -435,6 +432,7 @@ public class ClassInDefaultPackage {
         <example>
     <![CDATA[
 package com.MyCompany;  // <- should be lower case name
+
 public class SomeClass {
 }
     ]]>
@@ -448,8 +446,7 @@ public class SomeClass {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#MisleadingVariableName">
       <description>
-Detects when a non-field has a name starting with 'm_'.  This usually
-indicates a field and thus is confusing.
+Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.
       </description>
       <priority>3</priority>
         <properties>
@@ -465,12 +462,12 @@ indicates a field and thus is confusing.
         </properties>
       <example>
   <![CDATA[
-  public class Foo {
+public class Foo {
     private int m_foo; // OK
     public void bar(String m_baz) {  // Bad
       int m_boz = 42; // Bad
     }
-  }
+}
   ]]>
       </example>
     </rule>
@@ -482,8 +479,7 @@ indicates a field and thus is confusing.
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#BooleanGetMethodName">
         <description>
-Looks for methods named 'getX()' with 'boolean' as the return type. The convention
-is to name these methods 'isX()'.
+Looks for methods named 'getX()' with 'boolean' as the return type. The convention is to name these methods 'isX()'.
         </description>
         <priority>4</priority>
         <properties>
@@ -514,12 +510,12 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
     <rule 	name="ShortClassName"
    		language="java"
             since="5.0"
-            message="A Classname should have, at least, 5 characters"
+            message="A Classname should have a minimum of five characters"
             class="net.sourceforge.pmd.lang.rule.XPathRule"
           	externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#ShortClassName">
         <description>
         	<![CDATA[
-Detects if a classname if lower than 5 characters.
+Detects if a classname has fewer than five characters.
 			]]>
         </description>
         <priority>4</priority>

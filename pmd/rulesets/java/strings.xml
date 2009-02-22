@@ -22,11 +22,11 @@ Code containing duplicate String literals can usually be improved by declaring t
     <example>
 <![CDATA[
 public class Foo {
- private void bar() {
-    buz("Howdy");
-    buz("Howdy");
-    buz("Howdy");
-    buz("Howdy");
+  private void bar() {
+     buz("Howdy");
+     buz("Howdy");
+     buz("Howdy");
+     buz("Howdy");
  }
  private void buz(String x) {}
 }
@@ -64,10 +64,10 @@ public class Foo {
     <example>
 <![CDATA[
 public class Foo {
- private String baz() {
-  String bar = "howdy";
-  return bar.toString();
- }
+  private String baz() {
+    String bar = "howdy";
+    return bar.toString();
+  }
 }
 ]]>
     </example>
@@ -85,13 +85,13 @@ Avoid concatenating non literals in a StringBuffer constructor or append().
     <example>
 <![CDATA[
 public class Foo {
- void bar() {
-  // Avoid this
-  StringBuffer sb=new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
-  // use instead something like this
-  StringBuffer sb = new StringBuffer("tmp = ");
-  sb.append(System.getProperty("java.io.tmpdir"));
- }
+  void bar() {
+    // Avoid this
+    StringBuffer sb=new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
+    // use instead something like this
+    StringBuffer sb = new StringBuffer("tmp = ");
+    sb.append(System.getProperty("java.io.tmpdir"));
+    }
 }
 ]]>
     </example>
@@ -108,13 +108,13 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
        <priority>3</priority>
        <example>
                  <![CDATA[
- public class Foo {
+public class Foo {
   public boolean bar(String buz) {
     // should be buz.equalsIgnoreCase("baz")
     return buz.toUpperCase().equals("baz");
     // another unnecessary toUpperCase()
     // return buz.toUpperCase().equalsIgnoreCase("baz");
-  }
+    }
  }
                  ]]>
        </example>
@@ -133,13 +133,13 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
       <example>
   <![CDATA[
 public class Foo {
- void bar() {
-  StringBuffer sb = new StringBuffer();
-  // this is bad
-  if(sb.toString().equals("")) {}
-  // this is good
-  if(sb.length() == 0) {}
- }
+  void bar() {
+    StringBuffer sb = new StringBuffer();
+    // this is bad
+    if(sb.toString().equals("")) {}
+    // this is good
+    if(sb.length() == 0) {}
+    }
 }
 
   ]]>
@@ -159,15 +159,15 @@ Avoid concatenating characters as strings in StringBuffer.append.
     <example>
 <![CDATA[
 public class Foo {
- void bar() {
-  StringBuffer sb=new StringBuffer();
-  // Avoid this
-  sb.append("a");
+  void bar() {
+    StringBuffer sb = new StringBuffer();
+    // Avoid this
+    sb.append("a");
 
-  // use instead something like this
-  StringBuffer sb=new StringBuffer();
-  sb.append('a');
- }
+    // use instead something like this
+    StringBuffer sb=new StringBuffer();
+    sb.append('a');
+  }
 }
 ]]>
     </example>
@@ -185,10 +185,10 @@ Consecutively calling StringBuffer.append with String literals
     <example>
 <![CDATA[
 public class Foo {
- private void bar() {
-   StringBuffer buf = new StringBuffer();
-   buf.append("Hello").append(" ").append("World"); //bad
-   buf.append("Hello World");//good
+  private void bar() {
+    StringBuffer buf = new StringBuffer();
+    buf.append("Hello").append(" ").append("World"); //bad
+    buf.append("Hello World");        //good
  }
 }
 ]]>
@@ -301,9 +301,7 @@ public String convert(int i) {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#StringBufferInstantiationWithChar">
     <description>
-StringBuffer sb = new StringBuffer('c'); The
-char will be converted into int to intialize
-StringBuffer size.
+StringBuffer sb = new StringBuffer('c'); The char will be converted into int to initialize StringBuffer size.
     </description>
     <priority>4</priority>
     <properties>
@@ -400,4 +398,3 @@ class Foo {
 
 
 </ruleset>
-

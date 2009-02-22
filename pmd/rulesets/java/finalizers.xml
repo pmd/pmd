@@ -82,9 +82,8 @@ public class Foo {
       class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#FinalizeOverloaded">
    <description>
-Methods named finalize() should not have parameters.  It is
-confusing and probably a bug to overload finalize().  It will
-not be called by the VM.
+Methods named finalize() should not have parameters.  It is confusing and probably a bug to overload finalize().  
+It will not be called by the VM.
    </description>
    <priority>3</priority>
     <properties>

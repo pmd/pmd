@@ -45,18 +45,15 @@ This prevents that future changes from the user affect the internal functionalit
       <example>
   <![CDATA[
 public class Foo {
- private String [] x;
-  public void foo (String [] param) {
+  private String [] x;
+    public void foo (String [] param) {
       // Don't do this, make a copy of the array at least
       this.x=param;
-  }
+    }
 }
   ]]>
       </example>
       </rule>
     
 </ruleset>
-
-
-
-                                             
+                                         

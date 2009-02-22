@@ -34,9 +34,10 @@ The suite() method in a JUnit test needs to be both public and static.
       <example>
   <![CDATA[
 import junit.framework.*;
+
 public class Foo extends TestCase {
- public void suite() {} // oops, should be static
- private static void suite() {} // oops, should be public
+   public void suite() {}         // oops, should be static
+   private static void suite() {} // oops, should be public
 }
   ]]>
       </example>
@@ -69,9 +70,10 @@ Some JUnit framework methods are easy to misspell.
     <example>
 <![CDATA[
 import junit.framework.*;
+
 public class Foo extends TestCase {
- public void setup() {} // oops, should be setUp
- public void TearDown() {} // oops, should be tearDown
+   public void setup() {}    // oops, should be setUp
+   public void TearDown() {} // oops, should be tearDown
 }
 ]]>
     </example>
@@ -83,8 +85,7 @@ public class Foo extends TestCase {
           class="net.sourceforge.pmd.lang.java.rule.junit.JUnitAssertionsShouldIncludeMessageRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#JUnitAssertionsShouldIncludeMessage">
       <description>
-JUnit assertions should include a message - i.e., use the three argument version of
-assertEquals(), not the two argument version.
+JUnit assertions should include a message - i.e., use the three argument version of assertEquals(), not the two-argument version.
       </description>
         <priority>3</priority>
       <example>
@@ -107,19 +108,18 @@ public class Foo extends TestCase {
           class="net.sourceforge.pmd.lang.java.rule.junit.JUnitTestsShouldIncludeAssertRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#JUnitTestsShouldIncludeAssert">
         <description>
-JUnit tests should include at least one assertion.  This makes the tests more robust, and
- using assert with messages provide the developer a clearer idea of what the test does.
+JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert with messages provide the developer a clearer idea of what the test does.
         </description>
           <priority>3</priority>
         <example>
     <![CDATA[
 public class Foo extends TestCase {
-  public void testSomething() {
+   public void testSomething() {
       Bar b = findBar();
-  // This is better than having a NullPointerException
-  // assertNotNull("bar not found", b);
-  b.work();
-  }
+   // This is better than having a NullPointerException
+   // assertNotNull("bar not found", b);
+   b.work();
+   }
 }
     ]]>
         </example>
@@ -131,9 +131,8 @@ public class Foo extends TestCase {
           class="net.sourceforge.pmd.lang.java.rule.junit.TestClassWithoutTestCasesRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#TestClassWithoutTestCases">
       <description>
-Test classes end with the suffix Test. Having a non-test class with that name is
-not a good practice, since most people will assume it is a test case. Test
-classes have test methods named testXXX.
+Test classes end with the suffix Test. Having a non-test class with that name is not a good practice, since most people will assume it is a test case. 
+Test classes have test methods named testXXX.
       </description>
         <priority>3</priority>
       <example>
@@ -200,8 +199,7 @@ public class SimpleTest extends TestCase {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#UseAssertEqualsInsteadOfAssertTrue">
       <description>
-This rule detects JUnit assertions in object equality. These assertions
-should be made by more specific methods, like assertEquals.
+This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
       </description>
       <priority>3</priority>
     <properties>
@@ -239,8 +237,7 @@ public class FooTest extends TestCase {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#UseAssertSameInsteadOfAssertTrue">
       <description>
-This rule detects JUnit assertions in object references equality. These assertions
-should be made by more specific methods, like assertSame, assertNotSame.
+This rule detects JUnit assertions in object references equality. These assertions should be made by more specific methods, like assertSame, assertNotSame.
       </description>
       <priority>3</priority>
     <properties>
@@ -279,8 +276,7 @@ public class FooTest extends TestCase {
            class="net.sourceforge.pmd.lang.rule.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#UseAssertNullInsteadOfAssertTrue">
        <description>
- This rule detects JUnit assertions in object references equality. These assertions
- should be made by more specific methods, like assertNull, assertNotNull.
+ This rule detects JUnit assertions in object references equality. These assertions should be made by more specific methods, like assertNull, assertNotNull.
        </description>
        <priority>3</priority>
      <properties>
@@ -322,10 +318,14 @@ public class FooTest extends TestCase {
        externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#SimplifyBooleanAssertion">
       <description>
 Avoid negation in an assertTrue or assertFalse test.
+
 For example, rephrase:
-assertTrue(!expr);
+
+   assertTrue(!expr);
+   
 as:
-assertFalse(expr);
+
+   assertFalse(expr);
       </description>
       <priority>3</priority>
       <properties>
@@ -348,10 +348,10 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
- public void testX() {
-  assertTrue("not empty", !r.isEmpty()); // replace with assertFalse("not empty", r.isEmpty())
-  assertFalse(!r.isEmpty()); // replace with assertTrue(r.isEmpty())
- }
+   public void testX() {
+     assertTrue("not empty", !r.isEmpty()); // replace with assertFalse("not empty", r.isEmpty())
+     assertFalse(!r.isEmpty()); // replace with assertTrue(r.isEmpty())
+   }
 }
 ]]>
           </example>

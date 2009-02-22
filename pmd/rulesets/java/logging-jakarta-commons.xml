@@ -34,15 +34,15 @@ concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfa
 		</properties>
 		<example><![CDATA[
 public class Main {
- private static final Log _LOG = LogFactory.getLog( Main.class );
- void bar() {
-  try {
-  } catch( Exception e ) {
-   _LOG.error( e ); //Wrong!
-  } catch( OtherException oe ) {
-   _LOG.error( oe.getMessage(), oe ); //Correct
-  }
- }
+   private static final Log _LOG = LogFactory.getLog( Main.class );
+   void bar() {
+     try {
+     } catch( Exception e ) {
+      _LOG.error( e ); //Wrong!
+     } catch( OtherException oe ) {
+      _LOG.error( oe.getMessage(), oe ); //Correct
+     }
+   }
 }
 ]]></example>
 	</rule>
@@ -82,14 +82,13 @@ around, with the restriction that the logger needs to be passed into the constru
              <example>
  <![CDATA[
  public class Foo {
- // right
-  private static final Log LOG = LogFactory.getLog(Foo.class);
- // wrong
- protected Log LOG = LogFactory.getLog(Testclass.class);
+   // right
+   private static final Log LOG = LogFactory.getLog(Foo.class);
+   // wrong
+   protected Log LOG = LogFactory.getLog(Testclass.class);
 }
  ]]>
             </example>
      </rule>
 
 </ruleset>
-

@@ -73,7 +73,7 @@ first -->
          message="There is log block not surrounded by if"
          class="net.sourceforge.pmd.lang.rule.XPathRule">
      <description>
-     When many log statements are used, it is conveninent to surround them with an if statement.
+When many log statements are used, it is convenient to surround them with an if statement.
      </description>
      <properties>
          <property name="xpath">
@@ -163,17 +163,16 @@ Avoid printStackTrace(); use a logger call instead.
            <example>
 <![CDATA[
 class Foo {
- void bar() {
-  try {
-   // do something
-  } catch (Exception e) {
-   e.printStackTrace();
-  }
- }
+  void bar() {
+    try {
+     // do something
+    } catch (Exception e) {
+     e.printStackTrace();
+     }
+   }
 }
 ]]>
            </example>
     </rule>
     
 </ruleset>
-
