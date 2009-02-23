@@ -2,6 +2,7 @@
 
 Fixed bug 2590258 - NPE with nicerhtml output
 Fixed bug 2317099 - False + in SimplifyCondition
+Fixed bug 2606609 - False "UnusedImports" positive in package-info.java
 
 New rule:
 	StrictExceptions : AvoidCatchingGenericException
