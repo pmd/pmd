@@ -314,7 +314,7 @@ public class FileRecord extends AbstractPMDRecord {
      * @return a String which is the Files Content
      */
     protected String resourceToString(IResource resource) {
-        final StringBuffer fileContents = new StringBuffer();
+        final StringBuilder fileContents = new StringBuilder();
         BufferedReader bReader = null;
         try {
             // we create a FileReader

@@ -101,7 +101,7 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
         case 2:
             if (value instanceof Match) {
                 final Match match = (Match)value;
-                final StringBuffer buffer = new StringBuffer(50);
+                final StringBuilder buffer = new StringBuilder(50);
                 buffer.append("Found suspect cut & paste (");               
                 buffer.append(match.getMarkCount()).append(" matches,");
                 buffer.append(match.getLineCount());
@@ -117,7 +117,7 @@ public class CPDViewLabelProvider extends LabelProvider implements ITableLabelPr
                 final int startLine = entry.getBeginLine();
                 final int endLine = entry.getBeginLine() + match.getLineCount() - 1;
                 final IPath path = Path.fromOSString(entry.getTokenSrcID());
-                final StringBuffer buffer = new StringBuffer(100);
+                final StringBuilder buffer = new StringBuilder(100);
                 if (startLine == endLine) {
                     buffer.append("line ").append(startLine);
                 } else {

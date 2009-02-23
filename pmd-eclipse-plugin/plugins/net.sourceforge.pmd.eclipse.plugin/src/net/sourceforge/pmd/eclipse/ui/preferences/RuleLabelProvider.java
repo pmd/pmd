@@ -8,7 +8,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
  * rule table of the PMD Preference page
  * 
  * @author Philippe Herlin
- *
+ * @deprecated
  */
 public class RuleLabelProvider extends AbstractTableLabelProvider {
     private static final String PRIORITY_ILLEGAL = "* illegal *";

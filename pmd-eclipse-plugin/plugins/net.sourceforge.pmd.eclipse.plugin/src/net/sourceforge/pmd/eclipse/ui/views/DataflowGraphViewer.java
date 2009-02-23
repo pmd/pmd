@@ -160,7 +160,7 @@ public class DataflowGraphViewer extends Composite {
             // reference) in this Line of Code
             List<VariableAccess> access = inode.getVariableAccess();
             if (access != null) {
-                StringBuffer exp = new StringBuffer();
+                StringBuilder exp = new StringBuilder();
                 for (int k = 0; k < access.size(); k++) {
                     if (k > 0)
                         exp.append(", ");

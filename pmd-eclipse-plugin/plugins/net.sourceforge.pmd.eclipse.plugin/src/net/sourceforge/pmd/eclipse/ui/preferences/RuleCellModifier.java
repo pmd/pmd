@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.TableItem;
  * of the PMD Preference page
  * 
  * @author Philippe Herlin
- *
+ * @deprecated
  */
 public class RuleCellModifier implements ICellModifier {
     private TableViewer tableViewer;

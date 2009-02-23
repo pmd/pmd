@@ -140,7 +140,7 @@ public class CPDViewTooltipListener implements Listener {
 
     private String createText(Match match) {
         final String text = match.getSourceCodeSlice().replaceAll("\t", "    ");
-        final StringBuffer outputString = new StringBuffer();
+        final StringBuilder outputString = new StringBuilder();
         final StringTokenizer lines = new StringTokenizer(text, "\n");
         for (int i=0; lines.hasMoreTokens(); i++) {
             if (i < 6) {

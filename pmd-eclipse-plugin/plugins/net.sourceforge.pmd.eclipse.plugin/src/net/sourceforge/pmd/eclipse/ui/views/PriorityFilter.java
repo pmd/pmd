@@ -165,12 +165,11 @@ public class PriorityFilter extends ViewerFilter {
      * @return the List-String
      */
     public String getPriorityFilterListAsString(String splitter) {
-        final StringBuffer listString = new StringBuffer();
-        for (int i = 0; i < priorityList.size(); i++) {
-            if (i > 0) {
-                listString.append(splitter);
-            }
-            listString.append(priorityList.get(i));
+        if (priorityList.isEmpty()) return "";
+        
+        final StringBuilder listString = new StringBuilder(priorityList.get(0));
+        for (int i=1; i<priorityList.size(); i++) {
+            listString.append(splitter).append(priorityList.get(i));
         }
         return listString.toString();
     }
