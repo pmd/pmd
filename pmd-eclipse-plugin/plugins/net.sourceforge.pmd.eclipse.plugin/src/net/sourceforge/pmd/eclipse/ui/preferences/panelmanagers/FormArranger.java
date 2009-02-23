@@ -49,8 +49,8 @@ public class FormArranger {
 
 	public void clearChildren() {
 		Control[] kids = parent.getChildren();
-		for (int i=0; i<kids.length; i++) 
-		    kids[i].dispose();
+		for (Control kid : kids) 
+		    kid.dispose();
         parent.pack();
         rule = null;
 	}
@@ -76,10 +76,10 @@ public class FormArranger {
 				
 		int maxColumns = 2;
 		int rowCount = 0;	// count up the actual rows with widgets needed, not all have editors yet
-		for (int i=0; i<orderedDescs.length; i++) {
-			EditorFactory factory = factoryFor(orderedDescs[i]);
+		for (PropertyDescriptor<?> desc: orderedDescs) {
+			EditorFactory factory = factoryFor(desc);
 			if (factory == null) {
-			    System.out.println("No editor defined for: "  + orderedDescs[i]);
+			    System.out.println("No editor defined for: "  + desc);
 			    continue;
 			}
 			int colsReqd = factory.columnsRequired();
@@ -96,8 +96,8 @@ public class FormArranger {
 		if (maxColumns < 1) return 0;
 		
 		int rowsAdded = 0;
-		for (int i=0; i<orderedDescs.length; i++) {
-			if (addRowWidgets(factoryFor(orderedDescs[i]), rowsAdded, orderedDescs[i])) rowsAdded++;
+		for (PropertyDescriptor<?> desc: orderedDescs) {
+			if (addRowWidgets(factoryFor(desc), rowsAdded, desc)) rowsAdded++;
 		}
 				
 		if (rowsAdded > 0) {

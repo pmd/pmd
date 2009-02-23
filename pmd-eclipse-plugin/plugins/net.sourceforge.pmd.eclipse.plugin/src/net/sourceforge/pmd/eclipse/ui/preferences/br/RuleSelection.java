@@ -76,12 +76,12 @@ public class RuleSelection {
         
         if (ruleItems == null) return;
         
-        for (int i=0; i<ruleItems.length; i++) {
-            if (ruleItems[i] instanceof Rule) {
-                ((Rule)ruleItems[i]).setPriority(priority);
+        for (Object ruleItem : ruleItems) {
+            if (ruleItem instanceof Rule) {
+                ((Rule)ruleItem).setPriority(priority);
             }
-            if (ruleItems[i] instanceof RuleGroup) {
-                ((RuleGroup)ruleItems[i]).setPriority(priority);
+            if (ruleItem instanceof RuleGroup) {
+                ((RuleGroup)ruleItem).setPriority(priority);
             }
         }
     }
@@ -105,12 +105,12 @@ public class RuleSelection {
             return selections;
         }
         
-        for (int i=0; i<ruleItems.length; i++) {
-            if (ruleItems[i] instanceof Rule) {
-                selections.add((Rule)ruleItems[i]);
+        for (Object ruleItem : ruleItems) {
+            if (ruleItem instanceof Rule) {
+                selections.add((Rule)ruleItem);
                 continue;
             } else {
-                Rule[] rules = ((RuleGroup)ruleItems[i]).rules();
+                Rule[] rules = ((RuleGroup)ruleItem).rules();
                 for (int r=0; r<rules.length; r++) selections.add(rules[r]);
             }
         }

@@ -36,8 +36,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 		super(listener);
 	}
 	
-	protected boolean canManageMultipleRules() { return true; }
-	 
+	protected boolean canManageMultipleRules() { return true; }	 
     
     protected void clearControls() {
         excludeWidget.setText("");
@@ -95,7 +94,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 	 */
 	public Control setupOn(Composite parent, String regexExclusionLabel, String xpathExclusionLabel) {
 				
-		colourManager = new ColourManager(parent.getDisplay());
+		colourManager = ColourManager.managerFor(parent.getDisplay());
 
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		
@@ -112,7 +111,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 	    
         excludeColour = newColourPanel(panel, "Color code  ");
                
-		excludeWidget = new Text(panel, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		excludeWidget = newTextField(panel);
 		gridData = new GridData(GridData.FILL_BOTH);
 	    gridData.grabExcessHorizontalSpace = true;
 	    gridData.horizontalSpan = 2;
@@ -131,7 +130,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;
 	    gridData.grabExcessHorizontalSpace = true;
-		xpathWidget = new Text(panel, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		xpathWidget = newTextField(panel);
 		xpathWidget.setLayoutData(gridData);
 		
 		addListeners(xpathWidget, Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, xPathColour);

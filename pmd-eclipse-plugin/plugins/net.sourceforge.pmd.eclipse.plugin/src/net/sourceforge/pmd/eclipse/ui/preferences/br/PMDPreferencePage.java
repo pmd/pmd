@@ -382,8 +382,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	     label.setText(comboLabel);
 	        
          final Combo combo = new Combo(panel, SWT.READ_ONLY);
-         combo.setItems(SWTUtil.labelsIn(groupingChoices,1));            
-         combo.select(groupingChoices.length - 1);
+         combo.setItems(SWTUtil.labelsIn(groupingChoices, 1));            
+         combo.select(groupingChoices.length - 1);  // picks last one by default TODO make it a persistent preference
             
          combo.addSelectionListener(new SelectionAdapter() {
              public void widgetSelected(SelectionEvent e) {
@@ -423,13 +423,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private RulePropertyManager buildPropertyTab(TabFolder parent, int index, String title) {
 
-	    TabItem propertyTab = new TabItem(parent, 0, index);
-		propertyTab.setText(title);
+	    TabItem tab = new TabItem(parent, 0, index);
+	    tab.setText(title);
 
 		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(this);
-		propertyTab.setControl(
+		tab.setControl(
 		    manager.setupOn(parent, this)
 		    );
+		manager.tab(tab);
 		return manager;
 	}
 
@@ -446,6 +447,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         tab.setControl(
             manager.setupOn(parent)
             );
+        manager.tab(tab);
         return manager;
 	}
 
@@ -462,6 +464,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         tab.setControl(
             manager.setupOn(parent)
             );
+        manager.tab(tab);
         return manager;
     }
 	
@@ -469,6 +472,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 *
 	 * @param parent TabFolder
 	 * @param index int
+	 * @param title String
 	 */
 	private RulePropertyManager buildUsageTab(TabFolder parent, int index, String title) {
 
@@ -483,6 +487,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 					"XPath exclusion expression"
 					)
 			);
+		manager.tab(tab);
 		return manager;
 	}
 

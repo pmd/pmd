@@ -1,13 +1,10 @@
 package net.sourceforge.pmd.eclipse.util;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
@@ -128,7 +125,7 @@ public class Util {
 	        
 	        private ColourManager colorManagerFor(Display display) {
 	            if (colorManager != null) return colorManager;
-	            colorManager = new ColourManager(display);
+	            colorManager = ColourManager.managerFor(display);
 	            return colorManager;
 	        }
 	        

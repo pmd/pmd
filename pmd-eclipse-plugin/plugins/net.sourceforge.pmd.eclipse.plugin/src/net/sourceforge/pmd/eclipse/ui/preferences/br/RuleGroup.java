@@ -69,7 +69,7 @@ public class RuleGroup implements Comparable<RuleGroup> {
 	    
 	    Arrays.sort(sortedRules, ruleComparator);
 	    rules.clear();
-	    for (int i=0;i<sortedRules.length; i++) rules.add((Rule)sortedRules[i]);
+	    for (Object rule : sortedRules) rules.add((Rule)rule);
 	}
 	
 	/**

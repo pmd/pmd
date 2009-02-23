@@ -20,10 +20,28 @@ public class ColourManager {
 	
 	private final Map<int[], Color> coloursByRGB = new HashMap<int[], Color>();
 	
-	public ColourManager(Display theDisplay) {
+	private static ColourManager instance;
+	
+	public static ColourManager managerFor(Display display) {
+	    
+	    if (instance == null) instance = new ColourManager(display);
+	    return instance;
+	}
+	
+	private ColourManager(Display theDisplay) {
 		display = theDisplay;
 	}
 
+	public Color colourFor(int[] colourFractions) {
+	    
+	    Color colour = coloursByRGB.get(colourFractions);
+        if (colour != null) return colour;
+        
+        colour = new Color(display, colourFractions[0], colourFractions[1], colourFractions[2]);
+        coloursByRGB.put(colourFractions, colour);
+        return colour;
+	}
+	
 	public Color colourFor(String text) {
 		
 		if (StringUtil.isEmpty(text)) return display.getSystemColor(SWT.COLOR_WHITE);
@@ -46,12 +64,7 @@ public class ColourManager {
 			(int)(Math.log10(bHash) % 1 * 255)
 			};
 		
-		Color colour = coloursByRGB.get(colourFractions);
-		if (colour != null) return colour;
-		
-		colour = new Color(display, colourFractions[0], colourFractions[1],	colourFractions[2]);
-		coloursByRGB.put(colourFractions, colour);
-		return colour;
+		return colourFor(colourFractions);
 	}
 	
 	public void dispose() {

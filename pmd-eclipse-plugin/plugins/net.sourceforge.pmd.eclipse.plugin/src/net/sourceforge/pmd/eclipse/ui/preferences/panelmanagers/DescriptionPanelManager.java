@@ -5,6 +5,7 @@ import java.net.URL;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
@@ -12,6 +13,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -37,7 +39,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     private Button browseButton;
     private Label messageLabel;
     private Text  messageField;
-    
+        
     public DescriptionPanelManager(ValueChangeListener theListener) {
         super(theListener);
     }
@@ -58,21 +60,22 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         messageLabel.setVisible(flag);
         messageField.setVisible(flag);
     }
+   
     
     public Control setupOn(Composite parent) {
+        
+        initializeOn(parent);
         
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         
         Composite panel = new Composite(parent, 0);
-        GridLayout layout = new GridLayout(2, false);
-        layout.verticalSpacing = 0;
-        layout.marginBottom = 0;
+        GridLayout layout = new GridLayout(3, false);
         panel.setLayout(layout);
                 
-        descriptionBox = buildDescriptionBox(panel); 
+        descriptionBox = newTextField(panel); 
         gridData = new GridData(GridData.FILL_BOTH);
         gridData.grabExcessHorizontalSpace = true;
-        gridData.horizontalSpan = 1;
+        gridData.horizontalSpan = 3;
         descriptionBox.setLayoutData(gridData);              
       
         descriptionBox.addListener(SWT.FocusOut, new Listener() {
@@ -90,54 +93,29 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
             }
         }); 
         
-        Composite urlPanel = buildExternalUrlPanel(panel, "External URL:");
-        gridData = new GridData(GridData.FILL_HORIZONTAL);
-        gridData.horizontalSpan = 2;
-        gridData.grabExcessHorizontalSpace = true;
-        urlPanel.setLayoutData(gridData);
-        
-        Composite messagePanel = buildMessagePanel(panel, "Message:");
-        gridData = new GridData(GridData.FILL_HORIZONTAL);
-        gridData.horizontalSpan = 2;
-        gridData.grabExcessHorizontalSpace = true;
-        messagePanel.setLayoutData(gridData);
+        buildExternalUrlPanel(panel, "External URL:");        
+        buildMessagePanel(panel, "Message:");
         
         return panel;    
     }
-    
-    /**
-     * Method buildDescriptionBox.
-     * @param parent Composite
-     * @return Text
-     */
-    private Text buildDescriptionBox(Composite parent) {
         
-        return new Text(parent, SWT.BORDER | SWT.WRAP | SWT.MULTI);
-    }
-    
-    private Composite buildExternalUrlPanel(Composite parent, String urlLabel) {
-                
-        Composite panel = new Composite(parent, 0);
-        GridLayout layout = new GridLayout(3, false);
-        layout.verticalSpacing = 0;
-        layout.marginBottom = 0;
-        panel.setLayout(layout);
-        
+    private void buildExternalUrlPanel(Composite parent, String urlLabel) {
+                        
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         
-        extURLLabel = new Label(panel, 0);
+        extURLLabel = new Label(parent, 0);
         extURLLabel.setText(urlLabel);
         gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = false;
         extURLLabel.setLayoutData(gridData);        
         
-        externalURLField = new Text(panel, SWT.BORDER);
+        externalURLField = new Text(parent, SWT.BORDER);
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = true;
         externalURLField.setLayoutData(gridData);
         
-        browseButton = buildExternalInfoUrlButton(panel);
+        browseButton = buildExternalInfoUrlButton(parent);
         gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
         gridData.horizontalSpan = 1;
         browseButton.setLayoutData(gridData);
@@ -152,25 +130,19 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
                 adjustBrowseButton();
             }           
         });
-        
-        return panel;
     }
     
-    private Composite buildMessagePanel(Composite parent, String messageLbl) {
-        
-        Composite panel = new Composite(parent, 0);
-        GridLayout layout = new GridLayout(3, false);
-        panel.setLayout(layout);
-        
+    private void buildMessagePanel(Composite parent, String messageLbl) {
+                
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         
-        messageLabel = new Label(panel, 0);
+        messageLabel = new Label(parent, 0);
         messageLabel.setText(messageLbl);
         gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = false;
         messageLabel.setLayoutData(gridData);        
         
-        messageField = new Text(panel, SWT.BORDER);
+        messageField = new Text(parent, SWT.BORDER);
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 2;
         gridData.grabExcessHorizontalSpace = true;
@@ -181,8 +153,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
               handleMessageChange();
             }
           });
-        
-        return panel;
     }
     
     private void handleExternalURLChange() {
@@ -254,16 +224,24 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         if (StringUtil.isEmpty(url)) return false;
         
         String urlUC = url.toUpperCase();       
-        return urlUC.startsWith("HTTP");
+        if (!urlUC.startsWith("HTTP")) return false;
+        
+        for (int i=0; i<url.length(); i++) {
+            if (Character.isWhitespace(url.charAt(i))) return false;
+        }
+        
+        return true;
     }
     
     private void adjustBrowseButton() {
         
         String url = externalURLField.getText().trim();
+        boolean isValid = isValidURL(url);
         
-        browseButton.setEnabled(
-             isValidURL(url)
-             );
+        browseButton.setEnabled(isValid);
+        externalURLField.setForeground(
+            isValid ? textColour : errorColour
+            );
     }
 
 }

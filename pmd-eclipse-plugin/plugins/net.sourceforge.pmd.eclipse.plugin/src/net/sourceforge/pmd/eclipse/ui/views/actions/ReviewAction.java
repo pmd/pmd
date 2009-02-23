@@ -205,7 +205,7 @@ public class ReviewAction extends ViolationSelectionAction {
                 System.getProperty("user.name", ""), new Date() });
 
         // Copy the source code until the violation line not included
-        StringBuffer sb = new StringBuffer(sourceCode.substring(0, offset));
+        StringBuilder sb = new StringBuilder(sourceCode.substring(0, offset));
 
         // Add the review comment
         sb.append(computeIndent(sourceCode, offset));
@@ -275,21 +275,21 @@ public class ReviewAction extends ViolationSelectionAction {
         return indent.toString();
     }
 
-    private String readFile(IFile file) throws IOException, CoreException {
+    public static String readFile(IFile file) throws IOException, CoreException {
         InputStream contents = file.getContents(true);
         InputStreamReader reader = new InputStreamReader(contents);
 
         try {
             char[] buffer = new char[4096];
-            StringBuilder stringBuffer = new StringBuilder(4096);
+            StringBuilder sb = new StringBuilder(4096);
             while (reader.ready()) {
                 int readCount = reader.read(buffer);
                 if (readCount != -1) {
-                    stringBuffer.append(buffer, 0, readCount);
+                    sb.append(buffer, 0, readCount);
                 }
             }
 
-            return stringBuffer.toString();
+            return sb.toString();
 
         } finally {
             reader.close();
@@ -297,7 +297,7 @@ public class ReviewAction extends ViolationSelectionAction {
     }
 
     /**
-     * Helper mehod to retreive an NLS string from its key
+     * Helper method to retrieve an NLS string from its key
      */
     private String getString(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);

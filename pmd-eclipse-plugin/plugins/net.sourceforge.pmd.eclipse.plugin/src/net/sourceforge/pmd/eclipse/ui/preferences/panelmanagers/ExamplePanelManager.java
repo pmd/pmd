@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ExamplePanelManager extends AbstractRulePanelManager {
 
-    private Text exampleBox;
+    private Text exampleField;
     
     public ExamplePanelManager(ValueChangeListener theListener) {
         super(theListener);
@@ -32,12 +32,12 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
     protected boolean canManageMultipleRules() { return false; }
     
     protected void clearControls() {
-        exampleBox.setText("");
+        exampleField.setText("");
     }
     
     protected void setVisible(boolean flag) {
         
-        exampleBox.setVisible(flag);
+        exampleField.setVisible(flag);
     }
     
     public Control setupOn(Composite parent) {
@@ -48,18 +48,18 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         GridLayout layout = new GridLayout(2, false);
         panel.setLayout(layout);
         
-        exampleBox = buildDescriptionBox(panel); 
+        exampleField = newTextField(panel); 
         gridData = new GridData(GridData.FILL_BOTH);
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalSpan = 1;
-        exampleBox.setLayoutData(gridData);              
+        exampleField.setLayoutData(gridData);              
       
-        exampleBox.addListener(SWT.FocusOut, new Listener() {
+        exampleField.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                                
                 Rule soleRule = soleRule();
                 
-                String cleanValue = exampleBox.getText().trim();
+                String cleanValue = exampleField.getText().trim();
                 String existingValue = soleRule.getDescription();
                 
                 if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
@@ -71,17 +71,7 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         
         return panel;    
     }
-    
-    /**
-     * Method buildDescriptionBox.
-     * @param parent Composite
-     * @return Text
-     */
-    private Text buildDescriptionBox(Composite parent) {
-        
-        return new Text(parent, SWT.BORDER | SWT.WRAP | SWT.MULTI);
-    }
-    
+       
     private void formatExampleOn(StringBuilder sb, String example) {
         // TODO - adjust for common leading whitespace on all lines - see StringUtil facilities
    //     sb.append(example.trim());
@@ -95,8 +85,8 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         if (trimDepth > 0) {
             lines = StringUtil.trimStartOn(lines, trimDepth);
         }
-        for (int i=0; i<lines.length; i++) {
-            sb.append(lines[i]).append(PMD.EOL);
+        for (String line : lines) {
+            sb.append(line).append(PMD.EOL);
         }
     }
     
@@ -121,11 +111,9 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         Rule soleRule = soleRule();
         
         if (soleRule == null) {
-            shutdown(exampleBox);
-    //        shutdown(externalURL);
+            shutdown(exampleField);
         } else {
-            show(exampleBox, examples(soleRule));
-    //        show(externalURL, "<a>"+soleRule.getExternalInfoUrl()+"</a>");
+            show(exampleField, examples(soleRule));
         }
     }
 
