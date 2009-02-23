@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
@@ -28,6 +29,14 @@ public class UnusedImportsRule extends AbstractJavaRule {
         imports.clear();
         super.visit(node, data);
         visitComments(node);
+
+        /* special handling for Bug 2606609 : False "UnusedImports" positive in package-info.java
+         * package annotations are processed before the import clauses so they need to be examined
+         * again later on.
+         */
+        if (node.jjtGetNumChildren()>0 && node.jjtGetChild(0) instanceof ASTPackageDeclaration) {
+            visit((ASTPackageDeclaration)node.jjtGetChild(0), data);
+        }
         for (ImportWrapper wrapper : imports) {
             addViolation(data, wrapper.getNode(), wrapper.getFullName());
         }
