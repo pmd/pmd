@@ -51,9 +51,9 @@ public interface IPreferencesFactory {
     IPreferencesManager getPreferencesManager();
     
     /**
-     * Return a new instance, not intialized, of a preferences information structure for the
+     * Return a new instance, not initialized, of a preferences information structure for the
      * specified preferences manager. 
-     * @param prefencesManager a instance of a preferencs manager
+     * @param prefencesManager a instance of a preferences manager
      */
     IPreferences newPreferences(IPreferencesManager prefencesManager);
 
