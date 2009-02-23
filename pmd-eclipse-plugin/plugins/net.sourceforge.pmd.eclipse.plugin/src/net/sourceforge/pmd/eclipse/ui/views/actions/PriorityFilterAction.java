@@ -53,9 +53,9 @@ public class PriorityFilterAction extends Action {
         priority = prio;
 
         ViewerFilter[] filters = view.getViewer().getFilters();
-        for (int i = 0; i < filters.length; i++) {
-            if (filters[i] instanceof PriorityFilter)
-                priorityFilter = (PriorityFilter) filters[i];
+        for (Object filter : filters) {
+            if (filter instanceof PriorityFilter)
+                priorityFilter = (PriorityFilter) filter;
         }
 
         setupActionLook();

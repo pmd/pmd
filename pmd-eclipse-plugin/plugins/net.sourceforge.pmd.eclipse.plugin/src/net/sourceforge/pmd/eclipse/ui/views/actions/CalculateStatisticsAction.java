@@ -81,12 +81,12 @@ public class CalculateStatisticsAction extends Action {
 
     private int calculateWorkUnits(TreeItem[] items) {
         int toWork = 0;
-        for (int i=0; i<items.length; i++) {
-            if (items[i].getData() instanceof PackageRecord) {
-                final PackageRecord record = (PackageRecord) items[i].getData();
+        for (TreeItem item : items) {
+            if (item.getData() instanceof PackageRecord) {
+                final PackageRecord record = (PackageRecord) item.getData();
                 final AbstractPMDRecord[] children = record.getChildren();
-                toWork+=children.length;
-            } else if (items[i].getData() instanceof FileRecord) {
+                toWork += children.length;
+            } else if (item.getData() instanceof FileRecord) {
                 toWork++;
             }
         }

@@ -244,7 +244,7 @@ public class ReviewAction extends ViolationSelectionAction {
         if (sourceCode.substring(offset, index).indexOf(PMDRuntimeConstants.PMD_STYLE_REVIEW_COMMENT) == -1) {
 
             // Copy the source code until the violation line included
-            StringBuffer sb = new StringBuffer(sourceCode.substring(0, index));
+            StringBuilder sb = new StringBuilder(sourceCode.substring(0, index));
 
             // Add the review comment
             sb.append(' ');
@@ -264,7 +264,7 @@ public class ReviewAction extends ViolationSelectionAction {
      * Calcul l'indentation employée sur la ligne du marker
      */
     private String computeIndent(String sourceCode, int offset) {
-        StringBuffer indent = new StringBuffer();
+        StringBuilder indent = new StringBuilder();
         int i = 0;
 
         while (Character.isWhitespace(sourceCode.charAt(offset + i))) {
@@ -281,7 +281,7 @@ public class ReviewAction extends ViolationSelectionAction {
 
         try {
             char[] buffer = new char[4096];
-            StringBuffer stringBuffer = new StringBuffer(4096);
+            StringBuilder stringBuffer = new StringBuilder(4096);
             while (reader.ready()) {
                 int readCount = reader.read(buffer);
                 if (readCount != -1) {
