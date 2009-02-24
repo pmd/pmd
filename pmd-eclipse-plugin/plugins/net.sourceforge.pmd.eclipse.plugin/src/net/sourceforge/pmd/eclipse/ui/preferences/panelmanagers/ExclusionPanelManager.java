@@ -4,6 +4,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -46,6 +47,10 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
     protected void setVisible(boolean flag) {
         excludeWidget.setVisible(flag);
         xpathWidget.setVisible(flag);
+    }
+    
+    protected String[] fieldErrors() {
+        return StringUtil.EMPTY_STRINGS;
     }
     
 	private void addListeners(final Text control, final StringProperty desc, final Control colourWindow) {
@@ -92,7 +97,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 	 * @param xpathExclusionLabel String
 	 * @return Control
 	 */
-	public Control setupOn(Composite parent, String regexExclusionLabel, String xpathExclusionLabel) {
+	public Control setupOn(Composite parent, String regexExclusionLabel, String xpathExclusionLabel, String colourBoxLabel) {
 				
 		colourManager = ColourManager.managerFor(parent.getDisplay());
 
@@ -109,7 +114,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         gridData.grabExcessHorizontalSpace = true;
 	    labelA.setLayoutData(gridData);
 	    
-        excludeColour = newColourPanel(panel, "Color code  ");
+        excludeColour = newColourPanel(panel, colourBoxLabel);
                
 		excludeWidget = newTextField(panel);
 		gridData = new GridData(GridData.FILL_BOTH);
@@ -125,7 +130,7 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 	    gridData.horizontalSpan = 1;
 	    labelB.setLayoutData(gridData);
 
-        xPathColour = newColourPanel(panel, "Color code  ");
+        xPathColour = newColourPanel(panel, colourBoxLabel);
 	    
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;

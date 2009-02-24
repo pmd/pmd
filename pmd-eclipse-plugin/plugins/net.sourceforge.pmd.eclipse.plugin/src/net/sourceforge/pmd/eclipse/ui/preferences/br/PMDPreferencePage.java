@@ -31,6 +31,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelMana
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -409,8 +410,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		rulePropertyManagers = new RulePropertyManager[] {
 		    buildPropertyTab(tabFolder,    0, "Properties"),
 		    buildDescriptionTab(tabFolder, 1, stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION)),
-		    buildUsageTab(tabFolder,       2, "Usage"),
-		    buildExampleTab(tabFolder,     3, "Examples")
+		    buildUsageTab(tabFolder,       2, "Filters"),
+		    buildXPathTab(tabFolder,       3, "XPath"),     
+		    buildExampleTab(tabFolder,     4, "Examples")
 		    };
 
 		tabFolder.pack();
@@ -451,7 +453,24 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         return manager;
 	}
 
-	   /**
+    /**
+     * @param parent TabFolder
+     * @param index int
+     */
+    private RulePropertyManager buildXPathTab(TabFolder parent, int index, String title) {
+
+        TabItem tab = new TabItem(parent, 0, index);
+        tab.setText(title);
+
+        XPathPanelManager manager = new XPathPanelManager(this);
+        tab.setControl(
+            manager.setupOn(parent)
+            );
+        manager.tab(tab);
+        return manager;
+    }
+	
+	/**
      * @param parent TabFolder
      * @param index int
      */
@@ -466,8 +485,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
             );
         manager.tab(tab);
         return manager;
-    }
-	
+    }    
+    
 	/**
 	 *
 	 * @param parent TabFolder
@@ -484,7 +503,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 			manager.setupOn(
 					parent,
 					"Exclusion regular expression",
-					"XPath exclusion expression"
+					"XPath exclusion expression",
+					"Color code  "
 					)
 			);
 		manager.tab(tab);

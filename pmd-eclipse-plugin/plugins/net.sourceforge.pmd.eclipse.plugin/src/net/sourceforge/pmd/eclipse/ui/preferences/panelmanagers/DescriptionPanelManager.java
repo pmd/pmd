@@ -5,7 +5,6 @@ import java.net.URL;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
@@ -13,7 +12,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -61,7 +59,6 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         messageField.setVisible(flag);
     }
    
-    
     public Control setupOn(Composite parent) {
         
         initializeOn(parent);
@@ -89,7 +86,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
                 if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
                 
                 soleRule.setDescription(cleanValue);
-                changeListener.changed(rules, null, cleanValue);                
+                valueChanged(null, cleanValue);         
             }
         }); 
         
@@ -162,6 +159,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         
         if (!StringUtil.areSemanticEquals(rule.getExternalInfoUrl().trim(), newURL)) {
             rule.setExternalInfoUrl(newURL);
+            valueChanged(null, newURL);
         }
         
        adjustBrowseButton();
@@ -233,10 +231,14 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         return true;
     }
     
+    private boolean hasValidURL() {
+        String url = externalURLField.getText().trim();
+        return isValidURL(url);
+    }
+    
     private void adjustBrowseButton() {
         
-        String url = externalURLField.getText().trim();
-        boolean isValid = isValidURL(url);
+        boolean isValid = hasValidURL();
         
         browseButton.setEnabled(isValid);
         externalURLField.setForeground(
@@ -244,4 +246,10 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
             );
     }
 
+    protected String[] fieldErrors() {
+        
+        return hasValidURL() ? 
+               StringUtil.EMPTY_STRINGS :
+               new String[] { "Invalid external URL" };
+    }
 }

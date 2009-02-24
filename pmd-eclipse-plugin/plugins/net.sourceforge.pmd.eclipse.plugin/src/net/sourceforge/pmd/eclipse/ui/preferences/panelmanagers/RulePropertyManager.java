@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.TabItem;
 
 public interface RulePropertyManager {
 
-    public void tab(TabItem tab);
-    public void manage(RuleSelection rules);
+    void tab(TabItem tab);
+    boolean isActive();
+    void manage(RuleSelection rules);
 }

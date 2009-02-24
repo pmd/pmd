@@ -65,7 +65,7 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
                 if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
                 
                 soleRule.setDescription(cleanValue);
-                changeListener.changed(rules, null, cleanValue);                
+                valueChanged(null, cleanValue);                
             }
         }); 
         
