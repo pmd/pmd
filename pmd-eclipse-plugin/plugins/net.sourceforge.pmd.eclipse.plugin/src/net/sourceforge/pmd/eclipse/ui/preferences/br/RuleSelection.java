@@ -111,7 +111,7 @@ public class RuleSelection {
                 continue;
             } else {
                 Rule[] rules = ((RuleGroup)ruleItem).rules();
-                for (int r=0; r<rules.length; r++) selections.add(rules[r]);
+                for (Rule rule : rules) selections.add(rule);
             }
         }
         

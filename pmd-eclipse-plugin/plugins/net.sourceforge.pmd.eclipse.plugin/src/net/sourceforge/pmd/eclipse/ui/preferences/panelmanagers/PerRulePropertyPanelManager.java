@@ -4,7 +4,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.BooleanEditorFactory;
@@ -66,6 +68,10 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     }
 
     protected boolean canManageMultipleRules() { return false; }
+    
+    protected boolean canWorkWith(Rule rule) {
+        return !PMDPreferencePage.filteredPropertiesOf(rule).isEmpty();
+    }
     
     protected void clearControls() {
         formArranger.clearChildren();

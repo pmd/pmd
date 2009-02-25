@@ -901,7 +901,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 				new RuleSetTreeItemProvider(groupingField, "??", Util.comparatorFrom(columnSorter, sortDescending))
 				);
 
-		populateRuleTable();
+//		ruleTreeViewer.setInput(ruleSet);
+//      checkSelections();
 
 		TreeColumn[] columns = ruleTree.getColumns();
 		for (TreeColumn column : columns) column.pack();
