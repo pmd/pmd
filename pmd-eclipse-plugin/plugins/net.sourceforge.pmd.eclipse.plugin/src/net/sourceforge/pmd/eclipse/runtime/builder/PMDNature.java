@@ -130,8 +130,8 @@ public class PMDNature implements IProjectNature {
      */
     private boolean pmdBuilderFound(ICommand[] commands) {
         
-        for (int i = 0; i < commands.length; i++) {
-            if (commands[i].getBuilderName().equals(PMDBuilder.PMD_BUILDER)) {
+        for (ICommand command: commands) {
+            if (command.getBuilderName().equals(PMDBuilder.PMD_BUILDER)) {
                 return true;
             }
         }
