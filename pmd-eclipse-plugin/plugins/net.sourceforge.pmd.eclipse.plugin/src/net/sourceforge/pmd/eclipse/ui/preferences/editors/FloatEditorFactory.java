@@ -49,6 +49,8 @@ public class FloatEditorFactory extends AbstractNumericEditorFactory {
 					
 					rule.setProperty(fp, newValue);
 					listener.changed(rule, fp, newValue);
+
+                    adjustRendering(rule, desc, spinner);
 				}
 			});
 			

@@ -5,6 +5,7 @@ import java.net.URL;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
@@ -59,6 +60,18 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         messageField.setVisible(flag);
     }
    
+    protected void updateOverridenFields() {
+        
+        Rule rule = soleRule();
+        
+        if (rule instanceof RuleReference) {
+            RuleReference ruleReference = (RuleReference)rule;
+            messageField.setBackground(ruleReference.getOverriddenMessage() != null ? overridenColour: null);
+            descriptionBox.setBackground(ruleReference.getOverriddenDescription() != null ? overridenColour: null);
+            externalURLField.setBackground(ruleReference.getOverriddenExternalInfoUrl() != null ? overridenColour: null);
+        }
+    }
+    
     public Control setupOn(Composite parent) {
         
         initializeOn(parent);
@@ -172,6 +185,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         
         if (!StringUtil.areSemanticEquals(rule.getMessage().trim(), newMessage)) {
             rule.setMessage(newMessage);
+            updateUI();
         }
     }
     

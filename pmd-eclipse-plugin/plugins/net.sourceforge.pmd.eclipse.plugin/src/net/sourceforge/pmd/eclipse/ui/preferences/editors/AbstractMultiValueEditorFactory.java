@@ -200,6 +200,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
                  
                renumberLabelsIn(newControls);
                fillWidget(parentWidget, desc, rule);
+               adjustRendering(rule, desc, parentWidget);
                sizeListener.addedRows(1);
                changeListener.changed(rule, desc, newValue);
                parent.getParent().layout();
@@ -234,6 +235,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         
         Object[] values = (Object[])rule.getProperty(desc);
         textWidget.setText(values == null ? "" : StringUtil.asString(values, delimiter + ' '));
+        adjustRendering(rule, desc, textWidget);
     }
     
     protected String[] textWidgetValues(Text textWidget) {

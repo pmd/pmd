@@ -86,6 +86,8 @@ public class TypeEditorFactory extends AbstractEditorFactory {
                     
                     rule.setProperty(tp, newValue);
                     listener.changed(rule, desc, newValue);
+
+                    adjustRendering(rule, desc, typeText);
                 }
             });
 

@@ -6,6 +6,7 @@ import net.sourceforge.pmd.util.StringUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -92,6 +93,10 @@ public class TypeText extends Composite {
         }
         
         text.setText(cls.getName());
+    }
+    
+    public void setBackground(Color clr) {
+        text.setBackground(clr);
     }
     
     public void setEnabled(boolean flag) {

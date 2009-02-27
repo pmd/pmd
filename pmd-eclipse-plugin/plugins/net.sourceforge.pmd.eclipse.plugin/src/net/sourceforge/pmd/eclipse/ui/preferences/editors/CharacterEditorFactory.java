@@ -50,7 +50,7 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
         }
     }
     
-    public Control newEditorOn(Composite parent, int columnIndex, PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+    public Control newEditorOn(Composite parent, int columnIndex, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
        
         if (columnIndex == 0) return addLabel(parent, desc);    
         
@@ -70,6 +70,8 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
                     
                     rule.setProperty(cp, newValue);
                     listener.changed(rule, cp, newValue);
+
+                    adjustRendering(rule, desc, text);
                 }
             });
 

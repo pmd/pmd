@@ -35,8 +35,11 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
     protected static Color textColour;
     protected static Color errorColour;
     protected static Color disabledColour;
+    protected static Color overridenColour;
     
     private static final String disabledTabText = "-------";
+    
+    public static final int[] overridenColourValues = new int[] {196, 196, 255};  // light blue
     
     public AbstractRulePanelManager(ValueChangeListener theListener) {
         changeListener = theListener;
@@ -73,7 +76,16 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
     
     protected void valueChanged(PropertyDescriptor<?> optionalDesc, Object newValue) {
         changeListener.changed(rules, optionalDesc, newValue); 
+        updateUI();
+    }
+    
+    protected void updateUI() {
         updateTabUI();
+        updateOverridenFields();
+    }
+    
+    protected void updateOverridenFields() {
+        
     }
     
     protected boolean canWorkWith(Rule rule) { return true; }   // override as necessary
@@ -131,6 +143,7 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
         errorColour = clrMgr.colourFor(new int[] { 255, 0, 0 });        // red
         textColour = clrMgr.colourFor(new int[] { 0, 0, 0 });           // black
         disabledColour = clrMgr.colourFor(new int[] {128, 128, 128});   // grey 
+        overridenColour = clrMgr.colourFor(overridenColourValues);
     }
     
     /**

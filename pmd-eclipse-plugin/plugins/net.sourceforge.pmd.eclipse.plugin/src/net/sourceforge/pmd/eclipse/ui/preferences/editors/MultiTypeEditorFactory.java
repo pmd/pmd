@@ -47,6 +47,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         }
         
         textWidget.setText(values == null ? "" : asString(values));
+        adjustRendering(rule, desc, textWidget);
     }
 	
     private String asString(Class<?>[] types) {
@@ -102,6 +103,8 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
                 rule.setProperty(tmp, newValue);
                 fillWidget(textWidget, desc, rule);   // display the accepted values
                 listener.changed(rule, desc, newValue);
+                
+                adjustRendering(rule, desc, textWidget);
             }
         });
     }

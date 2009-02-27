@@ -49,6 +49,8 @@ public class DoubleEditorFactory extends AbstractNumericEditorFactory {
                     
                     rule.setProperty(dp, newValue);
                     listener.changed(rule, dp, newValue);
+
+                    adjustRendering(rule, desc, spinner);
                 }
             });
             

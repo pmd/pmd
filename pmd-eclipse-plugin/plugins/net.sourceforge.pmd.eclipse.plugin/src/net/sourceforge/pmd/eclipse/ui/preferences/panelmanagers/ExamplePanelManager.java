@@ -6,6 +6,7 @@ import java.util.List;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
@@ -38,6 +39,16 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
     protected void setVisible(boolean flag) {
         
         exampleField.setVisible(flag);
+    }
+    
+    protected void updateOverridenFields() {
+        
+        Rule rule = soleRule();
+        
+        if (rule instanceof RuleReference) {
+            RuleReference ruleReference = (RuleReference)rule;
+            exampleField.setBackground(ruleReference.getOverriddenExamples() != null ? overridenColour: null);
+        }
     }
     
     public Control setupOn(Composite parent) {

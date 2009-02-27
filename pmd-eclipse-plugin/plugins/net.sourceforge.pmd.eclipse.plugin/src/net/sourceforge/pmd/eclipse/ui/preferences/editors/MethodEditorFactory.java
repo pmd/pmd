@@ -35,6 +35,7 @@ public class MethodEditorFactory extends AbstractEditorFactory {
 		
 		Method method = (Method)rule.getProperty(desc);
 		widget.setMethod(method);
+        adjustRendering(rule, desc, widget);
 	}
 		
     private static MethodProperty methodPropertyFrom(PropertyDescriptor<?> desc) {

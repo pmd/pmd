@@ -8,6 +8,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -78,6 +79,11 @@ public class MethodPicker extends Composite {
         
         methodList.setItems(items);
         methodList.select(0);
+    }
+    
+    public void setBackground(Color clr) {
+        typeText.setBackground(clr);
+        methodList.setBackground(clr);
     }
     
     public Point computeSize(int wHint, int hHint, boolean changed) {

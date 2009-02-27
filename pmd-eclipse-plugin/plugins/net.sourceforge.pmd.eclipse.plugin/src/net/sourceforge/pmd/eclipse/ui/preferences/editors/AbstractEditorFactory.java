@@ -1,9 +1,14 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.AbstractRulePanelManager;
+import net.sourceforge.pmd.eclipse.util.ColourManager;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -16,8 +21,26 @@ import org.eclipse.swt.widgets.Label;
  */
 public abstract class AbstractEditorFactory implements EditorFactory {
 	
+    protected static ColourManager  colourManager;
+    protected static Color          overriddenColour;
+    
 	protected AbstractEditorFactory() { }
 
+	private static ColourManager managerFor(Display display) {
+	    
+	    if (colourManager != null) return colourManager;
+	    colourManager = ColourManager.managerFor(display);
+	    return colourManager;
+	}
+	
+	private Color overriddenColour(Display display) {
+	    
+	    if (overriddenColour != null) return overriddenColour;
+	    
+	    overriddenColour = managerFor(display).colourFor(AbstractRulePanelManager.overridenColourValues);
+	    return overriddenColour;
+	}
+	
 	/**
 	 * @return int
 	 * @see net.sourceforge.pmd.ui.preferences.br.EditorFactory#columnsRequired()
@@ -66,6 +89,17 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 	    control.setBackground( 
 	       display.getSystemColor(hasDefaultValue ? SWT.COLOR_WHITE : SWT.COLOR_CYAN) 
 	       );
+	}
+	
+	protected void adjustRendering(Rule rule, PropertyDescriptor<?> desc, Control control) {
+	        
+	        if (!(rule instanceof RuleReference)) return;    
+
+	        boolean isOverridden = ((RuleReference)rule).hasOverriddenProperty(desc);
+	        Display display = control.getDisplay();
+	        Color clr = isOverridden ? overriddenColour(display) : display.getSystemColor(SWT.COLOR_WHITE);
+
+	        control.setBackground(clr);
 	}
 	
 	/**

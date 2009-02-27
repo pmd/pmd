@@ -220,6 +220,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	@Override
     protected Control createContents(Composite parent) {
+	    
+	    populateRuleset();
+	    
 		Composite composite = new Composite(parent, SWT.NULL);
 		layoutControls(composite);
 		return composite;
@@ -901,8 +904,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 				new RuleSetTreeItemProvider(groupingField, "??", Util.comparatorFrom(columnSorter, sortDescending))
 				);
 
-//		ruleTreeViewer.setInput(ruleSet);
-//      checkSelections();
+		ruleTreeViewer.setInput(ruleSet);
+        checkSelections();
 
 		TreeColumn[] columns = ruleTree.getColumns();
 		for (TreeColumn column : columns) column.pack();
@@ -1216,20 +1219,23 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		return button;
 	}
+	
+	private void populateRuleset() {
+	    
+	    RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
+        ruleSet = new RuleSet();
+        ruleSet.addRuleSet(defaultRuleSet);
+        ruleSet.setName(defaultRuleSet.getName());
+        ruleSet.setDescription(Util.asCleanString(defaultRuleSet.getDescription()));
+        ruleSet.addExcludePatterns(defaultRuleSet.getExcludePatterns());
+        ruleSet.addIncludePatterns(defaultRuleSet.getIncludePatterns());
+	}
 
 	/**
 	 * Populate the rule table
 	 */
-	private void populateRuleTable() {
-		RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
-		ruleSet = new RuleSet();
-		ruleSet.addRuleSet(defaultRuleSet);
-		ruleSet.setName(defaultRuleSet.getName());
-		ruleSet.setDescription(Util.asCleanString(defaultRuleSet.getDescription()));
-		ruleSet.addExcludePatterns(defaultRuleSet.getExcludePatterns());
-		ruleSet.addIncludePatterns(defaultRuleSet.getIncludePatterns());
+	private void populateRuleTable() {		
 		ruleTreeViewer.setInput(ruleSet);
-
 		checkSelections();
 	}
 

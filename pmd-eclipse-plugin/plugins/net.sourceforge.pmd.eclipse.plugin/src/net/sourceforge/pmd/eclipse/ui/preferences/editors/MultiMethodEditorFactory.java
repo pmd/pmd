@@ -82,6 +82,8 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         
         Map<String, List<Method>> methodMap = ClassUtil.asMethodGroupsByTypeName(values);        
         textWidget.setText(values == null ? "" : asString(methodMap));
+
+        adjustRendering(rule, desc, textWidget);
     }
 		
     protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {

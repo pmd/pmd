@@ -33,7 +33,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
         }
     }
     
-    private static int indexOf(Object item, Object[][] items) {
+    public static int indexOf(Object item, Object[][] items) {
         for (int i=0; i<items.length; i++) if (items[i][0].equals(item)) return i;
         return -1;
     }
@@ -59,6 +59,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
                     
                     rule.setProperty(ep, newValue);
                     listener.changed(rule, desc, newValue);
+                    adjustRendering(rule, desc, combo);
                 }
               });  
             

@@ -68,9 +68,9 @@ public class IntegerEditorFactory extends AbstractEditorFactory {
 					int newValue = spinner.getSelection();
 					if (newValue == rule.getProperty(ip)) return;
 					
-			//		adjustRendering(spinner, newValue == ip.defaultValue().intValue());
 					rule.setProperty(ip, Integer.valueOf(newValue));
 					listener.changed(rule, desc, Integer.valueOf(newValue));
+                    adjustRendering(rule, desc, spinner);
 				}
 			});		
 						

@@ -23,7 +23,7 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
     private String             imagePath;
     private CellPainterBuilder painterBuilder;
     
-    public static final RuleColumnDescriptor filterExpression  = new ImageColumnDescriptor("Exclusion rule", SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER, Util.regexBuilderFor(16, 16));
+    public static final RuleColumnDescriptor filterExpression  = new ImageColumnDescriptor("Filters", SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER, Util.regexBuilderFor(16, 16));
 
     
     public ImageColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, CellPainterBuilder thePainterBuilder) {
