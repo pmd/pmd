@@ -86,7 +86,7 @@ public class UselessOperationOnImmutable extends AbstractJavaRule {
     private ASTVariableDeclaratorId getDeclaration(ASTLocalVariableDeclaration node) {
         ASTType type = node.getTypeNode();
         if (mapClasses.keySet().contains(type.getTypeImage())) {
-            return (ASTVariableDeclaratorId) node.jjtGetChild(1).jjtGetChild(0);
+            return node.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
         }
         return null;
     }
