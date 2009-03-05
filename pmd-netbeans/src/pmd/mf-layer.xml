@@ -3,24 +3,26 @@
 <filesystem>
   <folder name="OptionsDialog">
      <folder name="Advanced">
-         <attr name="FormEditor.instance/PmdOptionsPanel.instance" boolvalue="true"/>
-            <file name="PmdOptionsPanel.instance">
+         <file name="PmdOptionsPanel.instance">
              <attr name="instanceClass" stringvalue="pmd.config.ui.PmdOptionsPanel"/>
          </file>
      </folder>
   </folder>
   <folder name="Services">
     <folder name="JavaHelp">
-      <file name="pmd-helpset.xml" url="pmd-helpset.xml"/>
+      <file name="pmd-helpset.xml" url="pmd-helpset.xml">
+         <attr name="position" intvalue="4000"/>
+      </file>
     </folder>
   </folder>
     <folder name="Menu">
         <folder name="Window">
-            <attr name="ResultWindowOpenAction.shadow/pmd-ShowOutputWindowAction.shadow" boolvalue="true"/>
-            <file name="pmd-ShowOutputWindowAction.shadow">
-                <attr name="originalFile" stringvalue="Actions/Window/pmd-ShowOutputWindowAction.instance"/>
-            </file>
-            <attr name="pmd-ShowOutputWindowAction.shadow/Debug" boolvalue="true"/>
+            <folder name="Output">
+                <file name="pmd-ShowOutputWindowAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Window/pmd-ShowOutputWindowAction.instance"/>
+                    <attr name="position" intvalue="600"/>
+                </file>
+            </folder>
         </folder>
     </folder>
     <folder name="Actions">

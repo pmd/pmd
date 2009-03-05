@@ -1,3 +1,8 @@
+Version 2.2.5
+- Updated pmd to version 4.2.5
+- Fixed dependencies to make it working with nightly NetBeans builds (post 6.5)
+- Requires NetBeans 6.5 or newer IDE build
+
 Version 2.2.1
 - Updated pmd to version 4.2.1
 
