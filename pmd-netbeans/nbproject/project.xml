@@ -4,26 +4,8 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
             <code-name-base>pmd</code-name-base>
-            <path>pmd-netbeans</path>
+            <!--<path>pmd-netbeans</path>-->
             <standalone/>
-            <class-path-extension>
-                <!-- Deployed path, relative to dir containing module: -->
-                <runtime-relative-path>ext/asm-3.1.jar</runtime-relative-path>
-                <!-- Path of library in your own sources, relative to project basedir: -->
-                <binary-origin>lib/asm-3.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jaxen-1.1.1.jar</runtime-relative-path>
-                <binary-origin>lib/jaxen-1.1.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/pmd-4.2.1.jar</runtime-relative-path>
-                <binary-origin>lib/pmd-4.2.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <!-- Deployed path, relative to dir containing module: -->
-                <runtime-relative-path>ext/nbpmdrules.jar</runtime-relative-path>
-            </class-path-extension>
             <module-dependencies>
                 <dependency>
                     <code-name-base>org.jdesktop.layout</code-name-base>
@@ -43,6 +25,15 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.netbeans.api.java.classpath</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.18</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.netbeans.api.progress</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -57,7 +48,16 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>3</release-version>
-                        <specification-version>1.26.1.1</specification-version>
+                        <specification-version>1.41</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.netbeans.modules.editor.indent</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>2</release-version>
+                        <specification-version>1.9</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -66,6 +66,16 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
+                        <specification-version>1.27</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.netbeans.modules.editor.settings</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.22</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -153,7 +163,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>6.2</specification-version>
+                        <specification-version>6.16</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -187,6 +197,24 @@
                 </test-type>
             </test-dependencies>
             <public-packages/>
+            <class-path-extension>
+                <!-- Deployed path, relative to dir containing module: -->
+                <runtime-relative-path>ext/asm-3.1.jar</runtime-relative-path>
+                <!-- Path of library in your own sources, relative to project basedir: -->
+                <binary-origin>lib/asm-3.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jaxen-1.1.1.jar</runtime-relative-path>
+                <binary-origin>lib/jaxen-1.1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/pmd-4.2.1.jar</runtime-relative-path>
+                <binary-origin>lib/pmd-4.2.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <!-- Deployed path, relative to dir containing module: -->
+                <runtime-relative-path>ext/nbpmdrules.jar</runtime-relative-path>
+            </class-path-extension>
             <extra-compilation-unit>
                 <package-root>libsrc</package-root>
                 <classpath>lib/pmd-4.2.1.jar</classpath>
