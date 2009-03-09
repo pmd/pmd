@@ -27,6 +27,10 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
 		
 	private MultiStringEditorFactory() { }
 	
+    public PropertyDescriptor<?> createDescriptor(String name, String optionalDescription, Control[] otherData) {
+        return new StringMultiProperty(name, "String value " + name, new String[] {""}, 0.0f, StringMultiProperty.DEFAULT_DELIMITER);
+    }
+	
     private static StringMultiProperty multiStringPropertyFrom(PropertyDescriptor<?> desc) {
 	        
         if (desc instanceof PropertyDescriptorWrapper) {
@@ -36,6 +40,11 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         }
     }
 	
+    protected Object valueFrom(Control valueControl) {
+        
+        return null;    // TODO
+    }
+    
     protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
         Text textWidget = new Text(parent, SWT.SINGLE | SWT.BORDER);
         setValue(textWidget,value);
@@ -53,7 +62,7 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         textWidget.addListener(SWT.FocusOut, new Listener() {
         	public void handleEvent(Event event) {
         		String[] newValues = textWidgetValues(textWidget);					
-        		String[] existingValues = rule.getProperty(smp);				
+        		String[] existingValues = (String[])valueFor(rule, smp);				
         		if (CollectionUtil.areSemanticEquals(existingValues, newValues)) return;				
         		
         		rule.setProperty(smp, newValues);        		
@@ -74,7 +83,7 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         String newValue = ((Text)widget).getText().trim();
         if (StringUtil.isEmpty(newValue)) return null;
         
-        String[] currentValues = (String[])rule.getProperty(desc);
+        String[] currentValues = (String[])valueFor(rule, desc);
         String[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
         if (currentValues.length == newValues.length) return null;
         

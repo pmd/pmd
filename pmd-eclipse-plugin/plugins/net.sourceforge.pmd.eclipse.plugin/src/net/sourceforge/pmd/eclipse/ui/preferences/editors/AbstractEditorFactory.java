@@ -3,6 +3,8 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.AbstractRulePanelManager;
 import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -41,11 +43,31 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 	    return overriddenColour;
 	}
 	
+	protected Label newLabel(Composite parent, String text) {
+	    Label label = new Label(parent, SWT.None);
+	    label.setText(text);
+	    return label;
+	}
+	
 	/**
-	 * @return int
-	 * @see net.sourceforge.pmd.ui.preferences.br.EditorFactory#columnsRequired()
+	 * Generic control that provides a label/widget pair for the default value. Subclasses can override this to provide additional
+	 * labels & widgets as necessary but must be able to extract the values held by them when the property is created.
 	 */
-	public int columnsRequired() { return 2; };
+	public Control[] createOtherControlsOn(Composite parent, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener, SizeChangeListener sizeListener) {
+	    return new Control[] {
+	        newLabel(parent,"Default"),
+	        newEditorOn(parent, desc, rule, listener, sizeListener)  
+	        };
+	}	
+	
+	protected abstract Object valueFrom(Control valueControl);
+	
+    protected Object valueFor(Rule rule, PropertyDescriptor<?> desc) {
+        
+        return rule.hasDescriptor(desc) ?
+                rule.getProperty(desc) : 
+                desc.defaultValue();
+    }
 	
 	/**
 	 * Method addLabel.
@@ -53,7 +75,7 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 	 * @param desc PropertyDescriptor
 	 * @return Label
 	 */
-	protected Label addLabel(Composite parent, PropertyDescriptor<?> desc) {
+	public Label addLabel(Composite parent, PropertyDescriptor<?> desc) {
 		
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(desc.description());

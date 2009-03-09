@@ -1370,6 +1370,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		// TODO enhance to recognize default values
 		modified = true;				
 		for (Rule rule : selection.allRules()) ruleTreeViewer.update(rule, null);
+		for (RulePropertyManager manager : rulePropertyManagers) {
+		    manager.validate();
+		}
 	}
 
 	public void sortBy(RuleFieldAccessor accessor) {

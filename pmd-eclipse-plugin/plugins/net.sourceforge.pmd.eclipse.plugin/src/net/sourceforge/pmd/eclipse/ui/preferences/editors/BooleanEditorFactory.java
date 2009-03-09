@@ -24,6 +24,16 @@ public class BooleanEditorFactory extends AbstractEditorFactory {
 	
 	private BooleanEditorFactory() { }
 	
+    public PropertyDescriptor<?> createDescriptor(String name, String description, Control[] otherData) {
+        
+        return new BooleanProperty(
+                name, 
+                description, 
+                otherData == null ? Boolean.FALSE : valueFrom(otherData[1]), 
+                0
+                );
+    }  
+	
     private static BooleanProperty booleanPropertyFrom(PropertyDescriptor<?> desc) {
         
         if (desc instanceof PropertyDescriptorWrapper) {
@@ -31,46 +41,33 @@ public class BooleanEditorFactory extends AbstractEditorFactory {
            } else {
             return (BooleanProperty)desc;
          }
-    }    
-	
-	/**
-	 * Method newEditorOn.
-	 * @param parent Composite
-	 * @param columnIndex int
-	 * @param desc PropertyDescriptor
-	 * @param rule Rule
-	 * @return Control
-	 * @see net.sourceforge.pmd.ui.preferences.br.EditorFactory#newEditorOn(Composite, int, PropertyDescriptor, Rule)
-	 */
-	public Control newEditorOn(Composite parent, int columnIndex, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
-		
-		if (columnIndex == 0) return addLabel(parent, desc);	
-		
-    	if (columnIndex == 1) {
-    		    
-    		final Button butt =  new Button(parent, SWT.CHECK);
-            butt.setText("");
-                		
-    		final BooleanProperty bp = booleanPropertyFrom(desc);	// TODO - do I really have to do this?
-    		
-    		boolean set = ((Boolean)rule.getProperty(desc)).booleanValue();
-    		butt.setSelection(set);
-    		
-    		butt.addSelectionListener(new SelectionAdapter() {
-    			public void widgetSelected(SelectionEvent event) {
-    				boolean selected = butt.getSelection();
-    				if (selected == rule.getProperty(bp)) return;
-    				
-    				rule.setProperty(bp, Boolean.valueOf(selected));
-    				listener.changed(rule, desc, Boolean.valueOf(selected));
-                    adjustRendering(rule, desc, butt);
-    			}
-    		});
-    		
-    		
-    		return butt;
-    	}
-        return null;
-	}
-
+    }
+    
+    protected Boolean valueFrom(Control valueControl) {
+        return ((Button)valueControl).getSelection() ? Boolean.TRUE : Boolean.FALSE;
+    }
+    
+   public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+	        	                
+       final Button butt =  new Button(parent, SWT.CHECK);
+       butt.setText("");
+	                        
+       final BooleanProperty bp = booleanPropertyFrom(desc);   // TODO - do I really have to do this?
+	            
+       boolean set = ((Boolean)valueFor(rule, desc)).booleanValue();
+       butt.setSelection(set);
+	            
+       butt.addSelectionListener(new SelectionAdapter() {
+           public void widgetSelected(SelectionEvent event) {
+                boolean selected = butt.getSelection();
+                if (selected == (((Boolean)valueFor(rule, bp))).booleanValue()) return;
+	                    
+                rule.setProperty(bp, Boolean.valueOf(selected));
+                listener.changed(rule, desc, Boolean.valueOf(selected));
+                adjustRendering(rule, desc, butt);
+                }
+        });
+            
+      return butt;
+      }  
 }

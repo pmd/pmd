@@ -33,20 +33,28 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
         }
     }
     
+    
+    protected Object valueFrom(Control valueControl) {
+        
+        int index = ((Combo)valueControl).getSelectionIndex();
+        return null;    // TODO ???
+    }
+    
+    public PropertyDescriptor<?> createDescriptor(String name, String optionalDescription, Control[] otherData) {
+        return new EnumeratedProperty(name, "Value set " + name, null, null, 0, 0.0f);
+    }
+    
     public static int indexOf(Object item, Object[][] items) {
         for (int i=0; i<items.length; i++) if (items[i][0].equals(item)) return i;
         return -1;
     }
     
-    public Control newEditorOn(Composite parent, int columnIndex, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+    public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
         
-        if (columnIndex == 0) return addLabel(parent, desc);
-        
-        if (columnIndex == 1) {
             final Combo combo = new Combo(parent, SWT.READ_ONLY);
                         
             final EnumeratedProperty<?> ep = enumerationPropertyFrom(desc);
-            Object value = rule.getProperty(desc);
+            Object value = valueFor(rule, desc);
             combo.setItems(SWTUtil.labelsIn(ep.choices(), 0));
             int selectionIdx = indexOf(value, ep.choices());
             if (selectionIdx >= 0) combo.select(selectionIdx);
@@ -55,7 +63,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
                 public void widgetSelected(SelectionEvent e) {
                     int selectionIdx = combo.getSelectionIndex();
                     Object newValue = ep.choices()[selectionIdx][1];                    
-                    if (newValue == rule.getProperty(desc)) return;
+                    if (newValue == valueFor(rule, desc)) return;
                     
                     rule.setProperty(ep, newValue);
                     listener.changed(rule, desc, newValue);
@@ -65,8 +73,4 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
             
             return combo;
         }
-        
-        return null;
-    }
-
 }

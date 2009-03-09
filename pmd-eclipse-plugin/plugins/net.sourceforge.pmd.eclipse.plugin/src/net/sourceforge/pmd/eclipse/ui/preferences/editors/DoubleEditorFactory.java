@@ -18,12 +18,24 @@ import org.eclipse.swt.widgets.Spinner;
  * 
  * @author Brian Remedios
  */
-public class DoubleEditorFactory extends AbstractNumericEditorFactory {
+public class DoubleEditorFactory extends AbstractRealNumberEditor {
 
 	public static final DoubleEditorFactory instance = new DoubleEditorFactory();
 			
 	private DoubleEditorFactory() { }
 
+    public PropertyDescriptor<?> createDescriptor(String name, String description, Control[] otherData) {
+        
+        return new DoubleProperty(
+                name, 
+                description,
+                defaultIn(otherData).doubleValue(),
+                minimumIn(otherData).doubleValue(),
+                maximumIn(otherData).doubleValue(),
+                0.0f
+                );
+    }
+	
     private static DoubleProperty doublePropertyFrom(PropertyDescriptor<?> desc) {
         
         if (desc instanceof PropertyDescriptorWrapper) {
@@ -32,32 +44,29 @@ public class DoubleEditorFactory extends AbstractNumericEditorFactory {
             return (DoubleProperty)desc;
         }
     }
+	
+    protected Object valueFrom(Control valueControl) {
+        
+        return Double.valueOf(((Spinner)valueControl).getSelection() / scale);
+    }
     
-	public Control newEditorOn(Composite parent, int columnIndex, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
-		
-		if (columnIndex == 0) return addLabel(parent, desc);
-		
-		if (columnIndex == 1) {
+	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
-            final DoubleProperty dp = doublePropertyFrom(desc);            
-            final Spinner spinner = newSpinnerFor(parent, rule, dp);
+        final DoubleProperty dp = doublePropertyFrom(desc);            
+        final Spinner spinner = newSpinnerFor(parent, rule, dp);
                                                 
-            spinner.addListener(SWT.FocusOut, new Listener() {
-                public void handleEvent(Event event) {
-                    double newValue = (double)(spinner.getSelection() / scale);
-                    if (newValue == rule.getProperty(dp)) return;
+        spinner.addListener(SWT.FocusOut, new Listener() {
+            public void handleEvent(Event event) {
+                Double newValue = Double.valueOf(spinner.getSelection() / scale);
+                if (newValue.equals(valueFor(rule, dp))) return;
                     
-                    rule.setProperty(dp, newValue);
-                    listener.changed(rule, dp, newValue);
+                rule.setProperty(dp, newValue);
+                listener.changed(rule, dp, newValue);
 
-                    adjustRendering(rule, desc, spinner);
-                }
-            });
-            
-            return spinner;
-		}
-		
-		return null;
-	}
-
+                adjustRendering(rule, desc, spinner);
+             }
+         });
+           
+        return spinner;
+     }
 }

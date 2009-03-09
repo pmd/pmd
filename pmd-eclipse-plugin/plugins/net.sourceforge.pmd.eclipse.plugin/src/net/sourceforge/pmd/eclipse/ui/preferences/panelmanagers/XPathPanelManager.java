@@ -1,15 +1,22 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -20,7 +27,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
 /**
  * 
@@ -28,8 +34,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class XPathPanelManager extends AbstractRulePanelManager {
 
-    private Text  xpathField;
-    private Combo xpathVersionField;
+    private StyledText      xpathField;
+    private Combo           xpathVersionField;
+    private List<String>    unknownVariableNames;
     
     public XPathPanelManager(ValueChangeListener theListener) {
         super(theListener);
@@ -43,9 +50,13 @@ public class XPathPanelManager extends AbstractRulePanelManager {
     
     protected String[] fieldErrors() {
         
-        return StringUtil.isEmpty(xpathField.getText().trim()) ?
-              new String[] { "Missing XPATH code" } :
-              StringUtil.EMPTY_STRINGS;
+        if (StringUtil.isEmpty(xpathField.getText().trim())) return  new String[] { "Missing XPATH code" };
+        
+        if (unknownVariableNames == null || unknownVariableNames.isEmpty()) return StringUtil.EMPTY_STRINGS;
+        
+        return new String[] {
+            "Unknown variables: " + unknownVariableNames 
+            };
     }
     
     protected void clearControls() {
@@ -66,7 +77,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
             xpathField.setBackground(ruleReference.hasOverriddenProperty(XPathRule.XPATH_DESCRIPTOR) ? overridenColour: null);
         }
     }
-    
+        
     public Control setupOn(Composite parent) {
         
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
@@ -75,7 +86,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         GridLayout layout = new GridLayout(2, false);
         panel.setLayout(layout);
         
-        xpathField = newTextField(panel); 
+        xpathField = new StyledText(panel, SWT.BORDER); 
         gridData = new GridData(GridData.FILL_BOTH);
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalSpan = 2;
@@ -91,8 +102,9 @@ public class XPathPanelManager extends AbstractRulePanelManager {
                 
                 if (StringUtil.areSemanticEquals(existingValue, newValue)) return;
                 
-                soleRule.setProperty(XPathRule.XPATH_DESCRIPTOR, newValue);
-                valueChanged(XPathRule.XPATH_DESCRIPTOR, newValue);        
+                soleRule.setProperty(XPathRule.XPATH_DESCRIPTOR, newValue); 
+                updateVariablesField();
+                valueChanged(XPathRule.XPATH_DESCRIPTOR, newValue);
             }
         });        
 
@@ -105,6 +117,10 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         
         final EnumeratedProperty<String> ep = XPathRule.VERSION_DESCRIPTOR;        
         xpathVersionField = new Combo(panel, SWT.READ_ONLY); 
+        gridData = new GridData();
+        gridData.horizontalSpan = 1;
+        gridData.grabExcessHorizontalSpace = false;
+        xpathVersionField.setLayoutData(gridData); 
         xpathVersionField.setItems(SWTUtil.labelsIn(ep.choices(), 0));        
         
         xpathVersionField.addSelectionListener(new SelectionAdapter() {
@@ -117,8 +133,8 @@ public class XPathPanelManager extends AbstractRulePanelManager {
                 rule.setProperty(ep, newValue);
     //          adjustRendering(rule, ep, xpathVersionField);   TODO - won't compile?
             }
-          }); 
-                
+          });
+        
         return panel;    
     }
     
@@ -127,6 +143,36 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         Object value = rule.getProperty(XPathRule.VERSION_DESCRIPTOR);
         int selectionIdx = EnumerationEditorFactory.indexOf(value, XPathRule.VERSION_DESCRIPTOR.choices());
         if (selectionIdx >= 0) xpathVersionField.select(selectionIdx);
+    }
+    
+    private static StyleRange styleFor(Rule rule, String source, int[] position, List<String> unknownVars) {
+        
+        String varName = source.substring(position[0], position[0] + position[1]);
+        PropertyDescriptor<?> desc = rule.getPropertyDescriptor(varName);
+        
+        if (desc == null) unknownVars.add(varName);
+        
+        return new StyleRange(
+                position[0], position[1], 
+                desc == null ? errorColour : null, 
+                null, 
+                SWT.BOLD
+                );
+    }
+    
+    private void updateVariablesField() {
+                
+        xpathField.setStyleRange(null);     // clear all
+
+        Rule rule = soleRule();
+        unknownVariableNames = new ArrayList<String>();
+        
+        String xpath = rule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim();
+        List<int[]> positions = Util.referencedNamePositionsIn(xpath, '$');
+        for (int[] position : positions) {
+            StyleRange range = styleFor(rule, xpath, position, unknownVariableNames);        
+            xpathField.setStyleRange(range);
+        }
     }
     
     protected void adapt() {
@@ -138,6 +184,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         } else {
             show(xpathField, soleRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
             configureVersionFieldFor(soleRule);
+            updateVariablesField();
         }
     }
 

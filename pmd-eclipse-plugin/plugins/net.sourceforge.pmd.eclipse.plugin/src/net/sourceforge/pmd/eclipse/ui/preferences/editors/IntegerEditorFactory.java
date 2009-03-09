@@ -8,7 +8,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
@@ -19,12 +18,30 @@ import org.eclipse.swt.widgets.Spinner;
  * 
  * @author Brian Remedios
  */
-public class IntegerEditorFactory extends AbstractEditorFactory {
+public class IntegerEditorFactory extends AbstractNumericEditorFactory {
 
 	public static final IntegerEditorFactory instance = new IntegerEditorFactory();
 	
 	private IntegerEditorFactory() { }
 	
+    public PropertyDescriptor<?> createDescriptor(String name, String description, Control[] otherData) {
+        
+        return new IntegerProperty(
+                name, 
+                description,
+                minimumIn(otherData).intValue(),
+                maximumIn(otherData).intValue(),
+                defaultIn(otherData).intValue(),
+                0.0f
+                );
+    } 
+	
+    protected Object valueFrom(Control valueControl) {
+        
+        int value = ((Spinner)valueControl).getSelection();        
+        return Integer.valueOf(value);
+    }
+    
 	private static IntegerProperty intPropertyFrom(PropertyDescriptor<?> desc) {
 	    
 	    if (desc instanceof PropertyDescriptorWrapper) {
@@ -35,7 +52,9 @@ public class IntegerEditorFactory extends AbstractEditorFactory {
 	}
 	
 	public static Spinner newSpinner(Composite parent, NumericPropertyDescriptor<?> desc, Object valueIn) {
-	    final Spinner spinner = new Spinner(parent, SWT.SINGLE | SWT.BORDER);
+	    
+	    Spinner spinner = newSpinnerFor(parent, 0);
+	    
         spinner.setMinimum(desc.lowerLimit().intValue());
         spinner.setMaximum(desc.upperLimit().intValue());
         
@@ -43,40 +62,30 @@ public class IntegerEditorFactory extends AbstractEditorFactory {
         spinner.setSelection(value);
         return spinner;
 	}
-	
-	/**
-	 *
-	 * @param parent Composite
-	 * @param columnIndex int
-	 * @param desc PropertyDescriptor
-	 * @param rule Rule
-	 * @return Control
-	 * @see net.sourceforge.pmd.ui.preferences.br.EditorFactory#newEditorOn(Composite, int, PropertyDescriptor, Rule)
-	 */
-	public Control newEditorOn(Composite parent, int columnIndex, final	PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
-		
-		if (columnIndex == 0) return addLabel(parent, desc);
-		
-		if (columnIndex == 1) {		    
-            
-			final IntegerProperty ip = intPropertyFrom(desc);	// TODO - do I really have to do this?			
 
-            final Spinner spinner = newSpinner(parent, ip, rule.getProperty(desc));
-			
-			spinner.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent event) {
-					int newValue = spinner.getSelection();
-					if (newValue == rule.getProperty(ip)) return;
-					
-					rule.setProperty(ip, Integer.valueOf(newValue));
-					listener.changed(rule, desc, Integer.valueOf(newValue));
-                    adjustRendering(rule, desc, spinner);
-				}
-			});		
-						
-			return spinner;
-		}
-		return null;
+	protected void setValue(Rule rule, IntegerProperty desc, Integer value) {
+	    
+	    if (!rule.hasDescriptor(desc)) return;
+	    rule.setProperty(desc, value);
 	}
+	
+	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+	        
+	      final IntegerProperty ip = intPropertyFrom(desc);   // TODO - do I really have to do this?          
 
+	      final Spinner spinner = newSpinner(parent, ip, valueFor(rule, desc));
+	            
+	      spinner.addModifyListener(new ModifyListener() {
+	           public void modifyText(ModifyEvent event) {
+	                Integer newValue = Integer.valueOf(spinner.getSelection());
+	                if (newValue.equals(valueFor(rule, ip))) return;
+	                    
+	                setValue(rule, ip, newValue);
+	                listener.changed(rule, desc, newValue);
+	                adjustRendering(rule, desc, spinner);
+	                }
+	            });     
+	                        
+	       return spinner;
+	   }     
 }

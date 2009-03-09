@@ -6,6 +6,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -24,6 +25,24 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
     
     private CharacterEditorFactory() {  }
 
+    public PropertyDescriptor<?> createDescriptor(String name, String description, Control[] otherData) {
+        
+        return new CharacterProperty(
+                name, 
+                description, 
+                'a', 
+                0);
+    }  
+    
+    protected Object valueFrom(Control valueControl) {
+        
+        String value = ((Text)valueControl).getText().trim();
+        
+        return (StringUtil.isEmpty(value) || value.length() > 1) ? 
+                null : 
+                Character.valueOf(value.charAt(0));
+    }
+    
     /**
      * Method fillWidget.
      * @param textWidget Text
@@ -31,7 +50,7 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
      * @param rule Rule
      */
     protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
-        Character val = (Character)rule.getProperty(desc);
+        Character val = (Character)valueFor(rule, desc);
         textWidget.setText(val == null ? "" : val.toString());
     }
     
@@ -50,37 +69,26 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
         }
     }
     
-    public Control newEditorOn(Composite parent, int columnIndex, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
-       
-        if (columnIndex == 0) return addLabel(parent, desc);    
-        
-        if (columnIndex == 1) {
-            
-            final Text text =  new Text(parent, SWT.SINGLE | SWT.BORDER);
-
-            fillWidget(text, desc, rule);
-                        
-            final CharacterProperty cp = characterPropertyFrom(desc); // TODO - really necessary?
-            
-            text.addListener(SWT.FocusOut, new Listener() {
-                public void handleEvent(Event event) {
-                    Character newValue = charValueIn(text);
-                    Character existingValue = rule.getProperty(cp);                
-                    if (existingValue.equals(newValue)) return;              
+    public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
                     
-                    rule.setProperty(cp, newValue);
-                    listener.changed(rule, cp, newValue);
+        final Text text =  new Text(parent, SWT.SINGLE | SWT.BORDER);
 
-                    adjustRendering(rule, desc, text);
+        fillWidget(text, desc, rule);
+                        
+        final CharacterProperty cp = characterPropertyFrom(desc); // TODO - really necessary?
+            
+        text.addListener(SWT.FocusOut, new Listener() {
+            public void handleEvent(Event event) {
+                Character newValue = charValueIn(text);
+                Character existingValue = (Character)valueFor(rule, cp);                
+                if (existingValue.equals(newValue)) return;              
+                    
+                rule.setProperty(cp, newValue);
+                listener.changed(rule, cp, newValue);
+                adjustRendering(rule, desc, text);
                 }
             });
 
-            return text;
-        
-        
+        return text;
         }
-        
-        return null;
-    }
-
 }

@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
@@ -22,6 +23,8 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiStringEditorFacto
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiTypeEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.StringEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeEditorFactory;
+import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -39,6 +42,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     private Composite           composite;
     private ScrolledComposite   sComposite;
     private int                 widgetRowCount;
+    private List<String>        unreferencedVariables;
     
     private static final int MaxWidgetHeight = 30;  // TODO derive this instead
     
@@ -70,6 +74,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     protected boolean canManageMultipleRules() { return false; }
     
     protected boolean canWorkWith(Rule rule) {
+        if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) return true;
         return !PMDPreferencePage.filteredPropertiesOf(rule).isEmpty();
     }
     
@@ -107,8 +112,22 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     protected void adapt() {
                             
         widgetRowCount = formArranger.arrangeFor(soleRule());
+        validate();
+        
         if (widgetRowCount < 0) return;
         
         adjustMinimumHeight();
+    }
+    
+    public void validate() {
+        super.validate();
+        unreferencedVariables = formArranger.updateDeleteButtons();
+    }
+    
+    protected String[] fieldWarnings() {
+        
+        return unreferencedVariables == null || unreferencedVariables.isEmpty()? 
+               StringUtil.EMPTY_STRINGS :
+               (String[]) unreferencedVariables.toArray(new String[unreferencedVariables.size()]);
     }
 }

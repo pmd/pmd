@@ -73,9 +73,8 @@ public class RuleSetsExtensionProcessor {
     public void process() throws CoreException {
         final IExtensionRegistry registry = Platform.getExtensionRegistry();
         final IExtensionPoint extensionPoint = registry.getExtensionPoint(EXTENTION_POINT);
-        final IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
-        for (int i = 0; i < elements.length; i++) {
-            processExecutableExtension(elements[i]);
+        for (IConfigurationElement element : extensionPoint.getConfigurationElements()) {
+            processExecutableExtension(element);
         }
     }
 

@@ -30,6 +30,10 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
 				
 	private MultiTypeEditorFactory() { }
 	
+    public PropertyDescriptor<?> createDescriptor(String name, String optionalDescription, Control[] otherData) {
+        return new TypeMultiProperty(name, "Type value " + name, new Class[] {String.class}, new String[] { "java.lang" } , 0.0f);
+    }
+	
 	public static String[] shortNamesFor(Class<?>[] types) {
 	    String[] typeNames = new String[types.length];
         for (int i=0; i<typeNames.length; i++) {
@@ -38,9 +42,14 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         return typeNames;
 	}
 	
+    protected Object valueFrom(Control valueControl) {
+        
+        return null;    // TODO
+    }
+	
     protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
         
-        Class<?>[] values = (Class[])rule.getProperty(desc);
+        Class<?>[] values = (Class[])valueFor(rule, desc);
         if (values == null) {
             textWidget.setText("");
             return;
@@ -97,7 +106,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 Class<?>[] newValue = currentTypes(textWidget);               
-                Class<?>[] existingValue = rule.getProperty(tmp);             
+                Class<?>[] existingValue = (Class[])valueFor(rule, tmp);             
                 if (CollectionUtil.areSemanticEquals(existingValue, newValue)) return;                
                 
                 rule.setProperty(tmp, newValue);
@@ -119,7 +128,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         Class<?> enteredValue = ((TypeText) widget).getType(true);
         if (enteredValue == null) return null;
         
-        Class<?>[] currentValues = (Class[])rule.getProperty(desc);
+        Class<?>[] currentValues = (Class[])valueFor(rule, desc);
         Class<?>[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, enteredValue);
         if (currentValues.length == newValues.length) return null;
         

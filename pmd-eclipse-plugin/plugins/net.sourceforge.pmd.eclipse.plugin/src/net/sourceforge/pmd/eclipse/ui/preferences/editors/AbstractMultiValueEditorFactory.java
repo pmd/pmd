@@ -61,62 +61,54 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
 
     protected abstract Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule);
     
-    protected abstract Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule);    
-        
+    protected abstract Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule);
+    
     /**
      * 
      * @param parent Composite
-     * @param columnIndex int
      * @param desc PropertyDescriptor
      * @param rule Rule
      * @param listener ValueChangeListener
      * @return Control
-     * @see net.sourceforge.pmd.ui.preferences.br.EditorFactory#newEditorOn(Composite, int, PropertyDescriptor, Rule)
+     * @see net.sourceforge.pmd.ui.preferences.br.EditorFactory#newEditorOn(Composite, PropertyDescriptor, Rule, ValueChangeListener, SizeChangeListener)
      */
-    public Control newEditorOn(final Composite parent, int columnIndex, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {
-        
-        if (columnIndex == 0) return addLabel(parent, desc);
-        
-        if (columnIndex == 1) {
+    public Control newEditorOn(final Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {
+                
+        final Composite panel = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout(3, false);
+        layout.verticalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        panel.setLayout(layout);
             
-            final Composite panel = new Composite(parent, SWT.NONE);
-            GridLayout layout = new GridLayout(3, false);
-            layout.verticalSpacing = 0;
-            layout.marginHeight = 0;
-            layout.marginWidth = 0;
-            panel.setLayout(layout);
-            
-            final Text textWidget = new Text(panel, SWT.SINGLE | SWT.BORDER);
-            final Button butt = new Button(panel, SWT.BORDER);
-            butt.setText("...");    // TODO use triangle icon & rotate 90deg when clicked
-            butt.addListener(SWT.Selection, new Listener() {
-                boolean itemsVisible = false;
-                List<Control> items = new ArrayList<Control>();
-                public void handleEvent(Event event) {
-                    if (itemsVisible) {
-                        hideCollection(items);
-                        sizeListener.addedRows(items.size() / -WidgetsPerRow);
-                        } else {                            
-                          items = openCollection(panel, desc, rule, textWidget, changeListener, sizeListener);
-                          sizeListener.addedRows(items.size() / WidgetsPerRow);
-                        }
-                    itemsVisible = !itemsVisible;
-                    textWidget.setEditable(!itemsVisible);   // no raw editing when individual items are available
-                    parent.layout();
-                }
-              });
-            GridData data = new GridData(GridData.FILL_HORIZONTAL);
-            data.horizontalSpan = 2;            
-            textWidget.setLayoutData(data);
-            panel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        final Text textWidget = new Text(panel, SWT.SINGLE | SWT.BORDER);
+        final Button butt = new Button(panel, SWT.BORDER);
+        butt.setText("...");    // TODO use triangle icon & rotate 90deg when clicked
+        butt.addListener(SWT.Selection, new Listener() {
+           boolean itemsVisible = false;
+           List<Control> items = new ArrayList<Control>();
+           public void handleEvent(Event event) {
+                if (itemsVisible) {
+                    hideCollection(items);
+                    sizeListener.addedRows(items.size() / -WidgetsPerRow);
+                    } else {                            
+                      items = openCollection(panel, desc, rule, textWidget, changeListener, sizeListener);
+                      sizeListener.addedRows(items.size() / WidgetsPerRow);
+                    }
+                itemsVisible = !itemsVisible;
+                textWidget.setEditable(!itemsVisible);   // no raw editing when individual items are available
+                parent.layout();
+             }
+          });
+         GridData data = new GridData(GridData.FILL_HORIZONTAL);
+         data.horizontalSpan = 2;            
+         textWidget.setLayoutData(data);
+         panel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
                         
-            fillWidget(textWidget, desc, rule);
-            configure(textWidget, desc, rule, changeListener);
+         fillWidget(textWidget, desc, rule);
+         configure(textWidget, desc, rule, changeListener);
 
-            return panel;
-        }
-        
-        return null;
+         return panel;
     }
     
     private void hideCollection(List<Control> controls) {
@@ -130,7 +122,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         controlList.remove(button); button.dispose();
         renumberLabelsIn(controlList);
         
-        Object[] values = (Object[])rule.getProperty(desc);
+        Object[] values = (Object[])valueFor(rule, desc);
         List<Object> newValues = new ArrayList<Object>(values.length - 1);
         for (Object value : values) {
             if (value.equals(deleteValue)) continue;
@@ -145,7 +137,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         final List<Control> newControls = new ArrayList<Control>();
         
         int i=0;
-        Object[] values = (Object[])rule.getProperty(desc);
+        Object[] values = (Object[])valueFor(rule, desc);
         for (i=0; i<values.length; i++) {
             final Label number = new Label(parent, SWT.NONE);
             number.setText(Integer.toString(i+1));
@@ -233,7 +225,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
     
     protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
         
-        Object[] values = (Object[])rule.getProperty(desc);
+        Object[] values = (Object[])valueFor(rule, desc);
         textWidget.setText(values == null ? "" : StringUtil.asString(values, delimiter + ' '));
         adjustRendering(rule, desc, textWidget);
     }

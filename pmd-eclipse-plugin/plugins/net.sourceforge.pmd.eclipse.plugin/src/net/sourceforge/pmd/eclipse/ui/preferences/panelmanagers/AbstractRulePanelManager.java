@@ -12,6 +12,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -98,7 +99,11 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
         return StringUtil.EMPTY_STRINGS;   
     }
     
-    private void updateTabUI() {
+    public void validate() {
+        updateTabUI();
+    }
+    
+    protected void updateTabUI() {
         
         if (!isActive) {
             tab.setToolTipText("");
@@ -106,12 +111,23 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
             return;
         }
         
-        String[] errors = fieldErrors();
-        tab.setImage(
-                CollectionUtil.isEmpty(errors) ? null : ResourceManager.imageFor(PMDUiConstants.ICON_ERROR)
-                );
+        boolean hasIssues = updateTab(fieldErrors(), PMDUiConstants.ICON_ERROR);
+        if (hasIssues) return;
         
-        tab.setToolTipText(errors.toString());
+        updateTab(fieldWarnings(), PMDUiConstants.ICON_WARN);
+    }
+    
+    private boolean updateTab(String[] issues, String iconName) {
+        
+        boolean hasIssues = !CollectionUtil.isEmpty(issues);
+        
+        tab.setImage(
+                hasIssues ? ResourceManager.imageFor(iconName) : null
+                );
+           
+        tab.setToolTipText(hasIssues ? issues.toString() : "");
+        
+        return hasIssues;
     }
     
     protected abstract boolean canManageMultipleRules();
@@ -168,12 +184,22 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
         control.setEnabled(false);
     }
   
+    protected void shutdown(StyledText control) {
+        control.setText("");
+        control.setEnabled(false);
+    }
+    
     protected void shutdown(Link control) {
         control.setText("");
         control.setEnabled(false);
     }
     
     protected void show(Text control, String value) {
+        control.setText(value == null ? "" : value);
+        control.setEnabled(true);
+    }
+    
+    protected void show(StyledText control, String value) {
         control.setText(value == null ? "" : value);
         control.setEnabled(true);
     }

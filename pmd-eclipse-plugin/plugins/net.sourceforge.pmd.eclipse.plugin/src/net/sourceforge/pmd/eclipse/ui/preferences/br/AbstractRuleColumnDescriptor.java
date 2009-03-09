@@ -33,13 +33,14 @@ public abstract class AbstractRuleColumnDescriptor implements RuleColumnDescript
     
     protected TreeColumn buildTreeColumn(Tree parent, final RuleSortListener sortListener) {
         
-        TreeColumn tc = new TreeColumn(parent, alignment);
+        final TreeColumn tc = new TreeColumn(parent, alignment);
         tc.setWidth(width);
         tc.setResizable(isResizable);
 
         tc.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event e) {
              sortListener.sortBy(accessor());
+      //       tc.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_LABEL_ARRDN));
             }
           });  
         

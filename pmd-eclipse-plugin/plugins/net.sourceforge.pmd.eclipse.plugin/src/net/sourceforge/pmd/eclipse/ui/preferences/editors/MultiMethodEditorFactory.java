@@ -29,6 +29,10 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
 				
 	private MultiMethodEditorFactory() { }
 	
+    public PropertyDescriptor<?> createDescriptor(String name, String optionalDescription, Control[] otherData) {
+        return new MethodMultiProperty(name, "Method value " + name, new Method[] {MethodEditorFactory.stringLength}, new String[] { "java.lang" }, 0.0f);
+    }
+	
 	public static String[] signaturesFor(Method[] methods) {
 	    String[] typeNames = new String[methods.length];
         for (int i=0; i<typeNames.length; i++) {
@@ -36,6 +40,11 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         }
         return typeNames;
 	}
+	
+    protected Object valueFrom(Control valueControl) {
+        
+        return null;    // TODO
+    }
 	
 	private static String asString(Map<String, List<Method>> methodGroups) {
 	    
@@ -74,7 +83,7 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
 	
     protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
         
-        Method[] values = (Method[])rule.getProperty(desc);
+        Method[] values = (Method[])valueFor(rule, desc);
         if (values == null) {
             textWidget.setText("");
             return;
@@ -111,7 +120,7 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         Method newValue = ((MethodPicker)widget).getMethod();
         if (newValue == null) return null;
         
-        Method[] currentValues = (Method[])rule.getProperty(desc);
+        Method[] currentValues = (Method[])valueFor(rule, desc);
         Method[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
         if (currentValues.length == newValues.length) return null;  // nothing changed
         

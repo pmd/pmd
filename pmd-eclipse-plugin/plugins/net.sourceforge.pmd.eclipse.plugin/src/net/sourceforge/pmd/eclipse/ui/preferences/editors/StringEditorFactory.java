@@ -25,16 +25,33 @@ public class StringEditorFactory extends AbstractEditorFactory {
 	public static final StringEditorFactory instance = new StringEditorFactory();
 	
 	protected StringEditorFactory() { }
-	
+    
+    public PropertyDescriptor<?> createDescriptor(String name, String description, Control[] otherData) {
+        
+        return new StringProperty(
+                name, 
+                description, 
+                otherData == null ? "" : (String)valueFrom(otherData[1]), 
+                0.0f
+                );
+    }
+    
+    
+    protected Object valueFrom(Control valueControl) {
+        
+        return ((Text)valueControl).getText();
+    }
+    
 	/**
 	 * Method fillWidget.
 	 * @param textWidget Text
 	 * @param desc PropertyDescriptor<?>
 	 * @param rule Rule
 	 */
-	protected void fillWidget(final Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
-		String val = (String)rule.getProperty(desc);
+	protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
+		String val = (String)valueFor(rule, desc);
 		textWidget.setText(val == null ? "" : val);
+		adjustRendering(rule, desc, textWidget);
 	}
 		
 	private static StringProperty stringPropertyFrom(PropertyDescriptor<?> desc) {
@@ -45,48 +62,34 @@ public class StringEditorFactory extends AbstractEditorFactory {
 	        return (StringProperty)desc;
 	     }
 	}
+
+	private void setValue(Rule rule, StringProperty desc, String value) {
+	        
+	    if (!rule.hasDescriptor(desc)) return;
+	    rule.setProperty(desc, value);
+	}
 	
-	/**
-	 * 
-	 * @param parent Composite
-	 * @param columnIndex int
-	 * @param desc PropertyDescriptor
-	 * @param rule Rule
-	 * @param listener ValueChangeListener
-	 * @return Control
-	 * @see net.sourceforge.pmd.ui.preferences.br.EditorFactory#newEditorOn(Composite, int, PropertyDescriptor, Rule)
-	 */
-	public Control newEditorOn(Composite parent, int columnIndex, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
-		
-		if (columnIndex == 0) return addLabel(parent, desc);
-		
-		if (columnIndex == 1) {
-			
-			final Text text =  new Text(parent, SWT.SINGLE | SWT.BORDER);
-	        text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+   public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+           
+            final Text text =  new Text(parent, SWT.SINGLE | SWT.BORDER);
+            text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
             fillWidget(text, desc, rule);
-                        
-			final StringProperty sp = stringPropertyFrom(desc);	// TODO - really necessary?
-			
-			text.addListener(SWT.FocusOut, new Listener() {
-				public void handleEvent(Event event) {
-					String newValue = text.getText().trim();					
-					String existingValue = rule.getProperty(sp);				
-					if (StringUtil.areSemanticEquals(existingValue, newValue)) return;				
-					
-					rule.setProperty(sp, newValue);
-		            fillWidget(text, desc, rule);     // redraw
-					listener.changed(rule, desc, newValue);
-					
-					adjustRendering(rule, desc, text);
-				}
-			});
+	                        
+            final StringProperty sp = stringPropertyFrom(desc); // TODO - really necessary?
+	            
+            text.addListener(SWT.FocusOut, new Listener() {
+                public void handleEvent(Event event) {
+                    String newValue = text.getText().trim();                    
+                    String existingValue = (String)valueFor(rule, sp);                
+                    if (StringUtil.areSemanticEquals(existingValue, newValue)) return;              
+	                    
+                    setValue(rule, sp, newValue);
+                    fillWidget(text, desc, rule);     // redraw
+                    listener.changed(rule, desc, newValue);
+                }
+            });
 
-			return text;
-		}
-		
-		return null;
-	}
-
+            return text;
+        }       
 }

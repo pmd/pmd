@@ -10,6 +10,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.NumericConstants;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -26,6 +27,15 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
     private static final Integer[] emptyIntSet = new Integer[0];
     
     private MultiIntegerEditorFactory() {   }
+    
+    public PropertyDescriptor<?> createDescriptor(String name, String optionalDescription, Control[] otherData) {
+        return new IntegerMultiProperty(name, "Integer values " + name, NumericConstants.ZERO, Integer.valueOf(10), new Integer[] {NumericConstants.ZERO}, 0.0f);
+    }
+    
+    protected Object valueFrom(Control valueControl) {
+        
+        return currentIntegers((Text)valueControl);
+    }
     
     private Integer[] currentIntegers(Text textWidget) {
         
@@ -71,15 +81,15 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
     
     protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
                 
-        final IntegerMultiProperty tmp = (IntegerMultiProperty)numericPropertyFrom(desc);
+        final IntegerMultiProperty imp = (IntegerMultiProperty)numericPropertyFrom(desc);
         
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 Integer[] newValue = currentIntegers(textWidget);               
-                Integer[] existingValue = rule.getProperty(tmp);             
+                Integer[] existingValue = (Integer[])valueFor(rule, imp);             
                 if (CollectionUtil.areSemanticEquals(existingValue, newValue)) return;                
                 
-                rule.setProperty(tmp, newValue);
+                rule.setProperty(imp, newValue);
                 fillWidget(textWidget, desc, rule);   // display the accepted values
                 listener.changed(rule, desc, newValue);
             }
@@ -95,7 +105,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
                 
         Integer newValue= Integer.valueOf(((Spinner)widget).getSelection());
         
-        Integer[] currentValues = (Integer[])rule.getProperty(desc);
+        Integer[] currentValues = (Integer[])valueFor(rule, desc);
         Integer[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
         if (currentValues.length == newValues.length) return null;
         

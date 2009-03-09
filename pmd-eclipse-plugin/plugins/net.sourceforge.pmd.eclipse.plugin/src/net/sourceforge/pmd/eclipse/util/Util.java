@@ -36,6 +36,57 @@ public class Util {
     
     private Util() {};
     
+    /**
+     * Scans the source for occurrences of the prefix char and assumes that all letters
+     * that follow immediately after make up a reference name. Returns the position and
+     * lengths of all names found.
+     * 
+     * NOTE: Doesn't handle the prefix within escaped or quoted strings
+     * 
+     * @param source
+     * @param prefix
+     * @return List<int[]>
+     */
+    public static List<int[]> referencedNamePositionsIn(String source, char prefix) {
+        
+        List<int[]> namePositions = new ArrayList<int[]>();
+        if (StringUtil.isEmpty(source)) return namePositions;
+        
+        int pos = source.indexOf(prefix);
+        int max = source.length();
+        
+        while (pos >= 0) {            
+            int end = pos+1;
+            while (end < max && Character.isLetter(source.charAt(end)) ) end++;
+            int length = end - pos -1;
+            if (length < 1) continue;
+            
+            namePositions.add( new int[] {pos+1, length} );
+            pos = source.indexOf(prefix, pos + length);
+        }
+        
+        return namePositions;
+    }
+    
+    /**
+     * Extract and return all the string fragments listed in the list of positions
+     * where each position = int [start][length]
+     * 
+     * @param source
+     * @param positions
+     * @return List<String>
+     */
+    public static List<String> fragmentsWithin(String source, List<int[]> positions) {
+        
+        List<String> fragments = new ArrayList<String>(positions.size());
+        for (int[] position : positions) {
+            fragments.add(
+                    source.substring(position[0], position[0] + position[1])
+                    );
+        }
+        return fragments;
+    }
+    
     public static String signatureFor(Method method, String[] unwantedPrefixes) {
 
         StringBuilder sb = new StringBuilder();
@@ -72,6 +123,13 @@ public class Util {
         return paramType;
     }
     
+    public static String signatureFor(Class<?> type, String[] unwantedPrefixes) {
+        
+        StringBuilder sb = new StringBuilder();
+        signatureFor(type, unwantedPrefixes, sb);
+        return sb.toString();
+    }
+    
     private static void signatureFor(Class<?> type, String[] unwantedPrefixes, StringBuilder sb) {        
         
         String typeName = ClassUtil.asShortestName(
@@ -104,8 +162,15 @@ public class Util {
         for (Listener listener : widget.getListeners(listenerType)) {
             widget.removeListener(listenerType, listener);
         }
+    }	
+    
+    public static int indexOf(Object[] items, Object choice) {
+        for (int i=0; i<items.length; i++) {
+            if (items[i].equals(choice)) return i;
+        }
+        return -1;
     }
-	
+    
 	/**
 	 * Method asCleanString.
 	 * @param original String
