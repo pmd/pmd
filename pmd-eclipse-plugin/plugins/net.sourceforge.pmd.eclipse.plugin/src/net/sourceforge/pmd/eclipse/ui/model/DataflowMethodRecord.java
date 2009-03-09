@@ -110,21 +110,21 @@ public class DataflowMethodRecord {
     public IMarker[] getMarkers() {
         final List<IMarker> markers = new ArrayList<IMarker>();
         try {
-            if (this.method.getResource().isAccessible()) {
+            if (method.getResource().isAccessible()) {
 
                 // we can only find Markers for a file
                 // we use the DFA-Marker-ID set for Dataflow Anomalies
-                final IMarker[] allMarkers = this.method.getResource().findMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true,
+                final IMarker[] allMarkers = method.getResource().findMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true,
                         IResource.DEPTH_INFINITE);
 
                 // we only want to get the Markers for this Method,
                 // so we need to "extract" them from the whole List
-                for (int i = 0; i < allMarkers.length; i++) {
+                for (IMarker marker : allMarkers) {
                     // the Marker should have valid Information in it
                     // ... and we don't want it twice, so we check,
                     // if the Marker already exists
-                    if (markerIsValid(allMarkers[i]) && !markerIsInList(allMarkers[i], markers)) {
-                        markers.add(allMarkers[i]);
+                    if (markerIsValid(marker) && !markerIsInList(marker, markers)) {
+                        markers.add(marker);
                     }
                 }
             }

@@ -306,9 +306,8 @@ public abstract class AbstractPMDRecord {
         final List<AbstractPMDRecord> records = new ArrayList<AbstractPMDRecord>();
         final List<AbstractPMDRecord> thisChildren = getChildrenAsList();
 
-        for (int l = 0; l < thisChildren.size(); l++) {
-            final AbstractPMDRecord thisChild = thisChildren.get(l);
-
+        for (AbstractPMDRecord thisChild : thisChildren) {
+      
             // If type and name are equals, then the record is the one we search
             if (thisChild.getResourceType() == type && thisChild.getName().equalsIgnoreCase(name)) {
                 records.add(thisChild);
