@@ -26,6 +26,13 @@ import net.sourceforge.pmd.util.ClassUtil;
 /**
  * A non-functional rule containing all property types. Used for testing UIs.
  * 
+ * Steps required to use with Eclipse Plugin:
+ * 
+ *  update your chosen ruleset xml file to include this 'rule'
+ *  compile new PMD jars
+ *  copy both the pmd5.0.jar and pmd-test-5.0.jar to the eclipse-plugin/lib directory
+ *  update the /manifest.mf file to ensure it includes the pmd-test-5.0.jar
+ * 
  * @author Brian Remedios
  */
 public class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
