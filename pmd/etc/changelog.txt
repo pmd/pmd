@@ -5,6 +5,8 @@ Fixed bug 2317099 - False + in SimplifyCondition
 Fixed bug 2606609 - False "UnusedImports" positive in package-info.java
 Fixed bug 2645268 - ClassCastException in UselessOperationOnImmutable.getDeclaration
 
+Android ruleset: CallSuperLast rule now also checks for finish() redefinitions
+
 New rule:
 	Controversial : AvoidLiteralsInIfCondition (patch 2591627)
 	StrictExceptions : AvoidCatchingGenericException
