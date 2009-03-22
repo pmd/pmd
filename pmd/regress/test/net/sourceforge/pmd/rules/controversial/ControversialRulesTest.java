@@ -10,6 +10,7 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule("controversial", "AssignmentInOperand");
         addRule("controversial", "AvoidFinalLocalVariable");
+        addRule("controversial", "AvoidLiteralsInIfCondition");
         addRule("controversial", "AvoidUsingNativeCode");
         addRule("controversial", "AvoidUsingShortType");
         addRule("controversial", "AvoidUsingVolatile");

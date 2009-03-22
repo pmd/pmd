@@ -6,6 +6,7 @@ Fixed bug 2606609 - False "UnusedImports" positive in package-info.java
 Fixed bug 2645268 - ClassCastException in UselessOperationOnImmutable.getDeclaration
 
 New rule:
+	Controversial : AvoidLiteralsInIfCondition (patch 2591627)
 	StrictExceptions : AvoidCatchingGenericException
 
 February 08, 2009 - 4.2.5:

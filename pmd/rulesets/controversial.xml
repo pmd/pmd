@@ -682,6 +682,36 @@ public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } }
 		</example>
 	</rule>
 
+  <rule  name="AvoidLiteralsInIfCondition"
+      since="4.2.6"
+      message="Avoid using Literals in Conditional Statements"
+      class="net.sourceforge.pmd.rules.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidLiteralsInIfCondition">
+    <description>
+      Avoid using hard coded literals in conditional statements, declare those as static variables or private members.
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+<![CDATA[
+//IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
+]]>
+        </value>
+      </property>
+    </properties>
+    <example>
+<![CDATA[
+public class PrimitiveType {
+  public void downCastPrimitiveType() {
+    if(i==1) {
+    }
+  }
+}
+]]>
+    </example>
+  </rule>
+
 </ruleset>
 
 
