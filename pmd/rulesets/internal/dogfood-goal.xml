@@ -30,6 +30,7 @@
 	<rule ref="rulesets/java/clone.xml"/>
 	
 	<rule ref="rulesets/java/controversial.xml">
+		<exclude name="AvoidLiteralsInIfCondition"/>
 		<exclude name="OnlyOneReturn"/>
 		<exclude name="AtLeastOneConstructor"/>
 		<exclude name="CallSuperInConstructor"/>
