@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+  <test-code>
+    <description>basic test</description>
+    <expected-problems>1</expected-problems>
+    <code><![CDATA[
+public class PrimitiveType {
+  public void downCastPrimitiveType() {
+    if(i==1) {
+    }
+  }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description>basic test, part2</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class PrimitiveType {
+  public static final int PRIMITIVE_TYPE = 1;
+  public void downCastPrimitiveType() {
+    if(i==PRIMITIVE_TYPE) {
+    }
+  }
+}
+    ]]></code>
+  </test-code>
+</test-data>

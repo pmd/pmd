@@ -464,14 +464,13 @@ Enhanced logging in the ClassTypeResolver to provide more detailed messaging.
 
 New Java rules:
 
-	Coupling ruleset: LoosePackageCoupling
-	Controversial ruleset: AvoidPrefixingMethodParameters 
-	Controversial ruleset: OneDeclarationByLine
-	Naming ruleset: ShortClassName
 	Basic ruleset:	EmptyInitializer,EmptyStatementBlock,ExtendsObject,UselessParentheses,CheckSkipResult
+	Controversial ruleset: AvoidLiteralsInIfCondition, AvoidPrefixingMethodParameters, OneDeclarationByLine
+	Coupling ruleset: LoosePackageCoupling
 	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass
 	Import ruleset: UnnecessaryFullyQualifiedName
-	StrictException : AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException
+	Naming ruleset: ShortClassName
+	StrictException ruleset : AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException
 
 New Java ruleset:
 	android.xml: new rules specific to the Android platform
