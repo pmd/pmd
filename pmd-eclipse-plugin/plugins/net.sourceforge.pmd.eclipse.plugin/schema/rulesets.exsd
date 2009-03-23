@@ -47,7 +47,7 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The absolute implementation class of a RuleSet Manager. Must be an implementation of net.sourceforge.pmd.IRuleSetsExtension interface.
+                  The absolute implementation class of a RuleSet Manager. Must be an implementation of net.sourceforge.pmd.eclipse.core.IRuleSetsExtension interface.
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn="net.sourceforge.pmd.eclipse.core.IRuleSetsExtension"/>
