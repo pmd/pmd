@@ -57,6 +57,13 @@
                        set-method="setIncludeDerivedFiles">
                         <bind-xml name="includeDerivedFiles" node="element"/>
                 </field>
+
+                <field name="ViolationsAsErrors"
+                       type="boolean"
+                       get-method="isViolationsAsErrors"
+                       set-method="setViolationsAsErrors">
+                        <bind-xml name="violationsAsErrors" node="element"/>
+                </field>
         </class>
 
         <class name="net.sourceforge.pmd.eclipse.runtime.properties.impl.RuleSpecTO">

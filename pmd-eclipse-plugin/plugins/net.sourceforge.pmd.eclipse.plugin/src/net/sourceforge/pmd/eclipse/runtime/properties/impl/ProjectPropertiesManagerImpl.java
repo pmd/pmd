@@ -213,6 +213,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             projectProperties.setRuleSetStoredInProject(to.isRuleSetStoredInProject());
             projectProperties.setPmdEnabled(projectProperties.getProject().hasNature(PMDNature.PMD_NATURE));
             projectProperties.setIncludeDerivedFiles(to.isIncludeDerivedFiles());
+            projectProperties.setViolationsAsErrors(to.isViolationsAsErrors());
 
             if (to.isRuleSetStoredInProject()) {
                 loadRuleSetFromProject(projectProperties);
@@ -301,6 +302,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         bean.setRuleSetFile(projectProperties.getRuleSetFile());
         bean.setWorkingSetName(projectProperties.getProjectWorkingSet() == null ? null : projectProperties.getProjectWorkingSet().getName());
         bean.setIncludeDerivedFiles(projectProperties.isIncludeDerivedFiles());
+        bean.setViolationsAsErrors(projectProperties.violationsAsErrors());
 
         if (!projectProperties.isRuleSetStoredInProject()) {
         	final RuleSet ruleSet = projectProperties.getProjectRuleSet();

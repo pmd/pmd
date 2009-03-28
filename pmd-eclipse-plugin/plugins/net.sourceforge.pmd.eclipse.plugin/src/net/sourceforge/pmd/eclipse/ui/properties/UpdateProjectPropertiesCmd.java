@@ -64,6 +64,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
     private boolean needRebuild;
     private boolean ruleSetFileExists;
     private boolean includeDerivedFiles;
+    private boolean violationsAsErrors = true;
 
     /**
      * Default constructor. Initializes command attributes
@@ -90,6 +91,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
             properties.setRuleSetStoredInProject(this.ruleSetStoredInProject);
             properties.setRuleSetFile(this.ruleSetFile);
             properties.setIncludeDerivedFiles(this.includeDerivedFiles);
+            properties.setViolationsAsErrors(this.violationsAsErrors);
             properties.sync();
             this.needRebuild = properties.isNeedRebuild();
             this.ruleSetFileExists = !properties.isRuleSetFileExist();
@@ -143,11 +145,18 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
 		this.ruleSetFile = ruleSetFile;
 	}
 
-	/**
+    /**
      * @param includeDerivedFiles The includeDerivedFiles to set.
      */
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         this.includeDerivedFiles = includeDerivedFiles;
+    }
+
+    /**
+     * @param violationsAsErrors The violationsAsErrors to set.
+     */
+    public void setViolationsAsErrors(boolean violationsAsErrors) {
+        this.violationsAsErrors = violationsAsErrors;
     }
 
     /**
@@ -174,6 +183,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
         this.setRuleSetStoredInProject(false);
         this.setRuleSetFile(null);
         this.setIncludeDerivedFiles(false);
+        this.setViolationsAsErrors(false);
         this.setTerminated(false);
     }
 

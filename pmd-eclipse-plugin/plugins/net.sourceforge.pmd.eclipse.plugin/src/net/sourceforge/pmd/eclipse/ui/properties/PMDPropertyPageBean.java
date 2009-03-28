@@ -53,6 +53,7 @@ public class PMDPropertyPageBean {
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private boolean includeDerivedFiles;
+    private boolean violationsAsErrors = true;
     
     /**
      * @return Returns the pmdEnabled.
@@ -130,11 +131,25 @@ public class PMDPropertyPageBean {
     public boolean isIncludeDerivedFiles() {
         return includeDerivedFiles;
     }
-    
+
     /**
      * @param includeDerivedFiles The includeDerivedFiles to set.
      */
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         this.includeDerivedFiles = includeDerivedFiles;
+    }
+
+    /**
+     * @return Returns the violationsAsErrors.
+     */
+    public boolean violationsAsErrors() {
+        return violationsAsErrors;
+    }
+
+    /**
+     * @param setViolationsAsErrors The setViolationsAsErrors to set.
+     */
+    public void setViolationsAsErrors(boolean violationsAsErrors) {
+        this.violationsAsErrors = violationsAsErrors;
     }
 }

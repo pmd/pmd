@@ -317,7 +317,7 @@ public class BaseVisitor {
      *            a map that contains impacted file and marker informations
      */
     private void updateMarkers(final IFile file, final RuleContext context, final boolean fTask, final Map<IFile, Set<MarkerInfo>> accumulator)
-            throws CoreException {
+            throws CoreException, PropertiesException {
         final Set<MarkerInfo> markerSet = new HashSet<MarkerInfo>();
         final List<Review> reviewsList = findReviewedViolations(file);
         final Review review = new Review();
@@ -441,7 +441,7 @@ public class BaseVisitor {
      *            a marker type
      * @return markerInfo a markerInfo object
      */
-    private MarkerInfo getMarkerInfo(final RuleViolation violation, final String type) {
+    private MarkerInfo getMarkerInfo(final RuleViolation violation, final String type) throws PropertiesException {
         final MarkerInfo markerInfo = new MarkerInfo();
 
         markerInfo.setType(type);
@@ -468,9 +468,18 @@ public class BaseVisitor {
         case 1:
             attributeNames.add(IMarker.PRIORITY);
             values.add(Integer.valueOf(IMarker.PRIORITY_HIGH));
+            attributeNames.add(IMarker.SEVERITY);
+            values.add(new Integer(projectProperties.violationsAsErrors()?IMarker.SEVERITY_ERROR:IMarker.SEVERITY_WARNING));
+            break;
         case 2:
             attributeNames.add(IMarker.SEVERITY);
-            values.add(Integer.valueOf(IMarker.SEVERITY_ERROR));
+            if (projectProperties.violationsAsErrors()) {
+                values.add(new Integer(IMarker.SEVERITY_ERROR));
+            } else {
+                values.add(new Integer(IMarker.SEVERITY_WARNING));
+                attributeNames.add(IMarker.PRIORITY);
+                values.add(new Integer(IMarker.PRIORITY_HIGH));
+            }
             break;
 
         case 5:

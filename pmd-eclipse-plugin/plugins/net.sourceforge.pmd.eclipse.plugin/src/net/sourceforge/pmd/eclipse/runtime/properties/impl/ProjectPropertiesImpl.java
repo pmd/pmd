@@ -76,7 +76,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private RuleSet projectRuleSet;
     private IWorkingSet projectWorkingSet;
     private boolean includeDerivedFiles;
-
+    private boolean violationsAsErrors = true;
+    
     /**
      * The default constructor takes a project as an argument
      */
@@ -302,6 +303,19 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         clonedRuleSet.addIncludePatterns(this.projectRuleSet.getIncludePatterns());
 
         return clonedRuleSet;
+    }
+
+    /**
+     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#violationsAsErrors()
+     */
+    public boolean violationsAsErrors() throws PropertiesException {
+        return this.violationsAsErrors;
+    }
+
+    public void setViolationsAsErrors(boolean violationsAsErrors) throws PropertiesException {
+        log.debug("Set to handle violations as errors: " + violationsAsErrors);
+        this.needRebuild |= this.violationsAsErrors != violationsAsErrors;
+        this.violationsAsErrors = violationsAsErrors;
     }
 
 }

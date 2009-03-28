@@ -84,6 +84,7 @@ public class PMDPropertyPage extends PropertyPage {
     private Label selectedWorkingSetLabel;
     private Button deselectWorkingSetButton;
     private Button includeDerivedFilesButton;
+    private Button violationsAsErrorsButton;
     protected Button ruleSetStoredInProjectButton;
     protected Text ruleSetFileText;
     protected Button ruleSetBrowseButton;
@@ -119,6 +120,14 @@ public class PMDPropertyPage extends PropertyPage {
             separator.setLayoutData(data);
 
             this.includeDerivedFilesButton = buildIncludeDerivedFilesButton(composite);
+
+            separator = new Label(composite, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
+            data = new GridData();
+            data.horizontalAlignment = GridData.FILL;
+            data.grabExcessHorizontalSpace = true;
+            separator.setLayoutData(data);
+            
+            this.violationsAsErrorsButton = buildViolationsAsErrorsButton(composite);
 
             separator = new Label(composite, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
             data = new GridData();
@@ -204,6 +213,18 @@ public class PMDPropertyPage extends PropertyPage {
         final Button button = new Button(parent, SWT.CHECK);
         button.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_INCLUDE_DERIVED_FILES));
         button.setSelection(model.isIncludeDerivedFiles());
+
+        return button;
+    }
+
+    /**
+     * Create the violations as errors checkbox
+     * @param parent the parent composite
+     */
+    private Button buildViolationsAsErrorsButton(final Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_VIOLATIONS_AS_ERRORS));
+        button.setSelection(model.violationsAsErrors());
 
         return button;
     }
@@ -408,6 +429,8 @@ public class PMDPropertyPage extends PropertyPage {
         this.model.setRuleSetStoredInProject(this.ruleSetStoredInProjectButton.getSelection());
         this.model.setRuleSetFile(this.ruleSetFileText.getText());
         this.model.setIncludeDerivedFiles(this.includeDerivedFilesButton.getSelection());
+
+        this.model.setViolationsAsErrors(this.violationsAsErrorsButton.getSelection());
 
         return controller.performOk();
     }

@@ -138,11 +138,21 @@ public interface IProjectProperties {
      * @return whether derived files should be checked
      */
     boolean isIncludeDerivedFiles() throws PropertiesException;
-    
+
     /**
      * @param excludeDerivedFiles whether derived files should be checked
      */
     void setIncludeDerivedFiles(boolean excludeDerivedFiles) throws PropertiesException;
+    
+    /**
+     * @return whether high priority violations should be handled as Eclipse errors
+     */    
+    boolean violationsAsErrors() throws PropertiesException;
+
+    /**
+     * @param violationsAsErrors whether high priority violations should be handled as Eclipse errors
+     */
+    void setViolationsAsErrors(boolean violationsAsErrors) throws PropertiesException;
     
     /**
      * Synchronize the properties with the persistant store

@@ -51,8 +51,9 @@ public class ProjectPropertiesTO {
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private boolean includeDerivedFiles;
-    
-    /**
+    private boolean violationsAsErrors = true;
+
+	/**
      * @return rules an array of RuleSpecTO objects that keep information of rules
      * selected for the current project
      */
@@ -161,6 +162,14 @@ public class ProjectPropertiesTO {
      */
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         this.includeDerivedFiles = includeDerivedFiles;
+    }
+
+    public boolean isViolationsAsErrors() {
+        return violationsAsErrors;
+    }
+
+    public void setViolationsAsErrors(boolean violationsAsErrors) {
+        this.violationsAsErrors = violationsAsErrors;
     }
 
 }

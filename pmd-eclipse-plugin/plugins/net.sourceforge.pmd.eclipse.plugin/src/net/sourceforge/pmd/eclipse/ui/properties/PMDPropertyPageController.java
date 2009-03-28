@@ -115,6 +115,7 @@ public class PMDPropertyPageController {
                 this.propertyPageBean.setRuleSetStoredInProject(properties.isRuleSetStoredInProject());
                 this.propertyPageBean.setRuleSetFile(properties.getRuleSetFile());
                 this.propertyPageBean.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());
+                this.propertyPageBean.setViolationsAsErrors(properties.violationsAsErrors());
                 this.pmdAlreadyActivated = properties.isPmdEnabled();
 
             } catch (PropertiesException e) {
@@ -152,6 +153,7 @@ public class PMDPropertyPageController {
             cmd.setRuleSetStoredInProject(this.propertyPageBean.isRuleSetStoredInProject());
             cmd.setRuleSetFile(this.propertyPageBean.getRuleSetFile());
             cmd.setIncludeDerivedFiles(this.propertyPageBean.isIncludeDerivedFiles());
+            cmd.setViolationsAsErrors(this.propertyPageBean.violationsAsErrors());
             cmd.setUserInitiated(true);
             cmd.performExecute();
 
