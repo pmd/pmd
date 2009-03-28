@@ -36,7 +36,7 @@
          download-size="0"
          install-size="0"
          version="5.0.0.v200810141040"
-         unpack="false"
+         unpack="true"
 	/>
 
 </feature>
