@@ -469,16 +469,16 @@ public class BaseVisitor {
             attributeNames.add(IMarker.PRIORITY);
             values.add(Integer.valueOf(IMarker.PRIORITY_HIGH));
             attributeNames.add(IMarker.SEVERITY);
-            values.add(new Integer(projectProperties.violationsAsErrors()?IMarker.SEVERITY_ERROR:IMarker.SEVERITY_WARNING));
+            values.add(Integer.valueOf(projectProperties.violationsAsErrors()?IMarker.SEVERITY_ERROR:IMarker.SEVERITY_WARNING));
             break;
         case 2:
             attributeNames.add(IMarker.SEVERITY);
             if (projectProperties.violationsAsErrors()) {
-                values.add(new Integer(IMarker.SEVERITY_ERROR));
+                values.add(Integer.valueOf(IMarker.SEVERITY_ERROR));
             } else {
-                values.add(new Integer(IMarker.SEVERITY_WARNING));
+                values.add(Integer.valueOf(IMarker.SEVERITY_WARNING));
                 attributeNames.add(IMarker.PRIORITY);
-                values.add(new Integer(IMarker.PRIORITY_HIGH));
+                values.add(Integer.valueOf(IMarker.PRIORITY_HIGH));
             }
             break;
 
