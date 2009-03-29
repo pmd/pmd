@@ -360,7 +360,8 @@ public class SimpleTest extends TestCase {
 		language="java"
 		since="5.0"
 		message="JUnit tests should not contain more than {0} asserts."
-		class="net.sourceforge.pmd.lang.rule.XPathRule">
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
+		externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#JUnitTestContainsTooManyAsserts">
 		<description>
 		    JUnit tests should not contain too many asserts.  Many asserts are indicative of a
 		    complex test, for which it is harder to verify correctness.  Consider breaking the
@@ -401,7 +402,8 @@ public class MyTestCase extends TestCase {
 		language="java"
 		since="5.0"
 		message="Use assertTrue(x)/assertFalse(x) instead of assertEquals(true, x)/assertEquals(false, x)."
-		class="net.sourceforge.pmd.lang.rule.XPathRule">
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
+		externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#UseAssertTrueInsteadOfAssertEquals">
 		<description>
 			When asserting a value is the same as a boolean literal, use assertTrue/assertFalse, instead of assertEquals.
 		</description>
