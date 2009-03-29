@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+		JUnit Test contains assertEquals on other than boolean literal
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+		public class MyTestCase extends TestCase {
+			public void testMyCase() {
+				String myVar = "test";
+				String myVar2 = "test";
+				assertEquals(myVar, myVar2);
+			}
+		}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+		JUnit Test contains assertEquals on boolean literal
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+		public class MyTestCase extends TestCase {
+			public void testMyCaseWithAssertEqualsOnBoolean() {
+				boolean myVar = true;
+				assertEquals("myVar is true", true, myVar);
+				assertEquals("myVar is true", myVar, true);
+				assertEquals("myVar is true", false, myVar);
+				assertEquals("myVar is true", myVar, false);
+			}
+		}
+     ]]></code>
+    </test-code>
+</test-data>

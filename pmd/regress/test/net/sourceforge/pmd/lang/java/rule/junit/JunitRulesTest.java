@@ -13,6 +13,7 @@ public class JunitRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "JUnitAssertionsShouldIncludeMessage");
         addRule(RULESET, "JUnitSpelling");
         addRule(RULESET, "JUnitStaticSuite");
+        addRule(RULESET, "JUnitTestContainsTooManyAsserts");
         addRule(RULESET, "JUnitTestsShouldIncludeAssert");
         addRule(RULESET, "SimplifyBooleanAssertion");
         addRule(RULESET, "TestClassWithoutTestCases");
@@ -20,6 +21,7 @@ public class JunitRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseAssertEqualsInsteadOfAssertTrue");
         addRule(RULESET, "UseAssertNullInsteadOfAssertTrue");
         addRule(RULESET, "UseAssertSameInsteadOfAssertTrue");
+        addRule(RULESET, "UseAssertTrueInsteadOfAssertEquals");
     }
 
     public static junit.framework.Test suite() {

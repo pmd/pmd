@@ -356,5 +356,79 @@ public class SimpleTest extends TestCase {
 ]]>
           </example>
     </rule>
+	<rule name="JUnitTestContainsTooManyAsserts"
+		language="java"
+		since="5.0"
+		message="JUnit tests should not contain more than {0} asserts."
+		class="net.sourceforge.pmd.lang.rule.XPathRule">
+		<description>
+		    JUnit tests should not contain too many asserts.  Many asserts are indicative of a
+		    complex test, for which it is harder to verify correctness.  Consider breaking the
+		    test scenario into multiple simpler test scenarios.  Customize the maximum number
+		    of assertions used by this Rule to suit your needs.
+		</description>
+		<priority>3</priority>
+		<properties>
+            <property name="maximumAsserts" type="Integer" min="1" max="1000" description="Maximum number of Asserts in a test method" value="1"/>
+			<property name="xpath">
+				<value>
+<![CDATA[
+//MethodDeclarator[(@Image[fn:matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[@Image='Test']) and count(..//PrimaryPrefix/Name[@Image[fn:matches(.,'^assert')]]) > $maximumAsserts]
+]]>
+				</value>
+			</property>
+		</properties>
+		<example>
+<![CDATA[
+public class MyTestCase extends TestCase {
+	// Ok
+	public void testMyCaseWithOneAssert() {
+		boolean myVar = false;		
+		assertFalse("should be false", myVar);
+	}
 
+	// Bad, too many asserts (assuming max=1)
+	public void testMyCaseWithMoreAsserts() {
+		boolean myVar = false;		
+		assertFalse("myVar should be false", myVar);
+		assertEquals("should equals false", false, myVar);
+	}
+}
+]]>
+		</example>
+	</rule>
+	<rule name="UseAssertTrueInsteadOfAssertEquals"
+		language="java"
+		since="5.0"
+		message="Use assertTrue(x)/assertFalse(x) instead of assertEquals(true, x)/assertEquals(false, x)."
+		class="net.sourceforge.pmd.lang.rule.XPathRule">
+		<description>
+			When asserting a value is the same as a boolean literal, use assertTrue/assertFalse, instead of assertEquals.
+		</description>
+		<priority>3</priority>
+		<properties>
+			<property name="xpath">
+				<value>
+<![CDATA[
+//PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']][PrimarySuffix/Arguments/ArgumentList//Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
+]]>
+			</value>
+			</property>
+		</properties>
+		<example>
+<![CDATA[
+public class MyTestCase extends TestCase {
+	public void testMyCase() {
+		boolean myVar = true;
+		// Ok
+		assertTrue("myVar is true", myVar);
+		// Bad
+		assertEquals("myVar is true", true, myVar);
+		// Bad
+		assertEquals("myVar is false", false, myVar);
+	}
+}
+]]>
+		</example>
+	</rule>
 </ruleset>

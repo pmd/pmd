@@ -470,7 +470,8 @@ New Java rules:
 	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass
 	Import ruleset: UnnecessaryFullyQualifiedName
 	Naming ruleset: ShortClassName
-	StrictException ruleset : AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException
+	StrictException ruleset: AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException
+	JUnit ruleset: JUnitTestContainsTooManyAsserts, UseAssertTrueInsteadOfAssertEquals
 
 New Java ruleset:
 	android.xml: new rules specific to the Android platform
