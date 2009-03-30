@@ -27,7 +27,7 @@ public class RuleViolationTest {
         ctx.setSourceCodeFilename("filename");
         DummyJavaNode s = new DummyJavaNode(1);
         s.testingOnly__setBeginLine(2);
-        RuleViolation r = new JavaRuleViolation(rule, ctx, s);
+        RuleViolation r = new JavaRuleViolation(rule, ctx, s, rule.getMessage());
         assertEquals("object mismatch", rule, r.getRule());
         assertEquals("line number is wrong", 2, r.getBeginLine());
         assertEquals("filename is wrong", "filename", r.getFilename());

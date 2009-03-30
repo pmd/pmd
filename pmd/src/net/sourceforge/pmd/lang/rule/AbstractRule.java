@@ -46,7 +46,7 @@ public abstract class AbstractRule implements Rule {
     private boolean usesDFA;
     private boolean usesTypeResolution;
     private List<String> ruleChainVisits = new ArrayList<String>();
-    
+
     public AbstractRule() {
 	definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
 	definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
@@ -271,14 +271,14 @@ public abstract class AbstractRule implements Rule {
      * @see Rule#hasDescriptor(PropertyDescriptor)
      */
     public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
-    	
-    	if (propertyValuesByDescriptor.isEmpty()) {
-    		getPropertiesByPropertyDescriptor();	// compute it
-    	}
-    	
-    	return propertyValuesByDescriptor.containsKey(descriptor);
+
+	if (propertyValuesByDescriptor.isEmpty()) {
+	    getPropertiesByPropertyDescriptor(); // compute it
+	}
+
+	return propertyValuesByDescriptor.containsKey(descriptor);
     }
-    
+
     /**
      * @see Rule#getPropertyDescriptors()
      */
@@ -311,7 +311,8 @@ public abstract class AbstractRule implements Rule {
 
     private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
 	if (!propertyDescriptors.contains(propertyDescriptor)) {
-	    throw new IllegalArgumentException("Property descriptor not defined for Rule " + this.getName() + ": " + propertyDescriptor);
+	    throw new IllegalArgumentException("Property descriptor not defined for Rule " + this.getName() + ": "
+		    + propertyDescriptor);
 	}
     }
 
@@ -342,23 +343,23 @@ public abstract class AbstractRule implements Rule {
      * @see Rule#usesDefaultValues()
      */
     public boolean usesDefaultValues() {
-        
-        Map<PropertyDescriptor<?>, Object> valuesByProperty = getPropertiesByPropertyDescriptor();
-        if (valuesByProperty.isEmpty()) {
-        	return true;
-        	}
-        
-        Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProperty.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
-            if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
-            	return false;
-           		}
-        }
-        
-        return true;
+
+	Map<PropertyDescriptor<?>, Object> valuesByProperty = getPropertiesByPropertyDescriptor();
+	if (valuesByProperty.isEmpty()) {
+	    return true;
+	}
+
+	Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProperty.entrySet().iterator();
+	while (iter.hasNext()) {
+	    Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
+	    if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
+		return false;
+	    }
+	}
+
+	return true;
     }
-    
+
     /**
      * @see Rule#setUsesDFA()
      */
@@ -440,7 +441,7 @@ public abstract class AbstractRule implements Rule {
     public void addViolation(Object data, Node node) {
 	RuleContext ruleContext = (RuleContext) data;
 	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
-		ruleContext, this, node);
+		ruleContext, this, node, this.getMessage(), null);
     }
 
     /**
@@ -449,7 +450,7 @@ public abstract class AbstractRule implements Rule {
     public void addViolation(Object data, Node node, String arg) {
 	RuleContext ruleContext = (RuleContext) data;
 	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
-		ruleContext, this, node, arg);
+		ruleContext, this, node, this.getMessage(), new Object[] { arg });
     }
 
     /**
@@ -458,7 +459,7 @@ public abstract class AbstractRule implements Rule {
     public void addViolation(Object data, Node node, Object[] args) {
 	RuleContext ruleContext = (RuleContext) data;
 	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
-		ruleContext, this, node, args);
+		ruleContext, this, node, this.getMessage(), args);
     }
 
     /**
@@ -466,8 +467,8 @@ public abstract class AbstractRule implements Rule {
      */
     public void addViolationWithMessage(Object data, Node node, String message) {
 	RuleContext ruleContext = (RuleContext) data;
-	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolationWithMessage(
-		ruleContext, this, node, message);
+	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
+		ruleContext, this, node, message, null);
     }
 
     /**
@@ -475,7 +476,7 @@ public abstract class AbstractRule implements Rule {
      */
     public void addViolationWithMessage(Object data, Node node, String message, Object[] args) {
 	RuleContext ruleContext = (RuleContext) data;
-	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolationWithMessage(
+	ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
 		ruleContext, this, node, message, args);
     }
 

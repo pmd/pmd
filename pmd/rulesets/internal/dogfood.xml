@@ -123,6 +123,11 @@
 	-->
 
 	<!-- Nothing here applies to PMD
+	<rule ref="rulesets/java/junit.xml"/>
+	</rule>
+	-->
+
+	<!-- Nothing here applies to PMD
 	<rule ref="rulesets/java/logging-jakarta-commons.xml"/>
 	</rule>
 	-->
@@ -137,10 +142,6 @@
 	<rule ref="rulesets/java/migrating_to_13.xml"/>
 	<rule ref="rulesets/java/migrating_to_14.xml"/>
 	<rule ref="rulesets/java/migrating_to_15.xml"/>
-	<rule ref="rulesets/java/migrating_to_junit4.xml">
-		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
-		<exclude name="JUnit4TestShouldUseTestAnnotation"/>
-	</rule>
 
 	<rule ref="rulesets/java/naming.xml">
 		<exclude name="ShortVariable"/>

@@ -89,8 +89,6 @@
 	<rule ref="rulesets/java/migrating_to_13.xml"/>
 	<rule ref="rulesets/java/migrating_to_14.xml"/>
 	<rule ref="rulesets/java/migrating_to_15.xml"/>
-	<rule ref="rulesets/java/migrating_to_junit4.xml">
-	</rule>
 
 	<rule ref="rulesets/java/naming.xml">
 		<exclude name="ShortVariable"/>

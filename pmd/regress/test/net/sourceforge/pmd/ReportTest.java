@@ -160,10 +160,12 @@ public class ReportTest extends RuleTst implements ReportListener {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
         JavaNode s = getNode(10, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
+        Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
+        r.addRuleViolation(new JavaRuleViolation(rule1, ctx, s, rule1.getMessage()));
         ctx.setSourceCodeFilename("bar");
         JavaNode s1 = getNode(10, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s1));
+        Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
+        r.addRuleViolation(new JavaRuleViolation(rule2, ctx, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer(new Properties());
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
@@ -175,10 +177,12 @@ public class ReportTest extends RuleTst implements ReportListener {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
         JavaNode s = getNode(10, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new JavaRuleViolation(new MockRule("rule2", "rule2", "msg", "rulesetname"), ctx, s));
+        Rule rule1 = new MockRule("rule2", "rule2", "msg", "rulesetname");
+        r.addRuleViolation(new JavaRuleViolation(rule1, ctx, s, rule1.getMessage()));
         ctx.setSourceCodeFilename("foo2");
         JavaNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new JavaRuleViolation(new MockRule("rule1", "rule1", "msg", "rulesetname"), ctx, s1));
+        Rule rule2 = new MockRule("rule1", "rule1", "msg", "rulesetname");
+        r.addRuleViolation(new JavaRuleViolation(rule2, ctx, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer(new Properties());
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
@@ -192,7 +196,8 @@ public class ReportTest extends RuleTst implements ReportListener {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("file");
         JavaNode s = getNode(5, 5, ctx.getSourceCodeFilename());
-        rpt.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
+        Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
+        rpt.addRuleViolation(new JavaRuleViolation(rule1, ctx, s, rule1.getMessage()));
         assertTrue(violationSemaphore);
 
         metricSemaphore = false;
@@ -208,13 +213,13 @@ public class ReportTest extends RuleTst implements ReportListener {
         ctx.setSourceCodeFilename("foo1");
         JavaNode s = getNode(5, 5, ctx.getSourceCodeFilename());
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new JavaRuleViolation(rule, ctx, s));
+        r.addRuleViolation(new JavaRuleViolation(rule, ctx, s, rule.getMessage()));
         ctx.setSourceCodeFilename("foo2");
         Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
         JavaNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
         JavaNode s2 = getNode(30, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new JavaRuleViolation(mr, ctx, s1));
-        r.addRuleViolation(new JavaRuleViolation(mr, ctx, s2));
+        r.addRuleViolation(new JavaRuleViolation(mr, ctx, s1, mr.getMessage()));
+        r.addRuleViolation(new JavaRuleViolation(mr, ctx, s2, mr.getMessage()));
         Map summary = r.getSummary();
         assertEquals(summary.keySet().size(), 2);
         assertTrue(summary.values().contains(Integer.valueOf(1)));

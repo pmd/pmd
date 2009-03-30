@@ -62,7 +62,7 @@ public class AbstractRuleTest {
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
         s.setScope(new SourceFileScope("foo"));
-        RuleViolation rv = new JavaRuleViolation(r, ctx, s);
+        RuleViolation rv = new JavaRuleViolation(r, ctx, s, r.getMessage());
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());

@@ -10,8 +10,10 @@
 	<exclude-pattern>.*/xml/.*.java</exclude-pattern>
 
 	<rule ref="rulesets/java/junit.xml">
-    		<exclude name="JUnitAssertionsShouldIncludeMessage"/>
-    		<exclude name="JUnitTestsShouldIncludeAssert"/>
+    	<exclude name="JUnitAssertionsShouldIncludeMessage"/>
+    	<exclude name="JUnitTestsShouldIncludeAssert"/>
+    	<exclude name="UseAssertTrueInsteadOfAssertEquals"/>
+    	<exclude name="JUnitTestContainsTooManyAsserts"/>
 	</rule>
 
 </ruleset>

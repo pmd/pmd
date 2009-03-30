@@ -9,11 +9,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRuleViolation;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
 public class XmlRuleViolation extends AbstractRuleViolation {
-    public XmlRuleViolation(Rule rule, RuleContext ctx, XmlNode node) {
-	super(rule, ctx, node);
-    }
-
-    public XmlRuleViolation(Rule rule, RuleContext ctx, XmlNode node, String specificMsg) {
-	super(rule, ctx, node, specificMsg);
+    public XmlRuleViolation(Rule rule, RuleContext ctx, XmlNode node, String message) {
+	super(rule, ctx, node, message);
     }
 }

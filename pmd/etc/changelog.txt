@@ -361,6 +361,7 @@ Rules can now define a 'violationSuppressXPath' property to universally suppress
 Rules are now directly associated with a corresponding Language, and a can also be associated with a specific Language Version range if desired.
 Rules can now be flagged with deprecated='true' in the RuleSet XML to allow the PMD Project to indicate a Rule (1) is scheduled for removal, (2) has been removed, or (3) has been renamed/moved.
 XPathRules can now query using XPath 2.0 with 'version=2.0"', or XPath 2.0 in XPath 1.0 compatibility mode using 'version="1.0 compatibility"'.  Many thanks to Saxon!
+Rules can now use property values in messages, for example ${propertyName} will expand to the value of the 'propertyName' property on the Rule.
 
 Other changes:
 Rule property API upgrades:

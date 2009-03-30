@@ -359,7 +359,7 @@ public class SimpleTest extends TestCase {
 	<rule name="JUnitTestContainsTooManyAsserts"
 		language="java"
 		since="5.0"
-		message="JUnit tests should not contain more than {0} asserts."
+		message="JUnit tests should not contain more than ${maximumAsserts} assert(s)."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#JUnitTestContainsTooManyAsserts">
 		<description>

@@ -18,11 +18,6 @@ public final class EcmascriptRuleViolationFactory extends AbstractRuleViolationF
     }
 
     @Override
-    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node) {
-	return new EcmascriptRuleViolation(rule, ruleContext, (EcmascriptNode) node);
-    }
-
-    @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
 	return new EcmascriptRuleViolation(rule, ruleContext, (EcmascriptNode) node, message);
     }

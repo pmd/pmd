@@ -16,11 +16,6 @@ public final class JavaRuleViolationFactory extends AbstractRuleViolationFactory
     }
 
     @Override
-    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node) {
-	return new JavaRuleViolation(rule, ruleContext, (JavaNode) node);
-    }
-
-    @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
 	return new JavaRuleViolation(rule, ruleContext, (JavaNode) node, message);
     }

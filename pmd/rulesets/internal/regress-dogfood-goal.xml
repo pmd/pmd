@@ -9,6 +9,8 @@
 
 	<exclude-pattern>.*/xml/.*.java</exclude-pattern>
 
-	<rule ref="rulesets/java/junit.xml"/>
+	<rule ref="rulesets/java/junit.xml">
+    	<exclude name="JUnitTestContainsTooManyAsserts"/>
+	</rule>
 
 </ruleset>

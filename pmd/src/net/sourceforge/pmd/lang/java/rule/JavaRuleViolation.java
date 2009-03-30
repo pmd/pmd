@@ -37,12 +37,8 @@ import net.sourceforge.pmd.lang.rule.AbstractRuleViolation;
  * </ul>
  */
 public class JavaRuleViolation extends AbstractRuleViolation {
-    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node) {
-	this(rule, ctx, node, rule.getMessage());
-    }
-
-    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String specificMsg) {
-	super(rule, ctx, node, specificMsg);
+    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message) {
+	super(rule, ctx, node, message);
 
 	if (node != null) {
 	    Scope scope = node.getScope();

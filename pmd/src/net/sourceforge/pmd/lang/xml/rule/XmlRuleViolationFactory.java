@@ -19,11 +19,6 @@ public final class XmlRuleViolationFactory extends AbstractRuleViolationFactory 
     }
 
     @Override
-    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node) {
-	return new XmlRuleViolation(rule, ruleContext, (XmlNode) node);
-    }
-
-    @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
 	return new XmlRuleViolation(rule, ruleContext, (XmlNode) node, message);
     }
