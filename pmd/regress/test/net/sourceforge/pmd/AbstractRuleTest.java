@@ -16,10 +16,13 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 import org.junit.Test;
@@ -84,6 +87,25 @@ public class AbstractRuleTest {
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
         assertEquals("Rule description mismatch!", "specificdescription", rv.getDescription());
+    }
+
+    @Test
+    public void testRuleWithVariableInMessage() {
+        MyRule r = new MyRule();
+        r.definePropertyDescriptor(new IntegerProperty("testInt", "description", 0, 100, 10, 0));
+        r.setMessage("Message ${testInt} ${noSuchProperty}");
+        RuleContext ctx = new RuleContext();
+        ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
+        ctx.setReport(new Report());
+        ctx.setSourceCodeFilename("filename");
+        DummyJavaNode s = new DummyJavaNode(1);
+        s.testingOnly__setBeginColumn(5);
+        s.testingOnly__setBeginLine(5);
+        s.setImage("TestImage");
+        s.setScope(new SourceFileScope("foo"));
+        r.addViolation(ctx, s);
+        RuleViolation rv = ctx.getReport().getViolationTree().iterator().next();
+        assertEquals("Message 10 ${noSuchProperty}", rv.getDescription());
     }
 
     @Test

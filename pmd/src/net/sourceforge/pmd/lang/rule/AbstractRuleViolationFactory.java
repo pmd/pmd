@@ -35,8 +35,11 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
 		final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
 		if (propertyDescriptor != null) {
 		    buf.replace(startIndex, endIndex+1, String.valueOf(rule.getProperty(propertyDescriptor)));
+		    continue;
 		}
 	    }
+	    // Escape the { in the ${, so MessageFormat doesn't bitch
+	    buf.replace(startIndex, startIndex + 2, "$'{'");
 	}
 	return buf.toString();
     }
