@@ -15,6 +15,7 @@ public class OptimizationsRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidInstantiatingObjectsInLoops");
         addRule(RULESET, "LocalVariableCouldBeFinal");
         addRule(RULESET, "MethodArgumentCouldBeFinal");
+        addRule(RULESET, "RedundantFieldInitializer");
         addRule(RULESET, "SimplifyStartsWith");
         addRule(RULESET, "UnnecessaryWrapperObjectCreation");
         addRule(RULESET, "UseArrayListInsteadOfVector");

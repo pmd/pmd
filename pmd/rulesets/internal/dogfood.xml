@@ -161,6 +161,7 @@
 		<exclude name="LocalVariableCouldBeFinal"/>
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="AvoidInstantiatingObjectsInLoops"/>
+		<exclude name="RedundantFieldInitializer"/>
 		<exclude name="UseStringBufferForStringAppends"/>
 	</rule>
 

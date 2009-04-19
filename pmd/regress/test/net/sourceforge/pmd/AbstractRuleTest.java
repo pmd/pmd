@@ -92,7 +92,7 @@ public class AbstractRuleTest {
     public void testRuleWithVariableInMessage() {
         MyRule r = new MyRule();
         r.definePropertyDescriptor(new IntegerProperty("testInt", "description", 0, 100, 10, 0));
-        r.setMessage("Message ${testInt} ${noSuchProperty}");
+        r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
         ctx.setReport(new Report());
@@ -104,7 +104,7 @@ public class AbstractRuleTest {
         s.setScope(new SourceFileScope("foo"));
         r.addViolation(ctx, s);
         RuleViolation rv = ctx.getReport().getViolationTree().iterator().next();
-        assertEquals("Message 10 ${noSuchProperty}", rv.getDescription());
+        assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
     }
 
     @Test

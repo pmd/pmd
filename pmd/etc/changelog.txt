@@ -362,6 +362,7 @@ Rules are now directly associated with a corresponding Language, and a can also 
 Rules can now be flagged with deprecated='true' in the RuleSet XML to allow the PMD Project to indicate a Rule (1) is scheduled for removal, (2) has been removed, or (3) has been renamed/moved.
 XPathRules can now query using XPath 2.0 with 'version=2.0"', or XPath 2.0 in XPath 1.0 compatibility mode using 'version="1.0 compatibility"'.  Many thanks to Saxon!
 Rules can now use property values in messages, for example ${propertyName} will expand to the value of the 'propertyName' property on the Rule.
+Rules can now use violation specific values in messages, specifically ${variableName}, ${methodName}, ${className}, ${packageName}.
 
 Other changes:
 Rule property API upgrades:
@@ -471,6 +472,7 @@ New Java rules:
 	Coupling ruleset: LoosePackageCoupling
 	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass
 	Import ruleset: UnnecessaryFullyQualifiedName
+	Optimization ruleset: RedundantFieldInitializer
 	Naming ruleset: ShortClassName
 	StrictException ruleset: AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException
 	JUnit ruleset: JUnitTestContainsTooManyAsserts, UseAssertTrueInsteadOfAssertEquals

@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
@@ -67,12 +68,51 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 	}
     }
 
+    protected String expandVariables(String message) {
+	if (message.indexOf("${") >= 0) {
+	    StringBuilder buf = new StringBuilder(message);
+	    int startIndex = -1;
+	    while ((startIndex = buf.indexOf("${", startIndex + 1)) >= 0) {
+		final int endIndex = buf.indexOf("}", startIndex);
+		if (endIndex >= 0) {
+		    final String name = buf.substring(startIndex + 2, endIndex);
+		    if (isVariable(name)) {
+			buf.replace(startIndex, endIndex + 1, getVariableValue(name));
+		    }
+		}
+	    }
+	    return buf.toString();
+	} else {
+	    return message;
+	}
+    }
+
+    protected boolean isVariable(String name) {
+	return "variableName".equals(name) || "methodName".equals(name) || "className".equals(name)
+		|| "packageName".equals(name) || rule.getPropertyDescriptor(name) != null;
+    }
+
+    protected String getVariableValue(String name) {
+	if ("variableName".equals(name)) {
+	    return variableName;
+	} else if ("methodName".equals(name)) {
+	    return methodName;
+	} else if ("className".equals(name)) {
+	    return className;
+	} else if ("packageName".equals(name)) {
+	    return packageName;
+	} else {
+	    final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
+	    return String.valueOf(rule.getProperty(propertyDescriptor));
+	}
+    }
+
     public Rule getRule() {
 	return rule;
     }
 
     public String getDescription() {
-	return description;
+	return expandVariables(description);
     }
 
     public boolean isSuppressed() {
@@ -117,6 +157,6 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 
     @Override
     public String toString() {
-        return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + beginLine;
+	return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + beginLine;
     }
 }

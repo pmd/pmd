@@ -344,6 +344,37 @@ String t = Integer.toString(456); // ok
         </example>
     </rule>
 
+	<rule name="RedundantFieldInitializer"
+			language="java"
+			since="5.0"
+			message="Avoid using redundant field initializer for ''${variableName}''"
+			class="net.sourceforge.pmd.lang.java.rule.optimizations.RedundantFieldInitializerRule"
+			externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#RedundantFieldInitializer">
+		<description>Java will initialize fields with defaults.  Explicit initialization of those same defaults
+		is redundant, and results in a larger class file (approximately 3 additional byte code instructions).</description>
+              <priority>3</priority>
+              <example>
+              <![CDATA[
+                  class C {
+                      // The following are examples of redundant initializers
+                      boolean b = false;
+                      byte by = 0;
+                      short s = 0;
+                      char c = 0;
+                      int i = 0;
+                      long l = 0;
+                      float f = .0f;    // all possible float literals
+                      doable d = 0d;    // all possible double literals
+                      Object o = null;
+                      MyClass mca[] = null;
+                      int i1 = 0, ia1[] = null;
+                      class Nested {
+                            boolean b = false;
+                      }
+                  }
+              ]]>
+              </example>
+            </rule>
 
     <!--
     other optimization should be like avoiding

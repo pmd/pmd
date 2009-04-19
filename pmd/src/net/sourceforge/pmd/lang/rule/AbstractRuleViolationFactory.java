@@ -2,7 +2,6 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.text.MessageFormat;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
@@ -15,8 +14,9 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
     public void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, Object[] args) {
 	final String formattedMessage;
 	if (message != null) {
-	    final String expandedMessage = expandVariables(rule, message);
-	    formattedMessage = MessageFormat.format(expandedMessage, args != null ? args : NO_ARGS);
+	    // Escape PMD specific variable message format, specifically the { in the ${, so MessageFormat doesn't bitch.
+	    final String escapedMessage = message.replace("${", "$'{'");
+	    formattedMessage = MessageFormat.format(escapedMessage, args != null ? args : NO_ARGS);
 	} else {
 	    formattedMessage = message;
 	}
@@ -24,23 +24,4 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
     }
 
     protected abstract RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message);
-
-    protected String expandVariables(Rule rule, String message) {
-	StringBuilder buf = new StringBuilder(message);
-	int startIndex = -1;
-	while ((startIndex = buf.indexOf("${", startIndex+1)) >= 0) {
-	    final int endIndex = buf.indexOf("}", startIndex);
-	    if (endIndex >= 0) {
-		final String name = buf.substring(startIndex+2, endIndex);
-		final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
-		if (propertyDescriptor != null) {
-		    buf.replace(startIndex, endIndex+1, String.valueOf(rule.getProperty(propertyDescriptor)));
-		    continue;
-		}
-	    }
-	    // Escape the { in the ${, so MessageFormat doesn't bitch
-	    buf.replace(startIndex, startIndex + 2, "$'{'");
-	}
-	return buf.toString();
-    }
 }

@@ -315,6 +315,7 @@
             <li>jmichelberger - wrote Byte/Short/Long Instantiation migration rules</li>
             <li>Edwin Chan - Support for -auxclasspath for use with Type Resolution</li>
             <li>Jared Bunting - Patch to add ASTAnnotationMethodDeclaration to Java AST</li>
+            <li>Lucian Ciufudean - RedundantFieldInitializerRule</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

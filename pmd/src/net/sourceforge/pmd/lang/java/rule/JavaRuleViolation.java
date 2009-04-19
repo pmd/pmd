@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -24,7 +25,6 @@ import net.sourceforge.pmd.lang.java.symboltable.Scope;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolation;
 
-// FUTURE Move to Java specific language location
 /**
  * This is a Java RuleViolation.  It knows how to try to extract the following
  * extra information from the violation node:
@@ -97,6 +97,8 @@ public class JavaRuleViolation extends AbstractRuleViolation {
 	    variableName = ((ASTFieldDeclaration) node).getVariableName();
 	} else if (node instanceof ASTLocalVariableDeclaration) {
 	    variableName = ((ASTLocalVariableDeclaration) node).getVariableName();
+	} else if (node instanceof ASTVariableDeclarator) {
+	    variableName = node.jjtGetChild(0).getImage();
 	} else if (node instanceof ASTVariableDeclaratorId) {
 	    variableName = node.getImage();
 	}
