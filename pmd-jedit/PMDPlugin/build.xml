@@ -7,8 +7,7 @@
     <property name="lib" location="${basedir}/lib"/>
     <property name="build" location="build"/>
     <property name="docs" location="doc"/>
-    <property name="pmdjar" value="pmd-4.1.jar"/>
-    <property name="pluginversion" value="2.7"/>
+    <property name="pluginversion" value="3.0"/>
     <property name="jedit.install.dir" location="../.."/>
     <property name="jedit.jars.dir" location="${jedit.install.dir}/jars" />
     <property name="install.dir"  location="${jedit.jars.dir}"/>
@@ -18,12 +17,7 @@
         <pathelement location="${jedit.jars.dir}/ErrorList.jar"/>
         <pathelement location="${build}"/>
         <fileset casesensitive="false" id="pmd.libs" dir="${lib}">
-            <include name="${pmdjar}"/>
-            <include name="asm-3.1.jar"/>
-            <include name="jaxen-1.1.1.jar"/>
-            <include name="junit-4.4.jar"/>
-            <include name="pmd-swingui-0.1.jar"/>
-            <include name="jakarta-oro-2.0.8.jar"/>
+            <include name="*.jar"/>
         </fileset>
     </path>
 
@@ -65,6 +59,7 @@
         </copy>
     </target>
 
+    <!--
     <target name="release">
         <antcall target="clean"/>
         <antcall target="jar"/>
@@ -79,6 +74,7 @@
         <move file="pmd-jedit-bin-${pluginversion}.zip" todir="${install.dir}"/>
         <delete dir="tmp"/>
     </target>
+    -->
 
     <target name="clean" depends="delete" />
 

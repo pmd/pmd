@@ -37,7 +37,7 @@ import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.SourceFileSelector;
 import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.cpd.FileFinder;
+import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.cpd.JavaTokenizer;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
@@ -47,6 +47,7 @@ import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.util.designer.Designer;
 
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.EBMessage;
@@ -857,6 +858,14 @@ public class PMDJEditPlugin extends EBPlugin
     private CPD getCPD(String fileType, View view)
     {
         return getCPD(jEdit.getIntegerProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,100), fileType, view);
+    }
+
+    /**
+     * Run the PMD rule designer.
+     */
+    public static void runDesigner() {
+        String[] args = new String[]{"-noexitonclose"};
+        new Designer(args);
     }
 }
 
