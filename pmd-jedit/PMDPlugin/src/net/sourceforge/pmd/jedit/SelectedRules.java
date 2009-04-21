@@ -32,6 +32,9 @@ public class SelectedRules {
     // root of tree to show rule sets and rules
     private DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 
+    // model for the checkbox tree
+    private TreeModel treeModel = null;
+
     // model of the checkboxes for the tree that shows the rule sets and rules
     private TreeCheckingModel checkingModel = null;
 
@@ -148,8 +151,47 @@ public class SelectedRules {
         return rulesets;
     }
 
-    private void loadTree() {
-        TreeModel treeModel = new DefaultTreeModel( root );
+    protected void loadGoodRulesTree() {
+
+        Properties goodRules = new Properties();
+        try {
+            goodRules.load(getClass().getClassLoader().getResourceAsStream("default_rules.props"));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        treeModel = new DefaultTreeModel( root );
+        checkingModel = new DefaultTreeCheckingModel( treeModel );
+        selectedRules = new RuleSets();
+
+        // load the selected rules from a list of good rules, this
+        // builds the checking model for the tree as well as the RuleSets for the
+        // selected rules to pass to PMD.
+        for ( int i = 0; i < root.getChildCount(); i++ ) {
+            DefaultMutableTreeNode ruleSetNode = ( DefaultMutableTreeNode ) root.getChildAt( i );
+            RuleSet ruleset = new RuleSet();
+            boolean hadCheckedRule = false;
+            for ( int j = 0; j < ruleSetNode.getChildCount(); j++ ) {
+                DefaultMutableTreeNode ruleNode = ( DefaultMutableTreeNode ) ruleSetNode.getChildAt( j );
+                TreePath path = new TreePath( ruleNode.getPath() );
+                RuleNode rn = ( RuleNode ) ruleNode.getUserObject();
+                String goodRuleChecked = goodRules.getProperty(PMDJEditPlugin.OPTION_RULES_PREFIX + rn.getRule().getName());
+                boolean checked = goodRuleChecked == null ? false : "true".equals(goodRuleChecked);
+                if ( checked ) {
+                    checkingModel.addCheckingPath( path );
+                    ruleset.addRule( rn.getRule() );
+                    hadCheckedRule = true;
+                }
+            }
+            if ( hadCheckedRule ) {
+                selectedRules.addRuleSet( ruleset );
+            }
+        }
+    }
+
+    protected void loadTree() {
+        treeModel = new DefaultTreeModel( root );
         checkingModel = new DefaultTreeCheckingModel( treeModel );
         selectedRules = new RuleSets();
 
@@ -158,7 +200,7 @@ public class SelectedRules {
         // selected rules to pass to PMD.
         for ( int i = 0; i < root.getChildCount(); i++ ) {
             DefaultMutableTreeNode ruleSetNode = ( DefaultMutableTreeNode ) root.getChildAt( i );
-            RuleSet ruleset = new RuleSet();//( ( RuleSetNode ) ruleSetNode.getUserObject() ).getRuleSet();
+            RuleSet ruleset = new RuleSet();
             boolean hadCheckedRule = false;
             for ( int j = 0; j < ruleSetNode.getChildCount(); j++ ) {
                 DefaultMutableTreeNode ruleNode = ( DefaultMutableTreeNode ) ruleSetNode.getChildAt( j );
@@ -177,6 +219,10 @@ public class SelectedRules {
         }
     }
 
+    public TreeModel getTreeModel() {
+        return treeModel;
+    }
+
     public TreeCheckingModel getCheckingModel() {
         return checkingModel;
     }
@@ -185,28 +231,15 @@ public class SelectedRules {
     public void save( TreeCheckingModel tcm ) {
         checkingModel = tcm;
         root = ( DefaultMutableTreeNode ) checkingModel.getTreeModel().getRoot();
-        selectedRules = new RuleSets();
 
-        // need to go through all the tree nodes to turn off those that may have
-        // been on and to turn on those that may have been off.  The tree is only
-        // 2 levels deep, so no need for recursion.
         for ( int i = 0; i < root.getChildCount(); i++ ) {
             DefaultMutableTreeNode ruleSetNode = ( DefaultMutableTreeNode ) root.getChildAt( i );
-            RuleSet ruleset = ( ( RuleSetNode ) ruleSetNode.getUserObject() ).getRuleSet();
-            boolean hadCheckedRule = false;
             for ( int j = 0; j < ruleSetNode.getChildCount(); j++ ) {
                 DefaultMutableTreeNode ruleNode = ( DefaultMutableTreeNode ) ruleSetNode.getChildAt( j );
                 TreePath path = new TreePath( ruleNode.getPath() );
                 boolean checked = checkingModel.isPathChecked( path );
                 RuleNode rn = ( RuleNode ) ruleNode.getUserObject();
                 jEdit.setBooleanProperty( PMDJEditPlugin.OPTION_RULES_PREFIX + rn.getRule().getName(), checked );
-                if ( checked ) {
-                    ruleset.addRule( rn.getRule() );
-                    hadCheckedRule = true;
-                }
-            }
-            if ( hadCheckedRule ) {
-                selectedRules.addRuleSet( ruleset );
             }
         }
     }
