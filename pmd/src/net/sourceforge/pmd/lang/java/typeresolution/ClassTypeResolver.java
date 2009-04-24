@@ -684,6 +684,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		List<ASTImportDeclaration> theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
 		importedClasses = new HashMap<String, String>();
 
+		importedClasses.putAll(JAVA_LANG);
+
 		// go through the imports
 		for (ASTImportDeclaration anImportDeclaration : theImportDeclarations) {
 			String strPackage = anImportDeclaration.getPackageName();
@@ -695,8 +697,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 				importedClasses.put(strName.substring(strPackage.length() + 1), strName);
 			}
 		}
-
-		importedClasses.putAll(JAVA_LANG);
 	}
 
 	private void populateClassName(ASTCompilationUnit node, String className) throws ClassNotFoundException {
