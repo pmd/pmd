@@ -742,33 +742,6 @@ public class Foo {
         ]]>
         </example>
     </rule>
-	<rule name="CatchSubClassBeforeSuperClass"
-			language="java"
-			since="5.0"
-			message="A subclass ''{0}'' must come before its superclass ''{1}'' in a series of catch statements."
-			class="net.sourceforge.pmd.lang.java.rule.basic.CatchSubClassBeforeSuperClassRule"
-			externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#CatchSubClassBeforeSuperClass">
-		<description>A subclass must come before its superclass in a series of catch statements.  If not, the subclass catch will never be reached.</description>
-		<priority>1</priority>
-		<example>
-		<![CDATA[
-public class Foo {
-	public static void main(String[] args) {
-		try {
-			int a = 0;
-			int b = 33/a;
-		} catch(Exception e) {
-			System.out.println("Generic exception catch");
-		} catch(ArithmeticException e) {
-			// This catch never reached because ArithmeticException is a subclass of Exception.
-			// To fix the problem reverse the order of catch statements.
-			System.out.println("This is never catched");
-		}
-	}
-}
-]]>
-		</example>
-	</rule>
 
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyCatchBlock" />
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyIfStmt" />
