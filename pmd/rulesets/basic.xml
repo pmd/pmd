@@ -942,11 +942,12 @@ if (method1().equals(a)) {
 
     <rule  name="AvoidThreadGroup"
       since="3.6"
-      message="Avoid using ThreadGroup; it is not thread safe"
+      message="Avoid using java.lang.ThreadGroup; it is not thread safe"
       class="net.sourceforge.pmd.rules.XPathRule"
-      externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+      externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup"
+      typeResolution="true">
       <description>
-Avoid using ThreadGroup; although it is intended to be used in a threaded environment
+Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
  it contains methods that are not thread safe.
       </description>
       <priority>3</priority>
@@ -954,7 +955,7 @@ Avoid using ThreadGroup; although it is intended to be used in a threaded enviro
         <property name="xpath">
         <value>
 <![CDATA[
-//AllocationExpression/ClassOrInterfaceType[contains(@Image,'ThreadGroup')] |
+//AllocationExpression/ClassOrInterfaceType[typeof(@Image, 'java.lang.ThreadGroup')]|
 //PrimarySuffix[contains(@Image, 'getThreadGroup')]
 ]]>
         </value>

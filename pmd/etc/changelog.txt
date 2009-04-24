@@ -4,7 +4,9 @@ Fixed bug 2590258 - NPE with nicerhtml output
 Fixed bug 2317099 - False + in SimplifyCondition
 Fixed bug 2606609 - False "UnusedImports" positive in package-info.java
 Fixed bug 2645268 - ClassCastException in UselessOperationOnImmutable.getDeclaration
+Fixed bug 2724653 - AvoidThreadGroup reports false positives
 Correct -benchmark reporting of Rule visits via the RuleChain
+Fix issue with Type Resolution incorrectly handling of Classes with same name as a java.lang Class.
 
 Android ruleset: CallSuperLast rule now also checks for finish() redefinitions
 

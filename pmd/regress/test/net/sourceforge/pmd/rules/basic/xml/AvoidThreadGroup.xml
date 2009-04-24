@@ -1,42 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
-    <test-code>
-        <description><![CDATA[
+	<test-code>
+		<description><![CDATA[
 bad, using new ThreadGroup()
      ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
 public class Foo {
  void bar() {
   ThreadGroup t = new ThreadGroup("my tg");
  }
 }
      ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+bad, using fully qualified java.lang.ThreadGroup()
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+ void bar() {
+  java.lang.ThreadGroup t = new java.lang.ThreadGroup();
+ }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
 bad, using Thread.getThreadGroup()
      ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
 public class Foo {
  void bar() {
   ThreadGroup t = Thread.currentThread().getThreadGroup();
  }
 }
      ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
+	</test-code>
+	<test-code>
+		<description><![CDATA[
 bad, using System.getSecurityManager().getThreadGroup()
      ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
 public class Foo {
  void bar() {
   ThreadGroup t = System.getSecurityManager().getThreadGroup();
  }
 }
      ]]></code>
-    </test-code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+ThreadGroup() but not java.lang.ThreadGroup
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+import some.pkg.ThreadGroup;
+public class Foo {
+ void bar() {
+  ThreadGroup t = new ThreadGroup();
+ }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+MyThreadGroup() not java.lang.ThreadGroup
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+import java.lang.ThreadGroup;
+public class Foo {
+
+ public class MyThreadGroup{}
+ 
+ void bar() {
+  MyThreadGroup t = new MyThreadGroup();
+ }
+}
+     ]]></code>
+	</test-code>
 </test-data>
