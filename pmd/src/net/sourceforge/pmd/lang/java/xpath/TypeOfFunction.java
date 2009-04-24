@@ -61,10 +61,9 @@ public class TypeOfFunction implements Function {
 	    Class type = ((TypeNode) n).getType();
 	    if (type == null) {
 		return nodeTypeName != null
-			&& (nodeTypeName.equals(fullTypeName) || (shortTypeName != null && shortTypeName
-				.equals(nodeTypeName)));
+			&& (nodeTypeName.equals(fullTypeName) || nodeTypeName.equals(shortTypeName));
 	    }
-	    if (type.getName().equals(fullTypeName) || (nodeTypeName != null && nodeTypeName.equals(type.getName()))) {
+	    if (type.getName().equals(fullTypeName)) {
 		return true;
 	    }
 	    List<Class> implementors = Arrays.asList(type.getInterfaces());
@@ -81,6 +80,6 @@ public class TypeOfFunction implements Function {
 	} else {
 	    throw new IllegalArgumentException("typeof function may only be called on a TypeNode.");
 	}
-	return true;
+	return false;
     }
 }
