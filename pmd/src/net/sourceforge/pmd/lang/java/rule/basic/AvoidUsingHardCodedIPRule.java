@@ -67,9 +67,11 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 
 	// Note: We used to check the addresses using InetAddress.getByName(String), but that's extremely slow,
 	// so we created more robust checking methods.
-	final char firstChar = Character.toUpperCase(image.charAt(0));
-	if ((checkIPv4 && isIPv4(firstChar, image)) || isIPv6(firstChar, image, checkIPv6, checkIPv4MappedIPv6)) {
-	    addViolation(data, node);
+	if (image.length() > 0) {
+	    final char firstChar = Character.toUpperCase(image.charAt(0));
+	    if ((checkIPv4 && isIPv4(firstChar, image)) || isIPv6(firstChar, image, checkIPv6, checkIPv4MappedIPv6)) {
+		addViolation(data, node);
+	    }
 	}
 	return data;
     }
@@ -116,7 +118,6 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 	}
 
 	Matcher matcher = IPV6_PATTERN.matcher(s);
-	System.out.println("---- " + s);
 	if (matcher.matches()) {
 	    // Account for leading or trailing :: before splitting on :
 	    boolean zeroSubstitution = false;
@@ -139,7 +140,6 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 	    String[] parts = s.split(":");
 	    for (int i = 0; i < parts.length; i++) {
 		final String part = parts[i];
-		System.out.println("<" + part + ">");
 		// An empty part indicates :: was encountered.  There can only be 1 such instance.
 		if (part.length() == 0) {
 		    if (zeroSubstitution) {
