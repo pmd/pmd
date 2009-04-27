@@ -550,7 +550,7 @@ public class Test {
 
     <rule   name="AvoidUsingHardCodedIP"
             since="4.1"
-            message="Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !"
+            message="Do not hard code the IP address ${variableName}"
             class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingHardCodedIPRule"
             externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidUsingHardCodedIP">
 	    <description>
