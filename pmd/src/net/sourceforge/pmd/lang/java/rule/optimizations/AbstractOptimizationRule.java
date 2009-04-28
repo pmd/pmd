@@ -30,7 +30,6 @@ public class AbstractOptimizationRule extends AbstractJavaRule {
             if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
                 return true;
             }
-            continue;
         }
         return false;
     }

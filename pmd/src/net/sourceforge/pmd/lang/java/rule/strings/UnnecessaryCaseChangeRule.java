@@ -57,8 +57,9 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
 
             if (image == null || !(image.endsWith("toUpperCase") || image.endsWith("toLowerCase"))) {
                 continue;
+            } else {
+                return i;
             }
-            return i;
         }
         return -1;
     }

@@ -55,21 +55,23 @@ public class PositionalIteratorRule extends AbstractJavaRule {
     }
 
     private boolean hasNameAsChild(Node node) {
-        while (node.jjtGetNumChildren() > 0) {
+        if (node.jjtGetNumChildren() > 0) {
             if (node.jjtGetChild(0) instanceof ASTName) {
                 return true;
+            } else {
+        	return hasNameAsChild(node.jjtGetChild(0));
             }
-            return hasNameAsChild(node.jjtGetChild(0));
         }
         return false;
     }
 
     private String getName(Node node) {
-        while (node.jjtGetNumChildren() > 0) {
+        if (node.jjtGetNumChildren() > 0) {
             if (node.jjtGetChild(0) instanceof ASTName) {
                 return ((ASTName) node.jjtGetChild(0)).getImage();
+            } else {
+        	return getName(node.jjtGetChild(0));
             }
-            return getName(node.jjtGetChild(0));
         }
         throw new IllegalArgumentException("Check with hasNameAsChild() first!");
     }

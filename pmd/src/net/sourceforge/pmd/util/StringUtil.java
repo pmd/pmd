@@ -36,8 +36,9 @@ public final class StringUtil {
     	}
     	
     	for (int i=0; i<value.length(); i++) {
-    		if (Character.isWhitespace(value.charAt(i))) { continue; }
-    		return false;
+    		if (!Character.isWhitespace(value.charAt(i))) {
+    		    return false;
+    		}
     	}
     	
     	return true;

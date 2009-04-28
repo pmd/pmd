@@ -137,6 +137,7 @@ public class NameOccurrence {
      *
      * @return true, if the occurrence is self-assignment, false, otherwise.
      */
+    @SuppressWarnings("PMD.AvoidBranchingStatementAsLastInLoop")
     public boolean isSelfAssignment() {
         Node l = location;
         while (true) {
@@ -167,11 +168,7 @@ public class NameOccurrence {
             }
 
             // catch this.i++ or ++this.i
-            if (gp instanceof ASTPreDecrementExpression || gp instanceof ASTPreIncrementExpression || gp instanceof ASTPostfixExpression) {
-                return true;
-            }
-
-            return false;
+            return gp instanceof ASTPreDecrementExpression || gp instanceof ASTPreIncrementExpression || gp instanceof ASTPostfixExpression;
         }
     }
 

@@ -55,10 +55,9 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 	public String errorFor(Object value) {
 		Object[] values = (Object[])value;
 		for (int i=0; i<values.length; i++) {
-			if (labelsByChoice.containsKey(values[i])) {
-			    continue;
+			if (!labelsByChoice.containsKey(values[i])) {
+				return nonLegalValueMsgFor(values[i]);
 			}
-			return nonLegalValueMsgFor(values[i]);
 		}
 		return null;
 	}
