@@ -6,10 +6,25 @@
 This ruleset contains links to rules that are new in PMD v5.0
   </description>
 
-	<rule ref="rulesets/java/android.xml"/>
+	<rule ref="rulesets/ecmascript/basic.xml/AssignmentInOperand"/>
+	<rule ref="rulesets/ecmascript/basic.xml/ConsistentReturn"/>
+	<rule ref="rulesets/ecmascript/basic.xml/InnaccurateNumericLiteral"/>
+	<rule ref="rulesets/ecmascript/basic.xml/UnreachableCode"/>
+	<rule ref="rulesets/ecmascript/braces.xml/ForLoopsMustUseBraces"/>
+	<rule ref="rulesets/ecmascript/braces.xml/IfStmtsMustUseBraces"/>
+	<rule ref="rulesets/ecmascript/braces.xml/IfElseStmtsMustUseBraces"/>
+	<rule ref="rulesets/ecmascript/braces.xml/WhileLoopsMustUseBraces"/>
+	<rule ref="rulesets/ecmascript/unnecessary.xml/UnnecessaryParentheses"/>
+	<rule ref="rulesets/ecmascript/unnecessary.xml/UnnecessaryBlock"/>
+
+	<rule ref="rulesets/java/android.xml/CallSuperFirst"/>
+	<rule ref="rulesets/java/android.xml/CallSuperLast"/>
+	<rule ref="rulesets/java/android.xml/ProtectLogD"/>
+	<rule ref="rulesets/java/android.xml/ProtectLogV"/>
 	<rule ref="rulesets/java/basic.xml/CheckSkipResult"/>
 	<rule ref="rulesets/java/basic.xml/ExtendsObject"/>
 	<rule ref="rulesets/java/controversial.xml/AvoidPrefixingMethodParameters"/>
+	<rule ref="rulesets/java/controversial.xml/AvoidLiteralsInIfCondition"/>
 	<rule ref="rulesets/java/controversial.xml/OneDeclarationPerLine"/>
   	<rule ref="rulesets/java/coupling.xml/LoosePackageCoupling"/>
 	<rule ref="rulesets/java/design.xml/FieldDeclarationsShouldBeAtStartOfClass"/>
@@ -18,10 +33,14 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/java/empty.xml/EmptyInitializer"/>
 	<rule ref="rulesets/java/empty.xml/EmptyStatementBlock"/>
 	<rule ref="rulesets/java/imports.xml/UnnecessaryFullyQualifiedName"/>
+	<rule ref="rulesets/java/junit.xml/JUnitTestContainsTooManyAsserts"/>
+	<rule ref="rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals"/>
 	<rule ref="rulesets/java/naming.xml/ShortClassName"/>
+	<rule ref="rulesets/java/optimizations.xml/RedundantFieldInitializer"/>
 	<rule ref="rulesets/java/strictexception.xml/AvoidCatchingGenericException"/>
 	<rule ref="rulesets/java/strictexception.xml/AvoidThrowingNewInstanceOfSameException"/>
 	<rule ref="rulesets/java/unnecessary.xml/UselessParentheses"/>
 
+	<rule ref="rulesets/xml/basic.xml/MistypedCDATASection"/>
 </ruleset>
 

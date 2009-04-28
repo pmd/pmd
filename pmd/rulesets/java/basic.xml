@@ -743,6 +743,42 @@ public class Foo {
         </example>
     </rule>
 
+	<rule name="AvoidBranchingStatementAsLastInLoop"
+		since="5.0"
+		class="net.sourceforge.pmd.lang.java.rule.basic.AvoidBranchingStatementAsLastInLoopRule"
+		message="Avoid using a branching statement as the last in a loop."
+        externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop">
+        <description>
+            <![CDATA[
+            		Using a branching statement as the last in a loop may be a bug, and/or is confusing.
+					Check the usage is not a bug, or consider changing.
+            ]]>
+        </description>
+        <priority>2</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+ public void bar() {
+  // Funky use of branching statement in a loop...
+  for (int i = 0; i < 10; i++) {
+   if (i*i <= 25) {
+    continue;
+   }
+   break;
+  }
+
+  // This makes more sense...
+  for (int i = 0; i < 10; i++) {
+   if (i*i > 25) {
+    break;
+   }
+  }
+ }
+}
+            ]]>
+        </example>
+    </rule>
+
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyCatchBlock" />
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyIfStmt" />
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyWhileStmt" />

@@ -13,6 +13,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 
     @Before
     public void setUp() {
+        addRule(RULESET, "AvoidBranchingStatementAsLastInLoop");
         addRule(RULESET, "AvoidDecimalLiteralsInBigDecimalConstructor");
     	addRule(RULESET, "AvoidMultipleUnaryOperators");
         addRule(RULESET, "AvoidThreadGroup");
