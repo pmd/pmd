@@ -43,11 +43,8 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
             if (literal.getNthParent(3) instanceof ASTAdditiveExpression) {
                 immediateLiterals++;
             }
-            try {
-                Integer.parseInt(literal.getImage());
-                return data;
-            } catch (NumberFormatException nfe) {
-                // NFE means new StringBuffer("a" + "b"), want to flag those
+            if (literal.isIntLiteral() || literal.isFloatLiteral()) {
+        	return data;
             }
         }
 
