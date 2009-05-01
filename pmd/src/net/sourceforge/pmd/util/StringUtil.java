@@ -60,38 +60,42 @@ public final class StringUtil {
 		return a.equals(b);
 	}
     
-    public static String replaceString(String original, char oldChar, String newString) {
-        
-    	String fixedNew = newString == null ? "" : newString;
-
-        StringBuilder desc = new StringBuilder();
-        int index = original.indexOf(oldChar);
-        int last = 0;
-        while (index != -1) {
-            desc.append(original.substring(last, index));
-            desc.append(fixedNew);
-            last = index + 1;
-            index = original.indexOf(oldChar, last);
-        }
-        desc.append(original.substring(last));
-        return desc.toString();
+    public static String replaceString(final String original, char oldChar, final String newString) {
+	int index = original.indexOf(oldChar);
+	if (index < 0) {
+	    return original;
+	} else {
+	    final String replace = newString == null ? "" : newString;
+	    final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
+	    int last = 0;
+	    while (index != -1) {
+		buf.append(original.substring(last, index));
+		buf.append(replace);
+		last = index + 1;
+		index = original.indexOf(oldChar, last);
+	    }
+	    buf.append(original.substring(last));
+	    return buf.toString();
+	}
     }
 
-    public static String replaceString(String original, String oldString, String newString) {
-    	
-    	String fixedNew = newString == null ? "" : newString;
-    	
-        StringBuilder desc = new StringBuilder();
-        int index = original.indexOf(oldString);
-        int last = 0;
-        while (index != -1) {
-            desc.append(original.substring(last, index));
-            desc.append(fixedNew);
-            last = index + oldString.length();
-            index = original.indexOf(oldString, last);
-        }
-        desc.append(original.substring(last));
-        return desc.toString();
+    public static String replaceString(final String original, final String oldString, final String newString) {
+	int index = original.indexOf(oldString);
+	if (index < 0) {
+	    return original;
+	} else {
+	    final String replace = newString == null ? "" : newString;
+	    final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
+	    int last = 0;
+	    while (index != -1) {
+		buf.append(original.substring(last, index));
+		buf.append(replace);
+		last = index + oldString.length();
+		index = original.indexOf(oldString, last);
+	    }
+	    buf.append(original.substring(last));
+	    return buf.toString();
+	}
     }
 
     /**
