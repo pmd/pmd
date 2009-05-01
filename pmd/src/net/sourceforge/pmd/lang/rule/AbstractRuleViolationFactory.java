@@ -6,6 +6,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.StringUtil;
 
 public abstract class AbstractRuleViolationFactory implements RuleViolationFactory {
 
@@ -15,7 +16,7 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
 	final String formattedMessage;
 	if (message != null) {
 	    // Escape PMD specific variable message format, specifically the { in the ${, so MessageFormat doesn't bitch.
-	    final String escapedMessage = message.replace("${", "$'{'");
+	    final String escapedMessage = StringUtil.replaceString(message, "${", "$'{'");
 	    formattedMessage = MessageFormat.format(escapedMessage, args != null ? args : NO_ARGS);
 	} else {
 	    formattedMessage = message;
