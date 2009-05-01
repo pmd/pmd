@@ -24,26 +24,37 @@ public final class RuleViolationComparator implements Comparator<RuleViolation> 
     private RuleViolationComparator() {
     }
 
-    public int compare(RuleViolation r1, RuleViolation r2) {
-	if (!r1.getFilename().equals(r2.getFilename())) {
-	    return r1.getFilename().compareTo(r2.getFilename());
+    public int compare(final RuleViolation r1, final RuleViolation r2) {
+	int cmp = r1.getFilename().compareTo(r2.getFilename());
+	if (cmp == 0) {
+	    cmp = r1.getBeginLine() - r2.getBeginLine();
+	    if (cmp == 0) {
+		cmp = compare(r1.getDescription(), r2.getDescription());
+		if (cmp == 0) {
+		    cmp = r1.getBeginColumn() - r2.getBeginColumn();
+		    if (cmp == 0) {
+			cmp = r1.getEndLine() - r2.getEndLine();
+			if (cmp == 0) {
+			    cmp = r1.getEndColumn() - r2.getEndColumn();
+			    if (cmp == 0) {
+				cmp = r1.getRule().getName().compareTo(r2.getRule().getName());
+			    }
+			}
+		    }
+		}
+	    }
 	}
-	if (r1.getBeginLine() != r2.getBeginLine()) {
-	    return r1.getBeginLine() - r2.getBeginLine();
+	return cmp;
+    }
+
+    private static int compare(final String s1, final String s2) {
+	// Treat null as larger
+	if (s1 == null) {
+	    return 1;
+	} else if (s2 == null) {
+	    return -1;
+	} else {
+	    return s1.compareTo(s2);
 	}
-	if (r1.getDescription() != null && r2.getDescription() != null
-		&& !r1.getDescription().equals(r2.getDescription())) {
-	    return r1.getDescription().compareTo(r2.getDescription());
-	}
-	if (r1.getBeginColumn() != r2.getBeginColumn()) {
-	    return r1.getBeginColumn() - r2.getBeginColumn();
-	}
-	if (r1.getEndLine() != r2.getEndLine()) {
-	    return r1.getEndLine() - r2.getEndLine();
-	}
-	if (r1.getEndColumn() != r2.getEndColumn()) {
-	    return r1.getEndColumn() - r2.getEndColumn();
-	}
-	return r1.getRule().getName().compareTo(r2.getRule().getName());
     }
 }
