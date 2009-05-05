@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE ACTIONS SYSTEM "actions.dtd">
+<ACTIONS>
+    <ACTION NAME="pmd-check-current-buffer">
+        <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.check(buffer, view);
+    </CODE>
+    </ACTION>
+    <ACTION NAME="pmd-check-all-open-buffers">
+        <CODE>
+        net.sourceforge.pmd.jedit.PMDJEditPlugin.checkAllOpenBuffers(view);
+      </CODE>
+    </ACTION>
+    <ACTION NAME="pmd-check-directory">
+        <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.checkDirectory(view);
+    </CODE>
+    </ACTION>
+    <ACTION NAME="pmd-clear-errorlist">
+        <CODE>
+        net.sourceforge.pmd.jedit.PMDJEditPlugin.clearErrorList();
+      </CODE>
+    </ACTION>
+    <ACTION NAME="pmd-run-designer">
+        <CODE>
+        net.sourceforge.pmd.jedit.PMDJEditPlugin.runDesigner();
+      </CODE>
+    </ACTION>
+    <ACTION NAME="cpd-currentfile">
+        <CODE>
+      net.sourceforge.pmd.jedit.PMDJEditPlugin.cpdCurrentFile(view);
+    </CODE>
+    </ACTION>
+    <ACTION NAME="cpd-dir">
+        <CODE>
+            net.sourceforge.pmd.jedit.PMDJEditPlugin.cpdDir(view);
+        </CODE>
+    </ACTION>
+</ACTIONS>

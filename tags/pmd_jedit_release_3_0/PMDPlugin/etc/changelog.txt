@@ -1,0 +1,99 @@
+2007-11-20 - 2.7
+  Changelog is now in ../jedit.html (the documentation). No need to duplicate
+  it, now is there?
+  
+10th January 2006 - 2.6O
+- Updated to PMD 3.4
+- Updated to jEdit 4.3pre3 version.
+- Added "Ignore Literals & identifiers" option for CPD.
+
+16th August 2004 - 2.5
+- Updated to PMD 1.9
+- Removed Recursive Directory options and integrated them into FileChooser itself.
+- Complete redesign of the way PMD Rules and Copy/Paste Detector are used.
+- Fixed improper highlighting of Rule Violations. Because of this bug, any open file in jEdit was showing errors of other files too.
+- Lots of code cleanup and optimizations.
+
+22 March 2004- 2.4
+- Optimized usage of ErrorSource for faster Error Highlighting.
+- Fixed Run on save running when the buffer is non-Java.
+- Updated to pmd 1.6
+- Added option to export PMD results to files in various formats such as HTML, XML, Text, CSV etc.
+- Added a new feature to show Progressbar when working on Large file sets.
+- Progressbar color configured via jEdit Properties.
+- Improvements in Copy/Paste Detector
+
+October 31st 2003 - 2.3
+1. Updated to PMD 1.3
+
+August 18th 2003 - 2.2
+1. Updated to PMD 1.2.1
+2. Updated to jEdit 4.2 API changes
+3. Added PMD in jEdit's File System Browser Plugins Menu.
+
+
+May 19th 2003 - 2.1:
+Added "clear ErrorList" option - thanks to Randall Schultz for the suggestion.
+Added "check all open buffers" option - thanks to Randall Schultz for the suggestion.
+Added support to define Custom RuleSets thereby facilitating integration of Custom Rulesets with built-in rulesets & their independent development.
+Added C/C++, PHP support to Copy/Paste Detector. Now you can find out duplicate code in your C/C++ & PHP code besides the usual Java code.
+
+April 18 2003 - 2.0:
+Jiger Patel integrated CPD functionality.
+Upgraded to work with pmd-1.05.
+
+March 24 2003 - 1.5:
+Upgraded to work with pmd-1.04.
+
+February 11 2003 - 1.4:
+Upgraded to work with pmd-1.03.
+
+January 24 2003 - 1.3:
+Upgraded to work with pmd-1.02.
+
+November 20 2002 - 1.2:
+Added some more fixes from Jiger.
+
+November 14 2002 - 1.1:
+Added "directory popup option" feature; thanks to Jiger Patel for the suggestions.
+
+November 7 2002 - 1.0:
+Updated to use pmd-1.01.
+
+October 4 2002 - 0.9:
+Updated to use pmd-1.0rc3
+
+Augst 16 2002 - 0.8:
+Fixed GUI lockup problem
+Added example text to option pane
+Updated to use pmd-0.9
+
+August 2 2002 - 0.7:
+Updated to use pmd-0.8
+Now individual rules can be selected
+
+July 26 2002 - 0.6:
+Updated to use pmd-0.7.
+PMD can be run on 1) all files in a directory or 2) recursively into a directory tree.
+Added some detail to the Options area.
+
+July 22 2002 - 0.5:
+Moved options into Global Options area and made them look nicer.
+Cleaned up menus.
+Cleaned up help text.
+
+July 18 2002 - 0.4:
+Updated to use pmd-0.6
+Modified to use ErrorList plugin
+Fixed bug - displayed a popup if no messages are found
+
+July 12 2002 - 0.3:
+Updated to use pmd-0.4.
+Messages are displayed in a list.
+
+July 9 2002 - 0.2:
+Fixed bug - a message, not an empty box, is now displayed if no errors are found.
+Added options pane so rulesets are selectable and selections are persistant.
+
+July 8 2002 - 0.1:
+Initial release
