@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE DOCKABLES SYSTEM "dockables.dtd">
+
+<DOCKABLES>
+	<DOCKABLE NAME="cpd-viewer">
+		new net.sourceforge.pmd.jedit.CPDDuplicateCodeViewer(view);
+	</DOCKABLE>
+</DOCKABLES>

@@ -1,0 +1,81 @@
+<project name="PMDPlugin" default="jar" basedir=".">
+
+    <!-- user defined build properties, these override any properties set below -->
+    <property file="build.properties"/>
+    <property file="../build.properties"/>
+
+    <!-- properties specific to this build file -->
+    <property name="build" location="build"/>
+    <property name="src" location="src"/>
+    <property name="lib" location="lib"/>
+
+    <!-- load plugin version from plugin props file -->
+    <property file="pmd.props"/>
+    <property name="pluginversion" value="plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version"/>
+
+    <!-- default location of jEdit installation containing jedit.jar -->
+    <property name="jedit.install.dir" location="../.."/>
+
+    <!-- default location of user folder containing plugin jars -->
+    <property name="install.dir"  location="${user.home}/.jedit/jars"/>
+
+    <!-- set up the classpath for the build -->
+    <path id="project.class.path">
+        <pathelement location="${jedit.install.dir}/jedit.jar"/>
+        <pathelement location="${install.dir}/ErrorList.jar"/>
+        <pathelement location="${build}"/>
+        <fileset casesensitive="false" id="pmd.libs" dir="${lib}">
+            <include name="pmd-*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- might be able to auto-reload the plugin -->
+    <condition property="can.reload.plugins">
+        <and>
+            <available classname="org.gjt.sp.jedit.jEdit"/>
+            <available classname="ReloadPluginTask"/>
+        </and>
+    </condition>
+
+    <!-- Target: clean - delete the build directory contents -->
+    <target name="clean">
+        <delete dir="${build}"/>
+        <mkdir dir="${build}"/>
+    </target>
+
+    <!-- Target: compile -->
+    <target name="compile">
+        <mkdir dir="${build}"/>
+        <javac
+            srcdir="${src}"
+            destdir="${build}"
+            source="1.5"
+            target="1.5"
+            debug="on"
+            deprecation="on">
+            <classpath refid="project.class.path"/>
+        </javac>
+    </target>
+
+    <!-- Target: jar - create the plugin -->
+    <target name="jar" depends="compile">
+        <jar jarfile="${install.dir}/${ant.project.name}.jar">
+            <fileset dir="${build}"/>
+            <fileset dir="${basedir}">
+                <include name="*.props"/>
+                <include name="*.xml"/>
+                <include name="*.html"/>
+                <include name="doc/jedit.html"/>
+                <include name="doc/*.jpg"/>
+            </fileset>
+        </jar>
+        <antcall target="reload"/>
+    </target>
+
+    <target name="reload" if="can.reload.plugins">
+        <echo>Reloading ${install.dir}/${ant.project.name}.jar</echo>
+        <taskdef name="reloadPlugin" classname="ReloadPluginTask"/>
+        <reloadPlugin jarfile="${install.dir}/${ant.project.name}.jar"/>
+    </target>
+
+</project>
