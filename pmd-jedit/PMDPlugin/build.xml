@@ -62,8 +62,7 @@
                 <include name="*.props"/>
                 <include name="*.xml"/>
                 <include name="*.html"/>
-                <include name="doc/jedit.html"/>
-                <include name="doc/*.jpg"/>
+                <include name="doc/*"/>
             </fileset>
         </jar>
         <copy todir="${install.dir}">
