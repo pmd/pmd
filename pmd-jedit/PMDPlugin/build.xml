@@ -1,4 +1,4 @@
-<project name="PMDPlugin" default="jar" basedir=".">
+<project name="PMDPlugin" default="dist" basedir=".">
 
     <!-- user defined build properties, these override any properties set below -->
     <property file="build.properties"/>
@@ -9,23 +9,20 @@
     <property name="src" location="src"/>
     <property name="lib" location="lib"/>
 
-    <!-- load plugin version from plugin props file -->
-    <property file="pmd.props"/>
-    <property name="pluginversion" value="plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version"/>
-
     <!-- default location of jEdit installation containing jedit.jar -->
     <property name="jedit.install.dir" location="../.."/>
 
     <!-- default location of user folder containing plugin jars -->
     <property name="install.dir"  location="${user.home}/.jedit/jars"/>
+    <property name="jedit.plugins.dir" location="${install.dir}"/>
 
     <!-- set up the classpath for the build -->
     <path id="project.class.path">
         <pathelement location="${jedit.install.dir}/jedit.jar"/>
-        <pathelement location="${install.dir}/ErrorList.jar"/>
+        <pathelement location="${jedit.plugins.dir}/ErrorList.jar"/>
         <pathelement location="${build}"/>
         <fileset casesensitive="false" id="pmd.libs" dir="${lib}">
-            <include name="pmd-*.jar"/>
+            <include name="*.jar"/>
         </fileset>
     </path>
 
@@ -58,7 +55,7 @@
     </target>
 
     <!-- Target: jar - create the plugin -->
-    <target name="jar" depends="compile">
+    <target name="dist" depends="compile">
         <jar jarfile="${install.dir}/${ant.project.name}.jar">
             <fileset dir="${build}"/>
             <fileset dir="${basedir}">
@@ -69,6 +66,9 @@
                 <include name="doc/*.jpg"/>
             </fileset>
         </jar>
+        <copy todir="${install.dir}">
+            <fileset refid="pmd.libs" />
+        </copy>
         <antcall target="reload"/>
     </target>
 
