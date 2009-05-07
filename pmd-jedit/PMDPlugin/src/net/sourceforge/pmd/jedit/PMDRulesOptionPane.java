@@ -25,7 +25,7 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
 
     SelectedRules rules;
 
-    JTextArea exampleTextArea = new JTextArea( 15, 80 );
+    JTextArea exampleTextArea = new JTextArea( 15, 60 );
     JTextField txtCustomRules;
     CheckboxTree tree;
     JCheckBox useDefaultRules;
