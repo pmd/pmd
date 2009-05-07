@@ -1,31 +1,49 @@
 <project name="PMDPlugin" default="jar" basedir=".">
 
+    <!-- user defined build properties, these override any properties set below -->
     <property file="build.properties"/>
     <property file="../build.properties"/>
-    <property name="config" location="."/>
-    <property name="src" location="src/"/>
-    <property name="lib" location="${basedir}/lib"/>
-    <property name="build" location="build"/>
-    <property name="docs" location="doc"/>
-    <property name="pluginversion" value="3.0"/>
-    <property name="jedit.install.dir" location="../.."/>
-    <property name="jedit.jars.dir" location="${jedit.install.dir}/jars" />
-    <property name="install.dir"  location="${jedit.jars.dir}"/>
 
+    <!-- properties specific to this build file -->
+    <property name="build" location="build"/>
+    <property name="src" location="src"/>
+    <property name="lib" location="lib"/>
+
+    <!-- load plugin version from plugin props file -->
+    <property file="pmd.props"/>
+    <property name="pluginversion" value="plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version"/>
+
+    <!-- default location of jEdit installation containing jedit.jar -->
+    <property name="jedit.install.dir" location="../.."/>
+
+    <!-- default location of user folder containing plugin jars -->
+    <property name="install.dir"  location="${user.home}/.jedit/jars"/>
+
+    <!-- set up the classpath for the build -->
     <path id="project.class.path">
         <pathelement location="${jedit.install.dir}/jedit.jar"/>
-        <pathelement location="${jedit.jars.dir}/ErrorList.jar"/>
+        <pathelement location="${install.dir}/ErrorList.jar"/>
         <pathelement location="${build}"/>
         <fileset casesensitive="false" id="pmd.libs" dir="${lib}">
-            <include name="*.jar"/>
+            <include name="pmd-*.jar"/>
         </fileset>
     </path>
 
-    <target name="delete">
+    <!-- might be able to auto-reload the plugin -->
+    <condition property="can.reload.plugins">
+        <and>
+            <available classname="org.gjt.sp.jedit.jEdit"/>
+            <available classname="ReloadPluginTask"/>
+        </and>
+    </condition>
+
+    <!-- Target: clean - delete the build directory contents -->
+    <target name="clean">
         <delete dir="${build}"/>
         <mkdir dir="${build}"/>
     </target>
 
+    <!-- Target: compile -->
     <target name="compile">
         <mkdir dir="${build}"/>
         <javac
@@ -39,43 +57,25 @@
         </javac>
     </target>
 
+    <!-- Target: jar - create the plugin -->
     <target name="jar" depends="compile">
-        <jar jarfile="${jedit.jars.dir}/${ant.project.name}.jar">
+        <jar jarfile="${install.dir}/${ant.project.name}.jar">
             <fileset dir="${build}"/>
-            <fileset dir="${config}">
+            <fileset dir="${basedir}">
                 <include name="*.props"/>
                 <include name="*.xml"/>
                 <include name="*.html"/>
+                <include name="doc/jedit.html"/>
+                <include name="doc/*.jpg"/>
             </fileset>
-            <fileset dir="." includes="doc/*.*"/>
         </jar>
+        <antcall target="reload"/>
     </target>
 
-
-    <target name="dist">
-        <antcall target="jar"/>
-        <copy todir="${jedit.jars.dir}" verbose="true">
-            <fileset  refid="pmd.libs" />
-        </copy>
+    <target name="reload" if="can.reload.plugins">
+        <echo>Reloading ${install.dir}/${ant.project.name}.jar</echo>
+        <taskdef name="reloadPlugin" classname="ReloadPluginTask"/>
+        <reloadPlugin jarfile="${install.dir}/${ant.project.name}.jar"/>
     </target>
-
-    <!--
-    <target name="release">
-        <antcall target="clean"/>
-        <antcall target="jar"/>
-        <mkdir dir="tmp/jars"/>
-        <copy file="${install.dir}/${ant.project.name}.jar" todir="tmp/jars"/>
-        <copy file="${install.dir}/${pmdjar}" todir="tmp/jars"/>
-        <copy file="${lib}/asm-3.0.jar" todir="tmp/jars"/>
-        <copy file="${lib}/jaxen-1.1.1.jar" todir="tmp/jars"/>
-        <copy file="${lib}/junit-4.1.jar" todir="tmp/jars"/>
-        <copy file="${lib}/pmd-swingui-0.1.jar" todir="tmp/jars"/>
-        <zip zipfile="pmd-jedit-bin-${pluginversion}.zip" basedir="tmp"/>
-        <move file="pmd-jedit-bin-${pluginversion}.zip" todir="${install.dir}"/>
-        <delete dir="tmp"/>
-    </target>
-    -->
-
-    <target name="clean" depends="delete" />
 
 </project>
