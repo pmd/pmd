@@ -300,7 +300,7 @@ public class PMDJEditPlugin extends EBPlugin
 
         catch (PMDException pmde)
         {
-            String msg="Error while processing " + buffer.getPath() + ":\n" + pmde.getMessage();
+            String msg="Error while processing " + buffer.getPath() + ":\n" + pmde.getMessage() + "\n\n" + pmde.getCause();
             Log.log(Log.ERROR, this, msg, pmde);
             JOptionPane.showMessageDialog(view, msg, "PMD", JOptionPane.ERROR_MESSAGE);
         }
