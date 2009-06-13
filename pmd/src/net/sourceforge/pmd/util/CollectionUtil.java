@@ -215,52 +215,52 @@ public final class CollectionUtil {
         if (b == null) { return isEmpty(a); }
         return a.equals(b);
     }
-    
+
     /**
      * If the newValue is already held within the values array then the values array
      * is returned, otherwise a new array is created appending the newValue to the
      * end.
-     * 
+     *
      * @param <T>
      * @param values
      * @param newValue
-     * @return
+     * @return an array containing the union of values and newValue
      */
     public static <T> T[] addWithoutDuplicates(T[] values, T newValue) {
-        
+
         for (T value : values) {
             if (value.equals(newValue)) {
                 return values;
             }
         }
-        
+
         T[] largerOne = (T[])Array.newInstance(values.getClass().getComponentType(), values.length + 1);
         System.arraycopy(values, 0, largerOne, 0, values.length);
         largerOne[values.length] = newValue;
-        return largerOne;        
+        return largerOne;
     }
-    
+
     /**
      * Returns an array of values as a union set of the two input arrays.
-     * 
+     *
      * @param <T>
      * @param values
      * @param newValues
-     * @return
+     * @return the union of the two arrays
      */
     public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
 
-        Set<T> originals = new HashSet<T>(values.length); 
+        Set<T> originals = new HashSet<T>(values.length);
         for (T value : values) { originals.add(value); }
         List<T> newOnes = new ArrayList<T>(newValues.length);
         for (T value : newValues) {
             if (originals.contains(value)) { continue; }
             newOnes.add(value);
         }
-        
+
         T[] largerOne = (T[])Array.newInstance(values.getClass().getComponentType(), values.length + newOnes.size());
         System.arraycopy(values, 0, largerOne, 0, values.length);
         for (int i=values.length; i<largerOne.length; i++) { largerOne[i] = newOnes.get(i-values.length); }
-        return largerOne;        
+        return largerOne;
     }
 }

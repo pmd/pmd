@@ -436,7 +436,7 @@ public abstract class AbstractRule implements Rule {
     }
 
     /**
-     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node)
+     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String, Object[])
      */
     public void addViolation(Object data, Node node) {
 	RuleContext ruleContext = (RuleContext) data;
@@ -445,7 +445,7 @@ public abstract class AbstractRule implements Rule {
     }
 
     /**
-     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String)
+     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String, Object[])
      */
     public void addViolation(Object data, Node node, String arg) {
 	RuleContext ruleContext = (RuleContext) data;
@@ -454,7 +454,7 @@ public abstract class AbstractRule implements Rule {
     }
 
     /**
-     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, Object[])
+     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String, Object[])
      */
     public void addViolation(Object data, Node node, Object[] args) {
 	RuleContext ruleContext = (RuleContext) data;
@@ -463,7 +463,7 @@ public abstract class AbstractRule implements Rule {
     }
 
     /**
-     * @see RuleViolationFactory#addViolationWithMessage(RuleContext, Rule, Node, String)
+     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String, Object[])
      */
     public void addViolationWithMessage(Object data, Node node, String message) {
 	RuleContext ruleContext = (RuleContext) data;
@@ -472,7 +472,7 @@ public abstract class AbstractRule implements Rule {
     }
 
     /**
-     * @see RuleViolationFactory#addViolationWithMessage(RuleContext, Rule, Node, String, Object[])
+     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String, Object[])
      */
     public void addViolationWithMessage(Object data, Node node, String message, Object[] args) {
 	RuleContext ruleContext = (RuleContext) data;
