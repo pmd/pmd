@@ -64,7 +64,7 @@ cp ../LICENSE.txt changelog.txt $pmd_bin_dir/etc
 cd ../bin/
 cp pmd.* cpd.sh cpdgui.bat designer.* $pmd_bin_dir/bin
 cd ../etc/
-cp ../lib/pmd-$version.jar ../lib/asm-3.1.jar ../lib/jaxen-1.1.1.jar ../lib/junit-4.4.jar $pmd_bin_dir/lib/
+cp ../lib/pmd-$version.jar ../lib/asm-3.2.jar ../lib/jaxen-1.1.1.jar ../lib/junit-4.4.jar $pmd_bin_dir/lib/
 mkdir $pmd_bin_dir/etc/xslt
 cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css $pmd_bin_dir/etc/xslt/
 mkdir $pmd_bin_dir/docs
