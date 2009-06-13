@@ -13,6 +13,7 @@ Dependencies updates: asm updated to 3.2
 Android ruleset: CallSuperLast rule now also checks for finish() redefinitions
 
 New rule:
+	Android: DoNotHardCodeSDCard
 	Controversial : AvoidLiteralsInIfCondition (patch 2591627)
 	StrictExceptions : AvoidCatchingGenericException
 
