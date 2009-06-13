@@ -12,6 +12,7 @@ public class AndroidRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "CallSuperFirst");
         addRule(RULESET, "CallSuperLast");
+        addRule(RULESET, "DoNotHardCodeSDCard");
         addRule(RULESET, "ProtectLogD");
         addRule(RULESET, "ProtectLogV");
     }
