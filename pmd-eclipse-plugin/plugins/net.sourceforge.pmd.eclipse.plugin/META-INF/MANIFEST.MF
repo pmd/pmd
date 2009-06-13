@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.core.resources,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: %plugin.provider
-Bundle-ClassPath: lib/asm-3.1.jar,
+Bundle-ClassPath: lib/asm-3.2.jar,
  lib/castor-1.1.2.1-xml.jar,
  lib/commons-logging-1.1.1.jar,
  lib/jaxen-1.1.1.jar,
