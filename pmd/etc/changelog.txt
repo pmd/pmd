@@ -8,6 +8,8 @@ Fixed bug 2724653 - AvoidThreadGroup reports false positives
 Correct -benchmark reporting of Rule visits via the RuleChain
 Fix issue with Type Resolution incorrectly handling of Classes with same name as a java.lang Class.
 
+Dependencies updates: asm updated to 3.2
+
 Android ruleset: CallSuperLast rule now also checks for finish() redefinitions
 
 New rule:
