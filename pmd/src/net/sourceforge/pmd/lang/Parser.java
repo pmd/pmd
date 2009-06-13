@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  *
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */
-// FUTURE Parser implementations need to be moved into Language specific packages
 public interface Parser {
     /**
      * Get a TokenManager for the given source.
