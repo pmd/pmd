@@ -14,7 +14,6 @@ import net.sourceforge.pmd.util.NumericConstants;
  * so the numbers may not match up.  (But topcount and sigma
  * should work.)
  */
-// FUTURE Rename to ExcessiveParameterListRule
 public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
     public ExcessiveParameterListRule() {
         super(ASTFormalParameters.class);
