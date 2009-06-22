@@ -53,7 +53,7 @@
   </tr>
   <tr>
     <td valign="top">encoding</td>
-    <td valign="top">The character set encoding (e.g., UTF-8) to use when reading the source code files; defaults to locale setting.</td>
+    <td valign="top">The character set encoding (e.g., UTF-8) to use when reading the source code files, but also when producing the report. A piece of warning, even if you set properly the encoding value, let's say to UTF-8, but you are running CPD encoded with CP1252, you may end up with not UTF-8 file. Indeed, CPD copy piece of source code in its report directly, therefore, the source files keep their encoding.</td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
