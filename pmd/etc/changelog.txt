@@ -526,7 +526,7 @@ Modified AvoidReassigningParameter to also check constructor arguments for reass
 
 New rules:
 	Basic ruleset: AvoidMultipleUnaryOperators
-	Controversial ruleset: DoNotCallGarbageCollectionExplicitly
+	Controversial ruleset: DoNotCallGarbageCollectionExplicitly,UseObjectForClearerAPI
 	Design ruleset : ReturnEmptyArrayRatherThanNull,TooFewBranchesForASwitchStatement,AbstractClassWithoutAnyMethod
 	Codesize : TooManyMethods
 	StrictExceptions : DoNotThrowExceptionInFinally

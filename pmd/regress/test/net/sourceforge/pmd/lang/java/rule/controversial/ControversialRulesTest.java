@@ -31,6 +31,7 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "SuspiciousOctalEscape");
         addRule(RULESET, "UnnecessaryConstructor");
         addRule(RULESET, "UnnecessaryParentheses");
+        addRule(RULESET, "UseObjectForClearerAPI");
     }
 
     public static junit.framework.Test suite() {

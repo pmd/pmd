@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+No issues here
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+
+import other.exceptions.SecurityException;
+import yet.an.other.one.NoSuchMethodException;
+
+public class MyClass {
+
+    public void method() {
+      // no args, no violation
+    }
+
+    public void otherMethod(String arg1, String arg2) {
+      // less than 2, should be ok
+    }
+
+    public void otherMethod(String arg1, String arg2, int arg3) {
+      // less than 2 Strings, should be ok
+    }
+
+    public void yetAnOtherOneWithException(String arg1,int arg2) throws SecurityException, NoSuchMethodException {
+      System.loadLibrary("nativelib");
+    }
+}
+		     ]]>
+		</code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+public class MyClass {
+  public void connect(String username,
+    String pssd, 
+    String databaseName, 
+    String databaseAdress) 
+    // Instead of those parameters object 
+    // would ensure a cleaner API and permit
+    // to add extra data transparently (no code change):
+    // void connect(UserData data);
+    {
+
+  }
+}
+		     ]]>
+		</code>
+    </test-code>
+</test-data>
