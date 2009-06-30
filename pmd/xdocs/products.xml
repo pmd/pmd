@@ -46,6 +46,11 @@
           <li><a href="http://www.amazon.com/exec/obidos/tg/detail/-/0672325624/ref=ase_interncom-20/103-5706126-6692649?v=glance&amp;s=book">Extreme Programming With Ant</a></li>
           </ul>
       </subsection>
+      <subsection name="article">
+        <ul>
+	  <li><a href="http://www.unixgarden.com/index.php/programmation/verifier-votre-code-java-avec-pmd">An introduction to PMD (in French)</a></li>
+	</ul>
+      </subsection>
       </section>
   </body>
 </document>
