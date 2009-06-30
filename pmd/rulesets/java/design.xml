@@ -1729,44 +1729,4 @@ public class HelloWorldBean {
     </example>
   </rule>
  	 
-<!--
-	<rule 	name="TooManyHttpFilter"
-	         since="4.2"
-          	message="Too many Http Filter inside a web application can make very it complex to understand and to deploy."
-          	class="net.sourceforge.pmd.lang.java.rule.design.GenericClassCounterRule"
-      		externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#TooManyHttpFilter">
-		<description>
-			<![CDATA[
-The Http filters are generally used to create sessions for object-relational mapping tools or for security/logging considerations. Too many of them may
-lead to a complex architecture where everything is "intercepted" the http request (akin to aspect-oriented programming). It can be elegant but far too complex.
-			]]>
-		</description>
-		<priority>4</priority>
-		<properties>
-		 -->
-			<!-- Must be a full java name to ensure type control !!! -->
-			<!--
-			<property 	name="typeMatch"
-						description="A series of regex to match on implements/extends classname"
-						value="javax.servlet.Filter,javax.servlet.HttpFilter"/>
-						 -->
-			<!-- Define after how many occurences one should log a violation -->
-<!--
-			<property 	name="threshold"
-						description="Defines how many occurences are legal"
-						value="2"/>
-      	</properties>
-		<example>
-			<![CDATA[
-import javax.servlet.Filter;
-
-public class FooFilter implements Filter {
-	public FooFilter() { }
-
-	private class OneTooMuchFilter implements Filter {}
-}
-			]]>
-		</example>
-	</rule>
-	 -->
 </ruleset>
