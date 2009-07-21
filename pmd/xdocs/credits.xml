@@ -86,7 +86,7 @@
             <li>Peter Van de Voorde - Rewrote the 'create rule XML' functionality in the designer utility</li>
             <li>Josh Devins - Reported bug with annotation parsing</li>
             <li>Alan Berg - Reported bug in Ant task</li>
-            <li>George Thomas - Wrote AvoidRethrowingException rule</li>
+            <li>George Thomas - Wrote AvoidRethrowingException rule, new AvoidLosingExceptionInformation rule</li>
             <li>Robert Simmons - Reported bug in optimizations package along with suggestions for fix</li>
             <li>Brian Remedios - display cleanup of CPD GUI, code cleanup of StringUtil and various rules, cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
             <li>Max Tardiveau - A nice XML to HTML stylesheet for CPD.</li>

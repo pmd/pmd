@@ -13,6 +13,7 @@ public class StrictExceptionRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidCatchingGenericException");
         addRule(RULESET, "AvoidCatchingNPE");
         addRule(RULESET, "AvoidCatchingThrowable");
+        addRule(RULESET, "AvoidLosingExceptionInformation");
         addRule(RULESET, "AvoidRethrowingException");
         addRule(RULESET, "AvoidThrowingNewInstanceOfSameException");
         addRule(RULESET, "AvoidThrowingNullPointerException");

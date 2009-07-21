@@ -478,7 +478,7 @@ New Java rules:
 	Import ruleset: UnnecessaryFullyQualifiedName
 	Optimization ruleset: RedundantFieldInitializer
 	Naming ruleset: ShortClassName
-	StrictException ruleset: AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException
+	StrictException ruleset: AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException, AvoidLosingExceptionInformation
 	Unnecessary ruleset: UselessParentheses
 	JUnit ruleset: JUnitTestContainsTooManyAsserts, UseAssertTrueInsteadOfAssertEquals
 

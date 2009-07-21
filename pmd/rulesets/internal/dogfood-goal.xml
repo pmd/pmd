@@ -41,6 +41,7 @@
 		<exclude name="DataflowAnomalyAnalysis"/>
 		<exclude name="AssignmentInOperand"/>
 		<exclude name="NullAssignment"/>
+		<exclude name="UseObjectForClearerAPI"/>
 	</rule>
 	<rule ref="rulesets/java/controversial.xml/AssignmentInOperand">
 		<properties>
