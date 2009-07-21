@@ -373,5 +373,48 @@ public class PrimitiveType {
     </example>
   </rule>
 
+	<rule name="AvoidLosingExceptionInformation"
+		since="4.2.6"
+		message="Avoid statements in a catch block that invoke accessors on the exception without using the information"
+		externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidLosingExceptionInformation"
+		class="net.sourceforge.pmd.rules.XPathRule">
+		<description>Statements in a catch block that invoke accessors on the exception without using the information
+		only add to code size.  Either remove the invocation, or use the return result.</description>
+		<priority>2</priority>
+		<properties>
+			<property name="xpath">
+				<value>
+<![CDATA[
+//CatchStatement/Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name
+[
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getMessage')
+   or
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getLocalizedMessage')
+   or
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getCause')
+   or
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getStackTrace')
+   or
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.toString')
+]
+]]>
+				</value>
+			</property>
+		</properties>
+		<example>
+<![CDATA[
+public class Foo {
+ void bar() {
+  try {
+   // do something
+  } catch (SomeException se) {
+    se.getMessage();
+  }
+ }
+}
+]]>
+		</example>
+	</rule>
+
 </ruleset>
 
