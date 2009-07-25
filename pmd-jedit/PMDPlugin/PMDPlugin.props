@@ -3,7 +3,7 @@
 #
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.name=PMDPlugin
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.author=Jiger Patel, Tom Copeland, Alan Ezust, Dale Anson
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=3.0.1
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=3.1
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=doc/jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.5
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.03.03.00

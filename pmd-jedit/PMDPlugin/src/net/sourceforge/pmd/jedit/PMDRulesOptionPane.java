@@ -25,7 +25,7 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
 
     SelectedRules rules;
 
-    JTextArea exampleTextArea = new JTextArea( 15, 60 );
+    JTextArea exampleTextArea = new JTextArea( 15, 90 );
     JTextField txtCustomRules;
     CheckboxTree tree;
     JCheckBox useDefaultRules;
@@ -144,10 +144,12 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                     Object userObject = node.getUserObject();
                     if ( userObject instanceof RuleNode ) {
                         changeExampleLabel( "Example" );
+                        String description = ( ( RuleNode ) userObject ).getRule().getDescription();
+                        description = description.trim();
                         List<String> examples = ( ( RuleNode ) userObject ).getRule().getExamples();
                         exampleTextArea.setLineWrap( false );
                         exampleTextArea.setWrapStyleWord( false );
-                        exampleTextArea.setText( StringList.join( examples, "\n---------\n" ) );
+                        exampleTextArea.setText( description + StringList.join( examples, "\n---------\n" ) );
                         exampleTextArea.setCaretPosition( 0 );
                     }
                     else if ( userObject instanceof RuleSetNode ) {
