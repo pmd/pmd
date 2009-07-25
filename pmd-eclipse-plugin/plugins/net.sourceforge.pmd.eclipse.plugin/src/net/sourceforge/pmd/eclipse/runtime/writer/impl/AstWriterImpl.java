@@ -22,31 +22,20 @@
  */
 package net.sourceforge.pmd.eclipse.runtime.writer.impl;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 
-import org.apache.log4j.Logger;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Implements a default AST Writer
@@ -55,92 +44,22 @@ import org.w3c.dom.Element;
  *
  */
 class AstWriterImpl implements IAstWriter {
-    private static final Logger log = Logger.getLogger(AstWriterImpl.class);
-
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter#write(java.io.Writer, net.sourceforge.pmd.ast.ASTCompilationUnit)
      */
     public void write(OutputStream outputStream, ASTCompilationUnit compilationUnit) throws WriterException {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-            Document doc = documentBuilder.newDocument();
-
-            Element compilationUnitElement = getElement(doc, compilationUnit);
-            doc.appendChild(compilationUnitElement);
-
-            OutputFormat outputFormat = new OutputFormat(doc, "UTF-8", true);
-            outputFormat.setLineWidth(0);
-            DOMSerializer serializer = new XMLSerializer(outputStream, outputFormat);
-            serializer.serialize(doc);
-
-        } catch (DOMException e) {
-            throw new WriterException(e);
-        } catch (FactoryConfigurationError e) {
-            throw new WriterException(e);
-        } catch (ParserConfigurationException e) {
-            throw new WriterException(e);
-        } catch (IOException e) {
-            throw new WriterException(e);
-        }
+	try {
+	    Document doc = compilationUnit.getAsDocument();
+	    OutputFormat outputFormat = new OutputFormat(doc, "UTF-8", true);
+	    outputFormat.setLineWidth(0);
+	    DOMSerializer serializer = new XMLSerializer(outputStream, outputFormat);
+	    serializer.serialize(doc);
+	} catch (DOMException e) {
+	    throw new WriterException(e);
+	} catch (FactoryConfigurationError e) {
+	    throw new WriterException(e);
+	} catch (IOException e) {
+	    throw new WriterException(e);
+	}
     }
-
-    /**
-     * Transform a ast node to a xml element
-     * @param doc the generated document
-     * @param simpleNode a ast node
-     * @return a xml element
-     */
-    private Element getElement(Document doc, Node simpleNode) {
-        log.debug("creating element " + simpleNode);
-        Element simpleNodeElement = doc.createElement(simpleNode.toString());
-
-        addAttributes(simpleNodeElement, simpleNode);
-
-        for (int i = 0; i < simpleNode.jjtGetNumChildren(); i++) {
-            Node child = simpleNode.jjtGetChild(i);
-            Element element = getElement(doc, child);
-            simpleNodeElement.appendChild(element);
-        }
-
-        return simpleNodeElement;
-    }
-
-    /**
-     * Add attributes to element by introspecting the node. This way, the abstract
-     * tree can evolve independently from the way it is persisted
-     * @param element a xml element
-     * @param simpleNode a ast node
-     */
-    private void addAttributes(Element element, Node simpleNode) {
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(simpleNode.getClass());
-            PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-            for (PropertyDescriptor descriptor : descriptors) {
-                String attributeName = descriptor.getName();
-                if (!attributeName.equals("class") && !attributeName.equals("scope")) {
-                    log.debug("   processing attribute " + descriptor.getName());
-                    Method getter = descriptor.getReadMethod();
-                    if (getter != null) {
-                        try {
-                            Object result = getter.invoke(simpleNode, (Object)null);
-                            if (result != null) {
-                                log.debug("      added");
-                                element.setAttribute(descriptor.getName(), result.toString());
-                            } else {
-                                log.debug("      not added attribute is null");
-                            }
-                        } catch (InvocationTargetException e) {
-                            log.debug("      not added calling getter has failed");
-                        }
-                    } else {
-                        log.debug("      not added getter is null");
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.debug("Error introspecting properties. Ignored", e);
-        }
-    }
-
 }
