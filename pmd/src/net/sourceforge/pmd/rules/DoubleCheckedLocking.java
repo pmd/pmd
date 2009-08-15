@@ -47,8 +47,9 @@ import net.sourceforge.pmd.ast.Node;
  */
 public class DoubleCheckedLocking extends AbstractJavaRule {
 
-    List<String> volatileFields;
+    private List<String> volatileFields;
 
+    @Override
     public Object visit(ASTCompilationUnit compilationUnit, Object data) {
         if ( volatileFields == null ) {
             volatileFields = new ArrayList<String>(0);
@@ -58,6 +59,7 @@ public class DoubleCheckedLocking extends AbstractJavaRule {
         return super.visit(compilationUnit, data);
     }
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;
@@ -65,6 +67,7 @@ public class DoubleCheckedLocking extends AbstractJavaRule {
         return super.visit(node, data);
     }
  
+    @Override
     public Object visit(ASTFieldDeclaration fieldDeclaration, Object data) {
         if ( fieldDeclaration.isVolatile() ) {
         	List<ASTVariableDeclaratorId> declarators = fieldDeclaration.findChildrenOfType(ASTVariableDeclaratorId.class);
@@ -75,6 +78,7 @@ public class DoubleCheckedLocking extends AbstractJavaRule {
         return super.visit(fieldDeclaration, data);
     }
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         if (node.getResultType().isVoid()) {
             return super.visit(node, data);
