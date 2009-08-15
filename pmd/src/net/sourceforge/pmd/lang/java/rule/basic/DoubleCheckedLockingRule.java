@@ -3,11 +3,13 @@
  */
 package net.sourceforge.pmd.lang.java.rule.basic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -20,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -43,12 +46,24 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public class DoubleCheckedLockingRule extends AbstractJavaRule {
 
-    @Override
+    private List<String> volatileFields = new ArrayList<String>(0);
+
+	@Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;
         }
         return super.visit(node, data);
+    }
+ 
+	@Override
+    public Object visit(ASTFieldDeclaration fieldDeclaration, Object data) {
+        if ( fieldDeclaration.isVolatile() ) {
+        	for (ASTVariableDeclaratorId declarator : fieldDeclaration.findDescendantsOfType(ASTVariableDeclaratorId.class) ) {
+                this.volatileFields.add(declarator.getImage());
+        	}
+        }
+        return super.visit(fieldDeclaration, data);
     }
 
     @Override
@@ -75,7 +90,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         if (lastChild instanceof ASTPrimaryPrefix) {
             returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
         }
-        if (returnVariableName == null) {
+        // With Java5 and volatile keyword, DCL is no longer an issue
+        if (returnVariableName == null || this.volatileFields.contains(returnVariableName)) {
             return super.visit(node, data);
         }
         List<ASTIfStatement> isl = node.findDescendantsOfType(ASTIfStatement.class);
@@ -119,9 +135,9 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             if ( nullStmt != null ) {
                 if ((nullStmt.jjtGetNumChildren() == 1) && (nullStmt.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
                     ASTPrimaryPrefix pp2 = (ASTPrimaryPrefix) nullStmt.jjtGetChild(0);
-                    if (pp2.jjtGetNumChildren() == 1 && pp2.jjtGetChild(0) instanceof ASTLiteral) {
+                    if ((pp2.jjtGetNumChildren() == 1) && (pp2.jjtGetChild(0) instanceof ASTLiteral)) {
                         ASTLiteral lit = (ASTLiteral) pp2.jjtGetChild(0);
-                        if (lit.jjtGetNumChildren() == 1 && lit.jjtGetChild(0) instanceof ASTNullLiteral) {
+                        if ((lit.jjtGetNumChildren() == 1) && (lit.jjtGetChild(0) instanceof ASTNullLiteral)) {
                             return true;
                         }
                     }
@@ -151,7 +167,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
 	}
 
 	private boolean matchName(ASTPrimaryExpression ape, String name) {
-        if (ape.jjtGetNumChildren() == 1 && ape.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
+        if ((ape.jjtGetNumChildren() == 1) && (ape.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
             ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ape.jjtGetChild(0);
             String name2 = getNameFromPrimaryPrefix(pp);
             if (name2 != null && name2.equals(name)) {
@@ -162,7 +178,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     }
 
     private String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
-        if (pp.jjtGetNumChildren() == 1 && pp.jjtGetChild(0) instanceof ASTName) {
+        if ((pp.jjtGetNumChildren() == 1) && (pp.jjtGetChild(0) instanceof ASTName)) {
             return ((ASTName) pp.jjtGetChild(0)).getImage();
         }
         return null;
