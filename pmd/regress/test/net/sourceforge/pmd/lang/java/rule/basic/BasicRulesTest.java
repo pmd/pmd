@@ -28,7 +28,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ClassCastExceptionWithToArray");
         addRule(RULESET, "CollapsibleIfStatements");
         addRule(RULESET, "DoubleCheckedLocking");
-	addRule(RULESET, "ExtendsObject");
+        addRule(RULESET, "ExtendsObject");
         addRule(RULESET, "ForLoopShouldBeWhileLoop");
         addRule(RULESET, "JumbledIncrementer");
         addRule(RULESET, "MisplacedNullCheck");
