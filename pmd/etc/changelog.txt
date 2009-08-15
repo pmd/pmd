@@ -5,6 +5,7 @@ Fixed bug 2317099 - False + in SimplifyCondition
 Fixed bug 2606609 - False "UnusedImports" positive in package-info.java
 Fixed bug 2645268 - ClassCastException in UselessOperationOnImmutable.getDeclaration
 Fixed bug 2724653 - AvoidThreadGroup reports false positives
+Fixed bug 2835074 - False -: DoubleCheckedLocking with reversed null check  	 
 Correct -benchmark reporting of Rule visits via the RuleChain
 Fix issue with Type Resolution incorrectly handling of Classes with same name as a java.lang Class.
 

@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.rules;
 
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTIfStatement;
@@ -41,7 +42,7 @@ import java.util.List;
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */
-public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
+public class DoubleCheckedLocking extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
@@ -119,12 +120,11 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
     private boolean ifVerify(ASTIfStatement is, String varname) {
         List<ASTPrimaryExpression> finder = new ArrayList<ASTPrimaryExpression>();
         is.findChildrenOfType(ASTPrimaryExpression.class, finder, true);
-        if (finder.size() > 1) {
-            ASTPrimaryExpression apeLeft = finder.get(0);
-            if (matchName(apeLeft, varname)) {
-                ASTPrimaryExpression apeRight = finder.get(1);
-                if ((apeRight.jjtGetNumChildren() == 1) && (apeRight.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
-                    ASTPrimaryPrefix pp2 = (ASTPrimaryPrefix) apeRight.jjtGetChild(0);
+        if (finder.size() > 1) { 
+            ASTPrimaryExpression nullStmt = findNonVariableStmt(varname,finder.get(0),finder.get(1));
+            if ( nullStmt != null ) {
+                if ((nullStmt.jjtGetNumChildren() == 1) && (nullStmt.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
+                    ASTPrimaryPrefix pp2 = (ASTPrimaryPrefix) nullStmt.jjtGetChild(0);
                     if ((pp2.jjtGetNumChildren() == 1) && (pp2.jjtGetChild(0) instanceof ASTLiteral)) {
                         ASTLiteral lit = (ASTLiteral) pp2.jjtGetChild(0);
                         if ((lit.jjtGetNumChildren() == 1) && (lit.jjtGetChild(0) instanceof ASTNullLiteral)) {
@@ -137,7 +137,26 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
         return false;
     }
 
-    private boolean matchName(ASTPrimaryExpression ape, String name) {
+    /** 
+     * <p>Sort out if apeLeft or apeRight are variable with the provided 'variableName'.</p>
+     * 
+     * @param variableName
+     * @param apeLeft
+     * @param apeRight
+     * @return reference from either apeLeft or apeRight, if one of them match, or 'null', if none match.
+     */
+	private ASTPrimaryExpression findNonVariableStmt(String variableName,
+			ASTPrimaryExpression apeLeft, ASTPrimaryExpression apeRight) {
+    	if (matchName(apeLeft, variableName) ) {
+    		return apeRight;
+    	}
+    	else if (matchName(apeRight, variableName) ) {
+    		return apeLeft;
+    	}
+		return null;
+	}
+
+	private boolean matchName(ASTPrimaryExpression ape, String name) {
         if ((ape.jjtGetNumChildren() == 1) && (ape.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
             ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ape.jjtGetChild(0);
             String name2 = getNameFromPrimaryPrefix(pp);

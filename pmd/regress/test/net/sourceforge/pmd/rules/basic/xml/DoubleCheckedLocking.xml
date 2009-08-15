@@ -55,4 +55,48 @@ public class Foo {
      ]]></code>
         <source-type>java 1.5</source-type>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+inversed null check -see bug 2835074  	 False -: DoubleCheckedLocking with reversed null check
+2835074  	 False -: DoubleCheckedLocking with reversed null check
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+      Object baz;
+      Object bar() {
+        if(null == baz) { //baz may be non-null yet not fully created
+          synchronized(this){
+            if(baz == null){
+              baz = new Object();
+            }
+          }
+        }
+        return baz;
+      }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+inversed null check -see bug 2835074  	 False -: DoubleCheckedLocking with reversed null check
+2835074  	 False -: DoubleCheckedLocking with reversed null check
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+      Object baz;
+      Object bar() {
+        if(baz == null) { //baz may be non-null yet not fully created
+          synchronized(this){
+            if(null == baz){
+              baz = new Object();
+            }
+          }
+        }
+        return baz;
+      }
+}
+     ]]></code>
+    </test-code>    
 </test-data>
