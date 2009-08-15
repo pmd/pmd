@@ -9,7 +9,6 @@ import java.util.List;
 import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTLiteral;
@@ -47,17 +46,7 @@ import net.sourceforge.pmd.ast.Node;
  */
 public class DoubleCheckedLocking extends AbstractJavaRule {
 
-    private List<String> volatileFields;
-
-    @Override
-    public Object visit(ASTCompilationUnit compilationUnit, Object data) {
-        if ( volatileFields == null ) {
-            volatileFields = new ArrayList<String>(0);
-        } else {
-            volatileFields.clear();
-        }
-        return super.visit(compilationUnit, data);
-    }
+    private List<String> volatileFields = new ArrayList<String>(0);
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -70,8 +59,7 @@ public class DoubleCheckedLocking extends AbstractJavaRule {
     @Override
     public Object visit(ASTFieldDeclaration fieldDeclaration, Object data) {
         if ( fieldDeclaration.isVolatile() ) {
-        	List<ASTVariableDeclaratorId> declarators = fieldDeclaration.findChildrenOfType(ASTVariableDeclaratorId.class);
-        	for (ASTVariableDeclaratorId declarator : declarators ) {
+        	for (ASTVariableDeclaratorId declarator : fieldDeclaration.findChildrenOfType(ASTVariableDeclaratorId.class) ) {
                 this.volatileFields.add(declarator.getImage());
         	}
         }
