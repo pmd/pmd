@@ -57,8 +57,8 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-inversed null check -see bug 2835074  	 False -: DoubleCheckedLocking with reversed null check
-2835074  	 False -: DoubleCheckedLocking with reversed null check
+inversed null check
+see bug 2835074 False -: DoubleCheckedLocking with reversed null check (1)
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -79,8 +79,8 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-inversed null check -see bug 2835074  	 False -: DoubleCheckedLocking with reversed null check
-2835074  	 False -: DoubleCheckedLocking with reversed null check
+inversed null check
+see bug 2835074 False -: DoubleCheckedLocking with reversed null check (2)
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -99,4 +99,26 @@ public class Foo {
 }
      ]]></code>
     </test-code>    
+    <test-code>
+        <description><![CDATA[
+Use of volatile keyword
+see bug 2826119 - False +: DoubleCheckedLocking warning with volatile field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+      volatile Object baz;
+      Object bar() {
+        if(baz == null) { //baz may be non-null yet not fully created
+          synchronized(this){
+            if(null == baz){
+              baz = new Object();
+            }
+          }
+        }
+        return baz;
+      }
+}
+     ]]></code>
+    </test-code>        
 </test-data>

@@ -3,9 +3,14 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
@@ -18,10 +23,8 @@ import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * void method() {
@@ -44,11 +47,32 @@ import java.util.List;
  */
 public class DoubleCheckedLocking extends AbstractJavaRule {
 
+    List<String> volatileFields;
+
+    public Object visit(ASTCompilationUnit compilationUnit, Object data) {
+        if ( volatileFields == null ) {
+            volatileFields = new ArrayList<String>(0);
+        } else {
+            volatileFields.clear();
+        }
+        return super.visit(compilationUnit, data);
+    }
+
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;
         }
         return super.visit(node, data);
+    }
+ 
+    public Object visit(ASTFieldDeclaration fieldDeclaration, Object data) {
+        if ( fieldDeclaration.isVolatile() ) {
+        	List<ASTVariableDeclaratorId> declarators = fieldDeclaration.findChildrenOfType(ASTVariableDeclaratorId.class);
+        	for (ASTVariableDeclaratorId declarator : declarators ) {
+                this.volatileFields.add(declarator.getImage());
+        	}
+        }
+        return super.visit(fieldDeclaration, data);
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
@@ -76,7 +100,8 @@ public class DoubleCheckedLocking extends AbstractJavaRule {
         if (lastChild instanceof ASTPrimaryPrefix) {
             returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
         }
-        if (returnVariableName == null) {
+        // With Java5 and volatile keyword, DCL is no longer an issue
+        if (returnVariableName == null || this.volatileFields.contains(returnVariableName)) {
             return super.visit(node, data);
         }
         List<ASTIfStatement> isl = new ArrayList<ASTIfStatement>();
