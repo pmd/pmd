@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -46,9 +47,9 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public class DoubleCheckedLockingRule extends AbstractJavaRule {
 
-    private List<String> volatileFields = new ArrayList<String>(0);
+    private List<String> volatileFields;
 
-	@Override
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;
@@ -56,7 +57,18 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
  
-	@Override
+    @Override
+    public Object visit(ASTCompilationUnit compilationUnit, Object data) {
+        if ( this.volatileFields == null ) {
+            this.volatileFields = new ArrayList<String>(0);
+	} else {
+	    this.volatileFields.clear();
+	}
+	return super.visit(compilationUnit,data);
+    }
+
+
+    @Override
     public Object visit(ASTFieldDeclaration fieldDeclaration, Object data) {
         if ( fieldDeclaration.isVolatile() ) {
         	for (ASTVariableDeclaratorId declarator : fieldDeclaration.findDescendantsOfType(ASTVariableDeclaratorId.class) ) {
