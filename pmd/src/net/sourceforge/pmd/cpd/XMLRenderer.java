@@ -44,7 +44,7 @@ public class XMLRenderer implements Renderer {
                 buffer.append("<file line=\"");
                 buffer.append(mark.getBeginLine());
                 buffer.append("\" path=\"");
-                buffer.append(mark.getTokenSrcID());
+                buffer.append(encode(mark.getTokenSrcID()));
                 buffer.append("\"/>").append(PMD.EOL);
             }
             String codeFragment = match.getSourceCodeSlice();
@@ -58,4 +58,33 @@ public class XMLRenderer implements Renderer {
         buffer.append("</pmd-cpd>");
         return buffer.toString();
     }
+    
+
+    /*
+    * <p>Fixes bug : https://sourceforge.net/tracker/?func=detail&aid=2832322&group_id=56262&atid=479921</p>
+    * 
+    * TODO: The following method - and its static arrays - should
+    * most likely be place somewhere else, like some kind of utility
+    * classes to solve issue on encoding.
+	*/
+	private static String encode(String path) {
+		for ( int i = 0; i < BASIC_ESCAPE.length; i++ ) {
+			if ( path.indexOf(BASIC_ESCAPE[i][0]) != -1 ) {
+				path = path.replaceAll(BASIC_ESCAPE[i][0],BASIC_ESCAPE[i][1]);
+			}
+		}
+		return path;
+	}
+	
+	/* 
+	 * Cut'n'paster from Apache Commons Lang
+	 * 
+	 */
+	public static final String[][] BASIC_ESCAPE = {
+        {"\"", "&quot;"}, // " - double-quote
+        {"&", "&amp;"},   // & - ampersand
+        {"<", "&lt;"},    // < - less-than
+        {">", "&gt;"},    // > - greater-than
+    };
+
 }
