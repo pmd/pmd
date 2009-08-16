@@ -404,6 +404,7 @@ Creating a unnecessary Code Ruleset and moved the following rules from Basic rul
         * UselessParentheses
 	Basic rulesets still includes a reference to those rules.	
 
+Fixed bug 2832322 -  cpd.xml file tag path attribute should be entity-encoded
 Fixed bug 2826119 - False +: DoubleCheckedLocking warning with volatile field
 Fixed bug 2835074 - False -: DoubleCheckedLocking with reversed null check
 Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +

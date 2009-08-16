@@ -4,6 +4,7 @@
 package test.net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Renderer;
@@ -101,6 +102,18 @@ public class XMLRendererTest {
         }
     }
 
+    @Test
+    public void testRendererEncodedPath() {
+        Renderer renderer = new XMLRenderer();
+        List<Match> list = new ArrayList<Match>();
+        Match match1 = new Match(75, new TokenEntry("public", "/var/F" + XMLRenderer.BASIC_ESCAPE[2][0] + "oo.java", 48), new TokenEntry("void", "/var/F<oo.java", 73));
+        match1.setLineCount(6);
+        match1.setSourceCodeSlice("code fragment");
+        list.add(match1);
+        String report = renderer.render(list.iterator());
+        assertTrue(report.contains(XMLRenderer.BASIC_ESCAPE[2][1]));
+    }
+    
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(XMLRendererTest.class);
     }
