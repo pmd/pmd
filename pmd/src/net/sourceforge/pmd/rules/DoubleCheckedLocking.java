@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTLiteral;
@@ -46,7 +47,17 @@ import net.sourceforge.pmd.ast.Node;
  */
 public class DoubleCheckedLocking extends AbstractJavaRule {
 
-    private List<String> volatileFields = new ArrayList<String>(0);
+    private List<String> volatileFields;
+
+    @Override
+    public Object visit(ASTCompilationUnit compilationUnit,Object data) {
+        if ( this.volatileFields == null ) {
+            this.volatileFields = new ArrayList<String>(0);
+        } else {
+            this.volatileFields.clear();
+        }
+        return super.visit(compilationUnit,data);
+    }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
