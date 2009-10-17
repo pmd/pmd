@@ -38,7 +38,7 @@ public class FileStorage implements SettingsStorage {
 
             final FileOutputStream fos = new FileOutputStream(file);
             savedProperties.store(fos, 
-                                  "PMD-JDeveloper rule selections " + new Date());
+                                  "PMD generated file " + new Date());
             fos.close();
         } catch (FileNotFoundException e) {
             Util.logMessage(e.getStackTrace());

@@ -20,7 +20,7 @@ TESTS:
 
 src release:
 // TODO automation by ant, if subversion tasks are available
-checkin 
+checkin
 // TODO automation by ant, if subversion tasks are available
 copy to tags/pmd-jdeveloper/pmd_jdeveloperXXX_release_X_X_X_X_X
 ant releasesrc

@@ -5,13 +5,17 @@ import net.sourceforge.pmd.SourceType;
 
 import oracle.ide.Context;
 
+import oracle.ide.Ide;
+
 import oracle.jdeveloper.compiler.BuildSystemConfiguration;
 
 final class Version {
     private Version() {
     }
+
     public static void setJavaVersion(final Context context, final PMD pmd) {
-        final BuildSystemConfiguration config = BuildSystemConfiguration.getInstance(context.getProject());
+        final BuildSystemConfiguration config =
+            BuildSystemConfiguration.getInstance(context.getProject());
         final String source = config.getSource();
         if ("1.6".equals(source)) {
             pmd.setJavaVersion(SourceType.JAVA_16);
@@ -25,7 +29,10 @@ final class Version {
     }
 
     public static String version() {
-        return "4.2.4.3.0";
+        return "4.2.5.3.0";
     }
 
+    static String getJdevHome() {
+        return Ide.getProductHomeDirectory();
+    }
 }
