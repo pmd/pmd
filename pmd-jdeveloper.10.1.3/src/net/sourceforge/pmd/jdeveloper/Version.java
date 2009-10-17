@@ -5,6 +5,8 @@ import net.sourceforge.pmd.SourceType;
 
 import oracle.ide.Context;
 
+import oracle.ide.Ide;
+
 import oracle.jdeveloper.compiler.OjcConfiguration;
 
 final class Version {
@@ -27,7 +29,10 @@ final class Version {
     }
 
     public static String version() {
-        return "4.2.4.2.0";
+        return "4.2.5.2.0";
     }
 
+    static String getJdevHome() {
+        return Ide.getHomeDirectory();
+    }
 }

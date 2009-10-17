@@ -3,18 +3,18 @@
   <property name="config" value="config/"/>
   <property name="src" value="src/"/>
   <property name="etc" value="etc/"/>
-  <property name="pmdjar" value="pmd-4.2.4.jar"/>
+  <property name="pmdjar" value="pmd-4.2.5.jar"/>
   <!-- first to third number for the pmd plugin -->
   <!-- fourth number JDeveloper Version 1:9.0.5-10.1.2, 2:10.1.3, 3:11.1.1 -->
   <!-- fifth number minor version number for the JDeveloper Plugin -->
-  <property name="pluginversion" value="4.2.4.2.0"/>
+  <property name="pluginversion" value="4.2.5.2.0"/>
   <property name="mainclass" value="net.sourceforge.pmd.jdeveloper"/>
-  <property name="jdeveloper.dir" value="C:/Oracle/10gJD10134"/>
+  <property name="jdeveloper.dir" value="C:/Oracle/10gJD10135"/>
   <property name="jdeveloper.ext.subdir" value="jdev/extensions"/>
   <property name="release.dir"
             value="C:/Documents and Settings/Torsten/My Documents/Eigene Programme/Java/PMD/releases"/>
-  <property name="uploadbundle.scp.user" value=""/>
-  <property name="uploadbundle.scp.pwd" value=""/>
+  <property name="uploadbundle.scp.user" value="***"/>
+  <property name="uploadbundle.scp.pwd" value="***"/>
   <property name="upload.ftp.pwd" value=""/>
   <!-- builded properties -->
   <property name="release.dirname" value="${mainclass}.${pluginversion}"/>
@@ -68,6 +68,10 @@
           todir="${jdeveloper.install.dir}/${mainclass}.${pluginversion}/lib"/>
     <copy file="lib/asm-3.1.jar"
           todir="${jdeveloper.install.dir}/${mainclass}.${pluginversion}/lib"/>
+    <copy file="conf/pmd.plugin.properties"
+          todir="${jdeveloper.install.dir}/${mainclass}.${pluginversion}/conf"/>
+    <copy file="conf/pmd.rule.properties"
+          todir="${jdeveloper.install.dir}/${mainclass}.${pluginversion}/conf"/>
   </target>
   <target name="release" depends="clean,jar">
     <mkdir dir="tmp/${release.dirname}/lib"/>
@@ -75,6 +79,8 @@
     <copy file="lib/${pmdjar}" todir="tmp/${release.dirname}/lib"/>
     <copy file="lib/jaxen-1.1.1.jar" todir="tmp/${release.dirname}/lib"/>
     <copy file="lib/asm-3.1.jar" todir="tmp/${release.dirname}/lib"/>
+    <copy file="conf/pmd.plugin.properties" todir="tmp/${release.dirname}/conf"/>
+    <copy file="conf/pmd.rule.properties" todir="tmp/${release.dirname}/conf"/>
     <zip destfile="${release.zipname}" basedir="tmp/"/>
     <move file="${release.zipname}" todir="${release.dir}"/>
     <delete dir="tmp"/>
@@ -102,6 +108,10 @@
           todir="update-center-bundle/${mainclass}.${pluginversion}/lib/"/>
     <copy file="lib/asm-3.1.jar"
           todir="update-center-bundle/${mainclass}.${pluginversion}/lib/"/>
+    <copy file="conf/pmd.plugin.properties"
+          todir="update-center-bundle/${mainclass}.${pluginversion}/conf"/>
+    <copy file="conf/pmd.rule.properties"
+          todir="update-center-bundle/${mainclass}.${pluginversion}/conf"/>
     <zip destfile="update-center-bundle/${bundle.filename}"
          basedir="update-center-bundle">
       <exclude name="center.xml"/>
@@ -124,7 +134,7 @@
   <target name="uploadbundle" depends="bundle">
     <echo message="Uploading center.xml file"></echo>
     <scp file="${release.dir}/update-center-bundle/center.xml"
-         todir="${uploadbundle.scp.user}@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"
+         todir="${uploadbundle.scp.user},pmd@frs.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"
          password="${uploadbundle.scp.pwd}" trust="true"></scp>
   </target>
 </project>
