@@ -473,7 +473,7 @@ AvoidUsingHardCodedIP modified to not use InetAddress.getByName(String), instead
 New Java rules:
 
 	Basic ruleset: ExtendsObject,CheckSkipResult,AvoidBranchingStatementAsLastInLoop
-	Controversial ruleset: AvoidLiteralsInIfCondition, AvoidPrefixingMethodParameters, OneDeclarationPerLine
+	Controversial ruleset: AvoidLiteralsInIfCondition, AvoidPrefixingMethodParameters, OneDeclarationPerLine, UseConcurrentHashMap
 	Coupling ruleset: LoosePackageCoupling
 	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass
 	Empty ruleset: EmptyInitializer,EmptyStatementBlock
