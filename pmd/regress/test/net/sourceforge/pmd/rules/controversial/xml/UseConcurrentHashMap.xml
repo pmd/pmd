@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Basic use case
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+     private Map _map = new TreeMap();
+
+      public void m() {
+         Map m = new HashMap();
+      }
+
+      public Map contructMap() {
+         return new HashMap(); //not detected
+      }
+}
+     ]]></code>
+    </test-code>
+</test-data>

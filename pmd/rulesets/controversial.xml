@@ -712,6 +712,36 @@ public class PrimitiveType {
     </example>
   </rule>
 
+  <rule  name="UseConcurrentHashMap"
+      since="4.2.6"
+      message="If you run in Java5 and have concurrent access, you should use ConcurrentHashMap implementation"
+      class="net.sourceforge.pmd.rules.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UseConcurrentHashMap">
+    <description>
+Since Java5 brought a new implementation of the Map interface, specially designed for concurrent application.
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+<![CDATA[
+//Type[../VariableDeclarator/VariableInitializer]/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
+]]>
+        </value>
+      </property>
+    </properties>
+    <example>
+<![CDATA[
+public class ConcurrentApp {
+  public void getMyInstance() {
+    Map map = new HashMap(); 
+  }
+}
+]]>
+    </example>
+  </rule>
+
+
 </ruleset>
 
 
