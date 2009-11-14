@@ -55,7 +55,8 @@
 		<exclude name="AssignmentInOperand"/>
 		<exclude name="NullAssignment"/>
 		<exclude name="UseObjectForClearerAPI"/>
-	</rule>
+		<exclude name="UseConcurrentHashMap"/>
+        </rule>
 	<rule ref="rulesets/java/controversial.xml/AssignmentInOperand">
 		<properties>
 			<property name="allowWhile" value="true"/>
