@@ -18,7 +18,7 @@ Android ruleset: CallSuperLast rule now also checks for finish() redefinitions
 
 New rule:
 	Android: DoNotHardCodeSDCard
-	Controversial : AvoidLiteralsInIfCondition (patch 2591627)
+	Controversial : AvoidLiteralsInIfCondition (patch 2591627), UseConcurrentHashMap
 	StrictExceptions : AvoidCatchingGenericException, AvoidLosingExceptionInformation
 
 February 08, 2009 - 4.2.5:
