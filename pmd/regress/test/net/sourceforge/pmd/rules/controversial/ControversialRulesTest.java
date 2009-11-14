@@ -28,6 +28,7 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule("controversial", "UnnecessaryConstructor");
         addRule("controversial", "UnnecessaryParentheses");
         addRule("controversial", "UnusedModifier");
+	addRule("controversial", "UseConcurrentHashMap");
     }
 
     public static junit.framework.Test suite() {
