@@ -141,6 +141,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		String className = null;
 		try {
 			importedOnDemand = new ArrayList<String>();
+			importedClasses = new HashMap<String, String>();
 			className = getClassName(node);
 			if (className != null) {
 				populateClassName(node, className);
@@ -682,7 +683,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	 */
 	private void populateImports(ASTCompilationUnit node) {
 		List<ASTImportDeclaration> theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
-		importedClasses = new HashMap<String, String>();
 
 		importedClasses.putAll(JAVA_LANG);
 
@@ -701,7 +701,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	private void populateClassName(ASTCompilationUnit node, String className) throws ClassNotFoundException {
 		node.setType(pmdClassLoader.loadClass(className));
-		importedClasses = pmdClassLoader.getImportedClasses(className);
+		importedClasses.putAll(pmdClassLoader.getImportedClasses(className));
 	}
 
 }

@@ -435,6 +435,7 @@ Fixed bug 2027626 - False + : AvoidFinalLocalVariable
 Fixed bug 2606609 - False "UnusedImports" positive in package-info.java
 Fixed bug 2645268 - ClassCastException in UselessOperationOnImmutable.getDeclaration
 Fixed bug 2724653 - AvoidThreadGroup reports false positives
+Fixed bug 2904832 - Type resolution not working for ASTType when using an inner class
 
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 bin and java14/bin scripts:

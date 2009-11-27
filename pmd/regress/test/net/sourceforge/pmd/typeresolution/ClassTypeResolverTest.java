@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
@@ -30,7 +31,6 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
 import org.jaxen.JaxenException;
-import org.junit.Before;
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
@@ -86,11 +86,6 @@ public class ClassTypeResolverTest {
 
 	@Test
 	public void testInnerClass() throws ClassNotFoundException {
-		if (TestDescriptor.inRegressionTestMode()) {
-			// skip this test if we're only running regression tests
-			return;
-		}
-
 		ASTCompilationUnit acu = parseAndTypeResolveForClass(InnerClass.class);
 		Class<?> theInnerClass = Class.forName("test.net.sourceforge.pmd.typeresolution.testdata.InnerClass$TheInnerClass");
 		// Outer class
@@ -101,6 +96,9 @@ public class ClassTypeResolverTest {
 		// Inner class
 		assertEquals(theInnerClass,
 				outerClassDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
+		// Method parameter as inner class
+		ASTFormalParameter formalParameter = typeDeclaration.getFirstDescendantOfType(ASTFormalParameter.class);
+		assertEquals(theInnerClass, formalParameter.getTypeNode().getType());
 	}
 
 	@Test
