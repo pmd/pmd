@@ -16,6 +16,7 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
@@ -98,11 +99,6 @@ public class ClassTypeResolverTest {
 
 	@Test
 	public void testInnerClass() throws ClassNotFoundException {
-		if (TestDescriptor.inRegressionTestMode()) {
-			// skip this test if we're only running regression tests
-			return;
-		}
-
 		ASTCompilationUnit acu = parseAndTypeResolveForClass(InnerClass.class);
 		Class<?> theInnerClass = Class.forName("test.net.sourceforge.pmd.typeresolution.testdata.InnerClass$TheInnerClass");
 		// Outer class
@@ -113,6 +109,9 @@ public class ClassTypeResolverTest {
 		// Inner class
 		assertEquals(theInnerClass,
 				outerClassDeclaration.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class).getType());
+		// Method parameter as inner class
+		ASTFormalParameter formalParameter = typeDeclaration.getFirstChildOfType(ASTFormalParameter.class);
+		assertEquals(theInnerClass, formalParameter.getTypeNode().getType());
 	}
 
 	@Test

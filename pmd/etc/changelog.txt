@@ -8,6 +8,7 @@ Fixed bug 2645268 - ClassCastException in UselessOperationOnImmutable.getDeclara
 Fixed bug 2724653 - AvoidThreadGroup reports false positives
 Fixed bug 2835074 - False -: DoubleCheckedLocking with reversed null check  	 
 Fixed bug 2826119 - False +: DoubleCheckedLocking warning with volatile field
+Fixed bug 2904832 - Type resolution not working for ASTType when using an inner class
 
 Correct -benchmark reporting of Rule visits via the RuleChain
 Fix issue with Type Resolution incorrectly handling of Classes with same name as a java.lang Class.
