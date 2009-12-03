@@ -14,6 +14,7 @@ public class XPathRulesTest extends SimpleAggregatorTst {
     @Before
     public void setUp() {
         addRule(RULESET, "UseConcatOnce");
+	addRule(RULESET, "AvoidAxisNavigation");
     }
 
     public static junit.framework.Test suite() {

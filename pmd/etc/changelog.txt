@@ -356,6 +356,7 @@ New features:
 
 New Language 'ecmascript' added, for writing XPathRule and Java Rules against ECMAScript/JavaScript documents (must be standalone, not embedded in HTML).  Many thanks to Rhino!
 New Language 'xml' added, for writing XPathRules against XML documents
+New Language 'xsl' added, as a derivative from XML. 
 Rules can now define a 'violationSuppressRegex' property to universally suppress violations with messages matching the given regular expression
 Rules can now define a 'violationSuppressXPath' property to universally suppress violations on nodes which match the given relative XPath expression
 Rules are now directly associated with a corresponding Language, and a can also be associated with a specific Language Version range if desired.
