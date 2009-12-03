@@ -18,7 +18,7 @@ You can read much more about PMD here - http://pmd.sf.net/.</p>
 Use the plugin manager for easiest installation.  To install manually, follow these steps:
 <ul>
 <li>Uninstall any old PMD-JEdit plugins
-<li>Unzip the PMD-JEdit-bin-2.6.zip file into your JEdit directory; it'll put a couple of jar files into your jars directory.
+<li>Unzip the PMD-JEdit.zip file into your JEdit directory; it'll put a couple of jar files into your jars directory.
 <li>Restart JEdit and you'll be ready to go.
 </ul>
 <h3>Integration</h3>
@@ -51,6 +51,11 @@ These should be pretty much self-explanatory.  One non-obvious thing is that if 
 
 Take a look at the <a href="#releasenotes">Release Notes and Changelog</a> for more details on new features in this release. <br>
 
+<h3>CPD, the Copy/Paste Detector</h3>
+The PMD plugin provides access to the Copy/Paste Detector.  This can help identify and eliminate duplicate code in a project.  The heuristics used in the detection are a little "fuzzy" in that it is able to detect code that is very close to the same as code found elsewhere and can identify duplicate code regardless of the formatting of whitespace.
+<p>
+The CPD is very fast.  It can also work on a variety of languages.  Currently supported languages are Java, JSP, PHP, C/C++, Fortran, and Ruby.
+
 <h3>Custom Rules</h3>
 <p>Starting 2.1, you can now add Custom Defined Rulesets with PMD plugin. Previously, if you want to use your own rulesets with the PMD plugin, you had to unjar the pmd.jar file & add your ruleset defination in the jar file & re-jar it & use it. But this procedure had to be repeated whenever a new PMD is out. But not anymore. Now you can simply point PMD plugin to your custom rulesets.xml file & drop your custom ruleset jars in either of jEdit jars directory(either system or user). Once this is done, you will be able to manipulate your Custom Rulesets just the way like the built-in ones.</p>
 <p>
@@ -74,7 +79,7 @@ As of version 3.0, the PMD Plugin provides access to the PMD Rule Designer, whic
          <li>Split the option pane into smaller panes so they are easier to use.</li>
          <li>Selected some default rules for first-time users.  This makes it much easier for new users to get started.</li>
          <li>Changed plugin to start on jEdit startup and to check on file save.  This makes it easier for PMD to be useful right away.</li>
-         <li>Upgraded to PMD 2.4.5, which includes some new rulesets, including one specifically for Android programming.</li>
+         <li>Upgraded to PMD 4.2.5, which includes some new rulesets, including one specifically for Android programming.</li>
          <li>Mouse-over on ruleset names now gives description of the ruleset in the example box.  This makes it easier to understand what the group of rules is about.</li>
          <li>Added menu item to access PMD Rule Designer.</li>
       </ol>

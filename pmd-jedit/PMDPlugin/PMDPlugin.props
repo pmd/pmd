@@ -3,11 +3,11 @@
 #
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.name=PMDPlugin
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.author=Jiger Patel, Tom Copeland, Alan Ezust, Dale Anson
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=3.1
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=3.2
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=doc/jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.5
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.03.03.00
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.3.2
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.03.18.00
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.8
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-4.2.5.jar jaxen-1.1.1.jar asm-3.1.jar
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.description=The PMD plugin is a Java source code analysis tool.
 #
@@ -18,7 +18,7 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.description=The PMD plugin is a 
 # user unchecks the option to run on save, this setting will change to 'defer'.
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.activate=startup
 
-# default is to run on save
+# default is to run on save                                                 
 pmd.runPMDOnSave=true
 
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.menu.label=$PMD

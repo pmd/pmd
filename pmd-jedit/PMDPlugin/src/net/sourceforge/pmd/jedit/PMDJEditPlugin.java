@@ -268,7 +268,11 @@ public class PMDJEditPlugin extends EBPlugin
             if (ctx.getReport().isEmpty())
             {
                 /// danson, this is annoying if 'Run PMD on Save' is checked
-                ///JOptionPane.showMessageDialog(view, "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
+                boolean run_on_save = jEdit.getBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE );
+                if (!run_on_save) {
+                    // TODO: put string in properties file
+                    JOptionPane.showMessageDialog(view, "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
+                }
                 errorSource.clear();
             }
 
@@ -307,6 +311,7 @@ public class PMDJEditPlugin extends EBPlugin
 
         catch(Exception e)
         {
+            // TODO: is this useful to log?
             Log.log(Log.ERROR, this, "Exception processing file "+ buffer.getPath(), e);
         }
     }// check current buffer
@@ -442,7 +447,7 @@ public class PMDJEditPlugin extends EBPlugin
     {
         String modeName = getFileType(view.getBuffer().getMode().getName());
         if (modeName == null) {
-            JOptionPane.showMessageDialog(view, "Copy/Paste detection can only be performed on Java,C/C++,PHP code.", "Copy/Paste Detector", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(view, "Copy/Paste detection can not be performed on this file\nbecause the mode can not be determined.", "Copy/Paste Detector", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         instance.instanceCPDCurrentFile(view, view.getBuffer().getPath(), modeName);
@@ -497,7 +502,7 @@ public class PMDJEditPlugin extends EBPlugin
         }
         else
         {
-            view.getStatus().setMessageAndClear("Cannot run CPD on an Invalid file type");
+            view.getStatus().setMessageAndClear("CPD does not yet support this file type: " + fileType);
             return;
         }
     }
@@ -506,8 +511,15 @@ public class PMDJEditPlugin extends EBPlugin
     public static void cpdDir(View view)
     {
         JFileChooser chooser = new JFileChooser(jEdit.getProperty(LAST_DIRECTORY));
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
+        chooser.addChoosableFileFilter(new CPDFileFilter("ruby", "Ruby files", "rb", "rbw"));
+        chooser.addChoosableFileFilter(new CPDFileFilter("php", "PHP files", "php", "php3", "php4", "phtml", "inc"));
+        chooser.addChoosableFileFilter(new CPDFileFilter("jsp", "JSP files", "jsp", "jsf", "jspf"));
+        chooser.addChoosableFileFilter(new CPDFileFilter("fortran", "Fortran files", "for", "fort", "f77", "f90"));
+        chooser.addChoosableFileFilter(new CPDFileFilter("cpp", "C/C++ files", "c", "cc", "cpp"));
+        chooser.addChoosableFileFilter(new CPDFileFilter("java", "Java files", "java"));
+        
         JPanel pnlAccessory = new JPanel(new BorderLayout());
 
         JPanel pnlTile = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -527,10 +539,12 @@ public class PMDJEditPlugin extends EBPlugin
 
         int returnVal = chooser.showOpenDialog(view);
         File selectedFile = null;
+        String mode = null;
 
         if(returnVal == JFileChooser.APPROVE_OPTION)
         {
             selectedFile = chooser.getSelectedFile();
+            mode = ((CPDFileFilter)chooser.getFileFilter()).getMode();
 
             if(!selectedFile.isDirectory())
             {
@@ -553,7 +567,7 @@ public class PMDJEditPlugin extends EBPlugin
             try
             {
                 jEdit.setBooleanProperty(CHECK_DIR_RECURSIVE,chkRecursive.isSelected());
-                instance.instanceCPDDir(view, selectedFile.getCanonicalPath(), tilesize, chkRecursive.isSelected());
+                instance.instanceCPDDir(view, selectedFile.getCanonicalPath(), tilesize, chkRecursive.isSelected(), mode);
             }
             catch(IOException e)
             {
@@ -578,17 +592,17 @@ public class PMDJEditPlugin extends EBPlugin
                 JOptionPane.showMessageDialog(view, "Selected file must be a Directory.", NAME, JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            instance.instanceCPDDir(view, selectedDir[0].getPath(), jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100), recursive);
+            instance.instanceCPDDir(view, selectedDir[0].getPath(), jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100), recursive, "java");
         }
     }
 
-    private void instanceCPDDir(View view, String dir, int tileSize, boolean recursive) throws IOException
+    private void instanceCPDDir(View view, String dir, int tileSize, boolean recursive, String mode) throws IOException
     {
         if(dir != null)
         {
             jEdit.setProperty(LAST_DIRECTORY,dir);
             instance.errorSource.clear();
-            CPD cpd = getCPD(tileSize, "java", view);
+            CPD cpd = getCPD(tileSize, mode, view);
 
             if(cpd != null)
             {
@@ -830,6 +844,19 @@ public class PMDJEditPlugin extends EBPlugin
     {
         Language lang;
         LanguageFactory lf = new LanguageFactory();
+        StringBuilder sb = new StringBuilder();
+        boolean supported = false;
+        for (String s : lf.supportedLanguages) {
+            sb.append(s).append(", ");
+            if (s.equals(fileType)) {
+                supported = true;   
+            }
+        }
+        if (!supported) {
+            JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on " + sb.toString().substring(0, sb.length() - 2) + " code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+        
         if ("java".equals(fileType))
         {
             //Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing java");
@@ -837,20 +864,8 @@ public class PMDJEditPlugin extends EBPlugin
             props.setProperty(JavaTokenizer.IGNORE_LITERALS, String.valueOf(jEdit.getBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS)));
             lang = lf.createLanguage("java", props);
         }
-        else if ("php".equals(fileType))
-        {
-            //Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing PHP");
-            lang = lf.createLanguage("php");
-        }
-        else if ("cpp".equals(fileType))
-        {
-            //Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing C/C++");
-            lang = lf.createLanguage("cpp");
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on Java,C/C++,PHP code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
-            return null;
+        else {
+            lang = lf.createLanguage(fileType);   
         }
         return new CPD(tileSize,lang);
     }
