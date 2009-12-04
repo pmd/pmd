@@ -1,8 +1,8 @@
 /*
- * User: tom
- * Date: Jul 3, 2002
- * Time: 2:33:24 PM
- */
+* User: tom
+* Date: Jul 3, 2002
+* Time: 2:33:24 PM
+*/
 package net.sourceforge.pmd.jedit;
 
 import java.awt.BorderLayout;
@@ -66,12 +66,13 @@ import errorlist.ErrorSource;
 
 /** jEdit plugin for PMD
   @version $Id$
+  
+  TODO: move strings to property file so they can be localized.
 **/
-public class PMDJEditPlugin extends EBPlugin
-{
+public class PMDJEditPlugin extends EBPlugin {
 
     public static final SourceType[] sourceTypes =
-        new SourceType[]{SourceType.JAVA_14, SourceType.JAVA_15, SourceType.JAVA_16};
+        new SourceType[] {SourceType.JAVA_14, SourceType.JAVA_15, SourceType.JAVA_16};
     public static final String NAME = "PMD";
     public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
     public static final String DEFAULT_TILE_MINSIZE_PROPERTY = "pmd.cpd.defMinTileSize";
@@ -84,285 +85,213 @@ public class PMDJEditPlugin extends EBPlugin
     public static final String LAST_DIRECTORY = "pmd.cpd.lastDirectory";
     public static final String CHECK_DIR_RECURSIVE = "pmd.checkDirRecursive";
 
-    //private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
-
     private static PMDJEditPlugin instance;
 
-    /* 	static {
-            instance = new PMDJEditPlugin();
-            instance.start();
-        }
-     */
     private DefaultErrorSource errorSource;
     public static final String RENDERER = "pmd.renderer";
 
-    // boilerplate JEdit code
-    public void start()
-    {
+    public void start() {
         instance = this;
         //Log.log(Log.DEBUG,this,"Instance created.");
-        errorSource = new DefaultErrorSource(NAME);
-        //ErrorSource.registerErrorSource(errorSource);
+        errorSource = new DefaultErrorSource( NAME );
     }
 
-    public void stop()
-    {
+    public void stop() {
         instance = null;
         unRegisterErrorSource();
     }
 
-
-    /* 	public void createMenuItems(Vector menuItems) {
-            menuItems.addElement(GUIUtilities.loadMenu("pmd-menu"));
-        }
-
-        public void createOptionPanes(OptionsDialog optionsDialog) {
-            optionsDialog.addOptionPane(new PMDOptionPane());
-        } */
-    // boilerplate JEdit code
-
-    public static void checkDirectory(View view)
-    {
-        instance.instanceCheckDirectory(view);
+    public static void checkDirectory( View view ) {
+        instance.instanceCheckDirectory( view );
     }
 
-    public void handleMessage(EBMessage ebmess)
-    {
-        if (ebmess instanceof BufferUpdate && jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE))
-        {
-            BufferUpdate bu = (BufferUpdate)ebmess;
-
-            if (bu.getWhat() == BufferUpdate.SAVED)
-            {
-                if(bu.getBuffer().getMode().getName().equals("java")) //NOPMD
-                {
-                    check(bu.getBuffer(),bu.getView());
-                }
+    public void handleMessage( EBMessage ebmess ) {
+        // maybe run PMD on buffer save
+        if ( ebmess instanceof BufferUpdate && jEdit.getBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE ) ) {
+            BufferUpdate bu = ( BufferUpdate ) ebmess;
+            if ( bu.getWhat() == BufferUpdate.SAVED && "java".equals( bu.getBuffer().getMode().getName() ) ) {
+                check( bu.getBuffer(), bu.getView() );
             }
         }
     }
 
     // check all open buffers
-    public static void checkAllOpenBuffers(View view)
-    {
-        instance.instanceCheckAllOpenBuffers(view);
+    public static void checkAllOpenBuffers( View view ) {
+        instance.instanceCheckAllOpenBuffers( view );
     }
 
-    public static void clearErrorList()
-    {
+    public static void clearErrorList() {
         instance.instanceClearErrorList();
     }
 
-    public void instanceClearErrorList()
-    {
+    public void instanceClearErrorList() {
         errorSource.clear();
     }
 
-    public void instanceCheckDirectory(View view)
-    {
-        JFileChooser chooser = new JFileChooser(jEdit.getProperty(LAST_DIRECTORY));
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    public void instanceCheckDirectory( View view ) {
+        JFileChooser chooser = new JFileChooser( jEdit.getProperty( LAST_DIRECTORY ) );
+        chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
 
         JPanel pnlAccessory = new JPanel();
-        JCheckBox chkRecursive = new JCheckBox("Recursive", jEdit.getBooleanProperty(CHECK_DIR_RECURSIVE));
-        pnlAccessory.add(chkRecursive);
-        chooser.setAccessory(pnlAccessory);
+        JCheckBox chkRecursive = new JCheckBox( "Recursive", jEdit.getBooleanProperty( CHECK_DIR_RECURSIVE ) );
+        pnlAccessory.add( chkRecursive );
+        chooser.setAccessory( pnlAccessory );
 
-        int returnVal = chooser.showOpenDialog(view);
+        int returnVal = chooser.showOpenDialog( view );
 
-        try
-        {
+        try {
             File selectedFile = null;
 
-            if(returnVal == JFileChooser.APPROVE_OPTION)
-            {
+            if ( returnVal == JFileChooser.APPROVE_OPTION ) {
                 selectedFile = chooser.getSelectedFile();
 
-                if(!selectedFile.isDirectory())
-                {
-                    JOptionPane.showMessageDialog(view,"Selection not a directory.",NAME,JOptionPane.ERROR_MESSAGE);
-                    return;
+                if ( !selectedFile.isDirectory() ) {
+                    JOptionPane.showMessageDialog( view, "Selection not a directory.", NAME, JOptionPane.ERROR_MESSAGE );
+                    return ;
                 }
 
-                jEdit.setProperty(LAST_DIRECTORY,selectedFile.getCanonicalPath());
-                jEdit.setBooleanProperty(CHECK_DIR_RECURSIVE,chkRecursive.isSelected());
-                process(findFiles(selectedFile.getCanonicalPath(), chkRecursive.isSelected()), view);
+                jEdit.setProperty( LAST_DIRECTORY, selectedFile.getCanonicalPath() );
+                jEdit.setBooleanProperty( CHECK_DIR_RECURSIVE, chkRecursive.isSelected() );
+                process( findFiles( selectedFile.getCanonicalPath(), chkRecursive.isSelected() ), view );
             }
-            else
-            {
-                return; //Incase the user presses cancel or escape.
+            else {
+                return ; // In case the user presses cancel or escape.
             }
-
         }
-        catch(IOException e)
-        {
-            Log.log(Log.DEBUG,this,e);
+        catch ( IOException e ) {
+            Log.log( Log.DEBUG, this, e );
         }
-    }//End of instanceCheckDirectory
+    }
 
-    public void instanceCheckAllOpenBuffers(View view)
-    {
+    public void instanceCheckAllOpenBuffers( View view ) {
         // I'm putting the files in a Set to work around some
         // odd behavior in jEdit - the buffer.getNext()
         // seems to iterate over the files twice.
         Buffer buffers[] = jEdit.getBuffers();
 
-        if(buffers != null)
-        {
+        if ( buffers != null ) {
             ProgressBar pbd = null;
 
-            if(jEdit.getBooleanProperty(SHOW_PROGRESS))
-            {
-                pbd = startProgressBarDisplay(view,0,buffers.length);
+            if ( jEdit.getBooleanProperty( SHOW_PROGRESS ) ) {
+                pbd = startProgressBarDisplay( view, 0, buffers.length );
             }
 
-            for (int i=0; i<buffers.length; i++ )
-            {
-                if (buffers[i].getName().endsWith(".java"))
-                {
-                    //fileSet.add(buffer.getFile());
-                    Log.log(Log.DEBUG,this,"checking = " + buffers[i].getPath());
-                    instanceCheck(buffers[i],view, false);
+            for ( Buffer buffer : buffers ) {
+                if ( buffer.getName().endsWith( ".java" ) ) {  // TODO: check mode rather than filename
+                    Log.log( Log.DEBUG, this, "checking = " + buffer.getPath() );
+                    instanceCheck( buffer, view, false );
                 }
 
-                if(pbd != null)
-                {
-                    pbd.increment(1);
+                if ( pbd != null ) {
+                    pbd.increment( 1 );
                 }
             }
 
-            endProgressBarDisplay(pbd);
+            endProgressBarDisplay( pbd );
         }
-
-        //List files = new ArrayList();
-        //files.addAll(fileSet);
-        //process(files);
     }
 
-    public void instanceCheck(Buffer buffer, View view, boolean clearErrorList)
-    {
-        try
-        {
+    public void instanceCheck( Buffer buffer, View view, boolean clearErrorList ) {
+        try {
             unRegisterErrorSource();
 
-            if(clearErrorList)
-            {
+            if ( clearErrorList ) {
                 errorSource.clear();
             }
 
             PMD pmd = new PMD();
-            int jvidx = jEdit.getIntegerProperty(JAVA_VERSION_PROPERTY, 1);
-            pmd.setJavaVersion(sourceTypes[jvidx]);
+            int jvidx = jEdit.getIntegerProperty( JAVA_VERSION_PROPERTY, 1 );
+            pmd.setJavaVersion( sourceTypes[ jvidx ] );
             SelectedRules selectedRuleSets = new SelectedRules();
             RuleContext ctx = new RuleContext();
-            ctx.setReport(new Report());
+            ctx.setReport( new Report() );
             String path = buffer.getPath();
-            ctx.setSourceCodeFilename(path);
+            ctx.setSourceCodeFilename( path );
             VFS vfs = buffer.getVFS();
 
-            pmd.processFile(vfs._createInputStream(vfs.createVFSSession(path, view), path, false, view),
-                    System.getProperty("file.encoding"),
+            pmd.processFile( vfs._createInputStream( vfs.createVFSSession( path, view ), path, false, view ),
+                    System.getProperty( "file.encoding" ),
                     selectedRuleSets.getSelectedRules(),
-                    ctx);
+                    ctx );
 
-            if (ctx.getReport().isEmpty())
-            {
-                /// danson, this is annoying if 'Run PMD on Save' is checked
+            if ( ctx.getReport().isEmpty() ) {
+                // only show popup if run on save is NOT selected, otherwise it is annoying
                 boolean run_on_save = jEdit.getBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE );
-                if (!run_on_save) {
-                    // TODO: put string in properties file
-                    JOptionPane.showMessageDialog(view, "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
+                if ( !run_on_save ) {
+                    JOptionPane.showMessageDialog( view, "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE );
                 }
                 errorSource.clear();
             }
+            else {
+                String rulename = "";
 
-            else
-            {
-                String rulename="";
+                final boolean isPrintRule = jEdit.getBooleanProperty( PMDJEditPlugin.PRINT_RULE );
 
-                final boolean isPrintRule = jEdit.getBooleanProperty(PMDJEditPlugin.PRINT_RULE);
-
-                for (Iterator<IRuleViolation> i = ctx.getReport().iterator(); i.hasNext();)
-                {
+                for ( Iterator<IRuleViolation> i = ctx.getReport().iterator(); i.hasNext(); ) {
                     IRuleViolation rv = i.next();
-                    if(isPrintRule)
-                    {
-                        rulename = rv.getRule().getName() +"->";
+                    if ( isPrintRule ) {
+                        rulename = rv.getRule().getName() + "->";
                     }
 
-                    errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getBeginLine()-1,0,0,rulename + rv.getDescription())); //NOPMD
+                    errorSource.addError( new DefaultErrorSource.DefaultError( errorSource, ErrorSource.WARNING, path, rv.getBeginLine() - 1, 0, 0, rulename + rv.getDescription() ) ); //NOPMD
                 }
 
                 registerErrorSource();
             }
         }
-
-        catch (RuleSetNotFoundException rsne)
-        {
-            Log.log(Log.ERROR, this, "RuleSet not found", rsne);
+        catch ( RuleSetNotFoundException rsne ) {
+            Log.log( Log.ERROR, this, "RuleSet not found", rsne );
         }
-
-        catch (PMDException pmde)
-        {
-            String msg="Error while processing " + buffer.getPath() + ":\n" + pmde.getMessage() + "\n\n" + pmde.getCause();
-            Log.log(Log.ERROR, this, msg, pmde);
-            JOptionPane.showMessageDialog(view, msg, "PMD", JOptionPane.ERROR_MESSAGE);
+        catch ( PMDException pmde ) {
+            String msg = "Error while processing " + buffer.getPath() + ":\n" + pmde.getMessage() + "\n\n" + pmde.getCause();
+            Log.log( Log.ERROR, this, msg, pmde );
+            JOptionPane.showMessageDialog( view, msg, "PMD", JOptionPane.ERROR_MESSAGE );
         }
-
-        catch(Exception e)
-        {
+        catch ( Exception e ) {
             // TODO: is this useful to log?
-            Log.log(Log.ERROR, this, "Exception processing file "+ buffer.getPath(), e);
+            Log.log( Log.ERROR, this, "Exception processing file " + buffer.getPath(), e );
         }
-    }// check current buffer
+    }
 
-    public void process(final List<File> files, final View view)
-    {
-        new Thread(new Runnable ()
-                   {
-                       public void run()
-                       {
-                           processFiles(files, view);
-                       }
-                   }
-
-                  ).start();
+    public void process( final List<File> files, final View view ) {
+        // TODO: use SwingWorker?
+        new Thread(
+            new Runnable () {
+                public void run() {
+                    processFiles( files, view );
+                }
+            }
+        ).start();
     }
 
     // check current buffer
-    public static void check(Buffer buffer, View view)
-    {
-        instance.instanceCheck(buffer, view, true);
+    public static void check( Buffer buffer, View view ) {
+        instance.instanceCheck( buffer, view, true );
     }
 
-    void processFiles(List<File> files, View view)
-    {
+    void processFiles( List<File> files, View view ) {
         unRegisterErrorSource();
         errorSource.clear();
 
         ProgressBar pbd = null;
 
-        if(jEdit.getBooleanProperty(SHOW_PROGRESS))
-        {
-            pbd = startProgressBarDisplay(view,0,files.size());
+        if ( jEdit.getBooleanProperty( SHOW_PROGRESS ) ) {
+            pbd = startProgressBarDisplay( view, 0, files.size() );
         }
 
         PMD pmd = new PMD();
-        int jvidx = jEdit.getIntegerProperty(JAVA_VERSION_PROPERTY, 1);
-        pmd.setJavaVersion(sourceTypes[jvidx]);
+        int jvidx = jEdit.getIntegerProperty( JAVA_VERSION_PROPERTY, 1 );
+        pmd.setJavaVersion( sourceTypes[ jvidx ] );
         SelectedRules selectedRuleSets = null;
 
-        try
-        {
+        try {
             selectedRuleSets = new SelectedRules();
         }
-
-        catch (RuleSetNotFoundException rsne)
-        {
+        catch ( RuleSetNotFoundException rsne ) {
             // should never happen since rulesets are fetched via getRegisteredRuleSet, nonetheless:
-            Log.log(Log.ERROR, this, "PMD ERROR: Couldn't find a ruleset", rsne);
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "Unable to find rulesets, halting PMD", NAME, JOptionPane.ERROR_MESSAGE);
-            return;
+            Log.log( Log.ERROR, this, "PMD ERROR: Couldn't find a ruleset", rsne );
+            JOptionPane.showMessageDialog( jEdit.getFirstView(), "Unable to find rulesets, halting PMD", NAME, JOptionPane.ERROR_MESSAGE );
+            return ;
         }
 
         RuleContext ctx = new RuleContext();
@@ -370,518 +299,424 @@ public class PMDJEditPlugin extends EBPlugin
         List<Report> reports = new ArrayList<Report>();
         boolean foundProblems = false;
 
-        Iterator<File> iter = files.iterator();
-        while(iter.hasNext())
-        {
-            File file = iter.next();
-            //ctx.setReport(new Report());
-            ctx.setReport(new Report()); //NOPMD
-            ctx.setSourceCodeFilename(file.getAbsolutePath());
+        for ( File file : files ) {
+            ctx.setReport( new Report() ); 
+            ctx.setSourceCodeFilename( file.getAbsolutePath() );
 
-            try
-            {
-                pmd.processFile(new FileInputStream(file), System.getProperty("file.encoding"), selectedRuleSets.getSelectedRules(), ctx); //NOPMD
-                for (Iterator<IRuleViolation> j = ctx.getReport().iterator(); j.hasNext();)
-                {
+            try {
+                pmd.processFile( new FileInputStream( file ), System.getProperty( "file.encoding" ), selectedRuleSets.getSelectedRules(), ctx ); //NOPMD
+                for ( Iterator<IRuleViolation> j = ctx.getReport().iterator(); j.hasNext(); ) {
                     foundProblems = true;
                     IRuleViolation rv = j.next();
-                    errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR,  file.getAbsolutePath(), rv.getBeginLine()-1,0,0,rv.getDescription())); //NOPMD
+                    errorSource.addError( new DefaultErrorSource.DefaultError( errorSource, ErrorSource.ERROR, file.getAbsolutePath(), rv.getBeginLine() - 1, 0, 0, rv.getDescription() ) ); //NOPMD
                 }
-                if(!ctx.getReport().isEmpty())//That means Report contains some violations, so only cache such reports.
-                {
-                    reports.add(ctx.getReport());
+                if ( !ctx.getReport().isEmpty() ) {   // That means Report contains some violations, so only cache such reports.
+                    reports.add( ctx.getReport() );
                 }
             }
-            catch (FileNotFoundException fnfe)
-            {
+            catch ( FileNotFoundException fnfe ) {
                 // should never happen, but if it does, carry on to the next file
-                Log.log(Log.ERROR, this, "PMD ERROR: Unable to open file " + file.getAbsolutePath(), fnfe);
+                Log.log( Log.ERROR, this, "PMD ERROR: Unable to open file " + file.getAbsolutePath(), fnfe );
             }
-            catch (PMDException pmde)
-            {
+            catch ( PMDException pmde ) {
                 String msg = "Error while processing " + file.getAbsolutePath() + ":\n" + pmde.getMessage();
-                Log.log(Log.ERROR, this, msg, pmde);
-                JOptionPane.showMessageDialog(view, msg, "PMD", JOptionPane.ERROR_MESSAGE);
+                Log.log( Log.ERROR, this, msg, pmde );
+                JOptionPane.showMessageDialog( view, msg, "PMD", JOptionPane.ERROR_MESSAGE );
             }
 
-            if(jEdit.getBooleanProperty(SHOW_PROGRESS))
-            {
-                pbd.increment(1);
+            if ( jEdit.getBooleanProperty( SHOW_PROGRESS ) ) {
+                pbd.increment( 1 );
             }
-        }//End of for
+        }
 
-        if (!foundProblems)
-        {
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
+        if ( !foundProblems ) {
+            JOptionPane.showMessageDialog( jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE );
             errorSource.clear();
         }
-        else
-        {
+        else {
             registerErrorSource();
-            exportErrorAsReport(view, reports.toArray(new Report[reports.size()]));
+            exportErrorAsReport( view, reports.toArray( new Report[ reports.size() ] ) );
         }
 
-        endProgressBarDisplay(pbd);
+        endProgressBarDisplay( pbd );
         pbd = null;
     }
 
-    private List<File> findFiles(String dir, boolean recurse)
-    {
-        FileFinder f  = new FileFinder();
-        return f.findFilesFrom(dir, new net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter(new SourceFileSelector()), recurse);
+    private List<File> findFiles( String dir, boolean recurse ) {
+        FileFinder f = new FileFinder();
+        return f.findFilesFrom( dir, new net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter( new SourceFileSelector() ), recurse );
     }
 
-    private void registerErrorSource()
-    {
-        //Log.log(Log.DEBUG,this,"Registering ErrorSource of PMD");
-        ErrorSource.registerErrorSource(errorSource);
+    private void registerErrorSource() {
+        ErrorSource.registerErrorSource( errorSource );
     }
 
-    private void unRegisterErrorSource()
-    {
-        //Log.log(Log.DEBUG,this,"Unregistering ErrorSource of PMD");
-        ErrorSource.unregisterErrorSource(errorSource);
+    private void unRegisterErrorSource() {
+        ErrorSource.unregisterErrorSource( errorSource );
     }
 
-    public static void cpdCurrentFile(View view) throws IOException
-    {
-        String modeName = getFileType(view.getBuffer().getMode().getName());
-        if (modeName == null) {
-            JOptionPane.showMessageDialog(view, "Copy/Paste detection can not be performed on this file\nbecause the mode can not be determined.", "Copy/Paste Detector", JOptionPane.INFORMATION_MESSAGE);
-            return;
+    public static void cpdCurrentFile( View view ) throws IOException {
+        String modeName = getFileType( view.getBuffer().getMode().getName() );
+        if ( modeName == null ) {
+            JOptionPane.showMessageDialog( view, "Copy/Paste detection can not be performed on this file\nbecause the mode can not be determined.", "Copy/Paste Detector", JOptionPane.INFORMATION_MESSAGE );
+            return ;
         }
-        instance.instanceCPDCurrentFile(view, view.getBuffer().getPath(), modeName);
+        instance.instanceCPDCurrentFile( view, view.getBuffer().getPath(), modeName );
     }
 
-    public static void cpdCurrentFile(View view, VFSBrowser browser) throws IOException
-    {
+    public static void cpdCurrentFile( View view, VFSBrowser browser ) throws IOException {
         VFSFile selectedFile[] = browser.getSelectedFiles();
 
-        if(selectedFile == null || selectedFile.length == 0)
-        {
-            JOptionPane.showMessageDialog(view, "One file must be selected", NAME, JOptionPane.ERROR_MESSAGE);
-            return;
+        if ( selectedFile == null || selectedFile.length == 0 ) {
+            JOptionPane.showMessageDialog( view, "One file must be selected", NAME, JOptionPane.ERROR_MESSAGE );
+            return ;
         }
 
-        if(selectedFile[0].getType() == VFSFile.DIRECTORY)
-        {
-            JOptionPane.showMessageDialog(view, "Selected file cannot be a Directory.", NAME, JOptionPane.ERROR_MESSAGE);
-            return;
+        if ( selectedFile[ 0 ].getType() == VFSFile.DIRECTORY ) {
+            JOptionPane.showMessageDialog( view, "Selected file cannot be a Directory.", NAME, JOptionPane.ERROR_MESSAGE );
+            return ;
         }
-        String path = selectedFile[0].getPath();
-        instance.instanceCPDCurrentFile(view, path, getFileType(path));
+        String path = selectedFile[ 0 ].getPath();
+        instance.instanceCPDCurrentFile( view, path, getFileType( path ) );
     }
 
-    //TODO: Replace this method with a smart file type/mode detector.
-    private static String getFileType(String name)
-    {
-        if(name != null)
-        {
-            for (String lang : LanguageFactory.supportedLanguages) {
-                if (name.endsWith(lang)) return lang;
+    // TODO: Replace this method with a smart file type/mode detector.
+    private static String getFileType( String name ) {
+        if ( name != null ) {
+            for ( String lang : LanguageFactory.supportedLanguages ) {
+                if ( name.endsWith( lang ) )
+                    return lang;
             }
-            if(name.endsWith("h") || name.endsWith("cxx") || name.endsWith("c++"))
-            {
+            if ( name.endsWith( "h" ) || name.endsWith( "cxx" ) || name.endsWith( "c++" ) ) {
                 return "cpp";
             }
         }
         return null;
     }
 
-    private void instanceCPDCurrentFile(View view, String filename, String fileType) throws IOException
-    {
-        CPD cpd = getCPD(fileType, view);
+    private void instanceCPDCurrentFile( View view, String filename, String fileType ) throws IOException {
+        CPD cpd = getCPD( fileType );
         //Log.log(Log.DEBUG, PMDJEditPlugin.class , "See mode " + view.getBuffer().getMode().getName());
 
-        if(cpd != null)
-        {
-            cpd.add(new File(filename));
+        if ( cpd != null ) {
+            cpd.add( new File( filename ) );
             cpd.go();
-            instance.processDuplicates(cpd, view);
-            view.getDockableWindowManager().showDockableWindow("cpd-viewer");
+            instance.processDuplicates( cpd, view );
+            view.getDockableWindowManager().showDockableWindow( "cpd-viewer" );
         }
-        else
-        {
-            view.getStatus().setMessageAndClear("CPD does not yet support this file type: " + fileType);
-            return;
+        else {
+            view.getStatus().setMessageAndClear( "CPD does not yet support this file type: " + fileType );
+            return ;
         }
     }
 
 
-    public static void cpdDir(View view)
-    {
-        JFileChooser chooser = new JFileChooser(jEdit.getProperty(LAST_DIRECTORY));
-        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+    public static void cpdDir( View view ) {
+        JFileChooser chooser = new JFileChooser( jEdit.getProperty( LAST_DIRECTORY ) );
+        chooser.setFileSelectionMode( JFileChooser.FILES_AND_DIRECTORIES );
 
-        chooser.addChoosableFileFilter(new CPDFileFilter("ruby", "Ruby files", "rb", "rbw"));
-        chooser.addChoosableFileFilter(new CPDFileFilter("php", "PHP files", "php", "php3", "php4", "phtml", "inc"));
-        chooser.addChoosableFileFilter(new CPDFileFilter("jsp", "JSP files", "jsp", "jsf", "jspf"));
-        chooser.addChoosableFileFilter(new CPDFileFilter("fortran", "Fortran files", "for", "fort", "f77", "f90"));
-        chooser.addChoosableFileFilter(new CPDFileFilter("cpp", "C/C++ files", "c", "cc", "cpp"));
-        chooser.addChoosableFileFilter(new CPDFileFilter("java", "Java files", "java"));
-        
-        JPanel pnlAccessory = new JPanel(new BorderLayout());
+        // TODO: need to figure out how to create these filters dynamically
+        // TODO: check on the AnyLanguage and AnyTokenizer, can they be used for file types that are not specifically supported? 
+        chooser.addChoosableFileFilter( new CPDFileFilter( "ruby", "Ruby files", "rb", "rbw" ) );
+        chooser.addChoosableFileFilter( new CPDFileFilter( "php", "PHP files", "php", "php3", "php4", "phtml", "inc" ) );
+        chooser.addChoosableFileFilter( new CPDFileFilter( "jsp", "JSP files", "jsp", "jsf", "jspf" ) );
+        chooser.addChoosableFileFilter( new CPDFileFilter( "fortran", "Fortran files", "for", "fort", "f77", "f90" ) );
+        chooser.addChoosableFileFilter( new CPDFileFilter( "cpp", "C/C++ files", "c", "cc", "cpp" ) );
+        chooser.addChoosableFileFilter( new CPDFileFilter( "javascript", "Javascript files", "js" ) );
+        chooser.addChoosableFileFilter( new CPDFileFilter( "java", "Java files", "java" ) );
 
-        JPanel pnlTile = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel lblMinTileSize = new JLabel("Minimum Tile size :");
-        JTextField txttilesize = new JTextField(3);
-        txttilesize.setText(jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100)+"");
-        pnlTile.add(lblMinTileSize);
-        pnlTile.add(txttilesize);
-        pnlAccessory.add(BorderLayout.NORTH, pnlTile);
+        JPanel pnlAccessory = new JPanel( new BorderLayout() );
 
-        JPanel pnlRecursive = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JCheckBox chkRecursive = new JCheckBox("Recursive", jEdit.getBooleanProperty(CHECK_DIR_RECURSIVE));
-        pnlRecursive.add(chkRecursive);
-        pnlAccessory.add(BorderLayout.CENTER, pnlRecursive);
+        JPanel pnlTile = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
+        JLabel lblMinTileSize = new JLabel( "Minimum Tile size :" );
+        JTextField txttilesize = new JTextField( 3 );
+        txttilesize.setText( jEdit.getIntegerProperty( DEFAULT_TILE_MINSIZE_PROPERTY, 100 ) + "" );
+        pnlTile.add( lblMinTileSize );
+        pnlTile.add( txttilesize );
+        pnlAccessory.add( BorderLayout.NORTH, pnlTile );
 
-        chooser.setAccessory(pnlAccessory);
+        JPanel pnlRecursive = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
+        JCheckBox chkRecursive = new JCheckBox( "Recursive", jEdit.getBooleanProperty( CHECK_DIR_RECURSIVE ) );
+        pnlRecursive.add( chkRecursive );
+        pnlAccessory.add( BorderLayout.CENTER, pnlRecursive );
 
-        int returnVal = chooser.showOpenDialog(view);
+        chooser.setAccessory( pnlAccessory );
+
+        int returnVal = chooser.showOpenDialog( view );
         File selectedFile = null;
         String mode = null;
 
-        if(returnVal == JFileChooser.APPROVE_OPTION)
-        {
+        if ( returnVal == JFileChooser.APPROVE_OPTION ) {
             selectedFile = chooser.getSelectedFile();
-            mode = ((CPDFileFilter)chooser.getFileFilter()).getMode();
+            mode = ( ( CPDFileFilter ) chooser.getFileFilter() ).getMode();
 
-            if(!selectedFile.isDirectory())
-            {
-                JOptionPane.showMessageDialog(view,"Selection not a directory.",NAME,JOptionPane.ERROR_MESSAGE);
-                return;
+            if ( !selectedFile.isDirectory() ) {
+                JOptionPane.showMessageDialog( view, "Selection not a directory.", NAME, JOptionPane.ERROR_MESSAGE );
+                return ;
             }
 
             int tilesize = 100;
-            try
-            {
-                tilesize = Integer.parseInt(txttilesize.getText());
+            try {
+                tilesize = Integer.parseInt( txttilesize.getText() );
             }
-            catch(NumberFormatException e)
-            {
+            catch ( NumberFormatException e ) {
                 //use the default.
-                tilesize = jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100);
+                tilesize = jEdit.getIntegerProperty( DEFAULT_TILE_MINSIZE_PROPERTY, 100 );
             }
 
 
-            try
-            {
-                jEdit.setBooleanProperty(CHECK_DIR_RECURSIVE,chkRecursive.isSelected());
-                instance.instanceCPDDir(view, selectedFile.getCanonicalPath(), tilesize, chkRecursive.isSelected(), mode);
+            try {
+                jEdit.setBooleanProperty( CHECK_DIR_RECURSIVE, chkRecursive.isSelected() );
+                instance.instanceCPDDir( view, selectedFile.getCanonicalPath(), tilesize, chkRecursive.isSelected(), mode );
             }
-            catch(IOException e)
-            {
-                Log.log(Log.ERROR, instance, "PMD ERROR: Unable to open file " + selectedFile, e);
+            catch ( IOException e ) {
+                Log.log( Log.ERROR, instance, "PMD ERROR: Unable to open file " + selectedFile, e );
             }
         }
     }
 
-    public static void cpdDir(View view, VFSBrowser browser, boolean recursive) throws IOException
-    {
-        if(view != null && browser != null)
-        {
+    public static void cpdDir( View view, VFSBrowser browser, boolean recursive ) throws IOException {
+        if ( view != null && browser != null ) {
             VFSFile selectedDir[] = browser.getSelectedFiles();
-            if(selectedDir == null || selectedDir.length == 0)
-            {
-                JOptionPane.showMessageDialog(view, "One Directory has to be selected in which to detect duplicate code.", NAME, JOptionPane.ERROR_MESSAGE);
-                return;
+            if ( selectedDir == null || selectedDir.length == 0 ) {
+                JOptionPane.showMessageDialog( view, "One Directory has to be selected in which to detect duplicate code.", NAME, JOptionPane.ERROR_MESSAGE );
+                return ;
             }
 
-            if(selectedDir[0].getType() != VFSFile.DIRECTORY)
-            {
-                JOptionPane.showMessageDialog(view, "Selected file must be a Directory.", NAME, JOptionPane.ERROR_MESSAGE);
-                return;
+            if ( selectedDir[ 0 ].getType() != VFSFile.DIRECTORY ) {
+                JOptionPane.showMessageDialog( view, "Selected file must be a Directory.", NAME, JOptionPane.ERROR_MESSAGE );
+                return ;
             }
-            instance.instanceCPDDir(view, selectedDir[0].getPath(), jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100), recursive, "java");
+            instance.instanceCPDDir( view, selectedDir[ 0 ].getPath(), jEdit.getIntegerProperty( DEFAULT_TILE_MINSIZE_PROPERTY, 100 ), recursive, "java" );
         }
     }
 
-    private void instanceCPDDir(View view, String dir, int tileSize, boolean recursive, String mode) throws IOException
-    {
-        if(dir != null)
-        {
-            jEdit.setProperty(LAST_DIRECTORY,dir);
+    private void instanceCPDDir( View view, String dir, int tileSize, boolean recursive, String mode ) throws IOException {
+        if ( dir != null ) {
+            jEdit.setProperty( LAST_DIRECTORY, dir );
             instance.errorSource.clear();
-            CPD cpd = getCPD(tileSize, mode, view);
+            CPD cpd = getCPD( tileSize, mode );
 
-            if(cpd != null)
-            {
-                if(recursive)
-                {
-                    cpd.addRecursively(dir);
+            if ( cpd != null ) {
+                if ( recursive ) {
+                    cpd.addRecursively( dir );
                 }
-                else
-                {
-                    cpd.addAllInDirectory(dir);
+                else {
+                    cpd.addAllInDirectory( dir );
                 }
                 cpd.go();
-                instance.processDuplicates(cpd, view);
+                instance.processDuplicates( cpd, view );
             }
-            else
-            {
-                view.getStatus().setMessageAndClear("Cannot run CPD on Invalid directory/files.");
-                return;
+            else {
+                view.getStatus().setMessageAndClear( "Cannot run CPD on Invalid directory/files." );
+                return ;
             }
-        }//End of if(dir != null)
+        } 
     }
 
-    private void processDuplicates(CPD cpd, View view)
-    {
-        //StringBuffer report = new StringBuffer();
-        CPDDuplicateCodeViewer dv = getCPDDuplicateCodeViewer(view);
+    private void processDuplicates( CPD cpd, View view ) {
+        CPDDuplicateCodeViewer dv = getCPDDuplicateCodeViewer( view );
 
         dv.clearDuplicates();
         boolean foundDuplicates = false;
 
-        for (Iterator<Match> i = cpd.getMatches(); i.hasNext();)
-        {
-            if(!foundDuplicates) //Set foundDuplicates to true and that too only once.
-            {
+        for ( Iterator<Match> i = cpd.getMatches(); i.hasNext(); ) {
+            if ( !foundDuplicates ) {    // Set foundDuplicates to true and that too only once.
                 foundDuplicates = true;
             }
 
             Match match = i.next();
 
-            CPDDuplicateCodeViewer.Duplicates duplicates = dv.new Duplicates(match.getLineCount() + " duplicate lines", match.getSourceCodeSlice()); //NOPMD
+            CPDDuplicateCodeViewer.Duplicates duplicates = dv.new Duplicates( match.getLineCount() + " duplicate lines", match.getSourceCodeSlice() ); //NOPMD
 
-            for (Iterator<TokenEntry> occurrences = match.iterator(); occurrences.hasNext();)
-            {
+            for ( Iterator<TokenEntry> occurrences = match.iterator(); occurrences.hasNext(); ) {
                 TokenEntry mark = occurrences.next();
 
-                int lastLine = mark.getBeginLine()+match.getLineCount();
-                Log.log(Log.DEBUG, this, "Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount() +" last line "+ lastLine);
+                int lastLine = mark.getBeginLine() + match.getLineCount();
+                Log.log( Log.DEBUG, this, "Begin line " + mark.getBeginLine() + " of file " + mark.getTokenSrcID() + " Line Count " + match.getLineCount() + " last line " + lastLine );
 
-                CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getTokenSrcID(),mark.getBeginLine(),lastLine); //NOPMD
+                CPDDuplicateCodeViewer.Duplicate duplicate = dv.new Duplicate( mark.getTokenSrcID(), mark.getBeginLine(), lastLine ); //NOPMD
 
-                //System.out.println("Adding Duplicate " + duplicate +" to Duplicates "+ duplicates);
-                duplicates.addDuplicate(duplicate);
-            }//End of inner for
+                duplicates.addDuplicate( duplicate );
+            } 
 
-            dv.addDuplicates(duplicates);
-        }//End of outer for
+            dv.addDuplicates( duplicates );
+        }
 
-        if(!foundDuplicates)
-        {
-            dv.getRoot().add(new DefaultMutableTreeNode("No Duplicates found.",false));
+        if ( !foundDuplicates ) {
+            dv.getRoot().add( new DefaultMutableTreeNode( "No duplicates found.", false ) );
         }
 
         dv.refreshTree();
         dv.expandAll();
-    }//End of processDuplicates
+    } 
 
 
-    public CPDDuplicateCodeViewer getCPDDuplicateCodeViewer(View view)
-    {
-        view.getDockableWindowManager().showDockableWindow("cpd-viewer");
-        return (CPDDuplicateCodeViewer)view.getDockableWindowManager().getDockableWindow("cpd-viewer");
+    public CPDDuplicateCodeViewer getCPDDuplicateCodeViewer( View view ) {
+        view.getDockableWindowManager().showDockableWindow( "cpd-viewer" );
+        return ( CPDDuplicateCodeViewer ) view.getDockableWindowManager().getDockableWindow( "cpd-viewer" );
 
     }
 
-    public static void checkFile(View view, VFSBrowser browser)
-    {
-        instance.checkFile(view, browser.getSelectedFiles());
+    public static void checkFile( View view, VFSBrowser browser ) {
+        instance.checkFile( view, browser.getSelectedFiles() );
     }
 
-    public void checkFile(View view,  VFSFile de[])
-    {
-        if(view != null && de != null)
-        {
+    public void checkFile( View view, VFSFile de[] ) {
+        if ( view != null && de != null ) {
             List<File> files = new ArrayList<File>();
 
-            for(int i=0;i<de.length;i++)
-            {
-                if(de[i].getType() == VFSFile.FILE)
-                {
-                    files.add(new File(de[i].getPath())); //NOPMD
+            for (VFSFile file : de) {
+                if ( file.getType() == VFSFile.FILE ) {
+                    files.add( new File( file.getPath() ) ); 
                 }
             }
 
-            process(files, view);
+            process( files, view );
         }
     }
 
-    public static void checkDirectory(View view, VFSBrowser browser, boolean recursive)
-    {
+    public static void checkDirectory( View view, VFSBrowser browser, boolean recursive ) {
         VFSFile de[] = browser.getSelectedFiles();
 
-        if(de == null || de.length == 0 || de[0].getType() != VFSFile.DIRECTORY)
-        {
-            JOptionPane.showMessageDialog(view, "Selection must be a directory",NAME, JOptionPane.ERROR_MESSAGE);
-            return;
+        if ( de == null || de.length == 0 || de[ 0 ].getType() != VFSFile.DIRECTORY ) {
+            JOptionPane.showMessageDialog( view, "Selection must be a directory", NAME, JOptionPane.ERROR_MESSAGE );
+            return ;
         }
 
-        instance.process(instance.findFiles(de[0].getPath(), recursive),view);
+        instance.process( instance.findFiles( de[ 0 ].getPath(), recursive ), view );
     }
 
-    public ProgressBar startProgressBarDisplay(View view, int min, int max)
-    {
-        ProgressBar pbd = new ProgressBar(view,min,max);
-        pbd.setVisible(true);
+    public ProgressBar startProgressBarDisplay( View view, int min, int max ) {
+        ProgressBar pbd = new ProgressBar( view, min, max );
+        pbd.setVisible( true );
         return pbd;
     }
 
-    public void endProgressBarDisplay(ProgressBar pbd)
-    {
-        if(pbd != null)
-        {
+    public void endProgressBarDisplay( ProgressBar pbd ) {
+        if ( pbd != null ) {
             pbd.completeBar();
-            pbd.setVisible(false);
+            pbd.setVisible( false );
         }
     }
 
-    public void exportErrorAsReport(final View view, Report reports[])
-    {
+    public void exportErrorAsReport( final View view, Report reports[] ) {
 
-        String format = jEdit.getProperty(PMDJEditPlugin.RENDERER);
+        String format = jEdit.getProperty( PMDJEditPlugin.RENDERER );
 
-        //"None", "Text", "Html", "XML", "CSV"
-        if(format != null && !format.equals("None"))
-        {
+        // "None", "Text", "Html", "XML", "CSV"
+        if ( format != null && !format.equals( "None" ) ) {
             net.sourceforge.pmd.renderers.Renderer renderer = null;
 
-            if ("XML".equals(format))
-            {
+            if ( "XML".equals( format ) ) {
                 renderer = new XMLRenderer();
             }
-            else if ("Html".equals(format))
-            {
+            else if ( "Html".equals( format ) ) {
                 renderer = new HTMLRenderer();
             }
-            else if ("CSV".equals(format))
-            {
+            else if ( "CSV".equals( format ) ) {
                 renderer = new CSVRenderer();
             }
-            else if ("Text".equals(format))
-            {
+            else if ( "Text".equals( format ) ) {
                 renderer = new TextRenderer();
             }
-            else
-            {
-                JOptionPane.showMessageDialog(view, "Invalid Renderer", NAME, JOptionPane.ERROR_MESSAGE);
-                return;
+            else {
+                JOptionPane.showMessageDialog( view, "Invalid Renderer", NAME, JOptionPane.ERROR_MESSAGE );
+                return ;
             }
 
-            if(reports != null)
-            {
+            if ( reports != null ) {
                 final StringBuffer strbuf = new StringBuffer();
-                // String output = null;
                 try {
                     renderer.start();
-                    for(int i=0;i<reports.length;i++)
-                        renderer.renderFileReport(reports[i]);
+                    for ( int i = 0;i < reports.length;i++ )
+                        renderer.renderFileReport( reports[ i ] );
                     renderer.end();
                 }
-                catch (IOException ioe) {
-                    Log.log(Log.ERROR, this, "Renderer can't report.", ioe );
+                catch ( IOException ioe ) {
+                    Log.log( Log.ERROR, this, "Renderer can't report.", ioe );
                 }
-                view.setBuffer(jEdit.newFile(view));
+                view.setBuffer( jEdit.newFile( view ) );
                 VFSManager.runInAWTThread(
-                    new Runnable()
-                    {
-                        public void run()
-                        {
-                            view.getTextArea().setText(strbuf.toString());
+                    new Runnable() {
+                        public void run() {
+                            view.getTextArea().setText( strbuf.toString() );
                         }
                     }
                 );
-            }//End of if
-        }//End of exportErrorAsReport
+            }
+        }
     }
 
 
-    class ProgressBar extends JPanel
-    {
+    class ProgressBar extends JPanel {
         private JProgressBar pBar;
         private View view;
 
-        public ProgressBar(View view, int min,int max)
-        {
+        public ProgressBar( View view, int min, int max ) {
             super();
             this.view = view;
-            setLayout(new BorderLayout());
-            pBar = new JProgressBar(min,max);
-            pBar.setUI(new BasicProgressBarUI()
-                       {
-                           public Color getSelectionBackground()
-                           {
-                               return jEdit.getColorProperty("pmd.progressbar.foreground");
-                           }
+            setLayout( new BorderLayout() );
+            pBar = new JProgressBar( min, max );
+            pBar.setUI( new BasicProgressBarUI() {
+                        public Color getSelectionBackground() {
+                            return jEdit.getColorProperty( "pmd.progressbar.foreground" );
+                        }
 
-                           public Color getSelectionForeground()
-                           {
-                               return jEdit.getColorProperty("pmd.progressbar.foreground");
-                           }
-                       }
+                        public Color getSelectionForeground() {
+                            return jEdit.getColorProperty( "pmd.progressbar.foreground" );
+                        }
+                    }
 
                       );
-            //pBar.addNotify();
-            pBar.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-            pBar.setToolTipText("PMD Check in Progress");
-            pBar.setForeground(jEdit.getColorProperty("pmd.progressbar.background")); //Color of the ProgressBar flow
-            pBar.setBackground(jEdit.getColorProperty("view.status.background")); //Color of the ProgressBar Background
+            pBar.setBorder( new EtchedBorder( EtchedBorder.RAISED ) );
+            pBar.setToolTipText( "PMD Check in Progress" );
+            pBar.setForeground( jEdit.getColorProperty( "pmd.progressbar.background" ) );
+            pBar.setBackground( jEdit.getColorProperty( "view.status.background" ) ); 
 
-            pBar.setStringPainted(true);
-            add(pBar, BorderLayout.CENTER);
-            view.getStatus().add(pBar, BorderLayout.EAST);
+            pBar.setStringPainted( true );
+            add( pBar, BorderLayout.CENTER );
+            view.getStatus().add( pBar, BorderLayout.EAST );
         }
 
-        public void increment(int num)
-        {
-            pBar.setValue(pBar.getValue()+num);
+        public void increment( int num ) {
+            pBar.setValue( pBar.getValue() + num );
         }
 
-        public void completeBar()
-        {
-            pBar.setValue(pBar.getMaximum());
-            view.getStatus().remove(pBar);
+        public void completeBar() {
+            pBar.setValue( pBar.getMaximum() );
+            view.getStatus().remove( pBar );
             view = null;
             pBar = null;
         }
     }
 
 
-    private CPD getCPD(int tileSize, String fileType, View view)
-    {
+    private CPD getCPD( int tileSize, String fileType ) {
         Language lang;
         LanguageFactory lf = new LanguageFactory();
-        StringBuilder sb = new StringBuilder();
-        boolean supported = false;
-        for (String s : lf.supportedLanguages) {
-            sb.append(s).append(", ");
-            if (s.equals(fileType)) {
-                supported = true;   
-            }
-        }
-        if (!supported) {
-            JOptionPane.showMessageDialog(view,"Copy/Paste detection can only be performed on " + sb.toString().substring(0, sb.length() - 2) + " code.","Copy/Paste Detector",JOptionPane.INFORMATION_MESSAGE);
-            return null;
-        }
         
-        if ("java".equals(fileType))
-        {
-            //Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing java");
+        if ( "java".equals( fileType ) ) {
             Properties props = new Properties();
-            props.setProperty(JavaTokenizer.IGNORE_LITERALS, String.valueOf(jEdit.getBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS)));
-            lang = lf.createLanguage("java", props);
+            props.setProperty( JavaTokenizer.IGNORE_LITERALS, String.valueOf( jEdit.getBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS ) ) );
+            lang = lf.createLanguage( "java", props );
         }
         else {
-            lang = lf.createLanguage(fileType);   
+            lang = lf.createLanguage( fileType );
         }
-        return new CPD(tileSize,lang);
+
+        return lang == null ? null : new CPD( tileSize, lang );
     }
 
-    private CPD getCPD(String fileType, View view)
-    {
-        return getCPD(jEdit.getIntegerProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,100), fileType, view);
+    private CPD getCPD( String fileType ) {
+        return getCPD( jEdit.getIntegerProperty( PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY, 100 ), fileType );
     }
 
     /**
      * Run the PMD rule designer.
      */
     public static void runDesigner() {
-        String[] args = new String[]{"-noexitonclose"};
-        new Designer(args);
+        String[] args = new String[] {"-noexitonclose"};
+        new Designer( args );
     }
 }
-
-
