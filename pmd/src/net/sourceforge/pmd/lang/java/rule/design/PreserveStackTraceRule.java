@@ -123,7 +123,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 		// In case of NPE...
 		if ( node != null && node.getImage() != null )
 		{
-			return catchStmt.hasDescendantMatchingXPath("descendant::StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + node.getImage() + ".initCause']");
+			return catchStmt.hasDescendantMatchingXPath("./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + node.getImage() + ".initCause']");
 		}
 		return false;
 	}
