@@ -21,6 +21,7 @@ New rule:
 	Android: DoNotHardCodeSDCard
 	Controversial : AvoidLiteralsInIfCondition (patch 2591627), UseConcurrentHashMap
 	StrictExceptions : AvoidCatchingGenericException, AvoidLosingExceptionInformation
+	Naming : GenericsNaming
 
 February 08, 2009 - 4.2.5:
 
