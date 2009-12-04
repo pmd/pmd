@@ -60,6 +60,11 @@ Avoid using the 'following' or 'preceeding' axes whenever possible, as these can
   contains(@select,'descendant::')
   or 
   contains(@select,'descendant-self::')
+  or (
+    ($checkSelfDescendantAbreviation = 'true' )
+    and
+    contains(@select,'//')
+    )
 ]
 ]]>
 <!-- the use of node() allow to target any node with an select attribute
@@ -67,6 +72,7 @@ Avoid using the 'following' or 'preceeding' axes whenever possible, as these can
      node name.-->
              </value>
          </property>
+	 <property name="checkSelfDescendantAbreviation" type="Boolean" description="descendant::self abreviation, '//', will also trigger this rule."><value>false</value></property>
      </properties>
      <example>
  <![CDATA[

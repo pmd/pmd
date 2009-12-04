@@ -536,4 +536,54 @@ public class Foo {
         </example>
       </rule>
 
+   <rule name="GenericsNaming"
+         language="java"
+         since="4.2.6"
+         message="Generics names should be a one letter long and upper case."
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#GenericsNaming">
+        <description>
+Generics names should be a one letter long and upper case.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
+  string-length(@Image) > 1 
+  or
+  string:upper-case(@Image) != @Image
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public interface GenericDao<E extends BaseModel, K extends Serializable> extends BaseDao
+{
+   // This is ok...
+}
+
+public interface GenericDao<E extends BaseModel, K extends Serializable>
+{
+   // Also this
+}
+
+public interface GenericDao<e extends BaseModel, K extends Serializable>
+{
+   // 'e' should be an 'E'
+}
+
+public interface GenericDao<EF extends BaseModel, K extends Serializable>
+{
+   // 'EF' is not ok.
+}
+
+
+
+     ]]></example>
+    </rule>
+
 </ruleset>

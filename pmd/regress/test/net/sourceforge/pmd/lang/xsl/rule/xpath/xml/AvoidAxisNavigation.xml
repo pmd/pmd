@@ -14,13 +14,25 @@
     <source-type>xsl</source-type>
   </test-code>
   <test-code>
-    <description>Valid use of concat()</description>
+    <description>using an axis name as an node name</description>
     <expected-problems>0</expected-problems>
     <code><![CDATA[
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- a node called 'descendant', probably a bad idea but shouldn't be a problem -->
   <xsl:variable name="var" select="//descendant"/>
+</xsl:stylesheet>
+     ]]></code>
+    <source-type>xsl</source-type>
+  </test-code>
+  <test-code>
+    <description>using an axis descendant::self abreviation with checkSelfDescendantAbreviation @true</description>
+    <expected-problems>1</expected-problems>
+     <rule-property name="checkSelfDescendantAbreviation">true</rule-property>
+    <code><![CDATA[
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:variable name="var" select="//child"/>
 </xsl:stylesheet>
      ]]></code>
     <source-type>xsl</source-type>

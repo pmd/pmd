@@ -29,6 +29,7 @@ public class NamingRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "SuspiciousEqualsMethodName");
         addRule(RULESET, "SuspiciousHashcodeMethodName");
         addRule(RULESET, "VariableNamingConventions");
+	addRule(RULESET, "GenericsNaming");
     }
 
     public static junit.framework.Test suite() {
