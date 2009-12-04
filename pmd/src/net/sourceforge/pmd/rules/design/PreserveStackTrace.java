@@ -128,7 +128,7 @@ public class PreserveStackTrace extends AbstractJavaRule {
 		// In case of NPE...
 		if ( node != null && node.getImage() != null )
 		{
-			List <Node> nodes = catchStmt.findChildNodesWithXPath("descendant::StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + node.getImage() + ".initCause']");
+			List <Node> nodes = catchStmt.findChildNodesWithXPath("./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + node.getImage() + ".initCause']");
 			if ( nodes != null && nodes.size() > 0 )
 			{
 				return true;
