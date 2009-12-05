@@ -270,7 +270,7 @@ and
         name="NoInlineScript"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="Avoiding inlining HTML script content"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#JspEncoding">
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoInlineScript">
         <description>
             <![CDATA[
 Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the <script> element.
