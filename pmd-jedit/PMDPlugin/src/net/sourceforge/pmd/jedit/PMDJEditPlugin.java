@@ -7,7 +7,6 @@ package net.sourceforge.pmd.jedit;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,13 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -63,6 +56,8 @@ import org.gjt.sp.util.Log;
 
 import errorlist.DefaultErrorSource;
 import errorlist.ErrorSource;
+
+import ise.java.awt.KappaLayout;
 
 /** jEdit plugin for PMD
   @version $Id$
@@ -300,7 +295,7 @@ public class PMDJEditPlugin extends EBPlugin {
         boolean foundProblems = false;
 
         for ( File file : files ) {
-            ctx.setReport( new Report() ); 
+            ctx.setReport( new Report() );
             ctx.setSourceCodeFilename( file.getAbsolutePath() );
 
             try {
@@ -413,32 +408,34 @@ public class PMDJEditPlugin extends EBPlugin {
 
     public static void cpdDir( View view ) {
         JFileChooser chooser = new JFileChooser( jEdit.getProperty( LAST_DIRECTORY ) );
-        chooser.setFileSelectionMode( JFileChooser.FILES_AND_DIRECTORIES );
+        chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
 
-        // TODO: need to figure out how to create these filters dynamically
-        // TODO: check on the AnyLanguage and AnyTokenizer, can they be used for file types that are not specifically supported? 
-        chooser.addChoosableFileFilter( new CPDFileFilter( "ruby", "Ruby files", "rb", "rbw" ) );
-        chooser.addChoosableFileFilter( new CPDFileFilter( "php", "PHP files", "php", "php3", "php4", "phtml", "inc" ) );
-        chooser.addChoosableFileFilter( new CPDFileFilter( "jsp", "JSP files", "jsp", "jsf", "jspf" ) );
-        chooser.addChoosableFileFilter( new CPDFileFilter( "fortran", "Fortran files", "for", "fort", "f77", "f90" ) );
-        chooser.addChoosableFileFilter( new CPDFileFilter( "cpp", "C/C++ files", "c", "cc", "cpp" ) );
-        chooser.addChoosableFileFilter( new CPDFileFilter( "javascript", "Javascript files", "js" ) );
-        chooser.addChoosableFileFilter( new CPDFileFilter( "java", "Java files", "java" ) );
+        JPanel pnlAccessory = new JPanel();
+        pnlAccessory.setLayout(new KappaLayout());
 
-        JPanel pnlAccessory = new JPanel( new BorderLayout() );
-
-        JPanel pnlTile = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
         JLabel lblMinTileSize = new JLabel( "Minimum Tile size :" );
         JTextField txttilesize = new JTextField( 3 );
         txttilesize.setText( jEdit.getIntegerProperty( DEFAULT_TILE_MINSIZE_PROPERTY, 100 ) + "" );
-        pnlTile.add( lblMinTileSize );
-        pnlTile.add( txttilesize );
-        pnlAccessory.add( BorderLayout.NORTH, pnlTile );
 
-        JPanel pnlRecursive = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
         JCheckBox chkRecursive = new JCheckBox( "Recursive", jEdit.getBooleanProperty( CHECK_DIR_RECURSIVE ) );
-        pnlRecursive.add( chkRecursive );
-        pnlAccessory.add( BorderLayout.CENTER, pnlRecursive );
+
+        JComboBox fileTypeSelector = new JComboBox();
+        fileTypeSelector.setEditable( false );
+        fileTypeSelector.addItem( new CPDFileFilter( "java", "Java files", "java" ) );
+        fileTypeSelector.addItem( new CPDFileFilter( "jsp", "JSP files", "jsp", "jsf", "jspf" ) );
+        fileTypeSelector.addItem( new CPDFileFilter( "javascript", "Javascript files", "js" ) );
+        fileTypeSelector.addItem( new CPDFileFilter( "cpp", "C/C++ files", "c", "cc", "cpp" ) );
+        fileTypeSelector.addItem( new CPDFileFilter( "php", "PHP files", "php", "php3", "php4", "phtml", "inc" ) );
+        fileTypeSelector.addItem( new CPDFileFilter( "ruby", "Ruby files", "rb", "rbw" ) );
+        fileTypeSelector.addItem( new CPDFileFilter( "fortran", "Fortran files", "for", "fort", "f77", "f90" ) );
+        
+        // TODO: the "any" tokenizer doesn't seem to work
+        fileTypeSelector.addItem( new CPDFileFilter( "any", "All", "*" ) );
+
+        pnlAccessory.add( lblMinTileSize,  "0, 0, 1, 1, W, , 3" );
+        pnlAccessory.add( txttilesize,     "1, 0, 1, 1, W, , 3");
+        pnlAccessory.add( chkRecursive,    "0, 1, 2, 1, W, , 3" );
+        pnlAccessory.add( fileTypeSelector,"0, 2, 2, 1, W, , 3" );
 
         chooser.setAccessory( pnlAccessory );
 
@@ -448,7 +445,7 @@ public class PMDJEditPlugin extends EBPlugin {
 
         if ( returnVal == JFileChooser.APPROVE_OPTION ) {
             selectedFile = chooser.getSelectedFile();
-            mode = ( ( CPDFileFilter ) chooser.getFileFilter() ).getMode();
+            mode = ( ( CPDFileFilter ) fileTypeSelector.getSelectedItem() ).getMode();
 
             if ( !selectedFile.isDirectory() ) {
                 JOptionPane.showMessageDialog( view, "Selection not a directory.", NAME, JOptionPane.ERROR_MESSAGE );
@@ -464,7 +461,6 @@ public class PMDJEditPlugin extends EBPlugin {
                 tilesize = jEdit.getIntegerProperty( DEFAULT_TILE_MINSIZE_PROPERTY, 100 );
             }
 
-
             try {
                 jEdit.setBooleanProperty( CHECK_DIR_RECURSIVE, chkRecursive.isSelected() );
                 instance.instanceCPDDir( view, selectedFile.getCanonicalPath(), tilesize, chkRecursive.isSelected(), mode );
@@ -474,7 +470,14 @@ public class PMDJEditPlugin extends EBPlugin {
             }
         }
     }
-
+    
+    /**
+     * Run CPD on a directory selected from the File System Browser.
+     * @param view The current view.
+     * @param browser The file system browser supplying the user selecte directory to check.
+     * @param recursive If true, check all files in the selected directory and all child
+     * directories, otherwise, just check the files in the selected directory only.
+     */
     public static void cpdDir( View view, VFSBrowser browser, boolean recursive ) throws IOException {
         if ( view != null && browser != null ) {
             VFSFile selectedDir[] = browser.getSelectedFiles();
@@ -487,7 +490,27 @@ public class PMDJEditPlugin extends EBPlugin {
                 JOptionPane.showMessageDialog( view, "Selected file must be a Directory.", NAME, JOptionPane.ERROR_MESSAGE );
                 return ;
             }
-            instance.instanceCPDDir( view, selectedDir[ 0 ].getPath(), jEdit.getIntegerProperty( DEFAULT_TILE_MINSIZE_PROPERTY, 100 ), recursive, "java" );
+            
+            // display chooser for type of files to check
+            Object[] choices = new Object[8];
+            choices[0] = new CPDFileFilter( "java", "Java files", "java" );
+            choices[1] = new CPDFileFilter( "jsp", "JSP files", "jsp", "jsf", "jspf" );
+            choices[2] = new CPDFileFilter( "javascript", "Javascript files", "js" );
+            choices[3] = new CPDFileFilter( "cpp", "C/C++ files", "c", "cc", "cpp" );
+            choices[4] = new CPDFileFilter( "php", "PHP files", "php", "php3", "php4", "phtml", "inc" );
+            choices[5] = new CPDFileFilter( "ruby", "Ruby files", "rb", "rbw" );
+            choices[6] = new CPDFileFilter( "fortran", "Fortran files", "for", "fort", "f77", "f90" );
+            choices[7] = new CPDFileFilter( "any", "All", "*" );
+            
+            Object choice = JOptionPane.showInputDialog(view, "Select type of files to check:", "CPD, Select File Type", JOptionPane.OK_CANCEL_OPTION, null, choices, choices[0]);
+            if ( choice == null ) {
+                return;   
+            }
+            String mode = ((CPDFileFilter)choice).getMode();
+            
+            instance.instanceCPDDir( view, selectedDir[ 0 ].getPath(),
+                    jEdit.getIntegerProperty( DEFAULT_TILE_MINSIZE_PROPERTY, 100 ),
+                    recursive, mode );
         }
     }
 
@@ -511,7 +534,7 @@ public class PMDJEditPlugin extends EBPlugin {
                 view.getStatus().setMessageAndClear( "Cannot run CPD on Invalid directory/files." );
                 return ;
             }
-        } 
+        }
     }
 
     private void processDuplicates( CPD cpd, View view ) {
@@ -538,7 +561,7 @@ public class PMDJEditPlugin extends EBPlugin {
                 CPDDuplicateCodeViewer.Duplicate duplicate = dv.new Duplicate( mark.getTokenSrcID(), mark.getBeginLine(), lastLine ); //NOPMD
 
                 duplicates.addDuplicate( duplicate );
-            } 
+            }
 
             dv.addDuplicates( duplicates );
         }
@@ -549,7 +572,7 @@ public class PMDJEditPlugin extends EBPlugin {
 
         dv.refreshTree();
         dv.expandAll();
-    } 
+    }
 
 
     public CPDDuplicateCodeViewer getCPDDuplicateCodeViewer( View view ) {
@@ -566,9 +589,9 @@ public class PMDJEditPlugin extends EBPlugin {
         if ( view != null && de != null ) {
             List<File> files = new ArrayList<File>();
 
-            for (VFSFile file : de) {
+            for ( VFSFile file : de ) {
                 if ( file.getType() == VFSFile.FILE ) {
-                    files.add( new File( file.getPath() ) ); 
+                    files.add( new File( file.getPath() ) );
                 }
             }
 
@@ -672,7 +695,7 @@ public class PMDJEditPlugin extends EBPlugin {
             pBar.setBorder( new EtchedBorder( EtchedBorder.RAISED ) );
             pBar.setToolTipText( "PMD Check in Progress" );
             pBar.setForeground( jEdit.getColorProperty( "pmd.progressbar.background" ) );
-            pBar.setBackground( jEdit.getColorProperty( "view.status.background" ) ); 
+            pBar.setBackground( jEdit.getColorProperty( "view.status.background" ) );
 
             pBar.setStringPainted( true );
             add( pBar, BorderLayout.CENTER );
@@ -695,16 +718,16 @@ public class PMDJEditPlugin extends EBPlugin {
     private CPD getCPD( int tileSize, String fileType ) {
         Language lang;
         LanguageFactory lf = new LanguageFactory();
-        
-        if ( "java".equals( fileType ) ) {
-            Properties props = new Properties();
-            props.setProperty( JavaTokenizer.IGNORE_LITERALS, String.valueOf( jEdit.getBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS ) ) );
-            lang = lf.createLanguage( "java", props );
-        }
-        else {
-            lang = lf.createLanguage( fileType );
-        }
 
+        Properties props = new Properties();
+        if ( "java".equals( fileType ) ) {
+            props.setProperty( JavaTokenizer.IGNORE_LITERALS, String.valueOf( jEdit.getBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS ) ) );
+        }
+        lang = lf.createLanguage( fileType, props );
+        // TODO: the "any" tokenizer doesn't seem to work
+        if ( lang == null ) {
+            lang = lf.createLanguage( "any", props );
+        }
         return lang == null ? null : new CPD( tileSize, lang );
     }
 
