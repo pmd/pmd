@@ -13,6 +13,8 @@ Fixed bug 2904832 - Type resolution not working for ASTType when using an inner 
 
 Correct -benchmark reporting of Rule visits via the RuleChain
 Fix issue with Type Resolution incorrectly handling of Classes with same name as a java.lang Class.
+The JSP/JSF parser can now parse Unicode input.
+The JSP/JSP parser can now handle <script>...</script> tags.  The AST HtmlScript node contains the content.
 
 Dependencies updates: asm updated to 3.2
 
@@ -23,6 +25,7 @@ New rule:
 	Controversial : AvoidLiteralsInIfCondition (patch 2591627), UseConcurrentHashMap
 	StrictExceptions : AvoidCatchingGenericException, AvoidLosingExceptionInformation
 	Naming : GenericsNaming
+	JSP: NoInlineScript
 
 February 08, 2009 - 4.2.5:
 

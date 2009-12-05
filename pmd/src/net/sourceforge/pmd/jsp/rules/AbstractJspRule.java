@@ -22,6 +22,7 @@ import net.sourceforge.pmd.jsp.ast.ASTDoctypeDeclaration;
 import net.sourceforge.pmd.jsp.ast.ASTDoctypeExternalId;
 import net.sourceforge.pmd.jsp.ast.ASTElExpression;
 import net.sourceforge.pmd.jsp.ast.ASTElement;
+import net.sourceforge.pmd.jsp.ast.ASTHtmlScript;
 import net.sourceforge.pmd.jsp.ast.ASTJspComment;
 import net.sourceforge.pmd.jsp.ast.ASTJspDeclaration;
 import net.sourceforge.pmd.jsp.ast.ASTJspDirective;
@@ -45,7 +46,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 
 	/**
 	 * Adds a violation to the report.
-	 * 
+	 *
 	 * @param data
 	 *            the RuleContext
 	 * @param node
@@ -58,7 +59,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 
 	/**
 	 * Adds a violation to the report.
-	 * 
+	 *
 	 * @param data
 	 *            the RuleContext
 	 * @param node
@@ -75,7 +76,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 
 	/**
 	 * Adds a violation to the report.
-	 * 
+	 *
 	 * @param data
 	 *            the RuleContext
 	 * @param node
@@ -92,7 +93,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 
 	/**
 	 * Adds a violation to the report.
-	 * 
+	 *
 	 * @param data
 	 *            the RuleContext
 	 * @param node
@@ -211,6 +212,10 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	}
 
 	public Object visit(ASTDoctypeExternalId node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
+
+	public Object visit(ASTHtmlScript node, Object data) {
 		return visit((SimpleNode)node, data);
 	}
 }

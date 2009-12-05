@@ -1,13 +1,15 @@
-    /* JSP Parser for PMD.
+/* JSP Parser for PMD.
  * It supports supports more-or-less well written JSP files.
  * The JSP Document style is supported, except for inline DTD.
  * The JSP Page style (<% ... %>) is supported.
  * Java code is not parsed.
+ * Script code inside <script> ... </script> is not parsed.
  */
 
 options { 
 	USER_CHAR_STREAM = true;
 	NODE_USES_PARSER=true;
+	UNICODE_INPUT=true;
 	  
 	IGNORE_CASE = true; 
 	STATIC = false; 
@@ -19,7 +21,7 @@ options {
 PARSER_BEGIN(JspParser)
 /** 
  * JSP Parser for PMD.
- * @author Pieter – Application Engineers NV/SA – http://www.ae.be
+ * @author Pieter Â– Application Engineers NV/SA Â– http://www.ae.be
  */
 
 package net.sourceforge.pmd.jsp.ast;
@@ -78,6 +80,7 @@ PARSER_END(JspParser)
  * - JspExpressionState : inside an expression <%= ... %>
  * - JspDeclarationState : inside a declaration <%! ... %>
  * - JspCommentState : inside a comment <%-- ... --%>
+ * - HtmlScriptContentState : inside an HTML script <script> ... </script>
  */
 
 
@@ -263,6 +266,18 @@ PARSER_END(JspParser)
 | < COMMENT_TEXT: (~[]) >
 }
 
+<HtmlScriptContentState> TOKEN :
+{
+	<HTML_SCRIPT_CONTENT: (~[]) >
+	| <HTML_SCRIPT_END_TAG : "</script" | "</Script" | "</SCRIPT">
+	{
+		// We've done a custom lookahead for the closing </script> and found it.
+		// Put it back into the input stream, so it can be processed normally.
+		input_stream.backup(8);
+		image.setLength(image.length() - 8); // kill the "<script"
+		matchedToken.image = image.toString();
+	} : AfterTagState
+}
 
 /** ******************************************************************** */
 /** *************************  JSP GRAMMAR  **************************** */
@@ -498,9 +513,20 @@ void Element() :
     (Attribute())*
     ( 
     	(<TAG_END> 
-    		{ jjtThis.setEmpty(false); }
+    		{
+    			jjtThis.setEmpty(false);
+
+		    	// Content in a <script> element needs special treatment (like a comment or CDataSection).
+		    	// Tell the TokenManager to start looking for the body of a script element.  In this
+		    	// state all text will be consumed by the next token up to the closing </script> tag.
+		    	// This is a context sensitive switch for the token manager, not something one can
+		    	// express using normal JavaCC syntax.  Hence the hoop jumping.
+				if ("script".equalsIgnoreCase(startTagName.image)) {
+					token_source.SwitchTo(HtmlScriptContentState);
+				}
+    		}
     	
-    	(Content())? 
+   		(HtmlScript() | Content())?
     	
     	<ENDTAG_START> 
     	endTagName = <TAG_NAME> 
@@ -644,4 +670,17 @@ void DoctypeExternalId() :
 			systemLiteral = <QUOTED_LITERAL> 
 				{ jjtThis.setUri(quoteContent(systemLiteral.image)); }
 		)
+}
+
+void HtmlScript() :
+{
+	StringBuffer content = new StringBuffer();
+	Token t;
+}
+{
+	(t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); })*
+	<HTML_SCRIPT_END_TAG>
+		{
+			jjtThis.setImage(content.toString().trim());
+		}
 }

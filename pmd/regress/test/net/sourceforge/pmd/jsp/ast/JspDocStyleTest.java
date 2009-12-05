@@ -1,6 +1,13 @@
 package test.net.sourceforge.pmd.jsp.ast;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+
 import net.sourceforge.pmd.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.jsp.ast.ASTAttributeValue;
 import net.sourceforge.pmd.jsp.ast.ASTCData;
@@ -8,14 +15,9 @@ import net.sourceforge.pmd.jsp.ast.ASTCommentTag;
 import net.sourceforge.pmd.jsp.ast.ASTDoctypeDeclaration;
 import net.sourceforge.pmd.jsp.ast.ASTDoctypeExternalId;
 import net.sourceforge.pmd.jsp.ast.ASTElement;
+import net.sourceforge.pmd.jsp.ast.ASTHtmlScript;
 
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
 /**
  * Test parsing of a JSP in document style, by checking the generated AST.
  * 
@@ -156,6 +158,17 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 		ASTCommentTag comment = (ASTCommentTag) comments.iterator().next();
 		assertEquals("Correct comment content expected!", "comment", comment.getImage());
 	}
+    
+    /**
+     * Test parsing of HTML <script> element.
+     */
+    @Test
+    public void testHtmlScript() {
+	Set scripts = getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT);
+	assertEquals("One script expected!", 1, scripts.size());
+	ASTHtmlScript script = (ASTHtmlScript) scripts.iterator().next();
+	assertEquals("Correct script content expected!", "Script!", script.getImage());
+    }
 
 	private static final String TEST_SIMPLEST_HTML = "<html/>";
 
@@ -172,6 +185,9 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	
 	private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH = 
 		"<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
+
+	private static final String TEST_HTML_SCRIPT =
+		"<html><head><script>Script!</script></head></html>";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(JspDocStyleTest.class);

@@ -392,8 +392,16 @@
 		<delete file="src/net/sourceforge/pmd/jsp/ast/ParseException.java" />
 		<delete file="src/net/sourceforge/pmd/jsp/ast/CharStream.java" />
 		<jjtree target="etc/grammar/JspParser.jjt" outputdirectory="src/net/sourceforge/pmd/jsp/ast/" javacchome="${javacc-home.path}" />
+
+		<!-- Generate Unicode w/o Unicode Escapes CharStream implementation -->
+		<javacc static="false" usercharstream="false" unicodeinput="true" javaunicodeescape="false" target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
+		<replace file="src/net/sourceforge/pmd/jsp/ast/SimpleCharStream.java" token="public class SimpleCharStream" value="public class JspCharStream implements CharStream" />
+		<replace file="src/net/sourceforge/pmd/jsp/ast/SimpleCharStream.java" token="public SimpleCharStream" value="public JspCharStream" />
+		<move file="src/net/sourceforge/pmd/jsp/ast/SimpleCharStream.java" tofile="src/net/sourceforge/pmd/jsp/ast/JspCharStream.java"/>
+		<delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" />
+
 		<!-- Ensure generated using CharStream interface -->
-		<javacc static="false" usercharstream="true" target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
+		<javacc static="false" usercharstream="true" unicodeinput="true" javaunicodeescape="false" target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
 
 		<delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" />
 		<replace file="src/net/sourceforge/pmd/jsp/ast/JspParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
