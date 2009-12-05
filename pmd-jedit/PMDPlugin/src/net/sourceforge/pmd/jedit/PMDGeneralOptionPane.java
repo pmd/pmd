@@ -44,16 +44,16 @@ public class PMDGeneralOptionPane extends AbstractOptionPane implements OptionPa
 
         javaVersionBox = new JComboBox( PMDJEditPlugin.sourceTypes );
 
-        chkRunPMDOnSave = new JCheckBox( "Run PMD on Save", jEdit.getBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE ) );
-        chkShowProgressBar = new JCheckBox( "Show PMD Progress Bar", jEdit.getBooleanProperty( PMDJEditPlugin.SHOW_PROGRESS ) );
-        chkIgnoreLiterals = new JCheckBox( "Ignore Literals & identifiers when detecting Duplicate Code", jEdit.getBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS ) );
-        chkPrintRule = new JCheckBox( "Print Rulename in ErrorList", jEdit.getBooleanProperty( PMDJEditPlugin.PRINT_RULE ) );
+        chkRunPMDOnSave = new JCheckBox( jEdit.getProperty("net.sf.pmd.Run_PMD_on_Save", "Run PMD on Save"), jEdit.getBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE ) );
+        chkShowProgressBar = new JCheckBox( jEdit.getProperty("net.sf.pmd.Show_PMD_Progress_Bar", "Show PMD Progress Bar"), jEdit.getBooleanProperty( PMDJEditPlugin.SHOW_PROGRESS ) );
+        chkIgnoreLiterals = new JCheckBox( jEdit.getProperty("net.sf.pmd.Ignore_Literals_&_identifiers_when_detecting_Duplicate_Code", "Ignore Literals & identifiers when detecting Duplicate Code"), jEdit.getBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS ) );
+        chkPrintRule = new JCheckBox( jEdit.getProperty("net.sf.pmd.Print_Rulename_in_ErrorList", "Print Rulename in ErrorList"), jEdit.getBooleanProperty( PMDJEditPlugin.PRINT_RULE ) );
 
         JPanel pnlSouth = new JPanel( new GridLayout( 0, 1 ) );
 
         JPanel pnlTileSize = new JPanel();
         ( ( FlowLayout ) pnlTileSize.getLayout() ).setAlignment( FlowLayout.LEFT );
-        JLabel lblMinTileSize = new JLabel( "Minimum Tile Size :" );
+        JLabel lblMinTileSize = new JLabel( jEdit.getProperty("net.sf.pmd.Minimum_Tile_Size>", "Minimum Tile Size:") );
         txtMinTileSize = new JTextField( jEdit.getProperty( PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY, "100" ), 5 );
         pnlTileSize.add( lblMinTileSize );
         pnlTileSize.add( txtMinTileSize );
@@ -62,7 +62,7 @@ public class PMDGeneralOptionPane extends AbstractOptionPane implements OptionPa
                                                     }
                                      );
         comboRenderer.setSelectedItem( jEdit.getProperty( PMDJEditPlugin.RENDERER ) );
-        JLabel lblRenderer = new JLabel( "Export Output as " );
+        JLabel lblRenderer = new JLabel( jEdit.getProperty("net.sf.pmd.Export_Output_as_", "Export Output as ") );
 
         pnlTileSize.add( lblRenderer );
         pnlTileSize.add( comboRenderer );
@@ -74,7 +74,7 @@ public class PMDGeneralOptionPane extends AbstractOptionPane implements OptionPa
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout( new BorderLayout() );
-        mainPanel.add(new JLabel("PMD General Options"), BorderLayout.NORTH);
+        mainPanel.add(new JLabel(jEdit.getProperty("net.sf.pmd.PMD_General_Options", "PMD General Options")), BorderLayout.NORTH);
 
         pnlSouth.add( javaVersionBox );
         pnlSouth.add( chkRunPMDOnSave );

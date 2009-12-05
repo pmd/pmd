@@ -128,7 +128,7 @@ public class PMDJEditPlugin extends EBPlugin {
         chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
 
         JPanel pnlAccessory = new JPanel();
-        JCheckBox chkRecursive = new JCheckBox( "Recursive", jEdit.getBooleanProperty( CHECK_DIR_RECURSIVE ) );
+        JCheckBox chkRecursive = new JCheckBox( jEdit.getProperty("net.sf.pmd.Recursive", "Recursive"), jEdit.getBooleanProperty( CHECK_DIR_RECURSIVE ) );
         pnlAccessory.add( chkRecursive );
         chooser.setAccessory( pnlAccessory );
 
@@ -141,7 +141,7 @@ public class PMDJEditPlugin extends EBPlugin {
                 selectedFile = chooser.getSelectedFile();
 
                 if ( !selectedFile.isDirectory() ) {
-                    JOptionPane.showMessageDialog( view, "Selection not a directory.", NAME, JOptionPane.ERROR_MESSAGE );
+                    JOptionPane.showMessageDialog( view, jEdit.getProperty("net.sf.pmd.Selection_not_a_directory.", "Selection not a directory."), NAME, JOptionPane.ERROR_MESSAGE );
                     return ;
                 }
 
@@ -213,7 +213,7 @@ public class PMDJEditPlugin extends EBPlugin {
                 // only show popup if run on save is NOT selected, otherwise it is annoying
                 boolean run_on_save = jEdit.getBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE );
                 if ( !run_on_save ) {
-                    JOptionPane.showMessageDialog( view, "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE );
+                    JOptionPane.showMessageDialog( view, jEdit.getProperty("net.sf.pmd.No_problems_found", "No problems found"), NAME, JOptionPane.INFORMATION_MESSAGE );
                 }
                 errorSource.clear();
             }
@@ -238,7 +238,7 @@ public class PMDJEditPlugin extends EBPlugin {
             Log.log( Log.ERROR, this, "RuleSet not found", rsne );
         }
         catch ( PMDException pmde ) {
-            String msg = "Error while processing " + buffer.getPath() + ":\n" + pmde.getMessage() + "\n\n" + pmde.getCause();
+            String msg = jEdit.getProperty("net.sf.pmd.Error_while_processing_", "Error while processing ") + buffer.getPath() + ":\n" + pmde.getMessage() + "\n\n" + pmde.getCause();
             Log.log( Log.ERROR, this, msg, pmde );
             JOptionPane.showMessageDialog( view, msg, "PMD", JOptionPane.ERROR_MESSAGE );
         }
@@ -285,7 +285,7 @@ public class PMDJEditPlugin extends EBPlugin {
         catch ( RuleSetNotFoundException rsne ) {
             // should never happen since rulesets are fetched via getRegisteredRuleSet, nonetheless:
             Log.log( Log.ERROR, this, "PMD ERROR: Couldn't find a ruleset", rsne );
-            JOptionPane.showMessageDialog( jEdit.getFirstView(), "Unable to find rulesets, halting PMD", NAME, JOptionPane.ERROR_MESSAGE );
+            JOptionPane.showMessageDialog( jEdit.getFirstView(), jEdit.getProperty("net.sf.pmd.Unable_to_find_rulesets,_halting_PMD", "Unable to find rulesets, halting PMD"), NAME, JOptionPane.ERROR_MESSAGE );
             return ;
         }
 
@@ -314,7 +314,7 @@ public class PMDJEditPlugin extends EBPlugin {
                 Log.log( Log.ERROR, this, "PMD ERROR: Unable to open file " + file.getAbsolutePath(), fnfe );
             }
             catch ( PMDException pmde ) {
-                String msg = "Error while processing " + file.getAbsolutePath() + ":\n" + pmde.getMessage();
+                String msg = jEdit.getProperty("net.sf.pmd.Error_while_processing_", "Error while processing ") + file.getAbsolutePath() + ":\n" + pmde.getMessage();
                 Log.log( Log.ERROR, this, msg, pmde );
                 JOptionPane.showMessageDialog( view, msg, "PMD", JOptionPane.ERROR_MESSAGE );
             }
@@ -325,7 +325,7 @@ public class PMDJEditPlugin extends EBPlugin {
         }
 
         if ( !foundProblems ) {
-            JOptionPane.showMessageDialog( jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE );
+            JOptionPane.showMessageDialog( jEdit.getFirstView(), jEdit.getProperty("net.sf.pmd.No_problems_found", "No problems found"), NAME, JOptionPane.INFORMATION_MESSAGE );
             errorSource.clear();
         }
         else {
@@ -353,7 +353,9 @@ public class PMDJEditPlugin extends EBPlugin {
     public static void cpdCurrentFile( View view ) throws IOException {
         String modeName = getFileType( view.getBuffer().getMode().getName() );
         if ( modeName == null ) {
-            JOptionPane.showMessageDialog( view, "Copy/Paste detection can not be performed on this file\nbecause the mode can not be determined.", "Copy/Paste Detector", JOptionPane.INFORMATION_MESSAGE );
+            JOptionPane.showMessageDialog( view, 
+                jEdit.getProperty("net.sf.pmd.Copy/Paste_detection_can_not_be_performed_on_this_file\nbecause_the_mode_can_not_be_determined.", "Copy/Paste detection can not be performed on this file\nbecause the mode can not be determined."), 
+                jEdit.getProperty("net.sf.pmd.Copy/Paste_Detector", "Copy/Paste Detector"), JOptionPane.INFORMATION_MESSAGE );
             return ;
         }
         instance.instanceCPDCurrentFile( view, view.getBuffer().getPath(), modeName );
@@ -363,12 +365,12 @@ public class PMDJEditPlugin extends EBPlugin {
         VFSFile selectedFile[] = browser.getSelectedFiles();
 
         if ( selectedFile == null || selectedFile.length == 0 ) {
-            JOptionPane.showMessageDialog( view, "One file must be selected", NAME, JOptionPane.ERROR_MESSAGE );
+            JOptionPane.showMessageDialog( view, jEdit.getProperty("net.sf.pmd.One_file_must_be_selected", "One file must be selected"), NAME, JOptionPane.ERROR_MESSAGE );
             return ;
         }
 
         if ( selectedFile[ 0 ].getType() == VFSFile.DIRECTORY ) {
-            JOptionPane.showMessageDialog( view, "Selected file cannot be a Directory.", NAME, JOptionPane.ERROR_MESSAGE );
+            JOptionPane.showMessageDialog( view, jEdit.getProperty("net.sf.pmd.Selected_file_cannot_be_a_Directory.", "Selected file cannot be a Directory."), NAME, JOptionPane.ERROR_MESSAGE );
             return ;
         }
         String path = selectedFile[ 0 ].getPath();
@@ -400,7 +402,7 @@ public class PMDJEditPlugin extends EBPlugin {
             view.getDockableWindowManager().showDockableWindow( "cpd-viewer" );
         }
         else {
-            view.getStatus().setMessageAndClear( "CPD does not yet support this file type: " + fileType );
+            view.getStatus().setMessageAndClear( jEdit.getProperty("net.sf.pmd.CPD_does_not_yet_support_this_file_type>_", "CPD does not yet support this file type: ") + fileType );
             return ;
         }
     }
@@ -413,11 +415,11 @@ public class PMDJEditPlugin extends EBPlugin {
         JPanel pnlAccessory = new JPanel();
         pnlAccessory.setLayout(new KappaLayout());
 
-        JLabel lblMinTileSize = new JLabel( "Minimum Tile size :" );
+        JLabel lblMinTileSize = new JLabel( jEdit.getProperty("net.sf.pmd.Minimum_Tile_size_>", "Minimum Tile size :") );
         JTextField txttilesize = new JTextField( 3 );
         txttilesize.setText( jEdit.getIntegerProperty( DEFAULT_TILE_MINSIZE_PROPERTY, 100 ) + "" );
 
-        JCheckBox chkRecursive = new JCheckBox( "Recursive", jEdit.getBooleanProperty( CHECK_DIR_RECURSIVE ) );
+        JCheckBox chkRecursive = new JCheckBox( jEdit.getProperty("net.sf.pmd.Recursive", "Recursive"), jEdit.getBooleanProperty( CHECK_DIR_RECURSIVE ) );
 
         JComboBox fileTypeSelector = new JComboBox();
         fileTypeSelector.setEditable( false );
@@ -448,7 +450,7 @@ public class PMDJEditPlugin extends EBPlugin {
             mode = ( ( CPDFileFilter ) fileTypeSelector.getSelectedItem() ).getMode();
 
             if ( !selectedFile.isDirectory() ) {
-                JOptionPane.showMessageDialog( view, "Selection not a directory.", NAME, JOptionPane.ERROR_MESSAGE );
+                JOptionPane.showMessageDialog( view, jEdit.getProperty("net.sf.pmd.Selection_not_a_directory.", "Selection not a directory."), NAME, JOptionPane.ERROR_MESSAGE );
                 return ;
             }
 
@@ -482,12 +484,12 @@ public class PMDJEditPlugin extends EBPlugin {
         if ( view != null && browser != null ) {
             VFSFile selectedDir[] = browser.getSelectedFiles();
             if ( selectedDir == null || selectedDir.length == 0 ) {
-                JOptionPane.showMessageDialog( view, "One Directory has to be selected in which to detect duplicate code.", NAME, JOptionPane.ERROR_MESSAGE );
+                JOptionPane.showMessageDialog( view, jEdit.getProperty("net.sf.pmd.One_Directory_has_to_be_selected_in_which_to_detect_duplicate_code.", "One Directory has to be selected in which to detect duplicate code."), NAME, JOptionPane.ERROR_MESSAGE );
                 return ;
             }
 
             if ( selectedDir[ 0 ].getType() != VFSFile.DIRECTORY ) {
-                JOptionPane.showMessageDialog( view, "Selected file must be a Directory.", NAME, JOptionPane.ERROR_MESSAGE );
+                JOptionPane.showMessageDialog( view, jEdit.getProperty("net.sf.pmd.Selected_file_must_be_a_Directory.", "Selected file must be a Directory."), NAME, JOptionPane.ERROR_MESSAGE );
                 return ;
             }
             
@@ -502,7 +504,10 @@ public class PMDJEditPlugin extends EBPlugin {
             choices[6] = new CPDFileFilter( "fortran", "Fortran files", "for", "fort", "f77", "f90" );
             choices[7] = new CPDFileFilter( "any", "All", "*" );
             
-            Object choice = JOptionPane.showInputDialog(view, "Select type of files to check:", "CPD, Select File Type", JOptionPane.OK_CANCEL_OPTION, null, choices, choices[0]);
+            Object choice = JOptionPane.showInputDialog(view, 
+                jEdit.getProperty("net.sf.pmd.Select_type_of_files_to_check>", "Select type of files to check:"), 
+                jEdit.getProperty("net.sf.pmd.CPD,_Select_File_Type", "CPD, Select File Type"), 
+                JOptionPane.OK_CANCEL_OPTION, null, choices, choices[0]);
             if ( choice == null ) {
                 return;   
             }
@@ -531,7 +536,7 @@ public class PMDJEditPlugin extends EBPlugin {
                 instance.processDuplicates( cpd, view );
             }
             else {
-                view.getStatus().setMessageAndClear( "Cannot run CPD on Invalid directory/files." );
+                view.getStatus().setMessageAndClear( jEdit.getProperty("net.sf.pmd.Cannot_run_CPD_on_Invalid_directory/files.", "Cannot run CPD on Invalid directory/files.") );
                 return ;
             }
         }
@@ -567,7 +572,7 @@ public class PMDJEditPlugin extends EBPlugin {
         }
 
         if ( !foundDuplicates ) {
-            dv.getRoot().add( new DefaultMutableTreeNode( "No duplicates found.", false ) );
+            dv.getRoot().add( new DefaultMutableTreeNode( jEdit.getProperty("net.sf.pmd.No_duplicates_found.", "No duplicates found."), false ) );
         }
 
         dv.refreshTree();
@@ -603,7 +608,7 @@ public class PMDJEditPlugin extends EBPlugin {
         VFSFile de[] = browser.getSelectedFiles();
 
         if ( de == null || de.length == 0 || de[ 0 ].getType() != VFSFile.DIRECTORY ) {
-            JOptionPane.showMessageDialog( view, "Selection must be a directory", NAME, JOptionPane.ERROR_MESSAGE );
+            JOptionPane.showMessageDialog( view, jEdit.getProperty("net.sf.pmd.Selection_must_be_a_directory", "Selection must be a directory"), NAME, JOptionPane.ERROR_MESSAGE );
             return ;
         }
 
@@ -644,7 +649,7 @@ public class PMDJEditPlugin extends EBPlugin {
                 renderer = new TextRenderer();
             }
             else {
-                JOptionPane.showMessageDialog( view, "Invalid Renderer", NAME, JOptionPane.ERROR_MESSAGE );
+                JOptionPane.showMessageDialog( view, jEdit.getProperty("net.sf.pmd.Invalid_Renderer", "Invalid Renderer"), NAME, JOptionPane.ERROR_MESSAGE );
                 return ;
             }
 
@@ -693,7 +698,7 @@ public class PMDJEditPlugin extends EBPlugin {
 
                       );
             pBar.setBorder( new EtchedBorder( EtchedBorder.RAISED ) );
-            pBar.setToolTipText( "PMD Check in Progress" );
+            pBar.setToolTipText( jEdit.getProperty("net.sf.pmd.PMD_Check_in_Progress", "PMD Check in Progress") );
             pBar.setForeground( jEdit.getColorProperty( "pmd.progressbar.background" ) );
             pBar.setBackground( jEdit.getColorProperty( "view.status.background" ) );
 

@@ -8,8 +8,11 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=doc/jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.5
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.03.18.00
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.8
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.3=plugin CommonControlsPlugin 1.1
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-4.2.5.jar jaxen-1.1.1.jar asm-3.1.jar
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.description=The PMD plugin is a Java source code analysis tool.
+
+
 #
 # Menu properties
 #
@@ -71,4 +74,41 @@ pmd.progressbar.background=#FFC800
 
 
 
+# various strings
+net.sf.pmd.CPD,_Select_File_Type=CPD, Select File Type
+net.sf.pmd.CPD_does_not_yet_support_this_file_type>_=CPD does not yet support this file type: 
+net.sf.pmd.Cannot_run_CPD_on_Invalid_directory/files.=Cannot run CPD on Invalid directory/files.
+net.sf.pmd.Copy/Paste_Detector=Copy/Paste Detector
+net.sf.pmd.Copy/Paste_detection_can_not_be_performed_on_this_file\nbecause_the_mode_can_not_be_determined.=Copy/Paste detection can not be performed on this file\nbecause the mode can not be determined.
+net.sf.pmd.Description=Description
+net.sf.pmd.Error_Loading_Custom_Ruleset=Error Loading Custom Ruleset
+net.sf.pmd.Error_Loading_Rules=Error Loading Rules
+net.sf.pmd.Error_loading_rules._Check_any_custom_rulesets_for_errors.=Error loading rules. Check any custom rulesets for errors.
+net.sf.pmd.Error_while_processing_=Error while processing 
+net.sf.pmd.Example=Example
+net.sf.pmd.Export_Output_as_=Export Output as 
+net.sf.pmd.Ignore_Literals_&_identifiers_when_detecting_Duplicate_Code=Ignore Literals & identifiers when detecting Duplicate Code
+net.sf.pmd.Invalid_Renderer=Invalid Renderer
+net.sf.pmd.Minimum_Tile_Size>=Minimum Tile Size:
+net.sf.pmd.Minimum_Tile_size_>=Minimum Tile size :
+net.sf.pmd.No_duplicates_found.=No duplicates found.
+net.sf.pmd.No_problems_found=No problems found
+net.sf.pmd.One_Directory_has_to_be_selected_in_which_to_detect_duplicate_code.=One Directory has to be selected in which to detect duplicate code.
+net.sf.pmd.One_file_must_be_selected=One file must be selected
+net.sf.pmd.PMD_Check_in_Progress=PMD Check in Progress
+net.sf.pmd.PMD_General_Options=PMD General Options
+net.sf.pmd.Please_see_http>//pmd.sf.net/_for_more_information=Please see http://pmd.sf.net/ for more information
+net.sf.pmd.Print_Rulename_in_ErrorList=Print Rulename in ErrorList
+net.sf.pmd.Recursive=Recursive
+net.sf.pmd.Rules=Rules
+net.sf.pmd.Run_PMD_on_Save=Run PMD on Save
+net.sf.pmd.Select_default_rules=Select default rules
+net.sf.pmd.Select_type_of_files_to_check>=Select type of files to check:
+net.sf.pmd.Selected_file_cannot_be_a_Directory.=Selected file cannot be a Directory.
+net.sf.pmd.Selected_file_must_be_a_Directory.=Selected file must be a Directory.
+net.sf.pmd.Selection_must_be_a_directory=Selection must be a directory
+net.sf.pmd.Selection_not_a_directory.=Selection not a directory.
+net.sf.pmd.Show_PMD_Progress_Bar=Show PMD Progress Bar
+net.sf.pmd.There_was_an_error_loading_one_or_more_custom_rulesets,_so_no_custom_rulesets_were_loaded=There was an error loading one or more custom rulesets, so no custom rulesets were loaded
+net.sf.pmd.Unable_to_find_rulesets,_halting_PMD=Unable to find rulesets, halting PMD
 

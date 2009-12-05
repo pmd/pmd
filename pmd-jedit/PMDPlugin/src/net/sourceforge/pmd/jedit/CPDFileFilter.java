@@ -44,7 +44,7 @@ public class CPDFileFilter extends FileFilter {
         
         // get the file name extension
         String name = f.getName();
-        int index = name.lastIndexOf(".");
+        int index = name.lastIndexOf('.');
         if (index == -1) {
             return false;   
         }
@@ -70,5 +70,9 @@ public class CPDFileFilter extends FileFilter {
     
     public String getMode() {
         return mode;   
+    }
+    
+    public String toString() {
+        return description;   
     }
 }

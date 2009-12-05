@@ -146,7 +146,10 @@ public class SelectedRules {
             }
         }
         catch ( RuleSetNotFoundException e ) {
-            JOptionPane.showMessageDialog( null, "There was an error loading one or more custom rulesets, so no custom rulesets were loaded", "Error Loading Custom Ruleset", JOptionPane.ERROR_MESSAGE );
+            JOptionPane.showMessageDialog( null, 
+                jEdit.getProperty("net.sf.pmd.There_was_an_error_loading_one_or_more_custom_rulesets,_so_no_custom_rulesets_were_loaded", "There was an error loading one or more custom rulesets, so no custom rulesets were loaded"), 
+                jEdit.getProperty("net.sf.pmd.Error_Loading_Custom_Ruleset", "Error Loading Custom Ruleset"), 
+                JOptionPane.ERROR_MESSAGE );
         }
         return rulesets;
     }

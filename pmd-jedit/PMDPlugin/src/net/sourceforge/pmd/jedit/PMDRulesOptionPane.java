@@ -49,8 +49,8 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
 
         setLayout( new KappaLayout() );
 
-        JLabel rules_label = new JLabel( "Rules" );
-        useDefaultRules = new JCheckBox( "Select default rules" );
+        JLabel rules_label = new JLabel( jEdit.getProperty("net.sf.pmd.Rules", "Rules") );
+        useDefaultRules = new JCheckBox( jEdit.getProperty("net.sf.pmd.Select_default_rules", "Select default rules") );
         useDefaultRules.setSelected( jEdit.getBooleanProperty( USE_DEFAULT_RULES_KEY, false ) );
 
         // use a checkbox tree for displaying the rules.  This lets the rules be
@@ -62,7 +62,10 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
         // is checked.
         JScrollPane rules_pane = null;
         if ( rules == null ) {
-            JOptionPane.showMessageDialog( null, "Error loading rules. Check any custom rulesets for errors.", "Error Loading Rules", JOptionPane.ERROR_MESSAGE );
+            JOptionPane.showMessageDialog( null, 
+                jEdit.getProperty("net.sf.pmd.Error_loading_rules._Check_any_custom_rulesets_for_errors.", "Error loading rules. Check any custom rulesets for errors."), 
+                jEdit.getProperty("net.sf.pmd.Error_Loading_Rules", "Error Loading Rules"), 
+                JOptionPane.ERROR_MESSAGE );
         }
         else {
             if ( jEdit.getBooleanProperty( USE_DEFAULT_RULES_KEY, false ) ) {
@@ -109,10 +112,10 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
         rulesPanel.add( pnlCustomRules, BorderLayout.SOUTH );
         */
 
-        exampleLabel = new JLabel( "Example" );
+        exampleLabel = new JLabel( jEdit.getProperty("net.sf.pmd.Example", "Example") );
         JScrollPane example_pane = new JScrollPane( exampleTextArea );
 
-        JLabel more_info_label = new JLabel( "Please see http://pmd.sf.net/ for more information" );
+        JLabel more_info_label = new JLabel( jEdit.getProperty("net.sf.pmd.Please_see_http>//pmd.sf.net/_for_more_information", "Please see http://pmd.sf.net/ for more information") );
 
         setBorder( BorderFactory.createEmptyBorder( 12, 11, 11, 12 ) );
         add( "0, 0,  1, 1,  W, w,  3", rules_label );
@@ -143,7 +146,7 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                 if ( node != null ) {
                     Object userObject = node.getUserObject();
                     if ( userObject instanceof RuleNode ) {
-                        changeExampleLabel( "Example" );
+                        changeExampleLabel( jEdit.getProperty("net.sf.pmd.Example", "Example") );
                         String description = ( ( RuleNode ) userObject ).getRule().getDescription();
                         description = description.trim();
                         List<String> examples = ( ( RuleNode ) userObject ).getRule().getExamples();
@@ -153,7 +156,7 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                         exampleTextArea.setCaretPosition( 0 );
                     }
                     else if ( userObject instanceof RuleSetNode ) {
-                        changeExampleLabel( "Description" );
+                        changeExampleLabel( jEdit.getProperty("net.sf.pmd.Description", "Description") );
                         String description = ( ( RuleSetNode ) userObject ).getRuleSet().getDescription();
                         description = description.trim();
                         description = description.replaceAll( "\n", " " );
