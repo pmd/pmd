@@ -18,6 +18,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 	addRule(RULESET, "JspEncoding");
 	addRule(RULESET, "NoClassAttribute");
 	addRule(RULESET, "NoHtmlComments");
+	addRule(RULESET, "NoInlineScript");
 	addRule(RULESET, "NoInlineStyleInformation");
 	addRule(RULESET, "NoJspForward");
 	addRule(RULESET, "NoLongScripts");

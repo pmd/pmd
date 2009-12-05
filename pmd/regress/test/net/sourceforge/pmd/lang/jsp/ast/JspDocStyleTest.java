@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.jsp.ast.ASTCommentTag;
 import net.sourceforge.pmd.lang.jsp.ast.ASTDoctypeDeclaration;
 import net.sourceforge.pmd.lang.jsp.ast.ASTDoctypeExternalId;
 import net.sourceforge.pmd.lang.jsp.ast.ASTElement;
+import net.sourceforge.pmd.lang.jsp.ast.ASTHtmlScript;
 
 import org.junit.Test;
 /**
@@ -158,6 +159,17 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 		assertEquals("Correct comment content expected!", "comment", comment.getImage());
 	}
 
+    /**
+     * Test parsing of HTML <script> element.
+     */
+    @Test
+    public void testHtmlScript() {
+	Set scripts = getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT);
+	assertEquals("One script expected!", 1, scripts.size());
+	ASTHtmlScript script = (ASTHtmlScript) scripts.iterator().next();
+	assertEquals("Correct script content expected!", "Script!", script.getImage());
+    }
+
 	private static final String TEST_SIMPLEST_HTML = "<html/>";
 
 	private static final String TEST_ELEMENT_AND_NAMESPACE = "<h:html MyNsPrefix:MyAttr='MyValue'/>";
@@ -173,6 +185,9 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
 	private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH =
 		"<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
+
+	private static final String TEST_HTML_SCRIPT =
+		"<html><head><script>Script!</script></head></html>";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(JspDocStyleTest.class);

@@ -25,6 +25,7 @@ public interface JspParserTreeConstants
   public int JJTDECLARATION = 19;
   public int JJTDOCTYPEDECLARATION = 20;
   public int JJTDOCTYPEEXTERNALID = 21;
+  public int JJTHTMLSCRIPT = 22;
 
 
   public String[] jjtNodeName = {
@@ -50,6 +51,7 @@ public interface JspParserTreeConstants
     "Declaration",
     "DoctypeDeclaration",
     "DoctypeExternalId",
+    "HtmlScript",
   };
 }
-/* JavaCC - OriginalChecksum=71c6213c71bf42a9b188039b011ef3fa (do not edit this line) */
+/* JavaCC - OriginalChecksum=1c3b7dfcead7fec8d082ef75056e253b (do not edit this line) */

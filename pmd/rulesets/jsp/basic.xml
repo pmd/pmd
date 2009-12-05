@@ -262,4 +262,36 @@ and
 		</example>
 	</rule>
 
+    <rule
+        name="NoInlineScript" language="jsp"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="Avoiding inlining HTML script content"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoInlineScript">
+        <description>
+            <![CDATA[
+Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the <script> element.
+Externalized script could be reused between pages.  Browsers can also cache the script, reducing overall download bandwidth.
+            ]]>
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//HtmlScript[@Image != '']
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+                Most browsers should be able to interpret the following headers:
+                
+                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+                    
+                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
+            ]]>
+        </example>
+    </rule>
+
 </ruleset>

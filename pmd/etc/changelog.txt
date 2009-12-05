@@ -472,6 +472,8 @@ RuleSet short names now require a language prefix, 'basic' is now 'java-basic', 
 The JSP RuleSets are now in the 'jsp' language, and are 'jsp-basic', 'jsp-basic-jsf', 'rulesets/jsp/basic.xml' and 'rulesets/jsp/basic-jsp.xml'
 Enhanced logging in the ClassTypeResolver to provide more detailed messaging.
 AvoidUsingHardCodedIP modified to not use InetAddress.getByName(String), instead does better pattern analysis.
+The JSP/JSF parser can now parse Unicode input.
+The JSP/JSP parser can now handle <script>...</script> tags.  The AST HtmlScript node contains the content.
 
 New Java rules:
 
@@ -489,6 +491,9 @@ New Java rules:
 
 New Java ruleset:
 	android.xml: new rules specific to the Android platform
+
+New JSP rules:
+	Basic ruleset: NoInlineScript
 
 New ECMAScript rules:
 	Basic ruleset: AssignmentInOperand,ConsistentReturn,InnaccurateNumericLiteral,UnreachableCode

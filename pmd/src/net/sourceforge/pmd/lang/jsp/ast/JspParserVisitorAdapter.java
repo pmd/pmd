@@ -91,4 +91,7 @@ public class JspParserVisitorAdapter implements JspParserVisitor {
         return visit((JspNode) node, data);
     }
 
+    public Object visit(ASTHtmlScript node, Object data) {
+        return visit((JspNode) node, data);
+    }
 }

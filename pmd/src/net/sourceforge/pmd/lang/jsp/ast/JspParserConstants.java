@@ -158,41 +158,47 @@ public interface JspParserConstants {
   int COMMENT_END = 75;
   /** RegularExpression Id. */
   int COMMENT_TEXT = 76;
+  /** RegularExpression Id. */
+  int HTML_SCRIPT_CONTENT = 77;
+  /** RegularExpression Id. */
+  int HTML_SCRIPT_END_TAG = 78;
 
   /** Lexical state. */
-  int CommentState = 0;
+  int HtmlScriptContentState = 0;
   /** Lexical state. */
-  int AttrValueBetweenDoubleQuotesState = 1;
+  int CommentState = 1;
   /** Lexical state. */
-  int AttrValueBetweenSingleQuotesState = 2;
+  int AttrValueBetweenDoubleQuotesState = 2;
   /** Lexical state. */
-  int StartTagState = 3;
+  int AttrValueBetweenSingleQuotesState = 3;
   /** Lexical state. */
-  int CDataState = 4;
+  int StartTagState = 4;
   /** Lexical state. */
-  int DocTypeExternalIdState = 5;
+  int CDataState = 5;
   /** Lexical state. */
-  int DocTypeState = 6;
+  int DocTypeExternalIdState = 6;
   /** Lexical state. */
-  int JspCommentState = 7;
+  int DocTypeState = 7;
   /** Lexical state. */
-  int JspDeclarationState = 8;
+  int JspCommentState = 8;
   /** Lexical state. */
-  int JspExpressionState = 9;
+  int JspDeclarationState = 9;
   /** Lexical state. */
-  int JspScriptletState = 10;
+  int JspExpressionState = 10;
   /** Lexical state. */
-  int InTagState = 11;
+  int JspScriptletState = 11;
   /** Lexical state. */
-  int AfterTagState = 12;
+  int InTagState = 12;
   /** Lexical state. */
-  int AttrValueState = 13;
+  int AfterTagState = 13;
   /** Lexical state. */
-  int JspDirectiveAttributesState = 14;
+  int AttrValueState = 14;
   /** Lexical state. */
-  int JspDirectiveState = 15;
+  int JspDirectiveAttributesState = 15;
   /** Lexical state. */
-  int DEFAULT = 16;
+  int JspDirectiveState = 16;
+  /** Lexical state. */
+  int DEFAULT = 17;
 
   /** Literal token values. */
   String[] tokenImage = {
@@ -273,6 +279,8 @@ public interface JspParserConstants {
     "<DOLLAR_OR_HASH_DOUBLE_QUOTE>",
     "<COMMENT_END>",
     "<COMMENT_TEXT>",
+    "<HTML_SCRIPT_CONTENT>",
+    "<HTML_SCRIPT_END_TAG>",
   };
 
 }

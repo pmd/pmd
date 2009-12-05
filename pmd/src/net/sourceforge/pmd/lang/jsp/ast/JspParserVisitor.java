@@ -25,5 +25,6 @@ public interface JspParserVisitor
   public Object visit(ASTDeclaration node, Object data);
   public Object visit(ASTDoctypeDeclaration node, Object data);
   public Object visit(ASTDoctypeExternalId node, Object data);
+  public Object visit(ASTHtmlScript node, Object data);
 }
-/* JavaCC - OriginalChecksum=34036f9be051dd3397ac21f8e8b1d0ca (do not edit this line) */
+/* JavaCC - OriginalChecksum=9fbbb0955639a604281af29bb04ad1b4 (do not edit this line) */
