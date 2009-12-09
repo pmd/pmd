@@ -15,6 +15,7 @@ Correct -benchmark reporting of Rule visits via the RuleChain
 Fix issue with Type Resolution incorrectly handling of Classes with same name as a java.lang Class.
 The JSP/JSF parser can now parse Unicode input.
 The JSP/JSP parser can now handle <script>...</script> tags.  The AST HtmlScript node contains the content.
+Added Ecmascript as a supported language for CPD.
 
 Dependencies updates: asm updated to 3.2
 
