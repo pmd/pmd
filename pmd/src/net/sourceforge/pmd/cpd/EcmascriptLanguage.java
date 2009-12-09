@@ -4,8 +4,8 @@
  */
 package net.sourceforge.pmd.cpd;
 
-public class JavascriptLanguage extends AbstractLanguage {
-	public JavascriptLanguage() {
-		super(new JavascriptTokenizer(), ".js");
+public class EcmascriptLanguage extends AbstractLanguage {
+	public EcmascriptLanguage() {
+		super(new EcmascriptTokenizer(), ".js");
 	}
 }

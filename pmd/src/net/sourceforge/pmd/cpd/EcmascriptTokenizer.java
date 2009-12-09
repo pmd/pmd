@@ -5,8 +5,8 @@ import java.util.ArrayList;
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-public class JavascriptTokenizer extends AbstractTokenizer {
-    public JavascriptTokenizer() {
+public class EcmascriptTokenizer extends AbstractTokenizer {
+    public EcmascriptTokenizer() {
         // setting markers for "string" in javascript
         this.stringToken = new ArrayList<String>();
         this.stringToken.add( "\'" );
