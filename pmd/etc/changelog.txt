@@ -474,6 +474,7 @@ Enhanced logging in the ClassTypeResolver to provide more detailed messaging.
 AvoidUsingHardCodedIP modified to not use InetAddress.getByName(String), instead does better pattern analysis.
 The JSP/JSF parser can now parse Unicode input.
 The JSP/JSP parser can now handle <script>...</script> tags.  The AST HtmlScript node contains the content.
+Added Ecmascript as a supported language for CPD.
 
 New Java rules:
 
