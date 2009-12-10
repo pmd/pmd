@@ -72,7 +72,20 @@ public class CPDFileFilter extends FileFilter {
         return mode;   
     }
     
+    public String[] getExtensions() {
+        return extensions;   
+    }
+    
     public String toString() {
-        return description;   
+        StringBuilder sb = new StringBuilder();
+        sb.append(description);
+        sb.append(" (");
+        for (String s : extensions) {
+            sb.append(s).append(',');   
+        }
+        sb.deleteCharAt(sb.lastIndexOf(","));
+        sb.append(')');
+        
+        return sb.toString();   
     }
 }

@@ -20,6 +20,7 @@
     <path id="project.class.path">
         <pathelement location="${jedit.install.dir}/jedit.jar"/>
         <pathelement location="${jedit.plugins.dir}/ErrorList.jar"/>
+        <pathelement location="${jedit.plugins.dir}/kappalayout.jar"/>
         <pathelement location="${build}"/>
         <fileset casesensitive="false" id="pmd.libs" dir="${lib}">
             <include name="*.jar"/>
