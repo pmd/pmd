@@ -413,7 +413,7 @@
     <dependency>
       <groupId>rhino</groupId>
       <artifactId>js</artifactId>
-      <version>cvs-11282008</version>
+      <version>cvs-12122009</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

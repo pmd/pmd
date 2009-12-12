@@ -15,11 +15,24 @@ public class ASTKeywordLiteral extends AbstractEcmascriptNode<KeywordLiteral> {
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
 	return visitor.visit(this, data);
     }
 
     public boolean isBoolean() {
 	return node.isBooleanLiteral();
+    }
+    
+    public boolean isThis() {
+	return node.getType() == Token.THIS;
+    }
+    
+    public boolean isNull() {
+	return node.getType() == Token.NULL;
+    }
+    
+    public boolean isDebugger() {
+	return node.getType() == Token.DEBUGGER;
     }
 }

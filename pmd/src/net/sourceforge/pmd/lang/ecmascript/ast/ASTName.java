@@ -18,6 +18,10 @@ public class ASTName extends AbstractEcmascriptNode<Name> {
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
 	return visitor.visit(this, data);
     }
+    
+    public String getIdentifier() {
+	return node.getIdentifier();
+    }
 
     public boolean isLocalName() {
 	return node.isLocalName();

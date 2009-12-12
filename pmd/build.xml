@@ -19,7 +19,7 @@
 	<property name="jaxen.version" value="1.1.1" />
 	<property name="saxon.version" value="9" />
 	<property name="junit.version" value="4.4" />
-	<property name="rhino.version" value="cvs-11282008" />
+	<property name="rhino.version" value="cvs-12122009" />
 	<property name="javacc-home.path" value="${dir.lib}" />
 
 	<!--Settings-->

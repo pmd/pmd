@@ -16,6 +16,8 @@ public interface EcmascriptNode extends Node {
      * Accept the visitor. *
      */
     Object childrenAccept(EcmascriptParserVisitor visitor, Object data);
+    
+    String getJsDoc();
 
     boolean hasSideEffects();
 }

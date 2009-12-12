@@ -10,9 +10,12 @@ public class ASTComment extends AbstractEcmascriptNode<Comment> {
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
 	return visitor.visit(this, data);
     }
 
-    // TODO Implement something useful
+    public String getValue() {
+	return node.getValue();
+    }
 }

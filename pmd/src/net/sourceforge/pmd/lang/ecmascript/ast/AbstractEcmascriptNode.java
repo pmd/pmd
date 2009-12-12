@@ -40,6 +40,10 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
 	return data;
     }
 
+    public String getJsDoc() {
+	return node.getJsDoc();
+    }
+
     public boolean hasSideEffects() {
 	return node.hasSideEffects();
     }
