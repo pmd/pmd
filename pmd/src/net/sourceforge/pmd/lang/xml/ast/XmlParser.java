@@ -36,7 +36,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class XmlParser {
-    private final XmlParserOptions parserOptions;
+    protected final XmlParserOptions parserOptions;
     protected Map<Node, XmlNode> nodeCache = new HashMap<Node, XmlNode>();
     
     public XmlParser(XmlParserOptions parserOptions) {
@@ -177,7 +177,7 @@ public class XmlParser {
 	    // Delegate method
 	    else {
 		if ("toString".equals(method.getName())) {
-		    String s = ((Node) node).getNodeName();
+		    String s = node.getNodeName();
 		    s = s.replace("#", "");
 		    return s;
 		}

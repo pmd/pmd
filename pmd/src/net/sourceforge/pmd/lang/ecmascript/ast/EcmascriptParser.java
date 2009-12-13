@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.ErrorReporter;
@@ -18,14 +19,19 @@ import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.ErrorCollector;
 
 public class EcmascriptParser {
-
+    protected final EcmascriptParserOptions parserOptions;
     protected Map<AstNode, EcmascriptNode> nodeCache = new HashMap<AstNode, EcmascriptNode>();
 
+    public EcmascriptParser(EcmascriptParserOptions parserOptions) {
+	this.parserOptions = parserOptions;
+    }
+
     protected AstRoot parseEcmascript(final Reader reader) throws ParseException {
-	// TODO Fix hardcode
 	final CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-	compilerEnvirons.setRecordingComments(true);
-	//compilerEnvirons.setLanguageVersion(Context.VERSION_1_0);
+	compilerEnvirons.setRecordingComments(parserOptions.isRecordingComments());
+	compilerEnvirons.setRecordingLocalJsDocComments(parserOptions.isRecordingLocalJsDocComments());
+	compilerEnvirons.setLanguageVersion(parserOptions.getRhinoLanguageVersion().getVersion());
+
 	// TODO Fix hardcode
 	final ErrorReporter errorReporter = new ErrorCollector();
 	final Parser parser = new Parser(compilerEnvirons, errorReporter);

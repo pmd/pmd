@@ -32,7 +32,7 @@ public class Ecmascript3Parser extends AbstractParser {
     }
 
     public Node parse(String fileName, Reader source) throws ParseException {
-	return new net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser().parse(source);
+	return new net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser((EcmascriptParserOptions)parserOptions).parse(source);
     }
 
     public Map<Integer, String> getSuppressMap() {

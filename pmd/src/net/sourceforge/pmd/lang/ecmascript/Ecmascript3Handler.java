@@ -38,6 +38,11 @@ public class Ecmascript3Handler extends AbstractLanguageVersionHandler {
 	return EcmascriptRuleViolationFactory.INSTANCE;
     }
 
+    @Override
+    public ParserOptions getDefaultParserOptions() {
+	return new EcmascriptParserOptions();
+    }
+
     public Parser getParser(ParserOptions parserOptions) {
 	return new Ecmascript3Parser(parserOptions);
     }
