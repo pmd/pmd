@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.JavaCharStream;
@@ -18,13 +19,18 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  * This is a generic Java specific implementation of the Parser interface. It
  * creates a JavaParser instance, and sets the exclude marker. It also exposes
  * the exclude map from the JavaParser instance.
- * 
+ *
  * @see AbstractParser
  * @see JavaParser
  */
 public abstract class AbstractJavaParser extends AbstractParser {
     private JavaParser parser;
 
+    public AbstractJavaParser(ParserOptions parserOptions) {
+	super(parserOptions);
+    }
+
+    @Override
     public TokenManager createTokenManager(Reader source) {
 	return new JavaTokenManager(source);
     }
@@ -34,7 +40,7 @@ public abstract class AbstractJavaParser extends AbstractParser {
      */
     protected JavaParser createJavaParser(Reader source) throws ParseException {
 	parser = new JavaParser(new JavaCharStream(source));
-	String suppressMarker = getSuppressMarker();
+	String suppressMarker = getParserOptions().getSuppressMarker();
 	if (suppressMarker != null) {
 	    parser.setSuppressMarker(suppressMarker);
 	}

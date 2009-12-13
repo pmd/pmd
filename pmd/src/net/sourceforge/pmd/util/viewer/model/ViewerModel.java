@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -33,8 +34,9 @@ public class ViewerModel {
      * all existing source will be replaced
      */
     public void commitSource(String source, LanguageVersion languageVersion) {
-	ASTCompilationUnit compilationUnit = (ASTCompilationUnit) languageVersion.getLanguageVersionHandler()
-		.getParser().parse(null, new StringReader(source));
+	LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+	ASTCompilationUnit compilationUnit = (ASTCompilationUnit) languageVersionHandler
+		.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(source));
 	rootNode = compilationUnit;
 	fireViewerModelEvent(new ViewerModelEvent(this, ViewerModelEvent.CODE_RECOMPILED));
     }

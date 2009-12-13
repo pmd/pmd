@@ -3,9 +3,9 @@ package net.sourceforge.pmd.lang.jsp;
 import java.io.Writer;
 
 import net.sf.saxon.sxpath.IndependentContext;
-import net.sourceforge.pmd.lang.DataFlowHandler;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -20,12 +20,9 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
-public class JspHandler implements LanguageVersionHandler {
+public class JspHandler extends AbstractLanguageVersionHandler {
 
-    public DataFlowHandler getDataFlowHandler() {
-	return DataFlowHandler.DUMMY;
-    }
-
+    @Override
     public XPathHandler getXPathHandler() {
 	return new AbstractASTXPathHandler() {
 	    public void initialize() {
@@ -40,22 +37,11 @@ public class JspHandler implements LanguageVersionHandler {
 	return JspRuleViolationFactory.INSTANCE;
     }
 
-    public Parser getParser() {
-	return new JspParser();
+    public Parser getParser(ParserOptions parserOptions) {
+	return new JspParser(parserOptions);
     }
 
-    public VisitorStarter getDataFlowFacade() {
-	return VisitorStarter.DUMMY;
-    }
-
-    public VisitorStarter getSymbolFacade() {
-	return VisitorStarter.DUMMY;
-    }
-
-    public VisitorStarter getTypeResolutionFacade(ClassLoader classLoader) {
-	return VisitorStarter.DUMMY;
-    }
-
+    @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {

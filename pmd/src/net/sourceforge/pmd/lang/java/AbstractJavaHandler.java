@@ -3,9 +3,9 @@ package net.sourceforge.pmd.lang.java;
 import java.io.Writer;
 
 import net.sf.saxon.sxpath.IndependentContext;
+import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -27,12 +27,14 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
-public abstract class AbstractJavaHandler implements LanguageVersionHandler {
+public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler {
 
+    @Override
     public DataFlowHandler getDataFlowHandler() {
 	return new JavaDataFlowHandler();
     }
 
+    @Override
     public XPathHandler getXPathHandler() {
 	return new AbstractASTXPathHandler() {
 	    public void initialize() {
@@ -49,6 +51,7 @@ public abstract class AbstractJavaHandler implements LanguageVersionHandler {
 	return JavaRuleViolationFactory.INSTANCE;
     }
 
+    @Override
     public VisitorStarter getDataFlowFacade() {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
@@ -57,6 +60,7 @@ public abstract class AbstractJavaHandler implements LanguageVersionHandler {
 	};
     }
 
+    @Override
     public VisitorStarter getSymbolFacade() {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
@@ -65,6 +69,7 @@ public abstract class AbstractJavaHandler implements LanguageVersionHandler {
 	};
     }
 
+    @Override
     public VisitorStarter getTypeResolutionFacade(final ClassLoader classLoader) {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
@@ -73,6 +78,7 @@ public abstract class AbstractJavaHandler implements LanguageVersionHandler {
 	};
     }
 
+    @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {

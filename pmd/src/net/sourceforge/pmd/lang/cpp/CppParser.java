@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -14,6 +15,11 @@ import net.sourceforge.pmd.lang.ast.ParseException;
  */
 public class CppParser extends AbstractParser {
 
+    public CppParser(ParserOptions parserOptions) {
+	super(parserOptions);
+    }
+
+    @Override
     public TokenManager createTokenManager(Reader source) {
 	return new CppTokenManager(source);
     }

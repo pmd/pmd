@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.StringReader;
 
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.jsp.ast.Token;
 
@@ -13,7 +14,8 @@ public class JSPTokenizer implements Tokenizer {
 
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
 	StringBuffer buffer = sourceCode.getCodeBuffer();
-	TokenManager tokenMgr = Language.JSP.getDefaultVersion().getLanguageVersionHandler().getParser()
+	LanguageVersionHandler languageVersionHandler = Language.JSP.getDefaultVersion().getLanguageVersionHandler();
+	TokenManager tokenMgr = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
 		.getTokenManager(sourceCode.getFileName(), new StringReader(buffer.toString()));
 	Token currentToken = (Token) tokenMgr.getNextToken();
 	while (currentToken.image.length() > 0) {

@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.ecmascript;
 import java.io.Writer;
 
 import net.sf.saxon.sxpath.IndependentContext;
-import net.sourceforge.pmd.lang.DataFlowHandler;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -21,12 +21,9 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 /**
  * Implementation of LanguageVersionHandler for the ECMAScript Version 3.
  */
-public class Ecmascript3Handler implements LanguageVersionHandler {
+public class Ecmascript3Handler extends AbstractLanguageVersionHandler {
 
-    public DataFlowHandler getDataFlowHandler() {
-	return DataFlowHandler.DUMMY;
-    }
-
+    @Override
     public XPathHandler getXPathHandler() {
 	return new AbstractASTXPathHandler() {
 	    public void initialize() {
@@ -41,22 +38,11 @@ public class Ecmascript3Handler implements LanguageVersionHandler {
 	return EcmascriptRuleViolationFactory.INSTANCE;
     }
 
-    public Parser getParser() {
-	return new Ecmascript3Parser();
+    public Parser getParser(ParserOptions parserOptions) {
+	return new Ecmascript3Parser(parserOptions);
     }
 
-    public VisitorStarter getDataFlowFacade() {
-	return VisitorStarter.DUMMY;
-    }
-
-    public VisitorStarter getSymbolFacade() {
-	return VisitorStarter.DUMMY;
-    }
-
-    public VisitorStarter getTypeResolutionFacade(ClassLoader classLoader) {
-	return VisitorStarter.DUMMY;
-    }
-
+    @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {

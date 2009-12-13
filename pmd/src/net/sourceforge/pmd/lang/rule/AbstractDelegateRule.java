@@ -12,6 +12,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -131,6 +132,10 @@ public abstract class AbstractDelegateRule implements Rule {
 
 	public void setPriority(RulePriority priority) {
 		rule.setPriority(priority);
+	}
+
+	public ParserOptions getParserOptions() {
+	    return rule.getParserOptions();
 	}
 
 	public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException {

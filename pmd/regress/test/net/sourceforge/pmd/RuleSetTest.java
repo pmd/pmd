@@ -28,6 +28,7 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -424,8 +425,9 @@ public class RuleSetTest extends RuleTst {
 
     protected List<ASTCompilationUnit> makeCompilationUnits() throws Throwable {
 	List<ASTCompilationUnit> RC = new ArrayList<ASTCompilationUnit>();
-	ASTCompilationUnit cu = (ASTCompilationUnit) Language.JAVA.getDefaultVersion().getLanguageVersionHandler()
-		.getParser().parse(null, new StringReader(javaCode));
+	LanguageVersionHandler languageVersionHandler = Language.JAVA.getDefaultVersion().getLanguageVersionHandler();
+	ASTCompilationUnit cu = (ASTCompilationUnit) languageVersionHandler.getParser(
+		languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
 	RC.add(cu);
 	return RC;
     }

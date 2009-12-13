@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java;
 
 import java.io.Reader;
 
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 
@@ -14,6 +15,10 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class Java13Parser extends AbstractJavaParser {
+
+    public Java13Parser(ParserOptions parserOptions) {
+	super(parserOptions);
+    }
 
     @Override
     protected JavaParser createJavaParser(Reader source) throws ParseException {

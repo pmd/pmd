@@ -7,7 +7,9 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayComprehension;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayComprehensionLoop;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayLiteral;
@@ -61,11 +63,25 @@ import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 
 public abstract class AbstractEcmascriptRule extends AbstractRule implements EcmascriptParserVisitor, ImmutableLanguage {
 
+    private static final BooleanProperty RECORDING_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR;
+    private static final BooleanProperty RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR;
+    private static final EnumeratedProperty<EcmascriptParserOptions.Version> RHINO_LANGUAGE_VERSION = EcmascriptParserOptions.RHINO_LANGUAGE_VERSION;
+
     public AbstractEcmascriptRule() {
 	super.setLanguage(Language.ECMASCRIPT);
+	definePropertyDescriptor(RECORDING_COMMENTS_DESCRIPTOR);
+	definePropertyDescriptor(RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR);
+	definePropertyDescriptor(RHINO_LANGUAGE_VERSION);
+    }
+
+    @Override
+    public ParserOptions getParserOptions() {
+	return new EcmascriptParserOptions(this);
     }
 
     public void apply(List<? extends Node> nodes, RuleContext ctx) {

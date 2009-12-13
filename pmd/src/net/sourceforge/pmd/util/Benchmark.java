@@ -123,7 +123,8 @@ public class Benchmark {
         long start = System.currentTimeMillis();
         for (DataSource dataSource: dataSources) {
             LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-            languageVersionHandler.getParser().parse(dataSource.getNiceFileName(false, null), new InputStreamReader(dataSource.getInputStream()));
+	    languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(
+		    dataSource.getNiceFileName(false, null), new InputStreamReader(dataSource.getInputStream()));
         }
         long end = System.currentTimeMillis();
         long elapsed = end - start;

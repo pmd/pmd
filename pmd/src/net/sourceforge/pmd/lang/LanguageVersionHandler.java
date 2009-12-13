@@ -29,13 +29,19 @@ public interface LanguageVersionHandler {
      * Get the RuleViolationFactory.
      */
     RuleViolationFactory getRuleViolationFactory();
+    
+    /**
+     * Get the default ParserOptions.
+     * @return ParserOptions
+     */
+    ParserOptions getDefaultParserOptions();
 
     /**
      * Get the Parser.
      *
      * @return Parser
      */
-    Parser getParser();
+    Parser getParser(ParserOptions parserOptions);
 
     /**
      * Get the DataFlowFacade.

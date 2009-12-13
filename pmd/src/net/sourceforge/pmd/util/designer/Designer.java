@@ -126,7 +126,7 @@ public class Designer implements ClipboardOwner {
 
     private Node getCompilationUnit() {
 	LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
-	Parser parser = languageVersionHandler.getParser();
+	Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
 	Node node = parser.parse(null, new StringReader(codeEditorPane.getText()));
 	languageVersionHandler.getSymbolFacade().start(node);
 	languageVersionHandler.getTypeResolutionFacade(null).start(node);
@@ -136,8 +136,9 @@ public class Designer implements ClipboardOwner {
     private static LanguageVersion[] getSupportedLanguageVersions() {
 	List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
 	for (LanguageVersion languageVersion : LanguageVersion.values()) {
-	    if (languageVersion.getLanguageVersionHandler() != null) {
-		Parser parser = languageVersion.getLanguageVersionHandler().getParser();
+	    LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+	    if (languageVersionHandler != null) {
+		Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
 		if (parser != null && parser.canParse()) {
 		    languageVersions.add(languageVersion);
 		}

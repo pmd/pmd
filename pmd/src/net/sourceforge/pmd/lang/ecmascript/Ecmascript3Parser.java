@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -17,6 +18,11 @@ import net.sourceforge.pmd.lang.ast.ParseException;
  */
 public class Ecmascript3Parser extends AbstractParser {
 
+    public Ecmascript3Parser(ParserOptions parserOptions) {
+	super(parserOptions);
+    }
+
+    @Override
     public TokenManager createTokenManager(Reader source) {
 	return null;
     }

@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
@@ -134,7 +135,7 @@ public class PMD {
      * be automatically determined.  Any code which wishes to process files for
      * different Languages, will need to be sure to either properly set the
      * Language on the RuleContext, or set it to <code>null</code> first.
-     * 
+     *
      * @see RuleContext#setLanguageVersion(LanguageVersion)
      * @see Configuration#getLanguageVersionOfFile(String)
      *
@@ -155,12 +156,14 @@ public class PMD {
 	Initializer.initialize();
 
 	try {
-	    // Coarse check to see if any RuleSet applies to files, will need to do a finer RuleSet specific check later
+	    // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
 	    if (ruleSets.applies(ctx.getSourceCodeFile())) {
 		LanguageVersion languageVersion = ctx.getLanguageVersion();
 		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-		Parser parser = languageVersionHandler.getParser();
-		parser.setSuppressMarker(configuration.getSuppressMarker());
+		// TODO Handle Rules having different parser options.
+		ParserOptions parserOptions = languageVersionHandler.getDefaultParserOptions();
+		parserOptions.setSuppressMarker(configuration.getSuppressMarker());
+		Parser parser = languageVersionHandler.getParser(parserOptions);
 		long start = System.nanoTime();
 		Node rootNode = parser.parse(ctx.getSourceCodeFilename(), reader);
 		ctx.getReport().suppress(parser.getSuppressMap());

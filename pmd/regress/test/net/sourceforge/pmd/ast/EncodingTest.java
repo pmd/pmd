@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
@@ -23,7 +24,9 @@ public class EncodingTest {
 
         String code = new String(TEST_UTF8.getBytes(), encoding);
         InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(code.getBytes()));
-        ASTCompilationUnit acu = (ASTCompilationUnit)LanguageVersion.JAVA_14.getLanguageVersionHandler().getParser().parse(null, isr);
+        LanguageVersionHandler languageVersionHandler = LanguageVersion.JAVA_14.getLanguageVersionHandler();
+	ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler.getParser(
+		languageVersionHandler.getDefaultParserOptions()).parse(null, isr);
         String methodName = acu.findDescendantsOfType(ASTMethodDeclarator.class).get(0).getImage();
         assertEquals(new String("é".getBytes(), encoding), methodName);
     }

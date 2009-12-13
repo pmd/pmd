@@ -45,7 +45,7 @@ public enum Language {
     JSP("Java Server Pages", "JSP", "jsp", JspRuleChainVisitor.class, "jsp"),
     PHP("PHP: Hypertext Preprocessor", "PHP", "php", null, "php", "class"),
     RUBY("Ruby", null, "ruby", null, "rb", "cgi", "class"),
-    XSL("XSL",null,"xsl",XmlRuleChainVisitor.class,"xsl"),
+    XSL("XSL", null, "xsl", XmlRuleChainVisitor.class, "xsl", "xslt"),
     XML("XML", null, "xml", XmlRuleChainVisitor.class, "xml");
 
     private final String name;

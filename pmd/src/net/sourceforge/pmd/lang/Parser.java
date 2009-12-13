@@ -16,6 +16,11 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  */
 public interface Parser {
     /**
+     * Get the ParserOptions used by this Parser.
+     */
+    ParserOptions getParserOptions();
+    
+    /**
      * Get a TokenManager for the given source.
      * @param fileName The file name being parsed (may be <code>null</code>).
      * @param source Reader that provides the source code to tokenize.
@@ -41,10 +46,4 @@ public interface Parser {
 
     // TODO Document
     Map<Integer, String> getSuppressMap();
-
-    // TODO Document
-    String getSuppressMarker();
-
-    // TODO Document
-    void setSuppressMarker(String marker);
 }

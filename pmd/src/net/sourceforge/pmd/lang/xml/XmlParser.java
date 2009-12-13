@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -17,6 +18,11 @@ import net.sourceforge.pmd.lang.ast.ParseException;
  */
 public class XmlParser extends AbstractParser {
 
+    public XmlParser(ParserOptions parserOptions) {
+	super(parserOptions);
+    }
+
+    @Override
     public TokenManager createTokenManager(Reader source) {
 	return null;
     }
@@ -26,7 +32,7 @@ public class XmlParser extends AbstractParser {
     }
 
     public Node parse(String fileName, Reader source) throws ParseException {
-	return new net.sourceforge.pmd.lang.xml.ast.XmlParser().parse(source);
+	return new net.sourceforge.pmd.lang.xml.ast.XmlParser((XmlParserOptions) parserOptions).parse(source);
     }
 
     public Map<Integer, String> getSuppressMap() {

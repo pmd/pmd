@@ -4,6 +4,7 @@ import java.io.StringReader;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 
@@ -21,7 +22,8 @@ public abstract class STBBaseTst {
     }
 
     protected void parseCode(String code, LanguageVersion languageVersion) {
-   	  acu = (ASTCompilationUnit)Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getParser().parse(null, new StringReader(code));
+   	  LanguageVersionHandler languageVersionHandler = Language.JAVA.getDefaultVersion().getLanguageVersionHandler();
+	acu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
         stb = new SymbolFacade();
         stb.initializeWith(acu);
     }

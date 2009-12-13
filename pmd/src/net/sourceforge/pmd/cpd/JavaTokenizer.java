@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.util.Properties;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.java.ast.JavaParserConstants;
 import net.sourceforge.pmd.lang.java.ast.Token;
@@ -34,7 +35,8 @@ public class JavaTokenizer implements Tokenizer {
 	This could probably be turned into some objects.
 	*/
 	// Note that Java version is irrelevant for tokenizing
-	TokenManager tokenMgr = LanguageVersion.JAVA_14.getLanguageVersionHandler().getParser().getTokenManager(
+	LanguageVersionHandler languageVersionHandler = LanguageVersion.JAVA_14.getLanguageVersionHandler();
+	TokenManager tokenMgr = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).getTokenManager(
 		sourceCode.getFileName(), new StringReader(buffer.toString()));
 	Token currentToken = (Token) tokenMgr.getNextToken();
 	boolean inDiscardingState = false;

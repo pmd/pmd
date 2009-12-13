@@ -11,7 +11,15 @@ import java.io.Reader;
  * @see Parser
  */
 public abstract class AbstractParser implements Parser {
-    private String suppressMarker;
+    protected final ParserOptions parserOptions;
+    
+    public AbstractParser(ParserOptions parserOptions) {
+	this.parserOptions = parserOptions;
+    }
+
+    public ParserOptions getParserOptions() {
+	return parserOptions;
+    }
 
     public TokenManager getTokenManager(String fileName, Reader source) {
 	TokenManager tokenManager = createTokenManager(source);
@@ -20,12 +28,4 @@ public abstract class AbstractParser implements Parser {
     }
 
     protected abstract TokenManager createTokenManager(Reader source);
-
-    public String getSuppressMarker() {
-	return suppressMarker;
-    }
-
-    public void setSuppressMarker(String suppressMarker) {
-	this.suppressMarker = suppressMarker;
-    }
 }
