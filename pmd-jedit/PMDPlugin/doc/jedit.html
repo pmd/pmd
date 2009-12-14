@@ -54,7 +54,7 @@ Take a look at the <a href="#releasenotes">Release Notes and Changelog</a> for m
 <h3>CPD, the Copy/Paste Detector</h3>
 The PMD plugin provides access to the Copy/Paste Detector.  This can help identify and eliminate duplicate code in a project.  The heuristics used in the detection are a little "fuzzy" in that it is able to detect code that is very close to the same as code found elsewhere and can identify duplicate code regardless of the formatting of whitespace.
 <p>
-The CPD is very fast.  It can also work on a variety of languages.  Currently supported languages are Java, JSP, PHP, C/C++, Fortran, and Ruby.
+The CPD is very fast.  It can also work on a variety of languages.  Currently the fully supported languages are Java, JSP, PHP, C/C++, Fortran, Ruby, and Javascript.  Additionally, CPD can work with just about every file mode supported by jEdit, although results may not be perfect as the modes not specifically supported use a generic tokenizer that may not suitable for a particular language.
 
 <h3>Custom Rules</h3>
 <p>Starting 2.1, you can now add Custom Defined Rulesets with PMD plugin. Previously, if you want to use your own rulesets with the PMD plugin, you had to unjar the pmd.jar file & add your ruleset defination in the jar file & re-jar it & use it. But this procedure had to be repeated whenever a new PMD is out. But not anymore. Now you can simply point PMD plugin to your custom rulesets.xml file & drop your custom ruleset jars in either of jEdit jars directory(either system or user). Once this is done, you will be able to manipulate your Custom Rulesets just the way like the built-in ones.</p>
@@ -70,6 +70,12 @@ As of version 3.0, the PMD Plugin provides access to the PMD Rule Designer, whic
 
 <a name="releasenotes"></a>
 <h2>Release Notes &amp; Changelog</h2>
+      <h3>3.2 (Dale Anson, Dec 2009)</h3>
+      <ol>
+         <li>Upgraded to PMD 4.2.6.</li>
+         <li>Adjusted CPD to work with just about all file modes supported by jEdit.</li>
+         <li>Moved all hard-coded strings to the property file so they can be localized.</li>
+      </ol>
       <h3>3.1 (Dale Anson)</h3>
       <ol>
          <li>Display rule description along with example.</li>
