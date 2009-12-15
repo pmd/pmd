@@ -101,6 +101,7 @@ public class XmlParser {
 
     public class XmlNodeInvocationHandler implements InvocationHandler {
 	private final Node node;
+	private Object userData;
 
 	public XmlNodeInvocationHandler(Node node) {
 	    this.node = node;
@@ -171,6 +172,11 @@ public class XmlParser {
 		    return Integer.valueOf(-1);
 		} else if ("getNode".equals(method.getName())) {
 		    return node;
+		} else if ("getUserData".equals(method.getName())) {
+		    return userData;
+		} else if ("setUserData".equals(method.getName())) {
+		    userData = args[0];
+		    return null;
 		}
 		throw new UnsupportedOperationException("Method not supported for XmlNode: " + method);
 	    }

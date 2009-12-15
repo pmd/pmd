@@ -5,7 +5,9 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-public interface EcmascriptNode extends Node {
+import org.mozilla.javascript.ast.AstNode;
+
+public interface EcmascriptNode<T extends AstNode> extends Node {
 
     /**
      * Accept the visitor. *
@@ -17,6 +19,17 @@ public interface EcmascriptNode extends Node {
      */
     Object childrenAccept(EcmascriptParserVisitor visitor, Object data);
     
+    /**
+     * Get the underlying Rhino AST node.
+     */
+    T getNode();
+    
+    /**
+     * Get the JsDoc associated with the given node.  If there is no JsDoc on
+     * this node, it may be associated with a parent node, on more representative
+     * of the entire expression containing this node.
+     * @return
+     */
     String getJsDoc();
 
     boolean hasSideEffects();

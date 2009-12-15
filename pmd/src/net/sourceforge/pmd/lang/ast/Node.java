@@ -160,4 +160,26 @@ public interface Node {
      * also indirectly operate on the AST.
      */
     Document getAsDocument();
+    
+    /**
+     * Get the user data associated with this node.  By default there is no data,
+     * unless it has been set via {@link #setUserData(Object)}.
+     * @return The user data set on this node.
+     */
+    Object getUserData();
+
+    /**
+     * Set the user data associated with this node.
+     * <p>
+     * PMD itself will never set user data onto a node.  Nor should any Rule
+     * implementation, as the AST nodes are shared between concurrently executing
+     * Rules (i.e. it is <strong>not</strong> thread-safe).
+     * <p> 
+     * This API is most useful for external applications looking to leverage
+     * PMD's robust support for AST structures, in which case application
+     * specific annotations on the AST nodes can be quite useful.
+     * 
+     * @param userData The data to set on this node.
+     */
+    void setUserData(Object userData);
 }

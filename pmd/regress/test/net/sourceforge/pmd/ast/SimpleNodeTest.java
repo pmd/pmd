@@ -274,6 +274,16 @@ public class SimpleNodeTest extends ParserTst {
         assertTrue(c.hasDescendantMatchingXPath("//FieldDeclaration"));
         assertFalse(c.hasDescendantMatchingXPath("//MethodDeclaration"));
     }
+    
+    @Test
+    public void testUserData() throws Throwable {
+        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS).iterator().next();
+        assertNull(c.getUserData());
+        c.setUserData("foo");
+        assertEquals("foo", c.getUserData());
+        c.setUserData(null);
+        assertNull(c.getUserData());
+    }
 
     private void verifyNode(Node node, int beginLine, int beginCol, int endLine, int endCol) {
         assertEquals("Unexpected beginning line: ", beginLine, node.getBeginLine());

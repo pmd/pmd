@@ -29,6 +29,7 @@ public abstract class AbstractNode implements Node {
     protected int beginColumn = -1;
     protected int endColumn;
     private DataFlowNode dataFlowNode;
+    private Object userData;
 
     public AbstractNode(int id) {
 	this.id = id;
@@ -341,5 +342,19 @@ public abstract class AbstractNode implements Node {
         } catch (JaxenException e) {
             throw new RuntimeException("XPath expression " + xpathString + " failed: " + e.getLocalizedMessage(), e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getUserData() {
+        return userData;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setUserData(Object userData) {
+        this.userData = userData;
     }
 }

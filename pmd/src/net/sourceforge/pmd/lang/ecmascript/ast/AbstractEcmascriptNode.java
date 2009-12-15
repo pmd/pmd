@@ -39,6 +39,10 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
 	}
 	return data;
     }
+    
+    public T getNode() {
+	return node;
+    }
 
     public String getJsDoc() {
 	return node.getJsDoc();
