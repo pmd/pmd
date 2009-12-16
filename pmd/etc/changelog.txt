@@ -497,7 +497,7 @@ New JSP rules:
 	Basic ruleset: NoInlineScript
 
 New ECMAScript rules:
-	Basic ruleset: AssignmentInOperand,ConsistentReturn,InnaccurateNumericLiteral,UnreachableCode
+	Basic ruleset: AssignmentInOperand,ConsistentReturn,InnaccurateNumericLiteral,ScopeForInVariable,UnreachableCode
 	Braces ruleset: ForLoopsMustUseBraces,IfStmtsMustUseBraces,IfElseStmtsMustUseBraces,WhileLoopsMustUseBraces
 	Unnecessary ruleset: UnnecessaryParentheses,UnnecessaryBlock
 

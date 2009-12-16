@@ -31,6 +31,7 @@ public class EcmascriptParser {
 	compilerEnvirons.setRecordingComments(parserOptions.isRecordingComments());
 	compilerEnvirons.setRecordingLocalJsDocComments(parserOptions.isRecordingLocalJsDocComments());
 	compilerEnvirons.setLanguageVersion(parserOptions.getRhinoLanguageVersion().getVersion());
+	compilerEnvirons.setIdeMode(true); // Scope's don't appear to get set right without this
 
 	// TODO Fix hardcode
 	final ErrorReporter errorReporter = new ErrorCollector();

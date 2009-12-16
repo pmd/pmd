@@ -16,6 +16,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 	addRule(RULESET, "AssignmentInOperand");
 	addRule(RULESET, "ConsistentReturn");
 	addRule(RULESET, "InnaccurateNumericLiteral");
+	addRule(RULESET, "ScopeForInVariable");
 	addRule(RULESET, "UnreachableCode");
     }
 
