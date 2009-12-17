@@ -11,7 +11,10 @@ import net.sourceforge.pmd.jedit.checkboxtree.*;
 import org.gjt.sp.jedit.AbstractOptionPane;
 import org.gjt.sp.jedit.OptionPane;
 import org.gjt.sp.jedit.jEdit;
+import org.gjt.sp.jedit.GUIUtilities;
 import org.gjt.sp.util.StringList;
+import org.gjt.sp.jedit.browser.VFSBrowser;
+import org.gjt.sp.jedit.browser.VFSFileChooserDialog;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -21,15 +24,25 @@ import javax.swing.tree.TreePath;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RuleSetWriter;
+import java.io.*;
+
+/*
+    TODO: make custom rules a separate panel.
+    TODO: add ability to export current ruleset.
+*/
 public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane {
 
     SelectedRules rules;
 
-    JTextArea exampleTextArea = new JTextArea( 15, 90 );
+    JTextArea exampleTextArea = new JTextArea( 12, 60 );
     JTextField txtCustomRules;
     CheckboxTree tree;
     JCheckBox useDefaultRules;
     JLabel exampleLabel;
+    JButton exportButton;
 
     static final String USE_DEFAULT_RULES_KEY = "pmd.use-default-rules";
 
@@ -49,8 +62,8 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
 
         setLayout( new KappaLayout() );
 
-        JLabel rules_label = new JLabel( jEdit.getProperty("net.sf.pmd.Rules", "Rules") );
-        useDefaultRules = new JCheckBox( jEdit.getProperty("net.sf.pmd.Select_default_rules", "Select default rules") );
+        JLabel rules_label = new JLabel( jEdit.getProperty( "net.sf.pmd.Rules", "Rules" ) );
+        useDefaultRules = new JCheckBox( jEdit.getProperty( "net.sf.pmd.Select_default_rules", "Select default rules" ) );
         useDefaultRules.setSelected( jEdit.getBooleanProperty( USE_DEFAULT_RULES_KEY, false ) );
 
         // use a checkbox tree for displaying the rules.  This lets the rules be
@@ -62,10 +75,10 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
         // is checked.
         JScrollPane rules_pane = null;
         if ( rules == null ) {
-            JOptionPane.showMessageDialog( null, 
-                jEdit.getProperty("net.sf.pmd.Error_loading_rules._Check_any_custom_rulesets_for_errors.", "Error loading rules. Check any custom rulesets for errors."), 
-                jEdit.getProperty("net.sf.pmd.Error_Loading_Rules", "Error Loading Rules"), 
-                JOptionPane.ERROR_MESSAGE );
+            JOptionPane.showMessageDialog( null,
+                    jEdit.getProperty( "net.sf.pmd.Error_loading_rules._Check_any_custom_rulesets_for_errors.", "Error loading rules. Check any custom rulesets for errors." ),
+                    jEdit.getProperty( "net.sf.pmd.Error_Loading_Rules", "Error Loading Rules" ),
+                    JOptionPane.ERROR_MESSAGE );
         }
         else {
             if ( jEdit.getBooleanProperty( USE_DEFAULT_RULES_KEY, false ) ) {
@@ -112,18 +125,58 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
         rulesPanel.add( pnlCustomRules, BorderLayout.SOUTH );
         */
 
-        exampleLabel = new JLabel( jEdit.getProperty("net.sf.pmd.Example", "Example") );
+        exampleLabel = new JLabel( jEdit.getProperty( "net.sf.pmd.Example", "Example" ) );
         JScrollPane example_pane = new JScrollPane( exampleTextArea );
 
-        JLabel more_info_label = new JLabel( jEdit.getProperty("net.sf.pmd.Please_see_http>//pmd.sf.net/_for_more_information", "Please see http://pmd.sf.net/ for more information") );
+        exportButton = new JButton( "Export this ruleset" );
+        exportButton.addActionListener(
+            new ActionListener() {
+                public void actionPerformed( ActionEvent ae ) {
+                    RuleSets rulesets = rules.getSelectedRules();
+                    RuleSet ruleset = new RuleSet();
+                    for ( RuleSet rs : rulesets.getAllRuleSets() ) {
+                        ruleset.addRuleSet( rs );
+                    }
+
+                    // file chooser
+                    VFSFileChooserDialog chooser = new VFSFileChooserDialog( GUIUtilities.getParentDialog( PMDRulesOptionPane.this ),
+                            jEdit.getActiveView(),
+                            System.getProperty("user.home"),
+                            VFSBrowser.SAVE_DIALOG,
+                            false,
+                            false );
+
+
+                    chooser.setTitle( "Export Ruleset" );
+                    chooser.setVisible( true );
+
+                    if ( chooser.getSelectedFiles() != null ) {
+                        try {
+                            String outfile = chooser.getSelectedFiles() [ 0 ];
+                            OutputStream outputStream = new BufferedOutputStream( new FileOutputStream( outfile ) );
+                            RuleSetWriter writer = new RuleSetWriter( outputStream );
+                            writer.write( ruleset );
+                            writer.close();
+                        }
+                        catch(Exception e) {
+                            JOptionPane.showMessageDialog(GUIUtilities.getParentDialog( PMDRulesOptionPane.this ), "Error saving ruleset:\n" + e.getMessage(), "Error Saving Ruleset", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+        );
+
+
+        JLabel more_info_label = new JLabel( jEdit.getProperty( "net.sf.pmd.Please_see_http>//pmd.sf.net/_for_more_information", "Please see http://pmd.sf.net/ for more information" ) );
 
         setBorder( BorderFactory.createEmptyBorder( 12, 11, 11, 12 ) );
         add( "0, 0,  1, 1,  W, w,  3", rules_label );
         add( "0, 1,  1, 1,  W, w,  3", useDefaultRules );
-        add( "0, 2,  1, 10, 0, wh, 3", rules_pane );
-        add( "0, 12, 1, 1,  W, w,  3", exampleLabel );
-        add( "0, 13, 1, 6,  0, wh, 3", example_pane );
-        add( "0, 19, 1, 1,  W, w,  3", more_info_label );
+        add( "0, 2,  1, 10,  0, w, 3", rules_pane );
+        add( "0, 12, 1, 1,  W, w,  3", exportButton );
+        add( "0, 13, 1, 1,  W, w,  3", exampleLabel );
+        add( "0, 14, 1, 6,  0, wh, 3", example_pane );
+        add( "0, 20, 1, 1,  W, w,  3", more_info_label );
     }
 
     public void _save() {
@@ -146,7 +199,7 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                 if ( node != null ) {
                     Object userObject = node.getUserObject();
                     if ( userObject instanceof RuleNode ) {
-                        changeExampleLabel( jEdit.getProperty("net.sf.pmd.Example", "Example") );
+                        changeExampleLabel( jEdit.getProperty( "net.sf.pmd.Example", "Example" ) );
                         String description = ( ( RuleNode ) userObject ).getRule().getDescription();
                         description = description.trim();
                         List<String> examples = ( ( RuleNode ) userObject ).getRule().getExamples();
@@ -156,7 +209,7 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                         exampleTextArea.setCaretPosition( 0 );
                     }
                     else if ( userObject instanceof RuleSetNode ) {
-                        changeExampleLabel( jEdit.getProperty("net.sf.pmd.Description", "Description") );
+                        changeExampleLabel( jEdit.getProperty( "net.sf.pmd.Description", "Description" ) );
                         String description = ( ( RuleSetNode ) userObject ).getRuleSet().getDescription();
                         description = description.trim();
                         description = description.replaceAll( "\n", " " );
