@@ -50,12 +50,14 @@ cpd-viewer.label=Copy/Paste Detector
 # Option pane properties
 #
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.option-group=pmd.general \
-    pmd.rules
+    pmd.rules pmd.custom
 #plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.option-pane=pmd
 options.pmd.general.label=General Settings
 options.pmd.general.code=new net.sourceforge.pmd.jedit.PMDGeneralOptionPane()
 options.pmd.rules.label=Rules
 options.pmd.rules.code=new net.sourceforge.pmd.jedit.PMDRulesOptionPane()
+options.pmd.custom.label=Custom Rules
+options.pmd.custom.code=new net.sourceforge.pmd.jedit.PMDCustomRulesOptionPane()
 
 options.pmd.printRule=false
 

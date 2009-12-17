@@ -31,7 +31,7 @@ import java.io.*;
 
 /*
     TODO: make custom rules a separate panel.
-    TODO: add ability to export current ruleset.
+    DONE: add ability to export current ruleset.
 */
 public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane {
 
@@ -141,11 +141,10 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                     // file chooser
                     VFSFileChooserDialog chooser = new VFSFileChooserDialog( GUIUtilities.getParentDialog( PMDRulesOptionPane.this ),
                             jEdit.getActiveView(),
-                            System.getProperty("user.home"),
+                            System.getProperty("user.home") + "/ruleset.xml",
                             VFSBrowser.SAVE_DIALOG,
                             false,
                             false );
-
 
                     chooser.setTitle( "Export Ruleset" );
                     chooser.setVisible( true );
