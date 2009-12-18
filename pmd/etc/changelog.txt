@@ -3,6 +3,8 @@
 TODO - Release blockers - Must implement before this release can be finished
 
    CODE:
+   o Get Eclipse integration working with multiple languages, make sure there's
+     no major problems before we put the core release.
    o Some cleanup needs to be done on the PMD class.  
      The Benchmarking stuff really only can work for commandline PMD
      usage, and the RuleSets.start()/end() stuff isn't working for all entry
