@@ -8,13 +8,15 @@
 			</fileset>
 		</path>
 
-		<taskdef 	name="pmd-build"
-					classname="net.sourceforge.pmd.ant.PmdBuildTask">
+		<taskdef name="pmd-build"
+			 classname="net.sourceforge.pmd.ant.PmdBuildTask">
 			<classpath refid="tools.classpath"/>
 		</taskdef>
 		<echo>Generating documentation into ${target}</echo>
-		<pmd-build 	rulesDirectory="rulesets"
+		<mkdir dir="${target}"/>
+		<pmd-build 	rulesDirectory="rulesets/java"
 					target="${target}"/>
+
 
 	 </target>
 
