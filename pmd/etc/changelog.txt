@@ -1,32 +1,8 @@
 ??? ??, 2009 - 5.0:
 
-// TODO Refactor AST
-	o SimpleNode.dump() needs to be implemented as a Visitor
-
 TODO - Release blockers - Must implement before this release can be finished
-   o Additional changes to Rule organization within RuleSets as discussed on
-     this forum thread:
-     http://sourceforge.net/forum/forum.php?thread_id=1323593&forum_id=188194
-   o CPD needs work on use of Language.  It currently is hardcoded to only
-     handled Java 1.4.  Integrate CPD needs into core PMD where appropriate.
-     Otherwise, drive CPD behavior based off of core PMD, instead of duplicating
-     some logic.
-   o Do we have a rule to style check for multiple declarations and chained
-     assignments? (e.g. int a, b;  int a = b = x;)
-   o Remove the type resolution specific rules.  Merge these back into the
-     standard rules.  In general, a Rule should use TR when it can, and fall
-     back on non-TR approach otherwise.  No need for separate Rules for TR/non-TR.
-   o Need a JUnit test to check for "dead" Rules, that is those not used by any RuleSet.
-   o Rule JUnit tests should verify the Test class follows expected naming
-     conventions just like the Rules need to.
-   o Need a more flexible and powerful scheme for classifying files to various
-     Languages.  At a minimum, should have the ability to specify which
-     file extensions you want to be used for a language (e.g. not everyone uses
-     .jsp for JSP extensions, some use .jspx, .xhtml, etc.).  Also, consider
-     hooks into the LanguageVersionDiscoverer process for classifying a
-     File/String to a LanguageVersion of a specific Language, one could imaging
-     using a 'magic' system like Unix uses to tell different versions of files
-     apart based on actual content.
+
+   CODE:
    o Some cleanup needs to be done on the PMD class.  
      The Benchmarking stuff really only can work for commandline PMD
      usage, and the RuleSets.start()/end() stuff isn't working for all entry
@@ -37,30 +13,9 @@ TODO - Release blockers - Must implement before this release can be finished
      leverage the full PMD feature set.  Documentation on this class needs to
      vastly improved, this should be one of the best documented classes in the
      code base.
-   o Reconcile the util.designer and util.viewer packages.  Two versions of the
-     same thing.  Designer is more up to date, but Viewer has a nice MVC design.
-   o Should multiple Languages be able to claim a single source file?  Imagine
-     XML format JSP file, for which you've defined a ruleset which uses JSP and
-     XML rules.  Stating that certain XML rules also can map to the JSP language
-     extensions could be useful.  This means Source file to LanguageVersion
-     mapping is not 1-1, but 1-many, we'd need to deal with this accordingly.
    o Need to refactor the test framework to more readily support for multiple
      Languages (too Java centric at the moment).  Then, need start adding tests
-     for the new XML language.
-   o Rework RuleReference to be done via Rule.isReference() instead of instanceof RuleReference?
-   o Rule documentation should be automatically generated
-     from the descriptors, be they defined in code or XML, I think the code based
-     descriptors are not getting seen.
-   o Enhance Rule Designer to allow testing of the violation suppress Regex and XPath.
-   o Should we change Node interface to something like 'Node<T extends Node<T>>',
-     and then declare the language specific node interfaces to be something like
-     'JavaNode extends Node<JavaNode>'?  This could allow anything on the Node
-     interface to return the language specific node type instead of generic
-     node.  For example, ASTStatement.jjtGetParent() to return a JavaNode,
-     instead of a Node.  This is a rather huge change, as the Node interface is
-     one of the pervasive things in the PMD code base.  Is the extra work of using
-     the Node interface with properly with generics, worth the omission of
-     occasional some casting?
+     for the new XML language and other new languages.
    o Need the modify RuleViolation, RuleViolationFactory, and Rule base classes
      to recognize the difference between violations which require a Node, and
      those without.  This is to make certain that Rules which require and do not
@@ -69,26 +24,24 @@ TODO - Release blockers - Must implement before this release can be finished
      is because of the incompatible changes (e.g. dropping language on RuleSet).
      Additions to the Schema/DTD shouldn't be a problem going forward as long
      as they maintain backward compatibility.
+   o Need to get licenses for Saxon and Rhino in place.  Organize all PMD licenses into a
+     /license folder?
+
+   DOCUMENTATION:
+   o Expand documentation examples which demonstrate use of new RuleSetReferenceId
+     capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
+     of a Rule reference in places not previously possible (e.g. CMD and Ant). 
+   o Rule documentation should be automatically generated
+     from the descriptors, be they defined in code or XML, I think the code based
+     descriptors are not getting seen.
    o Fully document the changed/new command line and Ant configuration options.
      Should we provide backwards compatibility mode?  I'm not inclined to, we
      can keep the 4.2.x branch going for a long while, and just keep the 5.x.y
      line marching forward.  People will just have to switch at some point.
-   o Figure out a way to allow Rules to deal with parentheses and blocks, which
-     introduce certain repetitive (and generally ignorable for most Rules)
-     structures into the AST tree.  Some rules are making special effort
-     (e.g. ConfusingTernaryRule) to detect these AST patterns.  Perhaps a
-     "normalized" AST structure can be created which will make the AST appear
-     consistent regardless of how many parens are presented, or how many blocks
-     have been created (e.g. default block inserted, duplicates collapsed).
-     This should be configurable on per Rule basis similar to TR and SymbolTable.
-   o Need to get licenses for Saxon and Rhino in place.  Organize all PMD licenses into a
-     /license folder?
    o Need to enhance documentation to cover Global and Language specific
      function namespaces required for XPath 2.0 use (e.g. pmd:matches
      and pmd-java:typeof).
-   o Expand documentation examples which demonstrate use of new RuleSetReferenceId
-     capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
-     of a Rule reference in places not previously possible (e.g. CMD and Ant). 
+
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
