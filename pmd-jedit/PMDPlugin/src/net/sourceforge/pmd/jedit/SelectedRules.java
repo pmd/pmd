@@ -60,7 +60,7 @@ public class SelectedRules {
         loadTree();
     }
 
-    private void loadRuleSets() {
+    public void loadRuleSets() {
         rulesets = new ArrayList<RuleSet>();
 
         // load the rulesets built into PMD

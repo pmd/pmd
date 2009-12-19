@@ -73,6 +73,8 @@ public class PMDJEditPlugin extends EBPlugin {
     public static final String JAVA_VERSION_PROPERTY = "pmd.java.version";
     public static final String RUN_PMD_ON_SAVE = "pmd.runPMDOnSave";
     public static final String CUSTOM_RULES_PATH_KEY = "pmd.customRulesPath";
+    public static final String CUSTOM_RULES_ONLY_KEY = "pmd.customRulesOnly";
+    public static final String EXCLUDE_CUSTOM_RULES_KEY = "pmd.excludeCustomRules";
     public static final String SHOW_PROGRESS = "pmd.showprogress";
     public static final String IGNORE_LITERALS = "pmd.ignoreliterals";
     public static final String PRINT_RULE = "pmd.printRule";
@@ -499,19 +501,6 @@ public class PMDJEditPlugin extends EBPlugin {
     }
 
     private static CPDFileFilter[] getCPDFileFilters() {
-        /*
-        CPDFileFilter[] choices = new CPDFileFilter[ 8 ];
-        choices[ 0 ] = new CPDFileFilter( "java", "Java files", "java" );
-        choices[ 1 ] = new CPDFileFilter( "jsp", "JSP files", "jsp", "jsf", "jspf" );
-        choices[ 2 ] = new CPDFileFilter( "ecmascript", "Javascript files", "js" );
-        choices[ 3 ] = new CPDFileFilter( "cpp", "C/C++ files", "c", "cc", "cpp" );
-        choices[ 4 ] = new CPDFileFilter( "php", "PHP files", "php", "php3", "php4", "phtml", "inc" );
-        choices[ 5 ] = new CPDFileFilter( "ruby", "Ruby files", "rb", "rbw" );
-        choices[ 6 ] = new CPDFileFilter( "fortran", "Fortran files", "for", "fort", "f77", "f90" );
-        choices[ 7 ] = new CPDFileFilter( "any", "All", "*" );
-        return choices;
-        */
-
         List<CPDFileFilter> filters = new ArrayList<CPDFileFilter>();
         Mode[] modes = jEdit.getModes();
         for ( Mode mode : modes ) {

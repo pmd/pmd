@@ -8,7 +8,7 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=doc/jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.5
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.03.18.00
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.8
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.3=plugin CommonControlsPlugin 1.1
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.3=plugin CommonControlsPlugin 1.2
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-4.2.6.jar jaxen-1.1.1.jar asm-3.1.jar
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.description=The PMD plugin is a Java source code analysis tool.
 
@@ -50,15 +50,12 @@ cpd-viewer.label=Copy/Paste Detector
 # Option pane properties
 #
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.option-group=pmd.general \
-    pmd.rules pmd.custom
+    pmd.rules
 #plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.option-pane=pmd
 options.pmd.general.label=General Settings
 options.pmd.general.code=new net.sourceforge.pmd.jedit.PMDGeneralOptionPane()
 options.pmd.rules.label=Rules
 options.pmd.rules.code=new net.sourceforge.pmd.jedit.PMDRulesOptionPane()
-options.pmd.custom.label=Custom Rules
-options.pmd.custom.code=new net.sourceforge.pmd.jedit.PMDCustomRulesOptionPane()
-
 options.pmd.printRule=false
 
 #Dockables properties.
