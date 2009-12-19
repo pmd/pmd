@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/js-cvs-11282008.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/saxon9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/asm-3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/castor-1.1.2.1-xml.jar"/>
@@ -14,5 +13,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/js-cvs-12122009.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
