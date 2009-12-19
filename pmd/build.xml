@@ -82,7 +82,7 @@
 	<target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
 		<jar jarfile="${dir.lib}/pmd-${version}.jar">
 			<fileset dir="${dir.build}" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**"/>
-			<zipfileset dir="etc" includes="ruleset.dtd,ruleset_xml_schema.xsd" prefix="rulesets"/>
+			<zipfileset dir="etc" includes="ruleset_2_0_0.dtd,ruleset_2_0_0.xsd" prefix="rulesets"/>
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
 				<attribute name="Class-Path" value="jaxen-${jaxen.version}.jar saxon${saxon.version}.jar js-${rhino.version}.jar asm-${asm.version}.jar" />

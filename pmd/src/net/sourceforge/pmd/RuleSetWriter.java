@@ -81,11 +81,11 @@ public class RuleSetWriter {
 
     private Element createRuleSetElement(RuleSet ruleSet) {
 	Element ruleSetElement = document.createElement("ruleset");
-	ruleSetElement.setAttribute("xmlns", "http://pmd.sf.net/ruleset/1.0.0");
+	ruleSetElement.setAttribute("xmlns", "http://pmd.sourceforge.net/ruleset/2.0.0");
 	ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation",
-		"http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd");
+		"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd");
 	ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation",
-		"http://pmd.sf.net/ruleset_xml_schema.xsd");
+		"http://pmd.sourceforge.net/ruleset_2_0_0.xsd");
 	ruleSetElement.setAttribute("name", ruleSet.getName());
 
 	Element descriptionElement = createDescriptionElement(ruleSet.getDescription());

@@ -229,8 +229,8 @@
       <resource>
       	<directory>${basedir}/etc</directory>
       	<includes>
-            <include>ruleset.dtd</include>          
-        	<include>ruleset_xml_schema.xsd</include>        	
+            <include>ruleset_2_0_0.dtd</include>          
+        	<include>ruleset_2_0_0.xsd</include>        	
       	</includes>
       </resource>
       <resource>

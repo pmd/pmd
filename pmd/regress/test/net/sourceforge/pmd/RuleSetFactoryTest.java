@@ -3,7 +3,7 @@
  */
 package test.net.sourceforge.pmd;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -640,7 +640,7 @@ public class RuleSetFactoryTest {
 	saxParserFactory.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
 
 	SAXParser saxParser = saxParserFactory.newSAXParser();
-	ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler("etc/ruleset_xml_schema.xsd");
+	ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler("etc/ruleset_2_0_0.xsd");
 	saxParser.parse(inputStream, validateDefaultHandler);
 	inputStream.close();
 	return validateDefaultHandler.isValid();
@@ -667,19 +667,19 @@ public class RuleSetFactoryTest {
 
 	// Remove XML Schema stuff, replace with DTD
 	file = file.replaceAll("<\\?xml [ a-zA-Z0-9=\".-]*\\?>", "");
-	file = file.replaceAll("xmlns=\"http://pmd.sf.net/ruleset/1.0.0\"", "");
+	file = file.replaceAll("xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"", "");
 	file = file.replaceAll("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "");
 	file = file.replaceAll(
-		"xsi:schemaLocation=\"http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd\"", "");
-	file = file.replaceAll("xsi:noNamespaceSchemaLocation=\"http://pmd.sf.net/ruleset_xml_schema.xsd\"", "");
+		"xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\"", "");
+	file = file.replaceAll("xsi:noNamespaceSchemaLocation=\"http://pmd.sourceforge.net/ruleset_2_0_0.xsd\"", "");
 
 	file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM \"file://"
-		+ System.getProperty("user.dir") + "/etc/ruleset.dtd\">" + PMD.EOL + file;
+		+ System.getProperty("user.dir") + "/etc/ruleset_2_0_0.dtd\">" + PMD.EOL + file;
 
 	inputStream = new ByteArrayInputStream(file.getBytes());
 
 	SAXParser saxParser = saxParserFactory.newSAXParser();
-	ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler("etc/ruleset.dtd");
+	ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler("etc/ruleset_2_0_0.dtd");
 	saxParser.parse(inputStream, validateDefaultHandler);
 	inputStream.close();
 	return validateDefaultHandler.isValid();
@@ -745,7 +745,7 @@ public class RuleSetFactoryTest {
 
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
-	    if ("http://pmd.sf.net/ruleset_xml_schema.xsd".equals(systemId) || systemId.endsWith("ruleset.dtd")) {
+	    if ("http://pmd.sourceforge.net/ruleset_2_0_0.xsd".equals(systemId) || systemId.endsWith("ruleset_2_0_0.dtd")) {
 		try {
 		    InputStream inputStream = loadResourceAsStream(validateDocument);
 		    return new InputSource(inputStream);
@@ -962,6 +962,7 @@ public class RuleSetFactoryTest {
 
     private static RuleSetReferenceId createRuleSetReferenceId(final String ruleSetXml) {
 	return new RuleSetReferenceId(null) {
+	    @Override
 	    public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
 		return new ByteArrayInputStream(ruleSetXml.getBytes());
 	    }

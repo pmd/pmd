@@ -22,10 +22,6 @@ TODO - Release blockers - Must implement before this release can be finished
      to recognize the difference between violations which require a Node, and
      those without.  This is to make certain that Rules which require and do not
      pass, will die with an error because they are buggy and need to be fixed.
-   o Rename XML Schema and DTD to ruleset_5_0.dtd and ruleset_5_0.xsd.  This
-     is because of the incompatible changes (e.g. dropping language on RuleSet).
-     Additions to the Schema/DTD shouldn't be a problem going forward as long
-     as they maintain backward compatibility.
    o Need to get licenses for Saxon and Rhino in place.  Organize all PMD licenses into a
      /license folder?
 
@@ -430,6 +426,9 @@ AvoidUsingHardCodedIP modified to not use InetAddress.getByName(String), instead
 The JSP/JSF parser can now parse Unicode input.
 The JSP/JSP parser can now handle <script>...</script> tags.  The AST HtmlScript node contains the content.
 Added Ecmascript as a supported language for CPD.
+The RuleSet XML Schema namespace is now: http://pmd.sourceforge.net/ruleset/2.0.0
+The RuleSet XML Schema is located in the source at: etc/ruleset_2_0_0.xsd
+The RuleSet DTD is located in the source at: etc/ruleset_2_0_0.dtd
 
 New Java rules:
 

@@ -311,7 +311,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 			BufferedReader br = new BufferedReader(fr);
 			while (br.ready()) {
 				line = br.readLine();
-				line = line.replaceAll("xmlns=\"http://pmd.sf.net/ruleset/1.0.0\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+				line = line.replaceAll("xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				bw.write(line);
 			}
 			fr.close();
