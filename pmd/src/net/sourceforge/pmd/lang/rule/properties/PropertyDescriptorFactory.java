@@ -78,13 +78,13 @@ public class PropertyDescriptorFactory {
         
 	 // TODO - include legal package names for next four types
 	} else if ("Type".equals(type)) {
-	    return new TypeProperty(name, description, value, null, 0.0f);
+	    return new TypeProperty(name, description, value, (String[])null, 0.0f);
 	} else if ("Type[]".equals(type)) {
-        return new TypeMultiProperty(name, description, value, null, 0.0f);
+        return new TypeMultiProperty(name, description, value, (String[])null, 0.0f);
 	} else if ("Method".equals(type)) {
-	    return new MethodProperty(name, description, value, null, 0.0f);
+	    return new MethodProperty(name, description, value, (String[])null, 0.0f);
     } else if ("Method[]".equals(type)) {
-        return new MethodMultiProperty(name, description, value, null, 0.0f);
+        return new MethodMultiProperty(name, description, value, (String[])null, 0.0f);
         
 	} else if ("String".equals(type)) {	  
 	    return new StringProperty(name, description, value, 0.0f);
