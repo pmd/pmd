@@ -221,13 +221,27 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
      *
      * @param theName        String
      * @param theDescription String
-     * @param defaultStr     String
+     * @param defaultMethodStr String
      * @param legalPackageNames String[]
      * @param theUIOrder     float
      * @throws IllegalArgumentException
      */
-    public MethodProperty(String theName, String theDescription, String defaultStr, String[] legalPackageNames, float theUIOrder) {
-        super(theName, theDescription, methodFrom(defaultStr), legalPackageNames, theUIOrder);
+    public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames, float theUIOrder) {
+        super(theName, theDescription, methodFrom(defaultMethodStr), legalPackageNames, theUIOrder);
+    }
+    
+    /**
+     * Constructor for MethodProperty.
+     *
+     * @param theName        String
+     * @param theDescription String
+     * @param defaultMethodStr String
+     * @param otherParams Map<String, String>
+     * @param theUIOrder     float
+     * @throws IllegalArgumentException
+     */
+    public MethodProperty(String theName, String theDescription, String defaultMethodStr, Map<String, String> otherParams, float theUIOrder) {
+        this(theName, theDescription, methodFrom(defaultMethodStr), packageNamesIn(otherParams), theUIOrder);
     }
     
     /**

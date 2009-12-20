@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -41,6 +43,19 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
         this(theName, theDescription, typesFrom(theTypeDefaults), legalPackageNames, theUIOrder);
 
     }
+    
+    /**
+     * Constructor for TypeProperty.
+     * @param theName String
+     * @param theDescription String
+     * @param theTypeDefaults String
+     * @param otherParams Map<String, String>
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, Map<String, String> otherParams, float theUIOrder) {
+        this(theName, theDescription, typesFrom(theTypeDefaults), packageNamesIn(otherParams), theUIOrder);
+    }    
     
     /**
      * @param classesStr String

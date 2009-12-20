@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.util.ClassUtil;
 
 /**
@@ -37,7 +39,20 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
      * @throws IllegalArgumentException
      */
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, String[] legalPackageNames, float theUIOrder) {
-        super(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder);
+        this(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder);
+    }
+    
+    /**
+     * 
+     * @param theName String
+     * @param theDescription String
+     * @param defaultTypeStr String
+     * @param otherParams Map<String, String>
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<String, String> otherParams, float theUIOrder) {
+        this(theName, theDescription, classFrom(defaultTypeStr), packageNamesIn(otherParams), theUIOrder);
     }
     
     /**

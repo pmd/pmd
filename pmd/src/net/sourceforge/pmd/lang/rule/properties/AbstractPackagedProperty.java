@@ -18,6 +18,12 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
 	private static final char PACKAGE_NAME_DELIMITER = ' ';
 	
+    
+    protected static String[] packageNamesIn(Map<String, String> params) {
+        // TODO
+        return null;
+    }
+	
 	/**
 	 * 
 	 * @param theName
