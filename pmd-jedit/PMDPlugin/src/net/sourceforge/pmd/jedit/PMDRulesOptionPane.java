@@ -245,7 +245,7 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
     }
 
     private void customRulesDialog() {
-        PathBuilderDialog dialog = new PathBuilderDialog( jEdit.getActiveView(), "Choose Custom Rulesets", "Custom Ruleset Files" );
+        PathBuilderDialog dialog = new PathBuilderDialog( GUIUtilities.getParentDialog( PMDRulesOptionPane.this ), "Choose Custom Rulesets", "Custom Ruleset Files" );
         PathBuilder pathBuilder = dialog.getPathBuilder();
         pathBuilder.setAddButtonText( "Add Ruleset" );
         pathBuilder.setRemoveButtonText( "Remove Ruleset" );
