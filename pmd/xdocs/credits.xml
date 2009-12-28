@@ -57,7 +57,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Sergey Pariev - Fixed an ugly ArrayIndexOutOfBoundsException in CPD for Ruby</li>
+            <li>Nicolas Dordet - Fixed an issue on CloseResource</li>
+	    <li>Sergey Pariev - Fixed an ugly ArrayIndexOutOfBoundsException in CPD for Ruby</li>
             <li>Chris Heister - Reported and noted proper fix for bug in IDEAJ renderer operations</li>
             <li>Ralf Wagner - Reported bug in UselessOperationOnImmutable, reported and noted proper fix for broken XSLT</li>
             <li>Caroline Rioux - Reported bug in ImmutableField</li>

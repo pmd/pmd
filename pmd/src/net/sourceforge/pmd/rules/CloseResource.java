@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTReferenceType;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTType;
@@ -127,6 +128,16 @@ public class CloseResource extends AbstractRule {
                 for (ASTName oName : names) {
                     String name = oName.getImage();
                     if (name.equals(target) || closeTargets.contains(name)) {
+                        closed = true;
+                    }
+                }
+                
+                // look for primary suffix that could also contain close Targets elements.
+                List<ASTPrimarySuffix> suffixes = new ArrayList<ASTPrimarySuffix>();
+                f.findChildrenOfType(ASTPrimarySuffix.class, suffixes, true);
+                for (ASTPrimarySuffix oSuffix : suffixes) {
+                    String suffix = oSuffix.getImage();
+                    if (closeTargets.contains(suffix)) {
                         closed = true;
                     }
                 }

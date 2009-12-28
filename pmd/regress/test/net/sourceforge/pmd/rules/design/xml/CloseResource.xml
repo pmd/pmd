@@ -179,5 +179,42 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code reinitializeRule="true">
+        <description><![CDATA[
+invoke an external method that close the resource
+bug 2920057
+     ]]></description>
+        <rule-property name="closeTargets">fermerStatement,fermerStatement,fermerResultSet,fermerConnexion
+        </rule-property>
+        <rule-property name="types">PreparedStatement,Statement,ResultSet,Connection</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
 
+public class StructureFactory {
+
+    public void rechercherListe() {
+
+        Connection _connexion = null;
+        ArrayList <Structure> _listeStructure = new ArrayList<Structure>();
+        ResultSet _rs = null;
+        String _sql = "";
+        PreparedStatement _st = null;
+        Structure _structure = null;
+        try
+        {
+           //
+        }
+
+
+        finally
+        {
+            getFournisseurInstance().fermerConnexion(_connexion);
+            getFournisseurInstance().fermerResultSet(_rs);
+            getFournisseurInstance().fermerStatement(_st);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
