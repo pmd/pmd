@@ -40,6 +40,7 @@ public class TextColumnDescriptor extends AbstractRuleColumnDescriptor {
 	public static final RuleColumnDescriptor externalURL  = new TextColumnDescriptor("URL", SWT.LEFT, 100, RuleFieldAccessor.url, true);
 	public static final RuleColumnDescriptor properties   = new TextColumnDescriptor("Properties", SWT.LEFT, 40, propertiesAcc, true);
 	public static final RuleColumnDescriptor minLangVers  = new TextColumnDescriptor("Min Ver", SWT.LEFT, 30, RuleFieldAccessor.minLanguageVersion, false);
+	public static final RuleColumnDescriptor language     = new TextColumnDescriptor("Language", SWT.LEFT, 30, RuleFieldAccessor.language, false);
 
 	public static final RuleColumnDescriptor exampleCount = new TextColumnDescriptor("Examples", SWT.RIGHT, 20, RuleFieldAccessor.exampleCount, false);
 	public static final RuleColumnDescriptor ruleType	  = new TextColumnDescriptor("Type", 	SWT.LEFT, 20, RuleFieldAccessor.ruleType, false);

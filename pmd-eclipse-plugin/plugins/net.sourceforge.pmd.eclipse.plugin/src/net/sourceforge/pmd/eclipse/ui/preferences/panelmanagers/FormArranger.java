@@ -102,7 +102,7 @@ public class FormArranger {
 		for (PropertyDescriptor<?> desc: orderedDescs) {
 			EditorFactory factory = factoryFor(desc);
 			if (factory == null) {
-			    System.out.println("No editor defined for: "  + desc);
+			    System.out.println("No editor defined for: "  + desc.getClass().getSimpleName());
 			    continue;
 			}
 			rowCount++;

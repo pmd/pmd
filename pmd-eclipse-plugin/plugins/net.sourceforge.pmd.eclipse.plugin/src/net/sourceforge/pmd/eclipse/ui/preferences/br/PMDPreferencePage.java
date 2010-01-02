@@ -104,6 +104,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		TextColumnDescriptor.ruleSetName,
 		TextColumnDescriptor.ruleType,
 		TextColumnDescriptor.minLangVers,		
+		TextColumnDescriptor.language,
 		ImageColumnDescriptor.filterExpression,    // regex text -> compact color dots (for comparison)
 		TextColumnDescriptor.properties,
 		};
@@ -114,6 +115,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		{ TextColumnDescriptor.since,             "PMD version" },
 		{ TextColumnDescriptor.priorityName,      "Priority" },
 		{ TextColumnDescriptor.ruleType,          "Type" },
+		{ TextColumnDescriptor.language,		  "Language" },
         { ImageColumnDescriptor.filterExpression,  "Regex filter" },
 		{ null, "<no grouping>" }
 		};

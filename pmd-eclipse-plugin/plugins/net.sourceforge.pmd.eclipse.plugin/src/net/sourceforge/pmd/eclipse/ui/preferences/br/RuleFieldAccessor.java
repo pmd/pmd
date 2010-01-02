@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -100,6 +101,13 @@ public interface RuleFieldAccessor {
 		}
 	};
 		
+	RuleFieldAccessor language = new BasicRuleFieldAccessor() {
+        public Comparable<?> valueFor(Rule rule) {	            
+            Language language = rule.getLanguage();
+            return language == null ? "" : language.getTerseName();
+	    }
+	};
+	
 	RuleFieldAccessor minLanguageVersion = new BasicRuleFieldAccessor() {
         public Comparable<?> valueFor(Rule rule) {	            
             LanguageVersion version = rule.getMinimumLanguageVersion();
