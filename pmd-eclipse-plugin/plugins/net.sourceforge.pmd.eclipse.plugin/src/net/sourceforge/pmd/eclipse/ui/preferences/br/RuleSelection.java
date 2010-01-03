@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
+ * Represents a set of selected rules in a rule selection widget. Provides useful metrics
+ * and determines common properties (if any).
  * 
  * @author Brian Remedios
  */

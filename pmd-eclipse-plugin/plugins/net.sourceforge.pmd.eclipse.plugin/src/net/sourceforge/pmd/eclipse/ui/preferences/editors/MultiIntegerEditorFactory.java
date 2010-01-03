@@ -19,7 +19,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-
+/**
+ * 
+ * @author Brian Remedios
+ */
 public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
 
     public static final MultiIntegerEditorFactory instance = new MultiIntegerEditorFactory();

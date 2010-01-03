@@ -57,7 +57,7 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
             return columnDescriptors[columnIndex].imageFor(rule);
         }
 
-        return null;
+        return null;		// should never get here
     }
     
     /**

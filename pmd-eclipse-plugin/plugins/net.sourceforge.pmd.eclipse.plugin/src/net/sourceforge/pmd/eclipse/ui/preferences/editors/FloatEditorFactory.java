@@ -8,6 +8,8 @@ import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -55,8 +57,8 @@ public class FloatEditorFactory extends AbstractRealNumberEditor {
         final FloatProperty fp = floatPropertyFrom(desc);
         final Spinner spinner = newSpinnerFor(parent, rule, fp);
 	            
-        spinner.addListener(SWT.FocusOut, new Listener() {
-            public void handleEvent(Event event) {
+        spinner.addModifyListener(new ModifyListener() {
+	        public void modifyText(ModifyEvent event) {
                Float newValue = new Float(spinner.getSelection() / scale);
                if (newValue.equals(valueFor(rule, fp))) return;
 	                    

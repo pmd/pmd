@@ -5,7 +5,10 @@ import java.util.Map;
 
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
-
+/**
+ * 
+ * @author Brian Remedios
+ */
 public interface CellPainterBuilder {
 
 	void addPainterFor(Tree tree, int columnIndex, RuleFieldAccessor getter, Map<Integer, List<Listener>> listenersByEventCode);

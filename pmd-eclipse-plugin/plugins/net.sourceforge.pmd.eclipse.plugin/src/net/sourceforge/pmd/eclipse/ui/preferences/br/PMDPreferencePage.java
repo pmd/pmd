@@ -105,19 +105,19 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		TextColumnDescriptor.ruleType,
 		TextColumnDescriptor.minLangVers,		
 		TextColumnDescriptor.language,
-		ImageColumnDescriptor.filterExpression,    // regex text -> compact color dots (for comparison)
+		ImageColumnDescriptor.filterExpression,    // regex text -> compact color squares (for comparison)
 		TextColumnDescriptor.properties,
 		};
 
 	// last item in this list is the grouping used at startup
 	private static final Object[][] groupingChoices = new Object[][] {
-		{ TextColumnDescriptor.ruleSetName,       "Rule set" },   // TODO i18l
-		{ TextColumnDescriptor.since,             "PMD version" },
-		{ TextColumnDescriptor.priorityName,      "Priority" },
-		{ TextColumnDescriptor.ruleType,          "Type" },
-		{ TextColumnDescriptor.language,		  "Language" },
-        { ImageColumnDescriptor.filterExpression,  "Regex filter" },
-		{ null, "<no grouping>" }
+		{ TextColumnDescriptor.ruleSetName,       StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET},   
+		{ TextColumnDescriptor.since,             StringKeys.MSGKEY_PREF_RULESET_GROUPING_PMD_VERSION },
+		{ TextColumnDescriptor.priorityName,      StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY },
+		{ TextColumnDescriptor.ruleType,          StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_TYPE },
+		{ TextColumnDescriptor.language,		  StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE },
+        { ImageColumnDescriptor.filterExpression, StringKeys.MSGKEY_PREF_RULESET_GROUPING_REGEX },
+		{ null, 								  StringKeys.MSGKEY_PREF_RULESET_GROUPING_NONE }
 		};
 
 	// properties that should not be shown in the PerRuleProperty page
@@ -177,11 +177,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private Map<String, MenuItem>       rulesetMenusByName;
     
 	private boolean 			modified = false;
-	private static PMDPlugin	plugin = PMDPlugin.getDefault();
-	
-    private static String stringFor(String key) {
-        return plugin.getStringTable().getString(key);
-    }    
+	private static PMDPlugin	plugin = PMDPlugin.getDefault(); 
 	
 	/**
 	 * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
@@ -235,7 +231,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    Composite ruleSection = new Composite(parent, SWT.NULL);
 	    
 	    // Create the controls (order is important !)
-        Composite groupCombo = buildGroupCombo(ruleSection, "Rules grouped by ");
+        Composite groupCombo = buildGroupCombo(ruleSection, StringKeys.MSGKEY_PREF_RULESET_RULES_GROUPED_BY);
 
         Tree ruleTree = buildRuleTreeViewer(ruleSection);
         groupBy(null);
@@ -374,7 +370,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		groupBy(groupingColumn);
 	}
 
-	private Composite buildGroupCombo(Composite parent, String comboLabel) {
+	private Composite buildGroupCombo(Composite parent, String comboLabelKey) {
 
 	     Composite panel = new Composite(parent, 0);
 	     GridLayout layout = new GridLayout(2, false);
@@ -385,10 +381,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	     data.horizontalAlignment = SWT.LEFT;
 	     data.verticalAlignment = SWT.CENTER;
 	     label.setLayoutData(data);
-	     label.setText(comboLabel);
+	     label.setText(SWTUtil.stringFor(comboLabelKey));
 	        
          final Combo combo = new Combo(panel, SWT.READ_ONLY);
-         combo.setItems(SWTUtil.labelsIn(groupingChoices, 1));            
+         combo.setItems(SWTUtil.i18lLabelsIn(groupingChoices, 1));            
          combo.select(groupingChoices.length - 1);  // picks last one by default TODO make it a persistent preference
             
          combo.addSelectionListener(new SelectionAdapter() {
@@ -413,11 +409,11 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		tabFolder = new TabFolder(parent, SWT.TOP);
 
 		rulePropertyManagers = new RulePropertyManager[] {
-		    buildPropertyTab(tabFolder,    0, "Properties"),
-		    buildDescriptionTab(tabFolder, 1, stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION)),
-		    buildUsageTab(tabFolder,       2, "Filters"),
-		    buildXPathTab(tabFolder,       3, "XPath"),     
-		    buildExampleTab(tabFolder,     4, "Examples")
+		    buildPropertyTab(tabFolder,    0, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_PROPERTIES)),
+		    buildDescriptionTab(tabFolder, 1, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_DESCRIPTION)),
+		    buildUsageTab(tabFolder,       2, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FILTERS)),
+		    buildXPathTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_XPATH)),    
+		    buildExampleTab(tabFolder,     4, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_EXAMPLES)),
 		    };
 
 		tabFolder.pack();
@@ -507,15 +503,15 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		tab.setControl(
 			manager.setupOn(
 					parent,
-					"Exclusion regular expression",
-					"XPath exclusion expression",
-					"Color code  "
+					SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_EXCLUSION_REGEX),
+					SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_XPATH_EXCLUSION),
+					SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_COLOUR_CODE)
 					)
 			);
 		manager.tab(tab);
 		return manager;
 	}
-
+	
 	/**
 	 * Create buttons for rule table management
 	 * @param parent Composite
@@ -641,7 +637,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    Menu menu = new Menu(control);
 
 	    MenuItem priorityMenu = new MenuItem (menu, SWT.CASCADE);
-	    priorityMenu.setText(stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
+	    priorityMenu.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
 	    Menu subMenu = new Menu(menu);
 	    priorityMenu.setMenu (subMenu);
 	    priorityMenusByPriority = new HashMap<RulePriority, MenuItem>();

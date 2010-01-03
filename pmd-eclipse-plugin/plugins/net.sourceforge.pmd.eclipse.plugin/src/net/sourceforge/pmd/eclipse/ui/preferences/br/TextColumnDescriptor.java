@@ -30,21 +30,20 @@ public class TextColumnDescriptor extends AbstractRuleColumnDescriptor {
             }
       };
 	
-      // TODO externalize remaining title strings
-	public static final RuleColumnDescriptor name 		  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_NAME, SWT.LEFT, 210, RuleFieldAccessor.name, true);	
-	public static final RuleColumnDescriptor ruleSetName  = new TextColumnDescriptor("Rule set", SWT.LEFT, 160, ruleSetNameAcc, true);
-	public static final RuleColumnDescriptor priority	  = new TextColumnDescriptor("Priority", SWT.RIGHT, 53, RuleFieldAccessor.priority, false);		
-	public static final RuleColumnDescriptor priorityName = new TextColumnDescriptor("Priority", SWT.LEFT, 80, RuleFieldAccessor.priorityName, true);
-	public static final RuleColumnDescriptor since 		  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_SINCE, SWT.RIGHT, 46, RuleFieldAccessor.since, false);
-	public static final RuleColumnDescriptor usesDFA 	  = new TextColumnDescriptor("DFA", SWT.LEFT, 60, RuleFieldAccessor.usesDFA, false);	
-	public static final RuleColumnDescriptor externalURL  = new TextColumnDescriptor("URL", SWT.LEFT, 100, RuleFieldAccessor.url, true);
-	public static final RuleColumnDescriptor properties   = new TextColumnDescriptor("Properties", SWT.LEFT, 40, propertiesAcc, true);
-	public static final RuleColumnDescriptor minLangVers  = new TextColumnDescriptor("Min Ver", SWT.LEFT, 30, RuleFieldAccessor.minLanguageVersion, false);
-	public static final RuleColumnDescriptor language     = new TextColumnDescriptor("Language", SWT.LEFT, 30, RuleFieldAccessor.language, false);
-
-	public static final RuleColumnDescriptor exampleCount = new TextColumnDescriptor("Examples", SWT.RIGHT, 20, RuleFieldAccessor.exampleCount, false);
-	public static final RuleColumnDescriptor ruleType	  = new TextColumnDescriptor("Type", 	SWT.LEFT, 20, RuleFieldAccessor.ruleType, false);
-	public static final RuleColumnDescriptor violateXPath = new TextColumnDescriptor("Filter", SWT.RIGHT, 20, RuleFieldAccessor.violationXPath, true);
+	public static final RuleColumnDescriptor name 		  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_NAME, 	SWT.LEFT, 210, RuleFieldAccessor.name, true);	
+	public static final RuleColumnDescriptor ruleSetName  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME,SWT.LEFT, 160, ruleSetNameAcc, true);
+	public static final RuleColumnDescriptor priority	  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY, 	SWT.RIGHT,53, RuleFieldAccessor.priority, false);		
+	public static final RuleColumnDescriptor priorityName = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY, 	SWT.LEFT, 80, RuleFieldAccessor.priorityName, true);
+	public static final RuleColumnDescriptor since 		  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_SINCE, 		SWT.RIGHT,46, RuleFieldAccessor.since, false);
+	public static final RuleColumnDescriptor usesDFA 	  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DATAFLOW, 	SWT.LEFT, 60, RuleFieldAccessor.usesDFA, false);	
+	public static final RuleColumnDescriptor externalURL  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_URL, 		SWT.LEFT, 100, RuleFieldAccessor.url, true);
+	public static final RuleColumnDescriptor properties   = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, true);
+	public static final RuleColumnDescriptor language     = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE, 	SWT.LEFT, 32, RuleFieldAccessor.language, false);
+	public static final RuleColumnDescriptor ruleType	  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_TYPE, 	SWT.LEFT, 20, RuleFieldAccessor.ruleType, false);
+	public static final RuleColumnDescriptor minLangVers  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_MIN_VER, 	SWT.LEFT, 30, RuleFieldAccessor.minLanguageVersion, false);
+	
+//	public static final RuleColumnDescriptor exampleCount = new TextColumnDescriptor("Examples", SWT.RIGHT, 20, RuleFieldAccessor.exampleCount, false);
+//	public static final RuleColumnDescriptor violateXPath = new TextColumnDescriptor("Filter", SWT.RIGHT, 20, RuleFieldAccessor.violationXPath, true);
 			
 	/**
 	 * @param theLabel String
@@ -62,7 +61,8 @@ public class TextColumnDescriptor extends AbstractRuleColumnDescriptor {
      */
 	public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, RuleSortListener sortListener, Map<Integer, List<Listener>> paintListeners) {
 		TreeColumn tc = buildTreeColumn(parent, sortListener);
-        tc.setText(label());        
+        tc.setText(label());  
+        tc.setToolTipText(tooltip());
         return tc;
 	}
 	

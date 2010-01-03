@@ -38,7 +38,6 @@ public class StringEditorFactory extends AbstractEditorFactory {
     
     
     protected Object valueFrom(Control valueControl) {
-        
         return ((Text)valueControl).getText();
     }
     

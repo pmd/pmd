@@ -11,6 +11,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.StringUtil;
@@ -40,7 +41,7 @@ import org.eclipse.swt.widgets.Text;
  *
  * @author Brian Remedios
  */
-public class PropertyDialog extends Dialog implements SizeChangeListener {
+public class NewPropertyDialog extends Dialog implements SizeChangeListener {
     
     private Text                    nameField;
     private Text                    labelField;
@@ -49,18 +50,20 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
     private Composite               dlgArea;
     private EditorFactory           factory;
     private ValueChangeListener     changeListener;
-    
+        
     private Rule                            rule;
     private PropertyDescriptor<?>           descriptor;
     private Map<Class<?>, EditorFactory>    editorFactoriesByValueType;
     
     private Color textColour        = new Color(null, 0, 0, 0);
     private Color textErrorColour   = new Color(null, 255, 0, 0);    
-    
-    
+        
     // these are the ones we've tested, the others may work but might not make sense in the xpath source context...
     private static final Class<?>[] validEditorTypes = new Class[] { String.class, Integer.class, Boolean.class };
     private static final Class<?> defaultEditorType = validEditorTypes[0];     // first one
+    
+    private static final String INITIAL_NAME = "a unique name";	//
+    private static final String INITIAL_DESC = "a description";	//
     
     public static Map<Class<?>, EditorFactory> withOnly(Map<Class<?>, EditorFactory> factoriesByType, Class<?>[] legalTypeKeys) {
         Map<Class<?>, EditorFactory> results = new HashMap<Class<?>, EditorFactory>(legalTypeKeys.length);
@@ -72,13 +75,13 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
         }
         return results;
     }
-    
+
     /**
-     * Constructor for RuleDialog.
+     * Constructor for RuleDialog.  Supply a working descriptor with name & description values we expect the user to change.
      *
      * @param parentdlgArea
      */
-    public PropertyDialog(Shell parent, Map<Class<?>, EditorFactory> theEditorFactoriesByValueType, Rule theRule, ValueChangeListener theChangeListener) {
+    public NewPropertyDialog(Shell parent, Map<Class<?>, EditorFactory> theEditorFactoriesByValueType, Rule theRule, ValueChangeListener theChangeListener) {
         super(parent);
         
         setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MAX | SWT.APPLICATION_MODAL);
@@ -93,7 +96,7 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
      *
      * @param parentdlgArea
      */
-    public PropertyDialog(Shell parent, Map<Class<?>, EditorFactory> theEditorFactoriesByValueType, Rule theRule, PropertyDescriptor<?> theDescriptor, ValueChangeListener theChangeListener) {
+    public NewPropertyDialog(Shell parent, Map<Class<?>, EditorFactory> theEditorFactoriesByValueType, Rule theRule, PropertyDescriptor<?> theDescriptor, ValueChangeListener theChangeListener) {
         this(parent, theEditorFactoriesByValueType, theRule, theChangeListener);
 
         descriptor = theDescriptor;
@@ -114,8 +117,7 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
     protected Control createDialogArea(Composite parent) {
 
         parent.setLayoutData(new GridData(GridData.FILL_BOTH));
-        // Set the window title
-        getShell().setText("Add new property");
+        getShell().setText(SWTUtil.stringFor(StringKeys.MSGKEY_DIALOG_PREFS_ADD_NEW_PROPERTY));
 
         dlgArea = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout(2, false);
@@ -124,9 +126,9 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
         dlgArea.setLayout(layout);
         dlgArea.setLayoutData(new GridData(GridData.FILL_BOTH));
                 
-        buildLabel(dlgArea, "Name:");        nameField = buildNameText(dlgArea);
-        buildLabel(dlgArea, "Datatype:");    typeField = buildTypeField(dlgArea);
-        buildLabel(dlgArea, "Label:");       labelField = buildLabelField(dlgArea);
+        buildLabel(dlgArea, "Name:");        nameField = buildNameText(dlgArea);  	// TODO i18l label
+        buildLabel(dlgArea, "Datatype:");    typeField = buildTypeField(dlgArea);	// TODO i18l label
+        buildLabel(dlgArea, "Label:");       labelField = buildLabelField(dlgArea);	// TODO i18l label
                 
         setPreferredName();
         setInitialType();
@@ -143,7 +145,7 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
      */
     private Label buildLabel(Composite parent, String msgKey) {
         Label label = new Label(parent, SWT.NONE);
-        label.setText(msgKey == null ? "" : getMessage(msgKey));
+        label.setText(msgKey == null ? "" : SWTUtil.stringFor(msgKey));
         return label;
     }
   
@@ -173,8 +175,25 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
         return rule.getPropertyDescriptor(nameCandidate) == null;
     }
     
+    private static boolean isValidJavaIdentifier(String candidateName) {
+    	
+    	if (!Character.isJavaIdentifierStart(candidateName.charAt(0))) {
+    		return false;
+    	}
+    	
+    	for (int i=1; i<candidateName.length(); i++) {
+    		char ch = candidateName.charAt(i);
+    		if (Character.isJavaIdentifierPart(ch)) continue;
+    		return false;
+    	}
+    	return true;
+    }
+    
     private boolean isValidNewLabel(String labelCandidate) {
-        if (StringUtil.isEmpty(labelCandidate)) return false;
+        
+    	if (StringUtil.isEmpty(labelCandidate)) return false;
+        if (!isValidJavaIdentifier(labelCandidate)) return false;
+        
         for (PropertyDescriptor<?> desc : rule.getPropertyDescriptors()) {
             if (desc.description().equalsIgnoreCase(labelCandidate)) return false;
         }
@@ -288,7 +307,7 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
             nameField.setText(name);
             return;
         }
-        nameField.setText("a unique name");
+        nameField.setText(INITIAL_NAME);
     }
     
     private void setInitialType() {
@@ -306,7 +325,7 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
         
         factory = theFactory;
         
-        descriptor = factory.createDescriptor("??", "a description", null);
+        descriptor = factory.createDescriptor("??", INITIAL_DESC, null);
         labelField.setText(descriptor.description());
         cleanFactoryStuff();
         
@@ -316,15 +335,15 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
         dlgArea.getParent().pack();
     }
     
-    /**
-     * Helper method to shorten message access
-     *
-     * @param key a message key
-     * @return requested message
-     */
-    private String getMessage(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
-    }
+//    /**
+//     * Helper method to shorten message access
+//     *
+//     * @param key a message key
+//     * @return requested message
+//     */
+//    private String getMessage(String key) {
+//        return PMDPlugin.getDefault().getStringTable().getString(key);
+//    }
 
     /**
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
@@ -356,15 +375,15 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
         
         if (StringUtil.isEmpty(name)) {
             if (showErrorMessages) MessageDialog.openWarning(getShell(), 
-                    getMessage(StringKeys.MSGKEY_WARNING_TITLE),
-                    getMessage(StringKeys.MSGKEY_WARNING_NAME_MANDATORY));
+            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_TITLE),
+            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_NAME_MANDATORY));
             nameField.setFocus();
             return false;
         }
         
         if (ruleHasPropertyName(name)) {
             if (showErrorMessages) MessageDialog.openWarning(getShell(), 
-                    getMessage(StringKeys.MSGKEY_WARNING_TITLE),
+            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_TITLE),
                     "'" + name + "' is already used by another property"
                     );
             nameField.setFocus();
@@ -383,7 +402,7 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
         
         if (StringUtil.isEmpty(label)) {
             if (showErrorMessages) MessageDialog.openWarning(getShell(), 
-                    getMessage(StringKeys.MSGKEY_WARNING_TITLE),
+            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_TITLE),
                     "A proper label is required"
                     );
             labelField.setFocus();
@@ -392,7 +411,7 @@ public class PropertyDialog extends Dialog implements SizeChangeListener {
         
         if (!isValidNewLabel(label)) {
             if (showErrorMessages) MessageDialog.openWarning(getShell(), 
-                    getMessage(StringKeys.MSGKEY_WARNING_TITLE),
+            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_TITLE),
                     "Label text must differ from other label text"
                     );
             labelField.setFocus();

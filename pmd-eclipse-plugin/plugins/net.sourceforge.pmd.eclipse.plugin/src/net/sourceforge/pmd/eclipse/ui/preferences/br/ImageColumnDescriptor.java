@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 
@@ -22,8 +23,8 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
 
     private String             imagePath;
     private CellPainterBuilder painterBuilder;
-    
-    public static final RuleColumnDescriptor filterExpression  = new ImageColumnDescriptor("Filters", SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER, Util.regexBuilderFor(16, 16));
+
+    public static final RuleColumnDescriptor filterExpression  = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_FILTERS, SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER, Util.regexBuilderFor(16, 16));
 
     
     public ImageColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, CellPainterBuilder thePainterBuilder) {
@@ -38,7 +39,7 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
      */
     public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, final RuleSortListener sortListener, Map<Integer, List<Listener>> paintListeners) {
         TreeColumn tc = buildTreeColumn(parent, sortListener);
-        tc.setToolTipText(label());       
+        tc.setToolTipText(tooltip());       
         if (imagePath != null) tc.setImage(ResourceManager.imageFor(imagePath));        
         if (painterBuilder != null) painterBuilder.addPainterFor(tc.getParent(), columnIndex, accessor(), paintListeners);        
         return tc;

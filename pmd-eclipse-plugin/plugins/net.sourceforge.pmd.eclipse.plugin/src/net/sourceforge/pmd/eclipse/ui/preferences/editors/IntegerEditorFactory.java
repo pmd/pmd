@@ -65,7 +65,7 @@ public class IntegerEditorFactory extends AbstractNumericEditorFactory {
 
 	protected void setValue(Rule rule, IntegerProperty desc, Integer value) {
 	    
-	    if (!rule.hasDescriptor(desc)) return;
+//	    if (!rule.hasDescriptor(desc)) return;
 	    rule.setProperty(desc, value);
 	}
 	

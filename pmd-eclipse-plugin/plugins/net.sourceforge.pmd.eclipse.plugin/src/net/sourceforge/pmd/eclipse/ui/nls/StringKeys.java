@@ -75,6 +75,7 @@ public class StringKeys {
     public static final String MSGKEY_PREF_GENERAL_DIALOG_BROWSE = "preference.pmd.dialog.browse";
     public static final String MSGKEY_PREF_GENERAL_LABEL_LOG_LEVEL = "preference.pmd.label.log_level";
     
+    //  TOOLTIP keys are not shown here...just append  ".tooltip" to an existing key to see if you have one :)
     public static final String MSGKEY_PREF_RULESET_TITLE = "preference.ruleset.title";
     public static final String MSGKEY_PREF_RULESET_LIST = "preference.ruleset.list";
     public static final String MSGKEY_PREF_RULESET_ADD = "preference.ruleset.add";
@@ -83,16 +84,26 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESET_LABEL_RULEPROPSTABLE = "preference.ruleset.label.rulepropstable";
     public static final String MSGKEY_PREF_RULESET_LABEL_EXCLUDE_PATTERNS_TABLE = "preference.ruleset.label.exclude_patterns_table";
     public static final String MSGKEY_PREF_RULESET_LABEL_INCLUDE_PATTERNS_TABLE = "preference.ruleset.label.include_patterns_table";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_DATAFLOW = "preference.ruleset.column.dataflow";
     public static final String MSGKEY_PREF_RULESET_COLUMN_LANGUAGE = "preference.ruleset.column.language";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_RULESET = "preference.ruleset.column.ruleset";
     public static final String MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME = "preference.ruleset.column.ruleset_name";
     public static final String MSGKEY_PREF_RULESET_COLUMN_RULE_NAME = "preference.ruleset.column.rule_name";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_RULE_TYPE = "preference.ruleset.column.rule_type";
     public static final String MSGKEY_PREF_RULESET_COLUMN_SINCE = "preference.ruleset.column.since";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_FILTERS = "preference.ruleset.column.filters";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_MIN_VER = "preference.ruleset.column.minimum_version";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PRIORITY = "preference.ruleset.column.priority";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_PROPERTIES = "preference.ruleset.column.properties";
     public static final String MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION = "preference.ruleset.column.description";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PROPERTY = "preference.ruleset.column.property";
     public static final String MSGKEY_PREF_RULESET_COLUMN_VALUE = "preference.ruleset.column.value";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_URL = "preference.ruleset.column.url";
     public static final String MSGKEY_PREF_RULESET_COLUMN_EXCLUDE_PATTERN = "preference.ruleset.column.exclude_pattern";
     public static final String MSGKEY_PREF_RULESET_COLUMN_INCLUDE_PATTERN = "preference.ruleset.column.include_pattern";
+    public static final String MSGKEY_PREF_RULESET_GROUPING_NONE = "preference.ruleset.grouping.none";
+    public static final String MSGKEY_PREF_RULESET_GROUPING_PMD_VERSION = "preference.ruleset.grouping.pmd_version";
+    public static final String MSGKEY_PREF_RULESET_GROUPING_REGEX = "preference.ruleset.grouping.regex";
     public static final String MSGKEY_PREF_RULESET_BUTTON_ADDRULE = "preference.ruleset.button.addrule";
     public static final String MSGKEY_PREF_RULESET_BUTTON_REMOVERULE = "preference.ruleset.button.removerule";
     public static final String MSGKEY_PREF_RULESET_BUTTON_EDITRULE = "preference.ruleset.button.editrule";
@@ -106,6 +117,18 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESET_DIALOG_TITLE = "preference.ruleset.dialog.title";
     public static final String MSGKEY_PREF_RULESET_DIALOG_RULESET_DESCRIPTION = "preference.ruleset.dialog.ruleset_description";
     public static final String MSGKEY_PREF_RULESET_DIALOG_PROPERTY_NAME = "preference.ruleset.dialog.property_name";
+
+    public static final String MSGKEY_PREF_RULESET_RULES_GROUPED_BY = "preference.ruleset.label.rules_grouped_by";
+
+    public static final String MSGKEY_PREF_RULESET_TAB_PROPERTIES = "preference.ruleedit.tab.properties";
+    public static final String MSGKEY_PREF_RULESET_TAB_DESCRIPTION = "preference.ruleedit.tab.description";
+    public static final String MSGKEY_PREF_RULESET_TAB_FILTERS = "preference.ruleedit.tab.filters";
+    public static final String MSGKEY_PREF_RULESET_TAB_XPATH = "preference.ruleedit.tab.xpath";
+    public static final String MSGKEY_PREF_RULESET_TAB_EXAMPLES = "preference.ruleedit.tab.examples";
+
+    public static final String MSGKEY_LABEL_XPATH_EXCLUSION = "preference.ruleedit.label.xpath_exclusion";
+    public static final String MSGKEY_LABEL_EXCLUSION_REGEX = "preference.ruleedit.label.exclusion_regex";
+    public static final String MSGKEY_LABEL_COLOUR_CODE = "preference.ruleedit.label.colour_code";
     
     public static final String MSGKEY_PREF_RULESETSELECTION_LABEL_ENTER_RULESET = "preference.rulesetselection.label.enter_ruleset";
     public static final String MSGKEY_PREF_RULESETSELECTION_TOOLTIP_RULESET = "preference.rulesetselection.tooltip.ruleset";
@@ -211,6 +234,9 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_MENU_MARKERFILES = "view.menu.show_marker_files";
     public static final String MSGKEY_VIEW_MENU_PACKFILES = "view.menu.show_pack_files";
     public static final String MSGKEY_VIEW_MENU_PRESENTATION_TYPE = "view.menu.show_type";
+    
+    public static final String MSGKEY_DIALOG_PREFS_ADD_NEW_PROPERTY = "dialog.preferences.add_new_property";
+    
     
     public static final String MSGKEY_DIALOG_CPD_TITLE = "dialog.cpd.title";
     public static final String MSGKEY_DIALOG_CPD_MIN_TILESIZE_LABEL = "dialog.cpd.min_tilesize.label";

@@ -143,7 +143,7 @@ public class Util {
     
 	public static Comparator<?> comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
 		
-		return new Comparator<?>() {
+		return new Comparator() {
 
 			public int compare(Object a, Object b) {
 				Comparable ca = accessor.valueFor((Rule) a);

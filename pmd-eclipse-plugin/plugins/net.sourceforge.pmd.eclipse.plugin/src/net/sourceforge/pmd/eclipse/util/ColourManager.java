@@ -11,6 +11,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 /**
+ * A singleton that manages colour resources.
  * 
  * @author Brian Remedios
  */
@@ -42,6 +43,14 @@ public class ColourManager {
         return colour;
 	}
 	
+	/**
+	 * Derive a colour from the input text after slicing it into three
+	 * sections and taking the log of their hashes and smushing them
+	 * into RGB values
+	 * 
+	 * @param text
+	 * @return Color
+	 */
 	public Color colourFor(String text) {
 		
 		if (StringUtil.isEmpty(text)) return display.getSystemColor(SWT.COLOR_WHITE);

@@ -10,7 +10,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.PropertyDialog;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.NewPropertyDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
@@ -143,7 +143,7 @@ public class FormArranger {
 	    button.addSelectionListener( new SelectionListener(){
             public void widgetDefaultSelected(SelectionEvent e) {  }
             public void widgetSelected(SelectionEvent e) {
-                PropertyDialog dialog = new PropertyDialog(parent.getShell(), editorFactoriesByValueType, rule, changeListener);
+                NewPropertyDialog dialog = new NewPropertyDialog(parent.getShell(), editorFactoriesByValueType, rule, changeListener);
                 if (dialog.open() == Dialog.OK) {
                     PropertyDescriptor<?> desc = dialog.descriptor();
                     rule.definePropertyDescriptor(desc);

@@ -192,7 +192,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     private Button buildExternalInfoUrlButton(Composite parent) {
         
         final Button button = new Button(parent, SWT.PUSH);
-        button.setText("Browse");
+        button.setText("Browse");  // TODO  i18l
 
         button.addSelectionListener(new SelectionAdapter() {
             @Override

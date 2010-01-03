@@ -70,7 +70,7 @@ public class TypeEditorFactory extends AbstractEditorFactory {
 
     public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
         
-         final TypeText typeText = new TypeText(parent, SWT.SINGLE | SWT.BORDER, true, "Enter a type name");
+         final TypeText typeText = new TypeText(parent, SWT.SINGLE | SWT.BORDER, true, "Enter a type name");  // TODO  i18l
          typeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          fillWidget(typeText, desc, rule);

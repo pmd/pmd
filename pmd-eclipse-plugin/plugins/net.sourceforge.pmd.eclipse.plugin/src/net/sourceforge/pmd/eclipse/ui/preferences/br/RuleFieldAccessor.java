@@ -16,11 +16,16 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
  * Value returned are typed as comparable to facilitate sorting. Never return null, 
  * return an empty string instead.
  * 
- * TODO - move this to PMD proper, nothing UI-specific here
- * 
  * @author Brian Remedios
  */
 public interface RuleFieldAccessor {
+	
+	// NOTE: If you update these values then you also need to update
+	// the tooltip that references them: 'preference.ruleset.column.rule_type.tooltip'
+	
+	String ruleTypeXPath[]	= new String[] { "X", "XPath" };
+	String ruleTypeDFlow[]	= new String[] { "D", "Dataflow" };
+	String ruleTypeTypeRes[]= new String[] { "T", "Type resolving" };
 	
 	/**
 	 * @param rule Rule
@@ -87,16 +92,16 @@ public interface RuleFieldAccessor {
 	RuleFieldAccessor ruleType = new BasicRuleFieldAccessor() {
 		public Comparable<?> valueFor(Rule rule) {
 			StringBuilder sb = new StringBuilder(3);
-			if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) sb.append('X');
-			if (rule.usesDFA()) sb.append('D');
-			if (rule.usesTypeResolution()) sb.append('T');
+			if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) sb.append(ruleTypeXPath[0]);
+			if (rule.usesDFA()) sb.append(ruleTypeDFlow[0]);
+			if (rule.usesTypeResolution()) sb.append(ruleTypeTypeRes[0]);
 			return sb.toString();
 		}
 		public String labelFor(Rule rule) {
 		    List<String> types = new ArrayList<String>(3);
-            if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) types.add("XPath");
-            if (rule.usesDFA()) types.add("Dataflow");
-            if (rule.usesTypeResolution()) types.add("Type resolving");
+            if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) types.add(ruleTypeXPath[1]);
+            if (rule.usesDFA()) types.add(ruleTypeDFlow[1]);
+            if (rule.usesTypeResolution()) types.add(ruleTypeTypeRes[1]);
             return Util.asString(types, ", ");
 		}
 	};

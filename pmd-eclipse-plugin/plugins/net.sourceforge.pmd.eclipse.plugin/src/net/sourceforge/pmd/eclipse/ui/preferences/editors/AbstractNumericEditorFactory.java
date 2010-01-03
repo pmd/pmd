@@ -41,9 +41,9 @@ public abstract class AbstractNumericEditorFactory extends AbstractEditorFactory
         Label defaultLabel = newLabel(parent, "Default");
         Control valueControl = newEditorOn(parent, desc, rule, listener, sizeListener);
         
-        Label minLabel = newLabel(parent, "Min");
+        Label minLabel = newLabel(parent, "Min");  // TODO  i18l
         Spinner minWidget = newSpinnerFor(parent, digitPrecision());
-        Label maxLabel = newLabel(parent, "Max");
+        Label maxLabel = newLabel(parent, "Max"); // TODO  i18l
         Spinner maxWidget = newSpinnerFor(parent, digitPrecision());
         
         linkup(minWidget, (Spinner)valueControl, maxWidget);

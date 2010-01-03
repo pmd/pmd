@@ -33,7 +33,6 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 		comparator = theComparator;
 	}
 	
-
 	/**
 	 *
 	 * @param accessor RuleFieldAccessor

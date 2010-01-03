@@ -45,7 +45,7 @@ public class MethodPicker extends Composite {
         layout.marginHeight = 0;        layout.marginWidth = 0;
         this.setLayout(layout);
         
-        typeText = new TypeText(this, style, false, "Enter a type name");
+        typeText = new TypeText(this, style, false, "Enter a type name");	// TODO  i18l
         typeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         typeText.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
