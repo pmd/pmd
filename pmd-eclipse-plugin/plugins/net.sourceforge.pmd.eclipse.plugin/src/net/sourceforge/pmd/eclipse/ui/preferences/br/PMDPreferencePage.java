@@ -2,7 +2,6 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,7 +19,6 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
-import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
@@ -152,6 +150,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         formattersByType.put(Class[].class,     ValueFormatter.MultiTypeFormatter);        
         formattersByType.put(Method.class,      ValueFormatter.MethodFormatter);
         formattersByType.put(Method[].class,    ValueFormatter.MultiMethodFormatter);
+        formattersByType.put(Object[].class,    ValueFormatter.ObjectArrayFormatter);
 	}
 
 	private CheckboxTreeViewer   ruleTreeViewer;
@@ -188,7 +187,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		
 		// TODO retrieve the hidden column names from preference settings
 		hiddenColumnNames.add(TextColumnDescriptor.since.label());
+		hiddenColumnNames.add(TextColumnDescriptor.externalURL.label());
 		hiddenColumnNames.add(TextColumnDescriptor.minLangVers.label());
+		hiddenColumnNames.add(TextColumnDescriptor.exampleCount.label());
 	}
 
 	/**
@@ -632,6 +633,12 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    return ResourceManager.imageFor(codePath);
 	}
 	
+	private boolean currentSelectionHasNonDefaultValues() {
+		
+		 return ruleSelection == null ?
+			false : ruleSelection.allSelectedRulesUseDefaultValues();
+	}
+	
 	private Menu createMenuFor(Control control) {
 	    
 	    Menu menu = new Menu(control);
@@ -640,7 +647,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    priorityMenu.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
 	    Menu subMenu = new Menu(menu);
 	    priorityMenu.setMenu (subMenu);
-	    priorityMenusByPriority = new HashMap<RulePriority, MenuItem>();
+	    priorityMenusByPriority = new HashMap<RulePriority, MenuItem>(RulePriority.values().length);
 	    
 	    for (RulePriority priority : RulePriority.values()) {
     	    MenuItem priorityItem = new MenuItem (subMenu, SWT.RADIO);
@@ -659,7 +666,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    MenuItem removeItem = new MenuItem(menu, SWT.PUSH);
 	    removeItem.setText("Remove");
 	    removeItem.addSelectionListener(new SelectionAdapter() {
-            @Override
             public void widgetSelected(SelectionEvent event) {
                 removeSelectedRules();
             }
@@ -667,9 +673,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    
         MenuItem useDefaultsItem = new MenuItem(menu, SWT.PUSH);
         useDefaultsItem.setText("Use defaults");
-        useDefaultsItem.setEnabled(false);  //TODO
+        useDefaultsItem.setEnabled(false);
         useDefaultsItem.addSelectionListener(new SelectionAdapter() {
-            @Override
             public void widgetSelected(SelectionEvent event) {
            //     useDefaultValues();
             }
@@ -753,10 +758,15 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    
         adjustMenuPrioritySettings();
         adjustMenuRulesetSettings();
+        adjustMenuUseDefaultsOption();
 	    ruleListMenu.setLocation(event.x, event.y);
         ruleListMenu.setVisible(true);
 	}
 
+	private void adjustMenuUseDefaultsOption() {
+		
+	}
+	
 	// if all the selected rules/ruleGroups reference a common ruleset name
 	// then check that item and disable it, do the reverse for all others.
     private void adjustMenuRulesetSettings() {
@@ -1154,9 +1164,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 							MessageDialog.openInformation(getShell(), getMessage(StringKeys.MSGKEY_INFORMATION_TITLE),
 									getMessage(StringKeys.MSGKEY_INFORMATION_RULESET_EXPORTED));
 						}
-					} catch (IOException e) {
-						plugin.showError(getMessage(StringKeys.MSGKEY_ERROR_EXPORTING_RULESET), e);
-					} catch (WriterException e) {
+					} catch (Exception e) {
 						plugin.showError(getMessage(StringKeys.MSGKEY_ERROR_EXPORTING_RULESET), e);
 					}
 				}
@@ -1308,9 +1316,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 					plugin.getPreferencesManager().setRuleSet(ruleSet);
 				}
 			});
-		} catch (InterruptedException e) {
-			plugin.logError("Exception updating all projects after a preference change", e);
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
 			plugin.logError("Exception updating all projects after a preference change", e);
 		}
 	}
@@ -1328,14 +1334,11 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 						try {
 							ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 						} catch (CoreException e) {
-							plugin.logError(
-									"Exception building all projects after a preference change", e);
+							plugin.logError("Exception building all projects after a preference change", e);
 						}
 					}
 				});
-			} catch (InterruptedException e) {
-				plugin.logError("Exception building all projects after a preference change", e);
-			} catch (InvocationTargetException e) {
+			} catch (Exception e) {
 				plugin.logError("Exception building all projects after a preference change", e);
 			}
 		}

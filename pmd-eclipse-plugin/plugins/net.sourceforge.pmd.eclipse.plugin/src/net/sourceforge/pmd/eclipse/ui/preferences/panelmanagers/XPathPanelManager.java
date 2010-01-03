@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
@@ -36,6 +37,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
 
     private StyledText      xpathField;
     private Combo           xpathVersionField;
+    private Label 			versionLabel;
     private List<String>    unknownVariableNames;
     
     public XPathPanelManager(ValueChangeListener theListener) {
@@ -66,6 +68,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
     protected void setVisible(boolean flag) {        
         xpathField.setVisible(flag);
         xpathVersionField.setVisible(flag);
+        versionLabel.setVisible(flag);
     }
     
     protected void updateOverridenFields() {
@@ -108,8 +111,8 @@ public class XPathPanelManager extends AbstractRulePanelManager {
             }
         });        
 
-        Label versionLabel = new Label(panel, 0);
-        versionLabel.setText("XPath version:");
+        versionLabel = new Label(panel, 0);
+        versionLabel.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_XPATH_VERSION));
         gridData = new GridData();
         gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = false;

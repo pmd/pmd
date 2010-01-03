@@ -45,12 +45,32 @@ public class RuleSelection {
         return null;     // should not get here
     }
     
+    private boolean hasDefaultValues(Rule rule) {
+    	
+    	return true;
+    }
+    
+    
+    private boolean allHaveDefaultValues(RuleGroup group) {
+    	
+    	return true;
+    }
+    
     public boolean allSelectedRulesUseDefaultValues() {
         
         if (ruleItems == null || ruleItems.length == 0) return true;
                 
-        // TODO
+        if (ruleItems[0] instanceof Rule) return hasDefaultValues((Rule)ruleItems[0]);
+        if (ruleItems[0] instanceof RuleGroup) {
+            return allHaveDefaultValues((RuleGroup)ruleItems[0]);
+        }        
+
+        // should never get here
         return true;
+    }
+    
+    public void useDefaultValues() {
+    	// TODO
     }
     
     private RulePriority commonPriorityFor(Object item) {

@@ -22,11 +22,14 @@ public abstract class AbstractRealNumberEditor extends AbstractNumericEditorFact
     protected Spinner newSpinnerFor(Composite parent, Rule rule, NumericPropertyDescriptor<?> numDesc) {
         
         Spinner spinner = newSpinnerFor(parent, digits);
-        spinner.setMinimum((int)(numDesc.lowerLimit().doubleValue() * scale));
-        spinner.setMaximum((int)(numDesc.upperLimit().doubleValue() * scale));
+        int min = (int)(numDesc.lowerLimit().doubleValue() * scale);
+        int max = (int)(numDesc.upperLimit().doubleValue() * scale);
+        spinner.setMinimum(min);
+        spinner.setMaximum(max);
         
-        double value = ((Number)valueFor(rule, numDesc)).doubleValue();        
-        spinner.setSelection((int)(value * scale));
+        double value = ((Number)valueFor(rule, numDesc)).doubleValue();
+        int intVal = (int)(value * scale);
+        spinner.setSelection(intVal);
         
         return spinner;
     }

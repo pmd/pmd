@@ -7,6 +7,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
@@ -14,6 +16,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 /**
+ * Behaviour:
+ *           Provide a set of widgets that allows the user to select any number of items from a fixed set of choices. Each item can only appear once.
+ * 
+ * Provide a combo box for each value selected while ensuring that their choices only contain unselected values. If the last combo box holds the only
+ * remaining choice then ensure it gets disabled, the user can only delete it or the previous ones. If the user deletes a previous one then re-enable
+ * the last one and add the deleted value to its set of choices.
  * 
  * @author Brian Remedios
  * 
@@ -36,8 +44,18 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
 	
 	@Override
 	protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule) {
-		// TODO Auto-generated method stub
-		return null;
+		 
+		int idx = ((Combo)widget).getSelectionIndex();
+		if (idx < 0) return null;
+			
+		String newValue = ((Combo)widget).getItem(idx);
+	        
+	    String[] currentValues = (String[])valueFor(rule, desc);
+	    String[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
+	    if (currentValues.length == newValues.length) return null;
+	        
+	    rule.setProperty((StringMultiProperty)desc, newValues);
+	    return newValue;
 	}
 
 	@Override

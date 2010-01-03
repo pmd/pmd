@@ -41,8 +41,8 @@ public class TextColumnDescriptor extends AbstractRuleColumnDescriptor {
 	public static final RuleColumnDescriptor language     = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE, 	SWT.LEFT, 32, RuleFieldAccessor.language, false);
 	public static final RuleColumnDescriptor ruleType	  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_TYPE, 	SWT.LEFT, 20, RuleFieldAccessor.ruleType, false);
 	public static final RuleColumnDescriptor minLangVers  = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_MIN_VER, 	SWT.LEFT, 30, RuleFieldAccessor.minLanguageVersion, false);
+	public static final RuleColumnDescriptor exampleCount = new TextColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_EXAMPLE_CNT, SWT.RIGHT, 20, RuleFieldAccessor.exampleCount, false);
 	
-//	public static final RuleColumnDescriptor exampleCount = new TextColumnDescriptor("Examples", SWT.RIGHT, 20, RuleFieldAccessor.exampleCount, false);
 //	public static final RuleColumnDescriptor violateXPath = new TextColumnDescriptor("Filter", SWT.RIGHT, 20, RuleFieldAccessor.violationXPath, true);
 			
 	/**

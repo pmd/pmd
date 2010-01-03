@@ -4,7 +4,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -103,8 +105,8 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
             }
         }); 
         
-        buildExternalUrlPanel(panel, "External URL:");        
-        buildMessagePanel(panel, "Message:");
+        buildExternalUrlPanel(panel, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL));        
+        buildMessagePanel(panel, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_MESSAGE));
         
         return panel;    
     }
@@ -192,7 +194,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     private Button buildExternalInfoUrlButton(Composite parent) {
         
         final Button button = new Button(parent, SWT.PUSH);
-        button.setText("Browse");  // TODO  i18l
+        button.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL));
 
         button.addSelectionListener(new SelectionAdapter() {
             @Override

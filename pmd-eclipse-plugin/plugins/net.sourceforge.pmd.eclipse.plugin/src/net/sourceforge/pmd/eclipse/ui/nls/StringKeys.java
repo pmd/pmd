@@ -90,6 +90,7 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME = "preference.ruleset.column.ruleset_name";
     public static final String MSGKEY_PREF_RULESET_COLUMN_RULE_NAME = "preference.ruleset.column.rule_name";
     public static final String MSGKEY_PREF_RULESET_COLUMN_RULE_TYPE = "preference.ruleset.column.rule_type";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_EXAMPLE_CNT = "preference.ruleset.column.example_count";
     public static final String MSGKEY_PREF_RULESET_COLUMN_SINCE = "preference.ruleset.column.since";
     public static final String MSGKEY_PREF_RULESET_COLUMN_FILTERS = "preference.ruleset.column.filters";
     public static final String MSGKEY_PREF_RULESET_COLUMN_MIN_VER = "preference.ruleset.column.minimum_version";
@@ -146,12 +147,13 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL = "preference.ruleedit.label.external_info_url";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_EXAMPLES = "preference.ruleedit.label.examples";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_XPATH = "preference.ruleedit.label.xpath";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_XPATH_VERSION = "preference.ruleedit.label.xpath.version";
     public static final String MSGKEY_PREF_RULEEDIT_BUTTON_RULE_REFERENCE = "preference.ruleedit.button.rule_reference";
     public static final String MSGKEY_PREF_RULEEDIT_BUTTON_XPATH_RULE = "preference.ruleedit.button.xpath_rule";
     public static final String MSGKEY_PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION = "preference.ruleedit.button.uses_type_resolution";
     public static final String MSGKEY_PREF_RULEEDIT_BUTTON_USES_DFA = "preference.ruleedit.button.uses_dfa";
     public static final String MSGKEY_PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL = "preference.ruleedit.button.open_external_info_url";
-
+    
     public static final String MSGKEY_PREF_CPD_GROUP_GENERAL = "preference.cpd.group.general";
     public static final String MSGKEY_PREF_CPD_TITLE = "preference.cpd.title";
     public static final String MSGKEY_PREF_CPD_TILESIZE = "preference.cpd.tilesize";
