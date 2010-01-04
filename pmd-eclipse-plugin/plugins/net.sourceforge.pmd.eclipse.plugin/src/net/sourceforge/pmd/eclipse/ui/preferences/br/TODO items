@@ -1,18 +1,19 @@
 ToDo items:     							Jan 2nd 2010
 
+
+Finish remaining editors and the Add Property dialog
 Enable delete key on rule table
-Highlight rules with non-default values
+Highlight non-default values in editors and/or summary column
 Enable 'Use defaults' option in popup menu
-Remember 
+Remember settings for:
 	chosen grouping selection (or none)
 	sort column & order
 	rule table screen fraction
-Provide hoverhelp for individual table cells, esp. filter expressions over the color boxes
-
 
 
 Items needing support in PMD itself:
 
+Enable non-intrinsic property field removal
 Enable/disable rules w/out removing from ruleset
-Enable rule reassingment to different rulesets
+Enable rule reassignment to different rulesets
 Add support for creating new rulesets & descriptions for same
