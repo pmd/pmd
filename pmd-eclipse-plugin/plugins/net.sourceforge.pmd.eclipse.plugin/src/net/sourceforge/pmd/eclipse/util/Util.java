@@ -180,8 +180,9 @@ public class Util {
 		return original == null ? "" : original.trim();
 	}
 	
+	public static enum shape { square, circle };
 	
-	public static CellPainterBuilder regexBuilderFor(final int width, final int height) {
+	public static CellPainterBuilder textAsColorShapeFor(final int width, final int height, final shape shapeId) {
 	    
 	   
 	    return new CellPainterBuilder() {
@@ -215,8 +216,18 @@ public class Util {
                         
                         Color clr = colorManagerFor(event.display).colourFor(text);
                         event.gc.setBackground(clr);
-                        event.gc.fillRectangle(event.x+1, event.y+2, width, height);    // fill it
-                        event.gc.drawRectangle(event.x+1, event.y+2, width, height);    // then the border on top
+                        
+                        switch (shapeId) {
+	                        case square: {
+	                        	event.gc.fillRectangle(event.x+1, event.y+2, width, height);    // fill it
+	                        	event.gc.drawRectangle(event.x+1, event.y+2, width, height);    // then the border on top
+	                        	break;
+	                        	}
+	                        case circle: {
+	                        	event.gc.fillArc(event.x+1, event.y+2, width, height, 0, 360*64);    // fill it
+	                        	event.gc.drawArc(event.x+1, event.y+2, width, height, 0, 360*64);    // then the border on top
+	                        	}
+                        }
                         
                         event.gc.setBackground(original);
                     }

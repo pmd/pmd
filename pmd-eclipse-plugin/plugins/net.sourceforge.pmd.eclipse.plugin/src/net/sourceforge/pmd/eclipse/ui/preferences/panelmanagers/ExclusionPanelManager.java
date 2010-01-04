@@ -1,8 +1,10 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.ColourManager;
+import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -115,6 +117,8 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         gridData.grabExcessHorizontalSpace = true;
 	    labelA.setLayoutData(gridData);
 	    
+	 //   labelAIcon.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_FILTER)); 
+	    
         excludeColour = newColourPanel(panel, colourBoxLabel);
                
 		excludeWidget = newTextField(panel);
@@ -131,6 +135,8 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 	    gridData.horizontalSpan = 1;
 	    labelB.setLayoutData(gridData);
 
+	 //   labelAIcon.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_FILTER_X));
+	    
         xPathColour = newColourPanel(panel, colourBoxLabel);
 	    
 		gridData = new GridData(GridData.FILL_BOTH);

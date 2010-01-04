@@ -105,7 +105,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		TextColumnDescriptor.ruleType,
 		TextColumnDescriptor.minLangVers,		
 		TextColumnDescriptor.language,
-		ImageColumnDescriptor.filterExpression,    // regex text -> compact color squares (for comparison)
+		ImageColumnDescriptor.filterViolationRegex,    // regex text -> compact color squares (for comparison)
+		ImageColumnDescriptor.filterViolationXPath,    // xpath text -> compact color circles (for comparison)
 		TextColumnDescriptor.properties,
 		};
 
@@ -116,7 +117,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		{ TextColumnDescriptor.priorityName,      StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY },
 		{ TextColumnDescriptor.ruleType,          StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_TYPE },
 		{ TextColumnDescriptor.language,		  StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE },
-        { ImageColumnDescriptor.filterExpression, StringKeys.MSGKEY_PREF_RULESET_GROUPING_REGEX },
+        { ImageColumnDescriptor.filterViolationRegex, StringKeys.MSGKEY_PREF_RULESET_GROUPING_REGEX },
 		{ null, 								  StringKeys.MSGKEY_PREF_RULESET_GROUPING_NONE }
 		};
 

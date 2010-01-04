@@ -92,7 +92,8 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESET_COLUMN_RULE_TYPE = "preference.ruleset.column.rule_type";
     public static final String MSGKEY_PREF_RULESET_COLUMN_EXAMPLE_CNT = "preference.ruleset.column.example_count";
     public static final String MSGKEY_PREF_RULESET_COLUMN_SINCE = "preference.ruleset.column.since";
-    public static final String MSGKEY_PREF_RULESET_COLUMN_FILTERS = "preference.ruleset.column.filters";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_FILTERS_REGEX = "preference.ruleset.column.filters.regex";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_FILTERS_XPATH = "preference.ruleset.column.filters.xpath";
     public static final String MSGKEY_PREF_RULESET_COLUMN_MIN_VER = "preference.ruleset.column.minimum_version";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PRIORITY = "preference.ruleset.column.priority";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PROPERTIES = "preference.ruleset.column.properties";
