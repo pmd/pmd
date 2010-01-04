@@ -1422,7 +1422,15 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
 		// TODO enhance to recognize default values
 		modified = true;				
-		for (Rule rule : selection.allRules()) ruleTreeViewer.update(rule, null);
+		for (Rule rule : selection.allRules()) {
+			if (newValue != null) {		// non-reliable update behaviour, alternate trigger option - weird
+				ruleTreeViewer.getTree().redraw();
+		//		System.out.println("doing redraw");
+			} else {
+				ruleTreeViewer.update(rule, null);
+		//		System.out.println("viewer update");
+			}
+		}
 		for (RulePropertyManager manager : rulePropertyManagers) {
 		    manager.validate();
 		}

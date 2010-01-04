@@ -58,12 +58,13 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 		addTextListeners(control, desc);
 		
 		control.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {				
+			public void modifyText(ModifyEvent e) {
+				String newText = control.getText();
 				colourWindow.setBackground(
-					colourManager.colourFor(control.getText())
+					colourManager.colourFor(newText)
 					);
-
-                changeListener.changed(rules, null, null); 
+ 
+                changed(desc, newText);
 			}			
 		});
 	}
