@@ -51,7 +51,7 @@ public class RuleDialog extends Dialog {
     private Rule rule;
     private Text ruleSetNameText;
     private Button ruleReferenceButton;
-    private Text sinceText;
+//    private Text sinceText;
     private Text nameText;
     private Button xpathRuleButton;
     private Text messageText;
@@ -124,17 +124,16 @@ public class RuleDialog extends Dialog {
 
         ruleReferenceButton = buildRuleReferenceButton(dlgArea);
 
-        Label sinceLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_SINCE);
-        data = new GridData();
-        data.horizontalSpan = 1;
-        sinceLabel.setLayoutData(data);
+//        Label sinceLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_SINCE);
+//        data = new GridData();
+//        data.horizontalSpan = 1;
+//        sinceLabel.setLayoutData(data);
 
-        sinceText = buildSinceText(dlgArea);
-        data = new GridData();
-//        data.horizontalAlignment = GridData.;
-        data.horizontalSpan = 3;
-        data.grabExcessHorizontalSpace = false;
-        sinceText.setLayoutData(data);
+//        sinceText = buildSinceText(dlgArea);
+//        data = new GridData();
+//        data.horizontalSpan = 3;
+//        data.grabExcessHorizontalSpace = false;
+//        sinceText.setLayoutData(data);
 
         Label nameLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_NAME);
         data = new GridData();
@@ -306,30 +305,30 @@ public class RuleDialog extends Dialog {
     /**
      * Build the since text
      */
-    private Text buildSinceText(Composite parent) {
-        Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
-    	text.setEnabled(false);
-
-    	String since = "n/a";
-    	if (editedRule != null && editedRule.getSince() != null)
-    	{
-    		since = editedRule.getSince();
-    	}
-
-    	if (mode == MODE_ADD) {
-        	text.setText(since);
-        }
-
-        if (mode == MODE_EDIT) {
-        	text.setText(since);
-        }
-
-        if (mode == MODE_VIEW) {
-        	text.setText(since);
-        }
-
-        return text;
-    }
+//    private Text buildSinceText(Composite parent) {
+//        Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+//    	text.setEnabled(false);
+//
+//    	String since = "n/a";
+//    	if (editedRule != null && editedRule.getSince() != null)
+//    	{
+//    		since = editedRule.getSince();
+//    	}
+//
+//    	if (mode == MODE_ADD) {
+//        	text.setText(since);
+//        }
+//
+//        if (mode == MODE_EDIT) {
+//        	text.setText(since);
+//        }
+//
+//        if (mode == MODE_VIEW) {
+//        	text.setText(since);
+//        }
+//
+//        return text;
+//    }
 
     /**
      * Build the rule name text

@@ -17,12 +17,12 @@ import org.eclipse.swt.widgets.TreeColumn;
  */
 public abstract class AbstractRuleColumnDescriptor implements RuleColumnDescriptor {
 
-    private String            label;
-    private String			  tooltip;
-    private int               alignment;
-    private int               width;
-    private RuleFieldAccessor accessor;
-    private boolean           isResizable;
+    private final String            label;
+    private final String			 tooltip;
+    private final int               alignment;
+    private final int               width;
+    private final RuleFieldAccessor accessor;
+    private final boolean           isResizable;
 
     protected AbstractRuleColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag) {
         super();
@@ -60,4 +60,8 @@ public abstract class AbstractRuleColumnDescriptor implements RuleColumnDescript
     public String tooltip() { return tooltip;  }
     
     public RuleFieldAccessor accessor() { return accessor; }
+    
+    public String detailStringFor(Rule rule) {
+    	return accessor.labelFor(rule);
+    }
 }

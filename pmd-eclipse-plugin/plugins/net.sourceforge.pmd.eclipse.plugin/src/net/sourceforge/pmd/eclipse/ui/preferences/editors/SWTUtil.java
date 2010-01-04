@@ -1,5 +1,10 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 import org.eclipse.swt.widgets.Control;
@@ -13,6 +18,24 @@ public class SWTUtil {
 	private static PMDPlugin plugin = PMDPlugin.getDefault();
 	
 	private static final String TOOLTIP_SUFFIX = ".tooltip";
+	
+	// TODO move this to to Collections utility
+	public static Set<String> asStringSet(String input, char separator) {
+		List<String> values = Arrays.asList(input.split(""+separator));
+		return new HashSet<String>(values);
+	}
+	
+	// TODO move this to to Collections utility
+	public static String asString(Set<String> values, char separator) {
+		
+		String[] strings = values.toArray(new String[values.size()]);
+		StringBuilder sb = new StringBuilder(strings[0]);
+
+		for (int i=1; i<strings.length; i++) {
+			sb.append(separator).append(strings[i]);
+		}
+		return sb.toString();
+	}	
 	
     public static String stringFor(String key) {
         return plugin.getStringTable().getString(key);

@@ -57,6 +57,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -128,7 +130,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		StatisticalRule.TOP_SCORE_DESCRIPTOR
 		};
 
-	private static final int RuleTableFraction = 55;       // percent of screen height vs property tabs
+//	private static final int RuleTableFraction = 55;       // percent of screen height vs property tabs
 	private static final Map<Class<?>, ValueFormatter> formattersByType = new HashMap<Class<?>, ValueFormatter>();
 
 	static {   // used to render property values in short form in main table
@@ -156,7 +158,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private CheckboxTreeViewer   ruleTreeViewer;
 	private Button			     addRuleButton;
 	private Button 			     removeRuleButton;
-	private Button 			     editRuleButton;
+//	private Button 			     editRuleButton;
 	private RuleSet 			 ruleSet;       // TODO - what is this used for?  - br
 	private TabFolder 		     tabFolder;
 	private Set<Object> 		 checkedRules = new HashSet<Object>();
@@ -185,11 +187,12 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		setDescription(getMessage(StringKeys.MSGKEY_PREF_RULESET_TITLE));
 		activeInstance = this;
 		
-		// TODO retrieve the hidden column names from preference settings
-		hiddenColumnNames.add(TextColumnDescriptor.since.label());
-		hiddenColumnNames.add(TextColumnDescriptor.externalURL.label());
-		hiddenColumnNames.add(TextColumnDescriptor.minLangVers.label());
-		hiddenColumnNames.add(TextColumnDescriptor.exampleCount.label());
+//		hiddenColumnNames.add(TextColumnDescriptor.since.label());
+//		hiddenColumnNames.add(TextColumnDescriptor.externalURL.label());
+//		hiddenColumnNames.add(TextColumnDescriptor.minLangVers.label());
+//		hiddenColumnNames.add(TextColumnDescriptor.exampleCount.label());
+		
+		hiddenColumnNames = PreferenceUIStore.instance.hiddenColumnNames();
 	}
 
 	/**
@@ -206,6 +209,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	@Override
     public boolean performOk() {
+		
+		PreferenceUIStore.instance.save();
+		
 		if (modified) {
 			updateRuleSet();
 			rebuildProjects();
@@ -214,6 +220,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return super.performOk();
 	}
 
+	@Override
+	public boolean performCancel() {
+		
+		PreferenceUIStore.instance.save();
+		
+		return super.performCancel();
+	}
+	
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#createContents(Composite)
 	 */
@@ -275,18 +289,20 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     private void layoutControls(Composite parent) {
 
         parent.setLayout(new FormLayout());
-
+        int ruleTableFraction = 55;	//PreferenceUIStore.instance.tableFraction();
+        
         // Create the sash first, so the other controls can be attached to it.
         final Sash sash = new Sash(parent, SWT.HORIZONTAL);
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);                   // attach to left
         data.right = new FormAttachment(100, 0);                // attach to right
-        data.top = new FormAttachment(RuleTableFraction, 0);
+        data.top = new FormAttachment(ruleTableFraction, 0);
         sash.setLayoutData(data);
         sash.addSelectionListener(new SelectionAdapter() {
           public void widgetSelected(SelectionEvent event) {
             // Re-attach to the top edge, and we use the y value of the event to determine the offset from the top
             ((FormData)sash.getLayoutData()).top = new FormAttachment(0, event.y);
+//            PreferenceUIStore.instance.tableFraction(event.y);
             sash.getParent().layout();
           }
         });
@@ -526,7 +542,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		composite.setLayout(gridLayout);
 
 		removeRuleButton = buildRemoveRuleButton(composite);
-		editRuleButton = buildEditRuleButton(composite);
+//		editRuleButton = buildEditRuleButton(composite);
 		addRuleButton = buildAddRuleButton(composite);
 		Button importRuleSetButton = buildImportRuleSetButton(composite);
 		Button exportRuleSetButton = buildExportRuleSetButton(composite);
@@ -537,9 +553,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		data.horizontalAlignment = GridData.FILL;
 		removeRuleButton.setLayoutData(data);
 
-		data = new GridData();
-		data.horizontalAlignment = GridData.FILL;
-		editRuleButton.setLayoutData(data);
+//		data = new GridData();
+//		data.horizontalAlignment = GridData.FILL;
+//		editRuleButton.setLayoutData(data);
 
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
@@ -592,7 +608,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		int treeStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK;
 		ruleTreeViewer = new CheckboxTreeViewer(parent, treeStyle);
 
-		Tree ruleTree = ruleTreeViewer.getTree();
+		final Tree ruleTree = ruleTreeViewer.getTree();
 		ruleTree.setLinesVisible(true);
 		ruleTree.setHeaderVisible(true);
 
@@ -623,9 +639,39 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	        }
 	    });
 
-		//	ruleTreeViewer.setSorter(this.ruleTableViewerSorter);
-
+		ruleTree.addListener(SWT.MouseMove, new Listener() {
+	        public void handleEvent(Event event) {
+	        	Point point = new Point(event.x, event.y);
+	            TreeItem item = ruleTree.getItem(point);
+	            if (item != null) {
+	            	int columnIndex = columnIndexAt(item, event.x);
+	            	updateTooltipFor(item, columnIndex);
+	            }
+	        }
+	    });
+		
 		return ruleTree;
+	}
+	
+	private int columnIndexAt(TreeItem item, int xPosition) {
+		
+		TreeColumn[] cols = ruleTreeViewer.getTree().getColumns();
+		Rectangle bounds = null;
+		
+		for(int i = 0; i < cols.length; i++){
+			bounds = item.getBounds(i);
+			if (bounds.x < xPosition &&  xPosition < (bounds.x + bounds.width)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private void updateTooltipFor(TreeItem item, int columnIndex) {
+		
+		RuleLabelProvider provider = (RuleLabelProvider)ruleTreeViewer.getLabelProvider();		
+		String txt = provider.getDetailText(item.getData(), columnIndex);		
+		ruleTreeViewer.getTree().setToolTipText(txt);
 	}
 	
 	public static Image imageFor(RulePriority priority) {
@@ -719,7 +765,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    } else {
 	        hiddenColumnNames.add(columnName);
 	    }
-	    
+
+	    PreferenceUIStore.instance.hiddenColumnNames(hiddenColumnNames);
 	    redrawTable();
 	}
 	
@@ -777,6 +824,11 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         while (iter.hasNext()) {
             Map.Entry<String, MenuItem> entry = iter.next();
             MenuItem item = entry.getValue();
+            if (rulesetName == null) {	// allow all entries if none or conflicting
+            	 item.setSelection(false);
+                 item.setEnabled(true);
+                 continue;
+            	}
             if (StringUtil.areSemanticEquals(entry.getKey(), rulesetName)) {
                 item.setSelection(true);
                 item.setEnabled(false);
@@ -832,7 +884,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 	
 	private void setRuleset(String rulesetName) {
-	    // TODO
+	    // TODO - awaiting support in PMD itself
 	}
 		
 	/**
@@ -846,7 +898,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    Rule rule = ruleSelection.soleRule();
 	    
 		removeRuleButton.setEnabled(rule != null);
-		editRuleButton.setEnabled(rule != null && ruleSelection.hasOneRule());
+//		editRuleButton.setEnabled(rule != null && ruleSelection.hasOneRule());
 	}
 	
 	/**

@@ -1,0 +1,18 @@
+ToDo items:     							Jan 2nd 2010
+
+Enable delete key on rule table
+Highlight rules with non-default values
+Enable 'Use defaults' option in popup menu
+Remember 
+	chosen grouping selection (or none)
+	sort column & order
+	rule table screen fraction
+Provide hoverhelp for individual table cells, esp. filter expressions over the color boxes
+
+
+
+Items needing support in PMD itself:
+
+Enable/disable rules w/out removing from ruleset
+Enable rule reassingment to different rulesets
+Add support for creating new rulesets & descriptions for same

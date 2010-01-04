@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.TreeColumn;
  */
 public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
 
-    private String             imagePath;
-    private CellPainterBuilder painterBuilder;
+    private final String             imagePath;
+    private final CellPainterBuilder painterBuilder;
 
     public static final RuleColumnDescriptor filterExpression  = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_FILTERS, SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER, Util.regexBuilderFor(16, 16));
 

@@ -20,5 +20,6 @@ public interface RuleColumnDescriptor {
     RuleFieldAccessor accessor();
     Image imageFor(Rule rule);
     String stringValueFor(Rule rule);
+    String detailStringFor(Rule rule);
     TreeColumn newTreeColumnFor(Tree parent, int columnIndex, RuleSortListener sortListener, Map<Integer, List<Listener>> paintListeners);
 }

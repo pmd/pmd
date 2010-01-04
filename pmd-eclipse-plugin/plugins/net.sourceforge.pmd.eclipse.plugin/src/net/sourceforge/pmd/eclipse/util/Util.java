@@ -201,7 +201,7 @@ public class Util {
 	            String text = (String)getter.valueFor((Rule) item);
                 return StringUtil.isEmpty(text) ? null : text;
 	        }
-	        
+	        	        
             public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> listenersByEventCode) {
                 
                 Listener paintListener = new Listener() {

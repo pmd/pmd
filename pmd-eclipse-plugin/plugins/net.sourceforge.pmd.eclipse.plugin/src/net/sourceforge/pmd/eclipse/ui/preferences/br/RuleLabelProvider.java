@@ -21,6 +21,16 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
     	columnDescriptors = columns;
     }
     
+    public String getDetailText(Object element, int columnIndex) {
+    	
+    	if (element instanceof Rule) {
+        	Rule rule = (Rule) element;        	
+        	return columnDescriptors[columnIndex].detailStringFor(rule);      
+        }
+    	
+    	return "??";
+    }
+    
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object, int)
      */
