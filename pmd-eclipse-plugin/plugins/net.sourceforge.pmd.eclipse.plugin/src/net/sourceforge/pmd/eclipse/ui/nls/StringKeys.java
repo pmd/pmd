@@ -240,6 +240,9 @@ public class StringKeys {
     
     public static final String MSGKEY_DIALOG_PREFS_ADD_NEW_PROPERTY = "dialog.preferences.add_new_property";
     
+    public static final String MSGKEY_RULEEDIT_LABEL_MIN = "preference.ruleedit.label.min";
+    public static final String MSGKEY_RULEEDIT_LABEL_MAX = "preference.ruleedit.label.max";
+    public static final String MSGKEY_RULEEDIT_LABEL_DEFAULT = "preference.ruleedit.label.default";
     
     public static final String MSGKEY_DIALOG_CPD_TITLE = "dialog.cpd.title";
     public static final String MSGKEY_DIALOG_CPD_MIN_TILESIZE_LABEL = "dialog.cpd.min_tilesize.label";

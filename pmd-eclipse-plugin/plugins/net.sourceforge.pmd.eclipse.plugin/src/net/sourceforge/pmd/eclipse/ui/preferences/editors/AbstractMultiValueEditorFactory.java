@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 /** 
@@ -164,8 +165,27 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         return newControls;
     }
 
+    /**
+     * Override in subclasses as necessary
+     * @param desc
+     * @param rule
+     * @return
+     */
+    protected boolean canAddNewRowFor(final PropertyDescriptor<?> desc, final Rule rule) {
+    	return true;
+    }
+    
+    protected void setupDefaultActionFor(Control widget, Listener listener) {
+    	
+    //	if (widget instanceof Text || widget instanceof Spinner) {
+    		widget.addListener(SWT.DefaultSelection, listener);
+    //	}
+    }
+    
     private void addNewValueRow(final Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final Text parentWidget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener, final List<Control> newControls, int i) {
         
+    	if (!canAddNewRowFor(desc, rule)) return;
+    	
         final Label number = new Label(parent, SWT.NONE);
         number.setText(Integer.toString(i+1));
         newControls.add(number);
@@ -175,7 +195,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         final Button butt = new Button(parent, SWT.BORDER);
         butt.setText("+");  // TODO use icon for consistent width
         newControls.add(butt);
-        butt.addListener(SWT.Selection, new Listener() {                
+        Listener addListener = new Listener() {                
             public void handleEvent(Event event) {      // add new value handler
                 // add the new value to the property set
                 // set the value in the widget to the cleaned up one, disable it
@@ -197,7 +217,9 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
                changeListener.changed(rule, desc, newValue);
                parent.getParent().layout();
             }
-        } );
+        };
+        butt.addListener(SWT.Selection, addListener);
+        setupDefaultActionFor(widget, addListener);	// allow for CR on entry widgets themselves, no need to click the '+' button
     }
         
     private void convertToDelete(final Button button, final Object toDeleteValue, final Composite parent, final List<Control> newControls, final PropertyDescriptor<?> desc, final Rule rule, final Text parentWidget, final Label number, final Control widget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {

@@ -54,28 +54,35 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
 	    String[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
 	    if (currentValues.length == newValues.length) return null;
 	        
-	    rule.setProperty((StringMultiProperty)desc, newValues);
+	    rule.setProperty((EnumeratedMultiProperty<?>)desc, newValues);
 	    return newValue;
 	}
 
+	/**
+	 * Only add a new widget row if there are any remaining choices to make
+	 */
+	@Override
+    protected boolean canAddNewRowFor(PropertyDescriptor<?> desc, Rule rule) {
+    	
+    	Object[] choices = desc.choices();
+		Object[] values = (Object[])rule.getProperty(desc);
+		
+		return choices.length > values.length;
+    }
+		
 	@Override
 	protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
 		
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
         
         final EnumeratedMultiProperty<?> ep = enumerationPropertyFrom(desc);
+                
   // TODO remove all choices already chosen by previous widgets
         combo.setItems(SWTUtil.labelsIn(ep.choices(), 0));
         int selectionIdx = EnumerationEditorFactory.indexOf(value, ep.choices());
         if (selectionIdx >= 0) combo.select(selectionIdx);
 		
         return combo;
-	}
-
-	@Override
-	protected void configure(Text text, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -89,14 +96,17 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
 	}
 
 	@Override
-	protected Object valueFrom(Control valueControl) {
-		// unreferenced method?
+	protected Object valueFrom(Control valueControl) {			// unreferenced method?
 		return null;
 	}
 
 	public PropertyDescriptor<?> createDescriptor(String name, String description, Control[] otherData) {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected void configure(Text text, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener) {
+		text.setEditable(false);
 	}
 
 }

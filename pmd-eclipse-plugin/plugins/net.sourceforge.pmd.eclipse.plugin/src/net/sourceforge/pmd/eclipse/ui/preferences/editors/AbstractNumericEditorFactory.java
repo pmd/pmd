@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 
@@ -38,12 +39,12 @@ public abstract class AbstractNumericEditorFactory extends AbstractEditorFactory
     
     public Control[] createOtherControlsOn(Composite parent, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener, SizeChangeListener sizeListener) {
         
-        Label defaultLabel = newLabel(parent, "Default");
+        Label defaultLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.MSGKEY_RULEEDIT_LABEL_DEFAULT));
         Control valueControl = newEditorOn(parent, desc, rule, listener, sizeListener);
         
-        Label minLabel = newLabel(parent, "Min");  // TODO  i18l
+        Label minLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.MSGKEY_RULEEDIT_LABEL_MIN));
         Spinner minWidget = newSpinnerFor(parent, digitPrecision());
-        Label maxLabel = newLabel(parent, "Max"); // TODO  i18l
+        Label maxLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.MSGKEY_RULEEDIT_LABEL_MAX));
         Spinner maxWidget = newSpinnerFor(parent, digitPrecision());
         
         linkup(minWidget, (Spinner)valueControl, maxWidget);

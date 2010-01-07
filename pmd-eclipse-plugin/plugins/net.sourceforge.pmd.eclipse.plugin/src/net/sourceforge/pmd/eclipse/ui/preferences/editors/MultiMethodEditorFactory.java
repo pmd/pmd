@@ -40,12 +40,7 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         }
         return typeNames;
 	}
-	
-    protected Object valueFrom(Control valueControl) {
-        
-        return null;    // TODO
-    }
-	
+		
 	private static String asString(Map<String, List<Method>> methodGroups) {
 	    
 	    if (methodGroups.isEmpty()) return "";
@@ -126,5 +121,9 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         
         rule.setProperty((MethodMultiProperty)desc, newValues);
         return newValue;
+    }
+	
+    protected Object valueFrom(Control valueControl) {	// not necessary for this type
+        return null; 
     }
 }

@@ -7,13 +7,10 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
 
 /**

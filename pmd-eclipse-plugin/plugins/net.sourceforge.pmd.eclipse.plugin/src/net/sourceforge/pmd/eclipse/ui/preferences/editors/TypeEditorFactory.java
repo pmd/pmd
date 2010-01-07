@@ -77,21 +77,23 @@ public class TypeEditorFactory extends AbstractEditorFactory {
                         
          final TypeProperty tp = typePropertyFrom(desc);
             
-         typeText.addListener(SWT.FocusOut, new Listener() {
+         Listener wereDoneListener = new Listener() {
              public void handleEvent(Event event) {
-                Class<?> newValue = typeText.getType(true);
-                if (newValue == null) return;
-                    
-                Class<?> existingValue = (Class<?>)valueFor(rule, tp);                
-                if (existingValue == newValue) return;              
-                    
-                rule.setProperty(tp, newValue);
-                listener.changed(rule, desc, newValue);
+                 Class<?> newValue = typeText.getType(true);
+                 if (newValue == null) return;
+                     
+                 Class<?> existingValue = (Class<?>)valueFor(rule, tp);                
+                 if (existingValue == newValue) return;              
+                     
+                 rule.setProperty(tp, newValue);
+                 listener.changed(rule, desc, newValue);
 
-                adjustRendering(rule, desc, typeText);
-                }
-         });
-
+                 adjustRendering(rule, desc, typeText);
+                 }
+          	};
+          	
+        typeText.addListener(SWT.FocusOut, wereDoneListener);
+        typeText.addListener(SWT.DefaultSelection, wereDoneListener);
         return typeText;
      }
         

@@ -1,4 +1,4 @@
-ToDo items:     							Jan 2nd 2010
+ToDo items:     							Jan 6th 2010
 
 
 Finish remaining editors and the Add Property dialog
@@ -10,10 +10,10 @@ Remember settings for:
 	sort column & order
 	rule table screen fraction
 
-
 Items needing support in PMD itself:
 
 Enable non-intrinsic property field removal
 Enable/disable rules w/out removing from ruleset
 Enable rule reassignment to different rulesets
 Add support for creating new rulesets & descriptions for same
+For multi-value properties, decide whether to allow unique or duplicate values (default to Set behaviour)

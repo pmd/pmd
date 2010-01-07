@@ -42,11 +42,6 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         return typeNames;
 	}
 	
-    protected Object valueFrom(Control valueControl) {
-        
-        return null;    // TODO
-    }
-	
     protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
         
         Class<?>[] values = (Class[])valueFor(rule, desc);
@@ -134,5 +129,9 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         
         rule.setProperty((TypeMultiProperty)desc, newValues);
         return enteredValue;
+    }
+    
+    protected Object valueFrom(Control valueControl) {	// not necessary for this type
+        return null; 
     }
 }

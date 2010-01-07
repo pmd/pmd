@@ -39,11 +39,6 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
             return (StringMultiProperty)desc;
         }
     }
-	
-    protected Object valueFrom(Control valueControl) {
-        
-        return null;    // TODO
-    }
     
     protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
         Text textWidget = new Text(parent, SWT.SINGLE | SWT.BORDER);
@@ -59,7 +54,7 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
                 
         final StringMultiProperty smp = multiStringPropertyFrom(desc);
         
-        textWidget.addListener(SWT.FocusOut, new Listener() {
+        Listener widgetListener = new Listener() {
         	public void handleEvent(Event event) {
         		String[] newValues = textWidgetValues(textWidget);					
         		String[] existingValues = (String[])valueFor(rule, smp);				
@@ -68,8 +63,11 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         		rule.setProperty(smp, newValues);        		
         		fillWidget(textWidget, desc, rule);    // reload with latest scrubbed values        		
         		listener.changed(rule, desc, newValues);
-        	}
-        });
+        		}
+        	};
+        
+        textWidget.addListener(SWT.FocusOut, widgetListener);
+//        textWidget.addListener(SWT.DefaultSelection, widgetListener);
     }
 
     @Override
@@ -89,5 +87,9 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         
         rule.setProperty((StringMultiProperty)desc, newValues);
         return newValue;
+    }
+	
+    protected Object valueFrom(Control valueControl) {	// not necessary for this type
+        return null; 
     }
 }
