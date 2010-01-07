@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Various class-related utility methods.
+ * Various class-related utility methods intended for mapping common java.lang types to their short 
+ * short forms allowing end users to enter these names in UIs without the package prefixes.
  *
  * @author Brian Remedios
  */
 public final class ClassUtil {
 
-    public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
+    public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
 
     private ClassUtil() {
     };
@@ -25,9 +26,9 @@ public final class ClassUtil {
 
     private static final TypeMap TYPES_BY_NAME = new TypeMap(new Class[] { Integer.class, Byte.class, Long.class,
             Short.class, Float.class, Double.class, Character.class, Boolean.class, BigDecimal.class, String.class,
-            Object.class, });
+            Object.class, Class.class});
 
-    private static final Map<Class, String> SHORT_NAMES_BY_TYPE = computeClassShortNames();
+    private static final Map<Class<?>, String> SHORT_NAMES_BY_TYPE = computeClassShortNames();
     
     /**
      * Returns the type(class) for the name specified or null if not found.
@@ -45,15 +46,15 @@ public final class ClassUtil {
      *
      * @return Map<Class, String>
      */
-    private static Map<Class, String> computeClassShortNames() {
+    private static Map<Class<?>, String> computeClassShortNames() {
         
-        Map<Class, String> map = new HashMap<Class, String>();
+        Map<Class<?>, String> map = new HashMap<Class<?>, String>();
         map.putAll(PRIMITIVE_TYPE_NAMES.asInverseWithShortName());
         map.putAll(TYPES_BY_NAME.asInverseWithShortName());
         return map;
     }
 
-    public static Map<Class, String> getClassShortNames() {
+    public static Map<Class<?>, String> getClassShortNames() {
         return SHORT_NAMES_BY_TYPE;
     }
     
@@ -139,7 +140,7 @@ public final class ClassUtil {
         Map<String, List<Method>> methodGroups = new HashMap<String, List<Method>>(methods.length);
         
         for (int i=0; i<methods.length; i++) {
-            String clsName = ClassUtil.asShortestName(methods[i].getDeclaringClass());
+            String clsName = asShortestName(methods[i].getDeclaringClass());
             if (!methodGroups.containsKey(clsName)) {
                 methodGroups.put(clsName, new ArrayList<Method>());
             }

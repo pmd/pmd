@@ -232,7 +232,7 @@ public final class StringUtil {
 	 * @param iter Iterator
 	 * @param separator String
 	 */
-	public static void asStringOn(StringBuffer sb, Iterator iter, String separator) {
+	public static void asStringOn(StringBuffer sb, Iterator<?> iter, String separator) {
 		
 	    if (!iter.hasNext()) { return;  }
 	    

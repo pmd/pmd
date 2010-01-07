@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Generic collection and array-related utility functions.
+ * Generic collection and array-related utility functions for java.util types. See ClassUtil 
+ * for comparable facilities for short name lookup.
  *
  * @author Brian Remedios
  * @version $Revision$
@@ -24,7 +25,8 @@ public final class CollectionUtil {
     @SuppressWarnings({"PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName"})
     public static final TypeMap COLLECTION_CLASSES_BY_NAMES = new TypeMap(new Class[] { java.util.ArrayList.class,
 	    java.util.LinkedList.class, java.util.Vector.class, java.util.HashMap.class, java.util.LinkedHashMap.class,
-	    java.util.TreeMap.class, java.util.TreeSet.class, java.util.HashSet.class, java.util.LinkedHashSet.class });
+	    java.util.TreeMap.class, java.util.TreeSet.class, java.util.HashSet.class, java.util.LinkedHashSet.class,
+	    java.util.Hashtable.class});
 
     private CollectionUtil() {
     };
@@ -36,12 +38,12 @@ public final class CollectionUtil {
      * @return Class
      */
     public static Class<?> getCollectionTypeFor(String shortName) {
-	Class<?> cls = COLLECTION_CLASSES_BY_NAMES.typeFor(shortName);
-	if (cls != null) {
-	    return cls;
-	}
+	   Class<?> cls = COLLECTION_CLASSES_BY_NAMES.typeFor(shortName);
+	   if (cls != null) {
+	     return cls;
+	   }
 
-	return COLLECTION_INTERFACES_BY_NAMES.typeFor(shortName);
+	   return COLLECTION_INTERFACES_BY_NAMES.typeFor(shortName);
     }
 
     /**
@@ -54,11 +56,11 @@ public final class CollectionUtil {
      */
     public static boolean isCollectionType(String typeName, boolean includeInterfaces) {
 
-	if (COLLECTION_CLASSES_BY_NAMES.contains(typeName)) {
-	    return true;
-	}
+	   if (COLLECTION_CLASSES_BY_NAMES.contains(typeName)) {
+	     return true;
+	   }
 
-	return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
+	   return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
     }
 
     /**
@@ -71,11 +73,11 @@ public final class CollectionUtil {
      */
     public static boolean isCollectionType(Class<?> clazzType, boolean includeInterfaces) {
 
-	if (COLLECTION_CLASSES_BY_NAMES.contains(clazzType)) {
-	    return true;
-	}
+	   if (COLLECTION_CLASSES_BY_NAMES.contains(clazzType)) {
+	      return true;
+	   }
 
-	return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(clazzType);
+	   return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(clazzType);
     }
 
     /**
@@ -86,7 +88,7 @@ public final class CollectionUtil {
      */
     public static <T> Set<T> asSet(T[] items) {
 
-	return new HashSet<T>(Arrays.asList(items));
+	   return new HashSet<T>(Arrays.asList(items));
     }
 
     /**
@@ -98,14 +100,14 @@ public final class CollectionUtil {
      * @return Map
      */
     public static <K, V> Map<K, V> mapFrom(K[] keys, V[] values) {
-	if (keys.length != values.length) {
-	    throw new RuntimeException("mapFrom keys and values arrays have different sizes");
-	}
-	Map<K, V> map = new HashMap<K, V>(keys.length);
-	for (int i = 0; i < keys.length; i++) {
-	    map.put(keys[i], values[i]);
-	}
-	return map;
+	   if (keys.length != values.length) {
+	     throw new RuntimeException("mapFrom keys and values arrays have different sizes");
+	   }
+	   Map<K, V> map = new HashMap<K, V>(keys.length);
+	   for (int i = 0; i < keys.length; i++) {
+	      map.put(keys[i], values[i]);
+	      }
+	   return map;
     }
 
     /**
@@ -115,11 +117,11 @@ public final class CollectionUtil {
      * @return Map
      */
     public static <K, V> Map<V, K> invertedMapFrom(Map<K, V> source) {
-	Map<V, K> map = new HashMap<V, K>(source.size());
-	for (Map.Entry<K, V> entry : source.entrySet()) {
-	    map.put(entry.getValue(), entry.getKey());
-	}
-	return map;
+	   Map<V, K> map = new HashMap<V, K>(source.size());
+	   for (Map.Entry<K, V> entry : source.entrySet()) {
+	      map.put(entry.getValue(), entry.getKey());
+	   }
+	   return map;
     }
 
     /**
@@ -131,13 +133,13 @@ public final class CollectionUtil {
      * @return boolean
      */
     public static boolean arraysAreEqual(Object value, Object otherValue) {
-	if (value instanceof Object[]) {
-	    if (otherValue instanceof Object[]) {
-		return valuesAreTransitivelyEqual((Object[]) value, (Object[]) otherValue);
-	    }
-	    return false;
-	}
-	return false;
+	   if (value instanceof Object[]) {
+	      if (otherValue instanceof Object[]) {
+		  return valuesAreTransitivelyEqual((Object[]) value, (Object[]) otherValue);
+	      }
+	      return false;
+	   } 
+	   return false;
     }
 
     /**
@@ -149,21 +151,21 @@ public final class CollectionUtil {
      * @return boolean
      */
     public static boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
-	if (thisArray == thatArray) {
-	    return true;
-	}
-	if (thisArray == null || thatArray == null) {
-	    return false;
-	}
-	if (thisArray.length != thatArray.length) {
-	    return false;
-	}
-	for (int i = 0; i < thisArray.length; i++) {
-	    if (!areEqual(thisArray[i], thatArray[i])) {
-		return false; // recurse if req'd
-	    }
-	}
-	return true;
+	   if (thisArray == thatArray) {
+	     return true;
+	   }
+	   if (thisArray == null || thatArray == null) {
+	     return false;
+	   }
+	   if (thisArray.length != thatArray.length) {
+	     return false;
+	   }
+	   for (int i = 0; i < thisArray.length; i++) {
+	     if (!areEqual(thisArray[i], thatArray[i])) {
+	   	 return false; // recurse if req'd
+	     }
+	   }
+	   return true;
     }
 
     /**
