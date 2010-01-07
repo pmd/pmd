@@ -26,7 +26,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     public static final char[] METHOD_GROUP_DELIMITERS = new char[] { '(', ')' };
 
     private static final String ARRAY_FLAG = "[]";
-    private static final Map<Class, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
+    private static final Map<Class<?>, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 
     /**
      * @param cls Class<?>
