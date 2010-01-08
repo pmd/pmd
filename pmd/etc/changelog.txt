@@ -356,6 +356,7 @@ Creating a unnecessary Code Ruleset and moved the following rules from Basic rul
         * UselessParentheses
 	Basic rulesets still includes a reference to those rules.	
 
+Fixed bug 2920057 - Fixed False + on CloseResource
 Fixed bug 1808110 - Fixed performance issues on PreserveStackTrace
 Fixed bug 2832322 - cpd.xml file tag path attribute should be entity-encoded
 Fixed bug 2826119 - False +: DoubleCheckedLocking warning with volatile field

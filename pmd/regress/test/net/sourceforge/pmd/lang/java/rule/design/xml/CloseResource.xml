@@ -262,6 +262,78 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    
+        <test-code reinitializeRule="true">
+        <description><![CDATA[
+invoke an external method that close the resource
+bug 2920057
+     ]]></description>
+        <rule-property name="closeTargets">closeStatement,closeStatement,closeResultSet,closeConnexion
+        </rule-property>
+        <rule-property name="types">PreparedStatement,Statement,ResultSet,Connection</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+
+public class StructureFactory {
+
+    public void rechercherListe() {
+
+        Connection _connexion = null;
+        ResultSet _rs = null;
+        PreparedStatement _st = null;
+        try
+        {
+           //
+        }
+
+
+        finally
+        {
+            getProviderInstance().closeConnexion(_connexion);
+            getProviderInstance().closeResultSet(_rs);
+            getProviderInstance().closeStatement(_st);
+            
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code reinitializeRule="true">
+        <description><![CDATA[
+invoke an external method that closes the resource, but one is not the right method and an another is not the right variable
+see bug 2920057
+     ]]></description>
+        <rule-property name="closeTargets">closeStatement,closeStatement,closeResultSet,closeConnexion
+        </rule-property>
+        <rule-property name="types">PreparedStatement,Statement,ResultSet,Connection</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+
+public class StructureFactory {
+
+    public void searchList() {
+
+        Connection _connexion = null;
+        ResultSet _rs = null;
+        PreparedStatement _st = null;
+        Structure _structure = null;
+        try
+        {
+           //
+        }
+
+
+        finally
+        {
+            getProviderInstance().closeConnexion(_connexion);
+            getProviderInstance().closeYourEyes(_rs); //not the right method
+            getProviderInstance().closeStatement(_badOne); // not the right variable
+            
+        }
+    }
+}
+     ]]></code>
+    </test-code>
     
 </test-data>

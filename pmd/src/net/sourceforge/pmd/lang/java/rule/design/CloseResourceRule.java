@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -167,6 +168,28 @@ public class CloseResourceRule extends AbstractJavaRule {
                                     }
                                 }
                             }
+                         // look for primary suffix containing the close Targets elements.
+                            // If the .close is executed in another class accessed by a method
+                            // this form : getProviderInstance().closeConnexion(connexion)
+                            // For this use case, we assume the variable is correctly closed
+                            // in the other class since there is no way to really check it.
+                            if (!closed)
+                            {
+                                List<ASTPrimarySuffix> suffixes = new ArrayList<ASTPrimarySuffix>();
+                                expr.findDescendantsOfType(ASTPrimarySuffix.class, suffixes, true);
+                                for (ASTPrimarySuffix oSuffix : suffixes) {
+                                    String suff = oSuffix.getImage();
+                                    if (closeTargets.contains(suff)) 
+                                    {
+                                        closed = variableIsPassedToMethod(expr, variableToClose);
+                                        if(closed)
+                                        { 
+                                            break;                    
+                                        }                                                        
+                                    }
+
+                                }
+                            }
                         }
                     }
                 }
@@ -205,7 +228,9 @@ public class CloseResourceRule extends AbstractJavaRule {
         expr.findDescendantsOfType(ASTName.class, methodParams, true);
         for (ASTName pName : methodParams) {
             String paramName = pName.getImage();
-            if (paramName.equals(variable)) {
+            // also check if we've got the a parameter (i.e if it's an argument !) 
+            ASTArgumentList parentParam = pName.getFirstParentOfType(ASTArgumentList.class);
+            if (paramName.equals(variable) && parentParam != null) {
                 return true;
             }
         }
