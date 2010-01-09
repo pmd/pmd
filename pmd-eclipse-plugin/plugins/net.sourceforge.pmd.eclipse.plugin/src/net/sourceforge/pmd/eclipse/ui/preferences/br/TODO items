@@ -1,10 +1,14 @@
-ToDo items:     							Jan 6th 2010
+ToDo items:     							Jan 9th 2010
 
 
 Finish remaining editors and the Add Property dialog
 Enable delete key on rule table
 Highlight non-default values in editors and/or summary column
 Enable 'Use defaults' option in popup menu
+Sort indicators on rule column headings
+Add selection column selected rules in per-project rule settings table
+Rework context menu - build on-demand, not before
+Cleanup icons
 Remember settings for:
 	chosen grouping selection (or none)
 	sort column & order

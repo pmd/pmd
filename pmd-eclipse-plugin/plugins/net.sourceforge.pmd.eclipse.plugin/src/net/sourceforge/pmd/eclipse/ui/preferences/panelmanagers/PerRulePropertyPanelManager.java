@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,26 +48,28 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     
     private static final int MaxWidgetHeight = 30;  // TODO derive this instead
     
-    private static final Map<Class<?>, EditorFactory> editorFactoriesByPropertyType;
+    public static final Map<Class<?>, EditorFactory> editorFactoriesByPropertyType;
     
     static {
-        editorFactoriesByPropertyType = new HashMap<Class<?>, EditorFactory>();        
+    	Map<Class<?>, EditorFactory> factoriesByPropertyType = new HashMap<Class<?>, EditorFactory>();        
 
-        editorFactoriesByPropertyType.put(Boolean.class,    BooleanEditorFactory.instance);
-        editorFactoriesByPropertyType.put(String.class,     StringEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Integer.class,    IntegerEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Float.class,      FloatEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Double.class,     DoubleEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Object.class,     EnumerationEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Character.class,  CharacterEditorFactory.instance);
+    	factoriesByPropertyType.put(Boolean.class,    BooleanEditorFactory.instance);
+    	factoriesByPropertyType.put(String.class,     StringEditorFactory.instance);
+    	factoriesByPropertyType.put(Integer.class,    IntegerEditorFactory.instance);
+    	factoriesByPropertyType.put(Float.class,      FloatEditorFactory.instance);
+    	factoriesByPropertyType.put(Double.class,     DoubleEditorFactory.instance);
+    	factoriesByPropertyType.put(Object.class,     EnumerationEditorFactory.instance);
+    	factoriesByPropertyType.put(Character.class,  CharacterEditorFactory.instance);
         
-        editorFactoriesByPropertyType.put(Class.class,      TypeEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Class[].class,    MultiTypeEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Method.class,     MethodEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Method[].class,   MultiMethodEditorFactory.instance);
-        editorFactoriesByPropertyType.put(String[].class,   MultiStringEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Integer[].class,  MultiIntegerEditorFactory.instance);
-        editorFactoriesByPropertyType.put(Object[].class,   MultiEnumerationEditorFactory.instance);
+    	factoriesByPropertyType.put(Class.class,      TypeEditorFactory.instance);
+    	factoriesByPropertyType.put(Class[].class,    MultiTypeEditorFactory.instance);
+    	factoriesByPropertyType.put(Method.class,     MethodEditorFactory.instance);
+    	factoriesByPropertyType.put(Method[].class,   MultiMethodEditorFactory.instance);
+    	factoriesByPropertyType.put(String[].class,   MultiStringEditorFactory.instance);
+    	factoriesByPropertyType.put(Integer[].class,  MultiIntegerEditorFactory.instance);
+    	factoriesByPropertyType.put(Object[].class,   MultiEnumerationEditorFactory.instance);
+        
+        editorFactoriesByPropertyType = Collections.unmodifiableMap(factoriesByPropertyType);
     }
     
     public PerRulePropertyPanelManager(ValueChangeListener theListener) {
@@ -77,7 +80,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     
     protected boolean canWorkWith(Rule rule) {
         if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) return true;
-        return !PMDPreferencePage.filteredPropertiesOf(rule).isEmpty();
+        return !Configuration.filteredPropertiesOf(rule).isEmpty();
     }
     
     protected void clearControls() {

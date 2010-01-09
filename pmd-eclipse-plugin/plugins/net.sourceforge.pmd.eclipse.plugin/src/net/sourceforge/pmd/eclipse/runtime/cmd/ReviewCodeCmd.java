@@ -394,12 +394,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     private void applyMarkers() {
         log.info("Processing marker directives");
-        int violationsCount = 0;
+        int violationCount = 0;
         final Timer timer = new Timer();
 
         String currentFile = ""; // for logging
         try {
-            final Set<IFile> filesSet = this.markers.keySet();
+            final Set<IFile> filesSet = markers.keySet();
             final Iterator<IFile> i = filesSet.iterator();
 
             beginTask("PMD Applying markers", filesSet.size());
@@ -408,7 +408,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 final IFile file = i.next();
                 currentFile = file.getName();
 
-                final Set<MarkerInfo> markerInfoSet = this.markers.get(file);
+                final Set<MarkerInfo> markerInfoSet = markers.get(file);
                 file.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
                 file.deleteMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
                 final Iterator<MarkerInfo> j = markerInfoSet.iterator();
@@ -416,7 +416,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                     final MarkerInfo markerInfo = j.next();
                     final IMarker marker = file.createMarker(markerInfo.getType());
                     marker.setAttributes(markerInfo.getAttributeNames(), markerInfo.getAttributeValues());
-                    violationsCount++;
+                    violationCount++;
                 }
 
                 worked(1);
@@ -428,10 +428,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         } finally {
             timer.stop();
             PMDPlugin.getDefault().logInformation(
-                    "" + violationsCount + " markers applied on " + this.markers.size() + " files in " + timer.getDuration()
-                            + "ms.");
-            log.info("End of processing marker directives. " + violationsCount + " violations for " + this.markers.size()
-                    + " files.");
+                    "" + violationCount + " markers applied on " + markers.size() + " files in " + timer.getDuration() + "ms.");
+            log.info("End of processing marker directives. " + violationCount + " violations for " + markers.size() + " files.");
         }
 
     }
@@ -495,7 +493,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             count++;
 
             if (resource instanceof IFile && ((IFile) resource).getFileExtension() != null
-                    && ((IFile) resource).getFileExtension().equals("java")) {
+                    && "JAVA".equalsIgnoreCase(((IFile) resource).getFileExtension())) {
 
                 fVisitChildren = false;
             }

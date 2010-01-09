@@ -174,14 +174,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
     protected boolean canAddNewRowFor(final PropertyDescriptor<?> desc, final Rule rule) {
     	return true;
     }
-    
-    protected void setupDefaultActionFor(Control widget, Listener listener) {
-    	
-    //	if (widget instanceof Text || widget instanceof Spinner) {
-    		widget.addListener(SWT.DefaultSelection, listener);
-    //	}
-    }
-    
+        
     private void addNewValueRow(final Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final Text parentWidget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener, final List<Control> newControls, int i) {
         
     	if (!canAddNewRowFor(desc, rule)) return;
@@ -219,7 +212,8 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
             }
         };
         butt.addListener(SWT.Selection, addListener);
-        setupDefaultActionFor(widget, addListener);	// allow for CR on entry widgets themselves, no need to click the '+' button
+        widget.addListener(SWT.DefaultSelection, addListener);	// allow for CR on entry widgets themselves, no need to click the '+' button
+        widget.setFocus();
     }
         
     private void convertToDelete(final Button button, final Object toDeleteValue, final Composite parent, final List<Control> newControls, final PropertyDescriptor<?> desc, final Rule rule, final Text parentWidget, final Label number, final Control widget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {

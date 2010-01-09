@@ -35,14 +35,15 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -83,8 +84,9 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
         log.info("Remove Markers action requested");
         try {
             if (action.getId().equals(VIEW_ACTION)) {
-                ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
+            	final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+                root.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                root.deleteMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
                 log.debug("Remove markers on the entire workspace");
             } else if (action.getId().equals(OBJECT_ACTION)) {
                 processResource();
@@ -138,8 +140,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                     ((IFileEditorInput) editorInput).getFile().deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
                     log.debug("Remove markers " + PMDRuntimeConstants.PMD_MARKER + " on currently edited file " + ((IFileEditorInput) editorInput).getFile().getName());
                 } else {
-                    log.debug("The kind of editor input is not supported. The editor input if of type: "
-                            + editorInput.getClass().getName());
+                    log.debug("The kind of editor input is not supported. The editor input if of type: " + editorInput.getClass().getName());
                 }
             }
 

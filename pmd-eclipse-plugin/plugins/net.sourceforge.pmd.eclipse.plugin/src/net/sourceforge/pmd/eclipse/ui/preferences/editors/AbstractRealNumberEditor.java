@@ -27,9 +27,11 @@ public abstract class AbstractRealNumberEditor extends AbstractNumericEditorFact
         spinner.setMinimum(min);
         spinner.setMaximum(max);
         
-        double value = ((Number)valueFor(rule, numDesc)).doubleValue();
-        int intVal = (int)(value * scale);
-        spinner.setSelection(intVal);
+        Number value = ((Number)valueFor(rule, numDesc));
+        if (value != null) {
+        	int intVal = (int)(value.doubleValue() * scale);
+        	spinner.setSelection(intVal);
+        }
         
         return spinner;
     }

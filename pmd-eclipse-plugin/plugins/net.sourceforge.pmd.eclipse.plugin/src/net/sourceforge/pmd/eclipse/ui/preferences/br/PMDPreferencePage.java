@@ -24,6 +24,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
@@ -32,8 +33,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyMana
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
-import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.designer.Designer;
@@ -99,7 +98,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	// columns shown in the rule treetable in the desired order
 	private static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
 		TextColumnDescriptor.name,
-		TextColumnDescriptor.priorityName,
+		//TextColumnDescriptor.priorityName,
+		IconColumnDescriptor.priority,
 		TextColumnDescriptor.since,
 		TextColumnDescriptor.ruleSetName,
 		TextColumnDescriptor.ruleType,
@@ -119,16 +119,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		{ TextColumnDescriptor.language,		  StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE },
         { ImageColumnDescriptor.filterViolationRegex, StringKeys.MSGKEY_PREF_RULESET_GROUPING_REGEX },
 		{ null, 								  StringKeys.MSGKEY_PREF_RULESET_GROUPING_NONE }
-		};
-
-	// properties that should not be shown in the PerRuleProperty page
-	private static final PropertyDescriptor<?>[] excludedRuleProperties = new PropertyDescriptor<?>[] {
-		Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR,
-		Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR,
-		XPathRule.XPATH_DESCRIPTOR,
-		XPathRule.VERSION_DESCRIPTOR,
-		StatisticalRule.SIGMA_DESCRIPTOR,
-		StatisticalRule.TOP_SCORE_DESCRIPTOR
 		};
 
 //	private static final int RuleTableFraction = 55;       // percent of screen height vs property tabs
@@ -327,17 +317,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         propertySection.setLayoutData(data);
     }
 
-	public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(Rule rule) {
-
-		Map<PropertyDescriptor<?>, Object> valuesByProp = rule.getPropertiesByPropertyDescriptor();
-
-		for (PropertyDescriptor<?> excludedRulePropertie : excludedRuleProperties) {
-			valuesByProp.remove(excludedRulePropertie);
-		}
-
-		return valuesByProp;
-	}
-
 	public static void formatValueOn(StringBuilder target, Object value, Class<?> datatype) {
 
 	    ValueFormatter formatter = formattersByType.get(datatype);
@@ -355,7 +334,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	public static String propertyStringFrom(Rule rule) {
 
-		Map<PropertyDescriptor<?>, Object> valuesByProp = filteredPropertiesOf(rule);
+		Map<PropertyDescriptor<?>, Object> valuesByProp = Configuration.filteredPropertiesOf(rule);
 
 		if (valuesByProp.isEmpty()) return "";
 		StringBuilder sb = new StringBuilder();

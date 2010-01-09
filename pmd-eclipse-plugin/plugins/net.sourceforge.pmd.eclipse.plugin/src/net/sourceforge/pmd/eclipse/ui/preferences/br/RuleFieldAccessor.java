@@ -42,7 +42,7 @@ public interface RuleFieldAccessor {
 	
 	RuleFieldAccessor priority = new BasicRuleFieldAccessor() {
 		public Comparable<?> valueFor(Rule rule) {
-			return Integer.valueOf(rule.getPriority().getPriority());
+			return rule.getPriority();
 		}
 	};
 	

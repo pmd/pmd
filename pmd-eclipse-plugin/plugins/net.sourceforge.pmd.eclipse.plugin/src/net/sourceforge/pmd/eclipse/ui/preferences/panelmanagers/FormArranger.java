@@ -9,8 +9,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.NewPropertyDialog;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
@@ -86,7 +86,8 @@ public class FormArranger {
 		
 		if (rule == null) return -1;
 		
-		Map<PropertyDescriptor<?>, Object> valuesByDescriptor = PMDPreferencePage.filteredPropertiesOf(rule);
+		Map<PropertyDescriptor<?>, Object> valuesByDescriptor = Configuration.filteredPropertiesOf(rule);
+		
 		if (valuesByDescriptor.isEmpty()) {
 		    if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
 	            addAddButton(); 
@@ -212,10 +213,13 @@ public class FormArranger {
         
         for (Control[] widgetRow : widgets)  {
             Button butt = (Button)widgetRow[2];
-            boolean isReferenced = varNames.contains(butt.getData());
+            String buttonName = (String)butt.getData();
+            boolean isReferenced = varNames.contains(buttonName);
 
             butt.setToolTipText(
-                isReferenced ? "Delete variable" : "Delete unreferenced variable"
+                isReferenced ? 
+                		"Delete variable: $" + buttonName : 
+                		"Delete unreferenced variable: $" + buttonName
                 );
             if (!isReferenced) unreferenced.add((String) butt.getData());
             }

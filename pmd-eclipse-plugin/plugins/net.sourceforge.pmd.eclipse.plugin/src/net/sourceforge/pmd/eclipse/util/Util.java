@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.util;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import net.sourceforge.pmd.util.StringUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Control;
@@ -184,7 +186,6 @@ public class Util {
 	
 	public static CellPainterBuilder textAsColorShapeFor(final int width, final int height, final shape shapeId) {
 	    
-	   
 	    return new CellPainterBuilder() {
 
 	        private ColourManager colorManager;
@@ -398,4 +399,55 @@ public class Util {
             target.append(separator).append(items[i]);
         }
     }
+    
+	private static Map<Object, Image> imagesFor(Map<Object, String> imageNamesByValue) {
+		
+		Map<Object, Image> imagesByValue = new HashMap<Object, Image>(imageNamesByValue.size());
+		for (Map.Entry<Object, String> entry : imageNamesByValue.entrySet()) {
+			imagesByValue.put(entry.getKey(), ResourceManager.imageFor(entry.getValue()));
+			}
+		return imagesByValue;
+	}
+
+//	public static CellPainterBuilder iconsFromNameFor(final int width, final int height, final Map<Object, String> imageNamesByValue) {
+//		return iconsFor(width, height, imagesFor(imageNamesByValue));
+//	}
+//	
+//	public static CellPainterBuilder iconsFor(final int width, final int height, final Map<Object, Image> imagesByValue) {
+//	    
+//	    return new CellPainterBuilder() {
+//	        
+//	        private Object valueFrom(TreeItem tItem, RuleFieldAccessor getter) {
+//	            
+//	            Object item = tItem.getData();
+//	            if (!(item instanceof Rule)) return null;
+//	            return getter.valueFor((Rule) item);
+//	        }
+//	        	        
+//	        public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> listenersByEventCode) {
+//	            
+//	            Listener paintListener = new Listener() {
+//	                public void handleEvent(Event event) {
+//	                    if (event.index != columnIndex) return;
+//	                    
+//	                    Object value = valueFrom((TreeItem)event.item, getter);
+//	                    if (value == null) return;
+//	                    Image image = imagesByValue.get(value);
+//	                  	event.gc.drawImage(image, event.x+1, event.y+2);                
+//	                }
+//	            };
+//	                               
+//	            Listener measureListener = new Listener() {
+//	                public void handleEvent(Event e) {
+//	                    if (e.index != columnIndex) return;
+//	                    e.width = width + 2;
+//	                    e.height = height + 2;
+//	                }
+//	            };
+//	            
+//	            addListener(tree, SWT.PaintItem, paintListener, listenersByEventCode);
+//	            addListener(tree, SWT.MeasureItem, measureListener, listenersByEventCode);
+//	        }            
+//	    };
+//	}
 }
