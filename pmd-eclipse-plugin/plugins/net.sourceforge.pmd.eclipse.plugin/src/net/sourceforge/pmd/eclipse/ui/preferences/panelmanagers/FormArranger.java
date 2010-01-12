@@ -10,7 +10,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.NewPropertyDialog;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
@@ -27,6 +26,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
+ * Takes in a rule instance, extracts its properties, creates a series of type-specific editors for each, and then populates them with
+ * the current values.  As some types can hold multiple values the vertical span can grow to accommodate additional widgets and does so
+ * by broadcasting this through the SizeChange listener.  The ValueChange listener can be used to update any outside UIs as necessary.
  * 
  * @author Brian Remedios
  */
