@@ -76,8 +76,8 @@ public class PMDPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
         configureLogs(loadPreferences());
-        this.registerStandardRuleSets();
-        this.registerAdditionalRuleSets();
+        registerStandardRuleSets();
+        registerAdditionalRuleSets();
 	}
 
 	/*
@@ -163,9 +163,8 @@ public class PMDPlugin extends AbstractUIPlugin {
         Display.getDefault().syncExec(new Runnable() {
 
             public void run() {
-
-                MessageDialog.openError(Display.getCurrent().getActiveShell(), getStringTable().getString(StringKeys.MSGKEY_ERROR_TITLE), message
-                        + String.valueOf(t));
+            	String errTitle = getStringTable().getString(StringKeys.MSGKEY_ERROR_TITLE);
+                MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message + String.valueOf(t));
             }
         });
     }
@@ -174,11 +173,11 @@ public class PMDPlugin extends AbstractUIPlugin {
      * @return an instance of the string table
      */
     public StringTable getStringTable() {
-        if (this.stringTable == null) {
-            this.stringTable = new StringTable();
+        if (stringTable == null) {
+            stringTable = new StringTable();
         }
 
-        return this.stringTable;
+        return stringTable;
     }
 
     /**
@@ -192,9 +191,9 @@ public class PMDPlugin extends AbstractUIPlugin {
      * Return the priority labels
      */
     public String[] getPriorityLabels() {
-        if (this.priorityLabels == null) {
+        if (priorityLabels == null) {
             final StringTable stringTable = getStringTable();
-            this.priorityLabels = new String[]{
+            priorityLabels = new String[]{
                 stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR_HIGH),
                 stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR),
                 stringTable.getString(StringKeys.MSGKEY_PRIORITY_WARNING_HIGH),
@@ -203,7 +202,7 @@ public class PMDPlugin extends AbstractUIPlugin {
             };
         }
 
-        return this.priorityLabels; // NOPMD by Herlin on 11/10/06 00:22
+        return priorityLabels; // NOPMD by Herlin on 11/10/06 00:22
     }
 
     public static final String ROOT_LOG_ID = "net.sourceforge.pmd";
@@ -222,14 +221,14 @@ public class PMDPlugin extends AbstractUIPlugin {
      * @return the plugin preferences manager
      */
     public IPreferencesManager getPreferencesManager() {
-        return this.preferencesFactory.getPreferencesManager();
+        return preferencesFactory.getPreferencesManager();
     }
 
     /**
      * @return the plugin project properties manager
      */
     public IProjectPropertiesManager getPropertiesManager() {
-        return this.propertiesFactory.getProjectPropertiesManager();
+        return propertiesFactory.getProjectPropertiesManager();
     }
 
     /**
@@ -310,7 +309,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      * @return the ruleset manager instance
      */
     public final IRuleSetManager getRuleSetManager() {
-        return this.ruleSetManager;
+        return ruleSetManager;
     }
 
     /**
@@ -337,13 +336,15 @@ public class PMDPlugin extends AbstractUIPlugin {
         final RuleSetFactory factory = new RuleSetFactory();
         try {
             Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
+            final IRuleSetManager manager = getRuleSetManager();
+            RuleSet ruleSet;
             while (iterator.hasNext()) {
-        	final RuleSet ruleSet = iterator.next();
-                getRuleSetManager().registerRuleSet(ruleSet);
-                getRuleSetManager().registerDefaultRuleSet(ruleSet);
-            }
+            	ruleSet = iterator.next();
+            	manager.registerRuleSet(ruleSet);
+            	manager.registerDefaultRuleSet(ruleSet);
+            	}
         } catch (RuleSetNotFoundException e) {
-            this.log(IStatus.WARNING, "Problem getting all registered PMD RuleSets", e);
+            log(IStatus.WARNING, "Problem getting all registered PMD RuleSets", e);
         }
     }
 
