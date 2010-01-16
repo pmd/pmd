@@ -328,10 +328,8 @@ public class RuleSetWriter {
 	    propertyElement.setAttribute("delimiter", String.valueOf(propertyDescriptor.multiValueDelimiter()));
 	}
 	if (propertyDescriptor instanceof AbstractNumericProperty) {
-	    propertyElement.setAttribute("min", String.valueOf(((AbstractNumericProperty<?>) propertyDescriptor)
-		    .lowerLimit()));
-	    propertyElement.setAttribute("max", String.valueOf(((AbstractNumericProperty<?>) propertyDescriptor)
-		    .lowerLimit()));
+	    propertyElement.setAttribute("min", String.valueOf(((AbstractNumericProperty<?>) propertyDescriptor).lowerLimit()));
+	    propertyElement.setAttribute("max", String.valueOf(((AbstractNumericProperty<?>) propertyDescriptor).upperLimit()));
 	}
 
 	return propertyElement;
