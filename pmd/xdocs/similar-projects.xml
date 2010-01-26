@@ -38,6 +38,7 @@
                but also very expensive and requires a running X server (or Xvfb) to run on
                Linux.  They charge $500 to move a license from one machine to another.</li>
          <li><a href="http://www.jutils.com/index.html">Lint4J</a> - Lock graph, DFA, and type analysis, many EJB checks</li>
+         <li><a href="http://www.solidsourceit.com/products/SolidSDD-code-duplication-cloning-analysis.html">SolidSDD</a> - Code duplication detection, nice graphical reporting. Free licensing available for Educational or OSS use.</li>
        </ul>
      </subsection>
    </section>
