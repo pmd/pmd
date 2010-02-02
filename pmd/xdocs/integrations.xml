@@ -44,6 +44,11 @@
         <td>Amit Dev, <a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
+    <tr><td><a href="#idea-qaplug">IntelliJ IDEA - QAPlug</a></td>
+        <td>N/A</td>
+        <td>Jakub Sławiński</td>
+    </tr>
+
   <tr><td><a href="#jbuilder">JBuilder</a></td>
       <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jbuilder/">pmd-jbuilder</a></td>
       <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
@@ -226,6 +231,12 @@ try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.e
   away every time I fix something in the code window.</p>
         </subsection>
 
+        <a name="idea-qaplug"/><subsection name="IDEA - QAPlug ">
+          <p>QAPlug is an Intellij IDEA plugin to manage code quality.  It integrates no less than Checkstyle, FindBugs, and PMD.</p>
+          <p>The plugin is available at <a href="http://www.qaplug.com/">http://www.qaplug.com</a></p>
+          <p>Also available at the JetBrains site, <a href="http://plugins.intellij.net/plugin/?idea_ce&id=4596">QAPlug-PMD</a>
+             and <a href="http://plugins.intellij.net/plugin/?idea_ce&id=4594">QAPlug</a>.</p>
+        </subsection>
 
       <a name="jbuilder"/><subsection name="JBuilder">
 <p>
