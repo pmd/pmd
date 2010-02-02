@@ -10,12 +10,12 @@
       <subsection name="Summary">
 <table>
   <tr><td><b>IDE</b></td>
-      <td><b>CVS Module</b></td>
+      <td><b>SVN Module</b></td>
       <td><b>Maintainers</b></td>
       </tr>
 
     <tr><td><a href="#bluej">BlueJ</a></td>
-        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-bluej/">pmd-bluej</a></td>
+        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
@@ -25,17 +25,17 @@
     </tr>
 
   <tr><td><a href="#eclipse">Eclipse</a></td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-eclipse/">pmd-eclipse</a></td>
+      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-eclipse-plugin/">pmd-eclipse</a></td>
       <td>Philippe Herlin</td>
   </tr>
 
   <tr><td><a href="#emacs">Emacs</a></td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-emacs/">pmd-emacs</a></td>
+      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-emacs/">pmd-emacs</a></td>
       <td>Nascif Abousalh Neto</td>
   </tr>
 
     <tr><td><a href="#gel">Gel</a></td>
-        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-gel/">pmd-gel</a></td>
+        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-gel/">pmd-gel</a></td>
         <td>Andrei Lumianski</td>
     </tr>
 
@@ -50,7 +50,7 @@
     </tr>
 
   <tr><td><a href="#jbuilder">JBuilder</a></td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jbuilder/">pmd-jbuilder</a></td>
+      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jbuilder/">pmd-jbuilder</a></td>
       <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
   </tr>
 
@@ -60,12 +60,12 @@
     </tr>
 
     <tr><td><a href="#jdeveloper">JDeveloper</a></td>
-        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jdeveloper/">pmd-jdeveloper</a></td>
+        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jdeveloper/">pmd-jdeveloper</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
     <tr><td><a href="#jedit">JEdit</a></td>
-        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jedit/">pmd-jedit</a></td>
+        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jedit/">pmd-jedit</a></td>
         <td>Jiger Patel</td>
     </tr>
 
@@ -80,7 +80,7 @@
     </tr>
 
   <tr><td><a href="#netbeans">NetBeans/Sun Java Studio Enterprise/Creator</a></td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-netbeans/">pmd-netbeans</a></td>
+      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-netbeans/">pmd-netbeans</a></td>
       <td>Radim Kubacki</td>
   </tr>
 
@@ -123,7 +123,7 @@
       <ul>
           <li>Name: PMD </li>
           <li>Kind: Tool for directories</li>
-          <li>Executable: /Applications/pmd-4.2.6/bin/pmd.sh</li>
+          <li>Executable: /Applications/pmd-5.0/bin/pmd.sh</li>
           <li>Arguments: $DIRECTORY_PATH$ emacs $USER_ARGUMENTS$</li>
       </ul>
   </ul>
@@ -222,7 +222,7 @@ try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.e
   <li>Menu: Select the "Main menu", "Project views", "Editor menu", and "Search results" checkboxes.</li>
   <li>Program: $JDKPath$\bin\java.exe</li>
   <li>For the next parameter you'll need to plug in the location of your PMD installation and the rulesets you want to use</li>
-  <li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-4.2.6.jar;c:\pmd\lib\asm-3.2.jar;c:\pmd\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD "$FilePath$" ideaj unusedcode,imports "$Sourcepath$" $FileClass$.method $FileName$ </li>
+  <li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-5.0.jar;c:\pmd\lib\asm-3.2.jar;c:\pmd\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD "$FilePath$" ideaj unusedcode,imports "$Sourcepath$" $FileClass$.method $FileName$ </li>
   </ul>
   </ul>
   <p>That's pretty much it.  Now you can right click on a source directory and select PMD, it'll run recursively on the source files, and the results should
@@ -348,7 +348,7 @@ selecting the "Ask for Directory" checkbox.</p>
     <H5><U>Assumptions</U></H5>
     <P><UL>
         <LI>The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed into your machine, and exists in <CODE>D:\java\jdk_142\</CODE>.  This means that <CODE>D:\java\jdk_142\bin\java.exe</CODE> exists.</LI>
-        <LI>PMD version 4.2.6 exists in <CODE>D:\java\pmd-4.2.6\</CODE>.  This means that <CODE>D:\java\pmd-4.2.6\lib\pmd-4.2.6.jar</CODE> (among other jar files in the same directory) exist.</LI>
+        <LI>PMD version 5.0 exists in <CODE>D:\java\pmd-5.0\</CODE>.  This means that <CODE>D:\java\pmd-5.0\lib\pmd-5.0.jar</CODE> (among other jar files in the same directory) exist.</LI>
     </UL></P>
     <H5><U>To integrate into TextPad</U></H5>
     <P><OL>
@@ -362,7 +362,7 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>Expand the <B>Tools</B> branch (if not already) by clicking on the '<CODE>+</CODE>' directly to its left.</LI>
         <LI>In the expanded list, select <B>PMD directory</B>.  This changes the right side of this dialog to the "tool" form.</LI>
         <LI>In the "tool" form, enter these parameters:<UL>
-            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-4.2.6\lib\pmd-4.2.6.jar;D:\java\pmd-4.2.6\lib\asm-3.2.jar;D:\java\pmd-4.2.6\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
+            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-5.0\lib\pmd-5.0.jar;D:\java\pmd-5.0\lib\asm-3.2.jar;D:\java\pmd-5.0\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
             <BR/>(<I>Eliminate the spaces following '<CODE>jaxen-1.1.1.jar;</CODE>' and '<CODE>asm-3.2.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
             <LI><B>Initial Folder:</B>  <CODE>$FileDir</CODE></LI>
             <LI><B>Save all documents first:</B>  <CODE>Checked</CODE></LI>
