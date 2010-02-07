@@ -47,7 +47,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     protected void addAttributesTo(Map<String, String> attributes) {
         super.addAttributesTo(attributes);
         
-        attributes.put("legalPackageNames", delimitedPackageNames());
+        attributes.put(legalPackagesKey, delimitedPackageNames());
     }
 	
     /**

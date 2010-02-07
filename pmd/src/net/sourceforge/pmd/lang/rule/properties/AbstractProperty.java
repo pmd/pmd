@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
+public abstract class AbstractProperty<T> implements PropertyDescriptor<T>, PropertyDescriptorFields {
 
 	private final String	name;
 	private final String	description;
@@ -33,8 +34,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	 * @throws IllegalArgumentException
 	 */
 	protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
-		name = checkNotEmpty(theName, "name");
-		description = checkNotEmpty(theDescription, "description");
+		name = checkNotEmpty(theName, nameKey);
+		description = checkNotEmpty(theDescription, descriptionKey);
 		defaultValue = theDefault;
 		isRequired = false;	// TODO - do we need this?
 		uiOrder = checkPositive(theUIOrder, "UI order");
@@ -380,8 +381,9 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	 * @param attributes Map<String,String>
 	 */
 	protected void addAttributesTo(Map<String, String> attributes) {
-		attributes.put("description", description);
-		attributes.put("default", defaultAsString());
+		attributes.put(nameKey, name);
+		attributes.put(descriptionKey, description);
+		attributes.put(defaultValueKey, defaultAsString());
 	}
 
 }

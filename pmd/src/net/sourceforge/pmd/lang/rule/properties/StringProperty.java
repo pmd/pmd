@@ -3,13 +3,13 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
-
 /**
  * Defines a datatype that supports single String values.
  * 
  * @author Brian Remedios
  */
 public class StringProperty extends AbstractProperty<String> {
+	
 	/**
 	 * Constructor for StringProperty.
 	 * @param theName String

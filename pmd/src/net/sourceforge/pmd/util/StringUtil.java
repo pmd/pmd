@@ -44,6 +44,9 @@ public final class StringUtil {
     	return true;
     }
     
+    public static boolean isNotEmpty(String value) {
+    	return !isEmpty(value);
+    }
     /**
      * Returns true if both strings are effectively null or whitespace,
      * returns false otherwise if they have actual text that differs.

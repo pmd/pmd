@@ -8,6 +8,7 @@ import java.util.Map;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
+ * @author Brian Remedios
  */
 public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<T> {
 
@@ -18,7 +19,6 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
     protected Object[][] choices;
 
     /**
-     * 
      * @param theName
      * @param theDescription
      * @param theLabels

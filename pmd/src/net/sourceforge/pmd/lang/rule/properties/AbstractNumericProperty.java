@@ -97,7 +97,7 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
 	protected void addAttributesTo(Map<String, String> attributes) {
 		super.addAttributesTo(attributes);
 		
-		attributes.put("min", lowerLimit.toString());
-		attributes.put("max", upperLimit.toString());
+		attributes.put(minKey, lowerLimit.toString());
+		attributes.put(maxKey, upperLimit.toString());
 	}
 }
