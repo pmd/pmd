@@ -430,6 +430,7 @@ Added Ecmascript as a supported language for CPD.
 The RuleSet XML Schema namespace is now: http://pmd.sourceforge.net/ruleset/2.0.0
 The RuleSet XML Schema is located in the source at: etc/ruleset_2_0_0.xsd
 The RuleSet DTD is located in the source at: etc/ruleset_2_0_0.dtd
+Improved include/exclude pattern matching performance for ends-with type patterns.
 
 New Java rules:
 
