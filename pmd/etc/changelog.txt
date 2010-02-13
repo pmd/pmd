@@ -16,6 +16,7 @@ Fix issue with Type Resolution incorrectly handling of Classes with same name as
 The JSP/JSF parser can now parse Unicode input.
 The JSP/JSP parser can now handle <script>...</script> tags.  The AST HtmlScript node contains the content.
 Added Ecmascript as a supported language for CPD.
+Improved include/exclude pattern matching performance for ends-with type patterns.
 
 Dependencies updates: asm updated to 3.2
 
