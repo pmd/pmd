@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 /**
  * Defines a datatype that supports the single Long property values within an upper and lower boundary.
  * 
@@ -10,6 +15,20 @@ package net.sourceforge.pmd.lang.rule.properties;
  */
 public class LongProperty extends AbstractNumericProperty<Long> {
 
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<LongProperty>(Long.class, numberFieldTypesByKey) {
+
+		public LongProperty createWith(Map<String, String> valuesById) {
+			final String minMax[] = minMaxFrom(valuesById);		
+			return new LongProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					Long.valueOf(minMax[0]),
+					Long.valueOf(minMax[1]),
+					Long.valueOf(numericDefaultValueIn(valuesById)),
+					0f);
+		}
+	};
+	
 	/**
 	 * Constructor for LongProperty.
 	 * @param theName String

@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 /**
  * Defines a property type that supports single Boolean values.
  * 
@@ -10,6 +15,17 @@ package net.sourceforge.pmd.lang.rule.properties;
  */
 public class BooleanProperty extends AbstractScalarProperty<Boolean> {
 
+	
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<BooleanProperty>(Boolean.class) {
+
+		public BooleanProperty createWith(Map<String, String> valuesById) {
+			return new BooleanProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					Boolean.valueOf(defaultValueIn(valuesById)),
+					0f);
+		}
+	};
 	/**
 	 * Constructor for BooleanProperty limited to a single value.
 	 * 

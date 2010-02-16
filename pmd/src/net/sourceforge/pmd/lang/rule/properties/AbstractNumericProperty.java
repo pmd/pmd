@@ -3,6 +3,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.Map;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
  * Maintains a pair of boundary limit values between which all values managed
@@ -14,6 +15,11 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
 
 	private Number lowerLimit;
 	private Number upperLimit;
+	
+	public static final Map<String, Boolean> numberFieldTypesByKey = BasicPropertyDescriptorFactory.expectedFieldTypesWith(
+			new String[]  { minKey,  	  maxKey}, 
+			new Boolean[] { Boolean.TRUE, Boolean.TRUE}
+			);
 	
 	/**
 	 * 

@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 /**
  * Defines a property type that supports single float property values within an upper and lower boundary.
  * 
@@ -10,6 +15,21 @@ package net.sourceforge.pmd.lang.rule.properties;
  */
 public class FloatProperty extends AbstractNumericProperty<Float> {
 
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<FloatProperty>(float.class, numberFieldTypesByKey) {
+
+		public FloatProperty createWith(Map<String, String> valuesById) {
+			final String minMax[] = minMaxFrom(valuesById);
+			return new FloatProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					Float.valueOf(minMax[0]),
+					Float.valueOf(minMax[1]),
+					Float.valueOf(numericDefaultValueIn(valuesById)),
+					0f);
+		}
+	};
+		
+	
 	/**
 	 * Constructor for FloatProperty that limits itself to a single value within the specified limits.
 	 * 

@@ -3,12 +3,28 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 /**
  * Defines a datatype that supports single String values.
  * 
  * @author Brian Remedios
  */
 public class StringProperty extends AbstractProperty<String> {
+	
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<StringProperty>(String.class) {
+
+		public StringProperty createWith(Map<String, String> valuesById) {
+			return new StringProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					defaultValueIn(valuesById),
+					0f);
+		}
+	};
 	
 	/**
 	 * Constructor for StringProperty.

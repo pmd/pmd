@@ -5,6 +5,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -16,6 +18,19 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
+
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<TypeMultiProperty>(Class[].class, packagedFieldTypesByKey) {
+		
+		public TypeMultiProperty createWith(Map<String, String> valuesById) {
+			return new TypeMultiProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					defaultValueIn(valuesById),
+					legalPackageNamesIn(valuesById),
+					0f);
+		}
+	};
+	
     /**
      * Constructor for TypeProperty.
      * @param theName String

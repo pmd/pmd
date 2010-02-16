@@ -5,6 +5,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -13,6 +15,19 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  */
 public class CharacterMultiProperty extends AbstractDelimitedProperty<Character[]> {
+	
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<CharacterMultiProperty>(Character[].class) {
+
+		public CharacterMultiProperty createWith(Map<String, String> valuesById) {
+			return new CharacterMultiProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					defaultValueIn(valuesById),
+					null
+					);
+		}
+	};
+	
 	/**
 	 * Constructor for CharacterProperty.
 	 * @param theName String

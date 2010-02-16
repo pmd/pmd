@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 
 /**
  * Defines a property type that support single double-type property values within an upper and lower boundary.
@@ -11,6 +16,20 @@ package net.sourceforge.pmd.lang.rule.properties;
  */
 public class DoubleProperty extends AbstractNumericProperty<Double> {
 
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<DoubleProperty>(Double.class, numberFieldTypesByKey) {
+
+		public DoubleProperty createWith(Map<String, String> valuesById) {
+			final String minMax[] = minMaxFrom(valuesById);
+			return new DoubleProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					Double.valueOf(minMax[0]),
+					Double.valueOf(minMax[1]),
+					Double.valueOf(numericDefaultValueIn(valuesById)),
+					0f);
+		}
+	};
+	
 	/**
 	 * Constructor for DoubleProperty.
 	 * @param theName String

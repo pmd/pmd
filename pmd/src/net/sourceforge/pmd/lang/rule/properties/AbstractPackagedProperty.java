@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 /**
  * Concrete subclasses manage items that reside within namespaces per the design of the Java language.
  * Rule developers can limit the range of permissible items by specifying portions of their package
@@ -17,6 +19,11 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 	private String[] legalPackageNames;
 
 	private static final char PACKAGE_NAME_DELIMITER = ' ';
+	
+	protected static final Map<String, Boolean> packagedFieldTypesByKey = BasicPropertyDescriptorFactory.expectedFieldTypesWith(
+			new String[]  { legalPackagesKey}, 
+			new Boolean[] { Boolean.FALSE}
+			);
 	
     
     protected static String[] packageNamesIn(Map<String, String> params) {

@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Enumeration;
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -14,6 +19,21 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  */
 public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Object[]> {
+	
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<EnumeratedMultiProperty>(Enumeration[].class) {
+
+		public EnumeratedMultiProperty createWith(Map<String, String> valuesById) {
+
+			return new EnumeratedMultiProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					labelsIn(valuesById),
+					choicesIn(valuesById),
+					indiciesIn(valuesById),
+					0f
+					);
+		}
+	};
 	
 	/**
 	 * Constructor for EnumeratedProperty.

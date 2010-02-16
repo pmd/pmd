@@ -11,12 +11,17 @@ import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
+/**
+ * 
+ * @author Brian Remedios
+ *
+ * @param <T>
+ */
 public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory, PropertyDescriptorFields {
 
 	private final Class<?> valueType;
 	private final Map<String, Boolean> fieldTypesByKey;
 
-		
 	protected static final Map<String, Boolean> coreFieldTypesByKey = CollectionUtil.mapFrom(
 			new String[]  { nameKey, 		descKey, 	defaultValueKey}, 
 			new Boolean[] { Boolean.TRUE,  Boolean.TRUE, Boolean.TRUE}
@@ -193,7 +198,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 		return StringUtil.substringsOf(names, '|');	// TODO - get const
 	}
 	
-	protected static Map<String, Boolean> expectedFieldTypesWith(String[] otherKeys, Boolean[] otherValues) {
+	public static Map<String, Boolean> expectedFieldTypesWith(String[] otherKeys, Boolean[] otherValues) {
 		Map<String, Boolean> largerMap = new HashMap<String, Boolean>(otherKeys.length + coreFieldTypesByKey.size());
 		largerMap.putAll(coreFieldTypesByKey);
 		for (int i=0; i<otherKeys.length; i++) largerMap.put(otherKeys[i], otherValues[i]);

@@ -3,12 +3,34 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 /**
  * Defines a datatype that supports multiple Integer property values within an upper and lower boundary.
  * 
  * @author Brian Remedios
  */
 public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]> {
+	
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<IntegerMultiProperty>(Integer[].class, numberFieldTypesByKey) {
+
+		public IntegerMultiProperty createWith(Map<String, String> valuesById) {
+			final String[] minMax = minMaxFrom(valuesById);
+			Integer[] defaultValues = integersIn(defaultValueIn(valuesById));
+			return new IntegerMultiProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					Integer.parseInt(minMax[0]),
+					Integer.parseInt(minMax[1]),
+					defaultValues,
+					0f
+					);
+		};
+	};	
+	
 	/**
 	 * Constructor for IntegerProperty.
 	 * @param theName String

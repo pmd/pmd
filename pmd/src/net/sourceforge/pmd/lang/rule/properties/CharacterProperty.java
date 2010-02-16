@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 
 /**
  * Defines a property type that supports single Character values.
@@ -11,6 +16,17 @@ package net.sourceforge.pmd.lang.rule.properties;
  */
 public class CharacterProperty extends AbstractProperty<Character> {
 
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<CharacterProperty>(Character.class) {
+
+		public CharacterProperty createWith(Map<String, String> valuesById) {
+			return new CharacterProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					new Character(defaultValueIn(valuesById).charAt(0)),
+					0f);
+		}
+	};
+	
 	/**
 	 * Constructor for CharacterProperty.
 	 * @param theName String

@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -18,7 +20,19 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  */
 public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]> {
-        
+       
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<MethodMultiProperty>(Method[].class, packagedFieldTypesByKey) {
+
+		public MethodMultiProperty createWith(Map<String, String> valuesById) {
+			return new MethodMultiProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					defaultValueIn(valuesById),
+					legalPackageNamesIn(valuesById),
+					0f);
+		}
+	};
+	
     /**
      * Constructor for MethodProperty.
      *

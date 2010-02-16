@@ -5,6 +5,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -17,6 +19,20 @@ public class StringMultiProperty extends AbstractDelimitedProperty<String[]> {
 		
 	public static final char DEFAULT_DELIMITER = '|';
 		
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<StringMultiProperty>(String[].class) {
+
+		public StringMultiProperty createWith(Map<String, String> valuesById) {
+			final char delimiter = delimiterIn(valuesById);
+			return new StringMultiProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					StringUtil.substringsOf(defaultValueIn(valuesById), delimiter),
+					0f,
+					delimiter
+					);
+		}
+	};
+	
 	/**
 	 * Constructor for StringProperty.
 	 * @param theName String

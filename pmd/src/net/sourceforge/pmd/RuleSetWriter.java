@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.AbstractNumericProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorFactory;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorFactories;
+import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
@@ -332,7 +332,7 @@ public class RuleSetWriter {
 	private Element createPropertyDefinitionElementBR(PropertyDescriptor<?> propertyDescriptor) {
 		
 		final Element propertyElement = createPropertyValueElement(propertyDescriptor, propertyDescriptor.defaultValue());
-		propertyElement.setAttribute(PropertyDescriptorFields.typeKey, PropertyDescriptorFactories.typeIdFor(propertyDescriptor.type()));
+		propertyElement.setAttribute(PropertyDescriptorFields.typeKey, PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type()));
 		
 		Map<String, String> propertyValuesById = propertyDescriptor.attributeValuesById();
 		for (Map.Entry<String, String> entry : propertyValuesById.entrySet()) {

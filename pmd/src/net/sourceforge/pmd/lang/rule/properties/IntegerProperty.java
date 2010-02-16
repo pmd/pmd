@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 /**
  * Defines a datatype that supports single Integer property values within an upper and lower boundary.
  * 
@@ -10,6 +15,20 @@ package net.sourceforge.pmd.lang.rule.properties;
  */
 public class IntegerProperty extends AbstractNumericProperty<Integer> {
 
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<IntegerProperty>(Integer.class, numberFieldTypesByKey) {
+
+		public IntegerProperty createWith(Map<String, String> valuesById) {
+			final String minMax[] = minMaxFrom(valuesById);		
+			return new IntegerProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					Integer.valueOf(minMax[0]),
+					Integer.valueOf(minMax[1]),
+					Integer.valueOf(numericDefaultValueIn(valuesById)),
+					0f);
+		}
+	};		
+	
 	/**
 	 * Constructor for IntegerProperty that limits itself to a single value within the specified limits. 
 	 * 

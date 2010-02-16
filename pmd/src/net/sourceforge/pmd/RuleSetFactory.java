@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorFactory;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorFactories;
+import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -612,7 +612,7 @@ public class RuleSetFactory {
     	    return;
     	}
     	
-    	net.sourceforge.pmd.PropertyDescriptorFactory pdFactory = PropertyDescriptorFactories.factoryFor(typeId);
+    	net.sourceforge.pmd.PropertyDescriptorFactory pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
     	if (pdFactory == null) {
     		throw new RuntimeException("No property descriptor factory for type: " + typeId);
     	}

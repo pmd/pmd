@@ -3,6 +3,12 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Enumeration;
+import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
 /**
  * Defines a datatype with a set of preset values of any type as held within a pair of
  * maps. While the values are not serialized out, the labels are and serve as keys to
@@ -12,6 +18,21 @@ package net.sourceforge.pmd.lang.rule.properties;
  * @author Brian Remedios
  */
 public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object> {
+	
+	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<EnumeratedProperty>(Enumeration.class) {
+
+		public EnumeratedProperty createWith(Map<String, String> valuesById) {
+
+			return new EnumeratedProperty(
+					nameIn(valuesById),
+					descriptionIn(valuesById),
+					labelsIn(valuesById),
+					choicesIn(valuesById),
+					indexIn(valuesById),
+					0f
+					);
+		}
+	};
 	
 	/**
 	 * Constructor for EnumeratedProperty.
