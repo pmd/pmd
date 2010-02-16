@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;

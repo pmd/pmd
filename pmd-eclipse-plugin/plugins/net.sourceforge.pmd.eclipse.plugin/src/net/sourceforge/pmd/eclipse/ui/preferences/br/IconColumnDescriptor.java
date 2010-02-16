@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -25,23 +26,22 @@ public class IconColumnDescriptor extends AbstractRuleColumnDescriptor {
 	
 	private static final Map<Object, String> iconNamesByValue = CollectionUtil.mapFrom(
 			new Object[] { RulePriority.LOW, RulePriority.MEDIUM_LOW, RulePriority.MEDIUM, RulePriority.MEDIUM_HIGH, RulePriority.HIGH }, 
-			new String[] {"btn_prio5.gif", "btn_prio4.gif", "btn_prio3.gif","btn_prio2.gif", "btn_prio1.gif"}
+			new String[] {PMDUiConstants.ICON_BUTTON_PRIO5, PMDUiConstants.ICON_BUTTON_PRIO4, PMDUiConstants.ICON_BUTTON_PRIO3, PMDUiConstants.ICON_BUTTON_PRIO2, PMDUiConstants.ICON_BUTTON_PRIO1}
 			);
 	
-	public static final RuleColumnDescriptor priority = new IconColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY, SWT.RIGHT, 53, RuleFieldAccessor.priority, true, iconNamesByValue, "/icons/");
+	public static final RuleColumnDescriptor priority = new IconColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY, SWT.RIGHT, 53, RuleFieldAccessor.priority, true, iconNamesByValue);
 	
-	public IconColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, Map<Object, String> imageNamesByValue, String optionalPath) {
+	public IconColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, Map<Object, String> imageNamesByValue) {
 		super(labelKey, theAlignment, theWidth, theAccessor, resizableFlag);
 
-		iconsByValue = iconsFor(imageNamesByValue, optionalPath);
+		iconsByValue = iconsFor(imageNamesByValue);
 	}
 	
-	private static Map<Object, Image> iconsFor(Map<Object, String> imageNamesByValue, String optionalPath) {
+	private static Map<Object, Image> iconsFor(Map<Object, String> imageNamesByValue) {
 		
 		Map<Object, Image> imagesByValue = new HashMap<Object, Image>(imageNamesByValue.size());
 		for (Map.Entry<Object, String> entry : imageNamesByValue.entrySet()) {
-			String fullPath = optionalPath == null ? entry.getValue() : optionalPath + entry.getValue();
-			imagesByValue.put(entry.getKey(), ResourceManager.imageFor(fullPath));
+			imagesByValue.put(entry.getKey(), ResourceManager.imageFor(entry.getValue()));
 			}
 		return imagesByValue;
 	}
