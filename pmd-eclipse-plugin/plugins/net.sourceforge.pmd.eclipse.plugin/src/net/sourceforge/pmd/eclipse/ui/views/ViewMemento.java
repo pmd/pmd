@@ -58,8 +58,8 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 
 /**
- * Provides Functions to save the State of a View during a Session, even when the view is cloes and re-opened Saves the State in a
- * XML-File in the Plugins-Path (Standard: .metadata in the workspace)
+ * Provides functions to save the state of a View during a session, even when the view is closed and re-opened 
+ * saves the state in an XML-File in the Plugins-Path (Standard: .metadata in the workspace)
  *
  * @author SebastianRaffel ( 24.05.2005 ), Philippe Herlin, Sven Jacob
  *
@@ -111,7 +111,7 @@ public class ViewMemento {
             }
         }
 
-        // Validate that memento has correctly been build
+        // Validate that the memento has been built
         if (this.memento == null) {
             throw new IllegalStateException("Memento has not been built correctly. Check error log for details");
         }
@@ -204,7 +204,7 @@ public class ViewMemento {
     }
 
     /**
-     * Returns a Mewmento with the given Attribute
+     * Returns a Memento with the given Attribute
      *
      * @param name
      * @return a Memento
@@ -262,7 +262,7 @@ public class ViewMemento {
     }
 
     /**
-     * puts an ArrayList into a Memento, the List is changed into a separated String
+     * puts an ArrayList into a Memento, the List is changed into a delimited String
      *
      * @param key
      * @param valueList
@@ -275,7 +275,7 @@ public class ViewMemento {
         }
         
         final StringBuilder sb = new StringBuilder(String.valueOf(valueList.get(0)));
-        for (int k = 0; k < valueList.size(); k++) {
+        for (int k = 1; k < valueList.size(); k++) {
             sb.append(LIST_SEPARATOR).append(valueList.get(k));
         }
 
