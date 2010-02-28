@@ -36,75 +36,37 @@
 
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TreeColumn;
 
 /**
  * Displays an Arrow-Image in a TableColumn, that shows in which Direction the Column is sorted
  * 
- * @author SebastianRaffel ( 22.05.2005 ), Philippe Herlin
- *
+ * @author SebastianRaffel ( 22.05.2005 ), Philippe Herlin, Brian Remedios
  */
 public class TableColumnSorter extends ViewerSorter {
 
     /**
-     * Constructor
-     * 
      * @param column, the column to sort
      * @param order, the Direction to sort by, -1 (desc) or 1 (asc)
      */
     public TableColumnSorter(TreeColumn column, int order) {
         super();
 
-        // we delete all other Images
-        // and set the current one
-        final TreeColumn[] columns = column.getParent().getColumns();
-        for (int i = 0; i < columns.length; i++) {
-            columns[i].setImage(null);
-        }
-
-        column.setImage(getImage(order));
+        column.getParent().setSortColumn(column);
+        column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
     }
 
     /**
-     * Constructor
-     * 
      * @param column, the column to sort
      * @param order, the Direction to sort by, -1 (desc) or 1 (asc)
      */
     public TableColumnSorter(TableColumn column, int order) {
         super();
 
-        // we delete all other Images
-        // and set the current one
-        final TableColumn[] columns = column.getParent().getColumns();
-        for (int i = 0; i < columns.length; i++) {
-            columns[i].setImage(null);
-        }
-
-        column.setImage(getImage(order));
-    }
-    
-    /**
-     * Retreive an image for the corresponding sort order.
-     * 
-     * @param order
-     * @return
-     */
-    private Image getImage(int order) {
-        Image image = null;
-
-        if (order == 1) {
-            image = PMDPlugin.getDefault().getImage("arrow_up", PMDUiConstants.ICON_LABEL_ARRUP);
-        } else if (order == -1) {
-            image = PMDPlugin.getDefault().getImage("arrow_dn", PMDUiConstants.ICON_LABEL_ARRDN);
-        }
-        
-        return image;
+        column.getParent().setSortColumn(column);
+        column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
     }
 }
