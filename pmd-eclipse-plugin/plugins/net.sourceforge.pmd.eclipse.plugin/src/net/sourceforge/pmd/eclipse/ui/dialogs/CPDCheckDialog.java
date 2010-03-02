@@ -38,6 +38,7 @@ package net.sourceforge.pmd.eclipse.ui.dialogs;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -54,28 +55,28 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Spinner;
 
 /**
  *
- * @author Sven
- *
+ * @author Sven, Brian Remedios
  */
 
 public class CPDCheckDialog extends Dialog {
+	
     private final String[] languages;
     private final String[] formats;
     private int selectedFormat;
     private String selectedLanguage;
     private boolean createReport;
-    private String tileSize;
 
     private Group reportGroup = null;
     private Button createReportCheckbox = null;
     private Combo languageCombo = null;
-    private Text minimumTileSizeText = null;
+    private Spinner minTileSizeSpinner = null;
     private Combo formatCombo = null;
-
+    private int tileSize = defaultMinTileSize();
+    
     public CPDCheckDialog(Shell parentShell, String[] languages, String[] formats) {
         super(parentShell);
         this.languages = languages;
@@ -112,22 +113,8 @@ public class CPDCheckDialog extends Dialog {
         return selectedLanguage;
     }
 
-    /**
-     * Gets the tile-size.
-     * @return tile size
-     */
-    public int getTileSize() {
-        int tilesize = 0;
-        try {
-            tilesize = Integer.parseInt(tileSize);
-            if (tilesize <=0) {
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException e) {
-            tilesize = PMDPlugin.getDefault().loadPreferences().getMinTileSize();
-            PMDPlugin.getDefault().logInformation("Invalid minimum tile-size: Setting to default value of " + tilesize);
-        }
-        return tilesize;
+    private int defaultMinTileSize() {
+    	return PMDPlugin.getDefault().loadPreferences().getMinTileSize();
     }
 
     /**
@@ -142,6 +129,10 @@ public class CPDCheckDialog extends Dialog {
         return createReport;
     }
 
+    public int getTileSize() {
+    	return tileSize;
+    }
+    
     /**
      * Initializes the container.
      * @param container
@@ -154,12 +145,7 @@ public class CPDCheckDialog extends Dialog {
         final GridData gridData6 = new GridData();
         gridData6.horizontalAlignment = GridData.END;
         gridData6.verticalAlignment = GridData.CENTER;
-        final GridData gridData5 = new GridData();
-        gridData5.horizontalAlignment = GridData.FILL;
-        gridData5.grabExcessHorizontalSpace = true;
-        gridData5.horizontalIndent = 10;
-        gridData5.heightHint = -1;
-        gridData5.verticalAlignment = GridData.CENTER;
+
         final GridData gridData4 = new GridData();
         gridData4.verticalIndent = 5;
         gridData4.horizontalIndent = 5;
@@ -183,31 +169,41 @@ public class CPDCheckDialog extends Dialog {
         final Label minimumTileSizeLabel = new Label(container, SWT.NONE);
         minimumTileSizeLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_MIN_TILESIZE_LABEL));
         minimumTileSizeLabel.setLayoutData(gridData7);
-        minimumTileSizeText = new Text(container, SWT.BORDER);
-        minimumTileSizeText.setLayoutData(gridData5);
-        minimumTileSizeText.setToolTipText(getString(StringKeys.MSGKEY_DIALOG_TOOLTIP_CPD_MIN_TILESIZE));
-        final int minTileSize = PMDPlugin.getDefault().loadPreferences().getMinTileSize();
-        final String minTileSizeString = Integer.toString(minTileSize);
-        this.tileSize = minTileSizeString;
-        minimumTileSizeText.setText(minTileSizeString);
-        minimumTileSizeText.setTextLimit(3);
-
-
-        minimumTileSizeText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                tileSize = minimumTileSizeText.getText();
-            }
-        });
-
+        
+        createTileSizeSpinner(container);
+       
         createReportGroup(container);
     }
+    
+    private void createTileSizeSpinner(Composite container) {
+    	
+        final GridData gridData5 = new GridData();
+        gridData5.horizontalAlignment = GridData.FILL;
+        gridData5.grabExcessHorizontalSpace = true;
+        gridData5.horizontalIndent = 10;
+        gridData5.heightHint = -1;
+        gridData5.verticalAlignment = GridData.CENTER;
+        
+        minTileSizeSpinner = new Spinner(container, SWT.BORDER);
+        minTileSizeSpinner.setLayoutData(gridData5);
+        minTileSizeSpinner.setToolTipText(getString(StringKeys.MSGKEY_DIALOG_TOOLTIP_CPD_MIN_TILESIZE));   
+        minTileSizeSpinner.setMinimum(tileSize);
+        minTileSizeSpinner.setTextLimit(3);
 
+        minTileSizeSpinner.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                tileSize = Integer.parseInt( minTileSizeSpinner.getText() );
+            }
+        });
+    }
+    
     /**
      * This method initializes reportGroup
      * @param container
      *
      */
     private void createReportGroup(Composite container) {
+    	
         final GridData gridData7 = new GridData();
         gridData7.horizontalAlignment = GridData.BEGINNING;
         gridData7.horizontalIndent = 30;
@@ -268,7 +264,7 @@ public class CPDCheckDialog extends Dialog {
         gridData4.verticalIndent = 10;
         gridData4.horizontalIndent = 10;
         gridData4.horizontalAlignment = GridData.FILL;
-        languageCombo = new Combo(container, SWT.DROP_DOWN);
+        languageCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
         languageCombo.setLayoutData(gridData4);
         languageCombo.setItems(languages);
         languageCombo.select(0);
@@ -307,6 +303,6 @@ public class CPDCheckDialog extends Dialog {
      * @return requested message
      */
     private String getString(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
+        return SWTUtil.stringFor(key);
     }
 }
