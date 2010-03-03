@@ -24,7 +24,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * Base class for a processable command. Such command doesn't execute on itself
+ * Base class for processable commands. Such command doesn't execute on itself
  * but are explicitly executed by a processor which acts as an execution
  * environment.
  * @see name.herlin.command.CommandProcessor for more details on processor.
@@ -123,7 +123,7 @@ public abstract class AbstractProcessableCommand implements Command {
      * @return the current strategy to compute the best processor for that
      * command. The default is to find a concrete strategy in the strategy
      * bundle. If none found (or if the class cannot be loaded or instantiated)
-     * the default strategy of the framework is returned. Developpers of
+     * the default strategy of the framework is returned. Developers of
      * concrete commands may override this method to return a strategy of their
      * own without using the bundle. But in any case, the return of that method
      * MUST NOT be null.

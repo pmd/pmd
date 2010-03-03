@@ -30,7 +30,7 @@ public class UnregisteredCommandException extends CommandException {
 
     /**
      * @param message the exception message
-     * @param cause a root causse
+     * @param cause a root cause
      */
     public UnregisteredCommandException(String message, Throwable cause) {
         super(message, cause);

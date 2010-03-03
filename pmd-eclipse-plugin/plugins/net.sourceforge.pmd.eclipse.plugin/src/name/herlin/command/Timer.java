@@ -37,7 +37,7 @@
 package name.herlin.command;
 
 /**
- * This class lets mesure time
+ * This class lets measure time
  * 
  * @author Herlin
  *
@@ -48,7 +48,7 @@ public class Timer {
     private long topStop;
     
     /**
-     * Default constructor. Start the timer
+     * Default constructor that also starts the timer
      *
      */
     public Timer() {
@@ -65,7 +65,7 @@ public class Timer {
     }
     
     /**
-     * @return mesured interval in milliseconds
+     * @return measured interval in milliseconds
      */
     public long getDuration() {
         return this.topStop - this.topStart;
