@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -38,13 +39,14 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  *
  */
 public class GeneralPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
+	
     private static final String[] LOG_LEVELS = { "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "ALL" };
 
     private Text additionalCommentText;
     private Label sampleLabel;
     private Button showPerspectiveBox;
     private Button useProjectBuildPath;
-    private Text maxViolationsPerFilePerRule;
+    private Spinner maxViolationsPerFilePerRule;
     private Button reviewPmdStyleBox;
     private IPreferences preferences;
     private Text logFileNameText;
@@ -322,19 +324,12 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * @param parent
      * @return
      */
-    private Text buildMaxViolationsPerFilePerRuleText(Composite parent) {
+    private Spinner buildMaxViolationsPerFilePerRuleText(Composite parent) {
         buildLabel(parent, StringKeys.MSGKEY_PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR);
-        final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
-        text.setText(String.valueOf(this.preferences.getMaxViolationsPerFilePerRule()));
-        text.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR));
-
-        text.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                validateTextIsNumeric(text);
-            }
-        });
-
-        return text;
+        final Spinner spinner = new Spinner(parent, SWT.SINGLE | SWT.BORDER);
+        spinner.setMinimum(preferences.getMaxViolationsPerFilePerRule());
+        spinner.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR));
+        return spinner;
     }
 
     /**
@@ -368,7 +363,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         }
 
         if (this.maxViolationsPerFilePerRule != null) {
-            this.maxViolationsPerFilePerRule.setText(String.valueOf(IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT));
+            this.maxViolationsPerFilePerRule.setMinimum(IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
         }
 
         if (this.reviewPmdStyleBox !=null) {
@@ -399,21 +394,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         } catch (IllegalArgumentException e) {
             setMessage(getMessage(StringKeys.MSGKEY_PREF_GENERAL_MESSAGE_INCORRECT_FORMAT), ERROR);
-            setValid(false);
-        }
-    }
-
-    /**
-     * Check if the entry filed is a numeric value
-     *
-     */
-    protected void validateTextIsNumeric(Text text) {
-        try {
-            Integer.valueOf(text.getText());
-            setMessage(getMessage(StringKeys.MSGKEY_PREF_GENERAL_HEADER), NONE);
-            setValid(true);
-        } catch (NumberFormatException e) {
-            setMessage(getMessage(StringKeys.MSGKEY_PREF_GENERAL_MESSAGE_INVALID_NUMERIC_VALUE), ERROR);
             setValid(false);
         }
     }

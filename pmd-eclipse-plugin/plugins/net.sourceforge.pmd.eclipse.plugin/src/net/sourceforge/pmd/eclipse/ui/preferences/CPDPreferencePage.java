@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -20,12 +20,13 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * Preference page for CPD properties
  *
  * @author ?
- * @author Philippe Herlin
+ * @author Philippe Herlin, Brian Remedios
  *
  */
 public class CPDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-    private Text minTileText;
-    private Label minTileLabel;
+	
+    private Spinner	 	minTileSizeSpinner;
+    private Label 		minTileLabel;
     private IPreferences preferences;
 
     /**
@@ -74,13 +75,13 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         minTileLabel = new Label(group, SWT.NULL);
         minTileLabel.setText(getMessage(StringKeys.MSGKEY_PREF_CPD_TILESIZE));
 
-        minTileText = new Text(group, SWT.BORDER);
-        minTileText.setText(String.valueOf(this.preferences.getMinTileSize()));
+        minTileSizeSpinner = new Spinner(group, SWT.BORDER);
+        minTileSizeSpinner.setMinimum(preferences.getMinTileSize());
 
         // layout children
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.grabExcessHorizontalSpace = true;
-        minTileText.setLayoutData(data);
+        minTileSizeSpinner.setLayoutData(data);
 
         return group;
     }
@@ -89,14 +90,14 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
-        this.minTileText.setText(String.valueOf(IPreferences.MIN_TILE_SIZE_DEFAULT));
+        this.minTileSizeSpinner.setMinimum(IPreferences.MIN_TILE_SIZE_DEFAULT);
     }
 
     /**
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
     public boolean performOk() {
-        this.preferences.setMinTileSize(Integer.valueOf(this.minTileText.getText()).intValue());
+        this.preferences.setMinTileSize(Integer.valueOf(minTileSizeSpinner.getText()).intValue());
         this.preferences.sync();
 
         return super.performOk();
