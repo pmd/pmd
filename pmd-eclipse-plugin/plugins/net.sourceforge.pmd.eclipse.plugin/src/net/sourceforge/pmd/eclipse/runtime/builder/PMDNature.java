@@ -1,13 +1,10 @@
 package net.sourceforge.pmd.eclipse.runtime.builder;
 
 
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -18,9 +15,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
  *
  */
 public class PMDNature implements IProjectNature {
+	
     public static final String PMD_NATURE = "net.sourceforge.pmd.eclipse.plugin.pmdNature";
     private IProject project;
-
+    
     /**
      * @see org.eclipse.core.resources.IProjectNature#configure()
      */
@@ -117,8 +115,7 @@ public class PMDNature implements IProjectNature {
            }
            description.setNatureIds(newNatureIds);
            project.setDescription(description, monitor);
-           project.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-           project.deleteMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
+           MarkerUtil.deleteAllMarkersIn(project);
        }
 
        return success;
