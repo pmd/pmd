@@ -11,6 +11,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -229,7 +230,7 @@ public class RuleSetSelectionDialog extends Dialog {
         int selectionIndex = this.inputCombo.getSelectionIndex();
         if (selectionIndex == -1) {
             importedRuleSetName = inputCombo.getText();
-            if (!importedRuleSetName.equals("")) {
+            if (!StringUtil.isEmpty(importedRuleSetName)) {
                 try {
                     final RuleSetFactory factory = new RuleSetFactory();
                     this.selectedRuleSet = factory.createRuleSets(this.importedRuleSetName).getAllRuleSets()[0];
