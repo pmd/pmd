@@ -10,6 +10,7 @@ import org.eclipse.jface.preference.PreferenceStore;
 
 /**
  * 
+ *  
  * @author Brian Remedios
  */
 public class PreferenceUIStore {
@@ -38,8 +39,8 @@ public class PreferenceUIStore {
 	
 	private static String defaultHiddenColumnNames() {
 		 Set<String> colNames = new HashSet<String>(defaultHiddenColumns.length);
-		 for (int i=0; i<defaultHiddenColumns.length; i++) {
-			 colNames.add(defaultHiddenColumns[i].label());
+		 for (RuleColumnDescriptor rcDesc : defaultHiddenColumns) {
+			 colNames.add(rcDesc.label());
 		 }
 		 return SWTUtil.asString(colNames, stringSeparator);
 	}
@@ -49,6 +50,7 @@ public class PreferenceUIStore {
 	}
 		
 	private void initialize() {
+	//	TODO - replace this with the existing ViewMemento 
 		preferenceStore = new PreferenceStore(filename);
 
 	    try {

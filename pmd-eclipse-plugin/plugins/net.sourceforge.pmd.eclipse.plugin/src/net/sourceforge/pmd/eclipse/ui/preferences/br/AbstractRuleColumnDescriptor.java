@@ -43,7 +43,7 @@ public abstract class AbstractRuleColumnDescriptor implements RuleColumnDescript
 
         tc.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event e) {
-             sortListener.sortBy(accessor());
+             sortListener.sortBy(accessor(), e.widget);
       //       tc.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_LABEL_ARRDN));
             }
           });  

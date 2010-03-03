@@ -214,8 +214,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	@Override
 	public boolean performCancel() {
 		
-		PreferenceUIStore.instance.save();
-		
+		PreferenceUIStore.instance.save();		
 		return super.performCancel();
 	}
 	
@@ -353,6 +352,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return sb.toString();
 	}
 
+	public static Rule ruleFrom(String ruleName) {
+		return null;
+	}
+	
 	public static String ruleSetNameFrom(Rule rule) {
 		return ruleSetNameFrom( rule.getRuleSetName() );
 	}
@@ -363,8 +366,23 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         return pos < 0 ? rulesetName : rulesetName.substring(0, pos-1);
     }
 	
-	private void redrawTable() {
+    private TreeColumn columnFor(String tooltipText) {
+    	for (TreeColumn column : ruleTreeViewer.getTree().getColumns()) {
+    		if (column.getToolTipText().equals(tooltipText)) return column;
+    	}
+    	return null;
+    }
+    
+    private void redrawTable() {
+    	redrawTable("-", -1);
+    }
+    
+	private void redrawTable(String sortColumnLabel, int sortDir) {
 		groupBy(groupingColumn);
+		
+		TreeColumn sortColumn = columnFor(sortColumnLabel);
+		ruleTreeViewer.getTree().setSortColumn(sortColumn);
+		ruleTreeViewer.getTree().setSortDirection(sortDir);
 	}
 
 	private Composite buildGroupCombo(Composite parent, String comboLabelKey) {
@@ -1416,14 +1434,17 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		}
 	}
 
-	public void sortBy(RuleFieldAccessor accessor) {
+	public void sortBy(RuleFieldAccessor accessor, Object context) {
 
+		TreeColumn column = (TreeColumn)context;
+		
 		if (columnSorter == accessor) {
 			sortDescending = !sortDescending;
 		} else {
 			columnSorter = accessor;
 		}
-		redrawTable();
+		
+		redrawTable(column.getToolTipText(), sortDescending ? SWT.DOWN : SWT.UP);
 	}
 
 	
