@@ -90,7 +90,7 @@
       <page
             name="%preferences.rulesets"
             category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
-            class="net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage"
+            class="net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage"
             id="net.sourceforge.pmd.eclipse.ui.preferences.pmdPreferencePage">
       </page>
          
@@ -138,6 +138,7 @@
             id="net.sourceforge.pmd.eclipse.ui.pmdProjectContribution">
          <menu
                label="%menu.pmd"
+               icon="icons/pmd-icon-16.gif"
                path="additions"
                id="pmd.menu">
             <separator
@@ -146,7 +147,7 @@
          </menu>
          <action
                label="%action.checkpmd"
-               icon="icons/pmd-icon-16.gif"
+               icon="icons/icon_run.gif"
                class="net.sourceforge.pmd.eclipse.ui.actions.PMDCheckAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
@@ -178,7 +179,7 @@
          </action>
          <action
                label="%action.generatereport"
-               icon="icons/pmd-icon-16.gif"
+               icon="icons/file.gif"
                class="net.sourceforge.pmd.eclipse.ui.actions.GenerateReportAction"
                menubarPath="pmd.menu/group"
                enablesFor="1"
@@ -366,17 +367,24 @@
             category="net.sourceforge.pmd.eclipse.ui.views"
             name="%view.overview"
             id="net.sourceforge.pmd.eclipse.ui.views.violationOverview"/>
+<!--      <view												temporary placement, under construction
+            allowMultiple="false"
+            icon="icons/icon_overview.gif"
+            class="net.sourceforge.pmd.eclipse.ui.views.br.ViolationOverviewBR"
+            category="net.sourceforge.pmd.eclipse.ui.views"
+            name="Violation Overview BR"
+            id="net.sourceforge.pmd.eclipse.ui.views.violationOverview.br"/>  -->
       <view
             allowMultiple="false"
-            icon="icons/pmd-icon-16.gif"
-            class="net.sourceforge.pmd.eclipse.ui.views.DataflowView"
+            icon="icons/icon_dataflow.png"
+            class="net.sourceforge.pmd.eclipse.ui.views.dataflow.DataflowView"
             category="net.sourceforge.pmd.eclipse.ui.views"
             name="%view.dataflowview"
             id="net.sourceforge.pmd.eclipse.ui.views.dataflowView"/>
       <view
             allowMultiple="false"
             category="net.sourceforge.pmd.eclipse.ui.views"
-            class="net.sourceforge.pmd.eclipse.ui.views.CPDView"
+            class="net.sourceforge.pmd.eclipse.ui.views.cpd.CPDView"
             icon="icons/icon_cpd.gif"
             id="net.sourceforge.pmd.eclipse.ui.views.CPDView"
             name="%view.cpd"/>

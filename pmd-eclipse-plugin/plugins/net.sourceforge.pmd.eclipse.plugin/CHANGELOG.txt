@@ -1,4 +1,17 @@
 Change log for the PMD Eclipse plugin
+
+v4.0.0 - xxx 2010?
+. Overhauled rule preferences screen
+.    Allows users to group/edit rules by multiple criteria
+.    provides ability to enable/disable rules without removing them
+.    larger editors for the various fields
+.    group editing of filter exclusion rules
+.    Color-tagged expressions in shown in rule table
+.    new property editors are fully type-aware
+. Huge code cleanup
+. Several usability fixes for the Dataflow view
+. Updated to use latest SWT widgets wherever possible
+
 -------------------------------------
 v3.2.5 - October 13 2008
 
