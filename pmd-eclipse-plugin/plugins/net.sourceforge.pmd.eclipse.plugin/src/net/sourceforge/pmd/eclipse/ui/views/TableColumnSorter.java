@@ -55,8 +55,8 @@ public class TableColumnSorter extends ViewerSorter {
     public TableColumnSorter(TreeColumn column, int order) {
         super();
 
-        column.getParent().setSortColumn(column);
-        column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
+//        column.getParent().setSortColumn(column);
+//        column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
     }
 
     /**
@@ -66,7 +66,7 @@ public class TableColumnSorter extends ViewerSorter {
     public TableColumnSorter(TableColumn column, int order) {
         super();
 
-        column.getParent().setSortColumn(column);
-        column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
+ //       column.getParent().setSortColumn(column);
+//        column.getParent().setSortDirection(order == 1 ? SWT.UP : SWT.DOWN);
     }
 }

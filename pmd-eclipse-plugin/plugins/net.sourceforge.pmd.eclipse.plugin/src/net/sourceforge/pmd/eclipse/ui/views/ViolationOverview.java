@@ -42,7 +42,7 @@ import java.util.List;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.cmd.DeleteMarkersCommand;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
@@ -55,7 +55,6 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.util.NumericConstants;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
@@ -109,8 +108,6 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     protected final static String PROJECT_LIST = "projectFilterList";
     protected final static String COLUMN_WIDTHS = "tableColumnWidths";
     protected final static String COLUMN_SORTER = "tableColumnSorter";
-
-    public static final IMarker[] emptyMarkers = new IMarker[0];
 
     /**
      * Shows packages -> files -> markers.
@@ -634,7 +631,6 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
                 return vioPerLoc1.compareTo(vioPerLoc2) * sortOrder;
             }
 
-
         };
     }
 
@@ -742,7 +738,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     public void deleteMarkers(AbstractPMDRecord element) throws CoreException {
         if (element instanceof MarkerRecord) {
             final MarkerRecord record = (MarkerRecord) element;
-            IMarker[] markers = emptyMarkers;
+            IMarker[] markers = MarkerUtil.EMPTY_MARKERS;
 
             switch (getShowType()) {
             case SHOW_PACKAGES_FILES_MARKERS:
@@ -765,7 +761,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         } else if (element instanceof AbstractPMDRecord) {
             // simply delete markers from resource
             final AbstractPMDRecord record = element;
-            record.getResource().deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+            MarkerUtil.deleteAllMarkersIn(record.getResource());
         }
     }
 
@@ -831,7 +827,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     }
 
     /**
-     * Private Control Adpater to handle column width change.
+     * Private Control Adapter to handle column width changes.
      */
     private class ColumnControlAdapter extends ControlAdapter {
         private final int column;

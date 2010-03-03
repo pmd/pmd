@@ -64,14 +64,14 @@ public class FileToMarkerRecord extends AbstractPMDRecord {
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#createChildren()
      */
     protected AbstractPMDRecord[] createChildren() {
-        return AbstractPMDRecord.EMPTY_RECORDS;
+        return EMPTY_RECORDS;
     }
 
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getChildren()
      */
     public AbstractPMDRecord[] getChildren() {
-        return AbstractPMDRecord.EMPTY_RECORDS;
+        return EMPTY_RECORDS;
     }
 
     /* (non-Javadoc)

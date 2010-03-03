@@ -353,8 +353,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
         final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
 
         // we got through the changed Projects
-        for (int i = 0; i < changedProjects.size(); i++) {
-            final IProject project = changedProjects.get(i);
+        for (IProject project : changedProjects) {
             LOG.debug("Processing changes for project " + project.getName());
             ProjectRecord projectRec = (ProjectRecord) this.root.findResource(project);
 
@@ -396,7 +395,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      *
      * @param project
      * @param changedFiles, a List of all changed Files
-     * @return an ArrayList of ArrayLists containing additions [0], removals [1]
+     * @return an List of Lists containing additions [0], removals [1]
      *         and changes [2] (Array-Position in Brackets)
      */
     protected List<AbstractPMDRecord>[] updateFiles(IProject project, List<IResource> changedFiles) {
@@ -445,8 +444,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
 
         LOG.debug("Analyses project " + project.getName());
 
-        for (int i = 0; i < changedFiles.size(); i++) {
-            final IResource resource = changedFiles.get(i);
+        for (IResource resource : changedFiles) {
             LOG.debug("Analyses resource " + resource.getName());
 
             // ... and first check, if the project is the right one

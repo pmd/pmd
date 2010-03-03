@@ -1,18 +1,16 @@
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
-import org.eclipse.jface.action.Action;
-
 /**
- * Allows to Switch betwwen Package and Files or Files only view in the Violation Ovberview
+ * Allows to Switch between Package and Files or Files only view in the Violation Overview
  * 
  * @author SebastianRaffel ( 22.05.2005 )
  */
-public class PackageSwitchAction extends Action {
+public class PackageSwitchAction extends AbstractPMDAction {
 
     private ViolationOverview violationView;
 
@@ -23,12 +21,12 @@ public class PackageSwitchAction extends Action {
      */
     public PackageSwitchAction(ViolationOverview view) {
         violationView = view;
-
-        // set Image and Tooltip-Text
-        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILES));
-        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_PACKAGES_FILES));
     }
 
+ 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_FILES; }
+    
+    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_PACKAGES_FILES; }
+    
     /**
      * @return the Style, in which the Button is displayed
      */
@@ -57,11 +55,9 @@ public class PackageSwitchAction extends Action {
      */
     public void setChecked(boolean checked) {
         // we use this Function to change the Images of the Action's Button
-        if (checked == true) {
-            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PACKFILES));
-        } else {
-            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILES));
-        }
+    	
+        setImageDescriptor(PMDPlugin.getImageDescriptor(checked ? PMDUiConstants.ICON_BUTTON_PACKFILES : PMDUiConstants.ICON_BUTTON_FILES));
+        
         super.setChecked(checked);
     }
 }

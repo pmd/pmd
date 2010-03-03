@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Shell;
  * @author Philippe Herlin
  *
  */
-public class ReviewAction extends ViolationSelectionAction {
+public class ReviewAction extends AbstractViolationSelectionAction {
     private static final Logger log = Logger.getLogger(ReviewAction.class);
     private IProgressMonitor monitor;
 
@@ -44,48 +44,49 @@ public class ReviewAction extends ViolationSelectionAction {
      */
     public ReviewAction(TableViewer viewer) {
         super(viewer);
-
-        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_REVIEW));
-        setText(getString(StringKeys.MSGKEY_VIEW_ACTION_REVIEW));
-        setToolTipText(getString(StringKeys.MSGKEY_VIEW_TOOLTIP_REVIEW));
     }
 
+ 	protected String textId() { return StringKeys.MSGKEY_VIEW_ACTION_REVIEW; }
+ 	
+ 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_REVIEW; }
+    
+    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_REVIEW; } 
+    
     /**
      * @see org.eclipse.jface.action.IAction#run()
      */
     public void run() {
         final IMarker[] markers = getSelectedViolations();
-        final boolean reviewPmdStyle = PMDPlugin.getDefault().loadPreferences().isReviewPmdStyleEnabled();
+        if (markers == null) return;
+        
+        final boolean reviewPmdStyle = loadPreferences().isReviewPmdStyleEnabled();
 
-        if (markers != null) {
+        // Get confirmation if multiple markers are selected
+        // Not necessary when using PMD style
+        boolean go = true;
+        if (markers.length > 1 && !reviewPmdStyle) {
+            String title = getString(StringKeys.MSGKEY_CONFIRM_TITLE);
+            String message = getString(StringKeys.MSGKEY_CONFIRM_REVIEW_MULTIPLE_MARKERS);
+            Shell shell = Display.getCurrent().getActiveShell();
+            go = MessageDialog.openConfirm(shell, title, message);
+        }
 
-            // Get confirmation if multiple markers are selected
-            // Not necessary when using PMD style
-            boolean go = true;
-            if (markers.length > 1 && !reviewPmdStyle) {
-                String title = getString(StringKeys.MSGKEY_CONFIRM_TITLE);
-                String message = getString(StringKeys.MSGKEY_CONFIRM_REVIEW_MULTIPLE_MARKERS);
-                Shell shell = Display.getCurrent().getActiveShell();
-                go = MessageDialog.openConfirm(shell, title, message);
-            }
-
-            // If only one marker selected or user has confirmed, review violation
-            if (go) {
-                try {
-                    ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
-                    dialog.run(false, false, new IRunnableWithProgress() {
-                        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                            setMonitor(monitor);
-                            monitor.beginTask(getString(StringKeys.MSGKEY_MONITOR_REVIEW), 5);
-                            insertReview(markers[0], reviewPmdStyle);
-                            monitor.done();
-                        }
-                    });
-                } catch (InvocationTargetException e) {
-                    PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
-                } catch (InterruptedException e) {
-                    PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
-                }
+        // If only one marker selected or user has confirmed, review violation
+        if (go) {
+            try {
+                ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
+                dialog.run(false, false, new IRunnableWithProgress() {
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                        setMonitor(monitor);
+                        monitor.beginTask(getString(StringKeys.MSGKEY_MONITOR_REVIEW), 5);
+                        insertReview(markers[0], reviewPmdStyle);
+                        monitor.done();
+                    }
+                });
+            } catch (InvocationTargetException e) {
+                PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+            } catch (InterruptedException e) {
+                PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
             }
         }
     }
@@ -196,13 +197,18 @@ public class ReviewAction extends ViolationSelectionAction {
         return lineStart;
     }
 
+    public static String additionalCommentTxt() {
+    	String additionalCommentPattern = loadPreferences().getReviewAdditionalComment();
+    	return MessageFormat.format(
+    		additionalCommentPattern, 
+    		new Object[] { System.getProperty("user.name", ""), new Date() }
+    		);
+    }
+    
     /**
      * Insert a review comment with the Plugin style
      */
     private String addPluginReviewComment(String sourceCode, int offset, IMarker marker) {
-        String additionalCommentPattern = PMDPlugin.getDefault().loadPreferences().getReviewAdditionalComment();
-        String additionalComment = MessageFormat.format(additionalCommentPattern, new Object[] {
-                System.getProperty("user.name", ""), new Date() });
 
         // Copy the source code until the violation line not included
         StringBuilder sb = new StringBuilder(sourceCode.substring(0, offset));
@@ -211,8 +217,7 @@ public class ReviewAction extends ViolationSelectionAction {
         sb.append(computeIndent(sourceCode, offset));
         sb.append(PMDRuntimeConstants.PLUGIN_STYLE_REVIEW_COMMENT);
         sb.append(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, ""));
-        sb.append(": ");
-        sb.append(additionalComment);
+        sb.append(": ").append(additionalCommentTxt());
         sb.append(System.getProperty("line.separator"));
 
         // Copy the rest of the source code
@@ -226,9 +231,6 @@ public class ReviewAction extends ViolationSelectionAction {
      */
     private String addPmdReviewComment(String sourceCode, int offset, IMarker marker) {
         String result = sourceCode;
-        String additionalCommentPattern = PMDPlugin.getDefault().loadPreferences().getReviewAdditionalComment();
-        String additionalComment = MessageFormat.format(additionalCommentPattern, new Object[] {
-                System.getProperty("user.name", ""), new Date() });
 
         // Find the end of line
         int index = sourceCode.substring(offset).indexOf('\r');
@@ -247,10 +249,8 @@ public class ReviewAction extends ViolationSelectionAction {
             StringBuilder sb = new StringBuilder(sourceCode.substring(0, index));
 
             // Add the review comment
-            sb.append(' ');
-            sb.append(PMDRuntimeConstants.PMD_STYLE_REVIEW_COMMENT);
-            sb.append(' ');
-            sb.append(additionalComment);
+            sb.append(' ').append(PMDRuntimeConstants.PMD_STYLE_REVIEW_COMMENT);
+            sb.append(' ').append(additionalCommentTxt());
 
             // Copy the rest of the code
             sb.append(sourceCode.substring(index));
@@ -263,7 +263,7 @@ public class ReviewAction extends ViolationSelectionAction {
     /**
      * Calcul l'indentation employée sur la ligne du marker
      */
-    private String computeIndent(String sourceCode, int offset) {
+    private static String computeIndent(String sourceCode, int offset) {
         StringBuilder indent = new StringBuilder();
         int i = 0;
 
@@ -296,10 +296,4 @@ public class ReviewAction extends ViolationSelectionAction {
         }
     }
 
-    /**
-     * Helper method to retrieve an NLS string from its key
-     */
-    private String getString(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
-    }
 }

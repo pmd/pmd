@@ -84,15 +84,12 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
             this.file = (IFile) resource;
 
             try {
-                ProgressMonitorDialog dialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                        .getShell());
+                ProgressMonitorDialog dialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
                 dialog.run(false, false, this);
             } catch (InvocationTargetException e) {
-                PMDPlugin.getDefault().showError(
-                        PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+                showError(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
             } catch (InterruptedException e) {
-                PMDPlugin.getDefault().showError(
-                        PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
+                showError(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
             }
         }
 
@@ -123,12 +120,14 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
 
             monitor.worked(1);
         } catch (CoreException e) {
-            PMDPlugin.getDefault().showError(
-                    PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            showError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
-            PMDPlugin.getDefault().showError(
-                    PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_IO_EXCEPTION), e);
+            showError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
         }
     }
 
+    private void showError(String errorId, Throwable throwable) {
+    	String error = PMDPlugin.getDefault().getStringTable().getString(errorId);
+    	PMDPlugin.getDefault().showError(error, throwable);
+    }
 }

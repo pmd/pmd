@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.ui.views;
+package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.java.rule.controversial.DaaRuleViolation;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-
 
 /**
  * Provides the Content for the DataflowAnomalyTable
@@ -22,7 +21,7 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
 	/* @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object) */
 	public Object[] getElements(Object inputElement) {
 
-	    if (inputElement instanceof Iterator) {
+	    if (inputElement instanceof Iterator<?>) {
             final Iterator<DaaRuleViolation> violationsIterator = (Iterator<DaaRuleViolation>)inputElement;
             final List<DaaRuleViolation> violations = new ArrayList<DaaRuleViolation>();
             for (int count = 0; violationsIterator.hasNext() && count < MAX_ROWS; count++) {
@@ -46,8 +45,10 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
         // do nothing
     }
 
-    private boolean violationIsInList(DaaRuleViolation newViolation, List<DaaRuleViolation> list) {
+    private static boolean violationIsInList(DaaRuleViolation newViolation, List<DaaRuleViolation> list) {
 
+    	if (list.isEmpty()) return false;
+    	
         final Iterator<DaaRuleViolation> violationIterator = list.iterator();
         while (violationIterator.hasNext()) {
 

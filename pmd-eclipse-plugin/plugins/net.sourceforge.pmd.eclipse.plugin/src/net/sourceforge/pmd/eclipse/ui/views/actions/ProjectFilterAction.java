@@ -1,13 +1,11 @@
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ProjectFilter;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 /**
@@ -15,7 +13,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
  * 
  * @author SebastianRaffel ( 22.05.2005 )
  */
-public class ProjectFilterAction extends Action {
+public class ProjectFilterAction extends AbstractPMDAction {
 
     private ViolationOverview violationView;
     private ProjectFilter projectFilter;
@@ -33,17 +31,19 @@ public class ProjectFilterAction extends Action {
 
         // we need to get the views Filter
         ViewerFilter[] filters = view.getViewer().getFilters();
-        for (int i = 0; i < filters.length; i++) {
-            if (filters[i] instanceof ProjectFilter)
-                projectFilter = (ProjectFilter) filters[i];
+        for (ViewerFilter filter : filters) {
+            if (filter instanceof ProjectFilter)
+                projectFilter = (ProjectFilter) filter;
         }
 
         // we set Image and Text for the Action
-        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_PROJECT));
-        setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_FILTER_PROJECT_PREFIX) + " "
-                + projectRecord.getName());
+        setText(getString(StringKeys.MSGKEY_VIEW_FILTER_PROJECT_PREFIX) + " " + projectRecord.getName());
     }
 
+ 	protected String imageId() { return PMDUiConstants.ICON_PROJECT; }
+ 	
+ 	protected String tooltipMsgId() { return null; }      
+    
     /**
      * @return the Style, in which the Button is displayed
      */

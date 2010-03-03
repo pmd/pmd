@@ -2,32 +2,33 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import java.lang.reflect.InvocationTargetException;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
-public class CalculateStatisticsAction extends Action {
+public class CalculateStatisticsAction extends AbstractPMDAction {
+	
     public ViolationOverview violationView;
     
     public CalculateStatisticsAction(ViolationOverview view) {
         super();
+        
         violationView = view;
-
-        // set Image and Tooltip-Text
-        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_CALCULATE));
-        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS));
     }
+    
+    protected String imageId() { return PMDUiConstants.ICON_BUTTON_CALCULATE; }
+    
+    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS; }
     
     /**
      * Executes the Action
@@ -40,24 +41,24 @@ public class CalculateStatisticsAction extends Action {
             dialog.run(false, false, new IRunnableWithProgress() {
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     final TreeItem[] items = violationView.getViewer().getTree().getItems();
-                    final int toWork = calculateWorkUnits(items);
-                    monitor.beginTask(getString(StringKeys.MSGKEY_MONITOR_CALC_STATS_TASK), toWork);
-                    for (int i=0; i<items.length; i++) {
+                    final int unitCount = calculateWorkUnits(items);
+                    monitor.beginTask(getString(StringKeys.MSGKEY_MONITOR_CALC_STATS_TASK), unitCount);
+                    for (TreeItem item : items) {
                         if (monitor.isCanceled()) {
                             break;
                         }
-                        if (items[i].getData() instanceof PackageRecord) {
-                            final PackageRecord record = (PackageRecord) items[i].getData();
+                        if (item.getData() instanceof PackageRecord) {
+                            final PackageRecord record = (PackageRecord) item.getData();
                             final AbstractPMDRecord[] children = record.getChildren();
                             monitor.subTask(getString(StringKeys.MSGKEY_MONITOR_CALC_STATS_OF_PACKAGE) + ": " + record.getName());
-                            for (int j=0; j<children.length; j++) {
-                                if (children[j] instanceof FileRecord) {
-                                    calculateFileRecord((FileRecord)children[j]);
+                            for (AbstractPMDRecord kid : children) {
+                                if (kid instanceof FileRecord) {
+                                    calculateFileRecord((FileRecord)kid);
                                     monitor.worked(1);
                                 }
                             }
-                        } else if (items[i].getData() instanceof FileRecord) {
-                            calculateFileRecord((FileRecord) items[i].getData());
+                        } else if (item.getData() instanceof FileRecord) {
+                            calculateFileRecord((FileRecord) item.getData());
                             monitor.worked(1);                            
                         }
                     }
@@ -80,23 +81,16 @@ public class CalculateStatisticsAction extends Action {
     }
 
     private int calculateWorkUnits(TreeItem[] items) {
-        int toWork = 0;
+        int count = 0;
         for (TreeItem item : items) {
-            if (item.getData() instanceof PackageRecord) {
-                final PackageRecord record = (PackageRecord) item.getData();
-                final AbstractPMDRecord[] children = record.getChildren();
-                toWork += children.length;
-            } else if (item.getData() instanceof FileRecord) {
-                toWork++;
+        	Object data = item.getData();
+            if (data instanceof PackageRecord) {
+                count += ((PackageRecord) data).getChildren().length;
+            } else if (data instanceof FileRecord) {
+            	count++;
             }
         }
-        return toWork;
+        return count;
     }
 
-    /**
-     * Helper method to return an NLS string from its key
-     */
-    private String getString(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
-    }
 }

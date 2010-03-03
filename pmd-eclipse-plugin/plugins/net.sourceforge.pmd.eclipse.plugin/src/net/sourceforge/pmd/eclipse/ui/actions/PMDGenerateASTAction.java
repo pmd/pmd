@@ -39,14 +39,14 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.ast.JavaCharStream;
-import net.sourceforge.pmd.lang.java.ast.JavaParser;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.lang.ast.JavaCharStream;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
@@ -65,9 +65,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -77,17 +74,11 @@ import org.eclipse.ui.PlatformUI;
  * @author Philippe Herlin
  *
  */
-public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWithProgress {
+public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableWithProgress {
+	
     private static final Logger log = Logger.getLogger(PMDGenerateASTAction.class);
-    private IWorkbenchPart targetPart;
-    private IStructuredSelection structuredSelection;
 
-    /**
-     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-     */
-    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-        this.targetPart = targetPart;
-    }
+    private IStructuredSelection structuredSelection;
 
     /**
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
@@ -96,8 +87,8 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
         log.info("Generation AST action requested");
 
         // If action is selected from a view, process the selection
-        if (this.targetPart instanceof IViewPart) {
-            ISelection sel = targetPart.getSite().getSelectionProvider().getSelection();
+        if (isViewPart()) {
+            ISelection sel = targetSelection();
             if (sel instanceof IStructuredSelection) {
                 this.structuredSelection = (IStructuredSelection) sel;
                 ProgressMonitorDialog dialog =
@@ -105,20 +96,16 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
                 try {
                     dialog.run(false, false, this);
                 } catch (InvocationTargetException e) {
-                    PMDPlugin.getDefault().showError(
-                        getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION),
-                        e);
+                    showErrorById(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
                 } catch (InterruptedException e) {
-                    PMDPlugin.getDefault().showError(
-                        getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION),
-                        e);
+                    showErrorById( StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
                 }
             }
         }
 
         // If action is selected from an editor, process the file currently edited
-        if (this.targetPart instanceof IEditorPart) {
-            IEditorInput editorInput = ((IEditorPart) this.targetPart).getEditorInput();
+        if (isEditorPart()) {
+            IEditorInput editorInput = ((IEditorPart) targetPart()).getEditorInput();
             if (editorInput instanceof IFileEditorInput) {
                 generateAST(((IFileEditorInput) editorInput).getFile());
             } else {
@@ -129,7 +116,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
 
         // else this is not supported
         else {
-            log.debug("This action is not supported on this kind of part. This part type is: " + this.targetPart.getClass().getName());
+            log.debug("This action is not supported on this kind of part. This part type is: " + targetPartClassName());
         }
     }
 
@@ -174,13 +161,13 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
             }
 
         } catch (CoreException e) {
-            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            showErrorById(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         } catch (ParseException e) {
-            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
+            showErrorById(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION, e);
         } catch (WriterException e) {
-            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
+            showErrorById( StringKeys.MSGKEY_ERROR_PMD_EXCEPTION, e);
         } catch (IOException e) {
-            PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_IO_EXCEPTION), e);
+            showErrorById(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
         }
     }
 
@@ -189,7 +176,7 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
      */
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         monitor.beginTask("", this.structuredSelection.size());
-        for (Iterator i = this.structuredSelection.iterator(); i.hasNext();) {
+        for (Iterator<?> i = this.structuredSelection.iterator(); i.hasNext();) {
             Object element = i.next();
             if (element instanceof IAdaptable) {
                 IAdaptable adaptable = (IAdaptable) element;
@@ -207,13 +194,6 @@ public class PMDGenerateASTAction implements IObjectActionDelegate, IRunnableWit
                 log.debug("   -> selected object : " + element);
             }
         }
-    }
-
-    /**
-     * Helper method to return an NLS string from its key
-     */
-    private String getString(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

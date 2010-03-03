@@ -59,9 +59,7 @@ public class PriorityFilter extends ViewerFilter {
         } else if (element instanceof MarkerRecord) {
             // ViolationOverview
             final MarkerRecord markerRec = (MarkerRecord) element;
-            for (int i = 0; i < priorityList.size(); i++) {
-                final Integer priority = priorityList.get(i);
-
+            for (Integer priority : priorityList) {
                 if (markerRec.getPriority() == priority.intValue()) {
                     select = true;
                     break;
@@ -77,8 +75,7 @@ public class PriorityFilter extends ViewerFilter {
         boolean isEnabled = false;
         // for some unknown reasons markerPrio may be null.
         if (markerPrio != null) {
-            for (int i = 0; i < priorityList.size(); i++) {
-                final Integer priority = priorityList.get(i);
+            for (Integer priority : priorityList) {
                 if (markerPrio.equals(priority)) {
                     isEnabled = true;
                     break;
@@ -90,8 +87,7 @@ public class PriorityFilter extends ViewerFilter {
 
     private boolean hasMarkersToShow(AbstractPMDRecord record) {
         boolean hasMarkers = false;
-        for (int i = 0; i < priorityList.size(); i++) {
-            final Integer priority = priorityList.get(i);
+        for (Integer priority : priorityList) {
             final IMarker[] markers = record.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, priority);
             if (markers.length > 0) {
                 hasMarkers = true;
@@ -114,7 +110,7 @@ public class PriorityFilter extends ViewerFilter {
     /**
      * Gets the FilterList with the Priorities
      *
-     * @return an ArrayList of Integers
+     * @return an List of Integers
      */
     public List<Integer> getPriorityFilterList() {
         return this.priorityList;
@@ -147,7 +143,7 @@ public class PriorityFilter extends ViewerFilter {
     public void setPriorityFilterListFromString(String newList, String splitter) {
         if (newList != null) {
             final String[] newArray = newList.split(splitter);
-            final ArrayList<Integer> priorities = new ArrayList<Integer>();
+            final List<Integer> priorities = new ArrayList<Integer>(newArray.length);
 
             for (String element : newArray) {
                 priorities.add(Integer.valueOf(element)); // NOPMD by Sven on 13.11.06 11:53

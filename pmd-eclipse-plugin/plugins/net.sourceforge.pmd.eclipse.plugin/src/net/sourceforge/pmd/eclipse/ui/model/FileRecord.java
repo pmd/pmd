@@ -48,10 +48,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.br.RepositoryUtil;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -71,13 +73,11 @@ import org.eclipse.jdt.core.JavaModelException;
 public class FileRecord extends AbstractPMDRecord {
     
     private AbstractPMDRecord[] children;
-    private IResource resource;
-    private PackageRecord parent;
+    private final IResource resource;
+    private final PackageRecord parent;
     private int numberOfLOC;
     private int numberOfMethods;
     
-    public static final IMarker[] emptyMarkers = new IMarker[0];
-
     /**
      * Constructor (not for use with the Model, no PackageRecord is provided here)
      *
@@ -87,6 +87,10 @@ public class FileRecord extends AbstractPMDRecord {
         this(javaResource, null);
     }
 
+    public long getTimestamp() {
+    	return resource.getLocalTimeStamp();
+    }
+    
     /**
      * Constructor (for use with the Model)
      *
@@ -97,7 +101,7 @@ public class FileRecord extends AbstractPMDRecord {
         super();
 
         if (javaResource == null) {
-            throw new IllegalArgumentException("javaResouce cannot be null");
+            throw new IllegalArgumentException("javaResource cannot be null");
         }
 
         this.resource = javaResource;
@@ -144,11 +148,11 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     protected final AbstractPMDRecord[] createChildren() {
-        AbstractPMDRecord[] children = AbstractPMDRecord.EMPTY_RECORDS;
+        AbstractPMDRecord[] children = EMPTY_RECORDS;
 
         try {
             // get all markers
-            final List<IMarker> markers = Arrays.asList(this.findMarkers());
+            final List<IMarker> markers = Arrays.asList(findMarkers());
             final Iterator<IMarker> markerIterator = markers.iterator();
 
             // put all markers in a map with key = rulename
@@ -200,13 +204,13 @@ public class FileRecord extends AbstractPMDRecord {
             // this is the overwritten Function from AbstractPMDRecord
             // we simply call the IResource-function to find Markers
             if (this.resource.isAccessible()) {
-                return this.resource.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                return MarkerUtil.findMarkers(resource, PMDRuntimeConstants.PMD_MARKER);
             }
         } catch (CoreException ce) {
             PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
 
-        return emptyMarkers;
+        return MarkerUtil.EMPTY_MARKERS;
     }
 
     /**
@@ -220,13 +224,13 @@ public class FileRecord extends AbstractPMDRecord {
             // we can only find Markers for a file
             // we use the DFA-Marker-ID set for Dataflow Anomalies
             if (this.resource.isAccessible()) {
-                return this.resource.findMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
+                return MarkerUtil.findMarkers(resource, PMDRuntimeConstants.PMD_DFA_MARKER);
             }
         } catch (CoreException ce) {
             PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
 
-        return emptyMarkers;
+        return MarkerUtil.EMPTY_MARKERS;
     }
 
     /**
@@ -270,32 +274,49 @@ public class FileRecord extends AbstractPMDRecord {
 
             // the whole while has to be a String for this operation
             // so we read the File line-wise into a String
-            int loc = 0;
+
             final String source = resourceToString(this.resource);
-            final int firstCurly = source.indexOf('{');
-            if (firstCurly != -1) {
-                final String body = source.substring(firstCurly+1, source.length()-1).trim();
-                final StringTokenizer lines = new StringTokenizer(body, "\n");
-                while(lines.hasMoreTokens()) {
-                    String trimmed = lines.nextToken().trim();
-                    if (trimmed.length() > 0 && trimmed.startsWith("/*")) {
-                        while (trimmed.indexOf("*/") == -1) {
-                            trimmed = lines.nextToken().trim();
-                        }
-                        if (lines.hasMoreTokens()) { // NOPMD by Sven on 13.11.06 12:04
-                            trimmed = lines.nextToken().trim();
-                        }
-                    }
 
-                    if (!trimmed.startsWith("//")) {
-                        loc++;
-                    }
-                }
-            }
-
-            this.numberOfLOC = loc;
+            this.numberOfLOC = linesOfCodeIn(source, true);
         }
     }
+
+    // TODO migrate to utility class
+	public static int linesOfCodeIn(final String source, boolean ignoreSingleBrackets) {
+		
+		int loc = 0;
+		int ignoredLines = 0;
+		final int firstCurly = source.indexOf('{');
+		if (firstCurly != -1) {
+		    final String body = source.substring(firstCurly+1, source.length()-1).trim();
+		    final StringTokenizer lines = new StringTokenizer(body, "\n");
+		    while (lines.hasMoreTokens()) {
+		        String trimmed = lines.nextToken().trim();
+		        if (trimmed.length() > 0 && trimmed.startsWith("/*")) {
+		            while (trimmed.indexOf("*/") == -1) {
+		                trimmed = lines.nextToken().trim();
+		            }
+		            if (lines.hasMoreTokens()) { // NOPMD by Sven on 13.11.06 12:04
+		                trimmed = lines.nextToken().trim();
+		            }
+		        }
+
+		        if (ignoreSingleBrackets) {
+		        	if ("{".equals(trimmed) || "}".equals(trimmed)) {
+		        		ignoredLines++;
+		        		continue;
+		        	}
+		        }
+		        
+		        if (!trimmed.startsWith("//")) {
+		            loc++;
+		        }
+		    }
+		}
+//		System.out.println("ignored lines: " + ignoredLines);
+		
+		return loc;
+	}
 
     /**
      * Gets the Number of Code-Lines this File has.
@@ -406,12 +427,18 @@ public class FileRecord extends AbstractPMDRecord {
         return this.resource.getName();
     }
 
+    public String authorName() {
+    	
+    	return RepositoryUtil.hasRepositoryAccess() ?
+    		RepositoryUtil.authorNameFor(resource) :
+    		"<unknown>";
+    }
     /**
      *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()
      */
     @Override
     public int getResourceType() {
-        return AbstractPMDRecord.TYPE_FILE;
+        return TYPE_FILE;
     }
 
     /**

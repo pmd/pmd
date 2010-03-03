@@ -34,7 +34,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.eclipse.ui.views;
+package net.sourceforge.pmd.eclipse.ui.views.cpd;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -94,19 +94,20 @@ public class CPDView extends ViewPart implements IPropertyListener {
         final int treeStyle = SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
         this.treeViewer = new TreeViewer(parent, treeStyle);
         this.treeViewer.setUseHashlookup(true);
-        this.treeViewer.getTree().setHeaderVisible(true);
-        this.treeViewer.getTree().setLinesVisible(true);
+        Tree tree = this.treeViewer.getTree();
+        tree.setHeaderVisible(true);
+        tree.setLinesVisible(true);
 
         this.treeViewer.setContentProvider(contentProvider);
         this.treeViewer.setLabelProvider(labelProvider);
         this.treeViewer.addDoubleClickListener(this.doubleClickListener);
 
         this.tooltipListener.initialize();
-        this.treeViewer.getTree().addListener(SWT.Dispose, this.tooltipListener);
-        this.treeViewer.getTree().addListener(SWT.KeyDown, this.tooltipListener);
-        this.treeViewer.getTree().addListener(SWT.MouseMove, this.tooltipListener);
-        this.treeViewer.getTree().addListener(SWT.MouseHover, this.tooltipListener);
-        createColumns(treeViewer.getTree());
+        tree.addListener(SWT.Dispose, this.tooltipListener);
+        tree.addListener(SWT.KeyDown, this.tooltipListener);
+        tree.addListener(SWT.MouseMove, this.tooltipListener);
+        tree.addListener(SWT.MouseHover, this.tooltipListener);
+        createColumns(tree);
     }
 
     /**
@@ -117,12 +118,12 @@ public class CPDView extends ViewPart implements IPropertyListener {
         // the "+"-sign for expanding packages
         final TreeColumn plusColumn = new TreeColumn(tree, SWT.RIGHT);
         plusColumn.setWidth(20);
-        plusColumn.setResizable(false);
+  //      plusColumn.setResizable(false);
 
         // shows the image
         final TreeColumn imageColumn = new TreeColumn(tree, SWT.CENTER);
         imageColumn.setWidth(20);
-        imageColumn.setResizable(false);
+  //      imageColumn.setResizable(false);
 
         // shows the message
         final TreeColumn messageColumn = new TreeColumn(tree, SWT.LEFT);
@@ -193,8 +194,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
      * After the CPD command is executed, it will trigger an propertyChanged event.
      */
     public void propertyChanged(Object source, int propId) {
-        if (propId == PMDRuntimeConstants.PROPERTY_CPD
-                && source instanceof Iterator) {
+        if (propId == PMDRuntimeConstants.PROPERTY_CPD && source instanceof Iterator<?>) {
             final Iterator<Match> iter = (Iterator<Match>) source;
             // after setdata(iter) iter.hasNext will always return false
             final boolean hasResults = iter.hasNext();

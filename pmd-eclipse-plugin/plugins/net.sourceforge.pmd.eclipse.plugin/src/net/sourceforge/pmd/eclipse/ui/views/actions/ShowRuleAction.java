@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
  * @author Philippe Herlin
  *
  */
-public class ShowRuleAction extends ViolationSelectionAction {
+public class ShowRuleAction extends AbstractViolationSelectionAction {
 
     private Shell shell;
 
@@ -25,11 +25,14 @@ public class ShowRuleAction extends ViolationSelectionAction {
      */
     public ShowRuleAction(TableViewer viewer, Shell shell) {
         super(viewer);
-
-        setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_ACTION_SHOW_RULE));
-        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_SHOW_RULE));
     }
 
+ 	protected String textId() { return StringKeys.MSGKEY_VIEW_ACTION_SHOW_RULE; }
+ 	
+ 	protected String imageId() { return null; }
+    
+    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_SHOW_RULE; } 
+    
     /**
      * @see org.eclipse.jface.action.IAction#run()
      */

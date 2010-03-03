@@ -45,9 +45,11 @@ import java.util.Map;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.renderers.Renderer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -67,12 +69,11 @@ import org.eclipse.jdt.core.JavaCore;
  * @author Philippe Herlin
  *
  */
-public class RenderReportCmd extends AbstractDefaultCommand {
+public class RenderReportCmd extends AbstractProjectCommand {
 
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = Logger.getLogger(RenderReportCmd.class);
-    private IProject project;
 
     /**
      * Table containing the renderers indexed by the file name.
@@ -83,9 +84,8 @@ public class RenderReportCmd extends AbstractDefaultCommand {
      * Default Constructor
      */
     public RenderReportCmd() {
-        super();
-        this.setDescription("Produce a HTML report for a project");
-        this.setName("RenderReport");
+        super("RenderReport", "Produce a HTML report for a project");
+
         this.setOutputProperties(false);
         this.setReadOnly(false);
         this.setTerminated(false);
@@ -109,10 +109,10 @@ public class RenderReportCmd extends AbstractDefaultCommand {
         try {
             log.debug("Starting RenderReport command");
             log.debug("   Create a report object");
-            final Report report = this.createReport(this.project);
+            final Report report = this.createReport(project());
 
             log.debug("   Getting the report folder");
-            final IFolder folder = this.project.getFolder(PMDRuntimeConstants.REPORT_FOLDER);
+            final IFolder folder = getProjectFolder(PMDRuntimeConstants.REPORT_FOLDER);
             if (!folder.exists()) {
                 folder.create(true, true, this.getMonitor());
             }
@@ -164,18 +164,11 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * @param project The project to set.
-     */
-    public void setProject(final IProject project) {
-        this.project = project;
-    }
-
-    /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     @Override
     public boolean isReadyToExecute() {
-        return this.project != null && !this.renderers.isEmpty();
+        return super.isReadyToExecute() && !this.renderers.isEmpty();
     }
 
     /**
@@ -186,10 +179,12 @@ public class RenderReportCmd extends AbstractDefaultCommand {
     private Report createReport(final IProject project) throws CoreException {
         final Report report = new Report();
 
-        final IMarker[] markers = project.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+        final IMarker[] markers = MarkerUtil.findAllMarkers(project);
+        final RuleSet ruleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
+        
         for (IMarker marker : markers) {
             final String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
-            final Rule rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(ruleName);
+            final Rule rule = ruleSet.getRuleByName(ruleName);
 
             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
             final FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);

@@ -262,7 +262,7 @@ public class ViewMemento {
     }
 
     /**
-     * puts an ArrayList into a Memento, the List is changed into a delimited String
+     * puts an List into a Memento, the List is changed into a delimited String
      *
      * @param key
      * @param valueList
@@ -316,10 +316,10 @@ public class ViewMemento {
     }
 
     /**
-     * Returns an ArrayList of Integers from a Memento
+     * Returns an List of Integers from a Memento
      *
      * @param key
-     * @return ArrayList of Integer-Values
+     * @return List of Integer-values
      */
     public List<Integer> getIntegerList(String key) {
         final List<Integer> valuelist = new ArrayList<Integer>();
@@ -338,10 +338,10 @@ public class ViewMemento {
     }
 
     /**
-     * Returns an ArrayList of Strings from a Memento
+     * Returns an List of Strings from a Memento
      *
      * @param key
-     * @return a ArrayList of String values
+     * @return a List of String values
      */
     public List<String> getStringList(String key) {
         List<String> valuelist = Collections.emptyList();

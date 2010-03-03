@@ -15,7 +15,8 @@ public class PMDRuntimeConstants {
     public static final String PMD_MARKER       = PMDPlugin.PLUGIN_ID + ".pmdMarker";
     public static final String PMD_DFA_MARKER   = PMDPlugin.PLUGIN_ID + ".pmdDFAMarker";
     public static final String PMD_TASKMARKER   = PMDPlugin.PLUGIN_ID + ".pmdTaskMarker";
-
+    public static final String[] ALL_MARKER_TYPES = new String[] { PMD_MARKER, PMD_DFA_MARKER, PMD_TASKMARKER };
+    
     public static final IntegerProperty MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty("maxviolations", "Max allowable violations", 1, Integer.MAX_VALUE-1, 1000, 0f);
     
     public static final String ID_PERSPECTIVE               = "net.sourceforge.pmd.eclipse.ui.views.pmdPerspective";

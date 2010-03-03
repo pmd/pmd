@@ -59,16 +59,13 @@ public class ViolationOutlineContentProvider implements
 	/* @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (resource != null) {
-			resource.getResource().getWorkspace()
-				.removeResourceChangeListener(this);
+			resource.getResource().getWorkspace().removeResourceChangeListener(this);
 		}
 
 		// we create a new FileRecord
 		resource = (FileRecord) newInput;
 		if (resource != null) {
-			resource.getResource().getWorkspace()
-				.addResourceChangeListener(this,
-				IResourceChangeEvent.POST_CHANGE);
+			resource.getResource().getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 		}
 		tableViewer = (TableViewer) viewer;
 	}
@@ -76,8 +73,7 @@ public class ViolationOutlineContentProvider implements
 
 	/* @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent) */
 	public void resourceChanged(IResourceChangeEvent event) {
-        IMarkerDelta[] markerDeltas =
-        	event.findMarkerDeltas(PMDRuntimeConstants.PMD_MARKER, true);
+        IMarkerDelta[] markerDeltas = event.findMarkerDeltas(PMDRuntimeConstants.PMD_MARKER, true);
 
 		if (!resource.getResource().exists()
 				|| resource == null

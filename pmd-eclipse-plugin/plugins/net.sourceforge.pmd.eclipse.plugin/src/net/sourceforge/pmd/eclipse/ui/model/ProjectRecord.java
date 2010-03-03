@@ -89,7 +89,7 @@ public class ProjectRecord extends AbstractPMDRecord {
         if (project.isAccessible()) {
             this.children = createChildren();
         } else {
-            this.children = AbstractPMDRecord.EMPTY_RECORDS;
+            this.children = EMPTY_RECORDS;
         }
 
     }
@@ -226,7 +226,7 @@ public class ProjectRecord extends AbstractPMDRecord {
      */
     @Override
     public int getResourceType() {
-        return AbstractPMDRecord.TYPE_PROJECT;
+        return TYPE_PROJECT;
     }
 
     /**

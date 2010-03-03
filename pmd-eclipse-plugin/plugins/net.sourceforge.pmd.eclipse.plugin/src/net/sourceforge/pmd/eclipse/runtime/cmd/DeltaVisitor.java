@@ -17,7 +17,7 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
     private static final Logger log = Logger.getLogger(DeltaVisitor.class);
 
     /**
-     * Default construtor
+     * Default constructor
      */
     public DeltaVisitor() {
         super();

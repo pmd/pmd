@@ -2,10 +2,10 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -17,20 +17,28 @@ import org.eclipse.jface.viewers.TableViewer;
  *
  * @author SebastianRaffel  ( 21.05.2005 )
  */
-public class ViolationSelectionAction extends Action {
+public abstract class AbstractViolationSelectionAction extends AbstractPMDAction {
 
 	private TableViewer tableViewer;
-
 
 	/**
 	 * Constructor
 	 *
 	 * @param viewer
 	 */
-	public ViolationSelectionAction(TableViewer viewer) {
+	protected AbstractViolationSelectionAction(TableViewer viewer) {
 		tableViewer = viewer;
 	}
 
+	protected abstract String textId();
+	
+	protected void setupWidget() {
+		super.setupWidget();
+		
+		String textId = textId();
+		if (textId != null) setText(getString(textId));
+	}
+	
 	/**
 	 * Return the selected Violations (Markers)
 	 *
@@ -51,6 +59,6 @@ public class ViolationSelectionAction extends Action {
             }
         }
 
-        return ViolationOverview.emptyMarkers;
+        return MarkerUtil.EMPTY_MARKERS;
     }
 }

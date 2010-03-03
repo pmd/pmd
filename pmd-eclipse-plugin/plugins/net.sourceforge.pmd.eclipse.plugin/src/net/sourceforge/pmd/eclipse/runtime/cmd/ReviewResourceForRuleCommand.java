@@ -64,7 +64,6 @@ import org.eclipse.ui.IPropertyListener;
  * @author Sven
  *
  */
-
 public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
 
     private static final long serialVersionUID = 1L;
@@ -75,9 +74,8 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
     private List<IPropertyListener> listenerList;
 
     public ReviewResourceForRuleCommand() {
-        super();
-        this.setDescription("Review a resource for a specific rule.");
-        this.setName("ReviewResourceForRuleCommand");
+        super("ReviewResourceForRuleCommand", "Review a resource for a specific rule.");
+
         this.setOutputProperties(true);
         this.setReadOnly(true);
         this.setTerminated(false);
@@ -122,7 +120,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
     public void execute() throws CommandException {
         final IProject project = resource.getProject();
         final IFile file = (IFile) resource.getAdapter(IFile.class);
-        beginTask("PMD Checking for specific rule...", 1);
+        beginTask("PMD checking for rule: " + rule.getName(), 1);
 
         if (file != null) {
             final RuleSet ruleSet = new RuleSet();

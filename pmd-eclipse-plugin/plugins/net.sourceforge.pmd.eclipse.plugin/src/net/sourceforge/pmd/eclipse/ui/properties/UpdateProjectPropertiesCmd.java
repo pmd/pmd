@@ -37,12 +37,10 @@ package net.sourceforge.pmd.eclipse.ui.properties;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
+import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractProjectCommand;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IWorkingSet;
 
 /**
@@ -51,11 +49,11 @@ import org.eclipse.ui.IWorkingSet;
  * @author Philippe Herlin
  *
  */
-public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
+public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
 
     private static final long serialVersionUID = 1L;
 
-    private IProject project;
+//    private IProject project;
     private boolean pmdEnabled;
     private IWorkingSet projectWorkingSet;
     private RuleSet projectRuleSet;
@@ -71,12 +69,10 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
      *
      */
     public UpdateProjectPropertiesCmd() {
-        super();
+        super("UpdateProjectProperties", "Update a project PMD specific properties.");
         this.setReadOnly(false);
         this.setOutputProperties(true);
         this.setTerminated(false);
-        this.setName("UpdateProjectProperties");
-        this.setDescription("Update a project PMD specific properties.");
     }
 
     /**
@@ -84,7 +80,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
      */
     public void execute() throws CommandException {
         try {
-            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
+            final IProjectProperties properties = projectProperties();
             properties.setPmdEnabled(this.pmdEnabled);
             properties.setProjectRuleSet(this.projectRuleSet);
             properties.setProjectWorkingSet(this.projectWorkingSet);
@@ -101,13 +97,6 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
         } finally {
             this.setTerminated(true);
         }
-    }
-
-    /**
-     * @param project The project to set.
-     */
-    public void setProject(final IProject project) {
-        this.project = project;
     }
 
     /**
@@ -191,6 +180,6 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     public boolean isReadyToExecute() {
-        return this.project != null && this.projectRuleSet != null;
+        return super.isReadyToExecute() && this.projectRuleSet != null;
     }
 }

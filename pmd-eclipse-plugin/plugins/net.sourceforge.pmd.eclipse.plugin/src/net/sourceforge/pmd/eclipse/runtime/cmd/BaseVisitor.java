@@ -43,12 +43,12 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -72,7 +72,7 @@ public class BaseVisitor {
     private Map<IFile, Set<MarkerInfo>> accumulator;
     private PMDEngine pmdEngine;
     private RuleSet ruleSet;
-    private int filesCount;
+    private int fileCount;
     private long pmdDuration;
     private IProjectProperties projectProperties;
     protected RuleSet hiddenRules;
@@ -206,7 +206,7 @@ public class BaseVisitor {
      * @return the number of files that has been processed
      */
     public int getProcessedFilesCount() {
-        return this.filesCount;
+        return this.fileCount;
     }
 
     /**
@@ -241,7 +241,7 @@ public class BaseVisitor {
 
                 final File sourceCodeFile = file.getRawLocation().toFile();
                 if (getPmdEngine().applies(sourceCodeFile, getRuleSet()) && isFileInWorkingSet(file) && (this.projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived())) {
-                    subTask("PMD Checking file " + file.getName());
+                    subTask("PMD checking: " + file.getName());
 
                     Timer timer = new Timer();
 
@@ -260,7 +260,7 @@ public class BaseVisitor {
                     updateMarkers(file, context, isUseTaskMarker(), getAccumulator());
 
                     worked(1);
-                    this.filesCount++;
+                    this.fileCount++;
                 } else {
                     log.debug("The file " + file.getName() + " is not in the working set");
                 }
@@ -316,37 +316,43 @@ public class BaseVisitor {
      * @param accumulator
      *            a map that contains impacted file and marker informations
      */
+    
+    private int maxAllowableViolationsFor(Rule rule) {
+    	 
+         return rule.hasDescriptor(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR) ?
+             rule.getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR) :
+             PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
+    }
+    
     private void updateMarkers(final IFile file, final RuleContext context, final boolean fTask, final Map<IFile, Set<MarkerInfo>> accumulator)
             throws CoreException, PropertiesException {
         final Set<MarkerInfo> markerSet = new HashSet<MarkerInfo>();
         final List<Review> reviewsList = findReviewedViolations(file);
         final Review review = new Review();
         final Iterator<RuleViolation> iter = context.getReport().iterator();
-        final IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
+//        final IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
 //        final int maxViolationsPerFilePerRule = preferences.getMaxViolationsPerFilePerRule();
-        final Map<Rule, Integer> violationsCounter = new HashMap<Rule, Integer>();
+        final Map<Rule, Integer> violationsByRule = new HashMap<Rule, Integer>();
 
+        Rule rule = null;
         while (iter.hasNext()) {
             final RuleViolation violation = iter.next();
-            review.ruleName = violation.getRule().getName();
+            rule = violation.getRule();
+            review.ruleName = rule.getName();
             review.lineNumber = violation.getBeginLine();
 
             if (reviewsList.contains(review)) {
-                log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getBeginLine()
-                        + " because of a review.");
+                log.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine() + " because of a review.");
             } else {
-                Integer counter = violationsCounter.get(violation.getRule());
-                if (counter == null) {
-                    counter = NumericConstants.ZERO;
-                    violationsCounter.put(violation.getRule(), counter);
+                Integer count = violationsByRule.get(rule);
+                if (count == null) {
+                    count = NumericConstants.ZERO;
+                    violationsByRule.put(rule, count);
                 }
 
-                int maxViolations = PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
-                if (violation.getRule().hasDescriptor(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR)) {
-                    maxViolations = violation.getRule().getProperty(PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR);
-                }
+                int maxViolations = maxAllowableViolationsFor(rule);
 
-                if (counter.intValue() < maxViolations) {
+                if (count.intValue() < maxViolations) {
                 	// Ryan Gustafson 02/16/2008 - Always use PMD_MARKER, as people get confused as to why PMD problems don't always show up on Problems view like they do when you do build.
                     // markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
                     markerSet.add(getMarkerInfo(violation, PMDRuntimeConstants.PMD_MARKER));
@@ -357,11 +363,11 @@ public class BaseVisitor {
                         markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
                     }
                     */
-                    violationsCounter.put(violation.getRule(), Integer.valueOf(counter.intValue() + 1));
+                    violationsByRule.put(rule, Integer.valueOf(count.intValue() + 1));
 
-                    log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getBeginLine());
+                    log.debug("Adding a violation for rule " + rule.getName() + " at line " + violation.getBeginLine());
                 } else {
-                    log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getBeginLine()
+                    log.debug("Ignoring violation of rule " + rule.getName() + " at line " + violation.getBeginLine()
                             + " because maximum violations has been reached for file " + file.getName());
                 }
 
@@ -380,7 +386,7 @@ public class BaseVisitor {
      * @param file
      */
     private List<Review> findReviewedViolations(final IFile file) {
-        final List<Review> reviewsList = new ArrayList<Review>();
+        final List<Review> reviews = new ArrayList<Review>();
         try {
             int lineNumber = 0;
             boolean findLine = false;
@@ -397,11 +403,11 @@ public class BaseVisitor {
                     } else if (comment && line.indexOf("*/") != -1) {
                         comment = false;
                     } else if (!comment && line.startsWith(PMDRuntimeConstants.PLUGIN_STYLE_REVIEW_COMMENT)) {
-                        final String tail = line.substring(17);
+                        final String tail = line.substring(PMDRuntimeConstants.PLUGIN_STYLE_REVIEW_COMMENT.length());
                         final String ruleName = tail.substring(0, tail.indexOf(':'));
                         pendingReviews.push(ruleName);
                         findLine = true;
-                    } else if (!comment && findLine && !line.equals("") && !line.startsWith("//")) {
+                    } else if (!comment && findLine && !StringUtil.isEmpty(line) && !line.startsWith("//")) {
                         findLine = false;
                         while (!pendingReviews.empty()) {
                             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops:
@@ -409,7 +415,7 @@ public class BaseVisitor {
                             final Review review = new Review();
                             review.ruleName = pendingReviews.pop();
                             review.lineNumber = lineNumber;
-                            reviewsList.add(review);
+                            reviews.add(review);
                         }
                     }
                 }
@@ -429,7 +435,7 @@ public class BaseVisitor {
             PMDPlugin.getDefault().logError("IO Exception when searching reviewed violations", e);
         }
 
-        return reviewsList;
+        return reviews;
     }
 
     /**
@@ -442,9 +448,7 @@ public class BaseVisitor {
      * @return markerInfo a markerInfo object
      */
     private MarkerInfo getMarkerInfo(final RuleViolation violation, final String type) throws PropertiesException {
-        final MarkerInfo markerInfo = new MarkerInfo();
-
-        markerInfo.setType(type);
+        final MarkerInfo markerInfo = new MarkerInfo(type);
 
         final List<String> attributeNames = new ArrayList<String>();
         final List<Object> values = new ArrayList<Object>();

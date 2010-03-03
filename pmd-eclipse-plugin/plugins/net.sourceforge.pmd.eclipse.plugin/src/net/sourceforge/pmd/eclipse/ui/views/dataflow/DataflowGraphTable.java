@@ -1,6 +1,6 @@
-package net.sourceforge.pmd.eclipse.ui.views;
+package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 /**
  * A SWT-Composite for showing a DataflowGraph
- * as well as other Information in Form of a Table
+ * as well as other information in form of a table
  *
  * @author SebastianRaffel  ( 31.05.2005 )
  */
@@ -90,8 +90,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		initScrollBars(bodyFrame);
 
 		GridLayout mainLayout = new GridLayout(1, false);
-		mainLayout.horizontalSpacing = mainLayout.verticalSpacing =
-			mainLayout.marginHeight = mainLayout.marginWidth = 0;
+		mainLayout.horizontalSpacing = mainLayout.verticalSpacing =	mainLayout.marginHeight = mainLayout.marginWidth = 0;
 		setLayout(mainLayout);
 	}
 
@@ -106,37 +105,34 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		headerCanvas.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		GridLayout layout = new GridLayout(1, false);
-		layout.horizontalSpacing = layout.verticalSpacing =
-			layout.marginHeight = layout.marginWidth = 0;
+		layout.horizontalSpacing = layout.verticalSpacing =	layout.marginHeight = layout.marginWidth = 0;
 		headerCanvas.setLayout(layout);
 
 		return headerCanvas;
 	}
 
 	/**
-	 * Builds the Table's Body,
-	 * creates two Areas, one that carries the real Table,
-	 * another one that is the Table's "Background" or "Frame"
-	 * and fills the empty Space when the Viewing Area is
-	 * larger than the Table
+	 * Builds the Table Body,
+	 * creates two areas, one that carries the real Table,
+	 * another one that is the table "Background" or "Frame"
+	 * and fills the empty space when the viewing area is
+	 * larger than the table
 	 *
 	 * @param parent
 	 * @return a Composite-Array with the
-	 * Table's Frame [0] and the Table's Body [1]
+	 * Table Frame [0] and the Table's Body [1]
 	 */
 	private Composite[] buildTableBody(Composite parent) {
-		Composite frameCanvas =
-			new Composite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+		Composite frameCanvas =	new Composite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 		frameCanvas.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		// create the Body
+		// create the body
 		Composite bodyCanvas = new Composite(frameCanvas, SWT.NONE);
 		GridData data = new GridData(GridData.FILL_BOTH);
 		data.grabExcessHorizontalSpace = true;
 		data.grabExcessVerticalSpace = true;
 		bodyCanvas.setLayoutData(data);
-		bodyCanvas.setSize(numCols*DEFAULT_COL_WIDTH,
-			numRows*DEFAULT_ROW_HEIGHT);
+		bodyCanvas.setSize(numCols*DEFAULT_COL_WIDTH, numRows*DEFAULT_ROW_HEIGHT);
 
 		int spacing = 10;
 		GridLayout bodyLayout = new GridLayout(numCols, false);
@@ -144,23 +140,21 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		bodyLayout.horizontalSpacing = bodyLayout.verticalSpacing = spacing;
 		bodyCanvas.setLayout(bodyLayout);
 
-		// create the Frame
+		// create the frame
 		GridLayout frameLayout = new GridLayout(1, false);
-		frameLayout.horizontalSpacing = frameLayout.verticalSpacing =
-			frameLayout.marginWidth = frameLayout.marginHeight = 0;
+		frameLayout.horizontalSpacing = frameLayout.verticalSpacing = frameLayout.marginWidth = frameLayout.marginHeight = 0;
 		frameCanvas.setLayout(frameLayout);
 
 		// get the Position and size of the Table and store them
 		// this is needed later when resizing the Table
-		tablePosition = new Point(bodyCanvas.getLocation().x,
-			bodyCanvas.getLocation().y);
+		tablePosition = new Point(bodyCanvas.getLocation().x, bodyCanvas.getLocation().y);
 		tableSize = new Point(bodyCanvas.getSize().x, bodyCanvas.getSize().y);
 
 		return new Composite[] {frameCanvas, bodyCanvas};
 	}
 
 	/**
-	 * Inits the Columns, thereby gives the Header somthing to show
+	 * Inits the Columns, thereby gives the Header something to show
 	 * (the Widths- and Titles-Field should be the same size, so that
 	 * every Column has a real Width and Title)
 	 *
@@ -172,7 +166,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		// set the Number of Columns
 		numCols = widths.length;
 
-		// ceate an Integer-Arr out of the int-Array
+		// create an Integer-Arr out of the int-Array
 		colWidths = new Integer[numCols];
 		for (int i=0; i<widths.length; i++) {
 			colWidths[i] = Integer.valueOf(widths[i]);
@@ -213,8 +207,8 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	}
 
 	/**
-	 * Checks, if the Header's Titles are correct,
-	 * if there are fewer Titles than Columns, it adds empty Strings
+	 * Checks, if the header titles are correct,
+	 * if there are fewer titles than columns, it adds empty Strings
 	 *
 	 * @param givenTitles
 	 * @return the corrected String-Array of Titles
@@ -280,7 +274,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	 *
 	 * @param data
 	 */
-	public void setTableData(ArrayList<ArrayList<DataflowGraphTableData>> data) {
+	public void setTableData(List<List<DataflowGraphTableData>> data) {
 		buildTableData(bodyArea, data);
 
 		redraw();
@@ -315,7 +309,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	}
 
 	/**
-	 * Inits the ScrollBars for the Table
+	 * Initializes the ScrollBars for the Table
 	 *
 	 * @param parent
 	 */
@@ -337,7 +331,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	}
 
 	/**
-	 * Syncronizes the ScrollBars when the Source-View is resized
+	 * Synchronizes the ScrollBars when the Source-View is resized
 	 *
 	 * @param source
 	 */
@@ -382,7 +376,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	}
 
 	/**
-	 * Syncronizes the Frame's and Source's (the TableBody's)
+	 * Synchronizes the Frame's and Source's (the TableBody's)
 	 * Position when scrolled
 	 *
 	 * @param source
@@ -391,19 +385,15 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		tablePosition.x = -bodyFrame.getHorizontalBar().getSelection();
 		tablePosition.y = -bodyFrame.getVerticalBar().getSelection();
 
-		int viewWidth = source.getSize().x
-			- source.getVerticalBar().getSize().x;
-		int viewHeight = source.getSize().y
-			- source.getHorizontalBar().getSize().y;
+		int viewWidth = source.getSize().x - source.getVerticalBar().getSize().x;
+		int viewHeight = source.getSize().y - source.getHorizontalBar().getSize().y;
 
-		if (viewWidth > tableSize.x)
-			tablePosition.x = 0;
-		if (viewHeight > tableSize.y)
-			tablePosition.y = 0;
+		if (viewWidth > tableSize.x)	tablePosition.x = 0;
+		if (viewHeight > tableSize.y)	tablePosition.y = 0;
 	}
 
 	/**
-	 * Syncronizes the Header with the TableBody when scrolled
+	 * Synchronizes the Header with the TableBody when scrolled
 	 * so the Header won't stay on its Position while the Body
 	 * is scrolled
 	 */
@@ -417,8 +407,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 			button.setLocation(tablePosition.x+width, button.getLocation().y);
 			width += button.getSize().x;
 			if (k == buttons.length-1) {
-				button.setSize(button.getSize().x-tablePosition.x,
-					button.getSize().y);
+				button.setSize(button.getSize().x-tablePosition.x,button.getSize().y);
 			}
 		}
 	}
@@ -585,12 +574,12 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	}
 
 	/**
-	 * Build Labels for showing the TableData
+	 * Build labels showing the TableData
 	 *
 	 * @param table
 	 * @param tableData
 	 */
-	private void buildTableData(Composite table, ArrayList<ArrayList<DataflowGraphTableData>> tableData) {
+	private void buildTableData(Composite table, List<List<DataflowGraphTableData>> tableData) {
 		if (bgColor == null) bgColor = DEFAULT_BG_COLOR;
 		if (fgColor == null) fgColor = DEFAULT_FG_COLOR;
 
@@ -598,7 +587,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		int vSpace = ((GridLayout) table.getLayout()).verticalSpacing;
 
 		for (int i=0; i<tableData.size(); i++) {
-			ArrayList<DataflowGraphTableData> rowData = tableData.get(i);
+			List<DataflowGraphTableData> rowData = tableData.get(i);
 			int xPos = 0;
 			int width = 0;
 			int height = 0;
@@ -651,8 +640,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	 * @param coord, where to put the Label
 	 * @param size, how big the Label should be
 	 */
-	protected void createLabel(Composite parent, int style, String text,
-			Color bgColor, Color fgColor, Point coord, Point size) {
+	protected void createLabel(Composite parent, int style, String text, Color bgColor, Color fgColor, Point coord, Point size) {
 		Label label = new Label(parent, style);
 
 		GridData data = new GridData();
@@ -676,8 +664,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	 * @param size
 	 * @return the Graph's Area
 	 */
-	private Composite createGraphArea(Composite parent, Color bgColor,
-			Color fgColor, Point coord, Point size) {
+	private Composite createGraphArea(Composite parent, Color bgColor, Color fgColor, Point coord, Point size) {
 		Composite graphCanvas = new Composite(parent, SWT.NONE);
 
 		GridData data = new GridData(GridData.FILL_VERTICAL);

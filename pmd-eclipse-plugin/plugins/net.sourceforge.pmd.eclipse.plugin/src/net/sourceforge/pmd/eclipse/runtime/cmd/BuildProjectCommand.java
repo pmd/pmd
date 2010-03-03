@@ -36,11 +36,8 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 
@@ -50,22 +47,19 @@ import org.eclipse.core.runtime.CoreException;
  * @author Philippe Herlin
  *
  */
-public class BuildProjectCommand extends AbstractDefaultCommand {
+public class BuildProjectCommand extends AbstractProjectCommand {
 
     private static final long serialVersionUID = 1L;
-
-    private IProject project;
 
     /**
      * @param name
      */
     public BuildProjectCommand() {
-        super();
+        super("BuildProject", "Rebuild a project.");
+        
         this.setReadOnly(false);
         this.setOutputProperties(false);
         this.setTerminated(false);
-        this.setName("BuildProject");
-        this.setDescription("Rebuild a project.");
     }
 
     /**
@@ -73,10 +67,9 @@ public class BuildProjectCommand extends AbstractDefaultCommand {
      */
     public void execute() throws CommandException {
         try {
-            this.project.build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
+            project().build(IncrementalProjectBuilder.FULL_BUILD, this.getMonitor());
 
-            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
-            properties.setNeedRebuild(false);
+            projectProperties().setNeedRebuild(false);
         } catch (CoreException e) {
             throw new CommandException(e);
         } catch (PropertiesException e) {
@@ -84,21 +77,5 @@ public class BuildProjectCommand extends AbstractDefaultCommand {
         } finally {
             this.setTerminated(true);
         }
-    }
-
-    /**
-     * @param project The project to set.
-     */
-    public void setProject(final IProject project) {
-        this.project = project;
-        setReadyToExecute(project != null);
-    }
-
-    /**
-     * @see name.herlin.command.Command#reset()
-     */
-    public void reset() {
-        this.setProject(null);
-        this.setTerminated(false);
     }
 }

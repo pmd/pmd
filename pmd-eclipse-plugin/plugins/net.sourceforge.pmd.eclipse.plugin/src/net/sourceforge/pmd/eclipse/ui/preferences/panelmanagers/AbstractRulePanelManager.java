@@ -31,7 +31,7 @@ public abstract class AbstractRulePanelManager implements RulePropertyManager {
     private String                      tabText;
     private boolean                     isActive;
     protected RuleSelection             rules;
-    final protected ValueChangeListener changeListener;
+    protected final ValueChangeListener changeListener;
 
     protected static Color textColour;
     protected static Color errorColour;

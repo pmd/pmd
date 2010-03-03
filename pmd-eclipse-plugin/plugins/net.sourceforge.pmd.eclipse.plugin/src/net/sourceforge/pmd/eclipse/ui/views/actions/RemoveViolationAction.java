@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.TableViewer;
  * 
  * @author SebastianRaffel ( 21.05.2005 )
  */
-public class RemoveViolationAction extends ViolationSelectionAction {
+public class RemoveViolationAction extends AbstractViolationSelectionAction {
 
     /**
      * Constructor
@@ -26,41 +26,34 @@ public class RemoveViolationAction extends ViolationSelectionAction {
      */
     public RemoveViolationAction(TableViewer viewer) {
         super(viewer);
-
-        // set Image, Text and ToolTip-Text for this Action
-        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_REMVIO));
-        setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_ACTION_REMOVE_VIOLATION));
-        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION));
-
     }
 
+ 	protected String textId() { return StringKeys.MSGKEY_VIEW_ACTION_REMOVE_VIOLATION; }
+ 	
+ 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_REMVIO; }
+    
+    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION; } 
+    
     /**
      * Executes the Action
      */
     public void run() {
         // simply: get all Markers
         final IMarker[] markers = getSelectedViolations();
-        if (markers != null) {
-            try {
-                IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                workspace.run(new IWorkspaceRunnable() {
-                    public void run(IProgressMonitor monitor) throws CoreException {
-                        for (int i = 0; i < markers.length; i++) {
-                            // ... and delete them
-                            markers[i].delete();
-                        }
+        if (markers == null) return;
+        
+        try {
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            workspace.run(new IWorkspaceRunnable() {
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    for (IMarker marker : markers) {                        
+                        marker.delete();	// ... and delete them
                     }
-                }, null);
-            } catch (CoreException ce) {
-                PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), ce);
-            }
+                }
+            }, null);
+        } catch (CoreException ce) {
+            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), ce);
         }
     }
-    
-    /**
-     * Helper method to return an NLS string from its key
-     */
-    private String getString(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
-    }
+
 }

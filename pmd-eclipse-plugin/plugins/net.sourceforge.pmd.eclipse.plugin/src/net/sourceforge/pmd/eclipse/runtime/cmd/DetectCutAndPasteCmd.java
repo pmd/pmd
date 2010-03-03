@@ -49,15 +49,14 @@ import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Renderer;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
@@ -69,30 +68,29 @@ import org.eclipse.ui.IPropertyListener;
  * @author Philippe Herlin, Sven Jacob
  *
  */
-public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
+public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = Logger.getLogger(DetectCutAndPasteCmd.class);
-    private IProject project;
+
     private Language language;
     private int minTileSize;
     private Renderer renderer;
     private String reportName;
     private boolean createReport;
-    private List<IPropertyListener> listenerList;
+    private List<IPropertyListener> listeners;
 
     /**
      * Default Constructor
      */
     public DetectCutAndPasteCmd() {
-        super();
-        this.setDescription("Detect Cut & paste for a project");
-        this.setName("DetectCutAndPaste");
+        super("DetectCutAndPaste", "Detect Cut & paste for a project");
+        
         this.setOutputProperties(true);
         this.setReadOnly(false);
         this.setTerminated(false);
-        this.listenerList = new ArrayList<IPropertyListener>();
+        this.listeners = new ArrayList<IPropertyListener>();
     }
 
     /**
@@ -105,12 +103,12 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
             final List<File> files = findFiles();
 
             if (files.size() == 0) {
-                PMDPlugin.getDefault().logInformation("No files found for specified language.");
+                logInfo("No files found for specified language.");
             } else {
-                PMDPlugin.getDefault().logInformation("Found " + files.size() + " files for the specified language. Performing CPD.");
+                logInfo("Found " + files.size() + " files for the specified language. Performing CPD.");
             }
-            setStepsCount(files.size());
-            beginTask("Finding suspect Cut And Paste", getStepsCount()*2);
+            setStepCount(files.size());
+            beginTask("Finding suspect Cut And Paste", getStepCount()*2);
 
             if (!isCanceled()) {
                 // detect cut and paste
@@ -125,10 +123,8 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
 
                     // trigger event propertyChanged for all listeners
                     Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {
-                            final Iterator<IPropertyListener> listenerIterator = listenerList.iterator();
-                            while (listenerIterator.hasNext()) {
-                                final IPropertyListener listener = listenerIterator.next();
+                        public void run() {                            
+                            for (IPropertyListener listener : listeners) {
                                 listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
                             }
                         }
@@ -151,7 +147,8 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      */
     @Override
     public void reset() {
-        this.setProject(null);
+        super.reset();
+        
         this.setTerminated(false);
         this.setReportName(null);
         this.setRenderer(null);
@@ -159,7 +156,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         this.setMinTileSize(PMDPlugin.getDefault().loadPreferences().getMinTileSize());
         this.setCreateReport(false);
         this.addPropertyListener(null);
-        this.listenerList = new ArrayList<IPropertyListener>();
+        this.listeners = new ArrayList<IPropertyListener>();
     }
 
     /**
@@ -174,13 +171,6 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      */
     public void setMinTileSize(final int tilesize) {
         this.minTileSize = tilesize;
-    }
-
-    /**
-     * @param project The project to set.
-     */
-    public void setProject(final IProject project) {
-        this.project = project;
     }
 
     /**
@@ -209,7 +199,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      * @param listener the property listener to set.
      */
     public void addPropertyListener(IPropertyListener listener) {
-        this.listenerList.add(listener);
+        this.listeners.add(listener);
     }
 
     /**
@@ -217,7 +207,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      */
     @Override
     public boolean isReadyToExecute() {
-        return this.project != null
+        return super.isReadyToExecute()
             && this.language != null
             && (!this.createReport // need a renderer and reportName if a report should be created
                     || this.renderer != null && this.reportName != null);
@@ -231,13 +221,13 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      * @throws CoreException
      */
     private List<File> findFiles() throws PropertiesException, CoreException {
-        final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
+        final IProjectProperties properties = projectProperties();
         final CPDVisitor visitor = new CPDVisitor();
         visitor.setWorkingSet(properties.getProjectWorkingSet());
         visitor.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());
         visitor.setLanguage(language);
         visitor.setFiles(new ArrayList<File>());
-        this.project.accept(visitor);
+        visitProjectResourcesWith(visitor);
         return visitor.getFiles();
     }
 
@@ -252,7 +242,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         log.debug("Searching for project files");
         final CPD cpd = new CPD(minTileSize, language);
 
-        subTask("Adding files for the CPD");
+        subTask("Collecting files for CPD");
         final Iterator<File> fileIterator = files.iterator();
         while (fileIterator.hasNext() && !isCanceled()) {
             final File file = fileIterator.next();
@@ -268,7 +258,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
             subTask("Performing CPD");
             log.debug("Performing CPD");
             cpd.go();
-            worked(getStepsCount());
+            worked(getStepCount());
         }
 
         return cpd;
@@ -284,27 +274,27 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         try {
             log.debug("Rendering CPD report");
             subTask("Rendering CPD report");
-            final String reportString = this.renderer.render(matches);
+            final String reportString = renderer.render(matches);
 
             // Create the report folder if not already existing
             log.debug("Create the report folder");
-            final IFolder folder = this.project.getFolder(PMDRuntimeConstants.REPORT_FOLDER);
+            final IFolder folder = getProjectFolder(PMDRuntimeConstants.REPORT_FOLDER);
             if (!folder.exists()) {
-                folder.create(true, true, this.getMonitor());
+                folder.create(true, true, getMonitor());
             }
 
             // Create the report file
             log.debug("Create the report file");
-            final IFile reportFile = folder.getFile(this.reportName);
+            final IFile reportFile = folder.getFile(reportName);
             final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
             if (reportFile.exists()) {
                 log.debug("   Overwritting the report file");
-                reportFile.setContents(contentsStream, true, false, this.getMonitor());
+                reportFile.setContents(contentsStream, true, false, getMonitor());
             } else {
                 log.debug("   Creating the report file");
-                reportFile.create(contentsStream, true, this.getMonitor());
+                reportFile.create(contentsStream, true, getMonitor());
             }
-            reportFile.refreshLocal(IResource.DEPTH_INFINITE, this.getMonitor());
+            reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
             contentsStream.close();
         } catch (CoreException e) {
             log.debug("Core Exception: " + e.getMessage(), e);

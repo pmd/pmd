@@ -11,10 +11,9 @@ import net.sourceforge.pmd.cpd.XMLRenderer;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.dialogs.CPDCheckDialog;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.CPDView;
+import net.sourceforge.pmd.eclipse.ui.views.cpd.CPDView;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -25,9 +24,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 
@@ -39,26 +36,18 @@ import org.eclipse.ui.PartInitException;
  * @author Philippe Herlin
  * 
  */
-public class CPDCheckProjectAction implements IObjectActionDelegate {
+public class CPDCheckProjectAction extends AbstractUIAction {
     private static final Logger log = Logger.getLogger(CPDCheckProjectAction.class);
-    private IWorkbenchPart targetPart;
-
+   
     private static final String XML_KEY = "XML";
     private static final String SIMPLE_KEY = "Simple Text";
     private static final String CSV_KEY = "CSV";
-    
-    /*
-     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-     */
-    public void setActivePart(final IAction action, final IWorkbenchPart targetPart) { // NOPMD:UnusedFormalParameter
-        this.targetPart = targetPart;
-    }
 
     /*
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
      */
     public void run(final IAction action) { // NOPMD:UnusedFormalParameter
-        final IWorkbenchPartSite site = targetPart.getSite();
+        final IWorkbenchPartSite site = targetPartSite();
         final ISelection sel = site.getSelectionProvider().getSelection();
         final Shell shell = site.getShell();
         final String[] languages = LanguageFactory.supportedLanguages;
@@ -73,7 +62,7 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
         
         if (dialog.open() == Dialog.OK && sel instanceof IStructuredSelection) {       
             final StructuredSelection ss = (StructuredSelection) sel;
-            final Iterator i = ss.iterator();
+            final Iterator<?> i = ss.iterator();
             while (i.hasNext()) {
                 final Object obj = i.next();
                 if (obj instanceof IAdaptable) {
@@ -110,6 +99,7 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
      * @throws CommandException 
      */
     private void detectCutAndPaste(final IProject project, CPDCheckDialog dialog) {
+    	
         final String selectedLanguage = dialog.getSelectedLanguage();
         final int tilesize = dialog.getTileSize();
         final boolean createReport = dialog.isCreateReportSelected();
@@ -129,7 +119,7 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
             detectCmd.addPropertyListener(view);
             detectCmd.performExecute();
         } catch (CommandException e) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
+            logError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
         }
     }
 
@@ -140,11 +130,10 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
     private CPDView showView() {
         CPDView view = null;
         try {
-            final IWorkbenchPage workbenchPage = targetPart.getSite().getPage();
+            final IWorkbenchPage workbenchPage = targetPartSite().getPage();
             view = (CPDView) workbenchPage.showView(PMDUiConstants.ID_CPDVIEW);
         } catch (PartInitException pie) {
-            PMDPlugin.getDefault().logError(
-                getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), pie);
+            logError( getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), pie);
         } 
         return view;
     }
@@ -183,12 +172,4 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
         return fileName;
     }
     
-    /**
-     * Helper method to shorten message access
-     * @param key a message key
-     * @return requested message
-     */
-    private String getString(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
-    }
 }

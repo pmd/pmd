@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
@@ -21,8 +21,14 @@ public class PriorityFilterAction extends Action {
     private ViolationOutline outlineView;
     private ViolationOverview overviewView;
     private PriorityFilter priorityFilter;
-    private Integer priority;
+    private final Integer priority;
 
+    private PriorityFilterAction(ViewerFilter[] filters, Integer thePriority) {
+    	priority = thePriority;
+    	
+        setFilterFrom(filters);
+        setupActionLook();
+    }
     /**
      * Constructor, used for Violations Outline only
      * 
@@ -30,16 +36,8 @@ public class PriorityFilterAction extends Action {
      * @param view, the ViolationOutline
      */
     public PriorityFilterAction(Integer prio, ViolationOutline view) {
+    	this(view.getFilters(), prio);
         outlineView = view;
-        priority = prio;
-
-        ViewerFilter[] filters = view.getFilters();
-        for (int i = 0; i < filters.length; i++) {
-            if (filters[i] instanceof PriorityFilter)
-                priorityFilter = (PriorityFilter) filters[i];
-        }
-
-        setupActionLook();
     }
 
     /**
@@ -49,18 +47,18 @@ public class PriorityFilterAction extends Action {
      * @param view, the violations Overview
      */
     public PriorityFilterAction(Integer prio, ViolationOverview view) {
+    	this(view.getViewer().getFilters(), prio);
         overviewView = view;
-        priority = prio;
+    }
 
-        ViewerFilter[] filters = view.getViewer().getFilters();
+    private void setFilterFrom(ViewerFilter[] filters) {
+    	
         for (Object filter : filters) {
             if (filter instanceof PriorityFilter)
                 priorityFilter = (PriorityFilter) filter;
         }
-
-        setupActionLook();
     }
-
+    
     /**
      * Setup the Actions Look by giving the right Image, Text and ToolTip-Text to it, depending on its Priority
      */
@@ -74,28 +72,28 @@ public class PriorityFilterAction extends Action {
         switch (priority.intValue()) {
         case 1:
             image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO1);
-            text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_1);
-            tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_1);
+            text = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_1);
+            tooltipText = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_1);
             break;
         case 2:
             image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO2);
-            text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_2);
-            tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_2);
+            text = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_2);
+            tooltipText = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_2);
             break;
         case 3:
             image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO3);
-            text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_3);
-            tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_3);
+            text = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_3);
+            tooltipText = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_3);
             break;
         case 4:
             image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO4);
-            text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_4);
-            tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_4);
+            text = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_4);
+            tooltipText = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_4);
             break;
         case 5:
             image = PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PRIO5);
-            text = getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_5);
-            tooltipText = getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_5);
+            text = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_5);
+            tooltipText = AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_5);
             break;
         }
 
@@ -129,10 +127,4 @@ public class PriorityFilterAction extends Action {
             overviewView.refresh();
     }
 
-    /**
-     * Helper method to retrieve an NLS string from its key
-     */
-    private String getString(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
-    }
 }

@@ -29,10 +29,14 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
  *
  */
 public class MarkerInfo {
-    private String type;
+	
+    private final String type;
     private String[] attributeNames;
     private Object[] attributeValues;
     
+    public MarkerInfo(String theType) {
+    	type = theType;
+    }
     /**
      * @return
      */
@@ -66,13 +70,6 @@ public class MarkerInfo {
      */
     public void setAttributeValues(Object[] objects) {
         attributeValues = objects;
-    }
-
-    /**
-     * @param string
-     */
-    public void setType(String string) {
-        type = string;
     }
 
 }

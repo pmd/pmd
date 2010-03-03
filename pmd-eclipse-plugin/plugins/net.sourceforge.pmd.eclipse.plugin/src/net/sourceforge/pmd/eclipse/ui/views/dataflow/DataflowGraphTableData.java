@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.ui.views;
+package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 
 /**
@@ -12,8 +12,7 @@ public class DataflowGraphTableData {
 	
 	private Object data;
 	private int style;
-	
-	
+
 	/**
 	 * Constructor
 	 * 

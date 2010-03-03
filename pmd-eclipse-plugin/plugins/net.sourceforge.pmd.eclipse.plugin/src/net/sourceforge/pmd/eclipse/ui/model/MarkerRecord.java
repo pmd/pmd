@@ -67,7 +67,7 @@ public class MarkerRecord extends AbstractPMDRecord {
         this.ruleName = ruleName;
         this.priority = priority;
         this.markers = new ArrayList<IMarker>();
-        this.children = AbstractPMDRecord.EMPTY_RECORDS;
+        this.children = EMPTY_RECORDS;
     }
 
     public void addViolation(IMarker marker) {

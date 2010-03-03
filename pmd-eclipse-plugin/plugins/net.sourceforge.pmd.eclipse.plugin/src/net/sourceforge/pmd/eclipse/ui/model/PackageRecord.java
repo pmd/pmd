@@ -220,7 +220,7 @@ public class PackageRecord extends AbstractPMDRecord {
      */
     @Override
     public int getResourceType() {
-        return AbstractPMDRecord.TYPE_PACKAGE;
+        return TYPE_PACKAGE;
     }
 
     /**

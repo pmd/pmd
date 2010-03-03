@@ -3,14 +3,13 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 import java.lang.reflect.InvocationTargetException;
 
 import name.herlin.command.CommandException;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
@@ -20,7 +19,8 @@ import org.eclipse.swt.widgets.Display;
  * @author Sven Jacob
  *
  */
-public class ReviewResourceAction extends Action {
+public class ReviewResourceAction extends AbstractPMDAction {
+	
     private IProgressMonitor monitor;
     private IResource resource;
     
@@ -29,10 +29,12 @@ public class ReviewResourceAction extends Action {
      */
     public ReviewResourceAction(IResource resource) {
         super();
-        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_REFRESH));
-        setToolTipText(getString(StringKeys.MSGKEY_VIEW_TOOLTIP_REFRESH));
         this.resource = resource;
     }
+    
+ 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_REFRESH; }
+    
+    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_REFRESH; }
     
     public void setResource(IResource resource) {
         this.resource = resource;
@@ -50,7 +52,7 @@ public class ReviewResourceAction extends Action {
                     monitor.beginTask(getString(StringKeys.MSGKEY_MONITOR_REVIEW), 5);
                     ReviewCodeCmd cmd = new ReviewCodeCmd();
                     cmd.addResource(resource);
-                    cmd.setStepsCount(1);
+                    cmd.setStepCount(1);
                     cmd.setTaskMarker(true);
                     cmd.setUserInitiated(true);
                     try {
@@ -86,10 +88,4 @@ public class ReviewResourceAction extends Action {
         this.monitor = monitor;
     }
 
-    /**
-     * Helper mehod to retreive an NLS string from its key
-     */
-    private String getString(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
-    }
 }

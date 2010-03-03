@@ -43,7 +43,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.apache.log4j.Logger;
@@ -65,10 +65,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Implements the clear reviews action
@@ -76,23 +74,16 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Philippe Herlin
  *
  */
-public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisitor, IViewActionDelegate {
+public class ClearReviewsAction extends AbstractUIAction implements IResourceVisitor, IViewActionDelegate {
+	
     private static final Logger log = Logger.getLogger(ClearReviewsAction.class);
-    private IWorkbenchPart targetPart;
     private IProgressMonitor monitor;
 
     /**
      * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
      */
     public void init(IViewPart view) {
-        this.targetPart = view.getSite().getPage().getActivePart();
-    }
-
-    /**
-     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
-     */
-    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-        this.targetPart = targetPart;
+        setActivePart(null, view.getSite().getPage().getActivePart() );
     }
 
     /**
@@ -110,9 +101,9 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
                 }
             });
         } catch (InvocationTargetException e) {
-            PMDPlugin.getDefault().logError("Invocation Target Exception when removing violations reviews", e.getTargetException());
+            logError("Invocation Target Exception when removing violation reviews", e.getTargetException());
         } catch (InterruptedException e) {
-            PMDPlugin.getDefault().logError("Interrupted Exception when removing violations reviews", e);
+            logError("Interrupted Exception when removing violation reviews", e);
         }
     }
 
@@ -167,16 +158,15 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
         try {
             // If action is started from a view, the process all selected resource
-            if (this.targetPart instanceof IViewPart) {
-                ISelection selection = targetPart.getSite().getSelectionProvider().getSelection();
+            if (isViewPart()) {
+                ISelection selection = targetSelection();
 
                 if (selection != null && selection instanceof IStructuredSelection) {
                     IStructuredSelection structuredSelection = (IStructuredSelection) selection;
                     if (getMonitor() != null) {
-                        getMonitor().beginTask(getString(StringKeys.MSGKEY_MONITOR_REMOVE_REVIEWS),
-                                IProgressMonitor.UNKNOWN);
+                        getMonitor().beginTask(getString(StringKeys.MSGKEY_MONITOR_REMOVE_REVIEWS), IProgressMonitor.UNKNOWN);
 
-                        Iterator<Object> i = structuredSelection.iterator();
+                        Iterator<?> i = structuredSelection.iterator();
                         while (i.hasNext()) {
                             Object object = i.next();
                             IResource resource = null;
@@ -203,8 +193,8 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
             }
 
             // If action is started from an editor, process the file currently edited
-            if (this.targetPart instanceof IEditorPart) {
-                IEditorInput editorInput = ((IEditorPart) this.targetPart).getEditorInput();
+            if (isEditorPart()) {
+                IEditorInput editorInput = ((IEditorPart) this.targetPart()).getEditorInput();
                 if (editorInput instanceof IFileEditorInput) {
                     ((IFileEditorInput) editorInput).getFile().accept(this);
                 } else {
@@ -215,11 +205,10 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
             // else this is not supported
             else {
-                log.debug("This action is not supported on this kind of part. This part type is: "
-                        + this.targetPart.getClass().getName());
+                log.debug("This action is not supported on this kind of part. This part type is: " + targetPartClassName());
             }
         } catch (CoreException e) {
-            PMDPlugin.getDefault().logError("Core Exception when clearing violations reviews", e);
+            logError("Core Exception when clearing violations reviews", e);
         }
     }
 
@@ -239,6 +228,12 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
         monitorWorked();
     }
 
+    private static boolean isReviewable(IFile file) {
+    	
+    	if (AbstractDefaultCommand.isJavaFile(file)) return true;
+    	return file.getName().toLowerCase().endsWith(".jsp");
+    }
+    
     /**
      * remove reviews from file content
      *
@@ -246,10 +241,9 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
      * @return
      */
     private String removeReviews(IFile file) {
-    	String name = file.getName().toLowerCase();
-    	if (!(name.endsWith(".java") || name.endsWith(".jsp"))) {
-    		return null;
-    	}
+    	
+    	if (!isReviewable(file)) return null;
+    	
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         boolean noChange = true;
         try {
@@ -284,9 +278,9 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
             out.flush();
 
         } catch (CoreException e) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
+            logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
         }
 
         return noChange ? null : baos.toString();
@@ -302,7 +296,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
         try {
             file.setContents(new ByteArrayInputStream(newContent.getBytes()), false, true, getMonitor());
         } catch (CoreException e) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         }
     }
 
@@ -315,13 +309,6 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
         }
 
         return resource instanceof IProject || resource instanceof IFolder;
-    }
-
-    /**
-     * Helper method to return an NLS string from its key
-     */
-    private String getString(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

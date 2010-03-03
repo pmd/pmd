@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.ui.views;
+package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -18,6 +18,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Viewer for the DataFlowGraph, contains the DataflowGraphTable
@@ -74,19 +75,21 @@ public class DataflowGraphViewer extends Composite {
     private DataflowGraphTable initTable(Composite parent, int style) {
         DataflowGraphTable dfaTable = new DataflowGraphTable(parent, style);
 
-        // set Column-Widths ans Header-Titles
-        colWidths = new int[] { 50, 250, 70, 200, 200 };
-        String[] headerTitles = { getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_LINE),
+        // set Column-widths and header titles
+        colWidths = new int[] { 50, 250, 70, 220, 300 };
+        String[] headerTitles = { 
+        		getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_LINE),
                 getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_GRAPH),
                 getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_NEXT),
                 getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_VALUES),
                 getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_CODE) };
         dfaTable.setColumns(colWidths, headerTitles, 1);
 
+        Display display = parent.getDisplay();
         // set the Colors
-        bgColor = new Color(null, 255, 255, 255);
+        bgColor = display.getSystemColor(SWT.COLOR_WHITE);	//new Color(null, 255, 255, 255);
         lineColor = new Color(null, 192, 192, 192);
-        textColor = new Color(null, 0, 0, 0);
+        textColor = display.getSystemColor(SWT.COLOR_BLACK);	//new Color(null, 0, 0, 0);
         dfaTable.setColors(textColor, bgColor, lineColor);
 
         return dfaTable;
@@ -123,77 +126,84 @@ public class DataflowGraphViewer extends Composite {
         return graph;
     }
 
+    private String nextNodeNumberStringFrom(DataFlowNode dfNode) {
+    	
+    	 List<DataFlowNode> dfNodes = dfNode.getChildren();
+    	 if (dfNodes.isEmpty()) return "";
+    	 
+         StringBuilder sb = new StringBuilder( Integer.toString(dfNodes.get(0).getIndex()) );
+	            
+	     for (int j = 1; j < dfNodes.size(); j++) {
+	        sb.append(", ").append(dfNodes.get(j).getIndex());
+	        }
+	     return sb.toString();
+    }
+    
+	private String referenceStringFrom(DataFlowNode dfNode) {
+
+		List<VariableAccess> access = dfNode.getVariableAccess();
+		if (access == null)	return null;
+
+		StringBuilder exp = new StringBuilder();
+		for (int k = 0; k < access.size(); k++) {
+			if (k > 0) {
+				exp.append(", ");
+			}
+			VariableAccess va = access.get(k);
+			switch (va.getAccessType()) {
+				case VariableAccess.DEFINITION:		exp.append("d(");	break;
+				case VariableAccess.REFERENCING:	exp.append("r(");	break;
+				case VariableAccess.UNDEFINITION:	exp.append("u(");	break;
+				default:							exp.append("?(");
+				}
+			exp.append(va.getVariableName()).append(')');
+			}
+		
+		return exp.toString();
+	}
+    
     /**
-     * Creates an ArrayList (#Rows) of ArrayList (#Columns) with TableData in it, provides the Input for the Table
+     * Creates an List (#Rows) of List (#Columns) with TableData in it, provides the Input for the Table
      *
      * @param node
-     * @return the DataflowGraphTable's Input-ArrayList
+     * @return the DataflowGraphTable's Input-List
      */
-    protected ArrayList<ArrayList<DataflowGraphTableData>> createDataFields(Node node) {
+    protected List<List<DataflowGraphTableData>> createDataFields(Node node) {
         List<DataFlowNode> flow = node.getDataFlowNode().getFlow();
 
         // the whole TableData
-        ArrayList<ArrayList<DataflowGraphTableData>> tableData = new ArrayList<ArrayList<DataflowGraphTableData>>();
+        List<List<DataflowGraphTableData>> tableData = new ArrayList<List<DataflowGraphTableData>>();
 
-        for (int i = 0; i < flow.size(); i++) {
-            // one Data-List for a Row
-            ArrayList<DataflowGraphTableData> rowData = new ArrayList<DataflowGraphTableData>();
+        for (DataFlowNode inode : flow) {
+            // one Data-List for a row
+            List<DataflowGraphTableData> rowData = new ArrayList<DataflowGraphTableData>();
 
             // 1. The Nodes Line
-            DataFlowNode inode = flow.get(i);
             rowData.add(new DataflowGraphTableData(String.valueOf(inode.getLine()), SWT.CENTER));
 
-            // 2. empty, because the Graph is shown in this Column
+            // 2. empty, because the Graph is shown in this column
             rowData.add(null);
 
-            // 3. the Numbers of the next Nodes
-            String nextNodes = "";
-            for (int j = 0; j < inode.getChildren().size(); j++) {
-                DataFlowNode n = inode.getChildren().get(j);
-                if (j > 0)
-                    nextNodes += ", ";
-                nextNodes += String.valueOf(n.getIndex());
-            }
-            rowData.add(new DataflowGraphTableData(nextNodes, SWT.LEFT | SWT.WRAP));
-
-            // 4. The Dataflow occurrences (definition, undefinition,
-            // reference) in this Line of Code
-            List<VariableAccess> access = inode.getVariableAccess();
-            if (access != null) {
-                StringBuilder exp = new StringBuilder();
-                for (int k = 0; k < access.size(); k++) {
-                    if (k > 0)
-                        exp.append(", ");
-                    VariableAccess va = access.get(k);
-                    switch (va.getAccessType()) {
-                    case VariableAccess.DEFINITION:
-                        exp.append("d(");
-                        break;
-                    case VariableAccess.REFERENCING:
-                        exp.append("r(");
-                        break;
-                    case VariableAccess.UNDEFINITION:
-                        exp.append("u(");
-                        break;
-                    default:
-                        exp.append("?(");
-                    }
-                    exp.append(va.getVariableName() + ")");
-                }
-                rowData.add(new DataflowGraphTableData(exp.toString(), SWT.LEFT | SWT.WRAP));
+            // 3. the Numbers of the next Nodes           
+            String cellContent = nextNodeNumberStringFrom(inode);
+            rowData.add(new DataflowGraphTableData(cellContent, SWT.LEFT | SWT.WRAP));
+            
+            // 4. The Dataflow occurrences (definition, undefinition, reference) in this Line of Code
+            cellContent = referenceStringFrom(inode);
+            if (cellContent != null) {
+                rowData.add(new DataflowGraphTableData(cellContent, SWT.LEFT | SWT.WRAP));
             } else {
                 rowData.add(null);
             }
 
             // 5. The Line of Code itself
             if (resourceString != null) {
-                String codeLine = getCodeLine(resourceString, inode.getLine());
-                rowData.add(new DataflowGraphTableData(codeLine.trim(), SWT.LEFT | SWT.WRAP));
+            	cellContent = getCodeLine(resourceString, inode.getLine()).trim();
+                rowData.add(new DataflowGraphTableData(cellContent, SWT.LEFT | SWT.WRAP));
             } else {
                 rowData.add(null);
             }
 
-            // add the row to the TableData
             tableData.add(rowData);
         }
 

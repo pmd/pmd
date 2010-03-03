@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
@@ -18,7 +17,7 @@ import org.eclipse.ui.ide.IDE;
  * 
  * @author SebastianRaffel ( 21.05.2005 )
  */
-public class QuickFixAction extends ViolationSelectionAction {
+public class QuickFixAction extends AbstractViolationSelectionAction {
 
     /**
      * Constructor
@@ -27,12 +26,14 @@ public class QuickFixAction extends ViolationSelectionAction {
      */
     public QuickFixAction(TableViewer viewer) {
         super(viewer);
-
-        setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_QUICKFIX));
-        setText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_ACTION_QUICKFIX));
-        setToolTipText(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_TOOLTIP_QUICKFIX));
     }
 
+ 	protected String textId() { return StringKeys.MSGKEY_VIEW_ACTION_QUICKFIX; }
+ 	
+ 	protected String imageId() { return PMDUiConstants.ICON_BUTTON_QUICKFIX; }
+    
+    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_QUICKFIX; }    
+    
     /**
      * Checks, if the Markers support QuickFix
      * 
@@ -57,8 +58,7 @@ public class QuickFixAction extends ViolationSelectionAction {
         IWorkbench workbench = PlatformUI.getWorkbench();
         IMarkerResolution resolutions[] = IDE.getMarkerHelpRegistry().getResolutions(selectedMarkers[0]);
         if (resolutions.length != 0) {
-            MarkerResolutionSelectionDialog dialog = new MarkerResolutionSelectionDialog(workbench.getActiveWorkbenchWindow()
-                    .getShell(), resolutions);
+            MarkerResolutionSelectionDialog dialog = new MarkerResolutionSelectionDialog(workbench.getActiveWorkbenchWindow().getShell(), resolutions);
             if (dialog.open() == Dialog.OK) {
                 Object[] result = dialog.getResult();
                 if ((result != null) && (result.length > 0)) {

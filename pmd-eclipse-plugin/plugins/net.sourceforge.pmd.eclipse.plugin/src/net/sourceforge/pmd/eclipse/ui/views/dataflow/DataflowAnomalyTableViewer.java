@@ -1,8 +1,9 @@
-package net.sourceforge.pmd.eclipse.ui.views;
+package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.TableColumnSorter;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -19,7 +20,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- * Shows Dataflow Anomalies
+ * Shows Dataflow anomalies
  * 
  * @author SebastianRaffel ( 06.06.2005 )
  */
@@ -32,15 +33,16 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         super(parent, style | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
         setUseHashlookup(true);
 
-        getTable().setHeaderVisible(true);
-        getTable().setLinesVisible(true);
+        final Table table = getTable();
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
 
-        createColumns(getTable());
+        createColumns(table);
         GridData tableData = new GridData(GridData.FILL_BOTH);
-        getTable().setLayoutData(tableData);
+        table.setLayoutData(tableData);
         GridLayout tableLayout = new GridLayout(1, false);
         tableLayout.horizontalSpacing = tableLayout.verticalSpacing = 0;
-        getTable().setLayout(tableLayout);
+        table.setLayout(tableLayout);
     }
     
     /**
@@ -55,7 +57,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         typeColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE));
         typeColumn.setToolTipText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE_TOOLTIP));
         
-        // Line(s) where the Anomaly occures
+        // Line(s) where the Anomaly occurs
         final TableColumn lineColumn = new TableColumn(table, SWT.RIGHT);
         lineColumn.setWidth(100);
         lineColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_LINE));
@@ -145,7 +147,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
             break;
 
         case 1:
-            // sort by the Line(s) where the anomaly occures
+            // sort by the Line(s) where the anomaly occurs
             sorter = new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     int result = 0;
@@ -168,7 +170,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
             break;
 
         case 2:
-            // sort by the Variable's Name
+            // sort by the variable Name
             sorter =  new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
                     int result = 0;

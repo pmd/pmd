@@ -37,6 +37,7 @@ import java.util.Iterator;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -53,9 +54,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Implements action on the "Check code with PMD" action menu on a file
@@ -63,16 +61,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Philippe Herlin
  *
  */
-public class PMDCheckAction implements IObjectActionDelegate {
+public class PMDCheckAction extends AbstractUIAction {
+	
     private static final Logger log = Logger.getLogger(PMDCheckAction.class);
-    private IWorkbenchPart targetPart;
-
-    /**
-     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-     */
-    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-        this.targetPart = targetPart;
-    }
 
     /**
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
@@ -83,8 +74,8 @@ public class PMDCheckAction implements IObjectActionDelegate {
         try {
 
             // Execute PMD on a range of selected resource if action selected from a view part
-            if (this.targetPart instanceof IViewPart) {
-                ISelection selection = this.targetPart.getSite().getSelectionProvider().getSelection();
+            if (isViewPart()) {
+                ISelection selection = targetSelection();
                 if (selection instanceof IStructuredSelection) {
                     reviewSelectedResources((IStructuredSelection) selection);
                 } else {
@@ -94,8 +85,8 @@ public class PMDCheckAction implements IObjectActionDelegate {
             }
 
             // If action is selected from an editor, run PMD on the file currently edited
-            else if (this.targetPart instanceof IEditorPart) {
-                IEditorInput editorInput = ((IEditorPart) this.targetPart).getEditorInput();
+            else if (isEditorPart()) {
+                IEditorInput editorInput = ((IEditorPart) targetPart()).getEditorInput();
                 if (editorInput instanceof IFileEditorInput) {
                     reviewSingleResource(((IFileEditorInput) editorInput).getFile());
                 } else {
@@ -106,12 +97,11 @@ public class PMDCheckAction implements IObjectActionDelegate {
 
             // Else, this is not supported for now
             else {
-                log.debug("Running PMD from this kind of part is not supported. Part is of type "
-                        + this.targetPart.getClass().getName());
+                log.debug("Running PMD from this kind of part is not supported. Part is of type " + targetPartClassName());
             }
 
         } catch (CommandException e) {
-            PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+            showErrorById(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         }
 
     }
@@ -131,13 +121,18 @@ public class PMDCheckAction implements IObjectActionDelegate {
     private void reviewSingleResource(IResource resource) throws CommandException {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
         cmd.addResource(resource);
-        cmd.setStepsCount(1);
-        cmd.setTaskMarker(true);
+
+        setupAndExecute(cmd, 1);
+    }
+
+    private void setupAndExecute(ReviewCodeCmd cmd, int count) throws CommandException {
+    	cmd.setStepCount(count);
+    	cmd.setTaskMarker(true);
         cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
         cmd.setUserInitiated(true);
         cmd.performExecute();
     }
-
+    
     /**
      * Prepare and run the reviewCode command for all selected resources
      *
@@ -147,7 +142,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
 
         // Add selected resources to the list of resources to be reviewed
-        for (Iterator i = selection.iterator(); i.hasNext();) {
+        for (Iterator<?> i = selection.iterator(); i.hasNext();) {
             Object element = i.next();
             if (element instanceof AbstractPMDRecord) {
                 final IResource resource = ((AbstractPMDRecord) element).getResource();
@@ -173,12 +168,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
         }
 
         // Run the command
-        cmd.setStepsCount(countElement(selection));
-        cmd.setTaskMarker(true);
-        cmd.setOpenPmdPerspective(PMDPlugin.getDefault().loadPreferences().isPmdPerspectiveEnabled());
-        cmd.setUserInitiated(true);
-        cmd.performExecute();
-
+        setupAndExecute(cmd, countElement(selection));
     }
 
     /**
@@ -190,7 +180,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
     private int countElement(IStructuredSelection selection) {
         CountVisitor visitor = new CountVisitor();
 
-        for (Iterator i = selection.iterator(); i.hasNext();) {
+        for (Iterator<?> i = selection.iterator(); i.hasNext();) {
             Object element = i.next();
 
             try {
@@ -209,15 +199,14 @@ public class PMDCheckAction implements IObjectActionDelegate {
                 }
             } catch (CoreException e) {
                 // Ignore any exception
-                PMDPlugin.getDefault().logError(
-                        "Exception when counting the number of impacted elements when running PMD from menu", e);
+                logError("Exception when counting the number of impacted elements when running PMD from menu", e);
             }
         }
 
         return visitor.count;
     }
 
-    // Inner visitor to count number of childs of a resource
+    // Inner visitor to count number of children of a resource
     private class CountVisitor implements IResourceVisitor {
         public int count = 0;
 
@@ -225,8 +214,7 @@ public class PMDCheckAction implements IObjectActionDelegate {
             boolean fVisitChildren = true;
             count++;
 
-            if (resource instanceof IFile && ((IFile) resource).getFileExtension() != null
-                    && ((IFile) resource).getFileExtension().equals("java")) {
+            if (resource instanceof IFile && AbstractDefaultCommand.isJavaFile((IFile) resource)) {
 
                 fVisitChildren = false;
             }

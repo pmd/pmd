@@ -73,8 +73,6 @@ public class PMDUiConstants {
     public static final String ICON_LABEL_ERR4 = "icons/lab_err4.gif";
     public static final String ICON_LABEL_ERR5 = "icons/lab_err5.gif";
     public static final String ICON_LABEL_ERR_DFA = "icons/lab_errdfa.gif";
-    public static final String ICON_LABEL_ARRUP = "icons/lab_arrup.gif";
-    public static final String ICON_LABEL_ARRDN = "icons/lab_arrdn.gif";
     
     public static final String ICON_FILTER = "icons/filter.gif";
     public static final String ICON_FILTER_X = "icons/filter_x.png";
@@ -109,6 +107,7 @@ public class PMDUiConstants {
     
     public static final String MEMENTO_OUTLINE_FILE = "/violationOutline_memento.xml";
     public static final String MEMENTO_OVERVIEW_FILE = "/violationOverview_memento.xml";
+    public static final String MEMENTO_DATAFLOW_FILE = "/dataflowView_memento.xml";
     
     public static final String KEY_MARKERATT_RULENAME = "rulename";
     public static final String KEY_MARKERATT_PRIORITY = "pmd_priority";

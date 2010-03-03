@@ -47,19 +47,16 @@ import org.eclipse.core.runtime.CoreException;
  * For unknown reasons this took some time.
  *
  * @author Sven
- *
  */
-
 public class DeleteMarkersCommand extends AbstractDefaultCommand {
 
     private static final long serialVersionUID = 1L;
 
-    private IMarker[] marker;
+    private IMarker[] markers;
 
     public DeleteMarkersCommand() {
-        super();
-        this.setDescription("Deletes a possible high number of markers");
-        this.setName("DeleteMarkersCommand");
+        super("DeleteMarkersCommand", "Deletes a possible large number of markers");
+
         this.setOutputProperties(true);
         this.setReadOnly(false);
         this.setTerminated(false);
@@ -67,12 +64,12 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
         this.setUserInitiated(false);
     }
 
-    public final void setMarkers(IMarker[] marker) { // NOPMD by Sven on 13.11.06 11:43
-        this.marker = marker;
+    public final void setMarkers(IMarker[] theMarkers) { // NOPMD by Sven on 13.11.06 11:43
+        this.markers = theMarkers;
     }
 
     public boolean isReadyToExecute() {
-        return marker != null;
+        return markers != null;
     }
 
     /* (non-Javadoc)
@@ -80,11 +77,12 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
      */
     public void execute() throws CommandException {
         try {
-            beginTask("Deleting single markers", marker.length);
-            for (int j = 0; j < marker.length && !isCanceled(); j++) {
-                marker[j].delete();
+            beginTask("Deleting single markers", markers.length);
+            for (int j = 0; j < markers.length && !isCanceled(); j++) {
+                markers[j].delete();
                 worked(1);
             }
+            done();
         } catch (CoreException e) {
             throw new CommandException(e);
         }

@@ -34,7 +34,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.eclipse.ui.views;
+package net.sourceforge.pmd.eclipse.ui.views.cpd;
 
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.TokenEntry;
@@ -65,6 +65,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
  */
 
 public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
+	
     private final CPDView view;
     
     public CPDViewDoubleClickEventListener(CPDView view) {
@@ -91,35 +92,39 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
                 treeViewer.expandToLevel(node, 1);
             }
         } else if (value instanceof TokenEntry) {
-            // open file and jump to the startline
-            final TokenEntry entry = (TokenEntry) value;
-            final Match match = (Match) node.getParent().getValue();
-            final IPath path = Path.fromOSString(entry.getTokenSrcID());
-            final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-
-            if (file != null) {
-                try {
-                    // open editor
-                    final IWorkbenchPage page = this.view.getSite().getPage();
-                    final IEditorPart part = IDE.openEditor(page, file);
-                    if (part instanceof ITextEditor) {
-                        // select text
-                        final ITextEditor textEditor = (ITextEditor) part;
-                        final IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-                        final int offset = document.getLineOffset(entry.getBeginLine()-1);
-                        final int length = document.getLineOffset(entry.getBeginLine()-1 + match.getLineCount()) - offset -1;
-                        textEditor.selectAndReveal(offset, length); 
-                    }                    
-                } catch (PartInitException pie) {
-                    PMDPlugin.getDefault().logError(
-                            getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), pie);
-                } catch (BadLocationException ble) {
-                    PMDPlugin.getDefault().logError(
-                            getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), ble);
-                }
-            }
+        	final TokenEntry entry = (TokenEntry) value;
+    		final Match match = (Match) node.getParent().getValue();
+            highlightText(match, entry);
         }
     }
+
+	private void highlightText(Match match, TokenEntry entry) {
+		// open file and jump to the startline
+
+		final IPath path = Path.fromOSString(entry.getTokenSrcID());
+		final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+		if (file == null) return;
+		
+	    try {
+	        // open editor
+	        final IWorkbenchPage page = this.view.getSite().getPage();
+	        final IEditorPart part = IDE.openEditor(page, file);
+	        if (part instanceof ITextEditor) {
+	            // select text
+	            final ITextEditor textEditor = (ITextEditor) part;
+	            final IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+	            final int offset = document.getLineOffset(entry.getBeginLine()-1);
+	            final int length = document.getLineOffset(entry.getBeginLine()-1 + match.getLineCount()) - offset -1;
+	            textEditor.selectAndReveal(offset, length); 
+	        }                    
+	    } catch (PartInitException pie) {
+	        PMDPlugin.getDefault().logError(
+	                getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), pie);
+	    } catch (BadLocationException ble) {
+	        PMDPlugin.getDefault().logError(
+	                getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), ble);
+	    }
+	}
     
     /**
      * Helper method to return an NLS string from its key

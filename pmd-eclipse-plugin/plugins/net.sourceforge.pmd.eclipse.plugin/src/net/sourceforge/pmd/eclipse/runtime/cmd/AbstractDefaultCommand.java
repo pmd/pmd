@@ -43,6 +43,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
@@ -64,14 +65,24 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     private boolean readOnly;
     private boolean outputProperties;
     private boolean readyToExecute;
-    private String description;
-    private String name;
+    private final String description;
+    private final String name;
     private IProgressMonitor monitor;
-    private int stepsCount;
+    private int stepCount;
     private boolean userInitiated;
 
+    protected AbstractDefaultCommand(String theName, String theDescription) {
+    	name = theName;
+    	description = theDescription;
+    }
+    
+    public static boolean isJavaFile(IFile file) {
+    	if (file == null) return false;
+    	return "JAVA".equalsIgnoreCase(file.getFileExtension());
+    }
+    
     /**
-     * @return Returns the readOnly.
+     * @return Returns the readOnly status.
      */
     @Override
     public boolean isReadOnly() {
@@ -93,12 +104,12 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         return description;
     }
 
-    /**
-     * @param description The description to set.
-     */
-    public void setDescription(final String description) {
-        this.description = description;
-    }
+//    /**
+//     * @param description The description to set.
+//     */
+//    public void setDescription(final String description) {
+//        this.description = description;
+//    }
 
     /**
      * @return Returns the name.
@@ -108,12 +119,12 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         return name;
     }
 
-    /**
-     * @param name The name to set.
-     */
-    public void setName(final String name) {
-        this.name = name;
-    }
+//    /**
+//     * @param name The name to set.
+//     */
+//    public void setName(final String name) {
+//        this.name = name;
+//    }
 
     /**
      * @param outputProperties The outputProperties to set.
@@ -148,15 +159,15 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     /**
      * @return Returns the number of steps for that command
      */
-    public int getStepsCount() {
-        return stepsCount;
+    public int getStepCount() {
+        return stepCount;
     }
 
     /**
      * @param stepsCount The number of steps for that command
      */
-    public void setStepsCount(final int stepsCount) {
-        this.stepsCount = stepsCount;
+    public void setStepCount(final int stepCount) {
+        this.stepCount = stepCount;
     }
 
     /**
@@ -166,6 +177,14 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         return userInitiated;
     }
 
+    public static void logInfo(String message) {
+    	PMDPlugin.getDefault().logInformation(message);
+    }
+
+    public static void logError(String message, Throwable error) {
+    	PMDPlugin.getDefault().logError(message, error);
+    }
+    
     /**
      * @param userInitiated The userInitiated to set.
      */

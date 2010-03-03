@@ -154,7 +154,7 @@ public class RootRecord extends AbstractPMDRecord {
      */
     @Override
     public int getResourceType() {
-        return AbstractPMDRecord.TYPE_ROOT;
+        return TYPE_ROOT;
     }
 
     /**

@@ -73,9 +73,9 @@ public class CPDVisitor implements IResourceVisitor {
 
         if (resource instanceof IFile) {
             final IFile file = (IFile) resource;
-            final File ioFile = ((IFile) resource).getLocation().toFile();
+            final File ioFile = file.getLocation().toFile();
             try {
-                if (((IFile) resource).getFileExtension() != null
+                if (file.getFileExtension() != null
                         && this.language.getFileFilter().accept(ioFile, file.getName())
                         && isFileInWorkingSet(file)
                                 && (this.includeDerivedFiles
@@ -90,7 +90,6 @@ public class CPDVisitor implements IResourceVisitor {
         }
 
         return result;
-
     }
 
     /**

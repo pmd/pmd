@@ -19,6 +19,15 @@ public class SWTUtil {
 	
 	private static final String TOOLTIP_SUFFIX = ".tooltip";
 	
+    public static void logInfo(String message) {
+    	plugin.logInformation(message);
+    }
+
+    public static void logError(String message, Throwable error) {
+    	plugin.logError(message, error);
+    }
+	
+	
 	// TODO move this to to Collections utility
 	public static Set<String> asStringSet(String input, char separator) {
 		List<String> values = Arrays.asList(input.split(""+separator));
@@ -49,7 +58,7 @@ public class SWTUtil {
     
     public static void releaseListeners(Control control, int listenerType) {
         Listener[] listeners = control.getListeners(listenerType);
-        for (int i=0; i<listeners.length; i++) control.removeListener(listenerType, listeners[i]);
+        for (Listener listener : listeners) control.removeListener(listenerType, listener);
     }
     
     public static String[] labelsIn(Object[][] items, int columnIndex) {
