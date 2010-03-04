@@ -2,7 +2,6 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import java.lang.reflect.InvocationTargetException;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
@@ -13,12 +12,13 @@ import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
 public class CalculateStatisticsAction extends AbstractPMDAction {
 	
-    public ViolationOverview violationView;
+    public final ViolationOverview violationView;
     
     public CalculateStatisticsAction(ViolationOverview view) {
         super();
@@ -30,6 +30,10 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
     
     protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS; }
     
+    private TreeViewer getViewer() {
+    	return violationView.getViewer();
+    }
+    
     /**
      * Executes the Action
      */
@@ -40,7 +44,7 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
 
             dialog.run(false, false, new IRunnableWithProgress() {
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    final TreeItem[] items = violationView.getViewer().getTree().getItems();
+                    final TreeItem[] items = getViewer().getTree().getItems();
                     final int unitCount = calculateWorkUnits(items);
                     monitor.beginTask(getString(StringKeys.MSGKEY_MONITOR_CALC_STATS_TASK), unitCount);
                     for (TreeItem item : items) {
@@ -63,7 +67,7 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
                         }
                     }
                     
-                    violationView.getViewer().refresh(true);
+                    getViewer().refresh(true);
                 }
             });
         } catch (InvocationTargetException e) {

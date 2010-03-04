@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.TableViewer;
  * which Markers are selected
  *
  * @author SebastianRaffel  ( 21.05.2005 )
+ * @author Brian Remedios   (  4.03.2010 )
  */
 public abstract class AbstractViolationSelectionAction extends AbstractPMDAction {
 
@@ -28,10 +29,14 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
 	protected AbstractViolationSelectionAction(TableViewer viewer) {
 		tableViewer = viewer;
 
-		setEnabled(hasSelections());
+		setEnabled(canExecute());
 	}
 
 	protected abstract String textId();
+	
+	protected boolean canExecute() {
+		return hasSelections();
+	}
 	
 	protected void setupWidget() {
 		super.setupWidget();
@@ -62,6 +67,7 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
             while (i.hasNext()) {
                 markers[index++] = i.next();
             }
+            return markers;
         }
 
         return MarkerUtil.EMPTY_MARKERS;

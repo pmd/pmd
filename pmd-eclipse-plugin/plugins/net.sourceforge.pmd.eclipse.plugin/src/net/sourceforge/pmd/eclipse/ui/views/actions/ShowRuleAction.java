@@ -33,6 +33,25 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
     
     protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_SHOW_RULE; } 
     
+    private String ruleNameFor(IMarker marker) {
+    	return marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, "");
+    }
+    
+    protected boolean canExecute() {
+    	return super.canExecute() && allSelectionsDenoteSameRule();
+    }
+    
+    private boolean allSelectionsDenoteSameRule() {
+    	
+    	IMarker[] markers = getSelectedViolations();
+    	String ruleName = ruleNameFor(markers[0]);
+    	for (int i=1; i<markers.length; i++) {
+    		if (!ruleName.equals(ruleNameFor(markers[i]))) return false;
+    	}
+    	
+    	return true;
+    }
+    
     /**
      * @see org.eclipse.jface.action.IAction#run()
      */
