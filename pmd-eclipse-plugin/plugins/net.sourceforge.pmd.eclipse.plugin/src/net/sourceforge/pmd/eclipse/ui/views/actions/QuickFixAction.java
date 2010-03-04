@@ -6,6 +6,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.ui.IMarkerHelpRegistry;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -40,14 +41,17 @@ public class QuickFixAction extends AbstractViolationSelectionAction {
      * @return true, if the Marker(s) support QuickFix, false otherwise
      */
     public boolean hasQuickFix() {
-        boolean hasQuickFix = false;
-        IMarker[] selectedMarkers = getSelectedViolations();
-
-        if ((selectedMarkers != null) && (selectedMarkers.length == 1)) {
-            hasQuickFix = IDE.getMarkerHelpRegistry().hasResolutions(selectedMarkers[0]);
+    	
+    	if (!hasSelections()) return false;
+    	        
+        IMarkerHelpRegistry registry = IDE.getMarkerHelpRegistry();
+        
+        // must have resolutions for all of them to be valid
+        for (IMarker marker : getSelectedViolations()) {
+            if (!registry.hasResolutions(marker)) return false;
         }
 
-        return hasQuickFix;
+        return true;
     }
 
     /**
@@ -56,6 +60,7 @@ public class QuickFixAction extends AbstractViolationSelectionAction {
     public void run() {
         IMarker[] selectedMarkers = getSelectedViolations();
         IWorkbench workbench = PlatformUI.getWorkbench();
+        // TODO handle multiple selections
         IMarkerResolution resolutions[] = IDE.getMarkerHelpRegistry().getResolutions(selectedMarkers[0]);
         if (resolutions.length != 0) {
             MarkerResolutionSelectionDialog dialog = new MarkerResolutionSelectionDialog(workbench.getActiveWorkbenchWindow().getShell(), resolutions);

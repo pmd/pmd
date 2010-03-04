@@ -84,9 +84,9 @@ public class ReviewAction extends AbstractViolationSelectionAction {
                     }
                 });
             } catch (InvocationTargetException e) {
-                PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+                logErrorByKey(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
             } catch (InterruptedException e) {
-                PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
+            	logErrorByKey(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
             }
         }
     }
@@ -141,9 +141,9 @@ public class ReviewAction extends AbstractViolationSelectionAction {
                 }
             }
         } catch (CoreException e) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+        	logErrorByKey(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_IO_EXCEPTION), e);
+        	logErrorByKey(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
         }
     }
 

@@ -3,7 +3,6 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 import java.lang.reflect.InvocationTargetException;
 
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -58,15 +57,15 @@ public class ReviewResourceAction extends AbstractPMDAction {
                     try {
                         cmd.performExecute();
                     } catch (CommandException e) {
-                        PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
+                    	logErrorByKey(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
                     }
                     monitor.done();
                 }
             });
         } catch (InvocationTargetException e) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+        	logErrorByKey(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
         } catch (InterruptedException e) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
+        	logErrorByKey(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
         }
     }
  

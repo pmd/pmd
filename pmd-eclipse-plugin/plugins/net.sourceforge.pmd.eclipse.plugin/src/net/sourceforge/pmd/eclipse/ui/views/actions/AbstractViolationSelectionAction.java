@@ -3,7 +3,6 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.viewers.ISelection;
@@ -28,6 +27,8 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
 	 */
 	protected AbstractViolationSelectionAction(TableViewer viewer) {
 		tableViewer = viewer;
+
+		setEnabled(hasSelections());
 	}
 
 	protected abstract String textId();
@@ -37,6 +38,10 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
 		
 		String textId = textId();
 		if (textId != null) setText(getString(textId));
+	}
+	
+	protected boolean hasSelections() {
+		return !tableViewer.getSelection().isEmpty();
 	}
 	
 	/**

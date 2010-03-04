@@ -67,9 +67,9 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
                 }
             });
         } catch (InvocationTargetException e) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION), e);
+            logErrorByKey(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
         } catch (InterruptedException e) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION), e);
+        	logErrorByKey(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
         }
     }
     

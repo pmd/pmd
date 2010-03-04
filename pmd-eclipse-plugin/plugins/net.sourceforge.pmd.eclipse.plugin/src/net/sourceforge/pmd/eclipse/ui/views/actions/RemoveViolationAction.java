@@ -52,7 +52,7 @@ public class RemoveViolationAction extends AbstractViolationSelectionAction {
                 }
             }, null);
         } catch (CoreException ce) {
-            PMDPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), ce);
+        	logErrorByKey(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, ce);
         }
     }
 

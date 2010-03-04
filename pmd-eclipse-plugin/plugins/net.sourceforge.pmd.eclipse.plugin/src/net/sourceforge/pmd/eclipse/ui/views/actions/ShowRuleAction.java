@@ -56,7 +56,7 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
                         markers[0].getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, ""));
             }
         } catch (RuntimeException e) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION, e);
+        	logErrorByKey(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION, e);
         }
 
         return rule;
