@@ -7,6 +7,7 @@ import org.gjt.sp.jedit.jEdit;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 
+@Deprecated
 public class RuleCheckBox extends JCheckBox {
 
     private static final long serialVersionUID = 4779236734852745643L;
