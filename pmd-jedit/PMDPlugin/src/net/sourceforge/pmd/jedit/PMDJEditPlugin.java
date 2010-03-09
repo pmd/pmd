@@ -61,7 +61,7 @@ import ise.java.awt.KappaLayout;
 /** jEdit plugin for PMD
   @version $Id$
   
-  TODO: move strings to property file so they can be localized.
+  DONE: move strings to property file so they can be localized.
 **/
 public class PMDJEditPlugin extends EBPlugin {
 
@@ -173,7 +173,7 @@ public class PMDJEditPlugin extends EBPlugin {
             }
 
             for ( Buffer buffer : buffers ) {
-                if ( buffer.getName().endsWith( ".java" ) ) {  // TODO: check mode rather than filename
+                if ( buffer.getMode().getName().equals( "java" ) ) {
                     Log.log( Log.DEBUG, this, "checking = " + buffer.getPath() );
                     instanceCheck( buffer, view, false );
                 }
