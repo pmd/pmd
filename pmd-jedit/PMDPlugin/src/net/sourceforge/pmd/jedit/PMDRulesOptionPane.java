@@ -24,6 +24,7 @@ import javax.swing.tree.TreePath;
 import java.util.List;
 import java.awt.Dimension;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleSetWriter;
@@ -34,7 +35,10 @@ import common.gui.pathbuilder.PathBuilderDialog;
 import ise.java.awt.KappaLayout;
 
 /*
-    TODO: make custom rules a separate panel.
+    TODO: put strings in properties file
+    QUESTION: would it be possible to run the examples through the Beauty plugin
+    and the Code2Html plugin to format and colorize the examples per the users preferences?
+    DONE: make custom rules a separate panel. -- added custom rules dialog.
     DONE: add ability to export current ruleset.
 */
 public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane {
@@ -106,11 +110,11 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                                 public void run() {
                                     if ( ( ( JCheckBox ) ae.getSource() ).isSelected() ) {
                                         rules.loadGoodRulesTree();
-                                        customRulesButton.setEnabled(false);
+                                        customRulesButton.setEnabled( false );
                                     }
                                     else {
                                         rules.loadTree();
-                                        customRulesButton.setEnabled(true);
+                                        customRulesButton.setEnabled( true );
                                     }
                                     tree.setModel( rules.getTreeModel() );
                                     tree.getCheckingModel().setCheckingMode( TreeCheckingModel.CheckingMode.PROPAGATE_PRESERVING_UNCHECK );
@@ -210,19 +214,18 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                     Object userObject = node.getUserObject();
                     if ( userObject instanceof RuleNode ) {
                         changeExampleLabel( jEdit.getProperty( "net.sf.pmd.Example", "Example" ) );
-                        String description = ( ( RuleNode ) userObject ).getRule().getDescription();
-                        description = description.trim();
+                        Rule rule = (( RuleNode ) userObject).getRule();
+                        String header = getRuleExampleHeader(rule);
                         List<String> examples = ( ( RuleNode ) userObject ).getRule().getExamples();
                         exampleTextArea.setLineWrap( true );
                         exampleTextArea.setWrapStyleWord( true );
-                        exampleTextArea.setText( description + StringList.join( examples, "\n---------\n" ) );
+                        exampleTextArea.setText( header + StringList.join( examples, "\n---------\n" ) );
                         exampleTextArea.setCaretPosition( 0 );
                     }
                     else if ( userObject instanceof RuleSetNode ) {
                         changeExampleLabel( jEdit.getProperty( "net.sf.pmd.Description", "Description" ) );
                         String description = ( ( RuleSetNode ) userObject ).getRuleSet().getDescription();
-                        description = description.trim();
-                        description = description.replaceAll( "\n", " " );
+                        description = cleanUpDescription( description );
                         exampleTextArea.setLineWrap( true );
                         exampleTextArea.setWrapStyleWord( true );
                         exampleTextArea.setText( description );
@@ -231,6 +234,39 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                 }
             }
         }
+    }
+
+    private String getRuleExampleHeader( Rule rule ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Name: " ).append(rule.getName()).append('\n');
+        sb.append("Description: ").append(cleanUpDescription(rule.getDescription())).append('\n');
+        sb.append("Error Message: ").append(rule.getMessage()).append('\n');
+        sb.append("Priority: ");
+        switch ( rule.getPriority() ) {
+            case 1:
+                sb.append( "Severe Error" );
+                break;
+            case 2:
+                sb.append( "Error" );
+                break;
+            case 3:
+                sb.append( "Strong Warning" );
+                break;
+            case 4:
+                sb.append( "Warning" );
+                break;
+            default:
+                sb.append( "Informational" );
+                break;
+        }
+        sb.append('\n');
+        return sb.toString();
+    }
+
+    private String cleanUpDescription( String desc ) {
+        desc = desc.replaceAll( "\\s+", " " );
+        desc = desc.trim();
+        return desc;
     }
 
     private void changeExampleLabel( final String text ) {
@@ -245,7 +281,7 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
     }
 
     private void customRulesDialog() {
-        PathBuilderDialog dialog = new PathBuilderDialog( GUIUtilities.getParentDialog( PMDRulesOptionPane.this ), "Choose Custom Rulesets", "Custom Ruleset Files" );
+        PathBuilderDialog dialog = new PathBuilderDialog( jEdit.getActiveView(), "Choose Custom Rulesets", "Custom Ruleset Files" );
         PathBuilder pathBuilder = dialog.getPathBuilder();
         pathBuilder.setAddButtonText( "Add Ruleset" );
         pathBuilder.setRemoveButtonText( "Remove Ruleset" );
