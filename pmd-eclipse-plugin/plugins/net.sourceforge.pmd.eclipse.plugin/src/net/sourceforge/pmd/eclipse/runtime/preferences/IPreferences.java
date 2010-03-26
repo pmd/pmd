@@ -36,6 +36,8 @@
 
 package net.sourceforge.pmd.eclipse.runtime.preferences;
 
+import java.util.Set;
+
 import org.apache.log4j.Level;
 
 /**
@@ -57,7 +59,16 @@ public interface IPreferences {
     int MIN_TILE_SIZE_DEFAULT = 25;
     String LOG_FILENAME_DEFAULT = "pmd-eclipse.log";
     Level LOG_LEVEL = Level.WARN;
+    String ACTIVE_RULES = "";
 
+    boolean isActive(String rulename);
+    
+    void isActive(String ruleName, boolean flag);
+    
+    Set<String> getActiveRuleNames();
+    
+    void setActiveRuleNames(Set<String> ruleNames);
+    
     /**
      * Should the Project Build Path be used?
      */

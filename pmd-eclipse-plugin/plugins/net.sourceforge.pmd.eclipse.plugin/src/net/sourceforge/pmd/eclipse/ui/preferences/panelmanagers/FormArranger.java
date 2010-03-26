@@ -8,6 +8,7 @@ import java.util.Map;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.NewPropertyDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
@@ -181,7 +182,7 @@ public class FormArranger {
         
         Button button = new Button(parent, SWT.BORDER);
         button.setData(desc.name());    // for later reference
-        button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_REMVIO));
+		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_DELETE));
         
         button.addSelectionListener( new SelectionListener(){
             public void widgetDefaultSelected(SelectionEvent e) {  }

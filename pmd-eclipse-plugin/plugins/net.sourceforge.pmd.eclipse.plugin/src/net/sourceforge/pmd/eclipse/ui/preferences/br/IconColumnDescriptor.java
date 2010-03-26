@@ -24,15 +24,20 @@ public class IconColumnDescriptor extends AbstractRuleColumnDescriptor {
 
 	private Map<Object, Image> iconsByValue;
 	
-	private static final Map<Object, String> iconNamesByValue = CollectionUtil.mapFrom(
+	private static final Map<Object, String> iconNamesByPriority = CollectionUtil.mapFrom(
 			new Object[] { RulePriority.LOW, RulePriority.MEDIUM_LOW, RulePriority.MEDIUM, RulePriority.MEDIUM_HIGH, RulePriority.HIGH }, 
 			new String[] {PMDUiConstants.ICON_BUTTON_PRIO5, PMDUiConstants.ICON_BUTTON_PRIO4, PMDUiConstants.ICON_BUTTON_PRIO3, PMDUiConstants.ICON_BUTTON_PRIO2, PMDUiConstants.ICON_BUTTON_PRIO1}
 			);
 	
-	public static final RuleColumnDescriptor priority = new IconColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY, SWT.RIGHT, 53, RuleFieldAccessor.priority, true, iconNamesByValue);
+	private static final Map<Object, String> iconNamesByBoolean = CollectionUtil.mapFrom(
+			new Object[] { Boolean.TRUE, Boolean.FALSE }, 
+			new String[] { PMDUiConstants.ICON_GREEN_CHECK, PMDUiConstants.ICON_EMPTY}
+			);
 	
-	public IconColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, Map<Object, String> imageNamesByValue) {
-		super(labelKey, theAlignment, theWidth, theAccessor, resizableFlag);
+	public static final RuleColumnDescriptor priority = new IconColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY, SWT.RIGHT, 53, RuleFieldAccessor.priority, true, PMDUiConstants.ICON_BUTTON_PRIO0, iconNamesByPriority);
+	
+	public IconColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, Map<Object, String> imageNamesByValue) {
+		super(labelKey, theAlignment, theWidth, theAccessor, resizableFlag, theImagePath);
 
 		iconsByValue = iconsFor(imageNamesByValue);
 	}
@@ -53,7 +58,6 @@ public class IconColumnDescriptor extends AbstractRuleColumnDescriptor {
 
 	public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, RuleSortListener sortListener,	Map<Integer, List<Listener>> paintListeners) {
 		TreeColumn tc = buildTreeColumn(parent, sortListener);
-		tc.setToolTipText(tooltip());
 		return tc;
 	}
 

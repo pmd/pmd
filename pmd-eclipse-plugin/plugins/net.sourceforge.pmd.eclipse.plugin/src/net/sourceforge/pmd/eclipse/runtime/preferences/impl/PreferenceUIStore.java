@@ -1,11 +1,18 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.runtime.preferences.impl;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.TextColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.preference.PreferenceStore;
 
 /**
@@ -17,10 +24,12 @@ public class PreferenceUIStore {
 
 	private PreferenceStore preferenceStore;
 		
-	private static final String tableFraction 	= "ruletable.fraction";
-	private static final String tableHiddenCols = "ruletable.hiddenColumns";
-	private static final String tableColumnSortUp = "ruletable.sortUp";
-	private static final String groupingColumn = "ruletable.groupingColumn";
+	private static final String tableFraction 		= PMDPlugin.PLUGIN_ID + ".ruletable.fraction";
+	private static final String tableHiddenCols 	= PMDPlugin.PLUGIN_ID + ".ruletable.hiddenColumns";
+	private static final String tableColumnSortUp 	= PMDPlugin.PLUGIN_ID + ".ruletable.sortUp";
+	private static final String groupingColumn 		= PMDPlugin.PLUGIN_ID + ".ruletable.groupingColumn";
+	private static final String selectedRuleNames	= PMDPlugin.PLUGIN_ID + ".ruletable.selectedRules";
+	private static final String selectedPropertyTab	= PMDPlugin.PLUGIN_ID + ".ruletable.selectedPropertyTab";
 	
 	private static final int tableFractionDefault = 55;
 	private static final char stringSeparator = ',';
@@ -31,10 +40,7 @@ public class PreferenceUIStore {
 			};
 
 	private static final boolean defaultSortUp = false;
-	
-	// TODO - where to get the proper path? seem to park the file on my Ubuntu desktop for some reason 
-	private static final String filename = "pmd.ui.preferences";
-	
+		
 	public static final PreferenceUIStore instance = new PreferenceUIStore();
 	
 	private static String defaultHiddenColumnNames() {
@@ -50,8 +56,13 @@ public class PreferenceUIStore {
 	}
 		
 	private void initialize() {
+		
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IPath path = root.getLocation();
+        String fileName = path.append(PreferencesManagerImpl.NEW_PREFERENCE_LOCATION).toString();
+				
 	//	TODO - replace this with the existing ViewMemento 
-		preferenceStore = new PreferenceStore(filename);
+		preferenceStore = new PreferenceStore(fileName);
 
 	    try {
 			preferenceStore.load();
@@ -66,6 +77,8 @@ public class PreferenceUIStore {
 		 preferenceStore.setValue(tableHiddenCols, defaultHiddenColumnNames());
 		 preferenceStore.setValue(tableColumnSortUp, defaultSortUp);
 		 preferenceStore.setValue(groupingColumn, "");
+		 preferenceStore.setValue(selectedRuleNames, "");
+		 preferenceStore.setValue(selectedPropertyTab, 0);
 		 
 		 save();
 	}
@@ -95,6 +108,24 @@ public class PreferenceUIStore {
 	public void hiddenColumnNames(Set<String> names) {
 		String nameStr = SWTUtil.asString(names, stringSeparator);
 		preferenceStore.setValue(tableHiddenCols, nameStr);
+	}
+	
+	public int selectedPropertyTab() {
+		return preferenceStore.getInt(selectedPropertyTab);
+	}
+	
+	public void selectedPropertyTab(int anIndex) {
+		preferenceStore.setValue(selectedPropertyTab, anIndex);
+	}
+	
+	public Set<String> selectedRuleNames() {
+		String names = preferenceStore.getString(selectedRuleNames);
+		return SWTUtil.asStringSet(names, stringSeparator);
+	}
+	
+	public void selectedRuleNames(Collection<String> ruleNames) {
+		String nameStr = SWTUtil.asString(ruleNames, stringSeparator);
+		preferenceStore.setValue(selectedRuleNames, nameStr);
 	}
 	
 	public boolean sortDirectionUp() {

@@ -48,8 +48,10 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
@@ -93,6 +95,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private int 						ruleCount;
     private int 						fileCount;
     private long 						pmdDuration;
+    private String						onErrorIssue = null;
 
     private static final long serialVersionUID = 1L;
 
@@ -121,8 +124,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             this.pmdDuration = 0;
 
             beginTask("PMD checking...", getStepCount());
+            
             // Lancer PMD
-            if (this.resources.isEmpty()) {
+            if (resources.isEmpty()) {
                 processResourceDelta();
             } else {
                 processResources();
@@ -155,21 +159,19 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             done();
 
             // Log performance information
-            if (this.fileCount > 0 && this.ruleCount > 0) {
+            if (fileCount > 0 && ruleCount > 0) {
                 logInfo(
-                        "Review code command terminated. " + this.ruleCount + " rules were executed against " + this.fileCount
-                                + " files. Actual PMD duration is about " + this.pmdDuration + "ms, that is about "
-                                + (float)this.pmdDuration / this.fileCount
+                        "Review code command terminated. " + ruleCount + " rules were executed against " + fileCount
+                                + " files. Actual PMD duration is about " + pmdDuration + "ms, that is about "
+                                + (float)pmdDuration / fileCount
                                 + " ms/file, "
-                                + (float)this.pmdDuration / this.ruleCount
+                                + (float)pmdDuration / ruleCount
                                 + " ms/rule, "
-                                + (float)this.pmdDuration / ((long) this.fileCount * (long) this.ruleCount)
+                                + (float)pmdDuration / ((long) fileCount * (long) ruleCount)
                                 + " ms/filerule"
                                 );
             } else {
-                logInfo(
-                        "Review code command terminated. " + this.ruleCount + " rules were executed against " + this.fileCount
-                                + " files. PMD was not executed.");
+                logInfo("Review code command terminated. " + ruleCount + " rules were executed against " + fileCount + " files. PMD was not executed.");
             }
         }
     }
@@ -185,8 +187,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @param resource The resource to set.
      */
     public void setResources(final List<ISchedulingRule> resources) {
-        this.resources.clear();
-        this.resources.addAll(resources);
+        resources.clear();
+        resources.addAll(resources);
     }
 
     /**
@@ -199,7 +201,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             throw new IllegalArgumentException("Resource parameter can not be null");
         }
 
-        this.resources.add(resource);
+        resources.add(resource);
     }
 
     /**
@@ -229,10 +231,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     @Override
     public void reset() {
-        this.resources.clear();
-        this.markersByFile = new HashMap<IFile, Set<MarkerInfo>>();
-        this.setTerminated(false);
-        this.openPmdPerspective = false;
+        resources.clear();
+        markersByFile = new HashMap<IFile, Set<MarkerInfo>>();
+        setTerminated(false);
+        openPmdPerspective = false;
+        onErrorIssue = null;
     }
 
     /**
@@ -240,7 +243,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     @Override
     public boolean isReadyToExecute() {
-        return this.resources.size() != 0 || this.resourceDelta != null;
+        return resources.size() != 0 || resourceDelta != null;
     }
 
     /**
@@ -251,14 +254,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
         ISchedulingRule rule = null;
 
-        if (this.resources.isEmpty()) {
-            rule = ruleFactory.markerRule(this.resourceDelta.getResource().getProject());
+        if (resources.isEmpty()) {
+            rule = ruleFactory.markerRule(resourceDelta.getResource().getProject());
         } else {
-            ISchedulingRule rules[] = new ISchedulingRule[this.resources.size()];
+            ISchedulingRule rules[] = new ISchedulingRule[resources.size()];
             for (int i = 0; i < rules.length; i++) {
-                rules[i] = ruleFactory.markerRule((IResource) this.resources.get(i));
+                rules[i] = ruleFactory.markerRule((IResource) resources.get(i));
             }
-            rule = new MultiRule(this.resources.toArray(rules));
+            rule = new MultiRule(resources.toArray(rules));
         }
 
         return rule;
@@ -270,7 +273,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @throws CommandException
      */
     private void processResources() throws CommandException {
-        final Iterator<ISchedulingRule> i = this.resources.iterator();
+        final Iterator<ISchedulingRule> i = resources.iterator();
         while (i.hasNext()) {
             final IResource resource = (IResource) i.next();
 
@@ -290,7 +293,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         try {
             final IProject project = resource.getProject();
             final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
-            final RuleSet ruleSet = properties.getProjectRuleSet();
+            
+            final RuleSet ruleSet = filteredRuleSet(properties);	//properties.getProjectRuleSet();
+            
             final PMDEngine pmdEngine = getPmdEngineForProject(project);
             setStepCount(countResourceElement(resource));
             log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
@@ -304,9 +309,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             visitor.setProjectProperties(properties);
             resource.accept(visitor);
 
-            this.ruleCount = ruleSet.getRules().size();
-            this.fileCount += visitor.getProcessedFilesCount();
-            this.pmdDuration += visitor.getActualPmdDuration();
+            ruleCount = ruleSet.getRules().size();
+            fileCount += visitor.getProcessedFilesCount();
+            pmdDuration += visitor.getActualPmdDuration();
 
         } catch (PropertiesException e) {
             throw new CommandException(e);
@@ -355,7 +360,23 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             throw new CommandException(e);
         }
     }
+    
+    private void taskScope(int activeRuleCount, int totalRuleCount) {
+    	setTaskName("Checking with " + Integer.toString(activeRuleCount) + " out of " + Integer.toString(totalRuleCount) + " rules");
+    }
 
+    private RuleSet filteredRuleSet(IProjectProperties properties) throws CommandException, PropertiesException {
+    	 
+         final RuleSet ruleSet = properties.getProjectRuleSet();
+         IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
+         Set<String> activeRuleNames = preferences.getActiveRuleNames();
+         
+         RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
+         RuleSetUtil.retainOnly(filteredRuleSet, activeRuleNames);
+         taskScope(filteredRuleSet.getRules().size(), ruleSet.getRules().size());
+         return filteredRuleSet;
+    }
+    
     /**
      * Review a resource delta
      */
@@ -363,7 +384,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         try {
             final IProject project = this.resourceDelta.getResource().getProject();
             final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
-            final RuleSet ruleSet = properties.getProjectRuleSet();
+            
+            final RuleSet ruleSet = filteredRuleSet(properties);	//properties.getProjectRuleSet();
+
             final PMDEngine pmdEngine = getPmdEngineForProject(project);
             this.setStepCount(countDeltaElement(this.resourceDelta));
             log.debug("Visit of resource delta : " + getStepCount());

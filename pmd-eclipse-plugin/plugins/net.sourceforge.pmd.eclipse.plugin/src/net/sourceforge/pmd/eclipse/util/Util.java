@@ -145,6 +145,10 @@ public class Util {
     
 	public static Comparator<?> comparatorFrom(final RuleFieldAccessor accessor, final boolean inverted) {
 		
+		if (accessor == null) {
+			throw new IllegalArgumentException("Accessor is required");
+		}
+		
 		return new Comparator() {
 
 			public int compare(Object a, Object b) {

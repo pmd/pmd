@@ -80,7 +80,8 @@ public class PMDUiConstants {
     public static final String ICON_PROJECT = "icons/obj_project.gif";
     public static final String ICON_PACKAGE = "icons/obj_package.gif";
     public static final String ICON_JAVACU = "icons/obj_javacu.gif";
-    
+
+    public static final String ICON_BUTTON_PRIO0 = "icons/btn_prio0.png";
     public static final String ICON_BUTTON_PRIO1 = "icons/btn_prio1.gif";
     public static final String ICON_BUTTON_PRIO2 = "icons/btn_prio2.gif";
     public static final String ICON_BUTTON_PRIO3 = "icons/btn_prio3.gif";
@@ -91,13 +92,29 @@ public class PMDUiConstants {
     public static final String ICON_BUTTON_FILEMARKERS = "icons/btn_filemarkers.gif";
 	public static final String ICON_BUTTON_MARKERFILES = "icons/btn_markerfiles.gif";
 	public static final String ICON_BUTTON_FILES = "icons/btn_files.gif";
-	
+
+    public static final String ICON_BUTTON_DISABLE = "icons/btn_disable.gif";
     public static final String ICON_BUTTON_COLLAPSE = "icons/btn_collapse.gif";
     public static final String ICON_BUTTON_REMVIO = "icons/btn_remvio.gif";
 	public static final String ICON_BUTTON_QUICKFIX = "icons/btn_quickfix.gif";
 	public static final String ICON_BUTTON_REVIEW = "icons/btn_review.gif";
     public static final String ICON_BUTTON_REFRESH = "icons/btn_refresh.gif";
     public static final String ICON_BUTTON_CALCULATE = "icons/btn_calculate.gif";
+    
+
+    public static final String ICON_BUTTON_UPARROW = "icons/upArrow.png";
+    public static final String ICON_BUTTON_DOWNARROW = "icons/downArrow.png";
+    public static final String ICON_BUTTON_ADD = "icons/add.gif";
+    public static final String ICON_BUTTON_DELETE = "icons/delete.gif";
+    public static final String ICON_BUTTON_CHECK_ALL = "icons/checkAll.png";
+    public static final String ICON_BUTTON_UNCHECK_ALL = "icons/uncheckAll.png";
+    public static final String ICON_BUTTON_IMPORT = "icons/import.gif";
+    public static final String ICON_BUTTON_EXPORT = "icons/export.gif";
+    public static final String ICON_BUTTON_EDITOR = "icons/editTool.png";
+    public static final String ICON_BUTTON_SORT_CHECKED = "icons/sortChecked.png";
+    
+    public static final String ICON_GREEN_CHECK = "icons/icon_greenCheck.png";
+    public static final String ICON_EMPTY = "icons/icon_empty.png";
     
     public static final String ID_PERSPECTIVE = PLUGIN_ID + ".views.pmdPerspective";
     public static final String ID_OUTLINE = PLUGIN_ID + ".views.violationOutline";

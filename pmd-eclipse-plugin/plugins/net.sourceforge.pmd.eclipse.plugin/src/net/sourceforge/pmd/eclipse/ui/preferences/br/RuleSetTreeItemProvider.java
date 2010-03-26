@@ -158,8 +158,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(Viewer, Object, Object)
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void dispose() {

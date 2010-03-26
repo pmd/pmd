@@ -2,7 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
 
@@ -33,10 +33,6 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
     
     protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_SHOW_RULE; } 
     
-    private String ruleNameFor(IMarker marker) {
-    	return marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, "");
-    }
-    
     protected boolean canExecute() {
     	return super.canExecute() && allSelectionsDenoteSameRule();
     }
@@ -44,12 +40,7 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
     private boolean allSelectionsDenoteSameRule() {
     	
     	IMarker[] markers = getSelectedViolations();
-    	String ruleName = ruleNameFor(markers[0]);
-    	for (int i=1; i<markers.length; i++) {
-    		if (!ruleName.equals(ruleNameFor(markers[i]))) return false;
-    	}
-    	
-    	return true;
+    	return MarkerUtil.commonRuleNameAmong(markers) != null;
     }
     
     /**
@@ -72,7 +63,8 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
             IMarker[] markers = getSelectedViolations();
             if (markers != null) {
                 rule = PMDPlugin.getDefault().getPreferencesManager().getRuleSet().getRuleByName(
-                        markers[0].getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, ""));
+                        MarkerUtil.ruleNameFor(markers[0])
+                        );
             }
         } catch (RuntimeException e) {
         	logErrorByKey(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION, e);

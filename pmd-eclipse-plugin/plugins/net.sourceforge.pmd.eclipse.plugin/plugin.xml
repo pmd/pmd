@@ -90,13 +90,14 @@
       <page
             name="%preferences.rulesets"
             category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
-            class="net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage"
+            class="net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2"
             id="net.sourceforge.pmd.eclipse.ui.preferences.pmdPreferencePage">
       </page>
-         
-      <page name="Ruleset preferences - BR" category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage" class="net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage" id="net.sourceforge.pmd.ui.preferences.pmdPreferencePage">
+
+<!--      
+      <page name="Ruleset preferences - BR" category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage" class="net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2" id="net.sourceforge.pmd.ui.preferences.pmdPreferencePage">
       </page>
-      
+-->   
       <page
             name="%preferences.cpd"
             category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
@@ -367,13 +368,15 @@
             category="net.sourceforge.pmd.eclipse.ui.views"
             name="%view.overview"
             id="net.sourceforge.pmd.eclipse.ui.views.violationOverview"/>
-<!--      <view												temporary placement, under construction
+<!--            
+      <view							
             allowMultiple="false"
             icon="icons/icon_overview.gif"
             class="net.sourceforge.pmd.eclipse.ui.views.br.ViolationOverviewBR"
             category="net.sourceforge.pmd.eclipse.ui.views"
             name="Violation Overview BR"
-            id="net.sourceforge.pmd.eclipse.ui.views.violationOverview.br"/>  -->
+            id="net.sourceforge.pmd.eclipse.ui.views.violationOverview.br"/>
+-->            
       <view
             allowMultiple="false"
             icon="icons/icon_dataflow.png"

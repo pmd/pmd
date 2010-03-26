@@ -1,7 +1,10 @@
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 
 import org.eclipse.core.resources.IMarker;
@@ -47,6 +50,14 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
 	
 	protected boolean hasSelections() {
 		return !tableViewer.getSelection().isEmpty();
+	}
+	
+	protected List<Rule> getSelectedViolationRules() {
+		
+		if (!hasSelections()) return Collections.EMPTY_LIST;
+		
+		IMarker[] markers = getSelectedViolations();
+		return MarkerUtil.rulesFor(markers);
 	}
 	
 	/**

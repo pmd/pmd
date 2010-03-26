@@ -60,6 +60,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -88,10 +89,11 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String MIN_TILE_SIZE               = PMDPlugin.PLUGIN_ID + ".min_tile_size";
     private static final String LOG_FILENAME                = PMDPlugin.PLUGIN_ID + ".log_filename";
     private static final String LOG_LEVEL                   = PMDPlugin.PLUGIN_ID + ".log_level";
+    private static final String DISABLED_RULES              = PMDPlugin.PLUGIN_ID + ".disabled_rules";
 
     private static final String OLD_PREFERENCE_PREFIX       = "net.sourceforge.pmd.runtime";
     private static final String OLD_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
-    private static final String NEW_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
+    public static final String NEW_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
 
     private static final String PREFERENCE_RULESET_FILE     = "/ruleset.xml";
 
@@ -118,6 +120,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             loadMinTileSize();
             loadLogFileName();
             loadLogLevel();
+            loadActiveRules();
         }
 
         return this.preferences;
@@ -175,6 +178,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storeMinTileSize();
         storeLogFileName();
         storeLogLevel();
+        storeActiveRules();
     }
 
     /**
@@ -269,6 +273,44 @@ class PreferencesManagerImpl implements IPreferencesManager {
         this.preferences.setLogLevel(Level.toLevel(this.loadPreferencesStore.getString(LOG_LEVEL)));
     }
 
+    /**
+     * Read the disabled rules
+     *
+     */
+    private void loadActiveRules() {
+        this.loadPreferencesStore.setDefault(DISABLED_RULES, IPreferences.ACTIVE_RULES);
+        this.preferences.setActiveRuleNames(asStringSet(loadPreferencesStore.getString(DISABLED_RULES), ","));
+    }
+    
+    private static Set<String> asStringSet(String delimitedString, String delimiter) {
+    	
+    	String[] values = delimitedString.split(delimiter);
+    	Set<String> valueSet = new HashSet<String>(values.length);
+    	for (int i=0; i<values.length; i++) {
+    		String name = values[i].trim();
+    		if (StringUtil.isEmpty(name)) continue;
+    		valueSet.add(name);
+    	}
+    	return valueSet;
+    }
+    
+    private static String asDelimitedString(Set<String>values, String delimiter) {
+    	
+    	if (values == null || values.isEmpty()) return "";
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	for (String value : values) {
+    		sb.append(delimiter).append(value);
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    private void storeActiveRules() {
+    	storePreferencesStore.setValue(DISABLED_RULES, asDelimitedString(preferences.getActiveRuleNames(), ","));
+    }
+    
     /**
      * Write the projectBuildPathEnabled flag
      */

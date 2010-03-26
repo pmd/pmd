@@ -8,7 +8,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.BooleanEditorFactory;

@@ -159,12 +159,13 @@ public class FileRecord extends AbstractPMDRecord {
             while (markerIterator.hasNext()) {
                 final IMarker marker = markerIterator.next();
 
-                MarkerRecord markerRecord = allMarkerMap.get(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME));
+                MarkerRecord markerRecord = allMarkerMap.get(MarkerUtil.ruleNameFor(marker));
                 if (markerRecord == null) {
-                    String ruleName = (String)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME);
+                    String ruleName = MarkerUtil.ruleNameFor(marker);
                     markerRecord = new MarkerRecord(this,  // NOPMD by Sven on 13.11.06 11:57
                             ruleName,
-                            ((Integer)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY)).intValue());
+                            MarkerUtil.rulePriorityFor(marker)
+                            );
                     markerRecord.addViolation(marker);
                     allMarkerMap.put(ruleName, markerRecord);
                 } else {
@@ -430,7 +431,7 @@ public class FileRecord extends AbstractPMDRecord {
     	
     	return RepositoryUtil.hasRepositoryAccess() ?
     		RepositoryUtil.authorNameFor(resource) :
-    		"<unknown>";
+    		null;
     }
     /**
      *  @see net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord#getResourceType()

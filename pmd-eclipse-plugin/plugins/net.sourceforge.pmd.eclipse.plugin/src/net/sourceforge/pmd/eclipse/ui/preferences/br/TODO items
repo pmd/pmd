@@ -1,11 +1,8 @@
-ToDo items:     							Jan 9th 2010
-
+ToDo items:     							March 21st 2010
 
 Finish remaining editors and the Add Property dialog
-Enable delete key on rule table
 Highlight non-default values in editors and/or summary column
 Enable 'Use defaults' option in popup menu
-Sort indicators on rule column headings
 Add selection column selected rules in per-project rule settings table
 Rework context menu - build on-demand, not before
 Markup violations using priority icons rather than the yellow yield signs or red Xs
@@ -14,7 +11,6 @@ Remember settings for:
 	chosen grouping selection (or none)
 	sort column & order
 	rule table screen fraction
-Find standard place to park preference settings file
 
 Items needing support in PMD itself:
 

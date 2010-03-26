@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +36,9 @@ public class SWTUtil {
 	}
 	
 	// TODO move this to to Collections utility
-	public static String asString(Set<String> values, char separator) {
+	public static String asString(Collection<String> values, char separator) {
+		
+		if (values == null || values.isEmpty()) return "";
 		
 		String[] strings = values.toArray(new String[values.size()]);
 		StringBuilder sb = new StringBuilder(strings[0]);

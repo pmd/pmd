@@ -3,10 +3,17 @@ package net.sourceforge.pmd.eclipse.runtime.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.util.StringUtil;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -19,6 +26,85 @@ public class MarkerUtil {
     
 	private MarkerUtil() {	}
 
+	public static boolean hasAnyRuleMarkers(IResource resource) throws CoreException {
+		
+		final boolean foundOne[] = new boolean[] { false };
+		
+	    IResourceVisitor ruleMarkerFinder = new IResourceVisitor() {
+	 
+	        public boolean visit(IResource resource) {
+	        	
+	        	if (foundOne[0]) return false;
+	        	
+	            if (resource instanceof IFile) {
+
+	            	IMarker[] ruleMarkers = null;
+	            	try {
+	            		ruleMarkers = resource.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+	            		} catch (CoreException ex) {
+	            			// what do to?
+	            		}
+	            	if (ruleMarkers.length > 0) {
+	            		foundOne[0] = true;
+	            		return false;
+	            	}
+	            }
+
+	            return true;
+	        }
+	    };
+		
+		try {
+			resource.accept(ruleMarkerFinder);
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return foundOne[0];
+	}
+	
+    public static String ruleNameFor(IMarker marker) {
+    	return marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, "");
+    }
+    
+    public static int rulePriorityFor(IMarker marker) throws CoreException {
+    	return ((Integer)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY)).intValue();
+    }
+    
+    public static List<Rule> rulesFor(IMarker[] markers) {
+    	
+    	List<Rule> rules = new ArrayList<Rule>(markers.length);
+    	RuleSet ruleset = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
+
+    	for (IMarker marker : markers) {
+    		String name = ruleNameFor(marker);
+    		if (StringUtil.isEmpty(name)) continue;
+    		Rule rule = ruleset.getRuleByName(name);
+    		if (rule == null) continue;
+    		rules.add(rule);
+    	}
+    	
+    	return rules;
+    }
+    
+    /**
+     * Returns the name of the rule that is common to all markers
+     * or null if any one of them differ.
+     * 
+     * @param IMarker[] markers
+     * @return String
+     */
+	public static String commonRuleNameAmong(IMarker[] markers) {
+
+    	String ruleName = ruleNameFor(markers[0]);
+    	for (int i=1; i<markers.length; i++) {
+    		if (!ruleName.equals(ruleNameFor(markers[i]))) return null;
+    	}
+    	
+    	return ruleName;
+	}
+	
 	public static void deleteAllMarkersIn(IResource resource) throws CoreException {
 		deleteMarkersIn(resource, PMDRuntimeConstants.ALL_MARKER_TYPES);
 	}

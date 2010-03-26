@@ -17,7 +17,7 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -29,6 +29,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanel
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.QuickFixPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
@@ -45,12 +46,12 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -82,6 +83,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 
 /**
  * This page is used to modify preferences only. They are stored in the preference store that belongs to
@@ -91,7 +93,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author Brian Remedios
  */
 
-public class PMDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage, ValueChangeListener, RuleSortListener {
+public class PMDPreferencePage extends AbstractPMDPreferencePage implements ValueChangeListener, RuleSortListener {
 
 	public static PMDPreferencePage activeInstance = null;
 
@@ -100,6 +102,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		TextColumnDescriptor.name,
 		//TextColumnDescriptor.priorityName,
 		IconColumnDescriptor.priority,
+		TextColumnDescriptor.fixCount,
 		TextColumnDescriptor.since,
 		TextColumnDescriptor.ruleSetName,
 		TextColumnDescriptor.ruleType,
@@ -145,16 +148,15 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         formattersByType.put(Method[].class,    ValueFormatter.MultiMethodFormatter);
         formattersByType.put(Object[].class,    ValueFormatter.ObjectArrayFormatter);
 	}
-
-	private CheckboxTreeViewer   ruleTreeViewer;
-	private Button			     addRuleButton;
-	private Button 			     removeRuleButton;
-//	private Button 			     editRuleButton;
-	private RuleSet 			 ruleSet;       // TODO - what is this used for?  - br
-	private TabFolder 		     tabFolder;
-	private Set<Object> 		 checkedRules = new HashSet<Object>();
-	private Menu                 ruleListMenu;
-	private Set<String>          hiddenColumnNames = new HashSet<String>();
+	
+	private ContainerCheckedTreeViewer  ruleTreeViewer;
+	private Button			     		addRuleButton;
+	private Button			     		removeRuleButton;
+	private RuleSet 			 		ruleSet;
+	private TabFolder 		     		tabFolder;
+//	private final Set<Rule> 		 	checkedRules = new HashSet<Rule>();
+	private Menu                 		ruleListMenu;
+	private Set<String>          		hiddenColumnNames = new HashSet<String>();
 	
 	private RulePropertyManager[]   rulePropertyManagers;
 
@@ -168,24 +170,42 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private Map<RulePriority, MenuItem> priorityMenusByPriority;
 	private Map<String, MenuItem>       rulesetMenusByName;
     
-	private boolean 			modified = false;
-	private static PMDPlugin	plugin = PMDPlugin.getDefault(); 
+	private RuleFieldAccessor		checkedColumnAccessor;
+	
+	private Button					sortByCheckedButton;
+	private Button					selectAllButton;
+	private Button					unSelectAllButton;
 	
 	/**
 	 * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
-		setDescription(getMessage(StringKeys.MSGKEY_PREF_RULESET_TITLE));
+		super.init(workbench);
+		
 		activeInstance = this;
-		
-//		hiddenColumnNames.add(TextColumnDescriptor.since.label());
-//		hiddenColumnNames.add(TextColumnDescriptor.externalURL.label());
-//		hiddenColumnNames.add(TextColumnDescriptor.minLangVers.label());
-//		hiddenColumnNames.add(TextColumnDescriptor.exampleCount.label());
-		
+				
 		hiddenColumnNames = PreferenceUIStore.instance.hiddenColumnNames();
+		
+		checkedColumnAccessor = createCheckedItemAccessor();
 	}
-
+	
+	private RuleFieldAccessor createCheckedItemAccessor() {
+		
+		return new BasicRuleFieldAccessor() {
+			public Comparable<Boolean> valueFor(Rule rule) {
+				return preferences.isActive(rule.getName());
+			}
+		};
+	}
+	
+	private void sortByCheckedItems() {
+		sortBy(checkedColumnAccessor, ruleTreeViewer.getTree().getColumn(0));
+	}
+	
+	
+	protected String descriptionId() {
+		return StringKeys.MSGKEY_PREF_RULESET_TITLE;
+	}
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
@@ -195,17 +215,31 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		super.performDefaults();
 	}
 
+	private void storeActiveRules() {		
+		
+		Object[] chosenRules = ruleTreeViewer.getCheckedElements();
+		for (Object item : chosenRules) {
+			if (item instanceof Rule) {
+				preferences.isActive(((Rule)item).getName(), true);
+			}
+		}
+				
+		System.out.println("Active rules: " + preferences.getActiveRuleNames());
+	}
+	
 	/**
 	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
 	 */
 	@Override
     public boolean performOk() {
 		
+		saveRuleSelections();
 		PreferenceUIStore.instance.save();
 		
-		if (modified) {
+		if (isModified()) {
 			updateRuleSet();
 			rebuildProjects();
+			storeActiveRules();
 		}
 
 		return super.performOk();
@@ -213,9 +247,33 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 	@Override
 	public boolean performCancel() {
-		
+
+		saveRuleSelections();
 		PreferenceUIStore.instance.save();		
 		return super.performCancel();
+	}
+	
+	private void restoreSavedRuleSelections() {
+		
+		Set<String> names = PreferenceUIStore.instance.selectedRuleNames();
+		List<Rule> rules = new ArrayList<Rule>();
+		for (String name : names) rules.add(ruleSet.getRuleByName(name));
+		
+		IStructuredSelection selection = new StructuredSelection(rules);
+		ruleTreeViewer.setSelection(selection);
+	}
+	
+	private void saveRuleSelections() {
+		
+		IStructuredSelection selection = (IStructuredSelection)ruleTreeViewer.getSelection();
+		
+		List<String> ruleNames = new ArrayList<String>();
+		for (Object item : selection.toList()) {
+			if (item instanceof Rule)
+				ruleNames.add(((Rule)item).getName());
+		}
+
+		PreferenceUIStore.instance.selectedRuleNames(ruleNames);
 	}
 	
 	/**
@@ -228,6 +286,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    
 		Composite composite = new Composite(parent, SWT.NULL);
 		layoutControls(composite);
+		
+		restoreSavedRuleSelections();
+		updateCheckButtons();
+		
 		return composite;
 	}
 
@@ -271,7 +333,45 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         
         return ruleSection;
 	}
+	
+	private int[] selectionRatioIn(Rule[] rules) {
 		
+		int selectedCount = 0;
+		for (Rule rule : rules) {
+			if (preferences.isActive(rule.getName())) selectedCount++;
+		}
+		return new int[] { selectedCount , rules.length };
+	}
+	
+	private ICheckStateProvider createCheckStateProvider() {
+		
+		return new ICheckStateProvider() {
+
+			public boolean isChecked(Object item) {
+				if (item instanceof Rule) {
+					return preferences.isActive(((Rule)item).getName());
+				} else {
+					if (item instanceof RuleGroup) {
+						int[] fraction = selectionRatioIn(((RuleGroup)item).rules());
+						return (fraction[0] > 0) && (fraction[0] == fraction[1]);
+					}
+				}
+				return false;	// should never get here
+			}
+
+			public boolean isGrayed(Object item) {
+				
+				if (item instanceof Rule) return false;
+				if (item instanceof RuleGroup) {
+					int[] fraction = selectionRatioIn(((RuleGroup)item).rules());
+					return (fraction[0] > 0) && (fraction[0] != fraction[1]);
+				}
+				return false;
+			}
+			
+		};
+	}
+	
 	/**
      * Main layout
      * @param parent Composite
@@ -351,10 +451,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		}
 		return sb.toString();
 	}
-
-	public static Rule ruleFrom(String ruleName) {
-		return null;
-	}
 	
 	public static String ruleSetNameFrom(Rule rule) {
 		return ruleSetNameFrom( rule.getRuleSetName() );
@@ -385,11 +481,26 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		ruleTreeViewer.getTree().setSortDirection(sortDir);
 	}
 
+	private void updateCheckButtons() {
+		
+		Rule[] rules = new Rule[ruleSet.size()];
+		rules = ruleSet.getRules().toArray(rules);
+		int[] selectionRatio = selectionRatioIn(rules);
+		
+		selectAllButton.setEnabled( selectionRatio[0] < selectionRatio[1]);
+		unSelectAllButton.setEnabled( selectionRatio[0] > 0);
+		sortByCheckedButton.setEnabled( (selectionRatio[0] != 0) && (selectionRatio[0] != selectionRatio[1]));
+	}
+	
 	private Composite buildGroupCombo(Composite parent, String comboLabelKey) {
 
 	     Composite panel = new Composite(parent, 0);
-	     GridLayout layout = new GridLayout(2, false);
+	     GridLayout layout = new GridLayout(5, false);
 	     panel.setLayout(layout);
+	     
+	     sortByCheckedButton = buildSortByCheckedItemsButton(panel);
+	     selectAllButton = buildSelectAllButton(panel);
+	     unSelectAllButton = buildUnselectAllButton(panel);
 
 	     Label label = new Label(panel, 0);
 	     GridData data = new GridData();
@@ -427,8 +538,9 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		    buildPropertyTab(tabFolder,    0, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_PROPERTIES)),
 		    buildDescriptionTab(tabFolder, 1, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_DESCRIPTION)),
 		    buildUsageTab(tabFolder,       2, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FILTERS)),
-		    buildXPathTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_XPATH)),    
-		    buildExampleTab(tabFolder,     4, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_EXAMPLES)),
+		    buildXPathTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_XPATH)),   
+		    buildQuickFixTab(tabFolder,    4, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)), 
+		    buildExampleTab(tabFolder,     5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_EXAMPLES)),
 		    };
 
 		tabFolder.pack();
@@ -503,6 +615,23 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         return manager;
     }    
     
+    /**
+     * @param parent TabFolder
+     * @param index int
+     */
+    private RulePropertyManager buildQuickFixTab(TabFolder parent, int index, String title) {
+
+        TabItem tab = new TabItem(parent, 0, index);
+        tab.setText(title);
+
+        QuickFixPanelManager manager = new QuickFixPanelManager(this);
+        tab.setControl(
+            manager.setupOn(parent)
+            );
+        manager.tab(tab);
+        return manager;
+    }
+    
 	/**
 	 *
 	 * @param parent TabFolder
@@ -539,37 +668,20 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		gridLayout.verticalSpacing = 3;
 		composite.setLayout(gridLayout);
 
-		removeRuleButton = buildRemoveRuleButton(composite);
-//		editRuleButton = buildEditRuleButton(composite);
 		addRuleButton = buildAddRuleButton(composite);
+		removeRuleButton = buildRemoveRuleButton(composite);
 		Button importRuleSetButton = buildImportRuleSetButton(composite);
 		Button exportRuleSetButton = buildExportRuleSetButton(composite);
-		Button clearAllButton = buildClearAllButton(composite);
 		Button ruleDesignerButton = buildRuleDesignerButton(composite);
 
 		GridData data = new GridData();
-		data.horizontalAlignment = GridData.FILL;
-		removeRuleButton.setLayoutData(data);
-
-//		data = new GridData();
-//		data.horizontalAlignment = GridData.FILL;
-//		editRuleButton.setLayoutData(data);
-
-		data = new GridData();
-		data.horizontalAlignment = GridData.FILL;
 		addRuleButton.setLayoutData(data);
 
 		data = new GridData();
-		data.horizontalAlignment = GridData.FILL;
 		importRuleSetButton.setLayoutData(data);
 
 		data = new GridData();
-		data.horizontalAlignment = GridData.FILL;
 		exportRuleSetButton.setLayoutData(data);
-
-		data = new GridData();
-		data.horizontalAlignment = GridData.FILL;
-		clearAllButton.setLayoutData(data);
 
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
@@ -604,7 +716,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private Tree buildRuleTreeViewer(Composite parent) {
 
 		int treeStyle = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK;
-		ruleTreeViewer = new CheckboxTreeViewer(parent, treeStyle);
+		ruleTreeViewer = new ContainerCheckedTreeViewer(parent, treeStyle);
 
 		final Tree ruleTree = ruleTreeViewer.getTree();
 		ruleTree.setLinesVisible(true);
@@ -647,6 +759,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	            }
 	        }
 	    });
+		
+		ruleTreeViewer.setCheckStateProvider(createCheckStateProvider());
 		
 		return ruleTree;
 	}
@@ -892,11 +1006,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 	    ruleSelection = new RuleSelection(items);
 	    for (RulePropertyManager manager : rulePropertyManagers) manager.manage(ruleSelection);
-        
-	    Rule rule = ruleSelection.soleRule();
 	    
-		removeRuleButton.setEnabled(rule != null);
-//		editRuleButton.setEnabled(rule != null && ruleSelection.hasOneRule());
+	    removeRuleButton.setEnabled(items.length > 0);
 	}
 	
 	/**
@@ -1007,6 +1118,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	    for (TreeItem item2 : items) {
 	        checkItems(item2, checked);
 	    }
+	    updateCheckButtons();
 	}
 
 	/**
@@ -1018,13 +1130,34 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		item.setChecked(checked);
 		if (item.getData() instanceof RuleGroup) return;
 
-		if (checked) {
-			checkedRules.add(item.getData());
-		} else {
-			checkedRules.remove(item.getData());
-		}
+		String name = ((Rule)item.getData()).getName();
+		
+		preferences.isActive(name, checked);
+
+		updateCheckButtons();
+		setModified(true);
 	}
 
+	/**
+	 * Build the remove rule button
+	 * @param parent Composite
+	 * @return Button
+	 */
+	private Button buildRemoveRuleButton(Composite parent) {
+		
+		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
+		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_DELETE));
+		button.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_REMOVERULE));
+
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+           public void widgetSelected(SelectionEvent event) {
+				removeSelectedRules();
+			}
+		});
+		return button;
+	}
+	
 	private void removeSelectedRules() {
 	    
 	    int removeCount = ruleSelection.removeAllFrom(ruleSet);
@@ -1040,63 +1173,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 	
 	/**
-	 * Build the remove rule button
-	 * @param parent Composite
-	 * @return Button
-	 */
-	private Button buildRemoveRuleButton(Composite parent) {
-		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_REMOVERULE));
-		button.setEnabled(false);
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-            public void widgetSelected(SelectionEvent event) {
-				removeSelectedRules();
-			}
-		});
-		return button;
-	}
-
-	/**
-	 * Build the edit rule button
-	 * @param parent Composite
-	 * @return Button
-	 */
-	private Button buildEditRuleButton(Composite parent) {
-		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_EDITRULE));
-		button.setEnabled(false);
-
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-            public void widgetSelected(SelectionEvent event) {
-				IStructuredSelection selection = (IStructuredSelection)ruleTreeViewer.getSelection();
-				Rule rule = (Rule)selection.getFirstElement();
-
-				RuleDialog dialog = new RuleDialog(getShell(), rule);
-				int result = dialog.open();
-				if (result == RuleDialog.OK) {
-					setModified(true);
-					try {
-						refresh();
-					} catch (Throwable t) {
-						plugin.logError("Exception when refreshing the rule table", t);
-					}
-				}
-			}
-		});
-
-		return button;
-	}
-
-	/**
 	 * Build the edit rule button
 	 * @param parent Composite
 	 * @return Button
 	 */
 	private Button buildAddRuleButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADDRULE));
+		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_ADD));
+		button.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADDRULE));
 		button.setEnabled(true);
 
 		button.addSelectionListener(new SelectionAdapter() {
@@ -1134,7 +1218,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildImportRuleSetButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_IMPORTRULESET));
+		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_IMPORT));
+		button.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_IMPORTRULESET));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -1178,7 +1263,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildExportRuleSetButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_EXPORTRULESET));
+		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_EXPORT));
+		button.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_EXPORTRULESET));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -1224,34 +1310,75 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		return button;
 	}
 
-	/**
-	 * Build the clear all button
-	 * @param parent Composite
-	 * @return Button
-	 */
-	private Button buildClearAllButton(Composite parent) {
+	private CheckboxTreeViewer treeViewer() { return ruleTreeViewer; }
+	
+	private Button buildSortByCheckedItemsButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_CLEARALL));
-		button.setEnabled(true);
+		button.setToolTipText("Sort by checked items");
+		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_SORT_CHECKED));
+		
 		button.addSelectionListener(new SelectionAdapter() {
-			@Override
             public void widgetSelected(SelectionEvent event) {
-				if (MessageDialog.openConfirm(getShell(), getMessage(StringKeys.MSGKEY_CONFIRM_TITLE),
-						getMessage(StringKeys.MSGKEY_CONFIRM_CLEAR_RULESET))) {
-					ruleSet.getRules().clear();
-					setModified(true);
-					try {
-						refresh();
-					} catch (Throwable t) {
-						plugin.logError("Exception when refreshing the rule table", t);
-					}
-				}
+				sortByCheckedItems();
 			}
 		});
 
 		return button;
 	}
+	
+	/**
+	 * 
+	 * @param parent Composite
+	 * @return Button
+	 */
+	private Button buildSelectAllButton(Composite parent) {
+		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
+//		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_SELECT_ALL));
+		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_CHECK_ALL));
+		
+		button.setEnabled(true);
+		button.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+				setAllRulesActive();
+			}
+		});
 
+		return button;
+	}
+	
+	private void setAllRulesActive() {
+		for (Rule rule : ruleSet.getRules()) {
+			preferences.isActive(rule.getName(), true);
+		}
+		
+		treeViewer().setCheckedElements(ruleSet.getRules().toArray());
+		setModified(true);
+		updateCheckButtons();
+	}
+ 	
+	/**
+	 * 
+	 * @param parent Composite
+	 * @return Button
+	 */
+	private Button buildUnselectAllButton(Composite parent) {
+		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
+//		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_SELECT_ALL));
+		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_UNCHECK_ALL));
+		
+		button.setEnabled(true);
+		button.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+				preferences.getActiveRuleNames().clear();
+				treeViewer().setCheckedElements(new Object[0]);
+				setModified(true);
+				updateCheckButtons();
+			}
+		});
+
+		return button;
+	}
+	
 	/**
 	 * Build the Rule Designer button
 	 * @param parent Composite
@@ -1259,7 +1386,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildRuleDesignerButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_RULEDESIGNER));
+		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_EDITOR));
+		button.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_RULEDESIGNER));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -1296,48 +1424,16 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 
 	private void checkSelections() {
-		ruleTreeViewer.setCheckedElements(checkedRules.toArray());
-	}
-
-	/**
-	 * Helper method to shorten message access
-	 * @param key a message key
-	 * @return requested message
-	 */
-	protected String getMessage(String key) {
-		return plugin.getStringTable().getString(key);
-	}
-
-	/**
-	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
-	 */
-	@Override
-    protected IPreferenceStore doGetPreferenceStore() {
-		return plugin.getPreferenceStore();
-	}
-
-	/**
-	 * Returns the activeInstance.
-	 * @return PMDPreferencePage
-	 */
-	public static PMDPreferencePage getActiveInstance() {
-		return activeInstance;
-	}
-
-	/**
-	 * Returns the isModified.
-	 * @return boolean
-	 */
-	public boolean isModified() {
-		return modified;
-	}
-
-	/**
-	 * Sets the isModified.
-	 * @param isModified The isModified to set
-	 */
-	public void setModified(boolean isModified) {
-		this.modified = isModified;
+		
+//		List<Rule> activeRules = new ArrayList<Rule>();
+//		
+//		for (Rule rule : ruleSet.getRules()) {
+//			if (preferences.isActive(rule.getName())) {
+//				activeRules.add(rule);
+//			}
+//		}
+//		
+//		ruleTreeViewer.setCheckedElements(activeRules.toArray());
 	}
 
 	/**
@@ -1412,14 +1508,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	}
 
    public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
-        // TODO enhance to recognize default values
-        modified = true;                
+        // TODO enhance to recognize default values                
         ruleTreeViewer.update(rule, null);
+        setModified();
     }
 	
 	public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
 		// TODO enhance to recognize default values
-		modified = true;				
+						
 		for (Rule rule : selection.allRules()) {
 			if (newValue != null) {		// non-reliable update behaviour, alternate trigger option - weird
 				ruleTreeViewer.getTree().redraw();
@@ -1432,6 +1528,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		for (RulePropertyManager manager : rulePropertyManagers) {
 		    manager.validate();
 		}
+		
+		setModified();
 	}
 
 	public void sortBy(RuleFieldAccessor accessor, Object context) {

@@ -1,20 +1,22 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.cpd.GUI;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * Preference page for CPD properties
@@ -23,21 +25,14 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author Philippe Herlin, Brian Remedios
  *
  */
-public class CPDPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class CPDPreferencePage extends AbstractPMDPreferencePage {
 	
     private Spinner	 	minTileSizeSpinner;
     private Label 		minTileLabel;
-    private IPreferences preferences;
 
-    /**
-     * Insert the method's description here.
-     * @see PreferencePage#init
-     */
-    public void init(IWorkbench workbench) {
-        setDescription(getMessage(StringKeys.MSGKEY_PREF_CPD_TITLE));
-        this.preferences = PMDPlugin.getDefault().loadPreferences();
+    protected String descriptionId() {
+    	return StringKeys.MSGKEY_PREF_CPD_TITLE;
     }
-
     /**
      * Insert the method's description here.
      * @see PreferencePage#createContents
@@ -56,9 +51,41 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         // Layout children
         generalGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+        buildCPDLauncherButton(composite);
+        
         return composite;
     }
 
+	public void createControl(Composite parent) {
+		super.createControl(parent);
+		
+		setModified(false);		
+	}
+	
+	/**
+	 * Build the CPD launcher button
+	 * @param parent Composite
+	 * @return Button
+	 */
+	private Button buildCPDLauncherButton(Composite parent) {
+		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
+		button.setText("Launch CPD...");
+
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+            public void widgetSelected(SelectionEvent event) {
+				new Thread(new Runnable() {
+					public void run() {
+						GUI.main(new String[] { "-noexitonclose" });
+					}
+				}).start();
+			}
+		});
+
+		return button;
+	}
+    
+    
     /**
      * Build the group of general preferences
      * @param parent the parent composite
@@ -97,19 +124,9 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
     public boolean performOk() {
-        this.preferences.setMinTileSize(Integer.valueOf(minTileSizeSpinner.getText()).intValue());
-        this.preferences.sync();
-
+        preferences.setMinTileSize(Integer.valueOf(minTileSizeSpinner.getText()).intValue());
+       
         return super.performOk();
-    }
-
-    /**
-     * Helper method to shorten message access
-     * @param key a message key
-     * @return requested message
-     */
-    private String getMessage(String key) {
-        return PMDPlugin.getDefault().getStringTable().getString(key);
     }
 
 }

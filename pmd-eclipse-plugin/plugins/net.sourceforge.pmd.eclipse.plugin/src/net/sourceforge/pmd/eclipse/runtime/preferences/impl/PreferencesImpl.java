@@ -36,10 +36,13 @@
 
 package net.sourceforge.pmd.eclipse.runtime.preferences.impl;
 
-import org.apache.log4j.Level;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
+
+import org.apache.log4j.Level;
 
 /**
  * Implements the preferences information structure
@@ -49,16 +52,17 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
  */
 
 class PreferencesImpl implements IPreferences {
+	
     private IPreferencesManager preferencesManager;
-    private boolean projectBuildPathEnabled;
-    private boolean pmdPerspectiveEnabled;
-    private int maxViolationsPerFilePerRule;
-    private String reviewAdditionalComment;
-    private boolean reviewPmdStyleEnabled;
-    private int minTileSize;
-    private String logFileName;
-    private Level logLevel;
-    
+    private boolean 			projectBuildPathEnabled;
+    private boolean 			pmdPerspectiveEnabled;
+    private int 				maxViolationsPerFilePerRule;
+    private String 				reviewAdditionalComment;
+    private boolean 			reviewPmdStyleEnabled;
+    private int 				minTileSize;
+    private String 				logFileName;
+    private Level 				logLevel;
+    private Set<String> 		activeRuleNames = new HashSet<String>();
     /**
      * Is constructed from a preferences manager
      * @param preferencesManager
@@ -186,5 +190,25 @@ class PreferencesImpl implements IPreferences {
     public void sync() {
         this.preferencesManager.storePreferences(this);
     }
+
+	public boolean isActive(String ruleName) {
+		return activeRuleNames.contains(ruleName);
+	}
+
+	public void isActive(String ruleName, boolean flag) {
+		if (flag) {
+			activeRuleNames.add(ruleName);
+		} else {
+			activeRuleNames.remove(ruleName);
+		}
+	}
+
+	public Set<String> getActiveRuleNames() {
+		return activeRuleNames;
+	}
+
+	public void setActiveRuleNames(Set<String> ruleNames) {
+		activeRuleNames = ruleNames;
+	}
 
 }

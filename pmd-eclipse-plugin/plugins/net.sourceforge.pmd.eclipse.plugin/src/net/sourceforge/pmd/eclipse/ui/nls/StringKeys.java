@@ -96,6 +96,7 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESET_COLUMN_FILTERS_XPATH = "preference.ruleset.column.filters.xpath";
     public static final String MSGKEY_PREF_RULESET_COLUMN_MIN_VER = "preference.ruleset.column.minimum_version";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PRIORITY = "preference.ruleset.column.priority";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_FIXCOUNT = "preference.ruleset.column.fixCount";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PROPERTIES = "preference.ruleset.column.properties";
     public static final String MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION = "preference.ruleset.column.description";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PROPERTY = "preference.ruleset.column.property";
@@ -121,11 +122,16 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESET_DIALOG_PROPERTY_NAME = "preference.ruleset.dialog.property_name";
 
     public static final String MSGKEY_PREF_RULESET_RULES_GROUPED_BY = "preference.ruleset.label.rules_grouped_by";
+    public static final String MSGKEY_PREF_RULESET_ACTIVE_RULE_COUNT = "preference.ruleset.label.active_rule_count";
 
+    public static final String MSGKEY_PREF_RULESET_BUTTON_CHECK_ALL = "preference.ruleset.button.tooltip.check.all";
+    public static final String MSGKEY_PREF_RULESET_BUTTON_UNCHECK_ALL = "preference.ruleset.button.tooltip.uncheck.all";
+    
     public static final String MSGKEY_PREF_RULESET_TAB_PROPERTIES = "preference.ruleedit.tab.properties";
     public static final String MSGKEY_PREF_RULESET_TAB_DESCRIPTION = "preference.ruleedit.tab.description";
     public static final String MSGKEY_PREF_RULESET_TAB_FILTERS = "preference.ruleedit.tab.filters";
     public static final String MSGKEY_PREF_RULESET_TAB_XPATH = "preference.ruleedit.tab.xpath";
+    public static final String MSGKEY_PREF_RULESET_TAB_FIXES = "preference.ruleedit.tab.fixes";
     public static final String MSGKEY_PREF_RULESET_TAB_EXAMPLES = "preference.ruleedit.tab.examples";
 
     public static final String MSGKEY_LABEL_XPATH_EXCLUSION = "preference.ruleedit.label.xpath_exclusion";
@@ -208,6 +214,7 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_COLUMN_LOCATION = "view.column.location";
     public static final String MSGKEY_VIEW_TOOLTIP_PROJECT = "view.tooltip.project";
     public static final String MSGKEY_VIEW_TOOLTIP_FILE = "view.tooltip.file";
+    public static final String MSGKEY_VIEW_TOOLTIP_DISABLE = "view.tooltip.disable";
     public static final String MSGKEY_VIEW_TOOLTIP_ERRORHIGH_FILTER = "view.tooltip.errorhigh_filter";
     public static final String MSGKEY_VIEW_TOOLTIP_ERROR_FILTER = "view.tooltip.error_filter";
     public static final String MSGKEY_VIEW_TOOLTIP_WARNINGHIGH_FILTER = "view.tooltip.warninghigh_filter";
@@ -219,7 +226,9 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_TOOLTIP_REVIEW = "view.tooltip.review";
     public static final String MSGKEY_VIEW_TOOLTIP_QUICKFIX = "view.tooltip.quickfix";
     public static final String MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS = "view.tooltip.calc_stats";
+    public static final String MSGKEY_VIEW_TOOLTIP_COMPUTE_METRICS = "view.tooltip.compute_metrics";
     public static final String MSGKEY_VIEW_ACTION_PROJECT = "view.action.project";
+    public static final String MSGKEY_VIEW_ACTION_DISABLE = "view.action.disable";
     public static final String MSGKEY_VIEW_ACTION_FILE = "view.action.file";
     public static final String MSGKEY_VIEW_ACTION_ERRORHIGH = "view.action.errorhigh";
     public static final String MSGKEY_VIEW_ACTION_ERROR = "view.action.error";

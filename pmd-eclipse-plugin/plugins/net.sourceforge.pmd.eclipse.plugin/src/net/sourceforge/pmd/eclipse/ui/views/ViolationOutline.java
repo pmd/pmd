@@ -136,10 +136,10 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
             manager.add(filterAction);
         }
     }
-
+    
     /**
      * Creates a Context Menu for the View
-     *
+     * 
      * @param viewer
      */
     public void createContextMenu(final TableViewer viewer) {
@@ -148,6 +148,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         // here we add the Context Menus Actions
         manager.addMenuListener(new IMenuListener() {
             public void menuAboutToShow(IMenuManager manager) {
+            	
                 // show the Rule Dialog
                 Action showRuleAction = new ShowRuleAction(viewer, getSite().getShell());
                 manager.add(showRuleAction);

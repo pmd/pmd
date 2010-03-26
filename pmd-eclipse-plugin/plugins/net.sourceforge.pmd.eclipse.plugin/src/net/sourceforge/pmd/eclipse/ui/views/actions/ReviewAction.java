@@ -10,6 +10,7 @@ import java.util.Date;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
@@ -216,7 +217,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
         // Add the review comment
         sb.append(computeIndent(sourceCode, offset));
         sb.append(PMDRuntimeConstants.PLUGIN_STYLE_REVIEW_COMMENT);
-        sb.append(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, ""));
+        sb.append(MarkerUtil.ruleNameFor(marker));
         sb.append(": ").append(additionalCommentTxt());
         sb.append(System.getProperty("line.separator"));
 

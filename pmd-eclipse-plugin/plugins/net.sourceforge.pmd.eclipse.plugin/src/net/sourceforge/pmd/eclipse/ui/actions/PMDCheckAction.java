@@ -79,8 +79,7 @@ public class PMDCheckAction extends AbstractUIAction {
                 if (selection instanceof IStructuredSelection) {
                     reviewSelectedResources((IStructuredSelection) selection);
                 } else {
-                    log.debug("The selection is not an instance of IStructuredSelection. This is not supported: "
-                            + selection.getClass().getName());
+                    log.debug("The selection is not an instance of IStructuredSelection. This is not supported: " + selection.getClass().getName());
                 }
             }
 
@@ -90,8 +89,7 @@ public class PMDCheckAction extends AbstractUIAction {
                 if (editorInput instanceof IFileEditorInput) {
                     reviewSingleResource(((IFileEditorInput) editorInput).getFile());
                 } else {
-                    log.debug("The kind of editor input is not supported. The editor input if of type: "
-                            + editorInput.getClass().getName());
+                    log.debug("The kind of editor input is not supported. The editor input if of type: " + editorInput.getClass().getName());
                 }
             }
 
