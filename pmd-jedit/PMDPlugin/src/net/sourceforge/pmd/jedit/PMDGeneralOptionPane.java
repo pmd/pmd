@@ -10,25 +10,19 @@ import org.gjt.sp.jedit.AbstractOptionPane;
 import org.gjt.sp.jedit.OptionPane;
 import org.gjt.sp.jedit.jEdit;
 
+import java.awt.FlowLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+
+import ise.java.awt.KappaLayout;
 
 public class PMDGeneralOptionPane extends AbstractOptionPane implements OptionPane {
 
 
-    private JCheckBox chkRunPMDOnSave, chkShowProgressBar, chkIgnoreLiterals, chkPrintRule;
-
-    JTextField txtMinTileSize;
-
-    JTextField txtCustomRules;
-
-    JComboBox comboRenderer;
+    private JCheckBox chkRunPMDOnSave, chkShowProgressBar, chkPrintRule;
 
     JComboBox javaVersionBox;
 
@@ -38,60 +32,34 @@ public class PMDGeneralOptionPane extends AbstractOptionPane implements OptionPa
 
     public void _init() {
         removeAll();
-
-        setLayout( new FlowLayout( FlowLayout.LEADING ) );
-
+        setLayout(new FlowLayout(FlowLayout.LEFT));
+        
+        JPanel panel = new JPanel(new KappaLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+        
+        JLabel title = new JLabel("<html><b>" + jEdit.getProperty("options.pmd.general.label", "PMD Settings"));
 
         javaVersionBox = new JComboBox( PMDJEditPlugin.sourceTypes );
-
-        chkRunPMDOnSave = new JCheckBox( jEdit.getProperty("net.sf.pmd.Run_PMD_on_Save", "Run PMD on Save"), jEdit.getBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE ) );
-        chkShowProgressBar = new JCheckBox( jEdit.getProperty("net.sf.pmd.Show_PMD_Progress_Bar", "Show PMD Progress Bar"), jEdit.getBooleanProperty( PMDJEditPlugin.SHOW_PROGRESS ) );
-        chkIgnoreLiterals = new JCheckBox( jEdit.getProperty("net.sf.pmd.Ignore_Literals_&_identifiers_when_detecting_Duplicate_Code", "Ignore Literals & identifiers when detecting Duplicate Code"), jEdit.getBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS ) );
-        chkPrintRule = new JCheckBox( jEdit.getProperty("net.sf.pmd.Print_Rulename_in_ErrorList", "Print Rulename in ErrorList"), jEdit.getBooleanProperty( PMDJEditPlugin.PRINT_RULE ) );
-
-        JPanel pnlSouth = new JPanel( new GridLayout( 0, 1 ) );
-
-        JPanel pnlTileSize = new JPanel();
-        ( ( FlowLayout ) pnlTileSize.getLayout() ).setAlignment( FlowLayout.LEFT );
-        JLabel lblMinTileSize = new JLabel( jEdit.getProperty("net.sf.pmd.Minimum_Tile_Size>", "Minimum Tile Size:") );
-        txtMinTileSize = new JTextField( jEdit.getProperty( PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY, "100" ), 5 );
-        pnlTileSize.add( lblMinTileSize );
-        pnlTileSize.add( txtMinTileSize );
-
-        comboRenderer = new JComboBox( new String[] { "None", "Text", "Html", "XML", "CSV"
-                                                    }
-                                     );
-        comboRenderer.setSelectedItem( jEdit.getProperty( PMDJEditPlugin.RENDERER ) );
-        JLabel lblRenderer = new JLabel( jEdit.getProperty("net.sf.pmd.Export_Output_as_", "Export Output as ") );
-
-        pnlTileSize.add( lblRenderer );
-        pnlTileSize.add( comboRenderer );
-
         int stidx = jEdit.getIntegerProperty( PMDJEditPlugin.JAVA_VERSION_PROPERTY, 1 );
         javaVersionBox.setSelectedIndex( stidx );
 
-        pnlTileSize.add( chkShowProgressBar );
+        chkRunPMDOnSave = new JCheckBox( jEdit.getProperty("net.sf.pmd.Run_PMD_on_Save", "Run PMD on Save"), jEdit.getBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE ) );
+        chkPrintRule = new JCheckBox( jEdit.getProperty("net.sf.pmd.Print_Rulename_in_ErrorList", "Print Rulename in ErrorList"), jEdit.getBooleanProperty( PMDJEditPlugin.PRINT_RULE ) );
+        chkShowProgressBar = new JCheckBox( jEdit.getProperty("net.sf.pmd.Show_PMD_Progress_Bar", "Show PMD Progress Bar"), jEdit.getBooleanProperty( PMDJEditPlugin.SHOW_PROGRESS ) );
+        
+        panel.add("0, 0, 1, 1, W, w, 3", title);
+        panel.add("0, 1, 1, 1, W, w, 3", javaVersionBox);
+        panel.add("0, 2, 1, 1, W, w, 3", chkRunPMDOnSave);
+        panel.add("0, 3, 1, 1, W, w, 3", chkPrintRule);
+        panel.add("0, 4, 1, 1, W, w, 3", chkShowProgressBar);
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout( new BorderLayout() );
-        mainPanel.add(new JLabel(jEdit.getProperty("net.sf.pmd.PMD_General_Options", "PMD General Options")), BorderLayout.NORTH);
-
-        pnlSouth.add( javaVersionBox );
-        pnlSouth.add( chkRunPMDOnSave );
-        pnlSouth.add( chkIgnoreLiterals );
-        pnlSouth.add( chkPrintRule );
-        pnlSouth.add( pnlTileSize );
-        mainPanel.add( pnlSouth, BorderLayout.SOUTH );
-        addComponent( mainPanel );
+        add( panel );
     }
 
     public void _save() {
 
         jEdit.setIntegerProperty( PMDJEditPlugin.JAVA_VERSION_PROPERTY,
                 javaVersionBox.getSelectedIndex() );
-        jEdit.setIntegerProperty( PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,
-                ( txtMinTileSize.getText().length() == 0 ) ? 100 : Integer
-                .parseInt( txtMinTileSize.getText() ) );
 
         // If the user has checked "Run PMD on save", set the plugin to load on jEdit
         // start up so that the "run on save" feature works right away.  Unchecking
@@ -101,11 +69,8 @@ public class PMDGeneralOptionPane extends AbstractOptionPane implements OptionPa
         jEdit.setBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE, on_save );
         jEdit.setProperty( "plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.activate", on_save ? "startup" : "defer" );
 
-        jEdit.setBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS, chkIgnoreLiterals.isSelected() );
-        jEdit.setProperty( PMDJEditPlugin.RENDERER, ( String ) comboRenderer.getSelectedItem() );
-        jEdit.setBooleanProperty( PMDJEditPlugin.SHOW_PROGRESS, chkShowProgressBar
-                .isSelected() );
         jEdit.setBooleanProperty( PMDJEditPlugin.PRINT_RULE, chkPrintRule.isSelected() );
+        jEdit.setBooleanProperty( PMDJEditPlugin.SHOW_PROGRESS, chkShowProgressBar.isSelected() );
     }
 
 }
