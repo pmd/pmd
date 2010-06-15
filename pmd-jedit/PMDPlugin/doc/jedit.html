@@ -1,160 +1,341 @@
-<html><head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>
-PMD-JEdit Plug-in Users' Guide
-</title>
-<body>
-<TABLE CELLSPACING=0 BORDER=0 WIDTH="100%" bgcolor="#CCCCFF">
-<TR>
-<TD WIDTH="100%" VALIGN="MIDDLE">
-   <H1>PMD-JEdit Plug-in User's Guide</H1>
-</TD>
-</TR>
-</TABLE>
-<hr>
-<p>PMD is a Java source code analyzer - it finds unused variables, questionable design decisions, empty catch blocks, and so forth.
-You can read much more about PMD here - http://pmd.sf.net/.</p>
-<h3>Installation</h3>
-Use the plugin manager for easiest installation.  To install manually, follow these steps:
-<ul>
-<li>Uninstall any old PMD-JEdit plugins
-<li>Unzip the PMD-JEdit.zip file into your JEdit directory; it'll put a couple of jar files into your jars directory.
-<li>Restart JEdit and you'll be ready to go.
-</ul>
-<h3>Integration</h3>
-<p>The various actions provided by this plugin are available on the 'PMD' menu item in the Plugins menu.  This has several submenu options:</p>
-<ul>
-<li>"Check current file" checks your currently displayed Java code</li>
-<li>"Check all files in current directory" does just that</li>
-<li>"Check directory recursively" does just that, too! </li>
-<li>Detect Duplicate Code
-<ul>
-<li>"In current file" checks your currently displayed Java code for duplicates</li>
-<li>"In directory" same thing for the directory. On the resulting File Browser you can select "Recursive" to scan the selected directory recursively.</li>
-</ul>
-</ul>
-<p>All those options put any errors into the ErrorList so you can then go jumping around your project fixing stuff.
-<p>There's a section in the Utilities->Global Options->Plugins configuration panel that lets you pick which rule sets you want to use.</p>
-<p>Choose the rulesets you'd like to use:<br><br>
-<img src="ruleset.jpg"><br><br>
-The checkbox tree makes it easy to pick complete rulesets, just check on a ruleset to select all the rules in a ruleset.  You can also add your own custom rulesets by entering the path to your rules.xml file.  Probably most handy for day-to-day use are the Basic, Import, and Unused Code rulesets.  <br><br>
-The first time you install the PMD plugin, a number of rules are already selected.  The selected rules are those suggested by PMD best practices -- unused code, basic rules, a few design rules, a few controversial rules, the imports rules, and the string rules.  These are a good starting place.  Feel free to add or remove rules as fits your needs.
-<br><br>
-<img src="rules.jpg"><br><br>
-As you move your mouse over the various rules, the "Example" area shows the sort of code the particular rule checks for:<br><br>
-<img src="example_area.jpg"><br><br>
-The configuration area also contains settings for a few other things:<br><br>
-<img src="other_settings.jpg"><br><br>
-These should be pretty much self-explanatory.  One non-obvious thing is that if you check "Run PMD on Save", this will cause PMD to start automatically when jEdit starts.  This is so PMD is ready to check your code the first time you save.  This might cause jEdit to start just a little bit slower, but you probably won't notice that.</p>
+<html>
+   <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>
+   PMD-JEdit Plug-in Users' Guide </title> 
+   <body>
+      <table cellspacing="0" border="0" width="100%" bgcolor="#CCCCFF">
+         <tr>
+            <td width="100%" valign="MIDDLE">
+               <h1>
+                  PMD-JEdit Plug-in User's Guide
+               </h1>
+            </td> 
+         </tr> 
+      </table> 
+      <hr>
+      <p>
+         PMD is a Java source code analyzer - it finds unused variables, questionable design decisions, empty catch blocks, and so forth. You can read much more about PMD here - http://pmd.sf.net/.
+      </p>
+      <h3>
+         Installation
+      </h3>
+      Use the plugin manager for easiest installation. To install manually, follow these steps: 
+      <ul>
+         <li>Uninstall any old PMD-JEdit plugins 
+         <li>Unzip the PMD-JEdit.zip file into your JEdit directory; it'll put a couple of jar files into your jars directory. 
+         <li>Restart JEdit and you'll be ready to go. 
+      </ul>
+      <h3>
+         Integration
+      </h3>
+      <p>
+         The various actions provided by this plugin are available on the 'PMD' menu item in the Plugins menu. This has several submenu options:
+      </p>
+      <ul>
+         <li>
+            "Check current file" checks your currently displayed Java code
+         </li>
+         <li>
+            "Check all files in current directory" does just that
+         </li>
+         <li>
+            "Check directory recursively" does just that, too! 
+         </li>
+         <li>Detect Duplicate Code 
+         <ul>
+            <li>
+               "In current file" checks your currently displayed Java code for duplicates
+            </li>
+            <li>
+               "In directory" same thing for the directory. On the resulting File Browser you can select "Recursive" to scan the selected directory recursively.
+            </li>
+         </ul>
+      </ul>
+      <p>All those options put any errors into the ErrorList so you can then go jumping around your project fixing stuff. 
+      <p>
+         There's a section in the Utilities->Global Options->Plugins configuration panel that lets you pick which rule sets you want to use.
+      </p>
+      <p>
+         Choose the rulesets you'd like to use:
+         <br>
+         <br>
+         <img src="ruleset.jpg">
+         <br>
+         <br>
+         The checkbox tree makes it easy to pick complete rulesets, just check on a ruleset to select all the rules in a ruleset. You can also add your own custom rulesets by entering the path to your rules.xml file. Probably most handy for day-to-day use are the Basic, Import, and Unused Code rulesets. 
+         <br>
+         <br>
+         The first time you install the PMD plugin, a number of rules are already selected. The selected rules are those suggested by PMD best practices -- unused code, basic rules, a few design rules, a few controversial rules, the imports rules, and the string rules. These are a good starting place. Feel free to add or remove rules as fits your needs. 
+         <br>
+         <br>
+         <img src="rules.jpg">
+         <br>
+         <br>
+         As you move your mouse over the various rules, the "Example" area shows the sort of code the particular rule checks for:
+         <br>
+         <br>
+         <img src="example_area.jpg">
+         <br>
+         <br>
+         The configuration area also contains settings for a few other things:
+         <br>
+         <br>
+         <img src="other_settings.jpg">
+         <br>
+         <br>
+         These should be pretty much self-explanatory. One non-obvious thing is that if you check "Run PMD on Save", this will cause PMD to start automatically when jEdit starts. This is so PMD is ready to check your code the first time you save. This might cause jEdit to start just a little bit slower, but you probably won't notice that.
+      </p>
 
-<p>Note that the configuration panel also contains the minimum tile size for CPD to turn up a duplicate chunk.
+      <p>Note that the configuration panel also contains the minimum tile size for CPD to turn up a duplicate chunk.
+      Take a look at the <a href="#releasenotes">Release Notes and Changelog</a>for more details on new features in this release. 
+      <br>
+      <h3>
+         CPD, the Copy/Paste Detector
+      </h3>
+      The PMD plugin provides access to the Copy/Paste Detector. This can help identify and eliminate duplicate code in a project. The heuristics used in the detection are a little "fuzzy" in that it is able to detect code that is very close to the same as code found elsewhere and can identify duplicate code regardless of the formatting of whitespace. 
+      <p>
+      The CPD is very fast. It can also work on a variety of languages. Currently the fully supported languages are Java, JSP, PHP, C/C++, Fortran, Ruby, and Javascript. Additionally, CPD can work with just about every file mode supported by jEdit, although results may not be perfect as the modes not specifically supported use a generic tokenizer that may not suitable for a particular language.
+      <h3>
+         Custom Rules
+      </h3>
+      <p>
+         Starting 2.1, you can now add Custom Defined Rulesets with PMD plugin. Previously, if you want to use your own rulesets with the PMD plugin, you had to unjar the pmd.jar file & add your ruleset defination in the jar file & re-jar it & use it. But this procedure had to be repeated whenever a new PMD is out. But not anymore. Now you can simply point PMD plugin to your custom rulesets.xml file & drop your custom ruleset jars in either of jEdit jars directory(either system or user). Once this is done, you will be able to manipulate your Custom Rulesets just the way like the built-in ones.
+      </p>
+      <p>
+         As of version 3.0, the PMD Plugin provides access to the PMD Rule Designer, which makes it easier to create your own custom rules. Start the Designer by going to Plugins -&gt; PMD Plugin -&gt; Run Rule Designer. The instructions for the Designer can be found on the PMD website at <a href="http://pmd.sourceforge.net/xpathruletutorial.html">http://pmd.sourceforge.net/xpathruletutorial.html</a>. 
+         <br>
+         <br>
+         <strong>PMD Rule Designer:</strong> 
+         <br>
+         <br>
+         <img src="designer.jpg">
+      </p>
+      <p>
+         PMD jEdit 2.2 adds updates PMD plugin to the latest and the greatest PMD release, updates to Dynamic class loading feature of jEdit and adds PMD to jEdit's File System Browser for easy access.
+      </p>
 
-Take a look at the <a href="#releasenotes">Release Notes and Changelog</a> for more details on new features in this release. <br>
+      <p>
+         PMD jEdit plugin 2.5 updates to the latest PMD release, remove redundant menu options and makes usage of the plugin more compact. Look at the details Release notes and Changelog below.
+      </p>
 
-<h3>CPD, the Copy/Paste Detector</h3>
-The PMD plugin provides access to the Copy/Paste Detector.  This can help identify and eliminate duplicate code in a project.  The heuristics used in the detection are a little "fuzzy" in that it is able to detect code that is very close to the same as code found elsewhere and can identify duplicate code regardless of the formatting of whitespace.
-<p>
-The CPD is very fast.  It can also work on a variety of languages.  Currently the fully supported languages are Java, JSP, PHP, C/C++, Fortran, Ruby, and Javascript.  Additionally, CPD can work with just about every file mode supported by jEdit, although results may not be perfect as the modes not specifically supported use a generic tokenizer that may not suitable for a particular language.
-
-<h3>Custom Rules</h3>
-<p>Starting 2.1, you can now add Custom Defined Rulesets with PMD plugin. Previously, if you want to use your own rulesets with the PMD plugin, you had to unjar the pmd.jar file & add your ruleset defination in the jar file & re-jar it & use it. But this procedure had to be repeated whenever a new PMD is out. But not anymore. Now you can simply point PMD plugin to your custom rulesets.xml file & drop your custom ruleset jars in either of jEdit jars directory(either system or user). Once this is done, you will be able to manipulate your Custom Rulesets just the way like the built-in ones.</p>
-<p>
-As of version 3.0, the PMD Plugin provides access to the PMD Rule Designer, which makes it easier to create your own custom rules.  Start the Designer by going to Plugins -&gt; PMD Plugin -&gt; Run Rule Designer.  The instructions for the Designer can be found on the PMD website at <a href="http://pmd.sourceforge.net/xpathruletutorial.html">http://pmd.sourceforge.net/xpathruletutorial.html</a>.
-<br><br>
-<strong>PMD Rule Designer:</strong><br><br>
-<img src="designer.jpg">
-</p>
-<p>PMD jEdit 2.2 adds updates PMD plugin to the latest and the greatest PMD release, updates to Dynamic class loading feature of jEdit and adds PMD to jEdit's File System Browser for easy access.</p>
-
-<p>PMD jEdit plugin 2.5 updates to the latest PMD release, remove redundant menu options and makes usage of the plugin more compact. Look at the details Release notes and Changelog below.</p>
-
-<a name="releasenotes"></a>
-<h2>Release Notes &amp; Changelog</h2>
-      <h3>3.2 (Dale Anson, Dec 2009)</h3>
+      <a name="releasenotes"></a>
+      <h2>
+         Release Notes &amp; Changelog
+      </h2>
+      
+      <h3>
+         3.3 (Dale Anson, June 2010)
+      </h3>
       <ol>
-         <li>Upgraded to PMD 4.2.6.</li>
-         <li>Adjusted CPD to work with just about all file modes supported by jEdit.</li>
-         <li>Moved all hard-coded strings to the property file so they can be localized.</li>
-      </ol>
-      <h3>3.1 (Dale Anson)</h3>
-      <ol>
-         <li>Display rule description along with example.</li>
-      </ol>
-      <h3>3.0 (Dale Anson)</h3>
-      <ol>
-         <li>Split the option pane into smaller panes so they are easier to use.</li>
-         <li>Selected some default rules for first-time users.  This makes it much easier for new users to get started.</li>
-         <li>Changed plugin to start on jEdit startup and to check on file save.  This makes it easier for PMD to be useful right away.</li>
-         <li>Upgraded to PMD 4.2.5, which includes some new rulesets, including one specifically for Android programming.</li>
-         <li>Mouse-over on ruleset names now gives description of the ruleset in the example box.  This makes it easier to understand what the group of rules is about.</li>
-         <li>Added menu item to access PMD Rule Designer.</li>
-      </ol>
-      <h3>2.9 (2008-04-04, Dale Anson) </h3>
-      <ol>
-         <li>Fixed a bug in 'check all files in a directory' where the plugin always defaulted to Java 1.4 rather than the Java version selected in the option pane.</li>
-         <li>Revised the option pane to use a checkbox tree rather than a list of checkboxes.  The list was long (just under 200 rules), and didn't have any grouping by ruleset.  The checkbox tree groups the rules by ruleset, and clicking the checkbox on the ruleset checks all rules contained by that ruleset.  This is way easier than looking through the long list to pick out the rules.</li>
-         <li>Revised the option pane so the layout is more compact and fits on the screen better.</li>
-      </ol>
-      <h3>2.7 (2007-11-20) </h3>
-      <ol>
-       <li>Updated to PMD 4.1</li>
-       <li>New option: choose version of Java (1.4, 1.5, 1.6) </li>
-       <li>Fixed Bug [1501422] PMD Plugin: example box is not updated when new items hover filed in jEdit Plugins Bug tracker.</li>
-       <li>Changed the way Rules are managed and given for execution to PMD due to addition of new languages to PMD and was giving error due to language mismatch.</li>
-       <li>Added new option "Print Rulename in ErrorList" which is helpful to trace down what rule is generating this error.</li>
-      </ol>
-      <h3>2.6</h3>
-      <ol>
-       <li>Updated to PMD 3.4</li>
-       <li>Updated to jEdit 4.3pre3</li>
-       <li>Added &quot;Ignore Literals &amp; identifiers&quot; option for CPD. </li>
-      </ol>
-      <h3>2.5</h3>
-      <ol>
-       <li>Updated to PMD 1.9</li>
-       <li>Removed Recursive Directory options and integrated them into FileChooser itself.</li>
-       <li>Complete redesign of the way PMD Rules and Copy/Paste Detector are used.</li>
-       <li>Fixed improper highlighting of Rule Violations. Because of this bug, any open file in jEdit was showing errors of other files too.</li>
-       <li>Lots of code cleanup and optimizations.</li>
+         <li>Added ability to export the current ruleset.</li>
+         <li>Added a new option pane to allow the user to select custom rulesets.</li>
+         <li>Now using layout manager from Common Controls.</li>
+         <li>Now checking buffer mode rather than filename extension to know how to parse the file.</li>
+         <li>Improved display of rule priority and examples.</li>
+         <li>Added ability to use the JSP rules so PMD can be used on JSP files.</li>
       </ol>
 
-      <h3>2.4</h3>
+      <h3>
+         3.2 (Dale Anson, Dec 2009)
+      </h3>
       <ol>
-         <li>Optimized usage of ErrorSource for faster Error Highlighting.</li>
-         <li>Updated to PMD 1.6</li>
-         <li>Fixed Run on save running when the buffer is non Java also.</li>
-         <li>Added option to export PMD results to a file in various formats such as HTML, XML, Text, CSV etc.</li>
-         <li>Added a new feature to show Progressbar when working on Large file sets.</li>
-         <li>Made Progress bar color user-configurable.</li>
-         <li>Improvement in Copy/Paste Detector.</li>
+         <li>
+            Upgraded to PMD 4.2.6.
+         </li>
+         <li>
+            Adjusted CPD to work with just about all file modes supported by jEdit.
+         </li>
+         <li>
+            Moved all hard-coded strings to the property file so they can be localized.
+         </li>
+      </ol>
+      <h3>
+         3.1 (Dale Anson)
+      </h3>
+      <ol>
+         <li>
+            Display rule description along with example.
+         </li>
+      </ol>
+      <h3>
+         3.0 (Dale Anson)
+      </h3>
+      <ol>
+         <li>
+            Split the option pane into smaller panes so they are easier to use.
+         </li>
+         <li>
+            Selected some default rules for first-time users. This makes it much easier for new users to get started.
+         </li>
+         <li>
+            Changed plugin to start on jEdit startup and to check on file save. This makes it easier for PMD to be useful right away.
+         </li>
+         <li>
+            Upgraded to PMD 4.2.5, which includes some new rulesets, including one specifically for Android programming.
+         </li>
+         <li>
+            Mouse-over on ruleset names now gives description of the ruleset in the example box. This makes it easier to understand what the group of rules is about.
+         </li>
+         <li>
+            Added menu item to access PMD Rule Designer.
+         </li>
+      </ol>
+      <h3>
+         2.9 (2008-04-04, Dale Anson) 
+      </h3>
+      <ol>
+         <li>
+            Fixed a bug in 'check all files in a directory' where the plugin always defaulted to Java 1.4 rather than the Java version selected in the option pane.
+         </li>
+         <li>
+            Revised the option pane to use a checkbox tree rather than a list of checkboxes. The list was long (just under 200 rules), and didn't have any grouping by ruleset. The checkbox tree groups the rules by ruleset, and clicking the checkbox on the ruleset checks all rules contained by that ruleset. This is way easier than looking through the long list to pick out the rules.
+         </li>
+         <li>
+            Revised the option pane so the layout is more compact and fits on the screen better.
+         </li>
+      </ol>
+      <h3>
+         2.7 (2007-11-20) 
+      </h3>
+      <ol>
+         <li>
+            Updated to PMD 4.1
+         </li>
+         <li>
+            New option: choose version of Java (1.4, 1.5, 1.6) 
+         </li>
+         <li>
+            Fixed Bug [1501422] PMD Plugin: example box is not updated when new items hover filed in jEdit Plugins Bug tracker.
+         </li>
+         <li>
+            Changed the way Rules are managed and given for execution to PMD due to addition of new languages to PMD and was giving error due to language mismatch.
+         </li>
+         <li>
+            Added new option "Print Rulename in ErrorList" which is helpful to trace down what rule is generating this error.
+         </li>
+      </ol>
+      <h3>
+         2.6
+      </h3>
+      <ol>
+         <li>
+            Updated to PMD 3.4
+         </li>
+         <li>
+            Updated to jEdit 4.3pre3
+         </li>
+         <li>
+            Added &quot;Ignore Literals &amp; identifiers&quot; option for CPD. 
+         </li>
+      </ol>
+      <h3>
+         2.5
+      </h3>
+      <ol>
+         <li>
+            Updated to PMD 1.9
+         </li>
+         <li>
+            Removed Recursive Directory options and integrated them into FileChooser itself.
+         </li>
+         <li>
+            Complete redesign of the way PMD Rules and Copy/Paste Detector are used.
+         </li>
+         <li>
+            Fixed improper highlighting of Rule Violations. Because of this bug, any open file in jEdit was showing errors of other files too.
+         </li>
+         <li>
+            Lots of code cleanup and optimizations.
+         </li>
+      </ol>
+
+      <h3>
+         2.4
+      </h3>
+      <ol>
+         <li>
+            Optimized usage of ErrorSource for faster Error Highlighting.
+         </li>
+         <li>
+            Updated to PMD 1.6
+         </li>
+         <li>
+            Fixed Run on save running when the buffer is non Java also.
+         </li>
+         <li>
+            Added option to export PMD results to a file in various formats such as HTML, XML, Text, CSV etc.
+         </li>
+         <li>
+            Added a new feature to show Progressbar when working on Large file sets.
+         </li>
+         <li>
+            Made Progress bar color user-configurable.
+         </li>
+         <li>
+            Improvement in Copy/Paste Detector.
+         </li>
 
       </ol>
-      <h3>2.3</h3>
+      <h3>
+         2.3
+      </h3>
       <ol>
-         <li>Updated to PMD 1.3</li>
+         <li>
+            Updated to PMD 1.3
+         </li>
       </ol>
-      <h3>2.2</h3>
+      <h3>
+         2.2
+      </h3>
       <ol>
-         <li>Updated to PMD 1.2.1</li>
-         <li>Updated to jEdit 4.2 API changes</li>
-         <li>Added PMD in jEdit's File System Browser Plugins Menu.</li>
+         <li>
+            Updated to PMD 1.2.1
+         </li>
+         <li>
+            Updated to jEdit 4.2 API changes
+         </li>
+         <li>
+            Added PMD in jEdit's File System Browser Plugins Menu.
+         </li>
       </ol>
-      <h3>2.1</h3>
+      <h3>
+         2.1
+      </h3>
       <ol>
-         <li>Added "clear ErrorList" option.</li>
-         <li>Added "check all open buffers" option.</li>
-         <li>Added support to define Custom RuleSets thereby facilitating integration of Custom Rulesets with built-in rulesets & their independent development.</li>
-         <li>Added C/C++, PHP support to Copy/Paste Detector. Now you can find out duplicate code in your C/C++ & PHP code besides the usual Java code.</li>
+         <li>
+            Added "clear ErrorList" option.
+         </li>
+         <li>
+            Added "check all open buffers" option.
+         </li>
+         <li>
+            Added support to define Custom RuleSets thereby facilitating integration of Custom Rulesets with built-in rulesets & their independent development.
+         </li>
+         <li>
+            Added C/C++, PHP support to Copy/Paste Detector. Now you can find out duplicate code in your C/C++ & PHP code besides the usual Java code.
+         </li>
       </ol>
-   <h3>2.0</h3>
+      <h3>
+         2.0
+      </h3>
       <ol>
-         <li>Integrated Copy/Paste Detector(CPD) in jEdit.</li>
-         <li>Updated to use pmd-1.05</li>
+         <li>
+            Integrated Copy/Paste Detector(CPD) in jEdit.
+         </li>
+         <li>
+            Updated to use pmd-1.05
+         </li>
       </ol>
-   <h3>Old change log</h3>
+      <h3>
+         Old change log
+      </h3>
       <a href="changelog.txt">Old change log</a>
-
-<h3>License</h3>
-<p>The PMD-JEdit plugin is free software released under the Apache license.</p>
-</body>
-</html>
+      <h3>
+         License
+      </h3>
+      <p>
+         The PMD-JEdit plugin is free software released under the Apache license.
+      </p>
+   </body> 
+</html> 

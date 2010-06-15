@@ -104,10 +104,14 @@ public class PMDJEditPlugin extends EBPlugin {
     public void handleMessage(EBMessage ebmess) {
         // maybe run PMD on buffer save
         if (ebmess instanceof BufferUpdate && jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE)) {
-            BufferUpdate bu = (BufferUpdate) ebmess;
-            String modename = bu.getBuffer().getMode().getName();
-            if (bu.getWhat() == BufferUpdate.SAVED && ("java".equals(modename) || "jsp".equals(modename) )) {
-                check(bu.getBuffer(),  bu.getView());
+            try {
+                BufferUpdate bu = (BufferUpdate) ebmess;
+                String modename = bu.getBuffer().getMode().getName();
+                if (bu.getWhat() == BufferUpdate.SAVED && ("java".equals(modename) || "jsp".equals(modename) )) {
+                    check(bu.getBuffer(),  bu.getView());
+                }
+            }
+            catch(Exception e) {        // NOPMD
             }
         }
     }
@@ -319,7 +323,7 @@ public class PMDJEditPlugin extends EBPlugin {
         }
 
         if (! foundProblems) {
-            JOptionPane.showMessageDialog(jEdit.getFirstView(),  jEdit.getProperty("net.sf.pmd.No_problems_found",  "No problems found"),  NAME,  JOptionPane.INFORMATION_MESSAGE);
+            //JOptionPane.showMessageDialog(jEdit.getFirstView(),  jEdit.getProperty("net.sf.pmd.No_problems_found",  "No problems found"),  NAME,  JOptionPane.INFORMATION_MESSAGE);
             errorSource.clear();
         } else {
             registerErrorSource();
