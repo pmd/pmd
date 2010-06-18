@@ -36,7 +36,6 @@ import javax.swing.text.Document;
 import org.netbeans.api.editor.settings.SimpleValueNames;
 import org.netbeans.api.java.source.CancellableTask;
 import org.netbeans.api.java.source.CompilationInfo;
-import org.netbeans.editor.BaseDocument;
 import org.netbeans.modules.editor.NbEditorUtilities;
 import org.openide.loaders.DataObject;
 import org.openide.cookies.LineCookie;
@@ -95,11 +94,9 @@ public class Scanner implements CancellableTask<CompilationInfo> {
             }
             
             int tabSize = 8;
-            if (doc instanceof BaseDocument) {
-                Integer foo = (Integer) doc.getProperty(SimpleValueNames.TAB_SIZE);
-                if (foo != null)
-                    tabSize = foo.intValue();
-            }
+            Integer foo = (Integer) doc.getProperty(SimpleValueNames.TAB_SIZE);
+            if (foo != null)
+                tabSize = foo.intValue();
             
             DataObject dobj = NbEditorUtilities.getDataObject(doc);
             if (dobj == null) {
