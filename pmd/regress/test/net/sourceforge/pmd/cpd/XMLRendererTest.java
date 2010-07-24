@@ -27,13 +27,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 public class XMLRendererTest {
 
+	private final static String ENCODING = "utf-8"; // TODO: Switch this to System.getProperties().get("file.encoding"); ?
+	
     @Test
     public void test_no_dupes() {
-        Renderer renderer = new XMLRenderer();
+
+        Renderer renderer = new XMLRenderer(ENCODING);
         List<Match> list = new ArrayList<Match>();
         String report = renderer.render(list.iterator());
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes()));
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
             NodeList nodes = doc.getChildNodes();
             Node n = nodes.item(0);
             assertEquals("pmd-cpd", n.getNodeName());
@@ -46,7 +49,7 @@ public class XMLRendererTest {
 
     @Test
     public void test_one_dupe() {
-        Renderer renderer = new XMLRenderer();
+        Renderer renderer = new XMLRenderer("utf-8");
         List<Match> list = new ArrayList<Match>();
         Match match = new Match(75, new TokenEntry("public", "/var/Foo.java", 48), new TokenEntry("stuff", "/var/Foo.java", 73));
         match.setLineCount(6);
@@ -54,7 +57,7 @@ public class XMLRendererTest {
         list.add(match);
         String report = renderer.render(list.iterator());
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes()));
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
             NodeList dupes = doc.getElementsByTagName("duplication");
             assertEquals(1, dupes.getLength());
             Node file = dupes.item(0).getFirstChild();
@@ -81,7 +84,7 @@ public class XMLRendererTest {
 
     @Test
     public void testRender_MultipleMatch() {
-        Renderer renderer = new XMLRenderer();
+        Renderer renderer = new XMLRenderer(ENCODING);
         List<Match> list = new ArrayList<Match>();
         Match match1 = new Match(75, new TokenEntry("public", "/var/Foo.java", 48), new TokenEntry("void", "/var/Foo.java", 73));
         match1.setLineCount(6);
@@ -93,7 +96,7 @@ public class XMLRendererTest {
         list.add(match2);
         String report = renderer.render(list.iterator());
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes()));
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
             assertEquals(2, doc.getElementsByTagName("duplication").getLength());
             assertEquals(4, doc.getElementsByTagName("file").getLength());
         } catch (Exception e) {
@@ -104,7 +107,7 @@ public class XMLRendererTest {
 
     @Test
     public void testRendererEncodedPath() {
-        Renderer renderer = new XMLRenderer();
+        Renderer renderer = new XMLRenderer("utf-8");
         List<Match> list = new ArrayList<Match>();
         Match match1 = new Match(75, new TokenEntry("public", "/var/F" + XMLRenderer.BASIC_ESCAPE[2][0] + "oo.java", 48), new TokenEntry("void", "/var/F<oo.java", 73));
         match1.setLineCount(6);
