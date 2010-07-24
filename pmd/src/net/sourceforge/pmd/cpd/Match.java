@@ -14,10 +14,8 @@ public class Match implements Comparable<Match> {
 
     private int tokenCount;
     private int lineCount;
-    private Set<TokenEntry> markSet = new TreeSet<TokenEntry>();
-    private TokenEntry[] marks = new TokenEntry[2];
-    private String code;
-    private MatchCode mc;
+    private Set<TokenEntry> markSet = new TreeSet<TokenEntry>();    
+    private String code;    
     private String label;
     
     public static final Comparator<Match> MatchesComparator = new Comparator<Match>() {
@@ -34,55 +32,25 @@ public class Match implements Comparable<Match> {
     
     public static final Comparator<Match> LabelComparator = new Comparator<Match>() {
     	public int compare(Match ma, Match mb) {
-    		if (ma.getLabel() == null) return 1;
-    		if (mb.getLabel() == null) return -1;
+    		if (ma.getLabel() == null) {
+    		    return 1;
+    		}
+    		if (mb.getLabel() == null) {
+    		    return -1;
+    		}
     		return mb.getLabel().compareTo(ma.getLabel());
     	}
     };
     
-    public static final Comparator<Match> LengthComparator = new Comparator<Match>() {
+    public static final Comparator<Match> LENGTH_COMPARATOR = new Comparator<Match>() {
         public int compare(Match ma, Match mb) {
             return mb.getLineCount() - ma.getLineCount();
         }
     };
-    
-    public static class MatchCode {
-
-        private int first;
-        private int second;
-
-        public MatchCode() {
-        }
-
-        public MatchCode(TokenEntry m1, TokenEntry m2) {
-            first = m1.getIndex();
-            second = m2.getIndex();
-        }
-
-        public int hashCode() {
-            return first + 37 * second;
-        }
-
-        public boolean equals(Object other) {
-            MatchCode mc = (MatchCode) other;
-            return mc.first == first && mc.second == second;
-        }
-
-        public void setFirst(int first) {
-            this.first = first;
-        }
-
-        public void setSecond(int second) {
-            this.second = second;
-        }
-
-    }
 
     public Match(int tokenCount, TokenEntry first, TokenEntry second) {
         markSet.add(first);
         markSet.add(second);
-        marks[0] = first;
-        marks[1] = second;
         this.tokenCount = tokenCount;
     }
 
@@ -119,15 +87,15 @@ public class Match implements Comparable<Match> {
         if (diff != 0) {
             return diff;
         }
-        return other.getFirstMark().getIndex() - getFirstMark().getIndex();
+        return getFirstMark().getIndex() - other.getFirstMark().getIndex();
     }
 
     public TokenEntry getFirstMark() {
-        return marks[0];
+        return getMark(0);
     }
 
     public TokenEntry getSecondMark() {
-        return marks[1];
+        return getMark(1);
     }
 
     public String toString() {
@@ -138,15 +106,8 @@ public class Match implements Comparable<Match> {
         return markSet;
     }
 
-    public MatchCode getMatchCode() {
-        if (mc == null) {
-            mc = new MatchCode(marks[0], marks[1]);
-        }
-        return mc;
-    }
-
     public int getEndIndex() {
-        return marks[1].getIndex() + getTokenCount() - 1;
+        return getMark(0).getIndex() + getTokenCount() - 1;
     }
 
     public void setMarkSet(Set<TokenEntry> markSet) {
@@ -159,5 +120,18 @@ public class Match implements Comparable<Match> {
     
     public String getLabel() {
     	return label;
+    }
+    
+    public void addTokenEntry(TokenEntry entry){
+        markSet.add(entry);                
+    }
+    
+    private TokenEntry getMark(int index) {
+        TokenEntry result = null;
+        int i = 0;
+        for (Iterator<TokenEntry> it = markSet.iterator(); it.hasNext() && i < index + 1; ){            
+            result = it.next();
+        }
+        return result;
     }
 }

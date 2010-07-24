@@ -6,6 +6,7 @@ package test.net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.cpd.TokenEntry;
