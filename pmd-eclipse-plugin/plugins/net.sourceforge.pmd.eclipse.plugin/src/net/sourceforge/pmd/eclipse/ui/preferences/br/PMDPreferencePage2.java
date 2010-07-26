@@ -1,8 +1,8 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,11 +13,14 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.QuickFixPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
 import net.sourceforge.pmd.eclipse.util.Util;
@@ -50,26 +53,30 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	private TabFolder 		     	tabFolder;
 	private RulePropertyManager[]   rulePropertyManagers;
 	private RuleTableManager		tableManager;
-	
+
 	// columns shown in the rule treetable in the desired order
 	private static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
 		TextColumnDescriptor.name,
 		//TextColumnDescriptor.priorityName,
-		IconColumnDescriptor.priority,
+	//	IconColumnDescriptor.priority,
+		ImageColumnDescriptor.priority,
 		TextColumnDescriptor.fixCount,
 		TextColumnDescriptor.since,
 		TextColumnDescriptor.ruleSetName,
 		TextColumnDescriptor.ruleType,
-		TextColumnDescriptor.minLangVers,		
+		TextColumnDescriptor.minLangVers,
+		TextColumnDescriptor.maxLangVers,
 		TextColumnDescriptor.language,
 		ImageColumnDescriptor.filterViolationRegex,    // regex text -> compact color squares (for comparison)
 		ImageColumnDescriptor.filterViolationXPath,    // xpath text -> compact color circles (for comparison)
-		TextColumnDescriptor.properties,
+		TextColumnDescriptor.modCount,
+	//	TextColumnDescriptor.properties		
+		ImageColumnDescriptor.properties
 		};
 
 	// last item in this list is the grouping used at startup
 	private static final Object[][] groupingChoices = new Object[][] {
-		{ TextColumnDescriptor.ruleSetName,       StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET},   
+		{ TextColumnDescriptor.ruleSetName,       StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET},
 		{ TextColumnDescriptor.since,             StringKeys.MSGKEY_PREF_RULESET_GROUPING_PMD_VERSION },
 		{ TextColumnDescriptor.priorityName,      StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY },
 		{ TextColumnDescriptor.ruleType,          StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_TYPE },
@@ -77,62 +84,124 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         { ImageColumnDescriptor.filterViolationRegex, StringKeys.MSGKEY_PREF_RULESET_GROUPING_REGEX },
 		{ null, 								  StringKeys.MSGKEY_PREF_RULESET_GROUPING_NONE }
 		};
-	
-	private static final Map<Class<?>, ValueFormatter> formattersByType = new HashMap<Class<?>, ValueFormatter>();
 
-	static {   // used to render property values in short form in main table
-	    formattersByType.put(String.class,      ValueFormatter.StringFormatter);
-        formattersByType.put(String[].class,    ValueFormatter.MultiStringFormatter);
-        formattersByType.put(Boolean.class,     ValueFormatter.BooleanFormatter);
-        formattersByType.put(Boolean[].class,   ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Integer.class,     ValueFormatter.NumberFormatter);
-        formattersByType.put(Integer[].class,   ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Long.class,        ValueFormatter.NumberFormatter);
-        formattersByType.put(Long[].class,      ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Float.class,       ValueFormatter.NumberFormatter);
-        formattersByType.put(Float[].class,     ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Double.class,      ValueFormatter.NumberFormatter);
-        formattersByType.put(Double[].class,    ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Character.class,   ValueFormatter.ObjectFormatter);
-        formattersByType.put(Character[].class, ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Class.class,       ValueFormatter.TypeFormatter);
-        formattersByType.put(Class[].class,     ValueFormatter.MultiTypeFormatter);        
-        formattersByType.put(Method.class,      ValueFormatter.MethodFormatter);
-        formattersByType.put(Method[].class,    ValueFormatter.MultiMethodFormatter);
-        formattersByType.put(Object[].class,    ValueFormatter.ObjectArrayFormatter);
+	public PMDPreferencePage2() {
+
+	}
+
+	/**
+	 * @param rule Rule
+	 * @return String
+	 */
+	public static String propertyStringFrom(Rule rule, String modifiedTag) {
+
+		Map<PropertyDescriptor<?>, Object> valuesByProp = Configuration.filteredPropertiesOf(rule);
+
+		if (valuesByProp.isEmpty()) return "";
+		StringBuilder sb = new StringBuilder();
+
+		Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProp.entrySet().iterator();
+
+		Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
+		sb.append(entry.getKey().name()).append(": ");
+		formatValueOn(sb, entry, modifiedTag);
+
+		while (iter.hasNext()) {
+			entry = iter.next();
+			sb.append(", ").append(entry.getKey().name()).append(": ");
+			formatValueOn(sb, entry, modifiedTag);
+		}
+		return sb.toString();
 	}
 	
-	public PMDPreferencePage2() {
+	private static int formatValueOn(StringBuilder target, Map.Entry<PropertyDescriptor<?>, Object> entry, String modifiedTag) {
+
+		Object value = entry.getValue();
+		Class<?> datatype = entry.getKey().type();
 		
+		boolean isModified = !RuleUtil.isDefaultValue(entry);
+		if (isModified) target.append(modifiedTag);
+		
+	    ValueFormatter formatter = FormatManager.formatterFor(datatype);
+	    if (formatter != null) {
+	        String output = formatter.format(value);
+	        target.append(output);
+	        return isModified ? output.length() : 0;
+	    }
+
+	    String out = String.valueOf(value);
+		target.append(out);     // should not get here..breakpoint here
+		return isModified ? out.length() : 0;
+	}
+	
+	public static String ruleSetNameFrom(Rule rule) {
+		return ruleSetNameFrom( rule.getRuleSetName() );
+	}
+
+    public static String ruleSetNameFrom(String rulesetName) {
+
+        int pos = rulesetName.toUpperCase().indexOf("RULES");
+        return pos < 0 ? rulesetName : rulesetName.substring(0, pos-1);
+    }
+	
+	/**
+	 * @param rule Rule
+	 * @return String
+	 */
+	public static IndexedString indexedPropertyStringFrom(Rule rule) {
+
+		Map<PropertyDescriptor<?>, Object> valuesByProp = Configuration.filteredPropertiesOf(rule);
+
+		if (valuesByProp.isEmpty()) return IndexedString.Empty;
+		StringBuilder sb = new StringBuilder();
+
+		Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProp.entrySet().iterator();
+
+		List<int[]> modValueIndexes = new ArrayList<int[]>(valuesByProp.size());
+		
+		Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
+		sb.append(entry.getKey().name()).append(": ");
+		int start = sb.length();
+		int stop = start + formatValueOn(sb, entry, "");
+		if (stop > start) modValueIndexes.add(new int[] { start, stop });
+		
+		while (iter.hasNext()) {
+			entry = iter.next();
+			sb.append(", ").append(entry.getKey().name()).append(": ");
+			start = sb.length();
+			stop = start + formatValueOn(sb, entry, "");
+			if (stop > start) modValueIndexes.add(new int[] { start, stop });
+		}
+		return new IndexedString(sb.toString(), modValueIndexes);
 	}
 	
 	protected String descriptionId() {
 		return StringKeys.MSGKEY_PREF_RULESET_TITLE;
 	}
-	
+
 	@Override
 	protected Control createContents(Composite parent) {
- 
-		tableManager = new RuleTableManager(availableColumns, formattersByType, PMDPlugin.getDefault().loadPreferences());
+
+		tableManager = new RuleTableManager(availableColumns, PMDPlugin.getDefault().loadPreferences());
 		tableManager.modifyListener(this);
 		tableManager.selectionListener(this);
-		
-	    populateRuleset();   
-	    
+
+	    populateRuleset();
+
 		Composite composite = new Composite(parent, SWT.NULL);
 		layoutControls(composite);
-		
+
 		tableManager.populateRuleTable();
 		int i =  PreferenceUIStore.instance.selectedPropertyTab() ;
 		tabFolder.setSelection( i );
-		
+
 		return composite;
 	}
-    
+
 	public void createControl(Composite parent) {
 		super.createControl(parent);
-		
-		setModified(false);		
+
+		setModified(false);
 	}
 	/**
 	 * Create buttons for rule properties table management
@@ -149,17 +218,17 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 
 		return composite;
 	}
-	
+
 	private Composite createRuleSection(Composite parent) {
-	    
+
 	    Composite ruleSection = new Composite(parent, SWT.NULL);
-	    
+
 	    // Create the controls (order is important !)
         Composite groupCombo = tableManager.buildGroupCombo(ruleSection, StringKeys.MSGKEY_PREF_RULESET_RULES_GROUPED_BY, groupingChoices);
-	    
+
 	    Tree ruleTree = tableManager.buildRuleTreeViewer(ruleSection);
 	    tableManager.groupBy(null);
-	    
+
         Composite ruleTableButtons = tableManager.buildRuleTableButtons(ruleSection);
         Composite rulePropertiesTableButtons = buildRulePropertiesTableButtons(ruleSection);
 
@@ -187,10 +256,10 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         data.horizontalSpan = 1;
         data.horizontalAlignment = GridData.FILL;       data.verticalAlignment = GridData.FILL;
         rulePropertiesTableButtons.setLayoutData(data);
-        
+
         return ruleSection;
 	}
-	
+
 	/**
 	 * Method buildTabFolder.
 	 * @param parent Composite
@@ -201,12 +270,13 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		tabFolder = new TabFolder(parent, SWT.TOP);
 
 		rulePropertyManagers = new RulePropertyManager[] {
-		    buildPropertyTab(tabFolder,    0, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_PROPERTIES)),
+			buildRuleTab(tabFolder,    	   0, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_RULE)),
 		    buildDescriptionTab(tabFolder, 1, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_DESCRIPTION)),
-		    buildUsageTab(tabFolder,       2, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FILTERS)),
-		    buildXPathTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_XPATH)),   
-		    buildQuickFixTab(tabFolder,    4, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)), 
-		    buildExampleTab(tabFolder,     5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_EXAMPLES)),
+		    buildPropertyTab(tabFolder,    2, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_PROPERTIES)),
+		    buildUsageTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FILTERS)),
+		    buildXPathTab(tabFolder,       4, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_XPATH)),
+		    buildQuickFixTab(tabFolder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)),
+		    buildExampleTab(tabFolder,     6, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_EXAMPLES)),
 		    };
 
 		tabFolder.pack();
@@ -217,14 +287,31 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	 * @param parent TabFolder
 	 * @param index int
 	 */
+	private RulePropertyManager buildRuleTab(TabFolder parent, int index, String title) {
+
+	    TabItem tab = new TabItem(parent, 0, index);
+	    tab.setText(title);
+
+		RulePanelManager manager = new RulePanelManager(title, EditorUsageMode.Editing, this, null);
+		tab.setControl(
+		    manager.setupOn(parent)
+		    );
+		manager.tab(tab);
+		return manager;
+	}
+	
+	/**
+	 * @param parent TabFolder
+	 * @param index int
+	 */
 	private RulePropertyManager buildPropertyTab(TabFolder parent, int index, String title) {
 
 	    TabItem tab = new TabItem(parent, 0, index);
 	    tab.setText(title);
 
-		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(this);
+		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(title, EditorUsageMode.Editing, this);
 		tab.setControl(
-		    manager.setupOn(parent, this)
+		    manager.setupOn(parent)
 		    );
 		manager.tab(tab);
 		return manager;
@@ -239,7 +326,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		TabItem tab = new TabItem(parent, 0, index);
 		tab.setText(title);
 
-        DescriptionPanelManager manager = new DescriptionPanelManager(this);
+        DescriptionPanelManager manager = new DescriptionPanelManager(title, EditorUsageMode.Editing, this);
         tab.setControl(
             manager.setupOn(parent)
             );
@@ -256,14 +343,14 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
-        XPathPanelManager manager = new XPathPanelManager(this);
+        XPathPanelManager manager = new XPathPanelManager(title, EditorUsageMode.Editing, this);
         tab.setControl(
             manager.setupOn(parent)
             );
         manager.tab(tab);
         return manager;
     }
-	
+
 	/**
      * @param parent TabFolder
      * @param index int
@@ -273,14 +360,14 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
-        ExamplePanelManager manager = new ExamplePanelManager(this);
+        ExamplePanelManager manager = new ExamplePanelManager(title, EditorUsageMode.Editing, this);
         tab.setControl(
             manager.setupOn(parent)
             );
         manager.tab(tab);
         return manager;
-    }    
-    
+    }
+
     /**
      * @param parent TabFolder
      * @param index int
@@ -290,14 +377,14 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
-        QuickFixPanelManager manager = new QuickFixPanelManager(this);
+        QuickFixPanelManager manager = new QuickFixPanelManager(title, EditorUsageMode.Editing, this);
         tab.setControl(
             manager.setupOn(parent)
             );
         manager.tab(tab);
         return manager;
     }
-    
+
 	/**
 	 *
 	 * @param parent TabFolder
@@ -309,41 +396,36 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		TabItem tab = new TabItem(parent, 0, index);
 		tab.setText(title);
 
-		ExclusionPanelManager manager = new ExclusionPanelManager(this);
+		ExclusionPanelManager manager = new ExclusionPanelManager(title, EditorUsageMode.Editing, this, true);
 		tab.setControl(
-			manager.setupOn(
-					parent,
-					SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_EXCLUSION_REGEX),
-					SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_XPATH_EXCLUSION),
-					SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_COLOUR_CODE)
-					)
+			manager.setupOn(parent)
 			);
 		manager.tab(tab);
 		return manager;
 	}
-	
+
 	public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
 	        // TODO enhance to recognize default values
-	     setModified();                
+	     setModified();
 	     tableManager.updated(rule);
 	}
-		
+
 	public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {
 			// TODO enhance to recognize default values
-				
+
 		for (Rule rule : selection.allRules()) {
 			if (newValue != null) {		// non-reliable update behaviour, alternate trigger option - weird
-	//				ruleTreeViewer.getTree().redraw();
+				tableManager.changed(selection, desc, newValue);
 			//		System.out.println("doing redraw");
 			} else {
-	//				ruleTreeViewer.update(rule, null);
+				tableManager.changed(rule, desc, newValue);
 			//		System.out.println("viewer update");
 			}
 		}
 		for (RulePropertyManager manager : rulePropertyManagers) {
 		    manager.validate();
 		}
-		
+
 		setModified();
 	}
 
@@ -355,7 +437,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 
         parent.setLayout(new FormLayout());
         int ruleTableFraction = 55;	//PreferenceUIStore.instance.tableFraction();
-        
+
         // Create the sash first, so the other controls can be attached to it.
         final Sash sash = new Sash(parent, SWT.HORIZONTAL);
         FormData data = new FormData();
@@ -396,9 +478,9 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	 */
 	@Override
     public boolean performOk() {
-		
+
 		saveUIState();
-		
+
 		if (isModified()) {
 			updateRuleSet();
 			rebuildProjects();
@@ -407,14 +489,14 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 
 		return super.performOk();
 	}
-	
+
 	@Override
 	public boolean performCancel() {
 
-		saveUIState();		
+		saveUIState();
 		return super.performCancel();
 	}
-	
+
 	/**
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
@@ -423,9 +505,9 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		tableManager.populateRuleTable();
 		super.performDefaults();
 	}
-	
+
 	private void populateRuleset() {
-	    
+
 	    RuleSet defaultRuleSet = plugin.getPreferencesManager().getRuleSet();
         RuleSet ruleSet = new RuleSet();
         ruleSet.addRuleSet(defaultRuleSet);
@@ -433,18 +515,18 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         ruleSet.setDescription(Util.asCleanString(defaultRuleSet.getDescription()));
         ruleSet.addExcludePatterns(defaultRuleSet.getExcludePatterns());
         ruleSet.addIncludePatterns(defaultRuleSet.getIncludePatterns());
-        
+
         tableManager.useRuleSet(ruleSet);
 	}
-	
+
 	public void selection(RuleSelection selection) {
-		   
+
 		for (RulePropertyManager manager : rulePropertyManagers) {
 			manager.manage(selection);
 		    manager.validate();
 		}
 	}
-	
+
 	/**
 	 * If user wants to, rebuild all projects
 	 */
@@ -467,25 +549,25 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 			}
 		}
 	}
-	
+
 	private void saveUIState() {
 		tableManager.saveUIState();
 		int i =  tabFolder.getSelectionIndex();
 		PreferenceUIStore.instance.selectedPropertyTab( i );
 		PreferenceUIStore.instance.save();
 	}
-	
 
-	private void storeActiveRules() {		
-		
+
+	private void storeActiveRules() {
+
 		List<Rule> chosenRules = tableManager.activeRules();
 		for (Rule rule : chosenRules) {
 			preferences.isActive(rule.getName(), true);
 		}
-				
+
 		System.out.println("Active rules: " + preferences.getActiveRuleNames());
 	}
-	
+
 	/**
 	 * Update the configured rule set
 	 * Update also all configured projects

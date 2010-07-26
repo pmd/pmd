@@ -1,7 +1,9 @@
 package net.sourceforge.pmd.eclipse.runtime.builder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -12,8 +14,10 @@ import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -28,7 +32,7 @@ public class MarkerUtil {
 
 	public static boolean hasAnyRuleMarkers(IResource resource) throws CoreException {
 		
-		final boolean foundOne[] = new boolean[] { false };
+		final boolean[] foundOne = new boolean[] { false };
 		
 	    IResourceVisitor ruleMarkerFinder = new IResourceVisitor() {
 	 
@@ -64,12 +68,56 @@ public class MarkerUtil {
 		return foundOne[0];
 	}
 	
+	private static IProject projectFor(IResource resource) {
+				
+		if (resource instanceof IWorkspaceRoot) return null;
+		if (resource instanceof IProject) return (IProject)resource;
+		return projectFor(resource.getParent());
+	}
+	
+	public static Set<IProject> commonProjectsOf(IMarker[] markers) {
+		
+		Set<IProject> projects = new HashSet<IProject>();
+		
+		for (IMarker marker : markers) {
+			IProject project = projectFor(marker.getResource());
+			if (project != null) projects.add(project);
+		}
+		
+		return projects;
+	}
+	
     public static String ruleNameFor(IMarker marker) {
     	return marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, "");
     }
     
     public static int rulePriorityFor(IMarker marker) throws CoreException {
     	return ((Integer)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY)).intValue();
+    }
+    
+    public static int deleteViolationsOf(String ruleName, IResource resource) {
+    	
+    	try {
+	    	IMarker[] markers = findAllMarkers(resource);
+	    	if (markers.length == 0) return 0;
+	    	
+	    	List<IMarker> matches = new ArrayList<IMarker>(markers.length);
+	    	
+	    	for (IMarker marker : markers) {
+	    		String name = ruleNameFor(marker);
+	    		if (ruleName.equals(name)) {
+	    			matches.add(marker);
+	    		}
+	    	}
+	    	
+	    	markers = new IMarker[matches.size()];
+	    	matches.toArray(markers);
+	    	resource.getWorkspace().deleteMarkers(markers);
+	    	
+	    	return markers.length;
+    	} catch (CoreException ex) {
+    		return 0;
+    	}
     }
     
     public static List<Rule> rulesFor(IMarker[] markers) {

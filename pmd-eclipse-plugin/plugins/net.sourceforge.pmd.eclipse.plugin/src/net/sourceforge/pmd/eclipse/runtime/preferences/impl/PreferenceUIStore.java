@@ -35,8 +35,9 @@ public class PreferenceUIStore {
 	private static final char stringSeparator = ',';
 	
 	private static final RuleColumnDescriptor[] defaultHiddenColumns = new RuleColumnDescriptor[] {
-			TextColumnDescriptor.externalURL,		TextColumnDescriptor.minLangVers,
-			TextColumnDescriptor.exampleCount,		TextColumnDescriptor.since
+			TextColumnDescriptor.externalURL,		TextColumnDescriptor.minLangVers, TextColumnDescriptor.fixCount,
+			TextColumnDescriptor.exampleCount,		TextColumnDescriptor.maxLangVers, TextColumnDescriptor.since,
+			TextColumnDescriptor.modCount
 			};
 
 	private static final boolean defaultSortUp = false;

@@ -94,8 +94,10 @@
             id="net.sourceforge.pmd.eclipse.ui.preferences.pmdPreferencePage">
       </page>
 
-<!--      
-      <page name="Ruleset preferences - BR" category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage" class="net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2" id="net.sourceforge.pmd.ui.preferences.pmdPreferencePage">
+      <page name="PMD - Original" category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage" class="net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage" id="net.sourceforge.pmd.ui.preferences.pmdPreferencePage">
+      </page>
+<!--   
+      <page name="PMD -v1" category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage" class="net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage" id="net.sourceforge.pmd.ui.preferences.pmdPreferencePage">
       </page>
 -->   
       <page
@@ -271,6 +273,7 @@
                id="net.sourceforge.pmd.eclipse.ui.pmdClearReviewsAction">
          </action>
       </objectContribution>
+      
       <viewerContribution
             id="net.sourceforge.pmd.eclipse.ui.pmdTaskListContribution"
             targetID="org.eclipse.ui.views.TaskList">
@@ -344,7 +347,22 @@
                id="net.sourceforge.pmd.eclipse.ui.pmdFileCheckProjectAction"
                label="%action.checkpmd"
                menubarPath="additions"/>
-      </objectContribution>                               
+      </objectContribution>   
+      
+      <objectContribution
+            adaptable="false"
+            id="net.sourceforge.pmd.eclipse.ui.ruleContribution"
+            objectClass="net.sourceforge.pmd.eclipse.ui.views.br.ViewRecord">
+         <action
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDCheckAction"
+               enablesFor="+"
+               icon="icons/pmd-icon-16.gif"
+               id="net.sourceforge.pmd.eclipse.ui.pmdFileCheckProjectAction"
+               label="%action.checkpmd"
+               menubarPath="additions"/>
+      </objectContribution>  
+      
+                                  
    </extension>
 
    <extension
@@ -368,15 +386,8 @@
             category="net.sourceforge.pmd.eclipse.ui.views"
             name="%view.overview"
             id="net.sourceforge.pmd.eclipse.ui.views.violationOverview"/>
-<!--            
-      <view							
-            allowMultiple="false"
-            icon="icons/icon_overview.gif"
-            class="net.sourceforge.pmd.eclipse.ui.views.br.ViolationOverviewBR"
-            category="net.sourceforge.pmd.eclipse.ui.views"
-            name="Violation Overview BR"
-            id="net.sourceforge.pmd.eclipse.ui.views.violationOverview.br"/>
--->            
+            
+            
       <view
             allowMultiple="false"
             icon="icons/icon_dataflow.png"
@@ -400,6 +411,32 @@
             class="net.sourceforge.pmd.eclipse.ui.views.PMDPerspective"
             name="%view.perspective"
             id="net.sourceforge.pmd.eclipse.ui.views.pmdPerspective"/>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="net.sourceforge.pmd.eclipse.runtime.cmd.DisableRuleHandler"
+            id="net.sourceforge.pmd.eclipse.plugin.rule.disable"
+            name="DisableRule">
+      </command>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="editMenu"
+               label="Rule">
+            <command
+                  commandId="net.sourceforge.pmd.eclipse.plugin.rule.disable"
+                  label="Disable"
+                  style="push"
+                  tooltip="Disables the rule">
+            </command>
+         </menu>
+      </menuContribution>
    </extension>
 
 </plugin>

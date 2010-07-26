@@ -54,7 +54,7 @@ public abstract class AbstractViolationSelectionAction extends AbstractPMDAction
 	
 	protected List<Rule> getSelectedViolationRules() {
 		
-		if (!hasSelections()) return Collections.EMPTY_LIST;
+		if (!hasSelections()) return Collections.emptyList();
 		
 		IMarker[] markers = getSelectedViolations();
 		return MarkerUtil.rulesFor(markers);

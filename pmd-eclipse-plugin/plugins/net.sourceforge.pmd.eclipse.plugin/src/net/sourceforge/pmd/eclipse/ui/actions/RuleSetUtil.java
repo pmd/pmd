@@ -2,7 +2,6 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
@@ -14,6 +13,8 @@ import net.sourceforge.pmd.RuleSet;
  */
 public class RuleSetUtil {
 
+	private RuleSetUtil() {}
+	
 	public static RuleSet newCopyOf(RuleSet original) {
 		
 		RuleSet rs = new RuleSet();

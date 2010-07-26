@@ -198,14 +198,14 @@ public class RenderReportCmd extends AbstractProjectCommand {
 
             if (marker.getResource() instanceof IFile) {
                 final ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) marker.getResource());
-                final IPackageDeclaration packages[] = unit.getPackageDeclarations();
+                final IPackageDeclaration[] packages = unit.getPackageDeclarations();
                 if (packages.length > 0) {
                     ruleViolation.setPackageName(packages[0].getElementName());
                 } else {
                     ruleViolation.setPackageName("(default)");
                 }
 
-                IType types[] = unit.getAllTypes();
+                IType[] types = unit.getAllTypes();
                 if (types.length > 0) {
                     ruleViolation.setClassName(types[0].getElementName());
                 } else {

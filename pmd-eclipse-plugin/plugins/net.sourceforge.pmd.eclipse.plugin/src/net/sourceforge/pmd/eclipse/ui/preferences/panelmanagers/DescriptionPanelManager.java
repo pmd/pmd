@@ -2,6 +2,8 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -29,31 +31,35 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 
 /**
- * 
+ *
  * @author Brian Remedios
  */
 public class DescriptionPanelManager extends AbstractRulePanelManager {
 
     private Text descriptionBox;
-    private Text externalURLField;    
+    private Text externalURLField;
     private Label extURLLabel;
     private Button browseButton;
     private Label messageLabel;
     private Text  messageField;
-        
-    public DescriptionPanelManager(ValueChangeListener theListener) {
-        super(theListener);
+
+    private static final int MIN_MESSAGE_LENGTH = 10;	//chars
+
+    public static final String ID = "description";
+
+    public DescriptionPanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener) {
+        super(ID, theTitle, theMode, theListener);
     }
 
     protected boolean canManageMultipleRules() { return false; }
-    
+
     protected void clearControls() {
         descriptionBox.setText("");
         externalURLField.setText("");
     }
-    
-    protected void setVisible(boolean flag) {
-        
+
+    public void showControls(boolean flag) {
+
         descriptionBox.setVisible(flag);
         externalURLField.setVisible(flag);
         browseButton.setVisible(flag);
@@ -61,11 +67,11 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
         messageLabel.setVisible(flag);
         messageField.setVisible(flag);
     }
-   
+
     protected void updateOverridenFields() {
-        
+
         Rule rule = soleRule();
-        
+
         if (rule instanceof RuleReference) {
             RuleReference ruleReference = (RuleReference)rule;
             messageField.setBackground(ruleReference.getOverriddenMessage() != null ? overridenColour: null);
@@ -73,126 +79,137 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
             externalURLField.setBackground(ruleReference.getOverriddenExternalInfoUrl() != null ? overridenColour: null);
         }
     }
-    
+
     public Control setupOn(Composite parent) {
-        
+
         initializeOn(parent);
-        
+
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-        
+
         Composite panel = new Composite(parent, 0);
         GridLayout layout = new GridLayout(3, false);
         panel.setLayout(layout);
-                
-        descriptionBox = newTextField(panel); 
+
+        descriptionBox = newTextField(panel);
         gridData = new GridData(GridData.FILL_BOTH);
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalSpan = 3;
-        descriptionBox.setLayoutData(gridData);              
-      
-        descriptionBox.addListener(SWT.FocusOut, new Listener() {
-            public void handleEvent(Event event) {
-                               
+        descriptionBox.setLayoutData(gridData);
+
+        descriptionBox.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent event) {
+
                 Rule soleRule = soleRule();
-                
-                String cleanValue = descriptionBox.getText().trim();
+                if (soleRule == null) return;
+
+                String cleanValue = asCleanString(descriptionBox.getText());
                 String existingValue = soleRule.getDescription();
-                
+
                 if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
-                
+
                 soleRule.setDescription(cleanValue);
-                valueChanged(null, cleanValue);         
+                valueChanged(null, cleanValue);
+                validateRuleParams();		// TODO hang off of valueChanged instead?
             }
-        }); 
-        
-        buildExternalUrlPanel(panel, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL));        
+        });
+
+        buildExternalUrlPanel(panel, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL));
         buildMessagePanel(panel, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_MESSAGE));
-        
-        return panel;    
+
+        return panel;
     }
-        
+
+    private void validateRuleParams() {
+
+    	validate();
+    	
+    	boolean urlOK = StringUtil.isEmpty(externalURLField.getText()) || hasValidURL();
+    	adjustBrowseButton(urlOK);
+    }
+
     private void buildExternalUrlPanel(Composite parent, String urlLabel) {
-                        
+
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        
+
         extURLLabel = new Label(parent, 0);
         extURLLabel.setText(urlLabel);
         gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = false;
-        extURLLabel.setLayoutData(gridData);        
-        
+        extURLLabel.setLayoutData(gridData);
+
         externalURLField = new Text(parent, SWT.BORDER);
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = true;
         externalURLField.setLayoutData(gridData);
-        
+
         browseButton = buildExternalInfoUrlButton(parent);
         gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
         gridData.horizontalSpan = 1;
         browseButton.setLayoutData(gridData);
-        
+
         externalURLField.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event e) {
               handleExternalURLChange();
             }
-          });        
+          });
         externalURLField.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {             
-                adjustBrowseButton();
-            }           
+            public void modifyText(ModifyEvent e) {
+                validateRuleParams();
+            }
         });
     }
-    
+
     private void buildMessagePanel(Composite parent, String messageLbl) {
-                
+
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        
+
         messageLabel = new Label(parent, 0);
         messageLabel.setText(messageLbl);
         gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = false;
-        messageLabel.setLayoutData(gridData);        
-        
+        messageLabel.setLayoutData(gridData);
+
         messageField = new Text(parent, SWT.BORDER);
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 2;
         gridData.grabExcessHorizontalSpace = true;
         messageField.setLayoutData(gridData);
-                
-        messageField.addListener(SWT.FocusOut, new Listener() {
-            public void handleEvent(Event e) {
+
+        messageField.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
               handleMessageChange();
+              validateRuleParams();
             }
           });
     }
-    
+
     private void handleExternalURLChange() {
-        
-        String newURL = externalURLField.getText().trim();
+
+        String newURL = asCleanString(externalURLField.getText());
         Rule rule = soleRule();
-        
-        if (!StringUtil.areSemanticEquals(rule.getExternalInfoUrl().trim(), newURL)) {
+
+        if (!StringUtil.areSemanticEquals(asCleanString(rule.getExternalInfoUrl()), newURL)) {
             rule.setExternalInfoUrl(newURL);
             valueChanged(null, newURL);
         }
-        
-       adjustBrowseButton();
+
+       adjustBrowseButton( hasValidURL() );
     }
-    
+
     private void handleMessageChange() {
-        
-        String newMessage = messageField.getText().trim();
+
+        String newMessage = asCleanString(messageField.getText());
         Rule rule = soleRule();
-        
-        if (!StringUtil.areSemanticEquals(rule.getMessage().trim(), newMessage)) {
+
+        if (!StringUtil.areSemanticEquals(asCleanString(rule.getMessage()), newMessage)) {
             rule.setMessage(newMessage);
             updateUI();
         }
     }
-    
+
     private Button buildExternalInfoUrlButton(Composite parent) {
-        
+
         final Button button = new Button(parent, SWT.PUSH);
         button.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL));
 
@@ -215,57 +232,76 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
         return button;
     }
-    
+
     protected void adapt() {
-        
+
         Rule soleRule = soleRule();
-        
+
         if (soleRule == null) {
             shutdown(descriptionBox);
             shutdown(externalURLField);
             shutdown(messageField);
         } else {
-            show(descriptionBox, soleRule.getDescription().trim());
-            show(externalURLField, soleRule.getExternalInfoUrl().trim());
-            show(messageField, soleRule.getMessage().trim());
+            show(descriptionBox, asCleanString(soleRule.getDescription()));
+            show(externalURLField, asCleanString(soleRule.getExternalInfoUrl()));
+            show(messageField, asCleanString(soleRule.getMessage()));
         }
-        
-        adjustBrowseButton();
+
+        boolean isValid = hasValidURL();
+        adjustBrowseButton(isValid);
     }
 
     public static boolean isValidURL(String url) {
-        
+
         if (StringUtil.isEmpty(url)) return false;
-        
-        String urlUC = url.toUpperCase();       
+
+        String urlUC = url.toUpperCase();
         if (!urlUC.startsWith("HTTP")) return false;
-        
+
         for (int i=0; i<url.length(); i++) {
             if (Character.isWhitespace(url.charAt(i))) return false;
         }
-        
+
         return true;
     }
-    
+
     private boolean hasValidURL() {
         String url = externalURLField.getText().trim();
+        if (StringUtil.isEmpty(url)) return true;	// not required
         return isValidURL(url);
     }
-    
-    private void adjustBrowseButton() {
-        
-        boolean isValid = hasValidURL();
-        
-        browseButton.setEnabled(isValid);
+
+    private boolean hasValidMessage() {
+        String message = messageField.getText().trim();
+        return (!StringUtil.isEmpty(message) && message.length() > MIN_MESSAGE_LENGTH);
+    }
+
+    private boolean hasValidDescription() {
+        String description = descriptionBox.getText().trim();
+        return (!StringUtil.isEmpty(description) && description.length() > MIN_MESSAGE_LENGTH);
+    }
+
+    private void adjustBrowseButton(boolean hasValidURL) {
+
+        browseButton.setEnabled(hasValidURL);
         externalURLField.setForeground(
-            isValid ? textColour : errorColour
+            hasValidURL ? textColour : errorColour
             );
     }
 
-    protected String[] fieldErrors() {
-        
-        return hasValidURL() ? 
-               StringUtil.EMPTY_STRINGS :
-               new String[] { "Invalid external URL" };
+    protected List<String> fieldErrors() {
+
+    	List<String> errors = new ArrayList<String>(3);
+    	
+        if (StringUtil.isEmpty(descriptionBox.getText().trim())) {
+        	errors.add("Missing description");
+        }
+        if (StringUtil.isEmpty(messageField.getText().trim())) {
+        	errors.add("Missing message");
+        }
+
+       if (!hasValidURL()) errors.add("Invalid external URL");
+       
+       return errors;
     }
 }

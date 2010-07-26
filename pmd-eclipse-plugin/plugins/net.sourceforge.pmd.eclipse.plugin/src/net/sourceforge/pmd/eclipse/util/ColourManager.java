@@ -8,6 +8,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -19,7 +20,7 @@ public class ColourManager {
 
 	private final Display display;
 	
-	private final Map<int[], Color> coloursByRGB = new HashMap<int[], Color>();
+	private final Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 	
 	private static ColourManager instance;
 	
@@ -33,12 +34,12 @@ public class ColourManager {
 		display = theDisplay;
 	}
 
-	public Color colourFor(int[] colourFractions) {
+	public Color colourFor(RGB colourFractions) {
 	    
 	    Color colour = coloursByRGB.get(colourFractions);
         if (colour != null) return colour;
         
-        colour = new Color(display, colourFractions[0], colourFractions[1], colourFractions[2]);
+        colour = new Color(display, colourFractions.red, colourFractions.green, colourFractions.blue);
         coloursByRGB.put(colourFractions, colour);
         return colour;
 	}
@@ -67,11 +68,11 @@ public class ColourManager {
 		int gHash = text.subSequence(posA, posB).hashCode();
 		int bHash = text.subSequence(posB, length).hashCode();
 		
-		int colourFractions[] = new int[] {
+		RGB colourFractions = new RGB(
 			(int)(Math.log10(rHash) % 1 * 255),
 			(int)(Math.log10(gHash) % 1 * 255),
 			(int)(Math.log10(bHash) % 1 * 255)
-			};
+			);
 		
 		return colourFor(colourFractions);
 	}

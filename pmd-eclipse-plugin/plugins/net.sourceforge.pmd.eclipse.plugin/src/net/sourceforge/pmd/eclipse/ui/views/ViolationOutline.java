@@ -8,6 +8,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.actions.DisableRuleAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.PriorityFilterAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.QuickFixAction;
 import net.sourceforge.pmd.eclipse.ui.views.actions.RemoveViolationAction;
@@ -104,13 +105,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         // get the State of the destroyed Page for loading it into the
         // next Page -> different Pages look like one
         if (page != null) {
-            Integer[] widthArray = page.getColumnWidths();
-            List<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
-            memento.putList(COLUMN_WIDTHS, widthList);
-
-            Integer[] sorterProps = page.getSorterProperties();
-            List<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
-            memento.putList(COLUMN_SORTER, sorterList);
+            storeColumnData(page);
 
             memento.save(PMDUiConstants.ID_OUTLINE);
             page.dispose();
@@ -147,28 +142,8 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         manager.setRemoveAllWhenShown(true);
         // here we add the Context Menus Actions
         manager.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-            	
-                // show the Rule Dialog
-                Action showRuleAction = new ShowRuleAction(viewer, getSite().getShell());
-                manager.add(showRuleAction);
-
-                // add Review Comment
-                ReviewAction reviewAction = new ReviewAction(viewer);
-                manager.add(reviewAction);
-
-                // Remove Violation
-                RemoveViolationAction removeAction = new RemoveViolationAction(viewer);
-                manager.add(removeAction);
-
-                // Quick Fix (where possible)
-                QuickFixAction quickFixAction = new QuickFixAction(viewer);
-                quickFixAction.setEnabled(quickFixAction.hasQuickFix());
-                manager.add(quickFixAction);
-
-                // additions Action: Clear reviews
-                manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-                manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
+            public void menuAboutToShow(IMenuManager manager) {            	
+                buildMenu(manager, viewer);
             }
         });
 
@@ -177,6 +152,34 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         getSite().registerContextMenu(manager, viewer);
     }
 
+	private void buildMenu(IMenuManager manager, TableViewer viewer) {
+		// show the Rule Dialog
+        Action showRuleAction = new ShowRuleAction(viewer, getSite().getShell());
+        manager.add(showRuleAction);
+
+        // add Review Comment
+        ReviewAction reviewAction = new ReviewAction(viewer);
+        manager.add(reviewAction);
+
+        // Remove Violation
+        RemoveViolationAction removeAction = new RemoveViolationAction(viewer);
+        manager.add(removeAction);
+
+        // Disable rule
+        DisableRuleAction disableAction = new DisableRuleAction(viewer);
+        disableAction.setEnabled(disableAction.hasActiveRules());
+        manager.add(disableAction);
+        
+        // Quick Fix (where possible)
+        QuickFixAction quickFixAction = new QuickFixAction(viewer);
+        quickFixAction.setEnabled(quickFixAction.hasQuickFix());
+        manager.add(quickFixAction);
+
+        // additions Action: Clear reviews
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
+	}
+	
     /* @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IPartListener) */
     @Override
     public void partActivated(IWorkbenchPart part) {
@@ -214,15 +217,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         // and load it into the new Page, so it looks like the old one
         if (oldPage != newPage) {
             if (oldPage != null) {
-                // we care about the column widths
-                Integer[] widthArray = oldPage.getColumnWidths();
-                List<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
-                memento.putList(COLUMN_WIDTHS, widthList);
-
-                // ... and what Element is sorted, and in which way
-                Integer[] sorterProps = oldPage.getSorterProperties();
-                List<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
-                memento.putList(COLUMN_SORTER, sorterList);
+                storeColumnData(oldPage);
             }
 
             // we load the stuff into the new Page
@@ -245,6 +240,19 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
 
         super.showPageRec(pageRec);
     }
+
+	private void storeColumnData(ViolationOutlinePage page) {
+		
+		// we care about the column widths
+		Integer[] widthArray = page.getColumnWidths();
+		List<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
+		memento.putList(COLUMN_WIDTHS, widthList);
+
+		// ... and what Element is sorted, and in which way
+		Integer[] sorterProps = page.getSorterProperties();
+		List<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
+		memento.putList(COLUMN_SORTER, sorterList);
+	}
 
     /**
      * @return the currently displayed Page

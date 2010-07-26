@@ -11,15 +11,17 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
 /**
- * 
+ *
  * @author Brian Remedios
  */
-public interface RuleColumnDescriptor {
+public interface RuleColumnDescriptor extends ColumnDescriptor {
 
-    String label();
     RuleFieldAccessor accessor();
     Image imageFor(Rule rule);
+    Image imageFor(RuleCollection collection);
     String stringValueFor(Rule rule);
+    String stringValueFor(RuleCollection collection);
     String detailStringFor(Rule rule);
+    String detailStringFor(RuleGroup group);
     TreeColumn newTreeColumnFor(Tree parent, int columnIndex, RuleSortListener sortListener, Map<Integer, List<Listener>> paintListeners);
 }

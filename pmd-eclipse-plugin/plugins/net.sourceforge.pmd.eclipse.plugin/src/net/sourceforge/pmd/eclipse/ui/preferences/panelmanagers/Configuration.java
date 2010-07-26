@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 /**
  *
- * @author br
+ * @author Brian Remedios
  */
 public class Configuration {
 
@@ -21,13 +21,13 @@ public class Configuration {
 		StatisticalRule.SIGMA_DESCRIPTOR,
 		StatisticalRule.TOP_SCORE_DESCRIPTOR
 		};
-	
+
 	public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(Rule rule) {
 
 		Map<PropertyDescriptor<?>, Object> valuesByProp = rule.getPropertiesByPropertyDescriptor();
 
-		for (PropertyDescriptor<?> excludedRulePropertie : excludedRuleProperties) {
-			valuesByProp.remove(excludedRulePropertie);
+		for (PropertyDescriptor<?> excludedRuleProperty : excludedRuleProperties) {
+			valuesByProp.remove(excludedRuleProperty);
 		}
 
 		return valuesByProp;

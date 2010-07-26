@@ -51,7 +51,6 @@ import java.util.StringTokenizer;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
@@ -267,17 +266,16 @@ public class FileRecord extends AbstractPMDRecord {
      * The Function is adapted from the Eclipse Metrics-Plugin available at:
      * http://www.sourceforge.net/projects/metrics
      *
-     * @return the Lines of Code
      */
     public void calculateLinesOfCode() {
-        if (this.resource.isAccessible()) {
+        if (resource.isAccessible()) {
 
             // the whole while has to be a String for this operation
             // so we read the File line-wise into a String
 
-            final String source = resourceToString(this.resource);
+            final String source = resourceToString(resource);
 
-            this.numberOfLOC = linesOfCodeIn(source, true);
+            numberOfLOC = linesOfCodeIn(source, true);
         }
     }
 

@@ -32,7 +32,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 		groupDescription = description;
 		comparator = theComparator;
 	}
-	
+
 	/**
 	 *
 	 * @param accessor RuleFieldAccessor
@@ -40,15 +40,15 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 	public void accessor(RuleFieldAccessor accessor) {
 		fieldAccessor = accessor;
 	}
-	
+
 	private Object[] sort(Collection<Rule> ruleColl) {
 		Object[] rules = ruleColl.toArray();
 		if (comparator == null) return rules;
-		
+
 		Arrays.sort(rules, comparator);
 		return rules;
 	}
-	
+
 	/**
 	 *
 	 * @param parentElement Object
@@ -56,20 +56,20 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(Object)
 	 */
 	public Object[] getChildren(Object parentElement) {
-			        
+
 	     if (parentElement instanceof RuleSet) {
 	        RuleSet ruleSet = (RuleSet) parentElement;
 	        return fieldAccessor == null ?
 	        	sort(ruleSet.getRules()) :
 	        	asRuleGroups(ruleSet.getRules());
 	        }
-	      
+
 	     if (parentElement instanceof RuleGroup) {
 	    	 RuleGroup ruleGroup = (RuleGroup) parentElement;
 		     return ruleGroup.rules();
 		     }
-	     
-	     return Util.EMPTY_ARRAY;		
+
+	     return Util.EMPTY_ARRAY;
 	}
 
 	/**
@@ -78,14 +78,14 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 	 * @return RuleGroup[]
 	 */
 	private RuleGroup[] asRuleGroups(Collection<Rule> rules) {
-	
+
 		Iterator<Rule> iter = rules.iterator();
 		Map<Object, RuleGroup> ruleGroups = new HashMap<Object, RuleGroup>();
 		while (iter.hasNext()) {
 			Rule rule = iter.next();
-			
+
 			Comparable<?> groupId = fieldAccessor.valueFor(rule);
-			
+
 			RuleGroup group = ruleGroups.get(groupId);
 			if (group != null) {
 				group.add(rule);
@@ -99,16 +99,16 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 				ruleGroups.put(groupId, group);
 				}
 		}
-		
+
         RuleGroup[] groups = ruleGroups.values().toArray(new RuleGroup[ruleGroups.size()]);
-        
+
 		// TODO sort within groups
 		for (RuleGroup group : groups) group.sortBy(comparator);
-		
+
 		 Arrays.sort(groups);
 		 return groups;
 	}
-	
+
 	/**
 	 * Method getParent.
 	 * @param element Object
@@ -127,16 +127,16 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(Object)
 	 */
 	public boolean hasChildren(Object element) {
-		
+
 		if (element instanceof RuleSet) {
             RuleSet ruleSet = (RuleSet) element;
             return ruleSet.getRules().size() > 0;
 		}
-		
+
 		if (element instanceof RuleGroup) {
 			return ((RuleGroup)element).hasRules();
 		}
-		
+
         return false;
 	}
 
@@ -158,11 +158,11 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(Viewer, Object, Object)
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		
+
 	}
 
 	public void dispose() {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 
 }

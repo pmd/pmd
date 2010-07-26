@@ -108,7 +108,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         messageColumn.setWidth(170);
         messageColumn.setText(getString(StringKeys.MSGKEY_VIEW_OUTLINE_COLUMN_MESSAGE));
 
-        // the Line, the Error occured
+        // the Line, the Error occurred
         final TableColumn lineColumn = new TableColumn(viewerTable, SWT.RIGHT);
         lineColumn.setWidth(40);
         lineColumn.setText(getString(StringKeys.MSGKEY_VIEW_OUTLINE_COLUMN_LINE));
@@ -256,7 +256,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     /**
      * Sets the Column's Widths
      * 
-     * @param widths, an Integer-Array containg the Widths
+     * @param widths, an Integer-Array containing the widths
      */
     public void setColumnWidths(Integer[] widths) {
         if (tableViewer.getTable().isDisposed())
@@ -274,7 +274,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     }
 
     /**
-     * @return an Array wid5th the Column's Widths
+     * @return an Array with the column widths
      */
     public Integer[] getColumnWidths() {
         return columnWidths;

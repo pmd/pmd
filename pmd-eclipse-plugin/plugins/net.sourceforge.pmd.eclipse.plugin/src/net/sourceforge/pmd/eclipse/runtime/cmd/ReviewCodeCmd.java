@@ -257,7 +257,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         if (resources.isEmpty()) {
             rule = ruleFactory.markerRule(resourceDelta.getResource().getProject());
         } else {
-            ISchedulingRule rules[] = new ISchedulingRule[resources.size()];
+            ISchedulingRule[] rules = new ISchedulingRule[resources.size()];
             for (int i = 0; i < rules.length; i++) {
                 rules[i] = ruleFactory.markerRule((IResource) resources.get(i));
             }
@@ -313,6 +313,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             fileCount += visitor.getProcessedFilesCount();
             pmdDuration += visitor.getActualPmdDuration();
 
+            worked(1);		// TODO - temp fix?  BR
+            
         } catch (PropertiesException e) {
             throw new CommandException(e);
         } catch (CoreException e) {
@@ -432,7 +434,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 currentFile = file.getName();
 
                 final Set<MarkerInfo> markerInfoSet = markersByFile.get(file);
-                MarkerUtil.deleteAllMarkersIn(file);
+  //              MarkerUtil.deleteAllMarkersIn(file);
                 final Iterator<MarkerInfo> j = markerInfoSet.iterator();
                 while (j.hasNext()) {
                     final MarkerInfo markerInfo = j.next();

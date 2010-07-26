@@ -1,21 +1,25 @@
 ToDo items:     							March 21st 2010
 
 Finish remaining editors and the Add Property dialog
-Highlight non-default values in editors and/or summary column
-Enable 'Use defaults' option in popup menu
+Enable 'Use defaults' option in popup menu (need support in properties/PMD)
 Add selection column selected rules in per-project rule settings table
 Rework context menu - build on-demand, not before
 Markup violations using priority icons rather than the yellow yield signs or red Xs
+Work on support for fixes
+Format example & description text
+Should we add support for Date properties? (i.e. to reference file timestamp?)
 Cleanup icons
 Remember settings for:
 	chosen grouping selection (or none)
 	sort column & order
 	rule table screen fraction
-
+Fix:
+	new property dialog, use JFace dialog
+	
 Items needing support in PMD itself:
 
 Enable non-intrinsic property field removal
-Enable/disable rules w/out removing from ruleset
+Null-out property values to default 
 Enable rule reassignment to different rulesets
 Add support for creating new rulesets & descriptions for same
 For multi-value properties, decide whether to allow unique or duplicate values (default to Set behaviour)

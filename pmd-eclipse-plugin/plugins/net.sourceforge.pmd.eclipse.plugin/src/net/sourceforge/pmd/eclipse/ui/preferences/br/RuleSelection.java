@@ -2,204 +2,290 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Represents a set of selected rules in a rule selection widget. Provides useful metrics
  * and determines common properties (if any).
- * 
+ *
  * @author Brian Remedios
  */
-public class RuleSelection {
+public class RuleSelection implements RuleCollection {
 
     private Object[] ruleItems;
+    
+    public RuleSelection(Rule soleRule) {
+    	this(new Object[] {soleRule} );
+    }
+    
+    public boolean isEmpty() { return ruleItems == null || ruleItems.length == 0; }
     
     public RuleSelection(Object[] theRuleItems) {
         ruleItems = theRuleItems;
     }
 
+    public void soleRule(Rule theRule) {
+    	ruleItems = new Object[] { theRule };
+    }
+    
+    /**
+     * Iterate through all the rules ultimately held by the receiver.
+     * Returns true if it went through every one, false if it stopped
+     * along the way.
+     * 
+     * @param visitor
+     * @return
+     */
+    public boolean rulesDo(RuleVisitor visitor) {
+    	    	
+    	for (Object item : ruleItems) {
+    		if (item instanceof Rule) {
+    			if (!visitor.accept((Rule)item)) return false;
+    			continue;
+    		}
+    		if (item instanceof RuleGroup) {
+    			if (!((RuleGroup)item).rulesDo(visitor)) return false;
+    		}
+    	}
+    	
+    	return true;
+    }
+    
+    public ImplementationType implementationType() {
+    	
+    	if (ruleItems == null || ruleItems.length == 0) return ImplementationType.Mixed;
+    	
+		final Set<ImplementationType> types = new HashSet<ImplementationType>();
+		
+		RuleVisitor visitor = new RuleVisitor() {
+			public boolean accept(Rule rule) {
+				types.add( implementationType(rule) );
+		        return types.size() < 2;
+			}
+		};
+		
+		rulesDo(visitor);
+		
+		return types.size() > 1 ?
+			ImplementationType.Mixed :
+			types.iterator().next();    	
+    }
+	
+	/**
+	 * Returns whether all the elements match by equality and position
+	 * including any possible children they may have.
+	 *
+	 * @param thisArray Object[]
+	 * @param thatArray Object[]
+	 * @return boolean
+	 */
+	public static final boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
+		if (thisArray == thatArray) return true;
+		if ((thisArray == null) || (thatArray == null)) return false;
+		if (thisArray.length != thatArray.length) return false;
+		for (int i = 0; i < thisArray.length; i++) {
+			if (!CollectionUtil.areEqual(thisArray[i], thatArray[i])) return false;	// recurse if req'd
+		}
+		return true;
+	}
+    
+    public boolean haveDefaultValues() {
+    	
+    	RuleVisitor visitor = new RuleVisitor() {
+			public boolean accept(Rule rule) {
+				return rule.usesDefaultValues();
+			}    		
+    	};
+    	
+    	return rulesDo(visitor);
+    }
+     
     public boolean hasOneRule() {
-        
+
         if (ruleItems.length > 1) return false;
         return allRules().size() == 1;
     }
-    
+
     public boolean hasMultipleRules() {
         return ruleItems != null && allRules().size() > 1;
     }
-    
+
     public Rule soleRule() {
-        
+
         if (ruleItems == null || ruleItems.length != 1) return null;
         if (ruleItems[0] instanceof Rule) return (Rule)ruleItems[0];
         if (ruleItems[0] instanceof RuleGroup) {
             return ((RuleGroup)ruleItems[0]).soleRule();
         }
-        
+
         return null;     // should not get here
     }
-    
-    private boolean hasDefaultValues(Rule rule) {
-    	
-    	return true;
-    }
-    
-    
-    private boolean allHaveDefaultValues(RuleGroup group) {
-    	
-    	return true;
-    }
-    
-    public boolean allSelectedRulesUseDefaultValues() {
-        
-        if (ruleItems == null || ruleItems.length == 0) return true;
-                
-        if (ruleItems[0] instanceof Rule) return hasDefaultValues((Rule)ruleItems[0]);
-        if (ruleItems[0] instanceof RuleGroup) {
-            return allHaveDefaultValues((RuleGroup)ruleItems[0]);
-        }        
 
-        // should never get here
-        return true;
+    private static void useDefaultValues(Rule rule) {
+    	
+    	for (Map.Entry<PropertyDescriptor<?>, Object> entry : rule.getPropertiesByPropertyDescriptor().entrySet()) {
+    		//rule.useDefaultValueFor(entry.getKey());		
+    		System.out.println("TODO: Setting default for: " + entry.getKey().name() );
+    		// TODO filter out 'hidden' properties such as violationSuppressRegex..etc.
+    	}
     }
     
     public void useDefaultValues() {
-    	// TODO
+    	
+    	RuleVisitor visitor = new RuleVisitor() {
+			public boolean accept(Rule rule) {
+				useDefaultValues(rule);
+				return true;
+			}    		
+    	};
+    	
+    	rulesDo(visitor);
     }
     
-    private RulePriority commonPriorityFor(Object item) {
-        
-        return item instanceof Rule ?
-                ((Rule)item).getPriority() :
-                ((RuleGroup)item).commonPriority();
+    public static ImplementationType implementationType(Rule rule) {
+    	
+    	if (rule instanceof RuleReference) {
+    		return ((RuleReference)rule).getRule() instanceof XPathRule ? ImplementationType.XPath : ImplementationType.Java;
+    	} else {
+    		return rule instanceof XPathRule ? ImplementationType.XPath : ImplementationType.Java;
+    	}
     }
     
-    private String commonRulesetFor(Object item) {
-        
-        return item instanceof Rule ?
-                ((Rule)item).getRuleSetName() :
-                ((RuleGroup)item).commonRuleset();
-    }
-    
-    private String commonStringValueFor(Object item, StringProperty desc) {
-        
+    public static String commonStringValueFor(Object item, StringProperty desc) {
+
         return item instanceof Rule ?
                 ((Rule)item).getProperty(desc) :
                 ((RuleGroup)item).commonStringProperty(desc);
     }
-    
-    public void setPriority(RulePriority priority) {
-        
+
+    public void setLanguage(final Language language) {
+
         if (ruleItems == null) return;
-        
-        for (Object ruleItem : ruleItems) {
-            if (ruleItem instanceof Rule) {
-                ((Rule)ruleItem).setPriority(priority);
-            }
-            if (ruleItem instanceof RuleGroup) {
-                ((RuleGroup)ruleItem).setPriority(priority);
-            }
-        }
+
+        RuleVisitor visitor = new RuleVisitor() {
+			public boolean accept(Rule rule) {
+				rule.setLanguage(language);
+				return true;
+			}
+		};
+		
+		rulesDo(visitor);
     }
     
+    public void setMinLanguageVersion(final LanguageVersion version) {
+
+        if (ruleItems == null) return;
+
+		RuleVisitor visitor = new RuleVisitor() {
+			public boolean accept(Rule rule) {
+				rule.setMinimumLanguageVersion(version);
+				return true;
+			}
+		};
+		
+		rulesDo(visitor);
+    }
+    
+    public void setMaxLanguageVersion(final LanguageVersion version) {
+
+        if (ruleItems == null) return;
+
+		RuleVisitor visitor = new RuleVisitor() {
+			public boolean accept(Rule rule) {
+				rule.setMaximumLanguageVersion(version);
+				return true;
+			}
+		};
+		
+		rulesDo(visitor);
+    }
+    
+    public void setPriority(final RulePriority priority) {
+
+        if (ruleItems == null) return;
+
+		RuleVisitor visitor = new RuleVisitor() {
+			public boolean accept(Rule rule) {
+				rule.setPriority(priority);
+				return true;
+			}
+		};
+		
+		rulesDo(visitor);
+    }
+
     public int removeAllFrom(RuleSet ruleSet) {
-       
+
         List<Rule> rules = allRules();
         if (rules.isEmpty()) return 0;
-        
+
         Collection<Rule> currentRules = ruleSet.getRules();
-        for (Rule rule : rules) currentRules.remove(rule); 
-        
+        for (Rule rule : rules) currentRules.remove(rule);
+
         return currentRules.size();
     }
-    
+
     public List<Rule> allRules() {
-        
-        List<Rule> selections = new ArrayList<Rule>();
-        
-        if (ruleItems == null || ruleItems.length == 0) {
-            return selections;
+
+    	if (ruleItems == null || ruleItems.length == 0) {
+            return Collections.emptyList();
         }
-        
-        for (Object ruleItem : ruleItems) {
-            if (ruleItem instanceof Rule) {
-                selections.add((Rule)ruleItem);
-                continue;
-            } else {
-                Rule[] rules = ((RuleGroup)ruleItem).rules();
-                for (Rule rule : rules) selections.add(rule);
-            }
-        }
-        
-        return selections;
+    	
+        final List<Rule> rules = new ArrayList<Rule>(ruleItems.length);
+
+		RuleVisitor visitor = new RuleVisitor() {
+			public boolean accept(Rule rule) {
+				rules.add( rule );
+		        return true;
+			}
+		};
+		
+		rulesDo(visitor);
+
+        return rules;
     }
-    
-    /**
-     *  Iterates through the currently selected rules and returns
-     *  their common priority setting or null if they differ.
-     */
-    public RulePriority commonPriority() {
-        
-        if (ruleItems == null || ruleItems.length == 0) return null;
-        
-        RulePriority priority = commonPriorityFor(ruleItems[0]);
-        if (priority == null) return null;
-        
-        for (int i=1; i<ruleItems.length; i++) {
-            if (priority != commonPriorityFor(ruleItems[i])) return null;
-        }
-        
-       return priority;
-    }
-    
-    /**
-     *  Iterates through the currently selected rules and returns
-     *  their common ruleset name or null if they differ.
-     */
-    public String commonRuleset() {
-        
-        if (ruleItems == null || ruleItems.length == 0) return null;
-        
-        String rulesetName = commonRulesetFor(ruleItems[0]);
-        if (StringUtil.isEmpty(rulesetName)) return null;
-        
-        for (int i=1; i<ruleItems.length; i++) {
-            if (StringUtil.areSemanticEquals(rulesetName, commonRulesetFor(ruleItems[i]))) return null;
-        }
-        
-       return rulesetName;
-    }
-    
+
     public String commonStringValue(StringProperty desc) {
-        
-        if (ruleItems == null || ruleItems.length == 0) return null;
-        
+
+        if (ruleItems == null || ruleItems.length == 0 || desc == null) return null;
+
         String value = commonStringValueFor(ruleItems[0], desc);
         if (value == null) return null;
-        
+
         for (int i=1; i<ruleItems.length; i++) {
             if (StringUtil.areSemanticEquals(value, commonStringValueFor(ruleItems[i], desc))) return null;
         }
-        
+
        return value;
     }
-    
-    public void setValue(StringProperty desc, String value) {
-        
+
+    public void setValue(final StringProperty desc, final String value) {
+
         if (ruleItems == null || ruleItems.length == 0) return;
-                
-        for (Object ruleItem : ruleItems) {
-            if (ruleItem instanceof Rule) {
-                ((Rule)ruleItem).setProperty(desc, value);
-            } else {
-                ((RuleGroup)ruleItem).setProperty(desc, value);
-            }
-        }
+
+    	RuleVisitor visitor = new RuleVisitor() {
+			public boolean accept(Rule rule) {
+				rule.setProperty(desc, value);
+		        return true;
+			}
+		};
+		
+		rulesDo(visitor);
     }
 }

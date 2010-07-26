@@ -37,7 +37,6 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TreeColumn;
 

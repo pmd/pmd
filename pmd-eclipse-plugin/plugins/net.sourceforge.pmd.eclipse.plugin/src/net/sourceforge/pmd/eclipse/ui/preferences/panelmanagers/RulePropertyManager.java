@@ -10,5 +10,5 @@ public interface RulePropertyManager {
     void tab(TabItem tab);
     boolean isActive();
     void manage(RuleSelection rules);
-    void validate();
+    boolean validate();
 }

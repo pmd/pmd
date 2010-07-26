@@ -95,8 +95,10 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESET_COLUMN_FILTERS_REGEX = "preference.ruleset.column.filters.regex";
     public static final String MSGKEY_PREF_RULESET_COLUMN_FILTERS_XPATH = "preference.ruleset.column.filters.xpath";
     public static final String MSGKEY_PREF_RULESET_COLUMN_MIN_VER = "preference.ruleset.column.minimum_version";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_MAX_VER = "preference.ruleset.column.maximum_version";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PRIORITY = "preference.ruleset.column.priority";
     public static final String MSGKEY_PREF_RULESET_COLUMN_FIXCOUNT = "preference.ruleset.column.fixCount";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_MODCOUNT = "preference.ruleset.column.modCount";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PROPERTIES = "preference.ruleset.column.properties";
     public static final String MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION = "preference.ruleset.column.description";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PROPERTY = "preference.ruleset.column.property";
@@ -126,7 +128,8 @@ public class StringKeys {
 
     public static final String MSGKEY_PREF_RULESET_BUTTON_CHECK_ALL = "preference.ruleset.button.tooltip.check.all";
     public static final String MSGKEY_PREF_RULESET_BUTTON_UNCHECK_ALL = "preference.ruleset.button.tooltip.uncheck.all";
-    
+
+    public static final String MSGKEY_PREF_RULESET_TAB_RULE = "preference.ruleedit.tab.rule";
     public static final String MSGKEY_PREF_RULESET_TAB_PROPERTIES = "preference.ruleedit.tab.properties";
     public static final String MSGKEY_PREF_RULESET_TAB_DESCRIPTION = "preference.ruleedit.tab.description";
     public static final String MSGKEY_PREF_RULESET_TAB_FILTERS = "preference.ruleedit.tab.filters";
@@ -148,7 +151,11 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_SINCE = "preference.ruleedit.label.since";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_NAME = "preference.ruleedit.label.name";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS = "preference.ruleedit.label.implementation_class";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_IMPLEMENTED_BY = "preference.ruleedit.label.implemented_by";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_MESSAGE = "preference.ruleedit.label.message";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_LANGUAGE = "preference.ruleedit.label.language";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_LANGUAGE_MIN = "preference.ruleedit.label.language.version.min";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_LANGUAGE_MAX = "preference.ruleedit.label.language.version.max";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_PRIORITY = "preference.ruleedit.label.priority";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_DESCRIPTION = "preference.ruleedit.label.description";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL = "preference.ruleedit.label.external_info_url";
@@ -228,7 +235,7 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS = "view.tooltip.calc_stats";
     public static final String MSGKEY_VIEW_TOOLTIP_COMPUTE_METRICS = "view.tooltip.compute_metrics";
     public static final String MSGKEY_VIEW_ACTION_PROJECT = "view.action.project";
-    public static final String MSGKEY_VIEW_ACTION_DISABLE = "view.action.disable";
+    public static final String MSGKEY_VIEW_ACTION_DISABLE_RULE = "view.action.disable.rule";
     public static final String MSGKEY_VIEW_ACTION_FILE = "view.action.file";
     public static final String MSGKEY_VIEW_ACTION_ERRORHIGH = "view.action.errorhigh";
     public static final String MSGKEY_VIEW_ACTION_ERROR = "view.action.error";
@@ -321,6 +328,7 @@ public class StringKeys {
     public static final String MSGKEY_MONITOR_REMOVE_REVIEWS = "monitor.remove_reviews";
     public static final String MSGKEY_MONITOR_CALC_STATS_TASK = "monitor.calc_stats";
     public static final String MSGKEY_MONITOR_CALC_STATS_OF_PACKAGE = "monitor.calc_stats.package";
+    public static final String MSGKEY_MONITOR_COLLECTING_MARKERS = "monitor.collect_markers";
     
     /**
      * This class is not meant to be instanciated

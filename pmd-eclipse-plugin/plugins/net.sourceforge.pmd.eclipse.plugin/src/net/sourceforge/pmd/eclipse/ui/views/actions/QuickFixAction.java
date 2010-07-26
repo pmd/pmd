@@ -4,8 +4,8 @@ import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IMarkerHelpRegistry;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IWorkbench;
@@ -61,10 +61,10 @@ public class QuickFixAction extends AbstractViolationSelectionAction {
         IMarker[] selectedMarkers = getSelectedViolations();
         IWorkbench workbench = PlatformUI.getWorkbench();
         // TODO handle multiple selections
-        IMarkerResolution resolutions[] = IDE.getMarkerHelpRegistry().getResolutions(selectedMarkers[0]);
+        IMarkerResolution[] resolutions = IDE.getMarkerHelpRegistry().getResolutions(selectedMarkers[0]);
         if (resolutions.length != 0) {
             MarkerResolutionSelectionDialog dialog = new MarkerResolutionSelectionDialog(workbench.getActiveWorkbenchWindow().getShell(), resolutions);
-            if (dialog.open() == Dialog.OK) {
+            if (dialog.open() == Window.OK) {
                 Object[] result = dialog.getResult();
                 if ((result != null) && (result.length > 0)) {
                     IMarkerResolution selectedResolution = (IMarkerResolution) result[0];

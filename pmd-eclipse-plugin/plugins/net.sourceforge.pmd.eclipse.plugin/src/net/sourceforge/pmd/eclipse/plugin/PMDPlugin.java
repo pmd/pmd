@@ -1,8 +1,11 @@
 package net.sourceforge.pmd.eclipse.plugin;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -38,6 +41,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
@@ -62,6 +66,15 @@ public class PMDPlugin extends AbstractUIPlugin {
         Integer.valueOf(5)
 	    };
 	
+    public static final Map<Object, RGB> colorsByPriority = new HashMap<Object, RGB>();
+    
+    static {
+    	colorsByPriority.put(RulePriority.LOW, 			new RGB( 0,0,255) );	// blue
+    	colorsByPriority.put(RulePriority.MEDIUM_LOW, 	new RGB( 0,255,0) );	// green
+    	colorsByPriority.put(RulePriority.MEDIUM, 		new RGB( 255,255,0) );	// yellow
+    	colorsByPriority.put(RulePriority.MEDIUM_HIGH, 	new RGB( 255,0,255) );	// purple
+    	colorsByPriority.put(RulePriority.HIGH, 		new RGB( 255,0,0) );	// red
+    }
 	/**
 	 * The constructor
 	 */

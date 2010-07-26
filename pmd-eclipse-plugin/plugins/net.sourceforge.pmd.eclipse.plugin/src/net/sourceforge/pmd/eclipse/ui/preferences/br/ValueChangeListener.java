@@ -4,6 +4,9 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 
 /**
+ * Accepts notifications for changes to a single rule or a number of them.
+ * 
+ * @author BrianRemedios
  */
 public interface ValueChangeListener {
 
@@ -14,7 +17,7 @@ public interface ValueChangeListener {
 	 * @param newValue Object
 	 */
 	void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue);
-	
+
 	   /**
      * Method changed.
      * @param rule Rule

@@ -24,8 +24,10 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.AbstractRulePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
@@ -106,7 +108,8 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
 		TextColumnDescriptor.since,
 		TextColumnDescriptor.ruleSetName,
 		TextColumnDescriptor.ruleType,
-		TextColumnDescriptor.minLangVers,		
+		TextColumnDescriptor.minLangVers,
+		TextColumnDescriptor.maxLangVers,		
 		TextColumnDescriptor.language,
 		ImageColumnDescriptor.filterViolationRegex,    // regex text -> compact color squares (for comparison)
 		ImageColumnDescriptor.filterViolationXPath,    // xpath text -> compact color circles (for comparison)
@@ -125,29 +128,6 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
 		};
 
 //	private static final int RuleTableFraction = 55;       // percent of screen height vs property tabs
-	private static final Map<Class<?>, ValueFormatter> formattersByType = new HashMap<Class<?>, ValueFormatter>();
-
-	static {   // used to render property values in short form in main table
-	    formattersByType.put(String.class,      ValueFormatter.StringFormatter);
-        formattersByType.put(String[].class,    ValueFormatter.MultiStringFormatter);
-        formattersByType.put(Boolean.class,     ValueFormatter.BooleanFormatter);
-        formattersByType.put(Boolean[].class,   ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Integer.class,     ValueFormatter.NumberFormatter);
-        formattersByType.put(Integer[].class,   ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Long.class,        ValueFormatter.NumberFormatter);
-        formattersByType.put(Long[].class,      ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Float.class,       ValueFormatter.NumberFormatter);
-        formattersByType.put(Float[].class,     ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Double.class,      ValueFormatter.NumberFormatter);
-        formattersByType.put(Double[].class,    ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Character.class,   ValueFormatter.ObjectFormatter);
-        formattersByType.put(Character[].class, ValueFormatter.ObjectArrayFormatter);
-        formattersByType.put(Class.class,       ValueFormatter.TypeFormatter);
-        formattersByType.put(Class[].class,     ValueFormatter.MultiTypeFormatter);        
-        formattersByType.put(Method.class,      ValueFormatter.MethodFormatter);
-        formattersByType.put(Method[].class,    ValueFormatter.MultiMethodFormatter);
-        formattersByType.put(Object[].class,    ValueFormatter.ObjectArrayFormatter);
-	}
 	
 	private ContainerCheckedTreeViewer  ruleTreeViewer;
 	private Button			     		addRuleButton;
@@ -415,42 +395,6 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
         data.right = new FormAttachment(100, 0);
         propertySection.setLayoutData(data);
     }
-
-	public static void formatValueOn(StringBuilder target, Object value, Class<?> datatype) {
-
-	    ValueFormatter formatter = formattersByType.get(datatype);
-	    if (formatter != null) {
-	        formatter.format(value, target);
-	        return;
-	    }
-
-		target.append(value);     // should not get here..breakpoint here
-	}
-
-	/**
-	 * @param rule Rule
-	 * @return String
-	 */
-	public static String propertyStringFrom(Rule rule) {
-
-		Map<PropertyDescriptor<?>, Object> valuesByProp = Configuration.filteredPropertiesOf(rule);
-
-		if (valuesByProp.isEmpty()) return "";
-		StringBuilder sb = new StringBuilder();
-
-		Iterator<PropertyDescriptor<?>> iter = valuesByProp.keySet().iterator();
-
-		PropertyDescriptor<?> desc = iter.next();
-		sb.append(desc.name()).append(": ");
-		formatValueOn(sb, rule.getProperty(desc), desc.type());
-
-		while (iter.hasNext()) {
-			desc = iter.next();
-			sb.append(", ").append(desc.name()).append(": ");
-			formatValueOn(sb, rule.getProperty(desc), desc.type());
-		}
-		return sb.toString();
-	}
 	
 	public static String ruleSetNameFrom(Rule rule) {
 		return ruleSetNameFrom( rule.getRuleSetName() );
@@ -535,8 +479,8 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
 		tabFolder = new TabFolder(parent, SWT.TOP);
 
 		rulePropertyManagers = new RulePropertyManager[] {
-		    buildPropertyTab(tabFolder,    0, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_PROPERTIES)),
-		    buildDescriptionTab(tabFolder, 1, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_DESCRIPTION)),
+			buildDescriptionTab(tabFolder, 0, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_DESCRIPTION)),
+		    buildPropertyTab(tabFolder,    1, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_PROPERTIES)),
 		    buildUsageTab(tabFolder,       2, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FILTERS)),
 		    buildXPathTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_XPATH)),   
 		    buildQuickFixTab(tabFolder,    4, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)), 
@@ -556,9 +500,9 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
 	    TabItem tab = new TabItem(parent, 0, index);
 	    tab.setText(title);
 
-		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(this);
+		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(title, EditorUsageMode.Editing, this);
 		tab.setControl(
-		    manager.setupOn(parent, this)
+		    manager.setupOn(parent)
 		    );
 		manager.tab(tab);
 		return manager;
@@ -573,7 +517,7 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
 		TabItem tab = new TabItem(parent, 0, index);
 		tab.setText(title);
 
-        DescriptionPanelManager manager = new DescriptionPanelManager(this);
+        DescriptionPanelManager manager = new DescriptionPanelManager(title, EditorUsageMode.Editing, this);
         tab.setControl(
             manager.setupOn(parent)
             );
@@ -590,7 +534,7 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
-        XPathPanelManager manager = new XPathPanelManager(this);
+        XPathPanelManager manager = new XPathPanelManager(title, EditorUsageMode.Editing, this);
         tab.setControl(
             manager.setupOn(parent)
             );
@@ -607,7 +551,7 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
-        ExamplePanelManager manager = new ExamplePanelManager(this);
+        ExamplePanelManager manager = new ExamplePanelManager(title, EditorUsageMode.Editing, this);
         tab.setControl(
             manager.setupOn(parent)
             );
@@ -624,7 +568,7 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
-        QuickFixPanelManager manager = new QuickFixPanelManager(this);
+        QuickFixPanelManager manager = new QuickFixPanelManager(title, EditorUsageMode.Editing, this);
         tab.setControl(
             manager.setupOn(parent)
             );
@@ -643,13 +587,10 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
 		TabItem tab = new TabItem(parent, 0, index);
 		tab.setText(title);
 
-		ExclusionPanelManager manager = new ExclusionPanelManager(this);
+		ExclusionPanelManager manager = new ExclusionPanelManager(title, EditorUsageMode.Editing, this, true);
 		tab.setControl(
 			manager.setupOn(
-					parent,
-					SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_EXCLUSION_REGEX),
-					SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_XPATH_EXCLUSION),
-					SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_COLOUR_CODE)
+					parent
 					)
 			);
 		manager.tab(tab);
@@ -794,7 +735,7 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
 	private boolean currentSelectionHasNonDefaultValues() {
 		
 		 return ruleSelection == null ?
-			false : ruleSelection.allSelectedRulesUseDefaultValues();
+			false : RuleUtil.allUseDefaultValues(ruleSelection);
 	}
 	
 	private Menu createMenuFor(Control control) {
@@ -930,7 +871,7 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
 	// then check that item and disable it, do the reverse for all others.
     private void adjustMenuRulesetSettings() {
         
-        String rulesetName = ruleSetNameFrom(ruleSelection.commonRuleset());
+        String rulesetName = ruleSetNameFrom(RuleUtil.commonRuleset(ruleSelection));
         Iterator<Map.Entry<String, MenuItem>> iter = rulesetMenusByName.entrySet().iterator();
        
         while (iter.hasNext()) {
@@ -953,7 +894,7 @@ public class PMDPreferencePage extends AbstractPMDPreferencePage implements Valu
 
     private void adjustMenuPrioritySettings() {
         
-        RulePriority priority = ruleSelection.commonPriority();
+        RulePriority priority = RuleUtil.commonPriority(ruleSelection);
 	    Iterator<Map.Entry<RulePriority, MenuItem>> iter = priorityMenusByPriority.entrySet().iterator();
 	   
 	    while (iter.hasNext()) {

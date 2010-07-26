@@ -74,12 +74,15 @@ public class PMDUiConstants {
     public static final String ICON_LABEL_ERR5 = "icons/lab_err5.gif";
     public static final String ICON_LABEL_ERR_DFA = "icons/lab_errdfa.gif";
     
-    public static final String ICON_FILTER = "icons/filter.gif";
+    public static final String ICON_FILTER_R = "icons/filter_r.png";
     public static final String ICON_FILTER_X = "icons/filter_x.png";
 
     public static final String ICON_PROJECT = "icons/obj_project.gif";
     public static final String ICON_PACKAGE = "icons/obj_package.gif";
     public static final String ICON_JAVACU = "icons/obj_javacu.gif";
+    
+
+    public static final String ICON_BUTTON_DIAMOND_WHITE = "icons/btn_diamond_white.png";
 
     public static final String ICON_BUTTON_PRIO0 = "icons/btn_prio0.png";
     public static final String ICON_BUTTON_PRIO1 = "icons/btn_prio1.gif";
@@ -112,6 +115,7 @@ public class PMDUiConstants {
     public static final String ICON_BUTTON_EXPORT = "icons/export.gif";
     public static final String ICON_BUTTON_EDITOR = "icons/editTool.png";
     public static final String ICON_BUTTON_SORT_CHECKED = "icons/sortChecked.png";
+    public static final String ICON_BUTTON_RELOAD = "icons/icon_spinningArrows.png";
     
     public static final String ICON_GREEN_CHECK = "icons/icon_greenCheck.png";
     public static final String ICON_EMPTY = "icons/icon_empty.png";

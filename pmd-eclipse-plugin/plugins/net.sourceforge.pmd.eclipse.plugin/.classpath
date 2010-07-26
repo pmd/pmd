@@ -3,16 +3,22 @@
 	<classpathentry exported="true" kind="lib" path="lib/saxon9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/asm-3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/castor-1.1.2.1-xml.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.15.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pmd-5.0.jar" sourcepath="/pmd/src"/>
-	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xmlParserAPIs-2.6.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pmd-5.0.jar" sourcepath="/pmd"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/js-cvs-12122009.jar"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="lib" path="/home/br/apps/eclipse/plugins/org.eclipse.core.commands_3.5.0.I20090525-2000.jar"/>
+	<classpathentry kind="lib" path="/home/br/apps/eclipse/plugins/org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar"/>
+	<classpathentry kind="lib" path="/home/br/apps/eclipse/plugins/org.apache.commons.logging_1.0.4.v200904062259.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.6.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.tptp.platform.instrumentation.ui.ContainerInitializer/Build to Manage Libraries"/>
+	<classpathentry kind="lib" path="/home/br/apps/eclipse/plugins/org.eclipse.swt_3.5.2.v3557f.jar" sourcepath="/home/br/apps/eclipse/plugins/swt-debug.jar"/>
+	<classpathentry kind="lib" path="/home/br/apps/eclipse/plugins/org.eclipse.osgi_3.5.2.R35x_v20100126.jar"/>
+	<classpathentry kind="lib" path="/home/br/apps/eclipse/plugins/org.eclipse.team.core_3.5.1.r35x_20100113-0800.jar"/>
+	<classpathentry kind="lib" path="/home/br/apps/eclipse/plugins/org.tigris.subversion.subclipse.core_1.6.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

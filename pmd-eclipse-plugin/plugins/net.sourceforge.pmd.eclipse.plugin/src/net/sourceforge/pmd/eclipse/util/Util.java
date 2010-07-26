@@ -3,22 +3,29 @@ package net.sourceforge.pmd.eclipse.util;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.IndexedString;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleCollection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
+import org.eclipse.swt.graphics.TextLayout;
+import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -149,11 +156,11 @@ public class Util {
 			throw new IllegalArgumentException("Accessor is required");
 		}
 		
-		return new Comparator() {
+		return new Comparator<Rule>() {
 
-			public int compare(Object a, Object b) {
-				Comparable ca = accessor.valueFor((Rule) a);
-				Comparable cb = accessor.valueFor((Rule) b);
+			public int compare(Rule a, Rule b) {
+				Comparable ca = accessor.valueFor(a);
+				Comparable cb = accessor.valueFor(b);
 				
 				int result = (ca == null) ? 
 						-1 : (cb == null) ? 
@@ -186,7 +193,7 @@ public class Util {
 		return original == null ? "" : original.trim();
 	}
 	
-	public static enum shape { square, circle };
+	public static enum shape { square, circle, diamond, triangleDown, triangleNorthEast };
 	
 	public static CellPainterBuilder textAsColorShapeFor(final int width, final int height, final shape shapeId) {
 	    
@@ -194,18 +201,24 @@ public class Util {
 
 	        private ColourManager colorManager;
 	        
-	        private ColourManager colorManagerFor(Display display) {
+	        private ColourManager colorManager() {
 	            if (colorManager != null) return colorManager;
-	            colorManager = ColourManager.managerFor(display);
+	            colorManager = ColourManager.managerFor(Display.getCurrent());
 	            return colorManager;
 	        }
 	        
 	        private String getterTextIn(TreeItem tItem, RuleFieldAccessor getter) {
 	            
 	            Object item = tItem.getData();
-	            if (!(item instanceof Rule)) return null;
-	            String text = (String)getter.valueFor((Rule) item);
-                return StringUtil.isEmpty(text) ? null : text;
+	            
+	            String text = null;
+	            if (item instanceof Rule) {
+	            	text = (String)getter.valueFor((Rule) item);
+	            	}
+	            if (item instanceof RuleCollection) {
+	            	text = (String)getter.valueFor((RuleCollection) item);
+	            	}
+	            return StringUtil.isEmpty(text) ? null : text;
 	        }
 	        	        
             public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> listenersByEventCode) {
@@ -219,20 +232,10 @@ public class Util {
                         
                         Color original = event.gc.getBackground();
                         
-                        Color clr = colorManagerFor(event.display).colourFor(text);
+                        Color clr = colorManager().colourFor(text);
                         event.gc.setBackground(clr);
                         
-                        switch (shapeId) {
-	                        case square: {
-	                        	event.gc.fillRectangle(event.x+1, event.y+2, width, height);    // fill it
-	                        	event.gc.drawRectangle(event.x+1, event.y+2, width, height);    // then the border on top
-	                        	break;
-	                        	}
-	                        case circle: {
-	                        	event.gc.fillArc(event.x+1, event.y+2, width, height, 0, 360*64);    // fill it
-	                        	event.gc.drawArc(event.x+1, event.y+2, width, height, 0, 360*64);    // then the border on top
-	                        	}
-                        }
+                        drawShape(width, height, shapeId, event.gc, event.x, event.y);
                         
                         event.gc.setBackground(original);
                     }
@@ -243,6 +246,194 @@ public class Util {
                         if (e.index != columnIndex) return;
                         e.width = width + 2;
                         e.height = height + 2;
+                    }
+                };
+                
+                addListener(tree, SWT.PaintItem, paintListener, listenersByEventCode);
+                addListener(tree, SWT.MeasureItem, measureListener, listenersByEventCode);
+            }            
+	    };
+	}
+	
+	public static CellPainterBuilder itemAsColorShapeFor(final int width, final int height, final shape shapeId, final int horizAlignment, final Map<Object, RGB> coloursByItem) {
+	    
+	    return new CellPainterBuilder() {
+
+	        private ColourManager colorManager;
+	        
+	        private ColourManager colorManager() {
+	            if (colorManager != null) return colorManager;
+	            colorManager = ColourManager.managerFor(Display.getCurrent());
+	            return colorManager;
+	        }
+	        
+	        public void dispose() {
+	        	colorManager().dispose();
+	        }
+	        
+	        private Color getterColorIn(TreeItem tItem, RuleFieldAccessor getter) {
+	            
+	            Object item = tItem.getData();
+	            Object value = null;
+	            
+	            if (item instanceof Rule) {
+	            	value = getter.valueFor((Rule) item);
+	            }
+	            
+	            if (item instanceof RuleCollection) {
+	            	value = getter.valueFor((RuleCollection)item);
+	            }
+	            
+	            RGB color = coloursByItem.get(value);
+                return color == null ? null : colorManager().colourFor(color);
+	        }
+	        	        
+	        private int widthOf(int columnIndex, Tree tree) {
+	        	return tree.getColumn(columnIndex).getWidth();
+	        }
+	        
+            public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> listenersByEventCode) {
+                
+            	final int xBoundary = 3;
+            	
+                Listener paintListener = new Listener() {
+                    public void handleEvent(Event event) {
+                        if (event.index != columnIndex) return;
+                    
+                        Color clr = getterColorIn((TreeItem)event.item, getter);
+                        if (clr == null) return;
+                        
+                        Color original = event.gc.getBackground();
+                        
+                        event.gc.setBackground(clr);
+                        
+                        int xOffset = 0;
+                        final int cellWidth = widthOf(columnIndex, tree);
+                                                
+                        switch (horizAlignment) {
+	                        case SWT.CENTER: xOffset = (cellWidth / 2) - (width / 2) - xBoundary; 		break;
+	                        case SWT.RIGHT: xOffset = cellWidth - width - xBoundary;	break;
+	                        case SWT.LEFT: xOffset = 0;
+                        }
+                        
+                        drawShape(width, height, shapeId, event.gc, event.x + xOffset, event.y);
+                        
+                        event.gc.setBackground(original);
+                    }
+
+                };
+                                   
+                Listener measureListener = new Listener() {
+                    public void handleEvent(Event e) {
+                        if (e.index != columnIndex) return;
+                        e.width = width ;
+                        e.height = height ;
+                    }
+                };
+                
+                addListener(tree, SWT.PaintItem, paintListener, listenersByEventCode);
+                addListener(tree, SWT.MeasureItem, measureListener, listenersByEventCode);
+            }            
+	    };
+	}
+	
+	public static CellPainterBuilder uniqueItemsAsColorShapeFor(final int width, final int height, final shape shapeId, final int horizAlignment, final Map<Object, RGB> coloursByItem) {
+	    
+	    return new CellPainterBuilder() {
+
+	        private ColourManager colorManager;
+	        
+	        private ColourManager colorManager() {
+	            if (colorManager != null) return colorManager;
+	            colorManager = ColourManager.managerFor(Display.getCurrent());
+	            return colorManager;
+	        }
+	        
+	        public void dispose() {
+	        	colorManager().dispose();
+	        }
+	        
+	        private Set<Comparable<?>> uniqueItemsIn(TreeItem tItem, RuleFieldAccessor getter) {
+	        	
+	            Object item = tItem.getData();
+	            Set<Comparable<?>> values = null;
+	            
+	            if (item instanceof Rule) {
+	            	values = new HashSet<Comparable<?>>(1);
+	            	values.add( getter.valueFor((Rule) item) );
+	            }
+	            
+	            if (item instanceof RuleCollection) {
+	            	values = getter.uniqueValuesFor((RuleCollection)item);
+	            }
+	            return values;
+	        }
+	        
+	        private List<Color> getterColorsIn(TreeItem tItem, RuleFieldAccessor getter) {
+	 
+	            Set<Comparable<?>> values = uniqueItemsIn(tItem, getter);
+	            
+	            List<Color> colours = new ArrayList<Color>(values.size());
+	            Iterator<?> iter = values.iterator();
+	            while (iter.hasNext()) {
+	            	RGB rgb = coloursByItem.get(iter.next());
+	            	if (rgb != null) {
+	            		colours.add( colorManager().colourFor(rgb) );
+	            	}
+	            	
+	            }
+                return colours;
+	        }
+
+	        private int widthOf(int columnIndex, Tree tree) {
+	        	return tree.getColumn(columnIndex).getWidth();
+	        }
+	        
+            public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> listenersByEventCode) {
+                
+            	final int xBoundary = 3;
+            	
+                Listener paintListener = new Listener() {
+                    public void handleEvent(Event event) {
+                        if (event.index != columnIndex) return;
+                    
+                        List<Color> clrs = getterColorsIn((TreeItem)event.item, getter);
+                        if (clrs.isEmpty()) return;
+                        
+                        Color original = event.gc.getBackground();
+
+                    	final int cellWidth = widthOf(columnIndex, tree);
+                    	
+                        for (int i=0; i<clrs.size(); i++) {
+                        	event.gc.setBackground(clrs.get(i));
+                                                	                                     
+                            int xOffset = 3;
+                            int step = width * i;
+                            
+		                    switch (horizAlignment) {
+		                        case SWT.CENTER: xOffset = (cellWidth / 2) - (width / 2) - xBoundary + step; 		break;
+		                        case SWT.RIGHT: xOffset = cellWidth - width - xBoundary;	break;
+		                        case SWT.LEFT: xOffset = step;
+		                    }
+		                    
+		                    drawShape(width, height, shapeId, event.gc, event.x + xOffset, event.y);
+		                    
+		                    xOffset += width;
+                        }
+                        
+                        event.gc.setBackground(original);
+                    }
+
+                };
+                                   
+                Listener measureListener = new Listener() {
+                    public void handleEvent(Event event) {
+                        if (event.index != columnIndex) return;
+                        
+                        Set<Comparable<?>> items = uniqueItemsIn((TreeItem)event.item, getter);
+                        
+                        event.width = width + (items.size() * width);
+                        event.height = height ;
                     }
                 };
                 
@@ -263,6 +454,41 @@ public class Util {
         
         listenersByEventCode.get(eventCode).add(listener);
     }
+    
+	private static void drawShape(int width, int height, shape shapeId, GC gc, int x, int y) {
+		
+		switch (shapeId) {
+            case square: {
+            	gc.fillRectangle(x, y+2, width, height);    // fill it
+            	gc.drawRectangle(x, y+2, width, height);    // then the border on top
+            	break;
+            	}
+            case circle: {
+            	gc.fillArc(x+1, y+2, width, height, 0, 360*64);    // fill it
+            	gc.drawArc(x+1, y+2, width, height, 0, 360*64);    // then the border on top
+            	break;
+            	}
+            case triangleDown: {
+            	y = y+4;
+            	gc.fillPolygon(new int[] {x, y, x+width, y, x+(width/2), y+height});
+            	gc.drawPolygon(new int[] {x, y, x+width, y, x+(width/2), y+height});
+            	break;
+            	}
+            case triangleNorthEast: {
+            	y = y+4;
+            	gc.fillPolygon(new int[] {x, y, x+width, y, x+width, y+height});
+            	gc.drawPolygon(new int[] {x, y, x+width, y, x+width, y+height});
+            	break;
+            	}
+            case diamond: {
+            	y = y+4;
+            	gc.fillPolygon(new int[] {x+(width/2), y, x+width, y+(height/2), x+(width/2), y+height, x, y+(height/2)});
+            	gc.drawPolygon(new int[] {x+(width/2), y, x+width, y+(height/2), x+(width/2), y+height, x, y+(height/2)});
+            	break;
+            	}
+        }
+	}
+    
     
 	public static CellPainterBuilder backgroundBuilderFor(final int systemColourIndex) {
 	    
@@ -296,7 +522,7 @@ public class Util {
 	                            }
 	                        }
 	                        gc.setAdvanced(true);
-	                        if (gc.getAdvanced()) gc.setAlpha(127);                             
+	                        if (gc.getAdvanced()) gc.setAlpha(127);
 	                        Rectangle rect = event.getBounds();
 	                        Color foreground = gc.getForeground();
 	                        Color background = gc.getBackground();
@@ -379,8 +605,74 @@ public class Util {
 	                });
 	            }};
 	    }
-	
-	
+	   
+	   
+	   public static CellPainterBuilder styledTextBuilder(final FontBuilder builder) {
+	        
+	        return new CellPainterBuilder() {
+
+	        	final Display display = Display.getCurrent();
+	        	final TextLayout layout = new TextLayout(display);
+	        	final TextStyle style = builder.style(display);
+	        	
+	        	private boolean adjust(TreeItem tItem, RuleFieldAccessor getter) {
+		            Object item = tItem.getData();
+		            Object value = null;
+		            
+		            if (item instanceof Rule) {
+		            	value = getter.valueFor((Rule) item);
+		            }
+		            
+		            if (item instanceof RuleCollection) {
+		            	value = getter.valueFor((RuleCollection)item);
+		            }
+		            
+		            IndexedString is = (IndexedString)value;
+		            String text = value == null ? "" : is.string;
+		            		            
+		            layout.setText( text );
+		            
+		            if (StringUtil.isEmpty(text)) {
+		            	layout.setStyle(style, 0, 0);
+		            } else {
+		            	for (int i=0; i<is.indexSpans.size(); i++) {
+		            		layout.setStyle(style, is.indexSpans.get(i)[0], is.indexSpans.get(i)[1]-1);
+		            	}
+		            }
+		            
+		            return value != null;
+	        	}
+	        	
+	            public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> listenersByEventCode) {
+	                	                
+	            	Listener paintListener = new Listener() {
+	            		public void handleEvent(Event event) {
+	            			if (event.index != columnIndex) return; 
+
+	            			adjust((TreeItem)event.item, getter);
+	            			layout.draw(event.gc, event.x, event.y);
+	            			};
+	                	};
+	                
+	            	Listener measureListener = new Listener() {
+	            		public void handleEvent(Event event) {
+	            			if (event.index != columnIndex) return;
+	            			
+	            			adjust((TreeItem)event.item, getter);
+	            			
+	            			final Rectangle textLayoutBounds = layout.getBounds();
+	            			event.width = textLayoutBounds.width + 2;
+	            			event.height = textLayoutBounds.height + 2;
+	            		}
+	            	};
+
+
+	                addListener(tree, SWT.PaintItem, paintListener, listenersByEventCode);
+	                addListener(tree, SWT.MeasureItem, measureListener, listenersByEventCode);
+	            };
+	        };
+	    }
+	   
 	// TODO move these to StringUtil
     public static String asString(List<String> items, String separator) {
         
@@ -404,14 +696,14 @@ public class Util {
         }
     }
     
-	private static Map<Object, Image> imagesFor(Map<Object, String> imageNamesByValue) {
-		
-		Map<Object, Image> imagesByValue = new HashMap<Object, Image>(imageNamesByValue.size());
-		for (Map.Entry<Object, String> entry : imageNamesByValue.entrySet()) {
-			imagesByValue.put(entry.getKey(), ResourceManager.imageFor(entry.getValue()));
-			}
-		return imagesByValue;
-	}
+//	private static Map<Object, Image> imagesFor(Map<Object, String> imageNamesByValue) {
+//		
+//		Map<Object, Image> imagesByValue = new HashMap<Object, Image>(imageNamesByValue.size());
+//		for (Map.Entry<Object, String> entry : imageNamesByValue.entrySet()) {
+//			imagesByValue.put(entry.getKey(), ResourceManager.imageFor(entry.getValue()));
+//			}
+//		return imagesByValue;
+//	}
 
 //	public static CellPainterBuilder iconsFromNameFor(final int width, final int height, final Map<Object, String> imageNamesByValue) {
 //		return iconsFor(width, height, imagesFor(imageNamesByValue));

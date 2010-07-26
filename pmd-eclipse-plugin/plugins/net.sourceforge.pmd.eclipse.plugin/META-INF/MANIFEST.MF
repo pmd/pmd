@@ -2,23 +2,21 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin;singleton:=true
-Bundle-Version: 5.0.0.v200810141040
+Bundle-Version: 5.0.0.v20100726
 Bundle-Activator: net.sourceforge.pmd.eclipse.plugin.PMDPlugin
-Require-Bundle: org.eclipse.core.resources;bundle-version="3.5.0",
+Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
+ org.eclipse.core.resources;bundle-version="3.5.0",
  org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.jdt.core;bundle-version="3.5.0",
- org.eclipse.jface;bundle-version="3.5.0",
  org.eclipse.jface.text;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.0",
- org.eclipse.ui.editors;bundle-version="3.5.0",
  org.eclipse.ui.ide;bundle-version="3.5.0",
- org.eclipse.help
+ org.eclipse.ui.editors;bundle-version="3.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: %plugin.provider
 Bundle-ClassPath: lib/asm-3.2.jar,
  lib/castor-1.1.2.1-xml.jar,
- lib/commons-logging-1.1.1.jar,
  lib/jaxen-1.1.1.jar,
  lib/junit.jar,
  lib/log4j-1.2.15.jar,
@@ -27,12 +25,20 @@ Bundle-ClassPath: lib/asm-3.2.jar,
  lib/pmd-5.0.jar,
  lib/xercesImpl-2.6.2.jar,
  lib/xmlParserAPIs-2.6.2.jar,
- pmd-plugin.jar
+ pmd-plugin.jar,
+ lib/groupingTree.jar
 Bundle-Localization: plugin
 Export-Package: net.sourceforge.pmd,
- rulesets,
+ net.sourceforge.pmd.eclipse.core,
  net.sourceforge.pmd.eclipse.plugin,
  net.sourceforge.pmd.eclipse.runtime,
  net.sourceforge.pmd.eclipse.runtime.builder,
  net.sourceforge.pmd.eclipse.runtime.properties,
- net.sourceforge.pmd.eclipse.runtime.writer
+ net.sourceforge.pmd.eclipse.runtime.writer,
+ net.sourceforge.pmd.eclipse.ui,
+ net.sourceforge.pmd.eclipse.ui.model,
+ net.sourceforge.pmd.eclipse.ui.nls,
+ net.sourceforge.pmd.eclipse.ui.preferences.br,
+ net.sourceforge.pmd.eclipse.ui.views.actions,
+ net.sourceforge.pmd.util,
+ rulesets

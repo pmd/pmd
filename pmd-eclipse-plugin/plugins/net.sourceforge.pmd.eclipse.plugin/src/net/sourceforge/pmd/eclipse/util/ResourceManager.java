@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -25,7 +26,13 @@ public class ResourceManager {
         if (instance.imagesByCode.containsKey(codePath)) {
             return instance.imagesByCode.get(codePath);
         }
-        Image image= PMDPlugin.getImageDescriptor(codePath).createImage();
+        
+        ImageDescriptor desc = PMDPlugin.getImageDescriptor(codePath);
+        if (desc == null) {
+        	System.out.println("no image for: " + codePath);	// TODO handle better
+        	return null;
+        }
+        Image image= desc.createImage();
         instance.imagesByCode.put(codePath, image);
         return image;
     }
