@@ -246,6 +246,14 @@ public interface Rule {
     boolean usesDefaultValues();
 
     /**
+     * Clears out any user-specified value for the property allowing it to use the default
+     * value in the descriptor.
+     * 
+     * @param desc
+     */
+    void useDefaultValueFor(PropertyDescriptor<?> desc);
+    
+    /**
      * Sets whether this Rule uses Data Flow Analysis.
      */
     // FUTURE Use JavaBean conventions for boolean attributes

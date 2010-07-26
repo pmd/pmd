@@ -28,6 +28,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 // FUTURE Implement Cloneable and clone()?
 public abstract class AbstractRule implements Rule {
+	
     private Language language;
     private LanguageVersion minimumLanguageVersion;
     private LanguageVersion maximumLanguageVersion;
@@ -354,20 +355,25 @@ public abstract class AbstractRule implements Rule {
      */
     public boolean usesDefaultValues() {
 
-	Map<PropertyDescriptor<?>, Object> valuesByProperty = getPropertiesByPropertyDescriptor();
-	if (valuesByProperty.isEmpty()) {
-	    return true;
-	}
+		Map<PropertyDescriptor<?>, Object> valuesByProperty = getPropertiesByPropertyDescriptor();
+		if (valuesByProperty.isEmpty()) {
+		    return true;
+		}
+	
+		Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProperty.entrySet().iterator();
+		
+		while (iter.hasNext()) {
+		    Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
+		    if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
+			return false;
+		    }
+		}
 
-	Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProperty.entrySet().iterator();
-	while (iter.hasNext()) {
-	    Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
-	    if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
-		return false;
-	    }
-	}
-
-	return true;
+		return true;
+    }
+    
+    public void useDefaultValueFor(PropertyDescriptor<?> desc) {
+    	propertyValuesByDescriptor.remove(desc);
     }
 
     /**

@@ -276,4 +276,9 @@ public class RuleReference extends AbstractDelegateRule {
 	    
 	    return true;
 	}
+
+	public void useDefaultValueFor(PropertyDescriptor<?> desc) {
+		if (propertyValues == null) return;
+		propertyValues.remove(desc);
+	}
 }
