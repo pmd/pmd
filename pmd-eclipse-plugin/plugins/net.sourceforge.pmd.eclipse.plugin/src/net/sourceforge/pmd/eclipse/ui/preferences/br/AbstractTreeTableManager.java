@@ -50,7 +50,7 @@ public abstract class AbstractTreeTableManager {
 	
 	private final Set<String> hiddenColumnNames;
 
-	private Button sortByCheckedButton;
+//	private Button sortByCheckedButton;
 	private Button selectAllButton;
 	private Button unSelectAllButton;
 	private IPreferences preferences;
@@ -72,6 +72,20 @@ public abstract class AbstractTreeTableManager {
 	
 	protected Map<Integer, List<Listener>> paintListeners() {
 		return paintListeners;
+	}
+	
+	protected void createCheckBoxColumn(Tree tree) {
+		
+		TreeColumn tc = new TreeColumn(tree, 0);
+		tc.setWidth(10);
+		tc.setResizable(false);
+		tc.pack();
+		
+        tc.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event e) {
+               sortByCheckedItems();
+            }
+          });
 	}
 	/**
 	 * Remove all rows, columns, and column painters in preparation
@@ -271,15 +285,14 @@ public abstract class AbstractTreeTableManager {
 	protected void buildActiveCountLabel(Composite parent) {
         activeCountLabel = new Label(parent, 0);
         activeCountLabel.setText("---");
-        GridData data = new GridData();
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;
+        GridData data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER, GridData.CENTER, true, false, 1, 1);
         activeCountLabel.setAlignment(SWT.RIGHT);
 	    activeCountLabel.setLayoutData(data);
 	}
 	
 	protected void activeCountText(String msg) {
 		activeCountLabel.setText(msg);
+		activeCountLabel.getParent().pack();	// handle changing string length
 	}
 	
 	protected abstract String[] columnLabels();
@@ -294,7 +307,7 @@ public abstract class AbstractTreeTableManager {
 	
 	protected void buildCheckButtons(Composite parent) {
 
-	     sortByCheckedButton = buildSortByCheckedItemsButton(parent);
+	//     sortByCheckedButton = buildSortByCheckedItemsButton(parent);
 	     selectAllButton = buildSelectAllButton(parent);
 	     unSelectAllButton = buildUnselectAllButton(parent);
 	}
@@ -345,7 +358,7 @@ public abstract class AbstractTreeTableManager {
     
     private TreeColumn columnFor(String tooltipText) {
     	for (TreeColumn column : treeViewer().getTree().getColumns()) {
-    		if (column.getToolTipText().equals(tooltipText)) return column;
+    		if (String.valueOf(column.getToolTipText()).equals(tooltipText)) return column;
     	}
     	return null;
     }
@@ -421,7 +434,7 @@ public abstract class AbstractTreeTableManager {
 		
 		selectAllButton.setEnabled( selectionRatio[0] < selectionRatio[1]);
 		unSelectAllButton.setEnabled( selectionRatio[0] > 0);
-		sortByCheckedButton.setEnabled( (selectionRatio[0] != 0) && (selectionRatio[0] != selectionRatio[1]));
+//		sortByCheckedButton.setEnabled( (selectionRatio[0] != 0) && (selectionRatio[0] != selectionRatio[1]));
 	}
 		
 	protected abstract void updateCheckControls();
