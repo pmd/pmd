@@ -44,8 +44,18 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
         return new EnumeratedProperty(name, "Value set " + name, null, null, 0, 0.0f);
     }
 
+    /**
+     * Search through both columns if necessary
+     */
     public static int indexOf(Object item, Object[][] items) {
-        for (int i=0; i<items.length; i++) if (items[i][0].equals(item)) return i;
+    	int index = indexOf(item, items, 0);
+    	return index < 0 ? indexOf(item, items, 1) : index;
+    }
+    
+    public static int indexOf(Object item, Object[][] items, int testColumnIndex) {
+        for (int i=0; i<items.length; i++) {
+        	if (items[i][testColumnIndex].equals(item)) return i;
+        }
         return -1;
     }
 
@@ -56,7 +66,7 @@ public class EnumerationEditorFactory extends AbstractEditorFactory {
             final EnumeratedProperty<?> ep = enumerationPropertyFrom(desc);
             Object value = valueFor(rule, desc);
             combo.setItems(SWTUtil.labelsIn(ep.choices(), 0));
-            int selectionIdx = indexOf(value, ep.choices());
+            int selectionIdx = indexOf(value, ep.choices());            
             if (selectionIdx >= 0) combo.select(selectionIdx);
 
             combo.addSelectionListener(new SelectionAdapter() {

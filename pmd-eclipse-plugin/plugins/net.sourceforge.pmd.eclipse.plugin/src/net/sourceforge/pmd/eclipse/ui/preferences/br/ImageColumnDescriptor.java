@@ -7,7 +7,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.util.FontBuilder;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.swt.SWT;
@@ -27,23 +26,20 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
     private static final RuleFieldAccessor propertiesAcc = new BasicRuleFieldAccessor() {
     	
         public Comparable<?> valueFor(Rule rule) {
-           return PMDPreferencePage2.indexedPropertyStringFrom(rule);
+           return PMDPreferencePage2.indexedPropertyStringFrom(rule);	// notes indices of non-default values in the string for emphasis during later rendering
         }
     	public Comparable<?> valueFor(RuleCollection collection) {
     		return IndexedString.Empty;
 //    		int count = RuleUtil.countNonOccurrencesOf(collection, this, IndexedString.Empty);
 //    		if (count == 0) return IndexedString.Empty;
 //    		return new IndexedString("(rules with properties: " + count + ")");
-    	}
-        
+    	}        
     };
-    
-    private static final FontBuilder blueBold11 = new FontBuilder("Tahoma", 11, SWT.BOLD, SWT.COLOR_BLUE);
-    
-    public static final RuleColumnDescriptor priority  			   = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY, SWT.LEFT, 50, RuleFieldAccessor.priority, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.uniqueItemsAsColorShapeFor(12, 12, Util.shape.diamond, SWT.LEFT, PMDPlugin.colorsByPriority));
-    public static final RuleColumnDescriptor filterViolationRegex  = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_FILTERS_REGEX, SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER_R, Util.textAsColorShapeFor(16, 16, Util.shape.square));    
-    public static final RuleColumnDescriptor filterViolationXPath  = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_FILTERS_XPATH, SWT.LEFT, 25, RuleFieldAccessor.violationXPath, false, PMDUiConstants.ICON_FILTER_X, Util.textAsColorShapeFor(16, 16, Util.shape.circle));
-	public static final RuleColumnDescriptor properties   		   = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.styledTextBuilder(blueBold11));
+        
+    public static final RuleColumnDescriptor priority  			   = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY, 		SWT.LEFT, 50, RuleFieldAccessor.priority, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.uniqueItemsAsColorShapeFor(12, 12, PMDPreferencePage2.PriorityShape, SWT.LEFT, PMDPlugin.colorsByPriority));
+    public static final RuleColumnDescriptor filterViolationRegex  = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_FILTERS_REGEX, SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER_R, Util.textAsColorShapeFor(16, 16, PMDPreferencePage2.RegexFilterShape));    
+    public static final RuleColumnDescriptor filterViolationXPath  = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_FILTERS_XPATH, SWT.LEFT, 25, RuleFieldAccessor.violationXPath, false, PMDUiConstants.ICON_FILTER_X, Util.textAsColorShapeFor(16, 16, PMDPreferencePage2.XPathFilterShape));
+	public static final RuleColumnDescriptor properties   		   = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.styledTextBuilder(PMDPreferencePage2.ChangedPropertyFont));
 
 	
     public ImageColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, CellPainterBuilder thePainterBuilder) {

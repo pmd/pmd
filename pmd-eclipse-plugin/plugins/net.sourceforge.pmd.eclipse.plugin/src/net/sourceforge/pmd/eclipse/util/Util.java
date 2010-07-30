@@ -3,7 +3,6 @@ package net.sourceforge.pmd.eclipse.util;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -337,6 +336,17 @@ public class Util {
 	    };
 	}
 	
+//	public  static List<Comparable<?>> sort(Collection<Comparable<?>> items) {
+//		int count = items.size();
+//		switch (count) {
+//		case 0: return Collections.emptyList();
+//		case 1: return new ArrayList<Comparable<?>>(1);
+//		default:
+//			List<Comparable<?> sorted = new ArrayList(count);
+//		}
+//		
+//	}
+	
 	public static CellPainterBuilder uniqueItemsAsColorShapeFor(final int width, final int height, final shape shapeId, final int horizAlignment, final Map<Object, RGB> coloursByItem) {
 	    
 	    return new CellPainterBuilder() {
@@ -353,25 +363,9 @@ public class Util {
 	        	colorManager().dispose();
 	        }
 	        
-	        private Set<Comparable<?>> uniqueItemsIn(TreeItem tItem, RuleFieldAccessor getter) {
-	        	
-	            Object item = tItem.getData();
-	            Set<Comparable<?>> values = null;
-	            
-	            if (item instanceof Rule) {
-	            	values = new HashSet<Comparable<?>>(1);
-	            	values.add( getter.valueFor((Rule) item) );
-	            }
-	            
-	            if (item instanceof RuleCollection) {
-	            	values = getter.uniqueValuesFor((RuleCollection)item);
-	            }
-	            return values;
-	        }
-	        
 	        private List<Color> getterColorsIn(TreeItem tItem, RuleFieldAccessor getter) {
 	 
-	            Set<Comparable<?>> values = uniqueItemsIn(tItem, getter);
+	            Set<Comparable<?>> values = RuleUtil.uniqueItemsIn(tItem.getData(), getter);
 	            
 	            List<Color> colours = new ArrayList<Color>(values.size());
 	            Iterator<?> iter = values.iterator();
@@ -400,28 +394,30 @@ public class Util {
                         List<Color> clrs = getterColorsIn((TreeItem)event.item, getter);
                         if (clrs.isEmpty()) return;
                         
-                        Color original = event.gc.getBackground();
+                        GC gc = event.gc;
+                        
+                        Color original = gc.getBackground();
 
                     	final int cellWidth = widthOf(columnIndex, tree);
                     	
                         for (int i=0; i<clrs.size(); i++) {
-                        	event.gc.setBackground(clrs.get(i));
+                        	gc.setBackground(clrs.get(i));
                                                 	                                     
-                            int xOffset = 3;
+                            int xOffset = 0;
                             int step = width * i;
                             
 		                    switch (horizAlignment) {
 		                        case SWT.CENTER: xOffset = (cellWidth / 2) - (width / 2) - xBoundary + step; 		break;
 		                        case SWT.RIGHT: xOffset = cellWidth - width - xBoundary;	break;
-		                        case SWT.LEFT: xOffset = step;
+		                        case SWT.LEFT: xOffset = xBoundary + step;
 		                    }
 		                    
-		                    drawShape(width, height, shapeId, event.gc, event.x + xOffset, event.y);
+		                    drawShape(width, height, shapeId, gc, event.x + xOffset, event.y);
 		                    
 		                    xOffset += width;
                         }
                         
-                        event.gc.setBackground(original);
+                        gc.setBackground(original);
                     }
 
                 };
@@ -430,7 +426,8 @@ public class Util {
                     public void handleEvent(Event event) {
                         if (event.index != columnIndex) return;
                         
-                        Set<Comparable<?>> items = uniqueItemsIn((TreeItem)event.item, getter);
+                        Object item = ((TreeItem)event.item).getData();
+                        Set<Comparable<?>> items = RuleUtil.uniqueItemsIn(item, getter);
                         
                         event.width = width + (items.size() * width);
                         event.height = height ;
@@ -455,7 +452,7 @@ public class Util {
         listenersByEventCode.get(eventCode).add(listener);
     }
     
-	private static void drawShape(int width, int height, shape shapeId, GC gc, int x, int y) {
+	public static void drawShape(int width, int height, shape shapeId, GC gc, int x, int y) {
 		
 		switch (shapeId) {
             case square: {

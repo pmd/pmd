@@ -69,6 +69,9 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 
 	private RuleFieldAccessor 			columnSorter = RuleFieldAccessor.name;
 	private RuleColumnDescriptor 		groupingColumn;
+
+	protected String					groupColumnLabel;
+
 	private RuleFieldAccessor 			checkedColumnAccessor;
 	private Map<RulePriority, MenuItem> priorityMenusByPriority;
 	private Map<String, MenuItem>       rulesetMenusByName;
@@ -632,6 +635,8 @@ private	MenuItem useDefaultsItem;
 	 */
 	public void groupBy(RuleColumnDescriptor chosenColumn) {
 
+		groupColumnLabel = chosenColumn == null ? null : chosenColumn.label();
+		
 		List<RuleColumnDescriptor> visibleColumns = new ArrayList<RuleColumnDescriptor>(availableColumns.length);
 		for (RuleColumnDescriptor desc : availableColumns) {
 		    if (desc == chosenColumn) continue;   // redundant, don't include it
@@ -643,6 +648,8 @@ private	MenuItem useDefaultsItem;
 		    visibleColumns.toArray(new RuleColumnDescriptor[visibleColumns.size()]),
 		    chosenColumn == null ? null : chosenColumn.accessor()
 		    );
+		
+		selectedItems(new Object[0]);	// selections are killed by grouping
 	}
 
 	private boolean hasPriorityGrouping() {
@@ -651,6 +658,13 @@ private	MenuItem useDefaultsItem;
 	        groupingColumn == TextColumnDescriptor.priority;
 	}
 
+	private String labelFor(TreeColumn tc) {
+
+		return groupColumnLabel == null ?
+				tc.getText() :
+				groupColumnLabel + " / " + tc.getText();
+	}
+	
 	/**
 	 * Populate the rule table
 	 */
@@ -769,6 +783,7 @@ private	MenuItem useDefaultsItem;
 	private void setRuleset(String rulesetName) {
 	    // TODO - awaiting support in PMD itself
 	}
+	
 	/**
 	 *
 	 * @param columnDescs RuleColumnDescriptor[]
@@ -778,7 +793,14 @@ private	MenuItem useDefaultsItem;
 
 		Tree ruleTree = cleanupRuleTree();
 
-		for (int i=0; i<columnDescs.length; i++) columnDescs[i].newTreeColumnFor(ruleTree, i, this, paintListeners());
+		createCheckBoxColumn(ruleTree);
+		
+		for (int i=0; i<columnDescs.length; i++) {
+			TreeColumn tc =columnDescs[i].newTreeColumnFor(ruleTree, i+1, this, paintListeners());
+			if (i==0 && groupingColumn != null) {
+				tc.setText( labelFor(tc) );
+			}
+		}
 
 		treeViewer.setLabelProvider(new RuleLabelProvider(columnDescs));
 		treeViewer.setContentProvider(

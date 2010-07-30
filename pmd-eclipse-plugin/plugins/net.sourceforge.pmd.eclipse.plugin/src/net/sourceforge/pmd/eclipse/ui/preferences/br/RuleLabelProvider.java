@@ -23,18 +23,16 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
 
     public String getDetailText(Object element, int columnIndex) {
 
-    	if (columnIndex < 0) {
-    		return "??";
-    	}
-    	
+    	if (columnIndex <= 0) return "";
+    	    	
     	if (element instanceof Rule) {
         	Rule rule = (Rule) element;
-        	return columnDescriptors[columnIndex].detailStringFor(rule);
+        	return columnDescriptors[columnIndex-1].detailStringFor(rule);
         }
 
     	if (element instanceof RuleGroup) {
         	RuleGroup group = (RuleGroup) element;
-        	return columnDescriptors[columnIndex].detailStringFor(group);
+        	return columnDescriptors[columnIndex-1].detailStringFor(group);
         }
     	
     	return "??";
@@ -45,17 +43,20 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
      */
     public String getColumnText(Object element, int columnIndex) {
 
+    	if (columnIndex <= 0) return "";
+    	
         if (element instanceof RuleCollection) {
-        	if (columnIndex == 0) {
+        	if (columnIndex == 1) {
         		RuleGroup rg = (RuleGroup)element;
             	String label = rg.label();
             	return standardized(label, rg.ruleCount());
         	}
-        	return columnDescriptors[columnIndex].stringValueFor((RuleCollection)element);
+        	return columnDescriptors[columnIndex-1].stringValueFor((RuleCollection)element);
         }
 
         if (element instanceof Rule) {
-        	return columnDescriptors[columnIndex].stringValueFor((Rule) element);
+        	String text = columnDescriptors[columnIndex-1].stringValueFor((Rule) element);
+        	return columnIndex == 1 ? "   " + text : text;
         }
 
         return "??";
@@ -66,12 +67,14 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
      */
     public Image getColumnImage(Object element, int columnIndex) {
     	
+    	if (columnIndex <= 0) return null;
+    	
         if (element instanceof RuleCollection) {
-            return columnDescriptors[columnIndex].imageFor((RuleCollection)element);
+            return columnDescriptors[columnIndex-1].imageFor((RuleCollection)element);
         }
 
         if (element instanceof Rule) {
-            return columnDescriptors[columnIndex].imageFor((Rule) element);
+            return columnDescriptors[columnIndex-1].imageFor((Rule) element);
         }
             
         return null;	// should never get here

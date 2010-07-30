@@ -118,7 +118,7 @@ public class RuleSelection implements RuleCollection {
      
     public boolean hasOneRule() {
 
-        if (ruleItems.length > 1) return false;
+        if (ruleItems == null || ruleItems.length > 1) return false;
         return allRules().size() == 1;
     }
 

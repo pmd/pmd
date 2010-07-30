@@ -23,6 +23,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.QuickFixPanelMan
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
+import net.sourceforge.pmd.eclipse.util.FontBuilder;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -54,6 +55,14 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	private RulePropertyManager[]   rulePropertyManagers;
 	private RuleTableManager		tableManager;
 
+	public static final Util.shape PriorityShape = Util.shape.diamond;
+	public static final Util.shape RegexFilterShape = Util.shape.square;
+	public static final Util.shape XPathFilterShape = Util.shape.circle;
+	
+    public static final FontBuilder blueBold11 = new FontBuilder("Tahoma", 11, SWT.BOLD, SWT.COLOR_BLUE);
+    public static final FontBuilder redBold11 = new FontBuilder("Tahoma", 11, SWT.BOLD, SWT.COLOR_RED);
+    public static final FontBuilder ChangedPropertyFont = blueBold11;
+    
 	// columns shown in the rule treetable in the desired order
 	private static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
 		TextColumnDescriptor.name,
@@ -84,7 +93,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         { ImageColumnDescriptor.filterViolationRegex, StringKeys.MSGKEY_PREF_RULESET_GROUPING_REGEX },
 		{ null, 								  StringKeys.MSGKEY_PREF_RULESET_GROUPING_NONE }
 		};
-
+	
 	public PMDPreferencePage2() {
 
 	}
@@ -521,6 +530,8 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 
 	public void selection(RuleSelection selection) {
 
+		if (rulePropertyManagers == null) return;
+		
 		for (RulePropertyManager manager : rulePropertyManagers) {
 			manager.manage(selection);
 		    manager.validate();

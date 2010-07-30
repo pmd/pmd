@@ -30,9 +30,44 @@ public class RuleUtil {
 	public static boolean isDefaultValue(Map.Entry<PropertyDescriptor<?>, Object> entry) {
 		PropertyDescriptor<?> desc = entry.getKey();
 		Object value = entry.getValue();
-		return CollectionUtil.areEqual(desc.defaultValue(), value);
+		return areEqual(desc.defaultValue(), value);
 	}
 
+	// TODO move elsewhere
+    public static boolean areEqual(Object value, Object otherValue) {
+    	if (value == otherValue) {
+    	    return true;
+    	}
+    	if (value == null) {
+    	    return false;
+    	}
+    	if (otherValue == null) {
+    	    return false;
+    	}
+
+    	if (value.getClass().getComponentType() != null) {
+    	    return CollectionUtil.arraysAreEqual(value, otherValue);
+    	    }
+    	
+    	if (value instanceof Float || value instanceof Double) {
+    		return areEqualNumbers((Number)value, (Number)otherValue);
+    	}
+    	
+	    return value.equals(otherValue);
+    }
+	
+    // TODO move elsewhere, handle div by zero
+    public static boolean areEqualNumbers(Number a, Number b) {
+    	
+    	double da = a.doubleValue();
+    	double db = b.doubleValue();
+    	double delta = da-db;
+    	
+    	double pctDelta = delta/da;
+    	
+    	return pctDelta < 0.0001;
+    }
+    
 	public static boolean hasDefaultValues(Rule rule) {
 
 		Map<PropertyDescriptor<?>, Object> valuesByProperty = Configuration.filteredPropertiesOf(rule);
@@ -54,6 +89,21 @@ public class RuleUtil {
 		return descs;
 	}
 
+    public static Set<Comparable<?>> uniqueItemsIn(Object item, RuleFieldAccessor getter) {
+    	
+        Set<Comparable<?>> values = null;
+        
+        if (item instanceof Rule) {
+        	values = new HashSet<Comparable<?>>(1);
+        	values.add( getter.valueFor((Rule) item) );
+        }
+        
+        if (item instanceof RuleCollection) {
+        	values = getter.uniqueValuesFor((RuleCollection)item);
+        }
+        return values;
+    }
+	
 	/** 
 	 * Sometimes references reference references !
 	 * 
@@ -244,10 +294,6 @@ public class RuleUtil {
 		return types.size() > 1 ?
 				null :
 					types.iterator().next();    	
-	}
-
-	private static boolean areEqual(Object a, Object b) {
-		return AbstractProperty.areEqual(a, b);
 	}
 	
 	public static Comparable<?> commonAspect(RuleCollection collection, final RuleFieldAccessor accessor) {

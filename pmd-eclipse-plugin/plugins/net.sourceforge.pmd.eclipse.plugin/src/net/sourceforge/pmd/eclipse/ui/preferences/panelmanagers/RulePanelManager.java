@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ImplementationType;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
@@ -25,7 +27,6 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -53,8 +54,9 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
     private Button  	ruleReferenceButton;
     private Combo 		languageCombo;
-    private CCombo 		priorityCombo;
-
+    private Combo 		priorityCombo;
+    private ShapeSetCanvas priorityDisplay;
+    
     private Label		minLanguageLabel;
     private Label		maxLanguageLabel;
     private Combo		minLanguageVersionCombo;
@@ -85,6 +87,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         ruleSetNameField.setVisible(flag);
         languageCombo.setVisible(flag);
         priorityCombo.setVisible(flag);
+        priorityDisplay.setVisible(flag);
         minLanguageVersionCombo.setVisible(flag);
         maxLanguageVersionCombo.setVisible(flag);
         usesDfaButton.setVisible(flag);
@@ -101,6 +104,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
         ruleSetNameField.setText("");
         languageCombo.select(-1);
         priorityCombo.select(-1);
+        priorityDisplay.setItems(null);
         minLanguageVersionCombo.select(-1);
         maxLanguageVersionCombo.select(-1);
         usesDfaButton.setSelection(false);
@@ -132,6 +136,11 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		}
 	}
 
+	private Set<Comparable<?>> uniquePriorities() {
+		if (rules == null) return Collections.emptySet();
+		return RuleUtil.uniqueAspects(rules, RuleFieldAccessor.priority);
+	}
+	
 	private String commonLanguageMinVersionName() {
 
 		if (rules == null) return null;
@@ -144,7 +153,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
 		if (rules == null) return null;
 
-		//LanguageVersion version = RuleUtil.commonLanguageMaxVersion(rules);
 		LanguageVersion version = (LanguageVersion)RuleUtil.commonAspect(rules, RuleFieldAccessor.maxLanguageVersion);
 		
 		return version == null ? null : version.getName();
@@ -185,6 +193,8 @@ public class RulePanelManager extends AbstractRulePanelManager {
         implementationClassField.setEnabled( impClass != null);
         
         show(priorityCombo, commonPriorityName());
+        priorityDisplay.setItems(uniquePriorities().toArray());
+        
         show(usesTypeResolutionButton, allRulesUseTypeResolution());
         show(usesDfaButton, allRulesUseDfa());
 
@@ -323,14 +333,17 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        priorityLabel.setLayoutData(data);
 	        labels.add(priorityLabel);
 
-	        priorityCombo = buildPriorityCombo(dlgArea);
-	        data = new GridData();
-	  //      data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 1;
-	        data.grabExcessHorizontalSpace = true;
-	        priorityCombo.setLayoutData(data);
-
-//	        getShell().setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE));
+	        Composite priorityComp = new Composite(dlgArea, 0);
+	        priorityComp.setLayout(new GridLayout(2, false));
+	        priorityComp.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+	        
+	        priorityCombo = buildPriorityCombo(priorityComp);
+	        priorityCombo.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+	        
+	        priorityDisplay = new ShapeSetCanvas(priorityComp, SWT.NONE, PMDPreferencePage2.PriorityShape, 14);
+	        priorityDisplay.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));		     
+	        priorityDisplay.setColourMap(PMDPlugin.colorsByPriority);
+	        priorityDisplay.setSize(90, 25);
 
 	        if (usageMode == EditorUsageMode.CreateNew) {
 	        	implementationType(ImplementationType.XPath);
@@ -553,10 +566,10 @@ public class RulePanelManager extends AbstractRulePanelManager {
      }
 
 
-     private CCombo buildPriorityCombo(Composite parent) {
+     private Combo buildPriorityCombo(Composite parent) {
 
-        final CCombo combo = new CCombo(parent, SWT.READ_ONLY | SWT.BORDER);
-        combo.setEditable(false);
+        final Combo combo = new Combo(parent, SWT.READ_ONLY | SWT.BORDER);
+     //   combo.setEditable(false);
      	final RulePriority[] priorities = RulePriority.values();
 
      	for (RulePriority rulePriority : priorities) {
@@ -572,15 +585,19 @@ public class RulePanelManager extends AbstractRulePanelManager {
      	combo.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				if (rules == null) return;
-				RulePriority priority = priorities[ combo.getSelectionIndex() ];
-				rules.setPriority(priority);
-				valueChanged(null, priority);
+				setPriority( priorities[ combo.getSelectionIndex() ] );
 			}
 		});
 
         return combo;
      }
 
+     private void setPriority(RulePriority priority) {
+    	 rules.setPriority(priority);
+    	 priorityDisplay.setItems(new Object[] {priority});
+    	 valueChanged(null, priority);
+     }
+     
      private Button buildUsesTypeResolutionButton(Composite parent) {
 
          final Button button = new Button(parent, SWT.CHECK);

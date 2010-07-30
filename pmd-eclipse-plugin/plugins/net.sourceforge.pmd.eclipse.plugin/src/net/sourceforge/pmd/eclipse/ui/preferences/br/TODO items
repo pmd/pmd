@@ -7,7 +7,9 @@ Rework context menu - build on-demand, not before
 Markup violations using priority icons rather than the yellow yield signs or red Xs
 Work on support for fixes
 Format example & description text
-Should we add support for Date properties? (i.e. to reference file timestamp?)
+Additional property types?
+	 Date properties? (i.e. to reference file timestamp?)
+	 File (path) property types - used by the DuplicateLiterals rule that can ref an external file (URL type too then?)
 Cleanup icons
 Remember settings for:
 	chosen grouping selection (or none)
