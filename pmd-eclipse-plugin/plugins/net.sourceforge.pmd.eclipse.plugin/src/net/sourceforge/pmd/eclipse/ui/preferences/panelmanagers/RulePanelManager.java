@@ -11,9 +11,9 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ImplementationType;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
@@ -340,9 +340,9 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        priorityCombo = buildPriorityCombo(priorityComp);
 	        priorityCombo.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 	        
-	        priorityDisplay = new ShapeSetCanvas(priorityComp, SWT.NONE, PMDPreferencePage2.PriorityShape, 14);
+	        priorityDisplay = new ShapeSetCanvas(priorityComp, SWT.NONE, 14);
 	        priorityDisplay.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));		     
-	        priorityDisplay.setColourMap(PMDPlugin.colorsByPriority);
+	        priorityDisplay.setShapeMap(UISettings.shapesByPriority());
 	        priorityDisplay.setSize(90, 25);
 
 	        if (usageMode == EditorUsageMode.CreateNew) {

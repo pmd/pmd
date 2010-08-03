@@ -609,13 +609,14 @@ private	MenuItem useDefaultsItem;
     	    );
 	    }
 
-//	    MenuItem removeItem = new MenuItem(menu, SWT.PUSH);
-//	    removeItem.setText("Remove");
-//	    removeItem.addSelectionListener(new SelectionAdapter() {
-//            public void widgetSelected(SelectionEvent event) {
-//                removeSelectedRules();
-//            }
-//        });
+	    MenuItem hideItem = new MenuItem(menu, SWT.PUSH);
+	    hideItem.setText("Hide");
+	    hideItem.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+            	toggleColumnVisiblity("??");	// TODO
+            }
+        });
+	    hideItem.setEnabled(false);
 
         useDefaultsItem = new MenuItem(menu, SWT.PUSH);
         useDefaultsItem.setText("Use defaults");

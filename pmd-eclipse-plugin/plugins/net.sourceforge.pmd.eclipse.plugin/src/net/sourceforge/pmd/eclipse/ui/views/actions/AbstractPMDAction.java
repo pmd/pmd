@@ -18,7 +18,7 @@ public abstract class AbstractPMDAction extends Action {
 	protected abstract String imageId();
 	protected abstract String tooltipMsgId();
 	
-	protected static String getString(String messageId) {
+	public static String getString(String messageId) {
 		return PMDPlugin.getDefault().getStringTable().getString(messageId);
 	}
 	

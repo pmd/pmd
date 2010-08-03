@@ -1,11 +1,11 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
  * @author SebastianRaffel ( 17.05.2005 )
  */
 public class PriorityFilter extends ViewerFilter {
+	
     private List<Integer> priorityList;
 
     /**
@@ -33,7 +34,8 @@ public class PriorityFilter extends ViewerFilter {
      */
     public PriorityFilter() {
         super();
-        priorityList = new ArrayList<Integer>(Arrays.asList(PMDPlugin.getDefault().getPriorityValues()));
+ //       priorityList = new ArrayList<Integer>(Arrays.asList(PMDPlugin.getDefault().getPriorityValues()));
+        priorityList = UISettings.getPriorityIntValues();
     }
 
     /* @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
@@ -104,7 +106,7 @@ public class PriorityFilter extends ViewerFilter {
      * @param newList, an ArrayLust of Integers
      */
     public void setPriorityFilterList(List<Integer> newList) {
-        this.priorityList = newList;
+        priorityList = newList;
     }
 
     /**
@@ -113,7 +115,7 @@ public class PriorityFilter extends ViewerFilter {
      * @return an List of Integers
      */
     public List<Integer> getPriorityFilterList() {
-        return this.priorityList;
+        return priorityList;
     }
 
     /**
@@ -154,8 +156,8 @@ public class PriorityFilter extends ViewerFilter {
     }
 
     /**
-     * Returns the FilterList as String with the given splitter, e.g. with "," the Priorities {1,4,5} would look like "1,4,5" (for
-     * use with Mementos)
+     * Returns the FilterList as String with the given splitter, e.g. with "," the Priorities {1,4,5} 
+     * would look like "1,4,5" (for use with Mementos)
      *
      * @param splitter, The String splitter (in general ",")
      * @return the List-String

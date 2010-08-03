@@ -6,11 +6,12 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -38,7 +39,7 @@ import org.eclipse.ui.browser.IWebBrowser;
  * not.
  *
  * @author Philippe Herlin
- *
+ * @deprecated
  */
 public class RuleDialog extends Dialog {
     private static final int MODE_ADD = 1;
@@ -444,7 +445,7 @@ public class RuleDialog extends Dialog {
      */
     private Combo buildPriorityCombo(Composite parent) {
         Combo combo = new Combo(parent, SWT.SINGLE | SWT.BORDER);
-    	String[] labels = PMDPlugin.getDefault().getPriorityLabels();
+    	String[] labels = UISettings.getPriorityLabels();
     	int index = 3-1;
 		if (editedRule != null && editedRule.getPriority().getPriority() >= 0 && editedRule.getPriority().getPriority() <= labels.length) {
 			index = editedRule.getPriority().getPriority() - 1;

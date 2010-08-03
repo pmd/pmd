@@ -2,9 +2,11 @@ package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -122,10 +124,10 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         List<Integer> filterList = priorityFilter.getPriorityFilterList();
 
         // we add the PriorityFilter-Actions to this Menu
-        Integer[] priorities = PMDPlugin.getDefault().getPriorityValues();
-        for (Integer priority : priorities) {
+        RulePriority[] priorities = UISettings.currentPriorities(true);
+        for (RulePriority  priority : priorities) {
             Action filterAction = new PriorityFilterAction(priority, this);
-            if (filterList.contains(priority))
+            if (filterList.contains(priority.getPriority()))
                 filterAction.setChecked(true);
 
             manager.add(filterAction);

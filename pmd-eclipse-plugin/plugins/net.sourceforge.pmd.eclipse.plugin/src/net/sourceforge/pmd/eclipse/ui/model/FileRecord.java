@@ -148,9 +148,10 @@ public class FileRecord extends AbstractPMDRecord {
     protected final AbstractPMDRecord[] createChildren() {
         AbstractPMDRecord[] children = EMPTY_RECORDS;
 
-        try {
-            // get all markers
+        try { // get all markers
             final List<IMarker> markers = Arrays.asList(findMarkers());
+            if (markers.isEmpty()) return EMPTY_RECORDS;
+            
             final Iterator<IMarker> markerIterator = markers.iterator();
 
             // put all markers in a map with key = rulename

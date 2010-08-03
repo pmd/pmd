@@ -1,39 +1,34 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 /**
- * Renders a set of coloured shapes mapped to incoming items
+ * Renders a set of coloured shapes mapped to known set of incoming items
  * 
  * @author Brian Remedios
  */
 public class ShapeSetCanvas extends Canvas {
 
-	private Util.shape shapeId;
 	private Object[] items;
 	private int itemWidth;
-	private Map<Object, Color> coloursByItem;
-	
-	public ShapeSetCanvas(Composite parent, int style, Util.shape theShape, int theItemWidth) {
+	private Map<Object, ShapeDescriptor> shapeDescriptorsByItem;
+		
+	public ShapeSetCanvas(Composite parent, int style, int theItemWidth) {
 		super(parent, style);
 		
-		shapeId = theShape;
 		itemWidth = theItemWidth;
 		
 		ShapeSetCanvas.this.addPaintListener( new PaintListener() {
@@ -41,14 +36,17 @@ public class ShapeSetCanvas extends Canvas {
 				doPaint(pe);
 			}
 		} );
-		ShapeSetCanvas.this.addDisposeListener( new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				disposeAll(coloursByItem.values());
-			}});
 	}
 	
-	public static void disposeAll(Collection<Color> colors) {
-		for (Color color : colors) color.dispose();
+	private Color colourFor(int itemIndex) {
+		ShapeDescriptor desc = shapeDescriptorsByItem.get(items[itemIndex]);
+		if (desc == null) return Display.getCurrent().getSystemColor(SWT.COLOR_BLACK); 
+		return PMDPlugin.getDefault().colorFor(desc.rgbColor);
+	}
+	
+	private Util.shape shapeFor(int itemIndex) {
+		ShapeDescriptor desc = shapeDescriptorsByItem.get(items[itemIndex]);
+		return desc == null ? Util.shape.circle : desc.shape;
 	}
 	
 	private void doPaint(PaintEvent pe) {
@@ -56,12 +54,13 @@ public class ShapeSetCanvas extends Canvas {
 		GC gc = pe.gc;
 		int width = getSize().x;
 		int xBoundary = 3;
+		int gap = 2;
 		
         for (int i=0; i<items.length; i++) {
-        	gc.setBackground(coloursByItem.get(items[i]));
+        	gc.setBackground(colourFor(i));
                                 	                                     
             int xOffset = 0;
-            int step = itemWidth * i;
+            int step = (itemWidth + gap) * i;
             
             switch (SWT.LEFT) {	// TODO take from style bits
                 case SWT.CENTER: xOffset = (width / 2) - (itemWidth / 2) - xBoundary + step; break;
@@ -69,9 +68,7 @@ public class ShapeSetCanvas extends Canvas {
                 case SWT.LEFT: xOffset = xBoundary + step;
             }
             
-            Util.drawShape(itemWidth, itemWidth, shapeId, gc, pe.x + xOffset, pe.y);
-            
-            xOffset += itemWidth;
+            Util.drawShape(itemWidth, itemWidth, shapeFor(i), gc, pe.x + xOffset, pe.y);
         }
 	}
 	
@@ -80,11 +77,6 @@ public class ShapeSetCanvas extends Canvas {
 		Point pt = getSize();
 		// TODO adapt by shape count
 		return new Point(pt.x, pt.y);
-	}
-
-	public void setShape(Util.shape theShape) {
-		shapeId = theShape;
-		redraw();
 	}
 	
 	public void setItems(Object[] theItems) {
@@ -97,18 +89,9 @@ public class ShapeSetCanvas extends Canvas {
 		redraw();
 	}
 	
-	public void setColourMap(Map<Object, RGB> colourMap) {
+	public void setShapeMap(Map<Object, ShapeDescriptor> theShapeMap) {
 		
-		coloursByItem = new HashMap<Object, Color>(colourMap.size());
-		
-		for (Map.Entry<Object, RGB> entry : colourMap.entrySet()) {
-			RGB rgb = entry.getValue();
-			coloursByItem.put(
-				entry.getKey(), 
-				new Color(null, rgb.red, rgb.green, rgb.blue)
-				);
-		}
-		
+		shapeDescriptorsByItem = theShapeMap;		
 		redraw();
 	}
 

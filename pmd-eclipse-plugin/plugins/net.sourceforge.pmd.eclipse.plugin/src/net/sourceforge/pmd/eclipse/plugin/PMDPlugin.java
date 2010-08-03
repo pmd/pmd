@@ -1,11 +1,10 @@
 package net.sourceforge.pmd.eclipse.plugin;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -40,6 +39,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -52,7 +52,8 @@ import org.osgi.framework.BundleContext;
  */
 public class PMDPlugin extends AbstractUIPlugin {
 
-	// The plug-in ID
+	private HashMap<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
+
 	public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
 
 	// The shared instance
@@ -65,22 +66,33 @@ public class PMDPlugin extends AbstractUIPlugin {
         Integer.valueOf(4),
         Integer.valueOf(5)
 	    };
-	
-    public static final Map<Object, RGB> colorsByPriority = new HashMap<Object, RGB>();
     
-    static {
-    	colorsByPriority.put(RulePriority.LOW, 			new RGB( 0,0,255) );	// blue
-    	colorsByPriority.put(RulePriority.MEDIUM_LOW, 	new RGB( 0,255,0) );	// green
-    	colorsByPriority.put(RulePriority.MEDIUM, 		new RGB( 255,255,0) );	// yellow
-    	colorsByPriority.put(RulePriority.MEDIUM_HIGH, 	new RGB( 255,0,255) );	// purple
-    	colorsByPriority.put(RulePriority.HIGH, 		new RGB( 255,0,0) );	// red
-    }
 	/**
 	 * The constructor
 	 */
 	public PMDPlugin() {
 	}
-
+	
+	public Color colorFor(RGB rgb) {
+		
+		Color color = coloursByRGB.get(rgb);
+		if (color != null) return color;
+		
+		color = new Color(null, rgb.red, rgb.green, rgb.blue);
+		coloursByRGB.put( rgb, color );
+		
+		return color;
+	}
+	
+	private void disposeResources() {
+		
+		disposeAll(coloursByRGB.values());
+	}
+	
+	public static void disposeAll(Collection<Color> colors) {
+		for (Color color : colors) color.dispose();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
@@ -99,6 +111,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
+		disposeResources();
 		super.stop(context);
 	}
 
@@ -114,8 +127,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     private static final Logger log = Logger.getLogger(PMDPlugin.class);
 
     private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
-    private String[] priorityLabels; // NOPMD by Herlin on 11/10/06 00:22
-
+  
 	/**
 	 * Returns an image descriptor for the image file at the given
 	 * plug-in relative path.
@@ -195,27 +207,10 @@ public class PMDPlugin extends AbstractUIPlugin {
 
     /**
      * @return the priority values
+     * @deprecated
      */
     public Integer[] getPriorityValues() {
         return priorityValues;
-    }
-
-    /**
-     * Return the priority labels
-     */
-    public String[] getPriorityLabels() {
-        if (priorityLabels == null) {
-            final StringTable stringTable = getStringTable();
-            priorityLabels = new String[]{
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR_HIGH),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_WARNING_HIGH),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_WARNING),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_INFORMATION)
-            };
-        }
-
-        return priorityLabels; // NOPMD by Herlin on 11/10/06 00:22
     }
 
     public static final String ROOT_LOG_ID = "net.sourceforge.pmd";

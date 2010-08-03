@@ -10,6 +10,7 @@ import java.util.Comparator;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -374,7 +375,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 				PROPERTY_PRIORITY, PROPERTY_DESCRIPTION });
 		ruleTableViewer.setCellModifier(new RuleCellModifier(ruleTableViewer));
 		ruleTableViewer.setCellEditors(new CellEditor[] { null, null, null, null,
-				new ComboBoxCellEditor(ruleTable, PMDPlugin.getDefault().getPriorityLabels()),
+				new ComboBoxCellEditor(ruleTable, UISettings.getPriorityLabels()),
 				new TextCellEditor(ruleTable) });
 
 		populateRuleTable();

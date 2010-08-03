@@ -37,7 +37,20 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
+import net.sourceforge.pmd.eclipse.ui.model.ProjectRecord;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.actions.CalculateStatisticsAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.CollapseAllAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.PriorityFilterAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.ProjectFilterAction;
+import net.sourceforge.pmd.eclipse.ui.views.actions.ViolationPresentationTypeAction;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -47,16 +60,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchActionConstants;
-
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
-import net.sourceforge.pmd.eclipse.ui.model.ProjectRecord;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.actions.CalculateStatisticsAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.CollapseAllAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.PriorityFilterAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.ProjectFilterAction;
-import net.sourceforge.pmd.eclipse.ui.views.actions.ViolationPresentationTypeAction;
 
 /**
  *
@@ -77,14 +80,15 @@ public class ViolationOverviewMenuManager {
      * Setup the Actions for the ActionBars
      */
     public void setupActions() {
-        final Integer[] priorities = PMDPlugin.getDefault().getPriorityValues();
-        this.priorityActions = new PriorityFilterAction[priorities.length];
+    	
+        RulePriority[] priorities = UISettings.currentPriorities(true);
+        priorityActions = new PriorityFilterAction[priorities.length];
 
         // create the Actions for the PriorityFilter
-        for (int i = 0; i < priorities.length; i++) {
-            this.priorityActions[i] = new PriorityFilterAction(priorities[i], overview); // NOPMD by Herlin on 09/10/06 15:02
-            final boolean check = this.overview.getPriorityFilterList().contains(priorities[i]);
-            this.priorityActions[i].setChecked(check);
+        for (int i=0; i<priorities.length; i++) {
+            priorityActions[i] = new PriorityFilterAction(priorities[i], overview); // NOPMD by Herlin on 09/10/06 15:02
+            boolean check = overview.getPriorityFilterList().contains(priorities[i].getPriority());
+            priorityActions[i].setChecked(check);
         }
     }
 
@@ -93,18 +97,18 @@ public class ViolationOverviewMenuManager {
      */
     public void createActionBars(IToolBarManager manager) {
         // Action for calculating the #violations/loc
-        final Action calculateStats = new CalculateStatisticsAction(this.overview);
+        final Action calculateStats = new CalculateStatisticsAction(overview);
         manager.add(calculateStats);
         manager.add(new Separator());
 
         // the PriorityFilter-Actions
-        for (PriorityFilterAction priorityAction : this.priorityActions) {
+        for (PriorityFilterAction priorityAction : priorityActions) {
             manager.add(priorityAction);
         }
         manager.add(new Separator());
 
         // the CollapseAll-Action
-        final Action collapseAllAction = new CollapseAllAction(this.overview);
+        final Action collapseAllAction = new CollapseAllAction(overview);
         manager.add(collapseAllAction);
     }
 

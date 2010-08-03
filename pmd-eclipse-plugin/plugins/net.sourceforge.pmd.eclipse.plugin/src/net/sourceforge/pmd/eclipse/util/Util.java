@@ -9,17 +9,21 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.IndexedString;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleCollection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ShapeDescriptor;
 import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
@@ -192,7 +196,7 @@ public class Util {
 		return original == null ? "" : original.trim();
 	}
 	
-	public static enum shape { square, circle, diamond, triangleDown, triangleNorthEast };
+	public static enum shape { square, circle, diamond, triangleUp, triangleDown, triangleNorthEast, triangleSouthEast };
 	
 	public static CellPainterBuilder textAsColorShapeFor(final int width, final int height, final shape shapeId) {
 	    
@@ -254,7 +258,7 @@ public class Util {
 	    };
 	}
 	
-	public static CellPainterBuilder itemAsColorShapeFor(final int width, final int height, final shape shapeId, final int horizAlignment, final Map<Object, RGB> coloursByItem) {
+	public static CellPainterBuilder itemAsShapeFor(final int width, final int height, final shape shapeId, final int horizAlignment, final Map<Object, RGB> coloursByItem) {
 	    
 	    return new CellPainterBuilder() {
 
@@ -336,18 +340,35 @@ public class Util {
 	    };
 	}
 	
-//	public  static List<Comparable<?>> sort(Collection<Comparable<?>> items) {
-//		int count = items.size();
-//		switch (count) {
-//		case 0: return Collections.emptyList();
-//		case 1: return new ArrayList<Comparable<?>>(1);
-//		default:
-//			List<Comparable<?> sorted = new ArrayList(count);
-//		}
-//		
-//	}
+	/**
+	 * Creates an image initialized with the transparent colour with the shape drawn within.
+	 * 
+	 * 
+	 */
+	public static Image newDrawnImage(Display display, int width, int height, shape shape, RGB transparentColour, RGB fillColour) {
+		
+		 Image image = new Image(display, width, height);
+		 GC gc = new GC(image);
+		 
+		 gc.setBackground(PMDPlugin.getDefault().colorFor(transparentColour));
+		 gc.fillRectangle(0, 0, width, height);
+		 
+		 gc.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
+		 gc.setBackground(PMDPlugin.getDefault().colorFor(fillColour));
+		 
+		 drawShape(width-1, height-1, shape, gc, 0, 0);
+		
+		 ImageData data = image.getImageData();
+		 int clrIndex = data.palette.getPixel(transparentColour);
+		 data.transparentPixel = clrIndex;
+		 
+		 image = new Image(display, data);
+		 		
+		 gc.dispose();
+		 return image;
+	}
 	
-	public static CellPainterBuilder uniqueItemsAsColorShapeFor(final int width, final int height, final shape shapeId, final int horizAlignment, final Map<Object, RGB> coloursByItem) {
+	public static CellPainterBuilder uniqueItemsAsShapeFor(final int width, final int height, final int horizAlignment, final Map<Object, ShapeDescriptor> shapesByItem) {
 	    
 	    return new CellPainterBuilder() {
 
@@ -363,20 +384,20 @@ public class Util {
 	        	colorManager().dispose();
 	        }
 	        
-	        private List<Color> getterColorsIn(TreeItem tItem, RuleFieldAccessor getter) {
+	        private List<ShapeDescriptor> getterShapesIn(TreeItem tItem, RuleFieldAccessor getter) {
 	 
 	            Set<Comparable<?>> values = RuleUtil.uniqueItemsIn(tItem.getData(), getter);
 	            
-	            List<Color> colours = new ArrayList<Color>(values.size());
+	            List<ShapeDescriptor> shapes = new ArrayList<ShapeDescriptor>(values.size());
 	            Iterator<?> iter = values.iterator();
 	            while (iter.hasNext()) {
-	            	RGB rgb = coloursByItem.get(iter.next());
-	            	if (rgb != null) {
-	            		colours.add( colorManager().colourFor(rgb) );
+	            	ShapeDescriptor desc = shapesByItem.get(iter.next());
+	            	if (desc != null) {
+	            		shapes.add( desc );
 	            	}
 	            	
 	            }
-                return colours;
+                return shapes;
 	        }
 
 	        private int widthOf(int columnIndex, Tree tree) {
@@ -388,23 +409,27 @@ public class Util {
             	final int xBoundary = 3;
             	
                 Listener paintListener = new Listener() {
+                	final int gap = 2;
                     public void handleEvent(Event event) {
                         if (event.index != columnIndex) return;
                     
-                        List<Color> clrs = getterColorsIn((TreeItem)event.item, getter);
-                        if (clrs.isEmpty()) return;
+                        List<ShapeDescriptor> shapes = getterShapesIn((TreeItem)event.item, getter);
+                        if (shapes.isEmpty()) return;
                         
                         GC gc = event.gc;
+                        int verticalOffset = (event.height / 2) - (height / 2);
                         
                         Color original = gc.getBackground();
 
                     	final int cellWidth = widthOf(columnIndex, tree);
                     	
-                        for (int i=0; i<clrs.size(); i++) {
-                        	gc.setBackground(clrs.get(i));
+                        for (int i=0; i<shapes.size(); i++) {
+                        	ShapeDescriptor shape = shapes.get(i);
+                        	Color clr = colorManager().colourFor(shape.rgbColor);
+                        	gc.setBackground(clr);
                                                 	                                     
                             int xOffset = 0;
-                            int step = width * i;
+                            int step = (width+gap) * i;
                             
 		                    switch (horizAlignment) {
 		                        case SWT.CENTER: xOffset = (cellWidth / 2) - (width / 2) - xBoundary + step; 		break;
@@ -412,9 +437,7 @@ public class Util {
 		                        case SWT.LEFT: xOffset = xBoundary + step;
 		                    }
 		                    
-		                    drawShape(width, height, shapeId, gc, event.x + xOffset, event.y);
-		                    
-		                    xOffset += width;
+		                    drawShape(width, height, shape.shape, gc, event.x + xOffset, event.y + verticalOffset);		                    
                         }
                         
                         gc.setBackground(original);
@@ -456,29 +479,36 @@ public class Util {
 		
 		switch (shapeId) {
             case square: {
-            	gc.fillRectangle(x, y+2, width, height);    // fill it
-            	gc.drawRectangle(x, y+2, width, height);    // then the border on top
+            	gc.fillRectangle(x, y, width, height);    // fill it
+            	gc.drawRectangle(x, y, width, height);    // then the border on top
             	break;
             	}
             case circle: {
-            	gc.fillArc(x+1, y+2, width, height, 0, 360*64);    // fill it
-            	gc.drawArc(x+1, y+2, width, height, 0, 360*64);    // then the border on top
+            	gc.fillArc(x, y, width, height, 0, 360*64);    // fill it
+            	gc.drawArc(x, y, width, height, 0, 360*64);    // then the border on top
             	break;
             	}
             case triangleDown: {
-            	y = y+4;
             	gc.fillPolygon(new int[] {x, y, x+width, y, x+(width/2), y+height});
             	gc.drawPolygon(new int[] {x, y, x+width, y, x+(width/2), y+height});
             	break;
             	}
+            case triangleUp: {
+            	gc.fillPolygon(new int[] {x, y+height, x+width, y+height, x+(width/2), y});
+            	gc.drawPolygon(new int[] {x, y+height, x+width, y+height, x+(width/2), y});
+            	break;
+            	}
             case triangleNorthEast: {
-            	y = y+4;
             	gc.fillPolygon(new int[] {x, y, x+width, y, x+width, y+height});
             	gc.drawPolygon(new int[] {x, y, x+width, y, x+width, y+height});
             	break;
             	}
+            case triangleSouthEast: {
+            	gc.fillPolygon(new int[] {x, y+height, x+width, y+height, x+width, y});
+            	gc.drawPolygon(new int[] {x, y+height, x+width, y+height, x+width, y});
+            	break;
+            	}
             case diamond: {
-            	y = y+4;
             	gc.fillPolygon(new int[] {x+(width/2), y, x+width, y+(height/2), x+(width/2), y+height, x, y+(height/2)});
             	gc.drawPolygon(new int[] {x+(width/2), y, x+width, y+(height/2), x+(width/2), y+height, x, y+(height/2)});
             	break;
