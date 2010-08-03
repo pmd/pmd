@@ -333,7 +333,7 @@ public abstract class AbstractTreeTableManager {
         }
 	}
 	
-	private void toggleColumnVisiblity(String columnName) {
+	protected void toggleColumnVisiblity(String columnName) {
 
 	    if (hiddenColumnNames.contains(columnName)) {
 	        hiddenColumnNames.remove(columnName);

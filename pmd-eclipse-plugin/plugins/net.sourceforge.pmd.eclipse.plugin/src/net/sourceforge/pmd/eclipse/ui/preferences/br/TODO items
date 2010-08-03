@@ -7,6 +7,7 @@ Rework context menu - build on-demand, not before
 Markup violations using priority icons rather than the yellow yield signs or red Xs
 Work on support for fixes
 Format example & description text
+Need preference widgets to allow user-specified shapes for RulePriorities
 Additional property types?
 	 Date properties? (i.e. to reference file timestamp?)
 	 File (path) property types - used by the DuplicateLiterals rule that can ref an external file (URL type too then?)
