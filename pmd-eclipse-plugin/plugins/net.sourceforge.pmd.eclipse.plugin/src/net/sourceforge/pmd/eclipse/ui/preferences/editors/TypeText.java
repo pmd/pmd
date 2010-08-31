@@ -69,6 +69,8 @@ public class TypeText extends Composite {
     }
 
     public void addListener(int eventType, Listener listener) {
+    	super.addListener(eventType, listener);
+    	if (text == null) return;
         text.addListener(eventType, listener);
     }
 
