@@ -9,6 +9,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.StringUtil;
@@ -635,16 +636,18 @@ public class RuleDialog extends Dialog {
         }
 
         if (mode == MODE_EDIT) {
-        	if (this.editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
-                text.setText(this.editedRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
+        	//if (editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+        	if (RuleUtil.isXPathRule(editedRule)) {
+                text.setText(editedRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
                 text.setEditable(true);
         	}
         }
 
         if (mode == MODE_VIEW) {
             text.setEditable(false);
-        	if (this.editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
-                text.setText(this.editedRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
+        	//if (editedRule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+        	if (RuleUtil.isXPathRule(editedRule)) {
+                text.setText(editedRule.getProperty(XPathRule.XPATH_DESCRIPTOR).trim());
         	}
         }
 

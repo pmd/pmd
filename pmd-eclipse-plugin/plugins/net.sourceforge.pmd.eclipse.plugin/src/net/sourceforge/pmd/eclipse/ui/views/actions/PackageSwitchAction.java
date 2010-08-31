@@ -25,7 +25,7 @@ public class PackageSwitchAction extends AbstractPMDAction {
 
  	protected String imageId() { return PMDUiConstants.ICON_BUTTON_FILES; }
     
-    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_PACKAGES_FILES; }
+    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_PACKAGES_FILES; }
     
     /**
      * @return the Style, in which the Button is displayed

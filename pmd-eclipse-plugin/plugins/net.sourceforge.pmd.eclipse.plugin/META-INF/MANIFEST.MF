@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin;singleton:=true
-Bundle-Version: 5.0.0.v20100726
+Bundle-Version: 5.0.0.v20100826
 Bundle-Activator: net.sourceforge.pmd.eclipse.plugin.PMDPlugin
 Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
  org.eclipse.core.resources;bundle-version="3.5.0",
@@ -11,7 +11,12 @@ Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
  org.eclipse.jface.text;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.0",
  org.eclipse.ui.ide;bundle-version="3.5.0",
- org.eclipse.ui.editors;bundle-version="3.5.0"
+ org.eclipse.ui.editors;bundle-version="3.5.0",
+ org.eclipse.team.core;bundle-version="3.5.0",
+ org.eclipse.search,
+ org.eclipse.help;bundle-version="3.5.0",
+ org.eclipse.help.ui;bundle-version="3.5.0",
+ org.eclipse.help.appserver;bundle-version="3.1.400"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: %plugin.provider
@@ -36,9 +41,10 @@ Export-Package: net.sourceforge.pmd,
  net.sourceforge.pmd.eclipse.runtime.properties,
  net.sourceforge.pmd.eclipse.runtime.writer,
  net.sourceforge.pmd.eclipse.ui,
+ net.sourceforge.pmd.eclipse.ui.actions,
  net.sourceforge.pmd.eclipse.ui.model,
- net.sourceforge.pmd.eclipse.ui.nls,
  net.sourceforge.pmd.eclipse.ui.preferences.br,
  net.sourceforge.pmd.eclipse.ui.views.actions,
  net.sourceforge.pmd.util,
+ org.apache.log4j,
  rulesets

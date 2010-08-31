@@ -1,20 +1,31 @@
 package net.sourceforge.pmd.eclipse.plugin;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.Shape;
+import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ShapeDescriptor;
-import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PriorityDescriptorCache;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * 
@@ -27,19 +38,35 @@ public class UISettings {
     private static Map<Object, ShapeDescriptor> shapesByPriority;
     private static Map<Integer, RulePriority> prioritiesByIntValue;
     
-    private static final Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
+    private static final int MAX_MARKER_DIMENSION = 9;
     
-    static {
-    	uiDescriptorsByPriority.put(RulePriority.LOW, 			new PriorityDescriptor(RulePriority.LOW, 		StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_1, StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_1, PMDUiConstants.ICON_BUTTON_PRIO1, Util.shape.triangleSouthEast, new RGB( 0,0,255), 13) );	// blue
-    	uiDescriptorsByPriority.put(RulePriority.MEDIUM_LOW, 	new PriorityDescriptor(RulePriority.MEDIUM_LOW, StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_2, StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_2,	PMDUiConstants.ICON_BUTTON_PRIO2, Util.shape.triangleDown, new RGB( 0,255,0), 13) );	// green
-    	uiDescriptorsByPriority.put(RulePriority.MEDIUM, 		new PriorityDescriptor(RulePriority.MEDIUM, 	StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_3, StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_3,	PMDUiConstants.ICON_BUTTON_PRIO3, Util.shape.triangleUp, new RGB( 255,255,0), 13) );	// yellow
-    	uiDescriptorsByPriority.put(RulePriority.MEDIUM_HIGH, 	new PriorityDescriptor(RulePriority.MEDIUM_HIGH,StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_4, StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_4, PMDUiConstants.ICON_BUTTON_PRIO4, Util.shape.triangleNorthEast, new RGB( 255,0,255), 13) );	// purple
-    	uiDescriptorsByPriority.put(RulePriority.HIGH, 			new PriorityDescriptor(RulePriority.HIGH, 		StringKeys.MSGKEY_VIEW_FILTER_PRIORITY_5, StringKeys.MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_5,	PMDUiConstants.ICON_BUTTON_PRIO5, Util.shape.diamond, new RGB( 255,0,0), 13) );	// red
+    private static final Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
+
+
+    public static void reloadPriorities() {
+    	uiDescriptorsByPriority.clear();
+    	uiDescriptorsByPriority();	// cause a reload
+    }
+    
+    private static Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority() {
+    	
+    	if (uiDescriptorsByPriority.isEmpty()) {
+    		IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
+            for (RulePriority rp : currentPriorities(true)) {
+            	uiDescriptorsByPriority.put(rp, preferences.getPriorityDescriptor(rp));
+            }
+    	}
+    	
+    	return uiDescriptorsByPriority;
+    }
+       
+    public static Shape[] allShapes() {
+    	return new Shape[] { Shape.circle, Shape.star, Shape.domeLeft, Shape.domeRight, Shape.diamond, Shape.square, Shape.roundedRect, Shape.minus, Shape.pipe, Shape.plus, Shape.triangleUp, Shape.triangleDown, Shape.triangleRight, Shape.triangleLeft, Shape.triangleNorthEast, Shape.triangleSouthEast, Shape.triangleSouthWest, Shape.triangleNorthWest };
     }
     
     public static RulePriority[] currentPriorities(boolean sortAscending) {
     	
-    	RulePriority[] priorities = uiDescriptorsByPriority.keySet().toArray(new RulePriority[uiDescriptorsByPriority.size()]);
+    	RulePriority[] priorities = RulePriority.values();
     	
     	Arrays.sort(priorities, new Comparator<RulePriority>() {
     		public int compare(RulePriority rpA, RulePriority rbB) {
@@ -47,18 +74,89 @@ public class UISettings {
     			}
     		});	
     	return priorities;
-    }    
+    }     
+        
+    public static Map<Shape, ShapeDescriptor> shapeSet(RGB color, int size) {
+
+    	Map<Shape, ShapeDescriptor> shapes = new HashMap<Shape, ShapeDescriptor>();
+
+    	for(Shape shape : EnumSet.allOf(Shape.class)) {
+    		shapes.put(shape, new ShapeDescriptor(shape, color, size));
+    	}
+
+    	return shapes;
+    }
+    
+    public static String markerFilenameFor(RulePriority priority) {
+    	String fileDir = PMDPlugin.getPluginFolder().getAbsolutePath();
+    	return fileDir + "/" + relativeMarkerFilenameFor(priority);
+    }
+    
+    public static String relativeMarkerFilenameFor(RulePriority priority) {
+    	return "icons/markerP" + priority.getPriority() + ".png";
+    }
+    
+    private static ImageDescriptor getImageDescriptor(final String	fileName) {
+    	
+    	URL installURL = PMDPlugin.getDefault().getBundle().getEntry("/");
+    	try {
+    		URL url = new URL(installURL, fileName);
+    		return ImageDescriptor.createFromURL(url);
+    	}
+    	catch (MalformedURLException mue) {
+    		mue.printStackTrace();
+    		return null;
+    	}
+    }
+    
+    public static ImageDescriptor markerDescriptorFor(RulePriority priority) {
+    	String path = relativeMarkerFilenameFor(priority);
+    	return getImageDescriptor(path);
+    }
+    
+    public static Map<Integer, ImageDescriptor> markerImgDescriptorsByPriority() {
+    	
+    	RulePriority[] priorities = currentPriorities(true);
+    	Map<Integer, ImageDescriptor> overlaysByPriority = new HashMap<Integer, ImageDescriptor>(priorities.length);
+		for (RulePriority priority : priorities) {
+			overlaysByPriority.put(
+				priority.getPriority(), 
+				markerDescriptorFor(priority) 
+				);
+			}
+		return overlaysByPriority;
+    }
+    
+    public static void createRuleMarkerIcons(Display display) {
+		    	
+    	ImageLoader loader = new ImageLoader();
+    	
+    	PriorityDescriptorCache pdc = PriorityDescriptorCache.instance;
+    	
+    	for (RulePriority priority : currentPriorities(true)) {    		
+    		Image image = pdc.descriptorFor(priority).getImage(display, MAX_MARKER_DIMENSION);
+    	    loader.data = new ImageData[] { image.getImageData() };
+    	    String fullPath = markerFilenameFor( priority );
+    	    loader.save(fullPath, SWT.IMAGE_PNG);
+    	    
+    	    image.dispose();
+    	}
+    }
+    
+    public static String descriptionFor(RulePriority priority) {
+    	return descriptorFor(priority).description;
+    }
     
     public static PriorityDescriptor descriptorFor(RulePriority priority) {
-    	return uiDescriptorsByPriority.get(priority);
+    	return uiDescriptorsByPriority().get(priority);
     }
     
 	public static Map<Object, ShapeDescriptor> shapesByPriority() {
 		
 		if (shapesByPriority != null) return shapesByPriority;
 		
-		 Map<Object, ShapeDescriptor> shapesByPriority = new HashMap<Object, ShapeDescriptor>(uiDescriptorsByPriority.size());
-		 for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority.entrySet()) {
+		 Map<Object, ShapeDescriptor> shapesByPriority = new HashMap<Object, ShapeDescriptor>(uiDescriptorsByPriority().size());
+		 for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority().entrySet()) {
 			 shapesByPriority.put(entry.getKey(), entry.getValue().shape);
 		 }
 		 
@@ -68,8 +166,8 @@ public class UISettings {
 	public static RulePriority priorityFor(int value) {
 		
 		if (prioritiesByIntValue == null) {
-			prioritiesByIntValue = new HashMap<Integer, RulePriority>(uiDescriptorsByPriority.size());
-			for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority.entrySet()) {
+			prioritiesByIntValue = new HashMap<Integer, RulePriority>(uiDescriptorsByPriority().size());
+			for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority().entrySet()) {
 				prioritiesByIntValue.put(entry.getKey().getPriority(), entry.getKey());
 			 	}			 	
 			}
@@ -97,8 +195,8 @@ public class UISettings {
     
     public static List<Integer> getPriorityIntValues() {
     	
-    	List<Integer> values = new ArrayList<Integer>(uiDescriptorsByPriority.size());
-    	for (RulePriority priority : uiDescriptorsByPriority.keySet()) {
+    	List<Integer> values = new ArrayList<Integer>();
+    	for (RulePriority priority : RulePriority.values()) {
     		values.add(priority.getPriority());
     	}
     	return values;

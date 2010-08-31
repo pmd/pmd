@@ -130,7 +130,7 @@ public class ViolationOverviewMenuManager {
      * Creates the Context Menu
      */
     public void createContextMenu() {
-        final MenuManager manager = new MenuManager();
+        MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new IMenuListener() {
             public void menuAboutToShow(IMenuManager manager) {
@@ -160,10 +160,10 @@ public class ViolationOverviewMenuManager {
             }
         });
 
-        final Tree tree = this.overview.getViewer().getTree();
+        Tree tree = overview.getViewer().getTree();
         tree.setMenu(manager.createContextMenu(tree));
 
-        this.overview.getSite().registerContextMenu(manager, this.overview.getViewer());
+        overview.getSite().registerContextMenu(manager, overview.getViewer());
     }
 
     /**

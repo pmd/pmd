@@ -36,9 +36,13 @@
 
 package net.sourceforge.pmd.eclipse.runtime.preferences.impl;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 
@@ -63,6 +67,9 @@ class PreferencesImpl implements IPreferences {
     private String 				logFileName;
     private Level 				logLevel;
     private Set<String> 		activeRuleNames = new HashSet<String>();
+    
+    private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
+    
     /**
      * Is constructed from a preferences manager
      * @param preferencesManager
@@ -209,6 +216,14 @@ class PreferencesImpl implements IPreferences {
 
 	public void setActiveRuleNames(Set<String> ruleNames) {
 		activeRuleNames = ruleNames;
+	}
+
+	public void setPriorityDescriptor(RulePriority priority, PriorityDescriptor pd) {
+		uiDescriptorsByPriority.put(priority, pd);		
+	}
+
+	public PriorityDescriptor getPriorityDescriptor(RulePriority priority) {
+		return uiDescriptorsByPriority.get(priority);
 	}
 
 }

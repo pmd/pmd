@@ -79,7 +79,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
                 dialog.run(false, false, new IRunnableWithProgress() {
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         setMonitor(monitor);
-                        monitor.beginTask(getString(StringKeys.MSGKEY_MONITOR_REVIEW), 5);
+                        monitor.beginTask(getString(StringKeys.MONITOR_REVIEW), 5);
                         insertReview(markers[0], reviewPmdStyle);
                         monitor.done();
                     }

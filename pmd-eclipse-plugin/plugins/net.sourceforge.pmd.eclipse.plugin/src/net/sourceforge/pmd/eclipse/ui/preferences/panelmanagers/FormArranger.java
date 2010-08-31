@@ -10,6 +10,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.NewPropertyDialog;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
@@ -200,7 +201,7 @@ public class FormArranger {
      */
     public List<String> updateDeleteButtons() {
 
-        if (rule == null || !rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+        if (rule == null || !RuleUtil.isXPathRule(rule)) {
             return Collections.emptyList();
         }
 
@@ -208,7 +209,7 @@ public class FormArranger {
         List<int[]> refPositions = Util.referencedNamePositionsIn(source, '$');
         if (refPositions.isEmpty()) return Collections.emptyList();
 
-        List<String> unreferenced = new ArrayList<String>(refPositions.size());
+        List<String> unreferencedOnes = new ArrayList<String>(refPositions.size());
         List<String> varNames = Util.fragmentsWithin(source, refPositions);
 
         for (Control[] widgetRow : widgets)  {
@@ -221,9 +222,9 @@ public class FormArranger {
                 		"Delete variable: $" + buttonName :
                 		"Delete unreferenced variable: $" + buttonName
                 );
-            if (!isReferenced) unreferenced.add((String) butt.getData());
+            if (!isReferenced) unreferencedOnes.add((String) butt.getData());
             }
 
-        return unreferenced;
+        return unreferencedOnes;
      };
 }

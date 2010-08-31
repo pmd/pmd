@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
@@ -78,7 +79,14 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     protected boolean canManageMultipleRules() { return false; }
 
     protected boolean canWorkWith(Rule rule) {
-        if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) return true;
+    	
+ //  TODO     if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) return true;		won't work, need to tweak Rule implementation as map is empty
+        
+    	// alternate approach for now
+    	for (PropertyDescriptor<?> desc : rule.getPropertyDescriptors()) {
+    		if (desc.equals(XPathRule.XPATH_DESCRIPTOR)) return true;
+    	}
+    	
         return !Configuration.filteredPropertiesOf(rule).isEmpty();
     }
 

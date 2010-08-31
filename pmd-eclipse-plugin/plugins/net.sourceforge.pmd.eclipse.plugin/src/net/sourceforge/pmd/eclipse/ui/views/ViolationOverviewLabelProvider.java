@@ -38,10 +38,14 @@ package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
@@ -50,6 +54,7 @@ import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -60,14 +65,10 @@ import org.eclipse.swt.graphics.Image;
  * @author SebastianRaffel ( 09.05.2005 ), Philippe Herlin
  *
  */
-public class ViolationOverviewLabelProvider extends LabelProvider implements ITableLabelProvider {
+public class ViolationOverviewLabelProvider extends AbstractViolationLabelProvider {
+	
     private static final String KEY_IMAGE_PACKAGE = "package";
     private static final String KEY_IMAGE_JAVAFILE = "javafile";
-    private static final String KEY_IMAGE_ERR1 = "error1";
-    private static final String KEY_IMAGE_ERR2 = "error2";
-    private static final String KEY_IMAGE_ERR3 = "error3";
-    private static final String KEY_IMAGE_ERR4 = "error4";
-    private static final String KEY_IMAGE_ERR5 = "error5";
 
     private final ViolationOverview violationView;
 
@@ -78,12 +79,11 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
      */
     public ViolationOverviewLabelProvider(ViolationOverview overview) {
         super();
-        this.violationView = overview;
+        violationView = overview;
     }
-
+    
     /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
-     *      int)
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
      */
     public Image getColumnImage(Object element, int columnIndex) {
         Image image = null;
@@ -95,46 +95,15 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
             } else if (element instanceof FileRecord || element instanceof FileToMarkerRecord) {
                 image = getImage(KEY_IMAGE_JAVAFILE, PMDUiConstants.ICON_JAVACU);
             } else if (element instanceof MarkerRecord) {
-                final MarkerRecord markerRecord = (MarkerRecord)element;
-                final int priority = markerRecord.getPriority();
+                MarkerRecord markerRecord = (MarkerRecord)element;
+                int priority = markerRecord.getPriority();
                 image = getPriorityImage(priority);
             }
         }
 
         return image;
     }
-
-    /**
-     * Gets the image to a priority.
-     * @param priority priority
-     * @return Image
-     */
-    private Image getPriorityImage(int priority) {
-        Image image = null;
-
-        switch (priority) {
-        case 1:
-            image = getImage(KEY_IMAGE_ERR1, PMDUiConstants.ICON_LABEL_ERR1);
-            break;
-        case 2:
-            image = getImage(KEY_IMAGE_ERR2, PMDUiConstants.ICON_LABEL_ERR2);
-            break;
-        case 3:
-            image = getImage(KEY_IMAGE_ERR3, PMDUiConstants.ICON_LABEL_ERR3);
-            break;
-        case 4:
-            image = getImage(KEY_IMAGE_ERR4, PMDUiConstants.ICON_LABEL_ERR4);
-            break;
-        case 5:
-            image = getImage(KEY_IMAGE_ERR5, PMDUiConstants.ICON_LABEL_ERR5);
-            break;
-        default:
-            // do nothing
-        }
-
-        return image;
-    }
-
+    
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
      *      int)
@@ -156,9 +125,9 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
                 result = getNumberOfViolations(record);
                 break;
 
-            // show the Number of Violations per Line of Code
+            // show the Number of Violations per 1K lines of code
             case 2:
-                result = getViolationsPerLOC(record);
+                result = getViolationsPerKLOC(record);
                 break;
 
             // show the Number of Violations per Number of Methods
@@ -253,21 +222,21 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
      * @param element
      * @return
      */
-    private String getViolationsPerLOC(AbstractPMDRecord element) {
+    private String getViolationsPerKLOC(AbstractPMDRecord element) {
         String result = "";
-        final int vioCount = this.violationView.getNumberOfFilteredViolations(element);
-        final int loc = this.violationView.getLOC(element);
+        int vioCount = violationView.getNumberOfFilteredViolations(element);
+        int loc = violationView.getLOC(element);
 
         if (loc == 0) {
             result = "N/A";
         } else {
-            final double vioPerLoc = (double)(vioCount * 1000) / loc;
+            double vioPerLoc = (double)(vioCount * 1000) / loc;
             if (vioPerLoc < 0.1) {
-                result = "< 0.1 / 1000";
+                result = "< 0.1";
             } else {
-                final DecimalFormat format = (DecimalFormat)NumberFormat.getInstance(Locale.US);
+                DecimalFormat format = (DecimalFormat)NumberFormat.getInstance(Locale.US);
                 format.applyPattern("##0.0");
-                result = format.format(vioPerLoc) + " / 1000";
+                result = format.format(vioPerLoc);
             }
         }
 

@@ -2,18 +2,40 @@ package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PriorityDescriptor;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.Shape;
+import net.sourceforge.pmd.eclipse.ui.ShapePicker;
+import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PriorityDescriptorCache;
 
 import org.apache.log4j.Level;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -24,6 +46,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -41,7 +65,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class GeneralPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
 	
     private static final String[] LOG_LEVELS = { "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "ALL" };
-
+    private static final RGB SHAPE_COLOR = new RGB(255,255,255);
+    
     private Text additionalCommentText;
     private Label sampleLabel;
     private Button showPerspectiveBox;
@@ -53,7 +78,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Scale logLevelScale;
     private Label logLevelValueLabel;
     private Button browseButton;
-
+    private TableViewer  tableViewer;
+    
     /**
      * Initialize the page
      *
@@ -61,7 +87,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      */
     public void init(IWorkbench arg0) {
         setDescription(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TITLE));
-        this.preferences = PMDPlugin.getDefault().loadPreferences();
+        preferences = PMDPlugin.getDefault().loadPreferences();
     }
 
     /**
@@ -77,13 +103,15 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         layout.verticalSpacing = 10;
         composite.setLayout(layout);
 
-        // Create chidls
+        // Create groups
         Group generalGroup = buildGeneralGroup(composite);
+        Group priorityGroup = buildPriorityGroup(composite);
         Group reviewGroup = buildReviewGroup(composite);
         Group logGroup = buildLoggingGroup(composite);
 
         // Layout children
         generalGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        priorityGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         logGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         GridData data = new GridData();
@@ -96,7 +124,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
     /**
      * Build the group of general preferences
-     * @param parent the parent composte
+     * @param parent the parent composite
      * @return the group widget
      */
     private Group buildGeneralGroup(final Composite parent) {
@@ -131,11 +159,154 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
-        this.maxViolationsPerFilePerRule.setLayoutData(data);
+        maxViolationsPerFilePerRule.setLayoutData(data);
 
         return group;
     }
+  
+	/**
+     * Build the group of priority preferences
+     * @param parent the parent composite
+     * @return the group widget
+     */
+    private Group buildPriorityGroup(final Composite parent) {
 
+        Group group = new Group(parent, SWT.SHADOW_IN);
+        group.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_PRIORITIES));
+        group.setLayout(new GridLayout(1, false));
+
+        IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
+			public void dispose() {	}
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {	}
+			public Object[] getElements(Object inputElement) { return (RulePriority[])inputElement;	}        	
+        };
+        PriorityTableLabelProvider labelProvider = new PriorityTableLabelProvider(PriorityColumnDescriptor.VisibleColumns);
+        
+        tableViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI);
+        Table table = tableViewer.getTable();
+        table.setLayoutData( new GridData(GridData.BEGINNING, GridData.CENTER, true, true) );
+        
+        tableViewer.setLabelProvider(labelProvider);
+        tableViewer.setContentProvider(contentProvider);
+        table.setHeaderVisible(true);
+        labelProvider.addColumnsTo(table);
+        tableViewer.setInput( UISettings.currentPriorities(true) );
+        
+        TableColumn[] columns = table.getColumns();
+		for (TableColumn column : columns) column.pack();
+		
+        GridData data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        table.setLayoutData(data);
+        
+        Composite editorPanel = new Composite(group, SWT.None);
+        editorPanel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true) );
+        editorPanel.setLayout(new GridLayout(6, false));
+        
+        Label shapeLabel = new Label(editorPanel, SWT.None);
+        shapeLabel.setLayoutData( new GridData());
+        shapeLabel.setText("Shape:");
+        
+        final ShapePicker<Shape> ssc = new ShapePicker<Shape>(editorPanel, SWT.None, 14);
+        ssc.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+        ssc.setSize(280, 30);
+		ssc.setShapeMap(UISettings.shapeSet(SHAPE_COLOR, 10));
+		ssc.setItems( UISettings.allShapes() );
+		
+        Label colourLabel = new Label(editorPanel, SWT.None);
+        colourLabel.setLayoutData( new GridData());
+        colourLabel.setText("Color:");
+        
+        final ColorSelector colorPicker = new ColorSelector(editorPanel);
+        
+        Label nameLabel = new Label(editorPanel, SWT.None);
+        nameLabel.setLayoutData( new GridData());
+        nameLabel.setText("Name:");
+        
+        final Text priorityName = new Text(editorPanel, SWT.BORDER);
+        priorityName.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true) );
+
+        final Label descLabel = new Label(editorPanel, SWT.None);
+        descLabel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, false, true, 1, 1));
+        descLabel.setText("Description:");
+        
+        final Text priorityDesc = new Text(editorPanel, SWT.BORDER);
+        priorityDesc.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true, 5, 1) );
+        
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+				selectedPriorities(selection.toList(), ssc, colorPicker, priorityName);
+			}} );
+        
+		ssc.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+				setShape((Shape)selection.getFirstElement());
+			}} );
+		
+		colorPicker.addListener(new IPropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				setColor((RGB)event.getNewValue());
+			}} );
+		
+		priorityName.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent me) {
+				setName( priorityName.getText() );				
+			}} );
+		
+        return group;
+    }
+    
+    private void setShape(Shape shape) {
+    	
+    	if (shape == null) return;	// renderers can't handle this
+    	
+    	for (PriorityDescriptor pd : selectedDescriptors()) {
+    		pd.shape.shape = shape;
+    	}
+    	tableViewer.refresh();
+    }
+    
+    private void setColor(RGB clr) {
+    	for (PriorityDescriptor pd : selectedDescriptors()) {
+    		pd.shape.rgbColor = clr;
+    	}
+    	tableViewer.refresh();
+    }
+    
+    private void setName(String newName) {
+    	for (PriorityDescriptor pd : selectedDescriptors()) {
+    		pd.label = newName;
+    	}
+    	tableViewer.refresh();
+    }
+    
+    private PriorityDescriptor[] selectedDescriptors() {
+    	
+    	Object[] items = ((IStructuredSelection)tableViewer.getSelection()).toArray();
+    	PriorityDescriptor[] descs = new PriorityDescriptor[items.length];
+    	for (int i=0; i<descs.length; i++) descs[i] = PriorityDescriptorCache.instance.descriptorFor((RulePriority)items[i]);
+    	return descs;
+    }
+    
+    private static void selectedPriorities(List<RulePriority> items, ShapePicker<Shape> ssc, ColorSelector colorPicker, Text nameField) {
+
+    	if (items.size() != 1 ) {
+    		ssc.setSelection((Shape)null);
+    		nameField.setText("");
+    		return;
+    	}
+    	
+    	RulePriority priority = items.get(0);
+    	PriorityDescriptor desc = PriorityDescriptorCache.instance.descriptorFor(priority);
+    	
+    	ssc.setSelection( desc.shape.shape );
+    	nameField.setText(priority.getName());
+    	colorPicker.setColorValue( desc.shape.rgbColor );
+    }
+    
     /**
      * Build the group of review preferences
      * @param parent the parent composite
@@ -212,14 +383,14 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         logFileNameLabel.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_LOG_FILE_NAME));
         logFileNameLabel.setLayoutData(gridData);
 
-        this.logFileNameText = new Text(loggingGroup, SWT.BORDER);
-        this.logFileNameText.setText(this.preferences.getLogFileName());
-        this.logFileNameText.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TOOLTIP_LOG_FILE_NAME));
-        this.logFileNameText.setLayoutData(gridData1);
+        logFileNameText = new Text(loggingGroup, SWT.BORDER);
+        logFileNameText.setText(this.preferences.getLogFileName());
+        logFileNameText.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TOOLTIP_LOG_FILE_NAME));
+        logFileNameText.setLayoutData(gridData1);
 
-        this.browseButton = new Button(loggingGroup, SWT.NONE);
-        this.browseButton.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_BUTTON_BROWSE));
-        this.browseButton.addSelectionListener(new SelectionListener() {
+        browseButton = new Button(loggingGroup, SWT.NONE);
+        browseButton.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_BUTTON_BROWSE));
+        browseButton.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent event) {
                 browseLogFile();
             }
@@ -234,15 +405,15 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Label logLevelLabel = new Label(loggingGroup, SWT.NONE);
         logLevelLabel.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_LOG_LEVEL));
 
-        this.logLevelValueLabel = new Label(loggingGroup, SWT.NONE);
-        this.logLevelValueLabel.setText("");
-        this.logLevelValueLabel.setLayoutData(gridData2);
+        logLevelValueLabel = new Label(loggingGroup, SWT.NONE);
+        logLevelValueLabel.setText("");
+        logLevelValueLabel.setLayoutData(gridData2);
 
-        this.logLevelScale = new Scale(loggingGroup, SWT.NONE);
-        this.logLevelScale.setMaximum(6);
-        this.logLevelScale.setPageIncrement(1);
-        this.logLevelScale.setLayoutData(gridData3);
-        this.logLevelScale.addSelectionListener(new SelectionListener() {
+        logLevelScale = new Scale(loggingGroup, SWT.NONE);
+        logLevelScale.setMaximum(6);
+        logLevelScale.setPageIncrement(1);
+        logLevelScale.setLayoutData(gridData3);
+        logLevelScale.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent event) {
                 updateLogLevelValueLabel();
             }
@@ -251,7 +422,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             }
         });
 
-        this.logLevelScale.setSelection(intLogLevel(this.preferences.getLogLevel()));
+        logLevelScale.setSelection(intLogLevel(this.preferences.getLogLevel()));
         updateLogLevelValueLabel();
 
         return loggingGroup;
@@ -357,32 +528,32 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
-        if (this.additionalCommentText != null) {
-            this.additionalCommentText.setText(IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
+        if (additionalCommentText != null) {
+            additionalCommentText.setText(IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
         }
 
-        if (this.showPerspectiveBox != null) {
-            this.showPerspectiveBox.setSelection(IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
+        if (showPerspectiveBox != null) {
+            showPerspectiveBox.setSelection(IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
         }
 
-        if (this.useProjectBuildPath != null) {
-            this.useProjectBuildPath.setSelection(IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
+        if (useProjectBuildPath != null) {
+            useProjectBuildPath.setSelection(IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
         }
 
-        if (this.maxViolationsPerFilePerRule != null) {
-            this.maxViolationsPerFilePerRule.setMinimum(IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
+        if (maxViolationsPerFilePerRule != null) {
+            maxViolationsPerFilePerRule.setMinimum(IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
         }
 
-        if (this.reviewPmdStyleBox !=null) {
-            this.reviewPmdStyleBox.setSelection(IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
+        if (reviewPmdStyleBox !=null) {
+            reviewPmdStyleBox.setSelection(IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
         }
 
-        if (this.logFileNameText != null) {
-            this.logFileNameText.setText(IPreferences.LOG_FILENAME_DEFAULT);
+        if (logFileNameText != null) {
+            logFileNameText.setText(IPreferences.LOG_FILENAME_DEFAULT);
         }
 
-        if (this.logLevelScale != null) {
-            this.logLevelScale.setSelection(intLogLevel(IPreferences.LOG_LEVEL));
+        if (logLevelScale != null) {
+            logLevelScale.setSelection(intLogLevel(IPreferences.LOG_LEVEL));
             updateLogLevelValueLabel();
         }
     }
@@ -422,44 +593,67 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         dialog.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_DIALOG_BROWSE));
         String fileName = dialog.open();
         if (fileName != null) {
-            this.logFileNameText.setText(fileName);
+            logFileNameText.setText(fileName);
         }
     }
 
+    private void updateMarkerIcons() {
+    	
+    	if (!PriorityDescriptorCache.instance.hasChanges()) {
+    		return;
+    	}
+    	
+    	// TODO show in UI...could take a while to update
+    	
+    	PriorityDescriptorCache.instance.storeInPreferences();
+        UISettings.createRuleMarkerIcons(getShell().getDisplay());
+    	UISettings.reloadPriorities();
+    	
+    	// ensure that the decorator gets these new images...
+    	PMDPlugin.getDefault().ruleLabelDecorator().reloadDecorators();
+    	
+    	RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
+    	Set<IFile> files = MarkerUtil.allMarkedFiles(root);
+    	PMDPlugin.getDefault().changedFiles(files);
+    }
+    
     /**
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
     public boolean performOk() {
-        if (this.additionalCommentText != null) {
-            this.preferences.setReviewAdditionalComment(this.additionalCommentText.getText());
+    	
+    	updateMarkerIcons();
+    	
+        if (additionalCommentText != null) {
+            preferences.setReviewAdditionalComment(additionalCommentText.getText());
         }
 
-        if (this.showPerspectiveBox != null) {
-            this.preferences.setPmdPerspectiveEnabled(this.showPerspectiveBox.getSelection());
+        if (showPerspectiveBox != null) {
+            preferences.setPmdPerspectiveEnabled(showPerspectiveBox.getSelection());
         }
 
-        if (this.useProjectBuildPath != null) {
-            this.preferences.setProjectBuildPathEnabled(this.useProjectBuildPath.getSelection());
+        if (useProjectBuildPath != null) {
+            preferences.setProjectBuildPathEnabled(useProjectBuildPath.getSelection());
         }
 
-        if (this.maxViolationsPerFilePerRule != null) {
-            this.preferences.setMaxViolationsPerFilePerRule(Integer.valueOf(this.maxViolationsPerFilePerRule.getText()).intValue());
+        if (maxViolationsPerFilePerRule != null) {
+            preferences.setMaxViolationsPerFilePerRule(Integer.valueOf(maxViolationsPerFilePerRule.getText()).intValue());
         }
 
-        if (this.reviewPmdStyleBox != null) {
-            this.preferences.setReviewPmdStyleEnabled(this.reviewPmdStyleBox.getSelection());
+        if (reviewPmdStyleBox != null) {
+            preferences.setReviewPmdStyleEnabled(reviewPmdStyleBox.getSelection());
         }
 
-        if (this.logFileNameText != null) {
-            this.preferences.setLogFileName(this.logFileNameText.getText());
+        if (logFileNameText != null) {
+            preferences.setLogFileName(logFileNameText.getText());
         }
 
-        if (this.logLevelScale != null) {
-            this.preferences.setLogLevel(Level.toLevel(LOG_LEVELS[this.logLevelScale.getSelection()]));
+        if (logLevelScale != null) {
+            preferences.setLogLevel(Level.toLevel(LOG_LEVELS[logLevelScale.getSelection()]));
         }
 
-        this.preferences.sync();
-        PMDPlugin.getDefault().applyLogPreferences(this.preferences);
+        preferences.sync();
+        PMDPlugin.getDefault().applyLogPreferences(preferences);
 
         return true;
     }

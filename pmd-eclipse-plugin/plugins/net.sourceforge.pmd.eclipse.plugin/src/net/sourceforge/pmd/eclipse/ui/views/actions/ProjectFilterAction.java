@@ -37,7 +37,7 @@ public class ProjectFilterAction extends AbstractPMDAction {
         }
 
         // we set Image and Text for the Action
-        setText(getString(StringKeys.MSGKEY_VIEW_FILTER_PROJECT_PREFIX) + " " + projectRecord.getName());
+        setText(getString(StringKeys.VIEW_FILTER_PROJECT_PREFIX) + " " + projectRecord.getName());
     }
 
  	protected String imageId() { return PMDUiConstants.ICON_PROJECT; }

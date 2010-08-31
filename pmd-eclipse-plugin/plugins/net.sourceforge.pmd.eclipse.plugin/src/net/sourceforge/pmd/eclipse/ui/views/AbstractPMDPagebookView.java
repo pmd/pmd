@@ -56,6 +56,32 @@ public abstract class AbstractPMDPagebookView extends PageBookView {
     	return getSite().getPage();
     }
     
+    /**
+     * Gets the fileRecord from the currently active editor.
+     * @param part IWorkbenchPart
+     * @return a new FileRecord
+     */
+    protected FileRecord getFileRecordFromWorkbenchPart(IWorkbenchPart part) {
+        if (part instanceof IEditorPart) {
+            // If there is a file opened in the editor, we create a record for it
+            IEditorInput input = ((IEditorPart) part).getEditorInput();
+            if (input != null && input instanceof IFileEditorInput) {
+                IFile file = ((IFileEditorInput) input).getFile();                
+                return AbstractDefaultCommand.isJavaFile(file) ?
+                    new FileRecord(file) : 
+                    null;
+            }
+        } else {
+            // We also want to get the editors when it's not active
+            // so we pretend, that the editor has been activated
+            IEditorPart editorPart = getSite().getPage().getActiveEditor();
+            if (editorPart != null) {
+                return getFileRecordFromWorkbenchPart(editorPart);
+            }
+        }
+        return null;
+    }
+    
     /* @see org.eclipse.ui.part.ViewPart#init(org.eclipse.ui.IViewSite) */
     @Override
     public void init(IViewSite site) throws PartInitException {

@@ -64,7 +64,7 @@ public class CollapseAllAction extends AbstractPMDAction {
 
  	protected String imageId() { return PMDUiConstants.ICON_BUTTON_COLLAPSE; }
     
-    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_COLLAPSE_ALL; }
+    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_COLLAPSE_ALL; }
    
     /**
      * Performs the Action

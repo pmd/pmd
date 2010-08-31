@@ -46,7 +46,7 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     final TreeItem[] items = getViewer().getTree().getItems();
                     final int unitCount = calculateWorkUnits(items);
-                    monitor.beginTask(getString(StringKeys.MSGKEY_MONITOR_CALC_STATS_TASK), unitCount);
+                    monitor.beginTask(getString(StringKeys.MONITOR_CALC_STATS_TASK), unitCount);
                     for (TreeItem item : items) {
                         if (monitor.isCanceled()) {
                             break;
@@ -54,7 +54,7 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
                         if (item.getData() instanceof PackageRecord) {
                             final PackageRecord record = (PackageRecord) item.getData();
                             final AbstractPMDRecord[] children = record.getChildren();
-                            monitor.subTask(getString(StringKeys.MSGKEY_MONITOR_CALC_STATS_OF_PACKAGE) + ": " + record.getName());
+                            monitor.subTask(getString(StringKeys.MONITOR_CALC_STATS_OF_PACKAGE) + ": " + record.getName());
                             for (AbstractPMDRecord kid : children) {
                                 if (kid instanceof FileRecord) {
                                     calculateFileRecord((FileRecord)kid);

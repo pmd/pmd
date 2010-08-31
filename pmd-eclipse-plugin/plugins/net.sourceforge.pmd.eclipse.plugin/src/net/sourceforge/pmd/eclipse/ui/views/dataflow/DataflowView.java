@@ -1,13 +1,11 @@
 package net.sourceforge.pmd.eclipse.ui.views.dataflow;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractPMDPagebookView;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -17,9 +15,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.IPage;
 
@@ -44,6 +39,7 @@ public class DataflowView extends AbstractPMDPagebookView implements IResourceCh
     /* @see org.eclipse.ui.part.PageBookView#doCreatePage(org.eclipse.ui.IWorkbenchPart) */
     @Override
     protected PageRec doCreatePage(IWorkbenchPart part) {
+    	
         FileRecord resourceRecord = getFileRecordFromWorkbenchPart(part);
         if (resourceRecord != null) {
             resourceRecord.getResource().getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
@@ -129,31 +125,6 @@ public class DataflowView extends AbstractPMDPagebookView implements IResourceCh
         return (DataflowViewPage) page;
     }
     
-    /**
-     * Gets the fileRecord from the currently active editor.
-     * @param part IWorkbenchPart
-     * @return a new FileRecord
-     */
-    private FileRecord getFileRecordFromWorkbenchPart(IWorkbenchPart part) {
-        if (part instanceof IEditorPart) {
-            // If there is a file opened in the editor, we create a record for it
-            IEditorInput input = ((IEditorPart) part).getEditorInput();
-            if (input != null && input instanceof IFileEditorInput) {
-                IFile file = ((IFileEditorInput) input).getFile();                
-                return AbstractDefaultCommand.isJavaFile(file) ?
-                    new FileRecord(file) : 
-                    null;
-            }
-        } else {
-            // We also want to get the editors when it's not active
-            // so we pretend, that the editor has been activated
-            IEditorPart editorPart = getSite().getPage().getActiveEditor();
-            if (editorPart != null) {
-                return getFileRecordFromWorkbenchPart(editorPart);
-            }
-        }
-        return null;
-    }
     
     /**
      * Refresh, reloads the View with a given new resource.

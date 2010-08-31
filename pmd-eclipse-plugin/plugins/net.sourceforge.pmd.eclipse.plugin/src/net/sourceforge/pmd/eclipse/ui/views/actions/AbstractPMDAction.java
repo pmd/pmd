@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 
 import org.eclipse.jface.action.Action;
 
@@ -11,6 +12,15 @@ import org.eclipse.jface.action.Action;
  */
 public abstract class AbstractPMDAction extends Action {
 
+	private static StringTable stringTable;
+	
+	static {
+		PMDPlugin plugin = PMDPlugin.getDefault();
+		if (plugin != null) {
+			stringTable = plugin.getStringTable();
+		}
+	}
+	
 	protected AbstractPMDAction() {
 		setupWidget();
 	}
@@ -19,7 +29,7 @@ public abstract class AbstractPMDAction extends Action {
 	protected abstract String tooltipMsgId();
 	
 	public static String getString(String messageId) {
-		return PMDPlugin.getDefault().getStringTable().getString(messageId);
+		return stringTable == null ? messageId : stringTable.getString(messageId);
 	}
 	
 	protected void setupWidget() {

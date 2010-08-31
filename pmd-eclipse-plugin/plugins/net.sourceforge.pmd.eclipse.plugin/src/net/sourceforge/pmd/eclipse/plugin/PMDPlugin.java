@@ -1,8 +1,12 @@
 package net.sourceforge.pmd.eclipse.plugin;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleSet;
@@ -23,6 +27,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.impl.PropertiesFactoryImpl
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.impl.WriterFactoryImpl;
+import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 
@@ -32,9 +37,14 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -43,6 +53,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -51,6 +62,8 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class PMDPlugin extends AbstractUIPlugin {
+
+	private static File pluginFolder;
 
 	private HashMap<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 
@@ -91,6 +104,22 @@ public class PMDPlugin extends AbstractUIPlugin {
 	
 	public static void disposeAll(Collection<Color> colors) {
 		for (Color color : colors) color.dispose();
+	}
+	
+	public static File getPluginFolder() {
+
+		if (pluginFolder == null) {
+			URL url = Platform.getBundle(PLUGIN_ID).getEntry("/");
+			try {
+				url = FileLocator.resolve(url);
+			}
+			catch(IOException ex) {
+				ex.printStackTrace();
+			}
+			pluginFolder = new File(url.getPath());
+		}
+
+		return pluginFolder;
 	}
 	
 	/*
@@ -369,5 +398,90 @@ public class PMDPlugin extends AbstractUIPlugin {
             log(IStatus.ERROR, "Error when processing RuleSets extensions", e);
         }
     }
+    
+    public RuleLabelDecorator ruleLabelDecorator() {
+    	IDecoratorManager mgr = getWorkbench().getDecoratorManager();
+    	return (RuleLabelDecorator) mgr.getBaseLabelProvider("net.sourceforge.pmd.eclipse.plugin.RuleLabelDecorator");
+    }
+    
+    public void changedFiles(Collection<IFile> changedFiles) {
+    	
+    	Collection<IResource> withParents = new HashSet<IResource>(changedFiles.size() * 2);
+    	withParents.addAll(changedFiles);
+    	for (IFile file : changedFiles) {
+    		IResource parent = file.getParent();
+    		while (parent != null) {
+    			withParents.add(parent);
+    			parent = parent.getParent();
+    		}
+    	}
+    	
+    	changed( withParents );
+    }
+    
+	public void changed(Collection<IResource> changedResources) {
+		ruleLabelDecorator().changed(changedResources);
+	}
+	
+	private void addFilesTo(IResource resource, Collection<IResource> allKids) {
+		
+		if (resource instanceof IFile) {
+			allKids.add(resource);
+			return;
+		}
+		
+		if (resource instanceof IFolder) {
+			IFolder folder = (IFolder)resource;
+			IResource[] kids = null;
+			try {
+				kids = folder.members();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+			for (IResource irc : kids) {
+				if (irc instanceof IFile) {
+					allKids.add(irc);
+					continue;
+				}
+				if (irc instanceof IFolder) {
+					addFilesTo(irc, allKids);
+				}
+			}	
+			
+			allKids.add(folder);
+			return;
+		}
+		
+		if (resource instanceof IProject) {
+			IProject project = (IProject)resource;
+			IResource[] kids = null;
+			try {
+				kids = project.members();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+			for (IResource irc : kids) {
+				if (irc instanceof IFile) {
+					allKids.add(irc);
+					continue;
+				}
+				if (irc instanceof IFolder) {
+					addFilesTo(irc, allKids);
+				}
+			}	
+			allKids.add(project);
+			return;
+		}
+	}
+	
+	public void removedMarkersIn(IResource resource) {
+		
+		Collection<IResource> changes = new ArrayList<IResource>();
+		
+		addFilesTo(resource, changes);
+		
+		ruleLabelDecorator().changed(changes);
+	}
+
 }
 

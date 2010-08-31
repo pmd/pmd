@@ -164,7 +164,7 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
                 if (selection != null && selection instanceof IStructuredSelection) {
                     IStructuredSelection structuredSelection = (IStructuredSelection) selection;
                     if (getMonitor() != null) {
-                        getMonitor().beginTask(getString(StringKeys.MSGKEY_MONITOR_REMOVE_REVIEWS), IProgressMonitor.UNKNOWN);
+                        getMonitor().beginTask(getString(StringKeys.MONITOR_REMOVE_REVIEWS), IProgressMonitor.UNKNOWN);
 
                         Iterator<?> i = structuredSelection.iterator();
                         while (i.hasNext()) {

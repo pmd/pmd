@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
@@ -53,9 +52,6 @@ import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.resources.IMarkerDelta;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -80,6 +76,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
     private TreeViewer treeViewer;
 
     private RootRecord root;
+    private ChangeEvaluator changeEvaluator;
 
     /**
      * Constructor
@@ -89,8 +86,8 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
     public ViolationOverviewContentProvider(ViolationOverview view) {
         super();
 
-        this.violationView = view;
-        this.treeViewer = view.getViewer();
+        violationView = view;
+        treeViewer = view.getViewer();
     }
 
     /**
@@ -98,7 +95,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      */
     public void dispose() {
         if (root != null) {
-            final IWorkspaceRoot workspaceRoot = (IWorkspaceRoot) this.root.getResource();
+            IWorkspaceRoot workspaceRoot = (IWorkspaceRoot) root.getResource();
             workspaceRoot.getWorkspace().removeResourceChangeListener(this);
         }
     }
@@ -156,15 +153,12 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      */
     private Object[] getChildrenOfPackage(PackageRecord record) {
    
-        if (this.violationView.getShowType() == ViolationOverview.SHOW_MARKERS_FILES) {
-            final Map<String, AbstractPMDRecord> markers = new HashMap<String, AbstractPMDRecord>();
-            final List<AbstractPMDRecord> files = record.getChildrenAsList();
-            for (int i = 0; i < files.size(); i++) {
-                final AbstractPMDRecord fileRec = files.get(i);
-                final List<AbstractPMDRecord> newMarkers = fileRec.getChildrenAsList();
-
-                for (int j = 0; j < newMarkers.size(); j++) {
-                    final AbstractPMDRecord markerRec = newMarkers.get(j);
+        if (violationView.getShowType() == ViolationOverview.SHOW_MARKERS_FILES) {
+            Map<String, AbstractPMDRecord> markers = new HashMap<String, AbstractPMDRecord>();
+            List<AbstractPMDRecord> files = record.getChildrenAsList();
+            for (AbstractPMDRecord fileRec : files) {
+                List<AbstractPMDRecord> newMarkers = fileRec.getChildrenAsList();
+                for (AbstractPMDRecord markerRec : newMarkers) {
                     markers.put(markerRec.getName(), markerRec);
                 }
             }
@@ -182,19 +176,19 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
     private Object[] getChildrenOfRoot() {
 
         // ... we care about its Project's
-        final List<AbstractPMDRecord> projects = root.getChildrenAsList();
-        final ProjectRecord[] projectArray = new ProjectRecord[projects.size()];
+        List<AbstractPMDRecord> projects = root.getChildrenAsList();
+        ProjectRecord[] projectArray = new ProjectRecord[projects.size()];
         projects.toArray(projectArray);
 
         // we make a List of all Packages
-        final List<AbstractPMDRecord> packages = new ArrayList<AbstractPMDRecord>();
+        List<AbstractPMDRecord> packages = new ArrayList<AbstractPMDRecord>();
         for (ProjectRecord element : projectArray) {
             if (element.isProjectOpen()) {
                 packages.addAll(element.getChildrenAsList());
             }
         }
 
-        switch (this.violationView.getShowType()) {
+        switch (violationView.getShowType()) {
         case ViolationOverview.SHOW_MARKERS_FILES:
         case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
             // show packages
@@ -202,9 +196,8 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
 
         case ViolationOverview.SHOW_FILES_MARKERS:
             // show files
-            final List<AbstractPMDRecord> files = new ArrayList<AbstractPMDRecord>();
-            for (int j = 0; j < packages.size(); j++) {
-                final AbstractPMDRecord packageRec = packages.get(j);
+            List<AbstractPMDRecord> files = new ArrayList<AbstractPMDRecord>();
+            for (AbstractPMDRecord packageRec : packages) {
                 files.addAll(packageRec.getChildrenAsList());
             }
 
@@ -221,12 +214,12 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      */
     public Object getParent(Object element) {
         Object parent = null;
-        final AbstractPMDRecord record = (AbstractPMDRecord) element;
+        AbstractPMDRecord record = (AbstractPMDRecord) element;
 
         switch (violationView.getShowType()) {
         case ViolationOverview.SHOW_FILES_MARKERS:
             if (element instanceof FileRecord) {
-                parent = this.root;
+                parent = root;
             } else {
                 parent = record.getParent();
             }
@@ -235,7 +228,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
             if (element instanceof FileToMarkerRecord) {
                 parent = record.getParent();
             } else if (element instanceof PackageRecord) {
-                parent = this.root;
+                parent = root;
             } else if (element instanceof MarkerRecord) {
                 parent = record.getParent().getParent();
             }
@@ -243,7 +236,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
             break;
         case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
             if (element instanceof PackageRecord) {
-                parent = this.root;
+                parent = root;
             } else {
                 parent = record.getParent();
             }
@@ -287,16 +280,16 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         LOG.debug("ViolationOverview inputChanged");
-        this.treeViewer = (TreeViewer) viewer;
+        treeViewer = (TreeViewer) viewer;
 
         // this is called, when the View is instantiated and gets Input
         // or if the Source of Input changes
 
         // we remove an existing ResourceChangeListener
         IWorkspaceRoot workspaceRoot = null;
-        if (this.root != null) {
+        if (root != null) {
             LOG.debug("remove current listener");
-            workspaceRoot = (IWorkspaceRoot) this.root.getResource();
+            workspaceRoot = (IWorkspaceRoot) root.getResource();
             workspaceRoot.getWorkspace().removeResourceChangeListener(this);
         }
 
@@ -306,90 +299,106 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
             LOG.debug("the new input is a workspace root");
             // either we got a WorkspaceRoot
             workspaceRoot = (IWorkspaceRoot) newInput;
-            this.root = new RootRecord(workspaceRoot);
+            root = new RootRecord(workspaceRoot);
             workspaceRoot.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
         } else if (newInput instanceof RootRecord) {
             LOG.debug("the new input is a root record");
             // ... or already a Record for it
-            this.root = (RootRecord) newInput;
-            workspaceRoot = (IWorkspaceRoot) this.root.getResource();
+            root = (RootRecord) newInput;
+            workspaceRoot = (IWorkspaceRoot) root.getResource();
             workspaceRoot.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
         }
+        
+        changeEvaluator = new ChangeEvaluator(root);
     }
 
     /**
      * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
      */
     public void resourceChanged(IResourceChangeEvent event) {
-        LOG.debug("resource changed event");
-        final IMarkerDelta[] markerDeltas = event.findMarkerDeltas(PMDRuntimeConstants.PMD_MARKER, true);
 
-        // first we get a List of changes to Files and Projects
-        // so we won't need updating everything
-        final List<IResource> changedFiles = new ArrayList<IResource>();
-        final List<IProject> changedProjects = new ArrayList<IProject>();
-        for (IMarkerDelta markerDelta : markerDeltas) {
-            final IResource resource = markerDelta.getResource();
-            final IProject project = resource.getProject();
+    	final ChangeRecord<AbstractPMDRecord> changes = changeEvaluator.changeRecordFor(event);
 
-            // the lists should not contain
-            // Projects or Resources twice
-
-            if (!changedFiles.contains(resource)) {
-                changedFiles.add(resource);
-                LOG.debug("Resource " + resource.getName() + " has changed");
-            }
-
-            if (!changedProjects.contains(project)) {
-                changedProjects.add(project);
-                LOG.debug("Project " + project.getName() + " has changed");
-            }
-        }
-
-        // we can add, change or remove Resources
-        // all this changes are given to the viewer later
-        final List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
-        final List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
-        final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
-
-        // we got through the changed Projects
-        for (IProject project : changedProjects) {
-            LOG.debug("Processing changes for project " + project.getName());
-            ProjectRecord projectRec = (ProjectRecord) this.root.findResource(project);
-
-            // if the Project is closed or deleted,
-            // we also delete it from the Model and go on
-            if (!(project.isOpen() && project.isAccessible())) { // NOPMD by Sven on 09.11.06 22:17
-                LOG.debug("The project is not open or not accessible. Remove it");
-                final List<AbstractPMDRecord>[] array = updateFiles(project, changedFiles);
-                removals.addAll(array[1]);
-                this.root.removeResource(project);
-            }
-
-            // if we couldn't find the Project
-            // then it has to be new
-            else if (projectRec == null) {
-                LOG.debug("Cannot find a project record for it. Add it.");
-                projectRec = (ProjectRecord) this.root.addResource(project);
-            }
-
-            // then we can update the Files for the new or updated Project
-            final List<AbstractPMDRecord>[] array = updateFiles(project, changedFiles);
-            additions.addAll(array[0]);
-            removals.addAll(array[1]);
-            changes.addAll(array[2]);
-        }
-
-        // the additions, removals and changes are given to the viewer
-        // so that it can update itself
-        // updating the table MUST be in sync
-        this.treeViewer.getControl().getDisplay().syncExec(new Runnable() {
-            public void run() {
-                updateViewer(additions, removals, changes);
-            }
-        });
+    	// the additions, removals and changes are given to the viewer so that it can update itself
+    	// updating the table MUST be in sync
+    	treeViewer.getControl().getDisplay().syncExec(new Runnable() {
+    		public void run() {
+    			updateViewer(changes);
+    		}
+    	});
     }
 
+//    public void resourceChanged(IResourceChangeEvent event) {
+//    	
+//        LOG.debug("resource changed event");
+//        
+//        List<IMarkerDelta> markerDeltas = MarkerUtil.markerDeltasIn(event);
+//
+//        // first we get a List of changes to Files and Projects
+//        // so we won't need updating everything
+//        List<IResource> changedFiles = new ArrayList<IResource>();
+//        List<IProject> changedProjects = new ArrayList<IProject>();
+//        for (IMarkerDelta markerDelta : markerDeltas) {
+//            IResource resource = markerDelta.getResource();
+//            IProject project = resource.getProject();
+//
+//            // the lists should not contain Projects or Resources twice
+//
+//            if (!changedFiles.contains(resource)) {
+//                changedFiles.add(resource);
+//                LOG.debug("Resource " + resource.getName() + " has changed");
+//            }
+//
+//            if (!changedProjects.contains(project)) {
+//                changedProjects.add(project);
+//                LOG.debug("Project " + project.getName() + " has changed");
+//            }
+//        }
+//
+//        // we can add, change or remove Resources
+//        // all this changes are given to the viewer later
+//        final List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
+//        final List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
+//        final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
+//
+//        // we go through the changed Projects
+//        for (IProject project : changedProjects) {
+//            LOG.debug("Processing changes for project " + project.getName());
+//            ProjectRecord projectRec = (ProjectRecord) root.findResource(project);
+//
+//            // if the Project is closed or deleted,
+//            // we also delete it from the Model and go on
+//            if (!(project.isOpen() && project.isAccessible())) { // NOPMD by Sven on 09.11.06 22:17
+//                LOG.debug("The project is not open or not accessible. Remove it");
+//                List<AbstractPMDRecord>[] array = updateFiles(project, changedFiles);
+//                removals.addAll(array[1]);
+//                root.removeResource(project);
+//            }
+//
+//            // if we couldn't find the Project
+//            // then it has to be new
+//            else if (projectRec == null) {
+//                LOG.debug("Cannot find a project record for it. Add it.");
+//                projectRec = (ProjectRecord) root.addResource(project);
+//            }
+//
+//            // then we can update the Files for the new or updated Project
+//            List<AbstractPMDRecord>[] array = updateFiles(project, changedFiles);
+//            additions.addAll(array[0]);
+//            removals.addAll(array[1]);
+//            changes.addAll(array[2]);
+//        }
+//
+//        // the additions, removals and changes are given to the viewer
+//        // so that it can update itself
+//        // updating the table MUST be in sync
+//        treeViewer.getControl().getDisplay().syncExec(new Runnable() {
+//            public void run() {
+//                updateViewer(additions, removals, changes);
+//            }
+//        });
+//    }
+    
     /**
      * Updates the Files for a given Project
      *
@@ -398,90 +407,91 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      * @return an List of Lists containing additions [0], removals [1]
      *         and changes [2] (Array-Position in Brackets)
      */
-    protected List<AbstractPMDRecord>[] updateFiles(IProject project, List<IResource> changedFiles) {
-        final List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
-        final List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
-        final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
-        List<AbstractPMDRecord>[] updatedFiles = new List[] { additions, removals, changes };
+//    protected List<AbstractPMDRecord>[] updateFiles(IProject project, List<IResource> changedFiles) {
+//    	
+//        final List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
+//        final List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
+//        final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
+//        List<AbstractPMDRecord>[] updatedFiles = new List[] { additions, removals, changes };
+//
+//        // we search for the ProjectRecord to the Project
+//        // if it doesn't exist, we return nothing
+//        final ProjectRecord projectRec = (ProjectRecord) root.findResource(project);
+//
+//        // we got through all files
+//        if (projectRec != null && project.isAccessible()) {
+//            updatedFiles = ChangeEvaluator.searchProjectForModifications(projectRec, changedFiles);
+//        }
+//
+//        // if the project is deleted or closed
+//        else if (projectRec != null) {
+//            final List<AbstractPMDRecord> packages = projectRec.getChildrenAsList();
+//            // ... we add all Packages to the removals
+//            // so they are not shown anymore
+//            removals.addAll(packages);
+//            for (int k = 0; k < packages.size(); k++) {
+//                final PackageRecord packageRec = (PackageRecord) packages.get(k);
+//                removals.addAll(packageRec.getChildrenAsList());
+//            }
+//            updatedFiles = new List[] { additions, removals, changes };
+//        }
+//
+//        return updatedFiles;
+//    }
 
-        // we search for the ProjectRecord to the Project
-        // if it doesn't exist, we return nothing
-        final ProjectRecord projectRec = (ProjectRecord) this.root.findResource(project);
-
-        // we got through all files
-        if (projectRec != null && project.isAccessible()) {
-            updatedFiles = searchProjectForModifications(projectRec, changedFiles);
-        }
-
-        // if the project is deleted or closed
-        else if (projectRec != null) {
-            final List<AbstractPMDRecord> packages = projectRec.getChildrenAsList();
-            // ... we add all Packages to the removals
-            // so they are not shown anymore
-            removals.addAll(packages);
-            for (int k = 0; k < packages.size(); k++) {
-                final PackageRecord packageRec = (PackageRecord) packages.get(k);
-                removals.addAll(packageRec.getChildrenAsList());
-            }
-            updatedFiles = new List[] { additions, removals, changes };
-        }
-
-        return updatedFiles;
-    }
-
-    /**
-     * Analyzes the modification inside a single project and compute the list of additions, updates and removals.
-     *
-     * @param projectRec
-     * @param changedFiles
-     * @return
-     */
-    private List<AbstractPMDRecord>[] searchProjectForModifications(ProjectRecord projectRec, List<IResource> changedFiles) {
-        final List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
-        final List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
-        final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
-        final IProject project = (IProject) projectRec.getResource();
-
-        LOG.debug("Analyses project " + project.getName());
-
-        for (IResource resource : changedFiles) {
-            LOG.debug("Analyses resource " + resource.getName());
-
-            // ... and first check, if the project is the right one
-            if (project.equals(resource.getProject())) {
-                final AbstractPMDRecord rec = projectRec.findResource(resource);
-                if (rec != null && rec.getResourceType() == IResource.FILE) {
-                    final FileRecord fileRec = (FileRecord) rec;
-                    fileRec.updateChildren();
-                    if (fileRec.getResource().isAccessible() && fileRec.hasMarkers()) {
-                        LOG.debug("The file has changed");
-                        changes.add(fileRec);
-                    } else {
-                        LOG.debug("The file has been removed");
-                        projectRec.removeResource(fileRec.getResource());
-                        removals.add(fileRec);
-
-                        // remove parent if no more markers
-                        final PackageRecord packageRec = (PackageRecord) fileRec.getParent();
-                        if (!packageRec.hasMarkers()) {
-                            projectRec.removeResource(fileRec.getParent().getResource());
-                            removals.add(packageRec);
-                        }
-                    }
-                } else if (rec == null) {
-                    LOG.debug("This is a new file.");
-                    final AbstractPMDRecord fileRec = projectRec.addResource(resource);
-                    additions.add(fileRec);
-                } else {
-                    LOG.debug("The resource found is not a file! type found : " + rec.getResourceType());
-                }
-            } else {
-                LOG.debug("The project resource is not the same! (" + resource.getProject().getName() + ')');
-            }
-        }
-
-        return new List[] { additions, removals, changes };
-    }
+//    /**
+//     * Analyzes the modification inside a single project and compute the list of additions, updates and removals.
+//     *
+//     * @param projectRec
+//     * @param changedFiles
+//     * @return
+//     */
+//    private List<AbstractPMDRecord>[] searchProjectForModifications(ProjectRecord projectRec, List<IResource> changedFiles) {
+//        final List<AbstractPMDRecord> additions = new ArrayList<AbstractPMDRecord>();
+//        final List<AbstractPMDRecord> removals = new ArrayList<AbstractPMDRecord>();
+//        final List<AbstractPMDRecord> changes = new ArrayList<AbstractPMDRecord>();
+//        final IProject project = (IProject) projectRec.getResource();
+//
+//        LOG.debug("Analyses project " + project.getName());
+//
+//        for (IResource resource : changedFiles) {
+//            LOG.debug("Analyses resource " + resource.getName());
+//
+//            // ... and first check, if the project is the right one
+//            if (project.equals(resource.getProject())) {
+//                final AbstractPMDRecord rec = projectRec.findResource(resource);
+//                if (rec != null && rec.getResourceType() == IResource.FILE) {
+//                    final FileRecord fileRec = (FileRecord) rec;
+//                    fileRec.updateChildren();
+//                    if (fileRec.getResource().isAccessible() && fileRec.hasMarkers()) {
+//                        LOG.debug("The file has changed");
+//                        changes.add(fileRec);
+//                    } else {
+//                        LOG.debug("The file has been removed");
+//                        projectRec.removeResource(fileRec.getResource());
+//                        removals.add(fileRec);
+//
+//                        // remove parent if no more markers
+//                        final PackageRecord packageRec = (PackageRecord) fileRec.getParent();
+//                        if (!packageRec.hasMarkers()) {
+//                            projectRec.removeResource(fileRec.getParent().getResource());
+//                            removals.add(packageRec);
+//                        }
+//                    }
+//                } else if (rec == null) {
+//                    LOG.debug("This is a new file.");
+//                    final AbstractPMDRecord fileRec = projectRec.addResource(resource);
+//                    additions.add(fileRec);
+//                } else {
+//                    LOG.debug("The resource found is not a file! type found : " + rec.getResourceType());
+//                }
+//            } else {
+//                LOG.debug("The project resource is not the same! (" + resource.getProject().getName() + ')');
+//            }
+//        }
+//
+//        return new List[] { additions, removals, changes };
+//    }
 
     /**
      * Applies found updates on the table, adapted from Philippe Herlin
@@ -490,31 +500,57 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      * @param removals
      * @param changes
      */
-    protected void updateViewer(List<AbstractPMDRecord> additions, List<AbstractPMDRecord> removals, List<AbstractPMDRecord> changes) {
+//    protected void updateViewer(List<AbstractPMDRecord> additions, List<AbstractPMDRecord> removals, List<AbstractPMDRecord> changes) {
+//
+//        // perform removals
+//        if (removals.size() > 0) {
+//            treeViewer.cancelEditing();
+//            treeViewer.remove(removals.toArray());
+//        }
+//
+//        // perform additions
+//        if (additions.size() > 0) {
+//            for (int i = 0; i < additions.size(); i++) {
+//                final AbstractPMDRecord addedRec = additions.get(i);
+//                if (addedRec instanceof FileRecord) {
+//                    treeViewer.add(addedRec.getParent(), addedRec);
+//                } else {
+//                    treeViewer.add(root, addedRec);
+//                }
+//            }
+//        }
+//
+//        // perform changes
+//        if (changes.size() > 0) {
+//            treeViewer.update(changes.toArray(), null);
+//        }
+//
+//        violationView.refresh();
+//    }
+    
+    protected void updateViewer(ChangeRecord<AbstractPMDRecord> changes) {
 
         // perform removals
-        if (removals.size() > 0) {
-            this.treeViewer.cancelEditing();
-            this.treeViewer.remove(removals.toArray());
+        if (changes.hasRemovals()) {
+            treeViewer.cancelEditing();
+            treeViewer.remove(changes.removals.toArray());
         }
 
-        // perform additions
-        if (additions.size() > 0) {
-            for (int i = 0; i < additions.size(); i++) {
-                final AbstractPMDRecord addedRec = additions.get(i);
-                if (addedRec instanceof FileRecord) {
-                    this.treeViewer.add(addedRec.getParent(), addedRec);
-                } else {
-                    this.treeViewer.add(this.root, addedRec);
-                }
-            }
+        // perform additions (if any)
+        for (AbstractPMDRecord addedRec : changes.additions) {
+        	if (addedRec instanceof FileRecord) {
+        		treeViewer.add(addedRec.getParent(), addedRec);
+        	} else {
+        		treeViewer.add(root, addedRec);
+        	}
         }
+
 
         // perform changes
-        if (changes.size() > 0) {
-            this.treeViewer.update(changes.toArray(), null);
+        if (changes.hasChanges()) {
+            treeViewer.update(changes.changes.toArray(), null);
         }
 
-        this.violationView.refresh();
+        violationView.refresh();
     }
 }

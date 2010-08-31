@@ -48,11 +48,13 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.plugin.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesFactory;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
@@ -90,7 +92,12 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String LOG_FILENAME                = PMDPlugin.PLUGIN_ID + ".log_filename";
     private static final String LOG_LEVEL                   = PMDPlugin.PLUGIN_ID + ".log_level";
     private static final String DISABLED_RULES              = PMDPlugin.PLUGIN_ID + ".disabled_rules";
-
+    private static final String PRIORITY_DESC_1				= PMDPlugin.PLUGIN_ID + ".priority_descriptor_1";
+    private static final String PRIORITY_DESC_2				= PMDPlugin.PLUGIN_ID + ".priority_descriptor_2";
+    private static final String PRIORITY_DESC_3				= PMDPlugin.PLUGIN_ID + ".priority_descriptor_3";
+    private static final String PRIORITY_DESC_4				= PMDPlugin.PLUGIN_ID + ".priority_descriptor_4";
+    private static final String PRIORITY_DESC_5				= PMDPlugin.PLUGIN_ID + ".priority_descriptor_5";
+    
     private static final String OLD_PREFERENCE_PREFIX       = "net.sourceforge.pmd.runtime";
     private static final String OLD_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
     public static final String NEW_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.eclipse.plugin.prefs";
@@ -121,6 +128,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             loadLogFileName();
             loadLogLevel();
             loadActiveRules();
+            loadRulePriorityDescriptors();
         }
 
         return this.preferences;
@@ -179,6 +187,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storeLogFileName();
         storeLogLevel();
         storeActiveRules();
+        storePriorityDescriptors();
     }
 
     /**
@@ -186,10 +195,10 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     public RuleSet getRuleSet() {
         
-        if (this.ruleSet == null) {
-            this.ruleSet = getRuleSetFromStateLocation();
+        if (ruleSet == null) {
+            ruleSet = getRuleSetFromStateLocation();
         }
-        return this.ruleSet;
+        return ruleSet;
     }
 
     /**
@@ -281,6 +290,29 @@ class PreferencesManagerImpl implements IPreferencesManager {
         this.loadPreferencesStore.setDefault(DISABLED_RULES, IPreferences.ACTIVE_RULES);
         this.preferences.setActiveRuleNames(asStringSet(loadPreferencesStore.getString(DISABLED_RULES), ","));
     }
+    
+    /**
+     * Read the priority descriptors
+     *
+     */
+    private void loadRulePriorityDescriptors() {
+    	// TODO - put into a loop
+        loadPreferencesStore.setDefault(PRIORITY_DESC_1, IPreferences.PD_1_DEFAULT.storeString());
+        preferences.setPriorityDescriptor(RulePriority.HIGH, PriorityDescriptor.from( loadPreferencesStore.getString(PRIORITY_DESC_1) ) );
+        
+        loadPreferencesStore.setDefault(PRIORITY_DESC_2, IPreferences.PD_2_DEFAULT.storeString());
+        preferences.setPriorityDescriptor(RulePriority.MEDIUM_HIGH, PriorityDescriptor.from( loadPreferencesStore.getString(PRIORITY_DESC_2) ) );
+        
+        loadPreferencesStore.setDefault(PRIORITY_DESC_3, IPreferences.PD_3_DEFAULT.storeString());
+        preferences.setPriorityDescriptor(RulePriority.MEDIUM, PriorityDescriptor.from( loadPreferencesStore.getString(PRIORITY_DESC_3) ) );
+        
+        loadPreferencesStore.setDefault(PRIORITY_DESC_4, IPreferences.PD_4_DEFAULT.storeString());
+        preferences.setPriorityDescriptor(RulePriority.MEDIUM_LOW, PriorityDescriptor.from( loadPreferencesStore.getString(PRIORITY_DESC_4) ) );
+        
+        loadPreferencesStore.setDefault(PRIORITY_DESC_5, IPreferences.PD_5_DEFAULT.storeString());
+        preferences.setPriorityDescriptor(RulePriority.LOW, PriorityDescriptor.from( loadPreferencesStore.getString(PRIORITY_DESC_5) ) );
+    }
+    
     
     private static Set<String> asStringSet(String delimitedString, String delimiter) {
     	
@@ -374,6 +406,15 @@ class PreferencesManagerImpl implements IPreferencesManager {
         this.storePreferencesStore.setValue(LOG_LEVEL, this.preferences.getLogLevel().toString());
     }
 
+    private void storePriorityDescriptors() {
+    	// TODO put into a loop
+    	storePreferencesStore.setValue(PRIORITY_DESC_1, preferences.getPriorityDescriptor(RulePriority.HIGH).storeString());
+    	storePreferencesStore.setValue(PRIORITY_DESC_2, preferences.getPriorityDescriptor(RulePriority.MEDIUM_HIGH).storeString());
+    	storePreferencesStore.setValue(PRIORITY_DESC_3, preferences.getPriorityDescriptor(RulePriority.MEDIUM).storeString());
+    	storePreferencesStore.setValue(PRIORITY_DESC_4, preferences.getPriorityDescriptor(RulePriority.MEDIUM_LOW).storeString());
+    	storePreferencesStore.setValue(PRIORITY_DESC_5, preferences.getPriorityDescriptor(RulePriority.LOW).storeString());
+    }
+    
     /**
      * Get rule set from state location
      */

@@ -230,17 +230,17 @@ public class BaseVisitor {
      *            the resource to process
      */
     protected final void reviewResource(final IResource resource) {
-        final IFile file = (IFile) resource.getAdapter(IFile.class);
+        IFile file = (IFile) resource.getAdapter(IFile.class);
         if (file != null && file.getFileExtension() != null) {
 
             try {
-                boolean included = this.projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived();
-                log.debug("Derived files included: " + this.projectProperties.isIncludeDerivedFiles());
+                boolean included = projectProperties.isIncludeDerivedFiles() || !projectProperties.isIncludeDerivedFiles() && !file.isDerived();
+                log.debug("Derived files included: " + projectProperties.isIncludeDerivedFiles());
                 log.debug("file " + file.getName() + " is derived: " + file.isDerived());
                 log.debug("file checked: " + included);
 
                 final File sourceCodeFile = file.getRawLocation().toFile();
-                if (getPmdEngine().applies(sourceCodeFile, getRuleSet()) && isFileInWorkingSet(file) && (this.projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived())) {
+                if (getPmdEngine().applies(sourceCodeFile, getRuleSet()) && isFileInWorkingSet(file) && (projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived())) {
                     subTask("PMD checking: " + file.getName());
 
                     Timer timer = new Timer();
@@ -308,7 +308,7 @@ public class BaseVisitor {
      * Update markers list for the specified file
      *
      * @param file
-     *            the file for which markes are to be updated
+     *            the file for which markers are to be updated
      * @param context
      *            a PMD context
      * @param fTask
@@ -324,6 +324,20 @@ public class BaseVisitor {
              PMDRuntimeConstants.MAX_VIOLATIONS_DESCRIPTOR.defaultValue();
     }
     
+    public static String markerTypeFor(RuleViolation violation) {
+
+    	int priorityId = violation.getRule().getPriority().getPriority();
+
+    	switch (priorityId) {
+	    	case 1: return PMDRuntimeConstants.PMD_MARKER_1;
+	    	case 2: return PMDRuntimeConstants.PMD_MARKER_2;
+	    	case 3: return PMDRuntimeConstants.PMD_MARKER_3;
+	    	case 4: return PMDRuntimeConstants.PMD_MARKER_4;
+	    	case 5: return PMDRuntimeConstants.PMD_MARKER_5;
+	    	default: return PMDRuntimeConstants.PMD_MARKER;
+    	}
+    }
+    
     private void updateMarkers(final IFile file, final RuleContext context, final boolean fTask, final Map<IFile, Set<MarkerInfo>> accumulator)
             throws CoreException, PropertiesException {
         final Set<MarkerInfo> markerSet = new HashSet<MarkerInfo>();
@@ -336,7 +350,7 @@ public class BaseVisitor {
 
         Rule rule = null;
         while (iter.hasNext()) {
-            final RuleViolation violation = iter.next();
+            RuleViolation violation = iter.next();
             rule = violation.getRule();
             review.ruleName = rule.getName();
             review.lineNumber = violation.getBeginLine();
@@ -354,8 +368,8 @@ public class BaseVisitor {
 
                 if (count.intValue() < maxViolations) {
                 	// Ryan Gustafson 02/16/2008 - Always use PMD_MARKER, as people get confused as to why PMD problems don't always show up on Problems view like they do when you do build.
-                    // markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
-                    markerSet.add(getMarkerInfo(violation, PMDRuntimeConstants.PMD_MARKER));
+                     // markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
+                    markerSet.add(getMarkerInfo(violation, markerTypeFor(violation)));
                     /*
                     if (isDfaEnabled && violation.getRule().usesDFA()) {
                         markerSet.add(getMarkerInfo(violation, PMDRuntimeConstants.PMD_DFA_MARKER));
@@ -518,8 +532,8 @@ public class BaseVisitor {
         public boolean equals(final Object obj) {
             boolean result = false;
             if (obj instanceof Review) {
-                final Review reviewObj = (Review) obj;
-                result = this.ruleName.equals(reviewObj.ruleName) && this.lineNumber == reviewObj.lineNumber;
+                Review reviewObj = (Review) obj;
+                result = ruleName.equals(reviewObj.ruleName) && lineNumber == reviewObj.lineNumber;
             }
             return result;
         }

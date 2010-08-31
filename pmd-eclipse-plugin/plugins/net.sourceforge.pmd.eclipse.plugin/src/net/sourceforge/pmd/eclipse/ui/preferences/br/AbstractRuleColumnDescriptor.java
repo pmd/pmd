@@ -27,7 +27,7 @@ public abstract class AbstractRuleColumnDescriptor extends AbstractColumnDescrip
 
     protected TreeColumn buildTreeColumn(Tree parent, final RuleSortListener sortListener) {
 
-        TreeColumn tc = super.buildTreeColumn(parent, sortListener);
+        TreeColumn tc = super.buildTreeColumn(parent);
 
         tc.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event e) {

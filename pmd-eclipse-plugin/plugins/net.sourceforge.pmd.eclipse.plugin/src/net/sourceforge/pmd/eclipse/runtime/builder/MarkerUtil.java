@@ -1,8 +1,10 @@
 package net.sourceforge.pmd.eclipse.runtime.builder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
@@ -10,12 +12,18 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
+import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
+import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +35,8 @@ import org.eclipse.core.runtime.CoreException;
 public class MarkerUtil {
 
     public static final IMarker[] EMPTY_MARKERS = new IMarker[0];
+    
+    private static Map<String, Rule> rulesByName;
     
 	private MarkerUtil() {	}
 
@@ -42,15 +52,17 @@ public class MarkerUtil {
 	        	
 	            if (resource instanceof IFile) {
 
-	            	IMarker[] ruleMarkers = null;
-	            	try {
-	            		ruleMarkers = resource.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-	            		} catch (CoreException ex) {
-	            			// what do to?
-	            		}
-	            	if (ruleMarkers.length > 0) {
-	            		foundOne[0] = true;
-	            		return false;
+	            	for (String markerType : PMDRuntimeConstants.RULE_MARKER_TYPES) {
+		            	IMarker[] ruleMarkers = null;
+		            	try {
+		            		ruleMarkers = resource.findMarkers(markerType, true, IResource.DEPTH_INFINITE);
+		            		} catch (CoreException ex) {
+		            			// what do to?
+		            		}
+		            	if (ruleMarkers.length > 0) {
+		            		foundOne[0] = true;
+		            		return false;
+		            	}
 	            	}
 	            }
 
@@ -92,7 +104,7 @@ public class MarkerUtil {
     }
     
     public static int rulePriorityFor(IMarker marker) throws CoreException {
-    	return ((Integer)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY)).intValue();
+    	return (Integer)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
     }
     
     public static int deleteViolationsOf(String ruleName, IResource resource) {
@@ -119,6 +131,17 @@ public class MarkerUtil {
     		return 0;
     	}
     }
+    
+	public static List<IMarkerDelta> markerDeltasIn(IResourceChangeEvent event) {
+		
+		List<IMarkerDelta> deltas = new ArrayList<IMarkerDelta>();
+		for (String markerType : PMDRuntimeConstants.RULE_MARKER_TYPES) {
+			IMarkerDelta[] deltaArray = event.findMarkerDeltas(markerType, true);
+			for (IMarkerDelta delta : deltaArray) deltas.add(delta);
+		}
+		
+		return deltas;		
+	}
     
     public static List<Rule> rulesFor(IMarker[] markers) {
     	
@@ -165,6 +188,7 @@ public class MarkerUtil {
 		for (String markerType : markerTypes) {
 			resource.deleteMarkers(markerType, true, IResource.DEPTH_INFINITE);
 		}
+		PMDPlugin.getDefault().removedMarkersIn(resource);
 	}
 
 	public static IMarker[] findAllMarkers(IResource resource) throws CoreException {
@@ -189,4 +213,61 @@ public class MarkerUtil {
 		return markerList.toArray(markerArray);
 	}
 
+	public static Set<Integer> priorityRangeOf(IResource resource, String[] markerTypes, int sizeLimit) throws CoreException { 
+		
+		Set<Integer> priorityLevels = new HashSet<Integer>(sizeLimit);
+		
+		for (String markerType : markerTypes) {
+	    	for (IMarker marker : resource.findMarkers(markerType, true, IResource.DEPTH_INFINITE)) {
+	    		priorityLevels.add( rulePriorityFor(marker) );
+	    		if (priorityLevels.size() == sizeLimit) return priorityLevels;
+	    	}
+		}
+		
+		return priorityLevels;
+	}
+	
+
+	private static void gatherRuleNames() {
+
+		rulesByName = new HashMap<String, Rule>();
+		Set<RuleSet> ruleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+		for (RuleSet rs : ruleSets) {
+			for (Rule rule : rs.getRules()) {
+				rulesByName.put(rule.getName(), rule);
+			}
+		}
+	}
+
+	private static Rule ruleFrom(IMarker marker) {
+		String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
+		if (StringUtil.isEmpty(ruleName)) return null;	//printValues(marker);
+		return rulesByName.get(ruleName);		
+	}
+	
+	public static Set<IFile> allMarkedFiles(RootRecord root) {
+		
+		gatherRuleNames();
+		
+		Set<IFile> files = new HashSet<IFile>();
+		
+		for (AbstractPMDRecord projectRecord : root.getChildren()) {
+			for (AbstractPMDRecord packageRecord : projectRecord.getChildren()) {
+				for (AbstractPMDRecord fileRecord : packageRecord.getChildren()) {
+					((FileRecord)fileRecord).updateChildren();
+					for (AbstractPMDRecord mRecord : fileRecord.getChildren()) {
+						MarkerRecord markerRecord = (MarkerRecord) mRecord;
+						for (IMarker marker : markerRecord.findMarkers()) {
+							Rule rule = ruleFrom(marker);
+							if (rule == null) continue;
+							files.add((IFile)fileRecord.getResource());
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		return files;
+	}
 }

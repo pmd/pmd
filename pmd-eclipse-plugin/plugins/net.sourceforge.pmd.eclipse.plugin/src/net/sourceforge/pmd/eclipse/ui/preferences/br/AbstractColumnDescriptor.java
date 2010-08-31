@@ -3,6 +3,8 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
@@ -41,9 +43,21 @@ public abstract class AbstractColumnDescriptor implements ColumnDescriptor {
 	 */
 	public String tooltip() { return tooltip;  }
 
-    protected TreeColumn buildTreeColumn(Tree parent, final RuleSortListener sortListener) {
+    protected TreeColumn buildTreeColumn(Tree parent) {
 
         final TreeColumn tc = new TreeColumn(parent, alignment);
+        tc.setWidth(width);
+        tc.setResizable(isResizable);
+        tc.setToolTipText(tooltip);
+        if (imagePath != null) tc.setImage(ResourceManager.imageFor(imagePath));
+
+        return tc;
+    }
+    
+    public TableColumn buildTableColumn(Table parent) {
+
+        final TableColumn tc = new TableColumn(parent, alignment);
+        tc.setText(label);
         tc.setWidth(width);
         tc.setResizable(isResizable);
         tc.setToolTipText(tooltip);

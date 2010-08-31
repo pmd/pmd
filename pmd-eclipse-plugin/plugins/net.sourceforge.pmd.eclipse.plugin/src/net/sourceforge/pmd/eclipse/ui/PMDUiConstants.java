@@ -130,6 +130,8 @@ public class PMDUiConstants {
     public static final String MEMENTO_OVERVIEW_FILE = "/violationOverview_memento.xml";
     public static final String MEMENTO_DATAFLOW_FILE = "/dataflowView_memento.xml";
     
+    public static final String MEMENTO_AST_FILE = "/astView_memento.xml";
+    
     public static final String KEY_MARKERATT_RULENAME = "rulename";
     public static final String KEY_MARKERATT_PRIORITY = "pmd_priority";
     public static final String KEY_MARKERATT_LINE2 = "line2";

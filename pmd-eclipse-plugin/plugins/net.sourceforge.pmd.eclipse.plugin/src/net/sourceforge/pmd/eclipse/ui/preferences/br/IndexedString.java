@@ -26,5 +26,5 @@ public class IndexedString implements Comparable<IndexedString>{
 				deltaLength;
 	}
 	
-	public static final IndexedString Empty = new IndexedString("", Collections.EMPTY_LIST);
+	public static final IndexedString Empty = new IndexedString("");
 }

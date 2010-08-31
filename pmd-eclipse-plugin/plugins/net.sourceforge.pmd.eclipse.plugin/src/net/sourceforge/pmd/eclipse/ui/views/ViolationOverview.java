@@ -87,21 +87,21 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ViolationOverview extends ViewPart implements ISelectionProvider, ITreeViewerListener { // NOPMD by Sven on 13.11.06 11:45
 
-    private TreeViewer treeViewer;
-    private ViolationOverviewContentProvider contentProvider;
-    private ViolationOverviewLabelProvider labelProvider;
-    private PriorityFilter priorityFilter;
-    private ProjectFilter projectFilter;
+    private TreeViewer							treeViewer;
+    private ViolationOverviewContentProvider	contentProvider;
+    private ViolationOverviewLabelProvider		labelProvider;
+    private PriorityFilter						priorityFilter;
+    private ProjectFilter						projectFilter;
+    private ViolationOverviewMenuManager 		menuManager;
     private ViolationOverviewDoubleClickListener doubleClickListener;
-    private ViolationOverviewMenuManager menuManager;
 
-    private RootRecord root;
-    private ViewMemento memento;
+    private RootRecord 		root;
+    private ViewMemento 	memento;
 
-    protected final Integer[] columnWidths = new Integer[5];
-    protected final int[] columnSortOrder = { 1, -1, -1, -1, 1 };
-    protected int currentSortedColumn;
-    private int showType;
+    protected final Integer[] 	columnWidths = new Integer[5];
+    protected final int[] 		columnSortOrder = { 1, -1, -1, -1, 1 };
+    protected int 				currentSortedColumn;
+    private int 				showType;
 
     protected final static String PACKAGE_SWITCH = "packageSwitch";
     protected final static String PRIORITY_LIST = "priorityFilterList";
@@ -109,18 +109,9 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     protected final static String COLUMN_WIDTHS = "tableColumnWidths";
     protected final static String COLUMN_SORTER = "tableColumnSorter";
 
-    /**
-     * Shows packages -> files -> markers.
-     */
-    public final static int SHOW_PACKAGES_FILES_MARKERS = 1;
-    /**
-     * Shows files -> markers without packages.
-     */
-    public final static int SHOW_FILES_MARKERS = 2;
-    /**
-     * Shows markers -> files without packages.
-     */
-    public final static int SHOW_MARKERS_FILES = 3;
+    public final static int SHOW_PACKAGES_FILES_MARKERS = 1;	// Shows packages -> files -> markers
+    public final static int SHOW_FILES_MARKERS			= 2;	// Shows files -> markers without packages
+    public final static int SHOW_MARKERS_FILES			= 3;	// Shows markers -> files without packages
 
     /**
      * @see org.eclipse.ui.ViewPart#init(org.eclipse.ui.IViewSite)
@@ -131,22 +122,21 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
 
         // init the View, create Content-, LabelProvider and Filters
         // this is called before createPartControl()
-        this.root = (RootRecord) getInitialInput();
-        this.contentProvider = new ViolationOverviewContentProvider(this);
-        this.labelProvider = new ViolationOverviewLabelProvider(this);
-        this.priorityFilter = new PriorityFilter();
-        this.projectFilter = new ProjectFilter();
-        this.doubleClickListener = new ViolationOverviewDoubleClickListener(this);
-        this.menuManager = new ViolationOverviewMenuManager(this);
+        root = (RootRecord) getInitialInput();
+        contentProvider = new ViolationOverviewContentProvider(this);
+        labelProvider = new ViolationOverviewLabelProvider(this);
+        priorityFilter = new PriorityFilter();
+        projectFilter = new ProjectFilter();
+        doubleClickListener = new ViolationOverviewDoubleClickListener(this);
+        menuManager = new ViolationOverviewMenuManager(this);
 
-        this.showType = SHOW_PACKAGES_FILES_MARKERS;
+        showType = SHOW_PACKAGES_FILES_MARKERS;
 
         // we can load the Memento here
-        this.memento = new ViewMemento(PMDUiConstants.MEMENTO_OVERVIEW_FILE);
-        if (this.memento != null) {
+        memento = new ViewMemento(PMDUiConstants.MEMENTO_OVERVIEW_FILE);
+        if (memento != null) {
             rememberFilterSettings();
         }
-
     }
 
     /**
@@ -154,33 +144,33 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     @Override
     public void createPartControl(Composite parent) {
-        this.treeViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-        this.treeViewer.setUseHashlookup(true);
-        this.treeViewer.getTree().setHeaderVisible(true);
-        this.treeViewer.getTree().setLinesVisible(true);
+        treeViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        treeViewer.setUseHashlookup(true);
+        treeViewer.getTree().setHeaderVisible(true);
+        treeViewer.getTree().setLinesVisible(true);
 
         // set Content- and LabelProvider as well as Filters
-        this.treeViewer.setContentProvider(contentProvider);
-        this.treeViewer.setLabelProvider(labelProvider);
-        this.treeViewer.addFilter(priorityFilter);
-        this.treeViewer.addFilter(projectFilter);
-        this.treeViewer.addTreeListener(this);
+        treeViewer.setContentProvider(contentProvider);
+        treeViewer.setLabelProvider(labelProvider);
+        treeViewer.addFilter(priorityFilter);
+        treeViewer.addFilter(projectFilter);
+        treeViewer.addTreeListener(this);
 
-        // create the necessary Stuff
+        // create the necessary stuff
         menuManager.setupActions();
-        createColumns(this.treeViewer.getTree());
+        createColumns(treeViewer.getTree());
         menuManager.createActionBars(getViewSite().getActionBars().getToolBarManager());
         menuManager.createDropDownMenu(getViewSite().getActionBars().getMenuManager());
         menuManager.createContextMenu();
 
         // put in the Input
         // and add Listeners
-        this.treeViewer.setInput(root);
-        this.treeViewer.addDoubleClickListener(doubleClickListener);
+        treeViewer.setInput(root);
+        treeViewer.addDoubleClickListener(doubleClickListener);
         getSite().setSelectionProvider(this);
 
         // load the State from a Memento into the View if there is one
-        if (this.memento != null) {
+        if (memento != null) {
             rememberTreeSettings();
         }
     }
@@ -190,33 +180,35 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     @Override
     public void dispose() {
-        this.memento.putList(PRIORITY_LIST, this.priorityFilter.getPriorityFilterList());
+        memento.putList(PRIORITY_LIST, priorityFilter.getPriorityFilterList());
 
         // on Dispose of the View we save its State into a Memento
 
         // we save the filtered Projects
-        final List<AbstractPMDRecord> projects = this.projectFilter.getProjectFilterList();
-        final List<String> projectNames = new ArrayList<String>();
+        List<AbstractPMDRecord> projects = projectFilter.getProjectFilterList();
+        List<String> projectNames = new ArrayList<String>();
         for (int k = 0; k < projects.size(); k++) {
-            final AbstractPMDRecord project = projects.get(k);
+            AbstractPMDRecord project = projects.get(k);
             projectNames.add(project.getName());
         }
-        this.memento.putList(PROJECT_LIST, projectNames);
+        memento.putList(PROJECT_LIST, projectNames);
 
         // ... the Columns Widths
-        final List<Integer> widthList = Arrays.asList(columnWidths);
-        this.memento.putList(COLUMN_WIDTHS, widthList);
+        List<Integer> widthList = Arrays.asList(columnWidths);
+        memento.putList(COLUMN_WIDTHS, widthList);
 
         // ... what Element is sorted in what way
-        final Integer[] sorterProps = new Integer[] { Integer.valueOf(currentSortedColumn),
-                Integer.valueOf(columnSortOrder[currentSortedColumn]) };
-        final List<Integer> sorterList = Arrays.asList(sorterProps);
+        Integer[] sorterProps = new Integer[] { 
+        		Integer.valueOf(currentSortedColumn),
+                Integer.valueOf(columnSortOrder[currentSortedColumn]) 
+                };
+        List<Integer> sorterList = Arrays.asList(sorterProps);
         memento.putList(COLUMN_SORTER, sorterList);
 
         // ... and how we should display the Elements
-        this.memento.putInteger(PACKAGE_SWITCH, getShowType());
+        memento.putInteger(PACKAGE_SWITCH, getShowType());
 
-        this.memento.save(PMDUiConstants.MEMENTO_OVERVIEW_FILE);
+        memento.save(PMDUiConstants.MEMENTO_OVERVIEW_FILE);
 
         super.dispose();
     }
@@ -247,12 +239,12 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         vioTotalColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_TOTAL));
         vioTotalColumn.setWidth(100);
 
-        // Violations / Lines of code
+        // Violations / 1K lines of code (KLOC)
         final TreeColumn vioLocColumn = new TreeColumn(tree, SWT.RIGHT);
-        vioLocColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_LOC));
+        vioLocColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_KLOC));
         vioLocColumn.setWidth(100);
 
-        // Violations / Number of Methods
+        // Violations / Method
         final TreeColumn vioMethodColumn = new TreeColumn(tree, SWT.RIGHT);
         vioMethodColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_METHOD));
         vioMethodColumn.setWidth(100);
@@ -273,17 +265,15 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @param tree
      */
     private void createColumnAdapters(Tree tree) {
-        final TreeColumn[] columns = tree.getColumns();
+        TreeColumn[] columns = tree.getColumns();
 
         for (int k = 0; k < columns.length; k++) {
-            this.columnWidths[k] = Integer.valueOf(columns[k].getWidth()); // NOPMD by Herlin on 09/10/06 15:02
+            columnWidths[k] = Integer.valueOf(columns[k].getWidth()); // NOPMD by Herlin on 09/10/06 15:02
 
-            // each Column gets a SelectionAdapter
-            // on Selection the Column is sorted
+            // each Column gets a SelectionAdapter on Selection the Column is sorted
             columns[k].addSelectionListener(new ColumnSelectionAdapter(k));
 
-            // the ResizeListener saves the current Width
-            // for storing it easily into a Memento later
+            // the ResizeListener saves the current Width for storing it easily into a Memento later
             columns[k].addControlListener(new ColumnControlAdapter(k));
         }
     }
@@ -342,9 +332,9 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     public int getNumberOfFilteredViolations(AbstractPMDRecord record) {
         int number = 0;
 
-        final List<Integer> filterList = this.priorityFilter.getPriorityFilterList();
+        List<Integer> filterList = priorityFilter.getPriorityFilterList();
         for (int i = 0; i < filterList.size(); i++) {
-            final Integer priority = filterList.get(i);
+            Integer priority = filterList.get(i);
             number += record.getNumberOfViolationsToPriority(
                     priority.intValue(), getShowType() == SHOW_MARKERS_FILES);
         }
@@ -359,14 +349,14 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @see #SHOW_PACKAGES_FILES_MARKERS
      */
     public void setShowType(int type) {
-        this.showType = type;
+        showType = type;
     }
 
     /**
      * @return show type
      */
     public int getShowType() {
-        return this.showType;
+        return showType;
     }
 
     /**
@@ -374,7 +364,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @return project filter list
      */
     public List<AbstractPMDRecord> getProjectFilterList() {
-        return this.projectFilter.getProjectFilterList();
+        return projectFilter.getProjectFilterList();
     }
 
     /**
@@ -382,20 +372,20 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @return project filter list
      */
     public List<Integer> getPriorityFilterList() {
-        return this.priorityFilter.getPriorityFilterList();
+        return priorityFilter.getPriorityFilterList();
     }
 
     /**
      * Sets the Widths of the Columns
      */
     public void setColumnWidths() {
-        if (!this.treeViewer.getTree().isDisposed()) {
-            final TreeColumn[] columns = this.treeViewer.getTree().getColumns();
-            for (int k = 0; k < this.columnWidths.length; k++) {
-                if (this.columnWidths[k] == null) {
-                    this.columnWidths[k] = Integer.valueOf(75);
+        if (!treeViewer.getTree().isDisposed()) {
+            TreeColumn[] columns = treeViewer.getTree().getColumns();
+            for (int k = 0; k < columnWidths.length; k++) {
+                if (columnWidths[k] == null) {
+                    columnWidths[k] = Integer.valueOf(75);
                 }
-                columns[k].setWidth(this.columnWidths[k].intValue());
+                columns[k].setWidth(columnWidths[k].intValue());
             }
         }
     }
@@ -409,9 +399,9 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     public void setSorterProperties(Integer[] properties) { // NOPMD by Herlin on 09/10/06 15:03
         if (properties.length > 0) {
-            this.currentSortedColumn = properties[0].intValue();
-            this.columnSortOrder[this.currentSortedColumn] = properties[1].intValue();
-            this.treeViewer.setSorter(getViewerSorter(this.currentSortedColumn));
+            currentSortedColumn = properties[0].intValue();
+            columnSortOrder[currentSortedColumn] = properties[1].intValue();
+            treeViewer.setSorter(getViewerSorter(currentSortedColumn));
         }
     }
 
@@ -420,20 +410,20 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     @Override
     public void setFocus() {
-        this.treeViewer.getTree().setFocus();
+        treeViewer.getTree().setFocus();
     }
 
     /**
      * @return the viewer
      */
     public TreeViewer getViewer() {
-        return this.treeViewer;
+        return treeViewer;
     }
 
     public AbstractPMDRecord[] getAllProjects() {
         AbstractPMDRecord[] projects = AbstractPMDRecord.EMPTY_RECORDS;
-        if (this.root != null) {
-            projects = this.root.getChildren();
+        if (root != null) {
+            projects = root.getChildren();
         }
         return projects;
     }
@@ -444,43 +434,43 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     public void refresh() {
         if (!this.treeViewer.getControl().isDisposed()) {
             //this.treeViewer.getControl().setRedraw(false);
-            this.treeViewer.refresh();
+            treeViewer.refresh();
             refreshMenu();
             //this.treeViewer.getControl().setRedraw(true);
         }
     }
 
     public void refreshMenu() {
-        this.menuManager.createDropDownMenu(getViewSite().getActionBars().getMenuManager());
-        this.menuManager.createContextMenu();
+        menuManager.createDropDownMenu(getViewSite().getActionBars().getMenuManager());
+        menuManager.createContextMenu();
     }
 
     /**
      * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
      */
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
-        this.treeViewer.addSelectionChangedListener(listener);
+        treeViewer.addSelectionChangedListener(listener);
     }
 
     /**
      * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
      */
     public ISelection getSelection() {
-        return this.treeViewer.getSelection();
+        return treeViewer.getSelection();
     }
 
     /**
      * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
      */
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-        this.treeViewer.removeSelectionChangedListener(listener);
+        treeViewer.removeSelectionChangedListener(listener);
     }
 
     /**
      * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
      */
     public void setSelection(ISelection selection) {
-        this.treeViewer.setSelection(selection);
+        treeViewer.setSelection(selection);
     }
 
     /**
@@ -498,26 +488,26 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private void rememberFilterSettings() {
 
         // Provide the Filters with their last State
-        final List<Integer> priorityList = this.memento.getIntegerList(PRIORITY_LIST);
+        List<Integer> priorityList = memento.getIntegerList(PRIORITY_LIST);
         if (!priorityList.isEmpty()) {
-            this.priorityFilter.setPriorityFilterList(priorityList);
+            priorityFilter.setPriorityFilterList(priorityList);
         }
 
-        final List<String> projectNames = this.memento.getStringList(PROJECT_LIST);
+        List<String> projectNames = memento.getStringList(PROJECT_LIST);
         if (!projectNames.isEmpty()) {
-            final List<AbstractPMDRecord> projectList = new ArrayList<AbstractPMDRecord>();
+            List<AbstractPMDRecord> projectList = new ArrayList<AbstractPMDRecord>();
             for (int k = 0; k < projectNames.size(); k++) {
-                final AbstractPMDRecord project = this.root.findResourceByName(projectNames.get(k).toString(),
+                AbstractPMDRecord project = root.findResourceByName(projectNames.get(k).toString(),
                         AbstractPMDRecord.TYPE_PROJECT);
                 if (project != null) {
                     projectList.add(project);
                 }
             }
 
-            this.projectFilter.setProjectFilterList(projectList);
+            projectFilter.setProjectFilterList(projectList);
         }
 
-        final Integer type = this.memento.getInteger(PACKAGE_SWITCH);
+        Integer type = memento.getInteger(PACKAGE_SWITCH);
         if (type != null) {
             setShowType(type.intValue());
         }
@@ -531,16 +521,16 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private void rememberTreeSettings() {
 
         // the Memento sets the Widths of Columns
-        final List<Integer> widthList = this.memento.getIntegerList(COLUMN_WIDTHS);
+        List<Integer> widthList = memento.getIntegerList(COLUMN_WIDTHS);
         if (!widthList.isEmpty()) {
             widthList.toArray(this.columnWidths);
             setColumnWidths();
         }
 
         // ... and also the Sorter
-        final List<Integer> sorterList = this.memento.getIntegerList(COLUMN_SORTER);
+        List<Integer> sorterList = memento.getIntegerList(COLUMN_SORTER);
         if (!sorterList.isEmpty()) {
-            final Integer[] sorterProps = new Integer[sorterList.size()];
+            Integer[] sorterProps = new Integer[sorterList.size()];
             sorterList.toArray(sorterProps);
             setSorterProperties(sorterProps);
         }
@@ -707,13 +697,13 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * @see org.eclipse.jface.viewers.ITreeViewerListener#treeExpanded(org.eclipse.jface.viewers.TreeExpansionEvent)
      */
     public void treeExpanded(TreeExpansionEvent event) {
-        final Object object = event.getElement();
+        Object object = event.getElement();
         if (object instanceof PackageRecord) {
-            final PackageRecord record = (PackageRecord) object;
-            final AbstractPMDRecord[] children = record.getChildren();
+            PackageRecord record = (PackageRecord) object;
+            AbstractPMDRecord[] children = record.getChildren();
             for (AbstractPMDRecord element : children) {
                 if (element instanceof FileRecord) {
-                    final FileRecord fileRecord = (FileRecord) element;
+                    FileRecord fileRecord = (FileRecord) element;
                     fileRecord.calculateLinesOfCode();
                     fileRecord.calculateNumberOfMethods();
                 }
@@ -737,7 +727,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     public void deleteMarkers(AbstractPMDRecord element) throws CoreException {
         if (element instanceof MarkerRecord) {
-            final MarkerRecord record = (MarkerRecord) element;
+            MarkerRecord record = (MarkerRecord) element;
             IMarker[] markers = MarkerUtil.EMPTY_MARKERS;
 
             switch (getShowType()) {
@@ -747,7 +737,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
                 markers = record.findMarkers();
                 break;
             case SHOW_MARKERS_FILES:
-                final AbstractPMDRecord packRec = record.getParent().getParent();
+                AbstractPMDRecord packRec = record.getParent().getParent();
                 markers = packRec.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, record.getName());
                 break;
             default:
@@ -755,19 +745,19 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             }
             deleteMarkers(markers);
         } else if (element instanceof FileToMarkerRecord) {
-            final FileToMarkerRecord record = (FileToMarkerRecord) element;
+            FileToMarkerRecord record = (FileToMarkerRecord) element;
             IMarker[] markers = record.findMarkers();
             deleteMarkers(markers);
         } else if (element instanceof AbstractPMDRecord) {
             // simply delete markers from resource
-            final AbstractPMDRecord record = element;
+            AbstractPMDRecord record = element;
             MarkerUtil.deleteAllMarkersIn(record.getResource());
         }
     }
 
     private void deleteMarkers(IMarker[] markers) {
         if (markers.length > 0) {
-            final DeleteMarkersCommand cmd = new DeleteMarkersCommand();
+            DeleteMarkersCommand cmd = new DeleteMarkersCommand();
             cmd.setMarkers(markers);
             try {
                 cmd.performExecute();
@@ -822,7 +812,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         @Override
         public void widgetSelected(SelectionEvent e) {
             columnSortOrder[this.column] *= -1;
-            treeViewer.setSorter(getViewerSorter(this.column));
+            treeViewer.setSorter(getViewerSorter(column));
         }
     }
 
@@ -839,7 +829,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
 
         @Override
         public void controlResized(ControlEvent e) {
-            columnWidths[this.column] = Integer.valueOf(treeViewer.getTree().getColumn(this.column).getWidth());
+            columnWidths[column] = Integer.valueOf(treeViewer.getTree().getColumn(column).getWidth());
         }
     }
 

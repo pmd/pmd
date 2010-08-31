@@ -204,7 +204,7 @@ public class FileRecord extends AbstractPMDRecord {
             // this is the overwritten Function from AbstractPMDRecord
             // we simply call the IResource-function to find Markers
             if (this.resource.isAccessible()) {
-                return MarkerUtil.findMarkers(resource, PMDRuntimeConstants.PMD_MARKER);
+                return MarkerUtil.findMarkers(resource, PMDRuntimeConstants.RULE_MARKER_TYPES);
             }
         } catch (CoreException ce) {
             PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
@@ -11,6 +12,7 @@ import net.sourceforge.pmd.eclipse.util.ColourManager;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -28,7 +30,7 @@ import org.eclipse.swt.widgets.Text;
 public class ExclusionPanelManager extends AbstractRulePanelManager {
 
 	private Text 			excludeWidget;
-	private Text 			xpathWidget;
+	private StyledText 		xpathWidget;
 	private Composite		excludeColour;
 	private Composite		xPathColour;
 	private ColourManager	colourManager;
@@ -79,6 +81,23 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 		});
 	}
 
+	private void addListeners(final StyledText control, final StringProperty desc, final Control colourWindow) {
+
+		addTextListeners(control, desc);
+
+		control.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				String newText = control.getText();
+				if (colourWindow != null) {
+					colourWindow.setBackground(
+						colourManager.colourFor(newText)
+						);
+					}
+                changed(desc, newText);
+			}
+		});
+	}
+	
 	private Composite newColourPanel(Composite parent, String label) {
 
 	    Composite panel = new Composite(parent, SWT.None);
@@ -158,11 +177,12 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;
 	    gridData.grabExcessHorizontalSpace = true;
-		xpathWidget = newTextField(panel);
+		xpathWidget = newCodeField(panel);
 		xpathWidget.setLayoutData(gridData);
-
+		SyntaxManager.adapt(xpathWidget, "xpath", null);
+		
 		addListeners(xpathWidget, Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, xPathColour);
-
+		
 		panel.pack();
 
 		return panel;

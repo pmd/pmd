@@ -4,7 +4,6 @@ Finish remaining editors and the Add Property dialog
 Enable 'Use defaults' option in popup menu (need support in properties/PMD)
 Add selection column selected rules in per-project rule settings table
 Rework context menu - build on-demand, not before
-Markup violations using priority icons rather than the yellow yield signs or red Xs
 Work on support for fixes
 Format example & description text
 Need preference widgets to allow user-specified shapes for RulePriorities

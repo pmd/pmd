@@ -48,7 +48,7 @@ public class ReviewResourceAction extends AbstractPMDAction {
             dialog.run(false, false, new IRunnableWithProgress() {
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     setMonitor(monitor);
-                    monitor.beginTask(getString(StringKeys.MSGKEY_MONITOR_REVIEW), 5);
+                    monitor.beginTask(getString(StringKeys.MONITOR_REVIEW), 5);
                     ReviewCodeCmd cmd = new ReviewCodeCmd();
                     cmd.addResource(resource);
                     cmd.setStepCount(1);

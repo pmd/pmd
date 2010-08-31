@@ -9,6 +9,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
 
 /**
  * A wizard that encapsulates a succession of rule panel managers to collect the
@@ -18,18 +19,24 @@ import org.eclipse.jface.wizard.Wizard;
  */
 public class CreateRuleWizard extends Wizard implements ValueChangeListener, RuleTarget {
 
-	private Rule rule;
-
+	private Rule 		 rule;
+	private WizardDialog dialog;
+	
 	public CreateRuleWizard() {
 	  super();
 	}
 
+	public void dialog(WizardDialog theDialog) {
+		dialog = theDialog;
+	}
+	
 	public Rule rule() {
 	   return rule;
 	}
 
 	public void rule(Rule theRule) {
 		rule = theRule;
+		dialog.updateButtons();
 	}
 
 	public void addPages() {
@@ -38,7 +45,7 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
 	  addPage(new PerRulePropertyPanelManager("properties", EditorUsageMode.CreateNew, this));
 	  addPage(new XPathPanelManager("xpath", EditorUsageMode.CreateNew, this));
 	  addPage(new ExclusionPanelManager("exclusion", EditorUsageMode.CreateNew, this, false));
-	  addPage(new QuickFixPanelManager("fixes", EditorUsageMode.CreateNew, this));
+//	  addPage(new QuickFixPanelManager("fixes", EditorUsageMode.CreateNew, this));
 	  addPage(new ExamplePanelManager("examples", EditorUsageMode.CreateNew, this));
 	}
 
@@ -82,7 +89,8 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
 	    		getAndPrepare(ExclusionPanelManager.ID);
 	      }
 	    if (currentPage instanceof ExclusionPanelManager || currentPage instanceof XPathPanelManager) {
-	        return getAndPrepare(QuickFixPanelManager.ID);
+//	        return getAndPrepare(QuickFixPanelManager.ID);
+	        return getAndPrepare(ExamplePanelManager.ID);
 	      }
 	    if (currentPage instanceof QuickFixPanelManager) {
 	        return getAndPrepare(ExamplePanelManager.ID);

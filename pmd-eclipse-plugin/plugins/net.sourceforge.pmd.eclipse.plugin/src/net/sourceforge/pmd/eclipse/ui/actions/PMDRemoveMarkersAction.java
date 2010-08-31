@@ -35,7 +35,6 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -128,7 +127,7 @@ public class PMDRemoveMarkersAction  extends AbstractUIAction implements IViewAc
                 final IEditorInput editorInput = ((IEditorPart) targetPart()).getEditorInput();
                 if (editorInput instanceof IFileEditorInput) {
                     MarkerUtil.deleteAllMarkersIn(((IFileEditorInput) editorInput).getFile());
-                    log.debug("Remove markers " + PMDRuntimeConstants.PMD_MARKER + " on currently edited file " + ((IFileEditorInput) editorInput).getFile().getName());
+                    log.debug("Remove markers on currently edited file " + ((IFileEditorInput) editorInput).getFile().getName());
                 } else {
                     log.debug("The kind of editor input is not supported. The editor input type: " + editorInput.getClass().getName());
                 }

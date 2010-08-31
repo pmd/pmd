@@ -38,7 +38,13 @@ package net.sourceforge.pmd.eclipse.runtime.preferences;
 
 import java.util.Set;
 
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PriorityDescriptor;
+import net.sourceforge.pmd.eclipse.ui.Shape;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+
 import org.apache.log4j.Level;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * This interface models the PMD Plugin preferences
@@ -61,6 +67,12 @@ public interface IPreferences {
     Level LOG_LEVEL = Level.WARN;
     String ACTIVE_RULES = "";
 
+    PriorityDescriptor PD_1_DEFAULT = new PriorityDescriptor(RulePriority.HIGH, 		StringKeys.VIEW_FILTER_PRIORITY_1, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_1, null, Shape.diamond, 	new RGB( 255,0,0), 	13);	// red
+    PriorityDescriptor PD_2_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM_HIGH, 	StringKeys.VIEW_FILTER_PRIORITY_2, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_2, null, Shape.square, 	new RGB( 0,255,255), 13);	// yellow
+    PriorityDescriptor PD_3_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM, 		StringKeys.VIEW_FILTER_PRIORITY_3, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_3, null, Shape.circle, 	new RGB( 0,255,0), 	13);	// green
+    PriorityDescriptor PD_4_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM_LOW,	StringKeys.VIEW_FILTER_PRIORITY_4, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_4, null, Shape.domeRight,new RGB( 255,0,255), 13);	// purple
+    PriorityDescriptor PD_5_DEFAULT = new PriorityDescriptor(RulePriority.LOW, 	  		StringKeys.VIEW_FILTER_PRIORITY_5, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_5, null, Shape.plus, 	new RGB( 0,0,255), 	13);  	// blue
+    
     boolean isActive(String rulename);
     
     void isActive(String ruleName, boolean flag);
@@ -107,7 +119,7 @@ public interface IPreferences {
      * Get the review additional comment. This comment is a text appended to the
      * review comment that is inserted into the code when a violation is reviewed.
      * This string follows the MessageFormat syntax and could contain 2 variable fields.
-     * The 1st fied is replaced by the current used id and the second by the current date.
+     * The 1st field is replaced by the current used id and the second by the current date.
      */
     String getReviewAdditionalComment();
     
@@ -119,7 +131,7 @@ public interface IPreferences {
     
     /**
      * Does the review comment should be the PMD style (// NOPMD comment) or the
-     * Plugin style (// @PMD:REVIEW...) which was implemented before.
+     * plugin style (// @PMD:REVIEW...) which was implemented before.
      */
     boolean isReviewPmdStyleEnabled();
     
@@ -128,6 +140,9 @@ public interface IPreferences {
      */
     void setReviewPmdStyleEnabled(boolean reviewPmdStyleEnabled);
 
+    void setPriorityDescriptor(RulePriority priority, PriorityDescriptor pd);
+    
+    PriorityDescriptor getPriorityDescriptor(RulePriority priority);
     
     // CPD Preferences
     

@@ -50,7 +50,6 @@ public abstract class AbstractTreeTableManager {
 	
 	private final Set<String> hiddenColumnNames;
 
-//	private Button sortByCheckedButton;
 	private Button selectAllButton;
 	private Button unSelectAllButton;
 	private IPreferences preferences;
@@ -307,7 +306,6 @@ public abstract class AbstractTreeTableManager {
 	
 	protected void buildCheckButtons(Composite parent) {
 
-	//     sortByCheckedButton = buildSortByCheckedItemsButton(parent);
 	     selectAllButton = buildSelectAllButton(parent);
 	     unSelectAllButton = buildUnselectAllButton(parent);
 	}
@@ -434,7 +432,6 @@ public abstract class AbstractTreeTableManager {
 		
 		selectAllButton.setEnabled( selectionRatio[0] < selectionRatio[1]);
 		unSelectAllButton.setEnabled( selectionRatio[0] > 0);
-//		sortByCheckedButton.setEnabled( (selectionRatio[0] != 0) && (selectionRatio[0] != selectionRatio[1]));
 	}
 		
 	protected abstract void updateCheckControls();

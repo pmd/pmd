@@ -36,6 +36,11 @@
 
 package net.sourceforge.pmd.eclipse.ui.nls;
 
+import net.sourceforge.pmd.eclipse.ui.preferences.PriorityColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PriorityFieldAccessor;
+
+import org.eclipse.swt.SWT;
+
 /**
  * Convenient class to hold PMD Constants
  * @author phherlin
@@ -60,6 +65,7 @@ public class StringKeys {
     public static final String MSGKEY_PREF_GENERAL_TOOLTIP_ADDCOMMENT = "preference.pmd.tooltip.addcomment";
     public static final String MSGKEY_PREF_GENERAL_MESSAGE_INCORRECT_FORMAT ="preference.pmd.message.incorrect_format";
     public static final String MSGKEY_PREF_GENERAL_GROUP_REVIEW = "preference.pmd.group.review";
+    public static final String MSGKEY_PREF_GENERAL_GROUP_PRIORITIES = "preference.pmd.group.priorities";
     public static final String MSGKEY_PREF_GENERAL_GROUP_GENERAL = "preference.pmd.group.general";
     public static final String MSGKEY_PREF_GENERAL_LABEL_SHOW_PERSPECTIVE = "preference.pmd.label.perspective_on_check";
     public static final String MSGKEY_PREF_GENERAL_LABEL_USE_DFA = "preference.pmd.label.use_dfa";
@@ -177,7 +183,7 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_OUTLINE_COLUMN_LINE = "view.outline.column_line";
     public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_ELEMENT = "view.overview.column_element";
     public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_TOTAL = "view.overview.column_vio_total";
-    public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_LOC = "view.overview.column_vio_loc";
+    public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_KLOC = "view.overview.column_vio_loc";
     public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_METHOD = "view.overview.column_vio_method";
     public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_PROJECT = "view.overview.column_project";
     public static final String MSGKEY_VIEW_DATAFLOW_DEFAULT_TEXT = "view.dataflow.default_text";
@@ -196,22 +202,24 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_METHOD = "view.dataflow.table.column_method";
     public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE_TOOLTIP = "view.dataflow.table.column_type.tooltip";
     
-    public static final String MSGKEY_VIEW_FILTER_PRIORITY_1 = "view.filter.priority.1";
-    public static final String MSGKEY_VIEW_FILTER_PRIORITY_2 = "view.filter.priority.2";
-    public static final String MSGKEY_VIEW_FILTER_PRIORITY_3 = "view.filter.priority.3";
-    public static final String MSGKEY_VIEW_FILTER_PRIORITY_4 = "view.filter.priority.4";
-    public static final String MSGKEY_VIEW_FILTER_PRIORITY_5 = "view.filter.priority.5";
-    public static final String MSGKEY_VIEW_FILTER_PROJECT_PREFIX = "view.filter.project_prefix";
+    public static final String VIEW_AST_DEFAULT_TEXT = "view.ast.default_text";
+    
+    public static final String VIEW_FILTER_PRIORITY_1 = "view.filter.priority.1";
+    public static final String VIEW_FILTER_PRIORITY_2 = "view.filter.priority.2";
+    public static final String VIEW_FILTER_PRIORITY_3 = "view.filter.priority.3";
+    public static final String VIEW_FILTER_PRIORITY_4 = "view.filter.priority.4";
+    public static final String VIEW_FILTER_PRIORITY_5 = "view.filter.priority.5";
+    public static final String VIEW_FILTER_PROJECT_PREFIX = "view.filter.project_prefix";
     
     public static final String MSGKEY_VIEW_ACTION_CURRENT_PROJECT = "view.action.current_project";
     
-    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_1 = "view.tooltip.filter.priority.1";
-    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_2 = "view.tooltip.filter.priority.2";
-    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_3 = "view.tooltip.filter.priority.3";
-    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_4 = "view.tooltip.filter.priority.4";
-    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_5 = "view.tooltip.filter.priority.5";
-    public static final String MSGKEY_VIEW_TOOLTIP_PACKAGES_FILES = "view.tooltip.packages_files";
-    public static final String MSGKEY_VIEW_TOOLTIP_COLLAPSE_ALL = "view.tooltip.collapse_all";
+    public static final String VIEW_TOOLTIP_FILTER_PRIORITY_1 = "view.tooltip.filter.priority.1";
+    public static final String VIEW_TOOLTIP_FILTER_PRIORITY_2 = "view.tooltip.filter.priority.2";
+    public static final String VIEW_TOOLTIP_FILTER_PRIORITY_3 = "view.tooltip.filter.priority.3";
+    public static final String VIEW_TOOLTIP_FILTER_PRIORITY_4 = "view.tooltip.filter.priority.4";
+    public static final String VIEW_TOOLTIP_FILTER_PRIORITY_5 = "view.tooltip.filter.priority.5";
+    public static final String VIEW_TOOLTIP_PACKAGES_FILES = "view.tooltip.packages_files";
+    public static final String VIEW_TOOLTIP_COLLAPSE_ALL = "view.tooltip.collapse_all";
         
     public static final String MSGKEY_VIEW_COLUMN_MESSAGE = "view.column.message";
     public static final String MSGKEY_VIEW_COLUMN_RULE = "view.column.rule";
@@ -320,15 +328,22 @@ public class StringKeys {
     public static final String MSGKEY_PRIORITY_WARNING      = "priority.warning";
     public static final String MSGKEY_PRIORITY_INFORMATION  = "priority.information";
     
-    public static final String MSGKEY_MONITOR_JOB_TITLE = "monitor.job_title";
-    public static final String MSGKEY_MONITOR_CHECKING_FILE = "monitor.checking_file";
-    public static final String MSGKEY_PMD_PROCESSING = "monitor.begintask";
-    public static final String MSGKEY_MONITOR_UPDATING_PROJECTS = "monitor.updating_projects";
-    public static final String MSGKEY_MONITOR_REVIEW = "monitor.review";
-    public static final String MSGKEY_MONITOR_REMOVE_REVIEWS = "monitor.remove_reviews";
-    public static final String MSGKEY_MONITOR_CALC_STATS_TASK = "monitor.calc_stats";
-    public static final String MSGKEY_MONITOR_CALC_STATS_OF_PACKAGE = "monitor.calc_stats.package";
+    public static final String MONITOR_JOB_TITLE = "monitor.job_title";
+    public static final String MONITOR_CHECKING_FILE = "monitor.checking_file";
+    public static final String PMD_PROCESSING = "monitor.begintask";
+    public static final String MONITOR_UPDATING_PROJECTS = "monitor.updating_projects";
+    public static final String MONITOR_REVIEW = "monitor.review";
+    public static final String MONITOR_REMOVE_REVIEWS = "monitor.remove_reviews";
+    public static final String MONITOR_CALC_STATS_TASK = "monitor.calc_stats";
+    public static final String MONITOR_CALC_STATS_OF_PACKAGE = "monitor.calc_stats.package";
     public static final String MSGKEY_MONITOR_COLLECTING_MARKERS = "monitor.collect_markers";
+    
+    public static final String PRIORITY_COLUMN_NAME = "priority.column.name";
+    public static final String PRIORITY_COLUMN_VALUE = "priority.column.value";
+    public static final String PRIORITY_COLUMN_SIZE = "priority.column.size";
+    public static final String PRIORITY_COLUMN_SHAPE = "priority.column.shape";
+    public static final String PRIORITY_COLUMN_COLOR = "priority.column.color";
+    public static final String PRIORITY_COLUMN_DESC = "priority.column.description";
     
     /**
      * This class is not meant to be instanciated

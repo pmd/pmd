@@ -12,6 +12,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.ui.ShapePicker;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ImplementationType;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
@@ -55,7 +56,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
     private Button  	ruleReferenceButton;
     private Combo 		languageCombo;
     private Combo 		priorityCombo;
-    private ShapeSetCanvas priorityDisplay;
+    private ShapePicker priorityDisplay;
     
     private Label		minLanguageLabel;
     private Label		maxLanguageLabel;
@@ -68,6 +69,8 @@ public class RulePanelManager extends AbstractRulePanelManager {
     private Button 		usesDfaButton;
     private List<Label> labels;
 
+    private boolean 	inSetup;
+    
     public static final String ID = "rule";
 
 	public RulePanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener, RuleTarget theRuleSource) {
@@ -222,6 +225,8 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	@Override
 	public Control setupOn(Composite parent) {
 
+			inSetup = true;
+			
 			labels = new ArrayList<Label>();
 
 		    Composite dlgArea = new Composite(parent, SWT.NONE);
@@ -340,7 +345,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        priorityCombo = buildPriorityCombo(priorityComp);
 	        priorityCombo.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 	        
-	        priorityDisplay = new ShapeSetCanvas(priorityComp, SWT.NONE, 14);
+	        priorityDisplay = new ShapePicker(priorityComp, SWT.NONE, 14);
 	        priorityDisplay.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));		     
 	        priorityDisplay.setShapeMap(UISettings.shapesByPriority());
 	        priorityDisplay.setSize(90, 25);
@@ -353,6 +358,8 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        
 	        validate();
 
+	        inSetup = false;
+	        
 	        return dlgArea;
 		}
 
@@ -480,7 +487,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
         return combo;
      }
-
+     
 	private Combo buildLanguageCombo(Composite parent) {
 
 		final List<Language> languages = Language.findWithRuleSupport();
@@ -653,7 +660,15 @@ public class RulePanelManager extends AbstractRulePanelManager {
      		populateRuleInstance();
      	}
 
-     	if (target != null) target.rule(isOk ? rules.soleRule() : null);
+     	if (inSetup) return;
+     	
+     	if (target != null) {
+     		target.rule(
+     				isOk ? 
+     					rules.soleRule() : 
+     					null
+     					);
+     	}
      }
 
      private void copyLocalValuesTo(Rule rule) {

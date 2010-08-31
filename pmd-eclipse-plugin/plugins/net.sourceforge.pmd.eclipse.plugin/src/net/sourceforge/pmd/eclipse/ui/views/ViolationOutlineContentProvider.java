@@ -3,7 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.views;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.util.Util;
 
@@ -69,27 +69,27 @@ public class ViolationOutlineContentProvider implements
 		}
 		tableViewer = (TableViewer) viewer;
 	}
-
+	
 
 	/* @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent) */
 	public void resourceChanged(IResourceChangeEvent event) {
-        IMarkerDelta[] markerDeltas = event.findMarkerDeltas(PMDRuntimeConstants.PMD_MARKER, true);
+		
+		if (resource == null || !resource.getResource().exists()) return;
+		
+		List<IMarkerDelta> markerDeltas = MarkerUtil.markerDeltasIn(event);
 
-		if (!resource.getResource().exists()
-				|| resource == null
-				|| markerDeltas == null)
-			return;
+		if (markerDeltas.isEmpty())	return;
 
 		// we search for removed, added or changed Markers
         final List<IMarker> additions = new ArrayList<IMarker>();
         final List<IMarker> removals = new ArrayList<IMarker>();
         final List<IMarker> changes = new ArrayList<IMarker>();
 
-        for (int i=0; i<markerDeltas.length; i++) {
-        	if (!markerDeltas[i].getResource().equals(resource.getResource()))
+        for (IMarkerDelta delta : markerDeltas) {
+        	if (!delta.getResource().equals(resource.getResource()))
         		continue;
-        	IMarker marker = markerDeltas[i].getMarker();
-        	switch (markerDeltas[i].getKind()) {
+        	IMarker marker = delta.getMarker();
+        	switch (delta.getKind()) {
     			case IResourceDelta.ADDED:
     				additions.add(marker);
     				break;

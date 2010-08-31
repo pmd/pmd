@@ -11,6 +11,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
+import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
@@ -55,9 +56,9 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	private RulePropertyManager[]   rulePropertyManagers;
 	private RuleTableManager		tableManager;
 
-	public static final Util.shape PriorityShape = Util.shape.diamond;
-	public static final Util.shape RegexFilterShape = Util.shape.square;
-	public static final Util.shape XPathFilterShape = Util.shape.circle;
+	public static final Shape PriorityShape = Shape.diamond;
+	public static final Shape RegexFilterShape = Shape.square;
+	public static final Shape XPathFilterShape = Shape.circle;
 	
     public static final FontBuilder blueBold11 = new FontBuilder("Tahoma", 11, SWT.BOLD, SWT.COLOR_BLUE);
     public static final FontBuilder redBold11 = new FontBuilder("Tahoma", 11, SWT.BOLD, SWT.COLOR_RED);
@@ -69,7 +70,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		//TextColumnDescriptor.priorityName,
 	//	IconColumnDescriptor.priority,
 		ImageColumnDescriptor.priority,
-		TextColumnDescriptor.fixCount,
+	//	TextColumnDescriptor.fixCount,
 		TextColumnDescriptor.since,
 		TextColumnDescriptor.ruleSetName,
 		TextColumnDescriptor.ruleType,
@@ -284,8 +285,8 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		    buildPropertyTab(tabFolder,    2, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_PROPERTIES)),
 		    buildUsageTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FILTERS)),
 		    buildXPathTab(tabFolder,       4, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_XPATH)),
-		    buildQuickFixTab(tabFolder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)),
-		    buildExampleTab(tabFolder,     6, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_EXAMPLES)),
+//		    buildQuickFixTab(tabFolder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)),
+		    buildExampleTab(tabFolder,     5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_EXAMPLES)),
 		    };
 
 		tabFolder.pack();

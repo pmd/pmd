@@ -10,12 +10,14 @@ import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.ui.Shape;
+import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
+import net.sourceforge.pmd.eclipse.ui.ShapePainter;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.CellPainterBuilder;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.IndexedString;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleCollection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleFieldAccessor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ShapeDescriptor;
 import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -71,7 +73,10 @@ public class Util {
             int end = pos+1;
             while (end < max && Character.isLetter(source.charAt(end)) ) end++;
             int length = end - pos -1;
-            if (length < 1) continue;
+            if (length < 1) {
+            	pos = source.indexOf(prefix, pos + 1);
+            	continue;
+            }
             
             namePositions.add( new int[] {pos+1, length} );
             pos = source.indexOf(prefix, pos + length);
@@ -196,9 +201,8 @@ public class Util {
 		return original == null ? "" : original.trim();
 	}
 	
-	public static enum shape { square, circle, diamond, triangleUp, triangleDown, triangleNorthEast, triangleSouthEast };
 	
-	public static CellPainterBuilder textAsColorShapeFor(final int width, final int height, final shape shapeId) {
+	public static CellPainterBuilder textAsColorShapeFor(final int width, final int height, final Shape shapeId) {
 	    
 	    return new CellPainterBuilder() {
 
@@ -238,7 +242,7 @@ public class Util {
                         Color clr = colorManager().colourFor(text);
                         event.gc.setBackground(clr);
                         
-                        drawShape(width, height, shapeId, event.gc, event.x, event.y);
+                        ShapePainter.drawShape(width, height, shapeId, event.gc, event.x, event.y, null);
                         
                         event.gc.setBackground(original);
                     }
@@ -258,7 +262,7 @@ public class Util {
 	    };
 	}
 	
-	public static CellPainterBuilder itemAsShapeFor(final int width, final int height, final shape shapeId, final int horizAlignment, final Map<Object, RGB> coloursByItem) {
+	public static CellPainterBuilder itemAsShapeFor(final int width, final int height, final Shape shapeId, final int horizAlignment, final Map<Object, RGB> coloursByItem) {
 	    
 	    return new CellPainterBuilder() {
 
@@ -319,7 +323,7 @@ public class Util {
 	                        case SWT.LEFT: xOffset = 0;
                         }
                         
-                        drawShape(width, height, shapeId, event.gc, event.x + xOffset, event.y);
+                        ShapePainter.drawShape(width, height, shapeId, event.gc, event.x + xOffset, event.y, null);
                         
                         event.gc.setBackground(original);
                     }
@@ -338,34 +342,6 @@ public class Util {
                 addListener(tree, SWT.MeasureItem, measureListener, listenersByEventCode);
             }            
 	    };
-	}
-	
-	/**
-	 * Creates an image initialized with the transparent colour with the shape drawn within.
-	 * 
-	 * 
-	 */
-	public static Image newDrawnImage(Display display, int width, int height, shape shape, RGB transparentColour, RGB fillColour) {
-		
-		 Image image = new Image(display, width, height);
-		 GC gc = new GC(image);
-		 
-		 gc.setBackground(PMDPlugin.getDefault().colorFor(transparentColour));
-		 gc.fillRectangle(0, 0, width, height);
-		 
-		 gc.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
-		 gc.setBackground(PMDPlugin.getDefault().colorFor(fillColour));
-		 
-		 drawShape(width-1, height-1, shape, gc, 0, 0);
-		
-		 ImageData data = image.getImageData();
-		 int clrIndex = data.palette.getPixel(transparentColour);
-		 data.transparentPixel = clrIndex;
-		 
-		 image = new Image(display, data);
-		 		
-		 gc.dispose();
-		 return image;
 	}
 	
 	public static CellPainterBuilder uniqueItemsAsShapeFor(final int width, final int height, final int horizAlignment, final Map<Object, ShapeDescriptor> shapesByItem) {
@@ -437,7 +413,7 @@ public class Util {
 		                        case SWT.LEFT: xOffset = xBoundary + step;
 		                    }
 		                    
-		                    drawShape(width, height, shape.shape, gc, event.x + xOffset, event.y + verticalOffset);		                    
+		                    ShapePainter.drawShape(width, height, shape.shape, gc, event.x + xOffset, event.y + verticalOffset, null);		                    
                         }
                         
                         gc.setBackground(original);
@@ -475,46 +451,7 @@ public class Util {
         listenersByEventCode.get(eventCode).add(listener);
     }
     
-	public static void drawShape(int width, int height, shape shapeId, GC gc, int x, int y) {
-		
-		switch (shapeId) {
-            case square: {
-            	gc.fillRectangle(x, y, width, height);    // fill it
-            	gc.drawRectangle(x, y, width, height);    // then the border on top
-            	break;
-            	}
-            case circle: {
-            	gc.fillArc(x, y, width, height, 0, 360*64);    // fill it
-            	gc.drawArc(x, y, width, height, 0, 360*64);    // then the border on top
-            	break;
-            	}
-            case triangleDown: {
-            	gc.fillPolygon(new int[] {x, y, x+width, y, x+(width/2), y+height});
-            	gc.drawPolygon(new int[] {x, y, x+width, y, x+(width/2), y+height});
-            	break;
-            	}
-            case triangleUp: {
-            	gc.fillPolygon(new int[] {x, y+height, x+width, y+height, x+(width/2), y});
-            	gc.drawPolygon(new int[] {x, y+height, x+width, y+height, x+(width/2), y});
-            	break;
-            	}
-            case triangleNorthEast: {
-            	gc.fillPolygon(new int[] {x, y, x+width, y, x+width, y+height});
-            	gc.drawPolygon(new int[] {x, y, x+width, y, x+width, y+height});
-            	break;
-            	}
-            case triangleSouthEast: {
-            	gc.fillPolygon(new int[] {x, y+height, x+width, y+height, x+width, y});
-            	gc.drawPolygon(new int[] {x, y+height, x+width, y+height, x+width, y});
-            	break;
-            	}
-            case diamond: {
-            	gc.fillPolygon(new int[] {x+(width/2), y, x+width, y+(height/2), x+(width/2), y+height, x, y+(height/2)});
-            	gc.drawPolygon(new int[] {x+(width/2), y, x+width, y+(height/2), x+(width/2), y+height, x, y+(height/2)});
-            	break;
-            	}
-        }
-	}
+	
     
     
 	public static CellPainterBuilder backgroundBuilderFor(final int systemColourIndex) {

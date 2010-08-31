@@ -233,6 +233,8 @@ private	MenuItem useDefaultsItem;
 		try {
 			CreateRuleWizard wiz = new CreateRuleWizard();
 			WizardDialog dialog = new WizardDialog(shell, wiz);
+			wiz.dialog(dialog);
+			
 			int result = dialog.open();
 
 			if (result == Window.OK) {

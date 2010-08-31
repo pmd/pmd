@@ -2,7 +2,6 @@ package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.RulePriority;
@@ -60,6 +59,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         getSite().setSelectionProvider(this);
     }
 
+    
     protected String pageMessageId() { return StringKeys.MSGKEY_VIEW_OUTLINE_DEFAULT_TEXT; }
     
     protected String mementoFileId() { return PMDUiConstants.MEMENTO_OUTLINE_FILE; }

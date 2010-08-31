@@ -12,10 +12,18 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  */
 public class PMDRuntimeConstants {
 
-    public static final String PMD_MARKER       = PMDPlugin.PLUGIN_ID + ".pmdMarker";
+    public static final String PMD_MARKER       = PMDPlugin.PLUGIN_ID + ".pmdMarker";	// obsolete
+    
+    public static final String PMD_MARKER_1       = PMDPlugin.PLUGIN_ID + ".pmdMarker1";
+    public static final String PMD_MARKER_2       = PMDPlugin.PLUGIN_ID + ".pmdMarker2";
+    public static final String PMD_MARKER_3       = PMDPlugin.PLUGIN_ID + ".pmdMarker3";
+    public static final String PMD_MARKER_4       = PMDPlugin.PLUGIN_ID + ".pmdMarker4";
+    public static final String PMD_MARKER_5       = PMDPlugin.PLUGIN_ID + ".pmdMarker5";
+    
     public static final String PMD_DFA_MARKER   = PMDPlugin.PLUGIN_ID + ".pmdDFAMarker";
     public static final String PMD_TASKMARKER   = PMDPlugin.PLUGIN_ID + ".pmdTaskMarker";
-    public static final String[] ALL_MARKER_TYPES = new String[] { PMD_MARKER, PMD_DFA_MARKER, PMD_TASKMARKER };
+    public static final String[] RULE_MARKER_TYPES = new String[] { PMD_MARKER, PMD_MARKER_1, PMD_MARKER_2, PMD_MARKER_3, PMD_MARKER_4, PMD_MARKER_5 };   
+    public static final String[] ALL_MARKER_TYPES = new String[] { PMD_MARKER, PMD_DFA_MARKER, PMD_TASKMARKER, PMD_MARKER_1, PMD_MARKER_2, PMD_MARKER_3, PMD_MARKER_4, PMD_MARKER_5 };
     
     public static final IntegerProperty MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty("maxviolations", "Max allowable violations", 1, Integer.MAX_VALUE-1, 1000, 0f);
     

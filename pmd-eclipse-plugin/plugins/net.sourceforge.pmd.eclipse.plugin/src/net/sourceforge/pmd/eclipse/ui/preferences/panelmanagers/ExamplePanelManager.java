@@ -5,18 +5,20 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
 /**
  *
@@ -24,8 +26,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ExamplePanelManager extends AbstractRulePanelManager {
 
-    private Text exampleField;
-
+    private StyledText exampleField;
+    private ModifyListener modifyListener;
+    
     public static final String ID = "example";
 
     public ExamplePanelManager(String theTitle, EditorUsageMode theMode, ValueChangeListener theListener) {
@@ -61,7 +64,7 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
         GridLayout layout = new GridLayout(2, false);
         panel.setLayout(layout);
 
-        exampleField = newTextField(panel);
+        exampleField = newCodeField(panel);
         gridData = new GridData(GridData.FILL_BOTH);
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalSpan = 1;
@@ -77,11 +80,11 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
 
                 if (StringUtil.areSemanticEquals(existingValue, cleanValue)) return;
 
-                soleRule.setDescription(cleanValue);
+                soleRule.setDescription(cleanValue);                                
                 valueChanged(null, cleanValue);
             }
         });
-
+        
         return panel;
     }
 
@@ -127,6 +130,11 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
             shutdown(exampleField);
         } else {
             show(exampleField, examples(soleRule));
+            modifyListener = SyntaxManager.adapt(
+            		exampleField, 
+            		soleRule.getLanguage().getTerseName(), 
+            		modifyListener
+            		);
         }
     }
 

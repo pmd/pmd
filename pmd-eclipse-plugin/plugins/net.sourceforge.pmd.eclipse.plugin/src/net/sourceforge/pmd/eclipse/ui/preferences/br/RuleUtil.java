@@ -14,6 +14,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.AbstractProperty;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -33,6 +34,15 @@ public class RuleUtil {
 		return areEqual(desc.defaultValue(), value);
 	}
 
+	// TODO fix rule!!	
+	public static boolean isXPathRule(Rule rule) {
+		
+		for (PropertyDescriptor<?> desc : rule.getPropertyDescriptors()) {
+    		if (desc.equals(XPathRule.XPATH_DESCRIPTOR)) return true;
+    	}
+		return false;
+	}
+	
 	// TODO move elsewhere
     public static boolean areEqual(Object value, Object otherValue) {
     	if (value == otherValue) {

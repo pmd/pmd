@@ -1,9 +1,12 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
+/**
+ * 
+ * @author Brian Remedios
+ */
 public interface ColumnDescriptor {
 
-	public abstract String label();
+	String label();
 
-	public abstract String tooltip();
-
+	String tooltip();
 }

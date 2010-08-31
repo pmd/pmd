@@ -6,6 +6,9 @@ import java.util.List;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.ui.editors.BasicLineStyleListener;
+import net.sourceforge.pmd.eclipse.ui.editors.SyntaxData;
+import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeText;
@@ -17,7 +20,10 @@ import net.sourceforge.pmd.util.StringUtil;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.custom.LineStyleListener;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
@@ -201,7 +207,16 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
             }
         });
     }
+    
+    protected void addTextListeners(final StyledText control, final StringProperty desc) {
 
+        control.addListener(SWT.FocusOut, new Listener() {
+            public void handleEvent(Event event) {
+                changed(desc, control.getText());
+            }
+        });
+    }
+    
     protected void initializeOn(Composite parent) {
 
         if (errorColour != null) return;
@@ -335,4 +350,10 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
 
         return new Text(parent, SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
     }
+    
+    protected StyledText newCodeField(Composite parent) {
+    	
+    	return new StyledText(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+    }    
+    
 }

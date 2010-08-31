@@ -119,6 +119,7 @@ public interface RuleFieldAccessor {
 		public String labelFor(Rule rule) {
 		    List<String> types = new ArrayList<String>(3);
             if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) types.add(ruleTypeXPath[1]);
+	//	    if (if (RuleUtil.isXPathRule(rule))    TODO
             if (rule.usesDFA()) types.add(ruleTypeDFlow[1]);
             if (rule.usesTypeResolution()) types.add(ruleTypeTypeRes[1]);
             return Util.asString(types, ", ");
