@@ -6,16 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
@@ -28,7 +24,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.CreateRuleWizard;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.designer.Designer;
 
 import org.eclipse.jface.dialogs.InputDialog;
@@ -46,11 +41,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -73,13 +65,13 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	protected String					groupColumnLabel;
 
 	private RuleFieldAccessor 			checkedColumnAccessor;
-	private Map<RulePriority, MenuItem> priorityMenusByPriority;
-	private Map<String, MenuItem>       rulesetMenusByName;
+//	private Map<RulePriority, MenuItem> priorityMenusByPriority;
+//	private Map<String, MenuItem>       rulesetMenusByName;
 	
 	private RuleSelection               ruleSelection; // may hold rules and/or group nodes
 
-	private Menu                 		ruleListMenu;
-private	MenuItem useDefaultsItem; 
+//	private Menu                 		ruleListMenu;
+	private	MenuItem					useDefaultsItem; 
 	private Button			     		addRuleButton;
 	private Button			     		removeRuleButton;
 
@@ -136,76 +128,89 @@ private	MenuItem useDefaultsItem;
 		};
 	}
 
-	private void addRulesetMenuOptions(Menu menu) {
+//	private void addRulesetMenuOptions(Menu menu) {
+//
+//        MenuItem rulesetMenu = new MenuItem(menu, SWT.CASCADE);
+//        rulesetMenu.setText("Ruleset");
+//        Menu rulesetSubMenu = new Menu(menu);
+//        rulesetMenu.setMenu(rulesetSubMenu);
+//        rulesetMenusByName = new HashMap<String, MenuItem>();
+//
+//        MenuItem demoItem = new MenuItem(rulesetSubMenu, SWT.PUSH);
+//        demoItem.setText("---demo only---");    // NO API to re-parent rules to other rulesets (yet)
+//
+//        for (String rulesetName : rulesetNames()) {
+//            MenuItem rulesetItem = new MenuItem(rulesetSubMenu, SWT.RADIO);
+//            rulesetMenusByName.put(rulesetName, rulesetItem);
+//            rulesetItem.setText(rulesetName);
+//            final String rulesetStr = rulesetName;
+//            rulesetItem.addSelectionListener( new SelectionAdapter() {
+//                public void widgetSelected(SelectionEvent e) {
+//                    setRuleset(rulesetStr);
+//                    }
+//                }
+//            );
+//         }
+//	}
 
-        MenuItem rulesetMenu = new MenuItem(menu, SWT.CASCADE);
-        rulesetMenu.setText("Ruleset");
-        Menu rulesetSubMenu = new Menu(menu);
-        rulesetMenu.setMenu(rulesetSubMenu);
-        rulesetMenusByName = new HashMap<String, MenuItem>();
-
-        MenuItem demoItem = new MenuItem(rulesetSubMenu, SWT.PUSH);
-        demoItem.setText("---demo only---");    // NO API to re-parent rules to other rulesets (yet)
-
-        for (String rulesetName : rulesetNames()) {
-            MenuItem rulesetItem = new MenuItem(rulesetSubMenu, SWT.RADIO);
-            rulesetMenusByName.put(rulesetName, rulesetItem);
-            rulesetItem.setText(rulesetName);
-            final String rulesetStr = rulesetName;
-            rulesetItem.addSelectionListener( new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
-                    setRuleset(rulesetStr);
-                    }
-                }
-            );
-         }
-	}
-
-    private void adjustMenuPrioritySettings() {
-
-        RulePriority priority = ruleSelection == null ? null : RuleUtil.commonPriority(ruleSelection);
-	    Iterator<Map.Entry<RulePriority, MenuItem>> iter = priorityMenusByPriority.entrySet().iterator();
-
-	    while (iter.hasNext()) {
-	        Map.Entry<RulePriority, MenuItem> entry = iter.next();
-	        MenuItem item = entry.getValue();
-	        if (entry.getKey() == priority) {
-	            item.setSelection(true);
-	            item.setEnabled(false);
-	        } else {
-	            item.setSelection(false);
-	            item.setEnabled(true);
-	            }
-	    }
-    }
+//    private void adjustMenuPrioritySettings() {
+//
+//        RulePriority priority = ruleSelection == null ? null : RuleUtil.commonPriority(ruleSelection);
+//	    Iterator<Map.Entry<RulePriority, MenuItem>> iter = priorityMenusByPriority.entrySet().iterator();
+//
+//	    while (iter.hasNext()) {
+//	        Map.Entry<RulePriority, MenuItem> entry = iter.next();
+//	        MenuItem item = entry.getValue();
+//	        if (entry.getKey() == priority) {
+//	            item.setSelection(true);
+//	            item.setEnabled(false);
+//	        } else {
+//	            item.setSelection(false);
+//	            item.setEnabled(true);
+//	            }
+//	    }
+//    }
 
 	// if all the selected rules/ruleGroups reference a common ruleset name
 	// then check that item and disable it, do the reverse for all others.
-    private void adjustMenuRulesetSettings() {
+//    private void adjustMenuRulesetSettings() {
+//
+//        String rulesetName = ruleSelection == null ? null : ruleSetNameFrom(RuleUtil.commonRuleset(ruleSelection));
+//        Iterator<Map.Entry<String, MenuItem>> iter = rulesetMenusByName.entrySet().iterator();
+//
+//        while (iter.hasNext()) {
+//            Map.Entry<String, MenuItem> entry = iter.next();
+//            MenuItem item = entry.getValue();
+//            if (rulesetName == null) {	// allow all entries if none or conflicting
+//            	 item.setSelection(false);
+//                 item.setEnabled(true);
+//                 continue;
+//            	}
+//            if (StringUtil.areSemanticEquals(entry.getKey(), rulesetName)) {
+//                item.setSelection(true);
+//                item.setEnabled(false);
+//            } else {
+//                item.setSelection(false);
+//                item.setEnabled(true);
+//                }
+//        }
+//    }
 
-        String rulesetName = ruleSelection == null ? null : ruleSetNameFrom(RuleUtil.commonRuleset(ruleSelection));
-        Iterator<Map.Entry<String, MenuItem>> iter = rulesetMenusByName.entrySet().iterator();
-
-        while (iter.hasNext()) {
-            Map.Entry<String, MenuItem> entry = iter.next();
-            MenuItem item = entry.getValue();
-            if (rulesetName == null) {	// allow all entries if none or conflicting
-            	 item.setSelection(false);
-                 item.setEnabled(true);
-                 continue;
-            	}
-            if (StringUtil.areSemanticEquals(entry.getKey(), rulesetName)) {
-                item.setSelection(true);
-                item.setEnabled(false);
-            } else {
-                item.setSelection(false);
-                item.setEnabled(true);
-                }
-        }
-    }
-
-	private void adjustMenuUseDefaultsOption() {
-		useDefaultsItem.setEnabled( ! ruleSelection.haveDefaultValues() );
+	protected void addTableSelectionOptions(Menu menu) {
+		
+		useDefaultsItem = new MenuItem(menu, SWT.PUSH);
+	    useDefaultsItem.setText("Use defaults");
+//	    useDefaultsItem.setEnabled(false);
+	    useDefaultsItem.addSelectionListener(new SelectionAdapter() {
+	        public void widgetSelected(SelectionEvent event) {
+	            ruleSelection.useDefaultValues();
+	            }
+	        });
+	}
+    
+	protected void adjustTableMenuOptions() {
+		boolean hasDefaults = ruleSelection.haveDefaultValues();
+		useDefaultsItem.setEnabled( ! hasDefaults );
 	}
 
 	/**
@@ -500,13 +505,13 @@ private	MenuItem useDefaultsItem;
 
 		Tree ruleTree = treeViewer.getTree();
 		
-		ruleListMenu = createMenuFor(ruleTree);
-		ruleTree.setMenu(ruleListMenu);
-		ruleTree.addListener(SWT.MenuDetect, new Listener () {
-	        public void handleEvent (Event event) {
-	            popupRuleSelectionMenu(event);
-	        }
-	    });
+//		ruleListMenu = createMenuFor(ruleTree);
+//		ruleTree.setMenu(ruleListMenu);
+//		ruleTree.addListener(SWT.MenuDetect, new Listener () {
+//	        public void handleEvent (Event event) {
+//	            popupRuleSelectionMenu(event);
+//	        }
+//	    });
 
 		treeViewer.setCheckStateProvider(createCheckStateProvider());
 
@@ -587,50 +592,50 @@ private	MenuItem useDefaultsItem;
 		};
 	}
 
-	private Menu createMenuFor(Control control) {
-
-	    Menu menu = new Menu(control);
-
-	    MenuItem priorityMenu = new MenuItem (menu, SWT.CASCADE);
-	    priorityMenu.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
-	    Menu subMenu = new Menu(menu);
-	    priorityMenu.setMenu (subMenu);
-	    priorityMenusByPriority = new HashMap<RulePriority, MenuItem>(RulePriority.values().length);
-
-	    for (RulePriority priority : RulePriority.values()) {
-    	    MenuItem priorityItem = new MenuItem (subMenu, SWT.RADIO);
-    	    priorityMenusByPriority.put(priority, priorityItem);
-    	    priorityItem.setText(priority.getName());  // TODO need to internationalize?
-    	 //   priorityItem.setImage(imageFor(priority));  not visible with radiobuttons
-    	    final RulePriority pri = priority;
-    	    priorityItem.addSelectionListener( new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
-                    setPriority(pri);
-                    }
-                }
-    	    );
-	    }
-
-	    MenuItem hideItem = new MenuItem(menu, SWT.PUSH);
-	    hideItem.setText("Hide");
-	    hideItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-            	toggleColumnVisiblity("??");	// TODO
-            }
-        });
-	    hideItem.setEnabled(false);
-
-        useDefaultsItem = new MenuItem(menu, SWT.PUSH);
-        useDefaultsItem.setText("Use defaults");
-        useDefaultsItem.setEnabled(false);
-        useDefaultsItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                ruleSelection.useDefaultValues();
-            }
-        });
-
-        return menu;
-	}
+//	private Menu createMenuFor(Control control) {
+//
+//	    Menu menu = new Menu(control);
+//
+//	    MenuItem priorityMenu = new MenuItem (menu, SWT.CASCADE);
+//	    priorityMenu.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
+//	    Menu subMenu = new Menu(menu);
+//	    priorityMenu.setMenu (subMenu);
+//	    priorityMenusByPriority = new HashMap<RulePriority, MenuItem>(RulePriority.values().length);
+//
+//	    for (RulePriority priority : RulePriority.values()) {
+//    	    MenuItem priorityItem = new MenuItem (subMenu, SWT.RADIO);
+//    	    priorityMenusByPriority.put(priority, priorityItem);
+//    	    priorityItem.setText(priority.getName());  // TODO need to internationalize?
+//    	 //   priorityItem.setImage(imageFor(priority));  not visible with radiobuttons
+//    	    final RulePriority pri = priority;
+//    	    priorityItem.addSelectionListener( new SelectionAdapter() {
+//                public void widgetSelected(SelectionEvent e) {
+//                    setPriority(pri);
+//                    }
+//                }
+//    	    );
+//	    }
+//
+//	    MenuItem hideItem = new MenuItem(menu, SWT.PUSH);
+//	    hideItem.setText("Hide");
+//	    hideItem.addSelectionListener(new SelectionAdapter() {
+//            public void widgetSelected(SelectionEvent event) {
+//            	toggleColumnVisiblity("??");	// TODO
+//            }
+//        });
+//	    hideItem.setEnabled(false);
+//
+//        useDefaultsItem = new MenuItem(menu, SWT.PUSH);
+//        useDefaultsItem.setText("Use defaults");
+//        useDefaultsItem.setEnabled(false);
+//        useDefaultsItem.addSelectionListener(new SelectionAdapter() {
+//            public void widgetSelected(SelectionEvent event) {
+//                ruleSelection.useDefaultValues();
+//            }
+//        });
+//
+//        return menu;
+//	}
 
 	/**
 	 * Method groupBy.
@@ -655,11 +660,11 @@ private	MenuItem useDefaultsItem;
 		selectedItems(new Object[0]);	// selections are killed by grouping
 	}
 
-	private boolean hasPriorityGrouping() {
-	    return
-	        groupingColumn == TextColumnDescriptor.priorityName ||
-	        groupingColumn == TextColumnDescriptor.priority;
-	}
+//	private boolean hasPriorityGrouping() {
+//	    return
+//	        groupingColumn == TextColumnDescriptor.priorityName ||
+//	        groupingColumn == TextColumnDescriptor.priority;
+//	}
 
 	private String labelFor(TreeColumn tc) {
 
@@ -679,21 +684,21 @@ private	MenuItem useDefaultsItem;
 		updateCheckControls();
 	}
 
-	private void popupRuleSelectionMenu(Event event) {
-
-	    // have to do it here or else the ruleset var is null in the menu setup - timing issue
-	    if (rulesetMenusByName == null) {
-	        addRulesetMenuOptions(ruleListMenu);
-	        new MenuItem(ruleListMenu, SWT.SEPARATOR);
-            addColumnSelectionOptions(ruleListMenu);
-	    }
-
-        adjustMenuPrioritySettings();
-        adjustMenuRulesetSettings();
-        adjustMenuUseDefaultsOption();
-	    ruleListMenu.setLocation(event.x, event.y);
-        ruleListMenu.setVisible(true);
-	}
+//	private void popupRuleSelectionMenu(Event event) {
+//
+//	    // have to do it here or else the ruleset var is null in the menu setup - timing issue
+////	    if (rulesetMenusByName == null) {
+//	//        addRulesetMenuOptions(ruleListMenu);
+//	//        new MenuItem(ruleListMenu, SWT.SEPARATOR);
+// //           addColumnSelectionOptions(ruleListMenu);
+////	    }
+//
+// //       adjustMenuPrioritySettings();
+////        adjustMenuRulesetSettings();
+////        adjustMenuUseDefaultsOption();
+////	    ruleListMenu.setLocation(event.x, event.y);
+////        ruleListMenu.setVisible(true);
+//	}
 
 	protected void redrawTable(String sortColumnLabel, int sortDir) {
 		groupBy(groupingColumn);
@@ -713,14 +718,14 @@ private	MenuItem useDefaultsItem;
 
 	public RuleSet ruleSet() { return ruleSet; }
 
-	private String[] rulesetNames() {
-
-	    Set<String> names = new HashSet<String>();
-	    for (Rule rule : ruleSet.getRules()) {
-	        names.add(ruleSetNameFrom(rule));  // if we strip out the 'Rules' portions then we don't get matches...need to rename rulesets
-	    }
-	    return names.toArray(new String[names.size()]);
-	}
+//	private String[] rulesetNames() {
+//
+//	    Set<String> names = new HashSet<String>();
+//	    for (Rule rule : ruleSet.getRules()) {
+//	        names.add(ruleSetNameFrom(rule));  // if we strip out the 'Rules' portions then we don't get matches...need to rename rulesets
+//	    }
+//	    return names.toArray(new String[names.size()]);
+//	}
 
 	protected void saveItemSelections() {
 
@@ -768,24 +773,24 @@ private	MenuItem useDefaultsItem;
 		setModified();
 	}
 
-	private void setPriority(RulePriority priority) {
+//	private void setPriority(RulePriority priority) {
+//
+//		if (ruleSelection == null) return;
+//
+//	    ruleSelection.setPriority(priority);
+//
+//	    if (hasPriorityGrouping()) {
+//	        redrawTable();
+//	    } else {
+//	        treeViewer.update(ruleSelection.allRules().toArray(), null);
+//	    }
+//
+//	    setModified();
+//	}
 
-		if (ruleSelection == null) return;
-
-	    ruleSelection.setPriority(priority);
-
-	    if (hasPriorityGrouping()) {
-	        redrawTable();
-	    } else {
-	        treeViewer.update(ruleSelection.allRules().toArray(), null);
-	    }
-
-	    setModified();
-	}
-
-	private void setRuleset(String rulesetName) {
-	    // TODO - awaiting support in PMD itself
-	}
+//	private void setRuleset(String rulesetName) {
+//	    // TODO - awaiting support in PMD itself
+//	}
 	
 	/**
 	 *

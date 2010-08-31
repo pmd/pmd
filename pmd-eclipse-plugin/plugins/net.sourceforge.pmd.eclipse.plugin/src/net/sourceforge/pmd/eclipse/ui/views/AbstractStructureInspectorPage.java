@@ -14,11 +14,13 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.PMDEngine;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.designer.DFAGraphRule;
 
@@ -31,7 +33,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
@@ -60,17 +61,20 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
 		    Node sn = node.jjtGetChild(ix);
 	    	if (sn instanceof ASTMethodDeclarator) {
-	    		List<ASTFormalParameter> allParams = ((ASTMethodDeclarator) sn).findChildrenOfType(ASTFormalParameter.class);
+	    		List<ASTFormalParameter> allParams = ((ASTMethodDeclarator) sn).findDescendantsOfType(ASTFormalParameter.class);
 	    		for (ASTFormalParameter formalParam : allParams) {
-	    		    ASTClassOrInterfaceType param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-	    		    if (param != null) {
-	    		    	sb.append( param.getImage() ).append(", ");
-	    		    }
+	    		    AbstractNode param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+	    		    if (param == null) {
+	    		    	param = formalParam.getFirstDescendantOfType(ASTPrimitiveType.class);
+	    		    	}
+	    		    if (param == null) continue;
+	    	    	sb.append( param.getImage() ).append(", ");
 	    		}	
 	    	}
 		}
 		
-		return sb.toString();
+		int length = sb.length();
+		return length == 0 ? "" : sb.toString().substring(0, length-2);
 	}
 
 	protected AbstractStructureInspectorPage(IWorkbenchPart part, FileRecord record) {

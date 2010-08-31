@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +36,8 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 	private Composite		xPathColour;
 	private ColourManager	colourManager;
 	private boolean			showColourBoxes;
-
+	private List<Control>	miscControls = new ArrayList<Control>();	// hide-show as req'd
+	
 	public static final String ID = "exclusion";
 	/**
 	 * Constructor for ExclusionPanelManager.
@@ -56,8 +58,9 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 
     public void showControls(boolean flag) {
 
-        excludeWidget.setVisible(flag);
-        xpathWidget.setVisible(flag);
+        for (Control control : miscControls) {
+        	control.setVisible(flag);
+        }
     }
 
     protected List<String> fieldErrors() {
@@ -118,6 +121,9 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
         gridData.grabExcessHorizontalSpace = false;
         clrPanel.setLayoutData(gridData);
 
+        miscControls.add(clrPanel);
+        miscControls.add(labelWidget);
+        
         return clrPanel;
 	}
 
@@ -183,6 +189,11 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 		
 		addListeners(xpathWidget, Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, xPathColour);
 		
+	    miscControls.add(labelA);
+	    miscControls.add(labelB);
+	    miscControls.add(excludeWidget);
+	    miscControls.add(xpathWidget);
+	    
 		panel.pack();
 
 		return panel;

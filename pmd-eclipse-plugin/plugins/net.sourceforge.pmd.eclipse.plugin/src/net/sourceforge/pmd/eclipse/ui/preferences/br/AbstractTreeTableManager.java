@@ -27,11 +27,13 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -58,6 +60,9 @@ public abstract class AbstractTreeTableManager {
 
 	private Label		activeCountLabel;
 
+	private Menu headerMenu;
+	private Menu tableMenu;
+	
 	private Map<Integer, List<Listener>> paintListeners = new HashMap<Integer, List<Listener>>();
 	
 	protected static PMDPlugin		plugin = PMDPlugin.getDefault();
@@ -234,6 +239,45 @@ public abstract class AbstractTreeTableManager {
 	            }
 	        }
 	    });
+		
+		setupMenusFor(tree);
+	}
+	
+	private void setupMenusFor(final Tree tree) {
+		
+		final Display display = tree.getDisplay();
+		Shell shell = tree.getShell();
+		
+		headerMenu = new Menu(shell, SWT.POP_UP);
+		addColumnSelectionOptions(headerMenu);
+		
+		tableMenu = new Menu(shell, SWT.POP_UP);
+		addTableSelectionOptions(tableMenu);
+		
+		tree.addListener(SWT.MenuDetect, new Listener() {
+			public void handleEvent(Event event) {
+				Point pt = display.map(null, tree, new Point(event.x, event.y));
+				Rectangle clientArea = tree.getClientArea();
+				boolean isHeader = clientArea.y <= pt.y && pt.y < (clientArea.y + tree.getHeaderHeight());
+				if (!isHeader) adjustTableMenuOptions();
+				tree.setMenu(isHeader ? headerMenu : tableMenu);
+			}
+		});
+		
+		tree.addListener(SWT.Dispose, new Listener() {
+			public void handleEvent(Event event) {
+				headerMenu.dispose();
+				tableMenu.dispose();
+			}
+		});
+	}
+	
+	protected void addTableSelectionOptions(Menu menu) {
+		// subclasses to provide this
+	}
+	
+	protected void adjustTableMenuOptions() {
+		// subclasses to provide this
 	}
 	
 	public void updated(Object item) {
@@ -312,13 +356,8 @@ public abstract class AbstractTreeTableManager {
 	
 	protected void addColumnSelectionOptions(Menu menu) {
 
-	    MenuItem showMenu = new MenuItem(menu, SWT.CASCADE);
-	    showMenu.setText("Show");
-        Menu columnsSubMenu = new Menu(menu);
-        showMenu.setMenu(columnsSubMenu);
-
         for (String columnLabel : columnLabels()) {
-            MenuItem columnItem = new MenuItem(columnsSubMenu, SWT.CHECK);
+            MenuItem columnItem = new MenuItem(menu, SWT.CHECK);
             columnItem.setSelection(!hiddenColumnNames.contains(columnLabel));
             columnItem.setText(columnLabel);
             final String nameStr = columnLabel;
