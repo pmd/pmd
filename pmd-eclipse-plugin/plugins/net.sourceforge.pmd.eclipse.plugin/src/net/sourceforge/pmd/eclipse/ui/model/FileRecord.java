@@ -175,7 +175,7 @@ public class FileRecord extends AbstractPMDRecord {
 
             children = allMarkerMap.values().toArray(new MarkerRecord[allMarkerMap.size()]);
         } catch (CoreException e) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), e);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION + this.toString(), e);
         }
 
         return children; // no children so return an empty array, not null!
@@ -207,7 +207,7 @@ public class FileRecord extends AbstractPMDRecord {
                 return MarkerUtil.findMarkers(resource, PMDRuntimeConstants.RULE_MARKER_TYPES);
             }
         } catch (CoreException ce) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_FIND_MARKER + this.toString(), ce);
         }
 
         return MarkerUtil.EMPTY_MARKERS;
@@ -227,7 +227,7 @@ public class FileRecord extends AbstractPMDRecord {
                 return MarkerUtil.findMarkers(resource, PMDRuntimeConstants.PMD_DFA_MARKER);
             }
         } catch (CoreException ce) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_FIND_MARKER + this.toString(), ce);
         }
 
         return MarkerUtil.EMPTY_MARKERS;
@@ -255,7 +255,7 @@ public class FileRecord extends AbstractPMDRecord {
                 }
             }
         } catch (CoreException ce) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_FIND_MARKER + this.toString(), ce);
         }
 
         // return an Array of the Markers
@@ -346,9 +346,9 @@ public class FileRecord extends AbstractPMDRecord {
             }
         } catch (FileNotFoundException fnfe) {
             PMDPlugin.getDefault().logError(
-                    StringKeys.MSGKEY_ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), fnfe);
+                    StringKeys.ERROR_FILE_NOT_FOUND + resource.toString() + " in " + this.toString(), fnfe);
         } catch (IOException ioe) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
         } finally {
             if (bReader != null) {
                 try {
@@ -366,7 +366,7 @@ public class FileRecord extends AbstractPMDRecord {
      * Calculate the number of methods.
      */
     public void calculateNumberOfMethods() {
-        if (this.resource.isAccessible()) {
+        if (resource.isAccessible()) {
 
             // we need to change the Resource into a Java-File
             final IJavaElement element = JavaCore.create(this.resource);
@@ -375,7 +375,7 @@ public class FileRecord extends AbstractPMDRecord {
             if (element instanceof ICompilationUnit) {
                 try {
                     // ITypes can be Package Declarations or other Java Stuff too
-                    final IType[] types = ((ICompilationUnit) element).getTypes();
+                    IType[] types = ((ICompilationUnit) element).getTypes();
                     for (IType type : types) {
                         // only if it is an IType itself, it's a Class
                         // from which we can get its Methods
@@ -383,11 +383,11 @@ public class FileRecord extends AbstractPMDRecord {
                     }
                 } catch (JavaModelException jme) {
                     PMDPlugin.getDefault().logError(
-                            StringKeys.MSGKEY_ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
+                            StringKeys.ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
                 }
             }
             if (!methods.isEmpty()) {
-                this.numberOfMethods = methods.size();
+                numberOfMethods = methods.size();
             }
         }
     }
@@ -399,7 +399,7 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     public int getNumberOfMethods() {
-        return this.numberOfMethods; // deactivate this method for now
+        return numberOfMethods; // deactivate this method for now
     }
 
     /**

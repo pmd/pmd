@@ -119,7 +119,7 @@ public class ASTView extends AbstractPMDPagebookView implements IResourceChangeL
             });
         } catch (CoreException e) {
             PMDPlugin.getDefault().logError(
-                    StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+                    StringKeys.ERROR_CORE_EXCEPTION, e);
         }
 
     }

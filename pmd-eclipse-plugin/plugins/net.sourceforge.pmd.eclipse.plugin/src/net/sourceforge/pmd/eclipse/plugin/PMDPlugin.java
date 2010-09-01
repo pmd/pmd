@@ -217,7 +217,7 @@ public class PMDPlugin extends AbstractUIPlugin {
         Display.getDefault().syncExec(new Runnable() {
 
             public void run() {
-            	String errTitle = getStringTable().getString(StringKeys.MSGKEY_ERROR_TITLE);
+            	String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message + String.valueOf(t));
             }
         });

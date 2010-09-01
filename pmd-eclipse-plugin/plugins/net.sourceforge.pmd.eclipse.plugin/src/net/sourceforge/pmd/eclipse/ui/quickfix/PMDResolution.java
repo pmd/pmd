@@ -87,9 +87,9 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
                 ProgressMonitorDialog dialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
                 dialog.run(false, false, this);
             } catch (InvocationTargetException e) {
-                showError(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
+                showError(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
             } catch (InterruptedException e) {
-                showError(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
+                showError(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
             }
         }
 
@@ -120,9 +120,9 @@ public class PMDResolution implements IMarkerResolution, IRunnableWithProgress {
 
             monitor.worked(1);
         } catch (CoreException e) {
-            showError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            showError(StringKeys.ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
-            showError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
+            showError(StringKeys.ERROR_IO_EXCEPTION, e);
         }
     }
 

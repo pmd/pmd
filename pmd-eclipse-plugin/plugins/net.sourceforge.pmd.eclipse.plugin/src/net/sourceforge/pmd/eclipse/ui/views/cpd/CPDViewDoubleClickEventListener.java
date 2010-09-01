@@ -119,10 +119,10 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
 	        }                    
 	    } catch (PartInitException pie) {
 	        PMDPlugin.getDefault().logError(
-	                getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), pie);
+	                getString(StringKeys.ERROR_VIEW_EXCEPTION), pie);
 	    } catch (BadLocationException ble) {
 	        PMDPlugin.getDefault().logError(
-	                getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), ble);
+	                getString(StringKeys.ERROR_VIEW_EXCEPTION), ble);
 	    }
 	}
     

@@ -113,8 +113,8 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
             }
         });
 
-        buildExternalUrlPanel(panel, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL));
-        buildMessagePanel(panel, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_MESSAGE));
+        buildExternalUrlPanel(panel, SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL));
+        buildMessagePanel(panel, SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_LABEL_MESSAGE));
 
         return panel;
     }
@@ -211,7 +211,7 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
     private Button buildExternalInfoUrlButton(Composite parent) {
 
         final Button button = new Button(parent, SWT.PUSH);
-        button.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL));
+        button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL));
 
         button.addSelectionListener(new SelectionAdapter() {
             @Override

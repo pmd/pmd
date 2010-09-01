@@ -22,7 +22,7 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
 		super(viewer);
 	}
 
-	protected String textId() { return StringKeys.MSGKEY_VIEW_ACTION_DISABLE_RULE; }
+	protected String textId() { return StringKeys.VIEW_ACTION_DISABLE_RULE; }
  	
  	protected String imageId() { return PMDUiConstants.ICON_BUTTON_DISABLE; }
     

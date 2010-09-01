@@ -95,13 +95,13 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 
 	// last item in this list is the grouping used at startup
 	private static final Object[][] groupingChoices = new Object[][] {
-		{ TextColumnDescriptor.ruleSetName,       StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET},
-		{ TextColumnDescriptor.since,             StringKeys.MSGKEY_PREF_RULESET_GROUPING_PMD_VERSION },
-		{ TextColumnDescriptor.priorityName,      StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY },
-		{ TextColumnDescriptor.ruleType,          StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_TYPE },
-		{ TextColumnDescriptor.language,		  StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE },
-        { ImageColumnDescriptor.filterViolationRegex, StringKeys.MSGKEY_PREF_RULESET_GROUPING_REGEX },
-		{ null, 								  StringKeys.MSGKEY_PREF_RULESET_GROUPING_NONE }
+		{ TextColumnDescriptor.ruleSetName,       StringKeys.PREF_RULESET_COLUMN_RULESET},
+		{ TextColumnDescriptor.since,             StringKeys.PREF_RULESET_GROUPING_PMD_VERSION },
+		{ TextColumnDescriptor.priorityName,      StringKeys.PREF_RULESET_COLUMN_PRIORITY },
+		{ TextColumnDescriptor.ruleType,          StringKeys.PREF_RULESET_COLUMN_RULE_TYPE },
+		{ TextColumnDescriptor.language,		  StringKeys.PREF_RULESET_COLUMN_LANGUAGE },
+        { ImageColumnDescriptor.filterViolationRegex, StringKeys.PREF_RULESET_GROUPING_REGEX },
+		{ null, 								  StringKeys.PREF_RULESET_GROUPING_NONE }
 		};
 	
 	public RuleEditorView() {
@@ -195,7 +195,7 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 	}
 	
 	protected String descriptionId() {
-		return StringKeys.MSGKEY_PREF_RULESET_TITLE;
+		return StringKeys.PREF_RULESET_TITLE;
 	}
 
 	@Override
@@ -242,7 +242,7 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 	    Composite ruleSection = new Composite(parent, SWT.NULL);
 
 	    // Create the controls (order is important !)
-        Composite groupCombo = tableManager.buildGroupCombo(ruleSection, StringKeys.MSGKEY_PREF_RULESET_RULES_GROUPED_BY, groupingChoices);
+        Composite groupCombo = tableManager.buildGroupCombo(ruleSection, StringKeys.PREF_RULESET_RULES_GROUPED_BY, groupingChoices);
 
 	    Tree ruleTree = tableManager.buildRuleTreeViewer(ruleSection);
 	    tableManager.groupBy(null);
@@ -288,13 +288,13 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 		tabFolder = new TabFolder(parent, SWT.TOP);
 
 		rulePropertyManagers = new RulePropertyManager[] {
-			buildRuleTab(tabFolder,    	   0, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_RULE)),
-		    buildDescriptionTab(tabFolder, 1, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_DESCRIPTION)),
-		    buildPropertyTab(tabFolder,    2, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_PROPERTIES)),
-		    buildUsageTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FILTERS)),
-		    buildXPathTab(tabFolder,       4, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_XPATH)),
+			buildRuleTab(tabFolder,    	   0, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_RULE)),
+		    buildDescriptionTab(tabFolder, 1, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_DESCRIPTION)),
+		    buildPropertyTab(tabFolder,    2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_PROPERTIES)),
+		    buildUsageTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FILTERS)),
+		    buildXPathTab(tabFolder,       4, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_XPATH)),
 //		    buildQuickFixTab(tabFolder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)),
-		    buildExampleTab(tabFolder,     5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_EXAMPLES)),
+		    buildExampleTab(tabFolder,     5, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES)),
 		    };
 
 		tabFolder.pack();

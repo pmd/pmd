@@ -94,7 +94,7 @@ public class PackageRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord[] getChildren() {
-        return this.children; // NOPMD by Herlin on 09/10/06 00:22
+        return children; // NOPMD by Herlin on 09/10/06 00:22
     }
 
     /**
@@ -104,9 +104,9 @@ public class PackageRecord extends AbstractPMDRecord {
     public IResource getResource() {
         IResource resource = null;
         try {
-            resource = this.packageFragment.getCorrespondingResource();
+            resource = packageFragment.getCorrespondingResource();
         } catch (JavaModelException jme) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
         }
         return resource;
     }
@@ -117,7 +117,7 @@ public class PackageRecord extends AbstractPMDRecord {
      * @return the Fragment
      */
     public IPackageFragment getFragment() {
-        return this.packageFragment;
+        return packageFragment;
     }
 
     /**
@@ -125,11 +125,11 @@ public class PackageRecord extends AbstractPMDRecord {
      */
     @Override
     protected final AbstractPMDRecord[] createChildren() {
-        final List<FileRecord> fileList = new ArrayList<FileRecord>();
+        List<FileRecord> fileList = new ArrayList<FileRecord>();
         try {
-            final ICompilationUnit[] javaUnits = this.packageFragment.getCompilationUnits();
+            ICompilationUnit[] javaUnits = packageFragment.getCompilationUnits();
             for (ICompilationUnit javaUnit : javaUnits) {
-                final IResource javaResource = javaUnit.getCorrespondingResource();
+                IResource javaResource = javaUnit.getCorrespondingResource();
                 if (javaResource != null) {
                     fileList.add(new FileRecord(javaResource, this)); // NOPMD
                     // by
@@ -140,7 +140,7 @@ public class PackageRecord extends AbstractPMDRecord {
                 }
             }
         } catch (CoreException ce) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION + this.toString(), ce);
         }
 
         return fileList.toArray(new AbstractPMDRecord[fileList.size()]);
@@ -205,11 +205,11 @@ public class PackageRecord extends AbstractPMDRecord {
      */
     @Override
     public String getName() {
-        String name = this.packageFragment.getElementName();
+        String name = packageFragment.getElementName();
 
         // for the default Package we return a String saying "default Package"
-        if (this.packageFragment.isDefaultPackage()) {
-            name = PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_DEFAULT_PACKAGE);
+        if (packageFragment.isDefaultPackage()) {
+            name = PMDPlugin.getDefault().getStringTable().getString(StringKeys.VIEW_DEFAULT_PACKAGE);
         }
 
         return name;
@@ -228,7 +228,7 @@ public class PackageRecord extends AbstractPMDRecord {
      */
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof PackageRecord ? this.packageFragment.equals(((PackageRecord) obj).packageFragment) : false;
+        return obj instanceof PackageRecord ? packageFragment.equals(((PackageRecord) obj).packageFragment) : false;
     }
 
     /**

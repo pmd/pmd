@@ -202,8 +202,8 @@ public class CPDView extends ViewPart implements IPropertyListener {
             if (!hasResults) {
                 // no entries
                 final MessageBox box = new MessageBox(this.treeViewer.getControl().getShell());
-                box.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_NORESULTS_HEADER));
-                box.setMessage(getString(StringKeys.MSGKEY_DIALOG_CPD_NORESULTS_BODY));
+                box.setText(getString(StringKeys.DIALOG_CPD_NORESULTS_HEADER));
+                box.setMessage(getString(StringKeys.DIALOG_CPD_NORESULTS_BODY));
                 box.open();
             }
         }

@@ -209,8 +209,8 @@ public class PMDPropertyPageController {
      *
      */
     private void rebuildProject() {
-        final boolean rebuild = MessageDialog.openQuestion(shell, getMessage(StringKeys.MSGKEY_QUESTION_TITLE),
-                getMessage(StringKeys.MSGKEY_QUESTION_REBUILD_PROJECT));
+        final boolean rebuild = MessageDialog.openQuestion(shell, getMessage(StringKeys.QUESTION_TITLE),
+                getMessage(StringKeys.QUESTION_REBUILD_PROJECT));
 
         if (rebuild) {
             log.info("Full rebuild of the project " + this.project.getName());
@@ -244,8 +244,8 @@ public class PMDPropertyPageController {
      *
      */
     private void createDefaultRuleSetFile() throws PropertiesException {
-        final boolean create = MessageDialog.openQuestion(shell, getMessage(StringKeys.MSGKEY_QUESTION_TITLE),
-                getMessage(StringKeys.MSGKEY_QUESTION_CREATE_RULESET_FILE));
+        final boolean create = MessageDialog.openQuestion(shell, getMessage(StringKeys.QUESTION_TITLE),
+                getMessage(StringKeys.QUESTION_CREATE_RULESET_FILE));
         if (create) {
             final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
             properties.createDefaultRuleSetFile();

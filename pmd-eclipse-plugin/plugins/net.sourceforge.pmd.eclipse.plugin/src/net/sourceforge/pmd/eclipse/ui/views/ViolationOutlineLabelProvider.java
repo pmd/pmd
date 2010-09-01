@@ -29,7 +29,7 @@ public class ViolationOutlineLabelProvider extends AbstractViolationLabelProvide
             try {
                 priority = (Integer) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
             } catch (CoreException ce) {
-                PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + toString(), ce);
+                PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION + toString(), ce);
             }
 
             return getPriorityImage(priority);

@@ -31,7 +31,7 @@ public class DataflowView extends AbstractPMDPagebookView implements IResourceCh
         super.createPartControl(parent);
     }
     
-    protected String pageMessageId() { return StringKeys.MSGKEY_VIEW_DATAFLOW_DEFAULT_TEXT; }
+    protected String pageMessageId() { return StringKeys.VIEW_DATAFLOW_DEFAULT_TEXT; }
 
 	@Override
 	protected String mementoFileId() { return PMDUiConstants.MEMENTO_DATAFLOW_FILE; }
@@ -108,8 +108,7 @@ public class DataflowView extends AbstractPMDPagebookView implements IResourceCh
 
             });
         } catch (CoreException e) {
-            PMDPlugin.getDefault().logError(
-                    StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
 
     }

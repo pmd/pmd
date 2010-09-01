@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
@@ -40,6 +39,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 
 /**
+ * Tree table support, everything non-Rule related.
  * 
  * @author Brian Remedios
  */
@@ -48,17 +48,13 @@ public abstract class AbstractTreeTableManager {
 
 	protected ContainerCheckedTreeViewer  treeViewer;
 	
-	protected boolean sortDescending;
-	
-	private final Set<String> hiddenColumnNames;
-
-	private Button selectAllButton;
-	private Button unSelectAllButton;
-	private IPreferences preferences;
-	
-	private ModifyListener modifyListener;
-
-	private Label		activeCountLabel;
+	protected boolean			sortDescending;	
+	private final Set<String>	hiddenColumnNames;
+	private Button				selectAllButton;
+	private Button				unSelectAllButton;
+	private IPreferences		preferences;	
+	private ModifyListener		modifyListener;
+	private Label				activeCountLabel;
 
 	private Menu headerMenu;
 	private Menu tableMenu;
@@ -150,9 +146,48 @@ public abstract class AbstractTreeTableManager {
 		return button;
 	}
 	
+	/**
+	 *
+	 * @param parent Composite
+	 * @return Button
+	 */
+	protected Button buildSelectAllButton(Composite parent) {
+		
+		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_CHECK_ALL, StringKeys.PREF_RULESET_BUTTON_CHECK_ALL);
+		button.addSelectionListener(new SelectionAdapter() {
+          public void widgetSelected(SelectionEvent event) {
+				setAllItemsActive();
+			}
+		});
+
+		return button;
+	}
+	
+	/**
+	 *
+	 * @param parent Composite
+	 * @return Button
+	 */
+	protected Button buildUnselectAllButton(Composite parent) {
+		
+		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_UNCHECK_ALL, StringKeys.PREF_RULESET_BUTTON_UNCHECK_ALL);		
+		button.addSelectionListener(new SelectionAdapter() {
+          public void widgetSelected(SelectionEvent event) {
+				preferences.getActiveRuleNames().clear();
+				treeViewer().setCheckedElements(new Object[0]);
+				setModified();
+				updateCheckControls();
+			}
+		});
+
+		return button;
+	}
+	
 	protected boolean isHidden(String columnName) {
 		return hiddenColumnNames.contains(columnName);
 	}
+	
+	protected abstract String nameFor(Object treeItemData);
 	
 	/**
 	 * @param item TreeItem
@@ -164,7 +199,7 @@ public abstract class AbstractTreeTableManager {
 		Object itemData = item.getData();
 		if (itemData == null || itemData instanceof RuleGroup) return;
 
-		String name = ((Rule)itemData).getName();
+		String name = nameFor(itemData);
 
 		isActive(name, checked);
 
@@ -411,45 +446,26 @@ public abstract class AbstractTreeTableManager {
 		target.append(value);     // should not get here..breakpoint here
 	}
 	
-	protected Button buildSortByCheckedItemsButton(Composite parent) {
-		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setToolTipText("Sort by checked items");
-		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_SORT_CHECKED));
+//	protected Button buildSortByCheckedItemsButton(Composite parent) {
+//		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
+//		button.setToolTipText("Sort by checked items");
+//		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_SORT_CHECKED));
+//
+//		button.addSelectionListener(new SelectionAdapter() {
+//            public void widgetSelected(SelectionEvent event) {
+//				sortByCheckedItems();
+//			}
+//		});
+//
+//		return button;
+//	}	
 
-		button.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-				sortByCheckedItems();
-			}
-		});
-
-		return button;
-	}	
+	protected abstract void setAllItemsActive();
 	
 	protected abstract void sortByCheckedItems();
 	
-	/**
-	 *
-	 * @param parent Composite
-	 * @return Button
-	 */
-	protected Button buildSelectAllButton(Composite parent) {
+
 		
-		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_CHECK_ALL));
-		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_CHECK_ALL));
-
-		button.setEnabled(true);
-		button.addSelectionListener(new SelectionAdapter() {
-           public void widgetSelected(SelectionEvent event) {
-				setAllItemsActive();
-			}
-		});
-
-		return button;
-	}
-	
-	protected abstract void setAllItemsActive();
-	
 	public void modifyListener(ModifyListener theListener) {
 		modifyListener = theListener;
 	}
@@ -489,27 +505,4 @@ public abstract class AbstractTreeTableManager {
 		}
 	}
 	
-	/**
-	 *
-	 * @param parent Composite
-	 * @return Button
-	 */
-	protected Button buildUnselectAllButton(Composite parent) {
-		
-		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_UNCHECK_ALL));
-		button.setImage(ResourceManager.imageFor(PMDUiConstants.ICON_BUTTON_UNCHECK_ALL));
-
-		button.setEnabled(true);
-		button.addSelectionListener(new SelectionAdapter() {
-           public void widgetSelected(SelectionEvent event) {
-				preferences.getActiveRuleNames().clear();
-				treeViewer().setCheckedElements(new Object[0]);
-				setModified();
-				updateCheckControls();
-			}
-		});
-
-		return button;
-	}
 }

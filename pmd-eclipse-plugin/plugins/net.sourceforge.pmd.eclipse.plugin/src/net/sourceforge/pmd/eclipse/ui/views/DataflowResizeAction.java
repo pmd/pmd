@@ -11,7 +11,7 @@ public class DataflowResizeAction extends AbstractPMDAction {
 
     protected String imageId() { return PMDUiConstants.ICON_BUTTON_CALCULATE; }
     
-    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS; }
+    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_CALCULATE_STATS; }
 	   
     /**
      * @return the Style, in which the Button is displayed

@@ -97,7 +97,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
-		setDescription(getMessage(StringKeys.MSGKEY_PREF_RULESET_TITLE));
+		setDescription(getMessage(StringKeys.PREF_RULESET_TITLE));
 		activeInstance = this;
 	}
 
@@ -141,16 +141,14 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	private void layoutControls(Composite parent) {
 
 		// Create the controls (order is important !)
-		Label ruleTableLabel = buildLabel(parent, StringKeys.MSGKEY_PREF_RULESET_LABEL_RULETABLE);
+		Label ruleTableLabel = buildLabel(parent, StringKeys.PREF_RULESET_LABEL_RULETABLE);
 		Table ruleTable = buildRuleTableViewer(parent);
 		Composite ruleTableButtons = buildRuleTableButtons(parent);
-		Label rulePropertiesTableLabel = buildLabel(parent, StringKeys.MSGKEY_PREF_RULESET_LABEL_RULEPROPSTABLE);
+		Label rulePropertiesTableLabel = buildLabel(parent, StringKeys.PREF_RULESET_LABEL_RULEPROPSTABLE);
 		Table rulePropertiesTable = buildRulePropertiesTableViewer(parent);
 		Composite rulePropertiesTableButton = buildRulePropertiesTableButtons(parent);
-		Label excludePatternsLabel = buildLabel(parent,
-				StringKeys.MSGKEY_PREF_RULESET_LABEL_EXCLUDE_PATTERNS_TABLE);
-		Label includePatternsLabel = buildLabel(parent,
-				StringKeys.MSGKEY_PREF_RULESET_LABEL_INCLUDE_PATTERNS_TABLE);
+		Label excludePatternsLabel = buildLabel(parent,	StringKeys.PREF_RULESET_LABEL_EXCLUDE_PATTERNS_TABLE);
+		Label includePatternsLabel = buildLabel(parent,	StringKeys.PREF_RULESET_LABEL_INCLUDE_PATTERNS_TABLE);
 		Table excludePatternTable = buildExcludePatternTableViewer(parent);
 		Table includePatternTable = buildIncludePatternTableViewer(parent);
 		Composite excludeIncludePatternTableButtons = buildExcludeIncludePatternTableButtons(parent);
@@ -338,17 +336,17 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		ruleTableViewer = new TableViewer(parent, tableStyle);
 
 		Table ruleTable = ruleTableViewer.getTable();
-		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE), 70,
+		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_LANGUAGE), 70,
 				RuleTableViewerSorter.RULE_LANGUAGE_COMPARATOR);
-		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME), 110,
+		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_RULESET_NAME), 110,
 				RuleTableViewerSorter.RULE_RULESET_NAME_COMPARATOR);
-		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_NAME), 170,
+		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_RULE_NAME), 170,
 				RuleTableViewerSorter.RULE_NAME_COMPARATOR);
-		addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_SINCE), 40,
+		addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.PREF_RULESET_COLUMN_SINCE), 40,
 				RuleTableViewerSorter.RULE_SINCE_COMPARATOR);
-		addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY), 80,
+		addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.PREF_RULESET_COLUMN_PRIORITY), 80,
 				RuleTableViewerSorter.RULE_PRIORITY_COMPARATOR);
-		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION), 300,
+		addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_DESCRIPTION), 300,
 				RuleTableViewerSorter.RULE_DESCRIPTION_COMPARATOR);
 
 		ruleTable.setLinesVisible(true);
@@ -356,7 +354,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		ruleTableViewer.setContentProvider(new RuleSetContentProvider());
 		ruleTableViewer.setLabelProvider(new RuleLabelProvider());
-		ruleTableViewer.setSorter(this.ruleTableViewerSorter);
+		ruleTableViewer.setSorter(ruleTableViewerSorter);
 		ruleTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			/**
 			 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(SelectionChangedEvent)
@@ -393,12 +391,12 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		Table rulePropertiesTable = rulePropertiesTableViewer.getTable();
 		TableColumn propertyColumn = new TableColumn(rulePropertiesTable, SWT.LEFT);
 		propertyColumn.setResizable(true);
-		propertyColumn.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PROPERTY));
+		propertyColumn.setText(getMessage(StringKeys.PREF_RULESET_COLUMN_PROPERTY));
 		propertyColumn.setWidth(100);
 
 		TableColumn valueColumn = new TableColumn(rulePropertiesTable, SWT.LEFT);
 		valueColumn.setResizable(true);
-		valueColumn.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_VALUE));
+		valueColumn.setText(getMessage(StringKeys.PREF_RULESET_COLUMN_VALUE));
 		valueColumn.setWidth(350);
 
 		rulePropertiesTable.setLinesVisible(true);
@@ -418,7 +416,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildRemoveRuleButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_REMOVERULE));
+		button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_REMOVERULE));
 		button.setEnabled(false);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -442,7 +440,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildEditRuleButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_EDITRULE));
+		button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_EDITRULE));
 		button.setEnabled(false);
 
 		button.addSelectionListener(new SelectionAdapter() {
@@ -472,7 +470,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildAddRuleButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADDRULE));
+		button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_ADDRULE));
 		button.setEnabled(true);
 
 		button.addSelectionListener(new SelectionAdapter() {
@@ -508,7 +506,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildImportRuleSetButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_IMPORTRULESET));
+		button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_IMPORTRULESET));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -534,7 +532,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 							PMDPlugin.getDefault().logError("Exception when refreshing the rule table", t);
 						}
 					} catch (RuntimeException e) {
-						PMDPlugin.getDefault().showError(getMessage(StringKeys.MSGKEY_ERROR_IMPORTING_RULESET), e);
+						PMDPlugin.getDefault().showError(getMessage(StringKeys.ERROR_IMPORTING_RULESET), e);
 					}
 				}
 			}
@@ -548,7 +546,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildExportRuleSetButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_EXPORTRULESET));
+		button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_EXPORTRULESET));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -561,15 +559,15 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 						boolean flContinue = true;
 						if (file.exists()) {
 							flContinue = MessageDialog.openConfirm(getShell(),
-									getMessage(StringKeys.MSGKEY_CONFIRM_TITLE),
-									getMessage(StringKeys.MSGKEY_CONFIRM_RULESET_EXISTS));
+									getMessage(StringKeys.CONFIRM_TITLE),
+									getMessage(StringKeys.CONFIRM_RULESET_EXISTS));
 						}
 
 						InputDialog input = null;
 						if (flContinue) {
 							input = new InputDialog(getShell(),
-									getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE),
-									getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_RULESET_DESCRIPTION),
+									getMessage(StringKeys.PREF_RULESET_DIALOG_TITLE),
+									getMessage(StringKeys.PREF_RULESET_DIALOG_RULESET_DESCRIPTION),
 									ruleSet.getDescription() == null ? "" : ruleSet.getDescription().trim(), null);
 							flContinue = input.open() == InputDialog.OK;
 						}
@@ -581,13 +579,13 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 							IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
 							writer.write(out, ruleSet);
 							out.close();
-							MessageDialog.openInformation(getShell(), getMessage(StringKeys.MSGKEY_INFORMATION_TITLE),
-									getMessage(StringKeys.MSGKEY_INFORMATION_RULESET_EXPORTED));
+							MessageDialog.openInformation(getShell(), getMessage(StringKeys.INFORMATION_TITLE),
+									getMessage(StringKeys.INFORMATION_RULESET_EXPORTED));
 						}
 					} catch (IOException e) {
-						PMDPlugin.getDefault().showError(getMessage(StringKeys.MSGKEY_ERROR_EXPORTING_RULESET), e);
+						PMDPlugin.getDefault().showError(getMessage(StringKeys.ERROR_EXPORTING_RULESET), e);
 					} catch (WriterException e) {
-						PMDPlugin.getDefault().showError(getMessage(StringKeys.MSGKEY_ERROR_EXPORTING_RULESET), e);
+						PMDPlugin.getDefault().showError(getMessage(StringKeys.ERROR_EXPORTING_RULESET), e);
 					}
 				}
 			}
@@ -601,13 +599,13 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildClearAllButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_CLEARALL));
+		button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_CLEARALL));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
             public void widgetSelected(SelectionEvent event) {
-				if (MessageDialog.openConfirm(getShell(), getMessage(StringKeys.MSGKEY_CONFIRM_TITLE),
-						getMessage(StringKeys.MSGKEY_CONFIRM_CLEAR_RULESET))) {
+				if (MessageDialog.openConfirm(getShell(), getMessage(StringKeys.CONFIRM_TITLE),
+						getMessage(StringKeys.CONFIRM_CLEAR_RULESET))) {
 					ruleSet.getRules().clear();
 					setModified(true);
 					try {
@@ -627,7 +625,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildRuleDesignerButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_RULEDESIGNER));
+		button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_RULEDESIGNER));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -680,7 +678,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		Table excludePatternTable = excludePatternTableViewer.getTable();
 		TableColumn patternColumn = new TableColumn(excludePatternTable, SWT.LEFT);
 		patternColumn.setResizable(true);
-		patternColumn.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_EXCLUDE_PATTERN));
+		patternColumn.setText(getMessage(StringKeys.PREF_RULESET_COLUMN_EXCLUDE_PATTERN));
 		patternColumn.setWidth(250);
 
 		excludePatternTable.setLinesVisible(true);
@@ -708,7 +706,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		Table includePatternTable = includePatternTableViewer.getTable();
 		TableColumn patternColumn = new TableColumn(includePatternTable, SWT.LEFT);
 		patternColumn.setResizable(true);
-		patternColumn.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_INCLUDE_PATTERN));
+		patternColumn.setText(getMessage(StringKeys.PREF_RULESET_COLUMN_INCLUDE_PATTERN));
 		patternColumn.setWidth(250);
 
 		includePatternTable.setLinesVisible(true);
@@ -748,7 +746,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildAddExcludePatternButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADD_EXCLUDE_PATTERN));
+		button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_ADD_EXCLUDE_PATTERN));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -766,7 +764,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private Button buildAddIncludePatternButton(Composite parent) {
 		Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-		button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADD_INCLUDE_PATTERN));
+		button.setText(getMessage(StringKeys.PREF_RULESET_BUTTON_ADD_INCLUDE_PATTERN));
 		button.setEnabled(true);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -906,8 +904,8 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * If user wants to, rebuild all projects
 	 */
 	private void rebuildProjects() {
-		if (MessageDialog.openQuestion(getShell(), getMessage(StringKeys.MSGKEY_QUESTION_TITLE),
-				getMessage(StringKeys.MSGKEY_QUESTION_RULES_CHANGED))) {
+		if (MessageDialog.openQuestion(getShell(), getMessage(StringKeys.QUESTION_TITLE),
+				getMessage(StringKeys.QUESTION_RULES_CHANGED))) {
 			try {
 				ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
 				monitorDialog.run(true, true, new IRunnableWithProgress() {

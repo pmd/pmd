@@ -278,9 +278,9 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
             out.flush();
 
         } catch (CoreException e) {
-            logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            logError(StringKeys.ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
-            logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
+            logError(StringKeys.ERROR_IO_EXCEPTION, e);
         }
 
         return noChange ? null : baos.toString();
@@ -296,7 +296,7 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
         try {
             file.setContents(new ByteArrayInputStream(newContent.getBytes()), false, true, getMonitor());
         } catch (CoreException e) {
-            logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            logError(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
     }
 

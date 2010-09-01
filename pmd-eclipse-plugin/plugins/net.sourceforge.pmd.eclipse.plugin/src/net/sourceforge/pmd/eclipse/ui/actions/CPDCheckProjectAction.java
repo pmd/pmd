@@ -119,7 +119,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
             detectCmd.addPropertyListener(view);
             detectCmd.performExecute();
         } catch (CommandException e) {
-            logError(getString(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION), e);
+            logError(getString(StringKeys.ERROR_PMD_EXCEPTION), e);
         }
     }
 
@@ -133,7 +133,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
             final IWorkbenchPage workbenchPage = targetPartSite().getPage();
             view = (CPDView) workbenchPage.showView(PMDUiConstants.ID_CPDVIEW);
         } catch (PartInitException pie) {
-            logError( getString(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION), pie);
+            logError( getString(StringKeys.ERROR_VIEW_EXCEPTION), pie);
         } 
         return view;
     }

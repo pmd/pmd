@@ -56,7 +56,7 @@ public class PriorityFilter extends ViewerFilter {
                 final Integer markerPrio = (Integer) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
                 select = isPriorityEnabled(markerPrio);
             } catch (CoreException ce) {
-                PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
+                PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION + this.toString(), ce);
             }
         } else if (element instanceof MarkerRecord) {
             // ViolationOverview

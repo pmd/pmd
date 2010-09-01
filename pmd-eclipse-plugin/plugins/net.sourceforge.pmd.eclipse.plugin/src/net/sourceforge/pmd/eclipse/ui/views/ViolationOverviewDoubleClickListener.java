@@ -171,7 +171,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
             // open the corresponding File            
             IDE.openEditor(this.overview.getSite().getPage(), file);
         } catch (PartInitException pie) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), pie);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_VIEW_EXCEPTION + this.toString(), pie);
         }
     }
     
@@ -202,7 +202,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
                 }
             }
         } catch (PartInitException pie) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), pie);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_VIEW_EXCEPTION + this.toString(), pie);
         }            
     }
 }

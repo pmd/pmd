@@ -137,7 +137,7 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 				int length = getDocument().getLineOffset(violation.getEndLine())	- offset;
 				textEditor.selectAndReveal(offset, length);
 			} catch (BadLocationException ble) {
-				logError(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION	+ "Exception when selecting a line in the editor", ble);
+				logError(StringKeys.ERROR_RUNTIME_EXCEPTION	+ "Exception when selecting a line in the editor", ble);
 			}
 
 			// showMethodToMarker(marker);
@@ -221,7 +221,7 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		// the drop down box for showing all methods of the given resource
 		methodSelector = new Combo(parent, SWT.LEFT | SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
 		refreshPMDMethods();
-		methodSelector.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_CHOOSE_METHOD));
+		methodSelector.setText(getString(StringKeys.VIEW_DATAFLOW_CHOOSE_METHOD));
 		methodSelector.setLayoutData(new GridData(300, SWT.DEFAULT));
 		methodSelector.addSelectionListener( new SelectionAdapter() {
 			
@@ -273,7 +273,7 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 			// the Rule then can give us the Methods
 			methodList.addAll(dfaGraphRule.getMethods());
 		} catch (PMDException pmde) {
-			logError(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION + this.toString(), pmde);
+			logError(StringKeys.ERROR_PMD_EXCEPTION + this.toString(), pmde);
 		}
 	
 		return methodList;

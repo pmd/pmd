@@ -99,7 +99,7 @@ public class PMDCheckAction extends AbstractUIAction {
             }
 
         } catch (CommandException e) {
-            showErrorById(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
 
     }

@@ -116,7 +116,7 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
     protected Control createDialogArea(Composite parent) {
 
         parent.setLayoutData(new GridData(GridData.FILL_BOTH));
-        getShell().setText(SWTUtil.stringFor(StringKeys.MSGKEY_DIALOG_PREFS_ADD_NEW_PROPERTY));
+        getShell().setText(SWTUtil.stringFor(StringKeys.DIALOG_PREFS_ADD_NEW_PROPERTY));
 
         dlgArea = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout(2, false);
@@ -374,15 +374,15 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
 
         if (StringUtil.isEmpty(name)) {
             if (showErrorMessages) MessageDialog.openWarning(getShell(),
-            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_TITLE),
-            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_NAME_MANDATORY));
+            		SWTUtil.stringFor(StringKeys.WARNING_TITLE),
+            		SWTUtil.stringFor(StringKeys.WARNING_NAME_MANDATORY));
             nameField.setFocus();
             return false;
         }
 
         if (ruleHasPropertyName(name)) {
             if (showErrorMessages) MessageDialog.openWarning(getShell(),
-            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_TITLE),
+            		SWTUtil.stringFor(StringKeys.WARNING_TITLE),
                     "'" + name + "' is already used by another property"
                     );
             nameField.setFocus();
@@ -401,7 +401,7 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
 
         if (StringUtil.isEmpty(label)) {
             if (showErrorMessages) MessageDialog.openWarning(getShell(),
-            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_TITLE),
+            		SWTUtil.stringFor(StringKeys.WARNING_TITLE),
                     "A proper label is required"
                     );
             labelField.setFocus();
@@ -410,7 +410,7 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
 
         if (!isValidNewLabel(label)) {
             if (showErrorMessages) MessageDialog.openWarning(getShell(),
-            		SWTUtil.stringFor(StringKeys.MSGKEY_WARNING_TITLE),
+            		SWTUtil.stringFor(StringKeys.WARNING_TITLE),
                     "Label text must differ from other label text"
                     );
             labelField.setFocus();

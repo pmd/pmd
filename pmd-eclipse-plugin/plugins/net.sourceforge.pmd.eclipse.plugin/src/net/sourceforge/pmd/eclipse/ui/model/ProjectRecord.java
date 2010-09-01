@@ -99,7 +99,7 @@ public class ProjectRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord getParent() {
-        return this.parent;
+        return parent;
     }
 
     /**
@@ -107,7 +107,7 @@ public class ProjectRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord[] getChildren() {
-        return this.children; // NOPMD by Herlin on 09/10/06 00:43
+        return children; // NOPMD by Herlin on 09/10/06 00:43
     }
 
     /**
@@ -115,7 +115,7 @@ public class ProjectRecord extends AbstractPMDRecord {
      */
     @Override
     public IResource getResource() {
-        return this.project;
+        return project;
     }
 
     /**
@@ -126,13 +126,13 @@ public class ProjectRecord extends AbstractPMDRecord {
         final Set<PackageRecord> packages = new HashSet<PackageRecord>();
         try {
             // search for Packages
-            this.project.accept(new IResourceVisitor() {
+            project.accept(new IResourceVisitor() {
 
                 public boolean visit(IResource resource) throws CoreException {
                     boolean visitChildren = false;
                     switch (resource.getType()) {
                     case IResource.FOLDER:
-                        final IJavaElement javaMember = JavaCore.create(resource);
+                        IJavaElement javaMember = JavaCore.create(resource);
 
                         if (javaMember == null) {
                             visitChildren = true;
@@ -165,7 +165,7 @@ public class ProjectRecord extends AbstractPMDRecord {
                 }
             });
         } catch (CoreException ce) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION + this.toString(), ce);
         }
 
         // return the List as an Array of Packages
@@ -198,7 +198,7 @@ public class ProjectRecord extends AbstractPMDRecord {
                 }
             }
         } catch (JavaModelException jme) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
         }
 
         return packages;

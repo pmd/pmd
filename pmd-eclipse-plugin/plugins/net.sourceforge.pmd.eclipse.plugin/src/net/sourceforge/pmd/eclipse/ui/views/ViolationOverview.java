@@ -231,27 +231,27 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private void createColumns(Tree tree) {
         // the "+"-Sign for expanding Packages
         final TreeColumn plusColumn = new TreeColumn(tree, SWT.LEFT);
-        plusColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_ELEMENT));
+        plusColumn.setText(getString(StringKeys.VIEW_OVERVIEW_COLUMN_ELEMENT));
         plusColumn.setWidth(260);
 
         // Number of Violations
         final TreeColumn vioTotalColumn = new TreeColumn(tree, SWT.RIGHT);
-        vioTotalColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_TOTAL));
+        vioTotalColumn.setText(getString(StringKeys.VIEW_OVERVIEW_COLUMN_VIO_TOTAL));
         vioTotalColumn.setWidth(100);
 
         // Violations / 1K lines of code (KLOC)
         final TreeColumn vioLocColumn = new TreeColumn(tree, SWT.RIGHT);
-        vioLocColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_KLOC));
+        vioLocColumn.setText(getString(StringKeys.VIEW_OVERVIEW_COLUMN_VIO_KLOC));
         vioLocColumn.setWidth(100);
 
         // Violations / Method
         final TreeColumn vioMethodColumn = new TreeColumn(tree, SWT.RIGHT);
-        vioMethodColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_METHOD));
+        vioMethodColumn.setText(getString(StringKeys.VIEW_OVERVIEW_COLUMN_VIO_METHOD));
         vioMethodColumn.setWidth(100);
 
         // Projects Name
         final TreeColumn projectColumn = new TreeColumn(tree, SWT.CENTER);
-        projectColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_PROJECT));
+        projectColumn.setText(getString(StringKeys.VIEW_OVERVIEW_COLUMN_PROJECT));
         projectColumn.setWidth(100);
 
         // creates the Sorter and ResizeListener
@@ -762,7 +762,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             try {
                 cmd.performExecute();
             } catch (CommandException e) {
-                PMDPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e.getCause());
+                PMDPlugin.getDefault().showError(getString(StringKeys.ERROR_CORE_EXCEPTION), e.getCause());
             }
         }
     }

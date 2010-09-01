@@ -135,9 +135,9 @@ public class ExclusionPanelManager extends AbstractRulePanelManager {
 	 */
 	public Control setupOn(Composite parent) {
 
-		String regexExclusionLabel = SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_EXCLUSION_REGEX);
-		String xpathExclusionLabel = SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_XPATH_EXCLUSION);
-		String colourBoxLabel = SWTUtil.stringFor(StringKeys.MSGKEY_LABEL_COLOUR_CODE);
+		String regexExclusionLabel = SWTUtil.stringFor(StringKeys.LABEL_EXCLUSION_REGEX);
+		String xpathExclusionLabel = SWTUtil.stringFor(StringKeys.LABEL_XPATH_EXCLUSION);
+		String colourBoxLabel = SWTUtil.stringFor(StringKeys.LABEL_COLOUR_CODE);
 
 		colourManager = ColourManager.managerFor(parent.getDisplay());
 

@@ -102,7 +102,7 @@ public class CPDCheckDialog extends Dialog {
      */
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_TITLE));
+        newShell.setText(getString(StringKeys.DIALOG_CPD_TITLE));
     }
 
     /**
@@ -157,17 +157,17 @@ public class CPDCheckDialog extends Dialog {
         container.setLayout(gridLayout1);
 
         final Label helpLabel = new Label(container,SWT.NONE);
-        helpLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_HELP_LABEL));
+        helpLabel.setText(getString(StringKeys.DIALOG_CPD_HELP_LABEL));
         helpLabel.setLayoutData(gridData4);
 
         final Label languageLabel = new Label(container, SWT.NONE);
-        languageLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_LANGUAGE_LABEL));
+        languageLabel.setText(getString(StringKeys.DIALOG_CPD_LANGUAGE_LABEL));
         languageLabel.setLayoutData(gridData6);
 
         createLanguageCombo(container);
 
         final Label minimumTileSizeLabel = new Label(container, SWT.NONE);
-        minimumTileSizeLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_MIN_TILESIZE_LABEL));
+        minimumTileSizeLabel.setText(getString(StringKeys.DIALOG_CPD_MIN_TILESIZE_LABEL));
         minimumTileSizeLabel.setLayoutData(gridData7);
         
         createTileSizeSpinner(container);
@@ -186,7 +186,7 @@ public class CPDCheckDialog extends Dialog {
         
         minTileSizeSpinner = new Spinner(container, SWT.BORDER);
         minTileSizeSpinner.setLayoutData(gridData5);
-        minTileSizeSpinner.setToolTipText(getString(StringKeys.MSGKEY_DIALOG_TOOLTIP_CPD_MIN_TILESIZE));   
+        minTileSizeSpinner.setToolTipText(getString(StringKeys.DIALOG_TOOLTIP_CPD_MIN_TILESIZE));   
         minTileSizeSpinner.setMinimum(tileSize);
         minTileSizeSpinner.setTextLimit(3);
 
@@ -228,11 +228,11 @@ public class CPDCheckDialog extends Dialog {
         final GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         reportGroup = new Group(container, SWT.NONE);
-        reportGroup.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_REPORT));
+        reportGroup.setText(getString(StringKeys.DIALOG_CPD_REPORT));
         reportGroup.setLayoutData(gridData);
         reportGroup.setLayout(gridLayout);
         createReportCheckbox = new Button(reportGroup, SWT.CHECK);
-        createReportCheckbox.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_CREATEREPORT));
+        createReportCheckbox.setText(getString(StringKeys.DIALOG_CPD_CREATEREPORT));
         createReportCheckbox.setLayoutData(gridData2);
         createReportCheckbox.setSelection(true);
         this.createReport = true;
@@ -247,7 +247,7 @@ public class CPDCheckDialog extends Dialog {
             }
         });
         final Label formatLabel = new Label(reportGroup, SWT.NONE);
-        formatLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_FORMAT_LABEL));
+        formatLabel.setText(getString(StringKeys.DIALOG_CPD_FORMAT_LABEL));
         formatLabel.setLayoutData(gridData7);
         createFormatCombo();
     }
@@ -268,7 +268,7 @@ public class CPDCheckDialog extends Dialog {
         languageCombo.setLayoutData(gridData4);
         languageCombo.setItems(languages);
         languageCombo.select(0);
-        languageCombo.setToolTipText(getString(StringKeys.MSGKEY_DIALOG_TOOLTIP_CPD_LANGUAGE));
+        languageCombo.setToolTipText(getString(StringKeys.DIALOG_TOOLTIP_CPD_LANGUAGE));
     }
 
     /**
@@ -285,7 +285,7 @@ public class CPDCheckDialog extends Dialog {
         formatCombo = new Combo(reportGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
         formatCombo.setLayoutData(gridData3);
         formatCombo.setItems(formats);
-        formatCombo.setToolTipText(getString(StringKeys.MSGKEY_DIALOG_TOOLTIP_CPD_FORMAT));
+        formatCombo.setToolTipText(getString(StringKeys.DIALOG_TOOLTIP_CPD_FORMAT));
         formatCombo.select(0);
         formatCombo.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {

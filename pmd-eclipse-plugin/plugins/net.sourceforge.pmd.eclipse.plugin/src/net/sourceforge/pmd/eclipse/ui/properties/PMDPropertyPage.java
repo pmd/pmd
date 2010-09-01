@@ -157,7 +157,7 @@ public class PMDPropertyPage extends PropertyPage {
             data.grabExcessHorizontalSpace = true;
             separator.setLayoutData(data);
 
-            buildLabel(composite, StringKeys.MSGKEY_PROPERTY_LABEL_SELECT_RULE);
+            buildLabel(composite, StringKeys.PROPERTY_LABEL_SELECT_RULE);
             final Table availableRulesTable = buildAvailableRulesTableViewer(composite);
             data = new GridData();
             data.grabExcessHorizontalSpace = true;
@@ -199,7 +199,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Button buildEnablePMDButton(final Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_ENABLE));
+        button.setText(getMessage(StringKeys.PROPERTY_BUTTON_ENABLE));
         button.setSelection(model.isPmdEnabled());
 
         return button;
@@ -211,7 +211,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Button buildIncludeDerivedFilesButton(final Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_INCLUDE_DERIVED_FILES));
+        button.setText(getMessage(StringKeys.PROPERTY_BUTTON_INCLUDE_DERIVED_FILES));
         button.setSelection(model.isIncludeDerivedFiles());
 
         return button;
@@ -223,7 +223,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Button buildViolationsAsErrorsButton(final Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_VIOLATIONS_AS_ERRORS));
+        button.setText(getMessage(StringKeys.PROPERTY_BUTTON_VIOLATIONS_AS_ERRORS));
         button.setSelection(model.violationsAsErrors());
 
         return button;
@@ -235,7 +235,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Button buildStoreRuleSetInProjectButton(final Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_STORE_RULESET_PROJECT));
+        button.setText(getMessage(StringKeys.PROPERTY_BUTTON_STORE_RULESET_PROJECT));
         button.setSelection(model.isRuleSetStoredInProject());
 
         button.addSelectionListener(new SelectionAdapter() {
@@ -267,7 +267,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Button buildRuleSetBrowseButton(final Composite parent) {
         final Button button = new Button(parent, SWT.PUSH);
-        button.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_RULESET_BROWSE));
+        button.setText(getMessage(StringKeys.PROPERTY_BUTTON_RULESET_BROWSE));
 
         button.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -302,8 +302,8 @@ public class PMDPropertyPage extends PropertyPage {
         final Label label = new Label(parent, SWT.NONE);
         label.setText(
             this.selectedWorkingSet == null
-                ? getMessage(StringKeys.MSGKEY_PROPERTY_LABEL_NO_WORKINGSET)
-                : getMessage(StringKeys.MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET) + selectedWorkingSet.getName());
+                ? getMessage(StringKeys.PROPERTY_LABEL_NO_WORKINGSET)
+                : getMessage(StringKeys.PROPERTY_LABEL_SELECTED_WORKINGSET) + selectedWorkingSet.getName());
 
         return label;
     }
@@ -317,12 +317,12 @@ public class PMDPropertyPage extends PropertyPage {
 
         final Table ruleTable = availableRulesTableViewer.getTable();
 
-        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_LANGUAGE), 70 + 20, RuleTableViewerSorter.RULE_LANGUAGE_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME), 110, RuleTableViewerSorter.RULE_RULESET_NAME_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_NAME), 170, RuleTableViewerSorter.RULE_NAME_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_SINCE), 40, RuleTableViewerSorter.RULE_SINCE_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY), 80, RuleTableViewerSorter.RULE_PRIORITY_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION), 300, RuleTableViewerSorter.RULE_DESCRIPTION_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_LANGUAGE), 70 + 20, RuleTableViewerSorter.RULE_LANGUAGE_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_RULESET_NAME), 110, RuleTableViewerSorter.RULE_RULESET_NAME_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_RULE_NAME), 170, RuleTableViewerSorter.RULE_NAME_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.PREF_RULESET_COLUMN_SINCE), 40, RuleTableViewerSorter.RULE_SINCE_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.PREF_RULESET_COLUMN_PRIORITY), 80, RuleTableViewerSorter.RULE_PRIORITY_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_DESCRIPTION), 300, RuleTableViewerSorter.RULE_DESCRIPTION_COMPARATOR);
 
         ruleTable.setLinesVisible(true);
         ruleTable.setHeaderVisible(true);
@@ -370,7 +370,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private void buildSelectWorkingSetButton(final Composite parent) {
         final Button workingSetButton = new Button(parent, SWT.PUSH);
-        workingSetButton.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_SELECT_WORKINGSET));
+        workingSetButton.setText(getMessage(StringKeys.PROPERTY_BUTTON_SELECT_WORKINGSET));
         workingSetButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -385,7 +385,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Button buildDeselectWorkingSetButton(final Composite parent) {
         final Button button = new Button(parent, SWT.PUSH);
-        button.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_DESELECT_WORKINGSET));
+        button.setText(getMessage(StringKeys.PROPERTY_BUTTON_DESELECT_WORKINGSET));
         button.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -492,8 +492,8 @@ public class PMDPropertyPage extends PropertyPage {
         this.selectedWorkingSet = workingSet;
         this.selectedWorkingSetLabel.setText(
             this.selectedWorkingSet == null
-                ? getMessage(StringKeys.MSGKEY_PROPERTY_LABEL_NO_WORKINGSET)
-                : getMessage(StringKeys.MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET) + this.selectedWorkingSet.getName());
+                ? getMessage(StringKeys.PROPERTY_LABEL_NO_WORKINGSET)
+                : getMessage(StringKeys.PROPERTY_LABEL_SELECTED_WORKINGSET) + this.selectedWorkingSet.getName());
         deselectWorkingSetButton.setEnabled(this.selectedWorkingSet != null);
     }
 

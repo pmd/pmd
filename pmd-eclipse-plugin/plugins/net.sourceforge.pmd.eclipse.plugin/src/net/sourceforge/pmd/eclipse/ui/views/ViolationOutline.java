@@ -60,7 +60,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     }
 
     
-    protected String pageMessageId() { return StringKeys.MSGKEY_VIEW_OUTLINE_DEFAULT_TEXT; }
+    protected String pageMessageId() { return StringKeys.VIEW_OUTLINE_DEFAULT_TEXT; }
     
     protected String mementoFileId() { return PMDUiConstants.MEMENTO_OUTLINE_FILE; }
     

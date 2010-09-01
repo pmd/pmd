@@ -36,10 +36,10 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
     	}        
     };
         
-    public static final RuleColumnDescriptor priority  			   = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY, 		SWT.LEFT, 50, RuleFieldAccessor.priority, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.uniqueItemsAsShapeFor(12, 12, SWT.LEFT, UISettings.shapesByPriority()));
-    public static final RuleColumnDescriptor filterViolationRegex  = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_FILTERS_REGEX, SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER_R, Util.textAsColorShapeFor(16, 16, PMDPreferencePage2.RegexFilterShape));    
-    public static final RuleColumnDescriptor filterViolationXPath  = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_FILTERS_XPATH, SWT.LEFT, 25, RuleFieldAccessor.violationXPath, false, PMDUiConstants.ICON_FILTER_X, Util.textAsColorShapeFor(16, 16, PMDPreferencePage2.XPathFilterShape));
-	public static final RuleColumnDescriptor properties   		   = new ImageColumnDescriptor(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.styledTextBuilder(PMDPreferencePage2.ChangedPropertyFont));
+    public static final RuleColumnDescriptor priority  			   = new ImageColumnDescriptor(StringKeys.PREF_RULESET_COLUMN_PRIORITY, 		SWT.LEFT, 50, RuleFieldAccessor.priority, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.uniqueItemsAsShapeFor(12, 12, SWT.LEFT, UISettings.shapesByPriority()));
+    public static final RuleColumnDescriptor filterViolationRegex  = new ImageColumnDescriptor(StringKeys.PREF_RULESET_COLUMN_FILTERS_REGEX, SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER_R, Util.textAsColorShapeFor(16, 16, PMDPreferencePage2.RegexFilterShape));    
+    public static final RuleColumnDescriptor filterViolationXPath  = new ImageColumnDescriptor(StringKeys.PREF_RULESET_COLUMN_FILTERS_XPATH, SWT.LEFT, 25, RuleFieldAccessor.violationXPath, false, PMDUiConstants.ICON_FILTER_X, Util.textAsColorShapeFor(16, 16, PMDPreferencePage2.XPathFilterShape));
+	public static final RuleColumnDescriptor properties   		   = new ImageColumnDescriptor(StringKeys.PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.styledTextBuilder(PMDPreferencePage2.ChangedPropertyFont));
 
 	
     public ImageColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, CellPainterBuilder thePainterBuilder) {

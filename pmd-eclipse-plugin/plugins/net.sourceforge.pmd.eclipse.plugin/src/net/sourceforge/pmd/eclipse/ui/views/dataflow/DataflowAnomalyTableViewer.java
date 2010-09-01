@@ -54,23 +54,23 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         // type of Anomaly
         final TableColumn typeColumn = new TableColumn(table, SWT.LEFT);
         typeColumn.setWidth(80);
-        typeColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE));
-        typeColumn.setToolTipText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE_TOOLTIP));
+        typeColumn.setText(getString(StringKeys.VIEW_DATAFLOW_TABLE_COLUMN_TYPE));
+        typeColumn.setToolTipText(getString(StringKeys.VIEW_DATAFLOW_TABLE_COLUMN_TYPE_TOOLTIP));
         
         // Line(s) where the Anomaly occurs
         final TableColumn lineColumn = new TableColumn(table, SWT.RIGHT);
         lineColumn.setWidth(100);
-        lineColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_LINE));
+        lineColumn.setText(getString(StringKeys.VIEW_DATAFLOW_TABLE_COLUMN_LINE));
 
         // Variable
         final TableColumn varColumn = new TableColumn(table, SWT.RIGHT);
         varColumn.setWidth(70);
-        varColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_VARIABLE));
+        varColumn.setText(getString(StringKeys.VIEW_DATAFLOW_TABLE_COLUMN_VARIABLE));
 
         // Method
         final TableColumn methodColumn = new TableColumn(table, SWT.RIGHT);
         methodColumn.setWidth(100);
-        methodColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_METHOD));
+        methodColumn.setText(getString(StringKeys.VIEW_DATAFLOW_TABLE_COLUMN_METHOD));
 
         // set Sorter and ResizeListener
         createColumnAdapters(table);

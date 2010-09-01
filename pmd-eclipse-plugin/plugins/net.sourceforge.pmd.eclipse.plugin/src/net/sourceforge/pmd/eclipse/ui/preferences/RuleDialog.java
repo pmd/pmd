@@ -112,7 +112,7 @@ public class RuleDialog extends Dialog {
         gridLayout.numColumns = 4;
         dlgArea.setLayout(gridLayout);
 
-        Label ruleSetNameLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_RULESET_NAME);
+        Label ruleSetNameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_RULESET_NAME);
         GridData data = new GridData();
         data.horizontalSpan = 1;
         ruleSetNameLabel.setLayoutData(data);
@@ -137,7 +137,7 @@ public class RuleDialog extends Dialog {
 //        data.grabExcessHorizontalSpace = false;
 //        sinceText.setLayoutData(data);
 
-        Label nameLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_NAME);
+        Label nameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_NAME);
         data = new GridData();
         data.horizontalSpan = 4;
         nameLabel.setLayoutData(data);
@@ -151,7 +151,7 @@ public class RuleDialog extends Dialog {
 
         xpathRuleButton = buildXPathRuleButton(dlgArea);
 
-        Label implementationClassLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS);
+        Label implementationClassLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS);
         data = new GridData();
         data.horizontalSpan = 4;
         implementationClassLabel.setLayoutData(data);
@@ -163,7 +163,7 @@ public class RuleDialog extends Dialog {
         data.grabExcessHorizontalSpace = true;
         implementationClassText.setLayoutData(data);
 
-        Label messageLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_MESSAGE);
+        Label messageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_MESSAGE);
         data = new GridData();
         data.horizontalSpan = 4;
         messageLabel.setLayoutData(data);
@@ -175,7 +175,7 @@ public class RuleDialog extends Dialog {
         data.grabExcessHorizontalSpace = true;
         messageText.setLayoutData(data);
 
-        Label priorityLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_PRIORITY);
+        Label priorityLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_PRIORITY);
         data = new GridData();
         data.horizontalSpan = 1;
         priorityLabel.setLayoutData(data);
@@ -191,7 +191,7 @@ public class RuleDialog extends Dialog {
 
         usesDfaButton = buildUsesDfaButton(dlgArea);
 
-        Label descriptionLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_DESCRIPTION);
+        Label descriptionLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_DESCRIPTION);
         data = new GridData();
         data.horizontalSpan = 4;
         descriptionLabel.setLayoutData(data);
@@ -207,7 +207,7 @@ public class RuleDialog extends Dialog {
         data.heightHint = 100;
         descriptionText.setLayoutData(data);
 
-        Label externalInfoUrlLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL);
+        Label externalInfoUrlLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL);
         data = new GridData();
         data.horizontalSpan = 3;
         externalInfoUrlLabel.setLayoutData(data);
@@ -221,7 +221,7 @@ public class RuleDialog extends Dialog {
         data.grabExcessHorizontalSpace = true;
         externalInfoUrlText.setLayoutData(data);
 
-        Label exampleLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXAMPLES);
+        Label exampleLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_EXAMPLES);
         data = new GridData();
         data.horizontalSpan = 4;
         exampleLabel.setLayoutData(data);
@@ -237,7 +237,7 @@ public class RuleDialog extends Dialog {
         data.heightHint = 70;
         exampleText.setLayoutData(data);
 
-        Label xpathLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_XPATH);
+        Label xpathLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_XPATH);
         data = new GridData();
         data.horizontalSpan = 4;
         xpathLabel.setLayoutData(data);
@@ -254,7 +254,7 @@ public class RuleDialog extends Dialog {
         xpathText.setLayoutData(data);
 
         // Set the window title
-        getShell().setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE));
+        getShell().setText(getMessage(StringKeys.PREF_RULESET_DIALOG_TITLE));
 
         refreshOverridden();
 
@@ -298,7 +298,7 @@ public class RuleDialog extends Dialog {
      */
     private Button buildRuleReferenceButton(Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_RULE_REFERENCE));
+        button.setText(getMessage(StringKeys.PREF_RULEEDIT_BUTTON_RULE_REFERENCE));
         button.setEnabled(false);
         button.setSelection(editedRule instanceof RuleReference);
         return button;
@@ -359,7 +359,7 @@ public class RuleDialog extends Dialog {
      */
     private Button buildXPathRuleButton(Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_XPATH_RULE));
+        button.setText(getMessage(StringKeys.PREF_RULEEDIT_BUTTON_XPATH_RULE));
 
         if (mode == MODE_VIEW) {
             button.setVisible(false);
@@ -473,7 +473,7 @@ public class RuleDialog extends Dialog {
      */
     private Button buildUsesTypeResolutionButton(Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION));
+        button.setText(getMessage(StringKeys.PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION));
 
         if (mode == MODE_VIEW) {
             button.setVisible(false);
@@ -495,7 +495,7 @@ public class RuleDialog extends Dialog {
      */
     private Button buildUsesDfaButton(Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_USES_DFA));
+        button.setText(getMessage(StringKeys.PREF_RULEEDIT_BUTTON_USES_DFA));
 
         if (mode == MODE_VIEW) {
             button.setVisible(false);
@@ -561,7 +561,7 @@ public class RuleDialog extends Dialog {
      */
     private Button buildOpenExternalInfoUrlButton(Composite parent) {
         final Button button = new Button(parent, SWT.PUSH);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL));
+        button.setText(getMessage(StringKeys.PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL));
 
         button.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -712,8 +712,8 @@ public class RuleDialog extends Dialog {
 
         String name = nameText.getText();
         if (StringUtil.isEmpty(name)) {
-            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
-                    getMessage(StringKeys.MSGKEY_WARNING_NAME_MANDATORY));
+            MessageDialog.openWarning(getShell(), getMessage(StringKeys.WARNING_TITLE),
+                    getMessage(StringKeys.WARNING_NAME_MANDATORY));
             nameText.setFocus();
             flValid = false;
         }
@@ -728,8 +728,8 @@ public class RuleDialog extends Dialog {
         boolean flValid = true;
 
         if (priorityCombo.getSelectionIndex() < 0) {
-            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
-                    getMessage(StringKeys.MSGKEY_WARNING_PRIORITY_MANDATORY));
+            MessageDialog.openWarning(getShell(), getMessage(StringKeys.WARNING_TITLE),
+                    getMessage(StringKeys.WARNING_PRIORITY_MANDATORY));
             priorityCombo.setFocus();
             flValid = false;
         }
@@ -745,8 +745,8 @@ public class RuleDialog extends Dialog {
 
         String message = messageText.getText();
         if (StringUtil.isEmpty(message)) {
-            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
-                    getMessage(StringKeys.MSGKEY_WARNING_MESSAGE_MANDATORY));
+            MessageDialog.openWarning(getShell(), getMessage(StringKeys.WARNING_TITLE),
+                    getMessage(StringKeys.WARNING_MESSAGE_MANDATORY));
             messageText.setFocus();
             flValid = false;
         }
@@ -786,8 +786,8 @@ public class RuleDialog extends Dialog {
                     	if (xpath.length() != 0) {
                             rule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpath);
                     	} else {
-                            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
-                                    getMessage(StringKeys.MSGKEY_WARNING_XPATH_MANDATORY));
+                            MessageDialog.openWarning(getShell(), getMessage(StringKeys.WARNING_TITLE),
+                                    getMessage(StringKeys.WARNING_XPATH_MANDATORY));
                             xpathText.setFocus();
                             flValid = false;
                     	}
@@ -818,8 +818,8 @@ public class RuleDialog extends Dialog {
 
         // Display class error if needed
         if (flClassError) {
-            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
-                    getMessage(StringKeys.MSGKEY_WARNING_CLASS_INVALID));
+            MessageDialog.openWarning(getShell(), getMessage(StringKeys.WARNING_TITLE),
+                    getMessage(StringKeys.WARNING_CLASS_INVALID));
             implementationClassText.setFocus();
             flValid = false;
         }

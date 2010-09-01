@@ -90,7 +90,7 @@ public class RuleSetSelectionDialog extends Dialog {
         dlgArea.setLayout(gridLayout);
 
         // Create controls (order is important)
-        Label enterRuleSetLabel = buildLabel(dlgArea, getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_LABEL_ENTER_RULESET));
+        Label enterRuleSetLabel = buildLabel(dlgArea, getMessage(StringKeys.PREF_RULESETSELECTION_LABEL_ENTER_RULESET));
         GridData data = new GridData();
         data.horizontalSpan = 3;
         data.widthHint = 200;
@@ -115,7 +115,7 @@ public class RuleSetSelectionDialog extends Dialog {
         copyButton.setLayoutData(data);
 
         // Set the window title
-        getShell().setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE));
+        getShell().setText(getMessage(StringKeys.PREF_RULESET_DIALOG_TITLE));
 
 
         return dlgArea;
@@ -137,7 +137,7 @@ public class RuleSetSelectionDialog extends Dialog {
         Combo combo = new Combo(parent, SWT.NONE);
         combo.setItems(this.ruleSetNames);
         combo.setText("");
-        combo.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_TOOLTIP_RULESET));
+        combo.setToolTipText(getMessage(StringKeys.PREF_RULESETSELECTION_TOOLTIP_RULESET));
         return combo;
     }
 
@@ -146,7 +146,7 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     private Button buildBrowseButton(Composite parent) {
         Button button = new Button(parent, SWT.PUSH);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_BUTTON_BROWSE));
+        button.setText(getMessage(StringKeys.PREF_RULESETSELECTION_BUTTON_BROWSE));
         button.setEnabled(true);
         button.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent event) {
@@ -168,7 +168,7 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     private Button buildReferenceButton(Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_BUTTON_REFERENCE));
+        button.setText(getMessage(StringKeys.PREF_RULESETSELECTION_BUTTON_REFERENCE));
         button.setSelection(true);
         importByReference = true;
         button.addSelectionListener(new SelectionAdapter() {
@@ -187,7 +187,7 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     private Button buildCopyButton(Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_BUTTON_COPY));
+        button.setText(getMessage(StringKeys.PREF_RULESETSELECTION_BUTTON_COPY));
         button.setSelection(false);
         button.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -232,14 +232,14 @@ public class RuleSetSelectionDialog extends Dialog {
             importedRuleSetName = inputCombo.getText();
             if (!StringUtil.isEmpty(importedRuleSetName)) {
                 try {
-                    final RuleSetFactory factory = new RuleSetFactory();
-                    this.selectedRuleSet = factory.createRuleSets(this.importedRuleSetName).getAllRuleSets()[0];
+                    RuleSetFactory factory = new RuleSetFactory();
+                    selectedRuleSet = factory.createRuleSets(importedRuleSetName).getAllRuleSets()[0];
                 } catch (RuleSetNotFoundException e) {
-                    PMDPlugin.getDefault().showError(getMessage(StringKeys.MSGKEY_ERROR_RULESET_NOT_FOUND), e);
+                    PMDPlugin.getDefault().showError(getMessage(StringKeys.ERROR_RULESET_NOT_FOUND), e);
                 }
             }
         } else {
-            this.selectedRuleSet = this.ruleSets[selectionIndex];
+            selectedRuleSet = ruleSets[selectionIndex];
         }
 
         super.okPressed();

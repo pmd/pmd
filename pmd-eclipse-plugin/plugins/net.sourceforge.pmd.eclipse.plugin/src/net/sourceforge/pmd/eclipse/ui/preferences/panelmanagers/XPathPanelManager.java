@@ -129,7 +129,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
         });      
         
         versionLabel = new Label(panel, 0);
-        versionLabel.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_XPATH_VERSION));
+        versionLabel.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_LABEL_XPATH_VERSION));
         gridData = new GridData();
         gridData.horizontalSpan = 1;
         gridData.grabExcessHorizontalSpace = false;

@@ -235,7 +235,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        gridLayout.numColumns = 4;
 	        dlgArea.setLayout(gridLayout);
 
-	        Label nameLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_NAME);
+	        Label nameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_NAME);
 	        GridData data = new GridData();
 	        data.horizontalSpan = 1;
 	        nameLabel.setLayoutData(data);
@@ -248,7 +248,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        data.grabExcessHorizontalSpace = true;
 	        nameField.setLayoutData(data);
 
-	        Label ruleSetNameLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_RULESET_NAME);
+	        Label ruleSetNameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_RULESET_NAME);
 	        data = new GridData();
 	        data.horizontalSpan = 1;
 	        ruleSetNameLabel.setLayoutData(data);
@@ -261,7 +261,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        data.grabExcessHorizontalSpace = true;
 	        ruleSetNameField.setLayoutData(data);
 	        
-	        Label implTypeLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_IMPLEMENTED_BY);
+	        Label implTypeLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_IMPLEMENTED_BY);
 	        data = new GridData();
 	        data.horizontalSpan = 1;
 	        implTypeLabel.setLayoutData(data);
@@ -274,7 +274,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        data.grabExcessHorizontalSpace = true;
 	        implementationTypeCombo.setLayoutData(data);
 
-	        Label implementationClassLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS);
+	        Label implementationClassLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS);
 	        data = new GridData();
 	        data.horizontalSpan = 1;
 	        implementationClassLabel.setLayoutData(data);
@@ -292,7 +292,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        usesDfaButton = buildUsesDfaButton(dlgArea);
 	        buildLabel(dlgArea, null);
 
-	        Label languageLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_LANGUAGE);
+	        Label languageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE);
 	        data = new GridData();
 	        data.horizontalSpan = 1;
 	        languageLabel.setLayoutData(data);
@@ -315,7 +315,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		        cmboGD.grabExcessHorizontalSpace = true;
 		        
 	        	buildLabel(dlgArea, null);
-		        minLanguageLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_LANGUAGE_MIN);
+		        minLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MIN);
 		        minLanguageLabel.setAlignment(SWT.RIGHT);
 		        minLanguageLabel.setLayoutData(lblGD);
 		        labels.add(minLanguageLabel);
@@ -324,7 +324,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		        minLanguageVersionCombo.setLayoutData(cmboGD);
 
 		        buildLabel(dlgArea, null);
-		        maxLanguageLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_LANGUAGE_MAX);
+		        maxLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MAX);
 		        maxLanguageLabel.setAlignment(SWT.RIGHT);
 		        maxLanguageLabel.setLayoutData(lblGD);
 		        labels.add(maxLanguageLabel);
@@ -332,7 +332,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		        maxLanguageVersionCombo = buildLanguageVersionCombo(dlgArea, false);
 		        maxLanguageVersionCombo.setLayoutData(cmboGD);
 
-		    Label priorityLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_PRIORITY);
+		    Label priorityLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_PRIORITY);
 	        data = new GridData();
 	        data.horizontalSpan = 1;
 	        priorityLabel.setLayoutData(data);
@@ -368,7 +368,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
      */
     private Button buildRuleReferenceButton(Composite parent) {
         final Button button = new Button(parent, SWT.CHECK);
-        button.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_RULE_REFERENCE));
+        button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_RULE_REFERENCE));
         button.setEnabled(false);
 //        button.setSelection(rule() instanceof RuleReference);
         return button;
@@ -608,14 +608,14 @@ public class RulePanelManager extends AbstractRulePanelManager {
      private Button buildUsesTypeResolutionButton(Composite parent) {
 
          final Button button = new Button(parent, SWT.CHECK);
-         button.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION));
+         button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION));
          return button;
      }
 
      private Button buildUsesDfaButton(Composite parent) {
 
          final Button button = new Button(parent, SWT.CHECK);
-         button.setText(SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_USES_DFA));
+         button.setText(SWTUtil.stringFor(StringKeys.PREF_RULEEDIT_BUTTON_USES_DFA));
          return button;
      }
 

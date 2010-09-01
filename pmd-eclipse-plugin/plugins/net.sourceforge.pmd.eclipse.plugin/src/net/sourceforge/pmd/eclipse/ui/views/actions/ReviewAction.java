@@ -47,11 +47,11 @@ public class ReviewAction extends AbstractViolationSelectionAction {
         super(viewer);
     }
 
- 	protected String textId() { return StringKeys.MSGKEY_VIEW_ACTION_REVIEW; }
+ 	protected String textId() { return StringKeys.VIEW_ACTION_REVIEW; }
  	
  	protected String imageId() { return PMDUiConstants.ICON_BUTTON_REVIEW; }
     
-    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_REVIEW; } 
+    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_REVIEW; } 
     
     /**
      * @see org.eclipse.jface.action.IAction#run()
@@ -66,8 +66,8 @@ public class ReviewAction extends AbstractViolationSelectionAction {
         // Not necessary when using PMD style
         boolean go = true;
         if (markers.length > 1 && !reviewPmdStyle) {
-            String title = getString(StringKeys.MSGKEY_CONFIRM_TITLE);
-            String message = getString(StringKeys.MSGKEY_CONFIRM_REVIEW_MULTIPLE_MARKERS);
+            String title = getString(StringKeys.CONFIRM_TITLE);
+            String message = getString(StringKeys.CONFIRM_REVIEW_MULTIPLE_MARKERS);
             Shell shell = Display.getCurrent().getActiveShell();
             go = MessageDialog.openConfirm(shell, title, message);
         }
@@ -85,9 +85,9 @@ public class ReviewAction extends AbstractViolationSelectionAction {
                     }
                 });
             } catch (InvocationTargetException e) {
-                logErrorByKey(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
+                logErrorByKey(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
             } catch (InterruptedException e) {
-            	logErrorByKey(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
+            	logErrorByKey(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
             }
         }
     }
@@ -123,7 +123,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
 
                     monitorWorked();
                 } else {
-                    MessageDialog.openError(Display.getCurrent().getActiveShell(), getString(StringKeys.MSGKEY_ERROR_TITLE),
+                    MessageDialog.openError(Display.getCurrent().getActiveShell(), getString(StringKeys.ERROR_TITLE),
                             "The file " + file.getName()
                                     + " doesn't exist, review aborted. Try to refresh the workspace and retry.");
                 }
@@ -142,9 +142,9 @@ public class ReviewAction extends AbstractViolationSelectionAction {
                 }
             }
         } catch (CoreException e) {
-        	logErrorByKey(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+        	logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
-        	logErrorByKey(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
+        	logErrorByKey(StringKeys.ERROR_IO_EXCEPTION, e);
         }
     }
 

@@ -106,12 +106,12 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         // the Error-Message
         final TableColumn messageColumn = new TableColumn(viewerTable, SWT.LEFT);
         messageColumn.setWidth(170);
-        messageColumn.setText(getString(StringKeys.MSGKEY_VIEW_OUTLINE_COLUMN_MESSAGE));
+        messageColumn.setText(getString(StringKeys.VIEW_OUTLINE_COLUMN_MESSAGE));
 
         // the Line, the Error occurred
         final TableColumn lineColumn = new TableColumn(viewerTable, SWT.RIGHT);
         lineColumn.setWidth(40);
-        lineColumn.setText(getString(StringKeys.MSGKEY_VIEW_OUTLINE_COLUMN_LINE));
+        lineColumn.setText(getString(StringKeys.VIEW_OUTLINE_COLUMN_LINE));
 
         createColumnAdapters(tableViewer.getTable());
         tableViewer.setSorter(getViewerSorter(0));
@@ -186,7 +186,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                             prio2 = (Integer) marker2.getAttribute(IMarker.LINE_NUMBER);
                         }
                     } catch (CoreException ce) {
-                        PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, ce);
+                        PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION, ce);
                     }
 
                     return prio1 == null ? 0 : prio1.compareTo(prio2) * sortOrder;
@@ -203,7 +203,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                         message1 = String.valueOf(((IMarker) e1).getAttribute(IMarker.MESSAGE));
                         message2 = String.valueOf(((IMarker) e2).getAttribute(IMarker.MESSAGE));
                     } catch (CoreException ce) {
-                        PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
+                        PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION + this.toString(), ce);
                     }
 
                     return message1 == null ? 0 : message1.compareTo(message2) * sortOrder;

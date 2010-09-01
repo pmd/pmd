@@ -30,7 +30,7 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
     private Label 		minTileLabel;
 
     protected String descriptionId() {
-    	return StringKeys.MSGKEY_PREF_CPD_TITLE;
+    	return StringKeys.PREF_CPD_TITLE;
     }
     /**
      * Insert the method's description here.
@@ -94,12 +94,12 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
 
         // build the group
         Group group = new Group(parent, SWT.SHADOW_IN);
-        group.setText(getMessage(StringKeys.MSGKEY_PREF_CPD_GROUP_GENERAL));
+        group.setText(getMessage(StringKeys.PREF_CPD_GROUP_GENERAL));
         group.setLayout(new GridLayout(2, false));
 
         // build the children
         minTileLabel = new Label(group, SWT.NULL);
-        minTileLabel.setText(getMessage(StringKeys.MSGKEY_PREF_CPD_TILESIZE));
+        minTileLabel.setText(getMessage(StringKeys.PREF_CPD_TILESIZE));
 
         minTileSizeSpinner = new Spinner(group, SWT.BORDER);
         minTileSizeSpinner.setMinimum(preferences.getMinTileSize());

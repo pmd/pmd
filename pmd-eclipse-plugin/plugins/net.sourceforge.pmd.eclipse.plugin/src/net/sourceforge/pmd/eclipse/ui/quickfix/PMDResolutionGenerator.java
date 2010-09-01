@@ -180,7 +180,7 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
                 for (Fix fix : fixes)  markerResolutionList.add( new PMDResolution(fix) );
             }
         } catch (RuntimeException e) {
-            PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION), e);
+            PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getStringTable().getString(StringKeys.ERROR_RUNTIME_EXCEPTION), e);
         }
 
         return markerResolutionList.toArray(new IMarkerResolution[markerResolutionList.size()]);

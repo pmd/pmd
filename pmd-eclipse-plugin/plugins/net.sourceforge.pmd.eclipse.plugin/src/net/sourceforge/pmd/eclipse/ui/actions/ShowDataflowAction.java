@@ -32,7 +32,7 @@ public class ShowDataflowAction implements IObjectActionDelegate {
 
 			} catch (PartInitException pie) {
 				PMDPlugin.getDefault().logError(
-					StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION +
+					StringKeys.ERROR_VIEW_EXCEPTION +
 					this.toString(), pie);
 			}
 		}

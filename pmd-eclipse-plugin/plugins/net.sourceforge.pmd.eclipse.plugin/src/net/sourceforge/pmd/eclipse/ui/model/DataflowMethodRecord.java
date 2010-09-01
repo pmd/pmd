@@ -131,7 +131,7 @@ public class DataflowMethodRecord {
                 }
             }
         } catch (CoreException ce) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_FIND_MARKER + this.toString(), ce);
         }
 
         // return the Arraylist-Markers as an IMarker-Array

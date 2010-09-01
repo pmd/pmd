@@ -78,11 +78,11 @@ public class DataflowGraphViewer extends Composite {
         // set Column-widths and header titles
         colWidths = new int[] { 50, 250, 70, 220, 300 };
         String[] headerTitles = { 
-        		getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_LINE),
-                getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_GRAPH),
-                getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_NEXT),
-                getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_VALUES),
-                getString(StringKeys.MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_CODE) };
+        		getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_LINE),
+                getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_GRAPH),
+                getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_NEXT),
+                getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_VALUES),
+                getString(StringKeys.VIEW_DATAFLOW_GRAPH_COLUMN_CODE) };
         dfaTable.setColumns(colWidths, headerTitles, 1);
 
         Display display = parent.getDisplay();
@@ -232,7 +232,7 @@ public class DataflowGraphViewer extends Composite {
                 }
             }
         } catch (IOException ioe) {
-            PMDPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
         }
 
         return null;

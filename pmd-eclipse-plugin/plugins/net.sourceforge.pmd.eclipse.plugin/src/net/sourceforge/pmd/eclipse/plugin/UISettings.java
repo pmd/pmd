@@ -182,11 +182,11 @@ public class UISettings {
         if (priorityLabels == null) {
             final StringTable stringTable = PMDPlugin.getDefault().getStringTable();
             priorityLabels = new String[]{
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR_HIGH),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_WARNING_HIGH),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_WARNING),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_INFORMATION)
+                stringTable.getString(StringKeys.PRIORITY_ERROR_HIGH),
+                stringTable.getString(StringKeys.PRIORITY_ERROR),
+                stringTable.getString(StringKeys.PRIORITY_WARNING_HIGH),
+                stringTable.getString(StringKeys.PRIORITY_WARNING),
+                stringTable.getString(StringKeys.PRIORITY_INFORMATION)
             };
         }
 

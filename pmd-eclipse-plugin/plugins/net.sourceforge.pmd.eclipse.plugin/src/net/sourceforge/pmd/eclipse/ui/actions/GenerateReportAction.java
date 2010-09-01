@@ -56,7 +56,7 @@ public class GenerateReportAction extends AbstractUIAction {
                     cmd.performExecute();
                 }
             } catch (CommandException e) {
-                showErrorById(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION, e);
+                showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
             }
         }
     }

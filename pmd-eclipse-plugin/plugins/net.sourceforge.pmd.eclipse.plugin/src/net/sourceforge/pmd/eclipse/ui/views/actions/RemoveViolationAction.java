@@ -27,11 +27,11 @@ public class RemoveViolationAction extends AbstractViolationSelectionAction {
         super(viewer);
     }
 
- 	protected String textId() { return StringKeys.MSGKEY_VIEW_ACTION_REMOVE_VIOLATION; }
+ 	protected String textId() { return StringKeys.VIEW_ACTION_REMOVE_VIOLATION; }
  	
  	protected String imageId() { return PMDUiConstants.ICON_BUTTON_REMVIO; }
     
-    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION; } 
+    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_REMOVE_VIOLATION; } 
     
     /**
      * Executes the Action
@@ -51,7 +51,7 @@ public class RemoveViolationAction extends AbstractViolationSelectionAction {
                 }
             }, null);
         } catch (CoreException ce) {
-        	logErrorByKey(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, ce);
+        	logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, ce);
         }
     }
 

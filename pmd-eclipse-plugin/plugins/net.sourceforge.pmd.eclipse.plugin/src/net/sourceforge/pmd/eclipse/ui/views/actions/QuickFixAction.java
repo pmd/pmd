@@ -29,11 +29,11 @@ public class QuickFixAction extends AbstractViolationSelectionAction {
         super(viewer);
     }
 
- 	protected String textId() { return StringKeys.MSGKEY_VIEW_ACTION_QUICKFIX; }
+ 	protected String textId() { return StringKeys.VIEW_ACTION_QUICKFIX; }
  	
  	protected String imageId() { return PMDUiConstants.ICON_BUTTON_QUICKFIX; }
     
-    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_QUICKFIX; }    
+    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_QUICKFIX; }    
     
     /**
      * Checks, if the Markers support QuickFix

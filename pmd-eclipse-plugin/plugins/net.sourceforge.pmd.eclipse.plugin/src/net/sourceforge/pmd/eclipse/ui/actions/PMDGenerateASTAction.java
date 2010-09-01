@@ -96,9 +96,9 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
                 try {
                     dialog.run(false, false, this);
                 } catch (InvocationTargetException e) {
-                    showErrorById(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
+                    showErrorById(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
                 } catch (InterruptedException e) {
-                    showErrorById( StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
+                    showErrorById( StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
                 }
             }
         }
@@ -161,13 +161,13 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
             }
 
         } catch (CoreException e) {
-            showErrorById(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);
         } catch (ParseException e) {
-            showErrorById(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION, e);
+            showErrorById(StringKeys.ERROR_PMD_EXCEPTION, e);
         } catch (WriterException e) {
-            showErrorById( StringKeys.MSGKEY_ERROR_PMD_EXCEPTION, e);
+            showErrorById( StringKeys.ERROR_PMD_EXCEPTION, e);
         } catch (IOException e) {
-            showErrorById(StringKeys.MSGKEY_ERROR_IO_EXCEPTION, e);
+            showErrorById(StringKeys.ERROR_IO_EXCEPTION, e);
         }
     }
 

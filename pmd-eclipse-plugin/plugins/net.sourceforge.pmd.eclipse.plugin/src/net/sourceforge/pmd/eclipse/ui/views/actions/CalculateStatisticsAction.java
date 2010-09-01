@@ -28,7 +28,7 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
     
     protected String imageId() { return PMDUiConstants.ICON_BUTTON_CALCULATE; }
     
-    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS; }
+    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_CALCULATE_STATS; }
     
     private TreeViewer getViewer() {
     	return violationView.getViewer();
@@ -71,9 +71,9 @@ public class CalculateStatisticsAction extends AbstractPMDAction {
                 }
             });
         } catch (InvocationTargetException e) {
-            logErrorByKey(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
+            logErrorByKey(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
         } catch (InterruptedException e) {
-        	logErrorByKey(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
+        	logErrorByKey(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
         }
     }
     

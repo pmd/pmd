@@ -90,7 +90,7 @@ public class PMDRemoveMarkersAction  extends AbstractUIAction implements IViewAc
                 log.warn("Cannot remove markers, action ID is not supported");
             }
         } catch (CoreException e) {
-            showErrorById(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
     }
 
@@ -138,7 +138,7 @@ public class PMDRemoveMarkersAction  extends AbstractUIAction implements IViewAc
                 log.debug("This action is not supported on that part. This part type is: " + targetPartClassName());
             }
         } catch (CoreException e) {
-            showErrorById(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+            showErrorById(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
     }
     

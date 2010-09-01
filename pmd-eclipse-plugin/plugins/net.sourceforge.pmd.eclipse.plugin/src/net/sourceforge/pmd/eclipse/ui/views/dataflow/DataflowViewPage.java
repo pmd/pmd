@@ -100,7 +100,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage {
         	}}
         );
         
-        switchButton.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_SWITCHBUTTON_SHOW));
+        switchButton.setText(getString(StringKeys.VIEW_DATAFLOW_SWITCHBUTTON_SHOW));
 
         // //////////////////////////////////////////////////
         // the DataflowGraphViewer (left Part)
@@ -124,15 +124,6 @@ public class DataflowViewPage extends AbstractStructureInspectorPage {
         // hide the table
         showTableArea(false);
         showFirstMethod();
-    }
-
-    /**
-     * Gets the label of a method for an element of the combobox.
-     * @param pmdMethod the method to create a label for
-     * @return a label for the method
-     */
-    private String getMethodLabel(ASTMethodDeclaration pmdMethod) {
-        return pmdMethod.getMethodName() + " (line " + pmdMethod.getBeginLine() + "-" + pmdMethod.getEndLine() + ")";
     }
 
     /* @see org.eclipse.ui.part.IPage#getControl() */
@@ -168,7 +159,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage {
                             offset = getDocument().getLineOffset(startLine);
                             length = getDocument().getLineLength(startLine);
                         } catch (BadLocationException ble) {
-                            logError(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION + "Exception when selecting a line in the editor" , ble);
+                            logError(StringKeys.ERROR_RUNTIME_EXCEPTION + "Exception when selecting a line in the editor" , ble);
                         }
                         textEditor.selectAndReveal(offset, length);
                         tableViewer.getTable().deselectAll();
@@ -191,7 +182,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage {
         // set the new Size and update the SwitchButton's Label
         if (isShown) {
             ((GridData) graphViewer.getLayoutData()).horizontalSpan = 1;
-            switchButton.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_SWITCHBUTTON_HIDE));
+            switchButton.setText(getString(StringKeys.VIEW_DATAFLOW_SWITCHBUTTON_HIDE));
 
             // refresh the table if it isn't refreshed yet.
             if (!isTableRefreshed) {
@@ -199,7 +190,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage {
             }
         } else {
             ((GridData) graphViewer.getLayoutData()).horizontalSpan = 2;
-            switchButton.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_SWITCHBUTTON_SHOW));
+            switchButton.setText(getString(StringKeys.VIEW_DATAFLOW_SWITCHBUTTON_SHOW));
         }
 
         // lay out to update the View
@@ -224,7 +215,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage {
 				int length = getDocument().getLineOffset(violation.getEndLine()) - offset;
 				textEditor.selectAndReveal(offset, length);
 			} catch (BadLocationException ble) {
-				logError(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION	+ "Exception when selecting a line in the editor", ble);
+				logError(StringKeys.ERROR_RUNTIME_EXCEPTION	+ "Exception when selecting a line in the editor", ble);
 			}
 
 			// showMethodToMarker(marker);
@@ -279,7 +270,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage {
             cmd.addPropertyListener(this);
             cmd.performExecute();
         } catch (CommandException e) {
-        	logErrorByKey(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION, e);
+        	logErrorByKey(StringKeys.ERROR_PMD_EXCEPTION, e);
         }
     }
 

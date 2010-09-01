@@ -33,7 +33,7 @@ public class ReviewResourceAction extends AbstractPMDAction {
     
  	protected String imageId() { return PMDUiConstants.ICON_BUTTON_REFRESH; }
     
-    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_REFRESH; }
+    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_REFRESH; }
     
     public void setResource(IResource resource) {
         this.resource = resource;
@@ -57,15 +57,15 @@ public class ReviewResourceAction extends AbstractPMDAction {
                     try {
                         cmd.performExecute();
                     } catch (CommandException e) {
-                    	logErrorByKey(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, e);
+                    	logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, e);
                     }
                     monitor.done();
                 }
             });
         } catch (InvocationTargetException e) {
-        	logErrorByKey(StringKeys.MSGKEY_ERROR_INVOCATIONTARGET_EXCEPTION, e);
+        	logErrorByKey(StringKeys.ERROR_INVOCATIONTARGET_EXCEPTION, e);
         } catch (InterruptedException e) {
-        	logErrorByKey(StringKeys.MSGKEY_ERROR_INTERRUPTED_EXCEPTION, e);
+        	logErrorByKey(StringKeys.ERROR_INTERRUPTED_EXCEPTION, e);
         }
     }
  

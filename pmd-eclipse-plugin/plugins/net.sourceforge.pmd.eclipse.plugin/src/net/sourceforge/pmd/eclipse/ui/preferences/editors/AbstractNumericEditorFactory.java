@@ -39,12 +39,12 @@ public abstract class AbstractNumericEditorFactory extends AbstractEditorFactory
 
     public Control[] createOtherControlsOn(Composite parent, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener, SizeChangeListener sizeListener) {
 
-        Label defaultLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.MSGKEY_RULEEDIT_LABEL_DEFAULT));
+        Label defaultLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.RULEEDIT_LABEL_DEFAULT));
         Control valueControl = newEditorOn(parent, desc, rule, listener, sizeListener);
 
-        Label minLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.MSGKEY_RULEEDIT_LABEL_MIN));
+        Label minLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.RULEEDIT_LABEL_MIN));
         Spinner minWidget = newSpinnerFor(parent, digitPrecision());
-        Label maxLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.MSGKEY_RULEEDIT_LABEL_MAX));
+        Label maxLabel = newLabel(parent, SWTUtil.stringFor(StringKeys.RULEEDIT_LABEL_MAX));
         Spinner maxWidget = newSpinnerFor(parent, digitPrecision());
 
         linkup(minWidget, (Spinner)valueControl, maxWidget);

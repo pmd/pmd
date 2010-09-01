@@ -27,7 +27,7 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
         super(viewer);
     }
 
- 	protected String textId() { return StringKeys.MSGKEY_VIEW_ACTION_SHOW_RULE; }
+ 	protected String textId() { return StringKeys.VIEW_ACTION_SHOW_RULE; }
  	
  	protected String imageId() { return null; }
     
@@ -67,7 +67,7 @@ public class ShowRuleAction extends AbstractViolationSelectionAction {
                         );
             }
         } catch (RuntimeException e) {
-        	logErrorByKey(StringKeys.MSGKEY_ERROR_RUNTIME_EXCEPTION, e);
+        	logErrorByKey(StringKeys.ERROR_RUNTIME_EXCEPTION, e);
         }
 
         return rule;

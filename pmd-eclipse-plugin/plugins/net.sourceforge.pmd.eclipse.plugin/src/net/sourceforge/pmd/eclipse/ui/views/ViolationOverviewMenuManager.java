@@ -137,19 +137,19 @@ public class ViolationOverviewMenuManager {
                 MenuManager submenuManager;
 
                 // one SubMenu for filtering Projects
-                submenuManager = new MenuManager(getString(StringKeys.MSGKEY_VIEW_MENU_RESOURCE_FILTER));
+                submenuManager = new MenuManager(getString(StringKeys.VIEW_MENU_RESOURCE_FILTER));
                 createProjectFilterMenu(submenuManager);
                 manager.add(submenuManager);
 
                 // ... another one for filtering Priorities
-                submenuManager = new MenuManager(getString(StringKeys.MSGKEY_VIEW_MENU_PRIORITY_FILTER));
+                submenuManager = new MenuManager(getString(StringKeys.VIEW_MENU_PRIORITY_FILTER));
                 for (PriorityFilterAction priorityAction : priorityActions) {
                     submenuManager.add(priorityAction);
                 }
                 manager.add(submenuManager);
 
                 // ... another one for showing the presentation types
-                submenuManager = new MenuManager(getString(StringKeys.MSGKEY_VIEW_MENU_PRESENTATION_TYPE));
+                submenuManager = new MenuManager(getString(StringKeys.VIEW_MENU_PRESENTATION_TYPE));
                 createShowTypeSubmenu(submenuManager);
                 manager.add(submenuManager);
 

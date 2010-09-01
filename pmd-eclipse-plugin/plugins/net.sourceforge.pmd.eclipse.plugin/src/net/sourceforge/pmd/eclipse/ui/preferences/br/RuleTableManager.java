@@ -115,6 +115,10 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 		return activeOnes;
 	}
 
+	protected String nameFor(Object treeItemData) {
+		return ((Rule)treeItemData).getName();
+	}
+	
 	public void selectionListener(RuleSelectionListener theListener) {
 		ruleSelectionListener = theListener;
 	}
@@ -220,7 +224,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	 */
 	public Button buildAddRuleButton(final Composite parent) {
 		
-		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_ADD, StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADDRULE);
+		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_ADD, StringKeys.PREF_RULESET_BUTTON_ADDRULE);
 		
 		button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
@@ -266,7 +270,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	 */
 	public Button buildRemoveRuleButton(Composite parent) {
 
-		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_DELETE, StringKeys.MSGKEY_PREF_RULESET_BUTTON_REMOVERULE);
+		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_DELETE, StringKeys.PREF_RULESET_BUTTON_REMOVERULE);
 
 		button.addSelectionListener(new SelectionAdapter() {
            public void widgetSelected(SelectionEvent event) {
@@ -299,7 +303,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	 */
 	private Button buildExportRuleSetButton(final Composite parent) {
 		
-		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_EXPORT, StringKeys.MSGKEY_PREF_RULESET_BUTTON_EXPORTRULESET);
+		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_EXPORT, StringKeys.PREF_RULESET_BUTTON_EXPORTRULESET);
 		
 		button.addSelectionListener(new SelectionAdapter() {
 
@@ -310,7 +314,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 					try {
 						exportTo(fileName, parent.getShell());
 					} catch (Exception e) {
-						plugin.showError(getMessage(StringKeys.MSGKEY_ERROR_EXPORTING_RULESET), e);
+						plugin.showError(getMessage(StringKeys.ERROR_EXPORTING_RULESET), e);
 					}
 				}
 			}
@@ -327,15 +331,15 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 		
 		if (file.exists()) {
 			flContinue = MessageDialog.openConfirm(shell,
-					getMessage(StringKeys.MSGKEY_CONFIRM_TITLE),
-					getMessage(StringKeys.MSGKEY_CONFIRM_RULESET_EXISTS));
+					getMessage(StringKeys.CONFIRM_TITLE),
+					getMessage(StringKeys.CONFIRM_RULESET_EXISTS));
 		}
 
 		InputDialog input = null;
 		if (flContinue) {
 			input = new InputDialog(shell,
-					getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE),
-					getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_RULESET_DESCRIPTION),
+					getMessage(StringKeys.PREF_RULESET_DIALOG_TITLE),
+					getMessage(StringKeys.PREF_RULESET_DIALOG_RULESET_DESCRIPTION),
 					ruleSet.getDescription() == null ? "" : ruleSet.getDescription().trim(), null);
 			flContinue = input.open() == Window.OK;
 		}
@@ -347,8 +351,8 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 			IRuleSetWriter writer = plugin.getRuleSetWriter();
 			writer.write(out, ruleSet);
 			out.close();
-			MessageDialog.openInformation(shell, getMessage(StringKeys.MSGKEY_INFORMATION_TITLE),
-					getMessage(StringKeys.MSGKEY_INFORMATION_RULESET_EXPORTED));
+			MessageDialog.openInformation(shell, getMessage(StringKeys.INFORMATION_TITLE),
+					getMessage(StringKeys.INFORMATION_RULESET_EXPORTED));
 		}
 	}
 	
@@ -359,7 +363,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	 */
 	private Button buildImportRuleSetButton(final Composite parent) {
 
-		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_IMPORT, StringKeys.MSGKEY_PREF_RULESET_BUTTON_IMPORTRULESET);
+		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_IMPORT, StringKeys.PREF_RULESET_BUTTON_IMPORTRULESET);
 		
 		button.addSelectionListener(new SelectionAdapter() {
 
@@ -396,7 +400,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 				plugin.logError("Exception when refreshing the rule table", t);
 			}
 		} catch (RuntimeException e) {
-			plugin.showError(getMessage(StringKeys.MSGKEY_ERROR_IMPORTING_RULESET), e);
+			plugin.showError(getMessage(StringKeys.ERROR_IMPORTING_RULESET), e);
 		}
 	}
 	
@@ -440,7 +444,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	 */
 	private Button buildRuleDesignerButton(Composite parent) {
 
-		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_EDITOR, StringKeys.MSGKEY_PREF_RULESET_BUTTON_RULEDESIGNER);
+		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_EDITOR, StringKeys.PREF_RULESET_BUTTON_RULEDESIGNER);
 
 		button.addSelectionListener(new SelectionAdapter() {
 
@@ -851,7 +855,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 
 		updateButtonsFor(selectionRatio);
 		
-		String label = SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_ACTIVE_RULE_COUNT);
+		String label = SWTUtil.stringFor(StringKeys.PREF_RULESET_ACTIVE_RULE_COUNT);
 		activeCountText(label + " " + activeItemCount() + " / " + ruleSet.size());
 	}
 

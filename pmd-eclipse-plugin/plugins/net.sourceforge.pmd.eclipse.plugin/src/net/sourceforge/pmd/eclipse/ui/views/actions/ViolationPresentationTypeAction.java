@@ -61,15 +61,15 @@ public class ViolationPresentationTypeAction extends Action {
         switch (type) {
 	        case ViolationOverview.SHOW_FILES_MARKERS:   // we set Image and Text for the Action
 	            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_FILEMARKERS));
-	            setText(AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_MENU_FILEMARKERS));
+	            setText(AbstractPMDAction.getString(StringKeys.VIEW_MENU_FILEMARKERS));
 	            break;
 	        case ViolationOverview.SHOW_MARKERS_FILES:
 	            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_MARKERFILES));
-	            setText(AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_MENU_MARKERFILES));
+	            setText(AbstractPMDAction.getString(StringKeys.VIEW_MENU_MARKERFILES));
 	            break;
 	        case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
 	            setImageDescriptor(PMDPlugin.getImageDescriptor(PMDUiConstants.ICON_BUTTON_PACKFILES));
-	            setText(AbstractPMDAction.getString(StringKeys.MSGKEY_VIEW_MENU_PACKFILES));            
+	            setText(AbstractPMDAction.getString(StringKeys.VIEW_MENU_PACKFILES));            
 	            break;
 	        default:	 // do nothing
         }
