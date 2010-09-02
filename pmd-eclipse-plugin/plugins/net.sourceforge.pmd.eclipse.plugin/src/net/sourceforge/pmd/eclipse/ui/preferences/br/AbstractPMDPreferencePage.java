@@ -49,7 +49,7 @@ public abstract class AbstractPMDPreferencePage extends PreferencePage implement
      */
 
     public void init(IWorkbench workbench) {
-    	setDescription(getMessage(descriptionId()));
+  //  	setDescription(getMessage(descriptionId()));
         preferences = PMDPlugin.getDefault().loadPreferences();
     }
 

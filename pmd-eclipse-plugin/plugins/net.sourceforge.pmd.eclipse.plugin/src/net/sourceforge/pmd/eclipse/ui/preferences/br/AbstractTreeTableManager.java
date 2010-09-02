@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,29 +46,83 @@ import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
  */
 public abstract class AbstractTreeTableManager {
 
-
 	protected ContainerCheckedTreeViewer  treeViewer;
 	
 	protected boolean			sortDescending;	
-	private final Set<String>	hiddenColumnNames;
 	private Button				selectAllButton;
 	private Button				unSelectAllButton;
 	private IPreferences		preferences;	
 	private ModifyListener		modifyListener;
 	private Label				activeCountLabel;
-
 	private Menu headerMenu;
 	private Menu tableMenu;
+	
+	protected final ColumnDescriptor[] 	availableColumns;	// columns shown in the rule treetable in the desired order
+	private final Set<ColumnDescriptor>	hiddenColumns = new HashSet<ColumnDescriptor>();
 	
 	private Map<Integer, List<Listener>> paintListeners = new HashMap<Integer, List<Listener>>();
 	
 	protected static PMDPlugin		plugin = PMDPlugin.getDefault();
 	
-	public AbstractTreeTableManager(IPreferences thePreferences) {
+	   public class WidthChangeThread extends Thread {
+	        private int startWidth;
+	        private int endWidth;
+	        private TreeColumn column;
+	        
+	        protected WidthChangeThread(int start, int end, TreeColumn theColumn) {
+	            super();
+	            startWidth = start;
+	            endWidth = end;
+	            column = theColumn;
+	        }
+	        
+	        protected void setWidth(final int width) {
+	            column.getDisplay().syncExec(new Runnable() {
+	                public void run() { column.setWidth(width);    }                
+	            });
+	        }
+	        
+	        public void run() {
+	            if (endWidth > startWidth) {
+	                for (int i = startWidth; i <= endWidth; i++ ) {
+	                    setWidth(i);
+	                }
+	            } else {
+	                for (int i = startWidth; i >= endWidth; i-- ) {
+	                    setWidth(i);
+	                }
+	            }
+	        }
+	    }
+	   
+	public AbstractTreeTableManager(IPreferences thePreferences, ColumnDescriptor[] theColumns) {
 		super();
 
 		preferences = thePreferences;
-		hiddenColumnNames = PreferenceUIStore.instance.hiddenColumnNames();
+		availableColumns = theColumns;
+		
+		loadHiddenColumns();
+	}
+	
+	private void loadHiddenColumns() {
+		
+		for (String columnId : PreferenceUIStore.instance.hiddenColumnIds() ) {
+			for (ColumnDescriptor desc : availableColumns) {
+				if (desc.id().equals(columnId)) {
+					hiddenColumns.add(desc);
+				}
+			}
+		}
+	}
+	
+	private void storeHiddenColumns() {
+		
+		Set<String> columnIds = new HashSet<String>(hiddenColumns.size());
+		for (ColumnDescriptor desc : hiddenColumns) {
+			columnIds.add(desc.id());
+		}
+		
+		PreferenceUIStore.instance.hiddenColumnIds(columnIds);
 	}
 	
 	protected Map<Integer, List<Listener>> paintListeners() {
@@ -183,8 +238,8 @@ public abstract class AbstractTreeTableManager {
 		return button;
 	}
 	
-	protected boolean isHidden(String columnName) {
-		return hiddenColumnNames.contains(columnName);
+	protected boolean isHidden(ColumnDescriptor desc) {
+		return hiddenColumns.contains(desc);
 	}
 	
 	protected abstract String nameFor(Object treeItemData);
@@ -372,9 +427,7 @@ public abstract class AbstractTreeTableManager {
 		activeCountLabel.setText(msg);
 		activeCountLabel.getParent().pack();	// handle changing string length
 	}
-	
-	protected abstract String[] columnLabels();
-	
+		
 	protected boolean isActive(String item) {
 		return preferences.isActive(item);
 	}
@@ -391,30 +444,48 @@ public abstract class AbstractTreeTableManager {
 	
 	protected void addColumnSelectionOptions(Menu menu) {
 
-        for (String columnLabel : columnLabels()) {
+        for (ColumnDescriptor desc : availableColumns) {
             MenuItem columnItem = new MenuItem(menu, SWT.CHECK);
-            columnItem.setSelection(!hiddenColumnNames.contains(columnLabel));
-            columnItem.setText(columnLabel);
-            final String nameStr = columnLabel;
+            columnItem.setSelection(!hiddenColumns.contains(desc));
+            columnItem.setText(desc.label());
+            final ColumnDescriptor columnDesc = desc;
             columnItem.addSelectionListener( new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
-                    toggleColumnVisiblity(nameStr);
+                    toggleColumnVisiblity(columnDesc);
                     }
                 }
             );
         }
 	}
 	
-	protected void toggleColumnVisiblity(String columnName) {
+	private void hide(ColumnDescriptor desc) {
+		 hiddenColumns.add(desc);
+		 TreeColumn column = columnFor(desc);
+		 
+		 column.setData("restoredWidth", Integer.valueOf( column.getWidth() ));
+         WidthChangeThread t = new WidthChangeThread(column.getWidth(), 0, column);
+         t.run();
+	}
+	
+	private void show(ColumnDescriptor desc) {
+		hiddenColumns.remove(desc);
+		TreeColumn column = columnFor(desc);
+		
+		int width = ((Integer)column.getData("restoredWidth")).intValue();
+        WidthChangeThread t = new WidthChangeThread(0, width, column);
+        t.run();
+	}
+	
+	protected void toggleColumnVisiblity(ColumnDescriptor desc) {
 
-	    if (hiddenColumnNames.contains(columnName)) {
-	        hiddenColumnNames.remove(columnName);
+	    if (hiddenColumns.contains(desc)) {
+	        show(desc);
 	    } else {
-	        hiddenColumnNames.add(columnName);
-	    }
-
-	    PreferenceUIStore.instance.hiddenColumnNames(hiddenColumnNames);
-	    redrawTable();
+	        hide(desc);
+	    }    
+	    
+	    storeHiddenColumns();
+	  //  redrawTable();
 	}
 
     protected void redrawTable() {
@@ -434,6 +505,13 @@ public abstract class AbstractTreeTableManager {
     	}
     	return null;
     }
+    
+	private TreeColumn columnFor(ColumnDescriptor desc) {
+	   	for (TreeColumn column : treeViewer().getTree().getColumns()) {
+	   		if ((column.getData(AbstractColumnDescriptor.DescriptorKey)) == desc) return column;
+	    	}
+	   	return null;
+	}
     
 	protected void formatValueOn(StringBuilder target, Object value, Class<?> datatype) {
 

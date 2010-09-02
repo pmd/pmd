@@ -1,7 +1,9 @@
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
@@ -9,9 +11,11 @@ import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -51,18 +55,42 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
 	private TextLayout 	textLayout;
 	private Font		renderFont;
+	private Font		italicFont;
 	private TextStyle 	labelStyle;
 	private TextStyle 	imageStyle;
+	private TextStyle 	derivedStyle;
 
 	private StyledText	xpathField;
 	private StyledText  outputField;
 
 	private Node		classNode;
 	
-	private static Set<String> keywords = new HashSet<String>();
+//	private static Set<String> keywords = new HashSet<String>();
 
+	private static Map<Class<?>, NodeImageDeriver> DeriversByType;
+	private static Set<Class<?>> HiddenNodeTypes;
+	static {
+		HiddenNodeTypes = new HashSet<Class<?>>();
+		HiddenNodeTypes.add(ASTImportDeclaration.class);
+		
+		DeriversByType = new HashMap<Class<?>, NodeImageDeriver>(NodeImageDeriver.AllDerivers.length);
+		for (NodeImageDeriver deriver : NodeImageDeriver.AllDerivers) {
+			DeriversByType.put(deriver.target, deriver);
+		}
+	}
+	
+	private static String derivedTextFor(AbstractNode node) {
+		
+		NodeImageDeriver deriver = DeriversByType.get(node.getClass());
+		return deriver == null ? null : deriver.deriveFrom(node);
+	}
+	
+	public TreeViewer astViewer() {
+		return astViewer;
+	}
+	
 	/**
-	 * Constructor
+	 *
 	 * @param part
 	 * @param record the FileRecord
 	 */
@@ -70,6 +98,10 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		super(part, record);
 	}
 	
+	/**
+	 * TODO use an adjustable Sash to separate the two sections
+	 * TODO add an XPath version combo widget
+	 */
 	public void createControl(Composite parent) {
 
 		astFrame = new Composite(parent, SWT.NONE);        
@@ -78,9 +110,9 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		astFrame.setLayout(mainLayout);
 
 		Composite titleArea = new Composite(astFrame, SWT.NONE);
-		GridData tableData = new GridData(GridData.FILL_HORIZONTAL);
-		tableData.horizontalSpan = 2;
-		titleArea.setLayoutData(tableData);
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = 2;
+		titleArea.setLayoutData(gridData);
 		titleArea.setLayout(new GridLayout(4, false));
 
 		Label showLabel = new Label(titleArea, 0);
@@ -114,6 +146,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		data.horizontalSpan = 2;
 		astViewer.getTree().setLayoutData(data);
 
+		//==================
+		
 		Composite xpathTestPanel = new Composite(astFrame, SWT.NONE);
 		data = new GridData(GridData.FILL_BOTH);
 		data.horizontalSpan = 1;
@@ -123,7 +157,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		xpathTestPanel.setLayout(playLayout);
 
 		xpathField = new StyledText(xpathTestPanel, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		GridData gridData = new GridData(GridData.FILL_BOTH);
+		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.horizontalSpan = 1;
 		xpathField.setLayoutData(gridData);
@@ -158,7 +192,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		sb.append(node);
 		
 		String imgData = node.getImage();
-//		sb.append( "[" + node.getBeginColumn() +", " + node.getEndColumn() + "] " );
 		
 		if (imgData != null ) sb.append("  ").append( imgData );
 	}
@@ -167,7 +200,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
 		outputField.setText("");
 		
-		if (xpathField.getText().length() == 0) {
+		if (StringUtil.isEmpty(xpathField.getText())) {
 			outputField.setText("XPath query field is empty.");
 			return;
 		}
@@ -177,7 +210,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 			results = XPathEvaluator.instance.evaluate( 
 					getDocument().get(), 
 					xpathField.getText(),
-					XPathRuleQuery.XPATH_1_0
+					XPathRuleQuery.XPATH_1_0	// TODO derive from future combo widget
 					);
 		} catch (ParseException pe) {
 			outputField.setText(pe.fillInStackTrace().getMessage());
@@ -185,7 +218,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		}
 		
 		if (results.isEmpty()) {
-			outputField.setText("No matching nodes " + System.currentTimeMillis());
+			outputField.setText("No matching nodes found");
 			return;
 		}
 		
@@ -202,9 +235,13 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		AbstractNode node = (AbstractNode)item.getData();
 		String label = node.toString();
 
-		keywords.add(label);
-
-		String extra = node.getImage();
+		TextStyle extraStyle = imageStyle;
+		String extra = derivedTextFor(node);
+		if (extra != null) {
+			extraStyle = derivedStyle;
+			} else {
+				extra = node.getImage();
+				}
 
 		textLayout.setText(label + (extra == null  ? "" : " " + extra));
 
@@ -212,7 +249,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
 		textLayout.setStyle(labelStyle, 0, labelLength);
 		if (extra != null) {
-			textLayout.setStyle(imageStyle, labelLength, labelLength + extra.length() + 1);
+			textLayout.setStyle(extraStyle, labelLength, labelLength + extra.length() + 1);
 		}
 
 		return textLayout;
@@ -239,15 +276,20 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 	}
 
 	private void setupResources(Display display) {
-		textLayout = new TextLayout(display);    	    	
+		textLayout = new TextLayout(display);    	
+		
+		// TODO take values from the font/color registries and then adapt to changes
 		renderFont = new Font(display, "Tahoma", 10, SWT.NORMAL);
+		italicFont = new Font(display, "Tahoma", 10, SWT.ITALIC);
 		labelStyle = new TextStyle(renderFont, display.getSystemColor(SWT.COLOR_BLACK), null);
 		imageStyle = new TextStyle(renderFont, display.getSystemColor(SWT.COLOR_BLUE), null);
+		derivedStyle = new TextStyle(italicFont, display.getSystemColor(SWT.COLOR_DARK_MAGENTA), null);
 	}
 
 	public void dispose() {
 		super.dispose();
 		renderFont.dispose();
+		italicFont.dispose();
 	}
 
 	public Control getControl() {
@@ -330,32 +372,11 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		//        }
 
 		// refresh the methods and select the old selected method
-		final int index = methodSelector.getSelectionIndex();
+		int index = methodSelector.getSelectionIndex();
 		refreshPMDMethods();
 		showMethod(index);
 		methodSelector.select(index);
 		
 	}
-
-	/**
-	 * Executes a command to refresh the DFA table.
-	 * After execution {@link #refresh(IResource)} will be called.
-	 * @param newResource the new resource
-	 */
-	//    public void refreshDFATable(IResource newResource) {
-	//        this.isTableRefreshed = true;
-	//        try {
-	//            final ReviewResourceForRuleCommand cmd = new ReviewResourceForRuleCommand();
-	//            final DataflowAnomalyAnalysisRule rule = new DataflowAnomalyAnalysisRule();
-	//            rule.setUsesDFA();
-	//            cmd.setUserInitiated(false);
-	//            cmd.setRule(rule);
-	//            cmd.setResource(newResource);
-	//            cmd.addPropertyListener(this);
-	//            cmd.performExecute();
-	//        } catch (CommandException e) {
-	//        	logErrorByKey(StringKeys.MSGKEY_ERROR_PMD_EXCEPTION, e);
-	//        }
-	//    }
 
 }

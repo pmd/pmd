@@ -163,8 +163,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         menuManager.createDropDownMenu(getViewSite().getActionBars().getMenuManager());
         menuManager.createContextMenu();
 
-        // put in the Input
-        // and add Listeners
+        // put in the Input and add Listeners
         treeViewer.setInput(root);
         treeViewer.addDoubleClickListener(doubleClickListener);
         getSite().setSelectionProvider(this);

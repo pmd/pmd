@@ -116,7 +116,7 @@ public class CPDPreferencePage extends AbstractPMDPreferencePage {
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
-        this.minTileSizeSpinner.setMinimum(IPreferences.MIN_TILE_SIZE_DEFAULT);
+        minTileSizeSpinner.setMinimum(IPreferences.MIN_TILE_SIZE_DEFAULT);
     }
 
     /**

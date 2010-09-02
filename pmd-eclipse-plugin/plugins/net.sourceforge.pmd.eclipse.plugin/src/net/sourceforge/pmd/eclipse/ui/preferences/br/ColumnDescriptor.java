@@ -6,6 +6,8 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
  */
 public interface ColumnDescriptor {
 
+	String id();
+	
 	String label();
 
 	String tooltip();

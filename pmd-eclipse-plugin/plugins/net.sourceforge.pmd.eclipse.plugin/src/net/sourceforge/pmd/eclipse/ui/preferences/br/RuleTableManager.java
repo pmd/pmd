@@ -75,7 +75,6 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	private Button			     		addRuleButton;
 	private Button			     		removeRuleButton;
 
-	private final RuleColumnDescriptor[] 		availableColumns;	// columns shown in the rule treetable in the desired order
 	private RuleSelectionListener				ruleSelectionListener;
 
 	public static String ruleSetNameFrom(Rule rule) {
@@ -91,9 +90,8 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
     }
     
 	public RuleTableManager(RuleColumnDescriptor[] theColumns, IPreferences thePreferences) {
-		super(thePreferences);
+		super(thePreferences, theColumns);
 		
-		availableColumns = theColumns;
 		checkedColumnAccessor = createCheckedItemAccessor();
 	}
 	
@@ -559,14 +557,14 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 //		ruleTreeViewer.setCheckedElements(activeRules.toArray());
 	}
 
-	protected String[] columnLabels() {
-	    String[] names = new String[availableColumns.length];
-	    for (int i=0; i<availableColumns.length; i++) {
-	        names[i] = availableColumns[i].label();
-	    }
-	    return names;
-	}
-
+//	protected String[] columnLabels() {
+//	    String[] names = new String[availableColumns.length];
+//	    for (int i=0; i<availableColumns.length; i++) {
+//	        names[i] = availableColumns[i].label();
+//	    }
+//	    return names;
+//	}
+	
 	private ICheckStateProvider createCheckStateProvider() {
 
 		return new ICheckStateProvider() {
@@ -649,10 +647,10 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 
 		groupColumnLabel = chosenColumn == null ? null : chosenColumn.label();
 		
-		List<RuleColumnDescriptor> visibleColumns = new ArrayList<RuleColumnDescriptor>(availableColumns.length);
-		for (RuleColumnDescriptor desc : availableColumns) {
+		List<ColumnDescriptor> visibleColumns = new ArrayList<ColumnDescriptor>(availableColumns.length);
+		for (ColumnDescriptor desc : availableColumns) {
 		    if (desc == chosenColumn) continue;   // redundant, don't include it
-		    if (isHidden(desc.label())) continue;
+		    if (isHidden(desc)) continue;
 		    visibleColumns.add(desc);
 		}
 
@@ -816,8 +814,8 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 
 		treeViewer.setLabelProvider(new RuleLabelProvider(columnDescs));
 		treeViewer.setContentProvider(
-				new RuleSetTreeItemProvider(groupingField, "??", Util.comparatorFrom(columnSorter, sortDescending))
-				);
+			new RuleSetTreeItemProvider(groupingField, "??", Util.comparatorFrom(columnSorter, sortDescending))
+			);
 
 		treeViewer.setInput(ruleSet);
         checkSelections();

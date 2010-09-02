@@ -1,7 +1,11 @@
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -12,7 +16,14 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class ASTContentProvider implements ITreeContentProvider {
 
+	private Set<Class<?>> hiddenNodeTypes;
+	
 	public ASTContentProvider() {
+		this(Collections.EMPTY_SET);
+	}
+	
+	public ASTContentProvider(Set<Class<?>> theHiddenNodeTypes) {
+		hiddenNodeTypes = theHiddenNodeTypes;
 	}
 
 	public void dispose() {	}
@@ -21,28 +32,32 @@ public class ASTContentProvider implements ITreeContentProvider {
 
 	}
 
+	private List<Object> withoutHiddenOnes(AbstractNode parent) {
+				
+		int kidCount = parent.jjtGetNumChildren();
+		List<Object> kids = new ArrayList<Object>(kidCount);
+		
+		for (int i=0; i<kidCount; i++) {
+			Object kid = parent.jjtGetChild(i);
+			if (hiddenNodeTypes.contains(kid.getClass())) continue;
+			kids.add(kid);
+		}
+		
+		return kids;
+	}
+	
 	public Object[] getElements(Object inputElement) {
 		
 		AbstractNode parent = (AbstractNode)inputElement;
 		
-		Node[] kids = new Node[ parent.jjtGetNumChildren()];
-		for (int i=0; i<kids.length; i++) {
-			kids[i] = parent.jjtGetChild(i);
-		}
-		
-		return kids;
+		return withoutHiddenOnes(parent).toArray();
 	}
 
 	public Object[] getChildren(Object parentElement) {
 
 		AbstractNode parent = (AbstractNode)parentElement;
 		
-		Node[] kids = new Node[ parent.jjtGetNumChildren()];
-		for (int i=0; i<kids.length; i++) {
-			kids[i] = parent.jjtGetChild(i);
-		}
-		
-		return kids;
+		return withoutHiddenOnes(parent).toArray();
 	}
 
 	public Object getParent(Object element) {

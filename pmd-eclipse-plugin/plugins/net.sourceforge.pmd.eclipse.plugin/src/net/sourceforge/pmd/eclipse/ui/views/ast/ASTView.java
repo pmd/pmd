@@ -6,6 +6,7 @@ import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractPMDPagebookView;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
+import net.sourceforge.pmd.eclipse.ui.views.actions.CollapseAllAction;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -14,6 +15,8 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
@@ -25,12 +28,15 @@ import org.eclipse.ui.part.IPage;
  */
 public class ASTView extends AbstractPMDPagebookView implements IResourceChangeListener {
 
+	private ASTViewPage page;
+	
 	public ASTView() {
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
-		 super.createPartControl(parent);
+		super.createPartControl(parent);
+		addToolbarControls();
     }
 
     protected String pageMessageId() { return StringKeys.VIEW_AST_DEFAULT_TEXT; }
@@ -46,7 +52,7 @@ public class ASTView extends AbstractPMDPagebookView implements IResourceChangeL
             resourceRecord.getResource().getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 
             // creates a new DataflowViewPage, when a Resource exists
-            ASTViewPage page = new ASTViewPage(part, resourceRecord);
+            page = new ASTViewPage(part, resourceRecord);
             initPage(page);
             page.createControl(getPageBook());
 
@@ -118,12 +124,18 @@ public class ASTView extends AbstractPMDPagebookView implements IResourceChangeL
 
             });
         } catch (CoreException e) {
-            PMDPlugin.getDefault().logError(
-                    StringKeys.ERROR_CORE_EXCEPTION, e);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
 
     }
 
+    private void addToolbarControls() {
+        IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
+        
+        Action collapseAllAction = new CollapseAllAction(page.astViewer());
+        manager.add(collapseAllAction);
+    }
+	
     /**
      * Refresh, reloads the View with a given new resource.
      * @param newResource new resource for the current active page.

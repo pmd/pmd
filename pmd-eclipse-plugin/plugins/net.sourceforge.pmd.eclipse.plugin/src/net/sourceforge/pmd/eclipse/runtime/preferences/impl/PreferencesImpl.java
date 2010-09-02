@@ -60,6 +60,7 @@ class PreferencesImpl implements IPreferences {
     private IPreferencesManager preferencesManager;
     private boolean 			projectBuildPathEnabled;
     private boolean 			pmdPerspectiveEnabled;
+    private boolean				checkAfterSaveEnabled;
     private int 				maxViolationsPerFilePerRule;
     private String 				reviewAdditionalComment;
     private boolean 			reviewPmdStyleEnabled;
@@ -83,7 +84,7 @@ class PreferencesImpl implements IPreferences {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isProjectBuildPathEnabled()
      */
     public boolean isProjectBuildPathEnabled() {
-    	return this.projectBuildPathEnabled;
+    	return projectBuildPathEnabled;
 	}
 
     /**
@@ -97,9 +98,23 @@ class PreferencesImpl implements IPreferences {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isPmdPerspectiveEnabled()
      */
     public boolean isPmdPerspectiveEnabled() {
-        return this.pmdPerspectiveEnabled;
+        return pmdPerspectiveEnabled;
     }
 
+	/**
+     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isCheckCodeAfterSaveEnabled()
+     */
+    public boolean isCheckAfterSaveEnabled() {
+        return checkAfterSaveEnabled;
+    }
+    
+	/**
+     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isCheckCodeAfterSaveEnabled()
+     */
+    public void isCheckAfterSaveEnabled(boolean flag) {
+        checkAfterSaveEnabled = flag;
+    }
+    
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setPmdPerspectiveEnabled(boolean)
      */
@@ -111,7 +126,7 @@ class PreferencesImpl implements IPreferences {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getMaxViolationsPerFilePerRule()
      */
     public int getMaxViolationsPerFilePerRule() {
-        return this.maxViolationsPerFilePerRule;
+        return maxViolationsPerFilePerRule;
     }
 
     /**
@@ -125,7 +140,7 @@ class PreferencesImpl implements IPreferences {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getReviewAdditionalComment()
      */
     public String getReviewAdditionalComment() {
-        return this.reviewAdditionalComment;
+        return reviewAdditionalComment;
     }
 
     /**
@@ -139,7 +154,7 @@ class PreferencesImpl implements IPreferences {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isReviewPmdStyleEnabled()
      */
     public boolean isReviewPmdStyleEnabled() {
-        return this.reviewPmdStyleEnabled;
+        return reviewPmdStyleEnabled;
     }
 
     /**
@@ -153,7 +168,7 @@ class PreferencesImpl implements IPreferences {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getMinTileSize()
      */
     public int getMinTileSize() {
-        return this.minTileSize;
+        return minTileSize;
     }
 
     /**
@@ -167,14 +182,14 @@ class PreferencesImpl implements IPreferences {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getLogFileName()
      */
     public String getLogFileName() {
-        return this.logFileName;
+        return logFileName;
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#getLogLevel()
      */
     public Level getLogLevel() {
-        return this.logLevel;
+        return logLevel;
     }
 
     /**
@@ -188,14 +203,14 @@ class PreferencesImpl implements IPreferences {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#setLogLevel(org.apache.log4j.Level)
      */
     public void setLogLevel(Level level) {
-        this.logLevel = level;
+        logLevel = level;
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#sync()
      */
     public void sync() {
-        this.preferencesManager.storePreferences(this);
+        preferencesManager.storePreferences(this);
     }
 
 	public boolean isActive(String ruleName) {

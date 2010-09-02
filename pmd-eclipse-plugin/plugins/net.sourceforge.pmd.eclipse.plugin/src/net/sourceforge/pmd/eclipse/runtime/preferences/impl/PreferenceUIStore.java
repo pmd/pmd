@@ -101,12 +101,12 @@ public class PreferenceUIStore {
 		preferenceStore.setValue(tableFraction, aFraction);
 	}
 	
-	public Set<String> hiddenColumnNames() {
+	public Set<String> hiddenColumnIds() {
 		String names = preferenceStore.getString(tableHiddenCols);
 		return SWTUtil.asStringSet(names, stringSeparator);
 	}
 	
-	public void hiddenColumnNames(Set<String> names) {
+	public void hiddenColumnIds(Set<String> names) {
 		String nameStr = SWTUtil.asString(names, stringSeparator);
 		preferenceStore.setValue(tableHiddenCols, nameStr);
 	}

@@ -34,10 +34,10 @@ public class IconColumnDescriptor extends AbstractRuleColumnDescriptor {
 			new String[] { PMDUiConstants.ICON_GREEN_CHECK, PMDUiConstants.ICON_EMPTY}
 			);
 
-	public static final RuleColumnDescriptor priority = new IconColumnDescriptor(StringKeys.PREF_RULESET_COLUMN_PRIORITY, SWT.RIGHT, 53, RuleFieldAccessor.priority, true, PMDUiConstants.ICON_BUTTON_PRIO0, iconNamesByPriority);
+	public static final RuleColumnDescriptor priority = new IconColumnDescriptor("iPriority", StringKeys.PREF_RULESET_COLUMN_PRIORITY, SWT.RIGHT, 53, RuleFieldAccessor.priority, true, PMDUiConstants.ICON_BUTTON_PRIO0, iconNamesByPriority);
 
-	public IconColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, Map<Object, String> imageNamesByValue) {
-		super(labelKey, theAlignment, theWidth, theAccessor, resizableFlag, theImagePath);
+	public IconColumnDescriptor(String theId, String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, Map<Object, String> imageNamesByValue) {
+		super(theId, labelKey, theAlignment, theWidth, theAccessor, resizableFlag, theImagePath);
 
 		iconsByValue = iconsFor(imageNamesByValue);
 	}

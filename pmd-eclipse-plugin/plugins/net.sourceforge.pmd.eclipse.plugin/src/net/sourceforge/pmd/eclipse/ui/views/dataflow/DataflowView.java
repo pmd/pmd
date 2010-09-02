@@ -110,7 +110,6 @@ public class DataflowView extends AbstractPMDPagebookView implements IResourceCh
         } catch (CoreException e) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_CORE_EXCEPTION, e);
         }
-
     }
 
     /**

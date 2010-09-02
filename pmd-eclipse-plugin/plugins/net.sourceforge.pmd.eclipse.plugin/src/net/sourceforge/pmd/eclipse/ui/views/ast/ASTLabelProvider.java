@@ -4,6 +4,10 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * 
+ * @author Brian Remedios
+ */
 public class ASTLabelProvider implements ILabelProvider {
 
 	public void addListener(ILabelProviderListener listener) {	}

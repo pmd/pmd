@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.RGB;
@@ -44,6 +45,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
@@ -53,32 +55,32 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
- * Dummy page for PMD preference category
+ * The top-level page for PMD preferences
  *
  * @see CPDPreferencePage
  * @see PMDPreferencePage
  *
- * @author ?
  * @author Philippe Herlin
- *
+ * @author Brian Remedios
  */
 public class GeneralPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
 	
     private static final String[] LOG_LEVELS = { "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "ALL" };
     private static final RGB SHAPE_COLOR = new RGB(255,255,255);
     
-    private Text additionalCommentText;
-    private Label sampleLabel;
-    private Button showPerspectiveBox;
-    private Button useProjectBuildPath;
-    private Spinner maxViolationsPerFilePerRule;
-    private Button reviewPmdStyleBox;
+    private Text		additionalCommentText;
+    private Label		sampleLabel;
+    private Button		showPerspectiveBox;
+    private Button		useProjectBuildPath;
+    private Button		checkCodeOnSave;
+    private Spinner		maxViolationsPerFilePerRule;
+    private Button		reviewPmdStyleBox;
+    private Text		logFileNameText;
+    private Scale		logLevelScale;
+    private Label		logLevelValueLabel;
+    private Button		browseButton;
+    private TableViewer tableViewer;
     private IPreferences preferences;
-    private Text logFileNameText;
-    private Scale logLevelScale;
-    private Label logLevelValueLabel;
-    private Button browseButton;
-    private TableViewer  tableViewer;
     
     /**
      * Initialize the page
@@ -86,7 +88,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * @see PreferencePage#init
      */
     public void init(IWorkbench arg0) {
-        setDescription(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TITLE));
+   //     setDescription(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TITLE));
         preferences = PMDPlugin.getDefault().loadPreferences();
     }
 
@@ -135,10 +137,11 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         group.setLayout(new GridLayout(1, false));
 
         // build the children
-        this.showPerspectiveBox = buildShowPerspectiveBoxButton(group);
-        this.useProjectBuildPath = buildUseProjectBuildPathButton(group);
+        showPerspectiveBox = buildShowPerspectiveBoxButton(group);
+        useProjectBuildPath = buildUseProjectBuildPathButton(group);
+        checkCodeOnSave = buildCheckCodeOnSaveButton(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
-        this.maxViolationsPerFilePerRule = buildMaxViolationsPerFilePerRuleText(group);
+        maxViolationsPerFilePerRule = buildMaxViolationsPerFilePerRuleText(group);
 
         // layout children
         GridData data = new GridData();
@@ -175,6 +178,20 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         group.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_PRIORITIES));
         group.setLayout(new GridLayout(1, false));
 
+        Link link = new Link(group, SWT.None);
+        link.setText("PMD folder annotations can be enabled on the <A>label decorations</A> page");
+        link.addSelectionListener (new SelectionAdapter () {
+			public void widgetSelected(SelectionEvent se) {
+//				PreferencesUtil.createPreferenceDialogOn(
+//						getShell(), 
+//						"", what is the id??
+//						null,	//displayedIds, 
+//						null	//data
+//						);
+				System.out.println("Selection: " + se.text);
+			}
+		});
+        
         IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
 			public void dispose() {	}
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {	}
@@ -470,10 +487,23 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * @param viewGroup the parent composite
      *
      */
-    private Button buildShowPerspectiveBoxButton(final Composite viewGroup) {
+    private Button buildCheckCodeOnSaveButton(Composite viewGroup) {
+        Button button = new Button(viewGroup, SWT.CHECK);
+        button.setText("Check code after saving");
+        button.setSelection(preferences.isCheckAfterSaveEnabled());
+   //     button.setEnabled(false);
+        return button;
+    }
+    
+    /**
+     * Build the check box for showing the PMD perspective
+     * @param viewGroup the parent composite
+     *
+     */
+    private Button buildShowPerspectiveBoxButton(Composite viewGroup) {
         Button button = new Button(viewGroup, SWT.CHECK);
         button.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_SHOW_PERSPECTIVE));
-        button.setSelection(this.preferences.isPmdPerspectiveEnabled());
+        button.setSelection(preferences.isPmdPerspectiveEnabled());
 
         return button;
     }
@@ -482,10 +512,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * Build the check box for enabling using Project Build Path
      * @param viewGroup the parent composite
      */
-    private Button buildUseProjectBuildPathButton(final Composite viewGroup) {
+    private Button buildUseProjectBuildPathButton(Composite viewGroup) {
         Button button = new Button(viewGroup, SWT.CHECK);
         button.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_USE_PROJECT_BUILD_PATH));
-        button.setSelection(this.preferences.isProjectBuildPathEnabled());
+        button.setSelection(preferences.isProjectBuildPathEnabled());
         return button;
     }
 
@@ -528,6 +558,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
+    	
         if (additionalCommentText != null) {
             additionalCommentText.setText(IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
         }
@@ -536,6 +567,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             showPerspectiveBox.setSelection(IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
         }
 
+        if (checkCodeOnSave != null) {
+        	checkCodeOnSave.setSelection(IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);
+        }
+        
         if (useProjectBuildPath != null) {
             useProjectBuildPath.setSelection(IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
         }
@@ -632,6 +667,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             preferences.setPmdPerspectiveEnabled(showPerspectiveBox.getSelection());
         }
 
+        if (checkCodeOnSave != null) {
+            preferences.isCheckAfterSaveEnabled(checkCodeOnSave.getSelection());
+        }
+        
         if (useProjectBuildPath != null) {
             preferences.setProjectBuildPathEnabled(useProjectBuildPath.getSelection());
         }

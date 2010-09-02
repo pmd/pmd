@@ -85,6 +85,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
     private static final String PROJECT_BUILD_PATH_ENABLED  = PMDPlugin.PLUGIN_ID + ".project_build_path_enabled";
     private static final String PMD_PERSPECTIVE_ENABLED     = PMDPlugin.PLUGIN_ID + ".pmd_perspective_enabled";
+    private static final String PMD_CHECK_AFTER_SAVE_ENABLED= PMDPlugin.PLUGIN_ID + ".pmd_check_after_save_enabled";
     private static final String MAX_VIOLATIONS_PFPR         = PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
     private static final String REVIEW_ADDITIONAL_COMMENT 	= PMDPlugin.PLUGIN_ID + ".review_additional_comment";
     private static final String REVIEW_PMD_STYLE_ENABLED    = PMDPlugin.PLUGIN_ID + ".review_pmd_style_enabled";
@@ -114,13 +115,14 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager#loadPreferences()
      */
     public IPreferences loadPreferences() {
-        if (this.preferences == null) {
+        if (preferences == null) {
             initLoadPreferencesStore();
             IPreferencesFactory factory = new PreferencesFactoryImpl();
-            this.preferences = factory.newPreferences(this);
+            preferences = factory.newPreferences(this);
 
             loadProjectBuildPathEnabled();
             loadPmdPerspectiveEnabled();
+            loadCheckAfterSaveEnabled();
             loadMaxViolationsPerFilePerRule();
             loadReviewAdditionalComment();
             loadReviewPmdStyleEnabled();
@@ -131,7 +133,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             loadRulePriorityDescriptors();
         }
 
-        return this.preferences;
+        return preferences;
     }
 
     /**
@@ -180,6 +182,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
 
         storeProjectBuildPathEnabled();
         storePmdPerspectiveEnabled();
+        storeCheckAfterSaveEnabled();
         storeMaxViolationsPerFilePerRule();
         storeReviewAdditionalComment();
         storeReviewPmdStyleEnabled();
@@ -215,8 +218,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadProjectBuildPathEnabled() {
-        this.loadPreferencesStore.setDefault(PROJECT_BUILD_PATH_ENABLED, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
-        this.preferences.setProjectBuildPathEnabled(this.loadPreferencesStore.getBoolean(PROJECT_BUILD_PATH_ENABLED));
+        loadPreferencesStore.setDefault(PROJECT_BUILD_PATH_ENABLED, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
+        preferences.setProjectBuildPathEnabled(loadPreferencesStore.getBoolean(PROJECT_BUILD_PATH_ENABLED));
     }
 
     /**
@@ -224,17 +227,26 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadPmdPerspectiveEnabled() {
-        this.loadPreferencesStore.setDefault(PMD_PERSPECTIVE_ENABLED, IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
-        this.preferences.setPmdPerspectiveEnabled(this.loadPreferencesStore.getBoolean(PMD_PERSPECTIVE_ENABLED));
+        loadPreferencesStore.setDefault(PMD_PERSPECTIVE_ENABLED, IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
+        preferences.setPmdPerspectiveEnabled(loadPreferencesStore.getBoolean(PMD_PERSPECTIVE_ENABLED));
     }
 
+    /**
+     * Read the pmdPerspectiveEnabled flag
+     *
+     */
+    private void loadCheckAfterSaveEnabled() {
+        loadPreferencesStore.setDefault(PMD_PERSPECTIVE_ENABLED, IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);
+        preferences.isCheckAfterSaveEnabled(loadPreferencesStore.getBoolean(PMD_CHECK_AFTER_SAVE_ENABLED));
+    }
+    
     /**
      * Read the maxViolationsPerFilePerRule preference
      *
      */
     private void loadMaxViolationsPerFilePerRule() {
-        this.loadPreferencesStore.setDefault(MAX_VIOLATIONS_PFPR, IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
-        this.preferences.setMaxViolationsPerFilePerRule(this.loadPreferencesStore.getInt(MAX_VIOLATIONS_PFPR));
+        loadPreferencesStore.setDefault(MAX_VIOLATIONS_PFPR, IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
+        preferences.setMaxViolationsPerFilePerRule(loadPreferencesStore.getInt(MAX_VIOLATIONS_PFPR));
     }
 
     /**
@@ -242,8 +254,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadReviewAdditionalComment() {
-        this.loadPreferencesStore.setDefault(REVIEW_ADDITIONAL_COMMENT, IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
-        this.preferences.setReviewAdditionalComment(this.loadPreferencesStore.getString(REVIEW_ADDITIONAL_COMMENT));
+        loadPreferencesStore.setDefault(REVIEW_ADDITIONAL_COMMENT, IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
+        preferences.setReviewAdditionalComment(loadPreferencesStore.getString(REVIEW_ADDITIONAL_COMMENT));
     }
 
     /**
@@ -251,8 +263,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadReviewPmdStyleEnabled() {
-        this.loadPreferencesStore.setDefault(REVIEW_PMD_STYLE_ENABLED, IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
-        this.preferences.setReviewPmdStyleEnabled(this.loadPreferencesStore.getBoolean(REVIEW_PMD_STYLE_ENABLED));
+        loadPreferencesStore.setDefault(REVIEW_PMD_STYLE_ENABLED, IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
+        preferences.setReviewPmdStyleEnabled(loadPreferencesStore.getBoolean(REVIEW_PMD_STYLE_ENABLED));
     }
 
     /**
@@ -260,8 +272,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadMinTileSize() {
-        this.loadPreferencesStore.setDefault(MIN_TILE_SIZE, IPreferences.MIN_TILE_SIZE_DEFAULT);
-        this.preferences.setMinTileSize(this.loadPreferencesStore.getInt(MIN_TILE_SIZE));
+        loadPreferencesStore.setDefault(MIN_TILE_SIZE, IPreferences.MIN_TILE_SIZE_DEFAULT);
+        preferences.setMinTileSize(this.loadPreferencesStore.getInt(MIN_TILE_SIZE));
     }
 
     /**
@@ -269,8 +281,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadLogFileName() {
-        this.loadPreferencesStore.setDefault(LOG_FILENAME, IPreferences.LOG_FILENAME_DEFAULT);
-        this.preferences.setLogFileName(this.loadPreferencesStore.getString(LOG_FILENAME));
+        loadPreferencesStore.setDefault(LOG_FILENAME, IPreferences.LOG_FILENAME_DEFAULT);
+        preferences.setLogFileName(loadPreferencesStore.getString(LOG_FILENAME));
     }
 
     /**
@@ -278,8 +290,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadLogLevel() {
-        this.loadPreferencesStore.setDefault(LOG_LEVEL, IPreferences.LOG_LEVEL.toString());
-        this.preferences.setLogLevel(Level.toLevel(this.loadPreferencesStore.getString(LOG_LEVEL)));
+        loadPreferencesStore.setDefault(LOG_LEVEL, IPreferences.LOG_LEVEL.toString());
+        preferences.setLogLevel(Level.toLevel(loadPreferencesStore.getString(LOG_LEVEL)));
     }
 
     /**
@@ -287,8 +299,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void loadActiveRules() {
-        this.loadPreferencesStore.setDefault(DISABLED_RULES, IPreferences.ACTIVE_RULES);
-        this.preferences.setActiveRuleNames(asStringSet(loadPreferencesStore.getString(DISABLED_RULES), ","));
+        loadPreferencesStore.setDefault(DISABLED_RULES, IPreferences.ACTIVE_RULES);
+        preferences.setActiveRuleNames(asStringSet(loadPreferencesStore.getString(DISABLED_RULES), ","));
     }
     
     /**
@@ -347,15 +359,22 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * Write the projectBuildPathEnabled flag
      */
     private void storeProjectBuildPathEnabled() {
-        this.storePreferencesStore.setValue(PROJECT_BUILD_PATH_ENABLED, this.preferences.isProjectBuildPathEnabled());
+        storePreferencesStore.setValue(PROJECT_BUILD_PATH_ENABLED, preferences.isProjectBuildPathEnabled());
     }
 
+    /**
+     * Write the projectBuildPathEnabled flag
+     */
+    private void storeCheckAfterSaveEnabled() {
+        storePreferencesStore.setValue(PMD_CHECK_AFTER_SAVE_ENABLED, preferences.isCheckAfterSaveEnabled());
+    }
+    
     /**
      * Write the pmdPerspectiveEnabled flag
      *
      */
     private void storePmdPerspectiveEnabled() {
-        this.storePreferencesStore.setValue(PMD_PERSPECTIVE_ENABLED, this.preferences.isPmdPerspectiveEnabled());
+        storePreferencesStore.setValue(PMD_PERSPECTIVE_ENABLED, preferences.isPmdPerspectiveEnabled());
     }
 
     /**
@@ -363,7 +382,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeMaxViolationsPerFilePerRule() {
-        this.storePreferencesStore.setValue(MAX_VIOLATIONS_PFPR, this.preferences.getMaxViolationsPerFilePerRule());
+        storePreferencesStore.setValue(MAX_VIOLATIONS_PFPR, preferences.getMaxViolationsPerFilePerRule());
     }
 
     /**
@@ -371,7 +390,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeReviewAdditionalComment() {
-        this.storePreferencesStore.setValue(REVIEW_ADDITIONAL_COMMENT, this.preferences.getReviewAdditionalComment());
+        storePreferencesStore.setValue(REVIEW_ADDITIONAL_COMMENT, preferences.getReviewAdditionalComment());
     }
 
     /**
@@ -379,7 +398,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeReviewPmdStyleEnabled() {
-        this.storePreferencesStore.setValue(REVIEW_PMD_STYLE_ENABLED, this.preferences.isReviewPmdStyleEnabled());
+        storePreferencesStore.setValue(REVIEW_PMD_STYLE_ENABLED, preferences.isReviewPmdStyleEnabled());
     }
 
     /**
@@ -387,7 +406,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeMinTileSize() {
-        this.storePreferencesStore.setValue(MIN_TILE_SIZE, this.preferences.getMinTileSize());
+        storePreferencesStore.setValue(MIN_TILE_SIZE, preferences.getMinTileSize());
     }
 
     /**
@@ -395,7 +414,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeLogFileName() {
-        this.storePreferencesStore.setValue(LOG_FILENAME, this.preferences.getLogFileName());
+        storePreferencesStore.setValue(LOG_FILENAME, preferences.getLogFileName());
     }
 
     /**
@@ -403,7 +422,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      *
      */
     private void storeLogLevel() {
-        this.storePreferencesStore.setValue(LOG_LEVEL, this.preferences.getLogLevel().toString());
+        storePreferencesStore.setValue(LOG_LEVEL, preferences.getLogLevel().toString());
     }
 
     private void storePriorityDescriptors() {

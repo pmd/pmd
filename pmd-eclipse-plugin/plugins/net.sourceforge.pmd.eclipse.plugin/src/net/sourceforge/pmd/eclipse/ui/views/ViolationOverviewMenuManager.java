@@ -37,7 +37,6 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.RulePriority;
@@ -107,8 +106,7 @@ public class ViolationOverviewMenuManager {
         }
         manager.add(new Separator());
 
-        // the CollapseAll-Action
-        final Action collapseAllAction = new CollapseAllAction(overview);
+        Action collapseAllAction = new CollapseAllAction(overview.getViewer());
         manager.add(collapseAllAction);
     }
 
@@ -123,8 +121,6 @@ public class ViolationOverviewMenuManager {
         createProjectFilterMenu(manager);
         createShowTypeSubmenu(manager);
     }
-
-
 
     /**
      * Creates the Context Menu

@@ -59,6 +59,7 @@ public interface IPreferences {
     
     boolean PROJECT_BUILD_PATH_ENABLED_DEFAULT = true;
     boolean PMD_PERSPECTIVE_ENABLED_DEFAULT = true;
+    boolean PMD_CHECK_AFTER_SAVE_DEFAULT = false;
     int MAX_VIOLATIONS_PFPR_DEFAULT = 5;
     String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     boolean REVIEW_PMD_STYLE_ENABLED_DEFAULT = true;
@@ -96,6 +97,16 @@ public interface IPreferences {
      * code review is launched ?
      */
     boolean isPmdPerspectiveEnabled();
+    
+    /**
+     * Should the plugin scan any newly-saved code?
+     */
+    boolean isCheckAfterSaveEnabled();
+    
+    /**
+     * Should the plugin scan any newly-saved code?
+     */
+    void isCheckAfterSaveEnabled(boolean flag);
     
     /**
      * Set whether the plugin switch to the PMD perspective when a manual

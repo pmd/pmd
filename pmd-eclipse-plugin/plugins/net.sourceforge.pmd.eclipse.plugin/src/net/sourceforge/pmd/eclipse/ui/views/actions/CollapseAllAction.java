@@ -38,7 +38,6 @@ package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;
 
 import org.eclipse.jface.viewers.TreeViewer;
 
@@ -50,27 +49,18 @@ import org.eclipse.jface.viewers.TreeViewer;
  */
 public class CollapseAllAction extends AbstractPMDAction {
 
-    private TreeViewer treeViewer;
+    final private TreeViewer treeViewer;
 
-    /**
-     * Constructor
-     * 
-     * @param view, the Violation Overview
-     */
-    public CollapseAllAction(ViolationOverview view) {
+    public CollapseAllAction(TreeViewer theViewer) {
         super();
-        this.treeViewer = view.getViewer();
+        treeViewer = theViewer;
     }
 
  	protected String imageId() { return PMDUiConstants.ICON_BUTTON_COLLAPSE; }
     
     protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_COLLAPSE_ALL; }
    
-    /**
-     * Performs the Action
-     */
     public void run() {
-        // we just delegate to the TreeViewers Action
         treeViewer.collapseAll();
     }
 }

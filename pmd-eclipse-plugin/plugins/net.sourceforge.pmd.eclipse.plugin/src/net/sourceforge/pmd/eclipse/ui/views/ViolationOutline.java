@@ -38,7 +38,7 @@ import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.IPageBookViewPage;
 
 /**
- * A View to show a List of PMD-Violations for a File
+ * A View to show a list of PMD-Violations for a file
  *
  * @author SebastianRaffel ( 08.05.2005 )
  */

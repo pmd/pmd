@@ -19,8 +19,8 @@ public abstract class AbstractRuleColumnDescriptor extends AbstractColumnDescrip
 
     private final RuleFieldAccessor accessor;
 
-    protected AbstractRuleColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath) {
-        super(labelKey, theAlignment, theWidth, resizableFlag, theImagePath);
+    protected AbstractRuleColumnDescriptor(String theId, String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath) {
+        super(theId, labelKey, theAlignment, theWidth, resizableFlag, theImagePath);
 
         accessor = theAccessor;
     }

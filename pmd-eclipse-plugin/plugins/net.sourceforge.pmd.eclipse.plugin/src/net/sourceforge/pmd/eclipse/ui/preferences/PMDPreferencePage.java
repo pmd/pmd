@@ -97,7 +97,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
-		setDescription(getMessage(StringKeys.PREF_RULESET_TITLE));
+//		setDescription(getMessage(StringKeys.PREF_RULESET_TITLE));
 		activeInstance = this;
 	}
 

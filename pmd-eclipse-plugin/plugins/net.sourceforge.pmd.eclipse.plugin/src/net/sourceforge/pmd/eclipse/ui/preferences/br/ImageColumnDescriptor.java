@@ -1,12 +1,16 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.swt.SWT;
@@ -26,7 +30,7 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
     private static final RuleFieldAccessor propertiesAcc = new BasicRuleFieldAccessor() {
     	
         public Comparable<?> valueFor(Rule rule) {
-           return PMDPreferencePage2.indexedPropertyStringFrom(rule);	// notes indices of non-default values in the string for emphasis during later rendering
+           return RuleUIUtil.indexedPropertyStringFrom(rule);	// notes indices of non-default values in the string for emphasis during later rendering
         }
     	public Comparable<?> valueFor(RuleCollection collection) {
     		return IndexedString.Empty;
@@ -36,18 +40,19 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
     	}        
     };
         
-    public static final RuleColumnDescriptor priority  			   = new ImageColumnDescriptor(StringKeys.PREF_RULESET_COLUMN_PRIORITY, 		SWT.LEFT, 50, RuleFieldAccessor.priority, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.uniqueItemsAsShapeFor(12, 12, SWT.LEFT, UISettings.shapesByPriority()));
-    public static final RuleColumnDescriptor filterViolationRegex  = new ImageColumnDescriptor(StringKeys.PREF_RULESET_COLUMN_FILTERS_REGEX, SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER_R, Util.textAsColorShapeFor(16, 16, PMDPreferencePage2.RegexFilterShape));    
-    public static final RuleColumnDescriptor filterViolationXPath  = new ImageColumnDescriptor(StringKeys.PREF_RULESET_COLUMN_FILTERS_XPATH, SWT.LEFT, 25, RuleFieldAccessor.violationXPath, false, PMDUiConstants.ICON_FILTER_X, Util.textAsColorShapeFor(16, 16, PMDPreferencePage2.XPathFilterShape));
-	public static final RuleColumnDescriptor properties   		   = new ImageColumnDescriptor(StringKeys.PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.styledTextBuilder(PMDPreferencePage2.ChangedPropertyFont));
+    public static final RuleColumnDescriptor priority  			   = new ImageColumnDescriptor("iPriority", StringKeys.PREF_RULESET_COLUMN_PRIORITY, 	SWT.LEFT, 50, RuleFieldAccessor.priority, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.uniqueItemsAsShapeFor(12, 12, SWT.LEFT, UISettings.shapesByPriority()));
+    public static final RuleColumnDescriptor filterViolationRegex  = new ImageColumnDescriptor("iFvReg", StringKeys.PREF_RULESET_COLUMN_FILTERS_REGEX, SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER_R, Util.textAsColorShapeFor(16, 16, RuleUIUtil.RegexFilterShape));    
+    public static final RuleColumnDescriptor filterViolationXPath  = new ImageColumnDescriptor("iFVXp",  StringKeys.PREF_RULESET_COLUMN_FILTERS_XPATH, SWT.LEFT, 25, RuleFieldAccessor.violationXPath, false, PMDUiConstants.ICON_FILTER_X, Util.textAsColorShapeFor(16, 16, RuleUIUtil.XPathFilterShape));
+	public static final RuleColumnDescriptor properties   		   = new ImageColumnDescriptor("iProps", StringKeys.PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.styledTextBuilder(RuleUIUtil.ChangedPropertyFont));
 
 	
-    public ImageColumnDescriptor(String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, CellPainterBuilder thePainterBuilder) {
-        super(labelKey, theAlignment, theWidth, theAccessor, resizableFlag, theImagePath);
+    public ImageColumnDescriptor(String theId, String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, CellPainterBuilder thePainterBuilder) {
+        super(theId, labelKey, theAlignment, theWidth, theAccessor, resizableFlag, theImagePath);
 
         painterBuilder = thePainterBuilder;
     }
 
+	
     /**
      * @see net.sourceforge.pmd.eclipse.ui.preferences.br.IRuleColumnDescriptor#newTreeColumnFor(org.eclipse.swt.widgets.Tree, int, net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSortListener, java.util.Map)
      */

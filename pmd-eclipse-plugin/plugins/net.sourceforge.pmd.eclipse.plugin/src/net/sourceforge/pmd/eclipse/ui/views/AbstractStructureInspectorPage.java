@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.PMDException;
@@ -12,13 +13,8 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.PMDEngine;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.eclipse.ui.views.ast.ASTUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.designer.DFAGraphRule;
 
@@ -58,29 +54,6 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 
 	protected ITextEditor 				textEditor;
 	
-	public static String parameterTypes(ASTMethodDeclaration node) {
-	
-		StringBuilder sb = new StringBuilder();
-		
-		for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
-		    Node sn = node.jjtGetChild(ix);
-	    	if (sn instanceof ASTMethodDeclarator) {
-	    		List<ASTFormalParameter> allParams = ((ASTMethodDeclarator) sn).findDescendantsOfType(ASTFormalParameter.class);
-	    		for (ASTFormalParameter formalParam : allParams) {
-	    		    AbstractNode param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-	    		    if (param == null) {
-	    		    	param = formalParam.getFirstDescendantOfType(ASTPrimitiveType.class);
-	    		    	}
-	    		    if (param == null) continue;
-	    	    	sb.append( param.getImage() ).append(", ");
-	    		}	
-	    	}
-		}
-		
-		int length = sb.length();
-		return length == 0 ? "" : sb.toString().substring(0, length-2);
-	}
-
 	protected AbstractStructureInspectorPage(IWorkbenchPart part, FileRecord record) {
 		super();
 
@@ -183,15 +156,6 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 	}
 	
 	/**
-	 * Gets the label of a method for an element of the combobox.
-	 * @param pmdMethod the method to create a label for
-	 * @return a label for the method
-	 */
-	String getMethodLabel(ASTMethodDeclaration pmdMethod) {
-		return pmdMethod.getMethodName() + "(" + parameterTypes(pmdMethod) + ")";
-	}
-	
-	/**
 	 * Refreshes the list of PMD methods for the combobox.
 	 * @see #getPMDMethods(IResource)
 	 */
@@ -201,7 +165,7 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		pmdMethodList = getPMDMethods();
 	
 		for (ASTMethodDeclaration pmdMethod : pmdMethodList) {
-			methodSelector.add(getMethodLabel(pmdMethod));
+			methodSelector.add(ASTUtil.getMethodLabel(pmdMethod));
 		}
 	}
 
@@ -286,14 +250,14 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 	
 			StringReader reader = new StringReader(getDocument().get());
 	
-			// run PMD using the DFAGraphRule
-			// and the Text of the Resource
+			// run PMD using the DFAGraphRule and the Text of the Resource
 			new PMDEngine().processFile(reader, rs, ctx);
 	
 			// the Rule then can give us the Methods
 			methodList.addAll(dfaGraphRule.getMethods());
+			Collections.sort(methodList, ASTUtil.MethodComparator);
 		} catch (PMDException pmde) {
-			logError(StringKeys.ERROR_PMD_EXCEPTION + this.toString(), pmde);
+			logError(StringKeys.ERROR_PMD_EXCEPTION + toString(), pmde);
 		}
 	
 		return methodList;

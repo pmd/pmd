@@ -80,10 +80,10 @@ public class CPDView extends ViewPart implements IPropertyListener {
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
-        this.contentProvider = new TreeNodeContentProvider();
-        this.labelProvider = new CPDViewLabelProvider();
-        this.doubleClickListener = new CPDViewDoubleClickEventListener(this);
-        this.tooltipListener = new CPDViewTooltipListener(this);
+        contentProvider = new TreeNodeContentProvider();
+        labelProvider = new CPDViewLabelProvider();
+        doubleClickListener = new CPDViewDoubleClickEventListener(this);
+        tooltipListener = new CPDViewTooltipListener(this);
     }
 
     /*
@@ -91,22 +91,22 @@ public class CPDView extends ViewPart implements IPropertyListener {
      */
     @Override
     public void createPartControl(Composite parent) {
-        final int treeStyle = SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
-        this.treeViewer = new TreeViewer(parent, treeStyle);
-        this.treeViewer.setUseHashlookup(true);
-        Tree tree = this.treeViewer.getTree();
+        int treeStyle = SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
+        treeViewer = new TreeViewer(parent, treeStyle);
+        treeViewer.setUseHashlookup(true);
+        Tree tree = treeViewer.getTree();
         tree.setHeaderVisible(true);
         tree.setLinesVisible(true);
 
-        this.treeViewer.setContentProvider(contentProvider);
-        this.treeViewer.setLabelProvider(labelProvider);
-        this.treeViewer.addDoubleClickListener(this.doubleClickListener);
+        treeViewer.setContentProvider(contentProvider);
+        treeViewer.setLabelProvider(labelProvider);
+        treeViewer.addDoubleClickListener(this.doubleClickListener);
 
-        this.tooltipListener.initialize();
-        tree.addListener(SWT.Dispose, this.tooltipListener);
-        tree.addListener(SWT.KeyDown, this.tooltipListener);
-        tree.addListener(SWT.MouseMove, this.tooltipListener);
-        tree.addListener(SWT.MouseHover, this.tooltipListener);
+        tooltipListener.initialize();
+        tree.addListener(SWT.Dispose, tooltipListener);
+        tree.addListener(SWT.KeyDown, tooltipListener);
+        tree.addListener(SWT.MouseMove, tooltipListener);
+        tree.addListener(SWT.MouseHover, tooltipListener);
         createColumns(tree);
     }
 
@@ -121,17 +121,17 @@ public class CPDView extends ViewPart implements IPropertyListener {
   //      plusColumn.setResizable(false);
 
         // shows the image
-        final TreeColumn imageColumn = new TreeColumn(tree, SWT.CENTER);
+        TreeColumn imageColumn = new TreeColumn(tree, SWT.CENTER);
         imageColumn.setWidth(20);
   //      imageColumn.setResizable(false);
 
         // shows the message
-        final TreeColumn messageColumn = new TreeColumn(tree, SWT.LEFT);
+        TreeColumn messageColumn = new TreeColumn(tree, SWT.LEFT);
         messageColumn.setText(getString(StringKeys.MSGKEY_VIEW_COLUMN_MESSAGE));
         messageColumn.setWidth(300);
 
         // shows the class
-        final TreeColumn classColumn = new TreeColumn(tree, SWT.LEFT);
+        TreeColumn classColumn = new TreeColumn(tree, SWT.LEFT);
         classColumn.setText(getString(StringKeys.MSGKEY_VIEW_COLUMN_CLASS));
         classColumn.setWidth(300);
 
@@ -164,19 +164,19 @@ public class CPDView extends ViewPart implements IPropertyListener {
      * @param matches CPD Command that contain the matches from the CPD
      */
     public void setData(Iterator<Match> matches) {
-        final List<TreeNode> elements = new ArrayList<TreeNode>();
+        List<TreeNode> elements = new ArrayList<TreeNode>();
         if (matches != null) {
             // iterate the matches
             for (int count = 0; matches.hasNext() && count < MAX_MATCHES; count++) {
-                final Match match = matches.next();
+                Match match = matches.next();
 
                 // create a treenode for the match and add to the list
-                final TreeNode matchNode = new TreeNode(match); // NOPMD by Sven on 02.11.06 11:27
+                TreeNode matchNode = new TreeNode(match); // NOPMD by Sven on 02.11.06 11:27
                 elements.add(matchNode);
 
                 // create the children of the match
-                final TreeNode[] children = new TreeNode[match.getMarkCount()]; // NOPMD by Sven on 02.11.06 11:28
-                final Iterator<TokenEntry> entryIterator = match.getMarkSet().iterator();
+                TreeNode[] children = new TreeNode[match.getMarkCount()]; // NOPMD by Sven on 02.11.06 11:28
+                Iterator<TokenEntry> entryIterator = match.getMarkSet().iterator();
                 for (int j=0; entryIterator.hasNext(); j++) {
                     final TokenEntry entry = entryIterator.next();
                     children[j] = new TreeNode(entry); // NOPMD by Sven on 02.11.06 11:28
@@ -187,7 +187,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
         }
 
         // set the children of the rootnode: the matches
-        this.treeViewer.setInput(elements.toArray(new TreeNode[elements.size()]));
+        treeViewer.setInput(elements.toArray(new TreeNode[elements.size()]));
     }
 
     /**
@@ -195,13 +195,13 @@ public class CPDView extends ViewPart implements IPropertyListener {
      */
     public void propertyChanged(Object source, int propId) {
         if (propId == PMDRuntimeConstants.PROPERTY_CPD && source instanceof Iterator<?>) {
-            final Iterator<Match> iter = (Iterator<Match>) source;
+            Iterator<Match> iter = (Iterator<Match>) source;
             // after setdata(iter) iter.hasNext will always return false
-            final boolean hasResults = iter.hasNext();
+            boolean hasResults = iter.hasNext();
             setData(iter);
             if (!hasResults) {
                 // no entries
-                final MessageBox box = new MessageBox(this.treeViewer.getControl().getShell());
+                MessageBox box = new MessageBox(this.treeViewer.getControl().getShell());
                 box.setText(getString(StringKeys.DIALOG_CPD_NORESULTS_HEADER));
                 box.setMessage(getString(StringKeys.DIALOG_CPD_NORESULTS_BODY));
                 box.open();
