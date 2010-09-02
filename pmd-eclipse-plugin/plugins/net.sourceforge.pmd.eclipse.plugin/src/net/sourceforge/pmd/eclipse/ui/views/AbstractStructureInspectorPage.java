@@ -2,7 +2,6 @@ package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.PMDException;
@@ -10,7 +9,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.PMDEngine;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -25,8 +23,12 @@ import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.designer.DFAGraphRule;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.resource.ColorRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -37,16 +39,18 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.themes.ITheme;
+import org.eclipse.ui.themes.IThemeManager;
 
 /**
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractStructureInspectorPage extends Page implements IPropertyListener, ISelectionChangedListener {
+public abstract class AbstractStructureInspectorPage extends Page implements IPropertyChangeListener, ISelectionChangedListener {
 
 	protected Combo						methodSelector;
 	protected FileRecord				resourceRecord;
@@ -84,6 +88,32 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		if (part instanceof ITextEditor) {
 			textEditor = (ITextEditor) part;
 		}
+			}
+	
+	public void propertyChange(PropertyChangeEvent event) {
+		// TODO adapt the editors
+		System.out.println("property changed: " + event.getProperty());
+	}
+	
+	public void dispose() {
+		super.dispose();
+		unregisterListeners();
+	}
+	
+	private static ColorRegistry colorRegistry() {
+		IThemeManager themeManager = PlatformUI.getWorkbench().getThemeManager();
+	    ITheme currentTheme = themeManager.getCurrentTheme();
+	    return currentTheme.getColorRegistry();
+	}
+	
+	protected void registerListeners() {		
+		JFaceResources.getFontRegistry().addListener(this);
+		colorRegistry().addListener(this);
+	}
+	
+	protected void unregisterListeners() {		
+		JFaceResources.getFontRegistry().removeListener(this);
+		colorRegistry().removeListener(this);
 	}
 	
 	public void setFocus() {
@@ -149,16 +179,6 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 			//			if (!astViewer.isDisposed() && graph != null) {
 			//				graph.markPath(beginLine, endLine, varName);
 			//			}
-		}
-	}
-	
-	/**
-	 * If the review is ready propertyChanged with the results will be called.
-	 */
-	public void propertyChanged(Object source, int propId) {
-		if (source instanceof Iterator<?>
-		&& propId == PMDRuntimeConstants.PROPERTY_REVIEW) {
-			//          tableViewer.setInput(source);
 		}
 	}
 	

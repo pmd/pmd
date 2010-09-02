@@ -148,6 +148,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		outputField.setLayoutData(gridData);
 		SyntaxManager.adapt(outputField, "xpath", null);
 		
+		registerListeners();
+		
 		showFirstMethod();
 	}
 	
@@ -223,7 +225,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		tree.addListener(SWT.PaintItem, new Listener() {
 			public void handleEvent(Event event) {
 				TextLayout layout = layoutFor((TreeItem)event.item);
-				layout.draw(event.gc, event.x, event.y + 5);
+				layout.draw(event.gc, event.x+5, event.y );
 			}
 		});
 
@@ -244,6 +246,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 	}
 
 	public void dispose() {
+		super.dispose();
 		renderFont.dispose();
 	}
 

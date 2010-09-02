@@ -1,12 +1,18 @@
 Change log for the PMD Eclipse plugin
 
 v4.0.0 - xxx 2010?
+. New integrated AST View and XPath test area 
+. New rule creation wizard
+. User-definable rule violation markers 
+     Highest priority markers also decorate folders & projects (selectable)
+. Colour syntax highlighting in code viewers/editors
 . Overhauled rule preferences screen
 .    Allows users to group/edit rules by multiple criteria
-.    provides ability to enable/disable rules without removing them
+.    New ability to enable/disable rules without removing them
 .    larger editors for the various fields
 .	 new rule creation wizard supports new non-Java languages
 .    group editing of filter exclusion rules
+.    highlighting of non-default property values
 .    Color-tagged expressions in shown in rule table
 .    new property editors are fully type-aware
 . Huge code cleanup

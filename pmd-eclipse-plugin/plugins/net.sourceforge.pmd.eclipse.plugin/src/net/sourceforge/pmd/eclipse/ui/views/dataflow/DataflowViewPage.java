@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
@@ -35,7 +36,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Sven Jacob
  *
  */
-public class DataflowViewPage extends AbstractStructureInspectorPage {
+public class DataflowViewPage extends AbstractStructureInspectorPage implements IPropertyListener {
 	
     private Composite 					dfaFrame;
     private Button 						switchButton;
