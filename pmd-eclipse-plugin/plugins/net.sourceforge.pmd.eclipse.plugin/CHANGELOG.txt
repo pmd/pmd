@@ -10,7 +10,7 @@ v4.0.0 - xxx 2010?
 .    Allows users to group/edit rules by multiple criteria
 .    New ability to enable/disable rules without removing them
 .    larger editors for the various fields
-.	 new rule creation wizard supports new non-Java languages
+.	 support for non-Java languages
 .    group editing of filter exclusion rules
 .    highlighting of non-default property values
 .    Color-tagged expressions in shown in rule table

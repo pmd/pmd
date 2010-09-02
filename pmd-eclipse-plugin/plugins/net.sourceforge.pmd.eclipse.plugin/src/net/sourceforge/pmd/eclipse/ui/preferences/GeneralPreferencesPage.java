@@ -11,6 +11,7 @@ import net.sourceforge.pmd.eclipse.plugin.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapePicker;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
@@ -645,7 +646,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     	UISettings.reloadPriorities();
     	
     	// ensure that the decorator gets these new images...
-    	PMDPlugin.getDefault().ruleLabelDecorator().reloadDecorators();
+    	RuleLabelDecorator decorator = PMDPlugin.getDefault().ruleLabelDecorator();
+    	if (decorator != null) decorator.reloadDecorators();
     	
     	RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
     	Set<IFile> files = MarkerUtil.allMarkedFiles(root);

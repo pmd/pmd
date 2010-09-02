@@ -406,6 +406,9 @@ public class PMDPlugin extends AbstractUIPlugin {
     
     public void changedFiles(Collection<IFile> changedFiles) {
     	
+    	RuleLabelDecorator rld = ruleLabelDecorator();
+    	if (rld == null) return;
+    	
     	Collection<IResource> withParents = new HashSet<IResource>(changedFiles.size() * 2);
     	withParents.addAll(changedFiles);
     	for (IFile file : changedFiles) {
@@ -416,12 +419,8 @@ public class PMDPlugin extends AbstractUIPlugin {
     		}
     	}
     	
-    	changed( withParents );
+    	rld.changed( withParents );
     }
-    
-	public void changed(Collection<IResource> changedResources) {
-		ruleLabelDecorator().changed(changedResources);
-	}
 	
 	private void addFilesTo(IResource resource, Collection<IResource> allKids) {
 		
