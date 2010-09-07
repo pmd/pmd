@@ -5,8 +5,7 @@ Enable 'Use defaults' option in popup menu (need support in properties/PMD)
 Add selection column selected rules in per-project rule settings table
 Rework context menu - build on-demand, not before
 Work on support for fixes
-Format example & description text
-Need preference widgets to allow user-specified shapes for RulePriorities
+Format description text
 Additional property types?
 	 Date properties? (i.e. to reference file timestamp?)
 	 File (path) property types - used by the DuplicateLiterals rule that can ref an external file (URL type too then?)

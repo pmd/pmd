@@ -82,6 +82,15 @@ public class RuleUIUtil {
         return pos < 0 ? rulesetName : rulesetName.substring(0, pos-1);
     }
     
+    /**
+     * Parks the formatted value onto the buffer and determines whether it is a default value or not.
+     * If it is it will return its formatted length to denote this or just zero if not.
+     * 
+     * @param target
+     * @param entry
+     * @param modifiedTag
+     * @return
+     */
 	private static int formatValueOn(StringBuilder target, Map.Entry<PropertyDescriptor<?>, Object> entry, String modifiedTag) {
 
 		Object value = entry.getValue();
@@ -140,21 +149,21 @@ public class RuleUIUtil {
 
 		Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProp.entrySet().iterator();
 
-		List<int[]> modValueIndexes = new ArrayList<int[]>(valuesByProp.size());
+		List<int[]> modifiedValueIndexes = new ArrayList<int[]>(valuesByProp.size());
 		
 		Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
 		sb.append(entry.getKey().name()).append(": ");
 		int start = sb.length();
 		int stop = start + formatValueOn(sb, entry, "");
-		if (stop > start) modValueIndexes.add(new int[] { start, stop });
+		if (stop > start) modifiedValueIndexes.add(new int[] { start, stop });
 		
 		while (iter.hasNext()) {
 			entry = iter.next();
 			sb.append(", ").append(entry.getKey().name()).append(": ");
 			start = sb.length();
 			stop = start + formatValueOn(sb, entry, "");
-			if (stop > start) modValueIndexes.add(new int[] { start, stop });
+			if (stop > start) modifiedValueIndexes.add(new int[] { start, stop });
 		}
-		return new IndexedString(sb.toString(), modValueIndexes);
+		return new IndexedString(sb.toString(), modifiedValueIndexes);
 	}
 }
