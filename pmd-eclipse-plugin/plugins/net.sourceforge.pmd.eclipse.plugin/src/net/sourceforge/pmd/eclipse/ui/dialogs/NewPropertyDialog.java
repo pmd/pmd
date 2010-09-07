@@ -1,5 +1,6 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.dialogs;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -9,19 +10,21 @@ import java.util.Map.Entry;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUIUtil;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.StringUtil;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -40,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
  *
  * @author Brian Remedios
  */
-public class NewPropertyDialog extends Dialog implements SizeChangeListener {
+public class NewPropertyDialog extends TitleAreaDialog implements SizeChangeListener {
 
     private Text                    nameField;
     private Text                    labelField;
@@ -54,15 +57,9 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
     private PropertyDescriptor<?>           descriptor;
     private Map<Class<?>, EditorFactory>    editorFactoriesByValueType;
 
-    private Color textColour        = new Color(null, 0, 0, 0);
-    private Color textErrorColour   = new Color(null, 255, 0, 0);
-
     // these are the ones we've tested, the others may work but might not make sense in the xpath source context...
-    private static final Class<?>[] validEditorTypes = new Class[] { String.class, Integer.class, Boolean.class };
+    private static final Class<?>[] validEditorTypes = new Class[] { String.class, Integer.class, Boolean.class, Class.class, Method.class };
     private static final Class<?> defaultEditorType = validEditorTypes[0];     // first one
-
-    private static final String INITIAL_NAME = "a unique name";	//
-    private static final String INITIAL_DESC = "a description";	//
 
     public static Map<Class<?>, EditorFactory> withOnly(Map<Class<?>, EditorFactory> factoriesByType, Class<?>[] legalTypeKeys) {
         Map<Class<?>, EditorFactory> results = new HashMap<Class<?>, EditorFactory>(legalTypeKeys.length);
@@ -103,9 +100,6 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
 
     public boolean close() {
 
-        textColour.dispose();
-        textErrorColour.dispose();
-
         return super.close();
      }
 
@@ -115,7 +109,7 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
     @Override
     protected Control createDialogArea(Composite parent) {
 
-        parent.setLayoutData(new GridData(GridData.FILL_BOTH));
+//        parent.setLayoutData(new GridData(GridData.FILL_BOTH));
         getShell().setText(SWTUtil.stringFor(StringKeys.DIALOG_PREFS_ADD_NEW_PROPERTY));
 
         dlgArea = new Composite(parent, SWT.NULL);
@@ -132,13 +126,17 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
         setPreferredName();
         setInitialType();
 
-        validateForm(false);
-
         dlgArea.pack();
 
         return dlgArea;
     }
 
+    
+    protected Control createButtonBar(Composite parent) {
+    	Control result = super.createButtonBar(parent);
+    	validateForm();
+    	return result;
+    }
     /**
      * Build a label
      */
@@ -147,64 +145,47 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
         label.setText(msgKey == null ? "" : SWTUtil.stringFor(msgKey));
         return label;
     }
-
+    
+    private void setFieldLayoutData(Control widget) {
+    	
+    	GridData data = new GridData();
+        data.horizontalSpan = 1;
+        data.horizontalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        
+        widget.setLayoutData(data);
+    }
+    
     /**
      * Build the rule name text
      */
     private Text buildNameText(Composite parent) {
 
         final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
-        GridData data = new GridData();
-        data.horizontalSpan = 1;
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;
-        text.setLayoutData(data);
+        setFieldLayoutData(text);
 
+        text.addVerifyListener(RuleUIUtil.RuleNameVerifier);
+        
         text.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event event) {
-                nameChanged(text);
+                validateForm();
             }
         });
 
         return text;
     }
 
-    private boolean isValidNewName(String nameCandidate) {
-        if (StringUtil.isEmpty(nameCandidate)) return false;
-        return rule.getPropertyDescriptor(nameCandidate) == null;
-    }
-
-    private static boolean isValidJavaIdentifier(String candidateName) {
-
-    	if (!Character.isJavaIdentifierStart(candidateName.charAt(0))) {
-    		return false;
-    	}
-
-    	for (int i=1; i<candidateName.length(); i++) {
-    		char ch = candidateName.charAt(i);
-    		if (Character.isJavaIdentifierPart(ch)) continue;
-    		return false;
-    	}
-    	return true;
-    }
-
     private boolean isValidNewLabel(String labelCandidate) {
 
-    	if (StringUtil.isEmpty(labelCandidate)) return false;
-        if (!isValidJavaIdentifier(labelCandidate)) return false;
-
+    	return ! StringUtil.isEmpty(labelCandidate);
+    }
+        
+    private boolean isPreExistingLabel(String labelCandidate) {
+    	
         for (PropertyDescriptor<?> desc : rule.getPropertyDescriptors()) {
             if (desc.description().equalsIgnoreCase(labelCandidate)) return false;
         }
         return true;
-    }
-
-    private void nameChanged(Text textField) {
-        String newName = textField.getText().trim();
-        textField.setForeground(
-                isValidNewName(newName) ? textColour : textErrorColour
-                );
-        validateForm(false);
     }
 
     /**
@@ -213,27 +194,17 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
     private Text buildLabelField(Composite parent) {
 
         final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
-        GridData data = new GridData();
-        data.horizontalSpan = 1;
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;
-        text.setLayoutData(data);
+        setFieldLayoutData(text);
 
+        text.addVerifyListener(RuleUIUtil.RuleLabelVerifier);
+        
         text.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event event) {
-                labelChanged(text);
+               validateForm();
             }
         });
 
         return text;
-    }
-
-    private void labelChanged(Text textField) {
-        String newLabel = textField.getText().trim();
-        textField.setForeground(
-                isValidNewLabel(newLabel) ? textColour : textErrorColour
-                );
-        validateForm(false);
     }
 
     private static String labelFor(Class<?> type) {
@@ -263,10 +234,7 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
     private Combo buildTypeField(final Composite parent) {
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
-        GridData data = new GridData();
-        data.grabExcessHorizontalSpace = true;
-        data.horizontalAlignment = GridData.FILL;
-        combo.setLayoutData(data);
+        setFieldLayoutData(combo);
 
         String[] labels = new String[editorFactoriesByValueType.size()];
         int i=0;
@@ -306,7 +274,7 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
             nameField.setText(name);
             return;
         }
-        nameField.setText(INITIAL_NAME);
+        nameField.setText("");
     }
 
     private void setInitialType() {
@@ -324,12 +292,13 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
 
         factory = theFactory;
 
-        descriptor = factory.createDescriptor("??", INITIAL_DESC, null);
+        descriptor = factory.createDescriptor("??", "??", null);	// dummy values that will be replaced
         labelField.setText(descriptor.description());
         cleanFactoryStuff();
 
         factoryControls = factory.createOtherControlsOn(dlgArea, descriptor, rule, changeListener, this);
-
+        
+        dlgArea.getShell().layout();
         dlgArea.pack();
         dlgArea.getParent().pack();
     }
@@ -349,7 +318,7 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
      */
     @Override
     protected void okPressed() {
-        if (validateForm(true) ) {
+        if (validateForm() ) {
             descriptor = newDescriptor();
             super.okPressed();
         }
@@ -358,65 +327,67 @@ public class NewPropertyDialog extends Dialog implements SizeChangeListener {
     /**
      * Perform the form validation
      */
-    private boolean validateForm(boolean showErrorMessages) {
-        boolean isOk = validateName(showErrorMessages) && validateLabel(showErrorMessages);
+    private boolean validateForm() {
+        boolean isOk = validateName() && validateLabel();
         Control button = getButton(IDialogConstants.OK_ID);
-     //   if (button != null) button.setEnabled(isOk);
+        if (button != null) button.setEnabled(isOk);
         return isOk;
     }
 
     /**
      * Perform the name validation
      */
-    private boolean validateName(boolean showErrorMessages) {
+    private boolean validateName() {
 
         String name = nameField.getText().trim();
 
         if (StringUtil.isEmpty(name)) {
-            if (showErrorMessages) MessageDialog.openWarning(getShell(),
-            		SWTUtil.stringFor(StringKeys.WARNING_TITLE),
-            		SWTUtil.stringFor(StringKeys.WARNING_NAME_MANDATORY));
-            nameField.setFocus();
+            setErrorMessage(
+            		"A property name is required"
+            		);
             return false;
         }
 
         if (ruleHasPropertyName(name)) {
-            if (showErrorMessages) MessageDialog.openWarning(getShell(),
-            		SWTUtil.stringFor(StringKeys.WARNING_TITLE),
+            setErrorMessage(
                     "'" + name + "' is already used by another property"
                     );
-            nameField.setFocus();
             return false;
         }
 
+        setErrorMessage(null);
+        
         return true;
     }
 
     /**
      * Perform the label validation
      */
-    private boolean validateLabel(boolean showErrorMessages) {
+    private boolean validateLabel() {
 
         String label = labelField.getText().trim();
 
         if (StringUtil.isEmpty(label)) {
-            if (showErrorMessages) MessageDialog.openWarning(getShell(),
-            		SWTUtil.stringFor(StringKeys.WARNING_TITLE),
-                    "A proper label is required"
+            setErrorMessage(
+                    "A descriptive label is required"
                     );
-            labelField.setFocus();
             return false;
         }
 
         if (!isValidNewLabel(label)) {
-            if (showErrorMessages) MessageDialog.openWarning(getShell(),
-            		SWTUtil.stringFor(StringKeys.WARNING_TITLE),
-                    "Label text must differ from other label text"
+            setErrorMessage("Invalid label");
+            return false;
+        }
+        
+        if (!isPreExistingLabel(label)) {
+            setErrorMessage(
+            		"Label text must differ from other label text"
                     );
-            labelField.setFocus();
             return false;
         }
 
+        setErrorMessage(null);
+        
         return true;
     }
 

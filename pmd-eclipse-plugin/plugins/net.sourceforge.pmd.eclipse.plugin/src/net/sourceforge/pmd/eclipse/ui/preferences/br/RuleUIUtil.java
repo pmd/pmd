@@ -5,13 +5,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.swt.SWT;
-
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.eclipse.util.FontBuilder;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 
 /**
  * 
@@ -28,6 +31,47 @@ public class RuleUIUtil {
     public static final FontBuilder redBold11 = new FontBuilder("Tahoma", 11, SWT.BOLD, SWT.COLOR_RED);
     public static final FontBuilder ChangedPropertyFont = blueBold11;
     
+    
+    public static final VerifyListener RuleNameVerifier = new VerifyListener() {
+    	public void verifyText(VerifyEvent event) {
+            
+            event.doit = false;   // Assume we don't allow it
+
+            char ch = event.character;  // Get the character typed
+            String text = ((Text) event.widget).getText();
+
+            // No leading digits
+            if (Character.isDigit(ch) && text.length() == 0) {
+              event.doit = false;
+              return;
+            }
+
+            if (Character.isJavaIdentifierPart(ch))
+              event.doit = true;
+
+            if (ch == '\b')   // Allow backspace
+              event.doit = true;
+          }   	
+    };
+    
+    
+    public static final VerifyListener RuleLabelVerifier = new VerifyListener() {
+    	public void verifyText(VerifyEvent event) {
+            
+            event.doit = false;   // Assume we don't allow it
+
+            char ch = event.character;  // Get the character typed
+            String text = ((Text) event.widget).getText();
+
+            // No leading blanks
+            if (Character.isWhitespace(ch) && text.length() == 0) {
+              event.doit = false;
+              return;
+            }
+
+            event.doit = true;
+          }   	
+    };
 	public static String ruleSetNameFrom(Rule rule) {
 		return ruleSetNameFrom( rule.getRuleSetName() );
 	}

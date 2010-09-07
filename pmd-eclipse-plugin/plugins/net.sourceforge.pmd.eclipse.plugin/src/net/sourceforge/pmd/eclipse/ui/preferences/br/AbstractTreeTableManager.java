@@ -339,7 +339,7 @@ public abstract class AbstractTreeTableManager {
 		Shell shell = tree.getShell();
 		
 		headerMenu = new Menu(shell, SWT.POP_UP);
-		addColumnSelectionOptions(headerMenu);
+		addHeaderSelectionOptions(headerMenu);
 		
 		tableMenu = new Menu(shell, SWT.POP_UP);
 		addTableSelectionOptions(tableMenu);
@@ -442,7 +442,7 @@ public abstract class AbstractTreeTableManager {
 	     unSelectAllButton = buildUnselectAllButton(parent);
 	}
 	
-	protected void addColumnSelectionOptions(Menu menu) {
+	protected void addHeaderSelectionOptions(Menu menu) {
 
         for (ColumnDescriptor desc : availableColumns) {
             MenuItem columnItem = new MenuItem(menu, SWT.CHECK);

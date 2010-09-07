@@ -21,6 +21,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -39,6 +41,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPart;
+import org.jaxen.BaseXPath;
 
 /**
  * A combined abstract syntax tree viewer for a whole class or selected methods 
@@ -62,7 +65,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
 	private StyledText	xpathField;
 	private StyledText  outputField;
-
+	private Button		goButton;
 	private Node		classNode;
 	
 //	private static Set<String> keywords = new HashSet<String>();
@@ -163,7 +166,9 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		xpathField.setLayoutData(gridData);
 		SyntaxManager.adapt(xpathField, "xpath", null);
 
-		Button goButton = new Button(xpathTestPanel, SWT.PUSH);
+		addXPathValidator();
+		
+		goButton = new Button(xpathTestPanel, SWT.PUSH);
 		goButton.setText("GO");
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessHorizontalSpace = false;
@@ -185,6 +190,30 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		registerListeners();
 		
 		showFirstMethod();
+	}
+	
+	private void addXPathValidator() {
+		
+		ModifyListener ml = new ModifyListener() {
+	          public void modifyText(ModifyEvent event) {           
+	          	validateXPath(xpathField.getText());
+	          }
+	      };
+	      
+	      xpathField.addModifyListener(ml);	      
+	}
+	
+	private void validateXPath(String xpathString) {
+		
+		try {
+			new BaseXPath(xpathString, null);
+			} catch (Exception ex) {
+				// TODO add error marker to editor, red-underlining on offending text
+				goButton.setEnabled(false);
+				return;
+			}
+
+		goButton.setEnabled(true);
 	}
 	
 	private static void displayOn(Node node, StringBuilder sb) {
@@ -263,6 +292,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 			public void handleEvent(Event event) {
 				TextLayout layout = layoutFor((TreeItem)event.item);
 				layout.draw(event.gc, event.x+5, event.y );
+		//		event.gc.drawLine(event.x - 55, event.y, event.x - 55, event.y + 20);
 			}
 		});
 

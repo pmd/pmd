@@ -63,6 +63,8 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		}
 			}
 	
+	public abstract void refresh(IResource resource);
+	
 	public void propertyChange(PropertyChangeEvent event) {
 		// TODO adapt the editors
 		System.out.println("property changed: " + event.getProperty());
