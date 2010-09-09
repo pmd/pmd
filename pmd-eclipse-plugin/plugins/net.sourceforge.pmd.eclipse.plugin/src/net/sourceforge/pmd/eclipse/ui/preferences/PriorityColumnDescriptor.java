@@ -35,7 +35,7 @@ public class PriorityColumnDescriptor extends AbstractColumnDescriptor {
 //	public static final PriorityColumnDescriptor size  			= new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_SIZE, SWT.RIGHT, 25, true, PriorityFieldAccessor.size);
 	public static final PriorityColumnDescriptor image  		= new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_SHAPE, SWT.CENTER, 25, true, PriorityFieldAccessor.image);
 //	public static final PriorityColumnDescriptor color  		= new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_COLOR, SWT.RIGHT, 25, true, PriorityFieldAccessor.color);
-	public static final PriorityColumnDescriptor description	= new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_DESC, SWT.LEFT, 25, true, PriorityFieldAccessor.description);
+//	public static final PriorityColumnDescriptor description	= new PriorityColumnDescriptor("", StringKeys.PRIORITY_COLUMN_DESC, SWT.LEFT, 25, true, PriorityFieldAccessor.description);
     
-	public static final PriorityColumnDescriptor[] VisibleColumns = new PriorityColumnDescriptor[] { image, name, value, description };
+	public static final PriorityColumnDescriptor[] VisibleColumns = new PriorityColumnDescriptor[] { image, name, value}; //, description };
 }

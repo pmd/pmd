@@ -189,7 +189,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
        
         ImplementationType impType = rules == null ? ImplementationType.Mixed : rules.implementationType();
         implementationType(impType);
-        implementationTypeCombo.setEnabled(usageMode == EditorUsageMode.CreateNew);
+        implementationTypeCombo.setEnabled(creatingNewRule());
         
         Class<?> impClass = RuleUtil.commonImplementationClass(rules);
         show(implementationClassField, impClass);
@@ -350,7 +350,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        priorityDisplay.setShapeMap(UISettings.shapesByPriority());
 	        priorityDisplay.setSize(90, 25);
 
-	        if (usageMode == EditorUsageMode.CreateNew) {
+	        if (creatingNewRule()) {
 	        	implementationType(ImplementationType.XPath);
 	        }
 
@@ -382,7 +382,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
     private Text buildNameText(Composite parent) {
 
-    	int style = usageMode == EditorUsageMode.CreateNew ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
+    	int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
         final Text nameField = new Text(parent, style);
         nameField.setFocus();
 
@@ -408,7 +408,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
      private Combo buildRuleSetNameField(Composite parent) {
 
-    	 int style = usageMode == EditorUsageMode.CreateNew ? SWT.BORDER : SWT.READ_ONLY;
+    	 int style = creatingNewRule() ? SWT.BORDER : SWT.READ_ONLY;
          Combo field = new Combo(parent, style);
 
          Set<RuleSet> rs = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
@@ -440,7 +440,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	             usesDfaButton.setEnabled(false);
 	             usesDfaButton.setSelection(false);
 	             implementationTypeCombo.select(0);
-	             if (usageMode == EditorUsageMode.CreateNew) {
+	             if (creatingNewRule()) {
 	            	 implementationClassField.setType(XPathRule.class);
 	             }
 	    		 break;
@@ -452,7 +452,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	             usesDfaButton.setEnabled(true);
 	             usesDfaButton.setSelection(false);
 	             implementationTypeCombo.select(1);
-	             if (usageMode == EditorUsageMode.CreateNew) {
+	             if (creatingNewRule()) {
 	            	 implementationClassField.setType(null);
 	             }
 	    		 break;
@@ -543,7 +543,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
      private Combo buildLanguageVersionCombo(Composite parent, final boolean isMinVersion) {
 
-    	 int style = usageMode == EditorUsageMode.CreateNew ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
+    	 int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
          final Combo combo = new Combo(parent, style);
 
          combo.addSelectionListener(new SelectionAdapter() {
@@ -634,6 +634,11 @@ public class RulePanelManager extends AbstractRulePanelManager {
      	String name = nameField.getText();
      	return isValidRuleName(name);
      }
+     
+     private boolean hasExistingRuleName() {
+    	 // FIXME finish this
+    	 return false;
+     }
 
      private boolean hasValidRulesetName() {
      	String name = ruleSetNameField.getText();
@@ -646,17 +651,22 @@ public class RulePanelManager extends AbstractRulePanelManager {
     	 
     	 if (!hasValidRuleType()) errors.add("Invalid rule class");
     	 if (!hasValidRuleName()) errors.add("Invalid rule name");
+    	 if (creatingNewRule() && hasExistingRuleName()) errors.add("Rule name is already in use");
     	 if (!hasValidRulesetName()) errors.add("Invalid ruleset name");
     	 if (languageCombo.getSelectionIndex() < 0) errors.add("No language selected");
     	 
     	 return errors;
      }
      
+     private boolean creatingNewRule() {
+    	 return usageMode == EditorUsageMode.CreateNew;
+     }
+     
      private void validateRuleParams() {
 
      	boolean isOk = validate();
 
-     	if (isOk && usageMode == EditorUsageMode.CreateNew) {
+     	if (isOk && creatingNewRule()) {
      		populateRuleInstance();
      	}
 
@@ -717,7 +727,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
  	private TypeText buildImplementationClassField(Composite parent) {
 
-    	int style = usageMode == EditorUsageMode.CreateNew ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
+    	int style = creatingNewRule() ? SWT.SINGLE | SWT.BORDER : SWT.READ_ONLY | SWT.BORDER;
  		final TypeText classField = new TypeText(parent, style, true, "");
 
  	    classField.setEnabled(false);

@@ -22,6 +22,7 @@ import org.apache.log4j.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.preference.ColorSelector;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -52,8 +53,10 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ExtensionFactory;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 
 /**
  * The top-level page for PMD preferences
@@ -148,12 +151,12 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
-        this.showPerspectiveBox.setLayoutData(data);
+        showPerspectiveBox.setLayoutData(data);
 
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
-        this.useProjectBuildPath.setLayoutData(data);
+        useProjectBuildPath.setLayoutData(data);
 
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -183,13 +186,13 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         link.setText("PMD folder annotations can be enabled on the <A>label decorations</A> page");
         link.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected(SelectionEvent se) {
-//				PreferencesUtil.createPreferenceDialogOn(
-//						getShell(), 
-//						"", what is the id??
-//						null,	//displayedIds, 
-//						null	//data
-//						);
-				System.out.println("Selection: " + se.text);
+				PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
+						getShell(), "org.eclipse.ui.preferencePages.Decorators",
+						new String[] {}, null
+						);
+				if (pref != null) {
+					pref.open();
+				}
 			}
 		});
         
@@ -245,12 +248,12 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         final Text priorityName = new Text(editorPanel, SWT.BORDER);
         priorityName.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true) );
 
-        final Label descLabel = new Label(editorPanel, SWT.None);
-        descLabel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, false, true, 1, 1));
-        descLabel.setText("Description:");
+//        final Label descLabel = new Label(editorPanel, SWT.None);
+//        descLabel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, false, true, 1, 1));
+//        descLabel.setText("Description:");
         
-        final Text priorityDesc = new Text(editorPanel, SWT.BORDER);
-        priorityDesc.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true, 5, 1) );
+//        final Text priorityDesc = new Text(editorPanel, SWT.BORDER);
+//        priorityDesc.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true, 5, 1) );
         
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -341,16 +344,16 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         this.reviewPmdStyleBox = buildReviewPmdStyleBoxButton(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
         buildLabel(group, StringKeys.MSGKEY_PREF_GENERAL_LABEL_ADDCOMMENT);
-        this.additionalCommentText = buildAdditionalCommentText(group);
+        additionalCommentText = buildAdditionalCommentText(group);
         buildLabel(group, StringKeys.MSGKEY_PREF_GENERAL_LABEL_SAMPLE);
-        this.sampleLabel = buildSampleLabel(group);
+        sampleLabel = buildSampleLabel(group);
         updateSampleLabel();
 
         // layout children
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
-        this.reviewPmdStyleBox.setLayoutData(data);
+        reviewPmdStyleBox.setLayoutData(data);
 
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -360,7 +363,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
-        this.additionalCommentText.setLayoutData(data);
+        additionalCommentText.setLayoutData(data);
 
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -492,7 +495,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Button button = new Button(viewGroup, SWT.CHECK);
         button.setText("Check code after saving");
         button.setSelection(preferences.isCheckAfterSaveEnabled());
-   //     button.setEnabled(false);
+        button.setEnabled(false);	// FIXME - make it real
         return button;
     }
     
@@ -652,6 +655,12 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     	RootRecord root = new RootRecord(ResourcesPlugin.getWorkspace().getRoot());
     	Set<IFile> files = MarkerUtil.allMarkedFiles(root);
     	PMDPlugin.getDefault().changedFiles(files);
+    }
+    
+    public boolean performCancel() {
+    	// clear out any changes for next possible usage
+    	PriorityDescriptorCache.instance.loadFromPreferences();
+        return true;
     }
     
     /**
