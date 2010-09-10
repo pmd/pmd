@@ -131,6 +131,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		
 		final Button methodBtn = new Button(titleArea, SWT.RADIO);
 		methodBtn.setText("Method");
+		methodBtn.setSelection(true);
 		methodBtn.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent se) {
 				methodSelector.setEnabled( methodBtn.getSelection() );
@@ -313,7 +314,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		italicFont = new Font(display, "Tahoma", 10, SWT.ITALIC);
 		labelStyle = new TextStyle(renderFont, display.getSystemColor(SWT.COLOR_BLACK), null);
 		imageStyle = new TextStyle(renderFont, display.getSystemColor(SWT.COLOR_BLUE), null);
-		derivedStyle = new TextStyle(italicFont, display.getSystemColor(SWT.COLOR_DARK_MAGENTA), null);
+		derivedStyle = new TextStyle(italicFont, display.getSystemColor(SWT.COLOR_GRAY), null);
 	}
 
 	public void dispose() {
