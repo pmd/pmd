@@ -6,9 +6,8 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
-These rules deal with different problems that can occur with manipulation of the class String or StringBuffer.
+These rules deal with different issues that can arise with manipulation of the String, StringBuffer, or StringBuilder instances.
   </description>
-
 
     <rule name="AvoidDuplicateLiterals"
     	  since="1.0"
@@ -40,7 +39,8 @@ public class Foo {
         class="net.sourceforge.pmd.lang.java.rule.strings.StringInstantiationRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#StringInstantiation">
     <description>
-Avoid instantiating String objects; this is usually unnecessary.
+Avoid instantiating String objects; this is usually unnecessary since they are immutable and
+can be safely shared.
     </description>
        <priority>2</priority>
     <example>
@@ -58,7 +58,7 @@ public class Foo {
         class="net.sourceforge.pmd.lang.java.rule.strings.StringToStringRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#StringToString">
     <description>
-    Avoid calling toString() on String objects; this is unnecessary.
+Avoid calling toString() on objects already known to be string instances; this is unnecessary.
     </description>
        <priority>3</priority>
     <example>
@@ -75,24 +75,22 @@ public class Foo {
 
     <rule name="InefficientStringBuffering"
    	  since="3.4"
-        message="Avoid concatenating nonliterals in a StringBuffer constructor or append()."
+        message="Avoid concatenating nonliterals in a StringBuffer/StringBuilder constructor or append()."
         class="net.sourceforge.pmd.lang.java.rule.strings.InefficientStringBufferingRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#InefficientStringBuffering">
     <description>
-Avoid concatenating non literals in a StringBuffer constructor or append().
+Avoid concatenating non-literals in a StringBuffer constructor or append() since intermediate buffers will
+need to be be created and destroyed by the JVM.
     </description>
        <priority>3</priority>
     <example>
 <![CDATA[
-public class Foo {
-  void bar() {
-    // Avoid this
-    StringBuffer sb=new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
-    // use instead something like this
+    // Avoid this, two buffers are actually being created here
+    StringBuffer sb = new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
+    
+    // do this instead
     StringBuffer sb = new StringBuffer("tmp = ");
     sb.append(System.getProperty("java.io.tmpdir"));
-    }
-}
 ]]>
     </example>
     </rule>
@@ -116,7 +114,7 @@ public class Foo {
     // return buz.toUpperCase().equalsIgnoreCase("baz");
     }
  }
-                 ]]>
+ ]]>
        </example>
      </rule>
 
@@ -126,22 +124,19 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.strings.UseStringBufferLengthRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#UseStringBufferLength">
       <description>
- Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
-          or StringBuffer.toString().length() ==.
+Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
+or StringBuffer.toString().length() == ...
       </description>
       <priority>3</priority>
       <example>
   <![CDATA[
-public class Foo {
-  void bar() {
     StringBuffer sb = new StringBuffer();
-    // this is bad
+    
+    // inefficient 
     if(sb.toString().equals("")) {}
-    // this is good
+    
+    // preferred
     if(sb.length() == 0) {}
-    }
-}
-
   ]]>
       </example>
     </rule>
@@ -153,44 +148,34 @@ public class Foo {
         class="net.sourceforge.pmd.lang.java.rule.strings.AppendCharacterWithCharRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#AppendCharacterWithChar">
     <description>
-Avoid concatenating characters as strings in StringBuffer.append.
+Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.
     </description>
        <priority>3</priority>
     <example>
 <![CDATA[
-public class Foo {
-  void bar() {
     StringBuffer sb = new StringBuffer();
-    // Avoid this
-    sb.append("a");
+    sb.append("a");		 // avoid this
 
-    // use instead something like this
-    StringBuffer sb=new StringBuffer();
-    sb.append('a');
-  }
-}
+    StringBuffer sb = new StringBuffer();
+    sb.append('a');		// use this instead
 ]]>
     </example>
     </rule>
 
         <rule name="ConsecutiveLiteralAppends"
         since="3.5"
-        message="StringBuffer.append is called {0} consecutive times with literal Strings. Use a single append with a single String."
+        message="StringBuffer (or StringBuilder).append is called {0} consecutive times with literal Strings. Use a single append with a single combined String."
         class="net.sourceforge.pmd.lang.java.rule.strings.ConsecutiveLiteralAppendsRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#ConsecutiveLiteralAppends">
     <description>
-Consecutively calling StringBuffer.append with String literals
+Consecutively calling StringBuffer/StringBuilder.append with String literals
     </description>
         <priority>3</priority>
     <example>
 <![CDATA[
-public class Foo {
-  private void bar() {
     StringBuffer buf = new StringBuffer();
-    buf.append("Hello").append(" ").append("World"); //bad
-    buf.append("Hello World");        //good
- }
-}
+    buf.append("Hello").append(" ").append("World"); // poor
+    buf.append("Hello World");        				 // good
 ]]>
     </example>
   </rule>
@@ -207,15 +192,11 @@ Use String.indexOf(char) when checking for the index of a single character; it e
        <priority>3</priority>
     <example>
 <![CDATA[
-public class Foo {
- void bar() {
   String s = "hello world";
   // avoid this
   if (s.indexOf("d") {}
   // instead do this
   if (s.indexOf('d') {}
- }
-}
 ]]>
     </example>
     </rule>
@@ -251,23 +232,20 @@ public class Foo {
         class="net.sourceforge.pmd.lang.java.rule.strings.InsufficientStringBufferDeclarationRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#InsufficientStringBufferDeclaration">
     <description>
-Failing to pre-size a StringBuffer properly could cause it to re-size many times
-during runtime. This rule checks the characters that are actually passed into
-StringBuffer.append(), but represents a best guess "worst case" scenario. An
-empty StringBuffer constructor initializes the object to 16 characters. This default
+Failing to pre-size a StringBuffer or StringBuilder properly could cause it to re-size many times
+during runtime. This rule attempts to determine the total number the characters that are actually 
+passed into StringBuffer.append(), but represents a best guess "worst case" scenario. An empty
+StringBuffer/StringBuilder constructor initializes the object to 16 characters. This default
 is assumed if the length of the constructor can not be determined.
     </description>
        <priority>3</priority>
     <example>
 <![CDATA[
-public class Foo {
-    void bar() {
-        StringBuffer bad = new StringBuffer();
-        bad.append("This is a long string, will exceed the default 16 characters");//bad
-        StringBuffer good = new StringBuffer(41);
-        good.append("This is a long string, which is pre-sized");//good
-    }
-}
+    StringBuffer bad = new StringBuffer();
+    bad.append("This is a long string that will exceed the default 16 characters");
+        
+    StringBuffer good = new StringBuffer(41);
+    good.append("This is a long string, which is pre-sized");
 ]]>
     </example>
     </rule>
@@ -285,8 +263,8 @@ No need to call String.valueOf to append to a string; just use the valueOf() arg
 <![CDATA[
 public String convert(int i) {
   String s;
-  s = "a" + String.valueOf(i); // Bad
-  s = "a" + i; // Better
+  s = "a" + String.valueOf(i); // not required
+  s = "a" + i; 				   // preferred approach
   return s;
 }
 ]]>
@@ -297,11 +275,24 @@ public String convert(int i) {
 <rule   name="StringBufferInstantiationWithChar"
    		language="java"
         since="3.9"
-        message="Do not instantiate a StringBuffer with a char"
+        message="Do not instantiate a StringBuffer or StringBuilder with a char"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#StringBufferInstantiationWithChar">
     <description>
-StringBuffer sb = new StringBuffer('c'); The char will be converted into int to initialize StringBuffer size.
+Individual character values provided as initialization arguments will be converted into integers.
+This can lead to internal buffer sizes that are larger than expected. Some examples:
+
+new StringBuffer() 		//  16
+new StringBuffer(6)		//  6
+new StringBuffer("hello world")  // 11 + 16 = 27
+new StringBuffer('A')	//  chr(A) = 65
+new StringBuffer("A")   //  1 + 16 = 17 
+
+new StringBuilder() 		//  16
+new StringBuilder(6)		//  6
+new StringBuilder("hello world")  // 11 + 16 = 27
+new StringBuilder('C')	 //  chr(C) = 67
+new StringBuilder("A")   //  1 + 16 = 17
     </description>
     <priority>4</priority>
     <properties>
@@ -321,10 +312,14 @@ Literal
     </properties>
     <example>
 <![CDATA[
-class Foo {
-  StringBuffer sb1 = new StringBuffer('c'); //Bad
-  StringBuffer sb2 = new StringBuffer("c"); //Better
-}
+	// misleading instantiation, these buffers
+	// are actually sized to 99 characters long
+  StringBuffer  sb1 = new StringBuffer('c');   
+  StringBuilder sb2 = new StringBuilder('c');
+  
+// in these forms, just single characters are allocated
+  StringBuffer  sb3 = new StringBuffer("c");
+  StringBuilder sb4 = new StringBuilder("c");
 ]]>
     </example>
     </rule>
@@ -373,7 +368,8 @@ class Foo {
         	externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#AvoidStringBufferField">
     <description>
 		<![CDATA[
-StringBuffers can grow quite a lot, and so may become a source of memory leak (if the owning class has a long life time).
+StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaks
+if held within objects with long lifetimes.
 		]]>
     </description>
     <priority>3</priority>
@@ -389,12 +385,11 @@ StringBuffers can grow quite a lot, and so may become a source of memory leak (i
     	<example>
 <![CDATA[
 class Foo {
-	private StringBuffer memoryLeak;
+	private StringBuffer buffer;	// potential memoryLeak as an instance variable;
 }
 ]]>
 		</example>
 	</rule>
-
 
 
 </ruleset>
