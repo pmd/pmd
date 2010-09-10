@@ -431,7 +431,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      * Refresh the View (and its Elements)
      */
     public void refresh() {
-        if (!this.treeViewer.getControl().isDisposed()) {
+        if (!treeViewer.getControl().isDisposed()) {
             //this.treeViewer.getControl().setRedraw(false);
             treeViewer.refresh();
             refreshMenu();

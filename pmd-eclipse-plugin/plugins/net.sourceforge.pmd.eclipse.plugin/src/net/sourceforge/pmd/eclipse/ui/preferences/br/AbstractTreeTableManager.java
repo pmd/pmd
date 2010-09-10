@@ -9,6 +9,9 @@ import java.util.Set;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
+import net.sourceforge.pmd.eclipse.ui.AbstractColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
@@ -307,6 +310,14 @@ public abstract class AbstractTreeTableManager {
 			}
 		});
 		
+		tree.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent ev) {
+				if (ev.character == ' ') {
+					toggleSelectedItems();
+				}
+			}
+		});
+		
 		tree.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event event) {
 	            if (event.detail == SWT.CHECK) {
@@ -413,6 +424,11 @@ public abstract class AbstractTreeTableManager {
 	        checkItems(item2, checked);
 	    }
 	    updateCheckControls();
+	}
+	
+	private void toggleSelectedItems() {
+		// TODO
+		System.out.println("TODO: toggle selected items");
 	}
 	
 	protected void buildActiveCountLabel(Composite parent) {

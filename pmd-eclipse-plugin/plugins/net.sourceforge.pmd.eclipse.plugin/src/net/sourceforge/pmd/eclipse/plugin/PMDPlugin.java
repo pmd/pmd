@@ -172,10 +172,10 @@ public class PMDPlugin extends AbstractUIPlugin {
      * Get an image corresponding to the severity
      */
     public Image getImage(String key, String iconPath) {
-        final ImageRegistry registry = getImageRegistry();
+        ImageRegistry registry = getImageRegistry();
         Image image = registry.get(key);
         if (image == null) {
-            final ImageDescriptor descriptor = getImageDescriptor(iconPath);
+            ImageDescriptor descriptor = getImageDescriptor(iconPath);
             if (descriptor != null) {
                 registry.put(key, descriptor);
                 image = registry.get(key);
@@ -475,11 +475,14 @@ public class PMDPlugin extends AbstractUIPlugin {
 	
 	public void removedMarkersIn(IResource resource) {
 		
+		RuleLabelDecorator decorator = ruleLabelDecorator();
+		if (decorator == null) return;
+		
 		Collection<IResource> changes = new ArrayList<IResource>();
 		
 		addFilesTo(resource, changes);
 		
-		ruleLabelDecorator().changed(changes);
+		decorator.changed(changes);
 	}
 
 }

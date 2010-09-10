@@ -1,9 +1,8 @@
-package net.sourceforge.pmd.eclipse.ui.preferences;
+package net.sourceforge.pmd.eclipse.ui.priority;
 
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.ui.AbstractColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractColumnDescriptor;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.PriorityFieldAccessor;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;

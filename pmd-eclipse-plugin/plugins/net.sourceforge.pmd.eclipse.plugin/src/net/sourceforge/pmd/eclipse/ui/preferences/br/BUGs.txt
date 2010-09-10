@@ -1,0 +1,45 @@
+NewPropertyDialog
+	When changing the datatype the layout gets squashed horizontally
+	Need to add support for multi-value types
+	
+XPath Rule creation wizard
+	Should auto-capitalize 1st letter in rule name
+*	Need to specify an initial priority value
+*	Detect duplicate rule names
+	Can't add properties at the moment, the Add button doesn't show up
+	
+Rule tab
+	Park the priority combo in a better place, can be missed at the bottom
+*	Min/max version combos don't fill when they should
+	Fix error indicator when selecting group parent
+	
+Rule Table
+
+	Tooltip shows TODO when over grouped items
+	Spacebar should toggle rules on/off
+*	Menu cleanup
+	Type column
+		, X  values
+	Properties column 
+		Text label, not graphic
+		float values always show up as modified regardless
+*		Fix update problem, only shifts up/down by one from default value
+	
+Preferences
+	General Page
+		Value column before Name column
+*		Fix name column behaviour & updates
+		Enable 'check code after saving' button when working
+		Rework Logging Options section - lose the slider!
+		
+ASTView (XPathDesigner)
+	Add vertical and horizontal sashes w/memory
+	Need an XPath editor that shows errors, currently disabling Go button only
+	Need to be able to launch the new Rule wizard with XPath query filled-in
+	Provide filters for the tree?
+	
+ViolationOverview BR
+	Add context-sensitive filters w/memory
+	Context menus
+		Disable rule
+		Clear Violations

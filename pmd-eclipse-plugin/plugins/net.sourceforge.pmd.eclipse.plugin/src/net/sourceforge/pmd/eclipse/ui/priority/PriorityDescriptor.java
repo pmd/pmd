@@ -1,8 +1,9 @@
-package net.sourceforge.pmd.eclipse.plugin;
+package net.sourceforge.pmd.eclipse.ui.priority;
 
 import java.util.EnumSet;
 
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ShapePainter;

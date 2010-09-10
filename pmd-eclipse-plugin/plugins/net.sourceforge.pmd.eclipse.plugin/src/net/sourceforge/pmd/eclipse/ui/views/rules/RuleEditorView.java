@@ -1,9 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.views.rules;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
@@ -11,22 +8,15 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
-import net.sourceforge.pmd.eclipse.ui.Shape;
+import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.FormatManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ImageColumnDescriptor;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.IndexedString;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ModifyListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelectionListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.TextColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueFormatter;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
@@ -36,7 +26,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.QuickFixPanelMan
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
-import net.sourceforge.pmd.eclipse.util.FontBuilder;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.swt.SWT;
@@ -55,143 +44,31 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
 
+/**
+ * @deprecated  - temporary (don't add code here)
+ * 
+ * @author br
+ *
+ */
 public class RuleEditorView extends ViewPart implements RuleSelectionListener, ModifyListener, ValueChangeListener {
 
 	private TabFolder 		     	tabFolder;
 	private RulePropertyManager[]   rulePropertyManagers;
 	private RuleTableManager		tableManager;
-
-	public static final Shape PriorityShape = Shape.diamond;
-	public static final Shape RegexFilterShape = Shape.square;
-	public static final Shape XPathFilterShape = Shape.circle;
-	
-    public static final FontBuilder blueBold11 = new FontBuilder("Tahoma", 11, SWT.BOLD, SWT.COLOR_BLUE);
-    public static final FontBuilder redBold11 = new FontBuilder("Tahoma", 11, SWT.BOLD, SWT.COLOR_RED);
-    public static final FontBuilder ChangedPropertyFont = blueBold11;
-    
+	    
     private IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
 
 	protected static PMDPlugin		plugin = PMDPlugin.getDefault();
 	
 	// columns shown in the rule treetable in the desired order
-	private static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
-		TextColumnDescriptor.name,
-		//TextColumnDescriptor.priorityName,
-	//	IconColumnDescriptor.priority,
-		ImageColumnDescriptor.priority,
-		TextColumnDescriptor.fixCount,
-		TextColumnDescriptor.since,
-		TextColumnDescriptor.ruleSetName,
-		TextColumnDescriptor.ruleType,
-		TextColumnDescriptor.minLangVers,
-		TextColumnDescriptor.maxLangVers,
-		TextColumnDescriptor.language,
-		ImageColumnDescriptor.filterViolationRegex,    // regex text -> compact color squares (for comparison)
-		ImageColumnDescriptor.filterViolationXPath,    // xpath text -> compact color circles (for comparison)
-		TextColumnDescriptor.modCount,
-	//	TextColumnDescriptor.properties		
-		ImageColumnDescriptor.properties
-		};
+	private static final RuleColumnDescriptor[] availableColumns = PMDPreferencePage2.availableColumns;
 
 	// last item in this list is the grouping used at startup
-	private static final Object[][] groupingChoices = new Object[][] {
-		{ TextColumnDescriptor.ruleSetName,       StringKeys.PREF_RULESET_COLUMN_RULESET},
-		{ TextColumnDescriptor.since,             StringKeys.PREF_RULESET_GROUPING_PMD_VERSION },
-		{ TextColumnDescriptor.priorityName,      StringKeys.PREF_RULESET_COLUMN_PRIORITY },
-		{ TextColumnDescriptor.ruleType,          StringKeys.PREF_RULESET_COLUMN_RULE_TYPE },
-		{ TextColumnDescriptor.language,		  StringKeys.PREF_RULESET_COLUMN_LANGUAGE },
-        { ImageColumnDescriptor.filterViolationRegex, StringKeys.PREF_RULESET_GROUPING_REGEX },
-		{ null, 								  StringKeys.PREF_RULESET_GROUPING_NONE }
-		};
+	private static final Object[][] groupingChoices = PMDPreferencePage2.groupingChoices;
+	
 	
 	public RuleEditorView() {
 
-	}
-
-	/**
-	 * @param rule Rule
-	 * @return String
-	 */
-	public static String propertyStringFrom(Rule rule, String modifiedTag) {
-
-		Map<PropertyDescriptor<?>, Object> valuesByProp = Configuration.filteredPropertiesOf(rule);
-
-		if (valuesByProp.isEmpty()) return "";
-		StringBuilder sb = new StringBuilder();
-
-		Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProp.entrySet().iterator();
-
-		Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
-		sb.append(entry.getKey().name()).append(": ");
-		formatValueOn(sb, entry, modifiedTag);
-
-		while (iter.hasNext()) {
-			entry = iter.next();
-			sb.append(", ").append(entry.getKey().name()).append(": ");
-			formatValueOn(sb, entry, modifiedTag);
-		}
-		return sb.toString();
-	}
-	
-	private static int formatValueOn(StringBuilder target, Map.Entry<PropertyDescriptor<?>, Object> entry, String modifiedTag) {
-
-		Object value = entry.getValue();
-		Class<?> datatype = entry.getKey().type();
-		
-		boolean isModified = !RuleUtil.isDefaultValue(entry);
-		if (isModified) target.append(modifiedTag);
-		
-	    ValueFormatter formatter = FormatManager.formatterFor(datatype);
-	    if (formatter != null) {
-	        String output = formatter.format(value);
-	        target.append(output);
-	        return isModified ? output.length() : 0;
-	    }
-
-	    String out = String.valueOf(value);
-		target.append(out);     // should not get here..breakpoint here
-		return isModified ? out.length() : 0;
-	}
-	
-	public static String ruleSetNameFrom(Rule rule) {
-		return ruleSetNameFrom( rule.getRuleSetName() );
-	}
-
-    public static String ruleSetNameFrom(String rulesetName) {
-
-        int pos = rulesetName.toUpperCase().indexOf("RULES");
-        return pos < 0 ? rulesetName : rulesetName.substring(0, pos-1);
-    }
-	
-	/**
-	 * @param rule Rule
-	 * @return String
-	 */
-	public static IndexedString indexedPropertyStringFrom(Rule rule) {
-
-		Map<PropertyDescriptor<?>, Object> valuesByProp = Configuration.filteredPropertiesOf(rule);
-
-		if (valuesByProp.isEmpty()) return IndexedString.Empty;
-		StringBuilder sb = new StringBuilder();
-
-		Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProp.entrySet().iterator();
-
-		List<int[]> modValueIndexes = new ArrayList<int[]>(valuesByProp.size());
-		
-		Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
-		sb.append(entry.getKey().name()).append(": ");
-		int start = sb.length();
-		int stop = start + formatValueOn(sb, entry, "");
-		if (stop > start) modValueIndexes.add(new int[] { start, stop });
-		
-		while (iter.hasNext()) {
-			entry = iter.next();
-			sb.append(", ").append(entry.getKey().name()).append(": ");
-			start = sb.length();
-			stop = start + formatValueOn(sb, entry, "");
-			if (stop > start) modValueIndexes.add(new int[] { start, stop });
-		}
-		return new IndexedString(sb.toString(), modValueIndexes);
 	}
 	
 	protected String descriptionId() {
@@ -216,11 +93,6 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 
 	}
 
-//	public void createControl(Composite parent) {
-//		super.createControl(parent);
-//
-//		setModified(false);
-//	}
 	/**
 	 * Create buttons for rule properties table management
 	 * @param parent Composite

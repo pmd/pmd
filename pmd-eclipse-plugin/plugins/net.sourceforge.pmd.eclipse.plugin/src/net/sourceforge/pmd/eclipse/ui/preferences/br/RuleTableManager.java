@@ -17,6 +17,7 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
@@ -206,6 +207,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	    useDefaultsItem.addSelectionListener(new SelectionAdapter() {
 	        public void widgetSelected(SelectionEvent event) {
 	            ruleSelection.useDefaultValues();
+	            refresh();
 	            }
 	        });
 	}

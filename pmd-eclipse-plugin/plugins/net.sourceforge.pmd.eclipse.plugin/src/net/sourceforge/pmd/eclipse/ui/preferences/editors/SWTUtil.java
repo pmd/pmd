@@ -50,6 +50,11 @@ public class SWTUtil {
 		return sb.toString();
 	}
 
+	public static void setEnabled(Control control, boolean flag) {
+		if (control == null || control.isDisposed()) return;
+		control.setEnabled(flag);
+	}
+	
     public static String stringFor(String key) {
         return plugin.getStringTable().getString(key);
     }

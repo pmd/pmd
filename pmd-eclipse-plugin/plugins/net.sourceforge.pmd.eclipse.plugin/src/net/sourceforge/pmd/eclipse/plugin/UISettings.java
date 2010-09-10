@@ -17,7 +17,8 @@ import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.PriorityDescriptorCache;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;

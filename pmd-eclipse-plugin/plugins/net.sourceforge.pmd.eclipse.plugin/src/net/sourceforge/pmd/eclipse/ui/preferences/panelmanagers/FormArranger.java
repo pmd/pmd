@@ -15,6 +15,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
 import org.eclipse.jface.window.Window;
@@ -90,7 +91,7 @@ public class FormArranger {
 		Map<PropertyDescriptor<?>, Object> valuesByDescriptor = Configuration.filteredPropertiesOf(rule);
 
 		if (valuesByDescriptor.isEmpty()) {
-		    if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+		    if (RuleUtil.isXPathRule(rule)) {
 	            addAddButton();
 	            parent.pack();
 	            return 1;
@@ -110,7 +111,7 @@ public class FormArranger {
 			rowCount++;
 		}
 
-        boolean isXPathRule = rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR);
+        boolean isXPathRule = RuleUtil.isXPathRule(rule);
         int columnCount = isXPathRule ? 3 : 2;  // xpath descriptors have a column of delete buttons
 
         GridLayout layout = new GridLayout(columnCount, false);
@@ -126,7 +127,7 @@ public class FormArranger {
 			if (addRowWidgets(factoryFor(desc), rowsAdded, desc, isXPathRule)) rowsAdded++;
 		}
 
-		if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) {
+		if (RuleUtil.isXPathRule(rule)) {
 		    addAddButton();
 	        rowsAdded++;
 		}

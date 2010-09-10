@@ -12,6 +12,7 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -139,10 +140,8 @@ public class RuleSelection implements RuleCollection {
 
     private static void useDefaultValues(Rule rule) {
     	
-    	for (Map.Entry<PropertyDescriptor<?>, Object> entry : rule.getPropertiesByPropertyDescriptor().entrySet()) {
-    		//rule.useDefaultValueFor(entry.getKey());		
-    		System.out.println("TODO: Setting default for: " + entry.getKey().name() );
-    		// TODO filter out 'hidden' properties such as violationSuppressRegex..etc.
+    	for (Map.Entry<PropertyDescriptor<?>, Object> entry : Configuration.filteredPropertiesOf(rule).entrySet()) {
+    		rule.useDefaultValueFor(entry.getKey());		
     	}
     }
     

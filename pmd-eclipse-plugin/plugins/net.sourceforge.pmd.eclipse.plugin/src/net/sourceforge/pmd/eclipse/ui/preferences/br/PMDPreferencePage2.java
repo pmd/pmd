@@ -8,7 +8,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
-import net.sourceforge.pmd.eclipse.ui.Shape;
+import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
@@ -19,7 +19,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyP
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
-import net.sourceforge.pmd.eclipse.util.FontBuilder;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -52,7 +51,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	private RuleTableManager		tableManager;
     
 	// columns shown in the rule treetable in the desired order
-	private static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
+	public static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
 		TextColumnDescriptor.name,
 		//TextColumnDescriptor.priorityName,
 	//	IconColumnDescriptor.priority,
@@ -72,7 +71,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		};
 
 	// last item in this list is the grouping used at startup
-	private static final Object[][] groupingChoices = new Object[][] {
+	public static final Object[][] groupingChoices = new Object[][] {
 		{ TextColumnDescriptor.ruleSetName,       	StringKeys.PREF_RULESET_COLUMN_RULESET},
 		{ TextColumnDescriptor.since,             	StringKeys.PREF_RULESET_GROUPING_PMD_VERSION },
 		{ TextColumnDescriptor.priorityName,      	StringKeys.PREF_RULESET_COLUMN_PRIORITY },

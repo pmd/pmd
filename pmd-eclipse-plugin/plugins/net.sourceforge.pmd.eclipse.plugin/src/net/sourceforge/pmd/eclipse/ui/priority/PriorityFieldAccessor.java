@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.priority;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.ui.Shape;

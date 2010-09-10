@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui;
 
 import java.util.Collections;
 import java.util.List;

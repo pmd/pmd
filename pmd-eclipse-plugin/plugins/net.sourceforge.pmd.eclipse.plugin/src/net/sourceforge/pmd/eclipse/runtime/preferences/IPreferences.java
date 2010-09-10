@@ -39,9 +39,9 @@ package net.sourceforge.pmd.eclipse.runtime.preferences;
 import java.util.Set;
 
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.plugin.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 
 import org.apache.log4j.Level;
 import org.eclipse.swt.graphics.RGB;

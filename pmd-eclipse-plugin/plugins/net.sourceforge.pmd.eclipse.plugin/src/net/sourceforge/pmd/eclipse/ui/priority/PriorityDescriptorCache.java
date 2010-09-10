@@ -1,11 +1,10 @@
-package net.sourceforge.pmd.eclipse.ui.preferences.br;
+package net.sourceforge.pmd.eclipse.ui.priority;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.plugin.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
@@ -25,9 +24,13 @@ public class PriorityDescriptorCache {
 		loadFromPreferences();
 	}
 	
+	private IPreferencesManager preferencesManager() {
+		return PMDPlugin.getDefault().getPreferencesManager();
+	}
+	
 	public void loadFromPreferences() {
 		
-		IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
+		IPreferences preferences = preferencesManager().loadPreferences();
         for (RulePriority rp : UISettings.currentPriorities(true)) {
         	uiDescriptorsByPriority.put(rp, preferences.getPriorityDescriptor(rp).clone());
         }
@@ -35,7 +38,7 @@ public class PriorityDescriptorCache {
 	
 	public void storeInPreferences() {
 		
-		IPreferencesManager mgr = PMDPlugin.getDefault().getPreferencesManager();
+		IPreferencesManager mgr = preferencesManager();
 		
 		IPreferences prefs = mgr.loadPreferences();
 		
@@ -52,7 +55,7 @@ public class PriorityDescriptorCache {
 	
 	public boolean hasChanges() {
 		
-		IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
+		IPreferences preferences = preferencesManager().loadPreferences();
 		
         for (RulePriority rp : UISettings.currentPriorities(true)) {
         	PriorityDescriptor newOne = uiDescriptorsByPriority.get(rp);

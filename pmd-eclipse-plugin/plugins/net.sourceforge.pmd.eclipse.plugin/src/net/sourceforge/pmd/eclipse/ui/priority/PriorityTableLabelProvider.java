@@ -1,6 +1,7 @@
-package net.sourceforge.pmd.eclipse.ui.preferences;
+package net.sourceforge.pmd.eclipse.ui.priority;
 
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.ui.preferences.AbstractTableLabelProvider;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Table;

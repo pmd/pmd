@@ -1,8 +1,8 @@
 package net.sourceforge.pmd.eclipse.ui.views.actions;
 
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.plugin.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.views.PriorityFilter;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOutline;
 import net.sourceforge.pmd.eclipse.ui.views.ViolationOverview;

@@ -2,9 +2,9 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -28,6 +28,7 @@ public abstract class AbstractPMDPreferencePage extends PreferencePage implement
 	public void setModified() {
 		setModified(true);
 	}
+	
 	/**
 	 * Sets the isModified.
 	 * @param isModified The isModified to set
@@ -35,12 +36,8 @@ public abstract class AbstractPMDPreferencePage extends PreferencePage implement
 	public void setModified(boolean isModified) {
 		modified = isModified;
 
-		// can be null for some reason ..argh
-		Button button = getApplyButton();
-		if (button != null) button.setEnabled(modified);
-		
-		button = getDefaultsButton();
-		if (button != null) button.setEnabled(!modified);
+		SWTUtil.setEnabled(getApplyButton(), modified);
+		SWTUtil.setEnabled(getDefaultsButton(), !modified);
 	}
 
     /**

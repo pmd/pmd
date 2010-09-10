@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.StringUtil;
@@ -54,7 +55,7 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
 	}
 
 	private boolean isXPathRule() {
-		return rule instanceof XPathRule;
+		return RuleUtil.isXPathRule(rule);
 	}
 
 	public boolean performCancel() {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Listener;

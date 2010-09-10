@@ -196,7 +196,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * @return Returns the monitor.
      */
     public IProgressMonitor getMonitor() {
-        return this.monitor;
+        return monitor;
     }
 
     /**
@@ -222,9 +222,9 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * delegate method for monitor.beginTask
      * @see org.eclipse.core.runtime.IProgressMonitor#beginTask
      */
-    protected void beginTask(final String name, final int totalWork) {
-        if (this.monitor != null) {
-            this.monitor.beginTask(name, totalWork);
+    protected void beginTask(String name, int totalWork) {
+        if (monitor != null) {
+            monitor.beginTask(name, totalWork);
         }
     }
 
@@ -233,11 +233,11 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * @see org.eclipse.core.runtime.IProgressMonitor#done
      */
     protected void done() {
-        if (this.monitor != null) {
-            this.monitor.done();
+        if (monitor != null) {
+            monitor.done();
         }
 
-        this.setTerminated(true);
+        setTerminated(true);
     }
 
     /**
@@ -245,16 +245,16 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
      */
     protected boolean isCanceled() {
-        return this.monitor == null ? false : this.monitor.isCanceled();
+        return monitor == null ? false : monitor.isCanceled();
     }
 
     /**
      * delegate method for monitor.setTaskName()
      * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName
      */
-    protected void setTaskName(final String name) {
-        if (this.monitor != null) {
-            this.monitor.setTaskName(name);
+    protected void setTaskName(String name) {
+        if (monitor != null) {
+            monitor.setTaskName(name);
         }
     }
 
@@ -262,9 +262,9 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * delegate method for monitor.subTask()
      * @see org.eclipse.core.runtime.IProgressMonitor#subTask
      */
-    protected void subTask(final String name) {
-        if (this.monitor != null) {
-            this.monitor.subTask(name);
+    protected void subTask(String name) {
+        if (monitor != null) {
+            monitor.subTask(name);
         }
     }
 
@@ -272,9 +272,9 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * delegate method for monitor.worked()
      * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled
      */
-    protected void worked(final int work) {
-        if (this.monitor != null) {
-            this.monitor.worked(work);
+    protected void worked(int work) {
+        if (monitor != null) {
+            monitor.worked(work);
         }
     }
 
@@ -285,12 +285,12 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      * @param project
      * @return
      */
-    protected PMDEngine getPmdEngineForProject(final IProject project) throws CommandException {
-        final IJavaProject javaProject = JavaCore.create(project);
-        final PMDEngine pmdEngine = new PMDEngine();
+    protected PMDEngine getPmdEngineForProject(IProject project) throws CommandException {
+        IJavaProject javaProject = JavaCore.create(project);
+        PMDEngine pmdEngine = new PMDEngine();
 
         if (javaProject.exists()) {
-            final String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
             log.debug("compilerCompliance = " + compilerCompliance);
 
             LanguageVersion languageVersion = Language.JAVA.getVersion(compilerCompliance);
@@ -299,7 +299,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
             }
             pmdEngine.setLanguageVersion(languageVersion);
 
-            final IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
+            IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
             if (preferences.isProjectBuildPathEnabled()) {
             	pmdEngine.setClassLoader(new JavaProjectClassLoader(pmdEngine.getClassLoader(), javaProject));
             }

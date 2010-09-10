@@ -34,13 +34,26 @@ public class RuleUtil {
 	}
 
 	// TODO fix rule!!	
+//	public static boolean isXPathRule(Rule rule) {
+//		
+//		for (PropertyDescriptor<?> desc : rule.getPropertyDescriptors()) {
+//    		if (desc.equals(XPathRule.XPATH_DESCRIPTOR)) return true;
+//    	}
+//		return false;
+//	}
+	
 	public static boolean isXPathRule(Rule rule) {
+		//return rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR);	// not reliable since it may not have it yet
 		
-		for (PropertyDescriptor<?> desc : rule.getPropertyDescriptors()) {
-    		if (desc.equals(XPathRule.XPATH_DESCRIPTOR)) return true;
-    	}
+		if (rule instanceof XPathRule) return true;
+		if (rule instanceof RuleReference) {
+			Rule realOne = ((RuleReference)rule).getRule();
+			return realOne instanceof XPathRule;
+		}
+		
 		return false;
 	}
+	
 	
 	// TODO move elsewhere
     public static boolean areEqual(Object value, Object otherValue) {

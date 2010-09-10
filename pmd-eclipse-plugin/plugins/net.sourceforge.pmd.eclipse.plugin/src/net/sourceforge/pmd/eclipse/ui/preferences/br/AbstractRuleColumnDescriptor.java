@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.ui.AbstractColumnDescriptor;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
