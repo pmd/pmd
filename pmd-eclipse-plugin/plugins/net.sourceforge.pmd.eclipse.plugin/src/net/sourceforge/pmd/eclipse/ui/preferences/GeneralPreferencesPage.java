@@ -173,6 +173,25 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         return group;
     }
   
+    private Link createPreferenceLink(Composite parent, String label, final String prefPageId) {
+    	
+    	 Link link = new Link(parent, SWT.None);
+         link.setText(label);
+         link.addSelectionListener (new SelectionAdapter () {
+ 			public void widgetSelected(SelectionEvent se) {
+ 				PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
+ 						getShell(), prefPageId,
+ 						new String[] {}, null
+ 						);
+ 				if (pref != null) {
+ 					pref.open();
+ 				}
+ 			}
+ 		});
+         
+         return link;
+    }
+    
 	/**
      * Build the group of priority preferences
      * @param parent the parent composite
@@ -184,19 +203,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         group.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_PRIORITIES));
         group.setLayout(new GridLayout(1, false));
 
-        Link link = new Link(group, SWT.None);
-        link.setText("PMD folder annotations can be enabled on the <A>label decorations</A> page");
-        link.addSelectionListener (new SelectionAdapter () {
-			public void widgetSelected(SelectionEvent se) {
-				PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
-						getShell(), "org.eclipse.ui.preferencePages.Decorators",
-						new String[] {}, null
-						);
-				if (pref != null) {
-					pref.open();
-				}
-			}
-		});
+        createPreferenceLink(group, 
+        		"PMD folder annotations can be enabled on the <A>label decorations</A> page", 
+        		"org.eclipse.ui.preferencePages.Decorators"
+        		);
         
         IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
 			public void dispose() {	}

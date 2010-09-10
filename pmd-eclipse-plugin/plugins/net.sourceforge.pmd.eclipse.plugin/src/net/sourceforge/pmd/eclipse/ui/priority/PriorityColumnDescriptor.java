@@ -13,7 +13,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class PriorityColumnDescriptor extends AbstractColumnDescriptor {
 	
-	private PriorityFieldAccessor<?> accessor;
+	private final PriorityFieldAccessor<?> accessor;
 	
 	public PriorityColumnDescriptor(String theId, String labelKey, int theAlignment, int theWidth, boolean resizableFlag, PriorityFieldAccessor<?> theAccessor) {
 		super(theId, labelKey, theAlignment, theWidth, resizableFlag, null);
