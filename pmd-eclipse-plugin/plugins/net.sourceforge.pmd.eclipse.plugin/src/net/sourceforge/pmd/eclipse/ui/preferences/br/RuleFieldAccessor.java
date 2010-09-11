@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.quickfix.PMDResolutionGenerator;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.Language;
@@ -51,6 +52,9 @@ public interface RuleFieldAccessor {
 		public Comparable<?> valueFor(Rule rule) {
 			return rule.getPriority();
 		}
+		public String labelFor(Rule rule) {
+			return UISettings.labelFor(rule.getPriority());
+		}
 		public Comparable<?> valueFor(RuleCollection collection) {
 			return RuleUtil.commonPriority(collection);
 		}
@@ -58,7 +62,7 @@ public interface RuleFieldAccessor {
 
 	RuleFieldAccessor priorityName = new BasicRuleFieldAccessor() {
 		public Comparable<String> valueFor(Rule rule) {
-			return rule.getPriority().getName();
+			return UISettings.labelFor(rule.getPriority());
 		}
 	};
 

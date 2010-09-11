@@ -18,7 +18,6 @@ public class PriorityTableLabelProvider extends AbstractTableLabelProvider {
 		columns = theColumns;
 	}
 
-
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
 	}

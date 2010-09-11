@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 import java.lang.reflect.Method;
 
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MultiTypeEditorFactory;
 import net.sourceforge.pmd.eclipse.util.Util;
@@ -107,7 +108,7 @@ public interface ValueFormatter {
     
     ValueFormatter PriorityFormatter = new BasicValueFormatter() {
         public String format(Object value) {
-           return ((RulePriority)value).getName();
+           return UISettings.labelFor((RulePriority)value);
         }
     };
     

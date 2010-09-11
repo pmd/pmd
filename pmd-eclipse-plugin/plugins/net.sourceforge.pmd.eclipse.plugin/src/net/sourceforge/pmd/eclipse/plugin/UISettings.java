@@ -19,6 +19,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -150,6 +151,11 @@ public class UISettings {
     
     public static PriorityDescriptor descriptorFor(RulePriority priority) {
     	return uiDescriptorsByPriority().get(priority);
+    }
+    
+    public static String labelFor(RulePriority priority) {
+    	String descLabel = descriptorFor(priority).label;
+    	return StringUtil.isEmpty(descLabel) ? priority.getName() : descLabel; 
     }
     
 	public static Map<Object, ShapeDescriptor> shapesByPriority() {

@@ -75,9 +75,9 @@ public class PriorityDescriptor implements Cloneable {
 		sb.append(rgb.blue);
 	}
 	
-	public PriorityDescriptor(RulePriority thePriority, String theLabelKey, String theFilterTextKey, String theIconId, ShapeDescriptor theShape) {
+	public PriorityDescriptor(RulePriority thePriority, String theLabel, String theFilterTextKey, String theIconId, ShapeDescriptor theShape) {
 		priority = thePriority;
-		label =  AbstractPMDAction.getString(theLabelKey);
+		label = theLabel;
 		description = "--";		// TODO
 		filterText =  AbstractPMDAction.getString(theFilterTextKey);
 		iconId = theIconId;

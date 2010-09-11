@@ -166,7 +166,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		if (rules == null) return null;
 
 		RulePriority priority = RuleUtil.commonPriority(rules);
-		return priority == null ? null : priority.getName();
+		return priority == null ? null : UISettings.labelFor(priority);
 	}
 
 	private boolean allRulesUseTypeResolution() {
@@ -580,7 +580,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
      	final RulePriority[] priorities = RulePriority.values();
 
      	for (RulePriority rulePriority : priorities) {
-     		combo.add(rulePriority.getName());
+     		combo.add(UISettings.labelFor(rulePriority));
      	}
 
      	if (rules != null) {

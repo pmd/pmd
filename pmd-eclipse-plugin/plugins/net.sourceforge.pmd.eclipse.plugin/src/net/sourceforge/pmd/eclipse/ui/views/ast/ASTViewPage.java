@@ -127,7 +127,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		
 		buildMethodSelector(titleArea);
 
-		astViewer = new TreeViewer(astFrame);
+		astViewer = new TreeViewer(astFrame, SWT.MULTI);
 		astViewer.setContentProvider( new ASTContentProvider() );
 		astViewer.setLabelProvider( new ASTLabelProvider() );
 		setupListeners(astViewer.getTree());

@@ -19,6 +19,7 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityTableLabelProvider;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Level;
 import org.eclipse.core.resources.IFile;
@@ -35,6 +36,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -55,7 +58,6 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.ExtensionFactory;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -215,7 +217,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         };
         PriorityTableLabelProvider labelProvider = new PriorityTableLabelProvider(PriorityColumnDescriptor.VisibleColumns);
         
-        tableViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI);
+        tableViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         Table table = tableViewer.getTable();
         table.setLayoutData( new GridData(GridData.BEGINNING, GridData.CENTER, true, true) );
         
@@ -284,9 +286,9 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 				setColor((RGB)event.getNewValue());
 			}} );
 		
-		priorityName.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent me) {
-				setName( priorityName.getText() );				
+		priorityName.addFocusListener(new FocusAdapter() {
+			public void focusLost(FocusEvent e) {
+				setName( priorityName.getText() );	
 			}} );
 		
         return group;
@@ -310,6 +312,9 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
     
     private void setName(String newName) {
+    	
+    	if (StringUtil.isEmpty(newName)) return;
+    	
     	for (PriorityDescriptor pd : selectedDescriptors()) {
     		pd.label = newName;
     	}
@@ -336,7 +341,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     	PriorityDescriptor desc = PriorityDescriptorCache.instance.descriptorFor(priority);
     	
     	ssc.setSelection( desc.shape.shape );
-    	nameField.setText(priority.getName());
+    	nameField.setText( desc.label);
     	colorPicker.setColorValue( desc.shape.rgbColor );
     }
     
