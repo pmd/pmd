@@ -2,7 +2,6 @@ package net.sourceforge.pmd.eclipse.ui.views.ast;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;

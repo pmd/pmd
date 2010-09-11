@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -49,23 +50,38 @@ public class ASTUtil {
 		return sb.toString();
 	}
 	
-	/**
-	 * Gets the label of a method for an element of the combobox.
-	 * @param pmdMethod the method to create a label for
-	 * @return a label for the method
-	 */
 	public static String getFieldLabel(ASTFieldDeclaration pmdField) {
+			
+		List<String> modifiers = new ArrayList<String>();
+		if (pmdField.isPublic()) {
+			modifiers.add("public");
+			} else {
+				if (pmdField.isProtected()) {
+					modifiers.add("protected");
+				} else {
+					if (pmdField.isPrivate()) {
+						modifiers.add("private");
+					}
+				}
+			}				
 		
-		return "not finished";
-//		String returnType = returnType(pmdMethod);
-//		
-//		StringBuilder sb = new StringBuilder(pmdMethod.getMethodName());
-//		sb.append('(');
-//		sb.append(parameterTypes(pmdMethod));
-//		sb.append(')');
-//		if (returnType == null) return sb.toString();
-//		sb.append(" : ").append(returnType);
-//		return sb.toString();
+		if (pmdField.isAbstract()) 	modifiers.add("abstract");
+		if (pmdField.isStatic()) 	modifiers.add("static");
+		if (pmdField.isFinal()) 	modifiers.add("final");
+		if (pmdField.isTransient()) modifiers.add("transient");
+		if (pmdField.isVolatile()) 	modifiers.add("volatile");
+		if (pmdField.isSynchronized()) modifiers.add("synchronized");
+		if (pmdField.isNative()) 	modifiers.add("native");
+		if (pmdField.isStrictfp()) 	modifiers.add("strictfp");
+		
+		StringBuilder sb = new StringBuilder(modifiers.get(0));
+		for (int i=1; i<modifiers.size(); i++) {
+			sb.append(' ').append(modifiers.get(i));
+		}
+		// TODO add variable type
+		// TODO add variableName
+		
+		return sb.toString();
 	}
 	
 	public static String parameterTypes(ASTMethodDeclaration node) {

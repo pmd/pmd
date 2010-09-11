@@ -1,5 +1,8 @@
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -51,7 +54,21 @@ public class NodeImageDeriver {
 		}
 	};
 	
-	public static final NodeImageDeriver[] AllDerivers = new NodeImageDeriver[] {
+	private static final NodeImageDeriver[] AllDerivers = new NodeImageDeriver[] {
 		importDeriver, methodDeclarationDeriver, fieldDeclarationDeriver, annotationDeriver
 		};
+	
+	private static final Map<Class<?>, NodeImageDeriver>DeriversByType = new HashMap<Class<?>, NodeImageDeriver>(NodeImageDeriver.AllDerivers.length);
+	
+	static {
+		for (NodeImageDeriver deriver : NodeImageDeriver.AllDerivers) {
+			DeriversByType.put(deriver.target, deriver);
+		}
+	}
+	
+	public static String derivedTextFor(AbstractNode node) {
+		
+		NodeImageDeriver deriver = DeriversByType.get(node.getClass());
+		return deriver == null ? null : deriver.deriveFrom(node);
+	}
 }

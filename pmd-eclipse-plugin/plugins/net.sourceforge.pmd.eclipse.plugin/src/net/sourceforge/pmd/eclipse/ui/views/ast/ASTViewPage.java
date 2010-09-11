@@ -1,9 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.views.ast;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
@@ -70,22 +68,10 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 	
 //	private static Set<String> keywords = new HashSet<String>();
 
-	private static Map<Class<?>, NodeImageDeriver> DeriversByType;
 	private static Set<Class<?>> HiddenNodeTypes;
 	static {
 		HiddenNodeTypes = new HashSet<Class<?>>();
 		HiddenNodeTypes.add(ASTImportDeclaration.class);
-		
-		DeriversByType = new HashMap<Class<?>, NodeImageDeriver>(NodeImageDeriver.AllDerivers.length);
-		for (NodeImageDeriver deriver : NodeImageDeriver.AllDerivers) {
-			DeriversByType.put(deriver.target, deriver);
-		}
-	}
-	
-	private static String derivedTextFor(AbstractNode node) {
-		
-		NodeImageDeriver deriver = DeriversByType.get(node.getClass());
-		return deriver == null ? null : deriver.deriveFrom(node);
 	}
 	
 	public TreeViewer astViewer() {
@@ -266,7 +252,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		String label = node.toString();
 
 		TextStyle extraStyle = imageStyle;
-		String extra = derivedTextFor(node);
+		String extra = NodeImageDeriver.derivedTextFor(node);
 		if (extra != null) {
 			extraStyle = derivedStyle;
 			} else {
