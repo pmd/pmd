@@ -63,7 +63,11 @@ public class RuleSetWriter {
 		    document.appendChild(ruleSetElement);
 	
 		    TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		    transformerFactory.setAttribute("indent-number", 3);
+		    try {
+		    	transformerFactory.setAttribute("indent-number", 3);
+		    	} catch (IllegalArgumentException iae) {
+		    		//ignore it, specific to one parser
+		    	}
 		    Transformer transformer = transformerFactory.newTransformer();
 		    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 		    // This is as close to pretty printing as we'll get using standard Java APIs.

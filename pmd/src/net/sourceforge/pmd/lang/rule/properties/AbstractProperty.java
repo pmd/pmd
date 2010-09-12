@@ -339,7 +339,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T>, Prop
 	 */
 	@Override
 	public String toString() {
-	    return "[PropertyDescriptor: name=" + name() + ", type=" + type() + ", defaultValue=" + defaultValue() + "]";
+	    return "[PropertyDescriptor: name=" + name() + ", type=" + type() + ", value=" + defaultValue() + "]";
 	}
 
 	/**

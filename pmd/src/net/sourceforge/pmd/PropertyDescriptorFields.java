@@ -11,5 +11,5 @@ public interface PropertyDescriptorFields {
 	String minKey = "min";
 	String maxKey = "max";
 	String legalPackagesKey = "legalPackages";
-	String defaultValueKey = "defaultValue";
+	String defaultValueKey = "value";
 }

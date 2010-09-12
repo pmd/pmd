@@ -130,9 +130,9 @@ public class RuleSetFactoryTest {
 	public void testProps() throws RuleSetNotFoundException {
 		Rule r = loadFirstRule(PROPERTIES);
 		assertEquals("bar", r.getProperty((PropertyDescriptor<String>) r.getPropertyDescriptor("fooString")));
-		assertEquals(new Integer(2), r.getProperty((PropertyDescriptor<Integer>) r.getPropertyDescriptor("fooInt")));
+		assertEquals(new Integer(3), r.getProperty((PropertyDescriptor<Integer>) r.getPropertyDescriptor("fooInt")));
 		assertTrue(r.getProperty((PropertyDescriptor<Boolean>) r.getPropertyDescriptor("fooBoolean")));
-		assertEquals(1.0d, r.getProperty((PropertyDescriptor<Double>) r.getPropertyDescriptor("fooDouble")), 0.05);
+		assertEquals(3.0d, r.getProperty((PropertyDescriptor<Double>) r.getPropertyDescriptor("fooDouble")), 0.05);
 		assertNull(r.getPropertyDescriptor("BuggleFish"));
 		assertNotSame(r.getDescription().indexOf("testdesc2"), -1);
 	}
@@ -1084,17 +1084,17 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "<properties>"
 			+ PMD.EOL
-			+ "<property name=\"fooBoolean\" description=\"test\" type=\"Boolean\" defaultValue=\"false\" value=\"true\" />"
+			+ "<property name=\"fooBoolean\" description=\"test\" type=\"Boolean\" value=\"true\" />"
 			+ PMD.EOL
-			+ "<property name=\"fooChar\" description=\"test\" type=\"Character\" defaultValue=\"B\" value=\"b\" />"
+			+ "<property name=\"fooChar\" description=\"test\" type=\"Character\" value=\"B\" />"
 			+ PMD.EOL
-			+ "<property name=\"fooInt\" description=\"test\" type=\"Integer\" min=\"1\" max=\"10\" defaultValue=\"3\" value=\"2\"/>"
+			+ "<property name=\"fooInt\" description=\"test\" type=\"Integer\" min=\"1\" max=\"10\" value=\"3\" />"
 			+ PMD.EOL
-			+ "<property name=\"fooFloat\" description=\"test\" type=\"Float\" min=\"1.0\" max=\"1.0\" defaultValue=\"0.0\" value=\"1.0\" />"
+			+ "<property name=\"fooFloat\" description=\"test\" type=\"Float\" min=\"1.0\" max=\"1.0\" value=\"1.0\"  />"
 			+ PMD.EOL
-			+ "<property name=\"fooDouble\" description=\"test\" type=\"Double\" min=\"1.0\" max=\"9.0\" defaultValue=\"3.0\" value=\"1.0\" />"
+			+ "<property name=\"fooDouble\" description=\"test\" type=\"Double\" min=\"1.0\" max=\"9.0\" value=\"3.0\"  />"
 			+ PMD.EOL
-			+ "<property name=\"fooString\" description=\"test\" type=\"String\" defaultValue=\"bar\" value=\"bar\"/>"
+			+ "<property name=\"fooString\" description=\"test\" type=\"String\" value=\"bar\" />"
 			+ PMD.EOL + "</properties>" + PMD.EOL + "</rule></ruleset>";
 
 	private static final String XPATH = "<?xml version=\"1.0\"?>" + PMD.EOL

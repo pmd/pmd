@@ -253,16 +253,17 @@ public class RuleReference extends AbstractDelegateRule {
 		return false;
 	}
 	
+    public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {    	    	
+    	return (propertyDescriptors != null && propertyDescriptors.contains(descriptor)) || 
+    		super.hasDescriptor(descriptor);
+    }
+    
 	public boolean hasOverriddenProperty(PropertyDescriptor<?> descriptor) {
 		return propertyValues != null && propertyValues.containsKey(descriptor);
 	}
 	
 	public boolean usesDefaultValues() {
-	    
-	    if (!getRule().usesDefaultValues()) {
-	        return false;
-	    }
-	    
+	    	    
 	    List<PropertyDescriptor<?>> descriptors = getOverriddenPropertyDescriptors();
 	    if (!descriptors.isEmpty()) {
 	        return false;
@@ -274,11 +275,24 @@ public class RuleReference extends AbstractDelegateRule {
 	        }
 	    }
 	    
+	    if (!getRule().usesDefaultValues()) {
+	        return false;
+	    }
+	    
 	    return true;
 	}
 
 	public void useDefaultValueFor(PropertyDescriptor<?> desc) {
+		
+		// not sure if we should go all the way through to the real thing?
+		getRule().useDefaultValueFor(desc);
+		
 		if (propertyValues == null) return;
+		
 		propertyValues.remove(desc);
+		
+		if (propertyDescriptors != null) {
+			propertyDescriptors.remove(desc);
+		}
 	}
 }
