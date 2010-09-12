@@ -495,9 +495,7 @@ ResultType/Type/PrimitiveType[@Image = 'boolean']
 ]]>
                 </value>
             </property>
-            <property name="checkParameterizedMethods" type="Boolean" description="Check parameterized methods">
-                <value>false</value>
-            </property>
+            <property name="checkParameterizedMethods" type="Boolean" description="Check parameterized methods" value="false"/>
         </properties>
         <example>
             <![CDATA[

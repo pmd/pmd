@@ -1254,9 +1254,7 @@ and unintentional empty constructors.
  ]]>
              </value>
           </property>
-          <property name="ignoreExplicitConstructorInvocation" type="Boolean" description="Ignore explicit constructor invocation when deciding whether constructor is empty or not">
-              <value>false</value>
-          </property>
+          <property name="ignoreExplicitConstructorInvocation" type="Boolean" description="Ignore explicit constructor invocation when deciding whether constructor is empty or not" value="false"/>
       </properties>
       <example>
   <![CDATA[

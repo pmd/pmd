@@ -75,7 +75,7 @@
 	</rule>
 	<rule ref="rulesets/java/empty.xml/EmptyCatchBlock">
 		<properties>
-			<property name="allowCommentedBlocks" value="true" />
+			<property name="allowCommentedBlocks" description="blah blah" value="true" />
 		</properties>
 	</rule>
 

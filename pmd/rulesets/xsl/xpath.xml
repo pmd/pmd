@@ -72,7 +72,7 @@ Avoid using the 'following' or 'preceeding' axes whenever possible, as these can
      node name.-->
              </value>
          </property>
-	 <property name="checkSelfDescendantAbreviation" type="Boolean" description="descendant::self abreviation, '//', will also trigger this rule."><value>false</value></property>
+	 <property name="checkSelfDescendantAbreviation" type="Boolean" description="descendant::self abreviation, '//', will also trigger this rule." value="false"/>
      </properties>
      <example>
  <![CDATA[
