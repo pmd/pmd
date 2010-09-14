@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
@@ -45,7 +45,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
     private Set<VariableNameDeclaration> alreadySeen = new HashSet<VariableNameDeclaration>();
 
     @Override
-    public Object visit(ASTCompilationUnit acu, Object data) {
+    public Object visit(ASTMethodDeclaration acu, Object data) {
         alreadySeen.clear();
         return super.visit(acu, data);
     }
@@ -60,7 +60,8 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
             return data;
         }
         VariableNameDeclaration vnd = (VariableNameDeclaration) nd;
-        if (alreadySeen.contains(vnd) || !TypeHelper.isA(vnd, StringBuffer.class)) {
+        if (alreadySeen.contains(vnd) || 
+        		TypeHelper.isNeither(vnd, StringBuffer.class, StringBuilder.class)) {
             return data;
         }
         alreadySeen.add(vnd);
@@ -88,6 +89,4 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
         }
         return false;
     }
-
-
 }

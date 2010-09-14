@@ -11,7 +11,12 @@ public class Foo {
    public void bar() {
        StringBuffer sb = new StringBuffer(16);
        sb.append("foo");
- }
+   }
+   
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(16);
+       sb.append("foo");
+   }
 }
      ]]></code>
     </test-code>
@@ -19,11 +24,18 @@ public class Foo {
         <description><![CDATA[
 2, StringBuffer not allocated with enough space
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  sb.append("World");
+  sb.append("How are you today world");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
   sb.append("Hello");
   sb.append("World");
   sb.append("How are you today world");
@@ -40,6 +52,13 @@ public class Foo {
 public class Foo {
  public void bar(List l) {
   StringBuffer sb = new StringBuffer(l.size());
+  sb.append("Hello");
+  sb.append("World");
+  sb.append("How are you today world");
+ }
+ 
+ public void bar2(List l) {
+  StringBuilder sb = new StringBuilder(l.size());
   sb.append("Hello");
   sb.append("World");
   sb.append("How are you today world");
@@ -61,6 +80,14 @@ public class Foo {
   sb.append("World");
   sb.append("How are you today world");
  }
+ 
+ public void bar2(List l) {
+  int x = 3;
+  StringBuilder sb = new StringBuilder(x);
+  sb.append("Hello");
+  sb.append("World");
+  sb.append("How are you today world");
+ }
 }
      ]]></code>
     </test-code>
@@ -78,6 +105,14 @@ public class Foo {
   sb = new StringBuffer(23);
   sb.append("How are you today world");
  }
+ 
+ public void bar2(List l) {
+  int x = 3;
+  StringBuilder sb = new StringBuilder(5);
+  sb.append("Hello");
+  sb = new StringBuffer(23);
+  sb.append("How are you today world");
+ }
 }
      ]]></code>
     </test-code>
@@ -85,12 +120,18 @@ public class Foo {
         <description><![CDATA[
 6, Initialize with a specific String
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar(List l) {
   int x = 3;
   StringBuffer sb = new StringBuffer("Initialize With A String");
+  sb.append("Hello");
+  sb.append("How are you today world");
+ }
+ public void bar2(List l) {
+  int x = 3;
+  StringBuilder sb = new StringBuilder("Initialize With A String");
   sb.append("Hello");
   sb.append("How are you today world");
  }
@@ -106,6 +147,15 @@ public class Foo {
 public class Foo {
     public void bar(List l) {
         StringBuffer sb = new StringBuffer();
+        if(true){
+            sb.append("1234567890");
+        } else {
+            sb.append("123456789");
+        }
+    }
+    
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
         if(true){
             sb.append("1234567890");
         } else {
@@ -128,16 +178,31 @@ public class Foo {
   sb.append("How are you today world");
  }
 }
+public class Foo2 {
+  StringBuilder sb = new StringBuilder(200);
+ public void bar(List l) {
+  sb.append("Hello");
+  sb.append("How are you today world");
+ }
+}
      ]]></code>
     </test-code>
     <test-code>
         <description><![CDATA[
 9, Field level variable
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
   StringBuffer sb = new StringBuffer();
+ public void bar(List l) {
+  sb.append("Hello");
+  sb.append("How are you today world");
+ }
+}
+
+public class Foo2 {
+  StringBuilder sb = new StringBuilder();
  public void bar(List l) {
   sb.append("Hello");
   sb.append("How are you today world");
@@ -157,6 +222,12 @@ public class Foo {
   sb.append(l.get(2));
   sb.append(l.toString());
  }
+ 
+ public void bar2(List l) {
+  StringBuilder sb = new StringBuilder(0);
+  sb.append(l.get(2));
+  sb.append(l.toString());
+ }
 }
      ]]></code>
     </test-code>
@@ -172,6 +243,11 @@ public class Foo {
   sb = new StringBuffer(20);
   sb.append(l.toString());
  }
+ public void bar2(List l) {
+  StringBuilder sb = null;
+  sb = new StringBuilder(20);
+  sb.append(l.toString());
+ }
 }
      ]]></code>
     </test-code>
@@ -185,6 +261,9 @@ public class Foo {
  public void bar(StringBuffer param) {
   param.append("Append something");
  }
+ public void bar2(StringBuilder param) {
+  param.append("Append something");
+ }
 }
      ]]></code>
     </test-code>
@@ -192,12 +271,16 @@ public class Foo {
         <description><![CDATA[
 13, compound append
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
    public void bar() {
        StringBuffer sb = new StringBuffer();
+       sb.append("foo").append("this will make it long");
+ }
+   public void bar2() {
+       StringBuilder sb = new StringBuilder();
        sb.append("foo").append("this will make it long");
  }
 }
@@ -215,6 +298,10 @@ public class Foo {
        StringBuffer sb = new StringBuffer(30);
        sb.append("foo").append("this is presized just right");
  }
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(30);
+       sb.append("foo").append("this is presized just right");
+ }
 }
      ]]></code>
     </test-code>
@@ -222,12 +309,16 @@ public class Foo {
         <description><![CDATA[
 15, Append int, incorrect presize
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
    public void bar() {
        StringBuffer sb = new StringBuffer();
+       sb.append(12345678901234567890);
+ }
+   public void bar2() {
+       StringBuilder sb = new StringBuilder();
        sb.append(12345678901234567890);
  }
 }
@@ -245,6 +336,11 @@ public class Foo {
        StringBuffer sb = new StringBuffer();
        sb.append(12345);
  }
+ 
+  public void bar2() {
+       StringBuilder sb = new StringBuilder();
+       sb.append(12345);
+ }
 }
      ]]></code>
     </test-code>
@@ -252,12 +348,18 @@ public class Foo {
         <description><![CDATA[
 17, Append char, incorrect presize
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
    public void bar() {
        StringBuffer sb = new StringBuffer(2);
+       sb.append('a');
+       sb.append('a');
+       sb.append('a');
+ }
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(2);
        sb.append('a');
        sb.append('a');
        sb.append('a');
@@ -279,6 +381,12 @@ public class Foo {
        sb.append('a');
        sb.append('a');
  }
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(3);
+       sb.append('a');
+       sb.append('a');
+       sb.append('a');
+ }
 }
      ]]></code>
     </test-code>
@@ -286,12 +394,16 @@ public class Foo {
         <description><![CDATA[
 19, String concatenation, incorrect presize
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
    public void bar() {
        StringBuffer sb = new StringBuffer();
+       sb.append("This string" + " " + "isn't nice, but valid");
+ }
+   public void bar2() {
+       StringBuilder sb = new StringBuilder();
        sb.append("This string" + " " + "isn't nice, but valid");
  }
 }
@@ -301,12 +413,16 @@ public class Foo {
         <description><![CDATA[
 20, String concatenation with non-literal, incorrect presize
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Foo.class);
    public void bar(String x) {
        StringBuffer sb = new StringBuffer();
+       sb.append("This string" + x + "isn't nice, but valid");
+ }
+   public void bar2(String x) {
+       StringBuilder sb = new StringBuilder();
        sb.append("This string" + x + "isn't nice, but valid");
  }
 }
@@ -316,7 +432,7 @@ public class Foo {
         <description><![CDATA[
 21, Incorrectly presized twice
      ]]></description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar(List l) {
@@ -324,6 +440,13 @@ public class Foo {
   StringBuffer sb = new StringBuffer(2);
   sb.append("Hello");
   sb = new StringBuffer(5);
+  sb.append("How are you today world");
+ }
+ public void bar2(List l) {
+  int x = 3;
+  StringBuilder sb = new StringBuilder(2);
+  sb.append("Hello");
+  sb = new StringBuilder(5);
   sb.append("How are you today world");
  }
 }
@@ -338,6 +461,16 @@ public class Foo {
 public class Foo {
     public void bar(List l) {
         StringBuffer sb = new StringBuffer();
+        if(true){
+            sb.append("1234567890");
+        } else if( l.size() == 5){
+            sb.append("1234567890");
+        } else {
+            sb.append("1234567890");
+        }
+    }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
         if(true){
             sb.append("1234567890");
         } else if( l.size() == 5){
@@ -373,6 +506,23 @@ public class Foo {
             sb.append("12345");
         }
     }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
+        if(true){
+            sb.append("12345");
+        } else if( l.size() == 5){
+            sb.append("12345");
+        } else {
+            sb.append("12345");
+        }
+        if(true){
+            sb.append("12345");
+        } else if( l.size() == 5){
+            sb.append("12345");
+        } else {
+            sb.append("12345");
+        }
+    }
 }
      ]]></code>
     </test-code>
@@ -380,11 +530,21 @@ public class Foo {
         <description><![CDATA[
 24, appends inside if/else if/else statements
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar(List l) {
         StringBuffer sb = new StringBuffer();
+        if(true){
+            sb.append("This should use");
+        } else if( l.size() == 5){
+            sb.append("The longest if");
+        } else {
+            sb.append("statement for its violation, which is this one");
+        }
+    }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
         if(true){
             sb.append("This should use");
         } else if( l.size() == 5){
@@ -417,6 +577,20 @@ public class Foo {
            sb.append("A compound if");
        } 
     }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
+        if(true){
+           if(true){
+                sb.append("More");
+           } else if( l.size() == 5){
+                sb.append("Compound");
+           } else {
+               sb.append("If");
+           }
+       } else {
+           sb.append("A compound if");
+       } 
+    }
 }
      ]]></code>
     </test-code>
@@ -424,11 +598,26 @@ public class Foo {
         <description><![CDATA[
 26, Compound if, pushed over the edge
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar(List l) {
         StringBuffer sb = new StringBuffer();
+        if(true){
+           if(true){
+                sb.append("More");
+           } else if( l.size() == 5){
+                sb.append("Compound");
+           } else {
+               sb.append("If");
+           }
+       } else {
+           sb.append("A compound if");
+       } 
+       sb.append("Push");
+    }
+    public void bar2(List l) {
+        StringBuilder sb = new StringBuilder();
         if(true){
            if(true){
                 sb.append("More");
@@ -449,11 +638,21 @@ public class Foo {
         <description><![CDATA[
 28, Compound if, pushed over the edge
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar(String str) {
   StringBuffer sb = new StringBuffer();
+    switch(str.charAt(0)){
+        case 'a':
+            sb.append("Switch block");
+        break;
+        default:
+            sb.append("The default block exceeds 16 characters and will fail");
+    }
+ }
+ public void bar2(String str) {
+  StringBuilder sb = new StringBuilder();
     switch(str.charAt(0)){
         case 'a':
             sb.append("Switch block");
@@ -485,6 +684,19 @@ public class Foo {
             sb.append("16 chars");
     }
  }
+ public void bar2(String str) {
+  StringBuilder sb = new StringBuilder();
+    switch(str.charAt(0)){
+        case 'a':
+            sb.append("Switch block");
+        break;
+        case 'b':
+            sb.append("Doesn't exceed");
+        break;
+        default:
+            sb.append("16 chars");
+    }
+ }
 }
      ]]></code>
     </test-code>
@@ -499,6 +711,10 @@ public class Foo {
   StringBuffer sb = new StringBuffer(1);
    sb.append((char) 0x0041);
  }
+ public void bar2() {
+  StringBuilder sb = new StringBuilder(1);
+   sb.append((char) 0x0041);
+ }
 }
      ]]></code>
     </test-code>
@@ -511,6 +727,10 @@ public class Foo {
 public class Foo {
  public void bar(char longnamedchar) {
   StringBuffer sb = new StringBuffer(1);
+   sb.append(longnamedchar);
+ }
+ public void bar2(char longnamedchar) {
+  StringBuilder sb = new StringBuilder(1);
    sb.append(longnamedchar);
  }
 }
@@ -535,6 +755,18 @@ public class Foo {
        sb.append((char) 0x0041);
    } 
  }
+ public void bar2(int i) {
+  StringBuilder sb = new StringBuilder(1);
+   if(i == 1){
+       sb.append((char) 0x0041);
+   } else if(i == 2){
+       sb.append((char) 0x0041);
+   } else if(i == 19){
+       sb.append((char) 0x0041);
+   } else {
+       sb.append((char) 0x0041);
+   } 
+ }
 }
      ]]></code>
     </test-code>
@@ -548,10 +780,19 @@ public class Foo {
  public void bar(char longnamedchar) {
   StringBuffer sb = new StringBuffer(132+42);
    sb.append(
-);
+	);
   StringBuffer sb1 = new StringBuffer(132*42);
    sb1.append(
-);
+	);
+ }
+ 
+ public void bar2(char longnamedchar) {
+  StringBuilder sb = new StringBuilder(132+42);
+   sb.append(
+	);
+  StringBuilder sb1 = new StringBuilder(132*42);
+   sb1.append(
+	);
  }
 }
      ]]></code>
@@ -570,6 +811,13 @@ public class Foo {
   sb.setLength(0);
   sb.append("Hello world");
  }
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Hello");
+  sb.append("World");
+  sb.setLength(0);
+  sb.append("Hello world");
+ }
 }
      ]]></code>
     </test-code>
@@ -577,11 +825,18 @@ public class Foo {
         <description><![CDATA[
 34, Uses setLength incorrectly
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  sb.append("World");
+  sb.setLength(5);
+  sb.append("Hello world");
+ }
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
   sb.append("Hello");
   sb.append("World");
   sb.setLength(5);
@@ -601,6 +856,10 @@ public class Foo {
   StringBuffer sb = new StringBuffer();
   sb.append((String)null);
  }
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append((String)null);
+ }
 }
      ]]></code>
     </test-code>
@@ -613,6 +872,11 @@ public class Foo {
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  sb.append(false);
+  sb.append(true);
+ }
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
   sb.append(false);
   sb.append(true);
  }
@@ -632,6 +896,12 @@ public class Foo {
 		sb.append(temp);
 		sb.append("abc");
 	}
+    public static void testStringBufferSizeBug2() {
+		final String temp = "Hello world!";
+		final StringBuilder sb = new StringBuilder(temp.length() * 2);
+		sb.append(temp);
+		sb.append("abc");
+	}
 }
      ]]></code>
     </test-code>
@@ -644,6 +914,15 @@ public class Foo {
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer(100);
+  sb.append("Hello");
+  sb.append("World");
+  sb.setLength(0);
+  sb.append("Hello world");
+  sb.append("Hello world");
+  sb.append("Hello world");
+ }
+ public void bar2() {
+  StringBuilder sb = new StringBuilder(100);
   sb.append("Hello");
   sb.append("World");
   sb.setLength(0);

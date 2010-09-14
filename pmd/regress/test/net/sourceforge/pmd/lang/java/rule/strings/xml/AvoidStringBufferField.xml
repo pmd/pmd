@@ -4,12 +4,14 @@
         <description><![CDATA[
 Basic test case for AvoidStringBufferField
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
-
 import java.lang.StringBuffer;
+import java.lang.StringBuilder;
+
 public class Foo {
 	private StringBuffer buffer;
+	private StringBuilder buffer2;
 }
      ]]></code>
     </test-code>

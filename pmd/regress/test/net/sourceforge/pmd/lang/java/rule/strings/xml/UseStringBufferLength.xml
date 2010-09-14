@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
+ 
     <test-code>
         <description><![CDATA[
 Using length properly
@@ -7,33 +8,49 @@ Using length properly
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-void bar() {
+  void bar() {
     StringBuffer sb = new StringBuffer();
      if ( sb.length() == 0 ){
            sb.append(",");
      }
     sb.append( "whatever" );
-}
+  }
+  void bar2() {
+    StringBuilder sb = new StringBuilder();
+     if ( sb.length() == 0 ){
+           sb.append(",");
+     }
+    sb.append( "whatever" );
+  }
 }
      ]]></code>
     </test-code>
+        
     <test-code>
         <description><![CDATA[
 StringBuffer.toString.equals(""), bad
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
-void bar() {
+  void bar() {
     StringBuffer sb = new StringBuffer();
      if ( sb.toString().equals("") ){
            sb.append(",");
      }
     sb.append( "whatever" );
-}
+   }
+  void bar2() {
+    StringBuilder sb = new StringBuilder();
+     if ( sb.toString().equals("") ){
+           sb.append(",");
+     }
+    sb.append( "whatever" );
+   }
 }
      ]]></code>
     </test-code>
+    
     <test-code>
         <description><![CDATA[
 StringBuffer.toString.equals("foo"), ok
@@ -41,13 +58,20 @@ StringBuffer.toString.equals("foo"), ok
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-void bar() {
+  void bar() {
     StringBuffer sb = new StringBuffer();
      if ( sb.toString().equals("foo") ){
            sb.append(",");
      }
     sb.append( "whatever" );
-}
+  }
+  void bar2() {
+    StringBuilder sb = new StringBuilder();
+     if ( sb.toString().equals("foo") ){
+           sb.append(",");
+     }
+    sb.append( "whatever" );
+  }
 }
      ]]></code>
     </test-code>
@@ -55,16 +79,23 @@ void bar() {
         <description><![CDATA[
 StringBuffer.toString.length(), bad
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
-void bar() {
+  void bar() {
     StringBuffer sb = new StringBuffer();
      if ( sb.toString().length() == 0 ){
            sb.append(",");
      }
     sb.append( "whatever" );
-}
+  }
+  void bar2() {
+    StringBuilder sb = new StringBuilder();
+     if ( sb.toString().length() == 0 ){
+           sb.append(",");
+     }
+    sb.append( "whatever" );
+  }
 }
      ]]></code>
     </test-code>
@@ -79,7 +110,12 @@ public class Foo {
   StringBuffer sb = new StringBuffer();
   return sb.toString().equals(foo);
  }
+ boolean bar2(Object foo) {
+  StringBuilder sb = new StringBuilder();
+  return sb.toString().equals(foo);
+ }
 }
      ]]></code>
     </test-code>
+
 </test-data>

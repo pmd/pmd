@@ -103,7 +103,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         if (argList == null || argList.jjtGetNumChildren() > 1) {
             return false;
         }
-        return TypeHelper.isA((VariableNameDeclaration)n.getNameDeclaration(), StringBuffer.class);
+        return TypeHelper.isEither((VariableNameDeclaration)n.getNameDeclaration(), StringBuffer.class, StringBuilder.class);
     }
 
     private boolean isAllocatedStringBuffer(ASTAdditiveExpression node) {
@@ -113,7 +113,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         }
         // note that the child can be an ArrayDimsAndInits, for example, from java.lang.FloatingDecimal:  t = new int[ nWords+wordcount+1 ];
         ASTClassOrInterfaceType an = ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        return an != null && (TypeHelper.isA(an, StringBuffer.class) || TypeHelper.isA(an, StringBuilder.class));
+        return an != null && TypeHelper.isEither(an, StringBuffer.class, StringBuilder.class);
     }
 }
 

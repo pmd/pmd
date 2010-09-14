@@ -11,16 +11,27 @@ public class Foo {
    public void bar() {
        StringBuffer sb = new StringBuffer(15);
        sb.append("foo");
- }
+   }
+   
+   public void bar2() {
+       StringBuilder sb = new StringBuilder(15);
+       sb.append("foo");
+   }
 }
      ]]></code>
     </test-code>
     <code-fragment id="back to back append"><![CDATA[
 public class Foo {
  public void bar() {
-  StringBuffer sb = new StringBuffer();
-  sb.append("Hello");
-  sb.append("World");
+   StringBuffer sb = new StringBuffer();
+   sb.append("Hello");
+   sb.append("World");
+ }
+ 
+ public void bar2() {
+   StringBuilder sb = new StringBuilder();
+   sb.append("Hello");
+   sb.append("World");
  }
 }
      ]]></code-fragment>
@@ -28,7 +39,7 @@ public class Foo {
         <description><![CDATA[
 2, Back to back append, not ok
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code-ref id="back to back append"/>
     </test-code>
         <test-code>
@@ -53,6 +64,14 @@ public class Foo {
   sb.append(foo);
   sb.append("World");
  }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "Hello";
+  sb.append("Hello");
+  sb.append(foo);
+  sb.append("World");
+ }
 }
      ]]></code>
     </test-code>
@@ -60,11 +79,16 @@ public class Foo {
         <description><![CDATA[
 4, Appends with literal appends
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  sb.append("Hello").append("World");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
   sb.append("Hello").append("World");
  }
 }
@@ -74,11 +98,19 @@ public class Foo {
         <description><![CDATA[
 5, Appends broken up by while loop
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  while(true){
+  }
+  sb.append("World");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
   sb.append("Hello");
   while(true){
   }
@@ -91,11 +123,20 @@ public class Foo {
         <description><![CDATA[
 6, Appends, then a variable
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  String foo = "Hello";
+  sb.append("Hello");
+  sb.append("World");
+  sb.append(foo);
+  sb.append("World");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
   String foo = "Hello";
   sb.append("Hello");
   sb.append("World");
@@ -120,6 +161,15 @@ public class Foo {
   }
   sb.append("World");
  }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Hello");
+  while(true){
+   sb.append(foo);
+  }
+  sb.append("World");
+ }
 }
      ]]></code>
     </test-code>
@@ -138,6 +188,15 @@ public class Foo {
   }
   sb.append("World");
  }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Hello");
+  while(true){
+       sb.append("World");
+  }
+  sb.append("World");
+ }
 }
      ]]></code>
     </test-code>
@@ -145,11 +204,21 @@ public class Foo {
         <description><![CDATA[
 9, Multiple appends in same while
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  while(true){
+       sb.append("World");
+       sb.append("World");
+  }
+  sb.append("World");
+ }
+ 
+ public void bar() {
+  StringBuilder sb = new StringBuilder();
   sb.append("Hello");
   while(true){
        sb.append("World");
@@ -164,11 +233,22 @@ public class Foo {
         <description><![CDATA[
 10, Multiple appends in same while, with multiple outside that while
      ]]></description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  sb.append("Hello");
+  sb.append("Hello");
+  while(true){
+       sb.append("World");
+       sb.append("World");
+  }
+  sb.append("World");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
   sb.append("Hello");
   sb.append("Hello");
   while(true){
@@ -184,12 +264,20 @@ public class Foo {
         <description><![CDATA[
 11, Multiple appends in same while, none outside the loop
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   while(true){
   StringBuffer sb = new StringBuffer();
+       sb.append("World");
+       sb.append("World");
+  }
+ }
+ 
+ public void bar2() {
+  while(true){
+  StringBuilder sb = new StringBuilder();
        sb.append("World");
        sb.append("World");
   }
@@ -206,6 +294,18 @@ public class Foo {
 public class Foo {
  public void bar() {
        StringBuffer sb = new StringBuffer();
+  while(true){
+       sb.append("World");
+  }
+       sb.append("World");
+  for(int ix = 0; ix < 2; ix++){
+       sb.append("World");
+ }
+       sb.append("World");
+ }
+ 
+ public void bar2() {
+       StringBuilder sb = new StringBuilder();
   while(true){
        sb.append("World");
   }
@@ -242,6 +342,24 @@ public class Foo {
            sb.append("foo");
        }
    }
+   
+   public void bar2(List l) {
+       StringBuilder sb = new StringBuilder();
+       sb.append("Hello cruel world");
+       Iterator iter = l.iterator();
+       while (iter.hasNext()) {
+           List innerList = (List) iter.next();
+           sb.append(",");
+           for (Iterator ixtor = innerList.iterator(); ixtor.hasNext();) {
+               Integer integer = (Integer) ixtor.next();
+               sb.append("");
+               if (ixtor.hasNext()) {
+                   sb.append(",");
+               }
+           }
+           sb.append("foo");
+       }
+   }
 }
      ]]></code>
     </test-code>
@@ -249,11 +367,30 @@ public class Foo {
         <description><![CDATA[
 14, A bunch of loops, one concurrent
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
    public void bar(List l) {
        StringBuffer sb = new StringBuffer();
+       sb.append("Hello cruel world");
+       Iterator iter = l.iterator();
+       while (iter.hasNext()) {
+           List innerList = (List) iter.next();
+           sb.append(",");
+           for (Iterator ixtor = innerList.iterator(); ixtor.hasNext();) {
+               Integer integer = (Integer) ixtor.next();
+               sb.append("");
+               if (ixtor.hasNext()) {
+                   sb.append(",");
+                   sb.append(",");
+               }
+           }
+           sb.append("foo");
+       }
+   }
+   
+    public void bar2(List l) {
+       StringBuilder sb = new StringBuilder();
        sb.append("Hello cruel world");
        Iterator iter = l.iterator();
        while (iter.hasNext()) {
@@ -297,6 +434,24 @@ public class Foo {
            sb.append("foo");
        }
    }
+   
+   public void bar2(List l) {
+       StringBuilder sb = new StringBuilder();
+       sb.append("Hello cruel world");
+       Iterator iter = l.iterator();
+       while (iter.hasNext()) {
+           List innerList = (List) iter.next();
+           sb.append(",");
+           for (Iterator ixtor = innerList.iterator(); ixtor.hasNext();) {
+               Integer integer = (Integer) ixtor.next();
+               sb.append("");
+               if (ixtor.hasNext()) {
+                   sb.append(",");
+               } 
+           }
+           sb.append("foo");
+       }
+   }
 }
      ]]></code>
     </test-code>
@@ -312,6 +467,12 @@ public class Foo {
   String foo = "World";
   sb.append("Hello" + foo);
  }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "World";
+  sb.append("Hello" + foo);
+ }
 }
      ]]></code>
     </test-code>
@@ -324,6 +485,13 @@ public class Foo {
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  String foo = "World";
+  sb.append("Hello" + foo);
+  sb.append("World");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
   String foo = "World";
   sb.append("Hello" + foo);
   sb.append("World");
@@ -344,6 +512,13 @@ public class Foo {
   sb.append("Hello");
   sb.append(foo);
  }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "Hello";
+  sb.append("Hello");
+  sb.append(foo);
+ }
 }
      ]]></code>
     </test-code>
@@ -360,6 +535,13 @@ public class Foo {
   sb.append(foo).append("World");
   sb.append(foo).append("World");
  }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "World";
+  sb.append(foo).append("World");
+  sb.append(foo).append("World");
+ }
 }
      ]]></code>
     </test-code>
@@ -367,11 +549,18 @@ public class Foo {
         <description><![CDATA[
 20, Suffix append follwed by real append
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  String foo = "AAA";
+  sb.append(foo).append("BBB");
+  sb.append("CCC");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
   String foo = "AAA";
   sb.append(foo).append("BBB");
   sb.append("CCC");
@@ -394,6 +583,15 @@ public class Foo {
   }
   sb.append("DDD");
  }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("BBB");
+  if(true){
+   sb.append("CCC");
+  }
+  sb.append("DDD");
+ }
 }
      ]]></code>
     </test-code>
@@ -406,6 +604,12 @@ public class Foo {
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+  sb.append(String.valueOf("2"));
+  sb.append(String.valueOf("3"));
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
   sb.append(String.valueOf("2"));
   sb.append(String.valueOf("3"));
  }
@@ -422,13 +626,22 @@ public class Foo {
   sb.append("</bignode>");
   sb.append("</bignode>");
  }
+ 
+ public void bar2() {
+  String somevar = "";
+  StringBuilder sb = new StringBuilder();
+  sb.append("<bignode>");
+  sb.append("<somenode>").append(somevar).append("</somenode>");
+  sb.append("</bignode>");
+  sb.append("</bignode>");
+ }
 }
  ]]></code-fragment>
     <test-code>
         <description><![CDATA[
 23, force 2 failures on 3 lines
      ]]></description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>4</expected-problems>
         <code-ref id="three appends on one line"/>
     </test-code>
     <test-code>
@@ -436,7 +649,7 @@ public class Foo {
 23, re-running with threshold
      ]]></description>
         <rule-property name="threshold">2</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code-ref id="three appends on one line"/>
     </test-code>
     <test-code>
@@ -448,6 +661,29 @@ public class Foo {
 public class Foo {
     public String foo(int in) {
         StringBuffer retval = new StringBuffer();
+        for (int i = 0; i < in; i++) {
+          switch (in){
+             case 0 :
+                continue;
+             case 1:
+                retval.append("0");
+                continue;
+             case 2:
+                retval.append("1");
+                continue;
+             case 3:
+                retval.append("2");
+                continue;
+             default:
+                retval.append("3");
+                continue;
+          }
+        }
+        return retval.toString();
+     }
+     
+    public String foo2(int in) {
+        StringBuilder retval = new StringBuilder();
         for (int i = 0; i < in; i++) {
           switch (in){
              case 0 :
@@ -490,6 +726,19 @@ public class Foo {
    sb.append("CCC");
   }
  }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  if(true){
+   sb.append("CCC");
+  }
+  if(true){
+   sb.append("CCC");
+  }
+  if(true){
+   sb.append("CCC");
+  }
+ }
 }
      ]]></code>
     </test-code>
@@ -511,6 +760,18 @@ public class Foo {
    sb.append("CCC");
   }
  }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  sb.append("CCC");
+  if(true){
+   sb.append("CCC");
+  } else if (sb.length() == 2){
+   sb.append("CCC");
+  } else {
+   sb.append("CCC");
+  }
+ }
 }
      ]]></code>
     </test-code>
@@ -518,11 +779,36 @@ public class Foo {
         <description><![CDATA[
 27, Concurrent Appends from within switch statement
      ]]></description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 public class Foo {
     public String foo(int in) {
         StringBuffer retval = new StringBuffer();
+        for (int i = 0; i < in; i++) {
+          switch (in){
+             case 0 :
+                continue;
+             case 1:
+                retval.append("0");
+                continue;
+             case 2:
+                retval.append("1");
+                retval.append("1");
+                continue;
+             case 3:
+                retval.append("2");
+                continue;
+             default:
+                retval.append("3");
+                retval.append("3");
+                continue;
+          }
+        }
+        return retval.toString();
+     }
+
+    public String foo2(int in) {
+        StringBuilder retval = new StringBuilder();
         for (int i = 0; i < in; i++) {
           switch (in){
              case 0 :
@@ -565,6 +851,17 @@ public class Foo {
    sb.append("CCC" + (++count) + "Ffalsd");
   }
  }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  String foo = "blah";
+  int count = 0;
+  if(true){
+   sb.append("CCC" + (++count) + "Ffalsd");
+  }else if(foo.length() == 2){
+   sb.append("CCC" + (++count) + "Ffalsd");
+  }
+ }
 }
      ]]></code>
     </test-code>
@@ -577,6 +874,11 @@ public class Foo {
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+   sb.append("CCC" + "Ffalsd");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder();
    sb.append("CCC" + "Ffalsd");
  }
 }
@@ -594,6 +896,12 @@ public class Foo {
   int count = 0;
    sb.append("CCC" + String.valueOf(count++));
  }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
+  int count = 0;
+   sb.append("CCC" + String.valueOf(count++));
+ }
 }
      ]]></code>
     </test-code>
@@ -601,11 +909,17 @@ public class Foo {
         <description><![CDATA[
 31, Adding two strings together then another append
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer();
+   sb.append("CCC" + "Ffalsd");
+   sb.append("CCC");
+ }
+ 
+ public void bar2() {
+  StringBuilder sb = new StringBuilder();
    sb.append("CCC" + "Ffalsd");
    sb.append("CCC");
  }
@@ -616,11 +930,16 @@ public class Foo {
         <description><![CDATA[
 32, Including the constructor's string
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer("CCC");
+   sb.append("CCC");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder("CCC");
    sb.append("CCC");
  }
 }
@@ -630,11 +949,16 @@ public class Foo {
         <description><![CDATA[
 33, Additive in the constructor
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void bar() {
   StringBuffer sb = new StringBuffer(foo + "CCC");
+   sb.append("CCC");
+ }
+ 
+  public void bar2() {
+  StringBuilder sb = new StringBuilder(foo + "CCC");
    sb.append("CCC");
  }
 }
@@ -651,6 +975,10 @@ public class Foo {
   StringBuffer sb = new StringBuffer("CCC" + foo);
    sb.append("CCC");
  }
+ public void bar2() {
+  StringBuilder sb = new StringBuilder("CCC" + foo);
+   sb.append("CCC");
+ }
 }
      ]]></code>
     </test-code>
@@ -663,6 +991,15 @@ public class Foo {
 public class Foo {
  public void bar() {
        StringBuffer sb = new StringBuffer();
+ sb.append("World");
+  for(int ix = 0; ix < 2; ix++)
+     sb.append("World");
+ 
+ sb.append("World");
+ }
+ 
+ public void bar2() {
+       StringBuilder sb = new StringBuilder();
  sb.append("World");
   for(int ix = 0; ix < 2; ix++)
      sb.append("World");
@@ -685,6 +1022,13 @@ public class Foo {
         foo(sb);
         sb.append("World");
     }
+    
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("World");
+        foo(sb);
+        sb.append("World");
+    }
 }
      ]]></code>
     </test-code>
@@ -692,11 +1036,18 @@ public class Foo {
         <description><![CDATA[
 37, Intervening method call not related to append
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {
         StringBuffer sb = new StringBuffer();
+        sb.append("World");
+        sb.toString();
+        sb.append("World");
+    }
+    
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
         sb.append("World");
         sb.toString();
         sb.append("World");
@@ -708,11 +1059,18 @@ public class Foo {
         <description><![CDATA[
 38, Intervening method call not related to append
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {
         StringBuffer sb = new StringBuffer();
+        sb.append("World");
+        foo(sb.toString());
+        sb.append("World");
+    }
+    
+    public void bar2() {
+        StringBuilder sb = new StringBuilder();
         sb.append("World");
         foo(sb.toString());
         sb.append("World");
@@ -735,6 +1093,16 @@ public class Foo {
         sb.append("World");
     }
 }
+
+public class Foo2 {
+    StringBuilder sb = new StringBuilder();
+    public void foo() {
+        sb.append("World");
+    }
+    public void bar() {
+        sb.append("World");
+    }
+}
      ]]></code>
     </test-code>
     <test-code>
@@ -746,6 +1114,12 @@ public class Foo {
 public class Foo {
     public void foo(int i) {
         StringBuffer sb = new StringBuffer();
+        sb.append(foo(i-2));
+        sb.append("World");
+    }
+    
+    public void foo2(int i) {
+        StringBuilder sb = new StringBuilder();
         sb.append(foo(i-2));
         sb.append("World");
     }
@@ -764,6 +1138,12 @@ public class Foo {
         sb.append(foo("".length()+2));
         sb.append("World");
     }
+    
+    public void foo2() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(foo("".length()+2));
+        sb.append("World");
+    }
 }
      ]]></code>
     </test-code>
@@ -776,6 +1156,12 @@ public class Foo {
 public class Foo {
     public void foo(String[] a, int i) {
         StringBuffer sb = new StringBuffer();
+        sb.append(a[i]).append("Hello");
+        sb.append(a[i+1]).append("World");
+    }
+    
+    public void foo2(String[] a, int i) {
+        StringBuilder sb = new StringBuilder();
         sb.append(a[i]).append("Hello");
         sb.append(a[i+1]).append("World");
     }
@@ -796,6 +1182,14 @@ public class Foo {
         sb.append('c');
         return sb.toString();
     }
+    
+    toString3(char[] a, int n){
+        StringBuilder sb = new StringBuilder();
+        sb.append("ab");
+        sb.append(a, 0, n);
+        sb.append('c');
+        return sb.toString();
+    }
 }
      ]]></code>
     </test-code>
@@ -808,6 +1202,14 @@ public class Foo {
 public class Foo {
     public void foo(int i) {
         StringBuffer sb = new StringBuffer();
+        sb.append("Hello");
+        sb.append(i + 1);
+        sb.append(1 + i);
+        sb.append("World");
+    }
+    
+    public void foo2(int i) {
+        StringBuilder sb = new StringBuilder();
         sb.append("Hello");
         sb.append(i + 1);
         sb.append(1 + i);

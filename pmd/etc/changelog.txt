@@ -1,4 +1,4 @@
-??? ??, 2009 - 5.0:
+??? ??, 2010 - 5.0:
 
 TODO - Release blockers - Must implement before this release can be finished
 
@@ -30,7 +30,7 @@ TODO - Release blockers - Must implement before this release can be finished
      capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
      of a Rule reference in places not previously possible (e.g. CMD and Ant). 
    o Rule documentation should be automatically generated
-     from the descriptors, be they defined in code or XML, I think the code based
+     from the descriptors, be they defined in code or XML, I think the code-based
      descriptors are not getting seen.
    o Fully document the changed/new command line and Ant configuration options.
      Should we provide backwards compatibility mode?  I'm not inclined to, we
@@ -50,6 +50,9 @@ any code which has thumbed its nose at the developers over the years. ;)
 
 The following is relatively complete list of the major changes (this may not be
 100% accurate, see actual source code when in doubt):
+
+Fixed bug (no number) - Fixed UseStringBufferLengthRule only worked once per class
+All StringBuffer-related rules now also catch StringBuilder-related issues in the same way
 
 	API Change - Unification of treatment of languages within PMD core:
 	   Added - net.sourceforge.pmd.lang.Language (now an 'enum')

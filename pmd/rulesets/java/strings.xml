@@ -39,8 +39,7 @@ public class Foo {
         class="net.sourceforge.pmd.lang.java.rule.strings.StringInstantiationRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#StringInstantiation">
     <description>
-Avoid instantiating String objects; this is usually unnecessary since they are immutable and
-can be safely shared.
+Avoid instantiating String objects; this is usually unnecessary since they are immutable and can be safely shared.
     </description>
        <priority>2</priority>
     <example>
@@ -105,15 +104,12 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
        </description>
        <priority>3</priority>
        <example>
-                 <![CDATA[
-public class Foo {
-  public boolean bar(String buz) {
+       <![CDATA[
     // should be buz.equalsIgnoreCase("baz")
-    return buz.toUpperCase().equals("baz");
+boolean answer1 = buz.toUpperCase().equals("baz");
+    
     // another unnecessary toUpperCase()
-    // return buz.toUpperCase().equalsIgnoreCase("baz");
-    }
- }
+boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");
  ]]>
        </example>
      </rule>
@@ -300,7 +296,7 @@ new StringBuilder("A")   //  1 + 16 = 17
             <value>
 <![CDATA[
 //AllocationExpression/ClassOrInterfaceType
-[@Image='StringBuffer']
+[@Image='StringBuffer' or @Image='StringBuilder']
 /../Arguments/ArgumentList/Expression/PrimaryExpression
 /PrimaryPrefix/
 Literal
@@ -377,7 +373,7 @@ if held within objects with long lifetimes.
         <property name="xpath">
             <value>
 <![CDATA[
-//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer']
+//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
 ]]>
 			</value>
 		</property>
