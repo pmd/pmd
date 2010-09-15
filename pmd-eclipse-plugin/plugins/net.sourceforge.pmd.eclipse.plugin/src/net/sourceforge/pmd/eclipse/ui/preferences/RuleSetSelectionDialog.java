@@ -230,7 +230,7 @@ public class RuleSetSelectionDialog extends Dialog {
         int selectionIndex = this.inputCombo.getSelectionIndex();
         if (selectionIndex == -1) {
             importedRuleSetName = inputCombo.getText();
-            if (!StringUtil.isEmpty(importedRuleSetName)) {
+            if (StringUtil.isNotEmpty(importedRuleSetName)) {
                 try {
                     RuleSetFactory factory = new RuleSetFactory();
                     selectedRuleSet = factory.createRuleSets(importedRuleSetName).getAllRuleSets()[0];

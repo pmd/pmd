@@ -1,10 +1,12 @@
+Changes to the rule values or properties on the preferences scrn are made immediately, 
+they should only be applied after the user hits the OK or Apply button. Need a set
+of rule references...
+
 NewPropertyDialog
 	Need to add support for multi-value types
 	
 XPath Rule creation wizard
 	Should auto-capitalize 1st letter in rule name
-*	Need to specify an initial priority value
-*	Detect duplicate rule names
 	Can't add properties at the moment, the Add button doesn't show up
 	
 Rule tab

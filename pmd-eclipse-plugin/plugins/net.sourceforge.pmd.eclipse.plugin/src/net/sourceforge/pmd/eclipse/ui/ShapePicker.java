@@ -25,7 +25,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.ISelectionListener;
 
 /**
  * Renders a set of coloured shapes mapped to known set of incoming items
@@ -34,13 +33,13 @@ import org.eclipse.ui.ISelectionListener;
  */
 public class ShapePicker<T extends Object> extends Canvas implements ISelectionProvider {
 
-	private T[] 		items;
-	private int 		itemWidth;
-	private int 		gap = 6;
-	private T 			selectedItem;
-	private T 			highlightItem;
-	private Color		selectedItemFillColor;
-		
+	private T[] 			items;
+	private int 			itemWidth;
+	private int 			gap = 6;
+	private T 				selectedItem;
+	private T 				highlightItem;
+	private Color			selectedItemFillColor;
+	private LabelProvider 	tooltipProvider;
 	private Map<T, ShapeDescriptor> shapeDescriptorsByItem;
 //	private Map<T, String>			tooltipsByItem;
 		
@@ -65,7 +64,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
 				T newItem = itemAt(e.x, e.y);
 				if (newItem != highlightItem) {
 					highlightItem = newItem;
-					setToolTipText(newItem == null ? "" : newItem.toString());
+					setToolTipText( tooltipFor(newItem) );
 					redraw();
 				}
 			}
@@ -101,6 +100,13 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
 		RGB rgb = desc.rgbColor;
 		
 		return colorFor(rgb);
+	}
+	
+	private String tooltipFor(T item) {
+		return item == null ? "" : 
+			tooltipProvider == null ? 
+					item.toString() : 
+					tooltipProvider.labelFor(item);
 	}
 	
 	private Color colorFor(RGB rgb) {
@@ -206,6 +212,10 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
 		selectedItem = item;
 		redraw();
 		selectionChanged();
+	}
+	
+	public void tooltipProvider(LabelProvider provider) {
+		tooltipProvider = provider;
 	}
 	
 	public ISelection getSelection() {

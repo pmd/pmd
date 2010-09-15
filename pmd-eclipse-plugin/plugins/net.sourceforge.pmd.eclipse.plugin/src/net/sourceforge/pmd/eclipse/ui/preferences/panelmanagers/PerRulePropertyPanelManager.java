@@ -94,6 +94,10 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         formArranger.clearChildren();
     }
 
+    public void loadValues() {
+    	formArranger.loadValues();
+    }
+    
     public void showControls(boolean flag) {
 
         clearControls();

@@ -44,7 +44,7 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
     public static final RuleColumnDescriptor priority  			   = new ImageColumnDescriptor("iPriority", StringKeys.PREF_RULESET_COLUMN_PRIORITY, 	SWT.LEFT, 50, RuleFieldAccessor.priority, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.uniqueItemsAsShapeFor(12, 12, SWT.LEFT, UISettings.shapesByPriority()));
     public static final RuleColumnDescriptor filterViolationRegex  = new ImageColumnDescriptor("iFvReg", StringKeys.PREF_RULESET_COLUMN_FILTERS_REGEX, SWT.LEFT, 25, RuleFieldAccessor.violationRegex, false, PMDUiConstants.ICON_FILTER_R, Util.textAsColorShapeFor(16, 16, RuleUIUtil.RegexFilterShape));    
     public static final RuleColumnDescriptor filterViolationXPath  = new ImageColumnDescriptor("iFVXp",  StringKeys.PREF_RULESET_COLUMN_FILTERS_XPATH, SWT.LEFT, 25, RuleFieldAccessor.violationXPath, false, PMDUiConstants.ICON_FILTER_X, Util.textAsColorShapeFor(16, 16, RuleUIUtil.XPathFilterShape));
-	public static final RuleColumnDescriptor properties   		   = new ImageColumnDescriptor("iProps", StringKeys.PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, false, PMDUiConstants.ICON_BUTTON_DIAMOND_WHITE, Util.styledTextBuilder(RuleUIUtil.ChangedPropertyFont));
+	public static final RuleColumnDescriptor properties   		   = new ImageColumnDescriptor("iProps", StringKeys.PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, false, null, Util.styledTextBuilder(RuleUIUtil.ChangedPropertyFont));
 
 	
     public ImageColumnDescriptor(String theId, String labelKey, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath, CellPainterBuilder thePainterBuilder) {
@@ -59,7 +59,7 @@ public class ImageColumnDescriptor extends AbstractRuleColumnDescriptor {
      */
     public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, final RuleSortListener sortListener, Map<Integer, List<Listener>> paintListeners) {
         TreeColumn tc = buildTreeColumn(parent, sortListener);
-
+        setLabelIfImageMissing(tc);
         if (painterBuilder != null) painterBuilder.addPainterFor(tc.getParent(), columnIndex, accessor(), paintListeners);
         return tc;
     }

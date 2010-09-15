@@ -421,7 +421,7 @@ public class BaseVisitor {
                         final String ruleName = tail.substring(0, tail.indexOf(':'));
                         pendingReviews.push(ruleName);
                         findLine = true;
-                    } else if (!comment && findLine && !StringUtil.isEmpty(line) && !line.startsWith("//")) {
+                    } else if (!comment && findLine && StringUtil.isNotEmpty(line) && !line.startsWith("//")) {
                         findLine = false;
                         while (!pendingReviews.empty()) {
                             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops:

@@ -216,7 +216,7 @@ public class RuleUtil {
 
 		collection.rulesDo(visitor);
 
-		return prio[0];        
+		return prio[0];
 	}
 	
 	private static String format(Object item) {

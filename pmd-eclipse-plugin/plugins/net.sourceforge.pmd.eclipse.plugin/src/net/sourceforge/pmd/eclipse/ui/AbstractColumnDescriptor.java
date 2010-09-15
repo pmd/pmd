@@ -37,6 +37,12 @@ public abstract class AbstractColumnDescriptor implements ColumnDescriptor {
         imagePath = theImagePath;
 	}
 
+	protected void setLabelIfImageMissing(TreeColumn column) {
+		if (imagePath == null) {
+			column.setText(label);
+		}
+	}
+	
 	public String id() { return id; };
 	
 	public String label() { return label; }

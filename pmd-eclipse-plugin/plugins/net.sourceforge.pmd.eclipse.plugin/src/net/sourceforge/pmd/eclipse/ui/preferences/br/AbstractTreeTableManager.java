@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.views.ChangeRecord;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -47,7 +49,7 @@ import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractTreeTableManager {
+public abstract class AbstractTreeTableManager <T extends Object> {
 
 	protected ContainerCheckedTreeViewer  treeViewer;
 	
@@ -59,6 +61,8 @@ public abstract class AbstractTreeTableManager {
 	private Label				activeCountLabel;
 	private Menu headerMenu;
 	private Menu tableMenu;
+	
+	private ChangeRecord<T>		changes;
 	
 	protected final ColumnDescriptor[] 	availableColumns;	// columns shown in the rule treetable in the desired order
 	private final Set<ColumnDescriptor>	hiddenColumns = new HashSet<ColumnDescriptor>();
@@ -105,6 +109,19 @@ public abstract class AbstractTreeTableManager {
 		availableColumns = theColumns;
 		
 		loadHiddenColumns();
+	}
+	
+	protected void removed(Collection<T> items) {
+		
+		if (changes == null) changes = new ChangeRecord<T>();
+		changes.removed(items);
+		updateCheckControls();
+	}
+	
+	protected void added(T item) {
+		if (changes == null) changes = new ChangeRecord<T>();
+		changes.added(item);
+		updateCheckControls();
 	}
 	
 	private void loadHiddenColumns() {
@@ -194,6 +211,10 @@ public abstract class AbstractTreeTableManager {
 	}
 	
 	protected CheckboxTreeViewer treeViewer() { return treeViewer; }
+	
+	public ChangeRecord<T> changes() {
+		return changes;
+	}
 	
 	protected Button newImageButton(Composite parent, String imageId, String toolTipId) {
 		

@@ -127,12 +127,12 @@ public class CPDView extends ViewPart implements IPropertyListener {
 
         // shows the message
         TreeColumn messageColumn = new TreeColumn(tree, SWT.LEFT);
-        messageColumn.setText(getString(StringKeys.MSGKEY_VIEW_COLUMN_MESSAGE));
+        messageColumn.setText(getString(StringKeys.VIEW_COLUMN_MESSAGE));
         messageColumn.setWidth(300);
 
         // shows the class
         TreeColumn classColumn = new TreeColumn(tree, SWT.LEFT);
-        classColumn.setText(getString(StringKeys.MSGKEY_VIEW_COLUMN_CLASS));
+        classColumn.setText(getString(StringKeys.VIEW_COLUMN_CLASS));
         classColumn.setWidth(300);
 
     }

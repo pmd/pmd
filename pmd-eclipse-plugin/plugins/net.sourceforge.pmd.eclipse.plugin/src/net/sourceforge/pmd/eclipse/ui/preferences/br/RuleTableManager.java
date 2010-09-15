@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.TreeItem;
  *
  * @author Brian Remedios
  */
-public class RuleTableManager extends AbstractTreeTableManager implements RuleSortListener, ValueChangeListener {
+public class RuleTableManager extends AbstractTreeTableManager<Rule> implements RuleSortListener, ValueChangeListener {
 
 	private RuleSet						ruleSet;
 
@@ -76,8 +76,9 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	private Button			     		addRuleButton;
 	private Button			     		removeRuleButton;
 
-	private RuleSelectionListener				ruleSelectionListener;
-
+	private RuleSelectionListener		ruleSelectionListener;
+	private ValueResetHandler			resetHandler;
+	
 	public static String ruleSetNameFrom(Rule rule) {
 		return ruleSetNameFrom( rule.getRuleSetName() );
 	}
@@ -90,10 +91,11 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
         return pos < 0 ? rulesetName : rulesetName.substring(0, pos-1);
     }
     
-	public RuleTableManager(RuleColumnDescriptor[] theColumns, IPreferences thePreferences) {
+	public RuleTableManager(RuleColumnDescriptor[] theColumns, IPreferences thePreferences, ValueResetHandler aResetHandler) {
 		super(thePreferences, theColumns);
 		
 		checkedColumnAccessor = createCheckedItemAccessor();
+		resetHandler = aResetHandler;
 	}
 	
 	protected boolean isQualifiedItem(Object item) {
@@ -206,8 +208,7 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 //	    useDefaultsItem.setEnabled(false);
 	    useDefaultsItem.addSelectionListener(new SelectionAdapter() {
 	        public void widgetSelected(SelectionEvent event) {
-	            ruleSelection.useDefaultValues();
-	            refresh();
+	        	resetHandler.resetValuesIn(ruleSelection);
 	            }
 	        });
 	}
@@ -246,18 +247,21 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 			
 			int result = dialog.open();
 
-			if (result == Window.OK) {
-				Rule addedRule = wiz.rule();
-				ruleSet.addRule(addedRule);
-				setModified();
-				try {
-					refresh();
-					treeViewer.reveal(addedRule);
-				} catch (Throwable t) {
-					plugin.logError("Exception when refreshing the rule table", t);
+			if (result != Window.OK) return;
+			
+			Rule addedRule = wiz.rule();
+			ruleSet.addRule(addedRule);
+			
+			added(addedRule);
+			
+			setModified();
+			try {
+				refresh();
+				treeViewer.reveal(addedRule);
+			} catch (Throwable t) {
+				plugin.logError("Exception when refreshing the rule table", t);
 				}
-			}
-
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -287,6 +291,8 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 	    int removeCount = ruleSelection.removeAllFrom(ruleSet);
 	    if (removeCount == 0) return;
 
+	    removed(ruleSelection.allRules());
+	    
         setModified();
 
         try {
@@ -366,7 +372,6 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 		Button button = newImageButton(parent, PMDUiConstants.ICON_BUTTON_IMPORT, StringKeys.PREF_RULESET_BUTTON_IMPORTRULESET);
 		
 		button.addSelectionListener(new SelectionAdapter() {
-
             public void widgetSelected(SelectionEvent event) {
 				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(parent.getShell());
 				dialog.open();
@@ -389,8 +394,9 @@ public class RuleTableManager extends AbstractTreeTableManager implements RuleSo
 				Iterator<Rule> iter = selectedRuleSet.getRules().iterator();
 				while (iter.hasNext()) {
 					Rule rule = iter.next();
-					rule.setRuleSetName("pmd-eclipse");
+					rule.setRuleSetName("pmd-elipse");	// FIXME
 					ruleSet.addRule(rule);
+					added(rule);
 				}
 			}
 			setModified();

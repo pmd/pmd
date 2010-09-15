@@ -141,7 +141,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         // build the group
         Group group = new Group(parent, SWT.SHADOW_IN);
-        group.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_GENERAL));
+        group.setText(getMessage(StringKeys.PREF_GENERAL_GROUP_GENERAL));
         group.setLayout(new GridLayout(1, false));
 
         // build the children
@@ -202,7 +202,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Group buildPriorityGroup(final Composite parent) {
 
         Group group = new Group(parent, SWT.SHADOW_IN);
-        group.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_PRIORITIES));
+        group.setText(getMessage(StringKeys.PREF_GENERAL_GROUP_PRIORITIES));
         group.setLayout(new GridLayout(1, false));
 
         createPreferenceLink(group, 
@@ -354,15 +354,15 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         // build the group
         Group group = new Group(parent, SWT.SHADOW_IN);
-        group.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_REVIEW));
+        group.setText(getMessage(StringKeys.PREF_GENERAL_GROUP_REVIEW));
         group.setLayout(new GridLayout(1, false));
 
         // build children
         this.reviewPmdStyleBox = buildReviewPmdStyleBoxButton(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
-        buildLabel(group, StringKeys.MSGKEY_PREF_GENERAL_LABEL_ADDCOMMENT);
+        buildLabel(group, StringKeys.PREF_GENERAL_LABEL_ADDCOMMENT);
         additionalCommentText = buildAdditionalCommentText(group);
-        buildLabel(group, StringKeys.MSGKEY_PREF_GENERAL_LABEL_SAMPLE);
+        buildLabel(group, StringKeys.PREF_GENERAL_LABEL_SAMPLE);
         sampleLabel = buildSampleLabel(group);
         updateSampleLabel();
 
@@ -414,20 +414,20 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         gridLayout.numColumns = 3;
 
         Group loggingGroup = new Group(parent, SWT.NONE);
-        loggingGroup.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_GROUP_LOGGING));
+        loggingGroup.setText(getMessage(StringKeys.PREF_GENERAL_GROUP_LOGGING));
         loggingGroup.setLayout(gridLayout);
 
         Label logFileNameLabel = new Label(loggingGroup, SWT.NONE);
-        logFileNameLabel.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_LOG_FILE_NAME));
+        logFileNameLabel.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_LOG_FILE_NAME));
         logFileNameLabel.setLayoutData(gridData);
 
         logFileNameText = new Text(loggingGroup, SWT.BORDER);
         logFileNameText.setText(this.preferences.getLogFileName());
-        logFileNameText.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TOOLTIP_LOG_FILE_NAME));
+        logFileNameText.setToolTipText(getMessage(StringKeys.PREF_GENERAL_TOOLTIP_LOG_FILE_NAME));
         logFileNameText.setLayoutData(gridData1);
 
         browseButton = new Button(loggingGroup, SWT.NONE);
-        browseButton.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_BUTTON_BROWSE));
+        browseButton.setText(getMessage(StringKeys.PREF_GENERAL_BUTTON_BROWSE));
         browseButton.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent event) {
                 browseLogFile();
@@ -441,7 +441,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         separator.setLayoutData(gridData11);
 
         Label logLevelLabel = new Label(loggingGroup, SWT.NONE);
-        logLevelLabel.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_LOG_LEVEL));
+        logLevelLabel.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_LOG_LEVEL));
 
         logLevelValueLabel = new Label(loggingGroup, SWT.NONE);
         logLevelValueLabel.setText("");
@@ -492,7 +492,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Text buildAdditionalCommentText(Composite parent) {
         Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
         text.setText(this.preferences.getReviewAdditionalComment());
-        text.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TOOLTIP_ADDCOMMENT));
+        text.setToolTipText(getMessage(StringKeys.PREF_GENERAL_TOOLTIP_ADDCOMMENT));
 
         text.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -523,7 +523,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      */
     private Button buildShowPerspectiveBoxButton(Composite viewGroup) {
         Button button = new Button(viewGroup, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_SHOW_PERSPECTIVE));
+        button.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_SHOW_PERSPECTIVE));
         button.setSelection(preferences.isPmdPerspectiveEnabled());
 
         return button;
@@ -535,7 +535,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      */
     private Button buildUseProjectBuildPathButton(Composite viewGroup) {
         Button button = new Button(viewGroup, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_USE_PROJECT_BUILD_PATH));
+        button.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_USE_PROJECT_BUILD_PATH));
         button.setSelection(preferences.isProjectBuildPathEnabled());
         return button;
     }
@@ -551,13 +551,13 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     	Composite comp = new Composite(parent, 0);
     	comp.setLayout(new GridLayout(2, false));
     	
-        Label label = buildLabel(comp, StringKeys.MSGKEY_PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR);
+        Label label = buildLabel(comp, StringKeys.PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR);
         label.setLayoutData( new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, false, false, 1, 1));
         
         final Spinner spinner = new Spinner(comp, SWT.SINGLE | SWT.BORDER);
         spinner.setLayoutData( new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, true, false, 1, 1));
         spinner.setMinimum(preferences.getMaxViolationsPerFilePerRule());
-        spinner.setToolTipText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR));
+        spinner.setToolTipText(getMessage(StringKeys.PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR));
         return spinner;
     }
 
@@ -568,7 +568,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      */
     private Button buildReviewPmdStyleBoxButton(final Composite parent) {
         Button button = new Button(parent, SWT.CHECK);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_REVIEW_PMD_STYLE));
+        button.setText(getMessage(StringKeys.PREF_GENERAL_REVIEW_PMD_STYLE));
         button.setSelection(this.preferences.isReviewPmdStyleEnabled());
 
         return button;
@@ -623,11 +623,11 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             String commentText = MessageFormat.format(pattern, new Object[] { System.getProperty("user.name", ""), new Date() });
 
             sampleLabel.setText(commentText);
-            setMessage(getMessage(StringKeys.MSGKEY_PREF_GENERAL_HEADER), NONE);
+            setMessage(getMessage(StringKeys.PREF_GENERAL_HEADER), NONE);
             setValid(true);
 
         } catch (IllegalArgumentException e) {
-            setMessage(getMessage(StringKeys.MSGKEY_PREF_GENERAL_MESSAGE_INCORRECT_FORMAT), ERROR);
+            setMessage(getMessage(StringKeys.PREF_GENERAL_MESSAGE_INCORRECT_FORMAT), ERROR);
             setValid(false);
         }
     }
@@ -646,7 +646,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      */
     protected void browseLogFile() {
         FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
-        dialog.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_DIALOG_BROWSE));
+        dialog.setText(getMessage(StringKeys.PREF_GENERAL_DIALOG_BROWSE));
         String fileName = dialog.open();
         if (fileName != null) {
             logFileNameText.setText(fileName);

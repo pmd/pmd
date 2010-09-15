@@ -16,6 +16,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelectionListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueResetHandler;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
@@ -50,7 +51,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author br
  *
  */
-public class RuleEditorView extends ViewPart implements RuleSelectionListener, ModifyListener, ValueChangeListener {
+public class RuleEditorView extends ViewPart implements RuleSelectionListener, ModifyListener, ValueChangeListener, ValueResetHandler {
 
 	private TabFolder 		     	tabFolder;
 	private RulePropertyManager[]   rulePropertyManagers;
@@ -78,7 +79,7 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 	@Override
 	public void createPartControl(Composite parent) {
 
-		tableManager = new RuleTableManager(availableColumns, PMDPlugin.getDefault().loadPreferences());
+		tableManager = new RuleTableManager(availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
 		tableManager.modifyListener(this);
 		tableManager.selectionListener(this);
 
@@ -478,6 +479,11 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 
 	@Override
 	public void setFocus() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void resetValuesIn(RuleSelection rules) {
 		// TODO Auto-generated method stub
 		
 	}

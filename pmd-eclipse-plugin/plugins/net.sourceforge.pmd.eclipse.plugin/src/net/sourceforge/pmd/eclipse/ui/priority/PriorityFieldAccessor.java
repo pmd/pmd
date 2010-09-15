@@ -23,6 +23,10 @@ public interface PriorityFieldAccessor<T extends Object> {
 		public String valueFor(RulePriority priority) {	return PriorityDescriptorCache.instance.descriptorFor(priority).label; }
 	};
 	
+	PriorityFieldAccessor<String> pmdName = new PriorityFieldAccessorAdapter<String>() {
+		public String valueFor(RulePriority priority) {	return priority.getName(); }
+	};
+	
 	PriorityFieldAccessor<String> description = new PriorityFieldAccessorAdapter<String>() {
 		public String valueFor(RulePriority priority) {	return PriorityDescriptorCache.instance.descriptorFor(priority).description;	}	
 	};

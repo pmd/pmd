@@ -12,6 +12,8 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.ui.LabelProvider;
 import net.sourceforge.pmd.eclipse.ui.ShapePicker;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ImplementationType;
@@ -70,6 +72,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
     private List<Label> labels;
 
     private boolean 	inSetup;
+    private Set<String> currentRuleNames;
     
     public static final String ID = "rule";
 
@@ -232,7 +235,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		    Composite dlgArea = new Composite(parent, SWT.NONE);
 
 	        GridLayout gridLayout = new GridLayout();
-	        gridLayout.numColumns = 4;
+	        gridLayout.numColumns = 6;
 	        dlgArea.setLayout(gridLayout);
 
 	        Label nameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_NAME);
@@ -244,7 +247,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        nameField = buildNameText(dlgArea);
 	        data = new GridData();
 	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 3;
+	        data.horizontalSpan = 5;
 	        data.grabExcessHorizontalSpace = true;
 	        nameField.setLayoutData(data);
 
@@ -257,7 +260,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        ruleSetNameField = buildRuleSetNameField(dlgArea);
 	        data = new GridData();
 	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 3;
+	        data.horizontalSpan = 5;
 	        data.grabExcessHorizontalSpace = true;
 	        ruleSetNameField.setLayoutData(data);
 	        
@@ -270,7 +273,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        implementationTypeCombo = buildImplementationTypeCombo(dlgArea);
 	        data = new GridData();
 	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 3;
+	        data.horizontalSpan = 5;
 	        data.grabExcessHorizontalSpace = true;
 	        implementationTypeCombo.setLayoutData(data);
 
@@ -283,14 +286,19 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        implementationClassField = buildImplementationClassField(dlgArea);
 	        data = new GridData();
 	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 3;
+	        data.horizontalSpan = 5;
 	        data.grabExcessHorizontalSpace = true;
 	        implementationClassField.setLayoutData(data);
 
 	        buildLabel(dlgArea, null);
 	        usesTypeResolutionButton = buildUsesTypeResolutionButton(dlgArea);
 	        usesDfaButton = buildUsesDfaButton(dlgArea);
-	        buildLabel(dlgArea, null);
+	        data = new GridData();
+	        data.horizontalAlignment = GridData.FILL;
+	        data.horizontalSpan = 4;
+	        data.grabExcessHorizontalSpace = true;
+	        usesDfaButton.setLayoutData(data);
+	  //      buildLabel(dlgArea, null);
 
 	        Label languageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE);
 	        data = new GridData();
@@ -300,9 +308,9 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
 	        languageCombo = buildLanguageCombo(dlgArea);
 	        data = new GridData();
-	        data.horizontalAlignment = GridData.FILL;
-	        data.horizontalSpan = 3;
-	        data.grabExcessHorizontalSpace = true;
+	        data.horizontalAlignment = GridData.BEGINNING;
+	        data.horizontalSpan = 1;
+	        data.grabExcessHorizontalSpace = false;
 	        languageCombo.setLayoutData(data);
 
 	        	GridData lblGD = new GridData();
@@ -311,10 +319,9 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		        
 		        GridData cmboGD = new GridData();
 		        cmboGD.horizontalAlignment = GridData.FILL;
-		        cmboGD.horizontalSpan = 2;
+		        cmboGD.horizontalSpan = 1;
 		        cmboGD.grabExcessHorizontalSpace = true;
 		        
-	        	buildLabel(dlgArea, null);
 		        minLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MIN);
 		        minLanguageLabel.setAlignment(SWT.RIGHT);
 		        minLanguageLabel.setLayoutData(lblGD);
@@ -323,7 +330,6 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		        minLanguageVersionCombo = buildLanguageVersionCombo(dlgArea, true);
 		        minLanguageVersionCombo.setLayoutData(cmboGD);
 
-		        buildLabel(dlgArea, null);
 		        maxLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MAX);
 		        maxLanguageLabel.setAlignment(SWT.RIGHT);
 		        maxLanguageLabel.setLayoutData(lblGD);
@@ -337,18 +343,19 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        data.horizontalSpan = 1;
 	        priorityLabel.setLayoutData(data);
 	        labels.add(priorityLabel);
-
-	        Composite priorityComp = new Composite(dlgArea, 0);
-	        priorityComp.setLayout(new GridLayout(2, false));
-	        priorityComp.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 	        
-	        priorityCombo = buildPriorityCombo(priorityComp);
+	        priorityCombo = buildPriorityCombo(dlgArea);
 	        priorityCombo.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 	        
-	        priorityDisplay = new ShapePicker(priorityComp, SWT.NONE, 14);
-	        priorityDisplay.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));		     
+	        priorityDisplay = new ShapePicker(dlgArea, SWT.NONE, 14);
+	        priorityDisplay.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));		     
 	        priorityDisplay.setShapeMap(UISettings.shapesByPriority());
-	        priorityDisplay.setSize(90, 25);
+	        priorityDisplay.tooltipProvider( new LabelProvider() { 
+	        	public String labelFor(Object item) { 
+	        		return UISettings.labelFor((RulePriority)item); 
+	        		} 
+	        	} );
+	        priorityDisplay.setSize(120, 25);
 
 	        if (creatingNewRule()) {
 	        	implementationType(ImplementationType.XPath);
@@ -591,8 +598,8 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
      	combo.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				if (rules == null) return;
-				setPriority( priorities[ combo.getSelectionIndex() ] );
+				setPriority(priorities[ combo.getSelectionIndex() ]);
+				validateRuleParams();
 			}
 		});
 
@@ -600,8 +607,8 @@ public class RulePanelManager extends AbstractRulePanelManager {
      }
 
      private void setPriority(RulePriority priority) {
-    	 rules.setPriority(priority);
     	 priorityDisplay.setItems(new Object[] {priority});
+    	 if (rules != null) rules.setPriority(priority);
     	 valueChanged(null, priority);
      }
      
@@ -627,17 +634,22 @@ public class RulePanelManager extends AbstractRulePanelManager {
          return newType != null && Rule.class.isAssignableFrom(newType);
      }
 
+     private String nameFieldValue() {
+    	 return nameField.getText().trim();
+     }
+     
      private boolean hasValidRuleName() {
-    	 
-    	if (rules == null || rules.hasMultipleRules()) return true;
-    	
-     	String name = nameField.getText();
-     	return isValidRuleName(name);
+
+    	 if (creatingNewRule() && !isValidRuleName(nameFieldValue())) return false;   
+
+    	 if (rules == null || rules.hasMultipleRules()) return true;
+
+    	 return isValidRuleName(nameFieldValue());
      }
      
      private boolean hasExistingRuleName() {
-    	 // FIXME finish this
-    	 return false;
+    	 if (currentRuleNames == null) currentRuleNames = MarkerUtil.currentRuleNames();
+    	 return currentRuleNames.contains(nameFieldValue());
      }
 
      private boolean hasValidRulesetName() {
@@ -645,6 +657,17 @@ public class RulePanelManager extends AbstractRulePanelManager {
      	return isValidRulesetName(name);
      }
 
+     private static boolean hasNoSelection(Combo combo) {
+    	 return combo.getSelectionIndex() < 0;
+     }
+     
+     private boolean hasValidChoice(Combo combo) {
+    	 
+    	 if (creatingNewRule() && hasNoSelection(combo)) return false;    	 
+    	 if (rules == null || rules.hasMultipleRules()) return true;
+    	 return priorityCombo.getSelectionIndex() >= 0;
+     }
+     
      protected List<String> fieldErrors() {
     	 
     	 List<String> errors = new ArrayList<String>();
@@ -653,13 +676,10 @@ public class RulePanelManager extends AbstractRulePanelManager {
     	 if (!hasValidRuleName()) errors.add("Invalid rule name");
     	 if (creatingNewRule() && hasExistingRuleName()) errors.add("Rule name is already in use");
     	 if (!hasValidRulesetName()) errors.add("Invalid ruleset name");
-    	 if (languageCombo.getSelectionIndex() < 0) errors.add("No language selected");
+    	 if (!hasValidChoice(priorityCombo)) errors.add("No priority selected");
+    	 if (!hasValidChoice(languageCombo)) errors.add("No language selected");
     	 
     	 return errors;
-     }
-     
-     private boolean creatingNewRule() {
-    	 return usageMode == EditorUsageMode.CreateNew;
      }
      
      private void validateRuleParams() {
@@ -683,13 +703,15 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
      private void copyLocalValuesTo(Rule rule) {
 
-     	rule.setName(nameField.getText());
+     	rule.setName(nameFieldValue());
      	rule.setRuleSetName(ruleSetNameField.getText());
 
      	Language language = selectedLanguage();
      	rule.setLanguage(language);
 
-     	rule.setPriority(RulePriority.valueOf(priorityCombo.getSelectionIndex()+1));
+     	rule.setPriority(
+     			RulePriority.valueOf(priorityCombo.getSelectionIndex()+1)
+     			);
          if (usesTypeResolutionButton.getSelection()) {
          	rule.setUsesTypeResolution();
          }

@@ -40,7 +40,7 @@ package net.sourceforge.pmd.eclipse.ui.nls;
 /**
  * Convenient class to hold PMD Constants
  * @author phherlin
- *
+ * @author bremedios
  */
 public class StringKeys {
 	
@@ -55,28 +55,28 @@ public class StringKeys {
     public static final String PROPERTY_BUTTON_INCLUDE_DERIVED_FILES = "property.button.include_derived_files";
     public static final String PROPERTY_BUTTON_VIOLATIONS_AS_ERRORS = "property.button.violations_as_errors";
     
-    public static final String MSGKEY_PREF_GENERAL_HEADER = "preference.pmd.header";
-    public static final String MSGKEY_PREF_GENERAL_TITLE = "preference.pmd.title";
-    public static final String MSGKEY_PREF_GENERAL_LABEL_ADDCOMMENT = "preference.pmd.label.addcomment";
-    public static final String MSGKEY_PREF_GENERAL_LABEL_SAMPLE = "preference.pmd.label.sample";
-    public static final String MSGKEY_PREF_GENERAL_TOOLTIP_ADDCOMMENT = "preference.pmd.tooltip.addcomment";
-    public static final String MSGKEY_PREF_GENERAL_MESSAGE_INCORRECT_FORMAT ="preference.pmd.message.incorrect_format";
-    public static final String MSGKEY_PREF_GENERAL_GROUP_REVIEW = "preference.pmd.group.review";
-    public static final String MSGKEY_PREF_GENERAL_GROUP_PRIORITIES = "preference.pmd.group.priorities";
-    public static final String MSGKEY_PREF_GENERAL_GROUP_GENERAL = "preference.pmd.group.general";
-    public static final String MSGKEY_PREF_GENERAL_LABEL_SHOW_PERSPECTIVE = "preference.pmd.label.perspective_on_check";
-    public static final String MSGKEY_PREF_GENERAL_LABEL_USE_DFA = "preference.pmd.label.use_dfa";
-    public static final String MSGKEY_PREF_GENERAL_LABEL_USE_PROJECT_BUILD_PATH = "preference.pmd.label.use_project_build_path";
-    public static final String MSGKEY_PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR = "preference.pmd.label.max_violations_pfpr";
-    public static final String MSGKEY_PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR = "preference.pmd.tooltip.max_violations_pfpr";
-    public static final String MSGKEY_PREF_GENERAL_MESSAGE_INVALID_NUMERIC_VALUE ="preference.pmd.message.invalid_numeric_value";
-    public static final String MSGKEY_PREF_GENERAL_REVIEW_PMD_STYLE = "preference.pmd.label.review_pmd_style";
-    public static final String MSGKEY_PREF_GENERAL_GROUP_LOGGING = "preference.pmd.group.logging";
-    public static final String MSGKEY_PREF_GENERAL_LABEL_LOG_FILE_NAME = "preference.pmd.label.log_file_name";
-    public static final String MSGKEY_PREF_GENERAL_TOOLTIP_LOG_FILE_NAME = "preference.pmd.tooltip.log_file_name";
-    public static final String MSGKEY_PREF_GENERAL_BUTTON_BROWSE = "preference.pmd.button.browse";
-    public static final String MSGKEY_PREF_GENERAL_DIALOG_BROWSE = "preference.pmd.dialog.browse";
-    public static final String MSGKEY_PREF_GENERAL_LABEL_LOG_LEVEL = "preference.pmd.label.log_level";
+    public static final String PREF_GENERAL_HEADER = "preference.pmd.header";
+    public static final String PREF_GENERAL_TITLE = "preference.pmd.title";
+    public static final String PREF_GENERAL_LABEL_ADDCOMMENT = "preference.pmd.label.addcomment";
+    public static final String PREF_GENERAL_LABEL_SAMPLE = "preference.pmd.label.sample";
+    public static final String PREF_GENERAL_TOOLTIP_ADDCOMMENT = "preference.pmd.tooltip.addcomment";
+    public static final String PREF_GENERAL_MESSAGE_INCORRECT_FORMAT ="preference.pmd.message.incorrect_format";
+    public static final String PREF_GENERAL_GROUP_REVIEW = "preference.pmd.group.review";
+    public static final String PREF_GENERAL_GROUP_PRIORITIES = "preference.pmd.group.priorities";
+    public static final String PREF_GENERAL_GROUP_GENERAL = "preference.pmd.group.general";
+    public static final String PREF_GENERAL_LABEL_SHOW_PERSPECTIVE = "preference.pmd.label.perspective_on_check";
+    public static final String PREF_GENERAL_LABEL_USE_DFA = "preference.pmd.label.use_dfa";
+    public static final String PREF_GENERAL_LABEL_USE_PROJECT_BUILD_PATH = "preference.pmd.label.use_project_build_path";
+    public static final String PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR = "preference.pmd.label.max_violations_pfpr";
+    public static final String PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR = "preference.pmd.tooltip.max_violations_pfpr";
+    public static final String PREF_GENERAL_MESSAGE_INVALID_NUMERIC_VALUE ="preference.pmd.message.invalid_numeric_value";
+    public static final String PREF_GENERAL_REVIEW_PMD_STYLE = "preference.pmd.label.review_pmd_style";
+    public static final String PREF_GENERAL_GROUP_LOGGING = "preference.pmd.group.logging";
+    public static final String PREF_GENERAL_LABEL_LOG_FILE_NAME = "preference.pmd.label.log_file_name";
+    public static final String PREF_GENERAL_TOOLTIP_LOG_FILE_NAME = "preference.pmd.tooltip.log_file_name";
+    public static final String PREF_GENERAL_BUTTON_BROWSE = "preference.pmd.button.browse";
+    public static final String PREF_GENERAL_DIALOG_BROWSE = "preference.pmd.dialog.browse";
+    public static final String PREF_GENERAL_LABEL_LOG_LEVEL = "preference.pmd.label.log_level";
     
     //  TOOLTIP keys are not shown here...just append  ".tooltip" to an existing key to see if you have one :)
     public static final String PREF_RULESET_TITLE = "preference.ruleset.title";
@@ -202,6 +202,7 @@ public class StringKeys {
     
     public static final String VIEW_AST_DEFAULT_TEXT = "view.ast.default_text";
     
+    public static final String VIEW_FILTER_PRIORITY = "view.filter.priority";
     public static final String VIEW_FILTER_PRIORITY_1 = "view.filter.priority.1";
     public static final String VIEW_FILTER_PRIORITY_2 = "view.filter.priority.2";
     public static final String VIEW_FILTER_PRIORITY_3 = "view.filter.priority.3";
@@ -211,6 +212,7 @@ public class StringKeys {
     
     public static final String VIEW_ACTION_CURRENT_PROJECT = "view.action.current_project";
     
+    public static final String VIEW_TOOLTIP_FILTER_PRIORITY = "view.tooltip.filter.priority";
     public static final String VIEW_TOOLTIP_FILTER_PRIORITY_1 = "view.tooltip.filter.priority.1";
     public static final String VIEW_TOOLTIP_FILTER_PRIORITY_2 = "view.tooltip.filter.priority.2";
     public static final String VIEW_TOOLTIP_FILTER_PRIORITY_3 = "view.tooltip.filter.priority.3";
@@ -219,21 +221,21 @@ public class StringKeys {
     public static final String VIEW_TOOLTIP_PACKAGES_FILES = "view.tooltip.packages_files";
     public static final String VIEW_TOOLTIP_COLLAPSE_ALL = "view.tooltip.collapse_all";
         
-    public static final String MSGKEY_VIEW_COLUMN_MESSAGE = "view.column.message";
-    public static final String MSGKEY_VIEW_COLUMN_RULE = "view.column.rule";
-    public static final String MSGKEY_VIEW_COLUMN_CLASS = "view.column.class";
-    public static final String MSGKEY_VIEW_COLUMN_PACKAGE = "view.column.package";
-    public static final String MSGKEY_VIEW_COLUMN_PROJECT = "view.column.project";
-    public static final String MSGKEY_VIEW_COLUMN_LOCATION = "view.column.location";
-    public static final String MSGKEY_VIEW_TOOLTIP_PROJECT = "view.tooltip.project";
-    public static final String MSGKEY_VIEW_TOOLTIP_FILE = "view.tooltip.file";
-    public static final String MSGKEY_VIEW_TOOLTIP_DISABLE = "view.tooltip.disable";
-    public static final String MSGKEY_VIEW_TOOLTIP_ERRORHIGH_FILTER = "view.tooltip.errorhigh_filter";
-    public static final String MSGKEY_VIEW_TOOLTIP_ERROR_FILTER = "view.tooltip.error_filter";
-    public static final String MSGKEY_VIEW_TOOLTIP_WARNINGHIGH_FILTER = "view.tooltip.warninghigh_filter";
-    public static final String MSGKEY_VIEW_TOOLTIP_WARNING_FILTER = "view.tooltip.warning_filter";
-    public static final String MSGKEY_VIEW_TOOLTIP_INFORMATION_FILTER = "view.tooltip.information_filter";
-    public static final String MSGKEY_VIEW_TOOLTIP_SHOW_RULE = "view.tooltip.show_rule";
+    public static final String VIEW_COLUMN_MESSAGE = "view.column.message";
+    public static final String VIEW_COLUMN_RULE = "view.column.rule";
+    public static final String VIEW_COLUMN_CLASS = "view.column.class";
+    public static final String VIEW_COLUMN_PACKAGE = "view.column.package";
+    public static final String VIEW_COLUMN_PROJECT = "view.column.project";
+    public static final String VIEW_COLUMN_LOCATION = "view.column.location";
+    public static final String VIEW_TOOLTIP_PROJECT = "view.tooltip.project";
+    public static final String VIEW_TOOLTIP_FILE = "view.tooltip.file";
+    public static final String VIEW_TOOLTIP_DISABLE = "view.tooltip.disable";
+    public static final String VIEW_TOOLTIP_ERRORHIGH_FILTER = "view.tooltip.errorhigh_filter";
+    public static final String VIEW_TOOLTIP_ERROR_FILTER = "view.tooltip.error_filter";
+    public static final String VIEW_TOOLTIP_WARNINGHIGH_FILTER = "view.tooltip.warninghigh_filter";
+    public static final String VIEW_TOOLTIP_WARNING_FILTER = "view.tooltip.warning_filter";
+    public static final String VIEW_TOOLTIP_INFORMATION_FILTER = "view.tooltip.information_filter";
+    public static final String VIEW_TOOLTIP_SHOW_RULE = "view.tooltip.show_rule";
     public static final String VIEW_TOOLTIP_REMOVE_VIOLATION = "view.tooltip.remove_violation";
     public static final String VIEW_TOOLTIP_REFRESH = "view.tooltip.refresh_resource";
     public static final String VIEW_TOOLTIP_REVIEW = "view.tooltip.review";
@@ -319,7 +321,8 @@ public class StringKeys {
     public static final String WARNING_MESSAGE_MANDATORY = "message.warning.message_mandatory";
     public static final String WARNING_XPATH_MANDATORY = "message.warning.xpath_mandatory";
     public static final String WARNING_CLASS_INVALID = "message.warning.class_invalid";
-    
+
+    // these aren't used in the modern UI...can be removed
     public static final String PRIORITY_ERROR_HIGH   = "priority.error_high";
     public static final String PRIORITY_ERROR        = "priority.error";
     public static final String PRIORITY_WARNING_HIGH = "priority.warning_high";
@@ -337,6 +340,7 @@ public class StringKeys {
     public static final String MSGKEY_MONITOR_COLLECTING_MARKERS = "monitor.collect_markers";
     
     public static final String PRIORITY_COLUMN_NAME = "priority.column.name";
+    public static final String PRIORITY_COLUMN_PMD_NAME = "priority.column.name.pmd";
     public static final String PRIORITY_COLUMN_VALUE = "priority.column.value";
     public static final String PRIORITY_COLUMN_SIZE = "priority.column.size";
     public static final String PRIORITY_COLUMN_SHAPE = "priority.column.shape";
@@ -344,7 +348,7 @@ public class StringKeys {
     public static final String PRIORITY_COLUMN_DESC = "priority.column.description";
     
     /**
-     * This class is not meant to be instanciated
+     * This class is not meant to be instantiated
      *
      */
     private StringKeys() {

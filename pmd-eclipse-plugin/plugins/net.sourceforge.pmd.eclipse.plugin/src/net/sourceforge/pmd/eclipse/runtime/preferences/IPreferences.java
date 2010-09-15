@@ -68,11 +68,11 @@ public interface IPreferences {
     Level LOG_LEVEL = Level.WARN;
     String ACTIVE_RULES = "";
 
-    PriorityDescriptor PD_1_DEFAULT = new PriorityDescriptor(RulePriority.HIGH, 		StringKeys.VIEW_FILTER_PRIORITY_1, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_1, null, Shape.diamond, 	new RGB( 255,0,0), 	13);	// red
-    PriorityDescriptor PD_2_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM_HIGH, 	StringKeys.VIEW_FILTER_PRIORITY_2, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_2, null, Shape.square, 	new RGB( 0,255,255), 13);	// yellow
-    PriorityDescriptor PD_3_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM, 		StringKeys.VIEW_FILTER_PRIORITY_3, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_3, null, Shape.circle, 	new RGB( 0,255,0), 	13);	// green
-    PriorityDescriptor PD_4_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM_LOW,	StringKeys.VIEW_FILTER_PRIORITY_4, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_4, null, Shape.domeRight,new RGB( 255,0,255), 13);	// purple
-    PriorityDescriptor PD_5_DEFAULT = new PriorityDescriptor(RulePriority.LOW, 	  		StringKeys.VIEW_FILTER_PRIORITY_5, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY_5, null, Shape.plus, 	new RGB( 0,0,255), 	13);  	// blue
+    PriorityDescriptor PD_1_DEFAULT = new PriorityDescriptor(RulePriority.HIGH, 		StringKeys.VIEW_FILTER_PRIORITY_1, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.diamond, 	new RGB( 255,0,0), 	13);	// red
+    PriorityDescriptor PD_2_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM_HIGH, 	StringKeys.VIEW_FILTER_PRIORITY_2, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.square, 	new RGB( 0,255,255), 13);	// yellow
+    PriorityDescriptor PD_3_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM, 		StringKeys.VIEW_FILTER_PRIORITY_3, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.circle, 	new RGB( 0,255,0), 	13);	// green
+    PriorityDescriptor PD_4_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM_LOW,	StringKeys.VIEW_FILTER_PRIORITY_4, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.domeRight,new RGB( 255,0,255), 13);	// purple
+    PriorityDescriptor PD_5_DEFAULT = new PriorityDescriptor(RulePriority.LOW, 	  		StringKeys.VIEW_FILTER_PRIORITY_5, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.plus, 	new RGB( 0,0,255), 	13);  	// blue
     
     boolean isActive(String rulename);
     

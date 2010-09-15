@@ -44,10 +44,10 @@ public class PreferenceUIStore {
 		
 	public static final PreferenceUIStore instance = new PreferenceUIStore();
 	
-	private static String defaultHiddenColumnNames() {
+	private static String defaultHiddenColumnIds() {
 		 Set<String> colNames = new HashSet<String>(defaultHiddenColumns.length);
 		 for (RuleColumnDescriptor rcDesc : defaultHiddenColumns) {
-			 colNames.add(rcDesc.label());
+			 colNames.add(rcDesc.id());
 		 }
 		 return SWTUtil.asString(colNames, stringSeparator);
 	}
@@ -75,7 +75,7 @@ public class PreferenceUIStore {
 	private void createNewStore() {
 		
 		 preferenceStore.setValue(tableFraction, tableFractionDefault);		 
-		 preferenceStore.setValue(tableHiddenCols, defaultHiddenColumnNames());
+		 preferenceStore.setValue(tableHiddenCols, defaultHiddenColumnIds());
 		 preferenceStore.setValue(tableColumnSortUp, defaultSortUp);
 		 preferenceStore.setValue(groupingColumn, "");
 		 preferenceStore.setValue(selectedRuleNames, "");

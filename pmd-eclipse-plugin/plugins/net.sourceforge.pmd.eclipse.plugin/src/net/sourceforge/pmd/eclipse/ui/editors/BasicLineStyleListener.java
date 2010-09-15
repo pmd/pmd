@@ -113,7 +113,7 @@ public class BasicLineStyleListener implements LineStyleListener {
 	}
 
 	private boolean isDefinedVariable(String text) {
-		return !StringUtil.isEmpty(text);
+		return StringUtil.isNotEmpty(text);
 	}
 
 	private boolean atMultiLineCommentStart(String text, int position) {

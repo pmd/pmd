@@ -12,6 +12,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/xercesImpl-2.6.2.jar"/>
-	<classpathentry kind="con" path="org.eclipse.tptp.platform.instrumentation.ui.ContainerInitializer/Build to Manage Libraries"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

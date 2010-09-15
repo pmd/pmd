@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
@@ -44,12 +45,12 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Tree;
 
-public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements RuleSelectionListener, ModifyListener, ValueChangeListener {
+public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements RuleSelectionListener, ModifyListener, ValueChangeListener, ValueResetHandler {
 
 	private TabFolder 		     	tabFolder;
 	private RulePropertyManager[]   rulePropertyManagers;
 	private RuleTableManager		tableManager;
-    
+    	
 	// columns shown in the rule treetable in the desired order
 	public static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
 		TextColumnDescriptor.name,
@@ -92,7 +93,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	@Override
 	protected Control createContents(Composite parent) {
 
-		tableManager = new RuleTableManager(availableColumns, PMDPlugin.getDefault().loadPreferences());
+		tableManager = new RuleTableManager(availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
 		tableManager.modifyListener(this);
 		tableManager.selectionListener(this);
 
@@ -477,13 +478,9 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 			preferences.isActive(rule.getName(), true);
 		}
 
-		System.out.println("Active rules: " + preferences.getActiveRuleNames());
+//		System.out.println("Active rules: " + preferences.getActiveRuleNames());
 	}
 
-	/**
-	 * Update the configured rule set
-	 * Update also all configured projects
-	 */
 	private void updateRuleSet() {
 		try {
 			ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
@@ -494,6 +491,15 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 			});
 		} catch (Exception e) {
 			plugin.logError("Exception updating all projects after a preference change", e);
+		}
+	}
+
+	public void resetValuesIn(RuleSelection rules) {
+		
+		rules.useDefaultValues();
+		tableManager.refresh();
+		for (RulePropertyManager rpm : rulePropertyManagers) {
+			rpm.loadValues();
 		}
 	}
 

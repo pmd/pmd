@@ -141,7 +141,7 @@ public class RuleSelection implements RuleCollection {
     private static void useDefaultValues(Rule rule) {
     	
     	for (Map.Entry<PropertyDescriptor<?>, Object> entry : Configuration.filteredPropertiesOf(rule).entrySet()) {
-    		//rule.useDefaultValueFor(entry.getKey());		
+    		rule.useDefaultValueFor(entry.getKey());		
     	}
     }
     

@@ -227,7 +227,11 @@ public class MarkerUtil {
 		return priorityLevels;
 	}
 	
-
+	public static Set<String> currentRuleNames() {
+		gatherRuleNames();
+		return rulesByName.keySet();
+	}
+	
 	private static void gatherRuleNames() {
 
 		rulesByName = new HashMap<String, Rule>();

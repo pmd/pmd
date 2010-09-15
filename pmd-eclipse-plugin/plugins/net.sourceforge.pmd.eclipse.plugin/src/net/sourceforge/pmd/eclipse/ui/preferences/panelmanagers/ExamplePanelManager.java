@@ -89,12 +89,11 @@ public class ExamplePanelManager extends AbstractRulePanelManager {
     }
 
     private void formatExampleOn(StringBuilder sb, String example) {
-        // TODO - adjust for common leading whitespace on all lines - see StringUtil facilities
    //     sb.append(example.trim());
 
         String[] lines = example.split("\n");
         List<String> realLines = new ArrayList<String>(lines.length);
-        for (String line : lines) if (!StringUtil.isEmpty(line)) realLines.add(line);
+        for (String line : lines) if (StringUtil.isNotEmpty(line)) realLines.add(line);
         lines = realLines.toArray(new String[realLines.size()]);
 
         int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);

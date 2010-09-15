@@ -273,12 +273,12 @@ public class DescriptionPanelManager extends AbstractRulePanelManager {
 
     private boolean hasValidMessage() {
         String message = messageField.getText().trim();
-        return (!StringUtil.isEmpty(message) && message.length() > MIN_MESSAGE_LENGTH);
+        return StringUtil.isNotEmpty(message) && (message.length() > MIN_MESSAGE_LENGTH);
     }
 
     private boolean hasValidDescription() {
         String description = descriptionBox.getText().trim();
-        return (!StringUtil.isEmpty(description) && description.length() > MIN_MESSAGE_LENGTH);
+        return StringUtil.isNotEmpty(description) && (description.length() > MIN_MESSAGE_LENGTH);
     }
 
     private void adjustBrowseButton(boolean hasValidURL) {

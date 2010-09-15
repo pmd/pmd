@@ -48,7 +48,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     private boolean                     isActive;
     protected RuleSelection             rules;
     protected final ValueChangeListener changeListener;
-    protected final EditorUsageMode		usageMode;
+    private final EditorUsageMode		usageMode;
 
     protected static Color textColour;
     protected static Color errorColour;
@@ -82,6 +82,10 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         setPageComplete(true);
     }
 
+    protected boolean creatingNewRule() {
+   	 	return usageMode == EditorUsageMode.CreateNew;
+    }
+    
     public void tab(TabItem theTab) {
         tab = theTab;
         tabText = theTab.getText();
@@ -217,6 +221,10 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         });
     }
     
+    public void loadValues() {
+    	// subclasses to re-implement
+    }
+    
     protected void initializeOn(Composite parent) {
 
         if (errorColour != null) return;
@@ -225,7 +233,7 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
         errorColour = clrMgr.colourFor(new RGB( 255, 0, 0 ));        // red
         textColour = clrMgr.colourFor(new RGB( 0, 0, 0 ));           // black
         disabledColour = clrMgr.colourFor(new RGB( 128, 128, 128));   // grey
-        overridenColour = clrMgr.colourFor(overridenColourValues);
+//        overridenColour = clrMgr.colourFor(overridenColourValues);
     }
 
 //    protected void valueChanged() {

@@ -195,7 +195,7 @@ public class XPathPanelManager extends AbstractRulePanelManager {
 //        }
 //    }
 
-    protected void adapt() {
+    public void adapt() {
 
         Rule soleRule = soleRule();
 

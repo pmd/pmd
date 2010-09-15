@@ -5,16 +5,12 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.AbstractRulePanelManager;
 import net.sourceforge.pmd.eclipse.util.ColourManager;
-import net.sourceforge.pmd.lang.rule.RuleReference;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 /**
@@ -24,24 +20,24 @@ import org.eclipse.swt.widgets.Label;
 public abstract class AbstractEditorFactory implements EditorFactory {
 
     protected static ColourManager  colourManager;
-    protected static Color          overriddenColour;
+//    protected static Color          overriddenColour;
 
 	protected AbstractEditorFactory() { }
 
-	private static ColourManager colourManager() {
+//	private static ColourManager colourManager() {
+//
+//	    if (colourManager != null) return colourManager;
+//	    colourManager = ColourManager.managerFor(Display.getCurrent());
+//	    return colourManager;
+//	}
 
-	    if (colourManager != null) return colourManager;
-	    colourManager = ColourManager.managerFor(Display.getCurrent());
-	    return colourManager;
-	}
-
-	private Color overriddenColour() {
-
-	    if (overriddenColour != null) return overriddenColour;
-
-	    overriddenColour = colourManager().colourFor(AbstractRulePanelManager.overridenColourValues);
-	    return overriddenColour;
-	}
+//	private Color overriddenColour() {
+//
+//	    if (overriddenColour != null) return overriddenColour;
+//
+//	    overriddenColour = colourManager().colourFor(AbstractRulePanelManager.overridenColourValues);
+//	    return overriddenColour;
+//	}
 
 	protected Label newLabel(Composite parent, String text) {
 	    Label label = new Label(parent, SWT.None);
@@ -104,24 +100,26 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 	 * @param control
 	 * @param hasDefaultValue
 	 */
-	protected void adjustRendering(Control control, boolean hasDefaultValue) {
-
-	    Display display = control.getDisplay();
-
-	    control.setBackground(
-	       display.getSystemColor(hasDefaultValue ? SWT.COLOR_WHITE : SWT.COLOR_CYAN)
-	       );
-	}
+//	protected void adjustRendering(Control control, boolean hasDefaultValue) {
+//
+//	    Display display = control.getDisplay();
+//
+//	    control.setBackground(
+//	       display.getSystemColor(hasDefaultValue ? SWT.COLOR_WHITE : SWT.COLOR_CYAN)
+//	       );
+//	}
 
 	protected void adjustRendering(Rule rule, PropertyDescriptor<?> desc, Control control) {
 
-	        if (!(rule instanceof RuleReference)) return;
-
-	        boolean isOverridden = ((RuleReference)rule).hasOverriddenProperty(desc);
-	        Display display = control.getDisplay();
-	        Color clr = isOverridden ? overriddenColour() : display.getSystemColor(SWT.COLOR_WHITE);
-
-	        control.setBackground(clr);
+		return;	// don't do it...kinda irritating
+		
+//	        if (!(rule instanceof RuleReference)) return;
+//
+//	        boolean isOverridden = ((RuleReference)rule).hasOverriddenProperty(desc);
+//	        Display display = control.getDisplay();
+//	        Color clr = isOverridden ? overriddenColour() : display.getSystemColor(SWT.COLOR_WHITE);
+//
+//	        control.setBackground(clr);
 	}
 
 	/**

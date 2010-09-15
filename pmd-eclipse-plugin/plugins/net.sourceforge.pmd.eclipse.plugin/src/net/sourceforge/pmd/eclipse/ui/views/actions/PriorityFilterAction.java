@@ -13,9 +13,10 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * Filters Elements by their Marker's Priorities
+ * Filters elements by the Marker priorities
  * 
  * @author SebastianRaffel ( 22.05.2005 )
+ * @author bremedios (15.9.2010)
  */
 public class PriorityFilterAction extends Action {
 
@@ -30,6 +31,7 @@ public class PriorityFilterAction extends Action {
         setFilterFrom(filters);
         setupActionLook();
     }
+    
     /**
      * Constructor, used for Violations Outline only
      * 
@@ -101,7 +103,8 @@ public class PriorityFilterAction extends Action {
         PriorityDescriptor desc = UISettings.descriptorFor(priority);
         setImageDescriptor( ImageDescriptor.createFromImage( desc.getImage(Display.getCurrent())) );
         setText(desc.label);
-        setToolTipText(desc.filterText);
+        String toolTip = String.format(desc.filterText, UISettings.labelFor(priority));
+        setToolTipText(toolTip);
     }
 
     /**

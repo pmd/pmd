@@ -15,7 +15,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
-import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
 import org.eclipse.jface.window.Window;
@@ -80,6 +79,10 @@ public class FormArranger {
 	    return rearrangeFor(theRule);
 	}
 
+	public void loadValues() {
+		rearrangeFor(rule);
+	}
+	
 	private int rearrangeFor(Rule theRule) {
 
 		clearChildren();

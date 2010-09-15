@@ -26,7 +26,7 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
  	
  	protected String imageId() { return PMDUiConstants.ICON_BUTTON_DISABLE; }
     
-    protected String tooltipMsgId() { return StringKeys.MSGKEY_VIEW_TOOLTIP_DISABLE; } 
+    protected String tooltipMsgId() { return StringKeys.VIEW_TOOLTIP_DISABLE; } 
   
     public boolean hasActiveRules() {
     	

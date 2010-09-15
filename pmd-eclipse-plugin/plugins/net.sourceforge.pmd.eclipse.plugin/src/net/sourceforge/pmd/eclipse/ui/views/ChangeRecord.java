@@ -7,7 +7,6 @@ import java.util.List;
 /**
  * 
  * @author Brian Remedios
- *
  */
 public class ChangeRecord<T extends Object> {
 

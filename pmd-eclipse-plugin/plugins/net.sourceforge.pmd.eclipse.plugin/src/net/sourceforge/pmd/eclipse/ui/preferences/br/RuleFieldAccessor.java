@@ -26,6 +26,7 @@ public interface RuleFieldAccessor {
 	// NOTE: If you update these values then you also need to update
 	// the tooltip that references them: 'preference.ruleset.column.rule_type.tooltip'
 
+	String[] ruleTypeGeneric= new String[] { "-", "Generic" };
 	String[] ruleTypeXPath	= new String[] { "X", "XPath" };
 	String[] ruleTypeDFlow	= new String[] { "D", "Dataflow" };
 	String[] ruleTypeTypeRes= new String[] { "T", "Type resolving" };
@@ -118,6 +119,7 @@ public interface RuleFieldAccessor {
 			if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) sb.append(ruleTypeXPath[0]);
 			if (rule.usesDFA()) sb.append(ruleTypeDFlow[0]);
 			if (rule.usesTypeResolution()) sb.append(ruleTypeTypeRes[0]);
+			if (sb.length() == 0) sb.append(ruleTypeGeneric[0]);
 			return sb.toString();
 		}
 		public String labelFor(Rule rule) {
@@ -126,6 +128,7 @@ public interface RuleFieldAccessor {
 	//	    if (if (RuleUtil.isXPathRule(rule))    TODO
             if (rule.usesDFA()) types.add(ruleTypeDFlow[1]);
             if (rule.usesTypeResolution()) types.add(ruleTypeTypeRes[1]);
+            if (types.isEmpty()) types.add(ruleTypeGeneric[1]);
             return Util.asString(types, ", ");
 		}
 	};

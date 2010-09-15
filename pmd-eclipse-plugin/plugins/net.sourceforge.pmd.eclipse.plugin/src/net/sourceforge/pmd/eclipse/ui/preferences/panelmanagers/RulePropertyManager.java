@@ -11,4 +11,5 @@ public interface RulePropertyManager {
     boolean isActive();
     void manage(RuleSelection rules);
     boolean validate();
+    void loadValues();
 }

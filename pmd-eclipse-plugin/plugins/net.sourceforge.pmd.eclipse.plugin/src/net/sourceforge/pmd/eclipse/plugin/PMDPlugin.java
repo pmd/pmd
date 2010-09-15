@@ -401,6 +401,7 @@ public class PMDPlugin extends AbstractUIPlugin {
     
     public RuleLabelDecorator ruleLabelDecorator() {
     	IDecoratorManager mgr = getWorkbench().getDecoratorManager();
+    															// TODO don't use a raw string...urgh
     	return (RuleLabelDecorator) mgr.getBaseLabelProvider("net.sourceforge.pmd.eclipse.plugin.RuleLabelDecorator");
     }
     
