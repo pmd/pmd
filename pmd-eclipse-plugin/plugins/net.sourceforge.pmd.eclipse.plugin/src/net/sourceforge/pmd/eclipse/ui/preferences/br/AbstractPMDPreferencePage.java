@@ -15,7 +15,7 @@ public abstract class AbstractPMDPreferencePage extends PreferencePage implement
 
 	protected static PMDPlugin		plugin = PMDPlugin.getDefault();
 
-	abstract protected String descriptionId();
+	protected abstract String descriptionId();
 
 	/**
 	 * Returns the isModified.

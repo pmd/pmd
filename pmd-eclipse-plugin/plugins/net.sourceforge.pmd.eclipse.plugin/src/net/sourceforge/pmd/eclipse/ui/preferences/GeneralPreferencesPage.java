@@ -579,7 +579,7 @@ button.setSelection(true);
         Label label = buildLabel(comp, StringKeys.PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR);
         label.setLayoutData( new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, false, false, 1, 1));
         
-        final Spinner spinner = new Spinner(comp, SWT.SINGLE | SWT.BORDER);
+        final Spinner spinner = new Spinner(comp, SWT.BORDER);
         spinner.setLayoutData( new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_CENTER, true, false, 1, 1));
         spinner.setMinimum(preferences.getMaxViolationsPerFilePerRule());
         spinner.setToolTipText(getMessage(StringKeys.PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR));

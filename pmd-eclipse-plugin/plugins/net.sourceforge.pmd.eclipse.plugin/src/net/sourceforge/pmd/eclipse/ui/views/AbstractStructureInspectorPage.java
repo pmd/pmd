@@ -205,7 +205,7 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 
 	protected void buildMethodSelector(Composite parent) {
 		// the drop down box for showing all methods of the given resource
-		methodSelector = new Combo(parent, SWT.LEFT | SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
+		methodSelector = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
 		refreshPMDMethods();
 		methodSelector.setText(getString(StringKeys.VIEW_DATAFLOW_CHOOSE_METHOD));
 		methodSelector.setLayoutData(new GridData(300, SWT.DEFAULT));

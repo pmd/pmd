@@ -6,9 +6,9 @@ import java.util.List;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.editors.BasicLineStyleListener;
-import net.sourceforge.pmd.eclipse.ui.editors.SyntaxData;
-import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
+
+
+
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeText;
@@ -20,10 +20,10 @@ import net.sourceforge.pmd.util.StringUtil;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.custom.LineStyleListener;
+
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+
+
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;

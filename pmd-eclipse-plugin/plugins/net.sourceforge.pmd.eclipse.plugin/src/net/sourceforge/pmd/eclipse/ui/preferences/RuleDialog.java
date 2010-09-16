@@ -445,7 +445,7 @@ public class RuleDialog extends Dialog {
      * Build the priority combo
      */
     private Combo buildPriorityCombo(Composite parent) {
-        Combo combo = new Combo(parent, SWT.SINGLE | SWT.BORDER);
+        Combo combo = new Combo(parent, SWT.BORDER);
     	String[] labels = UISettings.getPriorityLabels();
     	int index = 3-1;
 		if (editedRule != null && editedRule.getPriority().getPriority() >= 0 && editedRule.getPriority().getPriority() <= labels.length) {

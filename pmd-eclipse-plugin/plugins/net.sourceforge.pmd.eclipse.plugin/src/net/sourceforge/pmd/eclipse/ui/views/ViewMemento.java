@@ -65,16 +65,16 @@ import org.eclipse.ui.XMLMemento;
  *
  */
 public class ViewMemento {
-    final private IPath path; // NOPMD by Herlin on 11/10/06 00:15
-    final private File file;
+    private final IPath path; // NOPMD by Herlin on 11/10/06 00:15
+    private final File file;
     private XMLMemento memento;
 
-    protected final static String XML_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    protected final static String LIST_SEPARATOR = ":";
-    protected final static String MEMENTO_PREFIX = "memento";
-    protected final static String ATTRIBUTE_PREFIX = "attribute";
-    protected final static String ATTR_NAME = "name";
-    protected final static String ATTR_VALUE = "value";
+    protected static final String XML_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    protected static final String LIST_SEPARATOR = ":";
+    protected static final String MEMENTO_PREFIX = "memento";
+    protected static final String ATTRIBUTE_PREFIX = "attribute";
+    protected static final String ATTR_NAME = "name";
+    protected static final String ATTR_VALUE = "value";
 
     /**
      * Constructor Searches for the XML-File, where the Memento should be saved and creates it if there is none

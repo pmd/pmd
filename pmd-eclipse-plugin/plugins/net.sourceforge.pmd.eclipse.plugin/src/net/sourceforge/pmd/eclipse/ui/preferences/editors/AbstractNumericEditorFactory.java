@@ -28,7 +28,7 @@ public abstract class AbstractNumericEditorFactory extends AbstractEditorFactory
 
     protected static Spinner newSpinnerFor(Composite parent, int digits) {
 
-        Spinner spinner = new Spinner(parent, SWT.SINGLE | SWT.BORDER);
+        Spinner spinner = new Spinner(parent, SWT.BORDER);
         spinner.setDigits(digits);
         return spinner;
     }

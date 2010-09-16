@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.ui.editors.BasicLineStyleListener;
-import net.sourceforge.pmd.eclipse.ui.editors.SyntaxData;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ImplementationType;

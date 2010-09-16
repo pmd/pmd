@@ -38,14 +38,11 @@ package net.sourceforge.pmd.eclipse.ui.views;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.HashMap;
+
 import java.util.Locale;
-import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.model.AbstractPMDRecord;
@@ -54,9 +51,6 @@ import net.sourceforge.pmd.eclipse.ui.model.FileToMarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.MarkerRecord;
 import net.sourceforge.pmd.eclipse.ui.model.PackageRecord;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 /**

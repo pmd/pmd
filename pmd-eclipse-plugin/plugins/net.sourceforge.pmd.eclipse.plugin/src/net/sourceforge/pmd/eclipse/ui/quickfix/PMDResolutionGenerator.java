@@ -148,7 +148,7 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
 	private static Fix fixFor(String ruleName, Class<Fix> fixClass) {
 		
 		try {
-			return (Fix)fixClass.newInstance();
+			return fixClass.newInstance();
 			} catch (Exception ex) {
 				brokenFixes.put(ruleName, fixClass.getName());
 				return null;

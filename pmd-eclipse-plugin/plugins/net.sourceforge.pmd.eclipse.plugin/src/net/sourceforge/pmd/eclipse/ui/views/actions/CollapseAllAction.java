@@ -49,7 +49,7 @@ import org.eclipse.jface.viewers.TreeViewer;
  */
 public class CollapseAllAction extends AbstractPMDAction {
 
-    final private TreeViewer treeViewer;
+    private final TreeViewer treeViewer;
 
     public CollapseAllAction(TreeViewer theViewer) {
         super();

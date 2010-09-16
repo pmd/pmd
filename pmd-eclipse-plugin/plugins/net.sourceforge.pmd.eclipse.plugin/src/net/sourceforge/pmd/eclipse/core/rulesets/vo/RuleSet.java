@@ -64,8 +64,8 @@ public class RuleSet {
     private String name = "";
     private String description = "";
     private String language = LANGUAGE_JAVA;
-    final private net.sourceforge.pmd.RuleSet pmdRuleSet = new net.sourceforge.pmd.RuleSet();
-    final private Collection<Rule> rules = new ArrayList<Rule>();
+    private final net.sourceforge.pmd.RuleSet pmdRuleSet = new net.sourceforge.pmd.RuleSet();
+    private final Collection<Rule> rules = new ArrayList<Rule>();
 
     /**
      * Getter for the description attribute. May be empty but never null.

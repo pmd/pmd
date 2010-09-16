@@ -56,7 +56,7 @@ public class TypeText extends Composite {
     private boolean hasRealText() {
         String textValue = text.getText();
         if (StringUtil.isEmpty(textValue)) return false;
-        if (text.equals(promptText)) return false;
+        if (textValue.equals(promptText)) return false;
 
         return true;
     }

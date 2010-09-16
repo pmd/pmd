@@ -57,7 +57,7 @@ import org.eclipse.core.runtime.Platform;
 public class RuleSetsExtensionProcessor {
     private static final String EXTENTION_POINT = "net.sourceforge.pmd.eclipse.plugin.rulesets";
     private static final String CLASS_ATTRIBUTE = "class";
-    final private IRuleSetManager ruleSetManager;
+    private final IRuleSetManager ruleSetManager;
 
     /**
      * Constructor

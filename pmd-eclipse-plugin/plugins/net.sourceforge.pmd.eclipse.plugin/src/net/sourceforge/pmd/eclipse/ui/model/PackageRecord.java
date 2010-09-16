@@ -55,8 +55,8 @@ import org.eclipse.jdt.core.JavaModelException;
  *
  */
 public class PackageRecord extends AbstractPMDRecord {
-    final private IPackageFragment packageFragment;
-    final private ProjectRecord parent;
+    private final IPackageFragment packageFragment;
+    private final ProjectRecord parent;
     private AbstractPMDRecord[] children;
 
     /**

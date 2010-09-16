@@ -46,11 +46,11 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 	protected Point tableSize;
 	protected int graphColumn;
 
-	protected final static Color DEFAULT_BG_COLOR = new Color(null,255,255,255);
-	protected final static Color DEFAULT_FG_COLOR = new Color(null,0,0,0);
-	protected final static Color DEFAULT_LINE_COLOR = new Color(null,192,192,192);
-	protected final static int DEFAULT_ROW_HEIGHT = 20;
-	protected final static int DEFAULT_COL_WIDTH = 100;
+	protected static final Color DEFAULT_BG_COLOR = new Color(null,255,255,255);
+	protected static final Color DEFAULT_FG_COLOR = new Color(null,0,0,0);
+	protected static final Color DEFAULT_LINE_COLOR = new Color(null,192,192,192);
+	protected static final int DEFAULT_ROW_HEIGHT = 20;
+	protected static final int DEFAULT_COL_WIDTH = 100;
 
 
 	/**

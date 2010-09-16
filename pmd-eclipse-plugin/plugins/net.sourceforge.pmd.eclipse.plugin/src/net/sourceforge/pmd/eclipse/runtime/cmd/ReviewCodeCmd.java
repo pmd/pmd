@@ -88,7 +88,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ReviewCodeCmd extends AbstractDefaultCommand {
 
-    final private List<ISchedulingRule> resources = new ArrayList<ISchedulingRule>();
+    private final List<ISchedulingRule> resources = new ArrayList<ISchedulingRule>();
     private IResourceDelta 				resourceDelta;
     private Map<IFile, Set<MarkerInfo>> markersByFile = new HashMap<IFile, Set<MarkerInfo>>();
     private boolean 					taskMarker;

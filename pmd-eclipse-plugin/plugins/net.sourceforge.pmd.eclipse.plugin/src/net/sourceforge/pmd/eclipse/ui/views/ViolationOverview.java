@@ -103,15 +103,15 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     protected int 				currentSortedColumn;
     private int 				showType;
 
-    protected final static String PACKAGE_SWITCH = "packageSwitch";
-    protected final static String PRIORITY_LIST = "priorityFilterList";
-    protected final static String PROJECT_LIST = "projectFilterList";
-    protected final static String COLUMN_WIDTHS = "tableColumnWidths";
-    protected final static String COLUMN_SORTER = "tableColumnSorter";
+    protected static final String PACKAGE_SWITCH = "packageSwitch";
+    protected static final String PRIORITY_LIST = "priorityFilterList";
+    protected static final String PROJECT_LIST = "projectFilterList";
+    protected static final String COLUMN_WIDTHS = "tableColumnWidths";
+    protected static final String COLUMN_SORTER = "tableColumnSorter";
 
-    public final static int SHOW_PACKAGES_FILES_MARKERS = 1;	// Shows packages -> files -> markers
-    public final static int SHOW_FILES_MARKERS			= 2;	// Shows files -> markers without packages
-    public final static int SHOW_MARKERS_FILES			= 3;	// Shows markers -> files without packages
+    public static final int SHOW_PACKAGES_FILES_MARKERS = 1;	// Shows packages -> files -> markers
+    public static final int SHOW_FILES_MARKERS			= 2;	// Shows files -> markers without packages
+    public static final int SHOW_MARKERS_FILES			= 3;	// Shows markers -> files without packages
 
     /**
      * @see org.eclipse.ui.ViewPart#init(org.eclipse.ui.IViewSite)
@@ -496,7 +496,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         if (!projectNames.isEmpty()) {
             List<AbstractPMDRecord> projectList = new ArrayList<AbstractPMDRecord>();
             for (int k = 0; k < projectNames.size(); k++) {
-                AbstractPMDRecord project = root.findResourceByName(projectNames.get(k).toString(),
+                AbstractPMDRecord project = root.findResourceByName(projectNames.get(k),
                         AbstractPMDRecord.TYPE_PROJECT);
                 if (project != null) {
                     projectList.add(project);

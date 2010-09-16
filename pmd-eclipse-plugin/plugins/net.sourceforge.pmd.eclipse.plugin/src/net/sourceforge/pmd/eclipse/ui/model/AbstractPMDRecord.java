@@ -53,11 +53,11 @@ import org.eclipse.core.resources.IResource;
  *
  */
 public abstract class AbstractPMDRecord {
-    public final static int TYPE_ROOT = IResource.ROOT;
-    public final static int TYPE_PROJECT = IResource.PROJECT;
-    public final static int TYPE_PACKAGE = IResource.FOLDER;
-    public final static int TYPE_FILE = IResource.FILE;
-    public final static int TYPE_MARKER = 16;
+    public static final int TYPE_ROOT = IResource.ROOT;
+    public static final int TYPE_PROJECT = IResource.PROJECT;
+    public static final int TYPE_PACKAGE = IResource.FOLDER;
+    public static final int TYPE_FILE = IResource.FILE;
+    public static final int TYPE_MARKER = 16;
 
     public static final AbstractPMDRecord[] EMPTY_RECORDS = new AbstractPMDRecord[0];
     /**
@@ -200,7 +200,7 @@ public abstract class AbstractPMDRecord {
             }
         }
 
-        return markerList.isEmpty() ? null : (IMarker[]) markerList.toArray(new IMarker[markerList.size()]); // NOPMD by Herlin on 07/10/06 15:51
+        return markerList.isEmpty() ? null : markerList.toArray(new IMarker[markerList.size()]); // NOPMD by Herlin on 07/10/06 15:51
     }
 
     /**

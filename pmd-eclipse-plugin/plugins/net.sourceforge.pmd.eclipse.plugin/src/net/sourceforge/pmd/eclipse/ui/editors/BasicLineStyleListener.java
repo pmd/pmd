@@ -96,7 +96,7 @@ public class BasicLineStyleListener implements LineStyleListener {
 
 		// Go through the multiline comment ranges
 		for (int i = 0, n = commentOffsets.size(); i < n; i++) {
-			int[] offsets = (int[]) commentOffsets.get(i);
+			int[] offsets = commentOffsets.get(i);
 
 			// If starting offset is past range, quit
 			if (offsets[0] > start + length)
@@ -231,7 +231,7 @@ public class BasicLineStyleListener implements LineStyleListener {
 		}
 
 		// Copy the StyleRanges back into the event
-		event.styles = (StyleRange[]) styles.toArray(new StyleRange[styles.size()]);
+		event.styles = styles.toArray(new StyleRange[styles.size()]);
 	}
 
 	private int getKeywordEnd(String lineText, int start) {

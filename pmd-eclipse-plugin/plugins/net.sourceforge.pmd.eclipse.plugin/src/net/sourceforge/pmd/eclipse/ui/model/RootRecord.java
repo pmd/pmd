@@ -51,7 +51,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
  *
  */
 public class RootRecord extends AbstractPMDRecord {
-    final private IWorkspaceRoot workspaceRoot;
+    private final IWorkspaceRoot workspaceRoot;
     private AbstractPMDRecord[] children;
 
     /**

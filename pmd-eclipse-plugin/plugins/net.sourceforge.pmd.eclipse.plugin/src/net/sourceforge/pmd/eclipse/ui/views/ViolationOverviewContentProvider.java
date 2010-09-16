@@ -72,7 +72,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
     private static final Log LOG = LogFactory.getLog(ViolationOverviewContentProvider.class);
     protected boolean filterPackages;
 
-    final private ViolationOverview violationView;
+    private final ViolationOverview violationView;
     private TreeViewer treeViewer;
 
     private RootRecord root;

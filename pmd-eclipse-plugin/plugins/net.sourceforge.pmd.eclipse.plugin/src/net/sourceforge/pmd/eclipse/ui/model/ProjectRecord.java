@@ -61,8 +61,8 @@ import org.eclipse.jdt.core.JavaModelException;
  *
  */
 public class ProjectRecord extends AbstractPMDRecord {
-    final private IProject project;
-    final private RootRecord parent;
+    private final IProject project;
+    private final RootRecord parent;
     private AbstractPMDRecord[] children;
 
     /**

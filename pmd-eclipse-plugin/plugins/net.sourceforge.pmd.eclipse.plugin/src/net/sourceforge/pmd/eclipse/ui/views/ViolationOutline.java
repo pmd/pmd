@@ -35,7 +35,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
-import org.eclipse.ui.part.IPageBookViewPage;
 
 /**
  * A View to show a list of PMD-Violations for a file
@@ -47,9 +46,9 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     private FileRecord resourceRecord;
     private PriorityFilter priorityFilter;
 
-    protected final static String PRIORITY_LIST = "priorityFilterList";
-    protected final static String COLUMN_WIDTHS = "tableColumnWidths";
-    protected final static String COLUMN_SORTER = "tableColumnSorter";
+    protected static final String PRIORITY_LIST = "priorityFilterList";
+    protected static final String COLUMN_WIDTHS = "tableColumnWidths";
+    protected static final String COLUMN_SORTER = "tableColumnSorter";
 
     /* @see org.eclipse.ui.part.PageBookView#createPartControl(org.eclipse.ui.part.PageBook) */
     @Override
@@ -91,7 +90,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         if (resourceRecord != null) {
             // creates a new ViolationOutlinePage, when a Resource exists
             ViolationOutlinePage page = new ViolationOutlinePage(resourceRecord, this);
-            if (page instanceof IPageBookViewPage)  initPage(page);
+            initPage(page);
             page.createControl(getPageBook());
             return new PageRec(part, page);
         }
