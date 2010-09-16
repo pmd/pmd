@@ -89,6 +89,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String MAX_VIOLATIONS_PFPR         = PMDPlugin.PLUGIN_ID + ".max_violations_pfpr";
     private static final String REVIEW_ADDITIONAL_COMMENT 	= PMDPlugin.PLUGIN_ID + ".review_additional_comment";
     private static final String REVIEW_PMD_STYLE_ENABLED    = PMDPlugin.PLUGIN_ID + ".review_pmd_style_enabled";
+    private static final String USE_CUSTOM_PRIORITY_NAMES   = PMDPlugin.PLUGIN_ID + ".use_custom_priority_names";
     private static final String MIN_TILE_SIZE               = PMDPlugin.PLUGIN_ID + ".min_tile_size";
     private static final String LOG_FILENAME                = PMDPlugin.PLUGIN_ID + ".log_filename";
     private static final String LOG_LEVEL                   = PMDPlugin.PLUGIN_ID + ".log_level";
@@ -123,6 +124,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             loadProjectBuildPathEnabled();
             loadPmdPerspectiveEnabled();
             loadCheckAfterSaveEnabled();
+            loadUseCustomPriorityNames();
             loadMaxViolationsPerFilePerRule();
             loadReviewAdditionalComment();
             loadReviewPmdStyleEnabled();
@@ -183,6 +185,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storeProjectBuildPathEnabled();
         storePmdPerspectiveEnabled();
         storeCheckAfterSaveEnabled();
+        storeUseCustomPriorityNames();
         storeMaxViolationsPerFilePerRule();
         storeReviewAdditionalComment();
         storeReviewPmdStyleEnabled();
@@ -231,13 +234,14 @@ class PreferencesManagerImpl implements IPreferencesManager {
         preferences.setPmdPerspectiveEnabled(loadPreferencesStore.getBoolean(PMD_PERSPECTIVE_ENABLED));
     }
 
-    /**
-     * Read the pmdPerspectiveEnabled flag
-     *
-     */
     private void loadCheckAfterSaveEnabled() {
         loadPreferencesStore.setDefault(PMD_PERSPECTIVE_ENABLED, IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);
         preferences.isCheckAfterSaveEnabled(loadPreferencesStore.getBoolean(PMD_CHECK_AFTER_SAVE_ENABLED));
+    }
+    
+    private void loadUseCustomPriorityNames() {
+        loadPreferencesStore.setDefault(PMD_PERSPECTIVE_ENABLED, IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES);
+        preferences.useCustomPriorityNames(loadPreferencesStore.getBoolean(USE_CUSTOM_PRIORITY_NAMES));
     }
     
     /**
@@ -363,10 +367,14 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     /**
-     * Write the projectBuildPathEnabled flag
+     * Write the checkAfterSaveEnabled flag
      */
     private void storeCheckAfterSaveEnabled() {
         storePreferencesStore.setValue(PMD_CHECK_AFTER_SAVE_ENABLED, preferences.isCheckAfterSaveEnabled());
+    }
+    
+    private void storeUseCustomPriorityNames() {
+        storePreferencesStore.setValue(USE_CUSTOM_PRIORITY_NAMES, preferences.useCustomPriorityNames());
     }
     
     /**

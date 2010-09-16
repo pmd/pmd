@@ -9,10 +9,10 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapeDescriptor;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
@@ -41,7 +41,7 @@ public class UISettings {
     private static Map<Integer, RulePriority> prioritiesByIntValue;
     
     private static final int MAX_MARKER_DIMENSION = 9;
-    
+    private static IPreferencesManager preferencesManager = PMDPlugin.getDefault().getPreferencesManager();
     private static final Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
 
 
@@ -53,7 +53,7 @@ public class UISettings {
     private static Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority() {
     	
     	if (uiDescriptorsByPriority.isEmpty()) {
-    		IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
+    		IPreferences preferences = preferencesManager.loadPreferences();
             for (RulePriority rp : currentPriorities(true)) {
             	uiDescriptorsByPriority.put(rp, preferences.getPriorityDescriptor(rp));
             }
@@ -154,8 +154,17 @@ public class UISettings {
     }
     
     public static String labelFor(RulePriority priority) {
-    	String descLabel = descriptorFor(priority).label;
-    	return StringUtil.isEmpty(descLabel) ? priority.getName() : descLabel; 
+    	return labelFor(priority, true);	// TODO reflect preferences..could be expensive?
+    }
+    
+    public static String labelFor(RulePriority priority, boolean getCustomOne) {
+    	PriorityDescriptor desc = descriptorFor(priority);
+    	if (getCustomOne) { 
+    		if (StringUtil.isEmpty(desc.label)) {
+    			return priority.getName();
+    		} else { return desc.label; }
+    	}
+    	return priority.getName();
     }
     
 	public static Map<Object, ShapeDescriptor> shapesByPriority() {

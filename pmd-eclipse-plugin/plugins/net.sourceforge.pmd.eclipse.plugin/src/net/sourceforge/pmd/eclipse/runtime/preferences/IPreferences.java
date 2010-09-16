@@ -60,6 +60,7 @@ public interface IPreferences {
     boolean PROJECT_BUILD_PATH_ENABLED_DEFAULT = true;
     boolean PMD_PERSPECTIVE_ENABLED_DEFAULT = true;
     boolean PMD_CHECK_AFTER_SAVE_DEFAULT = false;
+    boolean PMD_USE_CUSTOM_PRIORITY_NAMES = true;
     int MAX_VIOLATIONS_PFPR_DEFAULT = 5;
     String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     boolean REVIEW_PMD_STYLE_ENABLED_DEFAULT = true;
@@ -102,6 +103,10 @@ public interface IPreferences {
      * Should the plugin scan any newly-saved code?
      */
     boolean isCheckAfterSaveEnabled();
+    
+    boolean useCustomPriorityNames();
+    
+    void useCustomPriorityNames(boolean flag);
     
     /**
      * Should the plugin scan any newly-saved code?

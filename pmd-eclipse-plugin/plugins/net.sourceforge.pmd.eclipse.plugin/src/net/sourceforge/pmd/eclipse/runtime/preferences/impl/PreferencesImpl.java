@@ -61,6 +61,7 @@ class PreferencesImpl implements IPreferences {
     private boolean 			projectBuildPathEnabled;
     private boolean 			pmdPerspectiveEnabled;
     private boolean				checkAfterSaveEnabled;
+    private boolean				useCustomPriorityNames;
     private int 				maxViolationsPerFilePerRule;
     private String 				reviewAdditionalComment;
     private boolean 			reviewPmdStyleEnabled;
@@ -239,6 +240,14 @@ class PreferencesImpl implements IPreferences {
 
 	public PriorityDescriptor getPriorityDescriptor(RulePriority priority) {
 		return uiDescriptorsByPriority.get(priority);
+	}
+
+	public boolean useCustomPriorityNames() {
+		return useCustomPriorityNames;
+	}
+
+	public void useCustomPriorityNames(boolean flag) {
+		useCustomPriorityNames = flag;
 	}
 
 }

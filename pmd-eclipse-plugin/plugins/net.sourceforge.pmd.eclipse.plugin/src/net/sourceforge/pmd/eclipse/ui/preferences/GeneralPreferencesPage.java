@@ -81,6 +81,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Button		showPerspectiveBox;
     private Button		useProjectBuildPath;
     private Button		checkCodeOnSave;
+    private Button		useCustomPriorityNames;    
     private Spinner		maxViolationsPerFilePerRule;
     private Button		reviewPmdStyleBox;
     private Text		logFileNameText;
@@ -89,6 +90,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Button		browseButton;
     private TableViewer tableViewer;
     private IPreferences preferences;
+    
+    private Control[]	nameFields;
     
     /**
      * Initialize the page
@@ -139,19 +142,16 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      */
     private Group buildGeneralGroup(final Composite parent) {
 
-        // build the group
         Group group = new Group(parent, SWT.SHADOW_IN);
         group.setText(getMessage(StringKeys.PREF_GENERAL_GROUP_GENERAL));
         group.setLayout(new GridLayout(1, false));
 
-        // build the children
         showPerspectiveBox = buildShowPerspectiveBoxButton(group);
         useProjectBuildPath = buildUseProjectBuildPathButton(group);
         checkCodeOnSave = buildCheckCodeOnSaveButton(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
         maxViolationsPerFilePerRule = buildMaxViolationsPerFilePerRuleText(group);
 
-        // layout children
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
@@ -194,6 +194,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
          return link;
     }
     
+    private void useCustomPriorityNames(boolean flag) {
+    	for (Control field : nameFields) field.setEnabled(flag);
+    }
+    
 	/**
      * Build the group of priority preferences
      * @param parent the parent composite
@@ -203,12 +207,16 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         Group group = new Group(parent, SWT.SHADOW_IN);
         group.setText(getMessage(StringKeys.PREF_GENERAL_GROUP_PRIORITIES));
-        group.setLayout(new GridLayout(1, false));
+        group.setLayout(new GridLayout(2, false));
 
-        createPreferenceLink(group, 
+        Link link = createPreferenceLink(group, 
         		"PMD folder annotations can be enabled on the <A>label decorations</A> page", 
         		"org.eclipse.ui.preferencePages.Decorators"
         		);
+        link.setLayoutData( new GridData(GridData.BEGINNING, GridData.CENTER, false, false, 1, 1) );
+        
+        useCustomPriorityNames = buildUseCustomPriorityNamesButton(group);
+        useCustomPriorityNames.setLayoutData( new GridData(GridData.END, GridData.CENTER, false, false, 1, 1) );
         
         IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
 			public void dispose() {	}
@@ -219,7 +227,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         
         tableViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         Table table = tableViewer.getTable();
-        table.setLayoutData( new GridData(GridData.BEGINNING, GridData.CENTER, true, true) );
+        table.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true, 2, 1) );
         
         tableViewer.setLabelProvider(labelProvider);
         tableViewer.setContentProvider(contentProvider);
@@ -229,11 +237,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         
         TableColumn[] columns = table.getColumns();
 		for (TableColumn column : columns) column.pack();
-		
-        GridData data = new GridData();
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;
-        table.setLayoutData(data);
         
         Composite editorPanel = new Composite(group, SWT.None);
         editorPanel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true) );
@@ -250,7 +253,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 		ssc.setItems( UISettings.allShapes() );
 		
         Label colourLabel = new Label(editorPanel, SWT.None);
-        colourLabel.setLayoutData( new GridData());
+        colourLabel.setLayoutData( new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1));
         colourLabel.setText("Color:");
         
         final ColorSelector colorPicker = new ColorSelector(editorPanel);
@@ -262,6 +265,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         final Text priorityName = new Text(editorPanel, SWT.BORDER);
         priorityName.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true) );
 
+        nameFields = new Control[] { nameLabel, priorityName };
+        
 //        final Label descLabel = new Label(editorPanel, SWT.None);
 //        descLabel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, false, true, 1, 1));
 //        descLabel.setText("Description:");
@@ -290,6 +295,9 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 			public void focusLost(FocusEvent e) {
 				setName( priorityName.getText() );	
 			}} );
+		
+		// only set this once the name fields are built
+		useCustomPriorityNames.setSelection(preferences.useCustomPriorityNames());
 		
         return group;
     }
@@ -358,7 +366,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         group.setLayout(new GridLayout(1, false));
 
         // build children
-        this.reviewPmdStyleBox = buildReviewPmdStyleBoxButton(group);
+        reviewPmdStyleBox = buildReviewPmdStyleBoxButton(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
         buildLabel(group, StringKeys.PREF_GENERAL_LABEL_ADDCOMMENT);
         additionalCommentText = buildAdditionalCommentText(group);
@@ -491,7 +499,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      */
     private Text buildAdditionalCommentText(Composite parent) {
         Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
-        text.setText(this.preferences.getReviewAdditionalComment());
+        text.setText(preferences.getReviewAdditionalComment());
         text.setToolTipText(getMessage(StringKeys.PREF_GENERAL_TOOLTIP_ADDCOMMENT));
 
         text.addModifyListener(new ModifyListener() {
@@ -503,6 +511,24 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         return text;
     }
 
+    /**
+     * Build the check box for showing the PMD perspective
+     * @param viewGroup the parent composite
+     *
+     */
+    private Button buildUseCustomPriorityNamesButton(Composite parent) {
+        Button button = new Button(parent, SWT.CHECK);
+        button.setLayoutData( new GridData(GridData.END, GridData.CENTER, false, false, 1, 1) );
+        button.setText("Use custom names");
+button.setEnabled(false);	// FIXME react to changes by updating the UI
+button.setSelection(true);
+        button.addSelectionListener( new SelectionAdapter() {
+        	public void widgetSelected(SelectionEvent se) {
+        		useCustomPriorityNames(((Button)se.getSource()).getSelection());
+        	}} );
+        return button;
+    }
+    
     /**
      * Build the check box for showing the PMD perspective
      * @param viewGroup the parent composite
@@ -525,7 +551,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Button button = new Button(viewGroup, SWT.CHECK);
         button.setText(getMessage(StringKeys.PREF_GENERAL_LABEL_SHOW_PERSPECTIVE));
         button.setSelection(preferences.isPmdPerspectiveEnabled());
-
         return button;
     }
 
@@ -569,44 +594,39 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Button buildReviewPmdStyleBoxButton(final Composite parent) {
         Button button = new Button(parent, SWT.CHECK);
         button.setText(getMessage(StringKeys.PREF_GENERAL_REVIEW_PMD_STYLE));
-        button.setSelection(this.preferences.isReviewPmdStyleEnabled());
+        button.setSelection(preferences.isReviewPmdStyleEnabled());
 
         return button;
     }
 
-
+    public static void setSelection(Button button, boolean flag) {
+    	if (button == null || button.isDisposed()) return;
+    	button.setSelection(flag);
+    }
+    
+    public static void setText(Text field, String txt) {
+    	if (field == null || field.isDisposed()) return;
+    	field.setText(txt);
+    }
+    
     /**
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
     	
-        if (additionalCommentText != null) {
-            additionalCommentText.setText(IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
-        }
+        setText(additionalCommentText, IPreferences.REVIEW_ADDITIONAL_COMMENT_DEFAULT);
 
-        if (showPerspectiveBox != null) {
-            showPerspectiveBox.setSelection(IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
-        }
-
-        if (checkCodeOnSave != null) {
-        	checkCodeOnSave.setSelection(IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);
-        }
-        
-        if (useProjectBuildPath != null) {
-            useProjectBuildPath.setSelection(IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
-        }
+        setSelection(showPerspectiveBox, 	IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
+        setSelection(checkCodeOnSave , 		IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);        
+        setSelection(useCustomPriorityNames,IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES);        
+        setSelection(useProjectBuildPath, 	IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
+        setSelection(reviewPmdStyleBox, 	IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
 
         if (maxViolationsPerFilePerRule != null) {
             maxViolationsPerFilePerRule.setMinimum(IPreferences.MAX_VIOLATIONS_PFPR_DEFAULT);
         }
 
-        if (reviewPmdStyleBox !=null) {
-            reviewPmdStyleBox.setSelection(IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
-        }
-
-        if (logFileNameText != null) {
-            logFileNameText.setText(IPreferences.LOG_FILENAME_DEFAULT);
-        }
+        setText(logFileNameText, IPreferences.LOG_FILENAME_DEFAULT);
 
         if (logLevelScale != null) {
             logLevelScale.setSelection(intLogLevel(IPreferences.LOG_LEVEL));
@@ -697,6 +717,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         if (checkCodeOnSave != null) {
             preferences.isCheckAfterSaveEnabled(checkCodeOnSave.getSelection());
+        }
+        
+        if (useCustomPriorityNames != null) {
+            preferences.useCustomPriorityNames(useCustomPriorityNames.getSelection());
         }
         
         if (useProjectBuildPath != null) {
