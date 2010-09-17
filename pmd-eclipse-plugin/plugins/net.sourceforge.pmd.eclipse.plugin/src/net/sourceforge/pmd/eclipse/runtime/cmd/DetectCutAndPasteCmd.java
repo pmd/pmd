@@ -53,6 +53,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -100,7 +101,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     public void execute() throws CommandException {
         try {
             // find the files
-            final List<File> files = findFiles();
+            List<File> files = findFiles();
 
             if (files.size() == 0) {
                 logInfo("No files found for specified language.");
@@ -116,7 +117,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
                 if (!isCanceled()) {
                     // if the command was not canceled
-                    if (this.createReport) {
+                    if (createReport) {
                         // create the report optionally
                         this.renderReport(cpd.getMatches());
                     }
@@ -138,7 +139,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             log.debug("Properties Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } finally {
-            this.setTerminated(true);
+            setTerminated(true);
         }
     }
 
@@ -263,7 +264,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
         return cpd;
     }
-
+    
     /**
      * Renders a report using the matches of the CPD. Creates a report folder
      * and report file.
@@ -271,6 +272,8 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @throws CommandException
      */
     private void renderReport(Iterator<Match> matches) throws CommandException {
+    	InputStream contentsStream = null;
+    	
         try {
             log.debug("Rendering CPD report");
             subTask("Rendering CPD report");
@@ -286,7 +289,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             // Create the report file
             log.debug("Create the report file");
             final IFile reportFile = folder.getFile(reportName);
-            final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
+            contentsStream = new ByteArrayInputStream(reportString.getBytes());
             if (reportFile.exists()) {
                 log.debug("   Overwritting the report file");
                 reportFile.setContents(contentsStream, true, false, getMonitor());
@@ -302,6 +305,8 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         } catch (IOException e) {
             log.debug("IO Exception: " + e.getMessage(), e);
             throw new CommandException(e);
+        } finally {
+        	IOUtil.closeQuietly(contentsStream);
         }
     }
 }

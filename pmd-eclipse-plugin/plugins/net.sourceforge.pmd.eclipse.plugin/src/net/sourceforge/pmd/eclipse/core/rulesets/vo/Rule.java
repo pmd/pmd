@@ -119,7 +119,7 @@ public class Rule {
      * @return Returns the ref.
      */
     public String getRef() {
-        return this.ref;
+        return ref;
     }
 
     /**
@@ -145,9 +145,9 @@ public class Rule {
 
         if (arg0 instanceof Rule) {
             final Rule r = (Rule) arg0;
-            equal = this.ref.equals(r.ref);
-            equal = equal && (((this.priority == null) && (r.priority == null)) || (this.priority.equals(r.priority)));
-            equal = equal && (((this.properties == null) && (r.properties == null)) || (this.properties.equals(r.properties)));
+            equal = ref.equals(r.ref);
+            equal = equal && (((priority == null) && (r.priority == null)) || (this.priority.equals(r.priority)));
+            equal = equal && (((properties == null) && (r.properties == null)) || (this.properties.equals(r.properties)));
         }
 
         return equal;
@@ -157,12 +157,12 @@ public class Rule {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        int hashCode = this.ref.hashCode();
-        if (this.priority != null) {
-            hashCode += this.priority.hashCode() * 13 * 13;
+        int hashCode = ref.hashCode();
+        if (priority != null) {
+            hashCode += priority.hashCode() * 13 * 13;
         }
-        if (this.properties != null) {
-            hashCode += this.properties.hashCode() * 21 * 21;
+        if (properties != null) {
+            hashCode += properties.hashCode() * 21 * 21;
         }
         
         return hashCode;
@@ -172,8 +172,8 @@ public class Rule {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return "Rule ref=" + this.ref + " message=" + this.message + " priority=" + this.priority.toString() + " properties="
-                + this.properties.toString();
+        return "Rule ref=" + ref + " message=" + message + " priority=" + priority.toString() + " properties="
+                + properties.toString();
     }
 
     /**
@@ -183,7 +183,7 @@ public class Rule {
      * @return Returns the PMD Rule object.
      */
     public net.sourceforge.pmd.Rule getPmdRule() {
-        return this.pmdRule;
+        return pmdRule;
     }
 
     /**

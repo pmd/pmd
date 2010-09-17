@@ -75,70 +75,70 @@ public class FakeRuleViolation implements RuleViolation {
      * @see net.sourceforge.pmd.IRuleViolation#getFilename()
      */
     public String getFilename() {
-        return this.filename;
+        return filename;
     }
 
     /**
      * @see net.sourceforge.pmd.IRuleViolation#getBeginLine()
      */
     public int getBeginLine() {
-        return this.beginLine;
+        return beginLine;
     }
 
     /**
      * @see net.sourceforge.pmd.IRuleViolation#getBeginColumn()
      */
     public int getBeginColumn() {
-        return this.beginColumn;
+        return beginColumn;
     }
 
     /**
      * @see net.sourceforge.pmd.IRuleViolation#getEndLine()
      */
     public int getEndLine() {
-        return this.endLine;
+        return endLine;
     }
 
     /**
      * @see net.sourceforge.pmd.IRuleViolation#getEndColumn()
      */
     public int getEndColumn() {
-        return this.endColumn;
+        return endColumn;
     }
 
     /**
      * @see net.sourceforge.pmd.IRuleViolation#getRule()
      */
     public Rule getRule() {
-        return this.rule;
+        return rule;
     }
 
     /**
      * @see net.sourceforge.pmd.IRuleViolation#getDescription()
      */
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     /**
      * @see net.sourceforge.pmd.IRuleViolation#getPackageName()
      */
     public String getPackageName() {
-        return this.packageName;
+        return packageName;
     }
 
     /**
      * @see net.sourceforge.pmd.IRuleViolation#getMethodName()
      */
     public String getMethodName() {
-        return this.methodName;
+        return methodName;
     }
 
     /**
      * @see net.sourceforge.pmd.IRuleViolation#getClassName()
      */
     public String getClassName() {
-        return this.className;
+        return className;
     }
 
     /**
@@ -152,7 +152,7 @@ public class FakeRuleViolation implements RuleViolation {
      * @see net.sourceforge.pmd.IRuleViolation#getVariableName()
      */
     public String getVariableName() {
-        return this.variableName;
+        return variableName;
     }
 
     /**

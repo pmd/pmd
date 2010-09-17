@@ -48,6 +48,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
@@ -220,7 +221,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     public File getResolvedRuleSetFile() {
     	// Check as project file, otherwise as standard file
-        final IFile file = this.project.getFile(getRuleSetFile());
+        IFile file = project.getFile(getRuleSetFile());
         boolean exists = file.exists() && file.isAccessible();
         File f;
         if (exists) {
@@ -230,7 +231,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             	f = new  File(getRuleSetFile());
         	}
         } else {
-        	f = new  File(getRuleSetFile());
+        	f = new File(getRuleSetFile());
         }
         return f;
     }
@@ -241,13 +242,14 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     public void createDefaultRuleSetFile() throws PropertiesException {
         log.info("Create a default rule set file for project " + this.project.getName());
+        ByteArrayOutputStream baos = null;
         try {
-            final IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            writer.write(baos, this.projectRuleSet);
+            IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
+            baos = new ByteArrayOutputStream();
+            writer.write(baos, projectRuleSet);
             baos.close();
 
-            final IFile file = this.project.getFile(PROJECT_RULESET_FILE);
+            final IFile file = project.getFile(PROJECT_RULESET_FILE);
             if (file.exists() && file.isAccessible()) {
                 throw new PropertiesException("Project ruleset file already exists");
             } else {
@@ -261,6 +263,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             throw new PropertiesException(e);
         } catch (CoreException e) {
             throw new PropertiesException(e);
+        } finally {
+        	IOUtil.closeQuietly(baos);
         }
 
     }
@@ -269,7 +273,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isIncludeDerivedFiles()
      */
     public boolean isIncludeDerivedFiles() {
-        return this.includeDerivedFiles;
+        return includeDerivedFiles;
     }
 
     /**

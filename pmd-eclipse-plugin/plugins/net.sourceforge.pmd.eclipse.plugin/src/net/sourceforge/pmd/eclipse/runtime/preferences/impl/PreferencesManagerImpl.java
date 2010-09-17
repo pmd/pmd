@@ -62,6 +62,7 @@ import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Level;
@@ -528,17 +529,20 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * Store the rule set in preference store
      */
     private void storeRuleSetInStateLocation(RuleSet ruleSet) {
+    	OutputStream out = null;
         try {
             IPath ruleSetLocation = PMDPlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
-            OutputStream out = new FileOutputStream(ruleSetLocation.toOSString());
+            out = new FileOutputStream(ruleSetLocation.toOSString());
             IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
             writer.write(out, ruleSet);
             out.flush();
-            out.close();
+            
         } catch (IOException e) {
             PMDPlugin.getDefault().logError("IO Exception when storing ruleset in state location", e);
         } catch (WriterException e) {
             PMDPlugin.getDefault().logError("General PMD Eclipse Exception when storing ruleset in state location", e);
+        } finally {
+        	IOUtil.closeQuietly(out);
         }
     }
 }

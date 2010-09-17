@@ -49,6 +49,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.renderers.Renderer;
 
 import org.apache.log4j.Logger;
@@ -106,6 +107,7 @@ public class RenderReportCmd extends AbstractProjectCommand {
      */
     @Override
     public void execute() throws CommandException {
+    	StringWriter writer = null;
         try {
             log.debug("Starting RenderReport command");
             log.debug("   Create a report object");
@@ -122,23 +124,23 @@ public class RenderReportCmd extends AbstractProjectCommand {
                 final Renderer renderer = entry.getValue();
 
                 log.debug("   Render the report");
-                final StringWriter w = new StringWriter();
-                renderer.setWriter(w);
+                writer = new StringWriter();
+                renderer.setWriter(writer);
                 renderer.start();
                 renderer.renderFileReport(report);
                 renderer.end();
 
-                final String reportString = w.toString();
+                String reportString = writer.toString();
 
                 log.debug("   Creating the report file");
                 final IFile reportFile = folder.getFile(reportName);
                 final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
                 if (reportFile.exists()) {
-                    reportFile.setContents(contentsStream, true, false, this.getMonitor());
+                    reportFile.setContents(contentsStream, true, false, getMonitor());
                 } else {
-                    reportFile.create(contentsStream, true, this.getMonitor());
+                    reportFile.create(contentsStream, true, getMonitor());
                 }
-                reportFile.refreshLocal(IResource.DEPTH_INFINITE, this.getMonitor());
+                reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
                 contentsStream.close();
             }
         } catch (CoreException e) {
@@ -148,8 +150,9 @@ public class RenderReportCmd extends AbstractProjectCommand {
             log.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } finally {
+        	IOUtil.closeQuietly(writer);
             log.debug("End of RenderReport command");
-            this.setTerminated(true);
+            setTerminated(true);
         }
     }
 
@@ -158,9 +161,9 @@ public class RenderReportCmd extends AbstractProjectCommand {
      */
     @Override
     public void reset() {
-       this.setProject(null);
-       this.renderers = new HashMap<String, Renderer>();
-       this.setTerminated(false);
+       setProject(null);
+       renderers = new HashMap<String, Renderer>();
+       setTerminated(false);
     }
 
     /**

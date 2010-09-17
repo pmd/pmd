@@ -23,6 +23,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.CreateRuleWizard;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.designer.Designer;
@@ -351,12 +352,16 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		}
 
 		if (flContinue) {
-			ruleSet.setName(FileUtil.getFileNameWithoutExtension(file.getName()));
-			ruleSet.setDescription(input.getValue());
-			OutputStream out = new FileOutputStream(fileName);
-			IRuleSetWriter writer = plugin.getRuleSetWriter();
-			writer.write(out, ruleSet);
-			out.close();
+			OutputStream out = null;
+			try {
+				ruleSet.setName(FileUtil.getFileNameWithoutExtension(file.getName()));
+				ruleSet.setDescription(input.getValue());
+				out = new FileOutputStream(fileName);
+				IRuleSetWriter writer = plugin.getRuleSetWriter();
+				writer.write(out, ruleSet);
+			} finally { 
+				IOUtil.closeQuietly(out);
+				}
 			MessageDialog.openInformation(shell, getMessage(StringKeys.INFORMATION_TITLE),
 					getMessage(StringKeys.INFORMATION_RULESET_EXPORTED));
 		}

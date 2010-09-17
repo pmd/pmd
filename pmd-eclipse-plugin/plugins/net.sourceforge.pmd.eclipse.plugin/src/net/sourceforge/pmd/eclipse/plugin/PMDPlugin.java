@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -65,7 +66,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 
 	private static File pluginFolder;
 
-	private HashMap<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
+	private Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 
 	public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
 

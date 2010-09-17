@@ -54,7 +54,7 @@ public class Property {
      * @return Returns the name.
      */
     public String getName() {
-        return this.name;
+        return name;
     }
 
     /**
@@ -76,7 +76,7 @@ public class Property {
      * @return Returns the value.
      */
     public String getValue() {
-        return this.value;
+        return value;
     }
 
     /**
@@ -99,8 +99,8 @@ public class Property {
         boolean equal = false;
 
         if (arg0 instanceof Property) {
-            final Property p = (Property) arg0;
-            equal = this.name.equals(p.name) && this.value.equals(p.value);
+            Property p = (Property) arg0;
+            equal = name.equals(p.name) && value.equals(p.value);
         }
 
         return equal;
@@ -110,14 +110,14 @@ public class Property {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return (this.name + this.value).hashCode();
+        return (name + value).hashCode();
     }
 
     /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return "property name=" + this.name + " value=" + this.value;
+        return "property name=" + name + " value=" + value;
     }
 
 }

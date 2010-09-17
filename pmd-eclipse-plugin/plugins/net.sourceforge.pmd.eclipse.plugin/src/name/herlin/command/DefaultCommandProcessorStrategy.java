@@ -96,12 +96,12 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
      */
     private void loadBundle() {
         try {
-            final ResourceBundle bundle = ResourceBundle.getBundle(COMMAND_PROCESSOR_STRATEGY_BUNDLE);
-            final Enumeration<String> e = bundle.getKeys();
+            ResourceBundle bundle = ResourceBundle.getBundle(COMMAND_PROCESSOR_STRATEGY_BUNDLE);
+            Enumeration<String> e = bundle.getKeys();
             while (e.hasMoreElements()) {
-                final String key = e.nextElement();
-                final String value = bundle.getString(key);
-                this.registeredCommandProcessors.put(key, value);
+                String key = e.nextElement();
+                String value = bundle.getString(key);
+                registeredCommandProcessors.put(key, value);
             }
         } catch (RuntimeException e) {
             // @PMD:REVIEWED:EmptyCatchBlock: by Herlin on 01/05/05 18:10

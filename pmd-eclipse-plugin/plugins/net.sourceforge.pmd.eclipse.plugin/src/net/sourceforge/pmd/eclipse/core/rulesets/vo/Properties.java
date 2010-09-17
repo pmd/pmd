@@ -81,7 +81,7 @@ public class Properties {
 
         if (arg0 instanceof Properties) {
             final Properties p = (Properties) arg0;
-            equal = this.propertiesSet.equals(p.propertiesSet);
+            equal = propertiesSet.equals(p.propertiesSet);
         }
 
         return equal;
@@ -92,7 +92,7 @@ public class Properties {
      */
     @Override
     public int hashCode() {
-        return this.propertiesSet.hashCode();
+        return propertiesSet.hashCode();
     }
 
     /**
@@ -100,9 +100,9 @@ public class Properties {
      */
     @Override
     public String toString() {
-        final StringBuilder buffer = new StringBuilder("Properties");
-        for (Property property : this.propertiesSet) {
-            final Property p = property;
+        StringBuilder buffer = new StringBuilder("Properties");
+        for (Property property : propertiesSet) {
+            Property p = property;
             buffer.append(' ').append(p);
         }
 

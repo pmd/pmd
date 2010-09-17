@@ -47,6 +47,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -255,12 +256,12 @@ public class BaseVisitor {
                     input.close();
 
                     timer.stop();
-                    this.pmdDuration += timer.getDuration();
+                    pmdDuration += timer.getDuration();
 
                     updateMarkers(file, context, isUseTaskMarker(), getAccumulator());
 
                     worked(1);
-                    this.fileCount++;
+                    fileCount++;
                 } else {
                     log.debug("The file " + file.getName() + " is not in the working set");
                 }
@@ -294,9 +295,9 @@ public class BaseVisitor {
      */
     private boolean isFileInWorkingSet(final IFile file) throws PropertiesException {
         boolean fileInWorkingSet = true;
-        final IWorkingSet workingSet = this.projectProperties.getProjectWorkingSet();
+        IWorkingSet workingSet = projectProperties.getProjectWorkingSet();
         if (workingSet != null) {
-            final ResourceWorkingSetFilter filter = new ResourceWorkingSetFilter();
+            ResourceWorkingSetFilter filter = new ResourceWorkingSetFilter();
             filter.setWorkingSet(workingSet);
             fileInWorkingSet = filter.select(null, null, file);
         }
@@ -401,12 +402,13 @@ public class BaseVisitor {
      */
     private List<Review> findReviewedViolations(final IFile file) {
         final List<Review> reviews = new ArrayList<Review>();
+        BufferedReader reader = null;
         try {
             int lineNumber = 0;
             boolean findLine = false;
             boolean comment = false;
             final Stack<String> pendingReviews = new Stack<String>();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
+            reader = new BufferedReader(new InputStreamReader(file.getContents()));
             while (reader.ready()) {
                 String line = reader.readLine();
                 if (line != null) {
@@ -447,6 +449,8 @@ public class BaseVisitor {
             PMDPlugin.getDefault().logError("Core Exception when searching reviewed violations", e);
         } catch (IOException e) {
             PMDPlugin.getDefault().logError("IO Exception when searching reviewed violations", e);
+        } finally {
+        	IOUtil.closeQuietly(reader);
         }
 
         return reviews;

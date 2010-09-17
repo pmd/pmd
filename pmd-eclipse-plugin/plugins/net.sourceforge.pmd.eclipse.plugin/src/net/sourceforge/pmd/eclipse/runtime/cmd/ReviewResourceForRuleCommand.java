@@ -118,24 +118,24 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
      */
     @Override
     public void execute() throws CommandException {
-        final IProject project = resource.getProject();
-        final IFile file = (IFile) resource.getAdapter(IFile.class);
+        IProject project = resource.getProject();
+        IFile file = (IFile) resource.getAdapter(IFile.class);
         beginTask("PMD checking for rule: " + rule.getName(), 1);
 
         if (file != null) {
-            final RuleSet ruleSet = new RuleSet();
+            RuleSet ruleSet = new RuleSet();
             ruleSet.addRule(rule);
             final PMDEngine pmdEngine = getPmdEngineForProject(project);
-            final File sourceCodeFile = file.getFullPath().toFile();
+            File sourceCodeFile = file.getFullPath().toFile();
             if (pmdEngine.applies(sourceCodeFile, ruleSet)) {
                 try {
-                    this.context = new RuleContext();
-                    this.context.setSourceCodeFile(sourceCodeFile);
-                    this.context.setSourceCodeFilename(file.getName());
-                    this.context.setReport(new Report());
+                    context = new RuleContext();
+                    context.setSourceCodeFile(sourceCodeFile);
+                    context.setSourceCodeFilename(file.getName());
+                    context.setReport(new Report());
     
-                    final Reader input = new InputStreamReader(file.getContents(), file.getCharset());
-                    pmdEngine.processFile(input, ruleSet, this.context);
+                    Reader input = new InputStreamReader(file.getContents(), file.getCharset());
+                    pmdEngine.processFile(input, ruleSet, context);
                     input.close();
                 } catch (CoreException e) {
                     throw new CommandException(e);

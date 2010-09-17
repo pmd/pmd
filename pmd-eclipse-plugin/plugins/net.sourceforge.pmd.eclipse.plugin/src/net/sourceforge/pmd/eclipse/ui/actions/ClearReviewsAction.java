@@ -45,6 +45,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.cmd.AbstractDefaultCommand;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -245,11 +246,12 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
     	if (!isReviewable(file)) return null;
     	
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintWriter out = null;
         boolean noChange = true;
         try {
             boolean comment = false;
             BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
-            PrintWriter out = new PrintWriter(baos);
+            out = new PrintWriter(baos);
 
             while (reader.ready()) {
                 String origLine = reader.readLine();
@@ -281,6 +283,9 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
             logError(StringKeys.ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
             logError(StringKeys.ERROR_IO_EXCEPTION, e);
+        } finally{
+        	IOUtil.closeQuietly(baos);
+        	IOUtil.closeQuietly(out);
         }
 
         return noChange ? null : baos.toString();

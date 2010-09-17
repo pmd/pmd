@@ -43,6 +43,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
@@ -132,10 +133,12 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
      */
     private void generateAST(IFile file) {
         log.info("Genrating AST for file " + file.getName());
+        ByteArrayOutputStream byteArrayOutputStream = null;
+        ByteArrayInputStream astInputStream = null;
         try {
             JavaParser parser = new JavaParser(new JavaCharStream(file.getContents()));
             ASTCompilationUnit compilationUnit = parser.CompilationUnit();
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byteArrayOutputStream = new ByteArrayOutputStream();
             IAstWriter astWriter = PMDPlugin.getDefault().getAstWriter();
             astWriter.write(byteArrayOutputStream, compilationUnit);
             byteArrayOutputStream.flush();
@@ -156,7 +159,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
                 if (astFile.exists()) {
                     astFile.delete(false, null);
                 }
-                ByteArrayInputStream astInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                astInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
                 astFile.create(astInputStream, false, null);
             }
 
@@ -168,6 +171,9 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
             showErrorById( StringKeys.ERROR_PMD_EXCEPTION, e);
         } catch (IOException e) {
             showErrorById(StringKeys.ERROR_IO_EXCEPTION, e);
+        } finally {
+        	IOUtil.closeQuietly(byteArrayOutputStream);
+        	IOUtil.closeQuietly(astInputStream);
         }
     }
 

@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -43,7 +44,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
 	private Map<T, ShapeDescriptor> shapeDescriptorsByItem;
 //	private Map<T, String>			tooltipsByItem;
 		
-	private Vector<ISelectionChangedListener> listeners;
+	private List<ISelectionChangedListener> listeners;
 	
 	private static Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 	

@@ -87,8 +87,8 @@ public class RuleSetsExtensionProcessor {
         if (object instanceof IRuleSetsExtension) {
             final IRuleSetsExtension extension = (IRuleSetsExtension) object;
 
-            extension.registerRuleSets(this.ruleSetManager.getRegisteredRuleSets());
-            extension.registerDefaultRuleSets(this.ruleSetManager.getDefaultRuleSets());
+            extension.registerRuleSets(ruleSetManager.getRegisteredRuleSets());
+            extension.registerDefaultRuleSets(ruleSetManager.getDefaultRuleSets());
 
         } else {
             PMDPlugin.getDefault().log(IStatus.ERROR, "Extension " + element.getName() + " is not an instance of IRuleSetsExtension", null);

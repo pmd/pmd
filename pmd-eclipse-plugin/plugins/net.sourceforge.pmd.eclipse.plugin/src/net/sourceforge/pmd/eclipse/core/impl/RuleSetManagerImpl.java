@@ -62,44 +62,44 @@ public class RuleSetManagerImpl implements IRuleSetManager {
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#registerRuleSet(net.sourceforge.pmd.RuleSet)
      */
-    public void registerRuleSet(final RuleSet ruleSet) {
+    public void registerRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
 
-        this.ruleSets.add(ruleSet);
+        ruleSets.add(ruleSet);
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#unregisterRuleSet(net.sourceforge.pmd.RuleSet)
      */
-    public void unregisterRuleSet(final RuleSet ruleSet) {
+    public void unregisterRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
 
-        this.ruleSets.remove(ruleSet);
+        ruleSets.remove(ruleSet);
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#getDefaultRuleSets()
      */
     public Set<RuleSet> getDefaultRuleSets() {
-        return this.defaultRuleSets;
+        return defaultRuleSets;
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#registerDefaultRuleSet(net.sourceforge.pmd.RuleSet)
      */
-    public void registerDefaultRuleSet(final RuleSet ruleSet) {
+    public void registerDefaultRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
 
-        this.defaultRuleSets.add(ruleSet);
+        defaultRuleSets.add(ruleSet);
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#unregisterDefaultRuleSet(net.sourceforge.pmd.RuleSet)
      */
-    public void unregisterDefaultRuleSet(final RuleSet ruleSet) {
+    public void unregisterDefaultRuleSet(RuleSet ruleSet) {
         checkForNull(ruleSet);
 
-        this.defaultRuleSets.remove(ruleSet);
+        defaultRuleSets.remove(ruleSet);
     }
     
     private void checkForNull(RuleSet ruleSet) {

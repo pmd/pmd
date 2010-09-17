@@ -163,14 +163,14 @@ public abstract class AbstractProcessableCommand implements Command {
      * @return the command processor for that command
      */
     protected CommandProcessor getCommandProcessor() throws CommandException {
-        if (this.commandProcessor == null) {
+        if (commandProcessor == null) {
             final CommandProcessorStrategy strategy = getCommandProcessorStrategy();
-            this.commandProcessor = strategy.getCommandProcessor(this);
-            if (this.commandProcessor == null) {
+            commandProcessor = strategy.getCommandProcessor(this);
+            if (commandProcessor == null) {
                 throw new UnregisteredCommandException("Processor cannot be found for that command");
             }
         }
 
-        return this.commandProcessor;
+        return commandProcessor;
     }
 }

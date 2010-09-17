@@ -62,7 +62,7 @@ public class RuleSets {
      * @return Returns the defaultRuleSet.
      */
     public RuleSet getDefaultRuleSet() {
-        return this.defaultRuleSet;
+        return defaultRuleSet;
     }
 
     /**
@@ -75,7 +75,7 @@ public class RuleSets {
         if (defaultRuleSet == null) {
             throw new IllegalArgumentException("default rule set cannot be null");
         }
-        if (!this.ruleSetsList.contains(defaultRuleSet)) {
+        if (!ruleSetsList.contains(defaultRuleSet)) {
             throw new IllegalArgumentException("The rule set " + defaultRuleSet.getName()
                     + " must belong to the rule set list to be set as default.");
         }
@@ -89,7 +89,7 @@ public class RuleSets {
      * @return Returns the ruleSet list.
      */
     public List<RuleSet> getRuleSets() {
-        return this.ruleSetsList;
+        return ruleSetsList;
     }
 
     /**
@@ -110,7 +110,7 @@ public class RuleSets {
      * @return the name of the default ruleset
      */
     public String getDefaultRuleSetName() {
-        return this.defaultRuleSet.getName();
+        return defaultRuleSet.getName();
     }
 
     /**
@@ -123,8 +123,8 @@ public class RuleSets {
             throw new IllegalArgumentException("The default ruleset name must not be null or empty");
         }
 
-        for (RuleSet ruleSet2 : this.ruleSetsList) {
-            final RuleSet ruleSet = ruleSet2;
+        for (RuleSet ruleSet2 : ruleSetsList) {
+            RuleSet ruleSet = ruleSet2;
             if (ruleSet.getName().equals(ruleSetName)) {
                 setDefaultRuleSet(ruleSet);
                 break;
@@ -137,11 +137,11 @@ public class RuleSets {
      */
     @Override
     public String toString() {
-        final StringBuilder buffer = new StringBuilder("RuleSets defaultRuleSet=");
-        buffer.append(this.defaultRuleSet.getName());
+        StringBuilder buffer = new StringBuilder("RuleSets defaultRuleSet=");
+        buffer.append(defaultRuleSet.getName());
         buffer.append(" ruleSetsList=");
 
-        for (RuleSet ruleSet : this.ruleSetsList) {
+        for (RuleSet ruleSet : ruleSetsList) {
             buffer.append(ruleSet);
         }
 

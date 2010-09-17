@@ -57,6 +57,7 @@ import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -167,7 +168,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     private ProjectPropertiesTO readProjectProperties(final IProject project) throws PropertiesException {
         ProjectPropertiesTO projectProperties = null;
-
+        Reader reader = null;
         try {
             final Mapping mapping = new Mapping(this.getClass().getClassLoader());
             final URL mappingSpecUrl = this.getClass().getResource(PROPERTIES_MAPPING);
@@ -175,7 +176,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
 
             final IFile propertiesFile = project.getFile(PROPERTIES_FILE);
             if (propertiesFile.exists() && propertiesFile.isAccessible()) {
-                final Reader reader = new InputStreamReader(propertiesFile.getContents());
+                reader = new InputStreamReader(propertiesFile.getContents());
                 final Unmarshaller unmarshaller = new Unmarshaller(mapping);
                 projectProperties = (ProjectPropertiesTO) unmarshaller.unmarshal(reader);
                 reader.close();
@@ -190,6 +191,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             throw new PropertiesException(e);
         } catch (CoreException e) {
             throw new PropertiesException(e);
+        } finally {
+        	IOUtil.closeQuietly(reader);
         }
 
         return projectProperties;
@@ -258,14 +261,15 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     private void writeProjectProperties(final IProject project, final ProjectPropertiesTO projectProperties)
             throws PropertiesException {
+    	StringWriter writer = null;
         try {
             LocalConfiguration.getInstance().getProperties().setProperty("org.exolab.castor.indent", "true");
 
-            final Mapping mapping = new Mapping(this.getClass().getClassLoader());
-            final URL mappingSpecUrl = this.getClass().getResource(PROPERTIES_MAPPING);
+            final Mapping mapping = new Mapping(getClass().getClassLoader());
+            final URL mappingSpecUrl = getClass().getResource(PROPERTIES_MAPPING);
             mapping.loadMapping(mappingSpecUrl);
 
-            final StringWriter writer = new StringWriter();
+            writer = new StringWriter();
             final Marshaller marshaller = new Marshaller(writer);
             marshaller.setMapping(mapping);
             marshaller.marshal(projectProperties);
@@ -288,6 +292,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             throw new PropertiesException(e);
         } catch (CoreException e) {
             throw new PropertiesException(e);
+        } finally {
+        	IOUtil.closeQuietly(writer);
         }
     }
 

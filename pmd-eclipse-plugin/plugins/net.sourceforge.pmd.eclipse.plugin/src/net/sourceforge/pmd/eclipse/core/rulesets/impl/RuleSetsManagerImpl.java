@@ -50,6 +50,7 @@ import net.sourceforge.pmd.eclipse.core.rulesets.IRuleSetsManager;
 import net.sourceforge.pmd.eclipse.core.rulesets.vo.Rule;
 import net.sourceforge.pmd.eclipse.core.rulesets.vo.RuleSet;
 import net.sourceforge.pmd.eclipse.core.rulesets.vo.RuleSets;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -114,12 +115,13 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
             throw new PMDCoreException("A RuleSetsNotFound Exception was thrown.", e);
         }
     }
-
+    
     /**
      * @see net.sourceforge.pmd.eclipse.core.rulesets.IRuleSetsManager#writeToXml(net.sourceforge.pmd.eclipse.core.rulesets.vo.RuleSets, java.io.OutputStream)
      */
     public void writeToXml(RuleSets ruleSets, OutputStream output) throws PMDCoreException {
         LOG.debug("Storing plug-in rulesets");
+        StringWriter writer = null;
         try {
             LocalConfiguration.getInstance().getProperties().setProperty("org.exolab.castor.indent", "true");
 
@@ -127,12 +129,11 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
             final URL mappingSpecUrl = this.getClass().getResource(RULESETS_MAPPING);
             mapping.loadMapping(mappingSpecUrl);
 
-            final StringWriter writer = new StringWriter();
+            writer = new StringWriter();
             final Marshaller marshaller = new Marshaller(writer);
             marshaller.setMapping(mapping);
             marshaller.marshal(ruleSets);
             writer.flush();
-            writer.close();
 
             output.write(writer.getBuffer().toString().getBytes());
             output.flush();
@@ -149,6 +150,8 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
         } catch (IOException e) {
             LOG.error("A IO Exception was thrown.");
             throw new PMDCoreException("A IO Exception was thrown.", e);
+        } finally {
+        	 IOUtil.closeQuietly(writer);
         }
     }
 }
