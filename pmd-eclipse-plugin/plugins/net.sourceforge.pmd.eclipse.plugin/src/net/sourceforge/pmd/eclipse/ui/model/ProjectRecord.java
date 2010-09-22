@@ -87,9 +87,9 @@ public class ProjectRecord extends AbstractPMDRecord {
         this.parent = record;
 
         if (project.isAccessible()) {
-            this.children = createChildren();
+            children = createChildren();
         } else {
-            this.children = EMPTY_RECORDS;
+            children = EMPTY_RECORDS;
         }
 
     }
@@ -209,7 +209,7 @@ public class ProjectRecord extends AbstractPMDRecord {
      */
     @Override
     public String getName() {
-        return this.project.getName();
+        return project.getName();
     }
 
     /**
@@ -218,7 +218,7 @@ public class ProjectRecord extends AbstractPMDRecord {
      * @return true, if the Project is open, false otherwise
      */
     public boolean isProjectOpen() {
-        return this.project.isOpen();
+        return project.isOpen();
     }
 
     /**
@@ -247,7 +247,7 @@ public class ProjectRecord extends AbstractPMDRecord {
 
             // we search int the children Packages for the File's Package
             // by comparing their Fragments
-            for (int k = 0; k < this.children.length && addedResource == null; k++) {
+            for (int k = 0; k < children.length && addedResource == null; k++) {
                 final PackageRecord packageRec = (PackageRecord) children[k];
                 if (packageRec.getFragment().equals(fragment)) {
                     // if the Package exists
@@ -263,7 +263,7 @@ public class ProjectRecord extends AbstractPMDRecord {
                 packages.add(packageRec);
 
                 // ... and we add a new FileRecord to it
-                this.children = new AbstractPMDRecord[packages.size()];
+                children = new AbstractPMDRecord[packages.size()];
                 packages.toArray(children);
                 addedResource = packageRec.addResource(resource);
             }
@@ -292,8 +292,8 @@ public class ProjectRecord extends AbstractPMDRecord {
             PackageRecord packageRec;
 
             // like above we compare Fragments to find the right Package
-            for (int k = 0; k < this.children.length && removedResource == null; k++) {
-                packageRec = (PackageRecord) this.children[k];
+            for (int k = 0; k < children.length && removedResource == null; k++) {
+                packageRec = (PackageRecord) children[k];
                 if (packageRec.getFragment().equals(fragment)) {
 
                     // if we found it, we remove the File
@@ -304,13 +304,13 @@ public class ProjectRecord extends AbstractPMDRecord {
                         final List<AbstractPMDRecord> packages = getChildrenAsList();
                         packages.remove(packageRec);
 
-                        this.children = new AbstractPMDRecord[packages.size()]; // NOPMD
+                        children = new AbstractPMDRecord[packages.size()]; // NOPMD
                                                                                 // by
                                                                                 // Herlin
                                                                                 // on
                                                                                 // 09/10/06
                                                                                 // 00:54
-                        packages.toArray(this.children);
+                        packages.toArray(children);
                     }
 
                     removedResource = fileRec;

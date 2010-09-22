@@ -87,7 +87,7 @@ public class Priority {
      * @return Returns the priorityValue.
      */
     public int getPriorityValue() {
-        return this.priorityValue;
+        return priorityValue;
     }
 
     /**
@@ -122,14 +122,14 @@ public class Priority {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return Integer.valueOf(this.priorityValue).hashCode();
+        return Integer.valueOf(priorityValue).hashCode();
     }
 
     /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return "priorityValue value=" + this.priorityValue;
+        return "priorityValue value=" + priorityValue;
     }
 
 }

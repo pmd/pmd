@@ -6,6 +6,10 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
+/**
+ * 
+ * @author Brian Remedios
+ */
 public class IOUtil {
 
 	private IOUtil() {}

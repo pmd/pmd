@@ -85,7 +85,7 @@ public class BaseVisitor {
     protected BaseVisitor() {
         super();
 
-        this.hiddenRules = new RuleSet();
+        hiddenRules = new RuleSet();
     }
 
     /**
@@ -94,7 +94,7 @@ public class BaseVisitor {
      * @return boolean
      */
     public boolean isUseTaskMarker() {
-        return this.useTaskMarker;
+        return useTaskMarker;
     }
 
     /**
@@ -113,7 +113,7 @@ public class BaseVisitor {
      * @return Map
      */
     public Map<IFile, Set<MarkerInfo>> getAccumulator() {
-        return this.accumulator;
+        return accumulator;
     }
 
     /**
@@ -130,7 +130,7 @@ public class BaseVisitor {
      * @return
      */
     public IProgressMonitor getMonitor() {
-        return this.monitor;
+        return monitor;
     }
 
     /**
@@ -176,7 +176,7 @@ public class BaseVisitor {
      * @return Returns the pmdEngine.
      */
     public PMDEngine getPmdEngine() {
-        return this.pmdEngine;
+        return pmdEngine;
     }
 
     /**
@@ -207,14 +207,14 @@ public class BaseVisitor {
      * @return the number of files that has been processed
      */
     public int getProcessedFilesCount() {
-        return this.fileCount;
+        return fileCount;
     }
 
     /**
      * @return actual PMD duration
      */
     public long getActualPmdDuration() {
-        return this.pmdDuration;
+        return pmdDuration;
     }
 
     /**
@@ -233,7 +233,7 @@ public class BaseVisitor {
     protected final void reviewResource(final IResource resource) {
         IFile file = (IFile) resource.getAdapter(IFile.class);
         if (file != null && file.getFileExtension() != null) {
-
+        	Reader input = null;
             try {
                 boolean included = projectProperties.isIncludeDerivedFiles() || !projectProperties.isIncludeDerivedFiles() && !file.isDerived();
                 log.debug("Derived files included: " + projectProperties.isIncludeDerivedFiles());
@@ -251,9 +251,8 @@ public class BaseVisitor {
                     context.setSourceCodeFilename(file.getName());
                     context.setReport(new Report());
 
-                    final Reader input = new InputStreamReader(file.getContents(), file.getCharset());
+                    input = new InputStreamReader(file.getContents(), file.getCharset());
                     getPmdEngine().processFile(input, getRuleSet(), context);
-                    input.close();
 
                     timer.stop();
                     pmdDuration += timer.getDuration();
@@ -282,6 +281,8 @@ public class BaseVisitor {
                 log.error("Properties exception visiting " + file.getName(), e); // TODO:
                                                                             // complete
                                                                             // message
+            } finally {
+            	IOUtil.closeQuietly(input);
             }
 
         }

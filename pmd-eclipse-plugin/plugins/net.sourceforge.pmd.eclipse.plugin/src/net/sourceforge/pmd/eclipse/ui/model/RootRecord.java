@@ -83,7 +83,7 @@ public class RootRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord[] getChildren() {
-        return this.children; // NOPMD by Herlin on 09/10/06 00:56
+        return children; // NOPMD by Herlin on 09/10/06 00:56
     }
 
     /**
@@ -146,7 +146,7 @@ public class RootRecord extends AbstractPMDRecord {
      */
     @Override
     public String getName() {
-        return this.workspaceRoot.getName();
+        return workspaceRoot.getName();
     }
 
     /**
@@ -171,8 +171,8 @@ public class RootRecord extends AbstractPMDRecord {
             final ProjectRecord projectRec = new ProjectRecord(project, this);
             projects.add(projectRec);
 
-            this.children = new AbstractPMDRecord[projects.size()];
-            projects.toArray(this.children);
+            children = new AbstractPMDRecord[projects.size()];
+            projects.toArray(children);
             addedProject = projectRec;
         }
         return addedProject;
@@ -197,13 +197,13 @@ public class RootRecord extends AbstractPMDRecord {
             if (proj.equals(project)) {
                 projects.remove(projectRec);
 
-                this.children = new AbstractPMDRecord[projects.size()]; // NOPMD
+                children = new AbstractPMDRecord[projects.size()]; // NOPMD
                                                                         // by
                                                                         // Herlin
                                                                         // on
                                                                         // 09/10/06
                                                                         // 01:01
-                projects.toArray(this.children);
+                projects.toArray(children);
                 removedProject = projectRec;
             }
         }

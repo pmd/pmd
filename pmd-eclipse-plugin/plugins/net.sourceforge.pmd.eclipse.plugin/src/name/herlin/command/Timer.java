@@ -53,7 +53,7 @@ public class Timer {
      */
     public Timer() {
         super();
-        this.topStart = System.currentTimeMillis();
+        topStart = System.currentTimeMillis();
     }
     
     /**
@@ -61,14 +61,14 @@ public class Timer {
      *
      */
     public void stop() {
-        this.topStop = System.currentTimeMillis();
+        topStop = System.currentTimeMillis();
     }
     
     /**
      * @return measured interval in milliseconds
      */
     public long getDuration() {
-        return this.topStop - this.topStart;
+        return topStop - topStart;
     }
 
 }

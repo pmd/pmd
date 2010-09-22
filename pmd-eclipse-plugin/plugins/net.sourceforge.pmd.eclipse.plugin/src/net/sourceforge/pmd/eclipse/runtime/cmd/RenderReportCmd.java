@@ -111,12 +111,12 @@ public class RenderReportCmd extends AbstractProjectCommand {
         try {
             log.debug("Starting RenderReport command");
             log.debug("   Create a report object");
-            final Report report = this.createReport(project());
+            final Report report = createReport(project());
 
             log.debug("   Getting the report folder");
             final IFolder folder = getProjectFolder(PMDRuntimeConstants.REPORT_FOLDER);
             if (!folder.exists()) {
-                folder.create(true, true, this.getMonitor());
+                folder.create(true, true, getMonitor());
             }
 
             for (Map.Entry<String, Renderer> entry: renderers.entrySet()) {

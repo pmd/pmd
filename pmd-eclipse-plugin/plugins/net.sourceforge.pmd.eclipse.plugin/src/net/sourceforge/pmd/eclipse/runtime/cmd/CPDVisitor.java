@@ -76,12 +76,12 @@ public class CPDVisitor implements IResourceVisitor {
             final File ioFile = file.getLocation().toFile();
             try {
                 if (file.getFileExtension() != null
-                        && this.language.getFileFilter().accept(ioFile, file.getName())
+                        && language.getFileFilter().accept(ioFile, file.getName())
                         && isFileInWorkingSet(file)
-                                && (this.includeDerivedFiles
-                                        || !this.includeDerivedFiles && !file.isDerived())) {
+                                && (includeDerivedFiles
+                                        || !includeDerivedFiles && !file.isDerived())) {
                     log.debug("Add file " + resource.getName());
-                    this.files.add(ioFile);
+                    files.add(ioFile);
                     result = false;
                 }
             } catch (PropertiesException e) {
@@ -98,11 +98,11 @@ public class CPDVisitor implements IResourceVisitor {
      * @param file
      * @return true if the file should be checked
      */
-    private boolean isFileInWorkingSet(final IFile file) throws PropertiesException {
+    private boolean isFileInWorkingSet(IFile file) throws PropertiesException {
         boolean fileInWorkingSet = true;
 
-        if (this.workingSetFilter != null) {
-            fileInWorkingSet = this.workingSetFilter.select(null, null, file);
+        if (workingSetFilter != null) {
+            fileInWorkingSet = workingSetFilter.select(null, null, file);
         }
 
         return fileInWorkingSet;

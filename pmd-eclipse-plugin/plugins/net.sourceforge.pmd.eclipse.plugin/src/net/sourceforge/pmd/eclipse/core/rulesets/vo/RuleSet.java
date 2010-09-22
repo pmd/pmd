@@ -73,7 +73,7 @@ public class RuleSet {
      * @return Returns the description.
      */
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     /**
@@ -96,7 +96,7 @@ public class RuleSet {
      * @return Returns the name.
      */
     public String getName() {
-        return this.name;
+        return name;
     }
 
     /**
@@ -132,8 +132,8 @@ public class RuleSet {
             throw new IllegalArgumentException("rule cannot be null");
         }
 
-        this.rules.add(rule);
-        this.pmdRuleSet.addRule(rule.getPmdRule());
+        rules.add(rule);
+        pmdRuleSet.addRule(rule.getPmdRule());
     }
 
     /**
@@ -142,7 +142,7 @@ public class RuleSet {
      * @return Returns the language.
      */
     public String getLanguage() {
-        return this.language;
+        return language;
     }
 
     /**
@@ -167,7 +167,7 @@ public class RuleSet {
       
         if (arg0 instanceof RuleSet) {
             final RuleSet rs = (RuleSet) arg0;
-            return this.name.equals(rs.name) && this.rules.equals(rs.rules) && this.language.equals(rs.language);
+            return name.equals(rs.name) && rules.equals(rs.rules) && language.equals(rs.language);
         }
 
         return false;

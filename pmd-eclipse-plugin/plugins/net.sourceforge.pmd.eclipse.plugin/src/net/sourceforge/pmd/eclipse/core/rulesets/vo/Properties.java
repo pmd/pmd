@@ -56,7 +56,7 @@ public class Properties {
      * @return Returns the propertiesSet.
      */
     public Set<Property> getProperties() {
-        return this.propertiesSet;
+        return propertiesSet;
     }
 
     /**
@@ -69,7 +69,7 @@ public class Properties {
             throw new IllegalArgumentException("propertiesSet cannot be null");
         }
 
-        this.propertiesSet = properties;
+        propertiesSet = properties;
     }
 
     /**

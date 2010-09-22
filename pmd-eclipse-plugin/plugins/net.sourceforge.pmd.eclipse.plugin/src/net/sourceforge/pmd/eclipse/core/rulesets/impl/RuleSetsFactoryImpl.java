@@ -53,11 +53,11 @@ public class RuleSetsFactoryImpl implements IRuleSetsFactory {
      * @see net.sourceforge.pmd.eclipse.core.rulesets.IRuleSetsFactory#getRuleSetsManager()
      */
     public IRuleSetsManager getRuleSetsManager() {
-        if (this.ruleSetsManager == null) {
-            this.ruleSetsManager = new RuleSetsManagerImpl();
+        if (ruleSetsManager == null) {
+            ruleSetsManager = new RuleSetsManagerImpl();
         }
         
-        return this.ruleSetsManager;
+        return ruleSetsManager;
     }
 
 }

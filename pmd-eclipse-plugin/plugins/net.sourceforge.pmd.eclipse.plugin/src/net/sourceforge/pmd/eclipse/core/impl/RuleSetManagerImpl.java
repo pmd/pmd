@@ -56,7 +56,7 @@ public class RuleSetManagerImpl implements IRuleSetManager {
      * @see net.sourceforge.pmd.eclipse.core.IRuleSetManager#getRegisteredRuleSets()
      */
     public Set<RuleSet> getRegisteredRuleSets() {
-        return this.ruleSets;
+        return ruleSets;
     }
 
     /**

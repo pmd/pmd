@@ -61,7 +61,7 @@ public class Rule {
      * @return Returns the message.
      */
     public String getMessage() {
-        return this.message;
+        return message;
     }
 
     /**
@@ -80,7 +80,7 @@ public class Rule {
      * @return Returns the priority.
      */
     public Priority getPriority() {
-        return this.priority;
+        return priority;
     }
 
     /**
@@ -88,8 +88,8 @@ public class Rule {
      * 
      * @param priority The priority to set.
      */
-    public void setPriority(Priority priority) {
-        this.priority = priority;
+    public void setPriority(Priority thePriority) {
+        priority = thePriority;
     }
 
     /**
@@ -99,7 +99,7 @@ public class Rule {
      * @return Returns the properties.
      */
     public Properties getProperties() {
-        return this.properties;
+        return properties;
     }
 
     /**
@@ -107,8 +107,8 @@ public class Rule {
      * 
      * @param properties The properties to set.
      */
-    public void setProperties(Properties properties) {
-        this.properties = properties;
+    public void setProperties(Properties theProperties) {
+        properties = theProperties;
     }
 
     /**

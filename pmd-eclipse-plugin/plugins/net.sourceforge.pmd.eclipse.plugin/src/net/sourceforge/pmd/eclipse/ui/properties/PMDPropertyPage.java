@@ -97,21 +97,21 @@ public class PMDPropertyPage extends PropertyPage {
     @Override
     protected Control createContents(final Composite parent) {
         log.info("PMD properties editing requested");
-        this.controller = new PMDPropertyPageController(this.getShell());
-        final IProject project = (IProject) this.getElement().getAdapter(IProject.class);
-        this.controller.setProject(project);
-        this.model = controller.getPropertyPageBean();
+        controller = new PMDPropertyPageController(getShell());
+        final IProject project = (IProject) getElement().getAdapter(IProject.class);
+        controller.setProject(project);
+        model = controller.getPropertyPageBean();
 
         Composite composite = null;
         noDefaultAndApplyButton();
 
-        if (project.isAccessible() && this.model != null) {
+        if (project.isAccessible() && model != null) {
             composite = new Composite(parent, SWT.NONE);
 
             final GridLayout layout = new GridLayout();
             composite.setLayout(layout);
 
-            this.enablePMDButton = buildEnablePMDButton(composite);
+            enablePMDButton = buildEnablePMDButton(composite);
 
             Label separator = new Label(composite, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
             GridData data = new GridData();

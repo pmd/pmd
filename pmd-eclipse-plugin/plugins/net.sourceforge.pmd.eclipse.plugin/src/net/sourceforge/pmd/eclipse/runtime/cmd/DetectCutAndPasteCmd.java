@@ -150,21 +150,21 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     public void reset() {
         super.reset();
         
-        this.setTerminated(false);
-        this.setReportName(null);
-        this.setRenderer(null);
-        this.setLanguage("java");
-        this.setMinTileSize(PMDPlugin.getDefault().loadPreferences().getMinTileSize());
-        this.setCreateReport(false);
-        this.addPropertyListener(null);
-        this.listeners = new ArrayList<IPropertyListener>();
+        setTerminated(false);
+        setReportName(null);
+        setRenderer(null);
+        setLanguage("java");
+        setMinTileSize(PMDPlugin.getDefault().loadPreferences().getMinTileSize());
+        setCreateReport(false);
+        addPropertyListener(null);
+        listeners = new ArrayList<IPropertyListener>();
     }
 
     /**
      * @param language The language to set.
      */
-    public void setLanguage(final String language) {
-        this.language = new LanguageFactory().createLanguage(language);
+    public void setLanguage(String theLanguage) {
+        language = new LanguageFactory().createLanguage(theLanguage);
     }
 
     /**
@@ -192,7 +192,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @param render render a report or not.
      */
     public void setCreateReport(final boolean render) {
-        this.createReport = render;
+        createReport = render;
     }
 
     /**
@@ -200,7 +200,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @param listener the property listener to set.
      */
     public void addPropertyListener(IPropertyListener listener) {
-        this.listeners.add(listener);
+        listeners.add(listener);
     }
 
     /**
@@ -209,9 +209,9 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     @Override
     public boolean isReadyToExecute() {
         return super.isReadyToExecute()
-            && this.language != null
-            && (!this.createReport // need a renderer and reportName if a report should be created
-                    || this.renderer != null && this.reportName != null);
+            && language != null
+            && (!createReport // need a renderer and reportName if a report should be created
+                    || renderer != null && reportName != null);
     }
 
     /**
@@ -298,12 +298,9 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
                 reportFile.create(contentsStream, true, getMonitor());
             }
             reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-            contentsStream.close();
+
         } catch (CoreException e) {
             log.debug("Core Exception: " + e.getMessage(), e);
-            throw new CommandException(e);
-        } catch (IOException e) {
-            log.debug("IO Exception: " + e.getMessage(), e);
             throw new CommandException(e);
         } finally {
         	IOUtil.closeQuietly(contentsStream);

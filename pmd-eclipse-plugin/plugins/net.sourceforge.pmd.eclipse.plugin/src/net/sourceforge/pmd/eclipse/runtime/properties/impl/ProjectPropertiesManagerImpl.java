@@ -134,7 +134,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             }
 
             writeProjectProperties(projectProperties.getProject(), fillTransferObject(projectProperties));
-            this.projectsProperties.put(projectProperties.getProject(), projectProperties);
+            projectsProperties.put(projectProperties.getProject(), projectProperties);
 
         } catch (CoreException e) {
             throw new PropertiesException("Core Exception when storing project properties for project " + projectProperties.getProject().getName(), e);
@@ -274,7 +274,6 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             marshaller.setMapping(mapping);
             marshaller.marshal(projectProperties);
             writer.flush();
-            writer.close();
 
             final IFile propertiesFile = project.getFile(PROPERTIES_FILE);
             if (propertiesFile.exists() && propertiesFile.isAccessible()) {

@@ -135,7 +135,7 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     private Combo buildInputCombo(Composite parent) {
         Combo combo = new Combo(parent, SWT.NONE);
-        combo.setItems(this.ruleSetNames);
+        combo.setItems(ruleSetNames);
         combo.setText("");
         combo.setToolTipText(getMessage(StringKeys.PREF_RULESETSELECTION_TOOLTIP_RULESET));
         return combo;
@@ -205,14 +205,14 @@ public class RuleSetSelectionDialog extends Dialog {
      * @return String
      */
     public String getImportedRuleSetName() {
-        return this.importedRuleSetName;
+        return importedRuleSetName;
     }
 
     /**
      * @return the selected ruleSet
      */
     public RuleSet getSelectedRuleSet() {
-        return this.selectedRuleSet;
+        return selectedRuleSet;
     }
 
     /**
@@ -227,7 +227,7 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     @Override
     protected void okPressed() {
-        int selectionIndex = this.inputCombo.getSelectionIndex();
+        int selectionIndex = inputCombo.getSelectionIndex();
         if (selectionIndex == -1) {
             importedRuleSetName = inputCombo.getText();
             if (StringUtil.isNotEmpty(importedRuleSetName)) {

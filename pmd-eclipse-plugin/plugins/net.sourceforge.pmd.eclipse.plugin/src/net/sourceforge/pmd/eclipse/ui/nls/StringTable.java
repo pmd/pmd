@@ -42,6 +42,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -78,21 +79,24 @@ public class StringTable {
      * @return the string table
      */
     private Properties getTable() {
+    	
+    	if (table != null) return table;
+    	
+    	InputStream is = null;
         try {
-            if (this.table == null) {
-                this.table = new Properties();
-                final URL messageTableUrl = FileLocator.find(PMDPlugin.getDefault().getBundle(), new Path("$nl$/messages.properties"), null);
-                if (messageTableUrl != null) {
-                    final InputStream is = messageTableUrl.openStream();
-                    this.table.load(is);
-                    is.close();
-                }
-            }
+            table = new Properties();
+            final URL messageTableUrl = FileLocator.find(PMDPlugin.getDefault().getBundle(), new Path("$nl$/messages.properties"), null);
+            if (messageTableUrl != null) {
+               is = messageTableUrl.openStream();
+               table.load(is);
+               }
         } catch (IOException e) {
             log.error("IO Exception when loading string table", e);
-        }
+        } finally {
+        	IOUtil.closeQuietly(is);
+        	}
         
-        return this.table;
+        return table;
     }
 
 }

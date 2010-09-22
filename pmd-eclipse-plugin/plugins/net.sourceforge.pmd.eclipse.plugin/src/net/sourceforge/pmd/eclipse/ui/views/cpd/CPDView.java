@@ -100,7 +100,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
 
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(labelProvider);
-        treeViewer.addDoubleClickListener(this.doubleClickListener);
+        treeViewer.addDoubleClickListener(doubleClickListener);
 
         tooltipListener.initialize();
         tree.addListener(SWT.Dispose, tooltipListener);
@@ -141,7 +141,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
      * @return the tree viewer.
      */
     public TreeViewer getTreeViewer() {
-        return this.treeViewer;
+        return treeViewer;
     }
 
     /**
@@ -156,7 +156,7 @@ public class CPDView extends ViewPart implements IPropertyListener {
      */
     @Override
     public void setFocus() {
-        this.treeViewer.getTree().setFocus();
+        treeViewer.getTree().setFocus();
     }
 
     /**

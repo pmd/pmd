@@ -59,7 +59,7 @@ public abstract class AbstractProcessableCommand implements Command {
             throw new UnsetInputPropertiesException();
         }
 
-        this.getCommandProcessor().processCommand(this);
+        getCommandProcessor().processCommand(this);
 
     }
 
@@ -67,7 +67,7 @@ public abstract class AbstractProcessableCommand implements Command {
      * @see Command#join()
      */
     public final void join() throws CommandException {
-        this.getCommandProcessor().waitCommandToFinish(this);
+        getCommandProcessor().waitCommandToFinish(this);
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class AbstractProcessableCommand implements Command {
      * @return Returns the terminated.
      */
     public final boolean isTerminated() {
-        return this.terminated;
+        return terminated;
     }
 
     /**
@@ -131,9 +131,9 @@ public abstract class AbstractProcessableCommand implements Command {
     protected CommandProcessorStrategy getCommandProcessorStrategy() {
         CommandProcessorStrategy strategy = null;
         try {
-            final ResourceBundle bundle = ResourceBundle.getBundle(CommandProcessorStrategy.COMMAND_PROCESSOR_STRATEGY_BUNDLE);
-            final String strategyClassName = bundle.getString(CommandProcessorStrategy.STRATEGY_CLASS_KEY);
-            final Class<?> strategyClass = Class.forName(strategyClassName);
+            ResourceBundle bundle = ResourceBundle.getBundle(CommandProcessorStrategy.COMMAND_PROCESSOR_STRATEGY_BUNDLE);
+            String strategyClassName = bundle.getString(CommandProcessorStrategy.STRATEGY_CLASS_KEY);
+            Class<?> strategyClass = Class.forName(strategyClassName);
 
             strategy = (CommandProcessorStrategy) strategyClass.newInstance();
 

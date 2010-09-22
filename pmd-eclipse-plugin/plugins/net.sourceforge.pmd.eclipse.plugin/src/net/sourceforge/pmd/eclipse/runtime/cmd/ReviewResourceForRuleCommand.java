@@ -76,10 +76,10 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
     public ReviewResourceForRuleCommand() {
         super("ReviewResourceForRuleCommand", "Review a resource for a specific rule.");
 
-        this.setOutputProperties(true);
-        this.setReadOnly(true);
-        this.setTerminated(false);
-        this.listenerList = new ArrayList<IPropertyListener>();
+        setOutputProperties(true);
+        setReadOnly(true);
+        setTerminated(false);
+        listenerList = new ArrayList<IPropertyListener>();
     }
 
     public void setResource(IResource resource) {
@@ -95,7 +95,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
      * @param listener the property listener to set.
      */
     public void addPropertyListener(IPropertyListener listener) {
-        this.listenerList.add(listener);
+        listenerList.add(listener);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
     public void reset() {
         setResource(null);
         setRule(null);
-        this.listenerList = new ArrayList<IPropertyListener>();
+        listenerList = new ArrayList<IPropertyListener>();
     }
 
     /* (non-Javadoc)

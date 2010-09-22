@@ -52,6 +52,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -114,7 +115,7 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     public AbstractPMDRecord getParent() {
-        return this.parent;
+        return parent;
     }
 
     /**
@@ -130,7 +131,7 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     public IResource getResource() {
-        return this.resource;
+        return resource;
     }
 
     /**
@@ -138,7 +139,7 @@ public class FileRecord extends AbstractPMDRecord {
      *
      */
     public void updateChildren() {
-        this.children = createChildren();
+        children = createChildren();
     }
 
     /**
@@ -203,7 +204,7 @@ public class FileRecord extends AbstractPMDRecord {
         try {
             // this is the overwritten Function from AbstractPMDRecord
             // we simply call the IResource-function to find Markers
-            if (this.resource.isAccessible()) {
+            if (resource.isAccessible()) {
                 return MarkerUtil.findMarkers(resource, PMDRuntimeConstants.RULE_MARKER_TYPES);
             }
         } catch (CoreException ce) {
@@ -223,7 +224,7 @@ public class FileRecord extends AbstractPMDRecord {
         try {
             // we can only find Markers for a file
             // we use the DFA-Marker-ID set for Dataflow Anomalies
-            if (this.resource.isAccessible()) {
+            if (resource.isAccessible()) {
                 return MarkerUtil.findMarkers(resource, PMDRuntimeConstants.PMD_DFA_MARKER);
             }
         } catch (CoreException ce) {
@@ -324,7 +325,7 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     public int getLOC() {
-        return this.numberOfLOC;
+        return numberOfLOC;
     }
 
     /**
@@ -350,13 +351,7 @@ public class FileRecord extends AbstractPMDRecord {
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
         } finally {
-            if (bReader != null) {
-                try {
-                    bReader.close();
-                } catch (IOException e) { // NOPMD by Herlin on 07/10/06 17:47
-                    // ignore
-                }
-            }
+        	IOUtil.closeQuietly(bReader);
         }
 
         return fileContents.toString();
@@ -369,7 +364,7 @@ public class FileRecord extends AbstractPMDRecord {
         if (resource.isAccessible()) {
 
             // we need to change the Resource into a Java-File
-            final IJavaElement element = JavaCore.create(this.resource);
+            final IJavaElement element = JavaCore.create(resource);
             final List<Object> methods = new ArrayList<Object>();
 
             if (element instanceof ICompilationUnit) {
@@ -383,7 +378,7 @@ public class FileRecord extends AbstractPMDRecord {
                     }
                 } catch (JavaModelException jme) {
                     PMDPlugin.getDefault().logError(
-                            StringKeys.ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
+                            StringKeys.ERROR_JAVAMODEL_EXCEPTION + toString(), jme);
                 }
             }
             if (!methods.isEmpty()) {
@@ -423,7 +418,7 @@ public class FileRecord extends AbstractPMDRecord {
      */
     @Override
     public String getName() {
-        return this.resource.getName();
+        return resource.getName();
     }
 
     public String authorName() {

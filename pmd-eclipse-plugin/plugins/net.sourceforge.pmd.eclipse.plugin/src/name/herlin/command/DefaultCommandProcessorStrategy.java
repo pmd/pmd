@@ -40,14 +40,14 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
      */
     public DefaultCommandProcessorStrategy() {
         super();
-        this.loadBundle();
+        loadBundle();
     }
 
     /**
      * @param aCommand a command for finding a processor
      * @return a processor for the specified command according to the strategy.
      */
-    public CommandProcessor getCommandProcessor(final AbstractProcessableCommand aCommand) {
+    public CommandProcessor getCommandProcessor(AbstractProcessableCommand aCommand) {
         CommandProcessor aProcessor = getRegisteredCommandProcessor(aCommand);
 
         if (aProcessor == null) {
@@ -66,13 +66,13 @@ public class DefaultCommandProcessorStrategy implements CommandProcessorStrategy
      * @param aCommand a command to search in the registered command map.
      * @return a command processor from a registered command
      */
-    protected CommandProcessor getRegisteredCommandProcessor(final AbstractProcessableCommand aCommand) {
+    protected CommandProcessor getRegisteredCommandProcessor(AbstractProcessableCommand aCommand) {
         CommandProcessor aProcessor = null;
 
         try {
-            final String processorClassName = this.registeredCommandProcessors.get(aCommand.getName());
+            final String processorClassName = registeredCommandProcessors.get(aCommand.getName());
             if (processorClassName != null) {
-                final Class<?> clazz = Class.forName(processorClassName);
+                Class<?> clazz = Class.forName(processorClassName);
                 aProcessor = (CommandProcessor) clazz.newInstance();
             }
         } catch (ClassNotFoundException e) {

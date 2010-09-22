@@ -184,10 +184,10 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setProjectWorkingSet(org.eclipse.ui.IWorkingSet)
      */
     public void setProjectWorkingSet(final IWorkingSet projectWorkingSet) {
-        log.debug("Set working set for project " + this.project.getName() + ": "
+        log.debug("Set working set for project " + project.getName() + ": "
                 + (projectWorkingSet == null ? "none" : projectWorkingSet.getName()));
 
-        this.needRebuild |= this.projectWorkingSet == null?projectWorkingSet != null:!this.projectWorkingSet.equals(projectWorkingSet);
+        needRebuild |= projectWorkingSet == null ? projectWorkingSet != null:!this.projectWorkingSet.equals(projectWorkingSet);
         this.projectWorkingSet = projectWorkingSet;
     }
 
@@ -195,17 +195,17 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isNeedRebuild()
      */
     public boolean isNeedRebuild() {
-        log.debug("Query if project " + this.project.getName() + " need rebuild : " + (this.pmdEnabled && this.needRebuild));
-        log.debug("   PMD Enabled = " + this.pmdEnabled);
-        log.debug("   Project need rebuild = " + this.needRebuild);
-        return this.pmdEnabled && this.needRebuild;
+        log.debug("Query if project " + project.getName() + " need rebuild : " + (pmdEnabled && needRebuild));
+        log.debug("   PMD Enabled = " + pmdEnabled);
+        log.debug("   Project need rebuild = " + needRebuild);
+        return pmdEnabled && needRebuild;
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setNeedRebuild()
      */
     public void setNeedRebuild(final boolean needRebuild) {
-        log.debug("Set if rebuild is needed for project " + this.project.getName() + ": " + needRebuild);
+        log.debug("Set if rebuild is needed for project " + project.getName() + ": " + needRebuild);
         this.needRebuild = needRebuild;
     }
 
@@ -228,7 +228,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         	f =  new File(file.getLocation().toOSString());
         	// For some reason IFile says exists when it doesn't!  So double check.
         	if (!f.exists()) {
-            	f = new  File(getRuleSetFile());
+            	f = new File(getRuleSetFile());
         	}
         } else {
         	f = new File(getRuleSetFile());
@@ -243,30 +243,27 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     public void createDefaultRuleSetFile() throws PropertiesException {
         log.info("Create a default rule set file for project " + this.project.getName());
         ByteArrayOutputStream baos = null;
+        ByteArrayInputStream bais = null;
         try {
             IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
             baos = new ByteArrayOutputStream();
             writer.write(baos, projectRuleSet);
-            baos.close();
 
             final IFile file = project.getFile(PROJECT_RULESET_FILE);
             if (file.exists() && file.isAccessible()) {
                 throw new PropertiesException("Project ruleset file already exists");
             } else {
-                final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+                bais = new ByteArrayInputStream(baos.toByteArray());
                 file.create(bais, true, null);
-                bais.close();
             }
         } catch (WriterException e) {
-            throw new PropertiesException(e);
-        } catch (IOException e) {
             throw new PropertiesException(e);
         } catch (CoreException e) {
             throw new PropertiesException(e);
         } finally {
         	IOUtil.closeQuietly(baos);
+        	IOUtil.closeQuietly(bais);
         }
-
     }
 
     /**
@@ -289,8 +286,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
      */
     public void sync() throws PropertiesException {
-        log.info("Commit properties for project " + this.project.getName());
-        this.projectPropertiesManager.storeProjectProperties(this);
+        log.info("Commit properties for project " + project.getName());
+        projectPropertiesManager.storeProjectProperties(this);
     }
 
     /**
@@ -300,11 +297,11 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private RuleSet cloneRuleSet() {
         final RuleSet clonedRuleSet = new RuleSet();
 
-        for (Rule rule: this.projectRuleSet.getRules()) {
+        for (Rule rule: projectRuleSet.getRules()) {
             clonedRuleSet.addRule(rule);
         }
-        clonedRuleSet.addExcludePatterns(this.projectRuleSet.getExcludePatterns());
-        clonedRuleSet.addIncludePatterns(this.projectRuleSet.getIncludePatterns());
+        clonedRuleSet.addExcludePatterns(projectRuleSet.getExcludePatterns());
+        clonedRuleSet.addIncludePatterns(projectRuleSet.getIncludePatterns());
 
         return clonedRuleSet;
     }
@@ -318,7 +315,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
 
     public void setViolationsAsErrors(boolean violationsAsErrors) throws PropertiesException {
         log.debug("Set to handle violations as errors: " + violationsAsErrors);
-        this.needRebuild |= this.violationsAsErrors != violationsAsErrors;
+        needRebuild |= this.violationsAsErrors != violationsAsErrors;
         this.violationsAsErrors = violationsAsErrors;
     }
 

@@ -65,7 +65,7 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
     }
 
     public final void setMarkers(IMarker[] theMarkers) { // NOPMD by Sven on 13.11.06 11:43
-        this.markers = theMarkers;
+        markers = theMarkers;
     }
 
     public boolean isReadyToExecute() {

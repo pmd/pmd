@@ -102,7 +102,7 @@ public class RuleSets {
             throw new IllegalArgumentException("The rule set list should not be null or empty");
 
         }
-        this.ruleSetsList = ruleSets;
+        ruleSetsList = ruleSets;
     }
 
     /**

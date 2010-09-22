@@ -162,7 +162,7 @@ public class PackageRecord extends AbstractPMDRecord {
             final List<AbstractPMDRecord> files = getChildrenAsList();
             files.add(file);
 
-            this.children = new AbstractPMDRecord[files.size()];
+            children = new AbstractPMDRecord[files.size()];
             files.toArray(this.children);
 //        }
 
@@ -185,7 +185,7 @@ public class PackageRecord extends AbstractPMDRecord {
             if (file.getResource().equals(resource)) {
                 files.remove(i);
 
-                this.children = new AbstractPMDRecord[files.size()]; // NOPMD
+                children = new AbstractPMDRecord[files.size()]; // NOPMD
                 // by
                 // Herlin
                 // on
@@ -236,7 +236,7 @@ public class PackageRecord extends AbstractPMDRecord {
      */
     @Override
     public int hashCode() {
-        return this.packageFragment.hashCode();
+        return packageFragment.hashCode();
     }
 
     /**
