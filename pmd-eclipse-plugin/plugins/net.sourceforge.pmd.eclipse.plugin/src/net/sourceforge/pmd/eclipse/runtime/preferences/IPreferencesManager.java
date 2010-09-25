@@ -36,7 +36,9 @@
 
 package net.sourceforge.pmd.eclipse.runtime.preferences;
 
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 
 /**
  * This interface specifies the behaviour of the preferences manager.
@@ -72,4 +74,10 @@ public interface IPreferencesManager {
      */
     void setRuleSet(RuleSet newRuleSet);
     
+    /**
+     * 
+     * @param priority
+     * @return
+     */
+    PriorityDescriptor defaultDescriptorFor(RulePriority priority);
 }

@@ -238,12 +238,14 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        gridLayout.numColumns = 6;
 	        dlgArea.setLayout(gridLayout);
 
+	        // put first if we're not creating a new rule
+	        if (!creatingNewRule()) buildPriorityControls(dlgArea);	        
+	        
 	        Label nameLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_NAME);
 	        GridData data = new GridData();
 	        data.horizontalSpan = 1;
 	        nameLabel.setLayoutData(data);
-	        labels.add(nameLabel);
-
+	     
 	        nameField = buildNameText(dlgArea);
 	        data = new GridData();
 	        data.horizontalAlignment = GridData.FILL;
@@ -255,8 +257,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        data = new GridData();
 	        data.horizontalSpan = 1;
 	        ruleSetNameLabel.setLayoutData(data);
-	        labels.add(ruleSetNameLabel);
-
+	    
 	        ruleSetNameField = buildRuleSetNameField(dlgArea);
 	        data = new GridData();
 	        data.horizontalAlignment = GridData.FILL;
@@ -268,8 +269,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        data = new GridData();
 	        data.horizontalSpan = 1;
 	        implTypeLabel.setLayoutData(data);
-	        labels.add(implTypeLabel);
-
+	    
 	        implementationTypeCombo = buildImplementationTypeCombo(dlgArea);
 	        data = new GridData();
 	        data.horizontalAlignment = GridData.FILL;
@@ -281,8 +281,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        data = new GridData();
 	        data.horizontalSpan = 1;
 	        implementationClassLabel.setLayoutData(data);
-	        labels.add(implementationClassLabel);
-
+	      
 	        implementationClassField = buildImplementationClassField(dlgArea);
 	        data = new GridData();
 	        data.horizontalAlignment = GridData.FILL;
@@ -304,8 +303,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	        data = new GridData();
 	        data.horizontalSpan = 1;
 	        languageLabel.setLayoutData(data);
-	        labels.add(languageLabel);
-
+	       
 	        languageCombo = buildLanguageCombo(dlgArea);
 	        data = new GridData();
 	        data.horizontalAlignment = GridData.BEGINNING;
@@ -325,39 +323,19 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		        minLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MIN);
 		        minLanguageLabel.setAlignment(SWT.RIGHT);
 		        minLanguageLabel.setLayoutData(lblGD);
-		        labels.add(minLanguageLabel);
-
+		      
 		        minLanguageVersionCombo = buildLanguageVersionCombo(dlgArea, true);
 		        minLanguageVersionCombo.setLayoutData(cmboGD);
 
 		        maxLanguageLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_LANGUAGE_MAX);
 		        maxLanguageLabel.setAlignment(SWT.RIGHT);
 		        maxLanguageLabel.setLayoutData(lblGD);
-		        labels.add(maxLanguageLabel);
-
+		   
 		        maxLanguageVersionCombo = buildLanguageVersionCombo(dlgArea, false);
 		        maxLanguageVersionCombo.setLayoutData(cmboGD);
-
-		    Label priorityLabel = buildLabel(dlgArea, StringKeys.PREF_RULEEDIT_LABEL_PRIORITY);
-	        data = new GridData();
-	        data.horizontalSpan = 1;
-	        priorityLabel.setLayoutData(data);
-	        labels.add(priorityLabel);
-	        
-	        priorityCombo = buildPriorityCombo(dlgArea);
-	        priorityCombo.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-	        
-	        priorityDisplay = new ShapePicker(dlgArea, SWT.NONE, 14);
-	        priorityDisplay.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));		     
-	        priorityDisplay.setShapeMap(UISettings.shapesByPriority());
-	        priorityDisplay.tooltipProvider( new LabelProvider() { 
-	        	public String labelFor(Object item) { 
-	        		return UISettings.labelFor((RulePriority)item); 
-	        		} 
-	        	} );
-	        priorityDisplay.setSize(120, 25);
-
+	        	        
 	        if (creatingNewRule()) {
+	        	buildPriorityControls(dlgArea);	// put it at the bottom when creating new rules
 	        	implementationType(ImplementationType.XPath);
 	        }
 
@@ -384,6 +362,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
     private Label buildLabel(Composite parent, String msgKey) {
         Label label = new Label(parent, SWT.NONE);
         label.setText(msgKey == null ? "" : SWTUtil.stringFor(msgKey));
+        labels.add(label);
         return label;
     }
 
@@ -603,6 +582,8 @@ public class RulePanelManager extends AbstractRulePanelManager {
 			}
 		});
 
+     	 combo.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+	      
         return combo;
      }
 
@@ -636,6 +617,26 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
      private String nameFieldValue() {
     	 return nameField.getText().trim();
+     }
+     
+     private void buildPriorityControls(Composite parent) {
+    	 
+	    Label priorityLabel = buildLabel(parent, StringKeys.PREF_RULEEDIT_LABEL_PRIORITY);
+	    GridData data = new GridData();
+	    data.horizontalSpan = 1;
+	    priorityLabel.setLayoutData(data);
+	 	 
+    	 priorityCombo = buildPriorityCombo(parent);
+    	 
+	     priorityDisplay = new ShapePicker(parent, SWT.NONE, 14);
+	     priorityDisplay.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));		     
+	     priorityDisplay.setShapeMap(UISettings.shapesByPriority());
+	     priorityDisplay.tooltipProvider( new LabelProvider() { 
+	      	public String labelFor(Object item) { 
+	       		return UISettings.labelFor((RulePriority)item); 
+	       		} 
+	       	} );
+	     priorityDisplay.setSize(120, 25);
      }
      
      private boolean hasValidRuleName() {

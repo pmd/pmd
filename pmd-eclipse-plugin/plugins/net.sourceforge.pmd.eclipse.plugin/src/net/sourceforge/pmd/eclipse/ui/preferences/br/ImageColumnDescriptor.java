@@ -1,17 +1,13 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.ui.IndexedString;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.swt.SWT;

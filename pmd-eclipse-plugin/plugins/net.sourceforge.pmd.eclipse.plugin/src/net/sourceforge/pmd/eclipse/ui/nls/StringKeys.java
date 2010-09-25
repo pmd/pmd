@@ -139,6 +139,7 @@ public class StringKeys {
     public static final String PREF_RULESET_TAB_XPATH = "preference.ruleedit.tab.xpath";
     public static final String PREF_RULESET_TAB_FIXES = "preference.ruleedit.tab.fixes";
     public static final String PREF_RULESET_TAB_EXAMPLES = "preference.ruleedit.tab.examples";
+    public static final String PREF_RULESET_TAB_FULLVIEW = "preference.ruleedit.tab.fullview";
 
     public static final String LABEL_XPATH_EXCLUSION = "preference.ruleedit.label.xpath_exclusion";
     public static final String LABEL_EXCLUSION_REGEX = "preference.ruleedit.label.exclusion_regex";

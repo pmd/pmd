@@ -54,11 +54,11 @@ public class PreferencesFactoryImpl implements IPreferencesFactory {
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesFactory#getPreferencesManager()
      */
     public IPreferencesManager getPreferencesManager() {
-        if (this.preferencesManager == null) {
-            this.preferencesManager = new PreferencesManagerImpl();
+        if (preferencesManager == null) {
+            preferencesManager = new PreferencesManagerImpl();
         }
         
-        return this.preferencesManager;
+        return preferencesManager;
     }
 
     /**

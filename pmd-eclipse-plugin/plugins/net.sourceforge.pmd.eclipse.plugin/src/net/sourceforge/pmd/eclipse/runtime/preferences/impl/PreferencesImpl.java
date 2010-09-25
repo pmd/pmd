@@ -57,6 +57,8 @@ import org.apache.log4j.Level;
 
 class PreferencesImpl implements IPreferences {
 	
+	private Map<String, Boolean> booleansById = new HashMap<String, Boolean>();
+	
     private IPreferencesManager preferencesManager;
     private boolean 			projectBuildPathEnabled;
     private boolean 			pmdPerspectiveEnabled;
@@ -81,6 +83,16 @@ class PreferencesImpl implements IPreferences {
         this.preferencesManager = preferencesManager;
     }
 
+    public boolean boolFor(String prefId) {
+    	Boolean value = booleansById.get(prefId);
+    	if (value == null) throw new IllegalArgumentException("Unknown pref id: " + prefId);
+    	return value;
+    }
+    
+    public void boolFor(String prefId, boolean newValue) {
+    	booleansById.put(prefId, newValue);
+    }
+    
     /**
      * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences#isProjectBuildPathEnabled()
      */

@@ -2,7 +2,6 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
@@ -16,6 +15,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanel
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
@@ -188,6 +188,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		    buildXPathTab(tabFolder,       4, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_XPATH)),
 //		    buildQuickFixTab(tabFolder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)),
 		    buildExampleTab(tabFolder,     5, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES)),
+		    buildFullViewTab(tabFolder,	   6, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FULLVIEW)),
 		    };
 
 		tabFolder.pack();
@@ -262,6 +263,23 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         return manager;
     }
 
+    /**
+     * @param parent TabFolder
+     * @param index int
+     */
+    private RulePropertyManager buildFullViewTab(TabFolder parent, int index, String title) {
+
+        TabItem tab = new TabItem(parent, 0, index);
+        tab.setText(title);
+
+        SummaryPanelManager manager = new SummaryPanelManager("asdf", title, EditorUsageMode.Editing, this);
+        tab.setControl(
+            manager.setupOn(parent)
+            );
+        manager.tab(tab);
+        return manager;
+    }
+    
 	/**
      * @param parent TabFolder
      * @param index int

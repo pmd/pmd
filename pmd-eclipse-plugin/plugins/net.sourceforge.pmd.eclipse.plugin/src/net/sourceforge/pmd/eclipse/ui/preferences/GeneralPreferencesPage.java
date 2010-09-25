@@ -195,6 +195,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
     
     private void useCustomPriorityNames(boolean flag) {
+    	UISettings.useCustomPriorityLabels(flag);
     	for (Control field : nameFields) field.setEnabled(flag);
     }
     
@@ -520,8 +521,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Button button = new Button(parent, SWT.CHECK);
         button.setLayoutData( new GridData(GridData.END, GridData.CENTER, false, false, 1, 1) );
         button.setText("Use custom names");
-button.setEnabled(false);	// FIXME react to changes by updating the UI
-button.setSelection(true);
+        button.setSelection(preferences.useCustomPriorityNames());
         button.addSelectionListener( new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent se) {
         		useCustomPriorityNames(((Button)se.getSource()).getSelection());
@@ -618,7 +618,7 @@ button.setSelection(true);
 
         setSelection(showPerspectiveBox, 	IPreferences.PMD_PERSPECTIVE_ENABLED_DEFAULT);
         setSelection(checkCodeOnSave , 		IPreferences.PMD_CHECK_AFTER_SAVE_DEFAULT);        
-        setSelection(useCustomPriorityNames,IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES);        
+        setSelection(useCustomPriorityNames,IPreferences.PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT);        
         setSelection(useProjectBuildPath, 	IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
         setSelection(reviewPmdStyleBox, 	IPreferences.REVIEW_PMD_STYLE_ENABLED_DEFAULT);
 

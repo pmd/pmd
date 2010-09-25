@@ -39,12 +39,9 @@ package net.sourceforge.pmd.eclipse.runtime.preferences;
 import java.util.Set;
 
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.eclipse.ui.Shape;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 
 import org.apache.log4j.Level;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * This interface models the PMD Plugin preferences
@@ -60,7 +57,7 @@ public interface IPreferences {
     boolean PROJECT_BUILD_PATH_ENABLED_DEFAULT = true;
     boolean PMD_PERSPECTIVE_ENABLED_DEFAULT = true;
     boolean PMD_CHECK_AFTER_SAVE_DEFAULT = false;
-    boolean PMD_USE_CUSTOM_PRIORITY_NAMES = true;
+    boolean PMD_USE_CUSTOM_PRIORITY_NAMES_DEFAULT = true;
     int MAX_VIOLATIONS_PFPR_DEFAULT = 5;
     String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     boolean REVIEW_PMD_STYLE_ENABLED_DEFAULT = true;
@@ -68,12 +65,10 @@ public interface IPreferences {
     String LOG_FILENAME_DEFAULT = "pmd-eclipse.log";
     Level LOG_LEVEL = Level.WARN;
     String ACTIVE_RULES = "";
-
-    PriorityDescriptor PD_1_DEFAULT = new PriorityDescriptor(RulePriority.HIGH, 		StringKeys.VIEW_FILTER_PRIORITY_1, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.diamond, 	new RGB( 255,0,0), 	13);	// red
-    PriorityDescriptor PD_2_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM_HIGH, 	StringKeys.VIEW_FILTER_PRIORITY_2, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.square, 	new RGB( 0,255,255), 13);	// yellow
-    PriorityDescriptor PD_3_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM, 		StringKeys.VIEW_FILTER_PRIORITY_3, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.circle, 	new RGB( 0,255,0), 	13);	// green
-    PriorityDescriptor PD_4_DEFAULT = new PriorityDescriptor(RulePriority.MEDIUM_LOW,	StringKeys.VIEW_FILTER_PRIORITY_4, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.domeRight,new RGB( 255,0,255), 13);	// purple
-    PriorityDescriptor PD_5_DEFAULT = new PriorityDescriptor(RulePriority.LOW, 	  		StringKeys.VIEW_FILTER_PRIORITY_5, StringKeys.VIEW_TOOLTIP_FILTER_PRIORITY, null, Shape.plus, 	new RGB( 0,0,255), 	13);  	// blue
+  
+    boolean boolFor(String prefId);
+    
+    void boolFor(String prefId, boolean newValue);
     
     boolean isActive(String rulename);
     

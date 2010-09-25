@@ -39,6 +39,7 @@ public class UISettings {
 
     private static Map<Object, ShapeDescriptor> shapesByPriority;
     private static Map<Integer, RulePriority> prioritiesByIntValue;
+    private static Map<RulePriority, String> labelsByPriority = new HashMap<RulePriority, String>();
     
     private static final int MAX_MARKER_DIMENSION = 9;
     private static IPreferencesManager preferencesManager = PMDPlugin.getDefault().getPreferencesManager();
@@ -145,6 +146,28 @@ public class UISettings {
     	}
     }
     
+    private static String pLabelFor(RulePriority priority, boolean useCustom) {
+    	
+    	if (! useCustom) return priority.getName();
+    	
+    	String custom = descriptorFor(priority).label;
+    	return StringUtil.isEmpty(custom) ?
+    		preferencesManager.defaultDescriptorFor(priority).label :
+    		custom;
+    }
+    
+    public static void useCustomPriorityLabels(boolean flag) {
+    	
+    	labelsByPriority.clear();
+    	
+    	for (RulePriority priority : currentPriorities(true)) {  
+    		labelsByPriority.put(
+    			priority, 
+    			pLabelFor(priority, flag)
+    			);
+    	}
+    }
+    
     public static String descriptionFor(RulePriority priority) {
     	return descriptorFor(priority).description;
     }
@@ -154,17 +177,10 @@ public class UISettings {
     }
     
     public static String labelFor(RulePriority priority) {
-    	return labelFor(priority, true);	// TODO reflect preferences..could be expensive?
-    }
-    
-    public static String labelFor(RulePriority priority, boolean getCustomOne) {
-    	PriorityDescriptor desc = descriptorFor(priority);
-    	if (getCustomOne) { 
-    		if (StringUtil.isEmpty(desc.label)) {
-    			return priority.getName();
-    		} else { return desc.label; }
+    	if (labelsByPriority.isEmpty()) {
+    		useCustomPriorityLabels(preferencesManager.loadPreferences().useCustomPriorityNames());
     	}
-    	return priority.getName();
+    	return labelsByPriority.get(priority);
     }
     
 	public static Map<Object, ShapeDescriptor> shapesByPriority() {
