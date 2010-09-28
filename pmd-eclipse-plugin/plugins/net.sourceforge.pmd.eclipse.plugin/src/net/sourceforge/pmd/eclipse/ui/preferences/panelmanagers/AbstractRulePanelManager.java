@@ -361,7 +361,8 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     
     protected StyledText newCodeField(Composite parent) {
     	
-    	return new StyledText(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+    	StyledText st = new StyledText(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+    	return st;
     }    
     
 }

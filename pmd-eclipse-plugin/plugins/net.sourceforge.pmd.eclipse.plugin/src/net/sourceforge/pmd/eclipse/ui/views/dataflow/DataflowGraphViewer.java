@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.util.IOUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
@@ -218,8 +219,11 @@ public class DataflowGraphViewer extends Composite {
      * @return the Line of Code or null, if not found
      */
     protected String getCodeLine(String code, int line) {
+    	
+    	LineNumberReader reader = null;
+    	
         try {
-            LineNumberReader reader = new LineNumberReader(new StringReader(code));
+            reader = new LineNumberReader(new StringReader(code));
             String retString;
 
             // read the Code (File) line-wise
@@ -233,6 +237,8 @@ public class DataflowGraphViewer extends Composite {
             }
         } catch (IOException ioe) {
             PMDPlugin.getDefault().logError(StringKeys.ERROR_IO_EXCEPTION + this.toString(), ioe);
+        } finally {
+        	IOUtil.closeQuietly(reader);
         }
 
         return null;

@@ -19,6 +19,7 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
+import net.sourceforge.pmd.eclipse.util.FontBuilder;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -46,6 +47,8 @@ public class UISettings {
     private static final Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
 
 
+    public static final FontBuilder CodeFontBuilder = new FontBuilder("Courier", 11, SWT.NORMAL);
+    
     public static void reloadPriorities() {
     	uiDescriptorsByPriority.clear();
     	uiDescriptorsByPriority();	// cause a reload

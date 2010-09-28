@@ -121,7 +121,7 @@ public class RuleUIUtil {
 		Map<PropertyDescriptor<?>, Object> valuesByProp = Configuration.filteredPropertiesOf(rule);
 
 		if (valuesByProp.isEmpty()) return "";
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder(80);
 
 		Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProp.entrySet().iterator();
 

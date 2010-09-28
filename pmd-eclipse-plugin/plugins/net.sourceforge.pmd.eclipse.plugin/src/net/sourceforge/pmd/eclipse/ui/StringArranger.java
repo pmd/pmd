@@ -39,10 +39,10 @@ public class StringArranger {
 		List<String> lineSet = new ArrayList<String>(lines.length);
 		
 		int startLine = 0;
-		while (StringUtil.isEmpty(lines[startLine])) startLine++;
+		while (startLine < lines.length && StringUtil.isEmpty(lines[startLine])) startLine++;
 		
 		int endLine = lines.length-1;
-		while (StringUtil.isEmpty(lines[endLine])) endLine--;
+		while (endLine >= 0 && StringUtil.isEmpty(lines[endLine])) endLine--;
 		
 		for (int i=startLine; i<=endLine; i++) {
 			lineSet.add( lines[i].trim() );

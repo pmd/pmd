@@ -176,6 +176,11 @@ public class StringKeys {
     public static final String PREF_CPD_GROUP_GENERAL = "preference.cpd.group.general";
     public static final String PREF_CPD_TITLE = "preference.cpd.title";
     public static final String PREF_CPD_TILESIZE = "preference.cpd.tilesize";
+
+    public static final String PREF_SUMMARY_LABEL_NAME = "preference.summary.label.name";
+    public static final String PREF_SUMMARY_LABEL_DESCRIPTION = "preference.summary.label.description";
+    public static final String PREF_SUMMARY_LABEL_PARAMETERS = "preference.summary.label.parameters";
+    public static final String PREF_SUMMARY_LABEL_EXAMPLE = "preference.summary.label.example";
     
     public static final String VIEW_OUTLINE_DEFAULT_TEXT = "view.outline.default_text";
     public static final String VIEW_OUTLINE_COLUMN_MESSAGE = "view.outline.column_message";

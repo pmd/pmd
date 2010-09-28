@@ -7,9 +7,14 @@ XPath Rule creation wizard
 Rule tab
 	Sometimes a misguided red X appears in tab when group selected
 	
+Summary tab
+	Render code in monospaced font
+	Syntax-colour the example code
+	
 Rule Table
 	Tooltip shows TODO when over grouped items
 	Spacebar should toggle rules on/off
+	Adjust priority levels from context menu
 	Properties column 
 		float values always show up as modified regardless
 *		Fix update problem, only shifts up/down by one from default value
@@ -17,6 +22,7 @@ Rule Table
 Preferences
 	General Page
 		Enable 'check code after saving' button when working
+		Refresh whole Eclipse UI to obtain updated RulePriority settings
 		Rework Logging Options section - lose the slider!
 		
 ASTView (XPathDesigner)

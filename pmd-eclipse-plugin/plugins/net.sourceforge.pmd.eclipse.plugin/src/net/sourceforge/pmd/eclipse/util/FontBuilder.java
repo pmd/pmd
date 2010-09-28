@@ -22,11 +22,17 @@ public class FontBuilder {
 		   colorIdx = theColorIndex;
 	   }
 	   
+	   public FontBuilder(String theName, int theSize, int theStyle) {
+		   this(theName, theSize, theStyle, -1);
+	   }
+	   
 	   public Font build(Display display) {
 		   return new Font(display, name, size, style);
 	   }
 	   
 	   public TextStyle style(Display display) {			   
-		   return new TextStyle(build(display), display.getSystemColor(colorIdx), null);
+		   return new TextStyle(build(display), 
+				   colorIdx < 0 ? null : display.getSystemColor(colorIdx), 
+				   null);
 	   }
 }
