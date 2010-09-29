@@ -132,7 +132,7 @@ public class RuleTableViewerSorter extends ViewerSorter {
      * @return Returns the sortDescending.
      */
     public boolean isSortDescending() {
-        return this.sortDescending;
+        return sortDescending;
     }
     
     /**
@@ -146,7 +146,7 @@ public class RuleTableViewerSorter extends ViewerSorter {
      * @return Returns the comparator.
      */
     public Comparator<Rule> getComparator() {
-        return this.comparator;
+        return comparator;
     }
     
     /**
@@ -166,8 +166,8 @@ public class RuleTableViewerSorter extends ViewerSorter {
      * @see org.eclipse.jface.viewers.ViewerSorter#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
      */
     public int compare(Viewer viewer, Object e1, Object e2) {
-        int result = this.comparator.compare((Rule)e1,(Rule)e2);
-        return this.sortDescending ? 0 - result : result;
+        int result = comparator.compare((Rule)e1,(Rule)e2);
+        return sortDescending ? 0 - result : result;
     }
 
     /**

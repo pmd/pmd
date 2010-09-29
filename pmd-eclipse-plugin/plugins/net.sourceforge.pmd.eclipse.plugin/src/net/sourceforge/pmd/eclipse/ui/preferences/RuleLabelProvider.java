@@ -2,17 +2,15 @@ package net.sourceforge.pmd.eclipse.ui.preferences;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUIUtil;
 
 /**
  * Implements a label provider for the rules item to be displayed in the
  * rule table of the PMD Preference page
  * 
  * @author Philippe Herlin
- * @deprecated
  */
 public class RuleLabelProvider extends AbstractTableLabelProvider {
-    private static final String PRIORITY_ILLEGAL = "* illegal *";
-    private static final String[] PRIORITY_LABEL = UISettings.getPriorityLabels();
 
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object, int)
@@ -24,7 +22,7 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
             if (columnIndex == 0) {
                 result = rule.getLanguage().getShortName();
             } else if (columnIndex == 1) {
-                result = rule.getRuleSetName();
+                result = RuleUIUtil.ruleSetNameFrom(rule);
                 /*
                 if (rule instanceof RuleReference) {
                 	RuleReference ruleReference = (RuleReference)rule;
@@ -40,11 +38,7 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
                 result = rule.getSince();
                 result = (result == null) ? "n/a" : result;
             } else if (columnIndex == 4) {
-                if ((rule.getPriority().getPriority() <= PRIORITY_LABEL.length) && (rule.getPriority().getPriority() > 0)) {
-                    result = PRIORITY_LABEL[rule.getPriority().getPriority() - 1];
-                } else {
-                    result = PRIORITY_ILLEGAL;
-                }
+                result = UISettings.labelFor(rule.getPriority());
             } else if (columnIndex == 5) {
                 result = rule.getDescription();
                 result = (result == null) ? "" : result.trim();

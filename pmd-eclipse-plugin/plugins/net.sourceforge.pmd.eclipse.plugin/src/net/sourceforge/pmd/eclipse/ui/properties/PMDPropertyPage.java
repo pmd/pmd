@@ -289,7 +289,7 @@ public class PMDPropertyPage extends PropertyPage {
      */
     private Label buildLabel(final Composite parent, final String msgKey) {
         final Label label = new Label(parent, SWT.NONE);
-        label.setText(msgKey == null ? "" : this.getMessage(msgKey));
+        label.setText(msgKey == null ? "" : getMessage(msgKey));
         return label;
     }
 
@@ -297,7 +297,7 @@ public class PMDPropertyPage extends PropertyPage {
      * Build a label
      */
     private Label buildSelectedWorkingSetLabel(final Composite parent) {
-        this.selectedWorkingSet = model.getProjectWorkingSet();
+        selectedWorkingSet = model.getProjectWorkingSet();
 
         final Label label = new Label(parent, SWT.NONE);
         label.setText(
@@ -317,20 +317,20 @@ public class PMDPropertyPage extends PropertyPage {
 
         final Table ruleTable = availableRulesTableViewer.getTable();
 
-        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_LANGUAGE), 70 + 20, RuleTableViewerSorter.RULE_LANGUAGE_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_RULESET_NAME), 110, RuleTableViewerSorter.RULE_RULESET_NAME_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_RULE_NAME), 170, RuleTableViewerSorter.RULE_NAME_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.PREF_RULESET_COLUMN_SINCE), 40, RuleTableViewerSorter.RULE_SINCE_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.PREF_RULESET_COLUMN_PRIORITY), 80, RuleTableViewerSorter.RULE_PRIORITY_COMPARATOR);
-        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.PREF_RULESET_COLUMN_DESCRIPTION), 300, RuleTableViewerSorter.RULE_DESCRIPTION_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, StringKeys.PREF_RULESET_COLUMN_LANGUAGE, 70 + 20, RuleTableViewerSorter.RULE_LANGUAGE_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, StringKeys.PREF_RULESET_COLUMN_RULESET_NAME, 110, RuleTableViewerSorter.RULE_RULESET_NAME_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, StringKeys.PREF_RULESET_COLUMN_RULE_NAME, 170, RuleTableViewerSorter.RULE_NAME_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, false, StringKeys.PREF_RULESET_COLUMN_SINCE, 40, RuleTableViewerSorter.RULE_SINCE_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, false, StringKeys.PREF_RULESET_COLUMN_PRIORITY, 80, RuleTableViewerSorter.RULE_PRIORITY_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, StringKeys.PREF_RULESET_COLUMN_DESCRIPTION, 300, RuleTableViewerSorter.RULE_DESCRIPTION_COMPARATOR);
 
         ruleTable.setLinesVisible(true);
         ruleTable.setHeaderVisible(true);
 
-        this.availableRulesTableViewer.setContentProvider(new RuleSetContentProvider());
-        this.availableRulesTableViewer.setLabelProvider(new RuleLabelProvider());
-        this.availableRulesTableViewer.setSorter(this.availableRuleTableViewerSorter);
-        this.availableRulesTableViewer.setColumnProperties(
+        availableRulesTableViewer.setContentProvider(new RuleSetContentProvider());
+        availableRulesTableViewer.setLabelProvider(new RuleLabelProvider());
+        availableRulesTableViewer.setSorter(availableRuleTableViewerSorter);
+        availableRulesTableViewer.setColumnProperties(
             new String[] {
                 PMDPreferencePage.PROPERTY_LANGUAGE,
                 PMDPreferencePage.PROPERTY_RULESET_NAME,
@@ -347,11 +347,11 @@ public class PMDPropertyPage extends PropertyPage {
     /**
      * Helper method to add new table columns
      */
-    private void addColumnTo(Table table, int alignment, boolean resizable, String text, int width, final Comparator<Rule> comparator) {
+    private void addColumnTo(Table table, int alignment, boolean resizable, String textKey, int width, final Comparator<Rule> comparator) {
 
     	TableColumn newColumn = new TableColumn(table, alignment);
     	newColumn.setResizable(resizable);
-    	newColumn.setText(text);
+    	newColumn.setText(getMessage(textKey));
     	newColumn.setWidth(width);
     	if (comparator != null) {
 	    	newColumn.addSelectionListener(new SelectionAdapter() {
@@ -423,14 +423,14 @@ public class PMDPropertyPage extends PropertyPage {
     @Override
     public boolean performOk() {
         log.info("Properties editing accepted");
-        this.model.setPmdEnabled(this.enablePMDButton.getSelection());
-        this.model.setProjectWorkingSet(this.selectedWorkingSet);
-        this.model.setProjectRuleSet(this.getProjectRuleSet());
-        this.model.setRuleSetStoredInProject(this.ruleSetStoredInProjectButton.getSelection());
-        this.model.setRuleSetFile(this.ruleSetFileText.getText());
-        this.model.setIncludeDerivedFiles(this.includeDerivedFilesButton.getSelection());
+        model.setPmdEnabled(enablePMDButton.getSelection());
+        model.setProjectWorkingSet(selectedWorkingSet);
+        model.setProjectRuleSet(getProjectRuleSet());
+        model.setRuleSetStoredInProject(ruleSetStoredInProjectButton.getSelection());
+        model.setRuleSetFile(ruleSetFileText.getText());
+        model.setIncludeDerivedFiles(includeDerivedFilesButton.getSelection());
 
-        this.model.setViolationsAsErrors(this.violationsAsErrorsButton.getSelection());
+        model.setViolationsAsErrors(violationsAsErrorsButton.getSelection());
 
         return controller.performOk();
     }
@@ -489,12 +489,12 @@ public class PMDPropertyPage extends PropertyPage {
      * @param a newly selected working set
      */
     private void setSelectedWorkingSet(final IWorkingSet workingSet) {
-        this.selectedWorkingSet = workingSet;
-        this.selectedWorkingSetLabel.setText(
-            this.selectedWorkingSet == null
+        selectedWorkingSet = workingSet;
+        selectedWorkingSetLabel.setText(
+            selectedWorkingSet == null
                 ? getMessage(StringKeys.PROPERTY_LABEL_NO_WORKINGSET)
-                : getMessage(StringKeys.PROPERTY_LABEL_SELECTED_WORKINGSET) + this.selectedWorkingSet.getName());
-        deselectWorkingSetButton.setEnabled(this.selectedWorkingSet != null);
+                : getMessage(StringKeys.PROPERTY_LABEL_SELECTED_WORKINGSET) + selectedWorkingSet.getName());
+        deselectWorkingSetButton.setEnabled(selectedWorkingSet != null);
     }
 
     /**

@@ -79,18 +79,6 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
 	private RuleSelectionListener		ruleSelectionListener;
 	private ValueResetHandler			resetHandler;
-	
-	public static String ruleSetNameFrom(Rule rule) {
-		return ruleSetNameFrom( rule.getRuleSetName() );
-	}
-
-    public static String ruleSetNameFrom(String rulesetName) {
-
-    	if (rulesetName == null) return null;
-    	
-        int pos = rulesetName.toUpperCase().indexOf("RULES");
-        return pos < 0 ? rulesetName : rulesetName.substring(0, pos-1);
-    }
     
 	public RuleTableManager(RuleColumnDescriptor[] theColumns, IPreferences thePreferences, ValueResetHandler aResetHandler) {
 		super(thePreferences, theColumns);
