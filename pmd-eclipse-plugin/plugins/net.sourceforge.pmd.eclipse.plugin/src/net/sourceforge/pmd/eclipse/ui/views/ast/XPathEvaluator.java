@@ -44,6 +44,16 @@ public class XPathEvaluator {
 		return Language.JAVA.getDefaultVersion();
 	}
 
+	/**
+	 * Builds a temporary XPathRule using the query provided and executes it against
+	 * the source. Returns a list of nodes detailing any issues found with it.
+	 * 
+	 * @param source
+	 * @param xpathQuery
+	 * @param xpathVersion
+	 * @return
+	 * @throws ParseException
+	 */
 	public List<Node> evaluate(String source, String xpathQuery, String xpathVersion) throws ParseException {
 
 		Node c = getCompilationUnit(source);

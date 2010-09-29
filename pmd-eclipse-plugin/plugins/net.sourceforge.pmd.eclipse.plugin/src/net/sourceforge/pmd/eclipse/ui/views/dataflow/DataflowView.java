@@ -29,7 +29,7 @@ public class DataflowView extends AbstractResourceView {
     	
         FileRecord resourceRecord = getFileRecordFromWorkbenchPart(part);
         if (resourceRecord != null) {
-            resourceRecord.getResource().getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+            setupListener(resourceRecord);
 
             // creates a new DataflowViewPage, when a Resource exists
             DataflowViewPage page = new DataflowViewPage(part, resourceRecord);

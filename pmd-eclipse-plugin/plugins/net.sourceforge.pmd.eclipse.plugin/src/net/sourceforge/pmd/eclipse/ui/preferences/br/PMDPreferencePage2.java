@@ -82,6 +82,20 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		{ null, 								  	StringKeys.PREF_RULESET_GROUPING_NONE }
 		};
 	
+	public static RulePropertyManager[] buildPropertyManagersOn(TabFolder folder, ValueChangeListener listener) {
+		
+		return new RulePropertyManager[] {
+				buildRuleTab(folder,    	0, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_RULE), listener),
+			    buildDescriptionTab(folder, 1, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_DESCRIPTION), listener),
+			    buildPropertyTab(folder,    2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_PROPERTIES), listener),
+			    buildUsageTab(folder,       3, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FILTERS), listener),
+			    buildXPathTab(folder,       4, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_XPATH), listener),
+//			    buildQuickFixTab(folder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES), listener),
+			    buildExampleTab(folder,     5, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES), listener),
+			    buildFullViewTab(folder,    6, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FULLVIEW), listener),
+			    };
+	}
+	
 	public PMDPreferencePage2() {
 
 	}
@@ -119,7 +133,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	 * @param parent Composite
 	 * @return Composite
 	 */
-	private Composite buildRulePropertiesTableButtons(Composite parent) {
+	public static Composite buildRulePropertiesTableButtons(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.type = SWT.VERTICAL;
@@ -180,16 +194,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 
 		tabFolder = new TabFolder(parent, SWT.TOP);
 
-		rulePropertyManagers = new RulePropertyManager[] {
-			buildRuleTab(tabFolder,    	   0, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_RULE)),
-		    buildDescriptionTab(tabFolder, 1, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_DESCRIPTION)),
-		    buildPropertyTab(tabFolder,    2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_PROPERTIES)),
-		    buildUsageTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FILTERS)),
-		    buildXPathTab(tabFolder,       4, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_XPATH)),
-//		    buildQuickFixTab(tabFolder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)),
-		    buildExampleTab(tabFolder,     5, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES)),
-		    buildFullViewTab(tabFolder,	   6, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FULLVIEW)),
-		    };
+		rulePropertyManagers = buildPropertyManagersOn(tabFolder, this);
 
 		tabFolder.pack();
 		return tabFolder;
@@ -199,12 +204,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	 * @param parent TabFolder
 	 * @param index int
 	 */
-	private RulePropertyManager buildRuleTab(TabFolder parent, int index, String title) {
+	private static RulePropertyManager buildRuleTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
 
 	    TabItem tab = new TabItem(parent, 0, index);
 	    tab.setText(title);
 
-		RulePanelManager manager = new RulePanelManager(title, EditorUsageMode.Editing, this, null);
+		RulePanelManager manager = new RulePanelManager(title, EditorUsageMode.Editing, listener, null);
 		tab.setControl(
 		    manager.setupOn(parent)
 		    );
@@ -216,12 +221,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	 * @param parent TabFolder
 	 * @param index int
 	 */
-	private RulePropertyManager buildPropertyTab(TabFolder parent, int index, String title) {
+	private static RulePropertyManager buildPropertyTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
 
 	    TabItem tab = new TabItem(parent, 0, index);
 	    tab.setText(title);
 
-		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(title, EditorUsageMode.Editing, this);
+		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(title, EditorUsageMode.Editing, listener);
 		tab.setControl(
 		    manager.setupOn(parent)
 		    );
@@ -233,12 +238,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	 * @param parent TabFolder
 	 * @param index int
 	 */
-	private RulePropertyManager buildDescriptionTab(TabFolder parent, int index, String title) {
+	private static RulePropertyManager buildDescriptionTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
 
 		TabItem tab = new TabItem(parent, 0, index);
 		tab.setText(title);
 
-        DescriptionPanelManager manager = new DescriptionPanelManager(title, EditorUsageMode.Editing, this);
+        DescriptionPanelManager manager = new DescriptionPanelManager(title, EditorUsageMode.Editing, listener);
         tab.setControl(
             manager.setupOn(parent)
             );
@@ -250,12 +255,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
      * @param parent TabFolder
      * @param index int
      */
-    private RulePropertyManager buildXPathTab(TabFolder parent, int index, String title) {
+    private static RulePropertyManager buildXPathTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
 
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
-        XPathPanelManager manager = new XPathPanelManager(title, EditorUsageMode.Editing, this);
+        XPathPanelManager manager = new XPathPanelManager(title, EditorUsageMode.Editing, listener);
         tab.setControl(
             manager.setupOn(parent)
             );
@@ -267,12 +272,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
      * @param parent TabFolder
      * @param index int
      */
-    private RulePropertyManager buildFullViewTab(TabFolder parent, int index, String title) {
+    private static RulePropertyManager buildFullViewTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
 
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
-        SummaryPanelManager manager = new SummaryPanelManager("asdf", title, EditorUsageMode.Editing, this);
+        SummaryPanelManager manager = new SummaryPanelManager("asdf", title, EditorUsageMode.Editing, listener);
         tab.setControl(
             manager.setupOn(parent)
             );
@@ -284,12 +289,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
      * @param parent TabFolder
      * @param index int
      */
-    private RulePropertyManager buildExampleTab(TabFolder parent, int index, String title) {
+    private static RulePropertyManager buildExampleTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
 
         TabItem tab = new TabItem(parent, 0, index);
         tab.setText(title);
 
-        ExamplePanelManager manager = new ExamplePanelManager(title, EditorUsageMode.Editing, this);
+        ExamplePanelManager manager = new ExamplePanelManager(title, EditorUsageMode.Editing, listener);
         tab.setControl(
             manager.setupOn(parent)
             );
@@ -301,12 +306,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
      * @param parent TabFolder
      * @param index int
      */
-//    private RulePropertyManager buildQuickFixTab(TabFolder parent, int index, String title) {
+//    private static RulePropertyManager buildQuickFixTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
 //
 //        TabItem tab = new TabItem(parent, 0, index);
 //        tab.setText(title);
 //
-//        QuickFixPanelManager manager = new QuickFixPanelManager(title, EditorUsageMode.Editing, this);
+//        QuickFixPanelManager manager = new QuickFixPanelManager(title, EditorUsageMode.Editing, listener);
 //        tab.setControl(
 //            manager.setupOn(parent)
 //            );
@@ -320,12 +325,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	 * @param index int
 	 * @param title String
 	 */
-	private RulePropertyManager buildUsageTab(TabFolder parent, int index, String title) {
+	private static RulePropertyManager buildUsageTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
 
 		TabItem tab = new TabItem(parent, 0, index);
 		tab.setText(title);
 
-		ExclusionPanelManager manager = new ExclusionPanelManager(title, EditorUsageMode.Editing, this, true);
+		ExclusionPanelManager manager = new ExclusionPanelManager(title, EditorUsageMode.Editing, listener, true);
 		tab.setControl(
 			manager.setupOn(parent)
 			);

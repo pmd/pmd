@@ -18,6 +18,7 @@ import net.sourceforge.pmd.util.StringUtil;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -27,6 +28,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -50,7 +52,7 @@ import org.jaxen.BaseXPath;
  */
 public class ASTViewPage extends AbstractStructureInspectorPage {
 
-	private Composite 	astFrame;
+	private SashForm 	sashForm;
 
 	protected TreeViewer astViewer;
 
@@ -92,53 +94,54 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 	 * TODO add an XPath version combo widget
 	 */
 	public void createControl(Composite parent) {
+		
+		sashForm = new SashForm(parent, SWT.HORIZONTAL);        
 
-		astFrame = new Composite(parent, SWT.NONE);        
-
+		Composite astPanel = new Composite(sashForm, SWT.NONE);
 		GridLayout mainLayout = new GridLayout(3, false);
-		astFrame.setLayout(mainLayout);
-
-		Composite titleArea = new Composite(astFrame, SWT.NONE);
-		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		gridData.horizontalSpan = 2;
-		titleArea.setLayoutData(gridData);
-		titleArea.setLayout(new GridLayout(4, false));
-
-		Label showLabel = new Label(titleArea, 0);
-		showLabel.setText("Show: ");
-
-		final Button classBtn = new Button(titleArea, SWT.RADIO);
-		classBtn.setText("Class");
-		classBtn.addSelectionListener( new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent se) {
-				if (classBtn.getSelection()) showClass();
-			}
-		} );
+		astPanel.setLayout(mainLayout);
 		
-		final Button methodBtn = new Button(titleArea, SWT.RADIO);
-		methodBtn.setText("Method");
-		methodBtn.setSelection(true);
-		methodBtn.addSelectionListener( new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent se) {
-				methodSelector.setEnabled( methodBtn.getSelection() );
-				methodPicked();
-			}
-		} );
+			Composite titleArea = new Composite(astPanel, SWT.NONE);
+			GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+			gridData.horizontalSpan = 2;
+			titleArea.setLayoutData(gridData);
+			titleArea.setLayout(new GridLayout(4, false));
+	
+				Label showLabel = new Label(titleArea, 0);
+				showLabel.setText("Show: ");
 		
-		buildMethodSelector(titleArea);
+				final Button classBtn = new Button(titleArea, SWT.RADIO);
+				classBtn.setText("Class");
+				classBtn.addSelectionListener( new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent se) {
+						if (classBtn.getSelection()) showClass();
+					}
+				} );
+				
+				final Button methodBtn = new Button(titleArea, SWT.RADIO);
+				methodBtn.setText("Method");
+				methodBtn.setSelection(true);
+				methodBtn.addSelectionListener( new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent se) {
+						methodSelector.setEnabled( methodBtn.getSelection() );
+						methodPicked();
+					}
+				} );
+			
+			buildMethodSelector(titleArea);
 
-		astViewer = new TreeViewer(astFrame, SWT.MULTI);
-		astViewer.setContentProvider( new ASTContentProvider() );
-		astViewer.setLabelProvider( new ASTLabelProvider() );
-		setupListeners(astViewer.getTree());
-
-		GridData data = new GridData(GridData.FILL_BOTH);
-		data.horizontalSpan = 2;
-		astViewer.getTree().setLayoutData(data);
+			astViewer = new TreeViewer(astPanel, SWT.MULTI | SWT.BORDER);
+			astViewer.setContentProvider( new ASTContentProvider() );
+			astViewer.setLabelProvider( new ASTLabelProvider() );
+			setupListeners(astViewer.getTree());
+	
+			GridData data = new GridData(GridData.FILL_BOTH);
+			data.horizontalSpan = 2;
+			astViewer.getTree().setLayoutData(data);
 
 		//==================
 		
-		Composite xpathTestPanel = new Composite(astFrame, SWT.NONE);
+		Composite xpathTestPanel = new Composite(sashForm, SWT.NONE);
 		data = new GridData(GridData.FILL_BOTH);
 		data.horizontalSpan = 1;
 		xpathTestPanel.setLayoutData(data);
@@ -146,33 +149,33 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		GridLayout playLayout = new GridLayout(2, false);
 		xpathTestPanel.setLayout(playLayout);
 
-		xpathField = new StyledText(xpathTestPanel, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		gridData = new GridData(GridData.FILL_BOTH);
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalSpan = 1;
-		xpathField.setLayoutData(gridData);
-		SyntaxManager.adapt(xpathField, "xpath", null);
-
-		addXPathValidator();
-		
-		goButton = new Button(xpathTestPanel, SWT.PUSH);
-		goButton.setText("GO");
-		gridData = new GridData(GridData.FILL_BOTH);
-		gridData.grabExcessHorizontalSpace = false;
-		gridData.horizontalSpan = 1;
-		goButton.setLayoutData(gridData);
-		goButton.addSelectionListener( new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				evaluateXPath();				
-			}
-		} );
-		
-		outputField = new StyledText(xpathTestPanel, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		gridData = new GridData(GridData.FILL_BOTH);
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalSpan = 2;
-		outputField.setLayoutData(gridData);
-		SyntaxManager.adapt(outputField, "xpath", null);
+			xpathField = new StyledText(xpathTestPanel, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+			gridData = new GridData(GridData.FILL_BOTH);
+			gridData.grabExcessHorizontalSpace = true;
+			gridData.horizontalSpan = 1;
+			xpathField.setLayoutData(gridData);
+			SyntaxManager.adapt(xpathField, "xpath", null);
+	
+			addXPathValidator();
+			
+			goButton = new Button(xpathTestPanel, SWT.PUSH);
+			goButton.setText("GO");
+			gridData = new GridData(GridData.FILL_BOTH);
+			gridData.grabExcessHorizontalSpace = false;
+			gridData.horizontalSpan = 1;
+			goButton.setLayoutData(gridData);
+			goButton.addSelectionListener( new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					evaluateXPath();				
+				}
+			} );
+			
+			outputField = new StyledText(xpathTestPanel, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+			gridData = new GridData(GridData.FILL_BOTH);
+			gridData.grabExcessHorizontalSpace = true;
+			gridData.horizontalSpan = 2;
+			outputField.setLayoutData(gridData);
+			SyntaxManager.adapt(outputField, "xpath", null);
 		
 		registerListeners();
 		
@@ -310,7 +313,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 	}
 
 	public Control getControl() {
-		return astFrame;
+		return sashForm;
 	}
 
 	protected void showClass() {

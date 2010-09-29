@@ -17,9 +17,8 @@ import org.eclipse.ui.IWorkbenchPart;
 /**
  * 
  * @author Brian Remedios
- *
  */
-public abstract class AbstractResourceView extends AbstractPMDPagebookView  implements IResourceChangeListener {
+public abstract class AbstractResourceView extends AbstractPMDPagebookView implements IResourceChangeListener {
 
 	protected AbstractResourceView() {
 	}
@@ -41,6 +40,9 @@ public abstract class AbstractResourceView extends AbstractPMDPagebookView  impl
     	return resource.getFullPath();
     }
 
+    protected void setupListener(FileRecord resourceRecord) {
+    	resourceRecord.getResource().getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);	
+    }
     
 	@Override
 	protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {

@@ -34,9 +34,9 @@ public class ASTView extends AbstractResourceView {
 		
         FileRecord resourceRecord = getFileRecordFromWorkbenchPart(part);
         if (resourceRecord != null) {
-            resourceRecord.getResource().getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+        	setupListener(resourceRecord);
 
-            // creates a new DataflowViewPage, when a Resource exists
+            // creates a new ASTViewPage, when a Resource exists
             page = new ASTViewPage(part, resourceRecord);
             initPage(page);
             page.createControl(getPageBook());

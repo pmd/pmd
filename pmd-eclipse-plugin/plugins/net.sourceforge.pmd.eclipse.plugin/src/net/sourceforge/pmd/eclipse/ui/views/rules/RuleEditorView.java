@@ -17,16 +17,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelectionListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueResetHandler;
-import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.QuickFixPanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.swt.SWT;
@@ -37,16 +28,14 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * @deprecated  - temporary (don't add code here)
+ * @deprecated  - temporary (don't add code here, demo/testing view only)
  * 
  * @author br
  *
@@ -94,22 +83,6 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 
 	}
 
-	/**
-	 * Create buttons for rule properties table management
-	 * @param parent Composite
-	 * @return Composite
-	 */
-	private Composite buildRulePropertiesTableButtons(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		RowLayout rowLayout = new RowLayout();
-		rowLayout.type = SWT.VERTICAL;
-		rowLayout.wrap = false;
-		rowLayout.pack = false;
-		composite.setLayout(rowLayout);
-
-		return composite;
-	}
-
 	private Composite createRuleSection(Composite parent) {
 
 	    Composite ruleSection = new Composite(parent, SWT.NULL);
@@ -121,7 +94,7 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 	    tableManager.groupBy(null);
 
         Composite ruleTableButtons = tableManager.buildRuleTableButtons(ruleSection);
-        Composite rulePropertiesTableButtons = buildRulePropertiesTableButtons(ruleSection);
+        Composite rulePropertiesTableButtons = PMDPreferencePage2.buildRulePropertiesTableButtons(ruleSection);
 
         // Place controls on the layout
         GridLayout gridLayout = new GridLayout(3, false);
@@ -160,139 +133,10 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 
 		tabFolder = new TabFolder(parent, SWT.TOP);
 
-		rulePropertyManagers = new RulePropertyManager[] {
-			buildRuleTab(tabFolder,    	   0, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_RULE)),
-		    buildDescriptionTab(tabFolder, 1, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_DESCRIPTION)),
-		    buildPropertyTab(tabFolder,    2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_PROPERTIES)),
-		    buildUsageTab(tabFolder,       3, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FILTERS)),
-		    buildXPathTab(tabFolder,       4, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_XPATH)),
-//		    buildQuickFixTab(tabFolder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES)),
-		    buildExampleTab(tabFolder,     5, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES)),
-		    };
+		rulePropertyManagers = PMDPreferencePage2.buildPropertyManagersOn(tabFolder, this);
 
 		tabFolder.pack();
 		return tabFolder;
-	}
-
-	/**
-	 * @param parent TabFolder
-	 * @param index int
-	 */
-	private RulePropertyManager buildRuleTab(TabFolder parent, int index, String title) {
-
-	    TabItem tab = new TabItem(parent, 0, index);
-	    tab.setText(title);
-
-		RulePanelManager manager = new RulePanelManager(title, EditorUsageMode.Editing, this, null);
-		tab.setControl(
-		    manager.setupOn(parent)
-		    );
-		manager.tab(tab);
-		return manager;
-	}
-	
-	/**
-	 * @param parent TabFolder
-	 * @param index int
-	 */
-	private RulePropertyManager buildPropertyTab(TabFolder parent, int index, String title) {
-
-	    TabItem tab = new TabItem(parent, 0, index);
-	    tab.setText(title);
-
-		PerRulePropertyPanelManager manager = new PerRulePropertyPanelManager(title, EditorUsageMode.Editing, this);
-		tab.setControl(
-		    manager.setupOn(parent)
-		    );
-		manager.tab(tab);
-		return manager;
-	}
-
-	/**
-	 * @param parent TabFolder
-	 * @param index int
-	 */
-	private RulePropertyManager buildDescriptionTab(TabFolder parent, int index, String title) {
-
-		TabItem tab = new TabItem(parent, 0, index);
-		tab.setText(title);
-
-        DescriptionPanelManager manager = new DescriptionPanelManager(title, EditorUsageMode.Editing, this);
-        tab.setControl(
-            manager.setupOn(parent)
-            );
-        manager.tab(tab);
-        return manager;
-	}
-
-    /**
-     * @param parent TabFolder
-     * @param index int
-     */
-    private RulePropertyManager buildXPathTab(TabFolder parent, int index, String title) {
-
-        TabItem tab = new TabItem(parent, 0, index);
-        tab.setText(title);
-
-        XPathPanelManager manager = new XPathPanelManager(title, EditorUsageMode.Editing, this);
-        tab.setControl(
-            manager.setupOn(parent)
-            );
-        manager.tab(tab);
-        return manager;
-    }
-
-	/**
-     * @param parent TabFolder
-     * @param index int
-     */
-    private RulePropertyManager buildExampleTab(TabFolder parent, int index, String title) {
-
-        TabItem tab = new TabItem(parent, 0, index);
-        tab.setText(title);
-
-        ExamplePanelManager manager = new ExamplePanelManager(title, EditorUsageMode.Editing, this);
-        tab.setControl(
-            manager.setupOn(parent)
-            );
-        manager.tab(tab);
-        return manager;
-    }
-
-    /**
-     * @param parent TabFolder
-     * @param index int
-     */
-    private RulePropertyManager buildQuickFixTab(TabFolder parent, int index, String title) {
-
-        TabItem tab = new TabItem(parent, 0, index);
-        tab.setText(title);
-
-        QuickFixPanelManager manager = new QuickFixPanelManager(title, EditorUsageMode.Editing, this);
-        tab.setControl(
-            manager.setupOn(parent)
-            );
-        manager.tab(tab);
-        return manager;
-    }
-
-	/**
-	 *
-	 * @param parent TabFolder
-	 * @param index int
-	 * @param title String
-	 */
-	private RulePropertyManager buildUsageTab(TabFolder parent, int index, String title) {
-
-		TabItem tab = new TabItem(parent, 0, index);
-		tab.setText(title);
-
-		ExclusionPanelManager manager = new ExclusionPanelManager(title, EditorUsageMode.Editing, this, true);
-		tab.setControl(
-			manager.setupOn(parent)
-			);
-		manager.tab(tab);
-		return manager;
 	}
 
 	public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
