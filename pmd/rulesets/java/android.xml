@@ -48,12 +48,12 @@ To get better results, make sure that the auxclasspath is defined for type resol
       </property>
     </properties>
     <example><![CDATA[
-   public class DummyActivity extends Activity {
-    public void onCreate(Bundle bundle) {
+public class DummyActivity extends Activity {
+	public void onCreate(Bundle bundle) {
      // missing call to super.onCreate(bundle)
-     foo();
-    }
-   }
+		foo();
+	}
+}
 ]]>
     </example>
   </rule>
@@ -90,12 +90,12 @@ To get better results, make sure that the auxclasspath is defined for type resol
     </properties>
     <example>
       <![CDATA[
-   public class DummyActivity extends Activity {
-    public void onPause() {
-     foo();
-     // missing call to super.onPause()
-    }
-   }
+public class DummyActivity extends Activity {
+	public void onPause() {
+		foo();
+		// missing call to super.onPause()
+	}
+}
 ]]>
     </example>
   </rule>
@@ -123,15 +123,15 @@ To get better results, make sure that the auxclasspath is defined for type resol
     </properties>
     <example>
       <![CDATA[
-   public class DummyActivity extends Activity {
-    public void foo() {
-     Log.d("TAG", "msg1"); // Bad
+public class DummyActivity extends Activity {
+	public void foo() {
+		Log.d("TAG", "msg1");	// call at this point not recommended
 
-     bar();
+		anyMethod();
 
-     if (Config.LOGD) Log.d("TAG", "msg1"); // Good
+		if (Config.LOGD) Log.d("TAG", "msg1"); // preferred placement
     }
-   }
+}
 ]]>
     </example>
   </rule>
@@ -159,14 +159,15 @@ To get better results, make sure that the auxclasspath is defined for type resol
     </properties>
     <example>
       <![CDATA[
-   public class DummyActivity extends Activity {
-    public void foo() {
-     Log.v("TAG", "msg1"); // Bad
+public class DummyActivity extends Activity {
+	public void foo() {
+		Log.v("TAG", "msg1"); // call at this point not recommended
 
-     bar();
+		anyMethod();
 
-     if (Config.LOGV) Log.v("TAG", "msg1"); // Good
-    }
+		if (Config.LOGV) Log.v("TAG", "msg1"); // preferred placement
+		}
+}
 ]]>
     </example>
   </rule>
@@ -186,15 +187,14 @@ To get better results, make sure that the auxclasspath is defined for type resol
     <example>
       <![CDATA[
 public class MyActivity extends Activity {
-  protected void foo() {
-    String storageLocation = "/sdcard/mypackage"; // BAD
+	protected void foo() {
+		String storageLocation = "/sdcard/mypackage";	// hard-coded, poor approach
 
-    storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // GOOD
-  }
+		storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
+	}
 }
 ]]>
     </example>
   </rule>
 
 </ruleset>
-

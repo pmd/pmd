@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 
-<ruleset name="Basic Rules"
+<ruleset name="Basic"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
-The Basic Ruleset contains a collection of good practices which everyone should follow.
+The Basic ruleset contains a collection of good practices which should be followed.
   </description>
    
 	<rule name="JumbledIncrementer"
@@ -16,7 +16,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
          class="net.sourceforge.pmd.lang.rule.XPathRule"
          externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#JumbledIncrementer">
      <description>
-Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
+Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
      </description>
      <priority>3</priority>
      <properties>
@@ -36,14 +36,14 @@ Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing eve
      <example>
  <![CDATA[
 public class JumbledIncrementerRule1 {
-  public void foo() {
-   for (int i = 0; i < 10; i++) {
-    for (int k = 0; k < 20; i++) {
-     System.out.println("Hello");
-    }
-   }
-  }
- }
+	public void foo() {
+		for (int i = 0; i < 10; i++) {			// only references 'i'
+			for (int k = 0; k < 20; i++) {		// references both 'i' and 'k'
+				System.out.println("Hello");
+			}
+		}
+	}
+}
  ]]>
      </example>
      </rule>
@@ -55,7 +55,7 @@ public class JumbledIncrementerRule1 {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#ForLoopShouldBeWhileLoop">
       <description>
-Some for loops can be simplified to while loops - this makes them more concise.
+Some for loops can be simplified to while loops, this makes them more concise.
       </description>
       <priority>3</priority>
     <properties>
@@ -74,15 +74,16 @@ Some for loops can be simplified to while loops - this makes them more concise.
       <example>
   <![CDATA[
 public class Foo {
- void bar() {
-  for (;true;) true; // No Init or Update part, may as well be: while (true)
- }
+	void bar() {
+		for (;true;) true; // No Init or Update part, may as well be: while (true)
+	}
 }
  ]]>
       </example>
     </rule>
 
     <rule name="OverrideBothEqualsAndHashcode"
+    		 language="java"
     		 since="0.4"
           message="Ensure you override both equals() and hashCode()"
           class="net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule"
@@ -93,34 +94,32 @@ Override both public boolean Object.equals(Object other), and public int Object.
       <priority>3</priority>
       <example>
   <![CDATA[
-// this is bad
-public class Bar {
-  public boolean equals(Object o) {
+public class Bar {		// poor, missing a hashcode() method
+	public boolean equals(Object o) {
       // do some comparison
-  }
+	}
 }
 
-// and so is this
-public class Baz {
-  public int hashCode() {
+public class Baz {		// poor, missing an equals() method
+	public int hashCode() {
       // return some hash value
-  }
+	}
 }
 
-// this is OK
-public class Foo {
-  public boolean equals(Object other) {
+public class Foo {		// perfect, both methods provided
+	public boolean equals(Object other) {
       // do some comparison
-  }
-  public int hashCode() {
+	}
+	public int hashCode() {
       // return some hash value
-  }
+	}
 }
  ]]>
       </example>
     </rule>
 
     <rule name="DoubleCheckedLocking"
+        	 language="java"
     		 since="1.04"
           message="Double checked locking is not thread safe in Java."
           class="net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule"
@@ -128,23 +127,25 @@ public class Foo {
       <description>
 Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
 An optimizing JRE may assign a reference to the baz variable before it creates the object the
-  reference is intended to point to.  For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html.
+reference is intended to point to.  
+
+For more details refer to: http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html
       </description>
         <priority>1</priority>
       <example>
   <![CDATA[
 public class Foo {
-  Object baz;
-  Object bar() {
-    if(baz == null) { //baz may be non-null yet not fully created
-      synchronized(this){
-        if(baz == null){
-          baz = new Object();
-        }
-      }
-    }
-    return baz;
-  }
+	Object baz;
+	Object bar() {
+		if (baz == null) { // baz may be non-null yet not fully created
+			synchronized(this) {
+				if (baz == null) {
+					baz = new Object();
+        		}
+      		}
+    	}
+		return baz;
+	}
 }
  ]]>
       </example>
@@ -157,7 +158,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#ReturnFromFinallyBlock">
       <description>
-Avoid returning from a finally block - this can discard exceptions.
+Avoid returning from a finally block, this can discard exceptions.
       </description>
       <priority>3</priority>
       <properties>
@@ -172,20 +173,19 @@ Avoid returning from a finally block - this can discard exceptions.
       <example>
   <![CDATA[
 public class Bar {
- public String foo() {
-  try {
-   throw new Exception( "My Exception" );
-  } catch (Exception e) {
-   throw e;
-  } finally {
-   return "A. O. K."; // Very bad.
-  }
- }
+	public String foo() {
+		try {
+			throw new Exception( "My Exception" );
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			return "A. O. K."; // return not recommended here
+		}
+	}
 }
 ]]>
       </example>
     </rule>
-
 
     <rule name="UnconditionalIfStatement"
     		 language="java"
@@ -194,7 +194,7 @@ public class Bar {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#UnconditionalIfStatement">
       <description>
-Do not use "if" statements that are always true or always false.
+Do not use "if" statements whose conditionals are always true or always false.
       </description>
       <priority>3</priority>
         <properties>
@@ -211,11 +211,11 @@ Do not use "if" statements that are always true or always false.
       <example>
   <![CDATA[
 public class Foo {
- public void close() {
-  if (true) {
-       // ...
-   }
- }
+	public void close() {
+		if (true) {		// fixed conditional, not recommended
+			// ...
+		}
+	}
 }
 ]]>
       </example>
@@ -232,10 +232,8 @@ Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FAL
       <priority>2</priority>
    <example>
    <![CDATA[
-public class Foo {
- Boolean bar = new Boolean("true"); // just do a Boolean bar = Boolean.TRUE;
- Boolean buz = Boolean.valueOf(false); // just do a Boolean buz = Boolean.FALSE;
-}
+Boolean bar = new Boolean("true");		// unnecessary creation, just reference Boolean.TRUE;
+Boolean buz = Boolean.valueOf(false);	// ...., just reference Boolean.FALSE;
    ]]>
    </example>
    </rule>
@@ -247,7 +245,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#CollapsibleIfStatements">
       <description>
-Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
       </description>
       <priority>3</priority>
       <properties>
@@ -265,14 +263,18 @@ Sometimes two 'if' statements can be consolidated by separating their conditions
       </properties>
       <example>
   <![CDATA[
-public class Foo {
- void bar() {
-  if (x) {
-   if (y) {
-    // do stuff
-   }
-  }
- }
+void bar() {
+	if (x) {			// original implementation
+		if (y) {
+			// do stuff
+		}
+	}
+}
+
+void bar() {
+	if (x && y) {		// optimized implementation
+		// do stuff
+	}
 }
  ]]>
       </example>
@@ -285,10 +287,9 @@ public class Foo {
        class="net.sourceforge.pmd.lang.rule.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#ClassCastExceptionWithToArray">
   <description>
-if you need to get an array of a class from your Collection,
-you should pass an array of the desidered class
-as the parameter of the toArray method. Otherwise you will get a
-ClassCastException.
+When deriving an array of a specific class from your Collection, one should provide an array of 
+the same class as the parameter of the toArray() method. Doing otherwise you will will result 
+in a ClassCastException.
   </description>
   <priority>3</priority>
   <properties>
@@ -310,24 +311,15 @@ count(PrimarySuffix) = 1
   </properties>
   <example>
 <![CDATA[
-import java.util.ArrayList;
-import java.util.Collection;
+Collection c = new ArrayList();
+Integer obj = new Integer(1);
+c.add(obj);
 
-public class Test {
+    // this would trigger the rule (and throw a ClassCastException if executed)
+Integer[] a = (Integer [])c.toArray();
 
-    public static void main(String[] args) {
-        Collection c=new ArrayList();
-        Integer obj=new Integer(1);
-        c.add(obj);
-
-        // this would trigger the rule (and throw a ClassCastException
-if executed)
-        Integer[] a=(Integer [])c.toArray();
-
-        // this wouldn't trigger the rule
-        Integer[] b=(Integer [])c.toArray(new Integer[c.size()]);
-    }
-}
+   // this is fine and will not trigger the rule
+Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
 ]]>
   </example>
 </rule>
@@ -340,18 +332,15 @@ if executed)
        class="net.sourceforge.pmd.lang.rule.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
   <description>
-     One might assume that "new BigDecimal(.1)" is exactly equal
-     to .1, but it is actually equal
-     to .1000000000000000055511151231257827021181583404541015625.
-     This is so because .1 cannot be represented exactly as a double
-     (or, for that matter, as a binary fraction of any finite length).
-     Thus, the long value that is being passed in to the constructor
-     is not exactly equal to .1, appearances notwithstanding.
+One might assume that the result of "new BigDecimal(0.1)" is exactly equal to 0.1, but it is actually 
+equal to .1000000000000000055511151231257827021181583404541015625.
+This is because 0.1 cannot be represented exactly as a double (or as a binary fraction of any finite 
+length). Thus, the long value that is being passed in to the constructor is not exactly equal to 0.1, 
+appearances notwithstanding.
 
-     The (String) constructor, on the other hand, is perfectly predictable:
-     'new BigDecimal(".1")' is exactly equal to .1, as one
-     would expect.  Therefore, it is generally recommended that the (String)
-     constructor be used in preference to this one.
+The (String) constructor, on the other hand, is perfectly predictable: 'new BigDecimal("0.1")' is 
+exactly equal to 0.1, as one would expect.  Therefore, it is generally recommended that the 
+(String) constructor be used in preference to this one.
   </description>
   <priority>3</priority>
   <properties>
@@ -370,18 +359,11 @@ and
   </properties>
   <example>
 <![CDATA[
-import java.math.BigDecimal;
-public class Test {
+BigDecimal bd = new BigDecimal(1.123);		// loss of precision, this would trigger the rule
 
-    public static void main(String[] args) {
-      // this would trigger the rule
-     BigDecimal bd=new BigDecimal(1.123);
-      // this wouldn't trigger the rule
-     BigDecimal bd=new BigDecimal("1.123");
-      // this wouldn't trigger the rule
-     BigDecimal bd=new BigDecimal(12);
-    }
-}
+BigDecimal bd = new BigDecimal("1.123");   	// preferred approach
+
+BigDecimal bd = new BigDecimal(12);     	// preferred approach, ok for integer values
 ]]>
   </example>
 </rule>
@@ -394,8 +376,8 @@ public class Test {
            class="net.sourceforge.pmd.lang.rule.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#MisplacedNullCheck">
       <description>
-    The null check here is misplaced. if the variable is null you'll get a NullPointerException.
-    Either the check is useless (the variable will never be "null") or it's incorrect.
+The null check here is misplaced. If the variable is null a NullPointerException will be thrown.
+Either the check is useless (the variable will never be "null") or it is incorrect.
       </description>
       <priority>3</priority>
       <properties>
@@ -418,17 +400,17 @@ public class Test {
       <example>
     <![CDATA[
 public class Foo {
- void bar() {
-  if (a.equals(baz) && a != null) {}
- }
+	void bar() {
+		if (a.equals(baz) && a != null) {}
+		}
 }
     ]]>
       </example>
       <example><![CDATA[
 public class Foo {
- void bar() {
-  if (a.equals(baz) || a == null) {}
- }
+	void bar() {
+		if (a.equals(baz) || a == null) {}
+	}
 }
    ]]></example>
     </rule>
@@ -443,7 +425,7 @@ public class Foo {
       typeResolution="true">
       <description>
 Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
- it contains methods that are not thread safe.
+it contains methods that are not thread-safe.
       </description>
       <priority>3</priority>
       <properties>
@@ -458,15 +440,14 @@ Avoid using java.lang.ThreadGroup; although it is intended to be used in a threa
       </properties>
       <example>
     <![CDATA[
-    import java.util.ThreadGroup;
-    public class Bar {
-     void buz() {
-      ThreadGroup tg = new ThreadGroup("My threadgroup") ;
-      tg = new ThreadGroup(tg, "my thread group");
-      tg = Thread.currentThread().getThreadGroup();
-      tg = System.getSecurityManager().getThreadGroup();
-     }
-    }
+public class Bar {
+	void buz() {
+		ThreadGroup tg = new ThreadGroup("My threadgroup") ;
+		tg = new ThreadGroup(tg, "my thread group");
+		tg = Thread.currentThread().getThreadGroup();
+		tg = System.getSecurityManager().getThreadGroup();
+	}
+}
     ]]>
       </example>
     </rule>
@@ -483,15 +464,13 @@ It is likely that you used || instead of &amp;&amp; or vice versa.
         <priority>2</priority>
         <example>
 <![CDATA[
-class Foo {
- String bar(String string) {
+public String bar(String string) {
   // should be &&
-  if (string!=null || !string.equals(""))
-    return string;
+	if (string!=null || !string.equals(""))
+		return string;
   // should be ||
-  if (string==null && string.equals(""))
-    return string;
- }
+	if (string==null && string.equals(""))
+		return string;
 }
         ]]>
         </example>
@@ -503,24 +482,17 @@ class Foo {
   class="net.sourceforge.pmd.lang.java.rule.basic.BigIntegerInstantiationRule"
   externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#BigIntegerInstantiation">
   <description>
-Don't create instances of already existing BigInteger
-(BigInteger.ZERO, BigInteger.ONE) and for 1.5 on,
-BigInteger.TEN and BigDecimal (BigDecimal.ZERO,
-BigDecimal.ONE, BigDecimal.TEN)
+Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
+for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
   </description>
   <priority>3</priority>
   <example>
 <![CDATA[
-public class Test {
-
- public static void main(String[] args) {
-   BigInteger bi=new BigInteger(1);
-   BigInteger bi2=new BigInteger("0");
-   BigInteger bi3=new BigInteger(0.0);
-   BigInteger bi4;
-   bi4=new BigInteger(0);
- }
-}
+BigInteger bi = new BigInteger(1);		// reference BigInteger.ONE instead
+BigInteger bi2 = new BigInteger("0");	// reference BigInteger.ZERO instead
+BigInteger bi3 = new BigInteger(0.0);	// reference BigInteger.ZERO instead
+BigInteger bi4;
+bi4 = new BigInteger(0);				// reference BigInteger.ZERO instead
 ]]>
   </example>
 </rule>
@@ -532,18 +504,16 @@ public class Test {
             externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidUsingOctalValues">
     <description>
     	<![CDATA[
-		    Integer literals should not start with zero.
-		    Zero means that the rest of literal will be interpreted as an octal value.
+Integer literals should not start with zero since this denotes that the rest of literal will be 
+interpreted as an octal value.
     	]]>
     </description>
     <priority>3</priority>
     <example>
 		    <![CDATA[
-		public class Foo {
-		  int i = 012; // set i with 10 not 12
-		  int j = 010; // set j with 8 not 10
-		  k = i * j; // set k with 80 not 120
-		}
+int i = 012;	// set i with 10 not 12
+int j = 010;	// set j with 8 not 10
+k = i * j;		// set k with 80 not 120
 		    ]]>
     </example>
     </rule>
@@ -555,8 +525,8 @@ public class Test {
             externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidUsingHardCodedIP">
 	    <description>
 	    	<![CDATA[
-				An application with hard coded IP may become impossible to deploy in some case. It never hurts
-				to externalize IP adresses.
+Application with hard-coded IP addresses can become impossible to deploy in some cases. 
+Externalizing IP adresses is preferable.
 	    	]]>
 	    </description>
 	    <priority>3</priority>
@@ -565,9 +535,9 @@ public class Test {
         </properties>
 	    <example>
 	    <![CDATA[
-	public class Foo {
-	  String ip = "127.0.0.1"; // This is a really bad idea !
-	}
+public class Foo {
+	private String ip = "127.0.0.1"; 	// not recommended
+}
 	    ]]>
 	    </example>
     </rule>
@@ -581,8 +551,8 @@ public class Test {
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#CheckResultSet">
         <description>
             <![CDATA[
-	            Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet. Indeed,
-	            if the value return is 'false', the developer should deal with it !
+Always check the return values of navigation methods (next, previous, first, last) of a ResultSet.
+If the value return is 'false', it should be handled properly.
             ]]>
         </description>
         <priority>3</priority>
@@ -629,23 +599,18 @@ public class Test {
         </properties>
         <example>
             <![CDATA[
-            // This is NOT appropriate !
-            Statement stat = conn.createStatement();
-            ResultSet rst = stat.executeQuery("SELECT name FROM person");
-            rst.next(); // what if it returns a 'false' ?
-            String firstName = rst.getString(1);
+Statement stat = conn.createStatement();
+ResultSet rst = stat.executeQuery("SELECT name FROM person");
+rst.next(); 	// what if it returns false? bad form
+String firstName = rst.getString(1);
 
-            // This is appropriate...
-            Statement stat = conn.createStatement();
-            ResultSet rst = stat.executeQuery("SELECT name FROM person");
-            if (rst.next())
-            {
-                String firstName = rst.getString(1);
-            }
-            else
-            {
-                // here you deal with the error ( at least log it)
-            }
+Statement stat = conn.createStatement();
+ResultSet rst = stat.executeQuery("SELECT name FROM person");
+if (rst.next()) {	// result is properly examined and used
+    String firstName = rst.getString(1);
+	} else  {
+		// handle missing data
+}
             ]]>
         </example>
     </rule>
@@ -657,34 +622,33 @@ public class Test {
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidMultipleUnaryOperators">
         <description>
             <![CDATA[
-					Using multiple unary operators may be a bug, and/or is confusing.
-					Check the usage is not a bug, or consider simplifying the expression.
+The use of multiple unary operators may be problematic, and/or confusing.
+Ensure that the intended usage is not a bug, or consider simplifying the expression.
             ]]>
         </description>
         <priority>2</priority>
         <example>
             <![CDATA[
-            // These are typo bugs, or at best needlessly complex and confusing:
-            int i = - -1;
-            int j = + - +1;
-            int z = ~~2;
-            boolean b = !!true;
-            boolean c = !!!true;
+// These are typo bugs, or at best needlessly complex and confusing:
+int i = - -1;
+int j = + - +1;
+int z = ~~2;
+boolean b = !!true;
+boolean c = !!!true;
 
-            // These are better:
-            int i = 1;
-            int j = -1;
-            int z = 2;
-            boolean b = true;
-            boolean c = false;
+// These are better:
+int i = 1;
+int j = -1;
+int z = 2;
+boolean b = true;
+boolean c = false;
 
-            // And these just make your brain hurt:
-            int i = ~-2;
-            int j = -~7;
+// And these just make your brain hurt:
+int i = ~-2;
+int j = -~7;
             ]]>
         </example>
-    </rule>
-    
+    </rule>    
 
   <rule name="ExtendsObject"
   		language="java"
@@ -705,7 +669,7 @@ public class Test {
     </properties>
     <example>
     <![CDATA[
-public class Foo extends Object { // This is useless
+public class Foo extends Object { 	// not required
 }
     ]]>
     </example>
@@ -717,7 +681,7 @@ public class Foo extends Object { // This is useless
           	message="Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped."
           	class="net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResultRule"
 	  		externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#CheckSkipResult">
-        <description>The skip() method may skip a smaller number of bytes than requested. You need to check the returned value to find out if it was the case or not.</description>
+        <description>The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.</description>
         <priority>3</priority>
         <example>
         <![CDATA[
@@ -737,8 +701,6 @@ public class Foo {
          n -= skipped;
       }
    }
-
-}
         ]]>
         </example>
     </rule>
@@ -750,30 +712,26 @@ public class Foo {
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop">
         <description>
             <![CDATA[
-            		Using a branching statement as the last in a loop may be a bug, and/or is confusing.
-					Check the usage is not a bug, or consider changing.
+Using a branching statement as the last part of a loop may be a bug, and/or is confusing.
+Ensure that the usage is not a bug, or consider using another approach.
             ]]>
         </description>
         <priority>2</priority>
         <example>
             <![CDATA[
-public class Foo {
- public void bar() {
-  // Funky use of branching statement in a loop...
-  for (int i = 0; i < 10; i++) {
-   if (i*i <= 25) {
-    continue;
-   }
-   break;
-  }
+  // unusual use of branching statement in a loop
+for (int i = 0; i < 10; i++) {
+	if (i*i <= 25) {
+		continue;
+	}
+	break;
+}
 
-  // This makes more sense...
-  for (int i = 0; i < 10; i++) {
-   if (i*i > 25) {
-    break;
-   }
-  }
- }
+  // this makes more sense...
+for (int i = 0; i < 10; i++) {
+	if (i*i > 25) {
+		break;
+	}
 }
             ]]>
         </example>

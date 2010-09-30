@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
 
-<ruleset name="Controversial Rules"
+<ruleset name="Controversial"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
-The Controversial ruleset contains rules that, for whatever reason, are considered controversial.  They
-are separated out here to allow people to include as they see fit via custom rulesets.  This ruleset was
-initially created in response to discussions over UnnecessaryConstructorRule which Tom likes but
-most people really dislike :-)
+The Controversial ruleset contains rules that, for whatever reason, are considered controversial.
+They are held here to allow people to include them as they see fit within their custom rulesets.
   </description>
 
     <rule name="UnnecessaryConstructor"
@@ -20,8 +18,8 @@ most people really dislike :-)
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#UnnecessaryConstructor">
       <description>
-This rule detects when a constructor is not necessary; i.e., when there's only one constructor,
-it's public, has an empty body, and takes no arguments.
+This rule detects when a constructor is not necessary; i.e., when there is only one constructor,
+its public, has an empty body, and takes no arguments.
       </description>
       <priority>3</priority>
         <properties>
@@ -48,30 +46,27 @@ public class Foo {
       </example>
     </rule>
 
-
-
     <rule name="NullAssignment"
     		 since="1.02"
           message="Assigning an Object to null is a code smell.  Consider refactoring."
           class="net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#NullAssignment">
       <description>
- Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, the assignment is an indication that the programmer doesn't
- completely understand what is going on in the code.  NOTE: This sort of assignment may in rare cases be useful to encourage garbage collection.  
- If that's what you're using it for, by all means, disregard this rule :-)
+Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, this type
+of assignment is an indication that the programmer doesn't completely understand what is going on in the code.  
+
+NOTE: This sort of assignment may used in some cases to dereference objects and encourage garbage collection.  
       </description>
         <priority>3</priority>
       <example>
  <![CDATA[
- public class Foo {
-   public void bar() {
-     Object x = null; // This is OK.
-     x = new Object();
-     // Big, complex piece of code here.
-     x = null; // This is BAD.
-     // Big, complex piece of code here.
-   }
- }
+public void bar() {
+	Object x = null; // this is OK
+	x = new Object();
+     // big, complex piece of code here
+	x = null; // this is not required
+     // big, complex piece of code here
+}
 
  ]]>
       </example>
@@ -91,9 +86,9 @@ A method should have only one exit point, and that should be the last statement 
 public class OneReturnOnly1 {
   public void foo(int x) {
     if (x > 0) {
-      return "hey";   // oops, multiple exit points!
+      return "hey";   // first exit
     }
-    return "hi";
+    return "hi";	// second exit
   }
 }
  ]]>
@@ -111,17 +106,11 @@ Avoid assignments in operands; this can make code more complicated and harder to
     <priority>3</priority>
   <example>
   <![CDATA[
-public class Foo {
-  public void bar() {
+public void bar() {
     int x = 2;
     if ((x = getX()) == 3) {
       System.out.println("3!");
     }
-  }
-  
-  private int getX() {
-    return 3;
-  }
 }
   ]]>
   </example>
@@ -156,7 +145,9 @@ Each class should declare at least one constructor.
   <example>
   <![CDATA[
 public class Foo {
- // no constructor!  not good!
+ 	// missing constructor
+ 	public void doSomething() { ... }
+ 	public void doOtherThing { ... }
 }
   ]]>
   </example>
@@ -199,11 +190,9 @@ the literal character "8".
       <priority>3</priority>
       <example>
 <![CDATA[
-public class Foo {
- public void foo() {
-  // interpreted as octal 12, followed by character '8'
-  System.out.println("suspicious: \128");
- }
+public void foo() {
+	// interpreted as octal 12, followed by character '8'
+	System.out.println("suspicious: \128");
 }
 ]]>
       </example>
@@ -256,7 +245,7 @@ public class Foo extends Bar{
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#UnnecessaryParentheses">
       <description>
-Sometimes expressions are wrapped in unnecessary parentheses, making them look like a function call.
+Sometimes expressions are wrapped in unnecessary parentheses, making them look like function calls.
       </description>
       <priority>3</priority>
       <properties>
@@ -330,13 +319,9 @@ See http://www.javaspecialists.co.za/archive/newsletter.do?issue=042&amp;locale=
       </properties>
       <example>
   <![CDATA[
-public class Foo {
-  public void main(bar) {
-   boolean b = true;
-   b = !b; // slow
-   b ^= true; // fast
-   }
-}
+boolean b = true;
+b = !b;		// slow
+b ^= true;	// fast
 ]]>
       </example>
     </rule>
@@ -357,14 +342,12 @@ From those informations there can be found various problems.
           <priority>5</priority>
           <example>
 <![CDATA[
-public class Foo {
-   public void foo() {
-	 int buz = 5;
-	 buz = 6; // redefinition of buz -> dd-anomaly
-	 foo(buz);
-	 buz = 2;
-   } // buz is undefined when leaving scope -> du-anomaly
-}
+public void foo() {
+	int buz = 5;
+	buz = 6; // redefinition of buz -> dd-anomaly
+	foo(buz);
+	buz = 2;
+} // buz is undefined when leaving scope -> du-anomaly
 ]]>
           </example>
         </rule>
@@ -414,7 +397,8 @@ public class MyClass {
             <![CDATA[
 Java uses the 'short' type to reduce memory usage, not to optimize calculation. In fact, the JVM does not have any
 arithmetic capabilities for the short type: the JVM must convert the short into an int, do the proper calculation
-and convert the int back to a short. So, the use of the 'short' type may have a greater impact than memory usage.
+and convert the int back to a short. Thus any storage gains found through use of the 'short' type may be offset by
+adverse impacts on performance.
             ]]>
         </description>
         <priority>1</priority>
@@ -451,7 +435,7 @@ public class UsingShort {
 
         <description>
             <![CDATA[
-Use of the keyword 'volatile' is general used to fine tune a Java application, and therefore, requires
+Use of the keyword 'volatile' is generally used to fine tune a Java application, and therefore, requires
 a good expertise of the Java Memory Model. Moreover, its range of action is somewhat misknown. Therefore,
 the volatile keyword should not be used for maintenance purpose and portability.
             ]]>
@@ -471,8 +455,9 @@ the volatile keyword should not be used for maintenance purpose and portability.
 		<example>
 			<![CDATA[
 public class ThrDeux {
-	private volatile String var;
-
+	private volatile String var1;	// not suggested
+	private          String var2;	// preferred
+}
 }
 			]]>
 		</example>
@@ -488,10 +473,8 @@ public class ThrDeux {
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#AvoidUsingNativeCode">
         <description>
             <![CDATA[
-As JVM and Java language offer already many help in creating application, it should be
-very rare to have to rely on non-java code. Even though, it is rare to actually have to
-use Java Native Interface (JNI). As the use of JNI make application less portable, and
-harder to maintain, it is not recommended.
+Unnecessary reliance on Java Native Interface (JNI) calls directly reduces application portability 
+and increases the maintenance burden.
             ]]>
         </description>
         <priority>2</priority>
@@ -534,9 +517,8 @@ public class SomeJNIClass {
         <description>
             <![CDATA[
 Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
-as the interface PrivilegedAction, allow to alter, at runtime, the visilibilty of variable, classes, or
-methods, even if they are private. Obviously, no one should do so, as such behavior is against everything
-encapsulation principal stands for.
+as the interface PrivilegedAction, allows for the runtime alteration of variable, class, or
+method visibility, even if they are private. This violates the principle of encapsulation.
             ]]>
         </description>
         <priority>3</priority>
@@ -667,8 +649,7 @@ public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } }
         <description>
             <![CDATA[
 Java allows the use of several variables declaration of the same type on one line. However, it
-can lead to quite messy code. This rule looks for several declaration on the same line
-and report any of them.
+can lead to quite messy code. This rule looks for several declarations on the same line.
             ]]>
         </description>
        <priority>4</priority>
@@ -683,14 +664,10 @@ and report any of them.
         </properties>
         <example>
         	<![CDATA[
-String name ; 	
-String lastname ; 
-        	]]>
-        </example>
-                <example>
-        	<![CDATA[
-// This should trigger a violation
-String lastname,name; 
+String name; 			// separate declarations
+String lastname; 
+
+String name, lastname;	// combined declaration, a violation
         	]]>
         </example>
 	</rule>
@@ -705,7 +682,7 @@ String lastname,name;
         <description>
             <![CDATA[
 Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readability. 
-To indicate whether or not a parameter will be modify in a method, it's better to document method
+To indicate whether or not a parameter will be modify in a method, its better to document method
 behavior with Javadoc.
             ]]>
         </description>
@@ -754,7 +731,8 @@ public class Foo {
       class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#AvoidLiteralsInIfCondition">
     <description>
-      Avoid using hard coded literals in conditional statements, declare those as static variables or private members.
+Avoid using hard-coded literals in conditional statements. By declaring them as static variables
+or private members with descriptive names maintainability is enhanced.
     </description>
     <priority>3</priority>
     <properties>
@@ -768,11 +746,17 @@ public class Foo {
     </properties>
     <example>
 <![CDATA[
-public class PrimitiveType {
-  public void downCastPrimitiveType() {
-    if(i==1) {
+private static final int TEN = 10;
+
+public void downCastPrimitiveType() {
+	
+    if (i == 10) {		// magic number, buried in a method
+    	doSomething();
     }
-  }
+    
+    if (i == TEN) {		// preferred approach
+    	doSomething();
+    }
 }
 ]]>
     </example>
@@ -784,10 +768,10 @@ public class PrimitiveType {
          class="net.sourceforge.pmd.lang.rule.XPathRule"
          externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#UseObjectForClearerAPI">
     <description>
-When you write a public method, you should be thinking in terme of API. If your method is public, it means other class
+When you write a public method, you should be thinking in terms of an API. If your method is public, it means other class
 will use it, therefore, you want (or need) to offer a comprehensive and evolutive API. If you pass a lot of information
 as a simple series of Strings, you may think of using an Object to represent all those information. You'll get a simplier 
-API (such as doWork(Workload workload), rather than tidious serie of Strings) and more importantly, if you need at some
+API (such as doWork(Workload workload), rather than a tedious series of Strings) and more importantly, if you need at some
 point to pass extra data, you'll be able to do so by simply modifying or extending Workload without any modification to
 your API.
     </description>
