@@ -7,7 +7,6 @@ import net.sourceforge.pmd.eclipse.ui.views.AbstractResourceView;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 import net.sourceforge.pmd.eclipse.ui.views.actions.CollapseAllAction;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.IWorkbenchPart;

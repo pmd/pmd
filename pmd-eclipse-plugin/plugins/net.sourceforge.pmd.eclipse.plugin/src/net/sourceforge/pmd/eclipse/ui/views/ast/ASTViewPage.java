@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
@@ -16,7 +17,10 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
@@ -28,7 +32,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -38,6 +41,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPart;
@@ -64,7 +68,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 	private TextStyle 	derivedStyle;
 
 	private StyledText	xpathField;
-	private StyledText  outputField;
+	private TableViewer resultsViewer;
 	private Button		goButton;
 	private Node		classNode;
 	
@@ -170,17 +174,33 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 				}
 			} );
 			
-			outputField = new StyledText(xpathTestPanel, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+//			outputField = new StyledText(xpathTestPanel, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 			gridData = new GridData(GridData.FILL_BOTH);
 			gridData.grabExcessHorizontalSpace = true;
 			gridData.horizontalSpan = 2;
-			outputField.setLayoutData(gridData);
-			SyntaxManager.adapt(outputField, "xpath", null);
-		
-		registerListeners();
-		
-		showFirstMethod();
-	}
+//			outputField.setLayoutData(gridData);
+//			SyntaxManager.adapt(outputField, "xpath", null);
+			
+			IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
+				public void dispose() {	}
+				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {	}
+				public Object[] getElements(Object inputElement) { return (Node[])inputElement;	}        	
+		        };
+		    BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(NodeColumnUI.VisibleColumns);
+		        
+		    resultsViewer = new TableViewer(xpathTestPanel, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
+		    Table table = resultsViewer.getTable();
+		    table.setLayoutData(gridData);
+		        
+		    resultsViewer.setLabelProvider(labelProvider);
+		    resultsViewer.setContentProvider(contentProvider);
+		    table.setHeaderVisible(true);
+		    labelProvider.addColumnsTo(table);
+					
+			registerListeners();
+			
+			showFirstMethod();
+		}
 	
 	private void addXPathValidator() {
 		
@@ -206,23 +226,18 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		goButton.setEnabled(true);
 	}
 	
-	private static void displayOn(Node node, StringBuilder sb) {
-
-		sb.append(node);
-		
-		String imgData = node.getImage();
-		
-		if (imgData != null ) sb.append("  ").append( imgData );
-	}
+//	private static void displayOn(Node node, StringBuilder sb) {
+//
+//		sb.append(node);
+//		
+//		String imgData = node.getImage();
+//		
+//		if (imgData != null ) sb.append("  ").append( imgData );
+//	}
 
 	private void evaluateXPath() {
 
-		outputField.setText("");
-		
-		if (StringUtil.isEmpty(xpathField.getText())) {
-			outputField.setText("XPath query field is empty.");
-			return;
-		}
+		if (! setupTest() ) return;
 		
 		List<Node> results = null;
 		try {
@@ -232,21 +247,45 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 					XPathRuleQuery.XPATH_1_0	// TODO derive from future combo widget
 					);
 		} catch (ParseException pe) {
-			outputField.setText(pe.fillInStackTrace().getMessage());
+			showError(pe.fillInStackTrace().getMessage());
 			return;
 		}
+		
+		show(results);
+	}
+
+	private boolean setupTest() {
+
+	//	outputField.setText("");
+		resultsViewer.getTable().clearAll();
+		
+		if (StringUtil.isEmpty(xpathField.getText())) {
+			//outputField.setText("XPath query field is empty.");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private void showError(String message) {
+		//outputField.setText(message);
+	}
+	
+	private void show(List<Node> results) {
 		
 		if (results.isEmpty()) {
-			outputField.setText("No matching nodes found");
+			//outputField.setText("No matching nodes found");
 			return;
 		}
 		
-		StringBuilder sb = new StringBuilder();
-		for (Node node : results) {
-			displayOn(node, sb);
-			sb.append('\n');
-		}
-		outputField.setText( sb.toString() );
+//		StringBuilder sb = new StringBuilder();
+//		for (int i=0; i<results.size(); i++) {
+//			displayOn(results.get(i), i+1, sb);
+//			sb.append('\n');
+//		}
+//		outputField.setText( sb.toString() );
+		
+		resultsViewer.setInput( results.toArray(new Node[results.size()]) );
 	}
 
 	private TextLayout layoutFor(TreeItem item) {
