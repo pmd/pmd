@@ -1,9 +1,7 @@
 ToDo items:     							March 21st 2010
 
 Finish remaining editors and the Add Property dialog
-Enable 'Use defaults' option in popup menu (need support in properties/PMD)
 Add selection column selected rules in per-project rule settings table
-Rework context menu - build on-demand, not before
 Work on support for fixes
 Format description text
 Additional property types?
@@ -16,6 +14,7 @@ Remember settings for:
 	rule table screen fraction
 Fix:
 	new property dialog, use JFace dialog
+Finish new Filter preferences page
 	
 Items needing support in PMD itself:
 
