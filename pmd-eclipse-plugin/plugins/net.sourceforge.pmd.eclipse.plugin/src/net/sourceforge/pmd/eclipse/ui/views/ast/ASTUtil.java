@@ -11,10 +11,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 
 /**
  * 
@@ -36,51 +39,72 @@ public class ASTUtil {
 		return name == null ? "??" : name.getImage();
 	}
 	
-	public static String getMethodLabel(ASTMethodDeclaration pmdMethod) {
+	public static String getMethodLabel(ASTMethodDeclaration pmdMethod, boolean includeModifiers) {
 		
 		String returnType = returnType(pmdMethod);
 		
-		StringBuilder sb = new StringBuilder(pmdMethod.getMethodName());
-		sb.append('(');
-		sb.append(parameterTypes(pmdMethod));
-		sb.append(')');
+		StringBuilder sb = new StringBuilder();
+		
+		if (includeModifiers) {
+			addModifiers(pmdMethod, sb);
+			sb.append(' ');
+		}
+		
+		sb.append(pmdMethod.getMethodName());
+		sb.append('(').append(parameterTypes(pmdMethod)).append(')');
 		if (returnType == null) return sb.toString();
 		
 		sb.append(" : ").append(returnType);
 		return sb.toString();
 	}
 	
-	public static String getFieldLabel(ASTFieldDeclaration pmdField) {
-			
+	private static List<String> modifiersFor(AbstractJavaAccessNode node) {
+		
 		List<String> modifiers = new ArrayList<String>();
-		if (pmdField.isPublic()) {
+		if (node.isPublic()) {
 			modifiers.add("public");
 			} else {
-				if (pmdField.isProtected()) {
+				if (node.isProtected()) {
 					modifiers.add("protected");
 				} else {
-					if (pmdField.isPrivate()) {
+					if (node.isPrivate()) {
 						modifiers.add("private");
 					}
 				}
 			}				
 		
-		if (pmdField.isAbstract()) 	modifiers.add("abstract");
-		if (pmdField.isStatic()) 	modifiers.add("static");
-		if (pmdField.isFinal()) 	modifiers.add("final");
-		if (pmdField.isTransient()) modifiers.add("transient");
-		if (pmdField.isVolatile()) 	modifiers.add("volatile");
-		if (pmdField.isSynchronized()) modifiers.add("synchronized");
-		if (pmdField.isNative()) 	modifiers.add("native");
-		if (pmdField.isStrictfp()) 	modifiers.add("strictfp");
+		if (node.isAbstract()) 	modifiers.add("abstract");
+		if (node.isStatic()) 	modifiers.add("static");
+		if (node.isFinal()) 	modifiers.add("final");
+		if (node.isTransient()) modifiers.add("transient");
+		if (node.isVolatile()) 	modifiers.add("volatile");
+		if (node.isSynchronized()) modifiers.add("synchronized");
+		if (node.isNative()) 	modifiers.add("native");
+		if (node.isStrictfp()) 	modifiers.add("strictfp");
+		return modifiers;
+	}
+	
+	private static void addModifiers(AbstractJavaAccessNode node, StringBuilder sb) {
 		
-		StringBuilder sb = new StringBuilder(modifiers.get(0));
+		List<String> modifiers = modifiersFor(node);
+		if (modifiers.isEmpty()) return;
+		
+		sb.append(modifiers.get(0));
 		for (int i=1; i<modifiers.size(); i++) {
 			sb.append(' ').append(modifiers.get(i));
 		}
-		// TODO add variable type
-		// TODO add variableName
+	}
+	
+	public static String getFieldLabel(ASTFieldDeclaration pmdField) {
+			
+		StringBuilder sb = new StringBuilder();
+		addModifiers(pmdField, sb);
 		
+		ASTType type = pmdField.getFirstChildOfType(ASTType.class);
+		if (type != null) sb.append(' ').append(type.getTypeImage());
+		
+		sb.append(' ').append(pmdField.getVariableName());
+				
 		return sb.toString();
 	}
 	
@@ -122,5 +146,20 @@ public class ASTUtil {
 	    		}	
 	    	}
 		return null;
+	}
+
+	public static String getLocalVarDeclarationLabel(ASTLocalVariableDeclaration node) {
+
+		StringBuilder sb = new StringBuilder();
+		addModifiers(node, sb);
+		
+		ASTType type = node.getTypeNode();
+		sb.append(' ').append(type.getTypeImage());
+		
+		for (int i=0; i<node.getArrayDepth(); i++) sb.append("[]");
+		
+		sb.append(' ').append(node.getVariableName());
+		
+		return sb.toString();
 	}
 }

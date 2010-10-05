@@ -8,6 +8,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
@@ -48,15 +49,13 @@ public class ASTContentProvider implements ITreeContentProvider {
 	
 	public Object[] getElements(Object inputElement) {
 		
-		AbstractNode parent = (AbstractNode)inputElement;
-		
+		AbstractNode parent = (AbstractNode)inputElement;		
 		return withoutHiddenOnes(parent).toArray();
 	}
 
 	public Object[] getChildren(Object parentElement) {
 
-		AbstractNode parent = (AbstractNode)parentElement;
-		
+		AbstractNode parent = (AbstractNode)parentElement;		
 		return withoutHiddenOnes(parent).toArray();
 	}
 
@@ -72,4 +71,8 @@ public class ASTContentProvider implements ITreeContentProvider {
 		return parent.jjtGetNumChildren() > 0;
 	}
 
+	
+	public static void setupSorter(TableViewer viewer) {
+		
+	}
 }
