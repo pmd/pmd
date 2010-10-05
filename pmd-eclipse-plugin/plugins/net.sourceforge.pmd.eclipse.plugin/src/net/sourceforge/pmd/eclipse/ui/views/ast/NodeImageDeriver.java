@@ -3,12 +3,15 @@ package net.sourceforge.pmd.eclipse.ui.views.ast;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.Comment;
 
 /**
  * For nodes higher in the tree that don't have any identifying information
@@ -25,37 +28,65 @@ public class NodeImageDeriver {
 		target = theASTClass;
 	}
 	
-	public String deriveFrom(AbstractNode node) {
+	public String deriveFrom(Node node) {
 		return null;	// failed to implement!
 	}
+
+	private static void dumpComments(ASTCompilationUnit node) {
+		
+		for (Comment comment : node.getComments()) {
+			System.out.println(comment.getClass().getName());
+			System.out.println(comment.getImage());
+		}
+	}
+	
+	private static NodeImageDeriver compilationUnitDeriver = new NodeImageDeriver(ASTCompilationUnit.class) {
+		public String deriveFrom(Node node) {
+			dumpComments((ASTCompilationUnit)node);
+			return "Comments: " + ((ASTCompilationUnit)node).getComments().size();
+		}
+	};
 	
 	private static NodeImageDeriver importDeriver = new NodeImageDeriver(ASTImportDeclaration.class) {
-		public String deriveFrom(AbstractNode node) {
-			AbstractNode nameNode = node.getFirstChildOfType(ASTName.class);
-			return nameNode == null ? "??" : nameNode.getImage();
+		public String deriveFrom(Node node) {
+			// TODO show package name as well?
+			return ((ASTImportDeclaration)node).getImportedName();
 		}
 	};
 	
 	private static NodeImageDeriver methodDeclarationDeriver = new NodeImageDeriver(ASTMethodDeclaration.class) {
-		public String deriveFrom(AbstractNode node) {
-			return ASTUtil.getMethodLabel((ASTMethodDeclaration)node);
+		public String deriveFrom(Node node) {
+			return ASTUtil.getMethodLabel((ASTMethodDeclaration)node, true);
+		}
+	};
+	
+	private static NodeImageDeriver throwStatementDeriver = new NodeImageDeriver(ASTThrowStatement.class) {
+		public String deriveFrom(Node node) {
+			return ((ASTThrowStatement)node).getFirstClassOrInterfaceTypeImage();
 		}
 	};
 	
 	private static NodeImageDeriver fieldDeclarationDeriver = new NodeImageDeriver(ASTFieldDeclaration.class) {
-		public String deriveFrom(AbstractNode node) {
+		public String deriveFrom(Node node) {
 			return ASTUtil.getFieldLabel((ASTFieldDeclaration)node);
 		}
 	};
 	
+	private static NodeImageDeriver localVariableDeclarationDeriver = new NodeImageDeriver(ASTLocalVariableDeclaration.class) {
+		public String deriveFrom(Node node) {
+			return ASTUtil.getLocalVarDeclarationLabel((ASTLocalVariableDeclaration)node);
+		}
+	};
+	
 	private static NodeImageDeriver annotationDeriver = new NodeImageDeriver(ASTAnnotation.class) {
-		public String deriveFrom(AbstractNode node) {
+		public String deriveFrom(Node node) {
 			return ASTUtil.getAnnotationLabel((ASTAnnotation)node);
 		}
 	};
 	
 	private static final NodeImageDeriver[] AllDerivers = new NodeImageDeriver[] {
-		importDeriver, methodDeclarationDeriver, fieldDeclarationDeriver, annotationDeriver
+		importDeriver, methodDeclarationDeriver, localVariableDeclarationDeriver, fieldDeclarationDeriver, annotationDeriver,
+		compilationUnitDeriver, throwStatementDeriver
 		};
 	
 	private static final Map<Class<?>, NodeImageDeriver>DeriversByType = new HashMap<Class<?>, NodeImageDeriver>(NodeImageDeriver.AllDerivers.length);
@@ -66,7 +97,7 @@ public class NodeImageDeriver {
 		}
 	}
 	
-	public static String derivedTextFor(AbstractNode node) {
+	public static String derivedTextFor(Node node) {
 		
 		NodeImageDeriver deriver = DeriversByType.get(node.getClass());
 		return deriver == null ? null : deriver.deriveFrom(node);
