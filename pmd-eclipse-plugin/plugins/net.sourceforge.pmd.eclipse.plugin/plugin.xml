@@ -491,7 +491,7 @@
             category="net.sourceforge.pmd.eclipse.ui.views"
             class="net.sourceforge.pmd.eclipse.ui.views.rules.RuleEditorView"
             id="net.sourceforge.pmd.eclipse.plugin.ruleEditorView"
-            name="Rule Editor"
+            name="Rule Editor (DEBUG ONLY)"
             restorable="true">
       </view>
       <view
