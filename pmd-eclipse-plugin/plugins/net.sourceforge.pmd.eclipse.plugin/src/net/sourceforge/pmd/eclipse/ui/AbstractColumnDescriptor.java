@@ -51,7 +51,7 @@ public abstract class AbstractColumnDescriptor implements ColumnDescriptor {
 
     protected TreeColumn buildTreeColumn(Tree parent) {
 
-        final TreeColumn tc = new TreeColumn(parent, alignment);
+        TreeColumn tc = new TreeColumn(parent, alignment);
         loadCommon(tc);
         tc.setWidth(width);
         tc.setResizable(isResizable);
@@ -62,7 +62,7 @@ public abstract class AbstractColumnDescriptor implements ColumnDescriptor {
     
     public TableColumn buildTableColumn(Table parent) {
 
-        final TableColumn tc = new TableColumn(parent, alignment);
+        TableColumn tc = new TableColumn(parent, alignment);
         loadCommon(tc);
     	tc.setText(label);
         tc.setWidth(width);
