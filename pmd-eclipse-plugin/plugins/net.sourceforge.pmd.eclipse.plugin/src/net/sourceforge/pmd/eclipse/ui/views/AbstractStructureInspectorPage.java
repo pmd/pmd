@@ -167,7 +167,7 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		pmdMethodList = getPMDMethods();
 	
 		for (ASTMethodDeclaration pmdMethod : pmdMethodList) {
-			methodSelector.add(ASTUtil.getMethodLabel(pmdMethod));
+			methodSelector.add(ASTUtil.getMethodLabel(pmdMethod, false));
 		}
 	}
 
