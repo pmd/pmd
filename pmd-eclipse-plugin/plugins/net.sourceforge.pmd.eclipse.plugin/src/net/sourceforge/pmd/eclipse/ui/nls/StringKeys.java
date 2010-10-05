@@ -353,6 +353,12 @@ public class StringKeys {
     public static final String PRIORITY_COLUMN_COLOR = "priority.column.color";
     public static final String PRIORITY_COLUMN_DESC = "priority.column.description";
     
+    public static final String NODE_COLUMN_NAME = "node.column.name";
+    public static final String NODE_IMAGE_DATA = "node.column.image_data";
+    public static final String NODE_LINE_NUM = "node.column.line_num";
+    public static final String NODE_DERIVED = "node.column.derived";    
+    public static final String NODE_IMG_OR_DERIVED = "node.column.img_or_derived";
+    
     /**
      * This class is not meant to be instantiated
      *

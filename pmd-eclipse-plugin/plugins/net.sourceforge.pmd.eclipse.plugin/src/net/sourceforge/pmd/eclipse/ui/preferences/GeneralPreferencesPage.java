@@ -10,15 +10,15 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
 import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
 import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapePicker;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnUI;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
-import net.sourceforge.pmd.eclipse.ui.priority.PriorityTableLabelProvider;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Level;
@@ -224,7 +224,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {	}
 			public Object[] getElements(Object inputElement) { return (RulePriority[])inputElement;	}        	
         };
-        PriorityTableLabelProvider labelProvider = new PriorityTableLabelProvider(PriorityColumnDescriptor.VisibleColumns);
+        BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(PriorityColumnUI.VisibleColumns);
         
         tableViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         Table table = tableViewer.getTable();
