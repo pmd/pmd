@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 
-<ruleset name="Naming Rules"
+<ruleset name="Naming"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
-The Naming Ruleset contains a collection of rules about names - too long, too short, and so forth.
+The Naming Ruleset contains rules regarding preferred usage of names and identifiers.
   </description>
 
 
@@ -17,7 +17,7 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#ShortVariable">
     <description>
-Detects when a field, local, or parameter has a very short name.
+Fields, local variables, or parameter names that are very short are not helpful to the reader.
     </description>
     <priority>3</priority>
       <properties>
@@ -34,13 +34,13 @@ Detects when a field, local, or parameter has a very short name.
     <example>
 <![CDATA[
 public class Something {
-  private int q = 15; // VIOLATION - Field
-  public static void main( String as[] ) {  // VIOLATION - Formal
-    int r = 20 + q; // VIOLATION - Local
-    for (int i = 0; i < 10; i++) { // Not a Violation (inside FOR)
-      r += q;
-    }
-  }
+	private int q = 15; 						// field - too short
+	public static void main( String as[] ) {  	// formal arg - too short
+		int r = 20 + q; 						// local var - too short
+		for (int i = 0; i < 10; i++) { 			// not a violation (inside 'for' loop)
+			r += q;
+		}
+	}
 }
 ]]>
     </example>
@@ -53,7 +53,7 @@ public class Something {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#LongVariable">
     <description>
-Detects when a field, formal or local variable is declared with a long name.
+Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.
     </description>
       <priority>3</priority>
       <properties>
@@ -69,10 +69,10 @@ Detects when a field, formal or local variable is declared with a long name.
     <example>
 <![CDATA[
 public class Something {
-  int reallyLongIntName = -3;  // VIOLATION - Field
-  public static void main( String argumentsList[] ) { // VIOLATION - Formal
-    int otherReallyLongName = -5; // VIOLATION - Local
-    for (int interestingIntIndex = 0;  // VIOLATION - For
+	int reallyLongIntName = -3;  			// VIOLATION - Field
+	public static void main( String argumentsList[] ) { // VIOLATION - Formal
+		int otherReallyLongName = -5; 		// VIOLATION - Local
+		for (int interestingIntIndex = 0;	// VIOLATION - For
              interestingIntIndex < 10;
              interestingIntIndex ++ ) {
     }
@@ -88,7 +88,7 @@ public class Something {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#ShortMethodName">
      <description>
-Detects when very short method names are used.
+Method names that are very short are not helpful to the reader.
      </description>
       <priority>3</priority>
       <properties>
@@ -103,8 +103,8 @@ Detects when very short method names are used.
      <example>
 <![CDATA[
 public class ShortMethod {
-  public void a( int i ) { // Violation
-  }
+	public void a( int i ) { // Violation
+	}
 }
 ]]>
      </example>
@@ -118,8 +118,8 @@ public class ShortMethod {
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#VariableNamingConventions">
         <description>
 A variable naming conventions rule - customize this to your liking.  Currently, it
- checks for final variables that should be fully capitalized and non-final variables
- that should not include underscores.
+checks for final variables that should be fully capitalized and non-final variables
+that should not include underscores.
         </description>
         <priority>1</priority>
         <example>
@@ -145,8 +145,8 @@ Method names should always begin with a lower case character, and should not con
           <example>
 <![CDATA[
 public class Foo {
- public void fooStuff() {
- }
+	public void fooStuff() {
+	}
 }
 ]]>
           </example>
@@ -208,8 +208,8 @@ Avoid using dollar signs in variable/method/class/interface names.
          <priority>3</priority>
        <example>
    <![CDATA[
- public class Fo$o {  // yikes!
- }
+public class Fo$o {  // not a recommended name
+}
    ]]>
        </example>
      </rule>
@@ -226,10 +226,10 @@ Non-constructor methods should not have the same name as the enclosing class.
        <example>
     <![CDATA[
 public class MyClass {
- // this is bad because it is a method
-public void MyClass() {}
- // this is OK because it is a constructor
- public MyClass() {}
+
+	public MyClass() {}			// this is OK because it is a constructor
+	
+	public void MyClass() {}	// this is bad because it is a method
 }
     ]]>
        </example>
@@ -241,16 +241,16 @@ public void MyClass() {}
           class="net.sourceforge.pmd.lang.java.rule.naming.SuspiciousHashcodeMethodNameRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#SuspiciousHashcodeMethodName">
        <description>
-The method name and return type are suspiciously close to hashCode(), which
-may mean you are intending to override the hashCode() method.
+The method name and return type are suspiciously close to hashCode(), which may denote an intention
+to override the hashCode() method.
        </description>
         <priority>3</priority>
        <example>
     <![CDATA[
 public class Foo {
- public int hashcode() {
- // oops, this probably was supposed to be hashCode
- }
+	public int hashcode() {	// oops, this probably was supposed to be 'hashCode'
+	
+	}
 }
     ]]>
        </example>
@@ -263,7 +263,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#SuspiciousConstantFieldName">
        <description>
-A field name is all in uppercase characters, which in Sun's Java naming  conventions indicate a constant. However, the field is not final.
+Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should
+be declared as final.
        </description>
        <priority>3</priority>
         <properties>
@@ -298,7 +299,8 @@ public class Foo {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#SuspiciousEqualsMethodName">
         <description>
-The method name and parameter number are suspiciously close to equals(Object), which may mean you are intending to override the equals(Object) method.
+The method name and parameter number are suspiciously close to equals(Object), which can denote an
+intention to override the equals(Object) method.
         </description>
         <priority>2</priority>
         <properties>
@@ -344,14 +346,13 @@ public class Foo {
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#AvoidFieldNameMatchingTypeName">
       <description>
 It is somewhat confusing to have a field name matching the declaring class name.
-This probably means that type and or field names could be more precise.
+This probably means that type and/or field names should be chosen more carefully.
       </description>
         <priority>3</priority>
       <example>
 <![CDATA[
 public class Foo extends Bar {
- // There's probably a better name for foo
- int foo;
+	int foo;	// There is probably a better name that can be used
 }
 ]]>
       </example>
@@ -363,9 +364,9 @@ public class Foo extends Bar {
           class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingMethodNameRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#AvoidFieldNameMatchingMethodName">
       <description>
-It is somewhat confusing to have a field name with the same name as a method.
-While this is totally legal, having information (field) and actions (method) is
-not clear naming.
+It can be confusing to have a field name with the same name as a method. While this is permitted, 
+having information (field) and actions (method) is not clear naming. Developers versed in 
+Smalltalk often prefer this approach as the methods denote accessor methods.
       </description>
         <priority>3</priority>
       <example>
@@ -417,7 +418,7 @@ public class ClassInDefaultPackage {
             class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#PackageCase">
         <description>
-Detects when a package definition contains upper case characters.
+Detects when a package definition contains uppercase characters.
         </description>
         <priority>3</priority>
           <properties>
@@ -431,7 +432,7 @@ Detects when a package definition contains upper case characters.
           </properties>
         <example>
     <![CDATA[
-package com.MyCompany;  // <- should be lower case name
+package com.MyCompany;  // should be lowercase name
 
 public class SomeClass {
 }
@@ -479,7 +480,9 @@ public class Foo {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#BooleanGetMethodName">
         <description>
-Looks for methods named 'getX()' with 'boolean' as the return type. The convention is to name these methods 'isX()'.
+Methods that return boolean results should be named as predicate statements to denote this.
+I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the use of the 'get'
+prefix for these methods.
         </description>
         <priority>4</priority>
         <properties>
@@ -499,8 +502,8 @@ ResultType/Type/PrimitiveType[@Image = 'boolean']
         </properties>
         <example>
             <![CDATA[
-public boolean getFoo(); // bad
-public boolean isFoo(); // ok
+public boolean getFoo(); 	// bad
+public boolean isFoo(); 	// ok
 public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
      ]]></example>
     </rule>
@@ -513,7 +516,7 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
           	externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#ShortClassName">
         <description>
         	<![CDATA[
-Detects if a classname has fewer than five characters.
+Classnames with fewer than five characters are not recommended.
 			]]>
         </description>
         <priority>4</priority>
@@ -541,7 +544,7 @@ public class Foo {
          class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#GenericsNaming">
         <description>
-Generics names should be a one letter long and upper case.
+Names for references to generic values should be limited to a single uppercase letter.
         </description>
         <priority>4</priority>
         <properties>
@@ -559,28 +562,21 @@ Generics names should be a one letter long and upper case.
         </properties>
         <example>
             <![CDATA[
-public interface GenericDao<E extends BaseModel, K extends Serializable> extends BaseDao
-{
+public interface GenericDao<E extends BaseModel, K extends Serializable> extends BaseDao {
    // This is ok...
 }
 
-public interface GenericDao<E extends BaseModel, K extends Serializable>
-{
+public interface GenericDao<E extends BaseModel, K extends Serializable> {
    // Also this
 }
 
-public interface GenericDao<e extends BaseModel, K extends Serializable>
-{
+public interface GenericDao<e extends BaseModel, K extends Serializable> {
    // 'e' should be an 'E'
 }
 
-public interface GenericDao<EF extends BaseModel, K extends Serializable>
-{
+public interface GenericDao<EF extends BaseModel, K extends Serializable> {
    // 'EF' is not ok.
 }
-
-
-
      ]]></example>
     </rule>
 

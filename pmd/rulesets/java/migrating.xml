@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="Migration Rules"
+<ruleset name="Migration"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
@@ -8,7 +8,7 @@
 
   <description>
 Contains rules about migrating from one JDK version to another.  Don't use these rules directly,
-      rather, use a wrapper ruleset such as migrating_to_13.xml.
+rather, use a wrapper ruleset such as migrating_to_13.xml.
   </description>
 
 <rule name="ReplaceVectorWithList"
@@ -18,7 +18,7 @@ Contains rules about migrating from one JDK version to another.  Don't use these
   class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#ReplaceVectorWithList">
   <description>
-  Consider replacing Vector usages with the newer java.util.ArrayList if expensive threadsafe operation is not required.
+Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
   </description>
   <priority>3</priority>
   <properties>
@@ -48,7 +48,7 @@ public class Foo {
       class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#ReplaceHashtableWithMap">
       <description>
-      Consider replacing this Hashtable with the newer java.util.Map
+Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.
       </description>
       <priority>3</priority>
       <properties>
@@ -62,11 +62,11 @@ public class Foo {
       </properties>
       <example>
     <![CDATA[
-    public class Foo {
-     void bar() {
-        Hashtable h = new Hashtable();
-     }
-    }
+public class Foo {
+	void bar() {
+		Hashtable h = new Hashtable();
+	}
+}
     ]]>
       </example>
     </rule>
@@ -78,7 +78,7 @@ public class Foo {
       class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#ReplaceEnumerationWithIterator">
       <description>
-      Consider replacing this Enumeration with the newer java.util.Iterator
+Consider replacing Enumeration usages with the newer java.util.Iterator
       </description>
       <priority>3</priority>
       <properties>
@@ -111,7 +111,9 @@ public class Foo implements Enumeration {
           message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#AvoidEnumAsIdentifier">
-      <description>Finds all places where 'enum' is used as an identifier.</description>
+      <description>
+Use of the term 'enum' will conflict with newer versions of Java since it is a reserved word.
+	</description>
       <priority>2</priority>
       <properties>
           <property name="xpath">
@@ -124,11 +126,11 @@ public class Foo implements Enumeration {
       </properties>
       <example>
   <![CDATA[
-    public class A {
-        public  class foo {
-            String enum = "foo";
-        }
-    }
+public class A {
+	public  class foo {
+		String enum = "foo";
+	}
+}
   ]]>
       </example>
     </rule>
@@ -136,10 +138,12 @@ public class Foo implements Enumeration {
     <rule name="AvoidAssertAsIdentifier"
    		language="java"
           since="3.4"
-          message="Avoid using assert as an identifier; it's a reserved word in JDK 1.4"
+          message="Avoid using assert as an identifier; it became a reserved word in JDK 1.4"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#AvoidAssertAsIdentifier">
-      <description>Finds all places where 'assert' is used as an identifier.</description>
+      <description>
+Use of the term 'assert' will conflict with newer versions of Java since it is a reserved word.
+	</description>
       <priority>2</priority>
       <properties>
           <property name="xpath">
@@ -152,11 +156,11 @@ public class Foo implements Enumeration {
       </properties>
       <example>
   <![CDATA[
-    public class A {
-        public  class foo {
-            String assert = "foo";
-        }
-    }
+public class A {
+	public  class foo {
+		String assert = "foo";
+	}
+}
   ]]>
       </example>
     </rule>
@@ -167,7 +171,10 @@ public class Foo implements Enumeration {
           message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
 	  class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#IntegerInstantiation">
-      <description>In JDK 1.5, calling new Integer() causes memory allocation.  Integer.valueOf() is more memory friendly.</description>
+      <description>
+Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
+It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+	</description>
       <priority>2</priority>
       <properties>
           <property name="xpath">
@@ -185,7 +192,7 @@ public class Foo implements Enumeration {
       <example>
   <![CDATA[
 public class Foo {
- private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
+	private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
 }
    ]]>
       </example>
@@ -197,7 +204,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#ByteInstantiation">
           <description>
-              In JDK 1.5, calling new Byte() causes memory allocation. Byte.valueOf() is more memory friendly.
+Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
+It makes use of an internal cache that recycles earlier instances making it more memory efficient.
           </description>
           <priority>2</priority>
       <properties>
@@ -215,8 +223,7 @@ or ClassOrInterfaceType/@Image='java.lang.Byte')]
      <example>
 <![CDATA[
 public class Foo {
-private Byte i = new Byte(0); // change to Byte i =
-Byte.valueOf(0);
+	private Byte i = new Byte(0); // change to Byte i =	Byte.valueOf(0);
 }
 ]]>
      </example>
@@ -228,7 +235,9 @@ Byte.valueOf(0);
           message="Avoid instantiating Short objects. Call Short.valueOf() instead"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#ShortInstantiation">
-          <description>In JDK 1.5, calling new Short() causes memory allocation. Short.valueOf() is more memory friendly.
+          <description>
+Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
+It makes use of an internal cache that recycles earlier instances making it more memory efficient.
           </description>
           <priority>2</priority>
           <properties>
@@ -247,8 +256,7 @@ or ClassOrInterfaceType/@Image='java.lang.Short')]
           <example>
 <![CDATA[
 public class Foo {
-private Short i = new Short(0); // change to Short i =
-Short.valueOf(0);
+	private Short i = new Short(0); // change to Short i = Short.valueOf(0);
 }
 ]]>
           </example>
@@ -260,7 +268,10 @@ Short.valueOf(0);
 	message="Avoid instantiating Long objects.Call Long.valueOf() instead"
     class="net.sourceforge.pmd.lang.rule.XPathRule"
 	externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#LongInstantiation">
-    <description>In JDK 1.5, calling new Long() causes memory allocation. Long.valueOf() is more memory friendly.</description>
+    <description>
+Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
+It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+</description>
     <priority>2</priority>
     <properties>
     <property name="xpath">
@@ -278,8 +289,7 @@ or ClassOrInterfaceType/@Image='java.lang.Long')]
     <example>
 <![CDATA[
 public class Foo {
-private Long i = new Long(0); // change to Long i =
-Long.valueOf(0);
+	private Long i = new Long(0); // change to Long i = Long.valueOf(0);
 }
 ]]>
     </example>
@@ -293,8 +303,8 @@ Long.valueOf(0);
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#JUnit4TestShouldUseBeforeAnnotation">
       <description>
-In JUnit 3, the setUp method was used to set up all data entities required in running tests. JUnit 4 skips the setUp method 
-and executes all methods annotated with @Before before all tests
+In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
+JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests
       </description>
       <priority>3</priority>
       <properties>
@@ -329,8 +339,8 @@ public class MyTest2 {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#JUnit4TestShouldUseAfterAnnotation">
       <description>
-In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. JUnit 4 skips the tearDown method 
-and executes all methods annotated with @After after running each test
+In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
+JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test
       </description>
       <priority>3</priority>
       <properties>
@@ -365,8 +375,8 @@ public class MyTest2 {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#JUnit4TestShouldUseTestAnnotation">
       <description>
-In JUnit 3, the framework executed all methods which started with the word test as a unit test. In JUnit 4, only methods annotated
-with the @Test annotation are executed.
+In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
+In JUnit 4, only methods annotated with the @Test annotation are executed.
       </description>
       <priority>3</priority>
       <properties>
@@ -438,6 +448,7 @@ public class GoodTest {
           class="net.sourceforge.pmd.lang.java.rule.migrating.JUnitUseExpectedRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/migrating.html#JUnitUseExpected">
       <description>
+In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.
       </description>
         <priority>3</priority>
       <example>
@@ -462,4 +473,3 @@ public class MyTest {
     </rule>
 
 </ruleset>
-

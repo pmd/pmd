@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="Jakarta Commons Logging Rules"
+<ruleset name="Jakarta Commons Logging"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
@@ -16,7 +16,7 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-jakarta-commons.html#UseCorrectExceptionLogging">
 		<description>
-To make sure the full stacktrace is printed out, use the logging statement with 2 arguments: a String and a Throwable.
+To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
         </description>
         <priority>3</priority>
 	   	<properties>
@@ -54,9 +54,9 @@ public class Main {
          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-jakarta-commons.html#ProperLogger">
              <description>
-A logger should normally be defined private static final and have the correct class.
-Private final Log log; is also allowed for rare cases where loggers need to be passed
-around, with the restriction that the logger needs to be passed into the constructor.
+A logger should normally be defined private static final and be associated with the correct class.
+Private final Log log; is also allowed for rare cases where loggers need to be passed around, 
+with the restriction that the logger needs to be passed into the constructor.
              </description>
              <priority>3</priority>
              <properties>
@@ -79,11 +79,11 @@ around, with the restriction that the logger needs to be passed into the constru
              </properties>
              <example>
  <![CDATA[
- public class Foo {
-   // right
-   private static final Log LOG = LogFactory.getLog(Foo.class);
-   // wrong
-   protected Log LOG = LogFactory.getLog(Testclass.class);
+public class Foo {
+
+   private static final Log LOG = LogFactory.getLog(Foo.class);	   // proper way
+
+   protected Log LOG = LogFactory.getLog(Testclass.class);			// wrong approach
 }
  ]]>
             </example>

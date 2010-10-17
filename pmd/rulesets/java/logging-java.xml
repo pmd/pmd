@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="Java Logging Rules"
+<ruleset name="Java Logging"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
@@ -21,7 +21,7 @@ Normally only one logger is used in each class.
         <priority>2</priority>
      <example>
  <![CDATA[
-class Foo{
+public class Foo {
     Logger log = Logger.getLogger(Foo.class.getName());
     // It is very rare to see two loggers on a class, normally
     // log information is multiplexed by levels
@@ -38,7 +38,7 @@ class Foo{
          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#LoggerIsNotStaticFinal">
      <description>
-In most cases, the Logger can be declared static and final.
+In most cases, the Logger reference can be declared as static and final.
      </description>
      <priority>2</priority>
      <properties>
@@ -57,10 +57,10 @@ In most cases, the Logger can be declared static and final.
      </properties>
      <example>
  <![CDATA[
-class Foo{
-    Logger log = Logger.getLogger(Foo.class.getName());
-    // It is much better to declare the logger as follows 
-    // static final Logger log = Logger.getLogger(Foo.class.getName());
+public class Foo{
+    Logger log = Logger.getLogger(Foo.class.getName());					// not recommended
+
+    static final Logger log = Logger.getLogger(Foo.class.getName());	// preferred approach
 }
 ]]>
      </example>
@@ -109,7 +109,9 @@ When many log statements are used, it is convenient to surround them with an if 
          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#SystemPrintln">
      <description>
-System.(out|err).print is used, consider using a logger.
+References to System.(out|err).print are usually intended for debugging purposes and can remain in
+the codebase even in production code. By using a logger one can enable/disable this behaviour at
+will (and by priority) and avoid clogging the Standard out log.
      </description>
      <priority>2</priority>
      <properties>

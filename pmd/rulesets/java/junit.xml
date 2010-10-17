@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="JUnit Rules"
+<ruleset name="JUnit"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
@@ -85,7 +85,8 @@ public class Foo extends TestCase {
           class="net.sourceforge.pmd.lang.java.rule.junit.JUnitAssertionsShouldIncludeMessageRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#JUnitAssertionsShouldIncludeMessage">
       <description>
-JUnit assertions should include a message - i.e., use the three argument version of assertEquals(), not the two-argument version.
+JUnit assertions should include an informative message - i.e., use the three-argument version of 
+assertEquals(), not the two-argument version.
       </description>
         <priority>3</priority>
       <example>
@@ -108,7 +109,8 @@ public class Foo extends TestCase {
           class="net.sourceforge.pmd.lang.java.rule.junit.JUnitTestsShouldIncludeAssertRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#JUnitTestsShouldIncludeAssert">
         <description>
-JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert with messages provide the developer a clearer idea of what the test does.
+JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert 
+with messages provide the developer a clearer idea of what the test does.
         </description>
           <priority>3</priority>
         <example>
@@ -131,8 +133,8 @@ public class Foo extends TestCase {
           class="net.sourceforge.pmd.lang.java.rule.junit.TestClassWithoutTestCasesRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#TestClassWithoutTestCases">
       <description>
-Test classes end with the suffix Test. Having a non-test class with that name is not a good practice, since most people will assume it is a test case. 
-Test classes have test methods named testXXX.
+Test classes end with the suffix Test. Having a non-test class with that name is not a good practice, 
+since most people will assume it is a test case. Test classes have test methods named testXXX.
       </description>
         <priority>3</priority>
       <example>
@@ -156,9 +158,10 @@ public class CarTest {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#UnnecessaryBooleanAssertion">
       <description>
-A JUnit test assertion with a boolean literal is unnecessary since it always will eval to the same thing.
+A JUnit test assertion with a boolean literal is unnecessary since it always will evaluate to the same thing.
 Consider using flow control (in case of assertTrue(false) or similar) or simply removing
-statements like assertTrue(true) and assertFalse(false).  If you just want a test to halt, use the fail method.
+statements like assertTrue(true) and assertFalse(false).  If you just want a test to halt after finding
+an error, use the fail() method and provide an indication message of why it did.
       </description>
       <priority>3</priority>
       <properties>
@@ -183,10 +186,9 @@ UnaryExpressionNotPlusMinus[@Image='!']
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
- public void testX() {
-  // Why on earth would you write this?
-  assertTrue(true);
- }
+	public void testX() {
+		assertTrue(true);		 // serves no real purpose
+	}
 }
 ]]>
           </example>
@@ -220,11 +222,11 @@ This rule detects JUnit assertions in object equality. These assertions should b
       <example>
 <![CDATA[
 public class FooTest extends TestCase {
- void testCode() {
-  Object a, b;
-  assertTrue(a.equals(b)); // bad usage
-  assertEquals(?a should equals b?, a, b); // good usage
- }
+	void testCode() {
+		Object a, b;
+		assertTrue(a.equals(b)); 					// bad usage
+		assertEquals(?a should equals b?, a, b);	// good usage
+	}
 }
 ]]>
       </example>
@@ -237,7 +239,8 @@ public class FooTest extends TestCase {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#UseAssertSameInsteadOfAssertTrue">
       <description>
-This rule detects JUnit assertions in object references equality. These assertions should be made by more specific methods, like assertSame, assertNotSame.
+This rule detects JUnit assertions in object references equality. These assertions should be made 
+by more specific methods, like assertSame, assertNotSame.
       </description>
       <priority>3</priority>
     <properties>
@@ -261,7 +264,7 @@ This rule detects JUnit assertions in object references equality. These assertio
 public class FooTest extends TestCase {
  void testCode() {
   Object a, b;
-  assertTrue(a==b); // bad usage
+  assertTrue(a == b); // bad usage
   assertSame(a, b);  // good usage
  }
 }
@@ -276,7 +279,8 @@ public class FooTest extends TestCase {
            class="net.sourceforge.pmd.lang.rule.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#UseAssertNullInsteadOfAssertTrue">
        <description>
- This rule detects JUnit assertions in object references equality. These assertions should be made by more specific methods, like assertNull, assertNotNull.
+This rule detects JUnit assertions in object references equality. These assertions should be made by 
+more specific methods, like assertNull, assertNotNull.
        </description>
        <priority>3</priority>
      <properties>
@@ -363,10 +367,9 @@ public class SimpleTest extends TestCase {
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#JUnitTestContainsTooManyAsserts">
 		<description>
-		    JUnit tests should not contain too many asserts.  Many asserts are indicative of a
-		    complex test, for which it is harder to verify correctness.  Consider breaking the
-		    test scenario into multiple simpler test scenarios.  Customize the maximum number
-		    of assertions used by this Rule to suit your needs.
+JUnit tests should not contain too many asserts.  Many asserts are indicative of a complex test, for which 
+it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.  
+Customize the maximum number of assertions used by this Rule to suit your needs.
 		</description>
 		<priority>3</priority>
 		<properties>
@@ -405,7 +408,7 @@ public class MyTestCase extends TestCase {
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/java/junit.html#UseAssertTrueInsteadOfAssertEquals">
 		<description>
-			When asserting a value is the same as a boolean literal, use assertTrue/assertFalse, instead of assertEquals.
+When asserting a value is the same as a boolean literal, use assertTrue/assertFalse, instead of assertEquals.
 		</description>
 		<priority>3</priority>
 		<properties>
