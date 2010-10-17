@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="Finalizer Rules"
+<ruleset name="Finalizer"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
@@ -17,7 +17,7 @@ These rules deal with different problems that can occur with finalizers.
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#EmptyFinalizer">
        <description>
-If the finalize() method is empty, then it does not need to exist.
+Empty finalize methods serve no purpose and should be removed.
        </description>
        <priority>3</priority>
         <properties>
@@ -46,8 +46,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#FinalizeOnlyCallsSuperFinalize">
        <description>
-If the finalize() is implemented, it should do something besides just calling
-super.finalize().
+If the finalize() is implemented, it should do something besides just calling super.finalize().
        </description>
        <priority>3</priority>
         <properties>
@@ -66,10 +65,8 @@ super.finalize().
         </properties>
        <example>
            <![CDATA[
-public class Foo {
-   protected void finalize() {
-     super.finalize();
-   }
+protected void finalize() {
+	super.finalize();
 }
            ]]>
        </example>
@@ -82,8 +79,8 @@ public class Foo {
       class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#FinalizeOverloaded">
    <description>
-Methods named finalize() should not have parameters.  It is confusing and probably a bug to overload finalize().  
-It will not be called by the VM.
+Methods named finalize() should not have parameters.  It is confusing and most likely an attempt to
+overload Object.finalize(). It will not be called by the VM.
    </description>
    <priority>3</priority>
     <properties>
@@ -136,11 +133,9 @@ a block whose last statement is NOT a call to super.finalize -->
         </properties>
        <example>
 <![CDATA[
-public class Foo {
-   protected void finalize() {
-       something();
-       // neglected to call super.finalize()
-   }
+protected void finalize() {
+	something();
+	// neglected to call super.finalize()
 }
 ]]>
        </example>
@@ -153,8 +148,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#FinalizeShouldBeProtected">
       <description>
-If you override finalize(), make it protected.  If you make
- it public, other classes may call it.
+When overriding the finalize(), the new method should be set as protected.  If made public, 
+other classes may invoke it at inappropriate times.
       </description>
       <priority>3</priority>
         <properties>
@@ -170,15 +165,12 @@ If you override finalize(), make it protected.  If you make
         </properties>
       <example>
   <![CDATA[
-public class Foo {
- public void finalize() {
-  // do something
- }
+public void finalize() {
+	// do something
 }
   ]]>
       </example>
     </rule>
-
 
     <rule name="AvoidCallingFinalize"
     		 since="3.0"
@@ -186,23 +178,18 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.finalizers.AvoidCallingFinalizeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#AvoidCallingFinalize">
       <description>
-Object.finalize() is called by the garbage collector on an object when garbage collection determines
-that there are no more references to the object.
+The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
+that there are no more references to the object. It should not be invoked by application logic.
       </description>
         <priority>3</priority>
       <example>
 <![CDATA[
-public class Foo {
- void foo() {
-  Bar b = new Bar();
-  b.finalize();
- }
+void foo() {
+	Bar b = new Bar();
+	b.finalize();
 }
 ]]>
       </example>
     </rule>
 
  </ruleset>
-
-
-

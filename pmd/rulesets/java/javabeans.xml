@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="JavaBean Rules"
+<ruleset name="JavaBeans"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
@@ -17,9 +17,10 @@ The JavaBeans Ruleset catches instances of bean rules not being followed.
         class="net.sourceforge.pmd.lang.java.rule.javabeans.BeanMembersShouldSerializeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/javabeans.html#BeanMembersShouldSerialize">
     <description>
-If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. Member variables need to be marked as transient,
-static, or have accessor methods in the class. Marking variables as transient is the safest and easiest modification. Accessor methods should
-follow the Java naming conventions, i.e.if you have a variable foo, you should provide getFoo and setFoo methods.
+If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. 
+Member variables need to be marked as transient, static, or have accessor methods in the class. Marking 
+variables as transient is the safest and easiest modification. Accessor methods should follow the Java 
+naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.
     </description>
       <priority>3</priority>
     <example>
@@ -48,7 +49,7 @@ private int getMoreFoo(){
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/javabeans.html#MissingSerialVersionUID">
       <description>
-Classes that are serializable should provide a serialVersionUID field.
+Serializable classes should provide a serialVersionUID field.
       </description>
       <priority>3</priority>
       <properties>

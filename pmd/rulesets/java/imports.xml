@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<ruleset name="Import Statement Rules"
+<ruleset name="Import Statements"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
-These rules deal with different problems that can occur with a class' import statements.
+These rules deal with different problems that can occur with import statements.
   </description>
 
   <rule name="DuplicateImports"
@@ -16,7 +16,7 @@ These rules deal with different problems that can occur with a class' import sta
         class="net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#DuplicateImports">
     <description>
-    Avoid duplicate import statements.
+Duplicate or overlapping import statements should be avoided.
     </description>
       <priority>4</priority>
     <example>
@@ -39,15 +39,13 @@ Avoid importing anything from the package 'java.lang'.  These classes are automa
       <priority>4</priority>
     <example>
 <![CDATA[
-// this is unnecessary
-import java.lang.String;
+import java.lang.String;	// this is unnecessary
 
 public class Foo {}
 
 // --- in another source code file...
 
-// this is bad
-import java.lang.*;
+import java.lang.*;	// this is bad
 
 public class Foo {}
 ]]>
@@ -60,7 +58,7 @@ public class Foo {}
         class="net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#UnusedImports">
     <description>
-Avoid unused import statements.
+Avoid the use of unused import statements to prevent unwanted dependencies.
     </description>
       <priority>4</priority>
     <example>
@@ -78,7 +76,7 @@ public class Foo {}
          class="net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#ImportFromSamePackage">
      <description>
-No need to import a type that lives in the same package.
+There is no need to import a type that lives in the same package.
      </description>
         <priority>3</priority>
      <example>

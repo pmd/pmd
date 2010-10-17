@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<ruleset name="Coupling Rules"
+<ruleset name="Coupling"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
-    These are rules which find instances of high or inappropriate coupling between objects and packages.
+Rules which find instances of high or inappropriate coupling between objects and packages.
   </description>
 
     <rule name="CouplingBetweenObjects"
@@ -16,8 +16,8 @@
         class="net.sourceforge.pmd.lang.java.rule.coupling.CouplingBetweenObjectsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/coupling.html#CouplingBetweenObjects">
     <description>
-This rule counts unique attributes, local variables and return types within an object. A number
- higher than specified threshold can indicate a high degree of coupling.
+This rule counts the number of unique attributes, local variables, and return types within an object. 
+A number higher than the specified threshold can indicate a high degree of coupling.
     </description>
     <priority>3</priority>
     <example>
@@ -48,9 +48,9 @@ public class Foo {
      class="net.sourceforge.pmd.lang.java.rule.coupling.ExcessiveImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/coupling.html#ExcessiveImports">
      <description>
-A high number of imports can indicate a high degree of coupling within
-an object. Rule counts the number of unique imports and reports a violation
-if the count is above the user defined threshold.
+A high number of imports can indicate a high degree of coupling within an object. This rule 
+counts the number of unique imports and reports a violation if the count is above the 
+user-specified threshold.
   </description>
   <priority>3</priority>
   <example>
@@ -71,21 +71,27 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.coupling.LooseCouplingRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/coupling.html#LooseCoupling">
       <description>
-Avoid using implementation types (i.e., HashSet); use the interface (i.e, Set) instead
+The use of implementation types as object references limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, referencing objects 
+by their interface types provides much more flexibility.
       </description>
         <priority>3</priority>
       <example>
 <![CDATA[
-import java.util.*;
-public class Bar {
- // Use List instead
- private ArrayList list = new ArrayList();
- // Use Set instead
- public HashSet getFoo() {
-  return new HashSet();
- }
+	// sub-optimal approach
+private ArrayList list = new ArrayList();
+
+public HashSet getFoo() {
+	return new HashSet();
 }
-  ]]>
+
+	// preferred approach
+private List list = new ArrayList();
+
+public Set getFoo() {
+	return new HashSet();
+}
+]]>
       </example>
     </rule>
 
@@ -95,14 +101,16 @@ public class Bar {
           class="net.sourceforge.pmd.lang.java.rule.coupling.LoosePackageCouplingRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/coupling.html#LoosePackageCoupling">
       <description>
-Avoid using classes from the configured package hierarchy outside of the package
-hierarchy, except when using one of the configured allowed classes.
+Avoid using classes from the configured package hierarchy outside of the package hierarchy, 
+except when using one of the configured allowed classes.
       </description>
         <priority>3</priority>
       <example>
 <![CDATA[
 package some.package;
+
 import some.other.package.subpackage.subsubpackage.DontUseThisClass;
+
 public class Bar {
    DontUseThisClass boo = new DontUseThisClass();
 }

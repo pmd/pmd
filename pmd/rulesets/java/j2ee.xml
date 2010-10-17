@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<ruleset name="J2EE Rules"
+<ruleset name="J2EE"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
-    These are rules for J2EE
+Rules specific to the use of J2EE implementations.
   </description>
 
   <rule name="UseProperClassLoader"
@@ -17,7 +17,8 @@
    class="net.sourceforge.pmd.lang.rule.XPathRule"
    externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#UseProperClassLoader">
    <description>
-    In J2EE getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
+In J2EE, the getClassLoader() method might not work as expected. Use 
+Thread.currentThread().getContextClassLoader() instead.
    </description>
    <priority>3</priority>
       <properties>
@@ -46,7 +47,7 @@ public class Foo {
         message="SessionBean or MessageBean should be suffixed by Bean"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#MDBAndSessionBeanNamingConvention">
         <description>
-        The EJB Specification state that any MessageDrivenBean or SessionBean should be suffixed by Bean.
+The EJB Specification states that any MessageDrivenBean or SessionBean should be suffixed by 'Bean'.
         </description>
         <priority>4</priority>
         <properties>
@@ -70,14 +71,9 @@ public class Foo {
         </properties>
         <example>
             <![CDATA[
-    /* Proper name */
-public class SomeBean implements SessionBean{}
-            ]]>
-        </example>
-        <example>
-            <![CDATA[
-  /* Poor name */
-public class MissingTheProperSuffix implements SessionBean {}
+public class SomeBean implements SessionBean{}					// proper name
+
+public class MissingTheProperSuffix implements SessionBean {}  	// non-standard name
             ]]>
         </example>
     </rule>
@@ -90,7 +86,7 @@ public class MissingTheProperSuffix implements SessionBean {}
         message="Remote Home interface of a Session EJB should be suffixed by 'Home'"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#RemoteSessionInterfaceNamingConvention">
         <description>
-        Remote Home interface of a Session EJB should be suffixed by 'Home'.
+A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
         </description>
         <priority>4</priority>
         <properties>
@@ -114,14 +110,9 @@ public class MissingTheProperSuffix implements SessionBean {}
         </properties>
         <example>
             <![CDATA[
-            /* Proper name */
-            public interface MyBeautifulHome extends javax.ejb.EJBHome {}
-            ]]>
-        </example>
-        <example>
-            <![CDATA[
-            /* Bad name */
-            public interface MissingProperSuffix extends javax.ejb.EJBHome {}
+public interface MyBeautifulHome extends javax.ejb.EJBHome {}		// proper name
+
+public interface MissingProperSuffix extends javax.ejb.EJBHome {}	// non-standard name
             ]]>
         </example>
     </rule>
@@ -134,7 +125,7 @@ public class MissingTheProperSuffix implements SessionBean {}
         message="The Local Interface of a Session EJB should be suffixed by 'Local'"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#LocalInterfaceSessionNamingConvention">
         <description>
-        The Local Interface of a Session EJB should be suffixed by 'Local'.
+The Local Interface of a Session EJB should be suffixed by 'Local'.
         </description>
         <priority>4</priority>
         <properties>
@@ -158,14 +149,9 @@ public class MissingTheProperSuffix implements SessionBean {}
         </properties>
         <example>
             <![CDATA[
-  /* Proper name */
- public interface MyLocal extends javax.ejb.EJBLocalObject {}
-            ]]>
-        </example>
-        <example>
-            <![CDATA[
- /* Poor name */
- public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}
+ public interface MyLocal extends javax.ejb.EJBLocalObject {}				// proper name
+
+ public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}	// non-standard name
             ]]>
         </example>
     </rule>
@@ -178,7 +164,7 @@ public class MissingTheProperSuffix implements SessionBean {}
         message="The Local Home interface of a Session EJB should be suffixed by 'LocalHome'"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#LocalHomeNamingConvention">
         <description>
-        The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
+The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
         </description>
         <priority>4</priority>
         <properties>
@@ -202,14 +188,9 @@ public class MissingTheProperSuffix implements SessionBean {}
         </properties>
         <example>
             <![CDATA[
-  /* Proper name */
- public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}
-            ]]>
-        </example>
-        <example>
-            <![CDATA[
-  /* Poor name */
- public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}
+ public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}// proper name
+
+ public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}	// non-standard name
             ]]>
         </example>
     </rule>
@@ -222,7 +203,7 @@ public class MissingTheProperSuffix implements SessionBean {}
         message="Remote Interface of a Session EJB should NOT be suffixed"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#RemoteInterfaceNamingConvention">
         <description>
-        Remote Interface of a Session EJB should NOT be suffixed.
+Remote Interface of a Session EJB should not have a suffix.
         </description>
         <priority>4</priority>
         <properties>
@@ -251,16 +232,10 @@ public class MissingTheProperSuffix implements SessionBean {}
             <![CDATA[
  /* Poor Session suffix */
  public interface BadSuffixSession extends javax.ejb.EJBObject {}
-            ]]>
-        </example>
-        <example>
-            <![CDATA[
+
  /* Poor EJB suffix */
  public interface BadSuffixEJB extends javax.ejb.EJBObject {}
-            ]]>
-        </example>
-        <example>
-            <![CDATA[
+
  /* Poor Bean suffix */
  public interface BadSuffixBean extends javax.ejb.EJBObject {}
             ]]>
@@ -273,7 +248,8 @@ public class MissingTheProperSuffix implements SessionBean {}
     	message="System.exit() should not be used in J2EE/JEE apps"
     	class="net.sourceforge.pmd.lang.rule.XPathRule"
     	externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#DoNotCallSystemExit">
-    	<description>Web applications should not call System.exit(), since only the web container or the
+    	<description>
+Web applications should not call System.exit(), since only the web container or the
 application server should stop the JVM.
 	</description>
     	<priority>3</priority>
@@ -286,11 +262,8 @@ application server should stop the JVM.
     	</properties>
     	<example>
     		<![CDATA[
-public class Foo {
-    public void bar() {
-        // NEVER DO THIS IN A APP SERVER !!!
-        System.exit(0);
-    }
+public void bar() {
+	System.exit(0);		// never call this when running in an application server!
 }
      ]]></example>
     </rule>
@@ -302,8 +275,8 @@ public class Foo {
     	class="net.sourceforge.pmd.lang.rule.XPathRule"
     	externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#StaticEJBFieldShouldBeFinal">
     	<description>
-According to the J2EE specification (p.494), an EJB should not have any static fields
-with write access. However, static read only fields are allowed. This ensures proper
+According to the J2EE specification, an EJB should not have any static fields
+with write access. However, static read-only fields are allowed. This ensures proper
 behavior especially when instances are distributed by the container on several JREs.
     	</description>
     	<priority>3</priority>
@@ -334,9 +307,10 @@ behavior especially when instances are distributed by the container on several J
     	</properties>
     	<example><![CDATA[
 public class SomeEJB extends EJBObject implements EJBLocalHome {
-	private static int BAD_STATIC_FIELD;
 
-	private static final int GOOD_STATIC_FIELD;
+	private static int CountA;			// poor, field can be edited
+
+	private static final int CountB;	// preferred, read-only access
 }
      ]]></example>
     </rule>
@@ -350,7 +324,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
     	externalInfoUrl="http://pmd.sourceforge.net/rules/java/j2ee.html#DoNotUseThreads">
         <description>
             <![CDATA[
-The J2EE specification explicitly forbid use of threads.
+The J2EE specification explicitly forbids the use of threads.
             ]]>
         </description>
         <priority>3</priority>

@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 
-<ruleset name="Empty Code Rules"
+<ruleset name="Empty Code"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
-The Empty Code Ruleset contains a collection of rules that find empty statement of any kind (empty method,
+The Empty Code ruleset contains rules that find empty statements of any kind (empty method,
 empty block statement, empty try or catch block,...).
   </description>
 
@@ -17,9 +17,9 @@ empty block statement, empty try or catch block,...).
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyCatchBlock">
       <description>
-Empty Catch Block finds instances where an exception is caught,
-but nothing is done.  In most circumstances, this swallows an exception
-which should either be acted on or reported.
+Empty Catch Block finds instances where an exception is caught, but nothing is done.  
+In most circumstances, this swallows an exception which should either be acted on 
+or reported.
       </description>
       <priority>3</priority>
       <properties>
@@ -91,8 +91,8 @@ public class Foo {
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyWhileStmt">
        <description>
 Empty While Statement finds all instances where a while statement does nothing.  
-If it is a timing loop, then you should use Thread.sleep() for it; if
-it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+If it is a timing loop, then you should use Thread.sleep() for it; if it is
+a while loop that does a lot in the exit expression, rewrite it to make it clearer.
        </description>
        <priority>3</priority>
       <properties>
@@ -106,12 +106,10 @@ it's a while loop that does a lot in the exit expression, rewrite it to make it 
       </properties>
        <example>
   <![CDATA[
-public class Foo {
- void bar(int a, int b) {
-  while (a == b) {
-   // empty!
-  }
- }
+void bar(int a, int b) {
+	while (a == b) {
+	// empty!
+	}
 }
  ]]>
        </example>
@@ -158,7 +156,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyFinallyBlock">
       <description>
-Avoid empty finally blocks, these can be deleted.
+Empty finally blocks serve no purpose and should be removed.
       </description>
       <priority>3</priority>
       <properties>
@@ -193,7 +191,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptySwitchStatements">
       <description>
-Avoid empty switch statements.
+Empty switch statements serve no purpose and should be removed.
       </description>
       <priority>3</priority>
       <properties>
@@ -207,15 +205,14 @@ Avoid empty switch statements.
       </properties>
       <example>
   <![CDATA[
-public class Foo {
- public void bar() {
-  int x = 2;
-  switch (x) {
-   // once there was code here
-   // but it's been commented out or something
-  }
- }
-}]]>
+public void bar() {
+	int x = 2;
+	switch (x) {
+	// once there was code here
+	// but it's been commented out or something
+	}
+}
+]]>
       </example>
       </rule>
 
@@ -226,7 +223,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptySynchronizedBlock">
       <description>
-  Avoid empty synchronized blocks - they're useless.
+Empty synchronized blocks serve no purpose and should be removed.
       </description>
       <priority>3</priority>
       <properties>
@@ -259,8 +256,9 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyStatementNotInLoop">
        <description>
-An empty statement (aka a semicolon by itself) that is not used as the sole body of a for loop or while loop is probably a bug.  
-It could also be a double semicolon, which is useless and should be removed.
+An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for' 
+or 'while' loop is probably a bug.  It could also be a double semicolon, which has no purpose
+and should be removed.
        </description>
        <priority>3</priority>
         <properties>
@@ -283,13 +281,11 @@ It could also be a double semicolon, which is useless and should be removed.
         </properties>
        <example>
 <![CDATA[
-public class MyClass {
-   public void doit() {
+public void doit() {
       // this is probably not what you meant to do
       ;
       // the extra semicolon here this is not necessary
       System.out.println("look at the extra semicolon");;
-   }
 }
 ]]>
        </example>
@@ -302,7 +298,7 @@ public class MyClass {
           	class="net.sourceforge.pmd.lang.rule.XPathRule"
           	externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyInitializer">
        <description>
-An empty initializer was found.
+Empty initializers serve no purpose and should be removed.
        </description>
        <priority>3</priority>
          <properties>
@@ -327,14 +323,15 @@ public class Foo {
     </example>
   </rule>
 
-
   <rule name="EmptyStatementBlock"
         language="java"
         since="5.0"
         message="Avoid empty block statements."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
 	externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyStatementBlock">
-    <description>Empty block statements are useless so they should be removed.</description>
+    <description>
+Empty block statements serve no purpose and should be removed.
+	</description>
     <priority>3</priority>
     <properties>
        <property name="xpath">
@@ -361,8 +358,6 @@ public class Foo {
     </example>
   </rule>
 
-
-
     <rule name="EmptyStaticInitializer"
     		 language="java"
     		  since="1.5"
@@ -370,7 +365,7 @@ public class Foo {
            class="net.sourceforge.pmd.lang.rule.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/java/empty.html#EmptyStaticInitializer">
        <description>
-An empty static initializer provides no value, remove it.
+An empty static initializer serve no purpose and should be removed.
        </description>
        <priority>3</priority>
          <properties>
@@ -385,15 +380,12 @@ An empty static initializer provides no value, remove it.
        <example>
    <![CDATA[
 public class Foo {
- static {
-  // empty
- }
- }
+	static {
+	// empty
+	}
+}
 ]]>
        </example>
      </rule>
-
-
-
 
 </ruleset>
