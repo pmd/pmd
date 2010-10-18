@@ -34,8 +34,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T>, Prop
 	 * @throws IllegalArgumentException
 	 */
 	protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
-		name = checkNotEmpty(theName, nameKey);
-		description = checkNotEmpty(theDescription, descriptionKey);
+		name = checkNotEmpty(theName, NAME);
+		description = checkNotEmpty(theDescription, DESCRIPTION);
 		defaultValue = theDefault;
 		isRequired = false;	// TODO - do we need this?
 		uiOrder = checkPositive(theUIOrder, "UI order");
@@ -381,9 +381,9 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T>, Prop
 	 * @param attributes Map<String,String>
 	 */
 	protected void addAttributesTo(Map<String, String> attributes) {
-		attributes.put(nameKey, name);
-		attributes.put(descriptionKey, description);
-		attributes.put(defaultValueKey, defaultAsString());
+		attributes.put(NAME, name);
+		attributes.put(DESCRIPTION, description);
+		attributes.put(DEFAULT_VALUE, defaultAsString());
 	}
 
 }

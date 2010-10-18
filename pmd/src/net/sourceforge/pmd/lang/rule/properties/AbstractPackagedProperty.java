@@ -21,7 +21,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 	private static final char PACKAGE_NAME_DELIMITER = ' ';
 	
 	protected static final Map<String, Boolean> packagedFieldTypesByKey = BasicPropertyDescriptorFactory.expectedFieldTypesWith(
-			new String[]  { legalPackagesKey}, 
+			new String[]  { LEGAL_PACKAGES}, 
 			new Boolean[] { Boolean.FALSE}
 			);
 	
@@ -54,7 +54,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     protected void addAttributesTo(Map<String, String> attributes) {
         super.addAttributesTo(attributes);
         
-        attributes.put(legalPackagesKey, delimitedPackageNames());
+        attributes.put(LEGAL_PACKAGES, delimitedPackageNames());
     }
 	
     /**

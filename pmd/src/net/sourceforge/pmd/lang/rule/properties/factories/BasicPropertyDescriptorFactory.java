@@ -23,7 +23,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 	private final Map<String, Boolean> fieldTypesByKey;
 
 	protected static final Map<String, Boolean> coreFieldTypesByKey = CollectionUtil.mapFrom(
-			new String[]  { nameKey, 		descKey, 	defaultValueKey}, 
+			new String[]  { NAME, 		DESC, 	DEFAULT_VALUE}, 
 			new Boolean[] { Boolean.TRUE,  Boolean.TRUE, Boolean.TRUE}
 			);
 	
@@ -67,15 +67,15 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 	}
 
 	protected String nameIn(Map<String, String> valuesById) {
-		return valuesById.get(nameKey);
+		return valuesById.get(NAME);
 	}
 	
 	protected String descriptionIn(Map<String, String> valuesById) {
-		return valuesById.get(descKey);
+		return valuesById.get(DESC);
 	}
 	
 	protected String defaultValueIn(Map<String, String> valuesById) {
-		return valuesById.get(defaultValueKey);
+		return valuesById.get(DEFAULT_VALUE);
 	}
 	
 	protected String numericDefaultValueIn(Map<String, String> valuesById) {
@@ -84,11 +84,11 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 	}
 	
 	protected static String minValueIn(Map<String, String> valuesById) {
-		return valuesById.get(minKey);
+		return valuesById.get(MIN);
 	}
 	
 	protected static String maxValueIn(Map<String, String> valuesById) {
-		return valuesById.get(maxKey);
+		return valuesById.get(MAX);
 	}
 
 //	protected static T[] primitivesFrom(String text, WrapperBuilder<T> builder) {
@@ -179,7 +179,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 	}	
 
 	protected static char delimiterIn(Map<String, String> valuesById) {
-		String characterStr = valuesById.get(delimiterKey).trim();
+		String characterStr = valuesById.get(DELIMITER).trim();
 		return characterStr.charAt(0);
 	}
 	
@@ -193,7 +193,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 	}
 		
 	protected static String[] legalPackageNamesIn(Map<String, String> valuesById) {
-		String names = valuesById.get(legalPackagesKey);
+		String names = valuesById.get(LEGAL_PACKAGES);
 		if (StringUtil.isEmpty(names)) return null;
 		return StringUtil.substringsOf(names, '|');	// TODO - get const
 	}

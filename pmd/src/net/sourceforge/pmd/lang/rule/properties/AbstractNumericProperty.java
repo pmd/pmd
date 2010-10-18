@@ -17,7 +17,7 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
 	private Number upperLimit;
 	
 	public static final Map<String, Boolean> numberFieldTypesByKey = BasicPropertyDescriptorFactory.expectedFieldTypesWith(
-			new String[]  { minKey,  	  maxKey}, 
+			new String[]  { MIN,  	  MAX}, 
 			new Boolean[] { Boolean.TRUE, Boolean.TRUE}
 			);
 	
@@ -103,7 +103,7 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
 	protected void addAttributesTo(Map<String, String> attributes) {
 		super.addAttributesTo(attributes);
 		
-		attributes.put(minKey, lowerLimit.toString());
-		attributes.put(maxKey, upperLimit.toString());
+		attributes.put(MIN, lowerLimit.toString());
+		attributes.put(MAX, upperLimit.toString());
 	}
 }

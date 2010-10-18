@@ -2,14 +2,14 @@ package net.sourceforge.pmd;
 
 public interface PropertyDescriptorFields {
 
-	String typeKey = "type";
-	String nameKey = "name";
-	String descriptionKey = "description";
-	String valueKey = "value";
-	String descKey = "description";
-	String delimiterKey = "delimiter";
-	String minKey = "min";
-	String maxKey = "max";
-	String legalPackagesKey = "legalPackages";
-	String defaultValueKey = "value";
+	String TYPE = "type";
+	String NAME = "name";
+	String DESCRIPTION = "description";
+	String VALUE = "value";
+	String DESC = "description";
+	String DELIMITER = "delimiter";
+	String MIN = "min";
+	String MAX = "max";
+	String LEGAL_PACKAGES = "legalPackages";
+	String DEFAULT_VALUE = "value";
 }
