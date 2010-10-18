@@ -394,7 +394,7 @@ public class RuleSetFactory {
 		final NodeList nodeList = ruleElement.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
-			if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+			if (node.getNodeType() != Node.ELEMENT_NODE) { continue; }
 			String nodeName = node.getNodeName();
 			if (nodeName.equals("description")) {
 				rule.setDescription(parseTextNode(node));
@@ -439,7 +439,7 @@ public class RuleSetFactory {
 		}
 
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
-		ruleSetFactory.setClassLoader(this.classLoader);
+		ruleSetFactory.setClassLoader(classLoader);
 
 		RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
 		if (!otherRuleSetReferenceId.isExternal()) {
@@ -596,7 +596,9 @@ public class RuleSetFactory {
 		Element propertyElement = (Element) propertyNode;
 		String typeId = propertyElement.getAttribute(PropertyDescriptorFields.TYPE);
 		String strValue = propertyElement.getAttribute(PropertyDescriptorFields.VALUE);
-		if (StringUtil.isEmpty(strValue)) strValue = valueFrom(propertyElement);
+		if (StringUtil.isEmpty(strValue)) {
+			strValue = valueFrom(propertyElement);
+		}
 
 		// Setting of existing property, or defining a new property?
 		if (StringUtil.isEmpty(typeId)) {

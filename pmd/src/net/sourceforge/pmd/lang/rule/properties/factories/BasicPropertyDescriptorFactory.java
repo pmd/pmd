@@ -194,14 +194,18 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 		
 	protected static String[] legalPackageNamesIn(Map<String, String> valuesById) {
 		String names = valuesById.get(LEGAL_PACKAGES);
-		if (StringUtil.isEmpty(names)) return null;
+		if (StringUtil.isEmpty(names)) {
+			return null;
+		}
 		return StringUtil.substringsOf(names, '|');	// TODO - get const
 	}
 	
 	public static Map<String, Boolean> expectedFieldTypesWith(String[] otherKeys, Boolean[] otherValues) {
 		Map<String, Boolean> largerMap = new HashMap<String, Boolean>(otherKeys.length + coreFieldTypesByKey.size());
 		largerMap.putAll(coreFieldTypesByKey);
-		for (int i=0; i<otherKeys.length; i++) largerMap.put(otherKeys[i], otherValues[i]);
+		for (int i=0; i<otherKeys.length; i++) {
+			largerMap.put(otherKeys[i], otherValues[i]);
+		}
 		return largerMap;
 	}
 	
