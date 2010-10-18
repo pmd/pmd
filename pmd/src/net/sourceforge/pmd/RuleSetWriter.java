@@ -23,8 +23,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.AbstractNumericProperty;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorFactory;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 
@@ -258,7 +256,9 @@ public class RuleSetWriter {
 		    for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {		// For each provided PropertyDescriptor
 			
 			if (propertyDescriptor instanceof PropertyDescriptorWrapper) {				// Any wrapper property needs to go out as a definition.
-			    if (propertiesElement == null) propertiesElement = createPropertiesElement();
+			    if (propertiesElement == null) {
+			    	propertiesElement = createPropertiesElement();
+			    }
 			    
 			    Element propertyElement = createPropertyDefinitionElementBR(((PropertyDescriptorWrapper<?>) propertyDescriptor).getPropertyDescriptor());
 			    propertiesElement.appendChild(propertyElement);
@@ -267,7 +267,9 @@ public class RuleSetWriter {
 				Object defaultValue = propertyDescriptor.defaultValue();
 				Object value = propertiesByPropertyDescriptor.get(propertyDescriptor);
 				if (value != defaultValue && (value == null || !value.equals(defaultValue))) {
-				    if (propertiesElement == null) propertiesElement = createPropertiesElement();
+				    if (propertiesElement == null) {
+				    	propertiesElement = createPropertiesElement();
+				    }
 				    
 				    Element propertyElement = createPropertyValueElement(propertyDescriptor, value);
 				    propertiesElement.appendChild(propertyElement);

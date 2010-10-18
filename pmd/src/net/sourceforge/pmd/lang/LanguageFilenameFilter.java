@@ -14,58 +14,58 @@ import java.util.List;
  */
 public class LanguageFilenameFilter implements FilenameFilter {
 
-    private final List<Language> languages;
+	private final List<Language> languages;
 
-    /**
-     * Create a LanguageFilenameFilter for a single Language.
-     * @param language The Language.
-     */
-    public LanguageFilenameFilter(Language language) {
-	this(Collections.singletonList(language));
-    }
-
-    /**
-     * Create a LanguageFilenameFilter for a List of Languages.
-     * @param languages The List of Languages.
-     */
-    public LanguageFilenameFilter(List<Language> languages) {
-	this.languages = languages;
-    }
-
-    /**
-     * Check if a file should be checked by PMD.
-     * {@inheritDoc}
-     */
-    public boolean accept(File dir, String name) {
-	// Any source file should have a '.' in its name...
-	int lastDotIndex = name.lastIndexOf('.');
-	if (lastDotIndex < 0) {
-	    return false;
+	/**
+	 * Create a LanguageFilenameFilter for a single Language.
+	 * @param language The Language.
+	 */
+	public LanguageFilenameFilter(Language language) {
+		this(Collections.singletonList(language));
 	}
 
-	String extension = name.substring(1 + lastDotIndex).toUpperCase();
-	for (Language language : languages) {
-	    for (String ext : language.getExtensions()) {
-		if (extension.equalsIgnoreCase(ext)) {
-		    return true;
+	/**
+	 * Create a LanguageFilenameFilter for a List of Languages.
+	 * @param languages The List of Languages.
+	 */
+	public LanguageFilenameFilter(List<Language> languages) {
+		this.languages = languages;
+	}
+
+	/**
+	 * Check if a file should be checked by PMD.
+	 * {@inheritDoc}
+	 */
+	public boolean accept(File dir, String name) {
+		// Any source file should have a '.' in its name...
+		int lastDotIndex = name.lastIndexOf('.');
+		if (lastDotIndex < 0) {
+			return false;
 		}
-	    }
-	}
-	return false;
-    }
 
-    public String toString() {
-	StringBuilder buffer = new StringBuilder("(Extension is one of: ");
-	for (Language language : languages) {
-	    List<String> extensions = language.getExtensions();
-	    for (int i = 0; i < extensions.size(); i++) {
-		if (i > 0) {
-		    buffer.append(", ");
+		String extension = name.substring(1 + lastDotIndex).toUpperCase();
+		for (Language language : languages) {
+			for (String ext : language.getExtensions()) {
+				if (extension.equalsIgnoreCase(ext)) {
+					return true;
+				}
+			}
 		}
-		buffer.append(extensions.get(i));
-	    }
+		return false;
 	}
-	buffer.append(")");
-	return buffer.toString();
-    }
+
+	public String toString() {
+		StringBuilder buffer = new StringBuilder("(Extension is one of: ");
+		for (Language language : languages) {
+			List<String> extensions = language.getExtensions();
+			for (int i = 0; i < extensions.size(); i++) {
+				if (i > 0) {
+					buffer.append(", ");
+				}
+				buffer.append(extensions.get(i));
+			}
+		}
+		buffer.append(')');
+		return buffer.toString();
+	}
 }
