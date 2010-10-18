@@ -35,29 +35,29 @@ public class PropertyDescriptorUtil implements PropertyDescriptorFields {
     static {
     	Map<String, PropertyDescriptorFactory> temp = new HashMap<String, PropertyDescriptorFactory>(18);
     	
-    	temp.put("Boolean", 	BooleanProperty.factory);
+    	temp.put("Boolean", 	BooleanProperty.FACTORY);
     	
-    	temp.put("String", 		StringProperty.factory);
-    	temp.put("String[]", 	StringMultiProperty.factory);
-    	temp.put("Character", 	CharacterProperty.factory);
-    	temp.put("Character[]", CharacterMultiProperty.factory);
+    	temp.put("String", 		StringProperty.FACTORY);
+    	temp.put("String[]", 	StringMultiProperty.FACTORY);
+    	temp.put("Character", 	CharacterProperty.FACTORY);
+    	temp.put("Character[]", CharacterMultiProperty.FACTORY);
     	
-    	temp.put("Integer", 	IntegerProperty.factory);
-    	temp.put("Integer[]", 	IntegerMultiProperty.factory);
-    	temp.put("Long", 		LongProperty.factory);
-    	temp.put("Long[]", 		LongMultiProperty.factory);
-    	temp.put("Float", 		FloatProperty.factory);
-    	temp.put("Float[]", 	FloatMultiProperty.factory);
-    	temp.put("Double", 		DoubleProperty.factory);
-    	temp.put("Double[]", 	DoubleMultiProperty.factory);
+    	temp.put("Integer", 	IntegerProperty.FACTORY);
+    	temp.put("Integer[]", 	IntegerMultiProperty.FACTORY);
+    	temp.put("Long", 		LongProperty.FACTORY);
+    	temp.put("Long[]", 		LongMultiProperty.FACTORY);
+    	temp.put("Float", 		FloatProperty.FACTORY);
+    	temp.put("Float[]", 	FloatMultiProperty.FACTORY);
+    	temp.put("Double", 		DoubleProperty.FACTORY);
+    	temp.put("Double[]", 	DoubleMultiProperty.FACTORY);
     	
-    	temp.put("Enum", 		EnumeratedProperty.factory);
-    	temp.put("Enum[]", 		EnumeratedMultiProperty.factory);
+    	temp.put("Enum", 		EnumeratedProperty.FACTORY);
+    	temp.put("Enum[]", 		EnumeratedMultiProperty.FACTORY);
     	
-    	temp.put("Class", 		TypeProperty.factory);
-    	temp.put("Class[]", 	TypeMultiProperty.factory);
-    	temp.put("Method", 		MethodProperty.factory);
-    	temp.put("Method[]", 	MethodMultiProperty.factory);
+    	temp.put("Class", 		TypeProperty.FACTORY);
+    	temp.put("Class[]", 	TypeMultiProperty.FACTORY);
+    	temp.put("Method", 		MethodProperty.FACTORY);
+    	temp.put("Method[]", 	MethodMultiProperty.FACTORY);
     	descriptorFactoriesByType = Collections.unmodifiableMap(temp);
     	}
     

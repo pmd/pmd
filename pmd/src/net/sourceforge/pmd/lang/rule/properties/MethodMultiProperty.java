@@ -21,7 +21,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]> {
        
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<MethodMultiProperty>(Method[].class, packagedFieldTypesByKey) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<MethodMultiProperty>(Method[].class, packagedFieldTypesByKey) {
 
 		public MethodMultiProperty createWith(Map<String, String> valuesById) {
 			return new MethodMultiProperty(

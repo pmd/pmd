@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 public class BooleanProperty extends AbstractScalarProperty<Boolean> {
 
 	
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<BooleanProperty>(Boolean.class) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<BooleanProperty>(Boolean.class) {
 
 		public BooleanProperty createWith(Map<String, String> valuesById) {
 			return new BooleanProperty(

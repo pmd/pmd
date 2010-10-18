@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class LongProperty extends AbstractNumericProperty<Long> {
 
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<LongProperty>(Long.class, numberFieldTypesByKey) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<LongProperty>(Long.class, numberFieldTypesByKey) {
 
 		public LongProperty createWith(Map<String, String> valuesById) {
 			final String minMax[] = minMaxFrom(valuesById);		

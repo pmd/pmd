@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class StringProperty extends AbstractProperty<String> {
 	
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<StringProperty>(String.class) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringProperty>(String.class) {
 
 		public StringProperty createWith(Map<String, String> valuesById) {
 			return new StringProperty(

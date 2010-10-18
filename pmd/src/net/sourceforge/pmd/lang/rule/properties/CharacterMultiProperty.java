@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class CharacterMultiProperty extends AbstractDelimitedProperty<Character[]> {
 	
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<CharacterMultiProperty>(Character[].class) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterMultiProperty>(Character[].class) {
 
 		public CharacterMultiProperty createWith(Map<String, String> valuesById) {
 			return new CharacterMultiProperty(

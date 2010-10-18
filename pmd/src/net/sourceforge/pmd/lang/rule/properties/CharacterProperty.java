@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class CharacterProperty extends AbstractProperty<Character> {
 
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<CharacterProperty>(Character.class) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterProperty>(Character.class) {
 
 		public CharacterProperty createWith(Map<String, String> valuesById) {
 			return new CharacterProperty(

@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]> {
 	
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<IntegerMultiProperty>(Integer[].class, numberFieldTypesByKey) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<IntegerMultiProperty>(Integer[].class, numberFieldTypesByKey) {
 
 		public IntegerMultiProperty createWith(Map<String, String> valuesById) {
 			final String[] minMax = minMaxFrom(valuesById);

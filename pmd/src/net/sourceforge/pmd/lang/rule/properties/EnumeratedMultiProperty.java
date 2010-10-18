@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Object[]> {
 	
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<EnumeratedMultiProperty>(Enumeration[].class) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<EnumeratedMultiProperty>(Enumeration[].class) {
 
 		public EnumeratedMultiProperty createWith(Map<String, String> valuesById) {
 

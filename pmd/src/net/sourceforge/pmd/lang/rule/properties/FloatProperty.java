@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class FloatProperty extends AbstractNumericProperty<Float> {
 
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<FloatProperty>(float.class, numberFieldTypesByKey) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FloatProperty>(float.class, numberFieldTypesByKey) {
 
 		public FloatProperty createWith(Map<String, String> valuesById) {
 			final String minMax[] = minMaxFrom(valuesById);

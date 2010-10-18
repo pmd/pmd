@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object> {
 	
-	public static final PropertyDescriptorFactory factory = new BasicPropertyDescriptorFactory<EnumeratedProperty>(Enumeration.class) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<EnumeratedProperty>(Enumeration.class) {
 
 		public EnumeratedProperty createWith(Map<String, String> valuesById) {
 
