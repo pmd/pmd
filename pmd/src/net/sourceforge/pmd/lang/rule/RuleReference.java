@@ -22,7 +22,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * current underlying value do not override.
  */
 public class RuleReference extends AbstractDelegateRule {
-    
+
 	private Language language;
 	private LanguageVersion minimumLanguageVersion;
 	private LanguageVersion maximumLanguageVersion;
@@ -38,10 +38,14 @@ public class RuleReference extends AbstractDelegateRule {
 	private RuleSetReference ruleSetReference;
 
 	private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = new ArrayList<PropertyDescriptor<?>>(0);
-	
+
 	public Language getOverriddenLanguage() {
 		return language;
 	}
+
+	public RuleReference() {
+	}
+
 
 	@Override
 	public void setLanguage(Language language) {
@@ -150,12 +154,12 @@ public class RuleReference extends AbstractDelegateRule {
 
 		// Only override if different than current values.
 		if (!contains(super.getExamples(), example)) {
-			if (this.examples == null) {
-				this.examples = new ArrayList<String>(1);
+			if (examples == null) {
+				examples = new ArrayList<String>(1);
 			}
 			// TODO Fix later. To keep example overrides from being unbounded, we're only going to keep track of the last one.
-			this.examples.clear();
-			this.examples.add(example);
+			examples.clear();
+			examples.add(example);
 			super.addExample(example);
 		}
 	}
@@ -185,41 +189,41 @@ public class RuleReference extends AbstractDelegateRule {
 			super.setPriority(priority);
 		}
 	}
-	
-    public List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
-        
-	   return propertyDescriptors == null ? 
-	           EMPTY_DESCRIPTORS : 
-	           propertyDescriptors;
-    }
 
-    @Override
-    public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException {
-	// Define on the underlying Rule, where it is impossible to have two
-	// property descriptors with the same name.  Therefore, there is no need
-	// to check if the property is already overridden at this level.
-	super.definePropertyDescriptor(propertyDescriptor);
-	if (this.propertyDescriptors == null) {
-	    this.propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
+	public List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
+
+		return propertyDescriptors == null ? 
+				EMPTY_DESCRIPTORS : 
+					propertyDescriptors;
 	}
-	this.propertyDescriptors.add(propertyDescriptor);
-    }
 
-    public Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
-	return propertyValues;
-    }
-
-    @Override
-    public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
-	// Only override if different than current value.
-	if (!isSame(super.getProperty(propertyDescriptor), value)) {
-	    if (this.propertyValues == null) {
-		this.propertyValues = new HashMap<PropertyDescriptor<?>, Object>();
-	    }
-	    this.propertyValues.put(propertyDescriptor, value);
-	    super.setProperty(propertyDescriptor, value);
+	@Override
+	public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException {
+		// Define on the underlying Rule, where it is impossible to have two
+		// property descriptors with the same name.  Therefore, there is no need
+		// to check if the property is already overridden at this level.
+		super.definePropertyDescriptor(propertyDescriptor);
+		if (propertyDescriptors == null) {
+			propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
+		}
+		propertyDescriptors.add(propertyDescriptor);
 	}
-    }
+
+	public Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
+		return propertyValues;
+	}
+
+	@Override
+	public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
+		// Only override if different than current value.
+		if (!isSame(super.getProperty(propertyDescriptor), value)) {
+			if (propertyValues == null) {
+				propertyValues = new HashMap<PropertyDescriptor<?>, Object>();
+			}
+			propertyValues.put(propertyDescriptor, value);
+			super.setProperty(propertyDescriptor, value);
+		}
+	}
 
 	public RuleSetReference getRuleSetReference() {
 		return ruleSetReference;
@@ -235,9 +239,9 @@ public class RuleReference extends AbstractDelegateRule {
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	private static boolean isSame(Object o1, Object o2) {
-	    	if (o1 instanceof Object[] && o2 instanceof Object[]) {
-	    	    return isSame((Object[])o1, (Object[])o2);
-	    	}
+		if (o1 instanceof Object[] && o2 instanceof Object[]) {
+			return isSame((Object[])o1, (Object[])o2);
+		}
 		return o1 == o2 || (o1 != null && o2 != null && o1.equals(o2));
 	}
 	private static boolean isSame(Object[] a1, Object[] a2) {
@@ -252,47 +256,47 @@ public class RuleReference extends AbstractDelegateRule {
 		}
 		return false;
 	}
-	
-    public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {    	    	
-    	return (propertyDescriptors != null && propertyDescriptors.contains(descriptor)) || 
-    		super.hasDescriptor(descriptor);
-    }
-    
+
+	public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {    	    	
+		return (propertyDescriptors != null && propertyDescriptors.contains(descriptor)) || 
+		super.hasDescriptor(descriptor);
+	}
+
 	public boolean hasOverriddenProperty(PropertyDescriptor<?> descriptor) {
 		return propertyValues != null && propertyValues.containsKey(descriptor);
 	}
-	
+
 	public boolean usesDefaultValues() {
-	    	    
-	    List<PropertyDescriptor<?>> descriptors = getOverriddenPropertyDescriptors();
-	    if (!descriptors.isEmpty()) {
-	        return false;
-	    }
-	    
-	    for (PropertyDescriptor<?> desc : descriptors) {
-	        if (!isSame(desc.defaultValue(), getProperty(desc))) {
-	            return false;
-	        }
-	    }
-	    
-	    if (!getRule().usesDefaultValues()) {
-	        return false;
-	    }
-	    
-	    return true;
+
+		List<PropertyDescriptor<?>> descriptors = getOverriddenPropertyDescriptors();
+		if (!descriptors.isEmpty()) {
+			return false;
+		}
+
+		for (PropertyDescriptor<?> desc : descriptors) {
+			if (!isSame(desc.defaultValue(), getProperty(desc))) {
+				return false;
+			}
+		}
+
+		if (!getRule().usesDefaultValues()) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public void useDefaultValueFor(PropertyDescriptor<?> desc) {
-		
+
 		// not sure if we should go all the way through to the real thing?
-		getRule().useDefaultValueFor(desc);
-		
-		if (propertyValues == null) return;
-		
-		propertyValues.remove(desc);
-		
-		if (propertyDescriptors != null) {
-			propertyDescriptors.remove(desc);
-		}
+				getRule().useDefaultValueFor(desc);
+
+				if (propertyValues == null) return;
+
+				propertyValues.remove(desc);
+
+				if (propertyDescriptors != null) {
+					propertyDescriptors.remove(desc);
+				}
 	}
 }
