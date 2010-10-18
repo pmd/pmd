@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 
-<ruleset name="Optimization Rules"
+<ruleset name="Optimization"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
-These rules deal with different optimizations that generally apply to performance best practices.
+These rules deal with different optimizations that generally apply to best practices.
   </description>
 
     <rule name="LocalVariableCouldBeFinal"
@@ -15,16 +15,16 @@ These rules deal with different optimizations that generally apply to performanc
           class="net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#LocalVariableCouldBeFinal">
       <description>
-A local variable assigned only once can be declared final.
+A local variable assigned only can be declared final once.
       </description>
         <priority>3</priority>
       <example>
   <![CDATA[
 public class Bar {
-  public void foo () {
-    String a = "a"; //if a will not be assigned again it is better to do this:
-    final String b = "b";
-  }
+	public void foo () {
+		String a = "a"; //if a will not be assigned again it is better to do this:
+		final String b = "b";
+	}
 }
   ]]>
       </example>
@@ -36,14 +36,17 @@ public class Bar {
           class="net.sourceforge.pmd.lang.java.rule.optimizations.MethodArgumentCouldBeFinalRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#MethodArgumentCouldBeFinal">
       <description>
-A method argument that is never assigned can be declared final.
+A method argument that is never re-assigned within the method can be declared final.
       </description>
         <priority>3</priority>
       <example>
   <![CDATA[
-public void foo (String param) {
-  // do stuff with param never assigning it
-  // better: public void foo (final String param) {
+public void foo1 (String param) {	// do stuff with param never assigning it
+  
+}
+
+public void foo2 (final String param) {	// better, do stuff with param never assigning it
+  
 }
   ]]>
       </example>
@@ -55,17 +58,17 @@ public void foo (String param) {
         class="net.sourceforge.pmd.lang.java.rule.optimizations.AvoidInstantiatingObjectsInLoopsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AvoidInstantiatingObjectsInLoops">
     <description>
-Detects when a new object is created inside a loop
+New objects created within loops should be checked to see if they can created outside and reused.
     </description>
       <priority>3</priority>
     <example>
 <![CDATA[
 public class Something {
-  public static void main( String as[] ) {  
-    for (int i = 0; i < 10; i++) {
-      Foo f = new Foo(); //Avoid this whenever you can it's really expensive
-    }
-  }
+	public static void main( String as[] ) {  
+		for (int i = 0; i < 10; i++) {
+		Foo f = new Foo(); //Avoid this whenever you can it's really expensive
+		}
+	}
 }
 ]]>
     </example>
@@ -78,7 +81,7 @@ public class Something {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseArrayListInsteadOfVector">
       <description>
-ArrayList is a much better Collection implementation than Vector if you don't require thread-safe operation.
+ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
       </description>
       <priority>3</priority>
       <properties>
@@ -94,11 +97,10 @@ ArrayList is a much better Collection implementation than Vector if you don't re
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
-  public void testX() {
-    Collection c = new Vector();
-    // This achieves the same with much better performance
-    // Collection c = new ArrayList();
-   }
+	public void testX() {
+		Collection c1 = new Vector();		
+		Collection c2 = new ArrayList();	// achieves the same with much better performance
+	}
 }
 ]]>
           </example>
@@ -111,7 +113,8 @@ public class SimpleTest extends TestCase {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#SimplifyStartsWith">
       <description>
-Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
+Since it passes in a literal of length 1, calls to (string).startsWith can be rewritten using (string).charAt(0)
+at the expense of some readability.
       </description>
       <priority>3</priority>
     <properties>
@@ -135,9 +138,14 @@ Since it passes in a literal of length 1, this call to String.startsWith can be 
       <example>
   <![CDATA[
 public class Foo {
-  boolean checkIt(String x) {
-      return x.startsWith("a");
-  }
+
+	boolean checkIt(String x) {
+		return x.startsWith("a");	// suboptimal
+	}
+  
+	boolean fasterCheckIt(String x) {
+		return x.charAt(0) == 'a';	//	faster approach
+	}
 }
 ]]>
       </example>
@@ -149,7 +157,9 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.optimizations.UseStringBufferForStringAppendsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseStringBufferForStringAppends">
            <description>
-Finds usages of += for appending strings.
+The use of the '+=' operator for appending strings causes the JVM to create and use an internal StringBuffer.
+If a non-trivial number of these concatenations are being used then the explicit use of a StringBuffer or 
+StringBuilder is recommended to avoid this.
            </description>
             <priority>3</priority>
            <example>
@@ -176,7 +186,7 @@ public class Foo {
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseArraysAsList">
      <description>
 The java.util.Arrays class has a "asList" method that should be used when you want to create a new List from
-an array of objects. It is faster than executing a loop to copy all the elements of the array one by one
+an array of objects. It is faster than executing a loop to copy all the elements of the array one by one.
      </description>
      <priority>3</priority>
      <properties>
@@ -239,7 +249,7 @@ public class Test {
       class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AvoidArrayLoops">
       <description>
-Instead of copying data between two arrays, use System.arraycopy method
+Instead of copying data between two arrays, use System.arraycopy method.
       </description>
       <priority>3</priority>
       <properties>
@@ -294,7 +304,9 @@ public class Test {
           class="net.sourceforge.pmd.lang.java.rule.optimizations.UnnecessaryWrapperObjectCreationRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UnnecessaryWrapperObjectCreation">
       <description>
-Parsing method should be called directy instead.
+Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
+just to create the primitive forms. Using these avoids the cost of creating objects that also need to be 
+garbage-collected later.
       </description>
       <priority>3</priority>
       <example>
@@ -303,13 +315,13 @@ public int convert(String s) {
   int i, i2;
 
   i = Integer.valueOf(s).intValue(); // this wastes an object
-  i = Integer.parseInt(s); // this is better
+  i = Integer.parseInt(s); 			 // this is better
 
   i2 = Integer.valueOf(i).intValue(); // this wastes an object
   i2 = i; // this is better
 
   String s3 = Integer.valueOf(i2).toString(); // this wastes an object
-  s3 = Integer.toString(i2); // this is better
+  s3 = Integer.toString(i2); 		// this is better
 
   return i2;
 }
@@ -324,7 +336,8 @@ public int convert(String s) {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AddEmptyString">
         <description>
-Finds empty string literals which are being added. This is an inefficient way to convert any type to a String.
+The conversion of literals to strings by concatenating them with empty strings is inefficient.
+It is much better to use one of the type-specific toString() methods instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -338,8 +351,8 @@ Finds empty string literals which are being added. This is an inefficient way to
         </properties>
         <example>
             <![CDATA[ 
-String s = "" + 123; // bad 
-String t = Integer.toString(456); // ok 
+String s = "" + 123; 				// inefficient 
+String t = Integer.toString(456); 	// preferred approach
             ]]>
         </example>
     </rule>
@@ -350,28 +363,33 @@ String t = Integer.toString(456); // ok
 			message="Avoid using redundant field initializer for ''${variableName}''"
 			class="net.sourceforge.pmd.lang.java.rule.optimizations.RedundantFieldInitializerRule"
 			externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#RedundantFieldInitializer">
-		<description>Java will initialize fields with defaults.  Explicit initialization of those same defaults
-		is redundant, and results in a larger class file (approximately 3 additional byte code instructions).</description>
+		<description>
+Java will initialize fields with defaults so any explicit initialization of those same defaults
+is redundant and results in a larger class file (approximately three additional bytecode 
+instructions per field).
+		</description>
               <priority>3</priority>
               <example>
               <![CDATA[
-                  class C {
-                      // The following are examples of redundant initializers
-                      boolean b = false;
-                      byte by = 0;
-                      short s = 0;
-                      char c = 0;
-                      int i = 0;
-                      long l = 0;
-                      float f = .0f;    // all possible float literals
-                      doable d = 0d;    // all possible double literals
-                      Object o = null;
-                      MyClass mca[] = null;
-                      int i1 = 0, ia1[] = null;
-                      class Nested {
-                            boolean b = false;
-                      }
-                  }
+public class C {
+	boolean b	= false;	// examples of redundant initializers
+	byte by		= 0;
+	short s		= 0;
+	char c		= 0;
+	int i		= 0;
+	long l		= 0;
+	
+	float f		= .0f;    // all possible float literals
+	doable d	= 0d;    // all possible double literals
+	Object o	= null;
+	
+	MyClass mca[] = null;
+	int i1 = 0, ia1[] = null;
+	
+	class Nested {
+		boolean b = false;
+	}
+}
               ]]>
               </example>
             </rule>

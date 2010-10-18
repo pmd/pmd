@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="Strict Exception Rules"
+<ruleset name="Strict Exceptions"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
@@ -15,21 +15,20 @@ These rules provide some strict guidelines about throwing and catching exception
           class="net.sourceforge.pmd.lang.java.rule.strictexception.AvoidCatchingThrowableRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidCatchingThrowable">
       <description>
-This is dangerous because it casts too wide a net; it can catch things like OutOfMemoryError.
+Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as 
+OutOfMemoryError that should be exposed and managed separately.
       </description>
       <priority>3</priority>
       <example>
-                <![CDATA[
-public class Foo {
-  public void bar() {
-    try {
+	<![CDATA[
+public void bar() {
+	try {
      // do something
-    } catch (Throwable th) {  //Should not catch throwable
-     th.printStackTrace();
+    } catch (Throwable th) {  // should not catch Throwable
+		th.printStackTrace();
     }
   }
-}
-                ]]>
+	]]>
       </example>
     </rule>
 
@@ -39,14 +38,13 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.strictexception.SignatureDeclareThrowsExceptionRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#SignatureDeclareThrowsException">
       <description>
-It is unclear which exceptions that can be thrown from the methods.
-It might be difficult to document and understand the vague interfaces.
-Use either a class derived from RuntimeException or a checked exception.
+Methods that declare the generic Exception as a possible throwable are not very helpful since their
+failure modes are unclear. Use a class derived from RuntimeException or a more specific checked exception.
       </description>
       <priority>3</priority>
       <example>
                 <![CDATA[
-public void methodThrowingException() throws Exception {
+public void foo() throws Exception {
 }
                 ]]>
       </example>
@@ -58,13 +56,13 @@ public void methodThrowingException() throws Exception {
           class="net.sourceforge.pmd.lang.java.rule.strictexception.ExceptionAsFlowControlRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#ExceptionAsFlowControl">
       <description>
-Using Exceptions as flow control leads to GOTOish code and obscures true exceptions when debugging.
+Using Exceptions as form of flow control is not recommended as they obscure true exceptions when debugging.
+Either add the necessary validation or use an alternate control structure.
       </description>
         <priority>3</priority>
       <example>
   <![CDATA[
-public class Foo {
-  void bar() {
+public void bar() {
     try {
       try {
       } catch (Exception e) {
@@ -75,7 +73,6 @@ public class Foo {
      // do some more stuff
     }
   }
-}
   ]]>
       </example>
     </rule>
@@ -87,7 +84,8 @@ public class Foo {
     class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidCatchingNPE">
     <description>
-Code should never throw NPE under normal circumstances.  A catch block may hide the original error, causing other more subtle errors in its wake.
+Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the 
+original error, causing other, more subtle problems later on.
     </description>
     <priority>3</priority>
     <properties>
@@ -160,7 +158,7 @@ public class Foo {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidThrowingNullPointerException">
       <description>
-Avoid throwing a NullPointerException - it's confusing because most people will assume that the
+Avoid throwing NullPointerExceptions. These are confusing because most people will assume that the
 virtual machine threw it. Consider using an IllegalArgumentException instead; this will be
 clearly seen as a programmer-initiated exception.
       </description>
@@ -208,14 +206,12 @@ Catch blocks that merely rethrow a caught exception only add to code size and ru
         </property>
     </properties>
     <example>  <![CDATA[
-public class Foo {
-  void bar() {
+public void bar() {
     try {
     // do something
     }  catch (SomeException se) {
        throw se;
     }
-  }
 }
   ]]>
     </example>
@@ -257,7 +253,8 @@ public class Foo extends Error { }
 		    externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#DoNotThrowExceptionInFinally">
     	<description>
 			<![CDATA[
-Throwing exception within a 'finally block' is confusing as it may mask exceptions or code defects.
+Throwing exceptions within a 'finally' block is confusing since they may mask other exceptions 
+or code defects.
 Note: This is a PMD implementation of the Lint4j rule "A throw in a finally block"
 			]]>
 		</description>
@@ -295,7 +292,8 @@ public class Foo {
     externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidThrowingNewInstanceOfSameException"
     class="net.sourceforge.pmd.lang.rule.XPathRule">
     <description>
-Catch blocks that merely rethrow a caught exception wrapped inside a new instance of the same type only add to code size and runtime complexity.
+Catch blocks that merely rethrow a caught exception wrapped inside a new instance of the same type only add to
+code size and runtime complexity.
     </description>
     <priority>3</priority>
     <properties>
@@ -316,15 +314,13 @@ Catch blocks that merely rethrow a caught exception wrapped inside a new instanc
     </property>
     </properties>    
     <example>  <![CDATA[
-public class Foo {
-  void bar() {
+public void bar() {
       try {
        // do something
       }  catch (SomeException se) {
          // harmless comment      
            throw new SomeException(se);
       }
-   }
 }
   ]]>
     </example>
@@ -378,8 +374,10 @@ public class PrimitiveType {
 		message="Avoid statements in a catch block that invoke accessors on the exception without using the information"
 		externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidLosingExceptionInformation"
 		class="net.sourceforge.pmd.lang.rule.XPathRule">
-		<description>Statements in a catch block that invoke accessors on the exception without using the information
-		only add to code size.  Either remove the invocation, or use the return result.</description>
+		<description>
+Statements in a catch block that invoke accessors on the exception without using the information
+only add to code size.  Either remove the invocation, or use the return result.
+		</description>
 		<priority>2</priority>
 		<properties>
 			<property name="xpath">
@@ -403,14 +401,12 @@ public class PrimitiveType {
 		</properties>
 		<example>
 <![CDATA[
-public class Foo {
- void bar() {
-  try {
-   // do something
-  } catch (SomeException se) {
-    se.getMessage();
-  }
- }
+public void bar() {
+	try {
+		// do something
+	} catch (SomeException se) {
+		se.getMessage();
+	}
 }
 ]]>
 		</example>

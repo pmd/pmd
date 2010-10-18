@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="String and StringBuffer Rules"
+<ruleset name="String and StringBuffer"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
@@ -20,15 +20,13 @@ Code containing duplicate String literals can usually be improved by declaring t
         <priority>3</priority>
     <example>
 <![CDATA[
-public class Foo {
-  private void bar() {
+private void bar() {
      buz("Howdy");
      buz("Howdy");
      buz("Howdy");
      buz("Howdy");
  }
  private void buz(String x) {}
-}
 ]]>
     </example>
   </rule>
@@ -44,9 +42,7 @@ Avoid instantiating String objects; this is usually unnecessary since they are i
        <priority>2</priority>
     <example>
 <![CDATA[
-public class Foo {
- private String bar = new String("bar"); // just do a String bar = "bar";
-}
+private String bar = new String("bar"); // just do a String bar = "bar";
 ]]>
     </example>
     </rule>
@@ -62,11 +58,9 @@ Avoid calling toString() on objects already known to be string instances; this i
        <priority>3</priority>
     <example>
 <![CDATA[
-public class Foo {
-  private String baz() {
+private String baz() {
     String bar = "howdy";
     return bar.toString();
-  }
 }
 ]]>
     </example>
@@ -85,11 +79,11 @@ need to be be created and destroyed by the JVM.
     <example>
 <![CDATA[
     // Avoid this, two buffers are actually being created here
-    StringBuffer sb = new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
+StringBuffer sb = new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
     
     // do this instead
-    StringBuffer sb = new StringBuffer("tmp = ");
-    sb.append(System.getProperty("java.io.tmpdir"));
+StringBuffer sb = new StringBuffer("tmp = ");
+sb.append(System.getProperty("java.io.tmpdir"));
 ]]>
     </example>
     </rule>
@@ -105,11 +99,9 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
        <priority>3</priority>
        <example>
        <![CDATA[
-    // should be buz.equalsIgnoreCase("baz")
-boolean answer1 = buz.toUpperCase().equals("baz");
+boolean answer1 = buz.toUpperCase().equals("baz");	 		// should be buz.equalsIgnoreCase("baz")
     
-    // another unnecessary toUpperCase()
-boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");
+boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");	 // another unnecessary toUpperCase()
  ]]>
        </example>
      </rule>
@@ -126,13 +118,11 @@ or StringBuffer.toString().length() == ...
       <priority>3</priority>
       <example>
   <![CDATA[
-    StringBuffer sb = new StringBuffer();
+StringBuffer sb = new StringBuffer();
     
-    // inefficient 
-    if(sb.toString().equals("")) {}
+if (sb.toString().equals("")) {}	    // inefficient 
     
-    // preferred
-    if(sb.length() == 0) {}
+if (sb.length() == 0) {}	    		// preferred
   ]]>
       </example>
     </rule>
@@ -149,11 +139,11 @@ Avoid concatenating characters as strings in StringBuffer/StringBuilder.append m
        <priority>3</priority>
     <example>
 <![CDATA[
-    StringBuffer sb = new StringBuffer();
-    sb.append("a");		 // avoid this
+StringBuffer sb = new StringBuffer();
+sb.append("a");		 // avoid this
 
-    StringBuffer sb = new StringBuffer();
-    sb.append('a');		// use this instead
+StringBuffer sb = new StringBuffer();
+sb.append('a');		// use this instead
 ]]>
     </example>
     </rule>
@@ -169,9 +159,9 @@ Consecutively calling StringBuffer/StringBuilder.append with String literals
         <priority>3</priority>
     <example>
 <![CDATA[
-    StringBuffer buf = new StringBuffer();
-    buf.append("Hello").append(" ").append("World"); // poor
-    buf.append("Hello World");        				 // good
+StringBuffer buf = new StringBuffer();
+buf.append("Hello").append(" ").append("World"); // poor
+buf.append("Hello World");        				 // good
 ]]>
     </example>
   </rule>
@@ -188,11 +178,11 @@ Use String.indexOf(char) when checking for the index of a single character; it e
        <priority>3</priority>
     <example>
 <![CDATA[
-  String s = "hello world";
+String s = "hello world";
   // avoid this
-  if (s.indexOf("d") {}
+if (s.indexOf("d") {}
   // instead do this
-  if (s.indexOf('d') {}
+if (s.indexOf('d') {}
 ]]>
     </example>
     </rule>
@@ -211,12 +201,10 @@ false if a non-whitespace character is found.
        <priority>3</priority>
     <example>
 <![CDATA[
-public class Foo {
-    void bar(String string) {
-        if (string != null && string.trim().size() > 0) {
-		    doSomething();
-        }
-    }
+public void bar(String string) {
+	if (string != null && string.trim().size() > 0) {
+		doSomething();
+	}
 }
 ]]>
     </example>
@@ -237,11 +225,11 @@ is assumed if the length of the constructor can not be determined.
        <priority>3</priority>
     <example>
 <![CDATA[
-    StringBuffer bad = new StringBuffer();
-    bad.append("This is a long string that will exceed the default 16 characters");
+StringBuffer bad = new StringBuffer();
+bad.append("This is a long string that will exceed the default 16 characters");
         
-    StringBuffer good = new StringBuffer(41);
-    good.append("This is a long string, which is pre-sized");
+StringBuffer good = new StringBuffer(41);
+good.append("This is a long string, which is pre-sized");
 ]]>
     </example>
     </rule>
@@ -258,10 +246,10 @@ No need to call String.valueOf to append to a string; just use the valueOf() arg
       <example>
 <![CDATA[
 public String convert(int i) {
-  String s;
-  s = "a" + String.valueOf(i); // not required
-  s = "a" + i; 				   // preferred approach
-  return s;
+	String s;
+	s = "a" + String.valueOf(i);	// not required
+	s = "a" + i; 					// preferred approach
+	return s;
 }
 ]]>
           </example>
@@ -310,12 +298,12 @@ Literal
 <![CDATA[
 	// misleading instantiation, these buffers
 	// are actually sized to 99 characters long
-  StringBuffer  sb1 = new StringBuffer('c');   
-  StringBuilder sb2 = new StringBuilder('c');
+StringBuffer  sb1 = new StringBuffer('c');   
+StringBuilder sb2 = new StringBuilder('c');
   
 // in these forms, just single characters are allocated
-  StringBuffer  sb3 = new StringBuffer("c");
-  StringBuilder sb4 = new StringBuilder("c");
+StringBuffer  sb3 = new StringBuffer("c");
+StringBuilder sb4 = new StringBuilder("c");
 ]]>
     </example>
     </rule>
@@ -327,7 +315,8 @@ Literal
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/strings.html#UseEqualsToCompareStrings">
     <description>
-Using '==' or '!=' to compare strings only works if intern version is used on both sides
+Using '==' or '!=' to compare strings only works if intern version is used on both sides.
+Use the equals() method instead.
     </description>
     <priority>3</priority>
     <properties>
@@ -345,12 +334,10 @@ and count(PrimarySuffix) = 0)]
     </properties>
     <example>
 <![CDATA[
-class Foo {
-  boolean test(String s) {
-    if (s == "one") return true; //Bad
-    if ("two".equals(s)) return true; //Better
+public boolean test(String s) {
+    if (s == "one") return true; 		// unreliable
+    if ("two".equals(s)) return true; 	// better
     return false;
-  }
 }
 ]]>
     </example>
@@ -380,12 +367,11 @@ if held within objects with long lifetimes.
 		</properties>
     	<example>
 <![CDATA[
-class Foo {
-	private StringBuffer buffer;	// potential memoryLeak as an instance variable;
+public class Foo {
+	private StringBuffer buffer;	// potential memory leak as an instance variable;
 }
 ]]>
 		</example>
 	</rule>
-
 
 </ruleset>

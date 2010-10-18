@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 
-<ruleset name="Unused Code Rules"
+<ruleset name="Unused Code"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
-The Unused Code ruleset contains a collection of rules that find unused code.
+The Unused Code ruleset contains rules that find unused or ineffective code.
   </description>
 
   <rule name="UnusedPrivateField"
@@ -45,9 +45,9 @@ Detects when a local variable is declared and/or assigned, but not used.
     <example>
 <![CDATA[
 public class Foo {
-  public void doSomething() {
-    int i = 5; // Unused
-  }
+	public void doSomething() {
+		int i = 5; // Unused
+	}
 }
 ]]>
     </example>
@@ -65,7 +65,7 @@ Unused Private Method detects when a private method is declared but is unused.
     <example>
 <![CDATA[
 public class Something {
-  private void foo() {} // unused
+	private void foo() {} // unused
 }
 ]]>
     </example>
@@ -78,15 +78,16 @@ public class Something {
         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedFormalParameterRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedFormalParameter">
     <description>
-Avoid passing parameters to methods or constructors and then not using those parameters.
+Avoid passing parameters to methods or constructors without actually referencing them in the method body.
     </description>
       <priority>3</priority>
 
     <example>
 <![CDATA[
 public class Foo {
-  private void bar(String howdy) {
-  // howdy is not used
+	private void bar(String howdy) {
+	// howdy is not used
+	}
 }
 ]]>
     </example>
@@ -98,18 +99,18 @@ public class Foo {
          class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedModifierRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedModifier">
      <description>
- Fields in interfaces are automatically public static final, and methods are public abstract.
- Classes or interfaces nested in an interface are automatically public and static (all nested interfaces are automatically static).
- For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
+Fields in interfaces are automatically public static final, and methods are public abstract.
+Classes or interfaces nested in an interface are automatically public and static (all nested interfaces are automatically static).
+For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
      </description>
         <priority>3</priority>
      <example>
  <![CDATA[
 public interface Foo {
-  public abstract void bar(); // both abstract and public are ignored by the compiler
-  public static final int X = 0; // public, static, and final all ignored
-  public static class Bar {} // public, static ignored
-  public static interface Baz {} // ditto
+  public abstract void bar(); 		// both abstract and public are ignored by the compiler
+  public static final int X = 0; 	// public, static, and final all ignored
+  public static class Bar {} 		// public, static ignored
+  public static interface Baz {} 	// ditto
 }
 public class Bar {
   public static interface Baz {} // static ignored

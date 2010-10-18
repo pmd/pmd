@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="Unnecessary Rules"
+<ruleset name="Unnecessary"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
@@ -16,16 +16,16 @@ The Unnecessary Ruleset contains a collection of rules for unnecessary code.
           class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryConversionTemporaryRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UnnecessaryConversionTemporary">
       <description>
-Avoid unnecessary temporaries when converting primitives to Strings
+Avoid the use temporary objects when converting primitives to Strings. Use the static conversion methods
+on the wrapper classes instead.
       </description>
         <priority>3</priority>
       <example>
   <![CDATA[
 public String convert(int x) {
-  // this wastes an object
-  String foo = new Integer(x).toString();
-  // this is better
-  return Integer.toString(x);
+	String foo = new Integer(x).toString();	// this wastes an object
+	
+	return Integer.toString(x);				// preferred approach
 }
  ]]>
       </example>
@@ -39,7 +39,7 @@ public String convert(int x) {
           class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryReturnRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UnnecessaryReturn">
       <description>
-Avoid unnecessary return statements
+Avoid the use of unnecessary return statements.
       </description>
       <priority>3</priority>
       <example>
@@ -62,7 +62,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UnnecessaryFinalModifier">
       <description>
-When a class has the final modifier, all the methods are automatically final.
+When a class has the final modifier, all the methods are automatically final and do not need to be
+tagged as such.
       </description>
       <priority>3</priority>
       <properties>
@@ -95,23 +96,21 @@ public final class Foo {
     class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOverridingMethodRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UselessOverridingMethod">
         <description>
-The overriding method merely calls the same method defined in a superclass
+The overriding method merely calls the same method defined in a superclass.
         </description>
         <priority>3</priority>
         <example><![CDATA[
 public void foo(String bar) {
-  super.foo(bar);      //Why bother overriding?
+  super.foo(bar);      // why bother overriding?
 }
-        ]]></example>
-        <example><![CDATA[
+
 public String foo() {
-  return super.foo();  //Why bother overriding?
+	return super.foo();  // why bother overriding?
 }
-        ]]></example>
-        <example><![CDATA[
+
 @Id
 public Long getId() {
-  return super.getId();  //OK if 'ignoreAnnotations' is false, which is the default behavior
+  return super.getId();  // OK if 'ignoreAnnotations' is false, which is the default behavior
 }
         ]]></example>
     </rule>
@@ -123,7 +122,7 @@ public Long getId() {
            externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UselessOperationOnImmutable">
       <description>
 An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
-result of the operation is a new object. Therefore, ignoring the operation result is an error.
+since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
       </description>
       <priority>3</priority>
       <example>
@@ -133,7 +132,7 @@ import java.math.*;
 class Test {
   void method1() {
     BigDecimal bd=new BigDecimal(10);
-    bd.add(new BigDecimal(5)); // this will trigger the rule
+    bd.add(new BigDecimal(5)); 		// this will trigger the rule
   }
   void method2() {
     BigDecimal bd=new BigDecimal(10);
@@ -209,7 +208,6 @@ public class Test {
 				]]>
 			</example>
 		</rule>
-
 
   <rule name="UselessParentheses"
   		language="java"
