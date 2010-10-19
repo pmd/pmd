@@ -137,7 +137,7 @@ public class CommandLineOptions {
 	String languageName = args[optionsIndex + LANGUAGE_NAME_INDEX];
 	Language language = Language.findByTerseName(languageName);
 	if (language == null) {
-	    throw new IllegalArgumentException("Unknown Language '" + languageName + "'.  Available Languages are : "
+	    throw new IllegalArgumentException("Unknown language '" + languageName + "'.  Available Languages are : "
 		    + Language.commaSeparatedTerseNames(Language.findWithRuleSupport()));
 	} else {
 	    if (args.length > (optionsIndex + LANGUAGE_VERSION_INDEX)) {
@@ -152,7 +152,7 @@ public class CommandLineOptions {
 			}
 		    }
 		    throw new IllegalArgumentException("Language version '" + version
-			    + "' is not availaible for Language '" + language.getName()
+			    + "' is not available for language '" + language.getName()
 			    + "'.\nAvailable versions are :"
 			    + LanguageVersion.commaSeparatedTerseNames(languageVersions));
 		}

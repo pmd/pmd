@@ -16,6 +16,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Parameter;
@@ -114,7 +115,7 @@ public class Formatter {
 
     // FIXME - hm, what about this consoleRenderer thing... need a test for this
     private Renderer createRenderer() {
-        if ("".equals(type)) {
+        if (StringUtil.isEmpty(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
         }
 

@@ -74,7 +74,7 @@ public class RuleSets {
      * @return Set
      */
     public Set<Rule> getAllRules() {
-	HashSet<Rule> result = new HashSet<Rule>();
+	Set<Rule> result = new HashSet<Rule>();
 	for (RuleSet r : ruleSets) {
 	    result.addAll(r.getRules());
 	}
