@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java.rule.imports;
 
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class ImportFromSamePackageRule extends AbstractJavaRule {
 
@@ -16,7 +17,7 @@ public class ImportFromSamePackageRule extends AbstractJavaRule {
         }
 
         // special case
-        if (packageName == null && importDecl.getPackageName().equals("")) {
+        if (packageName == null && StringUtil.isEmpty(importDecl.getPackageName())) {
             addViolation(data, importDecl);
         }
         return data;

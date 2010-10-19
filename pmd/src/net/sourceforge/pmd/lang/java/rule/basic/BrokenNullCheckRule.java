@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class BrokenNullCheckRule extends AbstractJavaRule {
 
@@ -135,7 +136,7 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
                 }
             } else if (child instanceof ASTPrimarySuffix) {   //More method calls
                 String name = ((ASTPrimarySuffix)child).getImage();
-                if (name != null && !name.equals("")) {
+                if (StringUtil.isNotEmpty(name)) {
                     results.add(name);
                 }
             } else if (child instanceof ASTClassOrInterfaceType) {    //A class can be an argument too
