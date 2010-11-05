@@ -52,6 +52,8 @@ public class ProjectPropertiesTO {
     private String ruleSetFile;
     private boolean includeDerivedFiles;
     private boolean violationsAsErrors = true;
+    /** set the default to true to match pre-flag behavior */
+    private boolean fullBuildEnabled = true;
 
 	/**
      * @return rules an array of RuleSpecTO objects that keep information of rules
@@ -171,5 +173,21 @@ public class ProjectPropertiesTO {
     public void setViolationsAsErrors(boolean violationsAsErrors) {
         this.violationsAsErrors = violationsAsErrors;
     }
+
+    /**
+     * syntactic sugar for accessing this field
+     * @param fullBuildEnabled whether or not we should run at full build
+     */
+	public void setFullBuildEnabled(boolean fullBuildEnabled) {
+		this.fullBuildEnabled = fullBuildEnabled;
+	}
+
+	/**
+     * syntactic sugar for accessing this field
+	 * @return true if we should run at full build
+	 */
+	public boolean isFullBuildEnabled() {
+		return fullBuildEnabled;
+	}
 
 }

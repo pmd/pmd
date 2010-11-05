@@ -18,7 +18,7 @@ v4.0.0 - xxx 2010?
 . Huge code cleanup
 . Several usability fixes for the Dataflow view
 . Updated to use latest SWT widgets wherever possible
-
+. New option to control the launch of a full build per project - Thanks to Joe Freeman
 -------------------------------------
 v3.2.5 - October 13 2008
 

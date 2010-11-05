@@ -155,6 +155,16 @@ public interface IProjectProperties {
     void setViolationsAsErrors(boolean violationsAsErrors) throws PropertiesException;
     
     /**
+     * @return Returns whether PMD should be run for full build for that project.
+     */
+    boolean isFullBuildEnabled() throws PropertiesException;
+    
+    /**
+     * @param pmdEnabled Enable or disable PMD for full build for that project.
+     */
+    void setFullBuildEnabled(boolean fullBuildEnabled) throws PropertiesException;
+
+    /**
      * Synchronize the properties with the persistant store
      *
      */

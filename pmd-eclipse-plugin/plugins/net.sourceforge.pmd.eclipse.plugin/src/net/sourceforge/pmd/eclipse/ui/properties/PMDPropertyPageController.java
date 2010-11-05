@@ -98,6 +98,7 @@ public class PMDPropertyPageController {
     }
 
     /**
+     * populates teh property page bean from the loaded properties
      * @return Returns the propertyPageBean.
      */
     public PMDPropertyPageBean getPropertyPageBean() {
@@ -115,6 +116,7 @@ public class PMDPropertyPageController {
                 this.propertyPageBean.setRuleSetStoredInProject(properties.isRuleSetStoredInProject());
                 this.propertyPageBean.setRuleSetFile(properties.getRuleSetFile());
                 this.propertyPageBean.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());
+                this.propertyPageBean.setFullBuildEnabled(properties.isFullBuildEnabled());
                 this.propertyPageBean.setViolationsAsErrors(properties.violationsAsErrors());
                 this.pmdAlreadyActivated = properties.isPmdEnabled();
 
@@ -153,6 +155,7 @@ public class PMDPropertyPageController {
             cmd.setRuleSetStoredInProject(this.propertyPageBean.isRuleSetStoredInProject());
             cmd.setRuleSetFile(this.propertyPageBean.getRuleSetFile());
             cmd.setIncludeDerivedFiles(this.propertyPageBean.isIncludeDerivedFiles());
+            cmd.setFullBuildEnabled(this.propertyPageBean.isFullBuildEnabled());
             cmd.setViolationsAsErrors(this.propertyPageBean.violationsAsErrors());
             cmd.setUserInitiated(true);
             cmd.performExecute();

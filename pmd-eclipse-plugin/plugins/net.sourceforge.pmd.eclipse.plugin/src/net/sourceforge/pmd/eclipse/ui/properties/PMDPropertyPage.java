@@ -49,6 +49,7 @@ import net.sourceforge.pmd.eclipse.ui.preferences.RuleTableViewerSorter;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.help.internal.dynamic.IncludeResolver;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -85,6 +86,7 @@ public class PMDPropertyPage extends PropertyPage {
     private Button deselectWorkingSetButton;
     private Button includeDerivedFilesButton;
     private Button violationsAsErrorsButton;
+    private Button fullBuildEnabledButton;
     protected Button ruleSetStoredInProjectButton;
     protected Text ruleSetFileText;
     protected Button ruleSetBrowseButton;
@@ -128,6 +130,7 @@ public class PMDPropertyPage extends PropertyPage {
             separator.setLayoutData(data);
             
             this.violationsAsErrorsButton = buildViolationsAsErrorsButton(composite);
+            this.fullBuildEnabledButton = buildFullBuildEnabledButton(composite);
 
             separator = new Label(composite, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
             data = new GridData();
@@ -225,6 +228,18 @@ public class PMDPropertyPage extends PropertyPage {
         final Button button = new Button(parent, SWT.CHECK);
         button.setText(getMessage(StringKeys.PROPERTY_BUTTON_VIOLATIONS_AS_ERRORS));
         button.setSelection(model.violationsAsErrors());
+
+        return button;
+    }
+
+    /**
+     * Create the Run At Full Build
+     * @param parent the parent composite
+     */
+    private Button buildFullBuildEnabledButton(final Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(getMessage(StringKeys.PROPERTY_BUTTON_RUN_AT_FULL_BUILD));
+        button.setSelection(model.isFullBuildEnabled());
 
         return button;
     }
@@ -429,8 +444,8 @@ public class PMDPropertyPage extends PropertyPage {
         model.setRuleSetStoredInProject(ruleSetStoredInProjectButton.getSelection());
         model.setRuleSetFile(ruleSetFileText.getText());
         model.setIncludeDerivedFiles(includeDerivedFilesButton.getSelection());
-
         model.setViolationsAsErrors(violationsAsErrorsButton.getSelection());
+        model.setFullBuildEnabled(fullBuildEnabledButton.getSelection());
 
         return controller.performOk();
     }

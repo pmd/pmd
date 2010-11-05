@@ -9,6 +9,7 @@ Brian Remedios               improvements in the PMDPlugin class
                              preferences rule table have sortable columns
 Pablo Alba                   enhancements to the Violations View (legacy)
 Sven Jacob                   bug fixes
+Joe Freeman					 new option to control full building per project
 
 ------------------------------------------
 *** SPECIAL THANKS TO SEBASTIAN RAFFEL ***

@@ -78,6 +78,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private IWorkingSet projectWorkingSet;
     private boolean includeDerivedFiles;
     private boolean violationsAsErrors = true;
+    private boolean fullBuildEnabled  = true; // default in case didn't come from properties
     
     /**
      * The default constructor takes a project as an argument
@@ -318,5 +319,46 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         needRebuild |= this.violationsAsErrors != violationsAsErrors;
         this.violationsAsErrors = violationsAsErrors;
     }
+
+    /**
+     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#isFullBuildEnabled()
+     */
+	public boolean isFullBuildEnabled() throws PropertiesException {
+		return fullBuildEnabled;
+	}
+
+    /**
+     * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setFullBuildEnabled(boolean)
+     */
+	public void setFullBuildEnabled(boolean fullBuildEnabled)
+			throws PropertiesException {
+        log.debug("Set if run at full build for project " + project.getName() + ": " + fullBuildEnabled);
+		if (this.fullBuildEnabled != fullBuildEnabled){
+			this.fullBuildEnabled = fullBuildEnabled;
+			if (this.fullBuildEnabled){
+				needRebuild = true;
+			}
+		}
+		
+	}
+	
+	/**
+	 * Provide some help to folks using the debugger and logging
+	 */
+	public String toString(){
+		String projectName = "n/a";
+		String projectRuleSetName = "n/a";
+		String projectWorkingSetName = "n/a";
+		if (project != null ){ projectName = project.getName();}
+		if (projectRuleSet!= null){ projectRuleSetName = projectRuleSet.getName();}
+		if (projectWorkingSet!=null){ projectWorkingSetName = projectWorkingSet.getName();}
+		
+		return "fullBuildEnabled:"+fullBuildEnabled 
+		+ " includeDerivedFiles:"+includeDerivedFiles+" pmdEnabled:"+pmdEnabled
+		+ " project:"+projectName+ " projectRuleSet:"+projectRuleSetName
+		+ " projectWorkingSet:"+projectWorkingSetName + " ruleSetFile:"+ruleSetFile
+		+ " ruleSetStoredInProject:"+ruleSetStoredInProject 
+		+ " violationsAsErrors: "+violationsAsErrors;
+	}
 
 }

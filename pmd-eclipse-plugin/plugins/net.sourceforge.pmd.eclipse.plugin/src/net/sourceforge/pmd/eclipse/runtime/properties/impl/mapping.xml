@@ -64,6 +64,14 @@
                        set-method="setViolationsAsErrors">
                         <bind-xml name="violationsAsErrors" node="element"/>
                 </field>
+
+                <field name="FullBuildEnabled"
+                       type="boolean"
+                       get-method="isFullBuildEnabled"
+                       set-method="setFullBuildEnabled">
+                        <bind-xml name="fullBuildEnabled" node="element"/>
+                </field>
+
         </class>
 
         <class name="net.sourceforge.pmd.eclipse.runtime.properties.impl.RuleSpecTO">

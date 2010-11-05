@@ -62,6 +62,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
     private boolean needRebuild;
     private boolean ruleSetFileExists;
     private boolean includeDerivedFiles;
+    private boolean fullBuildEnabled = true;
     private boolean violationsAsErrors = true;
 
     /**
@@ -87,6 +88,7 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
             properties.setRuleSetStoredInProject(this.ruleSetStoredInProject);
             properties.setRuleSetFile(this.ruleSetFile);
             properties.setIncludeDerivedFiles(this.includeDerivedFiles);
+            properties.setFullBuildEnabled(this.fullBuildEnabled);
             properties.setViolationsAsErrors(this.violationsAsErrors);
             properties.sync();
             this.needRebuild = properties.isNeedRebuild();
@@ -142,6 +144,14 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
     }
 
     /**
+     * 
+     * @param fullBuildEnabled run at full build setter
+     */
+    public void setFullBuildEnabled(boolean fullBuildEnabled){
+    	this.fullBuildEnabled = fullBuildEnabled;
+    }
+    
+    /**
      * @param violationsAsErrors The violationsAsErrors to set.
      */
     public void setViolationsAsErrors(boolean violationsAsErrors) {
@@ -172,7 +182,8 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
         this.setRuleSetStoredInProject(false);
         this.setRuleSetFile(null);
         this.setIncludeDerivedFiles(false);
-        this.setViolationsAsErrors(false);
+        this.setFullBuildEnabled(true);   // made to match static initializer
+        this.setViolationsAsErrors(true); // 10/2010 changed to true to match static initializer
         this.setTerminated(false);
     }
 

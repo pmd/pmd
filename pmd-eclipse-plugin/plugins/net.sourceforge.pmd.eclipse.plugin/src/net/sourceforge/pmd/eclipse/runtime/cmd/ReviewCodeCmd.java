@@ -131,12 +131,17 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             beginTask("PMD checking...", getStepCount());
             
             // Lancer PMD
+            // PMDPlugin fills resources if it's a full build and 
+            // resourcesDelta if it is incremental or auto
             if (resources.isEmpty()) {
                 processResourceDelta();
             } else {
                 processResources();
             }
 
+            // do we really need to do any of the rest of this if 
+            // fileCount and ruleCount are both 0?
+            
             // Appliquer les marqueurs
             IWorkspaceRunnable action = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
@@ -298,27 +303,35 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     private void processResource(IResource resource) throws CommandException {
         try {
+        	
             final IProject project = resource.getProject();
             final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             
             final RuleSet ruleSet = filteredRuleSet(properties);	//properties.getProjectRuleSet();
             
             final PMDEngine pmdEngine = getPmdEngineForProject(project);
-            setStepCount(countResourceElement(resource));
-            log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
-
-            final ResourceVisitor visitor = new ResourceVisitor();
-            visitor.setMonitor(getMonitor());
-            visitor.setRuleSet(ruleSet);
-            visitor.setPmdEngine(pmdEngine);
-            visitor.setAccumulator(markersByFile);
-            visitor.setUseTaskMarker(taskMarker);
-            visitor.setProjectProperties(properties);
-            resource.accept(visitor);
-
-            ruleCount = ruleSet.getRules().size();
-            fileCount += visitor.getProcessedFilesCount();
-            pmdDuration += visitor.getActualPmdDuration();
+            int targetCount = countResourceElement(resource);
+            // Could add a property that lets us set the max number to analyze 
+            if (properties.isFullBuildEnabled() || targetCount ==1){
+	            setStepCount(targetCount);
+	            log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
+	
+	            final ResourceVisitor visitor = new ResourceVisitor();
+	            visitor.setMonitor(getMonitor());
+	            visitor.setRuleSet(ruleSet);
+	            visitor.setPmdEngine(pmdEngine);
+	            visitor.setAccumulator(markersByFile);
+	            visitor.setUseTaskMarker(taskMarker);
+	            visitor.setProjectProperties(properties);
+	            resource.accept(visitor);
+	
+	            ruleCount = ruleSet.getRules().size();
+	            fileCount += visitor.getProcessedFilesCount();
+	            pmdDuration += visitor.getActualPmdDuration();
+            } else {
+            	log.debug("Skipping resource "+ resource.getName() 
+            			+ " because of fullBuildEnabled flag");
+            }
 
             worked(1);		// TODO - temp fix?  BR
             
@@ -392,27 +405,35 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     private void processResourceDelta() throws CommandException {
         try {
-            final IProject project = resourceDelta.getResource().getProject();
+            IResource resource = resourceDelta.getResource();
+            final IProject project = resource.getProject();
             final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             
             RuleSet ruleSet = filteredRuleSet(properties);	//properties.getProjectRuleSet();
 
             PMDEngine pmdEngine = getPmdEngineForProject(project);
-            setStepCount(countDeltaElement(resourceDelta));
-            log.debug("Visit of resource delta : " + getStepCount());
-
-            DeltaVisitor visitor = new DeltaVisitor();
-            visitor.setMonitor(getMonitor());
-            visitor.setRuleSet(ruleSet);
-            visitor.setPmdEngine(pmdEngine);
-            visitor.setAccumulator(markersByFile);
-            visitor.setUseTaskMarker(taskMarker);
-            visitor.setProjectProperties(properties);
-            resourceDelta.accept(visitor);
-
-            ruleCount = ruleSet.getRules().size();
-            fileCount += visitor.getProcessedFilesCount();
-            pmdDuration += visitor.getActualPmdDuration();
+            int targetCount = countDeltaElement(resourceDelta);
+            // Could add a property that lets us set the max number to analyze 
+            if (properties.isFullBuildEnabled() || targetCount == 1){
+	            setStepCount(targetCount);
+	            log.debug("Visiting delta of resource " + resource.getName() + " : " + getStepCount());
+	
+	            DeltaVisitor visitor = new DeltaVisitor();
+	            visitor.setMonitor(getMonitor());
+	            visitor.setRuleSet(ruleSet);
+	            visitor.setPmdEngine(pmdEngine);
+	            visitor.setAccumulator(markersByFile);
+	            visitor.setUseTaskMarker(taskMarker);
+	            visitor.setProjectProperties(properties);
+	            resourceDelta.accept(visitor);
+	
+	            ruleCount = ruleSet.getRules().size();
+	            fileCount += visitor.getProcessedFilesCount();
+	            pmdDuration += visitor.getActualPmdDuration();
+            } else {
+            	log.debug("Skipping resource "+ resource.getName() 
+            			+ " because of fullBuildEnabled flag");
+            }
 
         } catch (PropertiesException e) {
             throw new CommandException(e);

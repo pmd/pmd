@@ -53,6 +53,7 @@ public class StringKeys {
     public static final String PROPERTY_BUTTON_STORE_RULESET_PROJECT = "property.button.store_ruleset_project";
     public static final String PROPERTY_BUTTON_RULESET_BROWSE = "property.button.ruleset_browse";
     public static final String PROPERTY_BUTTON_INCLUDE_DERIVED_FILES = "property.button.include_derived_files";
+    public static final String PROPERTY_BUTTON_RUN_AT_FULL_BUILD = "property.button.full_build_enabled";
     public static final String PROPERTY_BUTTON_VIOLATIONS_AS_ERRORS = "property.button.violations_as_errors";
     
     public static final String PREF_GENERAL_HEADER = "preference.pmd.header";

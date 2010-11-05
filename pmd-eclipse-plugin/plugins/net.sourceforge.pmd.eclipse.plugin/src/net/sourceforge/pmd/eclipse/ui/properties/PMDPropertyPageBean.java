@@ -53,6 +53,7 @@ public class PMDPropertyPageBean {
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
     private boolean includeDerivedFiles;
+    private boolean fullBuildEnabled = true;
     private boolean violationsAsErrors = true;
     
     /**
@@ -139,6 +140,21 @@ public class PMDPropertyPageBean {
         this.includeDerivedFiles = includeDerivedFiles;
     }
 
+    /**
+     * @return should we run at full build
+     */
+    public boolean isFullBuildEnabled(){
+    	return fullBuildEnabled;
+    }
+    
+    /**
+     * 
+     * @param fullBuildEnabled run at full build
+     */
+    public void setFullBuildEnabled(boolean fullBuildEnabled){
+    	this.fullBuildEnabled=fullBuildEnabled;
+    }
+    
     /**
      * @return Returns the violationsAsErrors.
      */
