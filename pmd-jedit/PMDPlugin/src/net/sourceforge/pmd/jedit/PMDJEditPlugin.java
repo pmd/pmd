@@ -147,7 +147,8 @@ public class PMDJEditPlugin extends EBPlugin {
                 selectedFile = chooser.getSelectedFile();
 
                 if (! selectedFile.isDirectory()) {
-                    JOptionPane.showMessageDialog(view,  jEdit.getProperty("net.sf.pmd.Selection_not_a_directory.",  "Selection not a directory."),  NAME,  JOptionPane.ERROR_MESSAGE);
+                    errorSource.addError(new DefaultErrorSource.DefaultError(errorSource,  ErrorSource.ERROR,  selectedFile.getAbsolutePath(),  0,  0,  0,  jEdit.getProperty("net.sf.pmd.Selection_not_a_directory.",  "Selection not a directory.")));                    //NOPMD
+                    //JOptionPane.showMessageDialog(view,  jEdit.getProperty("net.sf.pmd.Selection_not_a_directory.",  "Selection not a directory."),  NAME,  JOptionPane.ERROR_MESSAGE);
                     return ;
                 }
 
@@ -213,13 +214,15 @@ public class PMDJEditPlugin extends EBPlugin {
             ctx.setSourceCodeFilename(path);
             VFS vfs = buffer.getVFS();
 
-            pmd.processFile(vfs._createInputStream(vfs.createVFSSession(path,  view),  path,  false,  view), System.getProperty("file.encoding"), toCheck, ctx);
+            pmd.processFile(vfs._createInputStream(vfs.createVFSSession(path,  view),  path,  false,  view), (String)buffer.getProperty("encoding"), toCheck, ctx);
 
             if (ctx.getReport().isEmpty()) {
                 // only show popup if run on save is NOT selected, otherwise it is annoying
+                // even better, just show the message in the error list
                 boolean run_on_save = jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE);
                 if (! run_on_save) {
-                    JOptionPane.showMessageDialog(view,  jEdit.getProperty("net.sf.pmd.No_problems_found",  "No problems found"),  NAME,  JOptionPane.INFORMATION_MESSAGE);
+                    errorSource.addError(new DefaultErrorSource.DefaultError(errorSource,  ErrorSource.WARNING,  path,  0,  0,  0,  jEdit.getProperty("net.sf.pmd.No_problems_found",  "No problems found")));                    //NOPMD
+                    //JOptionPane.showMessageDialog(view,  jEdit.getProperty("net.sf.pmd.No_problems_found",  "No problems found"),  NAME,  JOptionPane.INFORMATION_MESSAGE);
                 }
                 errorSource.clear();
             } else {
@@ -243,7 +246,8 @@ public class PMDJEditPlugin extends EBPlugin {
         } catch (PMDException pmde) {
             String msg = jEdit.getProperty("net.sf.pmd.Error_while_processing_",  "Error while processing ") + buffer.getPath() + ":\n" + pmde.getMessage() + "\n\n" + pmde.getCause();
             Log.log(Log.ERROR,  this,  msg,  pmde);
-            JOptionPane.showMessageDialog(view,  msg,  "PMD",  JOptionPane.ERROR_MESSAGE);
+            errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, buffer.getPath(), 0, 0, 0, msg));
+            //JOptionPane.showMessageDialog(view,  msg,  "PMD",  JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             // TODO: is this useful to log?
             Log.log(Log.ERROR,  this,  "Exception processing file " + buffer.getPath(),  e);
@@ -314,7 +318,8 @@ public class PMDJEditPlugin extends EBPlugin {
             } catch (PMDException pmde) {
                 String msg = jEdit.getProperty("net.sf.pmd.Error_while_processing_",  "Error while processing ") + file.getAbsolutePath() + ":\n" + pmde.getMessage();
                 Log.log(Log.ERROR,  this,  msg,  pmde);
-                JOptionPane.showMessageDialog(view,  msg,  "PMD",  JOptionPane.ERROR_MESSAGE);
+                errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, file.getAbsolutePath(), 0, 0, 0, msg));
+                //JOptionPane.showMessageDialog(view,  msg,  "PMD",  JOptionPane.ERROR_MESSAGE);
             }
 
             if (jEdit.getBooleanProperty(SHOW_PROGRESS)) {
@@ -323,7 +328,6 @@ public class PMDJEditPlugin extends EBPlugin {
         }
 
         if (! foundProblems) {
-            //JOptionPane.showMessageDialog(jEdit.getFirstView(),  jEdit.getProperty("net.sf.pmd.No_problems_found",  "No problems found"),  NAME,  JOptionPane.INFORMATION_MESSAGE);
             errorSource.clear();
         } else {
             registerErrorSource();
