@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a custom-rulesets configuration.
+ * Represents a custom rulesets configuration.
  */
 public class CustomRuleSetSettings implements Serializable {
 	/** The serialVersionUID. */
@@ -50,13 +50,11 @@ public class CustomRuleSetSettings implements Serializable {
 	public CustomRuleSetSettings( List<String> ruleSets, List classPath, boolean include) {
 		this.ruleSets = ruleSets;
 		this.classPath = classPath;
-		this.includeStdRules = includeStdRules;
+		this.includeStdRules = include;
 	}
 	
 	public CustomRuleSetSettings() {
-		ruleSets = new ArrayList<String>();
-		classPath = new ArrayList();
-		includeStdRules = true;
+		this(new ArrayList<String>(), new ArrayList(), true);
 	}
 	
 	/** Getter for property ruleSets.
@@ -107,7 +105,8 @@ public class CustomRuleSetSettings implements Serializable {
 		this.includeStdRules = includeStdRules;
 	}
 	
-	public String toString() {
-		return "Custom rulesets";
-	}
+  @Override
+  public String toString() {
+    return "Custom rulesets";
+  }
 }
