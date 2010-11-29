@@ -29,6 +29,7 @@ package pmd.config;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -258,18 +259,12 @@ public class PMDOptionsSettings {
             crss.setIncludeStdRules(inclStdRueset);
             
             if (prefs.nodeExists(NODE_RULESETS)) {
-                List<String> rulesets = new ArrayList<String>();
-                for (String s: prefs.node(NODE_RULESETS).keys()) {
-                    rulesets.add(s);
-                }
+                List<String> rulesets = Arrays.asList(prefs.node(NODE_RULESETS).keys());
                 crss.setRuleSets(rulesets);
             }
             
             if (prefs.nodeExists(NODE_CLASSPATH)) {
-                List<String> cp = new ArrayList<String>();
-                for (String s: prefs.node(NODE_CLASSPATH).keys()) {
-                    cp.add(s);
-                }
+                List<String> cp = Arrays.asList(prefs.node(NODE_CLASSPATH).keys());
                 crss.setClassPath(cp);
             }
             
@@ -304,7 +299,7 @@ public class PMDOptionsSettings {
             
             @SuppressWarnings("unchecked")
             List<String> cp = rulesets.getClassPath();
-            if (r.isEmpty() && prefs.nodeExists(NODE_CLASSPATH)) {
+            if (cp.isEmpty() && prefs.nodeExists(NODE_CLASSPATH)) {
                 prefs.node(NODE_CLASSPATH).removeNode();
             }
             else {
@@ -312,7 +307,7 @@ public class PMDOptionsSettings {
                 for (String key: rsPref.keys()) {
                     rsPref.remove(key);
                 }
-                for(String s: r) {
+                for(String s: cp) {
                     rsPref.put(s, s);
                 }
             }
