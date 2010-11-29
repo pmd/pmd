@@ -32,7 +32,7 @@ RULES
 ------------------------
 1) Start NetBeans 
 2) Goto Tools --> Options 
-3) Navigate to Miscelaneous section and expand PMD node
+3) Navigate to Miscelaneous section and select PMD tab
 4) Click on "Rules"
 5) Click on the [...] button
 6) Select the different rules to see information and examples of the rule
@@ -44,11 +44,11 @@ CUSTOM RULESETS
 ------------------------
 1) Start NetBeans 
 2) Goto Tools --> Options 
-3) Navigate to Miscelaneous section and expand PMD node
+3) Navigate to Miscelaneous section and select PMD tab
 5) Click on "Rulesets"
-6) Click "Add RuleSet" to locate the ruleset xml file you want to include
+6) Click "Add RuleSet" to locate the ruleset XML file you want to include
 7) Click "Add Rule jar" to locate the jar containing the rules
-8) Check "Include PMD standard rules" to include the rules from the pmd distribution
+8) Check "Include PMD standard rules" to include the rules from the PMD distribution
 9) Press OK to save the configuration
 10) Go to Rules to select the new rules.
 
@@ -57,5 +57,5 @@ REALTIME SCANNING
 ------------------------
 1) Start NetBeans 
 2) Goto Tools --> Options 
-3) Navigate to Miscelaneous section and expand PMD node
+3) Navigate to Miscelaneous section and select PMD tab
 4) Select "Enable scan"

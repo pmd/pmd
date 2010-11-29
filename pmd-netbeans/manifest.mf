@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Specification-Version: 2.2.6
+OpenIDE-Module-Specification-Version: 2.2.7
 Created-By: Ole-Martin Mørk and Gunnlaugur Þór Briem, Radim Kubacki, Tomasz Slota
 OpenIDE-Module: pmd
 OpenIDE-Module-Layer: pmd/mf-layer.xml

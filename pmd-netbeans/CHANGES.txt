@@ -1,3 +1,7 @@
+Version 2.2.7
+- Fixed settings: problems with rule properties and classpath of custom rules.
+- Built with JDK 1.6 and sanity tested with NetBeans 6.9
+
 Version 2.2.6
 - Updated dependencies to make it working with NetBeans 6.9
 
