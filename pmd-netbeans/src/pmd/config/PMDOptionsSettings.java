@@ -39,6 +39,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSetFactory;
 import org.openide.util.NbPreferences;
 
 /**
@@ -87,7 +89,7 @@ public class PMDOptionsSettings {
 		"AvoidReassigningParametersRule, OnlyOneReturn, UseSingletonRule, " +
 		"DontImportJavaLang, UnusedImports, DuplicateImports, ";
 
-    /** Name of key for storing part of cumstom rulesets settings. */
+    /** Name of key for storing part of custom rule-set settings. */
     private static String PROP_INCLUDE_STD_RULES = "includeStdRules";
     
     private static final String NODE_RULESETS = "rulesets";
@@ -189,7 +191,7 @@ public class PMDOptionsSettings {
                 int idx = keyName.indexOf(".", PROP_RULE_PROPERTIES.length()+2);
                 if (idx == -1)
                     continue;
-                String ruleName = keyName.substring(PROP_RULE_PROPERTIES.length()+1, idx - 1);
+                String ruleName = keyName.substring(PROP_RULE_PROPERTIES.length()+1, idx);
                 Map<String, String> props = ruleProps.get(ruleName);
                 if (props == null) { 
                     props = new HashMap<String, String>();
@@ -223,7 +225,7 @@ public class PMDOptionsSettings {
                 int idx = keyName.indexOf(".", PROP_RULE_PROPERTIES.length()+2);
                 if (idx == -1)
                     continue;
-                String ruleName = keyName.substring(PROP_RULE_PROPERTIES.length()+1, idx - 1);
+                String ruleName = keyName.substring(PROP_RULE_PROPERTIES.length()+1, idx);
                 String propName = keyName.substring(idx+1);
                 if (ruleProperties.get(ruleName) != null && ruleProperties.get(ruleName).get(propName) == null) {
                     prefs.remove(keyName);
