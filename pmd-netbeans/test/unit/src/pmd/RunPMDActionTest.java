@@ -47,18 +47,6 @@ public class RunPMDActionTest extends NbTestCase {
         super(testName);
     }
 
-    protected void setUp() throws Exception {
-    }
-
-    protected void tearDown() throws Exception {
-    }
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite(RunPMDActionTest.class);
-        
-        return suite;
-    }
-
     /**
      * Test of getHelpCtx method, of class pmd.RunPMDAction.
      */
