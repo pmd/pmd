@@ -512,7 +512,7 @@
             name="%view.perspective"
             id="net.sourceforge.pmd.eclipse.ui.views.pmdPerspective"/>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -521,7 +521,7 @@
             name="DisableRule">
       </command>
    </extension>
-   
+<!--   
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -538,6 +538,7 @@
          </menu>
       </menuContribution>
    </extension>
+-->    
    <extension
          point="org.eclipse.ui.decorators">
       <decorator
