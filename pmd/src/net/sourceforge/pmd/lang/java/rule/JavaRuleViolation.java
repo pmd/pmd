@@ -20,80 +20,90 @@ import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolation;
 
 /**
- * This is a Java RuleViolation.  It knows how to try to extract the following
+ * This is a Java RuleViolation. It knows how to try to extract the following
  * extra information from the violation node:
  * <ul>
- *    <li>Package name</li>
- *    <li>Class name</li>
- *    <li>Method name</li>
- *    <li>Variable name</li>
- *    <li>Suppression indicator</li>
+ * <li>Package name</li>
+ * <li>Class name</li>
+ * <li>Method name</li>
+ * <li>Variable name</li>
+ * <li>Suppression indicator</li>
  * </ul>
  */
 public class JavaRuleViolation extends AbstractRuleViolation {
-    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message) {
-	super(rule, ctx, node, message);
 
-	if (node != null) {
-	    final Scope scope = node.getScope();
-	    final SourceFileScope sourceFileScope = scope.getEnclosingSourceFileScope();
+	public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message, int beginLine, int endLine) {
+		this(rule, ctx, node, message);
 
-	    // Package name is on SourceFileScope
-	    packageName = sourceFileScope.getPackageName() == null ? "" : sourceFileScope.getPackageName();
-
-	    // Class name is built from enclosing ClassScopes
-	    String qualifiedName = null;
-	    for (ASTClassOrInterfaceDeclaration parent : node.getParentsOfType(ASTClassOrInterfaceDeclaration.class)) {
-		if (qualifiedName == null) {
-		    qualifiedName = parent.getScope().getEnclosingClassScope().getClassName();
-		} else {
-		    qualifiedName = parent.getScope().getEnclosingClassScope().getClassName() + "$" + qualifiedName;
-		}
-	    }
-	    if (qualifiedName != null) {
-		className = qualifiedName;
-	    }
-	    // Method name comes from 1st enclosing MethodScope
-	    if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
-		methodName = scope.getEnclosingMethodScope().getName();
-	    }
-	    // Variable name node specific
-	    setVariableNameIfExists(node);
-
-	    // Check for suppression on this node, on parents, and on contained types for ASTCompilationUnit
-	    if (!suppressed) {
-		suppressed = suppresses(node);
-	    }
-	    if (!suppressed && node instanceof ASTCompilationUnit) {
-		for (int i = 0; !suppressed && i < node.jjtGetNumChildren(); i++) {
-		    suppressed = suppresses(node.jjtGetChild(i));
-		}
-	    }
-	    if (!suppressed) {
-		Node parent = node.jjtGetParent();
-		while (!suppressed && parent != null) {
-		    suppressed = suppresses(parent);
-		    parent = parent.jjtGetParent();
-		}
-	    }
+		setLines(beginLine, endLine);
 	}
-    }
 
-    private boolean suppresses(final Node node) {
-	return node instanceof CanSuppressWarnings
-		&& ((CanSuppressWarnings) node).hasSuppressWarningsAnnotationFor(getRule());
-    }
+	public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message) {
+		super(rule, ctx, node, message);
 
-    private void setVariableNameIfExists(Node node) {
-	variableName = "";
-	if (node instanceof ASTFieldDeclaration) {
-	    variableName = ((ASTFieldDeclaration) node).getVariableName();
-	} else if (node instanceof ASTLocalVariableDeclaration) {
-	    variableName = ((ASTLocalVariableDeclaration) node).getVariableName();
-	} else if (node instanceof ASTVariableDeclarator) {
-	    variableName = node.jjtGetChild(0).getImage();
-	} else if (node instanceof ASTVariableDeclaratorId) {
-	    variableName = node.getImage();
+		if (node != null) {
+			final Scope scope = node.getScope();
+			final SourceFileScope sourceFileScope = scope.getEnclosingSourceFileScope();
+
+			// Package name is on SourceFileScope
+			packageName = sourceFileScope.getPackageName() == null ? ""	: sourceFileScope.getPackageName();
+
+			// Class name is built from enclosing ClassScopes
+			String qualifiedName = null;
+			for (ASTClassOrInterfaceDeclaration parent : node.getParentsOfType(ASTClassOrInterfaceDeclaration.class)) {
+				if (qualifiedName == null) {
+					qualifiedName = parent.getScope().getEnclosingClassScope().getClassName();
+				} else {
+					qualifiedName = parent.getScope().getEnclosingClassScope().getClassName()
+							+ "$" + qualifiedName;
+				}
+			}
+			if (qualifiedName != null) {
+				className = qualifiedName;
+			}
+			// Method name comes from 1st enclosing MethodScope
+			if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
+				methodName = scope.getEnclosingMethodScope().getName();
+			}
+			// Variable name node specific
+			setVariableNameIfExists(node);
+
+			// Check for suppression on this node, on parents, and on contained
+			// types for ASTCompilationUnit
+			if (!suppressed) {
+				suppressed = suppresses(node);
+			}
+			if (!suppressed && node instanceof ASTCompilationUnit) {
+				for (int i = 0; !suppressed && i < node.jjtGetNumChildren(); i++) {
+					suppressed = suppresses(node.jjtGetChild(i));
+				}
+			}
+			if (!suppressed) {
+				Node parent = node.jjtGetParent();
+				while (!suppressed && parent != null) {
+					suppressed = suppresses(parent);
+					parent = parent.jjtGetParent();
+				}
+			}
+		}
 	}
-    }
+
+	private boolean suppresses(final Node node) {
+		return node instanceof CanSuppressWarnings
+				&& ((CanSuppressWarnings) node).hasSuppressWarningsAnnotationFor(getRule());
+	}
+
+	private void setVariableNameIfExists(Node node) {
+		variableName = "";
+		if (node instanceof ASTFieldDeclaration) {
+			variableName = ((ASTFieldDeclaration) node).getVariableName();
+		} else if (node instanceof ASTLocalVariableDeclaration) {
+			variableName = ((ASTLocalVariableDeclaration) node)
+					.getVariableName();
+		} else if (node instanceof ASTVariableDeclarator) {
+			variableName = node.jjtGetChild(0).getImage();
+		} else if (node instanceof ASTVariableDeclaratorId) {
+			variableName = node.getImage();
+		}
+	}
 }

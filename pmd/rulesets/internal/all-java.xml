@@ -12,6 +12,7 @@
     <rule ref="rulesets/java/braces.xml"/>
     <rule ref="rulesets/java/clone.xml"/>
     <rule ref="rulesets/java/codesize.xml"/>
+    <rule ref="rulesets/java/comments.xml"/>
     <rule ref="rulesets/java/controversial.xml"/>
     <rule ref="rulesets/java/coupling.xml"/>
     <rule ref="rulesets/java/design.xml"/>

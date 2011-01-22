@@ -24,4 +24,6 @@ public interface RuleViolationFactory {
      *            arguments to embed in the rule violation message
      */
     void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, Object[] args);
+    
+    void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, int beginLine, int endLine, Object[] args);
 }

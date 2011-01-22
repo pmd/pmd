@@ -155,6 +155,11 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 	return variableName;
     }
 
+    public void setLines(int theBeginLine, int theEndLine) {
+    	beginLine = theBeginLine;
+    	endLine = theEndLine;
+    }
+    
     @Override
     public String toString() {
 	return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + beginLine;

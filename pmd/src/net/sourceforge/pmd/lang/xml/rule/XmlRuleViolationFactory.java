@@ -22,4 +22,8 @@ public final class XmlRuleViolationFactory extends AbstractRuleViolationFactory 
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
 	return new XmlRuleViolation(rule, ruleContext, (XmlNode) node, message);
     }
+    
+    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {
+		return null;	// FIXME
+	}
 }

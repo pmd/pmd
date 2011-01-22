@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+
+<ruleset name="Comments"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+Rules intended to catch errors related to code comments
+  </description>
+
+   <rule name="CommentRequired"
+    		  since="5.0"
+        message="Comment is required"
+        class="net.sourceforge.pmd.lang.java.rule.comments.CommentRequiredRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/comments.html#CommentRequired">
+    <description>
+todotodotodotodo
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+todotodotodotodotodo
+]]>
+    </example>
+  </rule>
+  
+    <rule name="CommentSize"
+    		  since="5.0"
+        message="Comment is too large"
+        class="net.sourceforge.pmd.lang.java.rule.comments.CommentSizeRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/comments.html#CommentSize">
+    <description>
+Determines whether the dimensions of non-header comments found are within the specified limits.
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+/**
+*
+*	too many lines!
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*/
+]]>
+    </example>
+  </rule>
+
+  <rule name="CommentContent"
+    		  since="5.0"
+     message="Invalid words or phrases found."
+     class="net.sourceforge.pmd.lang.java.rule.comments.CommentContentRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/comments.html#CommentContent">
+     <description>
+A rule for the politically correct... we don't want to offend anyone.
+  </description>
+  <priority>3</priority>
+  <example>
+      <![CDATA[
+//	OMG, this is horrible, Bob is an idiot !!!
+      ]]>
+  </example>
+   </rule>
+
+
+ </ruleset>

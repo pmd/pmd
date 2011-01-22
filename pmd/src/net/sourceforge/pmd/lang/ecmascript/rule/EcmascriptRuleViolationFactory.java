@@ -21,4 +21,8 @@ public final class EcmascriptRuleViolationFactory extends AbstractRuleViolationF
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
 	return new EcmascriptRuleViolation(rule, ruleContext, (EcmascriptNode) node, message);
     }
+    
+    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {
+		return null;	// FIXME
+	}
 }

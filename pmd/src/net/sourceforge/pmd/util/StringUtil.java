@@ -23,6 +23,41 @@ public final class StringUtil {
     private StringUtil() {}
     
     /**
+     * Returns whether the text arg matches any of the test values.
+     * 
+     * @param text
+     * @param tests
+     * @return
+     */
+    public static boolean isAnyOf(String text, String... tests) {
+    	
+    	for (String test : tests) {
+    		if (text.equals(test)) return true;
+    	}
+    	
+    	return false;
+    }
+    
+    /**
+     * Checks for the existence of any of the listed prefixes on the
+     * text and removes them.
+     * 
+     * @param text
+     * @param prefixes
+     * @return
+     */
+    public static String withoutPrefixes(String text, String... prefixes) {
+    	
+    	for (String prefix : prefixes) {
+    		if (text.startsWith(prefix)) {
+    			return text.substring(prefix.length());
+    		}
+    	}
+    	
+    	return text;
+    }
+    
+    /**
      * Returns true if the value arg is either null, empty, or full of whitespace characters.
      * More efficient that calling (string).trim().length() == 0
      * 

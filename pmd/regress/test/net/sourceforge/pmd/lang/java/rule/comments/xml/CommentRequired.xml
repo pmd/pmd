@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Too many lines
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd;
+
+/**
+ * This is the header comment for the file.
+ *
+ */ 
+
+/*
+ * This is the comment for the constructor
+ */
+public class Foo {
+  public Foo() {
+  }
+  
+/*
+ * This is the comment for the first method
+ */
+  public void doNothing() {
+  }
+  
+/*
+ * This is the comment for the second method
+ */
+  public void doSomething() {
+  }
+}
+     ]]></code>
+    </test-code>
+ 
+</test-data>
