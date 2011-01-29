@@ -2,47 +2,79 @@ package net.sourceforge.pmd.lang.java.rule.comments;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A rule that checks for illegal words in the comment text. 
+ * 
+ * TODO provide case-insensitivity option
  * 
  * @author Brian Remedios
  */
 public class CommentContentRule extends AbstractCommentRule {
 
+	private boolean caseSensitive;
+	private String[] originalBadWords;
+	private String[] currentBadWords;
+	
 	private static final String[] badWords = new String[] { "idiot", "jerk" };
 	
+	public static final BooleanProperty CASE_SENSITIVE_DESCRIPTOR = new BooleanProperty("caseSensitive",
+    		"Case sensitive", false, 1.0f);
+  
     public static final StringMultiProperty DISSALLOWED_TERMS_DESCRIPTOR = new StringMultiProperty("disallowedTerms",
     		"Illegal terms or phrases", badWords, 2.0f, '|');
     
 	public CommentContentRule() {
+		definePropertyDescriptor(CASE_SENSITIVE_DESCRIPTOR);
 		definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
 	}	
 	
+	 /**
+	  * Perform all the case-conversions once per run
+	  */
+	 public void start(RuleContext ctx) {
+		 originalBadWords = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
+		 caseSensitive = getProperty(CASE_SENSITIVE_DESCRIPTOR);
+		 if (caseSensitive) {
+			 currentBadWords = originalBadWords;
+		 	} else {
+		 		currentBadWords = new String[originalBadWords.length];
+		 		 for (int i=0; i<currentBadWords.length; i++) {
+					 currentBadWords[i] = originalBadWords[i].toUpperCase();
+				 	}
+		 	}
+	 }
+
+	 /**
+	  * @see Rule#end(RuleContext)
+	  */
+	 public void end(RuleContext ctx) {
+		 // Override as needed
+	 }
+	
 	private List<String> illegalTermsIn(Comment comment) {
 
-		String[] badWords = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
-		if (badWords.length == 0) return Collections.emptyList();
+		if (currentBadWords.length == 0) return Collections.emptyList();
 		
 		String commentText = filteredCommentIn(comment);
+		if (StringUtil.isEmpty(commentText)) return Collections.emptyList();
 		
-		Set<String> commentWords = new HashSet<String>();
-		for (String word : commentText.split(" ")) {
-			commentWords.add(word.trim());
-		}
+		if (!caseSensitive) commentText = commentText.toUpperCase();
 		
 		List<String> foundWords = new ArrayList<String>();
 		
-		for (String badWord : badWords) {
-			if (commentWords.contains(badWord)) {
-				foundWords.add(badWord);
+		for (int i=0; i<currentBadWords.length; i++) {
+			if (commentText.indexOf(currentBadWords[i]) >= 0) {
+				foundWords.add(originalBadWords[i]);
 			}
 		}
 		

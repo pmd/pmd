@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.lang.java.rule.comments;
 
-import java.util.SortedMap;
-
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 /**
@@ -33,7 +31,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 	@Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
   
-		SortedMap<Integer, Object> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
+//		SortedMap<Integer, Object> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
 
         return super.visit(cUnit, data);
     }

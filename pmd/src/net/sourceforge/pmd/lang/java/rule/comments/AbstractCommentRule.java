@@ -69,7 +69,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 		return comment;
 	}
 	
-	private String asSingleString(List<String> lines) {
+	private static String asSingleString(List<String> lines) {
 		
 		StringBuilder sb = new StringBuilder();
 		for (String line : lines) {
@@ -80,12 +80,13 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 		return sb.toString().trim();
 	}
 	
-	private String multiLinesIn(String comment) {
+	private static String multiLinesIn(String comment) {
 		
 		String[] lines = comment.split("\n");
 		List<String> filteredLines = new ArrayList<String>(lines.length);
 		
-		for (String line : lines) {		
+		for (String rawLine : lines) {		
+			String line = rawLine.trim();
 			
 			if (line.endsWith("*/")) {
 				int end = line.length()-2;

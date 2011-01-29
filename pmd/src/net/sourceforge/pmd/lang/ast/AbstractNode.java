@@ -35,6 +35,19 @@ public abstract class AbstractNode implements Node {
 	this.id = id;
     }
 
+    public AbstractNode(int id, int theBeginLine, int theEndLine, int theBeginColumn, int theEndColumn) {
+    	this(id);
+    	
+    	beginLine = theBeginLine;
+    	endLine = theEndLine;
+    	beginColumn = theBeginColumn;
+    	endColumn = theEndColumn;
+    }
+    
+    public boolean isSingleLine() {
+    	return beginLine == endLine;
+    }
+    
     public void jjtOpen() {
     }
 

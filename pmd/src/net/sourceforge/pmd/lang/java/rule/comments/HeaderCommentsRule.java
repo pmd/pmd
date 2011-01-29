@@ -61,7 +61,7 @@ public class HeaderCommentsRule extends AbstractCommentRule {
 	@Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
   
-		SortedMap<Integer, Object> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
+//		SortedMap<Integer, Object> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
 
         return super.visit(cUnit, data);
     }

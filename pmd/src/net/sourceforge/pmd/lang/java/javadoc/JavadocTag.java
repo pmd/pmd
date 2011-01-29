@@ -2,11 +2,14 @@ package net.sourceforge.pmd.lang.java.javadoc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-public class JavadocTag {
+public final class JavadocTag {
 
 	public final String label;
 	public final String description;
+	
+	private static final Map<String, JavadocTag> tagsById = new HashMap<String, JavadocTag>();
 	
 	public static final JavadocTag AUTHOR  		= new JavadocTag("author", 	"Authors of the source code, in chronological order");
 	public static final JavadocTag SINCE		= new JavadocTag("since", 	"Version of the source code that this item was introduced, can be a number or a date");
@@ -14,6 +17,7 @@ public class JavadocTag {
 	public static final JavadocTag DEPRECATED	= new JavadocTag("deprecated", "Indicates that an item is a member of the deprecated API");
 	public static final JavadocTag PARAM  		= new JavadocTag("param", 	" ");
 	public static final JavadocTag THROWS  		= new JavadocTag("throws", 	" ");
+	public static final JavadocTag RETURN  		= new JavadocTag("returns", " ");
 	public static final JavadocTag SEE  		= new JavadocTag("see", 	" ");
 
 /*	public static final JavadocTag POST  		= new JavadocTag("post", 	" ");
@@ -27,8 +31,6 @@ public class JavadocTag {
 	public static final JavadocTag SERIAL_FIELD	= new JavadocTag("serialField", 	" ");
 	public static final JavadocTag GENERATED  	= new JavadocTag("generated", 	" ");
 	public static final JavadocTag GENERATED_BY	= new JavadocTag("generatedBy", 	" ");  */
-	
-	private static final Map<String, JavadocTag> tagsById = new HashMap<String, JavadocTag>();
 	
 	private JavadocTag(String theLabel, String theDescription) {
 		label = theLabel;
@@ -45,4 +47,7 @@ public class JavadocTag {
 		return tagsById.get(id);
 	}
 	
+	public static Set<String> allTagIds() {
+		return tagsById.keySet();
+	}
 }
