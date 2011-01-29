@@ -1,43 +1,43 @@
 package net.sourceforge.pmd.lang.java.ast;
 
-public abstract class Comment {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
-    private String image;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 
-    private int beginLine = -1;
-
-    private int endLine;
-
-    private int beginColumn = -1;
-
-    private int endColumn;
-
+public abstract class Comment extends AbstractNode {
+    
     protected Comment(Token t) {
-        beginLine = t.beginLine;
-        endLine = t.endLine;
-        beginColumn = t.beginColumn;
-        endColumn = t.endColumn;
-        image = t.image;
+    	super(-1, t.beginLine, t.endLine, t.beginColumn, t.endColumn);
+    	
+        setImage(t.image);
+        findJavadocs(t.image);
     }
 
-    public String getImage() {
-        return image;
+    public String toString() {
+    	return getImage();
     }
+    
+    private void findJavadocs(String commentText) {
 
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    public int getEndLine() {
-        return endLine;
-    }
-
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    public int getEndColumn() {
-        return endColumn;
+    	Collection<JavadocElement> kids = new ArrayList<JavadocElement>();
+    	
+    	Map<String, Integer> tags = CommentUtil.javadocTagsIn(commentText);
+    	for (Map.Entry<String, Integer> entry : tags.entrySet()) {
+    		JavadocTag tag = JavadocTag.tagFor(entry.getKey());
+    		if (tag == null) continue;
+    		kids.add( 
+    			new JavadocElement(
+    				getBeginLine(), getBeginLine(),	// TODO valid?
+    				entry.getValue() + 1, entry.getValue() + tag.label.length() + 1 ,tag
+    				)
+    			);
+    	}
+    	
+    	children = kids.toArray(new Node[kids.size()]);
     }
 
 }
