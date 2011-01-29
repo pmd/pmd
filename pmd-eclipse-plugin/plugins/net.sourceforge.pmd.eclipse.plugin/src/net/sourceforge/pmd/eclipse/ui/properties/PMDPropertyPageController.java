@@ -82,7 +82,7 @@ public class PMDPropertyPageController {
      * @return Returns the project.
      */
     public IProject getProject() {
-        return this.project;
+        return project;
     }
 
     /**
@@ -109,16 +109,16 @@ public class PMDPropertyPageController {
             try {
                 final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
 
-                this.propertyPageBean = new PMDPropertyPageBean();
-                this.propertyPageBean.setPmdEnabled(properties.isPmdEnabled());
-                this.propertyPageBean.setProjectWorkingSet(properties.getProjectWorkingSet());
-                this.propertyPageBean.setProjectRuleSet(properties.getProjectRuleSet());
-                this.propertyPageBean.setRuleSetStoredInProject(properties.isRuleSetStoredInProject());
-                this.propertyPageBean.setRuleSetFile(properties.getRuleSetFile());
-                this.propertyPageBean.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());
-                this.propertyPageBean.setFullBuildEnabled(properties.isFullBuildEnabled());
-                this.propertyPageBean.setViolationsAsErrors(properties.violationsAsErrors());
-                this.pmdAlreadyActivated = properties.isPmdEnabled();
+                propertyPageBean = new PMDPropertyPageBean();
+                propertyPageBean.setPmdEnabled(properties.isPmdEnabled());
+                propertyPageBean.setProjectWorkingSet(properties.getProjectWorkingSet());
+                propertyPageBean.setProjectRuleSet(properties.getProjectRuleSet());
+                propertyPageBean.setRuleSetStoredInProject(properties.isRuleSetStoredInProject());
+                propertyPageBean.setRuleSetFile(properties.getRuleSetFile());
+                propertyPageBean.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());
+                propertyPageBean.setFullBuildEnabled(properties.isFullBuildEnabled());
+                propertyPageBean.setViolationsAsErrors(properties.violationsAsErrors());
+                pmdAlreadyActivated = properties.isPmdEnabled();
 
             } catch (PropertiesException e) {
                 PMDPlugin.getDefault().showError(e.getMessage(), e);
@@ -148,21 +148,21 @@ public class PMDPropertyPageController {
 
             // Updates the project properties
             final UpdateProjectPropertiesCmd cmd = new UpdateProjectPropertiesCmd();
-            cmd.setProject(this.project);
-            cmd.setPmdEnabled(this.propertyPageBean.isPmdEnabled());
-            cmd.setProjectWorkingSet(this.propertyPageBean.getProjectWorkingSet());
-            cmd.setProjectRuleSet(this.propertyPageBean.getProjectRuleSet());
-            cmd.setRuleSetStoredInProject(this.propertyPageBean.isRuleSetStoredInProject());
-            cmd.setRuleSetFile(this.propertyPageBean.getRuleSetFile());
-            cmd.setIncludeDerivedFiles(this.propertyPageBean.isIncludeDerivedFiles());
-            cmd.setFullBuildEnabled(this.propertyPageBean.isFullBuildEnabled());
-            cmd.setViolationsAsErrors(this.propertyPageBean.violationsAsErrors());
+            cmd.setProject(project);
+            cmd.setPmdEnabled(propertyPageBean.isPmdEnabled());
+            cmd.setProjectWorkingSet(propertyPageBean.getProjectWorkingSet());
+            cmd.setProjectRuleSet(propertyPageBean.getProjectRuleSet());
+            cmd.setRuleSetStoredInProject(propertyPageBean.isRuleSetStoredInProject());
+            cmd.setRuleSetFile(propertyPageBean.getRuleSetFile());
+            cmd.setIncludeDerivedFiles(propertyPageBean.isIncludeDerivedFiles());
+            cmd.setFullBuildEnabled(propertyPageBean.isFullBuildEnabled());
+            cmd.setViolationsAsErrors(propertyPageBean.violationsAsErrors());
             cmd.setUserInitiated(true);
             cmd.performExecute();
 
             // If rebuild is needed, then rebuild the project
             log.debug("Updating command terminated, checking whether the project need to be rebuilt");
-            if (this.pmdAlreadyActivated && cmd.isNeedRebuild()) {
+            if (pmdAlreadyActivated && cmd.isNeedRebuild()) {
                 rebuildProject();
             }
         } catch (PropertiesException e) {
@@ -212,14 +212,14 @@ public class PMDPropertyPageController {
      *
      */
     private void rebuildProject() {
-        final boolean rebuild = MessageDialog.openQuestion(shell, getMessage(StringKeys.QUESTION_TITLE),
+        boolean rebuild = MessageDialog.openQuestion(shell, getMessage(StringKeys.QUESTION_TITLE),
                 getMessage(StringKeys.QUESTION_REBUILD_PROJECT));
 
         if (rebuild) {
-            log.info("Full rebuild of the project " + this.project.getName());
+            log.info("Full rebuild of the project " + project.getName());
             try {
                 final BuildProjectCommand cmd = new BuildProjectCommand();
-                cmd.setProject(this.project);
+                cmd.setProject(project);
                 cmd.setUserInitiated(true);
                 cmd.performExecute();
             } catch (CommandException e) {
@@ -234,8 +234,8 @@ public class PMDPropertyPageController {
      *
      */
     private void checkProjectRuleSetFile() throws PropertiesException {
-        if (this.propertyPageBean.isRuleSetStoredInProject()) {
-            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
+        if (propertyPageBean.isRuleSetStoredInProject()) {
+            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             if (!properties.isRuleSetFileExist()) {
                 createDefaultRuleSetFile();
             }
@@ -250,10 +250,10 @@ public class PMDPropertyPageController {
         final boolean create = MessageDialog.openQuestion(shell, getMessage(StringKeys.QUESTION_TITLE),
                 getMessage(StringKeys.QUESTION_CREATE_RULESET_FILE));
         if (create) {
-            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(this.project);
+            final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             properties.createDefaultRuleSetFile();
         } else {
-            this.propertyPageBean.setRuleSetStoredInProject(false);
+            propertyPageBean.setRuleSetStoredInProject(false);
         }
     }
 

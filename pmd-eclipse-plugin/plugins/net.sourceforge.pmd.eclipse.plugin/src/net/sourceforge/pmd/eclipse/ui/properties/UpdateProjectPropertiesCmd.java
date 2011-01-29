@@ -71,9 +71,9 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
      */
     public UpdateProjectPropertiesCmd() {
         super("UpdateProjectProperties", "Update a project PMD specific properties.");
-        this.setReadOnly(false);
-        this.setOutputProperties(true);
-        this.setTerminated(false);
+        setReadOnly(false);
+        setOutputProperties(true);
+        setTerminated(false);
     }
 
     /**
@@ -82,22 +82,22 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
     public void execute() throws CommandException {
         try {
             final IProjectProperties properties = projectProperties();
-            properties.setPmdEnabled(this.pmdEnabled);
-            properties.setProjectRuleSet(this.projectRuleSet);
-            properties.setProjectWorkingSet(this.projectWorkingSet);
-            properties.setRuleSetStoredInProject(this.ruleSetStoredInProject);
-            properties.setRuleSetFile(this.ruleSetFile);
-            properties.setIncludeDerivedFiles(this.includeDerivedFiles);
-            properties.setFullBuildEnabled(this.fullBuildEnabled);
-            properties.setViolationsAsErrors(this.violationsAsErrors);
+            properties.setPmdEnabled(pmdEnabled);
+            properties.setProjectRuleSet(projectRuleSet);
+            properties.setProjectWorkingSet(projectWorkingSet);
+            properties.setRuleSetStoredInProject(ruleSetStoredInProject);
+            properties.setRuleSetFile(ruleSetFile);
+            properties.setIncludeDerivedFiles(includeDerivedFiles);
+            properties.setFullBuildEnabled(fullBuildEnabled);
+            properties.setViolationsAsErrors(violationsAsErrors);
             properties.sync();
-            this.needRebuild = properties.isNeedRebuild();
-            this.ruleSetFileExists = !properties.isRuleSetFileExist();
+            needRebuild = properties.isNeedRebuild();
+            ruleSetFileExists = !properties.isRuleSetFileExist();
 
         } catch (PropertiesException e) {
             throw new CommandException(e.getMessage(), e);
         } finally {
-            this.setTerminated(true);
+            setTerminated(true);
         }
     }
 
@@ -162,14 +162,14 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
      * @return Returns the needRebuild.
      */
     public boolean isNeedRebuild() {
-        return this.needRebuild;
+        return needRebuild && fullBuildEnabled;
     }
 
     /**
      * @return Returns the ruleSetFileExists.
      */
     public boolean isRuleSetFileExists() {
-        return this.ruleSetFileExists;
+        return ruleSetFileExists;
     }
 
     /**

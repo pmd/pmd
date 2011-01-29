@@ -147,24 +147,12 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
             graphViewer.setData(pmdMethod, resourceString);
             graphViewer.addMouseListener(new MouseAdapter() {
 
-                @Override
                 public void mouseDown(MouseEvent e) {
-                    if (textEditor != null) {
-                        int row = (int)((double)e.y / DataflowGraphViewer.ROW_HEIGHT);
-                        graphViewer.getGraph().demark();
-                        graphViewer.getGraph().markNode(row);
-                        int startLine = pmdMethod.getDataFlowNode().getFlow().get(row).getLine()-1;
-                        int offset = 0;
-                        int length = 0;
-                        try {
-                            offset = getDocument().getLineOffset(startLine);
-                            length = getDocument().getLineLength(startLine);
-                        } catch (BadLocationException ble) {
-                            logError(StringKeys.ERROR_RUNTIME_EXCEPTION + "Exception when selecting a line in the editor" , ble);
-                        }
-                        textEditor.selectAndReveal(offset, length);
-                        tableViewer.getTable().deselectAll();
-                    }
+                   int row = (int)((double)e.y / DataflowGraphViewer.ROW_HEIGHT);
+                   graphViewer.getGraph().demark();
+                   graphViewer.getGraph().markNode(row);
+                   highlightLine( pmdMethod.getDataFlowNode().getFlow().get(row).getLine()-1 );
+                   tableViewer.getTable().deselectAll();
                 }
             });
             showTableArea(isTableShown);
@@ -187,7 +175,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
 
             // refresh the table if it isn't refreshed yet.
             if (!isTableRefreshed) {
-                refreshDFATable(this.resourceRecord.getResource());
+                refreshDFATable(getResource());
             }
         } else {
             ((GridData) graphViewer.getLayoutData()).horizontalSpan = 2;
@@ -214,7 +202,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
 			try {
 				int offset = getDocument().getLineOffset(violation.getBeginLine() - 1);
 				int length = getDocument().getLineOffset(violation.getEndLine()) - offset;
-				textEditor.selectAndReveal(offset, length);
+				highlight(offset, length);
 			} catch (BadLocationException ble) {
 				logError(StringKeys.ERROR_RUNTIME_EXCEPTION	+ "Exception when selecting a line in the editor", ble);
 			}
@@ -236,10 +224,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
      * @param newResource new resource for the page
      */
     public void refresh(IResource newResource) {
-        if (newResource.getType() == IResource.FILE) {
-            // set a new filerecord
-            resourceRecord = new FileRecord(newResource);
-        }
+    	super.refresh(newResource);
 
         if (isTableShown) {
             refreshDFATable(newResource);
@@ -247,11 +232,7 @@ public class DataflowViewPage extends AbstractStructureInspectorPage implements 
             isTableRefreshed = false;
         }
 
-        // refresh the methods and select the old selected method
-        int index = methodSelector.getSelectionIndex();
-        refreshPMDMethods();
-        showMethod(index);
-        methodSelector.select(index);
+        refreshMethodSelector();
     }
 
     /**

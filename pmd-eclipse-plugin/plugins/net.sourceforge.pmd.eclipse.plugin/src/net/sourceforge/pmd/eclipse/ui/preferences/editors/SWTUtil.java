@@ -54,6 +54,10 @@ public class SWTUtil {
 		if (control == null || control.isDisposed()) return;
 		control.setEnabled(flag);
 	}
+
+	public static void setEnabled(Collection<Control> controls, boolean flag) {
+		for (Control control : controls) setEnabled(control, flag);
+	}
 	
     public static String stringFor(String key) {
         return plugin.getStringTable().getString(key);

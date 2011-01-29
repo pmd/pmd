@@ -2,10 +2,14 @@ package net.sourceforge.pmd.eclipse.ui.views.ast;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.Comment;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -17,10 +21,19 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class ASTContentProvider implements ITreeContentProvider {
 
+	private boolean includeComments;
 	private Set<Class<?>> hiddenNodeTypes;
 	
-	public ASTContentProvider() {
+	private static final Comparator<Node> ByLineNumber = new Comparator<Node>() {
+		public int compare(Node a, Node b) {
+			return a.getBeginLine() - b.getBeginLine();
+		}
+	};
+	
+	public ASTContentProvider(boolean includeCommentsFlag) {
 		this(Collections.EMPTY_SET);
+		
+		includeComments = includeCommentsFlag;
 	}
 	
 	public ASTContentProvider(Set<Class<?>> theHiddenNodeTypes) {
@@ -33,16 +46,27 @@ public class ASTContentProvider implements ITreeContentProvider {
 
 	}
 
-	private List<Object> withoutHiddenOnes(AbstractNode parent) {
+	private List<Node> withoutHiddenOnes(Object parent) {
 				
-		int kidCount = parent.jjtGetNumChildren();
-		List<Object> kids = new ArrayList<Object>(kidCount);
+		List<Node> kids = new ArrayList<Node>();
 		
+		if (includeComments && parent instanceof ASTCompilationUnit) {
+			if (!hiddenNodeTypes.contains(Comment.class)) {
+
+				List<Comment> comments = ((ASTCompilationUnit)parent).getComments();
+				kids.addAll(comments);	
+				}
+		}
+				
+		AbstractNode node = (AbstractNode)parent;
+		int kidCount = node.jjtGetNumChildren();
 		for (int i=0; i<kidCount; i++) {
-			Object kid = parent.jjtGetChild(i);
+			Node kid = node.jjtGetChild(i);
 			if (hiddenNodeTypes.contains(kid.getClass())) continue;
 			kids.add(kid);
 		}
+		
+		Collections.sort(kids, ByLineNumber);
 		
 		return kids;
 	}
@@ -54,7 +78,7 @@ public class ASTContentProvider implements ITreeContentProvider {
 	}
 
 	public Object[] getChildren(Object parentElement) {
-
+		
 		AbstractNode parent = (AbstractNode)parentElement;		
 		return withoutHiddenOnes(parent).toArray();
 	}

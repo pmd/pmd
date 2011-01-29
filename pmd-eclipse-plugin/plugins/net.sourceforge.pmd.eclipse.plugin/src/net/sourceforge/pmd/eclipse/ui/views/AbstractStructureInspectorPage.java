@@ -48,11 +48,10 @@ import org.eclipse.ui.themes.IThemeManager;
  */
 public abstract class AbstractStructureInspectorPage extends Page implements IPropertyChangeListener, ISelectionChangedListener {
 
-	protected Combo						methodSelector;
-	protected FileRecord				resourceRecord;
-	protected List<ASTMethodDeclaration> pmdMethodList;
-
-	protected ITextEditor 				textEditor;
+	private Combo						methodSelector;
+	private FileRecord					resourceRecord;
+	private List<ASTMethodDeclaration> 	pmdMethodList;
+	private ITextEditor 				textEditor;
 	
 	protected AbstractStructureInspectorPage(IWorkbenchPart part, FileRecord record) {
 		super();
@@ -61,9 +60,60 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		if (part instanceof ITextEditor) {
 			textEditor = (ITextEditor) part;
 		}
-			}
+	}
 	
-	public abstract void refresh(IResource resource);
+	public void refresh(IResource resource) {
+		
+		if (resource.getType() == IResource.FILE) {
+			// set a new filerecord
+			resourceRecord = new FileRecord(resource);
+			}
+	}
+	
+	// refresh the methods and select the old selected method
+	protected void refreshMethodSelector() {
+		int index = methodSelector.getSelectionIndex();
+		refreshPMDMethods();
+		showMethod(index);
+		methodSelector.select(index);	
+	}
+	
+	protected void highlight(int beginLine, int beginColumn, int endLine, int endColumn) {
+		 try {
+        	int offset = getDocument().getLineOffset(beginLine)  + beginColumn;
+        	int length = getDocument().getLineOffset(endLine) + endColumn - offset;
+        	highlight(offset, length);
+        	} catch (BadLocationException ble) {
+        		logError(StringKeys.ERROR_RUNTIME_EXCEPTION	+ "Exception when selecting a section in the editor", ble);
+        	}
+	}
+	
+    protected IResource getResource() {
+    	return resourceRecord.getResource();
+    }
+	
+	protected void highlight(int offset, int length) {
+		
+		if (textEditor == null) return;
+		
+		textEditor.selectAndReveal(offset, length);
+	}
+
+	protected void highlightLine(int lineNumber) {
+		
+		if (textEditor == null) return;
+		
+		int offset = 0;
+        int length = 0;
+        try {
+              offset = getDocument().getLineOffset(lineNumber);
+              length = getDocument().getLineLength(lineNumber);
+          } catch (BadLocationException ble) {
+              logError(StringKeys.ERROR_RUNTIME_EXCEPTION + "Exception when selecting a line in the editor" , ble);
+          }
+          
+        highlight(offset, length);
+	}
 	
 	public void propertyChange(PropertyChangeEvent event) {
 		// TODO adapt the editors
@@ -265,6 +315,10 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 		return methodList;
 	}
 
+	protected void enableMethodSelector(boolean flag) {
+		methodSelector.setEnabled( flag );
+	}
+	
 	/**
 	 * Gets the Document of the page.
 	 * @return instance of IDocument of the page

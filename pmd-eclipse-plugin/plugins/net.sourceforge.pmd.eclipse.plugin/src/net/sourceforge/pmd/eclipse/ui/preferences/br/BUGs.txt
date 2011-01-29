@@ -8,6 +8,8 @@ NewPropertyDialog
 XPath Rule creation wizard
 	Should auto-capitalize 1st letter in rule name
 	Can't add properties at the moment, the Add button doesn't show up
+	'validate' new XPath code in window
+	Select new rule in list after creation
 	
 Rule tab
 *	Min/max version combos don't fill when they should

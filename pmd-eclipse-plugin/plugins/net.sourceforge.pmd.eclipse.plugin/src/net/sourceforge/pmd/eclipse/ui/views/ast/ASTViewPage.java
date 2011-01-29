@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AbstractPositionedElement;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.StringUtil;
@@ -28,16 +29,13 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
-import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -46,6 +44,8 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPart;
 import org.jaxen.BaseXPath;
+import org.jaxen.JaxenException;
+import org.jaxen.XPathSyntaxException;
 
 /**
  * A combined abstract syntax tree viewer for a whole class or selected methods 
@@ -56,22 +56,14 @@ import org.jaxen.BaseXPath;
  */
 public class ASTViewPage extends AbstractStructureInspectorPage {
 
-	private SashForm 	sashForm;
+	private SashForm 		sashForm;
 
-	protected TreeViewer astViewer;
-
-	private TextLayout 	textLayout;
-	private Font		renderFont;
-	private Font		italicFont;
-	private TextStyle 	labelStyle;
-	private TextStyle 	imageStyle;
-	private TextStyle 	derivedStyle;
-
-	private StyledText	xpathField;
-	private TableViewer resultsViewer;
-	private Button		goButton;
-	private Node		classNode;
-	
+	protected TreeViewer 	astViewer;
+	private StyledText		xpathField;
+	private TableViewer 	resultsViewer;
+	private Button			goButton;
+	private Node			 classNode;
+	private ASTPainterHelper helper;
 //	private static Set<String> keywords = new HashSet<String>();
 
 	private static Set<Class<?>> HiddenNodeTypes;
@@ -127,7 +119,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 				methodBtn.setSelection(true);
 				methodBtn.addSelectionListener( new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent se) {
-						methodSelector.setEnabled( methodBtn.getSelection() );
+						enableMethodSelector( methodBtn.getSelection() );
 						methodPicked();
 					}
 				} );
@@ -135,7 +127,9 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 			buildMethodSelector(titleArea);
 
 			astViewer = new TreeViewer(astPanel, SWT.MULTI | SWT.BORDER);
-			astViewer.setContentProvider( new ASTContentProvider() );
+			astViewer.setContentProvider( 
+					new ASTContentProvider( true ) 	// TODO disable showing comments until we can reference them in XPath
+					);
 			astViewer.setLabelProvider( new ASTLabelProvider() );
 			setupListeners(astViewer.getTree());
 	
@@ -191,7 +185,7 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		    resultsViewer = new TableViewer(xpathTestPanel, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		    Table table = resultsViewer.getTable();
 		    table.setLayoutData(gridData);
-		        
+		    
 		    resultsViewer.setLabelProvider(labelProvider);
 		    resultsViewer.setContentProvider(contentProvider);
 		    table.setHeaderVisible(true);
@@ -217,23 +211,17 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		
 		try {
 			new BaseXPath(xpathString, null);
-			} catch (Exception ex) {
-				// TODO add error marker to editor, red-underlining on offending text
+			} catch (XPathSyntaxException ex) {
+				System.out.println(ex.getPosition() + "  " + ex.getMessage());	// TODO add error marker to editor, red-underlining on offending text
 				goButton.setEnabled(false);
 				return;
-			}
+				} catch (JaxenException ex) {					
+					goButton.setEnabled(false);
+					return;
+					} 
 
 		goButton.setEnabled(true);
 	}
-	
-//	private static void displayOn(Node node, StringBuilder sb) {
-//
-//		sb.append(node);
-//		
-//		String imgData = node.getImage();
-//		
-//		if (imgData != null ) sb.append("  ").append( imgData );
-//	}
 
 	private void evaluateXPath() {
 
@@ -288,38 +276,13 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		resultsViewer.setInput( results.toArray(new Node[results.size()]) );
 	}
 
-	private TextLayout layoutFor(TreeItem item) {
-
-		AbstractNode node = (AbstractNode)item.getData();
-		String label = node.toString();
-
-		TextStyle extraStyle = imageStyle;
-		String extra = NodeImageDeriver.derivedTextFor(node);
-		if (extra != null) {
-			extraStyle = derivedStyle;
-			} else {
-				extra = node.getImage();
-				}
-
-		textLayout.setText(label + (extra == null  ? "" : " " + extra));
-
-		int labelLength = label.length();
-
-		textLayout.setStyle(labelStyle, 0, labelLength);
-		if (extra != null) {
-			textLayout.setStyle(extraStyle, labelLength, labelLength + extra.length() + 1);
-		}
-
-		return textLayout;
-	}
-
 	private void setupListeners(Tree tree) {
 
-		setupResources(tree.getDisplay());
-
+		helper = new ASTPainterHelper(tree.getDisplay());
+		
 		tree.addListener(SWT.PaintItem, new Listener() {
 			public void handleEvent(Event event) {
-				TextLayout layout = layoutFor((TreeItem)event.item);
+				TextLayout layout = helper.layoutFor((TreeItem)event.item);
 				layout.draw(event.gc, event.x+5, event.y );
 		//		event.gc.drawLine(event.x - 55, event.y, event.x - 55, event.y + 20);
 			}
@@ -327,28 +290,41 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 
 		tree.addListener(SWT.MeasureItem, new Listener() {
 			public void handleEvent(Event e) {
-				Rectangle textLayoutBounds = layoutFor((TreeItem)e.item).getBounds();
+				Rectangle textLayoutBounds = helper.layoutFor((TreeItem)e.item).getBounds();
 				e.width = textLayoutBounds.width + 2;
 				e.height = textLayoutBounds.height + 2;
 			}
 		});
-	}
-
-	private void setupResources(Display display) {
-		textLayout = new TextLayout(display);    	
 		
-		// TODO take values from the font/color registries and then adapt to changes
-		renderFont = new Font(display, "Tahoma", 10, SWT.NORMAL);
-		italicFont = new Font(display, "Tahoma", 10, SWT.ITALIC);
-		labelStyle = new TextStyle(renderFont, display.getSystemColor(SWT.COLOR_BLACK), null);
-		imageStyle = new TextStyle(renderFont, display.getSystemColor(SWT.COLOR_BLUE), null);
-		derivedStyle = new TextStyle(italicFont, display.getSystemColor(SWT.COLOR_GRAY), null);
+		tree.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent se) {
+            	highlightItem(se.item.getData());
+            }
+        });
 	}
 
+	private void highlightItem(Object item) {
+		
+		if (item instanceof AbstractPositionedElement) {
+			AbstractPositionedElement ape = (AbstractPositionedElement)item;
+			highlight(
+					ape.getBeginLine() - 1,ape.getBeginColumn() - 1, 
+					ape.getEndLine()- 1, 	ape.getEndColumn()
+		        	);
+			return;
+		}
+		
+        AbstractNode node = (AbstractNode)item;
+        highlight(
+       		node.getBeginLine() - 1,node.getBeginColumn() - 1, 
+       		node.getEndLine()- 1, 	node.getEndColumn()
+        	);
+	}
+	
 	public void dispose() {
 		super.dispose();
-		renderFont.dispose();
-		italicFont.dispose();
+		
+		helper.dispose();
 	}
 
 	public Control getControl() {
@@ -417,10 +393,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 	 * @param newResource new resource for the page
 	 */
 	public void refresh(IResource newResource) {
-		if (newResource.getType() == IResource.FILE) {
-			// set a new filerecord
-			resourceRecord = new FileRecord(newResource);
-		}
+		
+		super.refresh(newResource);
 
 		classNode = null;
 		
@@ -430,12 +404,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		//            this.isTableRefreshed = false;
 		//        }
 
-		// refresh the methods and select the old selected method
-		int index = methodSelector.getSelectionIndex();
-		refreshPMDMethods();
-		showMethod(index);
-		methodSelector.select(index);
 		
+		refreshMethodSelector();		
 	}
 
 }
