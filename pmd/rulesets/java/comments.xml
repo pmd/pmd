@@ -16,12 +16,16 @@ Rules intended to catch errors related to code comments
         class="net.sourceforge.pmd.lang.java.rule.comments.CommentRequiredRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/comments.html#CommentRequired">
     <description>
-todotodotodotodo
+Denotes whether comments are required (or unwanted) for specific language elements.
     </description>
     <priority>3</priority>
     <example>
 <![CDATA[
-todotodotodotodotodo
+/**
+* 
+*
+* @author George Bush
+*/
 ]]>
     </example>
   </rule>
