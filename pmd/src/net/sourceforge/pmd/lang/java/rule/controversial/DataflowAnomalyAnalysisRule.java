@@ -62,14 +62,14 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     }
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        this.maxRuleViolations = getProperty(MAX_VIOLATIONS_DESCRIPTOR);
-        this.currentRuleViolationCount = 0;
+        maxRuleViolations = getProperty(MAX_VIOLATIONS_DESCRIPTOR);
+        currentRuleViolationCount = 0;
         return super.visit(node, data);
     }
 
     public Object visit(ASTMethodDeclaration methodDeclaration, Object data) {
-        this.rc = (RuleContext) data;
-        this.daaRuleViolations = new ArrayList<DaaRuleViolation>();
+        rc = (RuleContext) data;
+        daaRuleViolations = new ArrayList<DaaRuleViolation>();
 
         final DataFlowNode node = methodDeclaration.getDataFlowNode().getFlow().get(0);
 
@@ -81,32 +81,29 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     }
 
     public void execute(CurrentPath path) {
-        if (maxNumberOfViolationsReached()) {
-            // dont execute this path if the limit is already reached
-            return;
-        }
+    	
+        if (maxNumberOfViolationsReached()) return;
 
-        final Map<String, Usage> hash = new HashMap<String, Usage>();
+        Map<String, Usage> usagesByVarName = new HashMap<String, Usage>();
 
-        final Iterator<DataFlowNode> pathIterator = path.iterator();
+        Iterator<DataFlowNode> pathIterator = path.iterator();
         while (pathIterator.hasNext()) {
             // iterate all nodes in this path
             DataFlowNode inode = pathIterator.next();
             if (inode.getVariableAccess() != null) {
                 // iterate all variables of this node
-                for (int g = 0; g < inode.getVariableAccess().size(); g++) {
-                    final VariableAccess va = inode.getVariableAccess().get(g);
+                for (VariableAccess va : inode.getVariableAccess()) {
 
                     // get the last usage of the current variable
-                    final Usage lastUsage = hash.get(va.getVariableName());
+                    Usage lastUsage = usagesByVarName.get(va.getVariableName());
                     if (lastUsage != null) {
                         // there was a usage to this variable before
                         checkVariableAccess(inode, va, lastUsage);
                     }
 
-                    final Usage newUsage = new Usage(va.getAccessType(), inode);
+                    Usage newUsage = new Usage(va.getAccessType(), inode);
                     // put the new usage for the variable
-                    hash.put(va.getVariableName(), newUsage);
+                    usagesByVarName.put(va.getVariableName(), newUsage);
                 }
             }
         }
@@ -114,11 +111,11 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
 
     private void checkVariableAccess(DataFlowNode inode, VariableAccess va, final Usage u) {
         // get the start and end line
-        final int startLine = u.node.getLine();
-        final int endLine = inode.getLine();
+        int startLine = u.node.getLine();
+        int endLine = inode.getLine();
 
-        final Node lastNode = inode.getNode();
-        final Node firstNode = u.node.getNode();
+        Node lastNode = inode.getNode();
+        Node firstNode = u.node.getNode();
 
         if (va.accessTypeMatches(u.accessType) && va.isDefinition() ) { // DD
             addDaaViolation(rc, lastNode, "DD", va.getVariableName(), startLine, endLine);
@@ -136,15 +133,15 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
         if (!maxNumberOfViolationsReached()
                 && !violationAlreadyExists(type, var, startLine, endLine)
                 && node != null) {
-            final RuleContext ctx = (RuleContext) data;
+            RuleContext ctx = (RuleContext) data;
             String msg = type;
             if (getMessage() != null) {
                 msg = MessageFormat.format(getMessage(), type, var, startLine, endLine);
             }
-            final DaaRuleViolation violation = new DaaRuleViolation(this, ctx, node, type, msg, var, startLine, endLine);
+            DaaRuleViolation violation = new DaaRuleViolation(this, ctx, node, type, msg, var, startLine, endLine);
             ctx.getReport().addRuleViolation(violation);
-            this.daaRuleViolations.add(violation);
-            this.currentRuleViolationCount++;
+            daaRuleViolations.add(violation);
+            currentRuleViolationCount++;
       }
     }
 
@@ -154,7 +151,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
      * <code>false</code> otherwise.
      */
     private boolean maxNumberOfViolationsReached() {
-        return this.currentRuleViolationCount >= this.maxRuleViolations;
+        return currentRuleViolationCount >= maxRuleViolations;
     }
 
     /**
@@ -167,7 +164,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
      * @return true if the violation already was added to the report
      */
     private boolean violationAlreadyExists(String type, String var, int startLine, int endLine) {
-        for(DaaRuleViolation violation: this.daaRuleViolations) {
+        for(DaaRuleViolation violation: daaRuleViolations) {
             if ((violation.getBeginLine() == startLine)
                     && (violation.getEndLine() == endLine)
                     && violation.getType().equals(type)

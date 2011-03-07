@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
@@ -56,6 +57,14 @@ public abstract class AbstractDelegateRule implements Rule {
 
 	public boolean isDeprecated() {
 		return rule.isDeprecated();
+	}
+	
+	public String dysfunctionReason() {
+		return rule.dysfunctionReason();
+	}
+	
+	public Set<PropertyDescriptor<?>> ignoredProperties() {
+		return rule.ignoredProperties();
 	}
 
 	public void setDeprecated(boolean deprecated) {

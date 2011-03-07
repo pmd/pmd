@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.rule.naming;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -208,4 +209,22 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 	}
 	return varName;
     }
+    
+	public boolean hasPrefixesOrSuffixes() {
+		
+		for (PropertyDescriptor<?> desc : getPropertyDescriptors()) {
+			if (desc instanceof StringMultiProperty) {
+				String[] values = getProperty((StringMultiProperty)desc);
+				if (values.length > 0) return true;				
+			}
+		}
+		return false;	
+	}
+	
+	public String dysfunctionReason() {
+		return hasPrefixesOrSuffixes() ?
+				null :
+				"No prefixes or suffixes specified";
+	}
+		
 }

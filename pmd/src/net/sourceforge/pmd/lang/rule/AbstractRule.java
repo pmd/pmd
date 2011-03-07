@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
@@ -152,6 +153,20 @@ public abstract class AbstractRule implements Rule {
 		 return deprecated;
 	 }
 
+	 /**
+	  * @see Rule#dysfunctionReason()
+	  */
+	 public String dysfunctionReason() {
+		 return null;
+	 }
+	 
+	 /**
+	  * @see Rule#ignoredProperties()
+	  */
+	 public Set<PropertyDescriptor<?>> ignoredProperties() {
+		 return Collections.EMPTY_SET;
+	 }
+	 
 	 /**
 	  * @see Rule#setDeprecated(boolean)
 	  */

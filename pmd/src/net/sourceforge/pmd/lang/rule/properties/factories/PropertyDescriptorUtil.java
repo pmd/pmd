@@ -1,9 +1,11 @@
 package net.sourceforge.pmd.lang.rule.properties.factories;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
@@ -13,6 +15,7 @@ import net.sourceforge.pmd.lang.rule.properties.DoubleMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.properties.FileProperty;
 import net.sourceforge.pmd.lang.rule.properties.FloatMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
@@ -31,6 +34,12 @@ import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
  */
 public class PropertyDescriptorUtil implements PropertyDescriptorFields {
 						
+	public static final Comparator<PropertyDescriptor<?>> ComparatorByOrder = new Comparator<PropertyDescriptor<?>>() {
+		public int compare(PropertyDescriptor<?> pd1, PropertyDescriptor<?> pd2) {
+			return  pd2.uiOrder() > pd1.uiOrder() ? -1 : 1;
+		}
+	};
+	
     private static final Map<String, PropertyDescriptorFactory> descriptorFactoriesByType;
     static {
     	Map<String, PropertyDescriptorFactory> temp = new HashMap<String, PropertyDescriptorFactory>(18);
@@ -58,6 +67,9 @@ public class PropertyDescriptorUtil implements PropertyDescriptorFields {
     	temp.put("Class[]", 	TypeMultiProperty.FACTORY);
     	temp.put("Method", 		MethodProperty.FACTORY);
     	temp.put("Method[]", 	MethodMultiProperty.FACTORY);
+    	
+    	temp.put("File", 		FileProperty.FACTORY);
+
     	descriptorFactoriesByType = Collections.unmodifiableMap(temp);
     	}
     
@@ -75,4 +87,6 @@ public class PropertyDescriptorUtil implements PropertyDescriptorFields {
     	}
     	return null;
     }
+    
+    
 }

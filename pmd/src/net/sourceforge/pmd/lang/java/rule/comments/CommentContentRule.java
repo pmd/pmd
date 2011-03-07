@@ -2,8 +2,11 @@ package net.sourceforge.pmd.lang.java.rule.comments;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -15,33 +18,46 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * A rule that checks for illegal words in the comment text. 
  * 
- * TODO provide case-insensitivity option
+ * TODO implement regex option
  * 
  * @author Brian Remedios
  */
 public class CommentContentRule extends AbstractCommentRule {
 
 	private boolean caseSensitive;
+	private boolean wordsAreRegex;
 	private String[] originalBadWords;
 	private String[] currentBadWords;
 	
 	private static final String[] badWords = new String[] { "idiot", "jerk" };
 	
+	public static final BooleanProperty WORDS_ARE_REGEX_DESCRIPTOR = new BooleanProperty("wordsAreRegex",
+    		"Use regular expressions", false, 1.0f);
+	
+	// ignored when property above == True
 	public static final BooleanProperty CASE_SENSITIVE_DESCRIPTOR = new BooleanProperty("caseSensitive",
-    		"Case sensitive", false, 1.0f);
+    		"Case sensitive", false, 2.0f);
   
     public static final StringMultiProperty DISSALLOWED_TERMS_DESCRIPTOR = new StringMultiProperty("disallowedTerms",
-    		"Illegal terms or phrases", badWords, 2.0f, '|');
+    		"Illegal terms or phrases", badWords, 3.0f, '|');
+    
+    private static final Set<PropertyDescriptor<?>> NonRegexProperties;
+    static {
+    	NonRegexProperties = new HashSet<PropertyDescriptor<?>>(1);
+    	NonRegexProperties.add(CASE_SENSITIVE_DESCRIPTOR);
+    }
     
 	public CommentContentRule() {
+		definePropertyDescriptor(WORDS_ARE_REGEX_DESCRIPTOR);
 		definePropertyDescriptor(CASE_SENSITIVE_DESCRIPTOR);
 		definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
 	}	
 	
 	 /**
-	  * Perform all the case-conversions once per run
+	  * Capture values and perform all the case-conversions once per run
 	  */
 	 public void start(RuleContext ctx) {
+		 wordsAreRegex = getProperty(WORDS_ARE_REGEX_DESCRIPTOR);
 		 originalBadWords = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
 		 caseSensitive = getProperty(CASE_SENSITIVE_DESCRIPTOR);
 		 if (caseSensitive) {
@@ -54,6 +70,13 @@ public class CommentContentRule extends AbstractCommentRule {
 		 	}
 	 }
 
+	 @Override
+	 public Set<PropertyDescriptor<?>> ignoredProperties() {
+		 return getProperty(WORDS_ARE_REGEX_DESCRIPTOR) ? 
+				NonRegexProperties : 
+				Collections.EMPTY_SET;			
+	 }
+	 
 	 /**
 	  * @see Rule#end(RuleContext)
 	  */
@@ -108,4 +131,15 @@ public class CommentContentRule extends AbstractCommentRule {
 
         return super.visit(cUnit, data);
     }
+	
+	public boolean hasDissallowedTerms() {
+		return getProperty(DISSALLOWED_TERMS_DESCRIPTOR).length > 0;
+	}
+	
+	public String dysfunctionReason() {
+		
+		return hasDissallowedTerms() ?
+				null :
+				"No disallowed terms specified";
+	}
 }

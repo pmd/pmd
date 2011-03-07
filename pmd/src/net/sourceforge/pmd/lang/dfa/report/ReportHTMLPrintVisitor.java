@@ -2,6 +2,7 @@ package net.sourceforge.pmd.lang.dfa.report;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.StringUtil;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,7 +14,7 @@ import java.io.IOException;
  *         <p/>
  *         * Uses the generated result tree instead of the result list. The visitor
  *         * traverses the tree and creates several html files. The "package view" file
- *         * (index.html) displays an overview of packgages, classes and the number of
+ *         * (index.html) displays an overview of packages, classes and the number of
  *         * rule violations they contain. All the other html files represent a class
  *         * and show detailed information about the violations.
  */
@@ -48,23 +49,28 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
  
     	StringBuffer sb = new StringBuffer(200);
         sb.append("<table border=\"0\">");
-        sb.append("<tr><td><b>Rule:</b></td><td>").append(vio.getRule().getName()).append("</td></tr>");
-        sb.append("<tr><td><b>Description:</b></td><td>").append(vio.getDescription()).append("</td></tr>");
+        renderViolationRow(sb, "Rule:", vio.getRule().getName());
+        renderViolationRow(sb, "Description:", vio.getDescription());
 
-        if (vio.getVariableName().length() > 0) {
-        	sb.append("<tr><td><b>Variable:</b></td><td>").append(vio.getVariableName()).append("</td></tr>");
+        if (StringUtil.isNotEmpty(vio.getVariableName())) {
+        	renderViolationRow(sb, "Variable:", vio.getVariableName());
         }
 
         if (vio.getEndLine() > 0) {
-        	sb.append("<tr><td><b>Line:</b></td><td>").append(vio.getEndLine()).append(" and ").append(vio.getBeginLine()).append("</td></tr>");
+        	renderViolationRow(sb, "Line:", vio.getEndLine() + " and " + vio.getBeginLine());
         } else {
-        	sb.append("<tr><td><b>Line:</b></td><td>").append(vio.getBeginLine()).append("</td></tr>");
+        	renderViolationRow(sb, "Line:", Integer.toString(vio.getBeginLine()));
         }
 
         sb.append("</table>");
         return sb.toString();
     }
 
+    // TODO - join the 21st century, include CSS attributes :)
+    private void renderViolationRow(StringBuffer sb, String fieldName, String fieldData) {
+    	sb.append("<tr><td><b>").append(fieldName).append("</b></td><td>").append(fieldData).append("</td></tr>");
+    }
+    
     /**
      * The visit method (Visitor Pattern). There are 3 types of ReportNodes:
      * RuleViolation - contains a RuleViolation, Class - represents a class and

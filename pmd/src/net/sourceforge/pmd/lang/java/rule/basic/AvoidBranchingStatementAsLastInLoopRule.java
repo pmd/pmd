@@ -82,4 +82,17 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
 	}
 	return false;
     }
+    
+	public boolean checksNothing() {
+		
+		return getProperty(CHECK_BREAK_LOOP_TYPES).length == 0 &&
+			getProperty(CHECK_CONTINUE_LOOP_TYPES).length == 0 &&
+			getProperty(CHECK_RETURN_LOOP_TYPES).length == 0 ;		
+	}
+	
+	public String dysfunctionReason() {
+		return checksNothing() ?
+				"All loop types are ignored" :
+				null;
+	}
 }

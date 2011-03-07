@@ -121,4 +121,17 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 	}
 	return false;
     }
+    
+    
+	public boolean checksNothing() {
+		
+		return getProperty(PACKAGES_DESCRIPTOR).length == 0 &&
+			getProperty(CLASSES_DESCRIPTOR).length == 0 ;		
+	}
+	
+	public String dysfunctionReason() {
+		return checksNothing() ?
+				"No packages or classes specified" :
+				null;
+	}
 }

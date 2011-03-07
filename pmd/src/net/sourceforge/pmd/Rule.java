@@ -5,6 +5,7 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -75,6 +76,22 @@ public interface Rule {
      */
     boolean isDeprecated();
 
+    /**
+     * Returns a description of why the rule may be dysfunctional. Usually due to missing property
+     * values or some kind of internal rule conflict. Returns null if the rule is ready to go!
+     * 
+     * @return
+     */
+    String dysfunctionReason();
+    
+    /**
+     * Return the properties that are effectively ignored due to the configuration
+     * of the rule and values held by other properties. This can be used to disable
+     * corresponding widgets in a UI.
+     *
+     */
+    Set<PropertyDescriptor<?>> ignoredProperties();
+    
     /**
      * Sets whether this Rule is deprecated.
      */

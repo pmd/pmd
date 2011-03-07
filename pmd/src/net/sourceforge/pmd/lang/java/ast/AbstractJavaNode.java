@@ -7,7 +7,8 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
     protected JavaParser parser;
     private Scope scope;
-
+    private Comment comment;
+    
     public AbstractJavaNode(int id) {
         super(id);
     }
@@ -65,6 +66,14 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 	this.scope = scope;
     }
 
+    public void comment(Comment theComment) {
+    	comment = theComment;
+    }
+    
+    public Comment comment() {
+    	return comment;
+    }
+    
     public String toString() {
         return JavaParserTreeConstants.jjtNodeName[id];
     }

@@ -41,7 +41,7 @@ public class CommentSizeRule extends AbstractCommentRule {
 			 if (hasRealText(lines[start])) break;
 		 }
 		 
-		 int end = lines.length - 1;	// go up from bottom
+		  int end = lines.length - 1;	// go up from bottom
 		 for (; end>0; end-- ) {
 			 if (hasRealText(lines[end])) break;
 		 }

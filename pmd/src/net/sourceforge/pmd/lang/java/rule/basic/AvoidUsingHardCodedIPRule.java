@@ -3,10 +3,12 @@ package net.sourceforge.pmd.lang.java.rule.basic;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 
@@ -184,4 +186,15 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 	    return false;
 	}
     }
+    
+    
+	public boolean hasChosenAddressTypes() {		
+		return getProperty(CHECK_ADDRESS_TYPES_DESCRIPTOR).length > 0;	
+	}
+	
+	public String dysfunctionReason() {
+		return hasChosenAddressTypes() ?
+				null :
+				"No address types specified";
+	}
 }
