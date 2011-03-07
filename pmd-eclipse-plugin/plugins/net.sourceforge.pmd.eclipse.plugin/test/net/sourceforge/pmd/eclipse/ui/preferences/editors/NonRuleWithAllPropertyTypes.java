@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.rule.properties.CharacterMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.properties.FileProperty;
 import net.sourceforge.pmd.lang.rule.properties.FloatMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
@@ -68,7 +69,8 @@ public class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
 	public static final EnumeratedProperty<Class> enumType			 = new EnumeratedProperty<Class>("enumType", "Enumerated choices", new String[] {"String", "Object"}, new Class[] {String.class, Object.class}, 1, 5.0f);
 	public static final EnumeratedMultiProperty<Class> multiEnumType = new EnumeratedMultiProperty<Class>("multiEnumType", "Multiple enumerated choices", new String[] {"String", "Object"}, new Class[] {String.class, Object.class}, new int[] {0,1}, 5.0f);
 	
-	
+	public static final FileProperty singleFile	  = new FileProperty("singleFile", "File value", null , 3.0f);
+
 	public NonRuleWithAllPropertyTypes() {
 		super();
 		definePropertyDescriptor(singleStr);
@@ -89,5 +91,6 @@ public class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
 		definePropertyDescriptor(singleMethod);
         definePropertyDescriptor(multiMethod);
 		definePropertyDescriptor(multiEnumType);
+		definePropertyDescriptor(singleFile);
 	}
 }
