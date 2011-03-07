@@ -101,4 +101,21 @@ public abstract class AbstractCellPainterBuilder implements CellPainterBuilder {
             
             return null;
     }
+    
+    protected String textFor(TreeItem tItem, RuleFieldAccessor getter) {
+        
+        Object item = tItem.getData();
+        
+        if (item instanceof Rule) {
+        	return getter.labelFor((Rule) item);
+        }
+        
+        if (item instanceof RuleCollection) {
+        	return String.valueOf(
+        			getter.valueFor((RuleCollection)item)
+        			);
+        }
+        
+        return null;
+}
 }

@@ -107,9 +107,8 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
                         Rule rule = (Rule)value;
                         gc.setFont( fontFor(tree, rule) );	
                         imgOffset = rule.dysfunctionReason() != null ? ImgOffset : 0;
-	                                           
-                        value = valueFor((TreeItem)event.item, getter);
-                        String text = String.valueOf(value);
+
+                        String text = textFor((TreeItem)event.item, getter);
 	                    int descent = gc.getFontMetrics().getDescent();
 	                    
                         gc.drawString(text, event.x+imgOffset, event.y+descent, true);                 
@@ -119,11 +118,9 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
             	Listener measureListener = new Listener() {
             		public void handleEvent(Event event) {
             			if (event.index != columnIndex) return;
-            			            			
-            			Object value = valueFor((TreeItem)event.item, getter);
-            			if (value instanceof RuleCollection) return;
+
+            			String text = textFor((TreeItem)event.item, getter);
             			
-	                    String text = String.valueOf(value);
 	                    Point size = event.gc.textExtent(text);
 	                    event.width = size.x + 2 * (3);
 	           //         event.height = Math.max(event.height, size.y + (3));

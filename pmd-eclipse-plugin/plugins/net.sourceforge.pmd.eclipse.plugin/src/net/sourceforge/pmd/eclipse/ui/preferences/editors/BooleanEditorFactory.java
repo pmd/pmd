@@ -57,16 +57,18 @@ public class BooleanEditorFactory extends AbstractEditorFactory {
        boolean set = ((Boolean)valueFor(rule, desc)).booleanValue();
        butt.setSelection(set);
 
-       butt.addSelectionListener(new SelectionAdapter() {
+       SelectionAdapter sa = new SelectionAdapter() {
            public void widgetSelected(SelectionEvent event) {
-                boolean selected = butt.getSelection();
-                if (selected == (((Boolean)valueFor(rule, bp))).booleanValue()) return;
+               boolean selected = butt.getSelection();
+               if (selected == (((Boolean)valueFor(rule, bp))).booleanValue()) return;
 
-                rule.setProperty(bp, Boolean.valueOf(selected));
-                listener.changed(rule, desc, Boolean.valueOf(selected));
-                adjustRendering(rule, desc, butt);
-                }
-        });
+               rule.setProperty(bp, Boolean.valueOf(selected));
+               listener.changed(rule, desc, Boolean.valueOf(selected));
+               adjustRendering(rule, desc, butt);
+               }
+       };
+       
+       butt.addSelectionListener(sa);
 
       return butt;
       }

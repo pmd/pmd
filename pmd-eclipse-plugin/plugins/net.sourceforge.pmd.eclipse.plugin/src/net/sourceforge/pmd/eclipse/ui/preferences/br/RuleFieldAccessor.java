@@ -138,8 +138,8 @@ public interface RuleFieldAccessor {
             return rule.getLanguage();
 	    }
         
-        protected String format(Object item) {
-        	return ((Language)item).getName();
+        public String labelFor(Rule rule) {
+        	return rule.getLanguage().getName();
         }
 	};
 
