@@ -50,10 +50,19 @@ import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 public interface IPreferencesManager {
     
     /**
-     * Load preferences from the preferences store
+     * Load preferences from the preferences store or return the one that
+     * was previously loaded.
+     * 
      * @return the preferences structure
      */
     IPreferences loadPreferences();
+    
+    /**
+     * Reload preferences from the preferences store.
+     * 
+     * @return the preferences structure
+     */
+    IPreferences reloadPreferences();
     
     /**
      * Store a preferences structure into the preferences store

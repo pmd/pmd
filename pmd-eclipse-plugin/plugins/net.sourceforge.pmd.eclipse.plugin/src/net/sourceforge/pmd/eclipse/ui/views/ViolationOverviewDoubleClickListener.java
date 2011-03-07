@@ -154,7 +154,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
      * @param packageRec
      */
     private void doubleClickToPackageRecord(PackageRecord packageRec) {
-        final TreeViewer viewer = this.overview.getViewer();
+        final TreeViewer viewer = overview.getViewer();
         if (viewer.getExpandedState(packageRec)) {
             viewer.collapseToLevel(packageRec, TreeViewer.ALL_LEVELS);
         } else {
@@ -187,8 +187,8 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
                 view = (ViolationOutline) workbenchPage.showView(PMDUiConstants.ID_OUTLINE);
             }
             
-            if (view.getCurrentPage() instanceof ViolationOutlinePage) {
-                final ViolationOutlinePage vioPage = (ViolationOutlinePage)view.getCurrentPage();
+            if (view.getCurrentPage() instanceof ViolationOutlinePageBR) {
+                final ViolationOutlinePageBR vioPage = (ViolationOutlinePageBR)view.getCurrentPage();
                 
                 final TableItem[] items = vioPage.getTableViewer().getTable().getItems();
                 vioPage.getTableViewer().getTable().deselectAll();
@@ -202,7 +202,7 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
                 }
             }
         } catch (PartInitException pie) {
-            PMDPlugin.getDefault().logError(StringKeys.ERROR_VIEW_EXCEPTION + this.toString(), pie);
+            PMDPlugin.getDefault().logError(StringKeys.ERROR_VIEW_EXCEPTION + toString(), pie);
         }            
     }
 }

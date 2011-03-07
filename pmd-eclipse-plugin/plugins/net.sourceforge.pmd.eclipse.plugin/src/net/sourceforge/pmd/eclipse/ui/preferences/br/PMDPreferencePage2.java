@@ -15,10 +15,10 @@ import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.DescriptionPanel
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.EditorUsageMode;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExamplePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.ExclusionPanelManager;
-import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.RulePropertyManager;
+import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.SummaryPanelManager;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.XPathPanelManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 
@@ -53,33 +53,33 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
     	
 	// columns shown in the rule treetable in the desired order
 	public static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
-		TextColumnDescriptor.name,
-		//TextColumnDescriptor.priorityName,
+		RuleTableColumns.name,
+		//PreferenceTableColumns.priorityName,
 	//	IconColumnDescriptor.priority,
-		ImageColumnDescriptor.priority,
-	//	TextColumnDescriptor.fixCount,
-		TextColumnDescriptor.since,
-		TextColumnDescriptor.ruleSetName,
-		TextColumnDescriptor.ruleType,
-		TextColumnDescriptor.minLangVers,
-		TextColumnDescriptor.maxLangVers,
-		TextColumnDescriptor.language,
-		ImageColumnDescriptor.filterViolationRegex,    // regex text -> compact color squares (for comparison)
-		ImageColumnDescriptor.filterViolationXPath,    // xpath text -> compact color circles (for comparison)
-		TextColumnDescriptor.modCount,
-	//	TextColumnDescriptor.properties		
-		ImageColumnDescriptor.properties
+		RuleTableColumns.imgPriority,
+	//	PreferenceTableColumns.fixCount,
+		RuleTableColumns.since,
+		RuleTableColumns.ruleSetName,
+		RuleTableColumns.ruleType,
+		RuleTableColumns.minLangVers,
+		RuleTableColumns.maxLangVers,
+		RuleTableColumns.language,
+		RuleTableColumns.filterViolationRegex,    // regex text -> compact color squares (for comparison)
+		RuleTableColumns.filterViolationXPath,    // xpath text -> compact color circles (for comparison)
+		RuleTableColumns.modCount,
+	//	PreferenceTableColumns.properties		
+		RuleTableColumns.imgProperties
 		};
 
 	// last item in this list is the grouping used at startup
 	public static final Object[][] groupingChoices = new Object[][] {
-		{ TextColumnDescriptor.ruleSetName,       	StringKeys.PREF_RULESET_COLUMN_RULESET},
-		{ TextColumnDescriptor.since,             	StringKeys.PREF_RULESET_GROUPING_PMD_VERSION },
-		{ TextColumnDescriptor.priorityName,      	StringKeys.PREF_RULESET_COLUMN_PRIORITY },
-		{ TextColumnDescriptor.ruleType,          	StringKeys.PREF_RULESET_COLUMN_RULE_TYPE },
-		{ TextColumnDescriptor.language,		  	StringKeys.PREF_RULESET_COLUMN_LANGUAGE },
-        { ImageColumnDescriptor.filterViolationRegex,StringKeys.PREF_RULESET_GROUPING_REGEX },
-		{ null, 								  	StringKeys.PREF_RULESET_GROUPING_NONE }
+		{ RuleTableColumns.ruleSetName,       	StringKeys.PREF_RULESET_COLUMN_RULESET},
+		{ RuleTableColumns.since,             	StringKeys.PREF_RULESET_GROUPING_PMD_VERSION },
+		{ RuleTableColumns.priorityName,      	StringKeys.PREF_RULESET_COLUMN_PRIORITY },
+		{ RuleTableColumns.ruleType,          	StringKeys.PREF_RULESET_COLUMN_RULE_TYPE },
+		{ RuleTableColumns.language,		  		StringKeys.PREF_RULESET_COLUMN_LANGUAGE },
+        { RuleTableColumns.filterViolationRegex,	StringKeys.PREF_RULESET_GROUPING_REGEX },
+		{ null, 								  		StringKeys.PREF_RULESET_GROUPING_NONE }
 		};
 	
 	public static RulePropertyManager[] buildPropertyManagersOn(TabFolder folder, ValueChangeListener listener) {
@@ -107,7 +107,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	@Override
 	protected Control createContents(Composite parent) {
 
-		tableManager = new RuleTableManager(availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
+		tableManager = new RuleTableManager("rules", availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
 		tableManager.modifyListener(this);
 		tableManager.selectionListener(this);
 

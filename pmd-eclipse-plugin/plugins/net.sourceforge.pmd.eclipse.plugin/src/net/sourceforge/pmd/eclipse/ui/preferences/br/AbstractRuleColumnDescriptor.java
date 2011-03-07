@@ -26,7 +26,7 @@ public abstract class AbstractRuleColumnDescriptor extends AbstractColumnDescrip
         accessor = theAccessor;
     }
 
-    protected TreeColumn buildTreeColumn(Tree parent, final RuleSortListener sortListener) {
+    protected TreeColumn buildTreeColumn(Tree parent, final SortListener sortListener) {
 
         TreeColumn tc = super.buildTreeColumn(parent);
 

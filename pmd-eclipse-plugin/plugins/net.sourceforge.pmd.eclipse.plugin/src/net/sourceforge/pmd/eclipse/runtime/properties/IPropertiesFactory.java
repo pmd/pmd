@@ -53,7 +53,7 @@ public interface IPropertiesFactory {
     IProjectPropertiesManager getProjectPropertiesManager();
     
     /**
-     * Instanciate a new Project Properties information structure for a particular project and
+     * Instantiate a new Project Properties information structure for a particular project and
      * a particular project properties manager
      */
     IProjectProperties newProjectProperties(IProject project, IProjectPropertiesManager projetcPropertiesManager);

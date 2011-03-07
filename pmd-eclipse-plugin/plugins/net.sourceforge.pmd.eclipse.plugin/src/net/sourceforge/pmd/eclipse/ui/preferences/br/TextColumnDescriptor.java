@@ -4,88 +4,137 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
+import net.sourceforge.pmd.eclipse.util.AbstractCellPainterBuilder;
+import net.sourceforge.pmd.eclipse.util.ResourceManager;
+import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  *
  * @author Brian Remedios
  */
-public class TextColumnDescriptor extends AbstractRuleColumnDescriptor {
+public class TextColumnDescriptor extends SimpleColumnDescriptor {
 
-	private static final RuleFieldAccessor ruleSetNameAcc = new BasicRuleFieldAccessor() {
+	public static final RuleFieldAccessor ruleSetNameAcc = new BasicRuleFieldAccessor() {
            public Comparable<?> valueFor(Rule rule) {
                return RuleUIUtil.ruleSetNameFrom(rule);
            }
        };
 
-    private static final RuleFieldAccessor propertiesAcc = new BasicRuleFieldAccessor() {
+    public static final RuleFieldAccessor propertiesAcc = new BasicRuleFieldAccessor() {
             public Comparable<?> valueFor(Rule rule) {
                return RuleUIUtil.propertyStringFrom(rule, "*");
             }
       };
 
-	public static final RuleColumnDescriptor name 		  = new TextColumnDescriptor("tName", StringKeys.PREF_RULESET_COLUMN_RULE_NAME, 	SWT.LEFT, 210, RuleFieldAccessor.name, true, null);
-	public static final RuleColumnDescriptor ruleSetName  = new TextColumnDescriptor("tRSName", StringKeys.PREF_RULESET_COLUMN_RULESET_NAME,SWT.LEFT, 160, ruleSetNameAcc, true, null);
-	public static final RuleColumnDescriptor priority	  = new TextColumnDescriptor("tPriority", StringKeys.PREF_RULESET_COLUMN_PRIORITY, 	SWT.RIGHT,53, RuleFieldAccessor.priority, false, null);
-	public static final RuleColumnDescriptor priorityName = new TextColumnDescriptor("tPrioName", StringKeys.PREF_RULESET_COLUMN_PRIORITY, 	SWT.LEFT, 80, RuleFieldAccessor.priorityName, true, null);
-	public static final RuleColumnDescriptor since 		  = new TextColumnDescriptor("tSince", StringKeys.PREF_RULESET_COLUMN_SINCE, 		SWT.RIGHT,46, RuleFieldAccessor.since, false, null);
-	public static final RuleColumnDescriptor usesDFA 	  = new TextColumnDescriptor("tUsesDFA", StringKeys.PREF_RULESET_COLUMN_DATAFLOW, 	SWT.LEFT, 60, RuleFieldAccessor.usesDFA, false, null);
-	public static final RuleColumnDescriptor externalURL  = new TextColumnDescriptor("tExtURL", StringKeys.PREF_RULESET_COLUMN_URL, 		SWT.LEFT, 100, RuleFieldAccessor.url, true, null);
-	public static final RuleColumnDescriptor properties   = new TextColumnDescriptor("tProps", StringKeys.PREF_RULESET_COLUMN_PROPERTIES, 	SWT.LEFT, 40, propertiesAcc, true, null);
-	public static final RuleColumnDescriptor language     = new TextColumnDescriptor("tLang", StringKeys.PREF_RULESET_COLUMN_LANGUAGE, 	SWT.LEFT, 32, RuleFieldAccessor.language, false, null);
-	public static final RuleColumnDescriptor ruleType	  = new TextColumnDescriptor("tRType", StringKeys.PREF_RULESET_COLUMN_RULE_TYPE, 	SWT.LEFT, 20, RuleFieldAccessor.ruleType, false, null);
-	public static final RuleColumnDescriptor minLangVers  = new TextColumnDescriptor("tMinLang", StringKeys.PREF_RULESET_COLUMN_MIN_VER, 	SWT.LEFT, 30, RuleFieldAccessor.minLanguageVersion, false, null);
-	public static final RuleColumnDescriptor maxLangVers  = new TextColumnDescriptor("tMaxLang", StringKeys.PREF_RULESET_COLUMN_MAX_VER, 	SWT.LEFT, 30, RuleFieldAccessor.maxLanguageVersion, false, null);
-	public static final RuleColumnDescriptor exampleCount = new TextColumnDescriptor("tXmpCnt", StringKeys.PREF_RULESET_COLUMN_EXAMPLE_CNT, SWT.RIGHT, 20, RuleFieldAccessor.exampleCount, false, null);
-	public static final RuleColumnDescriptor fixCount  	  = new TextColumnDescriptor("fixCnt", StringKeys.PREF_RULESET_COLUMN_FIXCOUNT,    SWT.RIGHT, 25, RuleFieldAccessor.fixCount, false, null);
-	public static final RuleColumnDescriptor modCount  	  = new TextColumnDescriptor("modCnt", StringKeys.PREF_RULESET_COLUMN_MODCOUNT,    SWT.RIGHT, 25, RuleFieldAccessor.nonDefaultProperyCount, false, null);
-
-//	public static final RuleColumnDescriptor violateXPath = new TextColumnDescriptor("Filter", SWT.RIGHT, 20, RuleFieldAccessor.violationXPath, true);
-
-	/**
+      
+    private static final int ImgOffset = 14;
+	
+    /**
+	 * @param theId String
 	 * @param theLabel String
 	 * @param theAlignment int
 	 * @param theWidth int
 	 * @param theAccessor RuleFieldAccessor
 	 * @param resizableFlag boolean
+	 * @param theImagePath String
 	 */
 	public TextColumnDescriptor(String theId, String theLabel, int theAlignment, int theWidth, RuleFieldAccessor theAccessor, boolean resizableFlag, String theImagePath) {
 		super(theId, theLabel, theAlignment,theWidth,theAccessor,resizableFlag, theImagePath);
 	}
 
+	private static boolean isCheckboxTree(Tree tree) {
+		return (tree.getStyle() | SWT.CHECK) > 0;
+	}
+	
 	/* (non-Javadoc)
      * @see net.sourceforge.pmd.eclipse.ui.preferences.br.IRuleColumnDescriptor#newTreeColumnFor(org.eclipse.swt.widgets.Tree, int, net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSortListener, java.util.Map)
      */
-	public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, RuleSortListener sortListener, Map<Integer, List<Listener>> paintListeners) {
-		TreeColumn tc = buildTreeColumn(parent, sortListener);
-        tc.setText(label());
+	public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, SortListener sortListener, Map<Integer, List<Listener>> paintListeners) {
+		
+		TreeColumn tc = super.newTreeColumnFor(parent, columnIndex, sortListener, paintListeners);
+        
+        if (isCheckboxTree(parent) && columnIndex != 0) {	// can't owner-draw the check or expansion toggles
+        	addPainterFor(tc.getParent(), columnIndex, accessor(), paintListeners);
+        }
+        
         return tc;
-	}
-
-	private String asString(Object value) {
-		 if (value == null) return "";
-		 if (value instanceof String) return value.toString();
-		 ValueFormatter formatter = FormatManager.formatterFor(value.getClass());
-	     return formatter == null ? value.toString() : formatter.format(value);
 	}
 	
 	public String stringValueFor(Rule rule) {
-	    Object value = valueFor(rule);
-	    return asString(value);
+		return "";	// we draw it ourselves
 	}
 
 	public String stringValueFor(RuleCollection collection) {
-	    Object value = valueFor(collection);
-	    return asString(value);
+		return "";	// we draw it ourselves
 	}
 	
     public Image imageFor(Rule rule) {
-        return null;
+
+        boolean hasIssues = rule.dysfunctionReason() != null;
+
+        return hasIssues ? ResourceManager.imageFor(PMDUiConstants.ICON_WARN) : null;
     }
+
+	public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> thePaintListeners) {
+            
+		CellPainterBuilder cpl = new AbstractCellPainterBuilder() {
+			
+			public void addPainterFor(final Tree tree, final int columnIndex, final RuleFieldAccessor getter, Map<Integer, List<Listener>> paintListeners) {
+					
+	            Listener paintListener = new Listener() {
+	                public void handleEvent(Event event) {
+	                    
+	                    if (event.index != columnIndex) return;
+
+                        Object value = ((TreeItem)event.item).getData();
+                        if (value instanceof RuleCollection) return;
+                        
+                        GC gc = event.gc;
+	                        
+                        int imgOffset = 0;
+                        
+                        Rule rule = (Rule)value;
+                        gc.setFont( fontFor(tree, rule) );	
+                        imgOffset = rule.dysfunctionReason() != null ? ImgOffset : 0;
+	                                           
+                        value = valueFor((TreeItem)event.item, getter);
+                        String text = String.valueOf(value);
+	                    int descent = gc.getFontMetrics().getDescent();
+	                    
+                        gc.drawString(text, event.x+imgOffset, event.y+descent, true);                 
+	                    }	                
+	            };
+	            
+            	Listener measureListener = new Listener() {
+            		public void handleEvent(Event event) {
+            			if (event.index != columnIndex) return;
+            			            			
+            			Object value = valueFor((TreeItem)event.item, getter);
+            			if (value instanceof RuleCollection) return;
+            			
+	                    String text = String.valueOf(value);
+	                    Point size = event.gc.textExtent(text);
+	                    event.width = size.x + 2 * (3);
+	           //         event.height = Math.max(event.height, size.y + (3));
+            		}
+            	};
+	            
+                Util.addListener(tree, SWT.PaintItem, paintListener, paintListeners);
+                Util.addListener(tree, SWT.MeasureItem, measureListener, paintListeners);
+			}
+        };
+		
+		cpl.addPainterFor(tree, columnIndex, getter, thePaintListeners);
+	}
 }

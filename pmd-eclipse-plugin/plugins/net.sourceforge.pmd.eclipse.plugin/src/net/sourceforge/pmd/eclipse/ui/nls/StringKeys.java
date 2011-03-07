@@ -350,7 +350,7 @@ public class StringKeys {
     public static final String PRIORITY_COLUMN_PMD_NAME = "priority.column.name.pmd";
     public static final String PRIORITY_COLUMN_VALUE = "priority.column.value";
     public static final String PRIORITY_COLUMN_SIZE = "priority.column.size";
-    public static final String PRIORITY_COLUMN_SHAPE = "priority.column.shape";
+    public static final String PRIORITY_COLUMN_SYMBOL = "priority.column.symbol";
     public static final String PRIORITY_COLUMN_COLOR = "priority.column.color";
     public static final String PRIORITY_COLUMN_DESC = "priority.column.description";
     

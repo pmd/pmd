@@ -38,13 +38,17 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -57,11 +61,10 @@ import org.eclipse.swt.widgets.TreeItem;
  *
  * @author Brian Remedios
  */
-public class RuleTableManager extends AbstractTreeTableManager<Rule> implements RuleSortListener, ValueChangeListener {
+public class RuleTableManager extends AbstractTreeTableManager<Rule> implements ValueChangeListener {
 
 	private RuleSet						ruleSet;
 
-	private RuleFieldAccessor 			columnSorter = RuleFieldAccessor.name;
 	private RuleColumnDescriptor 		groupingColumn;
 
 	protected String					groupColumnLabel;
@@ -80,9 +83,10 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 	private RuleSelectionListener		ruleSelectionListener;
 	private ValueResetHandler			resetHandler;
     
-	public RuleTableManager(RuleColumnDescriptor[] theColumns, IPreferences thePreferences, ValueResetHandler aResetHandler) {
-		super(thePreferences, theColumns);
+	public RuleTableManager(String theWidgetId, RuleColumnDescriptor[] theColumns, IPreferences thePreferences, ValueResetHandler aResetHandler) {
+		super(theWidgetId, thePreferences, theColumns);
 		
+		columnSorter = RuleFieldAccessor.name;
 		checkedColumnAccessor = createCheckedItemAccessor();
 		resetHandler = aResetHandler;
 	}
@@ -497,6 +501,51 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		return composite;
 	}
 	
+	protected boolean hasIssue(TreeItem item) {
+		
+		Object data = item.getData(); 
+        return data instanceof Rule && ((Rule)data).dysfunctionReason() != null;
+	}
+	
+	protected void addIssueStyler(final Tree tree) {
+		
+		final Display display = tree.getDisplay();
+		final Color issueColor = display.getSystemColor(SWT.COLOR_YELLOW);
+		
+		tree.addListener(SWT.EraseItem, new Listener() {
+            public void handleEvent(Event event) {
+                
+//                event.detail &= ~SWT.HOT;
+//                
+//                    GC gc = event.gc;
+//
+//                    gc.setAdvanced(true);
+//                    if (gc.getAdvanced()) gc.setAlpha(127);
+//                    Rectangle rect = event.getBounds();
+//                    Color foreground = gc.getForeground();
+//                    Color background = gc.getBackground();
+//                    
+//                    TreeItem item = (TreeItem)event.item;                   
+//                    
+//                    if (hasIssue(item)) {
+//	                    gc.setBackground(issueColor);
+//	                    gc.setForeground(issueColor);
+//                    } else {
+//                   // 	gc.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+//                    }
+//	            //    gc.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+//	                gc.fillRectangle(event.x, rect.y, rect.width, rect.height);
+//	                gc.setForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
+//	                
+//                    gc.setForeground(foreground);  // restore colors for subsequent drawing
+//                    gc.setBackground(background);
+//                    event.detail &= ~SWT.SELECTED;                  
+                }
+       
+        });
+		
+	}
+	
 	/**
 	 * Build rule table viewer
 	 * @param parent Composite
@@ -506,7 +555,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
 		buildTreeViewer(parent);
 
-		Tree ruleTree = treeViewer.getTree();
+		final Tree ruleTree = treeViewer.getTree();
 		
 //		ruleListMenu = createMenuFor(ruleTree);
 //		ruleTree.setMenu(ruleListMenu);
@@ -515,7 +564,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 //	            popupRuleSelectionMenu(event);
 //	        }
 //	    });
-
+		
+		addIssueStyler(treeViewer.getTree());
+		
 		treeViewer.setCheckStateProvider(createCheckStateProvider());
 
 		return ruleTree;
@@ -815,7 +866,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
 		treeViewer.setLabelProvider(new RuleLabelProvider(columnDescs));
 		treeViewer.setContentProvider(
-			new RuleSetTreeItemProvider(groupingField, "??", Util.comparatorFrom(columnSorter, sortDescending))
+			new RuleSetTreeItemProvider(groupingField, "??", Util.comparatorFrom(columnSorter(), sortDescending))
 			);
 
 		treeViewer.setInput(ruleSet);
@@ -825,21 +876,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		for (TreeColumn column : columns) column.pack();
 	}
 
+	private RuleFieldAccessor columnSorter() {
+		return (RuleFieldAccessor)columnSorter;
+	}
+	
 	protected void sortByCheckedItems() {
 		sortBy(checkedColumnAccessor, treeViewer.getTree().getColumn(0));
-	}
-
-	public void sortBy(RuleFieldAccessor accessor, Object context) {
-
-		TreeColumn column = (TreeColumn)context;
-
-		if (columnSorter == accessor) {
-			sortDescending = !sortDescending;
-		} else {
-			columnSorter = accessor;
-		}
-
-		redrawTable(column.getToolTipText(), sortDescending ? SWT.DOWN : SWT.UP);
 	}
 
 	public void useRuleSet(RuleSet theSet) {

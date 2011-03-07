@@ -24,5 +24,5 @@ public interface RuleColumnDescriptor extends ColumnDescriptor {
     String stringValueFor(RuleCollection collection);
     String detailStringFor(Rule rule);
     String detailStringFor(RuleGroup group);
-    TreeColumn newTreeColumnFor(Tree parent, int columnIndex, RuleSortListener sortListener, Map<Integer, List<Listener>> paintListeners);
+    TreeColumn newTreeColumnFor(Tree parent, int columnIndex, SortListener sortListener, Map<Integer, List<Listener>> paintListeners);
 }

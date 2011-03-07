@@ -6,9 +6,6 @@ import java.util.List;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-
-
-
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.TypeText;
@@ -20,10 +17,7 @@ import net.sourceforge.pmd.util.StringUtil;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-
 import org.eclipse.swt.custom.StyledText;
-
-
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
@@ -43,13 +37,13 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class AbstractRulePanelManager extends WizardPage implements RulePropertyManager {
 
-    private TabItem                     tab;
-    private String                      tabText;
-    private boolean                     isActive;
-    protected RuleSelection             rules;
-    protected final ValueChangeListener changeListener;
-    private final EditorUsageMode		usageMode;
-
+    private TabItem                     		tab;
+    private String                      		tabText;
+    private boolean                    			isActive;
+    protected RuleSelection            			rules;
+    protected final ValueChangeListener 		changeListener;
+    private final EditorUsageMode				usageMode;
+    
     protected static Color textColour;
     protected static Color errorColour;
     protected static Color disabledColour;
@@ -64,12 +58,13 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
 
         changeListener = theListener;
         usageMode = theMode;
+        
     }
 
     public abstract Control setupOn(Composite panel);
 
     public EditorUsageMode mode() { return usageMode; }
-
+    
     /**
      * For use by wizards only..
      */
@@ -130,12 +125,17 @@ public abstract class AbstractRulePanelManager extends WizardPage implements Rul
     	List<String> errors = fieldErrors();
         if (tab != null) updateTabUI(warnings, errors);
         updateOverridenFields();
+        disableIrrelevantFields();
     }
 
     protected void updateOverridenFields() {
 
     }
 
+    protected void disableIrrelevantFields() {
+    	
+    }
+    
     protected boolean canWorkWith(Rule rule) { return true; }   // override as necessary
 
     protected List<String> fieldErrors() {                          // override as necessary

@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,12 +11,14 @@ import java.util.Map;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.BooleanEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.CharacterEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.DoubleEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.EnumerationEditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.FileEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.FloatEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.IntegerEditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.MethodEditorFactory;
@@ -68,7 +71,10 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
     	factoriesByPropertyType.put(String[].class,   MultiStringEditorFactory.instance);
     	factoriesByPropertyType.put(Integer[].class,  MultiIntegerEditorFactory.instance);
     	factoriesByPropertyType.put(Object[].class,   MultiEnumerationEditorFactory.instance);
-
+    	
+    	factoriesByPropertyType.put(File.class,   	  FileEditorFactory.instance);
+    //	factoriesByPropertyType.put(Package.class,    PackageEditorFactory.instance);
+    	
         editorFactoriesByPropertyType = Collections.unmodifiableMap(factoriesByPropertyType);
     }
 
@@ -103,6 +109,24 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         clearControls();
     }
 
+    /*
+     * We want to intercept this and update the tab if we detect problems after we pass it on..
+     */
+    private ValueChangeListener chainedListener() {
+    	
+    	return FormArranger.chain(changeListener, new ValueChangeListener() {
+
+			public void changed(RuleSelection rule, PropertyDescriptor<?> desc, Object newValue) {
+				updateUI();
+			}
+
+			public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
+				updateUI();
+			}
+    		
+    	} );
+    }
+    
     public Control setupOn(Composite parent) {
 
         sComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
@@ -112,7 +136,7 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         sComposite.setExpandHorizontal(true);
         sComposite.setExpandVertical(true);
 
-        formArranger = new FormArranger(composite, editorFactoriesByPropertyType, changeListener, this);
+        formArranger = new FormArranger(composite, editorFactoriesByPropertyType, chainedListener(), this);
 
         return sComposite;
     }
@@ -146,12 +170,24 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
 
     protected List<String> fieldWarnings() {
 
+        List<String> warnings = new ArrayList<String>(2);
+
+        if (rules != null && !canManageMultipleRules()) {	// TODO can do better
+        	Rule soleRule = soleRule();
+        	if (soleRule != null) {
+		        String dysfunctionReason = soleRule.dysfunctionReason();
+		        if (dysfunctionReason != null) {
+		        	warnings.add(dysfunctionReason);
+		        }
+        	}
+        }
+        
         if (unreferencedVariables == null || unreferencedVariables.isEmpty()) {
-        	return Collections.emptyList();
+        	return warnings;
         }
          
-        List<String> warnings = new ArrayList<String>(2);
         warnings.add("Unreferences variables: " + unreferencedVariables.toArray(new String[unreferencedVariables.size()]));
+        
         
         return warnings;
     }

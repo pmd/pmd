@@ -11,4 +11,6 @@ public interface ColumnDescriptor {
 	String label();
 
 	String tooltip();
+	
+	int defaultWidth();
 }

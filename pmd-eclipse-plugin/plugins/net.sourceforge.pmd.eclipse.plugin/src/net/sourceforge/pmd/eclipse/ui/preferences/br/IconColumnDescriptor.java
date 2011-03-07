@@ -61,7 +61,7 @@ public class IconColumnDescriptor extends AbstractRuleColumnDescriptor {
 		return iconsByValue.get(value);
 	}
 	
-	public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, RuleSortListener sortListener,	Map<Integer, List<Listener>> paintListeners) {
+	public TreeColumn newTreeColumnFor(Tree parent, int columnIndex, SortListener sortListener,	Map<Integer, List<Listener>> paintListeners) {
 		TreeColumn tc = buildTreeColumn(parent, sortListener);
 		return tc;
 	}

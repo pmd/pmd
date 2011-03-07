@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui;
 
+import java.util.Comparator;
+
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -13,4 +15,6 @@ public interface ItemFieldAccessor<T extends Object, V extends Object> {
 	Image imageFor(V item);
 	
 	String labelFor(V item);
+	
+	Comparator<T> comparator();
 }

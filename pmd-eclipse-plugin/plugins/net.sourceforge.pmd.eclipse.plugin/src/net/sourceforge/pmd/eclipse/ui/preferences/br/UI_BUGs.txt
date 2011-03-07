@@ -32,7 +32,6 @@ ASTView (XPathDesigner)
 	Add vertical sash w/memory for both
 	Need an XPath editor that shows errors, currently disabling Go button only
 	Need to be able to launch the new Rule wizard with XPath query filled-in
-	Providing sorting behaviour for results tree
 	Colour-code the image data per node same as AST view
 	Provide filters for the tree elements?
 	

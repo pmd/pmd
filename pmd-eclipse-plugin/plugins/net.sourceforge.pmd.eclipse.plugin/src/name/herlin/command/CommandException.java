@@ -43,7 +43,7 @@ public class CommandException extends Exception {
     }
 
     /**
-     * Defaul constructor
+     * Default constructor
      */
     public CommandException() {
         super();

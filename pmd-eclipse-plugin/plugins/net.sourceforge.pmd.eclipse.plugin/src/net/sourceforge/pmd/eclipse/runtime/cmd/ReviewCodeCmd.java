@@ -36,7 +36,6 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +44,7 @@ import java.util.Set;
 
 import name.herlin.command.CommandException;
 import name.herlin.command.Timer;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
@@ -74,6 +74,7 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPerspectiveRegistry;
 import org.eclipse.ui.IWorkbench;
@@ -117,11 +118,50 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     	return markersByFile.keySet();
     }
     
+    private RuleSet currentRules() {
+    	// FIXME
+    	return new RuleSet();
+    }
+    
+    private Map<Rule, String> faultyRulesIn(RuleSet ruleset) {
+    	
+    	RuleSet ruleSet = currentRules();
+    	
+    	Map<Rule, String> faultsByRule = new HashMap<Rule, String>();
+    	for (Rule rule : ruleSet.getRules()) {
+    		String fault = rule.dysfunctionReason();
+    		if (fault != null) {
+    			faultsByRule.put(rule, fault);
+    		}
+    	}
+    	
+    	return faultsByRule;
+    }
+    
+    private boolean checkForFaultyRules() {
+    	
+    	RuleSet ruleSet = currentRules();
+    	if (ruleSet.getRules().isEmpty()) return true;
+    	
+    	Map<Rule, String> faultsByRule = faultyRulesIn(ruleSet);
+    	if (faultsByRule.isEmpty()) return true;
+    	
+    	return MessageDialog.openConfirm(
+    			Display.getDefault().getActiveShell(), 
+    			"Rule configuration problem", 
+    			"Continue anyways?"
+    			);
+    }
+    
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     @Override
     public void execute() throws CommandException {
+    	
+    	boolean doReview = checkForFaultyRules();
+    	if (!doReview) return;
+    	
         log.info("ReviewCode command starting.");
         try {
             fileCount = 0;
@@ -298,6 +338,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         }
     }
 
+    private RuleSet rulesetFrom(IResource resource) throws PropertiesException, CommandException {
+    	
+    	 IProject project = resource.getProject();
+         IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
+         
+         return filteredRuleSet(properties);	//properties.getProjectRuleSet();
+    }
+    
     /**
      * Review a single resource
      */
@@ -307,7 +355,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final IProject project = resource.getProject();
             final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             
-            final RuleSet ruleSet = filteredRuleSet(properties);	//properties.getProjectRuleSet();
+            final RuleSet ruleSet = rulesetFrom(resource);	//properties.getProjectRuleSet();
             
             final PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = countResourceElement(resource);
@@ -400,6 +448,16 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
          return filteredRuleSet;
     }
     
+    
+    private RuleSet rulesetFromResourceDelta() throws PropertiesException, CommandException{
+    	
+    	 IResource resource = resourceDelta.getResource();
+         final IProject project = resource.getProject();
+         final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
+         
+         return filteredRuleSet(properties);	//properties.getProjectRuleSet();
+    }
+    
     /**
      * Review a resource delta
      */
@@ -409,7 +467,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final IProject project = resource.getProject();
             final IProjectProperties properties = PMDPlugin.getDefault().loadProjectProperties(project);
             
-            RuleSet ruleSet = filteredRuleSet(properties);	//properties.getProjectRuleSet();
+            RuleSet ruleSet = rulesetFromResourceDelta();	//properties.getProjectRuleSet();
 
             PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = countDeltaElement(resourceDelta);

@@ -68,7 +68,7 @@ public class RuleEditorView extends ViewPart implements RuleSelectionListener, M
 	@Override
 	public void createPartControl(Composite parent) {
 
-		tableManager = new RuleTableManager(availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
+		tableManager = new RuleTableManager("rules", availableColumns, PMDPlugin.getDefault().loadPreferences(), this);
 		tableManager.modifyListener(this);
 		tableManager.selectionListener(this);
 

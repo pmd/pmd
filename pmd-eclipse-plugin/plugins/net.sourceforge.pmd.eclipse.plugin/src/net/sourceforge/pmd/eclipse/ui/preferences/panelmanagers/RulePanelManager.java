@@ -401,7 +401,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
          RuleSet[] ruleSets = rs.toArray(new RuleSet[rs.size()]);
          Arrays.sort(ruleSets, byNameComparator);
          for (RuleSet ruleSet : ruleSets) {
-        	 field.add(ruleSet.getName());
+        	 field.add(ruleSet.getName().trim());
          }
 
          Listener validateListener = new Listener() {

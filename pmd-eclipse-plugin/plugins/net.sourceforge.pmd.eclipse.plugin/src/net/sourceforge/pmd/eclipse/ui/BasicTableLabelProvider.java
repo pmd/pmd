@@ -28,7 +28,7 @@ public class BasicTableLabelProvider extends AbstractTableLabelProvider {
 
 	public String getColumnText(Object element, int columnIndex) {
 		
-		Object value = columns[columnIndex].valueFor(element);
+		Object value = columns[columnIndex].textFor(element);
 		return value == null ? null : value.toString();
 	}
 

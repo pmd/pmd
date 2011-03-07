@@ -41,7 +41,7 @@ import org.eclipse.ui.part.Page;
  * 
  * @author SebastianRaffel ( 08.05.2005 )
  */
-public class ViolationOutlinePage extends Page implements IPage, ISelectionChangedListener {
+public class ViolationOutlinePage extends Page implements IPage, ISelectionChangedListener, RefreshableTablePage {
 
     private TableViewer tableViewer;
     private ViolationOutline violationOutline;
@@ -70,6 +70,8 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
         }
     }
 
+    public TableViewer tableViewer() { return tableViewer; }
+    
     /* @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite) */
     public void createControl(Composite parent) {
         int tableStyle = SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;

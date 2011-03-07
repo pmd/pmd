@@ -16,6 +16,7 @@ import net.sourceforge.pmd.eclipse.ui.Shape;
 import net.sourceforge.pmd.eclipse.ui.ShapePicker;
 import net.sourceforge.pmd.eclipse.ui.model.RootRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityColumnUI;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptorCache;
@@ -90,6 +91,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Button		browseButton;
     private TableViewer tableViewer;
     private IPreferences preferences;
+    private BasicTableManager priorityTableMgr;
     
     private Control[]	nameFields;
     
@@ -195,6 +197,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
     
     private void useCustomPriorityNames(boolean flag) {
+    	
+    	priorityTableMgr.visible(PriorityColumnUI.name, flag);
+    	priorityTableMgr.visible(PriorityColumnUI.pmdName, !flag);
+    	
     	UISettings.useCustomPriorityLabels(flag);
     	for (Control field : nameFields) field.setEnabled(flag);
     }
@@ -226,18 +232,21 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         };
         BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(PriorityColumnUI.VisibleColumns);
         
-        tableViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
+        priorityTableMgr = new BasicTableManager("prio", null, PriorityColumnUI.VisibleColumns);   
+        tableViewer = priorityTableMgr.buildTableViewer(group);
+        priorityTableMgr.setupColumns(PriorityColumnUI.VisibleColumns);
+        
         Table table = tableViewer.getTable();
         table.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true, 2, 1) );
         
         tableViewer.setLabelProvider(labelProvider);
         tableViewer.setContentProvider(contentProvider);
         table.setHeaderVisible(true);
-        labelProvider.addColumnsTo(table);
+   //     labelProvider.addColumnsTo(table);
         tableViewer.setInput( UISettings.currentPriorities(true) );
         
-        TableColumn[] columns = table.getColumns();
-		for (TableColumn column : columns) column.pack();
+//        TableColumn[] columns = table.getColumns();
+//		for (TableColumn column : columns) column.pack();
         
         Composite editorPanel = new Composite(group, SWT.None);
         editorPanel.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, true) );
@@ -306,10 +315,13 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private void setShape(Shape shape) {
     	
     	if (shape == null) return;	// renderers can't handle this
-    	
+    	    	
     	for (PriorityDescriptor pd : selectedDescriptors()) {
     		pd.shape.shape = shape;
     	}
+    	
+//    	PriorityDescriptorCache.instance.dump(System.out);
+    	
     	tableViewer.refresh();
     }
     
@@ -681,6 +693,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     	
     	// TODO show in UI...could take a while to update
     	
+System.out.println("updating icons");
+
     	PriorityDescriptorCache.instance.storeInPreferences();
         UISettings.createRuleMarkerIcons(getShell().getDisplay());
     	UISettings.reloadPriorities();

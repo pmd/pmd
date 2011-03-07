@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.eclipse.ui.priority;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +27,13 @@ public class PriorityDescriptorCache {
 	
 	private IPreferencesManager preferencesManager() {
 		return PMDPlugin.getDefault().getPreferencesManager();
+	}
+	
+	public void dumpTo(PrintStream out) {
+		
+		for (Map.Entry<RulePriority, PriorityDescriptor> entry : uiDescriptorsByPriority.entrySet()) {
+			out.println(entry.getKey() +" : " + entry.getValue());
+		}
 	}
 	
 	public void loadFromPreferences() {
@@ -55,7 +63,7 @@ public class PriorityDescriptorCache {
 	
 	public boolean hasChanges() {
 		
-		IPreferences preferences = preferencesManager().loadPreferences();
+		IPreferences preferences = preferencesManager().reloadPreferences();
 		
         for (RulePriority rp : UISettings.currentPriorities(true)) {
         	PriorityDescriptor newOne = uiDescriptorsByPriority.get(rp);

@@ -6,6 +6,12 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
  */
 public class BasicValueFormatter implements ValueFormatter {
 	
+	public final String label;
+	
+	public BasicValueFormatter(String theLabel) {
+		label = theLabel;
+	}
+	
 	/**
 	 * Override in subclasses
 	 */

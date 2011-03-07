@@ -3,6 +3,11 @@ package net.sourceforge.pmd.eclipse.ui;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A string that maintains a set of interesting indicies about itself.
+ * 
+ * @author Brian Remedios
+ */
 public class IndexedString implements Comparable<IndexedString>{
 
 	public final String string;

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
-import net.sourceforge.pmd.eclipse.ui.preferences.br.TextColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleTableColumns;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -35,9 +35,9 @@ public class PreferenceUIStore {
 	private static final char stringSeparator = ',';
 	
 	private static final RuleColumnDescriptor[] defaultHiddenColumns = new RuleColumnDescriptor[] {
-			TextColumnDescriptor.externalURL,		TextColumnDescriptor.minLangVers, TextColumnDescriptor.fixCount,
-			TextColumnDescriptor.exampleCount,		TextColumnDescriptor.maxLangVers, TextColumnDescriptor.since,
-			TextColumnDescriptor.modCount
+		RuleTableColumns.externalURL,		RuleTableColumns.minLangVers, RuleTableColumns.fixCount,
+		RuleTableColumns.exampleCount,		RuleTableColumns.maxLangVers, RuleTableColumns.since,
+		RuleTableColumns.modCount
 			};
 
 	private static final boolean defaultSortUp = false;

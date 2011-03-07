@@ -140,27 +140,37 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     public IPreferences loadPreferences() {
         if (preferences == null) {
-            initLoadPreferencesStore();
-            IPreferencesFactory factory = new PreferencesFactoryImpl();
-            preferences = factory.newPreferences(this);
-
-            loadProjectBuildPathEnabled();
-            loadPmdPerspectiveEnabled();
-            loadCheckAfterSaveEnabled();
-            loadUseCustomPriorityNames();
-            loadMaxViolationsPerFilePerRule();
-            loadReviewAdditionalComment();
-            loadReviewPmdStyleEnabled();
-            loadMinTileSize();
-            loadLogFileName();
-            loadLogLevel();
-            loadActiveRules();
-            loadRulePriorityDescriptors();
+            reloadPreferences();
         }
 
         return preferences;
     }
 
+    /**
+     * @see net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager#loadPreferences()
+     */
+    public IPreferences reloadPreferences() {
+
+        initLoadPreferencesStore();
+        IPreferencesFactory factory = new PreferencesFactoryImpl();
+        preferences = factory.newPreferences(this);
+
+        loadProjectBuildPathEnabled();
+        loadPmdPerspectiveEnabled();
+        loadCheckAfterSaveEnabled();
+        loadUseCustomPriorityNames();
+        loadMaxViolationsPerFilePerRule();
+        loadReviewAdditionalComment();
+        loadReviewPmdStyleEnabled();
+        loadMinTileSize();
+        loadLogFileName();
+        loadLogLevel();
+        loadActiveRules();
+        loadRulePriorityDescriptors();
+
+        return preferences;
+    }
+    
     /**
      * Initialize 'loadPreferencesStore' to deal with backward compatibility issues.
      * The old preferences use the net.sourceforge.pmd.runtime package instead of the

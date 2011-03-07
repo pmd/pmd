@@ -2,14 +2,10 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.eclipse.runtime.preferences.impl.PreferenceUIStore;
 import net.sourceforge.pmd.eclipse.ui.AbstractColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ModifyListener;
@@ -32,13 +28,12 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -49,66 +44,36 @@ import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractTreeTableManager <T extends Object> {
+public abstract class AbstractTreeTableManager <T extends Object> extends AbstractTableManager<T> {
 
 	protected ContainerCheckedTreeViewer  treeViewer;
 	
-	protected boolean			sortDescending;	
 	private Button				selectAllButton;
 	private Button				unSelectAllButton;
-	private IPreferences		preferences;	
 	private ModifyListener		modifyListener;
 	private Label				activeCountLabel;
-	private Menu headerMenu;
-	private Menu tableMenu;
 	
 	private ChangeRecord<T>		changes;
-	
-	protected final ColumnDescriptor[] 	availableColumns;	// columns shown in the rule treetable in the desired order
-	private final Set<ColumnDescriptor>	hiddenColumns = new HashSet<ColumnDescriptor>();
-	
-	private Map<Integer, List<Listener>> paintListeners = new HashMap<Integer, List<Listener>>();
-	
-	protected static PMDPlugin		plugin = PMDPlugin.getDefault();
-	
-	   public class WidthChangeThread extends Thread {
-	        private int startWidth;
-	        private int endWidth;
-	        private TreeColumn column;
-	        
-	        protected WidthChangeThread(int start, int end, TreeColumn theColumn) {
-	            super();
-	            startWidth = start;
-	            endWidth = end;
-	            column = theColumn;
-	        }
-	        
-	        protected void setWidth(final int width) {
-	            column.getDisplay().syncExec(new Runnable() {
-	                public void run() { column.setWidth(width);    }                
-	            });
-	        }
-	        
-	        public void run() {
-	            if (endWidth > startWidth) {
-	                for (int i = startWidth; i <= endWidth; i++ ) {
-	                    setWidth(i);
-	                }
-	            } else {
-	                for (int i = startWidth; i >= endWidth; i-- ) {
-	                    setWidth(i);
-	                }
-	            }
-	        }
-	    }
-	   
-	public AbstractTreeTableManager(IPreferences thePreferences, ColumnDescriptor[] theColumns) {
-		super();
-
-		preferences = thePreferences;
-		availableColumns = theColumns;
 		
-		loadHiddenColumns();
+	private Map<Integer, List<Listener>> paintListeners = new HashMap<Integer, List<Listener>>();
+
+	protected static ColumnWidthAdapter adapterFor(final TreeColumn column) {
+		return new ColumnWidthAdapter() {
+			public int width() { return column.getWidth();	}
+			public void width(int newWidth) { column.setWidth(newWidth); }
+			public Display display() { return column.getDisplay();	}
+			public void setData(String key, Object value) { column.setData(key, value); }
+ 			public Object getData(String key) { return column.getData(key); }
+			};
+	}
+		
+	public AbstractTreeTableManager(String theWidgetId, IPreferences thePreferences, ColumnDescriptor[] theColumns) {
+		super(theWidgetId, thePreferences, theColumns);
+	}
+	
+
+	protected String idFor(Object column) {
+		return ((TreeColumn)column).getToolTipText();
 	}
 	
 	protected void removed(Collection<T> items) {
@@ -122,27 +87,6 @@ public abstract class AbstractTreeTableManager <T extends Object> {
 		if (changes == null) changes = new ChangeRecord<T>();
 		changes.added(item);
 		updateCheckControls();
-	}
-	
-	private void loadHiddenColumns() {
-		
-		for (String columnId : PreferenceUIStore.instance.hiddenColumnIds() ) {
-			for (ColumnDescriptor desc : availableColumns) {
-				if (desc.id().equals(columnId)) {
-					hiddenColumns.add(desc);
-				}
-			}
-		}
-	}
-	
-	private void storeHiddenColumns() {
-		
-		Set<String> columnIds = new HashSet<String>(hiddenColumns.size());
-		for (ColumnDescriptor desc : hiddenColumns) {
-			columnIds.add(desc.id());
-		}
-		
-		PreferenceUIStore.instance.hiddenColumnIds(columnIds);
 	}
 	
 	protected Map<Integer, List<Listener>> paintListeners() {
@@ -191,10 +135,6 @@ public abstract class AbstractTreeTableManager <T extends Object> {
 	}
 	
 	protected abstract boolean isQualifiedItem(Object item);
-	
-	public void saveUIState() {
-		saveItemSelections();
-	}
 	
 	protected abstract void saveItemSelections();
 	
@@ -262,10 +202,6 @@ public abstract class AbstractTreeTableManager <T extends Object> {
 		return button;
 	}
 	
-	protected boolean isHidden(ColumnDescriptor desc) {
-		return hiddenColumns.contains(desc);
-	}
-	
 	protected abstract String nameFor(Object treeItemData);
 	
 	/**
@@ -287,9 +223,7 @@ public abstract class AbstractTreeTableManager <T extends Object> {
 	}
 	
 	protected abstract void selectedItems(Object[] items); 
-	
-	protected abstract void removeSelectedItems();
-	
+		
 	protected abstract void updateTooltipFor(TreeItem item, int columnIndex);
 	
 	// TODO move to util
@@ -323,13 +257,7 @@ public abstract class AbstractTreeTableManager <T extends Object> {
 			}
 		});
 		
-		tree.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent ev) {
-				if (ev.character == SWT.DEL) {
-					removeSelectedItems();
-				}
-			}
-		});
+		addDeleteListener(tree);
 		
 		tree.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent ev) {
@@ -365,41 +293,16 @@ public abstract class AbstractTreeTableManager <T extends Object> {
 		setupMenusFor(tree);
 	}
 	
-	private void setupMenusFor(final Tree tree) {
-		
-		final Display display = tree.getDisplay();
-		Shell shell = tree.getShell();
-		
-		headerMenu = new Menu(shell, SWT.POP_UP);
-		addHeaderSelectionOptions(headerMenu);
-		
-		tableMenu = new Menu(shell, SWT.POP_UP);
-		addTableSelectionOptions(tableMenu);
-		
-		tree.addListener(SWT.MenuDetect, new Listener() {
-			public void handleEvent(Event event) {
-				Point pt = display.map(null, tree, new Point(event.x, event.y));
-				Rectangle clientArea = tree.getClientArea();
-				boolean isHeader = clientArea.y <= pt.y && pt.y < (clientArea.y + tree.getHeaderHeight());
-				if (!isHeader) adjustTableMenuOptions();
-				tree.setMenu(isHeader ? headerMenu : tableMenu);
-			}
-		});
-		
-		tree.addListener(SWT.Dispose, new Listener() {
-			public void handleEvent(Event event) {
-				headerMenu.dispose();
-				tableMenu.dispose();
-			}
-		});
+	protected int headerHeightFor(Control control) {
+		return ((Tree)control).getHeaderHeight();		
 	}
 	
-	protected void addTableSelectionOptions(Menu menu) {
-		// subclasses to provide this
+	protected void setMenu(Control control, Menu menu) {
+		((Tree)control).setMenu(menu);
 	}
 	
-	protected void adjustTableMenuOptions() {
-		// subclasses to provide this
+	protected Rectangle clientAreaFor(Control control) {
+		return ((Tree)control).getClientArea();
 	}
 	
 	public void updated(Object item) {
@@ -464,14 +367,6 @@ public abstract class AbstractTreeTableManager <T extends Object> {
 		activeCountLabel.setText(msg);
 		activeCountLabel.getParent().pack();	// handle changing string length
 	}
-		
-	protected boolean isActive(String item) {
-		return preferences.isActive(item);
-	}
-	
-	protected void isActive(String item, boolean flag) {
-		preferences.isActive(item, flag);
-	}
 	
 	protected void buildCheckButtons(Composite parent) {
 
@@ -479,52 +374,11 @@ public abstract class AbstractTreeTableManager <T extends Object> {
 	     unSelectAllButton = buildUnselectAllButton(parent);
 	}
 	
-	protected void addHeaderSelectionOptions(Menu menu) {
-
-        for (ColumnDescriptor desc : availableColumns) {
-            MenuItem columnItem = new MenuItem(menu, SWT.CHECK);
-            columnItem.setSelection(!hiddenColumns.contains(desc));
-            columnItem.setText(desc.label());
-            final ColumnDescriptor columnDesc = desc;
-            columnItem.addSelectionListener( new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
-                    toggleColumnVisiblity(columnDesc);
-                    }
-                }
-            );
-        }
-	}
-	
-	private void hide(ColumnDescriptor desc) {
-		 hiddenColumns.add(desc);
-		 TreeColumn column = columnFor(desc);
-		 
-		 column.setData("restoredWidth", Integer.valueOf( column.getWidth() ));
-         WidthChangeThread t = new WidthChangeThread(column.getWidth(), 0, column);
-         t.run();
-	}
-	
-	private void show(ColumnDescriptor desc) {
-		hiddenColumns.remove(desc);
+	protected ColumnWidthAdapter columnAdapterFor(ColumnDescriptor desc) {
 		TreeColumn column = columnFor(desc);
-		
-		int width = ((Integer)column.getData("restoredWidth")).intValue();
-        WidthChangeThread t = new WidthChangeThread(0, width, column);
-        t.run();
+		return adapterFor(column);
 	}
 	
-	protected void toggleColumnVisiblity(ColumnDescriptor desc) {
-
-	    if (hiddenColumns.contains(desc)) {
-	        show(desc);
-	    } else {
-	        hide(desc);
-	    }    
-	    
-	    storeHiddenColumns();
-	  //  redrawTable();
-	}
-
     protected void redrawTable() {
     	redrawTable("-", -1);
     }
@@ -578,20 +432,9 @@ public abstract class AbstractTreeTableManager <T extends Object> {
 	protected abstract void setAllItemsActive();
 	
 	protected abstract void sortByCheckedItems();
-	
-
-		
+			
 	public void modifyListener(ModifyListener theListener) {
 		modifyListener = theListener;
-	}
-
-	/**
-	 * Helper method to shorten message access
-	 * @param key a message key
-	 * @return requested message
-	 */
-	protected String getMessage(String key) {
-		return PMDPlugin.getDefault().getStringTable().getString(key);
 	}
 
 	protected void setModified() {

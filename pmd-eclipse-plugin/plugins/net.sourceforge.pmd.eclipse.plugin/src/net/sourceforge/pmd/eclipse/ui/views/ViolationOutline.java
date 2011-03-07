@@ -58,7 +58,6 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
         getSite().setSelectionProvider(this);
     }
 
-    
     protected String pageMessageId() { return StringKeys.VIEW_OUTLINE_DEFAULT_TEXT; }
     
     protected String mementoFileId() { return PMDUiConstants.MEMENTO_OUTLINE_FILE; }
@@ -88,8 +87,8 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     @Override
     protected PageRec doCreatePage(IWorkbenchPart part) {
         if (resourceRecord != null) {
-            // creates a new ViolationOutlinePage, when a Resource exists
-            ViolationOutlinePage page = new ViolationOutlinePage(resourceRecord, this);
+            // creates a new ViolationOutlinePageBR, when a Resource exists
+            ViolationOutlinePageBR page = new ViolationOutlinePageBR(resourceRecord, this);
             initPage(page);
             page.createControl(getPageBook());
             return new PageRec(part, page);
@@ -101,7 +100,7 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     @Override
     protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
     	
-        ViolationOutlinePage page = (ViolationOutlinePage) pageRecord.page;
+        ViolationOutlinePageBR page = (ViolationOutlinePageBR) pageRecord.page;
 
         // get the State of the destroyed Page for loading it into the
         // next Page -> different Pages look like one
@@ -208,10 +207,10 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
     /* @see org.eclipse.ui.part.PageBookView#showPageRec(org.eclipse.ui.part.PageBookView.PageRec) */
     @Override
     protected void showPageRec(PageRec pageRec) {
-        ViolationOutlinePage oldPage = getCurrentOutlinePage();
-        ViolationOutlinePage newPage = null;
-        if (pageRec.page instanceof ViolationOutlinePage)
-            newPage = (ViolationOutlinePage) pageRec.page;
+        ViolationOutlinePageBR oldPage = getCurrentOutlinePage();
+        ViolationOutlinePageBR newPage = null;
+        if (pageRec.page instanceof ViolationOutlinePageBR)
+            newPage = (ViolationOutlinePageBR) pageRec.page;
 
         // here we change from one Page to another
         // so we get the State of the old Page, put it in a Memento
@@ -222,48 +221,48 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
             }
 
             // we load the stuff into the new Page
-            if (newPage != null) {
-                List<Integer> widthList = memento.getIntegerList(COLUMN_WIDTHS);
-                if (!widthList.isEmpty()) {
-                    Integer[] widthArray = new Integer[3];
-                    widthList.toArray(widthArray);
-                    newPage.setColumnWidths(widthArray);
-                }
-
-                List<Integer> sorterList = memento.getIntegerList(COLUMN_SORTER);
-                if (!sorterList.isEmpty()) {
-                    Integer[] sorterProps = new Integer[sorterList.size()];
-                    sorterList.toArray(sorterProps);
-                    newPage.setSorterProperties(sorterProps);
-                }
-            }
+//            if (newPage != null) {
+//                List<Integer> widthList = memento.getIntegerList(COLUMN_WIDTHS);
+//                if (!widthList.isEmpty()) {
+//                    Integer[] widthArray = new Integer[3];
+//                    widthList.toArray(widthArray);
+//                    newPage.setColumnWidths(widthArray);
+//                }
+//
+//                List<Integer> sorterList = memento.getIntegerList(COLUMN_SORTER);
+//                if (!sorterList.isEmpty()) {
+//                    Integer[] sorterProps = new Integer[sorterList.size()];
+//                    sorterList.toArray(sorterProps);
+//                    newPage.setSorterProperties(sorterProps);
+//                }
+//            }
         }
 
         super.showPageRec(pageRec);
     }
 
-	private void storeColumnData(ViolationOutlinePage page) {
+	private void storeColumnData(ViolationOutlinePageBR page) {
 		
-		// we care about the column widths
-		Integer[] widthArray = page.getColumnWidths();
-		List<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
-		memento.putList(COLUMN_WIDTHS, widthList);
-
-		// ... and what Element is sorted, and in which way
-		Integer[] sorterProps = page.getSorterProperties();
-		List<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
-		memento.putList(COLUMN_SORTER, sorterList);
+//		// we care about the column widths
+//		Integer[] widthArray = page.getColumnWidths();
+//		List<Integer> widthList = new ArrayList<Integer>(Arrays.asList(widthArray));
+//		memento.putList(COLUMN_WIDTHS, widthList);
+//
+//		// ... and what Element is sorted, and in which way
+//		Integer[] sorterProps = page.getSorterProperties();
+//		List<Integer> sorterList = new ArrayList<Integer>(Arrays.asList(sorterProps));
+//		memento.putList(COLUMN_SORTER, sorterList);
 	}
 
     /**
      * @return the currently displayed Page
      */
-    private ViolationOutlinePage getCurrentOutlinePage() {
+    private ViolationOutlinePageBR getCurrentOutlinePage() {
         IPage page = super.getCurrentPage();
-        if (!(page instanceof ViolationOutlinePage))
+        if (!(page instanceof ViolationOutlinePageBR))
             return null;
 
-        return (ViolationOutlinePage) page;
+        return (ViolationOutlinePageBR) page;
     }
 
     /**
@@ -277,21 +276,21 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
      * Refreshes, reloads the View
      */
     public void refresh() {
-        ViolationOutlinePage page = getCurrentOutlinePage();
+        ViolationOutlinePageBR page = getCurrentOutlinePage();
         if (page != null)
             page.refresh();
     }
 
     /* @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener) */
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
-        ViolationOutlinePage page = getCurrentOutlinePage();
+        ViolationOutlinePageBR page = getCurrentOutlinePage();
         if (page != null)
             page.getTableViewer().addSelectionChangedListener(listener);
     }
 
     /* @see org.eclipse.jface.viewers.ISelectionProvider#getSelection() */
     public ISelection getSelection() {
-        ViolationOutlinePage page = getCurrentOutlinePage();
+        ViolationOutlinePageBR page = getCurrentOutlinePage();
         if (page != null)
             return page.getTableViewer().getSelection();
         return null;
@@ -299,14 +298,14 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
 
     /* @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener) */
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-        ViolationOutlinePage page = getCurrentOutlinePage();
+        ViolationOutlinePageBR page = getCurrentOutlinePage();
         if (page != null)
             page.getTableViewer().removeSelectionChangedListener(listener);
     }
 
     /* @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection) */
     public void setSelection(ISelection selection) {
-        ViolationOutlinePage page = getCurrentOutlinePage();
+        ViolationOutlinePageBR page = getCurrentOutlinePage();
         if (page != null)
             page.getTableViewer().setSelection(selection);
     }

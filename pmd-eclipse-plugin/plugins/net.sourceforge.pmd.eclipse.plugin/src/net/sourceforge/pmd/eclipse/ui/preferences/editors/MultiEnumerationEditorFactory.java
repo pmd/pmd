@@ -70,7 +70,7 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
     }
 
 	@Override
-	protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
+	protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, final Rule rule) {
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
@@ -80,7 +80,7 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
         combo.setItems(SWTUtil.labelsIn(ep.choices(), 0));
         int selectionIdx = EnumerationEditorFactory.indexOf(value, ep.choices());
         if (selectionIdx >= 0) combo.select(selectionIdx);
-
+        
         return combo;
 	}
 

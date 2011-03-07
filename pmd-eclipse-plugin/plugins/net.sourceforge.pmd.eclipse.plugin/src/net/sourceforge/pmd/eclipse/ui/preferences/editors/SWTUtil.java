@@ -55,6 +55,12 @@ public class SWTUtil {
 		control.setEnabled(flag);
 	}
 
+	public static void setEnabled(Control[] controls, boolean state) {
+		for (Control control : controls) {
+			setEnabled(control, state);
+		}
+	}
+	
 	public static void setEnabled(Collection<Control> controls, boolean flag) {
 		for (Control control : controls) setEnabled(control, flag);
 	}

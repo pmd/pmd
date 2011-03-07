@@ -48,6 +48,8 @@ public abstract class AbstractColumnDescriptor implements ColumnDescriptor {
 	public String label() { return label; }
 
 	public String tooltip() { return tooltip;  }
+	
+	public int defaultWidth() { return width; }
 
     protected TreeColumn buildTreeColumn(Tree parent) {
 

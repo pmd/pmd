@@ -25,19 +25,18 @@ import org.eclipse.jface.viewers.Viewer;
 public class ViolationOutlineContentProvider implements
 		IStructuredContentProvider, IResourceChangeListener {
 
-	private ViolationOutlinePage outlinePage;
-	private TableViewer tableViewer;
+	private RefreshableTablePage tablePage;
+	private TableViewer tableViewer;	
 	private FileRecord resource;
-
 
 	/**
 	 * Constructor
 	 *
 	 * @param page
 	 */
-	public ViolationOutlineContentProvider(ViolationOutlinePage page) {
-		outlinePage = page;
-		tableViewer = page.getTableViewer();
+	public ViolationOutlineContentProvider(RefreshableTablePage page) {
+		tablePage = page;
+		tableViewer = page.tableViewer();
 	}
 
 
@@ -135,7 +134,7 @@ public class ViolationOutlineContentProvider implements
             tableViewer.update(changes.toArray(), null);
         }
 
-        outlinePage.refresh();
+        tablePage.refresh();
     }
 }
 

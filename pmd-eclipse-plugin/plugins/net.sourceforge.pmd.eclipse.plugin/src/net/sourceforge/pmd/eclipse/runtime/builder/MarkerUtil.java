@@ -107,6 +107,27 @@ public class MarkerUtil {
     	return (Integer)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
     }
     
+    public static String messageFor(IMarker marker, String defaultValue) {
+    	return marker.getAttribute(IMarker.MESSAGE, defaultValue);
+    }
+    
+    public static Long createdOn(IMarker marker, long onErrorValue) {
+    	
+    	try {
+    		return (Long)marker.getCreationTime();
+    		} catch (CoreException ce) {
+    			return onErrorValue;
+    		}
+    }
+    
+    public static int rulePriorityFor(IMarker marker, int defaultValue) {
+   		return marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, defaultValue);
+    }
+
+    public static boolean doneState(IMarker marker, boolean defaultValue) {
+   		return marker.getAttribute(IMarker.DONE, defaultValue);
+    }
+    
     public static int deleteViolationsOf(String ruleName, IResource resource) {
     	
     	try {

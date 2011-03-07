@@ -1,21 +1,27 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.dialogs.NewPropertyDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -33,7 +39,7 @@ import org.eclipse.swt.widgets.Control;
  *
  * @author Brian Remedios
  */
-public class FormArranger {
+public class FormArranger implements ValueChangeListener {
 
 	private final Composite                     parent;
 	private final Map<Class<?>, EditorFactory>	editorFactoriesByValueType;
@@ -42,6 +48,30 @@ public class FormArranger {
 	private Rule                                rule;
 	private Control[][]                         widgets;
 
+    private Map<PropertyDescriptor<?>, Control[]> controlsByProperty;
+    
+    /**
+     * Echo the change to the second listener after notifying the primary one
+     * 
+     * @param primaryListener
+     * @param secondListener
+     * @return
+     */
+    public static ValueChangeListener chain(final ValueChangeListener primaryListener, final ValueChangeListener secondaryListener) {
+    	return new ValueChangeListener() {
+
+			public void changed(RuleSelection rule, PropertyDescriptor<?> desc,	Object newValue) {
+				primaryListener.changed(rule, desc, newValue);
+				secondaryListener.changed(rule, desc, newValue);				
+			}
+
+			public void changed(Rule rule, PropertyDescriptor<?> desc,	Object newValue) {
+				primaryListener.changed(rule, desc, newValue);
+				secondaryListener.changed(rule, desc, newValue);	
+			}    		
+    	};
+    }
+    
 	/**
 	 * Constructor for FormArranger.
 	 * @param theParent Composite
@@ -50,10 +80,16 @@ public class FormArranger {
 	public FormArranger(Composite theParent, Map<Class<?>, EditorFactory> factories, ValueChangeListener listener, SizeChangeListener sizeListener) {
 		parent = theParent;
 		editorFactoriesByValueType = factories;
-		changeListener = listener;
+		changeListener = chain(listener, this);
 		sizeChangeListener = sizeListener;
+
+        controlsByProperty = new HashMap<PropertyDescriptor<?>, Control[]>();
 	}
 
+    protected void register(PropertyDescriptor<?> property, Control[] controls) {
+    	controlsByProperty.put(property, controls);
+    }
+    
 	/**
 	 * @param desc PropertyDescriptor
 	 * @return EditorFactory
@@ -103,7 +139,8 @@ public class FormArranger {
 		}
 
 		PropertyDescriptor<?>[] orderedDescs = valuesByDescriptor.keySet().toArray(new PropertyDescriptor[valuesByDescriptor.size()]);
-
+		Arrays.sort(orderedDescs, PropertyDescriptorUtil.ComparatorByOrder);
+		
 		int rowCount = 0;	// count up the actual rows with widgets needed, not all have editors yet
 		for (PropertyDescriptor<?> desc: orderedDescs) {
 			EditorFactory factory = factoryFor(desc);
@@ -127,7 +164,9 @@ public class FormArranger {
 		int rowsAdded = 0;
 
 		for (PropertyDescriptor<?> desc: orderedDescs) {
-			if (addRowWidgets(factoryFor(desc), rowsAdded, desc, isXPathRule)) rowsAdded++;
+			if (addRowWidgets(
+					factoryFor(desc), rowsAdded, desc, isXPathRule)
+					) rowsAdded++;
 		}
 
 		if (RuleUtil.isXPathRule(rule)) {
@@ -139,6 +178,8 @@ public class FormArranger {
 		    parent.pack();
 			}
 
+		adjustEnabledStates();
+		
 		return rowsAdded;
 	}
 
@@ -177,6 +218,8 @@ public class FormArranger {
 		    widgets[rowIndex][2] = addDeleteButton(parent, desc,  rule, sizeChangeListener);
 		}
 
+		register(desc, widgets[rowIndex]);
+		
 		return true;
 	}
 
@@ -230,5 +273,25 @@ public class FormArranger {
             }
 
         return unreferencedOnes;
-     };
+     }
+	
+    private void adjustEnabledStates() {
+    	
+    	Set<PropertyDescriptor<?>> ignoreds = rule.ignoredProperties();
+		
+		for (Map.Entry<PropertyDescriptor<?>, Control[]> entry : controlsByProperty.entrySet()) {
+			if (ignoreds.contains( entry.getKey() )) {
+				SWTUtil.setEnabled(entry.getValue(), false);
+			} else {
+				SWTUtil.setEnabled(entry.getValue(), true);
+			}
+		}
+    }
+    
+	public void changed(RuleSelection rule, PropertyDescriptor<?> desc,	Object newValue) {	}
+
+	public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
+		
+		adjustEnabledStates();
+	};
 }

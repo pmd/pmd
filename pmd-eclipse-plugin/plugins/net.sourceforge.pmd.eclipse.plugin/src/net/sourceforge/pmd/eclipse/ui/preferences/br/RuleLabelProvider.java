@@ -2,6 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.AbstractTableLabelProvider;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.graphics.Image;
 
@@ -27,6 +28,10 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
     	    	
     	if (element instanceof Rule) {
         	Rule rule = (Rule) element;
+        	String problem = rule.dysfunctionReason();
+        	if (StringUtil.isNotEmpty(problem)) {
+        		return "Problem in " + rule.getName() + " rule: " + problem;
+        	}
         	return columnDescriptors[columnIndex-1].detailStringFor(rule);
         }
 

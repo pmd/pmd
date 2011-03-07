@@ -7,12 +7,12 @@ import java.util.Set;
 import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxManager;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AbstractPositionedElement;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.StringUtil;
@@ -175,6 +175,10 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 //			outputField.setLayoutData(gridData);
 //			SyntaxManager.adapt(outputField, "xpath", null);
 			
+			BasicTableManager tableMgr = new BasicTableManager("ast", null, NodeColumnUI.VisibleColumns);
+			resultsViewer = tableMgr.buildTableViewer(xpathTestPanel);
+			tableMgr.setupColumns(NodeColumnUI.VisibleColumns);
+			
 			IStructuredContentProvider contentProvider = new IStructuredContentProvider() {
 				public void dispose() {	}
 				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {	}
@@ -182,14 +186,11 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 		        };
 		    BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(NodeColumnUI.VisibleColumns);
 		        
-		    resultsViewer = new TableViewer(xpathTestPanel, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		    Table table = resultsViewer.getTable();
 		    table.setLayoutData(gridData);
 		    
 		    resultsViewer.setLabelProvider(labelProvider);
 		    resultsViewer.setContentProvider(contentProvider);
-		    table.setHeaderVisible(true);
-		    labelProvider.addColumnsTo(table);
 					
 			registerListeners();
 			
@@ -304,15 +305,6 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 	}
 
 	private void highlightItem(Object item) {
-		
-		if (item instanceof AbstractPositionedElement) {
-			AbstractPositionedElement ape = (AbstractPositionedElement)item;
-			highlight(
-					ape.getBeginLine() - 1,ape.getBeginColumn() - 1, 
-					ape.getEndLine()- 1, 	ape.getEndColumn()
-		        	);
-			return;
-		}
 		
         AbstractNode node = (AbstractNode)item;
         highlight(

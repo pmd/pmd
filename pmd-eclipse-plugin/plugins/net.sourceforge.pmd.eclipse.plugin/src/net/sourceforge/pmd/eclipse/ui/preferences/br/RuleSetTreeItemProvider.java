@@ -19,9 +19,11 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class RuleSetTreeItemProvider implements ITreeContentProvider {
 
-	private RuleFieldAccessor 	fieldAccessor;
-	private String 				groupDescription;
-	private Comparator			comparator;
+	private RuleFieldAccessor 				fieldAccessor;
+	private final String 					groupDescription;
+	private final Comparator				comparator;	
+	private final Map<Object, RuleGroup> 	ruleGroups;
+	
 	/**
 	 * Constructor for RuleSetTreeItemProvider.
 	 * @param accessor RuleFieldAccessor
@@ -31,6 +33,7 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 		fieldAccessor = accessor;
 		groupDescription = description;
 		comparator = theComparator;
+		ruleGroups = new HashMap<Object, RuleGroup>();
 	}
 
 	/**
@@ -80,7 +83,8 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 	private RuleGroup[] asRuleGroups(Collection<Rule> rules) {
 
 		Iterator<Rule> iter = rules.iterator();
-		Map<Object, RuleGroup> ruleGroups = new HashMap<Object, RuleGroup>();
+		ruleGroups.clear();
+
 		while (iter.hasNext()) {
 			Rule rule = iter.next();
 
@@ -109,6 +113,12 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 		 return groups;
 	}
 
+	private RuleGroup groupFor(Rule rule) {
+		
+		Comparable<?> groupId = fieldAccessor.valueFor(rule);
+		return ruleGroups.get(groupId);
+	}
+	
 	/**
 	 * Method getParent.
 	 * @param element Object
@@ -116,7 +126,11 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(Object)
 	 */
 	public Object getParent(Object element) {
-		// TODO Auto-generated method stub
+		
+		if (element instanceof RuleGroup) return null;
+		
+		if (element instanceof Rule) return groupFor((Rule)element);
+		
 		return null;
 	}
 

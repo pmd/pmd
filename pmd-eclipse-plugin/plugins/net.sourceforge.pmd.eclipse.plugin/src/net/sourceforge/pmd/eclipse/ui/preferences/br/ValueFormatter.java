@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
@@ -21,7 +22,7 @@ public interface ValueFormatter {
     
     void format(Object value, StringBuilder target);
         
-    ValueFormatter StringFormatter = new BasicValueFormatter() {
+    ValueFormatter StringFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "" : value);
         }
@@ -30,7 +31,7 @@ public interface ValueFormatter {
         }
     };
 
-    ValueFormatter MultiStringFormatter = new BasicValueFormatter() {
+    ValueFormatter MultiStringFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append('[');
             Util.asString((Object[])value, ", ", target);
@@ -38,25 +39,25 @@ public interface ValueFormatter {
         }
     };
 
-    ValueFormatter NumberFormatter = new BasicValueFormatter() {
+    ValueFormatter NumberFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "?" : value);
         }
     };
 
-    ValueFormatter BooleanFormatter = new BasicValueFormatter() {
+    ValueFormatter BooleanFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "?" : value);
         }
     };
 
-    ValueFormatter TypeFormatter = new BasicValueFormatter() {
+    ValueFormatter TypeFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append(value == null ? "" : ClassUtil.asShortestName((Class<?>)value));
         }
     };
 
-    ValueFormatter MultiTypeFormatter = new BasicValueFormatter() {
+    ValueFormatter MultiTypeFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append('[');
             Util.asString(MultiTypeEditorFactory.shortNamesFor((Class<?>[])value), ", ", target);
@@ -64,7 +65,7 @@ public interface ValueFormatter {
         }
     };
 
-    ValueFormatter MethodFormatter = new BasicValueFormatter() {
+    ValueFormatter MethodFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             if (value == null) return;
             target.append(
@@ -73,7 +74,7 @@ public interface ValueFormatter {
         }
     };
 
-    ValueFormatter MultiMethodFormatter = new BasicValueFormatter() {
+    ValueFormatter MultiMethodFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
             target.append('[');
             Object[] methods = ((Object[])value);
@@ -90,13 +91,13 @@ public interface ValueFormatter {
         }
     };
 
-    ValueFormatter ObjectFormatter = new BasicValueFormatter() {
+    ValueFormatter ObjectFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
           target.append(value == null ? "" : value);
         }
     };
 
-    ValueFormatter ObjectArrayFormatter = new BasicValueFormatter() {
+    ValueFormatter ObjectArrayFormatter = new BasicValueFormatter(null) {
         public void format(Object value, StringBuilder target) {
            target.append('[');
            Util.asString((Object[])value, ", ", target);
@@ -106,21 +107,36 @@ public interface ValueFormatter {
     
 // =================================================================
     
-    ValueFormatter PriorityFormatter = new BasicValueFormatter() {
+    ValueFormatter PriorityFormatter = new BasicValueFormatter(null) {
         public String format(Object value) {
            return UISettings.labelFor((RulePriority)value);
         }
     };
     
-    ValueFormatter LanguageFormatter = new BasicValueFormatter() {
+    ValueFormatter LanguageFormatter = new BasicValueFormatter(null) {
         public String format(Object value) {
            return ((Language)value).getName();
         }
     };
     
-    ValueFormatter LanguageVersionFormatter = new BasicValueFormatter() {
+    ValueFormatter LanguageVersionFormatter = new BasicValueFormatter(null) {
         public String format(Object value) {
            return ((LanguageVersion)value).getName();
         }
     };
+    
+    
+    ValueFormatter DateFromLongFormatter = new BasicValueFormatter("Date") {
+        public String format(Object value) {
+           return new Date((Long)value).toString();
+        }
+    };
+    
+    ValueFormatter TimeFromLongFormatter = new BasicValueFormatter("Time") {
+        public String format(Object value) {
+           return new Date((Long)value).toString();
+        }
+    };
+    
+    ValueFormatter[] TimeFormatters = new ValueFormatter[] { DateFromLongFormatter };
 }
