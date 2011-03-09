@@ -32,6 +32,8 @@ public final class CommentUtil {
 	public static String javadocContentAfter(String text, int position) {
 		
 		int endPos = text.indexOf('\n', position);
+		if (endPos < 0) return null;
+		
 		if (StringUtil.isNotEmpty(text.substring(position, endPos))) {
 			return text.substring(position, endPos).trim();
 		}
