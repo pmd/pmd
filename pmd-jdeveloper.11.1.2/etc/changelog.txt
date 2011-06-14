@@ -1,0 +1,33 @@
+October 14, 2009 - 4.2.5:
+Updated PMD version to 4.2.5 for 10.1.3 to 11.1.1
+Fixed bug 2543957
+
+October 21, 2008 - 4.2.4:
+Updated PMD version to 4.2.4 for 9.0.5 to 11.1.1
+
+April 06, 2008 - 4.2:
+Updated PMD version to 4.2 for 9.0.5 to 10.1.3.
+11g version is not available because of classloading errors for jaxen lib.
+Apply some pmd rules on the plugin.
+Export/Import PMD preferences in 10.1.3 Version.
+
+December 06, 2007 - 4.1:
+Updated PMD version to 4.1.
+Set PMD java version to project J2SE/target.
+Fix for showing rules examples in PMD property window.
+
+August 06, 2007 - 1.9:
+Upgraded to PMD 4.0
+
+January 30, 2005 - 1.8:
+Better presentation of the rule violations.
+PMD menu item now appears on Package node
+Cleaned up code examples in preferences panel.
+Upgraded to PMD 3.5.
+
+Oct 18, 2005 - 1.7:
+Merged in changes from Olaf Heimburger to update plugin to work with JDev 10.1.3 early access.
+Modified to use "update center" functionality.  Update center location is http://pmd.sf.net/center.xml
+
+August 04, 2005 - 1.6:
+Forked plugin code to provide a 10.1.13 version.
