@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.jedit;
 
 import java.io.File;
+import java.util.regex.*;
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -9,11 +10,12 @@ import javax.swing.filechooser.FileFilter;
  * One difference is I've added "mode" as a parameter to the constructor to make
  * it easy to match a filter against a supported language in CPD.
  */
-public class CPDFileFilter extends FileFilter {
+public class CPDFileFilter extends FileFilter implements Comparable<CPDFileFilter>, java.io.FilenameFilter {
     
     private String mode;
     private String description;
     private String[] extensions;
+    private Pattern exclusionsPattern = null;
     
     /**
      * @param mode A language known to CPD.  So far, these line up nicely with
@@ -26,6 +28,12 @@ public class CPDFileFilter extends FileFilter {
         this.mode = mode;
         this.description = description;
         this.extensions = extensions;
+    }
+    
+    public void setExclusions(String regex) {
+        if (regex != null && regex.length() > 0) {
+            exclusionsPattern = Pattern.compile(regex);
+        }
     }
     
     /**
@@ -42,26 +50,29 @@ public class CPDFileFilter extends FileFilter {
             return true;   
         }
         
-        // get the file name extension
-        String name = f.getName();
-        int index = name.lastIndexOf('.');
-        if (index == -1) {
-            return false;   
-        }
-        if (index + 1 >= name.length()) {
-            return false;   
+        // check full path against exclusions
+        if (exclusionsPattern != null) {
+            Matcher m = exclusionsPattern.matcher(f.getAbsolutePath());
+            if (m.matches()) {
+                return false;   
+            }
         }
         
         // check the extension against acceptable extensions
-        String extension = name.substring(index + 1);
+        String name = f.getName();
         for (String ext : extensions) {
-            if (ext.equals(extension)) {
-                return true;    
+            // The CPD file filter converts all extensions to upper case
+            if (name.toUpperCase().endsWith(ext)) {
+                return true;   
             }
         }
         
         // no match
         return false;
+    }
+    
+    public boolean accept(File dir, String name) {
+        return accept(new File(dir, name));   
     }
     
     public String getDescription() {
@@ -73,7 +84,14 @@ public class CPDFileFilter extends FileFilter {
     }
     
     public String[] getExtensions() {
-        return extensions;   
+        return extensions;   // NOPMD
+    }
+    
+    public int compareTo(CPDFileFilter filter) {
+        if (filter == null) {
+            return -1;   
+        }
+        return toString().compareTo(filter.toString());
     }
     
     public String toString() {

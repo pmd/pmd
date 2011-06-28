@@ -3,13 +3,13 @@
 #
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.name=PMDPlugin
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.author=Jiger Patel, Tom Copeland, Alan Ezust, Dale Anson
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=3.3
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=3.4
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=doc/jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.5
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.03.99.00
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.9
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.3=plugin CommonControlsPlugin 1.2
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-4.2.6.jar jaxen-1.1.1.jar asm-3.1.jar
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-4.2.6.jar jaxen-1.1.1.jar asm-3.2.jar
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.description=The PMD plugin is a Java source code analysis tool.
 
 
@@ -87,6 +87,7 @@ net.sf.pmd.Error_Loading_Rules=Error Loading Rules
 net.sf.pmd.Error_loading_rules._Check_any_custom_rulesets_for_errors.=Error loading rules. Check any custom rulesets for errors.
 net.sf.pmd.Error_while_processing_=Error while processing 
 net.sf.pmd.Example=Example
+net.sf.pmd.Exclusions=Exclusions
 net.sf.pmd.Export_Output_as_=Export Output as: 
 net.sf.pmd.Ignore_Literals_&_identifiers_when_detecting_Duplicate_Code=Ignore Literals & identifiers when detecting Duplicate Code
 net.sf.pmd.Invalid_Renderer=Invalid Renderer

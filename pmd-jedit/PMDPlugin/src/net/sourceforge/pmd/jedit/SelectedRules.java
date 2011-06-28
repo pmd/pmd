@@ -346,7 +346,6 @@ public class SelectedRules {
         Collections.sort(rules,  ruleSorter);
 
         for (Rule rule : rules) {
-            //System.out.println("+++++ adding rule: " + rule.getName());
             DefaultMutableTreeNode ruleNode = new DefaultMutableTreeNode(new RuleNode(rule));
             node.add(ruleNode);
         }
