@@ -77,6 +77,7 @@ public class PMDJEditPlugin extends EBPlugin {
     public static final String JAVA_VERSION_PROPERTY = "pmd.java.version";
     public static final String LAST_DIRECTORY = "pmd.cpd.lastDirectory";
     public static final String LAST_EXCLUSION_REGEX = "pmd.cpd.lastExclusionRegex";
+    public static final String LAST_INCLUSION_REGEX = "pmd.cpd.lastInclusionRegex";
     public static final String LAST_SELECTED_FILTER = "pmd.cpd.lastSelectedFilter";
     public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
     public static final String PRINT_RULE = "pmd.printRule";
@@ -89,6 +90,7 @@ public class PMDJEditPlugin extends EBPlugin {
     public static final String RENDERER = "pmd.renderer";
 
     private static int lastSelectedFilter = 0;
+    private static String lastInclusion = "";
     private static String lastExclusion = "";
 
     public void start() {
@@ -96,6 +98,7 @@ public class PMDJEditPlugin extends EBPlugin {
         // Log.log(Log.DEBUG,this,"Instance created.");
         errorSource = new DefaultErrorSource(NAME);
         lastSelectedFilter = jEdit.getIntegerProperty(LAST_SELECTED_FILTER, 0);
+        lastInclusion = jEdit.getProperty(LAST_INCLUSION_REGEX, "");
         lastExclusion = jEdit.getProperty(LAST_EXCLUSION_REGEX, "");
     }
 
@@ -427,6 +430,8 @@ public class PMDJEditPlugin extends EBPlugin {
         fileTypeSelector.setSelectedIndex(lastSelectedFilter);
         fileTypeSelector.setEditable(false);
 
+        JTextField inclusionsRegex = new JTextField();
+        inclusionsRegex.setText(lastInclusion);
         JTextField exclusionsRegex = new JTextField();
         exclusionsRegex.setText(lastExclusion);
 
@@ -434,24 +439,31 @@ public class PMDJEditPlugin extends EBPlugin {
         pnlAccessory.add(txttilesize, "1, 0, 1, 1, W,, 3");
         pnlAccessory.add(chkRecursive, "0, 1, 2, 1, W,, 3");
         pnlAccessory.add(fileTypeSelector, "0, 2, 2, 1, W,, 3");
-        pnlAccessory.add(new JLabel(jEdit.getProperty("net.sf.pmd.Exclusions", "Exclusions")), "0, 3, 1, 1, W,, 3");
-        pnlAccessory.add(exclusionsRegex, "1, 3, 1, 1, W, w, 3");
+        pnlAccessory.add(new JLabel(jEdit.getProperty("net.sf.pmd.Inclusions", "Inclusions")), "0, 3, 1, 1, W,, 3");
+        pnlAccessory.add(inclusionsRegex, "1, 3, 1, 1, W, w, 3");
+        pnlAccessory.add(new JLabel(jEdit.getProperty("net.sf.pmd.Exclusions", "Exclusions")), "0, 4, 1, 1, W,, 3");
+        pnlAccessory.add(exclusionsRegex, "1, 4, 1, 1, W, w, 3");
 
         chooser.setAccessory(pnlAccessory);
 
         int returnVal = chooser.showOpenDialog(view);
         File selectedFile = null;
+        String inclusions = null;
         String exclusions = null;
         CPDFileFilter mode = null;
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             selectedFile = chooser.getSelectedFile();
+            inclusions = inclusionsRegex.getText();
+            jEdit.setProperty(LAST_INCLUSION_REGEX, inclusions);
+            lastInclusion = inclusions;
             exclusions = exclusionsRegex.getText();
             jEdit.setProperty(LAST_EXCLUSION_REGEX, exclusions);
             lastExclusion = exclusions;
             mode = (CPDFileFilter) fileTypeSelector.getSelectedItem();
             lastSelectedFilter = fileTypeSelector.getSelectedIndex();
             jEdit.setIntegerProperty(LAST_SELECTED_FILTER, lastSelectedFilter);
+            mode.setInclusions(inclusions);
             mode.setExclusions(exclusions);
 
             if (! selectedFile.isDirectory()) {

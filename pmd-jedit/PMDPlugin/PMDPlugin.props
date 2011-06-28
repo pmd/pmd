@@ -90,6 +90,7 @@ net.sf.pmd.Example=Example
 net.sf.pmd.Exclusions=Exclusions
 net.sf.pmd.Export_Output_as_=Export Output as: 
 net.sf.pmd.Ignore_Literals_&_identifiers_when_detecting_Duplicate_Code=Ignore Literals & identifiers when detecting Duplicate Code
+net.sf.pmb.Inclustions=Inclusions
 net.sf.pmd.Invalid_Renderer=Invalid Renderer
 net.sf.pmd.Minimum_Tile_Size>=Minimum Tile Size:
 net.sf.pmd.Minimum_Tile_size_>=Minimum Tile size :

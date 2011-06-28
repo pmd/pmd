@@ -3,6 +3,7 @@ package net.sourceforge.pmd.jedit;
 import java.io.File;
 import java.util.regex.*;
 import javax.swing.filechooser.FileFilter;
+import org.gjt.sp.util.Log;
 
 /**
  * This is a file filter for CPD.  I wanted to use a FileNameExtension filter, but
@@ -15,6 +16,7 @@ public class CPDFileFilter extends FileFilter implements Comparable<CPDFileFilte
     private String mode;
     private String description;
     private String[] extensions;
+    private Pattern inclusionsPattern = null;
     private Pattern exclusionsPattern = null;
     
     /**
@@ -28,6 +30,12 @@ public class CPDFileFilter extends FileFilter implements Comparable<CPDFileFilte
         this.mode = mode;
         this.description = description;
         this.extensions = extensions;
+    }
+    
+    public void setInclusions(String regex) {
+        if (regex != null && regex.length() > 0) {
+            inclusionsPattern = Pattern.compile(regex);
+        }
     }
     
     public void setExclusions(String regex) {
@@ -50,13 +58,23 @@ public class CPDFileFilter extends FileFilter implements Comparable<CPDFileFilte
             return true;   
         }
         
-        // check full path against exclusions
+        // check full path for inclusions
+        if (inclusionsPattern != null) {
+            Matcher m = inclusionsPattern.matcher(f.getAbsolutePath());
+            if (!m.matches()) {
+                return false;   
+            }
+        }
+        
+        // check full path for exclusions
         if (exclusionsPattern != null) {
             Matcher m = exclusionsPattern.matcher(f.getAbsolutePath());
             if (m.matches()) {
                 return false;   
             }
         }
+        
+        Log.log(Log.DEBUG, this, "CPD checking: " + f.getAbsolutePath());
         
         // check the extension against acceptable extensions
         String name = f.getName();

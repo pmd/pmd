@@ -96,7 +96,11 @@
       <p>
       The CPD is very fast. It can also work on a variety of languages. Currently the fully supported languages are Java, JSP, PHP, C/C++, Fortran, Ruby, and Javascript. Additionally, CPD can work with just about every file mode supported by jEdit, although results may not be perfect as the modes not specifically supported use a generic tokenizer that may not suitable for a particular language. 
       <p>
-      A new feature for running CPD in a directory is the ability to exclude files. This makes it much easier to run CPD on a high level directory in a Maven project so the files in the "target" directories can be skipped. Enter a regular expression in the "Exclusions" field in the directory chooser dialog. For Maven projects, enter <code>.*?/target/.*</code> to exclude all the "target" directories. The "Exclusions" regular expression works on the full path of a file, so this regex might not work in all cases (like maybe code for target.com?)
+      A new feature for running CPD in a directory is the ability to include files as specified by a regular expression. This makes it easy to narrow your search in a project that may have a lot of files with the same name.
+      <p>
+      Another new feature for running CPD in a directory is the ability to exclude files. This makes it much easier to run CPD on a high level directory in a Maven project so the files in the "target" directories can be skipped. Enter a regular expression in the "Exclusions" field in the directory chooser dialog. For Maven projects, enter <code>.*?/target/.*</code> to exclude all the "target" directories. The "Exclusions" regular expression works on the full path of a file, so this regex might not work in all cases (like maybe code for target.com?)
+      <p>
+      You can set both an inclusion regular expression and an exclusion regular expression. Files are first checked for inclusion then exclusion. This means the Maven example above is still valid.
       <h3>
          Custom Rules 
       </h3>
