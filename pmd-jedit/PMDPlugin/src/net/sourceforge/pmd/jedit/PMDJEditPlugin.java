@@ -6,17 +6,12 @@
 package net.sourceforge.pmd.jedit;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.regex.*;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import net.sourceforge.pmd.IRuleViolation;
@@ -52,6 +47,7 @@ import org.gjt.sp.jedit.browser.VFSBrowser;
 import org.gjt.sp.jedit.io.VFS;
 import org.gjt.sp.jedit.io.VFSFile;
 import org.gjt.sp.jedit.msg.BufferUpdate;
+import org.gjt.sp.jedit.syntax.ModeProvider;
 import org.gjt.sp.util.Log;
 
 import errorlist.DefaultErrorSource;
@@ -204,10 +200,10 @@ public class PMDJEditPlugin extends EBPlugin {
     public void instanceCheck(Buffer buffer, View view, boolean clearErrorList) {
         try {
             unRegisterErrorSource();
-
             if (clearErrorList) {
                 errorSource.clear();
             }
+            registerErrorSource();
 
             String modename = buffer.getMode().getName();
             boolean isJsp = "jsp".equals(modename);
@@ -221,9 +217,17 @@ public class PMDJEditPlugin extends EBPlugin {
             ctx.setReport(new Report());
             String path = buffer.getPath();
             ctx.setSourceCodeFilename(path);
+            if (isJsp) {
+                ctx.setSourceType(SourceType.JSP);
+            }
             VFS vfs = buffer.getVFS();
 
-            pmd.processFile(vfs._createInputStream(vfs.createVFSSession(path, view), path, false, view), (String) buffer.getProperty("encoding"), toCheck, ctx);
+            if (isJsp) {
+                Reader reader = new StringReader(buffer.getText());
+                pmd.processFile(reader, toCheck, ctx, SourceType.JSP);
+            } else {
+                pmd.processFile(vfs._createInputStream(vfs.createVFSSession(path, view), path, false, view), (String) buffer.getProperty("encoding"), toCheck, ctx);
+            }
 
             if (ctx.getReport().isEmpty()) {
                 // only show popup if run on save is NOT selected, otherwise it is annoying
@@ -247,14 +251,23 @@ public class PMDJEditPlugin extends EBPlugin {
 
                     errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getBeginLine() - 1, 0, 0, rulename + rv.getDescription()));                    // NOPMD
                 }
-
-                registerErrorSource();
+            }
+        } catch (PMDException pmde) {
+            String msg = jEdit.getProperty("net.sf.pmd.Error_while_processing_", "Error while processing ") + buffer.getPath() + ":\n" + pmde.getMessage();
+            Throwable cause = pmde.getCause();
+            String lexicalError = null;
+            if (cause instanceof net.sourceforge.pmd.ast.TokenMgrError || cause instanceof net.sourceforge.pmd.jsp.ast.TokenMgrError) {
+                lexicalError = cause.getMessage();
+            }
+            if (lexicalError != null) {
+                int[] location = getLocation(lexicalError);
+                errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, buffer.getPath(), location[0], location[1], location[1] + 1, lexicalError));
+            } else {
+                errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, buffer.getPath(), 0, 0, 0, msg));
             }
         } catch (Exception e) {
-            // DONE: is this useful to log? Yes it is.
-            registerErrorSource();
             String msg = jEdit.getProperty("net.sf.pmd.Error_while_processing_", "Error while processing ") + buffer.getPath() + ":\n" + e.getMessage() + "\n\n" + e.getCause();
-            Log.log(Log.ERROR, this, "+++++ Exception processing file " + buffer.getPath(), e);
+            Log.log(Log.ERROR, this, "Exception processing file " + buffer.getPath(), e);
             errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, buffer.getPath(), 0, 0, 0, msg));
         }
     }
@@ -304,11 +317,23 @@ public class PMDJEditPlugin extends EBPlugin {
         boolean foundProblems = false;
 
         for (File file : files) {
+            System.out.println("+++++ checking file: " + file.getName());
             ctx.setReport(new Report());
             ctx.setSourceCodeFilename(file.getAbsolutePath());
 
             try {
-                pmd.processFile(new FileInputStream(file), System.getProperty("file.encoding"), selectedRuleSets.getSelectedRules(), ctx);                // NOPMD
+                RuleSets rules = null;
+                Mode mode = ModeProvider.instance.getModeForFile(file.getName(), "");
+                if ("java".equals(mode.getName())) {
+                    rules = selectedRuleSets.getSelectedRules();
+                } else if ("jsp".equals(mode.getName())) {
+                    rules = selectedRuleSets.getJspSelectedRules();
+                } else {
+                    throw new PMDException("No rules for file " + file.getAbsolutePath());
+                }
+
+                BufferedInputStream stream = new BufferedInputStream(new FileInputStream(file));                // PMD will close this
+                pmd.processFile(stream, System.getProperty("file.encoding"), rules, ctx);
                 for (Iterator<IRuleViolation> j = ctx.getReport().iterator(); j.hasNext();) {
                     foundProblems = true;
                     IRuleViolation rv = j.next();
@@ -322,9 +347,17 @@ public class PMDJEditPlugin extends EBPlugin {
                 Log.log(Log.ERROR, this, "PMD ERROR: Unable to open file " + file.getAbsolutePath(), fnfe);
             } catch (PMDException pmde) {
                 String msg = jEdit.getProperty("net.sf.pmd.Error_while_processing_", "Error while processing ") + file.getAbsolutePath() + ":\n" + pmde.getMessage();
-                Log.log(Log.ERROR, this, msg, pmde);
-                errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, file.getAbsolutePath(), 0, 0, 0, msg));
-                // JOptionPane.showMessageDialog(view,  msg,  "PMD",  JOptionPane.ERROR_MESSAGE);
+                Throwable cause = pmde.getCause();
+                String lexicalError = null;
+                if (cause instanceof net.sourceforge.pmd.ast.TokenMgrError || cause instanceof net.sourceforge.pmd.jsp.ast.TokenMgrError) {
+                    lexicalError = cause.getMessage();
+                }
+                if (lexicalError != null) {
+                    int[] location = getLocation(lexicalError);
+                    errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, file.getAbsolutePath(), location[0], location[1], location[1] + 1, lexicalError));
+                } else {
+                    errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, file.getAbsolutePath(), 0, 0, 0, msg));
+                }
             }
 
             if (jEdit.getBooleanProperty(SHOW_PROGRESS)) {
@@ -343,9 +376,37 @@ public class PMDJEditPlugin extends EBPlugin {
         pbd = null;
     }
 
+    // parses the output from a TokenMgrError to get the line and column of the error
+    private int[] getLocation(String lexicalError) {
+        int[] location = new int[2];
+        try {
+            Pattern p = Pattern.compile("(.*?)(\\d+)(.*?)(\\d+)(.*?)");
+            Matcher m = p.matcher(lexicalError);
+            if (m.matches()) {
+                String ln = m.group(2);
+                String cn = m.group(4);
+                int line_number = -1;
+                int column_number = 0;
+                if (ln != null) {
+                    line_number = Integer.parseInt(ln);
+                }
+                if (cn != null) {
+                    column_number = Integer.parseInt(cn);
+                }
+                location[0] = Math.max(0, line_number - 1);
+                location[1] = Math.max(0, column_number - 1);
+            }
+        } catch (Exception e) {            // NOPMD
+            e.printStackTrace();
+        }
+        return location;
+    }
+
     private List<File> findFiles(String dir, boolean recurse) {
         FileFinder f = new FileFinder();
-        return f.findFilesFrom(dir, new net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter(new SourceFileSelector()), recurse);
+        SourceFileSelector sfSelector = new SourceFileSelector();
+        sfSelector.setSelectJspFiles(true);
+        return f.findFilesFrom(dir, new net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter(sfSelector), recurse);
     }
 
     private void registerErrorSource() {
@@ -711,19 +772,6 @@ public class PMDJEditPlugin extends EBPlugin {
             this.view = view;
             setLayout(new BorderLayout());
             pBar = new JProgressBar(min, max);
-            // TODO: why do these colors override the look and feel colors?
-            // They probably should not.
-            pBar.setUI(new BasicProgressBarUI() {
-                public Color getSelectionBackground() {
-                    return jEdit.getColorProperty("pmd.progressbar.foreground");
-                }
-
-                public Color getSelectionForeground() {
-                    return jEdit.getColorProperty("pmd.progressbar.foreground");
-                }
-            }
-
-           );
             pBar.setBorder(new EtchedBorder(EtchedBorder.RAISED));
             pBar.setToolTipText(jEdit.getProperty("net.sf.pmd.PMD_Check_in_Progress", "PMD Check in Progress"));
             pBar.setForeground(jEdit.getColorProperty("pmd.progressbar.background"));
