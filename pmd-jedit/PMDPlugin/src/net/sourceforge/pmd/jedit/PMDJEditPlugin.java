@@ -59,6 +59,8 @@ import ise.java.awt.KappaLayout;
  * @version $Id$
  *
  * DONE: move strings to property file so they can be localized.
+ * TODO: this really needs rewritten to move all the "instance" stuff to a new
+ * class.
  **/
 public class PMDJEditPlugin extends EBPlugin {
 
@@ -81,6 +83,7 @@ public class PMDJEditPlugin extends EBPlugin {
     public static final String SHOW_PROGRESS = "pmd.showprogress";
 
     private static PMDJEditPlugin instance;
+    private static ProgressBar progressBar;
 
     private DefaultErrorSource errorSource;
     public static final String RENDERER = "pmd.renderer";
@@ -175,10 +178,9 @@ public class PMDJEditPlugin extends EBPlugin {
         Buffer buffers[] = jEdit.getBuffers();
 
         if (buffers != null) {
-            ProgressBar pbd = null;
 
             if (jEdit.getBooleanProperty(SHOW_PROGRESS)) {
-                pbd = startProgressBarDisplay(view, 0, buffers.length);
+                startProgressBarDisplay(view, 0, buffers.length);
             }
 
             for (Buffer buffer : buffers) {
@@ -188,12 +190,12 @@ public class PMDJEditPlugin extends EBPlugin {
                     instanceCheck(buffer, view, false);
                 }
 
-                if (pbd != null) {
-                    pbd.increment(1);
+                if (instance.progressBar != null) {
+                    instance.progressBar.increment(1);
                 }
             }
 
-            endProgressBarDisplay(pbd);
+            endProgressBarDisplay();
         }
     }
 
@@ -291,10 +293,8 @@ public class PMDJEditPlugin extends EBPlugin {
         unRegisterErrorSource();
         errorSource.clear();
 
-        ProgressBar pbd = null;
-
         if (jEdit.getBooleanProperty(SHOW_PROGRESS)) {
-            pbd = startProgressBarDisplay(view, 0, files.size());
+            startProgressBarDisplay(view, 0, files.size());
         }
 
         PMD pmd = new PMD();
@@ -317,7 +317,6 @@ public class PMDJEditPlugin extends EBPlugin {
         boolean foundProblems = false;
 
         for (File file : files) {
-            System.out.println("+++++ checking file: " + file.getName());
             ctx.setReport(new Report());
             ctx.setSourceCodeFilename(file.getAbsolutePath());
 
@@ -361,7 +360,7 @@ public class PMDJEditPlugin extends EBPlugin {
             }
 
             if (jEdit.getBooleanProperty(SHOW_PROGRESS)) {
-                pbd.increment(1);
+                instance.progressBar.increment(1);
             }
         }
 
@@ -369,11 +368,10 @@ public class PMDJEditPlugin extends EBPlugin {
             errorSource.clear();
         } else {
             registerErrorSource();
-            exportErrorAsReport(view, reports.toArray(new Report[reports.size()]));
+            // exportErrorAsReport(view, reports.toArray(new Report[reports.size()]));
         }
 
-        endProgressBarDisplay(pbd);
-        pbd = null;
+        endProgressBarDisplay();
     }
 
     // parses the output from a TokenMgrError to get the line and column of the error
@@ -698,16 +696,20 @@ public class PMDJEditPlugin extends EBPlugin {
         instance.process(instance.findFiles(de[0].getPath(), recursive), view);
     }
 
-    public ProgressBar startProgressBarDisplay(View view, int min, int max) {
-        ProgressBar pbd = new ProgressBar(view, min, max);
-        pbd.setVisible(true);
-        return pbd;
+    public void startProgressBarDisplay(final View view, final int min, final int max) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                instance.progressBar = new ProgressBar(view, min, max);
+                view.getStatus().add(instance.progressBar, BorderLayout.EAST);
+                instance.progressBar.setVisible(true);
+            }
+        } );
     }
 
-    public void endProgressBarDisplay(ProgressBar pbd) {
-        if (pbd != null) {
-            pbd.completeBar();
-            pbd.setVisible(false);
+    public void endProgressBarDisplay() {
+        if (instance.progressBar != null) {
+            instance.progressBar.completeBar();
+            instance.progressBar.setVisible(false);
         }
     }
 
@@ -739,23 +741,35 @@ public class PMDJEditPlugin extends EBPlugin {
             }
 
             if (reports != null) {
-                final StringBuffer strbuf = new StringBuffer();
+                final StringWriter sw = new StringWriter();
+                final Writer writer = new BufferedWriter(sw);
                 try {
+                    renderer.setWriter(writer);
                     renderer.start();
-                    for (int i = 0; i < reports.length; i++) {
-                        renderer.renderFileReport(reports[i]);
+                    for (Report report : reports) {
+                        if (report != null) {
+                            try {
+                                renderer.renderFileReport(report);                                // TODO: pmd throws an NPE here
+                            } catch (Exception e) {                                // NOPMD
+                            }
+                        }
                     }
-
                     renderer.end();
                 } catch (IOException ioe) {
                     Log.log(Log.ERROR, this, "Renderer can't report.", ioe);
+                } finally {
+                    try {
+                        writer.close();
+                    } catch (Exception ignored) {                        // NOPMD
+                    }
                 }
+
                 final Buffer buffer = jEdit.newFile(view);
                 view.setBuffer(buffer);
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         buffer.writeLock();
-                        buffer.insert(0, strbuf.toString());
+                        buffer.insert(0, sw.toString());
                         buffer.writeUnlock();
                     }
                 } );
@@ -779,18 +793,23 @@ public class PMDJEditPlugin extends EBPlugin {
 
             pBar.setStringPainted(true);
             add(pBar, BorderLayout.CENTER);
-            view.getStatus().add(pBar, BorderLayout.EAST);
         }
 
-        public void increment(int num) {
-            pBar.setValue(pBar.getValue() + num);
+        public void increment(final int num) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    pBar.setValue(pBar.getValue() + num);
+                }
+            } );
         }
 
         public void completeBar() {
-            pBar.setValue(pBar.getMaximum());
-            view.getStatus().remove(pBar);
-            view = null;
-            pBar = null;
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    pBar.setValue(pBar.getMaximum());
+                    view.getStatus().remove(pBar);
+                }
+            } );
         }
     }
 
