@@ -51,16 +51,24 @@ public final class CommentUtil {
 	}
 	
 	public static Map<String, Integer> javadocTagsIn(String comment) {
-		
+				
 		int atPos = comment.indexOf('@');
 		if (atPos < 0) return Collections.emptyMap();
 		
 		Map<String, Integer> tags = new HashMap<String, Integer>();
 		while (atPos >= 0) {
 			String tag = wordAfter(comment, atPos);
-			String content = javadocContentAfter(comment, atPos + tag.length() );
-			tags.put(tag, atPos);
-			atPos = comment.indexOf('@', atPos + tag.length());
+//			String content = javadocContentAfter(comment, atPos + tag.length() );
+//			tags.put(tag, atPos);
+//			atPos = comment.indexOf('@', atPos + tag.length());
+			int offset = 1; // default offset for next tag
+			if (StringUtil.isNotEmpty(tag)) {
+			    //TODO: this seems to be not complete, the content is not used
+			    //String content = javadocContentAfter(comment, atPos + tag.length() );
+			    tags.put(tag, atPos);
+			    offset = tag.length();
+			}
+			atPos = comment.indexOf('@', atPos + offset);
 		}
 		return tags;
 	}
