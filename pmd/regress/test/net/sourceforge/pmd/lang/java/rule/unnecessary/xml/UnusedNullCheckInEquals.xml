@@ -82,7 +82,7 @@ if(o1!=null && o2.equals(o1.getName()) ){ }
     </test-code>
     <test-code regressionTest="false">
         <description><![CDATA[
-shouldn't this fail?
+shouldn't this fail? Yes, it should. Fixed it, so that method calls to equals on variables are considered, too.
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
