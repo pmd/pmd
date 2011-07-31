@@ -20,7 +20,7 @@ public class PMDASMClassLoaderTest {
     @Test
     public void testLoadClassWithImportOnDemand() throws Exception {
         String className = "test.net.sourceforge.pmd.typeresolution.ClassWithImportOnDemand";
-        Class clazz = cl.loadClass(className);
+        Class<?> clazz = cl.loadClass(className);
         assertNotNull(clazz);
         Map<String, String> imports = cl.getImportedClasses(className);
         assertNotNull(imports);
@@ -34,7 +34,7 @@ public class PMDASMClassLoaderTest {
     @Test
     public void testClassWithImportInnerOnDemand() throws Exception {
         String className = "test.net.sourceforge.pmd.typeresolution.ClassWithImportInnerOnDemand";
-        Class clazz = cl.loadClass(className);
+        Class<?> clazz = cl.loadClass(className);
         assertNotNull(clazz);
         Map<String, String> imports = cl.getImportedClasses(className);
         assertNotNull(imports);
