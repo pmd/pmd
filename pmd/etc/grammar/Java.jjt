@@ -1,5 +1,8 @@
 /**
+ * Changed the CastLookahead production to use 3 lookaheads for primitive types as suggested by Andreas Dangel
  *
+ * Brian Remedios 07/2011
+ * ===================================================================
  * Added in support for assert as a name using lookaheads
  *
  * Tom Copeland, 09/03
@@ -1612,7 +1615,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 // this.
 void CastLookahead() #void :
 {}
-{ LOOKAHEAD(2) "(" PrimitiveType()
+{ LOOKAHEAD(3) "(" PrimitiveType() ")"
 | LOOKAHEAD("(" Type() "[")  "(" Type() "[" "]"
 | "(" Type() ")" ( "~" | "!" | "(" | <IDENTIFIER> | "this" | "super" | "new" | Literal() )
 }
