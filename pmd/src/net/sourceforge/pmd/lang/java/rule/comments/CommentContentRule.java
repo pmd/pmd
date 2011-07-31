@@ -29,7 +29,7 @@ public class CommentContentRule extends AbstractCommentRule {
 	private String[] originalBadWords;
 	private String[] currentBadWords;
 	
-	private static final String[] badWords = new String[] { "idiot", "jerk" };
+	private static final String[] badWords = new String[] { "idiot", "jerk" };	// FIXME need some better defaults (or none?)
 	
 	public static final BooleanProperty WORDS_ARE_REGEX_DESCRIPTOR = new BooleanProperty("wordsAreRegex",
     		"Use regular expressions", false, 1.0f);
@@ -85,7 +85,7 @@ public class CommentContentRule extends AbstractCommentRule {
 	 }
 	
 	private List<String> illegalTermsIn(Comment comment) {
-
+		
 		if (currentBadWords.length == 0) return Collections.emptyList();
 		
 		String commentText = filteredCommentIn(comment);
@@ -121,7 +121,10 @@ public class CommentContentRule extends AbstractCommentRule {
 	
 	@Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
-  
+
+		// NPE patch: Eclipse plugin doesn't call start() at onset?
+		if (currentBadWords == null) start(null);
+		
 		for (Comment comment : cUnit.getComments()) {
 			List<String> badWords = illegalTermsIn(comment);
 			if (badWords.isEmpty()) continue;

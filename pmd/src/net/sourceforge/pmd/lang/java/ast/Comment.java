@@ -14,7 +14,7 @@ public abstract class Comment extends AbstractNode {
     	super(-1, t.beginLine, t.endLine, t.beginColumn, t.endColumn);
     	
         setImage(t.image);
-        findJavadocs(t.image);
+        findJavadocs(t.image);	// TODO expensive?  perhaps lazy compute upon child access
     }
 
     public String toString() {
