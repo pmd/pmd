@@ -131,6 +131,7 @@ public class Match implements Comparable<Match> {
         int i = 0;
         for (Iterator<TokenEntry> it = markSet.iterator(); it.hasNext() && i < index + 1; ){            
             result = it.next();
+            i++;
         }
         return result;
     }
