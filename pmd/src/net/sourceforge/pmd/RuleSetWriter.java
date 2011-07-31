@@ -53,9 +53,10 @@ public class RuleSetWriter {
     public void write(RuleSet ruleSet) {
 		try {
 		    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		    documentBuilderFactory.setNamespaceAware(true);
 		    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		    this.document = documentBuilder.newDocument();
-		    this.ruleSetFileNames = new HashSet<String>();
+		    document = documentBuilder.newDocument();
+		    ruleSetFileNames = new HashSet<String>();
 	
 		    Element ruleSetElement = createRuleSetElement(ruleSet);
 		    document.appendChild(ruleSetElement);
@@ -84,9 +85,9 @@ public class RuleSetWriter {
     }
 
     private Element createRuleSetElement(RuleSet ruleSet) {
-		Element ruleSetElement = document.createElement("ruleset");
-		ruleSetElement.setAttribute("xmlns", "http://pmd.sourceforge.net/ruleset/2.0.0");
-		ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation",	"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd");
+    	Element ruleSetElement = document.createElementNS("http://pmd.sourceforge.net/ruleset/2.0.0", "ruleset");
+    	ruleSetElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation", "http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd");
 		ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation",	"http://pmd.sourceforge.net/ruleset_2_0_0.xsd");
 		ruleSetElement.setAttribute("name", ruleSet.getName());
 	
