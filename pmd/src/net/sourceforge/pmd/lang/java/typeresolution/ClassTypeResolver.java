@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -126,7 +127,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	private final PMDASMClassLoader pmdClassLoader;
 	private Map<String, String> importedClasses;
 	private List<String> importedOnDemand;
-
+	private int anonymousClassCounter = 0;
+	
 	public ClassTypeResolver() {
 		this(ClassTypeResolver.class.getClassLoader());
 	}
@@ -182,7 +184,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	@Override
 	public Object visit(ASTClassOrInterfaceType node, Object data) {
-		populateType(node, node.getImage());
+		String typeName = node.getImage();
+		if (node.jjtGetParent().hasDescendantOfType(ASTClassOrInterfaceBody.class)) {
+			anonymousClassCounter++;
+		    typeName = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getImage() + "$" + anonymousClassCounter;
+		}
+		populateType(node, typeName);
 		return data;
 	}
 
