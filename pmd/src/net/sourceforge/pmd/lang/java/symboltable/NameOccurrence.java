@@ -148,10 +148,9 @@ public class NameOccurrence {
                 return true;
             }
 
-            if (node instanceof ASTStatementExpression) {
-                ASTStatementExpression exp = (ASTStatementExpression) node;
-                if (exp.jjtGetNumChildren() >= 2 && exp.jjtGetChild(1) instanceof ASTAssignmentOperator) {
-                    ASTAssignmentOperator op = (ASTAssignmentOperator) exp.jjtGetChild(1);
+            if (node instanceof ASTStatementExpression || node instanceof ASTExpression) {
+                if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+                    ASTAssignmentOperator op = (ASTAssignmentOperator) node.jjtGetChild(1);
                     if (op.isCompound()) {
                         return true;
                     }
