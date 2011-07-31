@@ -222,6 +222,8 @@ public class Test {
           <value>
           <![CDATA[
 //Expression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and count(./CastExpression)=0]
+|
+//Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and count(./CastExpression)=0]
           ]]>
           </value>
        </property>
