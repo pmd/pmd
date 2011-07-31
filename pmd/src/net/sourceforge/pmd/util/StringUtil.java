@@ -153,9 +153,20 @@ public final class StringUtil {
         return replaceString(encoded, '>', "&gt;");
     }
     
-    // TODO - unify the method above with the one below
-    
-    private static void appendXmlEscaped(StringBuffer buf, String src, boolean supportUTF8) {
+    /**
+     * 
+     * @param buf
+     * @param src
+     * @param supportUTF8 override the default setting, whether special characters should be replaced
+     * with entities (<code>false</code>) or should be included as is (<code>true</code>).
+     * 
+     * @see #appendXmlEscaped(StringBuffer, String)
+     * 
+     * TODO - unify the method above with the one below
+     * 
+     * public to support unit testing - make this package private, once the unit test classes are in the same package.
+     */
+    public static void appendXmlEscaped(StringBuffer buf, String src, boolean supportUTF8) {
         char c;
         for (int i = 0; i < src.length(); i++) {
             c = src.charAt(i);
