@@ -244,6 +244,8 @@ public class RuleReference extends AbstractDelegateRule {
 		}
 		return o1 == o2 || (o1 != null && o2 != null && o1.equals(o2));
 	}
+	
+	@SuppressWarnings("PMD.UnusedNullCheckInEquals") //TODO: fix UnusedNullCheckInEquals rule for Arrays
 	private static boolean isSame(Object[] a1, Object[] a2) {
 		return a1 == a2 || (a1 != null && a2 != null && Arrays.equals(a1, a2));
 	}

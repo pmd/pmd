@@ -93,4 +93,17 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+Arrays can't be compared directly but with Arrays.equals().
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+        private static boolean isSame(Object[] a1, Object[] a2) {
+                return a1 == a2 || (a1 != null && a2 != null && Arrays.equals(a1, a2));
+        }
+}
+     ]]></code>
+    </test-code>
 </test-data>
