@@ -134,8 +134,21 @@ public class Foo {
                         int startOffset =
                                 (sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
                                 node.getBeginColumn()) - 1;
-	}
+        }
 
+}
+     ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+Parentheses around binary expressions are really necessary
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final boolean isModifier(int mask) {
+        return (modifiers & mask) == mask;
+    }
 }
      ]]></code>
     </test-code>

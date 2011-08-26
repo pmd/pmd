@@ -108,6 +108,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         setModifier(isStrictfp, STRICTFP);
     }
 
+    @SuppressWarnings("PMD.UselessParentheses") //TODO: fix the rule - around binary expressions the parentheses are needed...
     private final boolean isModifier(int mask) {
         return (modifiers & mask) == mask;
     }
