@@ -1,15 +1,19 @@
 package net.sourceforge.pmd;
 
-public interface PropertyDescriptorFields {
+/**
+ * 
+ * @author Brian Remedios
+ */
+public class PropertyDescriptorFields {
 
-	String TYPE = "type";
-	String NAME = "name";
-	String DESCRIPTION = "description";
-	String VALUE = "value";
-	String DESC = "description";
-	String DELIMITER = "delimiter";
-	String MIN = "min";
-	String MAX = "max";
-	String LEGAL_PACKAGES = "legalPackages";
-	String DEFAULT_VALUE = "value";
+	public static final String TYPE = "type";
+	public static final String NAME = "name";
+	public static final String DESCRIPTION = "description";
+	public static final String VALUE = "value";
+	public static final String DESC = "description";
+	public static final String DELIMITER = "delimiter";
+	public static final String MIN = "min";
+	public static final String MAX = "max";
+	public static final String LEGAL_PACKAGES = "legalPackages";
+	public static final String DEFAULT_VALUE = "value";
 }

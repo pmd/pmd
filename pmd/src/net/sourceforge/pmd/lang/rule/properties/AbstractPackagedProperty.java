@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import static net.sourceforge.pmd.PropertyDescriptorFields.*;
 
 /**
  * Concrete subclasses manage items that reside within namespaces per the design of the Java language.

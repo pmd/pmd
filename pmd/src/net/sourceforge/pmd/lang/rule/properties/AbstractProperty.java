@@ -7,15 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.StringUtil;
-
+import static net.sourceforge.pmd.PropertyDescriptorFields.*;
 /**
  *
  * @author Brian Remedios
  */
-public abstract class AbstractProperty<T> implements PropertyDescriptor<T>, PropertyDescriptorFields {
+public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 
 	private final String	name;
 	private final String	description;

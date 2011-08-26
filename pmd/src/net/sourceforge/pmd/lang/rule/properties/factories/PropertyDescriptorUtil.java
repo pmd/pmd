@@ -7,7 +7,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.CharacterMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
@@ -32,7 +31,7 @@ import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
  * 
  * @author Brian Remedios
  */
-public class PropertyDescriptorUtil implements PropertyDescriptorFields {
+public class PropertyDescriptorUtil {
 						
 	public static final Comparator<PropertyDescriptor<?>> ComparatorByOrder = new Comparator<PropertyDescriptor<?>>() {
 		public int compare(PropertyDescriptor<?> pd1, PropertyDescriptor<?> pd2) {
@@ -86,7 +85,6 @@ public class PropertyDescriptorUtil implements PropertyDescriptorFields {
     		}
     	}
     	return null;
-    }
-    
+    }    
     
 }

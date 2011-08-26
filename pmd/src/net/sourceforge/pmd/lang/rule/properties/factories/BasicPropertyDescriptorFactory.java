@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
+import static net.sourceforge.pmd.PropertyDescriptorFields.*;
 
 /**
  * 
@@ -17,7 +17,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @param <T>
  */
-public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory, PropertyDescriptorFields {
+public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory {
 
 	private final Class<?> valueType;
 	private final Map<String, Boolean> fieldTypesByKey;
