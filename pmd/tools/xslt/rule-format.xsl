@@ -6,7 +6,7 @@
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 
 	<!-- FUTURE: Externalising text to allow i18n generation  -->
-	<xsl:variable name="Since"					select="'Since: PMD'"/>
+	<xsl:variable name="Since"					select="'Since: PMD '"/>
 	<xsl:variable name="definedByJavaClass"		select="'This rule is defined by the following Java class'"/>
 	<xsl:variable name="ExampleLabel"			select="'Example(s)'"/>
 	<xsl:variable name="PropertiesLabel"		select="'This rule has the following properties'"/>
