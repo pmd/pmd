@@ -98,6 +98,7 @@ public class PMDUiConstants {
 
     public static final String ICON_BUTTON_DISABLE = "icons/btn_disable.gif";
     public static final String ICON_BUTTON_COLLAPSE = "icons/btn_collapse.gif";
+    public static final String ICON_BUTTON_EXPAND = "icons/btn_expand.gif";
     public static final String ICON_BUTTON_REMVIO = "icons/btn_remvio.gif";
 	public static final String ICON_BUTTON_QUICKFIX = "icons/btn_quickfix.gif";
 	public static final String ICON_BUTTON_REVIEW = "icons/btn_review.gif";
@@ -125,6 +126,7 @@ public class PMDUiConstants {
     public static final String ID_OVERVIEW = PLUGIN_ID + ".views.violationOverview";
     public static final String ID_DATAFLOWVIEW = PLUGIN_ID + ".views.dataflowView";
     public static final String ID_CPDVIEW = PLUGIN_ID + ".views.CPDView";
+    public static final String ID_CPDVIEW2 = PLUGIN_ID + ".views.br.CPDView2";
     
     public static final String MEMENTO_OUTLINE_FILE = "/violationOutline_memento.xml";
     public static final String MEMENTO_OVERVIEW_FILE = "/violationOverview_memento.xml";

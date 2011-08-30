@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -20,6 +21,10 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public abstract class AbstractResourceView extends AbstractPMDPagebookView implements IResourceChangeListener {
 
+	protected static boolean getBoolUIPref(String prefId) { return pStore().getBoolean(prefId); }
+	
+	protected static IPreferenceStore pStore() { return PMDPlugin.getDefault().getPreferenceStore(); }
+	
 	protected AbstractResourceView() {
 	}
 
@@ -40,6 +45,11 @@ public abstract class AbstractResourceView extends AbstractPMDPagebookView imple
     	return resource.getFullPath();
     }
 
+    
+    protected void setUIPref(String prefId, boolean flag) {
+    	pStore().setValue(prefId, flag);
+    }
+    
     protected void setupListener(FileRecord resourceRecord) {
     	resourceRecord.getResource().getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);	
     }
@@ -93,7 +103,6 @@ public abstract class AbstractResourceView extends AbstractPMDPagebookView imple
      */
     protected void refresh(IResource newResource) {
     	AbstractStructureInspectorPage page = getCurrentViewPage();
-        if (page != null)
-            page.refresh(newResource);
+        if (page != null) page.refresh(newResource);
     }
 }

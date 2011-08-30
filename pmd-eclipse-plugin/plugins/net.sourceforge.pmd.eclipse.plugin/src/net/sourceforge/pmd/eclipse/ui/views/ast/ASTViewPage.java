@@ -55,15 +55,17 @@ import org.jaxen.XPathSyntaxException;
  *
  */
 public class ASTViewPage extends AbstractStructureInspectorPage {
+	
+	private SashForm 			sashForm;
 
-	private SashForm 		sashForm;
-
-	protected TreeViewer 	astViewer;
-	private StyledText		xpathField;
-	private TableViewer 	resultsViewer;
-	private Button			goButton;
-	private Node			 classNode;
-	private ASTPainterHelper helper;
+	protected TreeViewer 		astViewer;
+	private StyledText			xpathField;
+	private TableViewer 		resultsViewer;
+	private Button				goButton;
+	private Node			 	classNode;
+	private ASTPainterHelper	helper;
+	private ASTContentProvider 	contentProvider;
+	
 //	private static Set<String> keywords = new HashSet<String>();
 
 	private static Set<Class<?>> HiddenNodeTypes;
@@ -74,6 +76,16 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 	
 	public TreeViewer astViewer() {
 		return astViewer;
+	}
+	
+	public void showImports(boolean flag) { 
+		contentProvider.includeImports(flag); 
+		astViewer.refresh(); 
+	}
+	
+	public void showComments(boolean flag) {
+		contentProvider.includeComments(flag); 
+		astViewer.refresh(); 
 	}
 	
 	/**
@@ -127,9 +139,8 @@ public class ASTViewPage extends AbstractStructureInspectorPage {
 			buildMethodSelector(titleArea);
 
 			astViewer = new TreeViewer(astPanel, SWT.MULTI | SWT.BORDER);
-			astViewer.setContentProvider( 
-					new ASTContentProvider( true ) 	// TODO disable showing comments until we can reference them in XPath
-					);
+			contentProvider = new ASTContentProvider( true, true );
+			astViewer.setContentProvider(contentProvider);
 			astViewer.setLabelProvider( new ASTLabelProvider() );
 			setupListeners(astViewer.getTree());
 	

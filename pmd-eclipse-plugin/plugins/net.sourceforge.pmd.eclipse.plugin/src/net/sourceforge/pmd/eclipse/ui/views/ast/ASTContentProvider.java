@@ -9,6 +9,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -21,8 +22,9 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class ASTContentProvider implements ITreeContentProvider {
 
+	private boolean includeImports;
 	private boolean includeComments;
-	private Set<Class<?>> hiddenNodeTypes;
+//	private Set<Class<?>> hiddenNodeTypes;
 	
 	private static final Comparator<Node> ByLineNumber = new Comparator<Node>() {
 		public int compare(Node a, Node b) {
@@ -30,14 +32,18 @@ public class ASTContentProvider implements ITreeContentProvider {
 		}
 	};
 	
-	public ASTContentProvider(boolean includeCommentsFlag) {
+	public void includeImports(boolean flag) { includeImports = flag; }
+	public void includeComments(boolean flag) { includeComments = flag; }
+	
+	public ASTContentProvider(boolean includeImportsFlag, boolean includeCommentsFlag) {
 		this(Collections.EMPTY_SET);
 		
+		includeImports = includeImportsFlag;
 		includeComments = includeCommentsFlag;
 	}
 	
 	public ASTContentProvider(Set<Class<?>> theHiddenNodeTypes) {
-		hiddenNodeTypes = theHiddenNodeTypes;
+	//	hiddenNodeTypes = theHiddenNodeTypes;
 	}
 
 	public void dispose() {	}
@@ -51,18 +57,24 @@ public class ASTContentProvider implements ITreeContentProvider {
 		List<Node> kids = new ArrayList<Node>();
 		
 		if (includeComments && parent instanceof ASTCompilationUnit) {
-			if (!hiddenNodeTypes.contains(Comment.class)) {
+		//	if (!hiddenNodeTypes.contains(Comment.class)) {
 
 				List<Comment> comments = ((ASTCompilationUnit)parent).getComments();
 				kids.addAll(comments);	
-				}
+		//		}
 		}
 				
 		AbstractNode node = (AbstractNode)parent;
 		int kidCount = node.jjtGetNumChildren();
 		for (int i=0; i<kidCount; i++) {
 			Node kid = node.jjtGetChild(i);
-			if (hiddenNodeTypes.contains(kid.getClass())) continue;
+//			if (hiddenNodeTypes.contains(kid.getClass())) continue;
+			if (!includeImports && kid instanceof ASTImportDeclaration) {
+				continue;
+			}
+			if (!includeComments && kid instanceof Comment) {
+				continue;
+			}
 			kids.add(kid);
 		}
 		

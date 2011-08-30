@@ -227,6 +227,7 @@ public class StringKeys {
     public static final String VIEW_TOOLTIP_FILTER_PRIORITY_5 = "view.tooltip.filter.priority.5";
     public static final String VIEW_TOOLTIP_PACKAGES_FILES = "view.tooltip.packages_files";
     public static final String VIEW_TOOLTIP_COLLAPSE_ALL = "view.tooltip.collapse_all";
+    public static final String VIEW_TOOLTIP_EXPAND_ALL = "view.tooltip.expand_all";
         
     public static final String VIEW_COLUMN_MESSAGE = "view.column.message";
     public static final String VIEW_COLUMN_RULE = "view.column.rule";
