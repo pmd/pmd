@@ -1,23 +1,22 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package test.net.sourceforge.pmd.lang.java.rule.coupling;
 
 import org.junit.Before;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class CouplingRulesTest extends SimpleAggregatorTst {
-    
+public class LawOfDemeterRuleTest extends SimpleAggregatorTst {
+
     private static final String RULESET = "java-coupling";
 
     @Before
     public void setUp() {
-        addRule(RULESET, "CouplingBetweenObjects");
-        addRule(RULESET, "ExcessiveImports");
-        addRule(RULESET, "LooseCoupling");
-        addRule(RULESET, "LoosePackageCoupling");
         addRule(RULESET, "LawOfDemeter");
     }
 
     public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(CouplingRulesTest.class);
+        return new junit.framework.JUnit4TestAdapter(LawOfDemeterRuleTest.class);
     }
 }

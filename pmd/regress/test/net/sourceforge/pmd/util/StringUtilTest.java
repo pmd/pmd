@@ -6,7 +6,6 @@ package test.net.sourceforge.pmd.util;
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.util.StringUtil;
 
-import org.junit.Ignore;
 import org.junit.Test;
 public class StringUtilTest {
 
@@ -35,25 +34,27 @@ public class StringUtilTest {
         assertEquals("replaceString didn't work with a char", "f", StringUtil.replaceString("foo", 'o', null));
     }
 
-    @Ignore
+    /**
+     * Usually you would set the system property "net.sourceforge.pmd.supportUTF8" to either "no" or "yes", to
+     * switch UTF8 support.
+     * 
+     * e.g.
+     * <code>System.setProperty("net.sourceforge.pmd.supportUTF8","yes");</code>
+     */
     @Test
     public void testUTF8NotSupported() {
-        System.setProperty("net.sourceforge.pmd.supportUTF8","no");
         StringBuffer sb = new StringBuffer();
-        String test = "�";
-        StringUtil.appendXmlEscaped(sb, test);
+        String test = "Ã©";
+        StringUtil.appendXmlEscaped(sb, test, false);
         assertEquals("&#233;", sb.toString());
     }
 
-    @Ignore
     @Test
     public void testUTF8Supported() {
-        System.setProperty("net.sourceforge.pmd.supportUTF8","yes");
         StringBuffer sb = new StringBuffer();
-        String test = "�";
-        StringUtil.appendXmlEscaped(sb, test);
-        assertEquals("�", sb.toString());
-        System.setProperty("net.sourceforge.pmd.supportUTF8","no");
+        String test = "Ã©";
+        StringUtil.appendXmlEscaped(sb, test, true);
+        assertEquals("Ã©", sb.toString());
     }
 
     public static junit.framework.Test suite() {

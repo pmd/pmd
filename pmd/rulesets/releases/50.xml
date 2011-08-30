@@ -30,9 +30,11 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/java/controversial.xml/AvoidLiteralsInIfCondition"/>
 	<rule ref="rulesets/java/controversial.xml/OneDeclarationPerLine"/>
   	<rule ref="rulesets/java/coupling.xml/LoosePackageCoupling"/>
+  	<rule ref="rulesets/java/coupling.xml/LawOfDemeter"/>
 	<rule ref="rulesets/java/design.xml/FieldDeclarationsShouldBeAtStartOfClass"/>
 	<rule ref="rulesets/java/design.xml/LogicInversion"/>
 	<rule ref="rulesets/java/design.xml/UseVarargs"/>
+	<rule ref="rulesets/java/design.xml/GodClass"/>
 	<rule ref="rulesets/java/empty.xml/EmptyInitializer"/>
 	<rule ref="rulesets/java/empty.xml/EmptyStatementBlock"/>
 	<rule ref="rulesets/java/imports.xml/UnnecessaryFullyQualifiedName"/>
@@ -43,7 +45,8 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/java/strictexception.xml/AvoidCatchingGenericException"/>
 	<rule ref="rulesets/java/strictexception.xml/AvoidThrowingNewInstanceOfSameException"/>
 	<rule ref="rulesets/java/unnecessary.xml/UselessParentheses"/>
-
+  
 	<rule ref="rulesets/xml/basic.xml/MistypedCDATASection"/>
+  
 </ruleset>
 
