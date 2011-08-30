@@ -6,7 +6,6 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractResourceView;
 import net.sourceforge.pmd.eclipse.ui.views.AbstractStructureInspectorPage;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.IPage;
 
