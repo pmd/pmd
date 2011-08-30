@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * A number of String-specific utility methods for use by PMD or its IDE plugins.
+ * 
+ * @author br
+ */
 public final class StringUtil {
 
 	public static final String[] EMPTY_STRINGS = new String[0];
@@ -23,7 +28,24 @@ public final class StringUtil {
     private StringUtil() {}
     
     /**
-     * Returns whether the text arg matches any of the test values.
+     * Return whether the non-null text arg starts with any of the prefix
+     * values. 
+     * 
+     * @param text
+     * @param prefixes
+     * @return
+     */
+    public static boolean startsWithAny(String text, String... prefixes) {
+    	
+    	for (String prefix : prefixes) {
+    		if (text.startsWith(prefix)) return true;
+    	}
+    	
+    	return false;
+    }
+    
+    /**
+     * Returns whether the non-null text arg matches any of the test values.
      * 
      * @param text
      * @param tests
@@ -40,7 +62,7 @@ public final class StringUtil {
     
     /**
      * Checks for the existence of any of the listed prefixes on the
-     * text and removes them.
+     * non-null text and removes them.
      * 
      * @param text
      * @param prefixes
@@ -82,6 +104,7 @@ public final class StringUtil {
     public static boolean isNotEmpty(String value) {
     	return !isEmpty(value);
     }
+    
     /**
      * Returns true if both strings are effectively null or whitespace,
      * returns false otherwise if they have actual text that differs.
@@ -99,41 +122,41 @@ public final class StringUtil {
 	}
     
     public static String replaceString(final String original, char oldChar, final String newString) {
-	int index = original.indexOf(oldChar);
-	if (index < 0) {
-	    return original;
-	} else {
-	    final String replace = newString == null ? "" : newString;
-	    final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
-	    int last = 0;
-	    while (index != -1) {
-		buf.append(original.substring(last, index));
-		buf.append(replace);
-		last = index + 1;
-		index = original.indexOf(oldChar, last);
-	    }
-	    buf.append(original.substring(last));
-	    return buf.toString();
-	}
+		int index = original.indexOf(oldChar);
+		if (index < 0) {
+		    return original;
+		} else {
+		    final String replace = newString == null ? "" : newString;
+		    final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
+		    int last = 0;
+		    while (index != -1) {
+				buf.append(original.substring(last, index));
+				buf.append(replace);
+				last = index + 1;
+				index = original.indexOf(oldChar, last);
+			    }
+		    buf.append(original.substring(last));
+		    return buf.toString();
+		}
     }
 
     public static String replaceString(final String original, final String oldString, final String newString) {
-	int index = original.indexOf(oldString);
-	if (index < 0) {
-	    return original;
-	} else {
-	    final String replace = newString == null ? "" : newString;
-	    final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
-	    int last = 0;
-	    while (index != -1) {
-		buf.append(original.substring(last, index));
-		buf.append(replace);
-		last = index + oldString.length();
-		index = original.indexOf(oldString, last);
-	    }
-	    buf.append(original.substring(last));
-	    return buf.toString();
-	}
+		int index = original.indexOf(oldString);
+		if (index < 0) {
+		    return original;
+		} else {
+		    final String replace = newString == null ? "" : newString;
+		    final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
+		    int last = 0;
+		    while (index != -1) {
+				buf.append(original.substring(last, index));
+				buf.append(replace);
+				last = index + oldString.length();
+				index = original.indexOf(oldString, last);
+			    }
+		    buf.append(original.substring(last));
+		    return buf.toString();
+		}
     }
 
     /**
