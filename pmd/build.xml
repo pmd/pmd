@@ -47,7 +47,7 @@
 
 	<target name="compile" description="Compiles the code">
 		<mkdir dir="${dir.build}" />
-		<javac source="1.5" target="1.5" encoding="latin1" deprecation="true" debug="true" optimize="false" srcdir="${dir.src}:${dir.regress}" destdir="${dir.build}">
+		<javac source="1.5" target="1.5" encoding="utf8" deprecation="true" debug="true" optimize="false" srcdir="${dir.src}:${dir.regress}" destdir="${dir.build}">
 			<classpath>
 				<path refid="dependencies.path" />
 			</classpath>
@@ -234,7 +234,7 @@
 	<target name="test-execute" description="Runs the unit tests">
 		<delete dir="${test.outputdir}" />
 		<mkdir dir="${test.outputdir}/xml"/>
-		<junit printsummary="${test.printsummary}" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch"
+		<junit printsummary="${test.printsummary}" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" 
 			failureProperty="test.failure">
 			<sysproperty key="pmd.regress" value="${test.regression}"/>
 			<classpath>
@@ -243,7 +243,7 @@
 				<path path="${clover.jar}"/>
 				<path path="${ant-testutil.jar}"/>
 			</classpath>
-			<batchtest fork="yes" todir="${test.outputdir}/xml">
+			<batchtest fork="no" todir="${test.outputdir}/xml">
 				<fileset dir="${dir.regress}">
 					<include name="test/**/*Test.java" />
 					<exclude name="test/**/Abstract*"/>
