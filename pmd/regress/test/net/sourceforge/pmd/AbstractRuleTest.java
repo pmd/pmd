@@ -197,7 +197,7 @@ public class AbstractRuleTest {
         MyRule r2 = new MyRule();
         r2.setMessage("another message");
         assertEquals("Rules with different messages are still equal", r1, r2);
-        assertSame("Rules that are equal must have the same hashcode", r1.hashCode(), r2.hashCode());
+        assertEquals("Rules that are equal must have the an equal hashcode", r1.hashCode(), r2.hashCode());
     }
 
 

@@ -157,7 +157,7 @@ After checking an object reference for null, you should invoke equals() on that 
         <property name="xpath">
         <value>
         <![CDATA[
-(//PrimaryPrefix[ends-with(Name/@Image, '.equals')] | //PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)])
+(//PrimaryPrefix[ends-with(Name/@Image, '.equals') and Name/@Image != 'Arrays.equals'] | //PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)])
  /following-sibling::PrimarySuffix/Arguments/ArgumentList/Expression
  /PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix
  /Name[@Image = ./../../../../../../../../../../Expression/ConditionalAndExpression
