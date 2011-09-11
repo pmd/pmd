@@ -5,12 +5,27 @@ usage() {
     echo "this scripts requires the release version number"
 }
 
+check_dependency() {
+    local binary="${1}"
+
+    which "${binary}" > /dev/null
+    local status="${?}"
+    if [ ${status} -ne 0 ]; then
+        echo "missing dependency:${binary}"
+        exit ${status}
+    fi
+}
+
 version="${1}"
 
 if [ -z ${version} ]; then
     usage
     exit 1
 fi
+
+check_dependency ant
+check_dependency maven
+check_dependency mvn
 
 echo "building release version ${version}"
 
