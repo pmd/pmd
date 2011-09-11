@@ -121,16 +121,14 @@ fi
 
 echo "generating source file ${pmd_top_dir}/pmd-src-${version}.zip"
 
-cd ../bin/
-ant jarsrc
-cd ..
+ant -f ../bin/build.xml jarsrc
 if [ -z ${no_tags} ]; then
     svn -q export "https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_${release_tag}" "${pmd_src_dir}"
 fi
 make_tree_structure "${pmd_src_dir}"
-cp "lib/pmd-src-${version}.jar" "${pmd_src_dir}/lib/"
-cp "lib/pmd-${version}.jar" "${pmd_src_dir}/lib"
-cp -R target/docs "${pmd_src_dir}"
+cp "../lib/pmd-src-${version}.jar" "${pmd_src_dir}/lib/"
+cp "../lib/pmd-${version}.jar" "${pmd_src_dir}/lib"
+cp -R ../target/docs "${pmd_src_dir}"
 rm -f "${pmd_src_dir}/etc/clover.license"
 cd "${pmd_top_dir}"
 zip -q -r "pmd-src-${version}.zip" "${pmd_src_dir}"
