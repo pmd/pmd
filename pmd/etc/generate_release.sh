@@ -66,8 +66,8 @@ echo "building release version ${version}"
 
 pmd_top_dir="$(mktemp -d)"
 echo "working directory is:${pmd_top_dir}"
-pmd_bin_dir="${pmd_top_dir}/pmd-${version}"
-pmd_src_dir="${pmd_top_dir}/pmd-${version}"
+pmd_bin_dir="${pmd_top_dir}/pmd-bin-${version}"
+pmd_src_dir="${pmd_top_dir}/pmd-src-${version}"
 
 echo
 echo "Rebuilding everything"
