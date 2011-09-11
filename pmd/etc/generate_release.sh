@@ -1,8 +1,11 @@
 #!/bin/bash
 
 usage() {
-    echo "$(basename ${0}) version-number"
-    echo "this scripts requires the release version number"
+    echo "$(basename ${0}) -v version-number [-d] [-s]"
+    echo ""
+    echo "-v must provide the release's version number"
+    echo "-d no docs generation"
+    echo "-s no SVN tags"
 }
 
 check_dependency() {
@@ -16,7 +19,27 @@ check_dependency() {
     fi
 }
 
-version="${1}"
+while getopts V:Dh OPT; do
+    case "$OPT" in
+	    h)
+            usage
+            exit 0
+            ;;
+        v)
+            readonly version=${OPTARG}
+            ;;
+        d)
+            readonly no_docs="true"
+            ;;
+        s)
+            readonly no_tags="true"
+            ;;
+	    *)
+	        echo "Unrecognized options:${OPTARG}"
+	        exit 1;
+	        ;;
+    esac
+done
 
 if [ -z ${version} ]; then
     usage
@@ -49,16 +72,16 @@ if [ ${status} -ne 0 ]; then
     exit 2
 fi
 
-echo
-echo "Press [enter] to generate docs"
-
-read RESP
-./docs.sh all
+if [ -z ${no_docs} ]; then
+    ./docs.sh all
+else
+    echo "no documentation generation"
+fi
 
 cd etc
 
 echo
-echo "generating binary file $pmd_top_dir/pmd-bin-$version.zip"
+echo "generating binary file ${pmd_top_dir}/pmd-bin-${version}.zip"
 echo
 
 rm -rf "${pmd_bin_dir}"
@@ -83,31 +106,17 @@ cd "${pmd_top_dir}"
 zip -q -r "pmd-bin-${version}.zip pmd-${version}/"
 cd -
 
-echo
 echo "binary package generated"
-echo
 
 release_tag=$(echo ${version} | sed -e 's/\./_/g' )
 
-echo
-echo
-echo "Type \"yes\" to tag svn repository using 'pmd_release_${release_tag}'"
-
-read RESP;
-
-if [ "$RESP" = "yes" ]; then
-	echo
-	echo "Tagging release using"
+if [ -z ${no_tags} ]; then
+    echo "tagging svn repository using 'pmd_release_${release_tag}'"
 	echo "svn copy -m \"$version release tag\" https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag"
-	echo
 	svn copy -m "${version} release tag" https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag
 else
-	echo
 	echo "Skipping svn tag!!!"
-	echo
 fi
-
-
 
 echo "generating source file ${pmd_top_dir}/pmd-src-${version}.zip"
 
@@ -125,11 +134,7 @@ cd "${pmd_top_dir}"
 zip -q -r "pmd-src-${version}.zip" "pmd-${version}/"
 cd -
 
-echo
 echo "source package generated"
-echo
 
 echo "Use the command below to upload to sourceforge"
-echo
-echo "rsync -avP -e ssh $pmd_top_dir/pmd-src-$version.zip $pmd_top_dir/pmd-bin-$version.zip xlv@frs.sourceforge.net:uploads/"
-
+echo "rsync -avP -e ssh ${pmd_top_dir}/pmd-src-${version}.zip ${pmd_top_dir}/pmd-bin-${version}.zip xlv@frs.sourceforge.net:uploads/"
