@@ -41,6 +41,12 @@ echo
 
 cd ..
 ant -f bin/build.xml dist
+status="${?}"
+
+if [ ${status} -ne 0 ]; then
+    echo "build failed - aborting release"
+    exit 2
+fi
 
 echo
 echo "Press [enter] to generate docs"
