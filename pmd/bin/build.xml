@@ -432,7 +432,7 @@
 
 	<target name="clean" depends="delete,compile,copy" description="Does a complete recompile" />
 
-	<target name="dist" depends="clean,jar,weave" description="Preps things for a release" />
+	<target name="dist" depends="clean,jar" description="Preps things for a release" />
 
 	<target name="cpdjnlp" depends="dist" description="Uploads a new CPD JNLP thingy to the PMD web site">
 		<signjar jar="${dir.lib}/pmd-${version}.jar" storetype="${keystore.type}" alias="${keystore.alias}" keystore="${keystore.path}" storepass="${keystore.password}" />
