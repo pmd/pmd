@@ -99,7 +99,7 @@ mkdir "${pmd_bin_dir}/etc/xslt"
 cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css "${pmd_bin_dir}/etc/xslt/"
 cp -R ../target/docs "${pmd_bin_dir}"
 cd "${pmd_top_dir}"
-zip -q -r "pmd-bin-${version}.zip pmd-${version}/"
+zip -q -r "pmd-bin-${version}.zip" "${pmd_bin_dir}"
 cd -
 
 echo "binary package generated"
@@ -116,18 +116,18 @@ fi
 
 echo "generating source file ${pmd_top_dir}/pmd-src-${version}.zip"
 
-rm -rf "${pmd_src_dir}"
-rm -f "${pmd_top_dir}/pmd-src-${version}.zip"
 cd ../bin/
 ant jarsrc
 cd ..
-svn -q export "https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_${release_tag}" "${pmd_src_dir}"
+if [ -z ${no_tags} ]; then
+    svn -q export "https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_${release_tag}" "${pmd_src_dir}"
+fi
 cp "lib/pmd-src-${version}.jar" "${pmd_src_dir}/lib/"
 cp "lib/pmd-${version}.jar" "${pmd_src_dir}/lib"
 cp -R target/docs "${pmd_src_dir}"
 rm -f "${pmd_src_dir}/etc/clover.license"
 cd "${pmd_top_dir}"
-zip -q -r "pmd-src-${version}.zip" "pmd-${version}/"
+zip -q -r "pmd-src-${version}.zip" "${pmd_src_dir}"
 cd -
 
 echo "source package generated"
