@@ -43,19 +43,15 @@ while getopts v:dsh OPT; do
     esac
 done
 
+current_dir=$(pwd | sed -e 's/^.*\///')
+if [ "${current_dir}" != "etc" ]; then
+    echo "release script MUST be executed from the 'etc' folder"
+    exit 3
+fi
+
 if [ -z ${version} ]; then
     check_dependency "xsltproc"
     readonly version=$(xsltproc extract_release_number.xslt ../pom.xml  | grep VERSION | cut -f2 -d: | sed -e 's/-SNAPSHOT//')
-fi
-
-check_dependency "ant"
-check_dependency "maven"
-check_dependency "mvn"
-
-current_dir=$(pwd | sed -e 's/^.*\///')
-if [ "${current_dir}" -ne "etc" ], then
-    echo "release script MUST be executed from the 'etc' folder"
-    exit 3
 fi
 
 echo "building release version ${version}"
