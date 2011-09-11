@@ -1,5 +1,5 @@
 ???? - 4.2.6:
-Fixed bug 2920057 - False + : CloseRessource whith an external getter 
+Fixed bug 2920057 - False + : CloseRessource whith an external getter
 Fixed bug 1808110 - Fixed performance issue on PreserveStackTrace
 Fixed bug 2832322 -  cpd.xml file tag path attribute should be entity-encoded
 Fixed bug 2590258 - NPE with nicerhtml output
@@ -7,7 +7,7 @@ Fixed bug 2317099 - False + in SimplifyCondition
 Fixed bug 2606609 - False "UnusedImports" positive in package-info.java
 Fixed bug 2645268 - ClassCastException in UselessOperationOnImmutable.getDeclaration
 Fixed bug 2724653 - AvoidThreadGroup reports false positives
-Fixed bug 2835074 - False -: DoubleCheckedLocking with reversed null check  	 
+Fixed bug 2835074 - False -: DoubleCheckedLocking with reversed null check
 Fixed bug 2826119 - False +: DoubleCheckedLocking warning with volatile field
 Fixed bug 2904832 - Type resolution not working for ASTType when using an inner class
 
@@ -34,7 +34,7 @@ February 08, 2009 - 4.2.5:
 
 Enhanced logging in the ClassTypeResolver to provide more detailed messaging.
 Fixed bug 2315623 - @SuppressWarnings("PMD.UseSingleton") has no effect
-Fixed bug 2230809 - False +: ClassWithOnlyPrivateConstructorsShouldBeFinal  
+Fixed bug 2230809 - False +: ClassWithOnlyPrivateConstructorsShouldBeFinal
 Fixed bug 2338341 - ArrayIndexOutOfBoundsException in CPD (on Ruby)
 Fixed bug 2315599 - False +: UseSingleton with class containing constructor
 Fixed bug 1955852 - false positives for UnusedPrivateMethod & UnusedLocalVariable

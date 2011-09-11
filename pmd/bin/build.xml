@@ -214,7 +214,7 @@
 		<delete dir="${test.outputdir}" />
 		<mkdir dir="${test.outputdir}/xml"/>
 		<junit printsummary="${test.printsummary}" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch"
-			failureProperty="test.failure" 
+			failureProperty="test.failure"
 		>
 			<sysproperty key="pmd.regress" value="${test.regression}"/>
 			<classpath>
@@ -243,8 +243,8 @@
 			</fileset>
 			<report format="frames" todir="${test.outputdir}/html" />
 		</junitreport>
-		<xslt in="${test.outputdir}/xml/TESTS-TestSuites.xml" style="etc/xslt/junit-txt-output.xsl" out="${test.outputdir}/summary.txt" /> 
-		<concat> 
+		<xslt in="${test.outputdir}/xml/TESTS-TestSuites.xml" style="etc/xslt/junit-txt-output.xsl" out="${test.outputdir}/summary.txt" />
+		<concat>
 			<filelist dir="${test.outputdir}" files="summary.txt"/>
 		</concat>
 	</target>
