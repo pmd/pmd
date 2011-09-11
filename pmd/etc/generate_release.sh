@@ -6,6 +6,7 @@ usage() {
     echo "-v override the release's version number provided in pom.xml"
     echo "-d no docs generation"
     echo "-s no SVN tags"
+    echo "-S generate a snapshot"
     echo ""
     echo "This script MUST BE executed from the 'etc' folder of the PMD projet."
 }
@@ -22,7 +23,7 @@ check_dependency() {
 }
 
 make_tree_structure() {
-    local root_dir="{1}"
+    local root_dir="${1}"
 
     mkdir -p "${root_dir}/etc"
     mkdir "${root_dir}/bin"
@@ -43,6 +44,9 @@ while getopts v:dsh OPT; do
             ;;
         s)
             readonly no_tags="true"
+            ;;
+        S)
+            readonly snapshot="true"
             ;;
 	    *)
 	        echo "Unrecognized options:${OPTARG}"
@@ -69,9 +73,7 @@ echo "working directory is:${pmd_top_dir}"
 pmd_bin_dir="${pmd_top_dir}/pmd-bin-${version}"
 pmd_src_dir="${pmd_top_dir}/pmd-src-${version}"
 
-echo
 echo "Rebuilding everything"
-echo
 
 set -e
 
@@ -124,7 +126,12 @@ echo "generating source file ${pmd_top_dir}/pmd-src-${version}.zip"
 ant -f ../bin/build.xml jarsrc
 if [ -z ${no_tags} ]; then
     svn -q export "https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_${release_tag}" "${pmd_src_dir}"
+else
+    if [ "${snapshot}" = "true" ] ; then
+        svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x "${pmd_src_dir}"
+    fi
 fi
+
 make_tree_structure "${pmd_src_dir}"
 cp "../lib/pmd-src-${version}.jar" "${pmd_src_dir}/lib/"
 cp "../lib/pmd-${version}.jar" "${pmd_src_dir}/lib"
