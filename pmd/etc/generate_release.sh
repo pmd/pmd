@@ -87,8 +87,6 @@ fi
 
 echo "generating binary file ${pmd_top_dir}/pmd-bin-${version}.zip"
 
-rm -rf "${pmd_bin_dir}"
-rm -f "${pmd_top_dir}/pmd-bin-${version}.zip"
 mkdir -p "${pmd_bin_dir}/etc"
 mkdir "${pmd_bin_dir}/bin"
 mkdir "${pmd_bin_dir}/lib"
