@@ -68,7 +68,6 @@ pmd_top_dir="$(mktemp -d)"
 echo "working directory is:${pmd_top_dir}"
 pmd_bin_dir="${pmd_top_dir}/pmd-${version}"
 pmd_src_dir="${pmd_top_dir}/pmd-${version}"
-pmd_tmp_dir="${pmd_top_dir}/pmd-tmp"
 
 echo
 echo "Rebuilding everything"
