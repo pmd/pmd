@@ -23,9 +23,9 @@ if [ -z ${version} ]; then
     exit 1
 fi
 
-check_dependency ant
-check_dependency maven
-check_dependency mvn
+check_dependency "ant"
+check_dependency "maven"
+check_dependency "mvn"
 
 echo "building release version ${version}"
 
@@ -39,6 +39,7 @@ echo
 echo "Rebuilding everything"
 echo
 
+set -e
 cd ..
 ant -f bin/build.xml dist
 status="${?}"
