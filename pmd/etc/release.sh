@@ -17,7 +17,7 @@ check_dependency() {
     which "${binary}" > /dev/null
     local status="${?}"
     if [ ${status} -ne 0 ]; then
-        echo "missing dependency:${binary}"
+        echo "Missing dependency:${binary}"
         exit ${status}
     fi
 }
@@ -57,7 +57,7 @@ done
 
 current_dir=$(pwd | sed -e 's/^.*\///')
 if [ "${current_dir}" != "etc" ]; then
-    echo "release script MUST be executed from the 'etc' folder"
+    echo "Release script MUST be executed from the 'etc' folder"
     exit 3
 fi
 
@@ -66,10 +66,10 @@ if [ -z ${version} ]; then
     readonly version=$(xsltproc extract_release_number.xslt ../pom.xml  | grep VERSION | cut -f2 -d: | sed -e 's/-SNAPSHOT//')
 fi
 
-echo "building release version ${version}"
+echo "Building release version ${version}"
 
 pmd_top_dir="$(mktemp -d)"
-echo "working directory is:${pmd_top_dir}"
+echo "Working directory is:${pmd_top_dir}"
 pmd_bin_dir="${pmd_top_dir}/pmd-bin-${version}"
 pmd_src_dir="${pmd_top_dir}/pmd-src-${version}"
 
@@ -81,7 +81,7 @@ cd ..
 ant -f bin/build.xml dist
 status="${?}"
 if [ ${status} -ne 0 ]; then
-    echo "build failed - aborting release"
+    echo "Build failed - aborting release"
     exit 2
 fi
 cd etc
@@ -91,10 +91,10 @@ if [ -z ${no_docs} ]; then
     ./docs.sh all
     cd etc
 else
-    echo "no documentation generation"
+    echo "No documentation generation"
 fi
 
-echo "generating binary file ${pmd_top_dir}/pmd-bin-${version}.zip"
+echo "Generating binary file ${pmd_top_dir}/pmd-bin-${version}.zip"
 
 make_tree_structure "${pmd_bin_dir}"
 cp ../LICENSE.txt changelog.txt "${pmd_bin_dir}/etc"
@@ -109,19 +109,20 @@ cd "${pmd_top_dir}"
 zip -q -r "pmd-bin-${version}.zip" "${pmd_bin_dir}"
 cd -
 
-echo "binary package generated"
+echo "Binary package generated"
 
 release_tag=$(echo ${version} | sed -e 's/\./_/g' )
 
 if [ -z ${no_tags} ]; then
-    echo "tagging svn repository using 'pmd_release_${release_tag}'"
-	echo "svn copy -m \"$version release tag\" https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag"
+    echo "Tagging svn repository using 'pmd_release_${release_tag}'"
+	echo "running 'svn copy -m \"$version release tag\"
+    https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_${release_tag}'"
 	svn copy -m "${version} release tag" https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag
 else
 	echo "Skipping svn tag!!!"
 fi
 
-echo "generating source file ${pmd_top_dir}/pmd-src-${version}.zip"
+echo "Generating source file ${pmd_top_dir}/pmd-src-${version}.zip"
 
 ant -f ../bin/build.xml jarsrc
 if [ -z ${no_tags} ]; then
@@ -141,7 +142,7 @@ cd "${pmd_top_dir}"
 zip -q -r "pmd-src-${version}.zip" "${pmd_src_dir}"
 cd -
 
-echo "source package generated"
+echo "Source package generated"
 
 echo "Use the command below to upload to sourceforge"
 echo "rsync -avP -e ssh ${pmd_top_dir}/pmd-src-${version}.zip ${pmd_top_dir}/pmd-bin-${version}.zip xlv@frs.sourceforge.net:uploads/"
