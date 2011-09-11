@@ -1,11 +1,13 @@
 #!/bin/bash
 
 usage() {
-    echo "$(basename ${0}) -v version-number [-d] [-s]"
+    echo "$(basename ${0}) [-v version-number] [-d] [-s]"
     echo ""
-    echo "-v must provide the release's version number"
+    echo "-v override the release's version number provided in pom.xml"
     echo "-d no docs generation"
     echo "-s no SVN tags"
+    echo ""
+    echo "This script MUST BE executed from the 'etc' folder of the PMD projet."
 }
 
 check_dependency() {
@@ -19,7 +21,7 @@ check_dependency() {
     fi
 }
 
-while getopts V:Dh OPT; do
+while getopts v:dsh OPT; do
     case "$OPT" in
 	    h)
             usage
@@ -42,13 +44,19 @@ while getopts V:Dh OPT; do
 done
 
 if [ -z ${version} ]; then
-    usage
-    exit 1
+    check_dependency "xsltproc"
+    readonly version=$(xsltproc extract_release_number.xslt ../pom.xml  | grep VERSION | cut -f2 -d: | sed -e 's/-SNAPSHOT//')
 fi
 
 check_dependency "ant"
 check_dependency "maven"
 check_dependency "mvn"
+
+current_dir=$(pwd | sed -e 's/^.*\///')
+if [ "${current_dir}" -ne "etc" ], then
+    echo "release script MUST be executed from the 'etc' folder"
+    exit 3
+fi
 
 echo "building release version ${version}"
 
