@@ -21,6 +21,14 @@ check_dependency() {
     fi
 }
 
+make_tree_structure() {
+    local root_dir="{1}"
+
+    mkdir -p "${root_dir}/etc"
+    mkdir "${root_dir}/bin"
+    mkdir "${root_dir}/lib"
+}
+
 while getopts v:dsh OPT; do
     case "$OPT" in
 	    h)
@@ -87,9 +95,7 @@ fi
 
 echo "generating binary file ${pmd_top_dir}/pmd-bin-${version}.zip"
 
-mkdir -p "${pmd_bin_dir}/etc"
-mkdir "${pmd_bin_dir}/bin"
-mkdir "${pmd_bin_dir}/lib"
+make_tree_structure "${pmd_bin_dir}"
 cp ../LICENSE.txt changelog.txt "${pmd_bin_dir}/etc"
 cd ../bin/
 cp pmd.* build.xml cpd.sh cpdgui.bat designer.* "${pmd_bin_dir}/bin"
@@ -122,6 +128,7 @@ cd ..
 if [ -z ${no_tags} ]; then
     svn -q export "https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_${release_tag}" "${pmd_src_dir}"
 fi
+make_tree_structure "${pmd_src_dir}"
 cp "lib/pmd-src-${version}.jar" "${pmd_src_dir}/lib/"
 cp "lib/pmd-${version}.jar" "${pmd_src_dir}/lib"
 cp -R target/docs "${pmd_src_dir}"
