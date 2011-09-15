@@ -747,10 +747,9 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
             FileToMarkerRecord record = (FileToMarkerRecord) element;
             IMarker[] markers = record.findMarkers();
             deleteMarkers(markers);
-        } else if (element instanceof AbstractPMDRecord) {
+        } else {
             // simply delete markers from resource
-            AbstractPMDRecord record = element;
-            MarkerUtil.deleteAllMarkersIn(record.getResource());
+            MarkerUtil.deleteAllMarkersIn(element.getResource());
         }
     }
 
