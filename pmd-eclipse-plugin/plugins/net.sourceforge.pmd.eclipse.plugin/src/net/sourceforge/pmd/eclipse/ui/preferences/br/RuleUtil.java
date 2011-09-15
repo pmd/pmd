@@ -112,18 +112,18 @@ public class RuleUtil {
 	}
 
     public static Set<Comparable<?>> uniqueItemsIn(Object item, RuleFieldAccessor getter) {
-    	
-        Set<Comparable<?>> values = null;
-        
+    	        
         if (item instanceof Rule) {
-        	values = new HashSet<Comparable<?>>(1);
+        	Set<Comparable<?>> values = new HashSet<Comparable<?>>(1);
         	values.add( getter.valueFor((Rule) item) );
+        	return values;
         }
         
         if (item instanceof RuleCollection) {
-        	values = getter.uniqueValuesFor((RuleCollection)item);
+        	return getter.uniqueValuesFor((RuleCollection)item);
         }
-        return values;
+
+        return Collections.emptySet();
     }
 	
 	/** 
