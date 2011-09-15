@@ -98,7 +98,7 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
 	                    if (event.index != columnIndex) return;
 
                         Object value = ((TreeItem)event.item).getData();
-                        if (value instanceof RuleCollection) return;
+                        if (value == null || value instanceof RuleCollection) return;
                         
                         GC gc = event.gc;
 	                        
