@@ -120,7 +120,8 @@ public class TextColumnDescriptor extends SimpleColumnDescriptor {
             			if (event.index != columnIndex) return;
 
             			String text = textFor((TreeItem)event.item, getter);
-            			
+            			if (text == null) text = "";
+
 	                    Point size = event.gc.textExtent(text);
 	                    event.width = size.x + 2 * (3);
 	           //         event.height = Math.max(event.height, size.y + (3));
