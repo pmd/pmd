@@ -479,12 +479,20 @@
             category="net.sourceforge.pmd.eclipse.ui.views"
             name="%view.dataflowview"
             id="net.sourceforge.pmd.eclipse.ui.views.dataflowView"/>
+<!--  obsolete version           
       <view
             allowMultiple="false"
             category="net.sourceforge.pmd.eclipse.ui.views"
             class="net.sourceforge.pmd.eclipse.ui.views.cpd.CPDView"
             icon="icons/icon_cpd.gif"
             id="net.sourceforge.pmd.eclipse.ui.views.CPDView"
+            name="%view.cpd"/>   -->
+      <view
+            allowMultiple="false"
+            category="net.sourceforge.pmd.eclipse.ui.views"
+            class="net.sourceforge.pmd.eclipse.ui.views.cpd2.CPDView2"
+            icon="icons/icon_cpd.gif"
+            id="net.sourceforge.pmd.eclipse.ui.views.br.CPDView2"
             name="%view.cpd"/>
       <view
             allowMultiple="false"

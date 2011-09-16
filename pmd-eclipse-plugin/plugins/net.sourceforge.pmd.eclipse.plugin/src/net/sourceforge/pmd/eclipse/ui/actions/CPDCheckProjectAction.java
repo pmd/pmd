@@ -13,7 +13,7 @@ import net.sourceforge.pmd.eclipse.runtime.cmd.DetectCutAndPasteCmd;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.dialogs.CPDCheckDialog;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.eclipse.ui.views.cpd.CPDView;
+import net.sourceforge.pmd.eclipse.ui.views.cpd2.CPDView2;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -105,7 +105,7 @@ public class CPDCheckProjectAction extends AbstractUIAction {
         final boolean createReport = dialog.isCreateReportSelected();
         final Renderer selectedRenderer = this.createRenderer(dialog.getSelectedFormat());
         final String fileName = this.createFileName(dialog.getSelectedFormat());
-        final CPDView view = showView();
+        final CPDView2 view = showView();
 
         try {
             final DetectCutAndPasteCmd detectCmd = new DetectCutAndPasteCmd();
@@ -127,11 +127,11 @@ public class CPDCheckProjectAction extends AbstractUIAction {
      * Shows the view.
      * @param matches
      */
-    private CPDView showView() {
-        CPDView view = null;
+    private CPDView2 showView() {
+        CPDView2 view = null;
         try {
             final IWorkbenchPage workbenchPage = targetPartSite().getPage();
-            view = (CPDView) workbenchPage.showView(PMDUiConstants.ID_CPDVIEW);
+            view = (CPDView2) workbenchPage.showView(PMDUiConstants.ID_CPDVIEW2);
         } catch (PartInitException pie) {
             logError( getString(StringKeys.ERROR_VIEW_EXCEPTION), pie);
         } 
