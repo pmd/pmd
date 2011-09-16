@@ -3,7 +3,6 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -129,8 +128,9 @@ public class TypeText extends Composite {
             return cls;
         }
 
-        // FIXME - incorporate this
-//        JavaConventions.validateClassFileName(typeStr, sourceLevel, complianceLevel);
+        // FIXME - incorporate this      
+//        IJavaProject project = getJavaProject();
+//        IStatus status = JavaConventions.validateClassFileName(typeStr, project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true));
         
         try {
             return Class.forName(typeStr);

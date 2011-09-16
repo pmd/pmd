@@ -95,6 +95,7 @@ public class UniqueItemsAsShapeBuilder extends AbstractCellPainterBuilder {
                 if (event.index != columnIndex) return;
                 
                 Object item = ((TreeItem)event.item).getData();
+                if (item == null) return;
                 Set<Comparable<?>> items = RuleUtil.uniqueItemsIn(item, getter);
                 
                 event.width = width + (items.size() * width);
