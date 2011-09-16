@@ -23,6 +23,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -52,6 +53,7 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
 	private Button				unSelectAllButton;
 	private ModifyListener		modifyListener;
 	private Label				activeCountLabel;
+	private Label				activeCountIssue;
 	
 	private ChangeRecord<T>		changes;
 		
@@ -355,16 +357,24 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
 		System.out.println("TODO: toggle selected items");
 	}
 	
-	protected void buildActiveCountLabel(Composite parent) {
+	protected void buildActiveCountWidgets(Composite parent) {
         activeCountLabel = new Label(parent, 0);
         activeCountLabel.setText("---");
+        
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER, GridData.CENTER, true, false, 1, 1);
         activeCountLabel.setAlignment(SWT.RIGHT);
 	    activeCountLabel.setLayoutData(data);
+	    
+	    activeCountIssue = new Label(parent, 0);
+        data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER, GridData.CENTER, true, false, 1, 1);
+        activeCountIssue.setAlignment(SWT.RIGHT);
+        activeCountIssue.setLayoutData(data);
 	}
 	
-	protected void activeCountText(String msg) {
+	protected void activeCountDetails(String msg, Image image) {
 		activeCountLabel.setText(msg);
+		activeCountIssue.setImage(image);
+		activeCountIssue.getParent().pack();
 		activeCountLabel.getParent().pack();	// handle changing string length
 	}
 	

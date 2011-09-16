@@ -122,13 +122,14 @@ public interface RuleFieldAccessor {
 			if (sb.length() == 0) sb.append(ruleTypeGeneric[0]);
 			return sb.toString();
 		}
+		final int labelTypeIdx = 0;	// just show the letter codes
 		public String labelFor(Rule rule) {
 		    List<String> types = new ArrayList<String>(3);
-            if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) types.add(ruleTypeXPath[1]);
+            if (rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR)) types.add(ruleTypeXPath[labelTypeIdx]);
 	//	    if (if (RuleUtil.isXPathRule(rule))    TODO
-            if (rule.usesDFA()) types.add(ruleTypeDFlow[1]);
-            if (rule.usesTypeResolution()) types.add(ruleTypeTypeRes[1]);
-            if (types.isEmpty()) types.add(ruleTypeGeneric[1]);
+            if (rule.usesDFA()) types.add(ruleTypeDFlow[labelTypeIdx]);
+            if (rule.usesTypeResolution()) types.add(ruleTypeTypeRes[labelTypeIdx]);
+            if (types.isEmpty()) types.add(ruleTypeGeneric[labelTypeIdx]);
             return Util.asString(types, ", ");
 		}
 	};

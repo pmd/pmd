@@ -223,7 +223,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
 				desc.defaultWidth() :
 				((Integer)widthData).intValue();
 	    WidthChangeThread t = new WidthChangeThread(0, width, cwa);
-	    t.run();
+	    t.start();
 	}
 
 	protected void hide(ColumnDescriptor desc) {
@@ -233,7 +233,7 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
 		
 		cwa.setData("restoredWidth", Integer.valueOf( cwa.width() ));
         WidthChangeThread t = new WidthChangeThread(cwa.width(), 0, cwa);
-        t.run();
+        t.start();
 	}
 	
 	protected boolean isHidden(ColumnDescriptor desc) {
