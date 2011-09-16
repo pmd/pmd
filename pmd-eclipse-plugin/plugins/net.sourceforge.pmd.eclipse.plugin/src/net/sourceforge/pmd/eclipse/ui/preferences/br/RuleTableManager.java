@@ -24,8 +24,10 @@ import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.CreateRuleWizard;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.designer.Designer;
 
 import org.eclipse.jface.dialogs.InputDialog;
@@ -435,7 +437,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
             }
           });
 
-         buildActiveCountLabel(panel);
+         buildActiveCountWidgets(panel);
 
 	     return panel;
 	 }
@@ -810,10 +812,14 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 	private int[] selectionRatioIn(Rule[] rules) {
 
 		int selectedCount = 0;
+		int dysfunctionCount = 0;
 		for (Rule rule : rules) {
-			if (isActive(rule.getName())) selectedCount++;
+			if (isActive(rule.getName())) {
+				selectedCount++;
+				if (StringUtil.isNotEmpty(rule.dysfunctionReason())) dysfunctionCount++;
+			}
 		}
-		return new int[] { selectedCount , rules.length };
+		return new int[] { selectedCount , rules.length, dysfunctionCount };
 	}
 
 	protected void setAllItemsActive() {
@@ -888,16 +894,27 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		ruleSet = theSet;
 	}
 	
+	private boolean activeRulesHaveIssues(Rule[] rules) {
+		for (Rule rule : rules) {
+			if (isActive(rule.getName()) && StringUtil.isNotEmpty(rule.dysfunctionReason())) 
+				return true;
+		}
+		return false;
+	}
+	
 	protected void updateCheckControls() {
 
 		Rule[] rules = new Rule[ruleSet.size()];
 		rules = ruleSet.getRules().toArray(rules);
 		int[] selectionRatio = selectionRatioIn(rules);
-
+		boolean hasIssues = selectionRatio[2] > 0;
 		updateButtonsFor(selectionRatio);
 		
 		String label = SWTUtil.stringFor(StringKeys.PREF_RULESET_ACTIVE_RULE_COUNT);
-		activeCountText(label + " " + activeItemCount() + " / " + ruleSet.size());
+		activeCountDetails(
+				label + " " + activeItemCount() + " / " + ruleSet.size(),
+				hasIssues ? ResourceManager.imageFor(PMDUiConstants.ICON_WARN) : null
+				);
 	}
 
 	protected void updateTooltipFor(TreeItem item, int columnIndex) {
