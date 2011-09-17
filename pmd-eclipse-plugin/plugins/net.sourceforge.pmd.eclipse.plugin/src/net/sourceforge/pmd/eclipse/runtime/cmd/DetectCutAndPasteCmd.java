@@ -54,6 +54,7 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -71,10 +72,6 @@ import org.eclipse.ui.IPropertyListener;
  */
 public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
-    private static final long serialVersionUID = 1L;
-
-    private static final Logger log = Logger.getLogger(DetectCutAndPasteCmd.class);
-
     private Language language;
     private int minTileSize;
     private Renderer renderer;
@@ -82,28 +79,41 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
     private boolean createReport;
     private List<IPropertyListener> listeners;
 
+    private static final long serialVersionUID = 1L;
+    private static final Logger log = Logger.getLogger(DetectCutAndPasteCmd.class);
+    
     /**
      * Default Constructor
      */
     public DetectCutAndPasteCmd() {
         super("DetectCutAndPaste", "Detect Cut & paste for a project");
         
-        this.setOutputProperties(true);
-        this.setReadOnly(false);
-        this.setTerminated(false);
-        this.listeners = new ArrayList<IPropertyListener>();
+        setOutputProperties(true);
+        setReadOnly(false);
+        setTerminated(false);
+        listeners = new ArrayList<IPropertyListener>();
     }
 
+    private void notifyListeners(final CPD cpd) {
+        // trigger event propertyChanged for all listeners
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {                            
+                for (IPropertyListener listener : listeners) {
+                    listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
+                }
+            }
+        });
+    }
+    
     /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     @Override
     public void execute() throws CommandException {
         try {
-            // find the files
-            List<File> files = findFiles();
+            List<File> files = findCandidateFiles();
 
-            if (files.size() == 0) {
+            if (files.isEmpty()) {
                 logInfo("No files found for specified language.");
             } else {
                 logInfo("Found " + files.size() + " files for the specified language. Performing CPD.");
@@ -112,24 +122,13 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             beginTask("Finding suspect Cut And Paste", getStepCount()*2);
 
             if (!isCanceled()) {
-                // detect cut and paste
                 final CPD cpd = detectCutAndPaste(files);
 
                 if (!isCanceled()) {
-                    // if the command was not canceled
                     if (createReport) {
-                        // create the report optionally
-                        this.renderReport(cpd.getMatches());
+                        renderReport(cpd.getMatches());
                     }
-
-                    // trigger event propertyChanged for all listeners
-                    Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {                            
-                            for (IPropertyListener listener : listeners) {
-                                listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
-                            }
-                        }
-                    });
+                    notifyListeners(cpd);
                 }
             }
         } catch (CoreException e) {
@@ -171,7 +170,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @param tilesize The tilesize to set.
      */
     public void setMinTileSize(final int tilesize) {
-        this.minTileSize = tilesize;
+        minTileSize = tilesize;
     }
 
     /**
@@ -203,6 +202,10 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         listeners.add(listener);
     }
 
+    private boolean canRenderReport() {
+    	return renderer != null && StringUtil.isNotEmpty(reportName);
+    }
+    
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
@@ -211,7 +214,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
         return super.isReadyToExecute()
             && language != null
             && (!createReport // need a renderer and reportName if a report should be created
-                    || renderer != null && reportName != null);
+                    || canRenderReport());
     }
 
     /**
@@ -221,7 +224,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @throws PropertiesException
      * @throws CoreException
      */
-    private List<File> findFiles() throws PropertiesException, CoreException {
+    private List<File> findCandidateFiles() throws PropertiesException, CoreException {
         final IProjectProperties properties = projectProperties();
         final CPDVisitor visitor = new CPDVisitor();
         visitor.setWorkingSet(properties.getProjectWorkingSet());
@@ -291,10 +294,10 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
             final IFile reportFile = folder.getFile(reportName);
             contentsStream = new ByteArrayInputStream(reportString.getBytes());
             if (reportFile.exists()) {
-                log.debug("   Overwritting the report file");
+                log.debug("   Overwriting report file");
                 reportFile.setContents(contentsStream, true, false, getMonitor());
             } else {
-                log.debug("   Creating the report file");
+                log.debug("   Creating report file");
                 reportFile.create(contentsStream, true, getMonitor());
             }
             reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());

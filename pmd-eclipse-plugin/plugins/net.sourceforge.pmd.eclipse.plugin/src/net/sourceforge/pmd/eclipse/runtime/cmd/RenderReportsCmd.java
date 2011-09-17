@@ -51,6 +51,7 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -70,11 +71,11 @@ import org.eclipse.jdt.core.JavaCore;
  * @author Philippe Herlin
  *
  */
-public class RenderReportCmd extends AbstractProjectCommand {
+public class RenderReportsCmd extends AbstractProjectCommand {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = Logger.getLogger(RenderReportCmd.class);
+    private static final Logger log = Logger.getLogger(RenderReportsCmd.class);
 
     /**
      * Table containing the renderers indexed by the file name.
@@ -84,12 +85,12 @@ public class RenderReportCmd extends AbstractProjectCommand {
     /**
      * Default Constructor
      */
-    public RenderReportCmd() {
-        super("RenderReport", "Produce a HTML report for a project");
+    public RenderReportsCmd() {
+        super("RenderReport", "Produce reports for a project");
 
-        this.setOutputProperties(false);
-        this.setReadOnly(false);
-        this.setTerminated(false);
+        setOutputProperties(false);
+        setReadOnly(false);
+        setTerminated(false);
     }
 
     /**
@@ -103,11 +104,53 @@ public class RenderReportCmd extends AbstractProjectCommand {
     }
 
     /**
+     * 
+     * @param report
+     * @param folder
+     * @param reportName
+     * @param renderer
+     * @throws IOException
+     * @throws CoreException
+     */
+    private void render(Report report, IFolder folder, String reportName, Renderer renderer) throws IOException, CoreException {
+    	
+        StringWriter writer = new StringWriter();
+        String reportString = null;
+        
+        try {
+	        renderer.setWriter(writer);
+	        renderer.start();
+	        renderer.renderFileReport(report);
+	        renderer.end();
+	
+	        reportString = writer.toString();
+	        } finally {
+	        	IOUtil.closeQuietly(writer);
+	        }
+	        
+	    if (StringUtil.isEmpty(reportString)) {
+	    	log.debug("Missing content for report: " + reportName);
+	    	return;
+	    }
+	        
+        log.debug("   Creating the report file");
+        final IFile reportFile = folder.getFile(reportName);
+        final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
+        if (reportFile.exists()) {
+            reportFile.setContents(contentsStream, true, false, getMonitor());
+        } else {
+            reportFile.create(contentsStream, true, getMonitor());
+        }
+        reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+        contentsStream.close();    	
+    }
+    
+    /**
      * @see name.herlin.command.AbstractProcessableCommand#execute()
      */
     @Override
     public void execute() throws CommandException {
-    	StringWriter writer = null;
+
         try {
             log.debug("Starting RenderReport command");
             log.debug("   Create a report object");
@@ -120,28 +163,10 @@ public class RenderReportCmd extends AbstractProjectCommand {
             }
 
             for (Map.Entry<String, Renderer> entry: renderers.entrySet()) {
-                final String reportName = entry.getKey();
-                final Renderer renderer = entry.getValue();
-
+                String reportName = entry.getKey();
+                Renderer renderer = entry.getValue();
                 log.debug("   Render the report");
-                writer = new StringWriter();
-                renderer.setWriter(writer);
-                renderer.start();
-                renderer.renderFileReport(report);
-                renderer.end();
-
-                String reportString = writer.toString();
-
-                log.debug("   Creating the report file");
-                final IFile reportFile = folder.getFile(reportName);
-                final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
-                if (reportFile.exists()) {
-                    reportFile.setContents(contentsStream, true, false, getMonitor());
-                } else {
-                    reportFile.create(contentsStream, true, getMonitor());
-                }
-                reportFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-                contentsStream.close();
+                render(report, folder, reportName, renderer);
             }
         } catch (CoreException e) {
             log.debug("Core Exception: " + e.getMessage(), e);
@@ -149,8 +174,7 @@ public class RenderReportCmd extends AbstractProjectCommand {
         } catch (IOException e) {
             log.debug("Core Exception: " + e.getMessage(), e);
             throw new CommandException(e);
-        } finally {
-        	IOUtil.closeQuietly(writer);
+        } finally {        	
             log.debug("End of RenderReport command");
             setTerminated(true);
         }
