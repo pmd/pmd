@@ -3,7 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.actions;
 import java.util.Properties;
 
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.eclipse.runtime.cmd.RenderReportCmd;
+import net.sourceforge.pmd.eclipse.runtime.cmd.RenderReportsCmd;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.renderers.CSVRenderer;
@@ -41,7 +41,7 @@ public class GenerateReportAction extends AbstractUIAction {
             try {
                 final IProject project = getProject((IStructuredSelection) sel);
                 if (project != null) {
-                    final RenderReportCmd cmd = new RenderReportCmd();
+                    final RenderReportsCmd cmd = new RenderReportsCmd();
                     cmd.setProject(project);
                     cmd.setUserInitiated(true);
 
