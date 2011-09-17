@@ -35,53 +35,54 @@ public class JavaProjectClassLoader extends URLClassLoader {
 	}
 
 	private void addURLs(IJavaProject javaProject, boolean exportsOnly) {
-		if (!javaProjects.contains(javaProject)) {
-			javaProjects.add(javaProject);
+		
+		if (javaProjects.contains(javaProject)) return;
+		
+		javaProjects.add(javaProject);
 
-			try {
-				// Add default output location
-				addURL(javaProject.getOutputLocation());
+		try {
+			// Add default output location
+			addURL(javaProject.getOutputLocation());
 
-				// Add each classpath entry
-				IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
-				for (IClasspathEntry classpathEntry : classpathEntries) {
-					if (classpathEntry.isExported() || !exportsOnly) {
-						switch (classpathEntry.getEntryKind()) {
+			// Add each classpath entry
+			IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+			for (IClasspathEntry classpathEntry : classpathEntries) {
+				if (classpathEntry.isExported() || !exportsOnly) {
+					switch (classpathEntry.getEntryKind()) {
 
-						// Recurse on projects
-						case IClasspathEntry.CPE_PROJECT:
-							IProject project = javaProject.getProject().getWorkspace().getRoot().getProject(
-									classpathEntry.getPath().toString());
-							IJavaProject javaProj = JavaCore.create(project);
-							if (javaProj != null) {
-								addURLs(javaProj, true);
+					// Recurse on projects
+					case IClasspathEntry.CPE_PROJECT:
+						IProject project = javaProject.getProject().getWorkspace().getRoot().getProject(
+								classpathEntry.getPath().toString());
+						IJavaProject javaProj = JavaCore.create(project);
+						if (javaProj != null) {
+							addURLs(javaProj, true);
 							}
-							break;
+						break;
 
 						// Library
-						case IClasspathEntry.CPE_LIBRARY:
-							addURL(classpathEntry);
-							break;
+					case IClasspathEntry.CPE_LIBRARY:
+						addURL(classpathEntry);
+						break;
 
-						// Only Source entries with custom output location need to be added
-						case IClasspathEntry.CPE_SOURCE:
-							IPath outputLocation = classpathEntry.getOutputLocation();
-							if (outputLocation != null) {
-								addURL(outputLocation);
+					// Only Source entries with custom output location need to be added
+					case IClasspathEntry.CPE_SOURCE:
+						IPath outputLocation = classpathEntry.getOutputLocation();
+						if (outputLocation != null) {
+							addURL(outputLocation);
 							}
-							break;
+						break;
 
-						// Variable and Container entries should not be happening, because we've asked for resolved entries.
-						case IClasspathEntry.CPE_VARIABLE:
-						case IClasspathEntry.CPE_CONTAINER:
-							break;
-						}
+					// Variable and Container entries should not be happening, because we've asked for resolved entries.
+					case IClasspathEntry.CPE_VARIABLE:
+					case IClasspathEntry.CPE_CONTAINER:
+					break;
 					}
 				}
-			} catch (JavaModelException e) {
-				log.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
 			}
-		}
+		} catch (JavaModelException e) {
+			log.debug("MalformedURLException occurred: " + e.getLocalizedMessage(), e);
+			}
 	}
 
 	private void addURL(IClasspathEntry classpathEntry) {

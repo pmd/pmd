@@ -27,7 +27,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
     public static final Logger log = Logger.getLogger(PMDBuilder.class);
     public static final String PMD_BUILDER = "net.sourceforge.pmd.eclipse.plugin.pmdBuilder";
 
-    IProject[] EMPTY_PROJECT_ARRAY = new IProject[0];
+    public static final IProject[] EMPTY_PROJECT_ARRAY = new IProject[0];
     /**
      * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
      */
