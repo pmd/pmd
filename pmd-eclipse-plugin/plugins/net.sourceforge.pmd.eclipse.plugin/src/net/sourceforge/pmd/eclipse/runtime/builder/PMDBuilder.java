@@ -23,9 +23,11 @@ import org.eclipse.core.runtime.Status;
  *
  */
 public class PMDBuilder extends IncrementalProjectBuilder {
+	
     public static final Logger log = Logger.getLogger(PMDBuilder.class);
     public static final String PMD_BUILDER = "net.sourceforge.pmd.eclipse.plugin.pmdBuilder";
 
+    IProject[] EMPTY_PROJECT_ARRAY = new IProject[0];
     /**
      * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -50,7 +52,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         }
 
         log.info("Build done.");
-        return null;
+        return EMPTY_PROJECT_ARRAY;
     }
 
     /**
