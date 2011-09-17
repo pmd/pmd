@@ -34,6 +34,10 @@ public class JavaProjectClassLoader extends URLClassLoader {
 		workspaceRoot = null;
 	}
 
+	private static IProject projectFor(IJavaProject javaProject, IClasspathEntry classpathEntry) {
+		return javaProject.getProject().getWorkspace().getRoot().getProject(classpathEntry.getPath().toString());
+	}
+	
 	private void addURLs(IJavaProject javaProject, boolean exportsOnly) {
 		
 		if (javaProjects.contains(javaProject)) return;
@@ -52,8 +56,7 @@ public class JavaProjectClassLoader extends URLClassLoader {
 
 					// Recurse on projects
 					case IClasspathEntry.CPE_PROJECT:
-						IProject project = javaProject.getProject().getWorkspace().getRoot().getProject(
-								classpathEntry.getPath().toString());
+						IProject project = projectFor(javaProject, classpathEntry);
 						IJavaProject javaProj = JavaCore.create(project);
 						if (javaProj != null) {
 							addURLs(javaProj, true);
