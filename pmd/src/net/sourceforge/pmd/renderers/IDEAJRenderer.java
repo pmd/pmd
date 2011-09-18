@@ -43,6 +43,8 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 		fileName = properties.getProperty(FILE_NAME);
 	}
 
+	 public String defaultFileExtension() { return "txt"; }
+	 
 	/**
 	 * {@inheritDoc}
 	 */

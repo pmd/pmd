@@ -34,6 +34,8 @@ public class TextPadRenderer extends AbstractIncrementingRenderer {
 	super(NAME, "TextPad integration.", properties);
     }
 
+    public String defaultFileExtension() { return "txt"; }
+    
     /**
      * {@inheritDoc}
      */

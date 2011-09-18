@@ -37,6 +37,8 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 		linePrefix = properties.getProperty(LINE_PREFIX);
     }
 
+    public String defaultFileExtension() { return "html"; }
+    
     /**
      * Write the body of the main body of the HTML content.
      *

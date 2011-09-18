@@ -51,6 +51,13 @@ public interface Renderer {
     String getDescription();
 
     /**
+     * Return the default filename extension to use.
+     * 
+     * @return
+     */
+    String defaultFileExtension();
+    
+    /**
      * Set the description of the Renderer.
      * @param description The description of the Renderer.
      */

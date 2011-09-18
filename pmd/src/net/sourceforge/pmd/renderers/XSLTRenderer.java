@@ -58,6 +58,8 @@ public class XSLTRenderer extends XMLRenderer {
 	}
     }
 
+    public String defaultFileExtension() { return "xsl"; }
+    
     /**
      * {@inheritDoc}
      */

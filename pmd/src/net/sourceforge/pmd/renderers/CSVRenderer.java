@@ -43,6 +43,8 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 	getWriter().write(buf.toString());
     }
 
+    public String defaultFileExtension() { return "csv"; }
+    
     /**
      * {@inheritDoc}
      */

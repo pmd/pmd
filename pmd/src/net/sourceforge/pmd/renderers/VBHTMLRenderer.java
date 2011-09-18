@@ -24,6 +24,8 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
 	super(NAME, "Vladimir Bossicard HTML format.", properties);
     }
 
+    public String defaultFileExtension() { return "vb.html"; }
+    
     /**
      * {@inheritDoc}
      */

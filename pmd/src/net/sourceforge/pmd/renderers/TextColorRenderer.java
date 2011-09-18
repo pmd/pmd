@@ -73,6 +73,8 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 	defineProperty(COLOR, "Enables colors with anything other than 'false' or '0'.");
     }
 
+    public String defaultFileExtension() { return "txt"; }
+    
     /**
      * Enables colors on *nix systems - not windows. Color support depends
      * on the pmd.color property, which should be set with the -D option

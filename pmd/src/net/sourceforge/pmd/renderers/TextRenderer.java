@@ -23,6 +23,9 @@ public class TextRenderer extends AbstractIncrementingRenderer {
 	super(NAME, "Text format.", properties);
     }
 
+    
+    public String defaultFileExtension() { return "txt"; }
+    
     /**
      * {@inheritDoc}
      */

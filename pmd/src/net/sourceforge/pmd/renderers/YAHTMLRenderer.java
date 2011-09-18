@@ -29,6 +29,8 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 	this.outputDir = properties.getProperty(OUTPUT_DIR);
     }
 
+    public String defaultFileExtension() { return "html"; }
+    
     /**
      * {@inheritDoc}
      */

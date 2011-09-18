@@ -27,6 +27,8 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
 	super.defineProperty(HTMLRenderer.LINE_PREFIX, "Prefix for line number anchor in the source file.");
     }
 
+    public String defaultFileExtension() { return "html"; }
+    
     /**
      * {@inheritDoc}
      */

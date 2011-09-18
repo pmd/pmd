@@ -36,6 +36,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 	}
     }
 
+    public String defaultFileExtension() { return "xml"; }
+    
     /**
      * {@inheritDoc}
      */
