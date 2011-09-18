@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -329,10 +330,16 @@ public class PMDTask extends Task {
 	}
 
 	private void validate() throws BuildException {
-		// TODO - check for empty Formatters List here?
-		for (Formatter f : formatters) {
-			if (f.isNoOutputSupplied()) {
-				throw new BuildException("toFile or toConsole needs to be specified in Formatter");
+		if (formatters.isEmpty()) {
+			Formatter defaultFormatter = new Formatter();
+			defaultFormatter.setType("text");
+			defaultFormatter.setToConsole(true);
+			formatters.add(defaultFormatter);
+		} else {
+			for (Formatter f : formatters) {
+				if (f.isNoOutputSupplied()) {
+					throw new BuildException("toFile or toConsole needs to be specified in Formatter");
+				}
 			}
 		}
 

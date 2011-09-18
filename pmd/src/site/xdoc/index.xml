@@ -16,9 +16,16 @@
       </ul>
 
       <h3>Download (early access)</h3>
-      <p>A new snapshot of the 5.0 release is generated daily using a <a href="https://hudson.dev.java.net/">Hudson</a> continuous integration server.</p>
-      <p>Source and binary packages are available <a href="http://hudson.xlv-labs.com/job/PMD-snapshot/">here</a> in the artifacts section in the center of the page. The packages for older builds can be accessed by navigating to the details page for a given build.</p>
+      <p>A new snapshot of the 5.0 release is generated daily using a <a href="http://jenkins-ci.org/">Jenkins</a> continuous integration server.</p>
+      <p>Source and binary packages are available at
+      
+      <!-- <a href="http://hudson.xlv-labs.com/job/PMD-snapshot/">here</a> -->
+      <a href="http://pmd.adabolo.de/job/pmd%20jar/">http://pmd.adabolo.de/job/pmd jar/</a>
+      in the artifacts section in the center of the page. The packages for older builds can be accessed by navigating to the details page for a given build.</p>
+      
+      <!-- 
       <p>Maven packages are also generated daily and uploaded to the <a href="http://pmd.sourceforge.net/snapshot/maven2">snapshot repository</a>.</p>
+      -->
 <!--
       <p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>.</p>
 -->

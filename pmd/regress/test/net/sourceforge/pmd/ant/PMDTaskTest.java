@@ -18,12 +18,11 @@ public class PMDTaskTest extends BuildFileTest {
 
     @Test
     public void testNoFormattersValidation() {
-        // FIXME: no formatter is needed for ant to run
-        // see TODO in PMDTask.validate()
         if (TestDescriptor.inRegressionTestMode()) {
             return;
         }
-        expectBuildExceptionContaining("testNoFormattersValidation", "Valid Error Message", "<??>");
+        executeTarget("testNoFormattersValidation");
+        assertOutputContaining("Fields should be declared at the top of the class");
     }
 
     @Test

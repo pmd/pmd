@@ -300,6 +300,7 @@ Ant changes:
 
    Removed - <formatter> 'linkPrefix' attribute, use <param name="linkPrefix"> instead
    Removed - <formatter> 'linePrefix' attribute, use <param name="linePrefix"> instead
+   Changed - <formatter> is optional - if not specified, falls back to "text" and console output.
    Removed - <pmd> 'targetJDK' attribute to <version>lang version</version> instead
      Added - <param name="name" value="value"/> as generic way to pass properties to Renderers on <formatter>
    Renamed - <pmd> 'excludeMarker' attribute to 'suppressMarker'
@@ -440,8 +441,8 @@ New Java rules:
 
 	Basic ruleset: ExtendsObject,CheckSkipResult,AvoidBranchingStatementAsLastInLoop
 	Controversial ruleset: AvoidLiteralsInIfCondition, AvoidPrefixingMethodParameters, OneDeclarationPerLine, UseConcurrentHashMap
-	Coupling ruleset: LoosePackageCoupling
-	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass
+	Coupling ruleset: LoosePackageCoupling,LawofDemeter
+	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass,GodClass
 	Empty ruleset: EmptyInitializer,EmptyStatementBlock
 	Import ruleset: UnnecessaryFullyQualifiedName
 	Optimization ruleset: RedundantFieldInitializer

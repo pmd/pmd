@@ -108,6 +108,9 @@
 
 	<target name="testNoFormattersValidation">
 		<pmd rulesetfiles="${pmd.home}/rulesets/java/design.xml">
+            <fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
+                <include name="*.java"/>
+            </fileset>
 		</pmd>
 	</target>
 

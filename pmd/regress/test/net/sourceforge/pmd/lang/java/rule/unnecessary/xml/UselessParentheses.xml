@@ -80,8 +80,16 @@ useful parentheses, logic
         <code><![CDATA[
 public class Foo {
    public int bar(int x) {
+   // actually, the inner parentheses wouldn't be necessary,
+   // as the "||" operator has the lowest priority, followed by "=="
+   // and by "%" with the highest priority here...
+   // But for readability, it is better to have the parentheses as in
+   // this example.
       if ((x % 2 == 0) || (x % 2 == 1)) {
          return x;
+      } else {
+         // it's the same with this extra parentheses
+         return (x %2 == 0) ? x : -x;
       }
       return -x;
    }
@@ -122,18 +130,22 @@ false negatives
         <code><![CDATA[
 public class Foo {
    private boolean isSimpleReturn(Node node) {
-      return ( node instanceof ASTReturnStatement ) && ( node.jjtGetNumChildren() == 0 );
+      return 
+         ( node instanceof ASTReturnStatement ) // rule triggeres here
+         &&
+         ( node.jjtGetNumChildren() == 0 );     // and here
     }
     public String getLocalName() {
         int colonIndex = name.indexOf(':');
-        return (colonIndex >= 0)
+        return (colonIndex >= 0)                // and here
                 ? name.substring(colonIndex + 1)
                 : name;
     }
     public void viewerModelChanged(ViewerModelEvent e) {
-                        int startOffset =
-                                (sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
-                                node.getBeginColumn()) - 1;
+        int startOffset =
+          // and here for the following parentheses once
+          (sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
+          node.getBeginColumn()) - 1;
         }
 
 }
