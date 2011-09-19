@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -231,12 +230,13 @@ public class PMDTask extends Task {
 		RuleContext ctx = new RuleContext();
 		Report errorReport = new Report();
 		final AtomicInteger reportSize = new AtomicInteger();
+		final String separator = System.getProperty("file.separator");
 		for (FileSet fs : filesets) {
 			List<DataSource> files = new LinkedList<DataSource>();
 			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 			String[] srcFiles = ds.getIncludedFiles();
 			for (String srcFile : srcFiles) {
-				File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFile);
+				File file = new File(ds.getBasedir() + separator + srcFile);
 				files.add(new FileDataSource(file));
 			}
 
@@ -262,6 +262,8 @@ public class PMDTask extends Task {
 				public void end() {
 					// Nothing to do
 				}
+
+				public String defaultFileExtension() { return null;	}	// not relevant
 			};
 			List<Renderer> renderers = new LinkedList<Renderer>();
 			renderers.add(logRenderer);
@@ -352,7 +354,7 @@ public class PMDTask extends Task {
 	}
 
 	private String getNestedRuleSetFiles() {
-		final StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 		for (Iterator<RuleSetWrapper> it = nestedRules.iterator(); it.hasNext();) {
 			RuleSetWrapper rs = it.next();
 			sb.append(rs.getFile());
