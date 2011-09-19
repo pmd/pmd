@@ -4,7 +4,7 @@
   <groupId>pmd</groupId>
   <artifactId>pmd</artifactId>
   <name>PMD</name>
-  <version>4.2.6-SNAPSHOT</version>
+  <version>4.2.6</version>
   <description>
     <![CDATA[
 <p>PMD scans Java source code and looks for potential problems like:</p>

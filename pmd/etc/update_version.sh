@@ -54,7 +54,6 @@ update_regexp "pmd14-[0-9\.]*.jar" "pmd14-$1.jar" docs.sh
 update_jar $1 etc/cpd.jnlp
 update_jar $1 xdocs/running.xml
 update_jar $1 xdocs/integrations.xml
-update_jar $1 etc/bug_closer.txt
 
 update_dir $1 xdocs/compiling.xml
 update_dir $1 xdocs/integrations.xml

@@ -162,7 +162,8 @@
 				<include name="**/*.java" />
 				<exclude name="**/ast/*.java" />
 				<exclude name="**/cppast/*.java" />
-			</fileset>
+                <exclude name="net/sourceforge/pmd/dcd/**/*.java" />
+            </fileset>
 		</pmd>
 	</target>
 

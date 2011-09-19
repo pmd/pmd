@@ -4,7 +4,7 @@
 	<pomVersion>3</pomVersion>
 	<id>pmd</id>
 	<name>PMD</name>
-	<currentVersion>4.2.6-SNAPSHOT</currentVersion>
+	<currentVersion>4.2.6</currentVersion>
 	<organization>
 		<name>InfoEther</name>
 		<url>http://pmd.sourceforge.net/</url>
@@ -28,6 +28,7 @@
 
 <h3>Recent releases</h3>
 <p><ul>
+<li>2011-09-14 PMD 4.2.6: bug fixes, new rules (<a href="http://sourceforge.net/projects/pmd/files/pmd/4.2.6/pmd-bin-4.2.6.zip/download"/>)</li>
 <li>2009-02-08 PMD 4.2.5: bug fixes, new rule, new Android ruleset (<a href="http://sourceforge.net/project/shownotes.php?release_id=659603&amp;group_id=56262">Changelog</a>)</li>
 <li>2008-10-12 PMD 4.2.4: bug fixes (<a href="http://sourceforge.net/project/shownotes.php?release_id=632850&amp;group_id=56262">Changelog</a>)</li>
 <li>2008-08-31 PMD 4.2.3: yet more bug fixes (<a href="http://sourceforge.net/project/shownotes.php?release_id=623284&amp;group_id=56262">Changelog</a>)</li>

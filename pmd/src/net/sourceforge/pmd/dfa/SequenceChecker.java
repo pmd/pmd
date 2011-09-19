@@ -29,7 +29,7 @@ public class SequenceChecker {
         public static final int ROOT = -1;
 
         private List<Status> nextSteps = new ArrayList<Status>();
-        private int type;
+        private int type; //NOPMD type is used, but PMD seems to no be able to spot it
         private boolean lastStep;
 
 

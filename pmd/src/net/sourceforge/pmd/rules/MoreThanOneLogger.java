@@ -23,12 +23,12 @@ public class MoreThanOneLogger extends AbstractRule {
     static {
         try {
             log4jLogger = Class.forName("org.apache.log4j.Logger");
-        } catch (Throwable t) {
+        } catch (Throwable t) { //NOPMD somewhat legitmate catch all
             log4jLogger = null;
         }
         try {
             javaLogger = Class.forName("java.util.logging.Logger");
-        } catch (Throwable t) {
+        } catch (Throwable t) { //NOPMD somewhat legitmate catch all
             javaLogger = null;
         }
     }

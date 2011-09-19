@@ -1,4 +1,4 @@
-???? - 4.2.6:
+September 14, 2011 - 4.2.6:
 Fixed bug 2920057 - False + : CloseRessource whith an external getter
 Fixed bug 1808110 - Fixed performance issue on PreserveStackTrace
 Fixed bug 2832322 -  cpd.xml file tag path attribute should be entity-encoded
