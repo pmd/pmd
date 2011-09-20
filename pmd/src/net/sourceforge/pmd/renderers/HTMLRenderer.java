@@ -152,6 +152,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 			buf.append("</tr>" + PMD.EOL);
 			writer.write(buf.toString());	
 		    }
+	    writer.write("</table>");
     }
 
     private void glomSuppressions(Writer writer, List<Report.SuppressedViolation> suppressed) throws IOException {
