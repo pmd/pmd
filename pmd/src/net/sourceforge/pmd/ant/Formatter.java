@@ -101,7 +101,7 @@ public class Formatter {
     }
 
     private static String unknownRendererMessage(String userSpecifiedType) {
-        StringBuffer sb = new StringBuffer(100);
+    	StringBuilder sb = new StringBuilder(100);
         sb.append("Formatter type must be one of: '");
         String[] typeCodes = validRendererCodes();
         sb.append(typeCodes[0]);

@@ -43,7 +43,7 @@ public class StringUtilTest {
      */
     @Test
     public void testUTF8NotSupported() {
-        StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
         String test = "é";
         StringUtil.appendXmlEscaped(sb, test, false);
         assertEquals("&#233;", sb.toString());
@@ -51,7 +51,7 @@ public class StringUtilTest {
 
     @Test
     public void testUTF8Supported() {
-        StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
         String test = "é";
         StringUtil.appendXmlEscaped(sb, test, true);
         assertEquals("é", sb.toString());

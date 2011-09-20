@@ -20,7 +20,7 @@ public class EmacsRenderer extends AbstractIncrementingRenderer {
     protected static final String EOL = System.getProperty("line.separator", "\n");
 
     public EmacsRenderer(Properties properties) {
-	super(NAME, "GNU Emacs integration.", properties);
+    	super(NAME, "GNU Emacs integration.", properties);
     }
 
     public String defaultFileExtension() { return "emacs"; }
@@ -30,15 +30,15 @@ public class EmacsRenderer extends AbstractIncrementingRenderer {
      */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-	Writer writer = getWriter();
-	StringBuffer buf = new StringBuffer();
-	while (violations.hasNext()) {
-	    RuleViolation rv = violations.next();
-	    buf.setLength(0);
-	    buf.append(rv.getFilename());
-	    buf.append(':').append(Integer.toString(rv.getBeginLine()));
-	    buf.append(": ").append(rv.getDescription()).append(EOL);
-	    writer.write(buf.toString());
-	}
+		Writer writer = getWriter();
+		StringBuilder buf = new StringBuilder();
+		while (violations.hasNext()) {
+		    RuleViolation rv = violations.next();
+		    buf.setLength(0);
+		    buf.append(rv.getFilename());
+		    buf.append(':').append(Integer.toString(rv.getBeginLine()));
+		    buf.append(": ").append(rv.getDescription()).append(EOL);
+		    writer.write(buf.toString());
+		}
     }
 }

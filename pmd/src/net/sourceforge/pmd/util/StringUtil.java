@@ -160,13 +160,13 @@ public final class StringUtil {
     }
 
     /**
-     * Appends to a StringBuffer the String src where non-ASCII and
+     * Appends to a StringBuilder the String src where non-ASCII and
      * XML special chars are escaped.
      *
      * @param buf The destination XML stream
      * @param src The String to append to the stream
      */
-    public static void appendXmlEscaped(StringBuffer buf, String src) {
+    public static void appendXmlEscaped(StringBuilder buf, String src) {
         appendXmlEscaped(buf, src, SUPPORTS_UTF8);
     }
 
@@ -189,7 +189,7 @@ public final class StringUtil {
      * 
      * public to support unit testing - make this package private, once the unit test classes are in the same package.
      */
-    public static void appendXmlEscaped(StringBuffer buf, String src, boolean supportUTF8) {
+    public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
         for (int i = 0; i < src.length(); i++) {
             c = src.charAt(i);
