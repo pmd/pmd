@@ -8,11 +8,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import net.sourceforge.pmd.AbstractPropertySource;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+
 /**
  * Abstract base class for {@link Renderer} implementations.
  */
-public abstract class AbstractRenderer implements Renderer {
-
+public abstract class AbstractRenderer extends AbstractPropertySource implements Renderer {
+	
     protected String name;
     protected String description;
     protected Map<String, String> propertyDefinitions = new LinkedHashMap<String, String>();
@@ -21,9 +24,9 @@ public abstract class AbstractRenderer implements Renderer {
     protected Writer writer;
 
     public AbstractRenderer(String name, String description, Properties properties) {
-	this.name = name;
-	this.description = description;
-	this.properties = properties;
+		this.name = name;
+		this.description = description;
+		this.properties = properties;
     }
 
     /**

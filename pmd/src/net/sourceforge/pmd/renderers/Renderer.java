@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -30,7 +31,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * Renderer.
  */
 // TODO Are implementations expected to be thread-safe?
-public interface Renderer {
+public interface Renderer extends PropertySource {
 
     /**
      * Get the name of the Renderer.

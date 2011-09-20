@@ -4,14 +4,9 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.AbstractPropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
@@ -19,7 +14,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule
@@ -28,7 +22,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 // FUTURE Implement Cloneable and clone()?
-public abstract class AbstractRule implements Rule {
+public abstract class AbstractRule extends AbstractPropertySource implements Rule {
 
 	private Language language;
 	private LanguageVersion minimumLanguageVersion;
@@ -43,9 +37,6 @@ public abstract class AbstractRule implements Rule {
 	private List<String> examples = new ArrayList<String>();
 	private String externalInfoUrl;
 	private RulePriority priority = RulePriority.LOW;
-	private List<PropertyDescriptor<?>> propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
-	// Map of explicitly set property values.
-	private Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<PropertyDescriptor<?>, Object>();
 	private boolean usesDFA;
 	private boolean usesTypeResolution;
 	private List<String> ruleChainVisits = new ArrayList<String>();
@@ -80,18 +71,6 @@ public abstract class AbstractRule implements Rule {
 		List<String> copy = new ArrayList<String>(examples.size());
 		copy.addAll(examples);
 		return copy;    	
-	}
-
-	private List<PropertyDescriptor<?>> copyPropertyDescriptors() {
-		List<PropertyDescriptor<?>> copy = new ArrayList<PropertyDescriptor<?>>(propertyDescriptors.size());
-		copy.addAll(propertyDescriptors);
-		return copy;
-	}
-
-	private Map<PropertyDescriptor<?>, Object> copyPropertyValues() {
-		Map<PropertyDescriptor<?>, Object> copy = new HashMap<PropertyDescriptor<?>, Object>(propertyValuesByDescriptor.size());
-		copy.putAll(propertyValuesByDescriptor);
-		return copy;
 	}
 
 	private List<String> copyRuleChainVisits() {
@@ -158,13 +137,6 @@ public abstract class AbstractRule implements Rule {
 	  */
 	 public String dysfunctionReason() {
 		 return null;
-	 }
-	 
-	 /**
-	  * @see Rule#ignoredProperties()
-	  */
-	 public Set<PropertyDescriptor<?>> ignoredProperties() {
-		 return Collections.EMPTY_SET;
 	 }
 	 
 	 /**
@@ -308,132 +280,6 @@ public abstract class AbstractRule implements Rule {
 	  */
 	 public ParserOptions getParserOptions() {
 		 return new ParserOptions();
-	 }
-
-	 /**
-	  * @see Rule#definePropertyDescriptor(PropertyDescriptor)
-	  */
-	 public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
-		 // Check to ensure the property does not already exist.
-		 for (PropertyDescriptor<?> descriptor : propertyDescriptors) {
-			 if (descriptor.name().equals(propertyDescriptor.name())) {
-				 throw new IllegalArgumentException("There is already a PropertyDescriptor with name '"
-						 + propertyDescriptor.name() + "' defined on Rule " + this.getName() + ".");
-			 }
-		 }
-		 propertyDescriptors.add(propertyDescriptor);
-		 // Sort in UI order
-		 Collections.sort(propertyDescriptors);
-	 }
-
-	 /**
-	  * @see Rule#getPropertyDescriptor(String)
-	  */
-	 public PropertyDescriptor<?> getPropertyDescriptor(String name) {
-		 for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {
-			 if (name.equals(propertyDescriptor.name())) {
-				 return propertyDescriptor;
-			 }
-		 }
-		 return null;
-	 }
-
-	 /**
-	  * @see Rule#hasDescriptor(PropertyDescriptor)
-	  */
-	 public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
-
-		 if (propertyValuesByDescriptor.isEmpty()) {
-			 getPropertiesByPropertyDescriptor(); // compute it
-		 }
-
-		 return propertyValuesByDescriptor.containsKey(descriptor);
-	 }
-
-	 /**
-	  * @see Rule#getPropertyDescriptors()
-	  */
-	 public List<PropertyDescriptor<?>> getPropertyDescriptors() {
-		 return propertyDescriptors;
-	 }
-
-	 /**
-	  * @see Rule#getProperty(PropertyDescriptor)
-	  */
-	 @SuppressWarnings("unchecked")
-	 public <T> T getProperty(PropertyDescriptor<T> propertyDescriptor) {
-		 checkValidPropertyDescriptor(propertyDescriptor);
-		 T value;
-		 if (propertyValuesByDescriptor.containsKey(propertyDescriptor)) {
-			 value = (T) propertyValuesByDescriptor.get(propertyDescriptor);
-		 } else {
-			 value = propertyDescriptor.defaultValue();
-		 }
-		 return value;
-	 }
-
-	 /**
-	  * @see Rule#setProperty(PropertyDescriptor, Object)
-	  */
-	 public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
-		 checkValidPropertyDescriptor(propertyDescriptor);
-		 propertyValuesByDescriptor.put(propertyDescriptor, value);
-	 }
-
-	 private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
-		 if (!propertyDescriptors.contains(propertyDescriptor)) {
-			 throw new IllegalArgumentException("Property descriptor not defined for Rule " + this.getName() + ": "
-					 + propertyDescriptor);
-		 }
-	 }
-
-	 /**
-	  * @see Rule#getPropertiesByPropertyDescriptor()
-	  */
-	 public Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor() {
-		 if (propertyDescriptors.isEmpty()) {
-			 return Collections.emptyMap();
-		 }
-
-		 Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = new HashMap<PropertyDescriptor<?>, Object>(
-				 propertyDescriptors.size());
-		 // Fill with existing explicitly values
-		 propertiesByPropertyDescriptor.putAll(this.propertyValuesByDescriptor);
-
-		 // Add default values for anything not yet set
-		 for (PropertyDescriptor<?> propertyDescriptor : this.propertyDescriptors) {
-			 if (!propertiesByPropertyDescriptor.containsKey(propertyDescriptor)) {
-				 propertiesByPropertyDescriptor.put(propertyDescriptor, propertyDescriptor.defaultValue());
-			 }
-		 }
-
-		 return propertiesByPropertyDescriptor;
-	 }
-
-	 /**
-	  * @see Rule#usesDefaultValues()
-	  */
-	 public boolean usesDefaultValues() {
-
-		 Map<PropertyDescriptor<?>, Object> valuesByProperty = getPropertiesByPropertyDescriptor();
-		 if (valuesByProperty.isEmpty()) {
-			 return true;
-		 }
-
-		 Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProperty.entrySet().iterator();
-
-		 while (iter.hasNext()) {
-			 Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
-			 if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
-				 return false;
-			 }
-		 }
-
-		 return true;
-	 }
-
-	 public void useDefaultValueFor(PropertyDescriptor<?> desc) {
-		 propertyValuesByDescriptor.remove(desc);
 	 }
 
 	 /**
