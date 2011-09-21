@@ -30,7 +30,7 @@ make_tree_structure() {
     mkdir -p "${root_dir}/lib"
 }
 
-while getopts v:dsh OPT; do
+while getopts v:dSsh OPT; do
     case "$OPT" in
 	    h)
             usage
@@ -104,9 +104,11 @@ cd ../etc/
 cp ../lib/pmd-$version.jar ../lib/asm-3.2.jar ../lib/jaxen-1.1.1.jar ../lib/junit-4.4.jar "${pmd_bin_dir}/lib/"
 mkdir "${pmd_bin_dir}/etc/xslt"
 cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css "${pmd_bin_dir}/etc/xslt/"
-cp -R ../target/docs "${pmd_bin_dir}"
+if [ -z ${no_docs} ] ; then
+    cp -R ../target/docs "${pmd_bin_dir}"
+fi
 cd "${pmd_top_dir}"
-zip -q -r "pmd-bin-${version}.zip" "${pmd_bin_dir}"
+zip -q -r "pmd-bin-${version}.zip" "pmd-bin-${version}"
 cd -
 
 echo "Binary package generated"
@@ -136,10 +138,12 @@ fi
 make_tree_structure "${pmd_src_dir}"
 cp "../lib/pmd-src-${version}.jar" "${pmd_src_dir}/lib/"
 cp "../lib/pmd-${version}.jar" "${pmd_src_dir}/lib"
-cp -R ../target/docs "${pmd_src_dir}"
+if [ -z ${no_docs} ] ; then
+    cp -R ../target/docs "${pmd_src_dir}"
+fi
 rm -f "${pmd_src_dir}/etc/clover.license"
 cd "${pmd_top_dir}"
-zip -q -r "pmd-src-${version}.zip" "${pmd_src_dir}"
+zip -q -r "pmd-src-${version}.zip" "pmd-src-${version}"
 cd -
 
 echo "Source package generated"
