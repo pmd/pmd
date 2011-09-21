@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
@@ -49,20 +49,20 @@ public class DoubleEditorFactory extends AbstractRealNumberEditor {
         return Double.valueOf(((Spinner)valueControl).getSelection() / scale);
     }
 
-	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
         final DoubleProperty dp = doublePropertyFrom(desc);
-        final Spinner spinner = newSpinnerFor(parent, rule, dp);
+        final Spinner spinner = newSpinnerFor(parent, source, dp);
 
         spinner.addModifyListener(new ModifyListener() {
 	           public void modifyText(ModifyEvent event) {
                 Double newValue = Double.valueOf(spinner.getSelection() / scale);
-                if (newValue.equals(valueFor(rule, dp))) return;
+                if (newValue.equals(valueFor(source, dp))) return;
 
-                rule.setProperty(dp, newValue);
-                listener.changed(rule, dp, newValue);
+                source.setProperty(dp, newValue);
+                listener.changed(source, dp, newValue);
 
-                adjustRendering(rule, desc, spinner);
+                adjustRendering(source, desc, spinner);
              }
          });
 

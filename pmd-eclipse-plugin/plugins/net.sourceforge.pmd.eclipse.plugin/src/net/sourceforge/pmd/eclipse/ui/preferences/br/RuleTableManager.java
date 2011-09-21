@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
@@ -574,11 +575,11 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		return ruleTree;
 	}
 	
-    public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
+    public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
         // TODO enhance to recognize default values
    // 	RuleUtil.modifiedPropertiesIn(rule);
     	
-        treeViewer.update(rule, null);
+        treeViewer.update(source, null);
         setModified();
     }
 

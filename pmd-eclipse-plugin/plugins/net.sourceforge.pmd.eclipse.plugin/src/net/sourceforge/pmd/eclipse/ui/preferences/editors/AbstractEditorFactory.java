@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
@@ -49,19 +50,19 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 	 * Generic control that provides a label/widget pair for the default value. Subclasses can override this to provide additional
 	 * labels & widgets as necessary but must be able to extract the values held by them when the property is created.
 	 */
-	public Control[] createOtherControlsOn(Composite parent, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener, SizeChangeListener sizeListener) {
+	public Control[] createOtherControlsOn(Composite parent, PropertyDescriptor<?> desc, PropertySource source, ValueChangeListener listener, SizeChangeListener sizeListener) {
 	    return new Control[] {
 	        newLabel(parent,"Default"),
-	        newEditorOn(parent, desc, rule, listener, sizeListener)
+	        newEditorOn(parent, desc, source, listener, sizeListener)
 	        };
 	}
 
 	protected abstract Object valueFrom(Control valueControl);
 
-    protected Object valueFor(Rule rule, PropertyDescriptor<?> desc) {
+    protected Object valueFor(PropertySource source, PropertyDescriptor<?> desc) {
 
-        return rule.hasDescriptor(desc) ?
-                rule.getProperty(desc) :
+        return source.hasDescriptor(desc) ?
+        		source.getProperty(desc) :
                 desc.defaultValue();
     }
 
@@ -109,7 +110,7 @@ public abstract class AbstractEditorFactory implements EditorFactory {
 //	       );
 //	}
 
-	protected void adjustRendering(Rule rule, PropertyDescriptor<?> desc, Control control) {
+	protected void adjustRendering(PropertySource source, PropertyDescriptor<?> desc, Control control) {
 
 		return;	// don't do it...kinda irritating
 		

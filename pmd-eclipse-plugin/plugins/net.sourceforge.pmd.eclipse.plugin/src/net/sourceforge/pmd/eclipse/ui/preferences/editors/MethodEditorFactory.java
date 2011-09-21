@@ -3,7 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 import java.lang.reflect.Method;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.MethodProperty;
@@ -43,11 +43,11 @@ public class MethodEditorFactory extends AbstractEditorFactory {
         return ((MethodPicker)valueControl).getMethod();
     }
 
-	protected void fillWidget(MethodPicker widget, PropertyDescriptor<?> desc, Rule rule) {
+	protected void fillWidget(MethodPicker widget, PropertyDescriptor<?> desc, PropertySource source) {
 
-		Method method = (Method)valueFor(rule, desc);
+		Method method = (Method)valueFor(source, desc);
 		widget.setMethod(method);
-        adjustRendering(rule, desc, widget);
+        adjustRendering(source, desc, widget);
 	}
 
     private static MethodProperty methodPropertyFrom(PropertyDescriptor<?> desc) {
@@ -59,12 +59,12 @@ public class MethodEditorFactory extends AbstractEditorFactory {
         }
     }
 
-    public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+    public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
         final MethodPicker picker = new MethodPicker(parent, SWT.SINGLE | SWT.BORDER, UnwantedPrefixes);
         picker.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        fillWidget(picker, desc, rule);
+        fillWidget(picker, desc, source);
 
         final MethodProperty mp = methodPropertyFrom(desc);
 
@@ -73,12 +73,12 @@ public class MethodEditorFactory extends AbstractEditorFactory {
                 Method newValue = picker.getMethod();
                 if (newValue == null) return;
 
-                Method existingValue = (Method)valueFor(rule, mp);
+                Method existingValue = (Method)valueFor(source, mp);
                 if (existingValue == newValue) return;
 
-                rule.setProperty(mp, newValue);
-                fillWidget(picker, desc, rule);     // redraw
-                listener.changed(rule, desc, newValue);
+                source.setProperty(mp, newValue);
+                fillWidget(picker, desc, source);     // redraw
+                listener.changed(source, desc, newValue);
             }
         });
 

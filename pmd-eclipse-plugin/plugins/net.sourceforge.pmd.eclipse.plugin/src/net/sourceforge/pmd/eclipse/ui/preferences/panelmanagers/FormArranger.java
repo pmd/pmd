@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.dialogs.NewPropertyDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
@@ -33,9 +33,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * Takes in a rule instance, extracts its properties, creates a series of type-specific editors for each, and then populates them with
- * the current values.  As some types can hold multiple values the vertical span can grow to accommodate additional widgets and does so
- * by broadcasting this through the SizeChange listener.  The ValueChange listener can be used to update any outside UIs as necessary.
+ * Takes in a property source instance, extracts its properties, creates a series of type-specific editors for each, and then populates 
+ * them with the current values.  As some types can hold multiple values the vertical span can grow to accommodate additional widgets 
+ * and does so by broadcasting this through the SizeChange listener.  The ValueChange listener can be used to update any outside UIs as 
+ * necessary.
  *
  * @author Brian Remedios
  */
@@ -45,7 +46,7 @@ public class FormArranger implements ValueChangeListener {
 	private final Map<Class<?>, EditorFactory>	editorFactoriesByValueType;
 	private final ValueChangeListener           changeListener;
 	private final SizeChangeListener            sizeChangeListener;
-	private Rule                                rule;
+	private PropertySource                      propertySource;
 	private Control[][]                         widgets;
 
     private Map<PropertyDescriptor<?>, Control[]> controlsByProperty;
@@ -65,9 +66,9 @@ public class FormArranger implements ValueChangeListener {
 				secondaryListener.changed(rule, desc, newValue);				
 			}
 
-			public void changed(Rule rule, PropertyDescriptor<?> desc,	Object newValue) {
-				primaryListener.changed(rule, desc, newValue);
-				secondaryListener.changed(rule, desc, newValue);	
+			public void changed(PropertySource source, PropertyDescriptor<?> desc,	Object newValue) {
+				primaryListener.changed(source, desc, newValue);
+				secondaryListener.changed(source, desc, newValue);	
 			}    		
     	};
     }
@@ -103,34 +104,34 @@ public class FormArranger implements ValueChangeListener {
 		for (Control kid : kids)
 		    kid.dispose();
         parent.pack();
-        rule = null;
+        propertySource = null;
 	}
 
 	/**
 	 * @param theRule Rule
 	 */
-	public int arrangeFor(Rule theRule) {
+	public int arrangeFor(PropertySource theSource) {
 
-	    if (rule == theRule) return -1;
-	    return rearrangeFor(theRule);
+	    if (propertySource == theSource) return -1;
+	    return rearrangeFor(theSource);
 	}
 
 	public void loadValues() {
-		rearrangeFor(rule);
+		rearrangeFor(propertySource);
 	}
 	
-	private int rearrangeFor(Rule theRule) {
+	private int rearrangeFor(PropertySource theSource) {
 
 		clearChildren();
 
-		rule = theRule;
+		propertySource = theSource;
 
-		if (rule == null) return -1;
+		if (propertySource == null) return -1;
 
-		Map<PropertyDescriptor<?>, Object> valuesByDescriptor = Configuration.filteredPropertiesOf(rule);
+		Map<PropertyDescriptor<?>, Object> valuesByDescriptor = Configuration.filteredPropertiesOf(propertySource);
 
 		if (valuesByDescriptor.isEmpty()) {
-		    if (RuleUtil.isXPathRule(rule)) {
+		    if (RuleUtil.isXPathRule(propertySource)) {
 	            addAddButton();
 	            parent.pack();
 	            return 1;
@@ -151,7 +152,7 @@ public class FormArranger implements ValueChangeListener {
 			rowCount++;
 		}
 
-        boolean isXPathRule = RuleUtil.isXPathRule(rule);
+        boolean isXPathRule = RuleUtil.isXPathRule(propertySource);
         int columnCount = isXPathRule ? 3 : 2;  // xpath descriptors have a column of delete buttons
 
         GridLayout layout = new GridLayout(columnCount, false);
@@ -169,7 +170,7 @@ public class FormArranger implements ValueChangeListener {
 					) rowsAdded++;
 		}
 
-		if (RuleUtil.isXPathRule(rule)) {
+		if (RuleUtil.isXPathRule(propertySource)) {
 		    addAddButton();
 	        rowsAdded++;
 		}
@@ -190,11 +191,11 @@ public class FormArranger implements ValueChangeListener {
 	    button.addSelectionListener( new SelectionListener(){
             public void widgetDefaultSelected(SelectionEvent e) {  }
             public void widgetSelected(SelectionEvent e) {
-                NewPropertyDialog dialog = new NewPropertyDialog(parent.getShell(), editorFactoriesByValueType, rule, changeListener);
+                NewPropertyDialog dialog = new NewPropertyDialog(parent.getShell(), editorFactoriesByValueType, propertySource, changeListener);
                 if (dialog.open() == Window.OK) {
                     PropertyDescriptor<?> desc = dialog.descriptor();
-                    rule.definePropertyDescriptor(desc);
-                    rearrangeFor(rule);
+                    propertySource.definePropertyDescriptor(desc);
+                    rearrangeFor(propertySource);
                     }
                 }
 	        });
@@ -212,10 +213,10 @@ public class FormArranger implements ValueChangeListener {
 
 		// add all the labels & controls necessary on each row
 		widgets[rowIndex][0] = factory.addLabel(parent, desc);
-		widgets[rowIndex][1] = factory.newEditorOn(parent, desc, rule, changeListener, sizeChangeListener);
+		widgets[rowIndex][1] = factory.newEditorOn(parent, desc, propertySource, changeListener, sizeChangeListener);
 
 		if (isXPathRule) {
-		    widgets[rowIndex][2] = addDeleteButton(parent, desc,  rule, sizeChangeListener);
+		    widgets[rowIndex][2] = addDeleteButton(parent, desc,  propertySource, sizeChangeListener);
 		}
 
 		register(desc, widgets[rowIndex]);
@@ -223,7 +224,7 @@ public class FormArranger implements ValueChangeListener {
 		return true;
 	}
 
-    private Control addDeleteButton(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final SizeChangeListener sizeChangeListener) {
+    private Control addDeleteButton(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final SizeChangeListener sizeChangeListener) {
 
         Button button = new Button(parent, SWT.PUSH);
         button.setData(desc.name());    // for later reference
@@ -233,7 +234,7 @@ public class FormArranger implements ValueChangeListener {
             public void widgetDefaultSelected(SelectionEvent e) {  }
             public void widgetSelected(SelectionEvent e) {
       //          rule.undefine(desc);
-                rearrangeFor(rule);
+                rearrangeFor(source);
                 updateDeleteButtons();
       //          sizeChangeListener.addedRows(-1);     not necessary apres rearrange?
             }});
@@ -248,11 +249,11 @@ public class FormArranger implements ValueChangeListener {
      */
     public List<String> updateDeleteButtons() {
 
-        if (rule == null || !RuleUtil.isXPathRule(rule)) {
+        if (propertySource == null || !RuleUtil.isXPathRule(propertySource)) {
             return Collections.emptyList();
         }
 
-        String source = rule.getProperty(XPathRule.XPATH_DESCRIPTOR);
+        String source = propertySource.getProperty(XPathRule.XPATH_DESCRIPTOR);
         List<int[]> refPositions = Util.referencedNamePositionsIn(source, '$');
         if (refPositions.isEmpty()) return Collections.emptyList();
 
@@ -277,7 +278,7 @@ public class FormArranger implements ValueChangeListener {
 	
     private void adjustEnabledStates() {
     	
-    	Set<PropertyDescriptor<?>> ignoreds = rule.ignoredProperties();
+    	Set<PropertyDescriptor<?>> ignoreds = propertySource.ignoredProperties();
 		
 		for (Map.Entry<PropertyDescriptor<?>, Control[]> entry : controlsByProperty.entrySet()) {
 			if (ignoreds.contains( entry.getKey() )) {
@@ -290,7 +291,7 @@ public class FormArranger implements ValueChangeListener {
     
 	public void changed(RuleSelection rule, PropertyDescriptor<?> desc,	Object newValue) {	}
 
-	public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
+	public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
 		
 		adjustEnabledStates();
 	};

@@ -2,7 +2,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
@@ -63,26 +63,26 @@ public class IntegerEditorFactory extends AbstractNumericEditorFactory {
         return spinner;
 	}
 
-	protected void setValue(Rule rule, IntegerProperty desc, Integer value) {
+	protected void setValue(PropertySource source, IntegerProperty desc, Integer value) {
 
 //	    if (!rule.hasDescriptor(desc)) return;
-	    rule.setProperty(desc, value);
+		source.setProperty(desc, value);
 	}
 
-	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
 	      final IntegerProperty ip = intPropertyFrom(desc);   // TODO - do I really have to do this?
 
-	      final Spinner spinner = newSpinner(parent, ip, valueFor(rule, desc));
+	      final Spinner spinner = newSpinner(parent, ip, valueFor(source, desc));
 
 	      spinner.addModifyListener(new ModifyListener() {
 	           public void modifyText(ModifyEvent event) {
 	                Integer newValue = Integer.valueOf(spinner.getSelection());
-	                if (newValue.equals(valueFor(rule, ip))) return;
+	                if (newValue.equals(valueFor(source, ip))) return;
 
-	                setValue(rule, ip, newValue);
-	                listener.changed(rule, desc, newValue);
-	                adjustRendering(rule, desc, spinner);
+	                setValue(source, ip, newValue);
+	                listener.changed(source, desc, newValue);
+	                adjustRendering(source, desc, spinner);
 	                }
 	            });
 

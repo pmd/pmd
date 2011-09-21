@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
@@ -75,7 +75,7 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
         }
     }
 
-    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
+    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, PropertySource source) {
 
         NumericPropertyDescriptor<?> ip = numericPropertyFrom(desc);   // TODO - do I really have to do this?
         return IntegerEditorFactory.newSpinner(parent, ip, value);
@@ -88,37 +88,37 @@ public class MultiIntegerEditorFactory extends AbstractMultiValueEditorFactory {
         spinner.setSelection(value);
     }
 
-    protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
+    protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener) {
 
         final IntegerMultiProperty imp = (IntegerMultiProperty)numericPropertyFrom(desc);
 
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 Integer[] newValue = currentIntegers(textWidget);
-                Integer[] existingValue = (Integer[])valueFor(rule, imp);
+                Integer[] existingValue = (Integer[])valueFor(source, imp);
                 if (CollectionUtil.areSemanticEquals(existingValue, newValue)) return;
 
-                rule.setProperty(imp, newValue);
-                fillWidget(textWidget, desc, rule);   // display the accepted values
-                listener.changed(rule, desc, newValue);
+                source.setProperty(imp, newValue);
+                fillWidget(textWidget, desc, source);   // display the accepted values
+                listener.changed(source, desc, newValue);
             }
         });
     }
 
-    protected void update(Rule rule, PropertyDescriptor<?> desc, List<Object> newValues) {
-        rule.setProperty((IntegerMultiProperty)desc, newValues.toArray(new Integer[newValues.size()]));
+    protected void update(PropertySource source, PropertyDescriptor<?> desc, List<Object> newValues) {
+        source.setProperty((IntegerMultiProperty)desc, newValues.toArray(new Integer[newValues.size()]));
     }
 
     @Override
-    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule) {
+    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, PropertySource source) {
 
         Integer newValue= Integer.valueOf(((Spinner)widget).getSelection());
 
-        Integer[] currentValues = (Integer[])valueFor(rule, desc);
+        Integer[] currentValues = (Integer[])valueFor(source, desc);
         Integer[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
         if (currentValues.length == newValues.length) return null;
 
-        rule.setProperty((IntegerMultiProperty)desc, newValues);
+        source.setProperty((IntegerMultiProperty)desc, newValues);
         return newValue;
     }
 }

@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
@@ -42,18 +43,18 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
     }
 
 	@Override
-	protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule) {
+	protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, PropertySource source) {
 
 		int idx = ((Combo)widget).getSelectionIndex();
 		if (idx < 0) return null;
 
 		String newValue = ((Combo)widget).getItem(idx);
 
-	    String[] currentValues = (String[])valueFor(rule, desc);
+	    String[] currentValues = (String[])valueFor(source, desc);
 	    String[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
 	    if (currentValues.length == newValues.length) return null;
 
-	    rule.setProperty((EnumeratedMultiProperty<?>)desc, newValues);
+	    source.setProperty((EnumeratedMultiProperty<?>)desc, newValues);
 	    return newValue;
 	}
 
@@ -61,16 +62,16 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
 	 * Only add a new widget row if there are any remaining choices to make
 	 */
 	@Override
-    protected boolean canAddNewRowFor(PropertyDescriptor<?> desc, Rule rule) {
+    protected boolean canAddNewRowFor(PropertyDescriptor<?> desc, PropertySource source) {
 
     	Object[] choices = desc.choices();
-		Object[] values = (Object[])rule.getProperty(desc);
+		Object[] values = (Object[])source.getProperty(desc);
 
 		return choices.length > values.length;
     }
 
 	@Override
-	protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, final Rule rule) {
+	protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, final PropertySource source) {
 
         final Combo combo = new Combo(parent, SWT.READ_ONLY);
 
@@ -90,8 +91,8 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
 	}
 
 	@Override
-	protected void update(Rule rule, PropertyDescriptor<?> desc, List<Object> newValues) {
-		rule.setProperty((EnumeratedMultiProperty<?>)desc, newValues.toArray(new String[newValues.size()]));
+	protected void update(PropertySource source, PropertyDescriptor<?> desc, List<Object> newValues) {
+		source.setProperty((EnumeratedMultiProperty<?>)desc, newValues.toArray(new String[newValues.size()]));
 	}
 
 	@Override
@@ -104,7 +105,7 @@ public class MultiEnumerationEditorFactory extends AbstractMultiValueEditorFacto
 	}
 
 	@Override
-	protected void configure(Text text, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener) {
+	protected void configure(Text text, PropertyDescriptor<?> desc, PropertySource source, ValueChangeListener listener) {
 		text.setEditable(false);
 	}
 

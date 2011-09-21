@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
@@ -42,16 +42,16 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         return typeNames;
 	}
 
-    protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
+    protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, PropertySource source) {
 
-        Class<?>[] values = (Class[])valueFor(rule, desc);
+        Class<?>[] values = (Class[])valueFor(source, desc);
         if (values == null) {
             textWidget.setText("");
             return;
         }
 
         textWidget.setText(values == null ? "" : asString(values));
-        adjustRendering(rule, desc, textWidget);
+        adjustRendering(source, desc, textWidget);
     }
 
     private String asString(Class<?>[] types) {
@@ -82,7 +82,7 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         }
     }
 
-    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
+    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, PropertySource source) {
         TypeText typeWidget = new TypeText(parent, SWT.SINGLE | SWT.BORDER, true, "Enter type name");
         setValue(typeWidget, value);
         return typeWidget;
@@ -94,40 +94,40 @@ public class MultiTypeEditorFactory extends AbstractMultiValueEditorFactory {
         ((TypeText)widget).setType(type);
     }
 
-    protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
+    protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener) {
 
         final TypeMultiProperty tmp = multiTypePropertyFrom(desc);  // TODO - really necessary?
 
         textWidget.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 Class<?>[] newValue = currentTypes(textWidget);
-                Class<?>[] existingValue = (Class[])valueFor(rule, tmp);
+                Class<?>[] existingValue = (Class[])valueFor(source, tmp);
                 if (CollectionUtil.areSemanticEquals(existingValue, newValue)) return;
 
-                rule.setProperty(tmp, newValue);
-                fillWidget(textWidget, desc, rule);   // display the accepted values
-                listener.changed(rule, desc, newValue);
+                source.setProperty(tmp, newValue);
+                fillWidget(textWidget, desc, source);   // display the accepted values
+                listener.changed(source, desc, newValue);
 
-                adjustRendering(rule, desc, textWidget);
+                adjustRendering(source, desc, textWidget);
             }
         });
     }
 
-    protected void update(Rule rule, PropertyDescriptor<?> desc, List<Object> newValues) {
-        rule.setProperty((TypeMultiProperty)desc, newValues.toArray(new Class[newValues.size()]));
+    protected void update(PropertySource source, PropertyDescriptor<?> desc, List<Object> newValues) {
+    	source.setProperty((TypeMultiProperty)desc, newValues.toArray(new Class[newValues.size()]));
     }
 
     @Override
-    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule) {
+    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, PropertySource source) {
 
         Class<?> enteredValue = ((TypeText) widget).getType(true);
         if (enteredValue == null) return null;
 
-        Class<?>[] currentValues = (Class[])valueFor(rule, desc);
+        Class<?>[] currentValues = (Class[])valueFor(source, desc);
         Class<?>[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, enteredValue);
         if (currentValues.length == newValues.length) return null;
 
-        rule.setProperty((TypeMultiProperty)desc, newValues);
+        source.setProperty((TypeMultiProperty)desc, newValues);
         return enteredValue;
     }
 

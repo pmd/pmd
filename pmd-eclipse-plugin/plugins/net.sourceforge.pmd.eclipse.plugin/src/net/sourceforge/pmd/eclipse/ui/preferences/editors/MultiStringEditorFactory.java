@@ -3,7 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
@@ -40,7 +40,7 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         }
     }
 
-    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
+    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, PropertySource source) {
         Text textWidget = new Text(parent, SWT.SINGLE | SWT.BORDER);
         setValue(textWidget,value);
         return textWidget;
@@ -50,19 +50,19 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
         ((Text)widget).setText(value == null ? "" : value.toString());
     }
 
-    protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
+    protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener) {
 
         final StringMultiProperty smp = multiStringPropertyFrom(desc);
 
         Listener widgetListener = new Listener() {
         	public void handleEvent(Event event) {
         		String[] newValues = textWidgetValues(textWidget);
-        		String[] existingValues = (String[])valueFor(rule, smp);
+        		String[] existingValues = (String[])valueFor(source, smp);
         		if (CollectionUtil.areSemanticEquals(existingValues, newValues)) return;
 
-        		rule.setProperty(smp, newValues);
-        		fillWidget(textWidget, desc, rule);    // reload with latest scrubbed values
-        		listener.changed(rule, desc, newValues);
+        		source.setProperty(smp, newValues);
+        		fillWidget(textWidget, desc, source);    // reload with latest scrubbed values
+        		listener.changed(source, desc, newValues);
         		}
         	};
 
@@ -71,21 +71,21 @@ public class MultiStringEditorFactory extends AbstractMultiValueEditorFactory {
     }
 
     @Override
-    protected void update(Rule rule, PropertyDescriptor<?> desc, List<Object> newValues) {
-        rule.setProperty((StringMultiProperty)desc, newValues.toArray(new String[newValues.size()]));
+    protected void update(PropertySource source, PropertyDescriptor<?> desc, List<Object> newValues) {
+    	source.setProperty((StringMultiProperty)desc, newValues.toArray(new String[newValues.size()]));
     }
 
     @Override
-    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule) {
+    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, PropertySource source) {
 
         String newValue = ((Text)widget).getText().trim();
         if (StringUtil.isEmpty(newValue)) return null;
 
-        String[] currentValues = (String[])valueFor(rule, desc);
+        String[] currentValues = (String[])valueFor(source, desc);
         String[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
         if (currentValues.length == newValues.length) return null;
 
-        rule.setProperty((StringMultiProperty)desc, newValues);
+        source.setProperty((StringMultiProperty)desc, newValues);
         return newValue;
     }
 

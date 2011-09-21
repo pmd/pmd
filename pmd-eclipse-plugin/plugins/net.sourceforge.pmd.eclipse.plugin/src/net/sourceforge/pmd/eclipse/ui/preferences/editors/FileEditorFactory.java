@@ -3,7 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 import java.io.File;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.FileProperty;
@@ -46,10 +46,10 @@ public class FileEditorFactory extends AbstractEditorFactory {
 	     }
 	}
 	
-	private void setValue(Rule rule, FileProperty desc, File value) {
+	private void setValue(PropertySource source, FileProperty desc, File value) {
 
-	    if (!rule.hasDescriptor(desc)) return;
-	    rule.setProperty(desc, value);
+	    if (!source.hasDescriptor(desc)) return;
+	    source.setProperty(desc, value);
 	}
 	
 	public static boolean areSemanticEquals(File fileA, File fileB) {
@@ -61,30 +61,30 @@ public class FileEditorFactory extends AbstractEditorFactory {
 		return fileA.equals(fileB);
 	}
 	
-	protected void fillWidget(FilePicker fileWidget, PropertyDescriptor<?> desc, Rule rule) {
-		File val = (File)valueFor(rule, desc);
+	protected void fillWidget(FilePicker fileWidget, PropertyDescriptor<?> desc, PropertySource source) {
+		File val = (File)valueFor(source, desc);
 		fileWidget.setFile(val == null ? null : val);
-		adjustRendering(rule, desc, fileWidget);
+		adjustRendering(source, desc, fileWidget);
 	}
 	
-	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
        
 		final FilePicker picker =  new FilePicker(parent, SWT.SINGLE | SWT.BORDER, "Open", null);
         picker.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        fillWidget(picker, desc, rule);
+        fillWidget(picker, desc, source);
 
         final FileProperty fp = filePropertyFrom(desc); // TODO - really necessary?
 
         picker.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 File newValue = picker.getFile();
-                File existingValue = (File)valueFor(rule, fp);
+                File existingValue = (File)valueFor(source, fp);
                 if (areSemanticEquals(existingValue, newValue)) return;
 
-                setValue(rule, fp, newValue);
-                fillWidget(picker, desc, rule);     // redraw
-                listener.changed(rule, desc, newValue);
+                setValue(source, fp, newValue);
+                fillWidget(picker, desc, source);     // redraw
+                listener.changed(source, desc, newValue);
             }
         });
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
@@ -53,15 +54,15 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
     protected AbstractMultiValueEditorFactory() {
     }
 
-    protected abstract void configure(Text text, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener);
+    protected abstract void configure(Text text, PropertyDescriptor<?> desc, PropertySource source, ValueChangeListener listener);
 
     protected abstract void setValue(Control widget, Object value);
 
-    protected abstract void update(Rule rule, PropertyDescriptor<?> desc, List<Object> newValues);
+    protected abstract void update(PropertySource source, PropertyDescriptor<?> desc, List<Object> newValues);
 
-    protected abstract Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule);
+    protected abstract Object addValueIn(Control widget, PropertyDescriptor<?> desc, PropertySource source);
 
-    protected abstract Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule);
+    protected abstract Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, PropertySource source);
 
     /**
      *
@@ -72,7 +73,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
      * @return Control
      * @see net.sourceforge.pmd.ui.preferences.br.EditorFactory#newEditorOn(Composite, PropertyDescriptor, Rule, ValueChangeListener, SizeChangeListener)
      */
-    public Control newEditorOn(final Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {
+    public Control newEditorOn(final Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {
 
         final Composite panel = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout(3, false);
@@ -92,7 +93,7 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
                     hideCollection(items);
                     sizeListener.addedRows(items.size() / -WidgetsPerRow);
                     } else {
-                      items = openCollection(panel, desc, rule, textWidget, changeListener, sizeListener);
+                      items = openCollection(panel, desc, source, textWidget, changeListener, sizeListener);
                       sizeListener.addedRows(items.size() / WidgetsPerRow);
                     }
                 itemsVisible = !itemsVisible;
@@ -105,8 +106,8 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
          textWidget.setLayoutData(data);
          panel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         fillWidget(textWidget, desc, rule);
-         configure(textWidget, desc, rule, changeListener);
+         fillWidget(textWidget, desc, source);
+         configure(textWidget, desc, source, changeListener);
 
          return panel;
     }
@@ -115,33 +116,33 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         for (Control control : controls) control.dispose();
     }
 
-    private void delete(Control number, Control widget, Control button, List<Control> controlList, Object deleteValue, PropertyDescriptor<?> desc, Rule rule) {
+    private void delete(Control number, Control widget, Control button, List<Control> controlList, Object deleteValue, PropertyDescriptor<?> desc, PropertySource source) {
 
         controlList.remove(number); number.dispose();
         controlList.remove(widget); widget.dispose();
         controlList.remove(button); button.dispose();
         renumberLabelsIn(controlList);
 
-        Object[] values = (Object[])valueFor(rule, desc);
+        Object[] values = (Object[])valueFor(source, desc);
         List<Object> newValues = new ArrayList<Object>(values.length - 1);
         for (Object value : values) {
             if (value.equals(deleteValue)) continue;
             newValues.add(value);
         }
 
-        update(rule, desc, newValues);
+        update(source, desc, newValues);
     }
 
-    private List<Control> openCollection(final Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final Text textWidget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {
+    private List<Control> openCollection(final Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final Text textWidget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {
 
         final List<Control> newControls = new ArrayList<Control>();
 
         int i=0;
-        Object[] values = (Object[])valueFor(rule, desc);
+        Object[] values = (Object[])valueFor(source, desc);
         for (i=0; i<values.length; i++) {
             final Label number = new Label(parent, SWT.NONE);
             number.setText(Integer.toString(i+1));
-            final Control widget = addWidget(parent, values[i], desc, rule);
+            final Control widget = addWidget(parent, values[i], desc, source);
             widget.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             widget.setEnabled(false);
             final Button butt = new Button(parent, SWT.PUSH);
@@ -149,17 +150,17 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
             final Object value = values[i];
             butt.addListener(SWT.Selection, new Listener() {  // remove value handler
                 public void handleEvent(Event event) {
-                   delete(number, widget, butt, newControls, value, desc, rule);
-                   fillWidget(textWidget, desc, rule);
+                   delete(number, widget, butt, newControls, value, desc, source);
+                   fillWidget(textWidget, desc, source);
                    sizeListener.addedRows(-1);
-                   changeListener.changed(rule, desc, null);
+                   changeListener.changed(source, desc, null);
                    parent.getParent().layout();
                 }
             } );
             newControls.add(number); newControls.add(widget); newControls.add(butt);
         }
 
-        addNewValueRow(parent, desc, rule, textWidget, changeListener, sizeListener, newControls, i);
+        addNewValueRow(parent, desc, source, textWidget, changeListener, sizeListener, newControls, i);
 
         return newControls;
     }
@@ -170,18 +171,18 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
      * @param rule
      * @return
      */
-    protected boolean canAddNewRowFor(final PropertyDescriptor<?> desc, final Rule rule) {
+    protected boolean canAddNewRowFor(final PropertyDescriptor<?> desc, final PropertySource source) {
     	return true;
     }
 
-    private void addNewValueRow(final Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final Text parentWidget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener, final List<Control> newControls, int i) {
+    private void addNewValueRow(final Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final Text parentWidget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener, final List<Control> newControls, int i) {
 
-    	if (!canAddNewRowFor(desc, rule)) return;
+    	if (!canAddNewRowFor(desc, source)) return;
 
         final Label number = new Label(parent, SWT.NONE);
         number.setText(Integer.toString(i+1));
         newControls.add(number);
-        final Control widget = addWidget(parent, null, desc, rule);
+        final Control widget = addWidget(parent, null, desc, source);
         widget.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         newControls.add(widget);
         final Button butt = new Button(parent, SWT.PUSH);
@@ -194,19 +195,19 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
                 // remove old listener from button, add new (delete) one, update text/icon
                 // add new row widgets: label, value widget, button
                 // add listener for new button
-               Object newValue = addValueIn(widget, desc, rule);
+               Object newValue = addValueIn(widget, desc, source);
                if (newValue == null) return;
 
-               addNewValueRow(parent, desc, rule, parentWidget, changeListener, sizeListener, newControls, -1);
-               convertToDelete(butt, newValue, parent, newControls, desc, rule, parentWidget, number, widget, changeListener, sizeListener);
+               addNewValueRow(parent, desc, source, parentWidget, changeListener, sizeListener, newControls, -1);
+               convertToDelete(butt, newValue, parent, newControls, desc, source, parentWidget, number, widget, changeListener, sizeListener);
                widget.setEnabled(false);
                setValue(widget, newValue);
 
                renumberLabelsIn(newControls);
-               fillWidget(parentWidget, desc, rule);
-               adjustRendering(rule, desc, parentWidget);
+               fillWidget(parentWidget, desc, source);
+               adjustRendering(source, desc, parentWidget);
                sizeListener.addedRows(1);
-               changeListener.changed(rule, desc, newValue);
+               changeListener.changed(source, desc, newValue);
                parent.getParent().layout();
             }
         };
@@ -215,15 +216,15 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         widget.setFocus();
     }
 
-    private void convertToDelete(final Button button, final Object toDeleteValue, final Composite parent, final List<Control> newControls, final PropertyDescriptor<?> desc, final Rule rule, final Text parentWidget, final Label number, final Control widget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {
+    private void convertToDelete(final Button button, final Object toDeleteValue, final Composite parent, final List<Control> newControls, final PropertyDescriptor<?> desc, final PropertySource source, final Text parentWidget, final Label number, final Control widget, final ValueChangeListener changeListener, final SizeChangeListener sizeListener) {
         button.setText("-");
         Util.removeListeners(button,SWT.Selection);
         button.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                delete(number, widget, button, newControls, toDeleteValue, desc, rule);
-                fillWidget(parentWidget, desc, rule);
+                delete(number, widget, button, newControls, toDeleteValue, desc, source);
+                fillWidget(parentWidget, desc, source);
                 sizeListener.addedRows(-1);
-                changeListener.changed(rule, desc, null);
+                changeListener.changed(source, desc, null);
                 parent.getParent().layout();
              }
          } );
@@ -238,11 +239,11 @@ public abstract class AbstractMultiValueEditorFactory extends AbstractEditorFact
         }
     }
 
-    protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
+    protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, PropertySource source) {
 
-        Object[] values = (Object[])valueFor(rule, desc);
+        Object[] values = (Object[])valueFor(source, desc);
         textWidget.setText(values == null ? "" : StringUtil.asString(values, delimiter + ' '));
-        adjustRendering(rule, desc, textWidget);
+        adjustRendering(source, desc, textWidget);
     }
 
     protected String[] textWidgetValues(Text textWidget) {

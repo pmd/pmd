@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Spinner;
@@ -19,7 +19,7 @@ public abstract class AbstractRealNumberEditor extends AbstractNumericEditorFact
     protected AbstractRealNumberEditor() {
     }
 
-    protected Spinner newSpinnerFor(Composite parent, Rule rule, NumericPropertyDescriptor<?> numDesc) {
+    protected Spinner newSpinnerFor(Composite parent, PropertySource source, NumericPropertyDescriptor<?> numDesc) {
 
         Spinner spinner = newSpinnerFor(parent, digits);
         int min = (int)(numDesc.lowerLimit().doubleValue() * scale);
@@ -27,7 +27,7 @@ public abstract class AbstractRealNumberEditor extends AbstractNumericEditorFact
         spinner.setMinimum(min);
         spinner.setMaximum(max);
 
-        Number value = ((Number)valueFor(rule, numDesc));
+        Number value = ((Number)valueFor(source, numDesc));
         if (value != null) {
         	int intVal = (int)(value.doubleValue() * scale);
         	spinner.setSelection(intVal);

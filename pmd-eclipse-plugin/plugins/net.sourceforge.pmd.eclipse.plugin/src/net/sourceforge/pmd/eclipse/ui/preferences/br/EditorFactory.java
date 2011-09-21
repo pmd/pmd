@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 
 import org.eclipse.swt.widgets.Composite;
@@ -43,7 +44,7 @@ public interface EditorFactory {
      * @param listener ValueChangeListener
      * @return Control
      */
-    Control newEditorOn(Composite parent, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener, SizeChangeListener sizeListener);
+    Control newEditorOn(Composite parent, PropertyDescriptor<?> desc, PropertySource source, ValueChangeListener listener, SizeChangeListener sizeListener);
 
     /**
      * Create an array of label-widget pairs on the parent composite for the
@@ -58,5 +59,5 @@ public interface EditorFactory {
      * @param sizeListener
      * @return Control[]
      */
-    Control[] createOtherControlsOn(Composite parent, PropertyDescriptor<?> desc, Rule rule, ValueChangeListener listener, SizeChangeListener sizeListener);
+    Control[] createOtherControlsOn(Composite parent, PropertyDescriptor<?> desc, PropertySource source, ValueChangeListener listener, SizeChangeListener sizeListener);
 }

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.EditorFactory;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
@@ -51,10 +51,10 @@ public class EditorTester implements ValueChangeListener, SizeChangeListener {
 
 		s.setText("Type Editor Tester");
 		s.setLayout(gl);
-		Composite gc = new Composite(s, SWT.BORDER);
+		Composite panel = new Composite(s, SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan = 4;
-		gc.setLayoutData(gd);
+		panel.setLayoutData(gd);
 		gd = new GridData();
 
 		Composite c1 = new Composite(s, SWT.NO_FOCUS);
@@ -70,7 +70,7 @@ public class EditorTester implements ValueChangeListener, SizeChangeListener {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		c.setLayoutData(gd);
 
-		FormArranger formArranger = new FormArranger(gc, PerRulePropertyPanelManager.editorFactoriesByPropertyType, this, this);
+		FormArranger formArranger = new FormArranger(panel, PerRulePropertyPanelManager.editorFactoriesByPropertyType, this, this);
 		formArranger.arrangeFor(new NonRuleWithAllPropertyTypes());
 		s.open();
 		while (!s.isDisposed()) {
@@ -87,7 +87,7 @@ public class EditorTester implements ValueChangeListener, SizeChangeListener {
 	// ignore these callbacks
 	public void changed(RuleSelection rule, PropertyDescriptor<?> desc,	Object newValue) {	}
 
-	public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) { }
+	public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) { }
 
 	public void addedRows(int newRowCount) { }
 

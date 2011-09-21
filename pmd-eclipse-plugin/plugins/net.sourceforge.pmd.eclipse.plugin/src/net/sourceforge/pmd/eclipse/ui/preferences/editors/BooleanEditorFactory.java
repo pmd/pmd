@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
@@ -47,24 +47,24 @@ public class BooleanEditorFactory extends AbstractEditorFactory {
         return ((Button)valueControl).getSelection() ? Boolean.TRUE : Boolean.FALSE;
     }
 
-   public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+   public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
        final Button butt =  new Button(parent, SWT.CHECK);
        butt.setText("");
 
        final BooleanProperty bp = booleanPropertyFrom(desc);   // TODO - do I really have to do this?
 
-       boolean set = ((Boolean)valueFor(rule, desc)).booleanValue();
+       boolean set = ((Boolean)valueFor(source, desc)).booleanValue();
        butt.setSelection(set);
 
        SelectionAdapter sa = new SelectionAdapter() {
            public void widgetSelected(SelectionEvent event) {
                boolean selected = butt.getSelection();
-               if (selected == (((Boolean)valueFor(rule, bp))).booleanValue()) return;
+               if (selected == (((Boolean)valueFor(source, bp))).booleanValue()) return;
 
-               rule.setProperty(bp, Boolean.valueOf(selected));
-               listener.changed(rule, desc, Boolean.valueOf(selected));
-               adjustRendering(rule, desc, butt);
+               source.setProperty(bp, Boolean.valueOf(selected));
+               listener.changed(source, desc, Boolean.valueOf(selected));
+               adjustRendering(source, desc, butt);
                }
        };
        

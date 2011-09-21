@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
@@ -22,9 +23,9 @@ public class Configuration {
 		StatisticalRule.TOP_SCORE_DESCRIPTOR
 		};
 
-	public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(Rule rule) {
+	public static Map<PropertyDescriptor<?>, Object> filteredPropertiesOf(PropertySource source) {
 
-		Map<PropertyDescriptor<?>, Object> valuesByProp = rule.getPropertiesByPropertyDescriptor();
+		Map<PropertyDescriptor<?>, Object> valuesByProp = source.getPropertiesByPropertyDescriptor();
 
 		for (PropertyDescriptor<?> excludedRuleProperty : excludedRuleProperties) {
 			valuesByProp.remove(excludedRuleProperty);

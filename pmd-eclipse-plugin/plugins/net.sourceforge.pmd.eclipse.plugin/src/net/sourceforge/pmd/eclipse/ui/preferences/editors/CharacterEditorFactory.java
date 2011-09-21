@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
@@ -49,8 +49,8 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
      * @param desc PropertyDescriptor<?>
      * @param rule Rule
      */
-    protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
-        Character val = (Character)valueFor(rule, desc);
+    protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, PropertySource source) {
+        Character val = (Character)valueFor(source, desc);
         textWidget.setText(val == null ? "" : val.toString());
     }
 
@@ -69,23 +69,23 @@ public class CharacterEditorFactory extends AbstractEditorFactory {
         }
     }
 
-    public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+    public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
         final Text text =  new Text(parent, SWT.SINGLE | SWT.BORDER);
 
-        fillWidget(text, desc, rule);
+        fillWidget(text, desc, source);
 
         final CharacterProperty cp = characterPropertyFrom(desc); // TODO - really necessary?
 
         text.addListener(SWT.FocusOut, new Listener() {
             public void handleEvent(Event event) {
                 Character newValue = charValueIn(text);
-                Character existingValue = (Character)valueFor(rule, cp);
+                Character existingValue = (Character)valueFor(source, cp);
                 if (existingValue.equals(newValue)) return;
 
-                rule.setProperty(cp, newValue);
-                listener.changed(rule, cp, newValue);
-                adjustRendering(rule, desc, text);
+                source.setProperty(cp, newValue);
+                listener.changed(source, cp, newValue);
+                adjustRendering(source, desc, text);
                 }
             });
 

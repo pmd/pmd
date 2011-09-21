@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.Configuration;
@@ -42,12 +43,12 @@ public class RuleUtil {
 //		return false;
 //	}
 	
-	public static boolean isXPathRule(Rule rule) {
+	public static boolean isXPathRule(PropertySource source) {
 		//return rule.hasDescriptor(XPathRule.XPATH_DESCRIPTOR);	// not reliable since it may not have it yet
 		
-		if (rule instanceof XPathRule) return true;
-		if (rule instanceof RuleReference) {
-			Rule realOne = ((RuleReference)rule).getRule();
+		if (source instanceof XPathRule) return true;
+		if (source instanceof RuleReference) {
+			Rule realOne = ((RuleReference)source).getRule();
 			return realOne instanceof XPathRule;
 		}
 		

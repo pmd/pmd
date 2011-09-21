@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
@@ -53,9 +53,9 @@ public class TypeEditorFactory extends AbstractEditorFactory {
         return ((TypeText)valueControl).getType(false);
     }
 
-	protected void fillWidget(TypeText textWidget, PropertyDescriptor<?> desc, Rule rule) {
+	protected void fillWidget(TypeText textWidget, PropertyDescriptor<?> desc, PropertySource source) {
 
-		Class<?> type = (Class<?>)valueFor(rule, desc);
+		Class<?> type = (Class<?>)valueFor(source, desc);
 		textWidget.setType(type);
 	}
 
@@ -68,12 +68,12 @@ public class TypeEditorFactory extends AbstractEditorFactory {
         }
     }
 
-    public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+    public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
          final TypeText typeText = new TypeText(parent, SWT.SINGLE | SWT.BORDER, true, "Enter a type name");  // TODO  i18l
          typeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         fillWidget(typeText, desc, rule);
+         fillWidget(typeText, desc, source);
 
          final TypeProperty tp = typePropertyFrom(desc);
 
@@ -82,13 +82,13 @@ public class TypeEditorFactory extends AbstractEditorFactory {
                  Class<?> newValue = typeText.getType(true);
                  if (newValue == null) return;
 
-                 Class<?> existingValue = (Class<?>)valueFor(rule, tp);
+                 Class<?> existingValue = (Class<?>)valueFor(source, tp);
                  if (existingValue == newValue) return;
 
-                 rule.setProperty(tp, newValue);
-                 listener.changed(rule, desc, newValue);
+                 source.setProperty(tp, newValue);
+                 listener.changed(source, desc, newValue);
 
-                 adjustRendering(rule, desc, typeText);
+                 adjustRendering(source, desc, typeText);
                  }
           	};
 

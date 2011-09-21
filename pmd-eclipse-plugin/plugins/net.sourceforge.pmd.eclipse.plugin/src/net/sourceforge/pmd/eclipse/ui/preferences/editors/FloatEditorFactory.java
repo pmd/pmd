@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
@@ -49,20 +49,20 @@ public class FloatEditorFactory extends AbstractRealNumberEditor {
         return new Float(((Spinner)valueControl).getSelection() / scale);
     }
 
-	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+	public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
         final FloatProperty fp = floatPropertyFrom(desc);
-        final Spinner spinner = newSpinnerFor(parent, rule, fp);
+        final Spinner spinner = newSpinnerFor(parent, source, fp);
 
         spinner.addModifyListener(new ModifyListener() {
 	        public void modifyText(ModifyEvent event) {
                Float newValue = new Float(spinner.getSelection() / scale);
-               if (newValue.equals(valueFor(rule, fp))) return;
+               if (newValue.equals(valueFor(source, fp))) return;
 
-               rule.setProperty(fp, newValue);
-               listener.changed(rule, fp, newValue);
+               source.setProperty(fp, newValue);
+               listener.changed(source, fp, newValue);
 
-               adjustRendering(rule, desc, spinner);
+               adjustRendering(source, desc, spinner);
                }
            });
 

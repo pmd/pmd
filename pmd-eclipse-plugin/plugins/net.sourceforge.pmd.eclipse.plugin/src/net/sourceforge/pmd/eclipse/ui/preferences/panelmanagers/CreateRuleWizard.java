@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleSelection;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleUtil;
@@ -103,7 +104,7 @@ public class CreateRuleWizard extends Wizard implements ValueChangeListener, Rul
 
 	}
 
-	public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
+	public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
 		// TODO Auto-generated method stub
 
 	}

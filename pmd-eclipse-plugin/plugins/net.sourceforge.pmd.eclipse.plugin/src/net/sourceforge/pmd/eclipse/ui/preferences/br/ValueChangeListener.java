@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 
 /**
  * Accepts notifications for changes to a single rule or a number of them.
@@ -24,5 +24,5 @@ public interface ValueChangeListener {
      * @param desc PropertyDescriptor<?>
      * @param newValue Object
      */
-    void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue);
+    void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue);
 }

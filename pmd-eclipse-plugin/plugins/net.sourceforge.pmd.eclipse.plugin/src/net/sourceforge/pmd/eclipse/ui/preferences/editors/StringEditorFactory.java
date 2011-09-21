@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.editors;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.SizeChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
@@ -47,10 +47,10 @@ public class StringEditorFactory extends AbstractEditorFactory {
 	 * @param desc PropertyDescriptor<?>
 	 * @param rule Rule
 	 */
-	protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
-		String val = (String)valueFor(rule, desc);
+	protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, PropertySource source) {
+		String val = (String)valueFor(source, desc);
 		textWidget.setText(val == null ? "" : val);
-		adjustRendering(rule, desc, textWidget);
+		adjustRendering(source, desc, textWidget);
 	}
 
 	private static StringProperty stringPropertyFrom(PropertyDescriptor<?> desc) {
@@ -62,30 +62,30 @@ public class StringEditorFactory extends AbstractEditorFactory {
 	     }
 	}
 
-	private void setValue(Rule rule, StringProperty desc, String value) {
+	private void setValue(PropertySource source, StringProperty desc, String value) {
 
-	    if (!rule.hasDescriptor(desc)) return;
-	    rule.setProperty(desc, value);
+	    if (!source.hasDescriptor(desc)) return;
+	    source.setProperty(desc, value);
 	}
 
-   public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener, SizeChangeListener sizeListener) {
+   public Control newEditorOn(Composite parent, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener, SizeChangeListener sizeListener) {
 
             final Text text =  new Text(parent, SWT.SINGLE | SWT.BORDER);
             text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-            fillWidget(text, desc, rule);
+            fillWidget(text, desc, source);
 
             final StringProperty sp = stringPropertyFrom(desc); // TODO - really necessary?
 
             text.addListener(SWT.FocusOut, new Listener() {
                 public void handleEvent(Event event) {
                     String newValue = text.getText().trim();
-                    String existingValue = (String)valueFor(rule, sp);
+                    String existingValue = (String)valueFor(source, sp);
                     if (StringUtil.areSemanticEquals(existingValue, newValue)) return;
 
-                    setValue(rule, sp, newValue);
-                    fillWidget(text, desc, rule);     // redraw
-                    listener.changed(rule, desc, newValue);
+                    setValue(source, sp, newValue);
+                    fillWidget(text, desc, source);     // redraw
+                    listener.changed(source, desc, newValue);
                 }
             });
 

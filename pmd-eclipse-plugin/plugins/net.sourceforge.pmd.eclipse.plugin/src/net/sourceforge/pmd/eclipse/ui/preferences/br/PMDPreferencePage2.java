@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
@@ -338,10 +339,10 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		return manager;
 	}
 
-	public void changed(Rule rule, PropertyDescriptor<?> desc, Object newValue) {
+	public void changed(PropertySource source, PropertyDescriptor<?> desc, Object newValue) {
 	        // TODO enhance to recognize default values
 	     setModified();
-	     tableManager.updated(rule);
+	     tableManager.updated(source);
 	}
 
 	public void changed(RuleSelection selection, PropertyDescriptor<?> desc, Object newValue) {

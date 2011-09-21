@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.util.Util;
 import net.sourceforge.pmd.lang.rule.properties.MethodMultiProperty;
@@ -76,9 +76,9 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
 	    }
 	}
 
-    protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, Rule rule) {
+    protected void fillWidget(Text textWidget, PropertyDescriptor<?> desc, PropertySource source) {
 
-        Method[] values = (Method[])valueFor(rule, desc);
+        Method[] values = (Method[])valueFor(source, desc);
         if (values == null) {
             textWidget.setText("");
             return;
@@ -87,10 +87,10 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         Map<String, List<Method>> methodMap = ClassUtil.asMethodGroupsByTypeName(values);
         textWidget.setText(values == null ? "" : asString(methodMap));
 
-        adjustRendering(rule, desc, textWidget);
+        adjustRendering(source, desc, textWidget);
     }
 
-    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, Rule rule) {
+    protected Control addWidget(Composite parent, Object value, PropertyDescriptor<?> desc, PropertySource source) {
         MethodPicker widget = new MethodPicker(parent, SWT.SINGLE | SWT.BORDER, MethodEditorFactory.UnwantedPrefixes);
         setValue(widget, value);
         return widget;
@@ -101,25 +101,25 @@ public class MultiMethodEditorFactory extends AbstractMultiValueEditorFactory {
         ((MethodPicker)widget).setMethod(method);
     }
 
-    protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final Rule rule, final ValueChangeListener listener) {
+    protected void configure(final Text textWidget, final PropertyDescriptor<?> desc, final PropertySource source, final ValueChangeListener listener) {
         textWidget.setEditable(false);
     }
 
-    protected void update(Rule rule, PropertyDescriptor<?> desc, List<Object> newValues) {
-        rule.setProperty((MethodMultiProperty)desc, newValues.toArray(new Method[newValues.size()]));
+    protected void update(PropertySource source, PropertyDescriptor<?> desc, List<Object> newValues) {
+    	source.setProperty((MethodMultiProperty)desc, newValues.toArray(new Method[newValues.size()]));
     }
 
     @Override
-    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, Rule rule) {
+    protected Object addValueIn(Control widget, PropertyDescriptor<?> desc, PropertySource source) {
 
         Method newValue = ((MethodPicker)widget).getMethod();
         if (newValue == null) return null;
 
-        Method[] currentValues = (Method[])valueFor(rule, desc);
+        Method[] currentValues = (Method[])valueFor(source, desc);
         Method[] newValues = CollectionUtil.addWithoutDuplicates(currentValues, newValue);
         if (currentValues.length == newValues.length) return null;  // nothing changed
 
-        rule.setProperty((MethodMultiProperty)desc, newValues);
+        source.setProperty((MethodMultiProperty)desc, newValues);
         return newValue;
     }
 
