@@ -18,8 +18,12 @@ Rule Table
 	Adjust priority levels from context menu
 	Columns don't always appear when selected to do so
 	Properties column 
-		float values always show up as modified regardless
+		float values always show up as modified regardless (compare as strings?)
 *		Fix update problem, only shifts up/down by one from default value
+
+new CPD view
+	Add copy-to-clipboard function
+	Add support for delete key
 	
 Preferences
 	General Page
@@ -33,7 +37,6 @@ ASTView (XPathDesigner)
 	Need an XPath editor that shows errors, currently disabling Go button only
 	Need to be able to launch the new Rule wizard with XPath query filled-in
 	Colour-code the image data per node same as AST view
-	Provide filters for the tree elements?
 	
 ViolationOverview BR
 	Add context-sensitive filters w/memory
