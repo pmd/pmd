@@ -65,6 +65,7 @@ public interface IPreferences {
     String LOG_FILENAME_DEFAULT = "pmd-eclipse.log";
     Level LOG_LEVEL = Level.WARN;
     String ACTIVE_RULES = "";
+    String ACTIVE_RENDERERS = "";
   
     boolean boolFor(String prefId);
     
@@ -73,6 +74,8 @@ public interface IPreferences {
     boolean isActive(String rulename);
     
     void isActive(String ruleName, boolean flag);
+    
+    boolean isActiveRenderer(String rendererName);
     
     Set<String> getActiveRuleNames();
     
@@ -192,6 +195,16 @@ public interface IPreferences {
     
     // later...
     
+    /**
+     * 
+     */
+    Set<String> activeReportRenderers();
+    
+    /**
+     * 
+     * @param names
+     */
+    void activeReportRenderers(Set<String> names);
     
     /**
      * Synchronize the preferences with the preferences store

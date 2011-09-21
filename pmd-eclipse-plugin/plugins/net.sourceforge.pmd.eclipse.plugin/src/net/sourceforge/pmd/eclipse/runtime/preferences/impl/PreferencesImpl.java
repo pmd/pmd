@@ -71,6 +71,7 @@ class PreferencesImpl implements IPreferences {
     private String 				logFileName;
     private Level 				logLevel;
     private Set<String> 		activeRuleNames = new HashSet<String>();
+    private Set<String> 		activeRendererNames = new HashSet<String>();
     
     private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
     
@@ -230,6 +231,10 @@ class PreferencesImpl implements IPreferences {
 		return activeRuleNames.contains(ruleName);
 	}
 
+	public boolean isActiveRenderer(String rendererName) {
+		return activeRendererNames.contains(rendererName);
+	}
+	
 	public void isActive(String ruleName, boolean flag) {
 		if (flag) {
 			activeRuleNames.add(ruleName);
@@ -260,6 +265,14 @@ class PreferencesImpl implements IPreferences {
 
 	public void useCustomPriorityNames(boolean flag) {
 		useCustomPriorityNames = flag;
+	}
+
+	public Set<String> activeReportRenderers() {
+		return activeRendererNames;
+	}
+
+	public void activeReportRenderers(Set<String> names) {
+		activeRendererNames = names;
 	}
 
 }

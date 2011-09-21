@@ -1,16 +1,10 @@
 package net.sourceforge.pmd.eclipse.ui.actions;
 
-import java.util.Properties;
-
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.runtime.cmd.RenderReportsCmd;
-import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
-import net.sourceforge.pmd.renderers.CSVRenderer;
-import net.sourceforge.pmd.renderers.HTMLRenderer;
-import net.sourceforge.pmd.renderers.TextRenderer;
-import net.sourceforge.pmd.renderers.VBHTMLRenderer;
-import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.eclipse.ui.reports.ReportManager;
+import net.sourceforge.pmd.renderers.Renderer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -25,11 +19,20 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * Generate a HTML report on the current project.
  *
  * @author Philippe Herlin
- *
+ * @author Brian Remedios
  */
 public class GenerateReportAction extends AbstractUIAction {
 	
     private static final Logger log = Logger.getLogger(GenerateReportAction.class);
+    
+    private static final String DefaultReportName = "pmd-report";
+    
+    private void registerRenderers(RenderReportsCmd cmd) {
+    	
+    	for (Renderer renderer : ReportManager.instance.activeRenderers()) {
+    	   cmd.registerRenderer(renderer, DefaultReportName + "." + renderer.defaultFileExtension());
+       }
+    }
     
     /**
      * @see org.eclipse.ui.IActionDelegate#run(IAction)
@@ -44,15 +47,7 @@ public class GenerateReportAction extends AbstractUIAction {
                     final RenderReportsCmd cmd = new RenderReportsCmd();
                     cmd.setProject(project);
                     cmd.setUserInitiated(true);
-
-                    // FIXME PMD 5.0
-                    Properties props = new Properties();
-                    cmd.registerRenderer(new HTMLRenderer(props), PMDUiConstants.HTML_REPORT_NAME);
-                    cmd.registerRenderer(new CSVRenderer(props), PMDUiConstants.CSV_REPORT_NAME);
-                    cmd.registerRenderer(new XMLRenderer(props), PMDUiConstants.XML_REPORT_NAME);
-                    cmd.registerRenderer(new TextRenderer(props), PMDUiConstants.TXT_REPORT_NAME);
-                    cmd.registerRenderer(new VBHTMLRenderer(props), PMDUiConstants.VBHTML_REPORT_NAME);
-
+                    registerRenderers(cmd);
                     cmd.performExecute();
                 }
             } catch (CommandException e) {
@@ -73,7 +68,7 @@ public class GenerateReportAction extends AbstractUIAction {
      * @param selection
      * @return
      */
-    private IProject getProject(final IStructuredSelection selection) {
+    private static IProject getProject(final IStructuredSelection selection) {
         IProject project = null;
         final Object object = selection.getFirstElement();
         if (object != null && object instanceof IAdaptable) {

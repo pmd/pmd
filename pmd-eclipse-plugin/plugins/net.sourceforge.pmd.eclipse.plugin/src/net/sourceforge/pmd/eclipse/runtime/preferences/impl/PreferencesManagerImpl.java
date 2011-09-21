@@ -107,6 +107,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String LOG_FILENAME                	= PMDPlugin.PLUGIN_ID + ".log_filename";
     private static final String LOG_LEVEL                   	= PMDPlugin.PLUGIN_ID + ".log_level";
     private static final String ACTIVE_RULES                	= PMDPlugin.PLUGIN_ID + ".active_rules";
+    private static final String ACTIVE_RENDERERS               	= PMDPlugin.PLUGIN_ID + ".active_renderers";
     
     private static final String OLD_PREFERENCE_PREFIX       = "net.sourceforge.pmd.runtime";
     private static final String OLD_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
@@ -166,6 +167,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadLogFileName();
         loadLogLevel();
         loadActiveRules();
+        loadActiveReportRenderers();
         loadRulePriorityDescriptors();
 
         return preferences;
@@ -226,6 +228,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storeLogFileName();
         storeLogLevel();
         storeActiveRules();
+        storeActiveReportRenderers();
         storePriorityDescriptors();
     }
 
@@ -304,6 +307,11 @@ class PreferencesManagerImpl implements IPreferencesManager {
         preferences.setActiveRuleNames(asStringSet(loadPreferencesStore.getString(ACTIVE_RULES), ","));
     }
 
+    private void loadActiveReportRenderers() {
+        loadPreferencesStore.setDefault(ACTIVE_RENDERERS, IPreferences.ACTIVE_RENDERERS);
+        preferences.activeReportRenderers(asStringSet(loadPreferencesStore.getString(ACTIVE_RENDERERS), ","));
+    }
+    
     private void loadRulePriorityDescriptors() {
     	
     	for (Map.Entry<RulePriority, String> entry : StoreKeysByPriority.entrySet()) {
@@ -342,6 +350,10 @@ class PreferencesManagerImpl implements IPreferencesManager {
     
     private void storeActiveRules() {
     	storePreferencesStore.setValue(ACTIVE_RULES, asDelimitedString(preferences.getActiveRuleNames(), ","));
+    }
+    
+    private void storeActiveReportRenderers() {
+    	storePreferencesStore.setValue(ACTIVE_RENDERERS, asDelimitedString(preferences.activeReportRenderers(), ","));
     }
     
     private void storeProjectBuildPathEnabled() {

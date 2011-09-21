@@ -190,6 +190,14 @@
             class="net.sourceforge.pmd.eclipse.ui.preferences.CPDPreferencePage"
             id="net.sourceforge.pmd.eclipse.ui.preferences.cpdPreferencePage">
       </page>
+      
+      <page
+            name="%preferences.report"
+            category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
+            class="net.sourceforge.pmd.eclipse.ui.reports.ReportPreferencesPage"
+            id="net.sourceforge.pmd.eclipse.ui.preferences.reportsPreferencePage">
+      </page>
+      
    </extension>
 
    <extension
