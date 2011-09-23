@@ -439,6 +439,7 @@ The RuleSet XML Schema is located in the source at: etc/ruleset_2_0_0.xsd
 The RuleSet DTD is located in the source at: etc/ruleset_2_0_0.dtd
 Improved include/exclude pattern matching performance for ends-with type patterns.
 Modify (and hopefully fixed) CPD algorithm thanks to a patch from Juan Jesús García de Soria.
+Fixed character reference in xml report - thanks to Seko
 
 New Java rules:
 

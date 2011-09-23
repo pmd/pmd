@@ -37,7 +37,7 @@ public class StringUtilTest {
     /**
      * Usually you would set the system property "net.sourceforge.pmd.supportUTF8" to either "no" or "yes", to
      * switch UTF8 support.
-     * 
+     *
      * e.g.
      * <code>System.setProperty("net.sourceforge.pmd.supportUTF8","yes");</code>
      */
@@ -46,7 +46,7 @@ public class StringUtilTest {
     	StringBuilder sb = new StringBuilder();
         String test = "é";
         StringUtil.appendXmlEscaped(sb, test, false);
-        assertEquals("&#233;", sb.toString());
+        assertEquals("&#xe9;", sb.toString());
     }
 
     @Test
