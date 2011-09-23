@@ -1,53 +1,60 @@
 #!/bin/bash
 
-# OS specific support.  $var _must_ be set to either true or false.
-cygwin=false;
-case "`uname`" in
-  CYGWIN*) cygwin=true ;;
-esac
+is_cygwin() {
+    case "$(uname)" in
+        CYGWIN*)
+            readonly cygwin=true
+            ;;
+    esac
+    # OS specific support.  $var _must_ be set to either true or false.
+    if [ -z ${cygwin} ] ; then
+        readonly cygwin=false
+    fi
+}
 
-SCRIPT_DIR=`dirname $0`
-CWD="$PWD"
+convert_cygwin_vars() {
+    # If cygwin, convert to Unix form before manipulating
+    if $cygwin ; then
+        [ -n "${JAVA_HOME}" ] &&
+            JAVA_HOME=$(cygpath --unix "${JAVA_HOME}")
+        [ -n "${CLASSPATH}" ] &&
+            CLASSPATH=$(cygpath --path --unix "${CLASSPATH}")
+    fi
+}
 
-cd "$SCRIPT_DIR/../lib"
-LIB_DIR=`pwd -P`
+cygwin_paths() {
+    # For Cygwin, switch paths to Windows format before running java
+    if ${cygwin} ; then
+        JAVA_HOME=$(cygpath --windows "${JAVA_HOME}")
+        classpath=$(cygpath --path --windows "${classpath}")
+        DIRECTORY=$(cygpath --windows "${DIRECTORY}")
+    fi
+}
 
-# If cygwin, convert to Unix form before manipulating
-if $cygwin ; then
-  [ -n "$JAVA_HOME" ] &&
-    JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
- [ -n "$CLASSPATH" ] &&
-    CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
-fi
+SCRIPT_DIR=$(dirname $0)
+CWD="$(PWD)"
+
+is_cygwin
+
+cd "${SCRIPT_DIR}/../lib"
+LIB_DIR=$(pwd -P)
+
+convert_cygwin_vars
 
 classpath=$CLASSPATH
 
-build_dir="$SCRIPT_DIR/../build"
+cd "${CWD}"
 
-if [ -d "$build_dir" ]; then
-    cd "$build_dir"
-    build_dir=`pwd -P`
-    classpath=$classpath:$build_dir
-fi
-
-cd "$CWD"
-
-for jarfile in `ls $LIB_DIR/*.jar`; do
+for jarfile in ${LIB_DIR}/*.jar; do
     classpath=$classpath:$jarfile
 done
 
-
-FILE=$1
+FILE="${1}"
 shift
-FORMAT=$1
+FORMAT="${1}"
 shift
 RULESETFILES="$@"
 
-# echo "CLASSPATH: $classpath"
+cygwin_paths
 
-# For Cygwin, switch paths to Windows format before running java
-if $cygwin; then
-  classpath=`cygpath --path --windows "$classpath"`
-fi
-
-java -cp $classpath net.sourceforge.pmd.util.designer.Designer
+java -cp ${classpath} net.sourceforge.pmd.util.designer.Designer
