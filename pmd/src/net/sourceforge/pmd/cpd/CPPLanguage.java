@@ -5,6 +5,6 @@ package net.sourceforge.pmd.cpd;
 
 public class CPPLanguage extends AbstractLanguage {
 	public CPPLanguage() {
-		super(new CPPTokenizer(), ".h", ".c", ".cpp", ".cxx", ".cc", ".C");
+		super(new CPPTokenizer(), ".h", ".hpp", ".hxx",".c", ".cpp", ".cxx", ".cc", ".C");
 	}
 }

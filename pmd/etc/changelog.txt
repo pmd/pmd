@@ -5,7 +5,7 @@ TODO - Release blockers - Must implement before this release can be finished
    CODE:
    o Get Eclipse integration working with multiple languages, make sure there's
      no major problems before we put the core release.
-   o Some cleanup needs to be done on the PMD class.  
+   o Some cleanup needs to be done on the PMD class.
      The Benchmarking stuff really only can work for commandline PMD
      usage, and the RuleSets.start()/end() stuff isn't working for all entry
      points into the PMD class.  Things need to be simplified and centralized.
@@ -28,7 +28,7 @@ TODO - Release blockers - Must implement before this release can be finished
    DOCUMENTATION:
    o Expand documentation examples which demonstrate use of new RuleSetReferenceId
      capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
-     of a Rule reference in places not previously possible (e.g. CMD and Ant). 
+     of a Rule reference in places not previously possible (e.g. CMD and Ant).
    o Rule documentation should be automatically generated
      from the descriptors, be they defined in code or XML, I think the code-based
      descriptors are not getting seen.
@@ -129,7 +129,7 @@ All StringBuffer-related rules now also catch StringBuilder-related issues in th
 	   Added - net.sourceforge.pmd.lang.jsp.rule.JspRuleViolation
 
 	API Change - Generalize DFA treatment
-	   Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.lang.dfa.DataFlowNode   
+	   Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.lang.dfa.DataFlowNode
 	   Renamed - net.sourceforge.pmd.dfa.DataFlowNode to net.sourceforge.pmd.lang.dfa.AbstractDataFlowNode
 	   Renamed - net.sourceforge.pmd.dfa.Linker to net.sourceforge.pmd.lang.dfa.Linker
 	   Renamed - net.sourceforge.pmd.dfa.LinkerException to net.sourceforge.pmd.lang.dfa.LinkerException
@@ -157,13 +157,13 @@ All StringBuffer-related rules now also catch StringBuilder-related issues in th
 
    API Change - Generalize Type Resolution treatment
 	   Renamed - net.sourceforge.pmd.typeresolution.* to net.sourceforge.pmd.lang.java.typeresolution.*
-	   
+
 	API Change - Generalize Property Descriptor treatment
 	   Renamed - net.sourceforge.pmd.properties.* to net.sourceforge.pmd.lang.rule.properties.*
 	   Renamed - net.sourceforge.pmd.properties.AbstractPMDProperty to net.sourceforge.pmd.lang.rule.properties.AbstractProperty
 	   Changed - net.sourceforge.pmd.properties.PropertyDescriptor to use Generics, and other changes
 	   Added - net.sourceforge.pmd.lang.rule.properties.* new types and other API changes
-	   
+
 	API Change - Generalize AST treatment
 	   Added - net.sourceforge.pmd.lang.ast.Node (interface extracted from old Node/SimpleNode)
 	   Added - net.sourceforge.pmd.lang.ast.AbstractNode
@@ -247,7 +247,7 @@ All StringBuffer-related rules now also catch StringBuilder-related issues in th
       Renamed - Node.getAsXml() as Node.getAsDocument()
       Added - Node.findChildrenOfType(Class), non recursive version
       Added - Node.getFirstChildOfType(Class), non recursive version
-      
+
    API Change - Remove deprecated APIs
       Removed - AccessNode.setXXX() methods, use AccessNode.setXXX(boolean) instead.
       Removed - PMDException.getReason()
@@ -311,7 +311,7 @@ New features:
 
 New Language 'ecmascript' added, for writing XPathRule and Java Rules against ECMAScript/JavaScript documents (must be standalone, not embedded in HTML).  Many thanks to Rhino!
 New Language 'xml' added, for writing XPathRules against XML documents
-New Language 'xsl' added, as a derivative from XML. 
+New Language 'xsl' added, as a derivative from XML.
 Rules can now define a 'violationSuppressRegex' property to universally suppress violations with messages matching the given regular expression
 Rules can now define a 'violationSuppressXPath' property to universally suppress violations on nodes which match the given relative XPath expression
 Rules are now directly associated with a corresponding Language, and a can also be associated with a specific Language Version range if desired.
@@ -320,6 +320,7 @@ XPathRules can now query using XPath 2.0 with 'version=2.0"', or XPath 2.0 in XP
 Rules can now use property values in messages, for example ${propertyName} will expand to the value of the 'propertyName' property on the Rule.
 Rules can now use violation specific values in messages, specifically ${variableName}, ${methodName}, ${className}, ${packageName}.
 New XPath function 'getCommentOn' can be used to search for strings in comments - Thanks to Andy Throgmorton
+Add .hxx and .hpp as valid file extension for CPD - Thanks to Ryan Pavlik
 
 Other changes:
 Rule property API upgrades:
@@ -334,7 +335,7 @@ TokenManager errors now include a file name whenever possible for every AST in P
 Added file encoding option to CPD GUI, which already existed for the command line and Ant
 AssignmentInOperand enhanced to catch assignment in 'for' condition, as well as use of increment/decrement operators.  Customization properties added to allow assignment in if/while/for, or use of increment/decrement.
 Fix false positive on CastExpressions for UselessParentheses
-Fix false positive where StringBuffer.setLength(0) was using default constructor size of 16, instead of actual constructor size. 
+Fix false positive where StringBuffer.setLength(0) was using default constructor size of 16, instead of actual constructor size.
 Fix false negative for non-primitive types for VariableNamingConventions, also expanded scope to local and method/constructors, and enhanced customization options to choose between members/locals/parameters (all checked by default)
 Correct -benchmark reporting of Rule visits via the RuleChain
 Creating an Empty Code Ruleset and moved the following rules from Basic ruleset:
@@ -359,7 +360,7 @@ Creating a unnecessary Code Ruleset and moved the following rules from Basic rul
         * UselessOperationOnImmutable
         * UnusedNullCheckInEquals
         * UselessParentheses
-	Basic rulesets still includes a reference to those rules.	
+	Basic rulesets still includes a reference to those rules.
 
 Fixed bug 2920057 - Fixed False + on CloseResource
 Fixed bug 1808110 - Fixed performance issues on PreserveStackTrace
