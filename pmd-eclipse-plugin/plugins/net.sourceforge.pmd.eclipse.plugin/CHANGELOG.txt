@@ -3,7 +3,7 @@ Change log for the PMD Eclipse plugin
 v4.0.0 - xxx 2011?
 . New integrated AST View and XPath test area 
 . New rule creation wizard
-. New report setup panel
+. New report preferences panel
 . User-definable rule violation markers 
      Highest priority markers also decorate folders & projects (selectable)
 . Colour syntax highlighting in code viewers/editors
@@ -21,6 +21,7 @@ v4.0.0 - xxx 2011?
 . Several usability fixes for the Dataflow view
 . Updated to use latest SWT widgets wherever possible
 . New option to control the launch of a full build per project - Thanks to Joe Freeman
+. Check code from working set selections - Thanks to Dominik
 -------------------------------------
 v3.2.5 - October 13 2008
 
