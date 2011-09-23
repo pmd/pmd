@@ -11,17 +11,9 @@ public class StringUtil {
 
 	public static final String[] EMPTY_STRINGS = new String[0];
     private static final boolean supportsUTF8 = System.getProperty("net.sourceforge.pmd.supportUTF8", "no").equals("yes");
-    private static final String[] ENTITIES;
-
-    static {
-        ENTITIES = new String[256 - 126];
-        for (int i = 126; i <= 255; i++) {
-            ENTITIES[i - 126] = "&#" + i + ';';
-        }
-    }
 
     public static String replaceString(String original, char oldChar, String newString) {
-        
+
     	String fixedNew = newString == null ? "" : newString;
 
         StringBuffer desc = new StringBuffer();
@@ -38,9 +30,9 @@ public class StringUtil {
     }
 
     public static String replaceString(String original, String oldString, String newString) {
-    	
+
     	String fixedNew = newString == null ? "" : newString;
-    	
+
         StringBuffer desc = new StringBuffer();
         int index = original.indexOf(oldString);
         int last = 0;
@@ -70,20 +62,16 @@ public class StringUtil {
         encoded = StringUtil.replaceString(encoded, '<', "&lt;");
         return StringUtil.replaceString(encoded, '>', "&gt;");
     }
-    
+
     // TODO - unify the method above with the one below
-    
+
     private static void appendXmlEscaped(StringBuffer buf, String src, boolean supportUTF8) {
         char c;
         for (int i = 0; i < src.length(); i++) {
             c = src.charAt(i);
             if (c > '~') {// 126
                 if (!supportUTF8) {
-                    if (c <= 255) {
-                        buf.append(ENTITIES[c - 126]);
-                    } else {
-                        buf.append("&u").append(Integer.toHexString(c)).append(';');
-                    }
+                    buf.append("&#x").append(Integer.toHexString(c)).append(';');
                 } else {
                     buf.append(c);
                 }
@@ -116,7 +104,7 @@ public class StringUtil {
 		if (source == null || source.length() == 0) {
             return EMPTY_STRINGS;
         }
-		
+
 		int delimiterCount = 0;
 		int length = source.length();
 		char[] chars = source.toCharArray();
@@ -141,16 +129,16 @@ public class StringUtil {
 
 		return results;
 	}
-	
+
 	/**
 	 * Much more efficient than StringTokenizer.
-	 * 
+	 *
 	 * @param str String
 	 * @param separator char
 	 * @return String[]
 	 */
 	  public static String[] substringsOf(String str, String separator) {
-		  
+
 	        if (str == null || str.length() == 0) {
 	            return EMPTY_STRINGS;
 	        }
@@ -171,8 +159,8 @@ public class StringUtil {
 	        list.add(str.substring(currPos));
 	        return list.toArray(new String[list.size()]);
 	    }
-	
-	
+
+
 	/**
 	 * Copies the elements returned by the iterator onto the string buffer
 	 * each delimited by the separator.
@@ -182,11 +170,11 @@ public class StringUtil {
 	 * @param separator String
 	 */
 	public static void asStringOn(StringBuffer sb, Iterator iter, String separator) {
-		
+
 	    if (!iter.hasNext()) return;
-	    
+
 	    sb.append(iter.next());
-	    
+
 	    while (iter.hasNext()) {
 	    	sb.append(separator);
 	        sb.append(iter.next());
@@ -195,70 +183,70 @@ public class StringUtil {
 	/**
 	 * Return the length of the shortest string in the array.
 	 * If any one of them is null then it returns 0.
-	 * 
+	 *
 	 * @param strings String[]
 	 * @return int
 	 */
 	public static int lengthOfShortestIn(String[] strings) {
-		
+
 		int minLength = Integer.MAX_VALUE;
-		
+
 		for (int i=0; i<strings.length; i++) {
 			if (strings[i] == null) return 0;
 			minLength = Math.min(minLength, strings[i].length());
 		}
-		
+
 		return minLength;
 	}
-	
+
 	/**
 	 * Determine the maximum number of common leading whitespace characters
 	 * the strings share in the same sequence. Useful for determining how
 	 * many leading characters can be removed to shift all the text in the
 	 * strings to the left without misaligning them.
-	 * 
+	 *
 	 * @param strings String[]
 	 * @return int
 	 */
 	public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
-		
+
 		int shortest = lengthOfShortestIn(strings);
 		if (shortest == 0) return 0;
-		
+
 		char[] matches = new char[shortest];
-		
+
 		String str;
 		for (int m=0; m<matches.length; m++) {
 			matches[m] = strings[0].charAt(m);
 			if (!Character.isWhitespace(matches[m])) return m;
 			for (int i=0; i<strings.length; i++) {
 				str = strings[i];
-				if (str.charAt(m) != matches[m])  return m; 
+				if (str.charAt(m) != matches[m])  return m;
 				}
 		}
-		
+
 		return shortest;
 	}
-	
+
 	/**
-	 * Trims off the leading characters off the strings up to the trimDepth 
+	 * Trims off the leading characters off the strings up to the trimDepth
 	 * specified. Returns the same strings if trimDepth = 0
-	 * 
+	 *
 	 * @param strings
 	 * @param trimDepth
 	 * @return String[]
 	 */
 	public static String[] trimStartOn(String[] strings, int trimDepth) {
-		
+
 		if (trimDepth == 0) return strings;
-		
+
 		String[] results = new String[strings.length];
 		for (int i=0; i<strings.length; i++) {
 			results[i] = strings[i].substring(trimDepth);
 		}
 		return results;
    }
-	
+
     /**
      * Left pads a string.
      * @param s The String to pad
@@ -274,14 +262,14 @@ public class StringUtil {
          }
          return res;
     }
-    
+
     /**
      * Are the two String values the same.
      * The Strings can be optionally trimmed before checking.
      * The Strings can be optionally compared ignoring case.
      * The Strings can be have embedded whitespace standardized before comparing.
      * Two null values are treated as equal.
-     * 
+     *
      * @param s1 The first String.
      * @param s2 The second String.
      * @param trim Indicates if the Strings should be trimmed before comparison.
