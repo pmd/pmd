@@ -8,12 +8,13 @@ import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
  * Exposes all Java Language specific functions for Saxon use.
  */
 public class JavaFunctions {
+
     public static boolean typeof(XPathContext context, String nodeTypeName, String fullTypeName) {
-	return typeof(context, nodeTypeName, fullTypeName, null);
+    	return typeof(context, nodeTypeName, fullTypeName, null);
     }
 
     public static boolean typeof(XPathContext context, String nodeTypeName, String fullTypeName, String shortTypeName) {
-	return TypeOfFunction.typeof((Node) ((ElementNode) context.getContextItem()).getUnderlyingNode(), nodeTypeName,
-		fullTypeName, shortTypeName);
+    	return TypeOfFunction.typeof((Node) ((ElementNode) context.getContextItem()).getUnderlyingNode(), nodeTypeName,
+    			fullTypeName, shortTypeName);
     }
 }

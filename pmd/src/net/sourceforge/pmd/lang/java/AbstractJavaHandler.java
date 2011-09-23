@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
+import net.sourceforge.pmd.lang.java.xpath.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.xpath.JavaFunctions;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
@@ -39,6 +40,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
 	return new AbstractASTXPathHandler() {
 	    public void initialize() {
 		TypeOfFunction.registerSelfInSimpleContext();
+		GetCommentOnFunction.registerSelfInSimpleContext();
 	    }
 
 	    public void initialize(IndependentContext context) {

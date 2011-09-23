@@ -7,6 +7,8 @@ import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.java.xpath.GetCommentOnFunction;
+import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 
 /**
  * This class serves as the means to perform XPath related static initialization.
@@ -27,34 +29,36 @@ public class Initializer {
      * Perform all initialization.
      */
     public static void initialize(IndependentContext context) {
-	context.declareNamespace("pmd", "java:" + PMDFunctions.class.getName());
-	for (Language language : Language.values()) {
-	    for (LanguageVersion languageVersion : language.getVersions()) {
-		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-		if (languageVersionHandler != null) {
-		    languageVersionHandler.getXPathHandler().initialize(context);
+		context.declareNamespace("pmd", "java:" + PMDFunctions.class.getName());
+		for (Language language : Language.values()) {
+		    for (LanguageVersion languageVersion : language.getVersions()) {
+			LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+			if (languageVersionHandler != null) {
+			    languageVersionHandler.getXPathHandler().initialize(context);
+			}
+		    }
 		}
-	    }
-	}
     }
 
     static {
-	initializeGlobal();
-	initializeLanguages();
+		initializeGlobal();
+		initializeLanguages();
     }
 
     private static void initializeGlobal() {
-	MatchesFunction.registerSelfInSimpleContext();
+    	GetCommentOnFunction.registerSelfInSimpleContext();
+    	MatchesFunction.registerSelfInSimpleContext();
+    	TypeOfFunction.registerSelfInSimpleContext();
     }
 
     private static void initializeLanguages() {
-	for (Language language : Language.values()) {
-	    for (LanguageVersion languageVersion : language.getVersions()) {
-		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-		if (languageVersionHandler != null) {
-		    languageVersionHandler.getXPathHandler().initialize();
+		for (Language language : Language.values()) {
+		    for (LanguageVersion languageVersion : language.getVersions()) {
+			LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+			if (languageVersionHandler != null) {
+			    languageVersionHandler.getXPathHandler().initialize();
+			}
+		    }
 		}
-	    }
-	}
     }
 }
