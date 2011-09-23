@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class JavaLanguage extends AbstractLanguage {
 	public JavaLanguage() {
-		this(new Properties());
+		this(System.getProperties());
 	}
 
 	public JavaLanguage(Properties properties) {
