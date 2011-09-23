@@ -443,7 +443,7 @@ Fixed character reference in xml report - thanks to Seko
 
 New Java rules:
 
-	Basic ruleset: ExtendsObject,CheckSkipResult,AvoidBranchingStatementAsLastInLoop
+	Basic ruleset: ExtendsObject,CheckSkipResult,AvoidBranchingStatementAsLastInLoop,DontCallThreadRun
 	Controversial ruleset: AvoidLiteralsInIfCondition, AvoidPrefixingMethodParameters, OneDeclarationPerLine, UseConcurrentHashMap
 	Coupling ruleset: LoosePackageCoupling,LawofDemeter
 	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass,GodClass

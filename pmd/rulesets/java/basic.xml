@@ -736,6 +736,45 @@ for (int i = 0; i < 10; i++) {
         </example>
     </rule>
 
+    <rule  name="DontCallThreadRun"
+           language="java"
+           since="4.3"
+           message="Don't call Thread.run() explicitly, use Thread.start()"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
+           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#DontCallThreadRun">
+      <description>
+Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
+      </description>
+      <priority>4</priority>
+      <properties>
+        <property name="xpath">
+          <value>
+<![CDATA[
+//StatementExpression/PrimaryExpression
+[
+    PrimaryPrefix
+    [
+        ./Name[ends-with(@Image, '.run') or @Image = 'run']
+        and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
+        [../../../Type/ReferenceType[ClassOrInterfaceType/@Image = 'Thread']]
+        or (
+        ./AllocationExpression/ClassOrInterfaceType[@Image = 'Thread']
+        and ../PrimarySuffix[@Image = 'run'])
+    ]
+]
+]]>
+         </value>
+        </property>
+      </properties>
+      <example>
+<![CDATA[
+Thread t = new Thread();
+t.run();            // use t.start() instead
+new Thread().run(); // same violation
+]]>
+      </example>
+    </rule>
+
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyCatchBlock" />
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyIfStmt" />
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyWhileStmt" />

@@ -8,7 +8,7 @@ import org.junit.Before;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class BasicRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-basic";
 
     @Before
@@ -34,6 +34,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "MisplacedNullCheck");
         addRule(RULESET, "OverrideBothEqualsAndHashcode");
         addRule(RULESET, "ReturnFromFinallyBlock");
+        addRule(RULESET, "DontCallThreadRun");
     }
 
     public static junit.framework.Test suite() {
