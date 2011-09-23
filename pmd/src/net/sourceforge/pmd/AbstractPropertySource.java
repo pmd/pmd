@@ -78,7 +78,7 @@ public abstract class AbstractPropertySource {
 	public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
 	
 		 if (propertyValuesByDescriptor.isEmpty()) {
-			 getPropertiesByPropertyDescriptor(); // compute it
+			 propertyValuesByDescriptor = getPropertiesByPropertyDescriptor();
 		 }
 	
 		 return propertyValuesByDescriptor.containsKey(descriptor);
