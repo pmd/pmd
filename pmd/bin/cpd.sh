@@ -19,6 +19,7 @@ if [ -z "$1" ]; then
 				echo " $script <directory>"
 				exit 1
 fi
+shift
 
 # OS specific support.  $var _must_ be set to either true or false.
 cygwin=false;
@@ -82,4 +83,4 @@ if $cygwin; then
   DIRECTORY=`cygpath --windows "$DIRECTORY"`
 fi
 
-java $HEAPSIZE -cp $classpath net.sourceforge.pmd.cpd.CPD --minimum-tokens $MINIMUM_TOKENS --files $DIRECTORY --language $LANGUAGE
+java $HEAPSIZE -cp $classpath net.sourceforge.pmd.cpd.CPD --minimum-tokens $MINIMUM_TOKENS --files $DIRECTORY --language $LANGUAGE ${@}

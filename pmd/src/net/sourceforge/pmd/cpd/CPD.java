@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -154,22 +155,41 @@ public class CPD {
         return defaultValue;
     }
 
+    private static void setSystemProperties(String[] args) {
+        boolean ignoreLiterals = findBooleanSwitch(args, "--ignore-literals"),
+        ignoreIdentifiers = findBooleanSwitch(args, "--ignore-identifiers");
+        Properties properties = System.getProperties();
+        if (ignoreLiterals) {
+            properties.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
+        }
+        if (ignoreIdentifiers) {
+            properties.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
+        }
+        System.setProperties(properties);
+    }
+
     public static void main(String[] args) {
         if (args.length == 0) {
             usage();
         }
 
         try {
-            boolean skipDuplicateFiles = findBooleanSwitch(args, "--skip-duplicate-files");
+
             String languageString = findOptionalStringValue(args, "--language", "java");
             String formatString = findOptionalStringValue(args, "--format", "text");
             String encodingString = findOptionalStringValue(args, "--encoding", System.getProperty("file.encoding"));
             int minimumTokens = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
             LanguageFactory f = new LanguageFactory();
+            // Pass extra paramteters as System properties to allow language
+            // implementation to retrieve their associate values...
+            setSystemProperties(args);
+
             Language language = f.createLanguage(languageString);
             Renderer renderer = CPD.getRendererFromString(formatString, encodingString);
             CPD cpd = new CPD(minimumTokens, language);
             cpd.setEncoding(encodingString);
+
+            boolean skipDuplicateFiles = findBooleanSwitch(args, "--skip-duplicate-files");
             if (skipDuplicateFiles) {
                 cpd.skipDuplicates();
             }

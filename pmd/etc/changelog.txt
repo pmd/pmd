@@ -321,6 +321,7 @@ Rules can now use property values in messages, for example ${propertyName} will 
 Rules can now use violation specific values in messages, specifically ${variableName}, ${methodName}, ${className}, ${packageName}.
 New XPath function 'getCommentOn' can be used to search for strings in comments - Thanks to Andy Throgmorton
 Add .hxx and .hpp as valid file extension for CPD - Thanks to Ryan Pavlik
+Add options to to the CPD command line task - Thanks to Cd-Man
 
 Other changes:
 Rule property API upgrades:
