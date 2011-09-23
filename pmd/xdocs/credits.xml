@@ -23,7 +23,7 @@
             <li>Tomasz Slota - Netbeans plugin</li>
             <li>Andrey Lumyanski - Gel plugin</li>
             <li>Johan Nagels - PMD core, JSP support</li>
-            <li>Brian Remedios - PMD core, lots of CPD UI improvements, Eclipse plugin improvements</li>
+            <li>Brian Remedios - PMD core, properties subsystem, lots of CPD UI improvements, Eclipse plugin improvements</li>
             <li>Xavier Le Vourch - PMD core, numerous bug fixes, UselessStringValueOf, UnnecessaryWrapperObjectCreation, SimplifyBooleanAssertion</li>
             <li>Sven Jacob - DFA subsystem, Eclipse plugin</li>
             <li>Wouter Zelle - Lots of bugfixes and cleanups, JUnit test XML design, introduced java.util.logging, BrokenNullCheck, NonThreadSafeSingleton, DefaultPackage rule, UselessOverridingMethod, ProperLogger, AvoidPrintStackTrace, SimplifyConditional</li>
@@ -318,6 +318,8 @@
             <li>jmichelberger - wrote Byte/Short/Long Instantiation migration rules</li>
             <li>Edwin Chan - Support for -auxclasspath for use with Type Resolution</li>
             <li>Jared Bunting - Patch to add ASTAnnotationMethodDeclaration to Java AST</li>
+            <li>Lucian Ciufudean - RedundantFieldInitializerRule</li>
+            <li>Andreas Dangel - GodClass and LawOfDemeter rules, several bugfixes and cleanup</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
