@@ -14,7 +14,9 @@ import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
 /**
- * 
+ * The XPath query "//VariableDeclarator[contains(getCommentOn(), '//password')]" 
+ * will find all variables declared that are annotated with the password comment.
+ *  
  * @author Andy Throgmorton
  */
 public class GetCommentOnFunction implements Function {
