@@ -1211,7 +1211,7 @@ public class Test {
     </rule>
 
     <rule name="EmptyInitializer"
-	  since="5.0"
+	      since="5.0"
           message="Empty initializer was found"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyInitializer">
@@ -1240,6 +1240,41 @@ public class Foo {
     ]]>
     </example>
   </rule>
-
+  <rule  name="DontCallThreadRun"
+         since="4.3"
+         message="Don't call Thread.run() explicitly, use Thread.start()"
+         class="net.sourceforge.pmd.rules.XPathRule"
+         externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#DontCallThreadRun">
+    <description>
+Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
+    </description>
+    <priority>4</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+<![CDATA[
+//StatementExpression/PrimaryExpression
+[
+    PrimaryPrefix
+    [
+        ./Name[ends-with(@Image, '.run') or @Image = 'run']
+        and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
+        [../../../Type/ReferenceType[ClassOrInterfaceType/@Image = 'Thread']]
+        or (
+        ./AllocationExpression/ClassOrInterfaceType[@Image = 'Thread']
+        and ../PrimarySuffix[@Image = 'run'])
+    ]
+]
+]]>
+        </value>
+      </property>
+    </properties>
+    <example>
+<![CDATA[
+Thread t = new Thread();
+t.run();            // use t.start() instead
+new Thread().run(); // same violation
+]]>
+    </example>
+  </rule>
 </ruleset>
-

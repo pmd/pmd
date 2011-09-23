@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+basic use case - calls to run()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+    Thread t = new Thread();
+    t.run();                // use t.start() instead
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+basic use case - call to Thread().run()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+    new Thread().run();
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>
