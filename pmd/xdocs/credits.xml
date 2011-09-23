@@ -56,9 +56,10 @@
         </ul>
         </subsection>
         <subsection name="Contributors">
-        <ul>
+          <ul>
+            <li>Andy Throgmorton - New XPath getCommentOn function, new rule DontCallThreadRun</li>
             <li>Nicolas Dordet - Fixed an issue on CloseResource</li>
-	    <li>Juan Jesús García de Soria - rework CPD algorithm</li>
+	        <li>Juan Jesús García de Soria - Rework CPD algorithm</li>
             <li>Sergey Pariev - Fixed an ugly ArrayIndexOutOfBoundsException in CPD for Ruby</li>
             <li>Chris Heister - Reported and noted proper fix for bug in IDEAJ renderer operations</li>
             <li>Ralf Wagner - Reported bug in UselessOperationOnImmutable, reported and noted proper fix for broken XSLT</li>
