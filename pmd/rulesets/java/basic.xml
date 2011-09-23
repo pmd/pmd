@@ -8,13 +8,13 @@
   <description>
 The Basic ruleset contains a collection of good practices which should be followed.
   </description>
-   
+
 	<rule name="JumbledIncrementer"
-    		language="java"
-    		since="1.0"
-         message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-         externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#JumbledIncrementer">
+    	  language="java"
+    	  since="1.0"
+          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#JumbledIncrementer">
      <description>
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
      </description>
@@ -49,8 +49,8 @@ public class JumbledIncrementerRule1 {
      </rule>
 
     <rule name="ForLoopShouldBeWhileLoop"
-    		 language="java"
-    		 since="1.02"
+          language="java"
+          since="1.02"
           message="This for loop could be simplified to a while loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#ForLoopShouldBeWhileLoop">
@@ -83,8 +83,8 @@ public class Foo {
     </rule>
 
     <rule name="OverrideBothEqualsAndHashcode"
-    		 language="java"
-    		 since="0.4"
+          language="java"
+          since="0.4"
           message="Ensure you override both equals() and hashCode()"
           class="net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#OverrideBothEqualsAndHashcode">
@@ -119,15 +119,15 @@ public class Foo {		// perfect, both methods provided
     </rule>
 
     <rule name="DoubleCheckedLocking"
-        	 language="java"
-    		 since="1.04"
+          language="java"
+          since="1.04"
           message="Double checked locking is not thread safe in Java."
           class="net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#DoubleCheckedLocking">
       <description>
 Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
 An optimizing JRE may assign a reference to the baz variable before it creates the object the
-reference is intended to point to.  
+reference is intended to point to.
 
 For more details refer to: http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html
       </description>
@@ -152,8 +152,8 @@ public class Foo {
     </rule>
 
     <rule name="ReturnFromFinallyBlock"
-    		 language="java"
-    		 since="1.05"
+          language="java"
+          since="1.05"
           message="Avoid returning from a finally block"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#ReturnFromFinallyBlock">
@@ -188,9 +188,9 @@ public class Bar {
     </rule>
 
     <rule name="UnconditionalIfStatement"
-    		 language="java"
-    		  since="1.5"
-       message="Do not use 'if' statements that are always true or always false"
+          language="java"
+          since="1.5"
+          message="Do not use 'if' statements that are always true or always false"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#UnconditionalIfStatement">
       <description>
@@ -222,10 +222,10 @@ public class Foo {
     </rule>
 
     <rule name="BooleanInstantiation"
-    	 since="1.2"
-       message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
-       class="net.sourceforge.pmd.lang.java.rule.basic.BooleanInstantiationRule"
-       externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#BooleanInstantiation">
+          since="1.2"
+          message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
+          class="net.sourceforge.pmd.lang.java.rule.basic.BooleanInstantiationRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#BooleanInstantiation">
    <description>
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
    </description>
@@ -237,10 +237,10 @@ Boolean buz = Boolean.valueOf(false);	// ...., just reference Boolean.FALSE;
    ]]>
    </example>
    </rule>
-   
+
     <rule name="CollapsibleIfStatements"
-    		 language="java"
-    		 since="3.1"
+          language="java"
+          since="3.1"
           message="These nested if statements could be combined"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#CollapsibleIfStatements">
@@ -281,14 +281,14 @@ void bar() {
     </rule>
 
 	<rule name="ClassCastExceptionWithToArray"
-    	 language="java"
-       since="3.4"
-       message="This usage of the Collection.toArray() method will throw a ClassCastException."
-       class="net.sourceforge.pmd.lang.rule.XPathRule"
-       externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#ClassCastExceptionWithToArray">
+          language="java"
+          since="3.4"
+          message="This usage of the Collection.toArray() method will throw a ClassCastException."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#ClassCastExceptionWithToArray">
   <description>
-When deriving an array of a specific class from your Collection, one should provide an array of 
-the same class as the parameter of the toArray() method. Doing otherwise you will will result 
+When deriving an array of a specific class from your Collection, one should provide an array of
+the same class as the parameter of the toArray() method. Doing otherwise you will will result
 in a ClassCastException.
   </description>
   <priority>3</priority>
@@ -326,20 +326,20 @@ Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
 
 
 <rule  name="AvoidDecimalLiteralsInBigDecimalConstructor"
-    	 language="java"
+       language="java"
        since="3.4"
        message="Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal"
        class="net.sourceforge.pmd.lang.rule.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
   <description>
-One might assume that the result of "new BigDecimal(0.1)" is exactly equal to 0.1, but it is actually 
+One might assume that the result of "new BigDecimal(0.1)" is exactly equal to 0.1, but it is actually
 equal to .1000000000000000055511151231257827021181583404541015625.
-This is because 0.1 cannot be represented exactly as a double (or as a binary fraction of any finite 
-length). Thus, the long value that is being passed in to the constructor is not exactly equal to 0.1, 
+This is because 0.1 cannot be represented exactly as a double (or as a binary fraction of any finite
+length). Thus, the long value that is being passed in to the constructor is not exactly equal to 0.1,
 appearances notwithstanding.
 
-The (String) constructor, on the other hand, is perfectly predictable: 'new BigDecimal("0.1")' is 
-exactly equal to 0.1, as one would expect.  Therefore, it is generally recommended that the 
+The (String) constructor, on the other hand, is perfectly predictable: 'new BigDecimal("0.1")' is
+exactly equal to 0.1, as one would expect.  Therefore, it is generally recommended that the
 (String) constructor be used in preference to this one.
   </description>
   <priority>3</priority>
@@ -370,7 +370,7 @@ BigDecimal bd = new BigDecimal(12);     	// preferred approach, ok for integer v
 
 
     <rule  name="MisplacedNullCheck"
-    		 language="java"
+    	   language="java"
            since="3.5"
            message="The null check here is misplaced; if the variable is null there'll be a NullPointerException"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -417,12 +417,12 @@ public class Foo {
 
 
     <rule  name="AvoidThreadGroup"
-    		 language="java"
-      since="3.6"
-      message="Avoid using java.lang.ThreadGroup; it is not thread safe"
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidThreadGroup"
-      typeResolution="true">
+    	   language="java"
+           since="3.6"
+           message="Avoid using java.lang.ThreadGroup; it is not thread safe"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
+           externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidThreadGroup"
+           typeResolution="true">
       <description>
 Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
 it contains methods that are not thread-safe.
@@ -476,11 +476,11 @@ public String bar(String string) {
         </example>
     </rule>
 
-<rule name="BigIntegerInstantiation"
-  since="3.9"
-  message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
-  class="net.sourceforge.pmd.lang.java.rule.basic.BigIntegerInstantiationRule"
-  externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#BigIntegerInstantiation">
+    <rule name="BigIntegerInstantiation"
+          since="3.9"
+          message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
+          class="net.sourceforge.pmd.lang.java.rule.basic.BigIntegerInstantiationRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#BigIntegerInstantiation">
   <description>
 Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
 for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
@@ -504,7 +504,7 @@ bi4 = new BigInteger(0);				// reference BigInteger.ZERO instead
             externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidUsingOctalValues">
     <description>
     	<![CDATA[
-Integer literals should not start with zero since this denotes that the rest of literal will be 
+Integer literals should not start with zero since this denotes that the rest of literal will be
 interpreted as an octal value.
     	]]>
     </description>
@@ -525,7 +525,7 @@ k = i * j;		// set k with 80 not 120
             externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidUsingHardCodedIP">
 	    <description>
 	    	<![CDATA[
-Application with hard-coded IP addresses can become impossible to deploy in some cases. 
+Application with hard-coded IP addresses can become impossible to deploy in some cases.
 Externalizing IP adresses is preferable.
 	    	]]>
 	    </description>
@@ -542,8 +542,7 @@ public class Foo {
 	    </example>
     </rule>
 
-  <rule
-        name="CheckResultSet"
+  <rule name="CheckResultSet"
     	language="java"
         since="4.1"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -616,10 +615,10 @@ if (rst.next()) {	// result is properly examined and used
     </rule>
 
 	<rule name="AvoidMultipleUnaryOperators"
-		since="4.2"
-		class="net.sourceforge.pmd.lang.java.rule.basic.AvoidMultipleUnaryOperatorsRule"
-		message="Using multiple unary operators may be a bug, and/or is confusing."
-        externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidMultipleUnaryOperators">
+		  since="4.2"
+		  class="net.sourceforge.pmd.lang.java.rule.basic.AvoidMultipleUnaryOperatorsRule"
+		  message="Using multiple unary operators may be a bug, and/or is confusing."
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidMultipleUnaryOperators">
         <description>
             <![CDATA[
 The use of multiple unary operators may be problematic, and/or confusing.
@@ -648,7 +647,7 @@ int i = ~-2;
 int j = -~7;
             ]]>
         </example>
-    </rule>    
+    </rule>
 
   <rule name="ExtendsObject"
   		language="java"
@@ -674,13 +673,13 @@ public class Foo extends Object { 	// not required
     ]]>
     </example>
   </rule>
-  
+
 	<rule name="CheckSkipResult"
-	  		language="java"
-	  		since="5.0"
-          	message="Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped."
-          	class="net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResultRule"
-	  		externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#CheckSkipResult">
+	      language="java"
+	  	  since="5.0"
+          message="Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped."
+          class="net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResultRule"
+	  	  externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#CheckSkipResult">
         <description>The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.</description>
         <priority>3</priority>
         <example>
@@ -706,10 +705,10 @@ public class Foo {
     </rule>
 
 	<rule name="AvoidBranchingStatementAsLastInLoop"
-		since="5.0"
-		class="net.sourceforge.pmd.lang.java.rule.basic.AvoidBranchingStatementAsLastInLoopRule"
-		message="Avoid using a branching statement as the last in a loop."
-        externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop">
+	  	  since="5.0"
+		  class="net.sourceforge.pmd.lang.java.rule.basic.AvoidBranchingStatementAsLastInLoopRule"
+		  message="Avoid using a branching statement as the last in a loop."
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop">
         <description>
             <![CDATA[
 Using a branching statement as the last part of a loop may be a bug, and/or is confusing.
