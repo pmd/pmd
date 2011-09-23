@@ -14,14 +14,18 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.util.StringUtil;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeNodeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -58,6 +62,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     private static final int SpanColumnWidth = 50;
     private static final int MAX_MATCHES = 100;
     private static final int xGap = 6;
+    private static final String TabEquivalent = "    ";	// tab char == 4 spaces
     public static final int SourceColumnIdx = 1;
     
     private static List<Match> asList(Iterator<Match> matchIter) {
@@ -86,7 +91,7 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
     
     public static String[] sourceLinesFrom(Match match, boolean trimLeadingWhitespace) {
     	
-        final String text = match.getSourceCodeSlice().replaceAll("\t", "    ");
+        final String text = match.getSourceCodeSlice().replaceAll("\t", TabEquivalent);
         final StringTokenizer lines = new StringTokenizer(text, "\n");
         
         List<String> sourceLines = new ArrayList<String>();
@@ -167,7 +172,8 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(labelProvider);
-
+        addDeleteListener(treeViewer.getControl());
+        
         createColumns(tree);
         
         CPDViewTooltipListener2 tooltipListener = new CPDViewTooltipListener2(this);
@@ -180,6 +186,24 @@ public class CPDView2 extends ViewPart implements IPropertyListener {
         packageColor = disp.getSystemColor(SWT.COLOR_GRAY);
     }
 
+	protected void addDeleteListener(Control control) {
+
+		control.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent ev) {
+				if (ev.character == SWT.DEL) {
+					removeSelectedItems();
+				}
+			}
+		});	
+	}
+    
+	// TODO fix - not deleting 'model' elements?
+	private void removeSelectedItems() {
+		IStructuredSelection selection = (IStructuredSelection)treeViewer.getSelection();
+		Object[] items = selection.toArray();
+		treeViewer.remove(items);
+	}
+	
     public int inColumn(Point point) {
     	
     	if (columnWidths == null) return -1;

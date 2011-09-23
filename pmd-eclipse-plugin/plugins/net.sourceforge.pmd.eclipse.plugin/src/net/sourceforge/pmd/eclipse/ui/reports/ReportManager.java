@@ -10,6 +10,7 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
@@ -36,6 +37,7 @@ public class ReportManager {
     	
     	return new Renderer[] {
     		new HTMLRenderer(props),
+    		new SummaryHTMLRenderer(props),
     		new CSVRenderer(props),
     		new XMLRenderer(props),
     		new TextRenderer(props),

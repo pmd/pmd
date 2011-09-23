@@ -138,6 +138,7 @@ public class CPDViewTooltipListener2 implements Listener {
   		for (int i=0; i<names.length; i++) {
   			int rightEdge = colWidth - (cellWidth * i);  			
   			int[] widths = view.widthsFor(names[i]);
+  			if (widths == null) continue;
   			int classWidth = widths[1];
   			if (location.x > rightEdge-classWidth && 	// right of the start?
   				location.x < rightEdge)	{				// left of the end?
