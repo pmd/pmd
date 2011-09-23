@@ -227,6 +227,29 @@
          name="PMD Popup Menus"
          point="org.eclipse.ui.popupMenus">
       <objectContribution
+            objectClass="org.eclipse.ui.IWorkingSet"
+            adaptable="true"
+            nameFilter="*"
+            id="net.sourceforge.pmd.eclipse.ui.pmdWorkingSetContribution">
+         <menu
+               label="%menu.pmd"
+               icon="icons/pmd-icon-16.gif"
+               path="additions"
+               id="pmd.menu">
+            <separator
+                  name="group">
+            </separator>
+         </menu>
+         <action
+               label="%action.checkpmd"
+               icon="icons/icon_run.gif"
+               class="net.sourceforge.pmd.eclipse.ui.actions.PMDCheckAction"
+               menubarPath="pmd.menu/group"
+               enablesFor="+"
+               id="net.sourceforge.pmd.eclipse.ui.pmdPopupCheckWorkingSetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
             nameFilter="*"
