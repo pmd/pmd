@@ -60,7 +60,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
         public Set<String> parse(String s) {
             Set<String> result = new HashSet<String>();
-            StringBuffer currentToken = new StringBuffer();
+            StringBuilder currentToken = new StringBuilder();
             boolean inEscapeMode = false;
             for (int i = 0; i < s.length(); i++) {
                 if (inEscapeMode) {
@@ -74,7 +74,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
                 }
                 if (s.charAt(i) == delimiter) {
                     result.add(currentToken.toString());
-                    currentToken = new StringBuffer();
+                    currentToken = new StringBuilder();
                 } else {
                     currentToken.append(s.charAt(i));
                 }
@@ -128,20 +128,29 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
         super.visit(node, data);
 
-        int threshold = getProperty(THRESHOLD_DESCRIPTOR);
-        for (String key : literals.keySet()) {
-            List<ASTLiteral> occurrences = literals.get(key);
-            if (occurrences.size() >= threshold) {
-                Object[] args = new Object[] { key, Integer.valueOf(occurrences.size()),
-                        Integer.valueOf(occurrences.get(0).getBeginLine()) };
-                addViolation(data, occurrences.get(0), args);
-            }
-        }
+        processResults(data);
 
         minLength = 2 + getProperty(MINIMUM_LENGTH_DESCRIPTOR);
 
         return data;
     }
+
+	private void processResults(Object data) {
+
+		int threshold = getProperty(THRESHOLD_DESCRIPTOR);
+
+        for (Map.Entry<String, List<ASTLiteral>> entry : literals.entrySet()) {
+            List<ASTLiteral> occurrences = entry.getValue();
+            if (occurrences.size() >= threshold) {
+                Object[] args = new Object[] { 
+                		entry.getKey(), 
+                		Integer.valueOf(occurrences.size()),
+                        Integer.valueOf(occurrences.get(0).getBeginLine()) 
+                        };
+                addViolation(data, occurrences.get(0), args);
+            }
+        }
+	}
 
     @Override
     public Object visit(ASTLiteral node, Object data) {
