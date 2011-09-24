@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class LanguageFactory {
 
-   public static String[] supportedLanguages = new String[]{"java", "jsp", "cpp", "c", "php", "ruby","fortran", "ecmascript","cs" };
+//   public static String[] supportedLanguages = new String[]{"java", "jsp", "cpp", "c", "php", "ruby","fortran", "ecmascript","cs" };
    private static final String SUFFIX = "Language";
    public static final String EXTENSION = "extension";
    public static final String BY_EXTENSION = "by_extension";

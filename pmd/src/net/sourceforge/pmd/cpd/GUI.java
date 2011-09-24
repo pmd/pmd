@@ -67,9 +67,9 @@ import net.sourceforge.pmd.PMD;
 
 public class GUI implements CPDListener {
 
-	private interface Renderer {
-		String render(Iterator<Match> items);
-	}
+//	private interface Renderer {
+//		String render(Iterator<Match> items);
+//	}
 	
 	private static final Object[][] RENDERER_SETS = new Object[][] {
 		{ "Text", 		new Renderer() { public String render(Iterator<Match> items) { return new SimpleRenderer().render(items); } } },
