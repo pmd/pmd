@@ -20,7 +20,7 @@ public class XMLRenderer implements Renderer {
     }
     
     public XMLRenderer(String e) {
-        this.encoding = e;
+        encoding = e;
     }
     
 	// FUTURE: Use a XML API - rather than StringBuffer to generate XML Report. 
@@ -28,7 +28,7 @@ public class XMLRenderer implements Renderer {
     // also allow us to get ride of the encode below, as the XML API choosed will
     // do that for us...
     public String render(Iterator<Match> matches) {
-        StringBuffer buffer = new StringBuffer(300);
+        StringBuilder buffer = new StringBuilder(300);
         buffer.append("<?xml version=\"1.0\" encoding=\"");
         buffer.append(encoding);
         buffer.append("\"?>").append(PMD.EOL);

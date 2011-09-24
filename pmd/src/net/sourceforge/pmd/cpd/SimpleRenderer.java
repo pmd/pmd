@@ -28,7 +28,7 @@ public class SimpleRenderer implements Renderer {
 		separator = theSeparator;
 	}
 	
-	private void renderOn(StringBuffer rpt, Match match) {
+	private void renderOn(StringBuilder rpt, Match match) {
 		
           rpt.append("Found a ").append(match.getLineCount()).append(" line (").append(match.getTokenCount()).append(" tokens) duplication in the following files: ").append(PMD.EOL);
           
@@ -59,7 +59,7 @@ public class SimpleRenderer implements Renderer {
 	
     public String render(Iterator<Match> matches) {
     	
-        StringBuffer rpt = new StringBuffer(300);
+    	StringBuilder rpt = new StringBuilder(300);
         
         if (matches.hasNext()) {
         	renderOn(rpt, matches.next());

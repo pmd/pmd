@@ -23,7 +23,7 @@ public class CSVRenderer implements Renderer {
 	}
 	
     public String render(Iterator<Match> matches) {
-        StringBuffer rpt = new StringBuffer(1000);
+        StringBuilder rpt = new StringBuilder(1000);
         rpt.append("lines").append(separator);
         rpt.append("tokens").append(separator);
         rpt.append("occurrences");
