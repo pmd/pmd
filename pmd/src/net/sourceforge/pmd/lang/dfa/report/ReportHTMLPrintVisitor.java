@@ -2,6 +2,7 @@ package net.sourceforge.pmd.lang.dfa.report;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import java.io.BufferedWriter;
@@ -21,9 +22,9 @@ import java.io.IOException;
 public class ReportHTMLPrintVisitor extends ReportVisitor {
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
-    private StringBuffer packageBuf = new StringBuffer();
+    private StringBuilder packageBuf = new StringBuilder();
     @SuppressWarnings("PMD.AvoidStringBufferField")
-    private StringBuffer classBuf = new StringBuffer();
+    private StringBuilder classBuf = new StringBuilder();
     private int length;
     private String baseDir;
 
@@ -36,10 +37,10 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
     /**
      * Writes the buffer to file.
      */
-    private void write(String filename, StringBuffer buf) throws IOException {
+    private void write(String filename, StringBuilder buf) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + FILE_SEPARATOR + filename)));
         bw.write(buf.toString(), 0, buf.length());
-        bw.close();
+        IOUtil.closeQuietly(bw);
     }
     
     /**
@@ -47,7 +48,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
      */
     private String displayRuleViolation(RuleViolation vio) {
  
-    	StringBuffer sb = new StringBuffer(200);
+    	StringBuilder sb = new StringBuilder(200);
         sb.append("<table border=\"0\">");
         renderViolationRow(sb, "Rule:", vio.getRule().getName());
         renderViolationRow(sb, "Description:", vio.getDescription());
@@ -67,7 +68,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
     }
 
     // TODO - join the 21st century, include CSS attributes :)
-    private void renderViolationRow(StringBuffer sb, String fieldName, String fieldData) {
+    private void renderViolationRow(StringBuilder sb, String fieldName, String fieldData) {
     	sb.append("<tr><td><b>").append(fieldName).append("</b></td><td>").append(fieldData).append("</td></tr>");
     }
     
@@ -83,7 +84,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
          * The first node of result tree.
          */
         if (node.getParent() == null) {
-            this.packageBuf.insert(0,
+            packageBuf.insert(0,
                     "<html>" +
                     " <head>" +
                     "   <title>PMD</title>" +
@@ -97,7 +98,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
                     "<th>#</th>" +
                     " </tr>" + PMD.EOL);
 
-            this.length = this.packageBuf.length();
+            length = packageBuf.length();
         }
 
 
@@ -133,14 +134,14 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
 
 
             try {
-                this.write(str + ".html", classBuf);
+                write(str + ".html", classBuf);
             } catch (Exception e) {
                 throw new RuntimeException("Error while writing HTML report: " + e.getMessage());
             }
-            classBuf = new StringBuffer();
+            classBuf = new StringBuilder();
 
 
-            this.packageBuf.insert(this.length,
+            packageBuf.insert(this.length,
                     "<tr>" +
                     " <td>-</td>" +
                     " <td><a href=\"" + str + ".html\">" + str + "</a></td>" +
@@ -160,7 +161,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
                 node.getParent().addNumberOfViolation(node.getNumberOfViolations());
             }
 
-            this.packageBuf.insert(this.length,
+            packageBuf.insert(length,
                     "<tr><td><b>" + str + "</b></td>" +
                     " <td>-</td>" +
                     " <td>" + node.getNumberOfViolations() + "</td>" +
@@ -168,9 +169,9 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
         }
         // The first node of result tree.
         if (node.getParent() == null) {
-            this.packageBuf.append("</table> </body></html>");
+            packageBuf.append("</table> </body></html>");
             try {
-                this.write("index.html", this.packageBuf);
+                write("index.html", packageBuf);
             } catch (Exception e) {
                 throw new RuntimeException("Error while writing HTML report: " + e.getMessage());
             }
