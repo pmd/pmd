@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class SourceCode {
 
@@ -50,13 +51,7 @@ public class SourceCode {
 		e.printStackTrace();
 		throw new RuntimeException("Problem while reading " + getFileName() + ":" + e.getMessage());
 	    } finally {
-		try {
-		    if (lnr != null) {
-			lnr.close();
-		    }
-		} catch (Exception e) {
-		    throw new RuntimeException("Problem while reading " + getFileName() + ":" + e.getMessage());
-		}
+	    	IOUtil.closeQuietly(lnr);
 	    }
 	}
     }
@@ -77,7 +72,7 @@ public class SourceCode {
 
 	@Override
 	public String getFileName() {
-	    return this.file.getAbsolutePath();
+	    return file.getAbsolutePath();
 	}
     }
 
@@ -129,7 +124,7 @@ public class SourceCode {
     }
 
     public String getSlice(int startLine, int endLine) {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	List<String> lines = cl.getCode();
         for (int i = startLine == 0 ? startLine :startLine - 1; i < endLine && i < lines.size(); i++) {
             if (sb.length() != 0) {

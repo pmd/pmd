@@ -64,7 +64,6 @@ public class MatchAlgorithm {
             Object o = i.next();
             if (o instanceof List) {
                 List<TokenEntry> l = (List<TokenEntry>) o;
-
                 Collections.reverse(l);
                 matchCollector.collect(l);
             }

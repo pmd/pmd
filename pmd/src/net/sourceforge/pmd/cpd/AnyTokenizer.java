@@ -8,6 +8,8 @@ import java.io.CharArrayReader;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.util.IOUtil;
+
 /**
  * This class does a best-guess try-anything tokenization.
  *
@@ -42,10 +44,7 @@ public class AnyTokenizer implements Tokenizer {
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            try {
-                reader.close();
-            } catch (Exception ex) {
-            }
+            IOUtil.closeQuietly(reader);
             tokenEntries.add(TokenEntry.getEOF());
         }
     }
