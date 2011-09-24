@@ -76,7 +76,7 @@ public class FileEditorFactory extends AbstractEditorFactory {
 
         final FileProperty fp = filePropertyFrom(desc); // TODO - really necessary?
 
-        picker.addListener(SWT.FocusOut, new Listener() {
+        picker.addFocusOutListener(new Listener() {
             public void handleEvent(Event event) {
                 File newValue = picker.getFile();
                 File existingValue = (File)valueFor(source, fp);

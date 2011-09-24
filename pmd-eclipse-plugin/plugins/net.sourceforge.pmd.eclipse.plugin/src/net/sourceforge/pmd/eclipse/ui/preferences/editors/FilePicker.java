@@ -68,6 +68,10 @@ public class FilePicker extends Composite {
         fileField.setLayoutData(data);
     }
 
+    public void addFocusOutListener(Listener listener) {
+    	fileField.addListener(SWT.FocusOut, listener);
+    }
+    
     private void openFileDialog(Shell shell) {
     	
     	 FileDialog fd = new FileDialog(shell, SWT.OPEN);
@@ -79,6 +83,7 @@ public class FilePicker extends Composite {
          String selected = fd.open();
          
          fileField.setText(selected == null ? "" : selected);
+         fileField.setFocus();
     }
     
     public void setBackground(Color clr) {
@@ -102,10 +107,7 @@ public class FilePicker extends Composite {
     public File getFile() {
     	
     	String name = fileField.getText();
-    	if (StringUtil.isEmpty(name)) return null;
-    	
-        File file = new File(name);
-        return file.exists() ? file : null;
+    	return StringUtil.isEmpty(name) ? null : new File(name);
     }
 
 }
