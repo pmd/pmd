@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java.rule.strings;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -15,14 +16,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
+import net.sourceforge.pmd.lang.rule.properties.FileProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
@@ -36,13 +41,13 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             "Skip literals within annotations", false, 2.0f);
 
     public static final StringProperty EXCEPTION_LIST_DESCRIPTOR = new StringProperty("exceptionList",
-            "Strings in that list are skipped", null, 3.0f);
+            "Strings to ignore", null, 3.0f);
 
     public static final CharacterProperty SEPARATOR_DESCRIPTOR = new CharacterProperty("separator",
-            "Exception list separator", ',', 4.0f);
+            "Ignore list separator", ',', 4.0f);
 
-    public static final StringProperty EXCEPTION_FILE_DESCRIPTOR = new StringProperty("exceptionfile",
-            "File containing strings to skip (one string per line), only used if exceptionlist is not set", null, 5.0f);
+    public static final FileProperty EXCEPTION_FILE_DESCRIPTOR = new FileProperty("exceptionfile",
+            "File containing strings to skip (one string per line), only used if ignore list is not set", null, 5.0f);
 
     public static class ExceptionParser {
 
@@ -94,6 +99,10 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         definePropertyDescriptor(EXCEPTION_FILE_DESCRIPTOR);
     }
 
+    private LineNumberReader getLineReader() throws FileNotFoundException {
+    	return new LineNumberReader(new BufferedReader(new FileReader(getProperty(EXCEPTION_FILE_DESCRIPTOR))));
+    }
+    
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         literals.clear();
@@ -105,8 +114,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             exceptions = new HashSet<String>();
             LineNumberReader reader = null;
             try {
-                reader = new LineNumberReader(new BufferedReader(new FileReader(new File(
-                        getProperty(EXCEPTION_FILE_DESCRIPTOR)))));
+                reader = getLineReader();
                 String line;
                 while ((line = reader.readLine()) != null) {
                     exceptions.add(line);
@@ -114,13 +122,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             } finally {
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
+                IOUtil.closeQuietly(reader);
             }
         }
 
@@ -174,4 +176,32 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
         return data;
     }
+    
+    private static String checkFile(File file) {
+    	
+		if (!file.exists()) return "File '" + file.getName() + "' does not exist";
+		if (!file.canRead()) return "File '" + file.getName() + "' cannot be read";
+		if (file.length() == 0) return "File '" + file.getName() + "' is empty";
+		
+		return null;
+    }
+    
+	 /**
+	  * @see Rule#dysfunctionReason()
+	  */
+	 public String dysfunctionReason() {
+		 
+		 File file = getProperty(EXCEPTION_FILE_DESCRIPTOR);
+		 if (file != null) {
+			 String issue = checkFile(file);
+			 if (issue != null) return issue;
+			 
+			 String ignores = getProperty(EXCEPTION_LIST_DESCRIPTOR);
+			 if (StringUtil.isNotEmpty(ignores)) {
+				 return "Cannot reference external file AND local values";
+			 }
+		 }
+		 
+		 return null;
+	 }
 }
