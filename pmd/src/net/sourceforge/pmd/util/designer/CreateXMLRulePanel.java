@@ -73,6 +73,7 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener{
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.weightx = 0.5;
+        ruledescField.setLineWrap(true);
         gbl.setConstraints(ruledescField,gbc);
         add(ruledescField);
 
