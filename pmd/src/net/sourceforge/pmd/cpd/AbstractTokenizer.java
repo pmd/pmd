@@ -7,42 +7,44 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.List;
 
-public abstract class AbstractTokenizer implements Tokenizer
-{
+public abstract class AbstractTokenizer implements Tokenizer {
 
-	protected List<String> stringToken;			// List<String>, should be setted by children classes
-	protected List<String> ignorableCharacter; 	// List<String>, should be setted by children classes
-												// FIXME:Maybe an array of 'char' would be better for perfomance ?
-	protected List<String> ignorableStmt; 		// List<String>, should be setted by children classes
-	protected char oneLineCommentChar = '#'; // Most script language ( shell, ruby, python,...) use this symbol for comment line
+	//FIXME depending on subclasses to assign local vars is rather fragile - better to make private and setup via explicit hook methods
+	
+	protected List<String> stringToken;		    // List<String>, should be set by sub classes
+	protected List<String> ignorableCharacter;  // List<String>, should be set by sub classes
+												// FIXME:Maybe an array of 'char' would be better for performance ?
+	protected List<String> ignorableStmt; 		// List<String>, should be set by sub classes
+	protected char oneLineCommentChar = '#'; // Most script languages ( shell, ruby, python,...) use this symbol for comment line
 
 	private List<String> code;
 	private int lineNumber = 0;
 	private String currentLine;
 
-	protected boolean spanMultipleLinesString = true;	// Most language does, so default is true
+	protected boolean spanMultipleLinesString = true;	// Most languages do, so default is true
 
 	private boolean downcaseString = true;
 
     public void tokenize(SourceCode tokens, Tokens tokenEntries) {
-        this.code = tokens.getCode();
+        code = tokens.getCode();
 
-        for ( this.lineNumber = 0; lineNumber < this.code.size(); lineNumber++ ) {
-        	this.currentLine = this.code.get(this.lineNumber);
+        for ( lineNumber = 0; lineNumber < code.size(); lineNumber++ ) {
+        	currentLine = code.get(lineNumber);
             int loc = 0;
             while ( loc < currentLine.length() ) {
-                StringBuffer token = new StringBuffer();
+                StringBuilder token = new StringBuilder();
                 loc = getTokenFromLine(token,loc);
                 if (token.length() > 0 && !isIgnorableString(token.toString())) {
                     if (downcaseString) {
-                        token = new StringBuffer(token.toString().toLowerCase());
+                        token = new StringBuilder(token.toString().toLowerCase());
                     }
                     if ( CPD.debugEnable ) {
                     	System.out.println("Token added:" + token.toString());
                     }
                     tokenEntries.add(new TokenEntry(token.toString(),
                             tokens.getFileName(),
-                            lineNumber));
+                            lineNumber)
+                    		);
 
                 }
             }
@@ -50,9 +52,9 @@ public abstract class AbstractTokenizer implements Tokenizer
         tokenEntries.add(TokenEntry.getEOF());
     }
 
-    private int getTokenFromLine(StringBuffer token, int loc) {
-        for (int j = loc; j < this.currentLine.length(); j++) {
-            char tok = this.currentLine.charAt(j);
+    private int getTokenFromLine(StringBuilder token, int loc) {
+        for (int j = loc; j < currentLine.length(); j++) {
+            char tok = currentLine.charAt(j);
             if (!Character.isWhitespace(tok) && !ignoreCharacter(tok)) {
                 if (isComment(tok)) {
                     if (token.length() > 0) {
@@ -62,7 +64,7 @@ public abstract class AbstractTokenizer implements Tokenizer
                     }
                 } else if (isString(tok)) {
                     if (token.length() > 0) {
-                        return j; // we need to now parse the string as a seperate token.
+                        return j; // we need to now parse the string as a separate token.
                     } else {
                         // we are at the start of a string
                         return parseString(token, j, tok);
@@ -80,7 +82,7 @@ public abstract class AbstractTokenizer implements Tokenizer
         return loc + 1;
     }
 
-    private int parseString(StringBuffer token, int loc, char stringDelimiter) {
+    private int parseString(StringBuilder token, int loc, char stringDelimiter) {
         boolean escaped = false;
         boolean done = false;
         char tok = ' '; // this will be replaced.
@@ -102,25 +104,25 @@ public abstract class AbstractTokenizer implements Tokenizer
         // Handling multiple lines string
         if ( 	! done &&	// ... we didn't find the end of the string
         		loc >= currentLine.length() && // ... we have reach the end of the line ( the String is incomplete, for the moment at least)
-        		this.spanMultipleLinesString && // ... the language allow multiple line span Strings
-        		this.lineNumber < this.code.size() - 1 // ... there is still more lines to parse
+        		spanMultipleLinesString && // ... the language allow multiple line span Strings
+        		lineNumber < code.size() - 1 // ... there is still more lines to parse
         	) {
         	// parsing new line
-        	this.currentLine = this.code.get(++this.lineNumber);
+        	currentLine = code.get(++lineNumber);
         	// Warning : recursive call !
-        	loc = this.parseString(token, loc, stringDelimiter);
+        	loc = parseString(token, loc, stringDelimiter);
         }
         return loc + 1;
     }
 
     private boolean ignoreCharacter(char tok)
     {
-    	return this.ignorableCharacter.contains(String.valueOf(tok));
+    	return ignorableCharacter.contains(String.valueOf(tok));
     }
 
     private boolean isString(char tok)
     {
-    	return this.stringToken.contains(String.valueOf(tok));
+    	return stringToken.contains(String.valueOf(tok));
     }
 
     private boolean isComment(char tok)
@@ -128,17 +130,17 @@ public abstract class AbstractTokenizer implements Tokenizer
         return tok == oneLineCommentChar;
     }
 
-    private int getCommentToken(StringBuffer token, int loc)
+    private int getCommentToken(StringBuilder token, int loc)
     {
-        while (loc < this.currentLine.length())
+        while (loc < currentLine.length())
         {
-            token.append(this.currentLine.charAt(loc++));
+            token.append(currentLine.charAt(loc++));
         }
         return loc;
     }
 
     private boolean isIgnorableString(String token)
     {
-    	return this.ignorableStmt.contains(token);
+    	return ignorableStmt.contains(token);
     }
 }
