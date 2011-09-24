@@ -89,6 +89,10 @@ public class GUI implements CPDListener {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("php"); }
 									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".php" }; };	} },
+		{"C#", 			    new LanguageConfig() {
+										public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cs"); }
+										public boolean ignoreLiteralsByDefault() { return false; }
+										public String[] extensions() { return new String[] {".cs" }; };	} },
 		};
 	
 	private static final int		defaultCPDMinimumLength = 75;
