@@ -185,7 +185,7 @@ public class CPDTask extends Task {
      * new language here ?
     */
     public static class LanguageAttribute extends EnumeratedAttribute {
-        private static final String[] LANGUAGES = new String[]{"java","jsp","cpp", "c","php", "ruby", "fortran"};
+        private static final String[] LANGUAGES = new String[]{"java","jsp","cpp", "c","php", "ruby", "fortran", "cs"};
         public String[] getValues() {
             return LANGUAGES;
         }

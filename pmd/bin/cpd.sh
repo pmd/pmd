@@ -19,7 +19,7 @@ usage() {
 }
 
 supported_languages() {
-    echo "c, cpp, fortran, java, jsp, php, ruby"
+    echo "c, cpp, fortran, java, jsp, php, ruby,cs"
 }
 
 is_cygwin() {
@@ -56,7 +56,7 @@ cygwin_paths() {
 language_settings() {
     readonly LANGUAGE=${LANGUAGE:-cpp}
     case "${LANGUAGE}" in
-        c|cpp|fortran|java|jsp|php|ruby)
+        c|cs|cpp|fortran|java|jsp|php|ruby)
             echo "Language is set to ${LANGUAGE}"
             ;;
         *)

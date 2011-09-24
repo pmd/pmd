@@ -76,7 +76,7 @@
   </tr>
   <tr>
     <td valign="top">language</td>
-    <td valign="top">Flag to select the appropriate language (e.g. <code>cpp</code>, <code>java</code>, <code>php</code>, <code>ruby</code>); defaults to <code>java</code>.</td>
+    <td valign="top">Flag to select the appropriate language (e.g. <code>cpp</code>, <code>cs</code> <code>java</code>, <code>php</code>, <code>ruby</code>, and <code>ecmascript</code>); defaults to <code>java</code>.</td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>

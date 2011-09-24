@@ -320,8 +320,11 @@ XPathRules can now query using XPath 2.0 with 'version=2.0"', or XPath 2.0 in XP
 Rules can now use property values in messages, for example ${propertyName} will expand to the value of the 'propertyName' property on the Rule.
 Rules can now use violation specific values in messages, specifically ${variableName}, ${methodName}, ${className}, ${packageName}.
 New XPath function 'getCommentOn' can be used to search for strings in comments - Thanks to Andy Throgmorton
+
+CPD:
 Add .hxx and .hpp as valid file extension for CPD - Thanks to Ryan Pavlik
 Add options to to the CPD command line task - Thanks to Cd-Man
+Add C# support for CPD - thanks to Florian Bauer
 
 Other changes:
 Rule property API upgrades:
