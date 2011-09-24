@@ -74,6 +74,7 @@
         <item name="Unused Code" href="/rules/unusedcode.html" />
         <item name="Java Server Pages" href="/rules/basic-jsp.html" />
         <item name="Java Server Faces" href="/rules/basic-jsf.html" />
+        <item name="Type Resolution" href="/rules/typeresolution.html"/>
     </menu>
   </body>
 </project>
