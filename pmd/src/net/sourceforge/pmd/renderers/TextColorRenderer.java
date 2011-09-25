@@ -16,6 +16,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * <p>A console renderer with optional color support under *nix systems.</p>
@@ -166,25 +167,19 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
      * @return a trimmed line of source code
      */
     private String getLine(String sourceFile, int line) {
-	String code = null;
-	BufferedReader br = null;
-	try {
-	    br = new BufferedReader(getReader(sourceFile));
-	    for (int i = 0; line > i; i++) {
-		code = br.readLine().trim();
-	    }
-	} catch (IOException ioErr) {
-	    ioErr.printStackTrace();
-	} finally {
-	    if (br != null) {
+		String code = null;
+		BufferedReader br = null;
 		try {
-		    br.close();
+		    br = new BufferedReader(getReader(sourceFile));
+		    for (int i = 0; line > i; i++) {
+			code = br.readLine().trim();
+		    }
 		} catch (IOException ioErr) {
 		    ioErr.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(br);
 		}
-	    }
-	}
-	return code;
+		return code;
     }
 
     protected Reader getReader(String sourceFile) throws FileNotFoundException {

@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
@@ -200,11 +201,8 @@ public class PMD {
 	} catch (Exception e) {
 	    throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
 	} finally {
-	    try {
-		reader.close();
-	    } catch (IOException e) {
+	    IOUtil.closeQuietly(reader);
 	    }
-	}
     }
 
     // This method is the main entry point for command line usage.
