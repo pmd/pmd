@@ -15,8 +15,6 @@ import net.sourceforge.pmd.PMD;
 
 import org.junit.Test;
 
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
-
 public class PMDCoverageTest {
 
     /**
@@ -66,10 +64,6 @@ public class PMDCoverageTest {
      */
     @Test
     public void testResourceFileCommands() {
-	if (TestDescriptor.inRegressionTestMode()) {
-	    // skip this test if we're only running regression tests
-	    return;
-	}
 
 	InputStream is = getClass().getResourceAsStream(PMD_CONFIG_FILE);
 

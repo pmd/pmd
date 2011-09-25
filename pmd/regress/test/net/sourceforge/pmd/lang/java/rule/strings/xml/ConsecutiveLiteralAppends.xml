@@ -1147,7 +1147,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 42, Using variable string array
      ]]></description>

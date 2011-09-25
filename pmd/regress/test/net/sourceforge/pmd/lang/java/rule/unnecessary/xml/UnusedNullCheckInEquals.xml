@@ -80,7 +80,7 @@ if(o1!=null && o2.equals(o1.getName()) ){ }
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 shouldn't this fail? Yes, it should. Fixed it, so that method calls to equals on variables are considered, too.
      ]]></description>
@@ -93,7 +93,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 Arrays can't be compared directly but with Arrays.equals().
      ]]></description>

@@ -128,7 +128,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 Bug 2614040 : false + if a += assignment operator is used inside a method call.
      ]]></description>

@@ -18,9 +18,6 @@ public class PMDTaskTest extends BuildFileTest {
 
     @Test
     public void testNoFormattersValidation() {
-        if (TestDescriptor.inRegressionTestMode()) {
-            return;
-        }
         executeTarget("testNoFormattersValidation");
         assertOutputContaining("Fields should be declared at the top of the class");
     }

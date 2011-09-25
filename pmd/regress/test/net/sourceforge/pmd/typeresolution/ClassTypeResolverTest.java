@@ -33,7 +33,6 @@ import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import org.jaxen.JaxenException;
 import org.junit.Test;
 
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
 import test.net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import test.net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import test.net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
@@ -103,11 +102,6 @@ public class ClassTypeResolverTest {
 
 	@Test
 	public void testAnonymousInnerClass() throws ClassNotFoundException {
-		if (TestDescriptor.inRegressionTestMode()) {
-			// skip this test if we're only running regression tests
-			return;
-		}
-
 		ASTCompilationUnit acu = parseAndTypeResolveForClass(AnonymousInnerClass.class);
 		Class<?> theAnonymousInnerClass = Class.forName("test.net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass$1");
 		// Outer class

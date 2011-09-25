@@ -43,7 +43,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 failure case, condition 2
      ]]></description>
@@ -122,7 +122,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 false negatives
      ]]></description>
@@ -151,7 +151,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 Parentheses around binary expressions are really necessary
      ]]></description>
