@@ -363,28 +363,34 @@ have more fine grained objects.
                     <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,
                                 something like this:
                                     not (
-                                    (
-                                    starts-with(@Image,'get')
-                                        or
-                                    starts-with(@Image,'set')
-                                    )
-                                    and ( (
-                                        (../Block/attribute::endLine)
-                                         -
-                                        (../Block/attribute::beginLine) ) <= 3 )
-                                    )
+                                            (
+                                                starts-with(@Image,'get')
+                                                or
+                                                starts-with(@Image,'set')
+                                                or
+                                                starts-with(@Image,'is')
+                                            )
+                                            and (
+                                                    (
+                                                        (../Block/attribute::endLine)
+                                                         -
+                                                        (../Block/attribute::beginLine)
+                                                    ) <= 3
+                                            )
+                                        )
                                 This will avoid discarding 'real' method...
                      -->
                     <![CDATA[
  //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
      [
       count(descendant::MethodDeclarator[
-         not
-        (
-         starts-with(@Image,'get')
-           or
-         starts-with(@Image,'set')
-         )
+         not (
+                starts-with(@Image,'get')
+                or
+                starts-with(@Image,'set')
+                or
+                starts-with(@Image,'is')
+            )
       ]) > $maxmethods
    ]
                     ]]>
