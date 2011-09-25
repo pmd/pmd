@@ -1747,16 +1747,4 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
         </description>
         <priority>3</priority>
     </rule>
-    
-    <rule ref="rulesets/java/naming.xml/ShortVariable" name="ShortVariable">
-        <description>
-See Naming/ShortVariable.
-        </description>
-    </rule>
-    <rule ref="rulesets/java/naming.xml/ShortMethodName" name="ShortMethodName">
-        <description>
-See Naming/ShortMethodName.
-        </description>
-    </rule>
- 	 
 </ruleset>
