@@ -325,6 +325,7 @@ CPD:
 Add .hxx and .hpp as valid file extension for CPD - Thanks to Ryan Pavlik
 Add options to to the CPD command line task - Thanks to Cd-Man
 Add C# support for CPD - thanks to Florian Bauer
+Fix small bug in Rule Designer UI
 
 Other changes:
 Rule property API upgrades:
