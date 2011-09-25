@@ -3,6 +3,7 @@
 Add options --ignore-literals and --ignore-identifiers to the CPD command line task, thanks to Cd-Man
 Fixed character reference in xml report - thanks to Seko
 Add C# support for CPD - thanks to Florian Bauer
+Fix small bug in Rule Designer UI
 
 New Rule:
 	basic: DontCallThreadRun - thanks to Andy Throgmorton
