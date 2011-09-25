@@ -31,14 +31,14 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
- * This rule finds concurrent calls to StringBuffer.append where String literals
+ * This rule finds concurrent calls to StringBuffer/Builder.append where String literals
  * are used It would be much better to make these calls using one call to
  * .append
  * <p/>
  * example:
  * <p/>
  * <pre>
- * StringBuffer buf = new StringBuffer();
+ * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello&quot;);
  * buf.append(&quot; &quot;).append(&quot;World&quot;);
  * </pre>
@@ -46,7 +46,7 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  * This would be more eloquently put as:
  * <p/>
  * <pre>
- * StringBuffer buf = new StringBuffer();
+ * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello World&quot;);
  * </pre>
  * <p/>

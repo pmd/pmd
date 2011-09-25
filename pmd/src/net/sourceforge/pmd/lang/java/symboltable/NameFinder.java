@@ -69,7 +69,7 @@ public class NameFinder {
 
     @Override
     public String toString() {
-        StringBuffer result = new StringBuffer();
+    	StringBuilder result = new StringBuilder();
         for (NameOccurrence occ: names) {
             result.append(occ.getImage());
         }

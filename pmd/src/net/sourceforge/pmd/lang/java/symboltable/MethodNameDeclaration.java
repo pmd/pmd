@@ -35,7 +35,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     }
 
     public String getParameterDisplaySignature() {
-        StringBuffer sb = new StringBuffer("(");
+    	StringBuilder sb = new StringBuilder("(");
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
         // TODO - this can be optimized - add [0] then ,[n] in a loop.
         //        no need to trim at the end
