@@ -3,7 +3,15 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * @author Philippe T'Seyen
@@ -38,9 +46,7 @@ public class FileReporter {
                 writer = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
                 writer.write(content);
             } finally {
-                if (writer != null) {
-                    writer.close();
-                }
+                IOUtil.closeQuietly(writer);
             }
         } catch (IOException ioe) {
             throw new ReportException(ioe);

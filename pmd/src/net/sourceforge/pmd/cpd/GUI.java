@@ -64,6 +64,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class GUI implements CPDListener {
 
@@ -205,9 +206,7 @@ public class GUI implements CPDListener {
                 } catch (IOException e) {
                     error("Couldn't save file" + f.getAbsolutePath(), e);
                 } finally {
-                    if (pw != null) {
-                	pw.close();
-                    }
+                    IOUtil.closeQuietly(pw);
                 }
             } else {
                 error("Could not write to file " + f.getAbsolutePath(), null);
@@ -441,7 +440,7 @@ public class GUI implements CPDListener {
     	int[] selectionIndices = resultsTable.getSelectedRows();
     	int colCount = resultsTable.getColumnCount();
     	
-    	StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
     	    	
     	for (int r=0; r<selectionIndices.length; r++) {
 			if (r > 0) {
