@@ -320,6 +320,7 @@
             <li>Jared Bunting - Patch to add ASTAnnotationMethodDeclaration to Java AST</li>
             <li>Lucian Ciufudean - RedundantFieldInitializerRule</li>
             <li>Andreas Dangel - GodClass and LawOfDemeter rules, several bugfixes and cleanup</li>
+            <li>Riku Nykanen - patch improving TooManyMethods rule</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
