@@ -147,12 +147,13 @@ public class Benchmark {
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
+            Reader reader = null;
             for (DataSource dataSource: dataSources) {
-                Reader reader = new InputStreamReader(dataSource.getInputStream());
-                ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
-                p.processFile(reader, ruleSets, ctx);
-                reader.close();
-            }
+            	reader = new InputStreamReader(dataSource.getInputStream());
+            	ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
+            	p.processFile(reader, ruleSets, ctx);
+            	IOUtil.closeQuietly(reader);
+            	}
             long end = System.currentTimeMillis();
             long elapsed = end - start;
             results.add(new Result(elapsed, rule));

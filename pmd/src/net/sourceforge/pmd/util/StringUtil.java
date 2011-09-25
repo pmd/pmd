@@ -304,6 +304,27 @@ public final class StringUtil {
 	        sb.append(iter.next());
 	    }
 	}
+	
+	/**
+	 * Copies the array items onto the string builder each delimited by the separator.
+	 * Does nothing if the array is null or empty.
+	 *
+	 * @param sb StringBuilder
+	 * @param items Object[]
+	 * @param separator String
+	 */
+	public static void asStringOn(StringBuilder sb, Object[] items, String separator) {
+
+	    if (items == null | items.length == 0) { return;  }
+
+	    sb.append(items[0]);
+
+	    for (int i=1; i<items.length; i++) {
+	    	sb.append(separator);
+	        sb.append(items[i]);
+	    }
+	}
+	
 	/**
 	 * Return the length of the shortest string in the array.
 	 * If the collection is empty or any one of them is

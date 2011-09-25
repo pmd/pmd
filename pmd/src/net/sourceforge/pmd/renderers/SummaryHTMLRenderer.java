@@ -48,22 +48,22 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
      * @throws IOException
      */
     public void renderSummary() throws IOException {
-	StringBuffer buf = new StringBuffer(500);
-	buf.append("<h2><center>Summary</h2></center>");
-	buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">");
-	buf.append("<th>Rule name</th>");
-	buf.append("<th>Number of violations</th>");
-	writer.write(buf.toString());
-	Map<String, Integer> summary = report.getSummary();
-	for (Map.Entry<String, Integer> entry : summary.entrySet()) {
-	    String ruleName = entry.getKey();
-	    buf.setLength(0);
-	    buf.append("<tr>");
-	    buf.append("<td>" + ruleName + "</td>");
-	    buf.append("<td align=center>" + entry.getValue().intValue() + "</td>");
-	    buf.append("</tr>");
-	    writer.write(buf.toString());
-	}
-	writer.write("</table>");
+    	StringBuilder buf = new StringBuilder(500);
+		buf.append("<h2><center>Summary</h2></center>");
+		buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">");
+		buf.append("<th>Rule name</th>");
+		buf.append("<th>Number of violations</th>");
+		writer.write(buf.toString());
+		Map<String, Integer> summary = report.getSummary();
+		for (Map.Entry<String, Integer> entry : summary.entrySet()) {
+		    String ruleName = entry.getKey();
+		    buf.setLength(0);
+		    buf.append("<tr>");
+		    buf.append("<td>" + ruleName + "</td>");
+		    buf.append("<td align=center>" + entry.getValue().intValue() + "</td>");
+		    buf.append("</tr>");
+		    writer.write(buf.toString());
+		}
+		writer.write("</table>");
     }
 }

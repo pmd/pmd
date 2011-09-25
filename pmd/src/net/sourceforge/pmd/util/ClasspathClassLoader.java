@@ -65,15 +65,8 @@ public class ClasspathClassLoader extends URLClassLoader {
                     urls.add(createURLFromPath(line));
                 }
             }
-            in.close();
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    LOG.log(Level.SEVERE, "IOException while closing InputStream", e);
-                }
-            }
+        	IOUtil.closeQuietly(in);
         }
     }
 
@@ -87,17 +80,9 @@ public class ClasspathClassLoader extends URLClassLoader {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         sb.append("[[");
-        boolean first = true;
-        for (URL url : getURLs()) {
-            if (!first) {
-                sb.append(':');
-            }
-            first = false;
-            sb.append(url);
-        }
+        StringUtil.asStringOn(sb, getURLs(), ":");       
         sb.append("] parent: ");
         sb.append(getParent());
         sb.append(']');
