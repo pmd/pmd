@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.views.ast;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.JavadocElement;
 import net.sourceforge.pmd.util.ClassUtil;
@@ -87,6 +88,18 @@ public class ASTPainterHelper {
 		return textLayout;
 	}
 	
+	private String textFor(AbstractNode node) {
+		String txt = node.getImage();
+		if (StringUtil.isNotEmpty(txt)) return txt;
+		
+		// booleans don't have image values..convert them
+		if (node instanceof ASTBooleanLiteral) {
+			return Boolean.toString( ((ASTBooleanLiteral)node).isTrue());
+		}
+		
+		return null;
+	}
+	
 	public TextLayout layoutFor(TreeItem item) {
 
 		Object data = item.getData();
@@ -106,7 +119,7 @@ public class ASTPainterHelper {
 		if (extra != null) {
 			extraStyle = derivedStyle;
 			} else {
-				extra = node.getImage();
+				extra = textFor(node);
 				}
 
 		textLayout.setText(label + (extra == null  ? "" : " " + extra));
