@@ -459,6 +459,7 @@ New Java rules:
 	StrictException ruleset: AvoidThrowingNewInstanceOfSameException, AvoidCatchingGenericException, AvoidLosingExceptionInformation
 	Unnecessary ruleset: UselessParentheses
 	JUnit ruleset: JUnitTestContainsTooManyAsserts, UseAssertTrueInsteadOfAssertEquals
+	Logging with Jakarta Commons ruleset: GuardDebugLogging
 
 New Java ruleset:
 	android.xml: new rules specific to the Android platform
