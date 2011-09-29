@@ -322,6 +322,7 @@
             <li>Andreas Dangel - GodClass and LawOfDemeter rules, several bugfixes and cleanup</li>
             <li>Riku Nykanen - patch improving TooManyMethods rule</li>
             <li>Tammo van Lessen - new rule GuardDebugLogging for Jakarta Commons Logging ruleset.</li>
+            <li>Steven Christou - patch improving DoNotCallSystemExit rule</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

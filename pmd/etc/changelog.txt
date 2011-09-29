@@ -5,9 +5,11 @@ Fixed character reference in xml report - thanks to Seko
 Add C# support for CPD - thanks to Florian Bauer
 Fix small bug in Rule Designer UI
 Improve TooManyMethods rule - thanks to a patch from Riku Nykanen
+Improve DoNotCallSystemExit - thanks to a patch from Steven Christou
 
 New Rule:
-	basic: DontCallThreadRun - thanks to Andy Throgmorton
+	Basic ruleset: DontCallThreadRun - thanks to Andy Throgmorton
+	Logging with Jakarta Commons ruleset: GuardDebugLogging
 
 September 14, 2011 - 4.2.6:
 Fixed bug 2920057 - False + : CloseRessource whith an external getter
@@ -40,7 +42,6 @@ New rule:
 	StrictExceptions : AvoidCatchingGenericException, AvoidLosingExceptionInformation
 	Naming : GenericsNaming
 	JSP: NoInlineScript
-	Logging with Jakarta Commons ruleset: GuardDebugLogging
 
 February 08, 2009 - 4.2.5:
 
