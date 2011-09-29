@@ -52,4 +52,23 @@ public class Test {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Complex logging wit misplaced guard
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+        if (true) {
+            // bad:
+            __log.debug("log something" + " and " + "concat strings");
+            // this is useless:
+            __log.isDebugEnabled();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>

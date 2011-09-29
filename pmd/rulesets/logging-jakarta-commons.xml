@@ -103,7 +103,7 @@ around, with the restriction that the logger needs to be passed into the constru
             <property name="xpath">
             <value>
             <![CDATA[
-                //PrimaryPrefix[ends-with(Name/@Image, '.debug') and count(../descendant::AdditiveExpression) > 0 and count(ancestor::IfStatement/descendant::PrimaryExpression[ends-with(descendant::PrimaryPrefix/Name/@Image, 'isDebugEnabled')]) = 0]
+                //PrimaryPrefix[ends-with(Name/@Image, '.debug') and count(../descendant::AdditiveExpression) > 0 and count(ancestor::IfStatement/Expression/descendant::PrimaryExpression[ends-with(descendant::PrimaryPrefix/Name/@Image, 'isDebugEnabled')]) = 0]
             ]]>
             </value>
             </property>
