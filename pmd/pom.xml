@@ -33,6 +33,13 @@
     </notifiers>
   </ciManagement>
   <inceptionYear>2002</inceptionYear>
+  <licenses>
+    <license>
+      <name>BSD-style</name>
+      <url>http://pmd.sourceforge.net/license.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <mailingLists>
     <mailingList>
       <name>PMD development</name>
