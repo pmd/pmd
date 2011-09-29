@@ -10,6 +10,7 @@ public class LoggingJakartaCommonsRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule("logging-jakarta-commons", "ProperLogger");
         addRule("logging-jakarta-commons", "UseCorrectExceptionLogging");
+        addRule("logging-jakarta-commons", "GuardDebugLogging");
     }
 
     public static junit.framework.Test suite() {

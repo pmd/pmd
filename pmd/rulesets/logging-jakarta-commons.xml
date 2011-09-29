@@ -87,7 +87,53 @@ around, with the restriction that the logger needs to be passed into the constru
 }
  ]]>
             </example>
-     </rule>
+        </rule>
+
+    <rule name="GuardDebugLogging"
+          since="4.3"
+          message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/logging-jakarta-commons.html#GuardDebugLogging">
+        <description>
+            When log messages are composed by concatenating strings, the whole section should be guarded
+            by a isDebugEnabled() check to avoid performance and memory issues.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+            <value>
+            <![CDATA[
+                //PrimaryPrefix[ends-with(Name/@Image, '.debug') and count(../descendant::AdditiveExpression) > 0 and count(ancestor::IfStatement/descendant::PrimaryExpression[ends-with(descendant::PrimaryPrefix/Name/@Image, 'isDebugEnabled')]) = 0]
+            ]]>
+            </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+        // okay:
+        __log.debug("log something");
+
+        // okay:
+        __log.debug("log something with exception", e);
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings");
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings", e);
+
+        // good:
+        if (__log.isDebugEnabled()) {
+        __log.debug("bla" + "",e );
+        }
+    }
+}
+            ]]>
+        </example>
+    </rule>
 
 </ruleset>
 

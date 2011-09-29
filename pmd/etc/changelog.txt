@@ -40,6 +40,7 @@ New rule:
 	StrictExceptions : AvoidCatchingGenericException, AvoidLosingExceptionInformation
 	Naming : GenericsNaming
 	JSP: NoInlineScript
+	Logging with Jakarta Commons ruleset: GuardDebugLogging
 
 February 08, 2009 - 4.2.5:
 
