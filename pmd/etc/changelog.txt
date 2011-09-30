@@ -3,6 +3,15 @@
 TODO - Release blockers - Must implement before this release can be finished
 
    CODE:
+   o PropertyDescriptor final tasks:
+      - Find some way to have them appear in the online documentation for the rules
+        that have them. Ideally we want to ensure we define them in one place only.
+      - Report renderers now inherit from PropertySource so we should migrate the
+        old-style property references to use the new style. Ensure we remain 
+        compatible with the online arguments that get passed in.
+      - Use the new dysfunctionReason method to invalidate misconfigured rules and 
+        reports that could be used by PMD at runtime. Ensure user is notified which
+        is disabled and why. 
    o Get Eclipse integration working with multiple languages, make sure there's
      no major problems before we put the core release.
    o Some cleanup needs to be done on the PMD class.
@@ -26,6 +35,8 @@ TODO - Release blockers - Must implement before this release can be finished
      /license folder?
 
    DOCUMENTATION:
+   o Copy over the new portions of the v4.3 release changelog to this file to provide 
+     a complete history
    o Expand documentation examples which demonstrate use of new RuleSetReferenceId
      capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
      of a Rule reference in places not previously possible (e.g. CMD and Ant).
@@ -222,6 +233,7 @@ All StringBuffer-related rules now also catch StringBuilder-related issues in th
       Added - LanguageVersion Rule.getMaximumLanguageVersion()
       Added - Rule.setDeprecated(boolean)
       Added - boolean Rule.isDeprecated()
+      Added - String Rule.dysfunctionReason();
 	   Added - Rule.definePropertyDescriptor(PropertyDescriptor)
 	   Added - List<PropertyDescriptor> Rule.getPropertyDescriptors()
  	   Added - RuleSet.applies(Rule,LanguageVersion)
