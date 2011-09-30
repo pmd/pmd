@@ -39,11 +39,13 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     private final static Set<Class<? extends Node>> BLOCK_PARENTS;
 
     static {
-        BLOCK_PARENTS = new HashSet<Class<? extends Node>>();
+        BLOCK_PARENTS = new HashSet<Class<? extends Node>>(2);
         BLOCK_PARENTS.add(ASTIfStatement.class);
         BLOCK_PARENTS.add(ASTSwitchStatement.class);
     }
 
+    public static final int DEFAULT_BUFFER_SIZE = 16;	// as specified in StringBuffer & StringBuilder
+    
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isEither(node.getNameDeclaration(), StringBuffer.class, StringBuilder.class)) {
@@ -51,7 +53,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         }
         Node rootNode = node;
         int anticipatedLength = 0;
-        int constructorLength = 16;
+        int constructorLength = DEFAULT_BUFFER_SIZE;
 
         constructorLength = getConstructorLength(node, constructorLength);
         anticipatedLength = getInitialLength(node);
@@ -77,7 +79,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
             int numChildren = s.jjtGetNumChildren();
             for (int jx = 0; jx < numChildren; jx++) {
-        	Node sn = s.jjtGetChild(jx);
+            	Node sn = s.jjtGetChild(jx);
                 if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
                     continue;
                 }
@@ -198,7 +200,6 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     private int getConstructorLength(Node node, int constructorLength) {
         int iConstructorLength = constructorLength;
         Node block = node.getFirstParentOfType(ASTBlockStatement.class);
-        List<ASTLiteral> literal;
 
         if (block == null) {
             block = node.getFirstParentOfType(ASTFieldDeclaration.class);
@@ -212,22 +213,22 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
         //if there is any addition/subtraction going on then just use the default.
         ASTAdditiveExpression exp = block.getFirstDescendantOfType(ASTAdditiveExpression.class);
-        if(exp != null){
-            return 16;
+        if (exp != null){
+            return DEFAULT_BUFFER_SIZE;
         }
         ASTMultiplicativeExpression mult = block.getFirstDescendantOfType(ASTMultiplicativeExpression.class);
-        if(mult != null){
-            return 16;
+        if (mult != null){
+            return DEFAULT_BUFFER_SIZE;
         }
 
-        literal = block.findDescendantsOfType(ASTLiteral.class);
-        if (literal.isEmpty()) {
+        List<ASTLiteral> literals = block.findDescendantsOfType(ASTLiteral.class);
+        if (literals.isEmpty()) {
             List<ASTName> name = block.findDescendantsOfType(ASTName.class);
             if (!name.isEmpty()) {
                 iConstructorLength = -1;
             }
-        } else if (literal.size() == 1) {
-            String str = literal.get(0).getImage();
+        } else if (literals.size() == 1) {
+            String str = literals.get(0).getImage();
             if (str == null) {
                 iConstructorLength = 0;
             } else if (isLiteral(str)) {
@@ -244,7 +245,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
         if (iConstructorLength == 0) {
             if (constructorLength == -1) {
-        	iConstructorLength = 16;
+        	iConstructorLength = DEFAULT_BUFFER_SIZE;
             } else {
         	iConstructorLength = constructorLength;
             }
@@ -255,7 +256,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
 
     private int getInitialLength(Node node) {
-	Node block = node.getFirstParentOfType(ASTBlockStatement.class);
+	
+    	Node block = node.getFirstParentOfType(ASTBlockStatement.class);
 
         if (block == null) {
             block = node.getFirstParentOfType(ASTFieldDeclaration.class);
