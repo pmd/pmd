@@ -62,7 +62,25 @@ Classify the file
 Click File Releases, Edit Release, set previous version to 'hidden'.
 
 upload command below will create and upload the maven artifacts to sourceforge. Login info
-for 'pmd-repo' must be defined in ~/.m2/settings.xml
+for 'pmd-repo' must be defined in ~/.m2/settings.xml:
+
+---8<---8<---
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <servers>
+    <server>
+      <id>pmd-repo</id>
+      <username>your-sf-login</username>
+      <password>your-sf-pwd</password>
+    </server>
+  </servers>
+
+</settings>
+--->8--->8---
+
 
 cd ~/pmd/pmd/
 update the "download" and "what's new" link in navigation.xml
