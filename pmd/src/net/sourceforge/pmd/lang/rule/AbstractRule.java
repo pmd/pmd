@@ -131,14 +131,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	 public boolean isDeprecated() {
 		 return deprecated;
 	 }
-
-	 /**
-	  * @see Rule#dysfunctionReason()
-	  */
-	 public String dysfunctionReason() {
-		 return null;
-	 }
-	 
+ 
 	 /**
 	  * @see Rule#setDeprecated(boolean)
 	  */

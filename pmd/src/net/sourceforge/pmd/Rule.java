@@ -73,14 +73,6 @@ public interface Rule extends PropertySource {
      * <ul>
      */
     boolean isDeprecated();
-
-    /**
-     * Returns a description of why the rule may be dysfunctional. Usually due to missing property
-     * values or some kind of internal rule conflict. Returns null if the rule is ready to go!
-     * 
-     * @return
-     */
-    String dysfunctionReason();
     
     /**
      * Sets whether this Rule is deprecated.

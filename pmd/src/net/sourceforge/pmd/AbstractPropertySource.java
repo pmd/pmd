@@ -14,7 +14,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractPropertySource {
+public abstract class AbstractPropertySource implements PropertySource {
 
 	protected List<PropertyDescriptor<?>> propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
 	protected Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<PropertyDescriptor<?>, Object>();
@@ -170,4 +170,10 @@ public abstract class AbstractPropertySource {
 		 propertyValuesByDescriptor.remove(desc);
 	 }
 
+	 /**
+	  * @see PropertySource#dysfunctionReason()
+	  */
+	 public String dysfunctionReason() {
+		 return null;
+	 }
 }
