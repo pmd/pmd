@@ -36,8 +36,9 @@ public class JavaTokenizer implements Tokenizer {
 	*/
 	// Note that Java version is irrelevant for tokenizing
 	LanguageVersionHandler languageVersionHandler = LanguageVersion.JAVA_14.getLanguageVersionHandler();
+	String fileName = sourceCode.getFileName();
 	TokenManager tokenMgr = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).getTokenManager(
-		sourceCode.getFileName(), new StringReader(buffer.toString()));
+		fileName, new StringReader(buffer.toString()));
 	Token currentToken = (Token) tokenMgr.getNextToken();
 	boolean inDiscardingState = false;
 	while (currentToken.image.length() > 0) {
@@ -67,7 +68,7 @@ public class JavaTokenizer implements Tokenizer {
 		if (ignoreIdentifiers && currentToken.kind == JavaParserConstants.IDENTIFIER) {
 		    image = String.valueOf(currentToken.kind);
 		}
-		tokenEntries.add(new TokenEntry(image, sourceCode.getFileName(), currentToken.beginLine));
+		tokenEntries.add(new TokenEntry(image, fileName, currentToken.beginLine));
 	    }
 
 	    currentToken = (Token) tokenMgr.getNextToken();

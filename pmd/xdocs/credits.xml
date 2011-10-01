@@ -323,6 +323,7 @@
             <li>Riku Nykanen - patch improving TooManyMethods rule</li>
             <li>Tammo van Lessen - new rule GuardDebugLogging for Jakarta Commons Logging ruleset.</li>
             <li>Steven Christou - patch improving DoNotCallSystemExit rule</li>
+            <li>Cd-Man - patch to improve CPD performance</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

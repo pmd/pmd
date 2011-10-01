@@ -52,27 +52,25 @@ public final class CommentUtil {
 		return null;
 	}
 
+	private static Pattern JAVADOC_TAG = Pattern.compile("@[A-Za-z0-9]+");
+	private static Map<String, String> JAVADOC_CACHE = new HashMap<String, String>();
+
 	public static Map<String, Integer> javadocTagsIn(String comment) {
-
-		int atPos = comment.indexOf('@');
-		if (atPos < 0) return Collections.emptyMap();
-
-		Map<String, Integer> tags = new HashMap<String, Integer>();
-		while (atPos >= 0) {
-			String tag = wordAfter(comment, atPos);
-//			String content = javadocContentAfter(comment, atPos + tag.length() );
-//			tags.put(tag, atPos);
-//			atPos = comment.indexOf('@', atPos + tag.length());
-			int offset = 1; // default offset for next tag
-			if (StringUtil.isNotEmpty(tag)) {
-			    //TODO: this seems to be not complete, the content is not used
-			    //String content = javadocContentAfter(comment, atPos + tag.length() );
-			    tags.put(tag, atPos);
-			    offset = tag.length();
+		Matcher m = JAVADOC_TAG.matcher(comment);
+		Map<String, Integer> tags = null;
+		while (m.find()) {
+			if (tags == null )  { tags = new HashMap<String, Integer>(); }
+			String match = comment.substring(m.start() + 1, m.end());
+			String tag = JAVADOC_CACHE.get(match);
+			if (tag == null) {
+				JAVADOC_CACHE.put(match, match);
 			}
-			atPos = comment.indexOf('@', atPos + offset);
-		}
-		return tags;
+			tags.put(tag, m.start());
+ 		}
+                if ( tags == null ) {
+                    return Collections.emptyMap();
+                }
+                return tags;
 	}
 
 	public static List<String> multiLinesIn(String comment) {
