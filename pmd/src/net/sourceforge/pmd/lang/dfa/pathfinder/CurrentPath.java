@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.dfa.NodeType;
 
 public class CurrentPath {
 
-    private List<DataFlowNode> list;
+    private final List<DataFlowNode> list;
 
     public CurrentPath() {
         list = new ArrayList<DataFlowNode>();
@@ -49,10 +49,11 @@ public class CurrentPath {
     }
 
     public DataFlowNode getDoBranchNodeFromFirstDoStatement() {
-	DataFlowNode inode = this.getLast();
+
         if (!isFirstDoStatement()) {
             return null;
         }
+    	DataFlowNode inode = getLast();
         for (DataFlowNode parent: inode.getParents()) {
             if (parent.isType(NodeType.DO_EXPR)) {
                 return parent;
