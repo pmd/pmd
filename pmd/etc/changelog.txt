@@ -1,4 +1,4 @@
-??? ??, 2010 - 5.0:
+??? ??, 2010 - 5.0
 
 TODO - Release blockers - Must implement before this release can be finished
 
@@ -7,11 +7,11 @@ TODO - Release blockers - Must implement before this release can be finished
       - Find some way to have them appear in the online documentation for the rules
         that have them. Ideally we want to ensure we define them in one place only.
       - Report renderers now inherit from PropertySource so we should migrate the
-        old-style property references to use the new style. Ensure we remain 
+        old-style property references to use the new style. Ensure we remain
         compatible with the online arguments that get passed in.
-      - Use the new dysfunctionReason method to invalidate misconfigured rules and 
+      - Use the new dysfunctionReason method to invalidate misconfigured rules and
         reports that could be used by PMD at runtime. Ensure user is notified which
-        is disabled and why. 
+        is disabled and why.
    o Get Eclipse integration working with multiple languages, make sure there's
      no major problems before we put the core release.
    o Some cleanup needs to be done on the PMD class.
@@ -35,7 +35,7 @@ TODO - Release blockers - Must implement before this release can be finished
      /license folder?
 
    DOCUMENTATION:
-   o Copy over the new portions of the v4.3 release changelog to this file to provide 
+   o Copy over the new portions of the v4.3 release changelog to this file to provide
      a complete history
    o Expand documentation examples which demonstrate use of new RuleSetReferenceId
      capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
@@ -462,7 +462,7 @@ Fixed character reference in xml report - thanks to Seko
 
 New Java rules:
 
-	Basic ruleset: ExtendsObject,CheckSkipResult,AvoidBranchingStatementAsLastInLoop,DontCallThreadRun
+	Basic ruleset: ExtendsObject,CheckSkipResult,AvoidBranchingStatementAsLastInLoop,DontCallThreadRun,DontUseFloatTypeForLoopIndices
 	Controversial ruleset: AvoidLiteralsInIfCondition, AvoidPrefixingMethodParameters, OneDeclarationPerLine, UseConcurrentHashMap
 	Coupling ruleset: LoosePackageCoupling,LawofDemeter
 	Design ruleset: LogicInversion,UseVarargs,FieldDeclarationsShouldBeAtStartOfClass,GodClass

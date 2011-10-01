@@ -775,6 +775,45 @@ new Thread().run(); // same violation
       </example>
     </rule>
 
+  <rule  name="DontUseFloatTypeForLoopIndices"
+         language="java"
+         since="4.3"
+         message="Don't use floating point for loop indices. If you must use floating point, use double."
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#DontUseFloatTypeForLoopIndices">
+    <description>
+Don't use floating point for loop indices. If you must use floating point, use double
+unless you're certain that float provides enough precision and you have a compelling
+performance need (space or time).
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+<![CDATA[
+//ForStatement/ForInit/LocalVariableDeclaration
+/Type/PrimitiveType[@Image="float"]
+]]>
+       </value>
+      </property>
+    </properties>
+    <example>
+<![CDATA[
+public class Count {
+  public static void main(String[] args) {
+    final int START = 2000000000;
+    int count = 0;
+    for (float f = START; f < START + 50; f++)
+      count++;
+      //Prints 0 because (float) START == (float) (START + 50).
+      System.out.println(count);
+      //The termination test misbehaves due to floating point granularity.
+    }
+}
+]]>
+    </example>
+  </rule>
+
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyCatchBlock" />
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyIfStmt" />
     <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyWhileStmt" />

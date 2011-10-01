@@ -324,6 +324,7 @@
             <li>Tammo van Lessen - new rule GuardDebugLogging for Jakarta Commons Logging ruleset.</li>
             <li>Steven Christou - patch improving DoNotCallSystemExit rule</li>
             <li>Cd-Man - patch to improve CPD performance</li>
+            <li>Suresh - new rule DontUseFloatTypeForLoopIndices</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

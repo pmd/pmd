@@ -35,6 +35,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "OverrideBothEqualsAndHashcode");
         addRule(RULESET, "ReturnFromFinallyBlock");
         addRule(RULESET, "DontCallThreadRun");
+        addRule(RULESET, "DontUseFloatTypeForLoopIndices");
     }
 
     public static junit.framework.Test suite() {
