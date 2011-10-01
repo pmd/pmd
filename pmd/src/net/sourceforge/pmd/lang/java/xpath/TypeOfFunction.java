@@ -23,36 +23,38 @@ public class TypeOfFunction implements Function {
 		new TypeOfFunction());
     }
 
-    public Object call(Context context, List args) throws FunctionCallException {
-	Node n = (Node) context.getNodeSet().get(0);
-	String nodeTypeName = null;
-	String fullTypeName = null;
-	String shortTypeName = null;
-	Attribute attr = null;
-	for (int i = 0; i < args.size(); i++) {
-	    if (args.get(i) instanceof List) {
-		if (attr == null) {
-		    attr = (Attribute) ((List) args.get(i)).get(0);
-		    nodeTypeName = attr.getStringValue();
-		} else {
-		    throw new IllegalArgumentException(
-			    "typeof function can take only a single argument which is an Attribute.");
+    @Override
+	public Object call(Context context, List args) throws FunctionCallException {
+		
+		String nodeTypeName = null;
+		String fullTypeName = null;
+		String shortTypeName = null;
+		Attribute attr = null;
+		for (int i = 0; i < args.size(); i++) {
+		    if (args.get(i) instanceof List) {
+			if (attr == null) {
+			    attr = (Attribute) ((List) args.get(i)).get(0);
+			    nodeTypeName = attr.getStringValue();
+			} else {
+			    throw new IllegalArgumentException(
+				    "typeof function can take only a single argument which is an Attribute.");
+			}
+		    } else {
+			if (fullTypeName == null) {
+			    fullTypeName = (String) args.get(i);
+			} else if (shortTypeName == null) {
+			    shortTypeName = (String) args.get(i);
+			} else {
+			    break;
+			}
+		    }
 		}
-	    } else {
 		if (fullTypeName == null) {
-		    fullTypeName = (String) args.get(i);
-		} else if (shortTypeName == null) {
-		    shortTypeName = (String) args.get(i);
-		} else {
-		    break;
-		}
-	    }
-	}
-	if (fullTypeName == null) {
-	    throw new IllegalArgumentException(
-		    "typeof function must be given at least one String argument for the fully qualified type name.");
-	}
-	return typeof(n, nodeTypeName, fullTypeName, shortTypeName);
+		    throw new IllegalArgumentException(
+			    "typeof function must be given at least one String argument for the fully qualified type name.");
+			}
+		Node n = (Node) context.getNodeSet().get(0);
+		return typeof(n, nodeTypeName, fullTypeName, shortTypeName);
     }
 
     // TEST //ClassOrInterfaceType[typeof(@Image, 'java.lang.String')]
