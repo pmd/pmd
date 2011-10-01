@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+premature declaration before unrelated test
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+	public int lengthSumOf(String[] strings) {
+		
+		int sum = 0;	// wasted cycles if strings have problems
+		
+		if (strings == null || strings.length == 0) return 0;
+		
+		for (int i=0; i<strings.length; i++) {
+			sum += strings[i].length();
+		}
+		
+		return sum;
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+optimal var declaration position
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+	public int lengthSumOf(String[] strings) {
+				
+		if (strings == null || strings.length == 0) return 0;
+				
+		int sum = 0;	// optimal placement
+		
+		for (int i=0; i<strings.length; i++) {
+			sum += strings[i].length();
+		}
+		
+		return sum;
+	}
+}
+     ]]></code>
+    </test-code>
+
+</test-data>

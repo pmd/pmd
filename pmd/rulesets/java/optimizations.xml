@@ -394,6 +394,34 @@ public class C {
               </example>
             </rule>
 
+	<rule name="PrematureDeclaration"
+			language="java"
+			since="5.0"
+			message="Avoid declaring a variable if it is unreferenced before a possible exit point."
+			class="net.sourceforge.pmd.lang.java.rule.optimizations.PrematureDeclarationRule"
+			externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#PrematureDeclaration">
+		<description>
+Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn'tuse it that also has the ability to return or throw an exception.
+		</description>
+              <priority>3</priority>
+              <example>
+              <![CDATA[
+public int getLength(String[] strings) {
+  
+  int length = 0;	// declared prematurely
+
+  if (strings == null || strings.length == 0) return 0;
+  
+  for (String str : strings) {
+    length += str.length();
+    }
+
+  return length;
+}
+              ]]>
+              </example>
+            </rule>
+
     <!--
     other optimization should be like avoiding
     "" + int

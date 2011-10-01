@@ -21,6 +21,7 @@ public class OptimizationsRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseArrayListInsteadOfVector");
         addRule(RULESET, "UseArraysAsList");
         addRule(RULESET, "UseStringBufferForStringAppends");
+        addRule(RULESET, "PrematureDeclaration");
     }
 
     public static junit.framework.Test suite() {
