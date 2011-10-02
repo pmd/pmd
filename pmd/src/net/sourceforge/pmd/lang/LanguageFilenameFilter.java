@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This is an implementation of the {@link FilenameFilter} interface which
@@ -14,21 +15,21 @@ import java.util.List;
  */
 public class LanguageFilenameFilter implements FilenameFilter {
 
-	private final List<Language> languages;
+	private final Set<Language> languages;
 
 	/**
 	 * Create a LanguageFilenameFilter for a single Language.
 	 * @param language The Language.
 	 */
 	public LanguageFilenameFilter(Language language) {
-		this(Collections.singletonList(language));
+		this(Collections.singleton(language));
 	}
 
 	/**
 	 * Create a LanguageFilenameFilter for a List of Languages.
 	 * @param languages The List of Languages.
 	 */
-	public LanguageFilenameFilter(List<Language> languages) {
+	public LanguageFilenameFilter(Set<Language> languages) {
 		this.languages = languages;
 	}
 
