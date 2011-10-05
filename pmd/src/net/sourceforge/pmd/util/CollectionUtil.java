@@ -201,6 +201,17 @@ public final class CollectionUtil {
     public static boolean isEmpty(Object[] items) {
         return items == null || items.length == 0;
     }
+    
+    /**
+     * Returns whether the items array is non-null and has
+     * at least one entry.
+     * 
+     * @param items
+     * @return boolean
+     */
+    public static boolean isNotEmpty(Object[] items) {
+        return !isEmpty(items);
+    }
 
     /**
      * Returns true if both arrays are if both are null or have zero-length,
