@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -136,7 +137,8 @@ public class CommentContentRule extends AbstractCommentRule {
     }
 	
 	public boolean hasDissallowedTerms() {
-		return getProperty(DISSALLOWED_TERMS_DESCRIPTOR).length > 0;
+		String[] terms = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
+		return CollectionUtil.isNotEmpty(terms);
 	}
 	
 	public String dysfunctionReason() {

@@ -30,6 +30,8 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
@@ -199,15 +201,14 @@ public class PMDTask extends Task {
 		ruleSetFactory.setClassLoader(configuration.getClassLoader());
 		try {
 			// This is just used to validate and display rules. Each thread will create its own ruleset
-			RuleSets rules;
 			ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
 			ruleSetFactory.setWarnDeprecated(true);
 			String ruleSets = configuration.getRuleSets();
-			if (ruleSets != null) {
+			if (StringUtil.isNotEmpty(ruleSets)) {
 				// Substitute env variables/properties
 				configuration.setRuleSets(getProject().replaceProperties(ruleSets));
 			}
-			rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
+			RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
 			ruleSetFactory.setWarnDeprecated(false);
 			logRulesUsed(rules);
 		} catch (RuleSetNotFoundException e) {
@@ -280,6 +281,7 @@ public class PMDTask extends Task {
 					PrintWriter printWriter = new PrintWriter(strWriter);
 					pmde.getCause().printStackTrace(printWriter);
 					log(strWriter.toString(), Project.MSG_VERBOSE);
+					IOUtil.closeQuietly(printWriter);
 				}
 				if (pmde.getCause() != null && pmde.getCause().getMessage() != null) {
 					log(pmde.getCause().getMessage(), Project.MSG_VERBOSE);

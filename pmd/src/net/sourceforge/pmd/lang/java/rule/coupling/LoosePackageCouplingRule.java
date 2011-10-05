@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * The loose package coupling Rule can be used to ensure coupling outside of
@@ -32,10 +33,10 @@ import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
  */
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
-    private static final StringMultiProperty PACKAGES_DESCRIPTOR = new StringMultiProperty("packages", "Restricted packages",
+    public static final StringMultiProperty PACKAGES_DESCRIPTOR = new StringMultiProperty("packages", "Restricted packages",
 	    new String[] {}, 1.0f, ',');
 
-    private static final StringMultiProperty CLASSES_DESCRIPTOR = new StringMultiProperty("classes", "Allowed classes",
+    public static final StringMultiProperty CLASSES_DESCRIPTOR = new StringMultiProperty("classes", "Allowed classes",
 	    new String[] {}, 2.0f, ',');
 
     // The package of this source file
@@ -122,11 +123,11 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 	return false;
     }
     
-    
 	public boolean checksNothing() {
 		
-		return getProperty(PACKAGES_DESCRIPTOR).length == 0 &&
-			getProperty(CLASSES_DESCRIPTOR).length == 0 ;		
+		return 
+			CollectionUtil.isEmpty(getProperty(PACKAGES_DESCRIPTOR)) &&
+			CollectionUtil.isEmpty(getProperty(CLASSES_DESCRIPTOR)) ;		
 	}
 	
 	public String dysfunctionReason() {
