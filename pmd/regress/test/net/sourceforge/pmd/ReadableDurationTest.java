@@ -18,13 +18,14 @@ public class ReadableDurationTest {
 
     private Integer value;
     private String expected;
+
     public ReadableDurationTest(String expected, Integer value) {
         this.value = value;
         this.expected = expected;
     }
 
     @Parameters
-    public static Collection data() {
+    public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"0s", 35},
                 {"25s", (25 * 1000)},
