@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class VariableNamingConventionsRule extends AbstractJavaRule {
 
@@ -215,7 +216,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 		for (PropertyDescriptor<?> desc : getPropertyDescriptors()) {
 			if (desc instanceof StringMultiProperty) {
 				String[] values = getProperty((StringMultiProperty)desc);
-				if (values.length > 0) return true;				
+				if (CollectionUtil.isNotEmpty(values)) return true;				
 			}
 		}
 		return false;	
