@@ -172,4 +172,16 @@ public class RuleSets {
 	}
 	return false;
     }
+    
+	/**
+	 * Remove and collect any rules that report problems.
+	 * 
+	 * @param collector
+	 */
+	public void removeDysfunctionalRules(Collection<Rule> collector) {
+		
+		for (RuleSet ruleSet : ruleSets) {
+		   ruleSet.removeDysfunctionalRules(collector);
+		}
+	}
 }

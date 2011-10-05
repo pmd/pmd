@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -112,14 +113,14 @@ public class RuleSet {
 	 * @return the rule or null if not found
 	 */
 	public Rule getRuleByName(String ruleName) {
-		Rule rule = null;
-		for (Iterator<Rule> i = rules.iterator(); i.hasNext() && rule == null;) {
+		
+		for (Iterator<Rule> i = rules.iterator(); i.hasNext();) {
 			Rule r = i.next();
 			if (r.getName().equals(ruleName)) {
-				rule = r;
+				return r;
 			}
 		}
-		return rule;
+		return null;
 	}
 
 	/**
@@ -236,7 +237,7 @@ public class RuleSet {
 	 */
 	@Override
 	public int hashCode() {
-		return this.getName().hashCode() + 13 * this.getRules().hashCode();
+		return getName().hashCode() + 13 * getRules().hashCode();
 	}
 
 	public String getFileName() {
@@ -264,7 +265,7 @@ public class RuleSet {
 	}
 
 	public List<String> getExcludePatterns() {
-		return this.excludePatterns;
+		return excludePatterns;
 	}
 
 	public void addExcludePattern(String excludePattern) {
@@ -280,7 +281,7 @@ public class RuleSet {
 	}
 
 	public List<String> getIncludePatterns() {
-		return this.includePatterns;
+		return includePatterns;
 	}
 
 	public void addIncludePattern(String includePattern) {
@@ -312,4 +313,22 @@ public class RuleSet {
 		return false;
 	}
 
+	/**
+	 * Remove and collect any misconfigured rules.
+	 * 
+	 * @param collector
+	 */
+	public void removeDysfunctionalRules(Collection<Rule> collector) {
+		
+		Iterator<Rule> iter = rules.iterator();
+		
+		while (iter.hasNext()) {
+			Rule rule = iter.next();
+			if (rule.dysfunctionReason() != null) {
+				iter.remove();
+				collector.add(rule);
+			}
+		}
+	}
+	
 }
