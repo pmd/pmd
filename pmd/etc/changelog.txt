@@ -54,7 +54,8 @@ TODO - Release blockers - Must implement before this release can be finished
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
-as RuleSet XML compatibility.  The decision to break compatibility, allows PMD
+as RuleSet XML compatibility. Also the maven coordinates (groupId) have been changed.
+The decision to break compatibility, allows PMD
 internals and code organization to be improved to better handle additional
 languages.  This opportunity was used to remove depreciated APIs, and beat up
 any code which has thumbed its nose at the developers over the years. ;)
@@ -318,6 +319,13 @@ Ant changes:
    Renamed - <pmd> 'excludeMarker' attribute to 'suppressMarker'
    Renamed - <pmd> 'cpus' attribute to 'threads'
 
+Maven changes:
+   The new maven coordinates are: net.sourceforge.pmd:pmd, e.g.
+   <dependency>
+     <groupId>net.sourceforge.pmd</groupId>
+     <artifactId>pmd</artifactId>
+     <version>5.0</version>
+   </dependency>
 
 New features:
 
