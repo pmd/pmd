@@ -20,12 +20,12 @@
       <p>Source and binary packages are available at
       
       <!-- <a href="http://hudson.xlv-labs.com/job/PMD-snapshot/">here</a> -->
-      <a href="http://pmd.adabolo.de/job/pmd%20jar/">http://pmd.adabolo.de/job/pmd jar/</a>
-      in the artifacts section in the center of the page. The packages for older builds can be accessed by navigating to the details page for a given build.</p>
+      <a href="http://pmd.adabolo.de/job/PMD-snapshot/">http://pmd.adabolo.de/job/PMD-snapshot/</a>
+      in the artifacts section in the center of the page.</p>
       
-      <!-- 
-      <p>Maven packages are also generated daily and uploaded to the <a href="http://pmd.sourceforge.net/snapshot/maven2">snapshot repository</a>.</p>
-      -->
+      <p>Maven packages are also generated regularly and uploaded to the <a href="http://pmd.sourceforge.net/snapshot/maven2">snapshot repository</a> and
+      to <a href="https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/pmd/5.0-SNAPSHOT/">Sonatypes OSS snapshot repository</a>.</p>
+
 <!--
       <p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>.</p>
 -->
@@ -38,4 +38,3 @@
   </body>
 </document>
 
- 	  	 
