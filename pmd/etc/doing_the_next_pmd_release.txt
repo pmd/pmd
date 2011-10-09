@@ -68,10 +68,54 @@ for 'pmd-repo' must be defined in ~/.m2/settings.xml:
                       http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
   <servers>
+    <!-- to upload to sonatype maven central.
+         See https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
+    <server>
+      <id>sonatype-nexus-snapshots</id>
+      <username>your-sonatype-jira-login</username>
+      <password>your-sonatype-jira-password</password>
+    </server>
+    <server>
+      <id>sonatype-nexus-staging</id>
+      <username>your-sonatype-jira-login</username>
+      <password>your-sonatype-jira-password</password>
+    </server>
+
     <server>
       <id>pmd-repo</id>
       <username>your-sf-login</username>
       <password>your-sf-pwd</password>
+      <!-- or use instead of the password your private key with optional passphrase
+      <privateKey>${user.home}/.ssh/id_dsa</privateKey>
+      <passphrase>some_passphrase</passphrase>
+      -->
+    </server>
+    <server>
+      <id>pmd-site</id>
+      <username>your-sf-login</username>
+      <password>your-sf-pwd</password>
+      <!-- or use instead of the password your private key with optional passphrase
+      <privateKey>${user.home}/.ssh/id_dsa</privateKey>
+      <passphrase>some_passphrase</passphrase>
+      -->
+    </server>
+    <server>
+      <id>pmd-snapshot-repo</id>
+      <username>your-sf-login</username>
+      <password>your-sf-pwd</password>
+      <!-- or use instead of the password your private key with optional passphrase
+      <privateKey>${user.home}/.ssh/id_dsa</privateKey>
+      <passphrase>some_passphrase</passphrase>
+      -->
+    </server>
+    <server>
+      <id>pmd-snapshot-site</id>
+      <username>your-sf-login</username>
+      <password>your-sf-pwd</password>
+      <!-- or use instead of the password your private key with optional passphrase
+      <privateKey>${user.home}/.ssh/id_dsa</privateKey>
+      <passphrase>some_passphrase</passphrase>
+      -->
     </server>
   </servers>
 
@@ -79,8 +123,17 @@ for 'pmd-repo' must be defined in ~/.m2/settings.xml:
 --->8--->8---
 
 
+In order to be able to upload the artifacts and the site to sourceforge, you need to have a interactive shell opened
+before:
+ssh your_sf_login,pmd@shell.sourceforge.net create
+
+
 update the "download" and "what's new" link in navigation.xml
 ./docs.sh upload
+
+shutdown the sourceforge shell again
+ssh your_sf_login@shell.sourceforge.net "shutdown"
+
 
 update cpd.jnlp by running:
 
@@ -91,29 +144,3 @@ Submit news to SF
 Go to http://freshmeat.net/
 Submit news to java.net
 Do a blog entry
-
-
-Getting the new PMD version into Maven Central Repository:
-----------------------------------------------------------
-1. Make sure you have a gpg key:
-
-   gpg --list-keys
-
-2. Create a bundle
-
-  mvn clean source:jar javadoc:jar package gpg:sign repository:bundle-create -Dgpg.keyname=your_key -Dgpg.passphrase=your_pwd
-
-3. The bundle is target/pmd-x.x.x-bundle.jar.
-
-  Test it: target/pmd-x.x.x.jar is the file, that is contained in the bundle.
-  So we can use it:
-  
-  java -cp target/pmd-x.x.x.jar:lib/asm-3.2.jar:lib/javacc.jar:lib/jaxen-1.1.1.jar net.sourceforge.pmd.PMD src/net/sourceforge/pmd/PMD.java text unusedcode
-
-  This should work: "No problems found!"
-  
-
-4. Upload pmd-x.x.x-bundle.jar to https://oss.sonatype.org.
-
-More info: https://docs.sonatype.org/display/Repository/Uploading+3rd-party+Artifacts+to+Maven+Central
-

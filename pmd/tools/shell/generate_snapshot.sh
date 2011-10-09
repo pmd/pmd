@@ -28,8 +28,8 @@ cd ../..
 # adapted from docs.sh "upload"
 
 remote_user=$USER,pmd
-remote_host=web.sourceforge.net
-remote_dir_home=/home/groups/p/pm/pmd/htdocs/snapshot
+remote_host=shell.sourceforge.net
+remote_dir_home=/home/project-web/pmd/htdocs/snapshot
 
 echo "Uploading src and bin archives"
 
@@ -40,13 +40,13 @@ mv target/release/pmd-src-${version}.zip target/release/${version}-build-${build
 # src and bin packages are available in hudson setup, no need to upload to sf.net
 #scp -r target/release/${version}-build-${buildnumber} ${remote_host}:${remote_dir_home}/files
 
-echo "Generating and uploading maven artifacts"
+echo "Generating and uploading maven artifacts to sourceforge"
 
-mvn -q -DskipTests source:jar javadoc:jar deploy
+mvn -q -Psf-snapshot -DskipTests source:jar javadoc:jar deploy
 
-echo "Uploading site"
+echo "Generating and uploading site"
 
-rsync -a -e ssh target/site/ ${remote_user}@${remote_host}:${remote_dir_home}
+mvn -q -Psf-snapshot site site:deploy
 
 echo "Cleaning up"
 
