@@ -363,6 +363,7 @@ AssignmentInOperand enhanced to catch assignment in 'for' condition, as well as 
 Fix false positive on CastExpressions for UselessParentheses
 Fix false positive where StringBuffer.setLength(0) was using default constructor size of 16, instead of actual constructor size.
 Fix false negative for non-primitive types for VariableNamingConventions, also expanded scope to local and method/constructors, and enhanced customization options to choose between members/locals/parameters (all checked by default)
+Fix false negative for UseArraysAsList when the array was passed as method parameter - thanks to Andy Throgmorton
 Improve TooManyMethods rule - thanks to a patch from Riku Nykanen
 Improve DoNotCallSystemExit - thanks to a patch from Steven Christou
 Correct -benchmark reporting of Rule visits via the RuleChain

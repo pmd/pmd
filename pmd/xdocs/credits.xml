@@ -57,7 +57,7 @@
         </subsection>
         <subsection name="Contributors">
           <ul>
-            <li>Andy Throgmorton - New XPath getCommentOn function, new rule DontCallThreadRun</li>
+            <li>Andy Throgmorton - New XPath getCommentOn function, new rule DontCallThreadRun, fix for rule UseArraysAsList</li>
             <li>Nicolas Dordet - Fixed an issue on CloseResource</li>
 	        <li>Juan Jesús García de Soria - Rework CPD algorithm</li>
             <li>Sergey Pariev - Fixed an ugly ArrayIndexOutOfBoundsException in CPD for Ruby</li>

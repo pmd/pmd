@@ -198,7 +198,7 @@ an array of objects. It is faster than executing a loop to copy all the elements
    ]
    //StatementExpression[
     PrimaryExpression/PrimaryPrefix/Name[
-	 substring-before(@Image,'.add') = ancestor::MethodDeclaration//LocalVariableDeclaration[
+     substring-before(@Image,'.add') = ancestor::MethodDeclaration//LocalVariableDeclaration[
       ./Type//ClassOrInterfaceType[
        @Image = 'Collection' or 
        @Image = 'List' or @Image='ArrayList'
@@ -213,8 +213,11 @@ an array of objects. It is faster than executing a loop to copy all the elements
     ]
    and
    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-   [@Image = ancestor::MethodDeclaration//LocalVariableDeclaration
-   [@Array="true"]/VariableDeclarator/VariableDeclaratorId/@Image]
+   [
+     @Image = ancestor::MethodDeclaration//LocalVariableDeclaration[@Array="true"]/VariableDeclarator/VariableDeclaratorId/@Image
+     or
+     @Image = ancestor::MethodDeclaration//FormalParameter/VariableDeclaratorId/@Image
+   ]
    /../..[count(.//PrimarySuffix)
    =1]/PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix
    /Name
