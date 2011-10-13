@@ -7,6 +7,7 @@ Add C# support for CPD - thanks to Florian Bauer
 Fix small bug in Rule Designer UI
 Improve TooManyMethods rule - thanks to a patch from Riku Nykanen
 Improve DoNotCallSystemExit - thanks to a patch from Steven Christou
+Fix false negative for UseArraysAsList when the array was passed as method parameter - thanks to Andy Throgmorton
 
 New Rule:
 	Basic ruleset: DontCallThreadRun - thanks to Andy Throgmorton
