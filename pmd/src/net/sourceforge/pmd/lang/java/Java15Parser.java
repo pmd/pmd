@@ -23,7 +23,7 @@ public class Java15Parser extends AbstractJavaParser {
     @Override
     protected JavaParser createJavaParser(Reader source) throws ParseException {
 	JavaParser javaParser = super.createJavaParser(source);
-	javaParser.setJDK15();
+	javaParser.setJdkVersion(5);
 	return javaParser;
     }
 }

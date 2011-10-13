@@ -454,6 +454,7 @@ Fixed handling of escape characters in UseIndexOfChar and AppendCharacterWithCha
 Fixed ClassCastException on generic method in BeanMembersShouldSerialize
 Fixed ClassCastException in symbol table code
 Support for Java 1.4 runtime dropped, PMD now requires Java 5 or higher.  PMD can still process Java 1.4 source files.
+Support for Java 1.7
 Text renderer is now silent if there's no violation instead of displaying "No problems found!"
 RuleSet short names now require a language prefix, 'basic' is now 'java-basic', and 'rulesets/basic.xml' is now 'rulesets/java/basic.xml'
 The JSP RuleSets are now in the 'jsp' language, and are 'jsp-basic', 'jsp-basic-jsf', 'rulesets/jsp/basic.xml' and 'rulesets/jsp/basic-jsp.xml'

@@ -46,9 +46,9 @@ public enum LanguageVersion {
     ECMASCRIPT(Language.ECMASCRIPT, "3", new Ecmascript3Handler(), true),
     JAVA_13(Language.JAVA, "1.3", new Java13Handler(), false),
     JAVA_14(Language.JAVA, "1.4", new Java14Handler(), false),
-    JAVA_15(Language.JAVA, "1.5", new Java15Handler(), true),
+    JAVA_15(Language.JAVA, "1.5", new Java15Handler(), false),
     JAVA_16(Language.JAVA, "1.6", new Java16Handler(), false),
-    JAVA_17(Language.JAVA, "1.7", new Java17Handler(), false),
+    JAVA_17(Language.JAVA, "1.7", new Java17Handler(), true),
     JSP(Language.JSP, "", new JspHandler(), true),
     PHP(Language.PHP, "", null, true),
     RUBY(Language.RUBY, "", null, true),
@@ -63,7 +63,7 @@ public enum LanguageVersion {
     /**
      * LanguageVersion constructor.  The LanguageVersion will add itself as a
      * version of its Language.
-     * 
+     *
      * @param language The Language of this LanguageVersion.
      * @param version The version String for this LanguageVersion.
      * Must not be <code>null</code>, but may be an empty String.
@@ -183,7 +183,7 @@ public enum LanguageVersion {
 	return null;
     }
 
-    
+
     /**
      * A utility method to find the all version associated with the given
      * terse name.
@@ -192,14 +192,14 @@ public enum LanguageVersion {
      */
     public static List<LanguageVersion> findVersionsForLanguageTerseName(String languageTerseName) {
 	List<LanguageVersion> versionsAvailable = new ArrayList<LanguageVersion>(0);
-	for (LanguageVersion languageVersion : LanguageVersion.values()) {	    
+	for (LanguageVersion languageVersion : LanguageVersion.values()) {
 	    if (languageVersion.getLanguage().getTerseName().equals(languageTerseName)) {
 		versionsAvailable.add(languageVersion);
 	    }
 	}
 	return versionsAvailable;
     }
-    
+
 
     /**
      * Return a comma-separated list of LanguageVersion terse names.
@@ -207,11 +207,11 @@ public enum LanguageVersion {
      * @return Comma-separated terse names.
      */
     public static String commaSeparatedTerseNames(List<LanguageVersion> languageVersions) {
-    	
+
     	if (languageVersions == null || languageVersions.isEmpty()) {
     		return "";
     	}
-    	
+
     	StringBuilder builder = new StringBuilder();
     	builder.append(languageVersions.get(0).getTerseName());
     	for (int i=1; i<languageVersions.size(); i++) {
@@ -223,7 +223,7 @@ public enum LanguageVersion {
     /**
      * Return the default version for PMD.
      *
-     * @return the proper instance of LanguageVersion 
+     * @return the proper instance of LanguageVersion
      */
     public static LanguageVersion getDefaultVersion() {
 	return LanguageVersion.JAVA_15;

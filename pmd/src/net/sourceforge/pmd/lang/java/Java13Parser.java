@@ -23,7 +23,7 @@ public class Java13Parser extends AbstractJavaParser {
     @Override
     protected JavaParser createJavaParser(Reader source) throws ParseException {
 	JavaParser javaParser = super.createJavaParser(source);
-	javaParser.setJDK13();
+	javaParser.setJdkVersion(3);
 	return javaParser;
     }
 }

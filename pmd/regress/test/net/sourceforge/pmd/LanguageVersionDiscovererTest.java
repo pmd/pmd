@@ -32,7 +32,7 @@ public class LanguageVersionDiscovererTest {
         File javaFile = new File("/path/to/MyClass.java");
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(javaFile);
-        assertEquals("LanguageVersion must be Java 1.5!", LanguageVersion.JAVA_15, languageVersion);
+        assertEquals("LanguageVersion must be Java 1.7 !", LanguageVersion.JAVA_17, languageVersion);
     }
 
     /**

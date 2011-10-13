@@ -62,10 +62,10 @@ public class ConfigurationTest {
     public void testLanguageVersionDiscoverer() {
 	Configuration configuration = new Configuration();
 	LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
-	assertEquals("Default Java version", LanguageVersion.JAVA_15, languageVersionDiscoverer
+	assertEquals("Default Java version", LanguageVersion.JAVA_17, languageVersionDiscoverer
 		.getDefaultLanguageVersion(Language.JAVA));
-	configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_17);
-	assertEquals("Modified Java version", LanguageVersion.JAVA_17, languageVersionDiscoverer
+	configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_15);
+	assertEquals("Modified Java version", LanguageVersion.JAVA_15, languageVersionDiscoverer
 		.getDefaultLanguageVersion(Language.JAVA));
     }
 

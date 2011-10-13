@@ -39,7 +39,7 @@ public class CommandLineOptionsTest {
     public void testLang() {
 	// Testing command line default behavior (no -lang option, means Java 1.5)
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
-        assertEquals("LanguageVersion[Java 1.5]", opt.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString());
+        assertEquals("LanguageVersion[Java 1.7]", opt.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString());
         opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-version","java", "1.3"});
         assertEquals("LanguageVersion[Java 1.3]", opt.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString());
         opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-version","java", "1.5"});

@@ -429,6 +429,17 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTTryStatement node, Object data) {
         return visit((JavaNode) node, data);
     }
+    public Object visit(ASTResourceSpecification node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+    
+    public Object visit(ASTResources node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+    
+    public Object visit(ASTResource node, Object data) {
+        return visit((JavaNode) node, data);
+    }
 
     public Object visit(ASTFinallyStatement node, Object data) {
         return visit((JavaNode) node, data);

@@ -3,7 +3,11 @@
  */
 package net.sourceforge.pmd.lang.java;
 
+import java.io.Reader;
+
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 /**
  * Adapter for the JavaParser, using Java 1.4 grammar.
@@ -14,5 +18,12 @@ public class Java14Parser extends AbstractJavaParser {
 
     public Java14Parser(ParserOptions parserOptions) {
 	super(parserOptions);
+    }
+    
+    @Override
+    protected JavaParser createJavaParser(Reader source) throws ParseException {
+	JavaParser javaParser = super.createJavaParser(source);
+	javaParser.setJdkVersion(4);
+	return javaParser;
     }
 }

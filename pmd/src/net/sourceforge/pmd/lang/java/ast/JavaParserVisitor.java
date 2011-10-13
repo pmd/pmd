@@ -94,6 +94,9 @@ public interface JavaParserVisitor
   public Object visit(ASTThrowStatement node, Object data);
   public Object visit(ASTSynchronizedStatement node, Object data);
   public Object visit(ASTTryStatement node, Object data);
+  public Object visit(ASTResourceSpecification node, Object data);
+  public Object visit(ASTResources node, Object data);
+  public Object visit(ASTResource node, Object data);
   public Object visit(ASTCatchStatement node, Object data);
   public Object visit(ASTFinallyStatement node, Object data);
   public Object visit(ASTAssertStatement node, Object data);
@@ -113,4 +116,4 @@ public interface JavaParserVisitor
   public Object visit(ASTAnnotationMethodDeclaration node, Object data);
   public Object visit(ASTDefaultValue node, Object data);
 }
-/* JavaCC - OriginalChecksum=ff6b0cc4cb84af70df4166cf5e43982c (do not edit this line) */
+/* JavaCC - OriginalChecksum=3fcb0cd1b133ccc7dcc669689411121c (do not edit this line) */

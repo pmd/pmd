@@ -98,6 +98,9 @@ public abstract class ParserTst {
     public ASTCompilationUnit parseJava15(String code) {
         return parseJava(LanguageVersion.JAVA_15, code);
     }
+    public ASTCompilationUnit parseJava17(String code) {
+        return parseJava(LanguageVersion.JAVA_17, code);
+    }
     public ASTCompilationUnit parseJava(LanguageVersion languageVersion, String code) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	return (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));

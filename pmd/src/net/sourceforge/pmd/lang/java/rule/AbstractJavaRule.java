@@ -501,4 +501,17 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     public Object visit(ASTCatchStatement node, Object data) {
 	return visit((JavaNode) node, data);
     }
+
+    public Object visit(ASTResourceSpecification node, Object data) {
+         return visit((JavaNode)node, data);
+    }
+
+    public Object visit(ASTResources node, Object data) {
+         return visit((JavaNode)node, data);
+    }
+
+    public Object visit(ASTResource node, Object data) {
+         return visit((JavaNode)node, data);
+    }
+
 }

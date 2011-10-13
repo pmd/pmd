@@ -1,4 +1,9 @@
 /**
+ *
+ * Added support for Java 7 language constructs
+ *
+ * Dinesh Bolkensteyn (SonarSource), 10/2011
+ * ===================================================================
  * Changed the CastLookahead production to use 3 lookaheads for primitive types as suggested by Andreas Dangel
  *
  * Brian Remedios 07/2011
@@ -75,63 +80,82 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 public class JavaParser {
 
-  private boolean isJDK13;
-  private boolean isJDK15;
+  private int jdkVersion = 0;
 
-  public void setJDK13() {
-   this.isJDK13 = true;
-  }
-
-  public void setJDK15() {
-   this.isJDK15 = true;
+  public void setJdkVersion(int jdkVersion) {
+   this.jdkVersion = jdkVersion;
   }
 
   private void checkForBadAssertUsage(String in, String usage) {
-    if (!isJDK13 && in.equals("assert")) {
+    if (jdkVersion > 3 && in.equals("assert")) {
       throw new ParseException("Can't use 'assert' as " + usage + " when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadStaticImportUsage() {
-    if (!isJDK15) {
+    if (jdkVersion < 5) {
       throw new ParseException("Can't use static imports when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadAnnotationUsage() {
-    if (!isJDK15) {
+    if (jdkVersion < 5) {
       throw new ParseException("Can't use annotations when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadGenericsUsage() {
-    if (!isJDK15) {
+    if (jdkVersion < 5) {
       throw new ParseException("Can't use generics unless running in JDK 1.5 mode!");
     }
   }
 
   private void checkForBadVariableArgumentsUsage() {
-    if (!isJDK15) {
+    if (jdkVersion < 5) {
       throw new ParseException("Can't use variable arguments (varargs) when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadJDK15ForLoopSyntaxArgumentsUsage() {
-    if (!isJDK15) {
+    if (jdkVersion < 5) {
       throw new ParseException("Can't use JDK 1.5 for loop syntax when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadEnumUsage(String in, String usage) {
-    if (isJDK15 && in.equals("enum")) {
+    if (jdkVersion >= 5 && in.equals("enum")) {
       throw new ParseException("Can't use 'enum' as " + usage + " when running in JDK 1.5 mode!");
     }
   }
 
   private void checkForBadHexFloatingPointLiteral() {
-    if (!isJDK15) {
-      throw new ParseException("ERROR: Can't use hexadecimal floating point literals in pre-JDK 1.5 target");
+    if (jdkVersion < 5) {
+      throw new ParseException("Can't use hexadecimal floating point literals in pre-JDK 1.5 target");
     }
+  }
+  
+  private void checkForBadNumericalLiteralslUsage(Token token) {
+    if (jdkVersion < 7) {
+      if (token.image.contains("_")) {
+        throw new ParseException("Can't use underscores in numerical literals when running in JDK inferior to 1.7 mode!");
+      }
+      	
+      if (token.image.startsWith("0b") || token.image.startsWith("0B")) {
+        throw new ParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");	
+      }
+    }
+  }
+  
+  private void checkForBadDiamondUsage() {
+  	if (jdkVersion < 7) {
+      throw new ParseException("Cannot use the diamond generic notation when running in JDK inferior to 1.7 mode!");
+  	}
+  }
+  
+  private void checkForBadTryWithResourcesUsage() {
+  	if (jdkVersion < 7) {
+      throw new ParseException("Cannot use the try-with-resources notation when running in JDK inferior to 1.7 mode!");
+  	}
   }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
@@ -139,7 +163,7 @@ public class JavaParser {
   // since "assert" isn't a string literal token
   private boolean isNextTokenAnAssert() {
     boolean res = getToken(1).image.equals("assert");
-    if (res && isJDK13 && getToken(2).image.equals("(")) {
+    if (res && jdkVersion <= 3 && getToken(2).image.equals("(")) {
      res = false;
     }
     return res;
@@ -283,27 +307,30 @@ TOKEN :
   < INTEGER_LITERAL:
         <DECIMAL_LITERAL> (["l","L"])?
       | <HEX_LITERAL> (["l","L"])?
+      | <BINARY_LITERAL> (["l","L"])?
       | <OCTAL_LITERAL> (["l","L"])?
   >
 |
-  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+  < #DECIMAL_LITERAL: (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) >
 |
-  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])?) >
 |
-  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+  < #BINARY_LITERAL: "0" ["b","B"] (["0","1"]((["0","1","_"])*["0","1"])?) >
+|
+  < #OCTAL_LITERAL: "0" (["0"-"7"]((["0"-"7","_"])*["0"-"7"])?) >
 |
   < FLOATING_POINT_LITERAL:
-        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
-      | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
-      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
-      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+        (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) "." (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?)? (<EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) (<EXPONENT>)? ["f","F","d","D"]
   >
 |
   < HEX_FLOATING_POINT_LITERAL:
-      (<HEX_LITERAL> (".")? | "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])* "." (["0"-"9","a"-"f","A"-"F"])+) ["p","P"] (["+","-"])? (["0"-"9"])+ (["f","F","d","D"])?
+      (<HEX_LITERAL> (".")? | "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])?)? "." (["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])?)) ["p","P"] (["+","-"])? (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) (["f","F","d","D"])?
   >
 |
-  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) >
 |
   < CHARACTER_LITERAL:
       "'"
@@ -1188,7 +1215,8 @@ jjtThis.setModifiers(modifiers);
     if (!t.image.equals("enum")) {
       throw new ParseException("ERROR: expecting enum");
     }
-    if (!this.isJDK15) {
+
+    if (jdkVersion < 5) {
       throw new ParseException("ERROR: Can't use enum as a keyword in pre-JDK 1.5 target");
     }
   }
@@ -1323,7 +1351,7 @@ void FormalParameter() :
 }
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type()
+   Type() ("|" Type())*
    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
@@ -1389,7 +1417,10 @@ void ClassOrInterfaceType():
 void TypeArguments():
 {}
 {
+   LOOKAHEAD(2)
    "<" {checkForBadGenericsUsage();} TypeArgument() ( "," TypeArgument() )* ">"
+ |
+   "<" {checkForBadDiamondUsage();} ">"
 }
 
 void TypeArgument():
@@ -1673,9 +1704,9 @@ void Literal() :
 {}
 {
 { Token t;}
-  t=<INTEGER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setIntLiteral();}
-| t=<FLOATING_POINT_LITERAL> {jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
-| t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
+  t=<INTEGER_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setIntLiteral();}
+| t=<FLOATING_POINT_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
+| t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
 | t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setCharLiteral();}
 | t=<STRING_LITERAL> {jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
 | BooleanLiteral()
@@ -1930,13 +1961,39 @@ void SynchronizedStatement() :
 void TryStatement() :
 /*
  * Semantic check required here to make sure that at least one
- * finally/catch is present.
+ * resource/finally/catch is present.
  */
 {}
 {
-  "try" Block()
+  "try" (ResourceSpecification())? Block()
   ( CatchStatement() )*
   [ FinallyStatement() ]
+}
+
+void ResourceSpecification() :
+{}
+{
+    {checkForBadTryWithResourcesUsage();}
+	"("
+	Resources()
+	(LOOKAHEAD(2) ";")?
+	")"	
+}
+
+void Resources() :
+{}
+{
+	Resource() (LOOKAHEAD(2) ";" Resource())*
+}
+
+void Resource() :
+{}
+{
+	( "final" | Annotation() )*
+	Type()
+	VariableDeclaratorId()
+	"="
+	Expression()
 }
 
 void CatchStatement() :
@@ -1955,7 +2012,7 @@ void FinallyStatement() :
 
 void AssertStatement() :
 {
-    if (isJDK13) {
+    if (jdkVersion <= 3) {
         throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
     }
 }

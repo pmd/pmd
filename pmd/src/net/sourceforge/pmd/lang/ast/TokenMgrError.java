@@ -41,7 +41,7 @@ public class TokenMgrError extends RuntimeException
     * equivalents in the given string
     */
    protected static final String addEscapes(String str) {
-	   StringBuilder retval = new StringBuilder();
+      StringBuffer retval = new StringBuffer();
       char ch;
       for (int i = 0; i < str.length(); i++) {
         switch (str.charAt(i))
@@ -98,11 +98,11 @@ public class TokenMgrError extends RuntimeException
     * Note: You can customize the lexical error message by modifying this method.
     */
    protected static String LexicalError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar) {
-      return "Lexical error in file " + AbstractTokenManager.getFileName() + " at line " +
+      return("Lexical error in file " + AbstractTokenManager.getFileName() + " at line " +
            errorLine + ", column " +
            errorColumn + ".  Encountered: " +
            (EOFSeen ? "<EOF> " : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int)curChar + "), ") +
-           "after : \"" + addEscapes(errorAfter) + "\"";
+           "after : \"" + addEscapes(errorAfter) + "\"");
    }
 
    /**
@@ -137,4 +137,4 @@ public class TokenMgrError extends RuntimeException
       this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
    }
 }
-/* JavaCC - OriginalChecksum=887ef629387efaf1cf31f0dc7c077049 (do not edit this line) */
+/* JavaCC - OriginalChecksum=b9b399e26118e93fe50a35b2900b6c8f (do not edit this line) */
