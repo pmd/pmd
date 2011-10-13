@@ -23,7 +23,7 @@ import oracle.ide.log.AbstractLogPage;
 import oracle.ide.model.Node;
 
 
-public class CPDViolationPage extends AbstractLogPage implements TreeSelectionListener {
+public class CpdViolationPage extends AbstractLogPage implements TreeSelectionListener {
 
     private final transient JScrollPane scrollPane;
     private final transient JTree tree;
@@ -31,8 +31,8 @@ public class CPDViolationPage extends AbstractLogPage implements TreeSelectionLi
     public final transient Map cpdFileToNodeMap = 
         new HashMap(); // whew, this is kludgey
 
-    public CPDViolationPage() {
-        super(new ViewId("PMDPage", Plugin.CPD_TITLE), null, false);
+    public CpdViolationPage() {
+        super(new ViewId("CpdPage", CpdAddin.CPD_TITLE), null, false);
         top = new DefaultMutableTreeNode("CPD");
         tree = new JTree(top);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -44,8 +44,8 @@ public class CPDViolationPage extends AbstractLogPage implements TreeSelectionLi
         final DefaultMutableTreeNode node = 
             (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
         if (node != null && node.isLeaf()) {
-            final CPDViolationWrapper nodeInfo = 
-                (CPDViolationWrapper)node.getUserObject();
+            final CpdViolationWrapper nodeInfo = 
+                (CpdViolationWrapper)node.getUserObject();
             EditorManager.getEditorManager().openDefaultEditorInFrame(nodeInfo.file.getURL());
             ((CodeEditor)EditorManager.getEditorManager().getCurrentEditor()).gotoLine(nodeInfo.mark.getBeginLine(), 
                                                                                        0, 
@@ -65,7 +65,7 @@ public class CPDViolationPage extends AbstractLogPage implements TreeSelectionLi
             final TokenEntry mark = (TokenEntry)i.next();
             final Node file = (Node)cpdFileToNodeMap.get(mark.getTokenSrcID());
             final DefaultMutableTreeNode markTreeNode = 
-                new DefaultMutableTreeNode(new CPDViolationWrapper(mark, file, 
+                new DefaultMutableTreeNode(new CpdViolationWrapper(mark, file, 
                                                                    file.getShortLabel() + 
                                                                    " has some at line " + 
                                                                    mark.getBeginLine()), 

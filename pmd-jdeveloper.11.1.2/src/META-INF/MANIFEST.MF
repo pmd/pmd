@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Bundle-ClassPath: .,external:$ORACLE_HOME$/jdeveloper/jdev/extensions/net.sourceforge.pmd.jdeveloper/lib/pmd-4.2.6.jar,external:$ORACLE_HOME$/jdeveloper/jdev/extensions/net.sourceforge.pmd.jdeveloper/lib/jaxen-1.1.1.jar,external:$ORACLE_HOME$/jdeveloper/jdev/extensions/net.sourceforge.pmd.jdeveloper/lib/asm-3.2.jar

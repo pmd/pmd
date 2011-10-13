@@ -4,10 +4,10 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.SourceType;
 
 import oracle.ide.Context;
-
 import oracle.ide.Ide;
 
 import oracle.jdeveloper.compiler.BuildSystemConfiguration;
+
 
 final class Version {
     private Version() {
@@ -29,10 +29,10 @@ final class Version {
     }
 
     public static String version() {
-        return "4.2.5.3.0";
+        return "4.2.6.4"; // NOPMD
     }
 
-    static String getJdevHome() {
+    public static String getJdevHome() {
         return Ide.getProductHomeDirectory();
     }
 }

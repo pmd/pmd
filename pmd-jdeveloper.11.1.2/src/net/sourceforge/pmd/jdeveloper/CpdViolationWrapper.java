@@ -5,12 +5,12 @@ import net.sourceforge.pmd.cpd.TokenEntry;
 import oracle.ide.model.Node;
 
 
-public class CPDViolationWrapper {
+public class CpdViolationWrapper {
     private final transient String label;
     public transient Node file;
     public transient TokenEntry mark;
 
-    public CPDViolationWrapper(final TokenEntry mark, final Node file, 
+    public CpdViolationWrapper(final TokenEntry mark, final Node file, 
                                final String label) {
         this.label = label;
         this.mark = mark;

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension xmlns="http://jcp.org/jsr/198/extension-manifest" id="net.sourceforge.pmd.jdeveloper" version="4.2.6.4"
+           esdk-version="1.0">
+    <name>PMD JDeveloper Extension</name>
+    <owner>Torsten Kleiber</owner>
+    <dependencies>
+        <import>oracle.ide.ceditor</import>
+        <import>oracle.jdeveloper.build</import>
+        <import>oracle.jdeveloper.java.core</import>
+    </dependencies>
+    <required-bundles>
+        <bundle>oracle.icons</bundle>
+        <bundle>oracle.ide</bundle>
+        <bundle>oracle.idert</bundle>
+        <bundle>oracle.javatools</bundle>
+        <bundle>oracle.javatools-nodeps</bundle>
+        <bundle>oracle.javaxide</bundle>
+    </required-bundles>
+    <trigger-hooks xmlns="http://xmlns.oracle.com/ide/extension">
+        <rules>
+            <rule id="context-has-project-element" type="context-has-element">
+                <parameters>
+                    <param name="element-class" value="oracle.ide.model.Project"/>
+                </parameters>
+            </rule>
+            <rule id="context-has-package-element" type="context-has-element">
+                <parameters>
+                    <param name="element-class" value="oracle.ide.model.RelativeDirectoryContextFolder"/>
+                </parameters>
+            </rule>
+            <rule id="context-has-java-element" type="context-has-element">
+                <parameters>
+                    <param name="element-class" value="oracle.jdeveloper.model.JavaSourceNode"/>
+                </parameters>
+            </rule>
+            <rule id="context-has-codeeditor-view" type="context-has-view">
+                <parameters>
+                    <param name="view-class" value="oracle.ide.ceditor.CodeEditor"/>
+                </parameters>
+            </rule>
+            <composite-rule id="context-has-pmd-element">
+                <or>
+                    <rule-reference id="context-has-project-element"/>
+                    <rule-reference id="context-has-package-element"/>
+                    <rule-reference id="context-has-java-element"/>
+                    <and>
+                        <rule-reference id="context-has-java-source-node"/>
+                        <rule-reference id="context-has-codeeditor-view"/>
+                    </and>
+                </or>
+            </composite-rule>
+            <composite-rule id="context-has-cpd-element">
+                <or>
+                    <rule-reference id="context-has-project-element"/>
+                    <rule-reference id="context-has-package-element"/>
+                </or>
+            </composite-rule>
+        </rules>
+        <triggers>
+            <actions xmlns="http://xmlns.oracle.com/jdeveloper/1013/extension">
+                <action id="net.sourceforge.pmd.jdeveloper.CheckPmd">
+                    <properties>
+                        <property name="Name">PMD</property>
+                        <property name="SmallIcon">res:/net/sourceforge/pmd/jdeveloper/icons/pmd-icon-16.png</property>
+                    </properties>
+                    <command-class>net.sourceforge.pmd.jdeveloper.PmdCommand</command-class>
+                </action>
+                <!--action id="net.sourceforge.pmd.jdeveloper.CheckCpd">
+                    <properties>
+                        <property name="Name">CPD</property>
+                        <property name="SmallIcon">res:/net/sourceforge/pmd/jdeveloper/icons/cpd-icon-16.png</property>
+                    </properties>
+                    <command-class>net.sourceforge.pmd.jdeveloper.CpdCommand</command-class>
+                </action-->
+            </actions>
+            <controllers xmlns="http://xmlns.oracle.com/ide/extension">
+                <controller class="net.sourceforge.pmd.jdeveloper.PmdController">
+                    <update-rules>
+                        <update-rule rule="context-has-pmd-element">
+                            <action id="net.sourceforge.pmd.jdeveloper.CheckPmd">
+                                <label>PMD</label>
+                            </action>
+                        </update-rule>
+                    </update-rules>
+                </controller>
+                <!--controller class="net.sourceforge.pmd.jdeveloper.CpdController">
+                    <update-rules>
+                        <update-rule rule="context-has-pmd-element">
+                            <action id="net.sourceforge.pmd.jdeveloper.CheckCpd">
+                                <label>CPD</label>
+                            </action>
+                        </update-rule>
+                    </update-rules>
+                </controller-->
+            </controllers>
+            <context-menu-hook rule="context-has-pmd-element">
+                <site idref="navigator, editor, explorer"/>
+                <menu>
+                    <section xmlns="http://jcp.org/jsr/198/extension-manifest" id="RUN_PMD_MENU_ID" weight="1.0">
+                        <item action-ref="net.sourceforge.pmd.jdeveloper.CheckPmd"></item>
+                    </section>
+                </menu>
+            </context-menu-hook>
+            <!--context-menu-hook rule="context-has-cpd-element">
+                <site idref="navigator, editor, explorer"/>
+                <menu>
+                    <section xmlns="http://jcp.org/jsr/198/extension-manifest" id="RUN_CPD_MENU_ID" weight="1.0">
+                        <item action-ref="net.sourceforge.pmd.jdeveloper.CheckCpd"></item>
+                    </section>
+                </menu>
+            </context-menu-hook-->
+            <menu-hook xmlns="http://jcp.org/jsr/198/extension-manifest">
+                <menus>
+                    <menubar id="javax.ide.view.MAIN_WINDOW_MENUBAR_ID">
+                        <menu id="javax.ide.FILE_MENU_ID">
+                            <section id="esdksample.customsection" before="javax.ide.NEW_SECTION_ID">
+                                <item action-ref="net.sourceforge.pmd.jdeveloper.CheckPmd"></item>
+                            </section>
+                        </menu>
+                    </menubar>
+                </menus>
+                <toolbars>
+                    <toolbar id="javax.ide.view.MAIN_WINDOW_TOOLBAR_ID">
+                        <section id="javax.ide.tck.toolbar.testsection" after="javax.ide.NEW_SECTION_ID">
+                            <item action-ref="net.sourceforge.pmd.jdeveloper.CheckPmd"></item>
+                        </section>
+                    </toolbar>
+                </toolbars>
+            </menu-hook>
+            <settings-ui-hook>
+                <page id="net.sourceforge.pmd.jdeveloper.SettingsPanel" parent-idref="/preferences">
+                    <label>PMD</label>
+                    <traversable-class>net.sourceforge.pmd.jdeveloper.PmdSettingsPanel</traversable-class>
+                </page>
+            </settings-ui-hook>
+        </triggers>
+    </trigger-hooks>
+    <hooks>
+        <feature-hook>
+            <description>Provides integrated support for PMD 4.2.5 in JDeveloper 11g.</description>
+            <optional>true</optional>
+        </feature-hook>
+        <jdeveloper-hook xmlns="http://xmlns.oracle.com/jdeveloper/1013/extension">
+            <addins>
+                <addin>net.sourceforge.pmd.jdeveloper.PmdAddin</addin>
+                <!--addin>net.sourceforge.pmd.jdeveloper.CpdAddin</addin-->
+            </addins>
+        </jdeveloper-hook>
+    </hooks>
+</extension>            
