@@ -2,7 +2,7 @@
 /* JavaCCOptions: */
 /** 
  * JSP Parser for PMD.
- * @author Pieter ï¿½ Application Engineers NV/SA ï¿½ http://www.ae.be
+ * @author Pieter  Application Engineers NV/SA  http://www.ae.be
  */
 
 package net.sourceforge.pmd.jsp.ast;
@@ -142,4 +142,4 @@ public class TokenMgrError extends RuntimeException
       this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
    }
 }
-/* JavaCC - OriginalChecksum=56dfce4188771884defbd50c7c708c54 (do not edit this line) */
+/* JavaCC - OriginalChecksum=70702fe47de729b5cd980a2b6f128c71 (do not edit this line) */

@@ -22,14 +22,18 @@ public class TargetJDK1_4 implements TargetJDKVersion {
      * @see net.sourceforge.pmd.TargetJDKVersion#createParser(InputStream)
      */
     public JavaParser createParser(InputStream in) {
-        return new JavaParser(new JavaCharStream(in));
+        JavaParser jp = new JavaParser(new JavaCharStream(in));
+        jp.setJdkVersion(4);
+        return jp;
     }
 
     /**
      * @see net.sourceforge.pmd.TargetJDKVersion#createParser(Reader)
      */
     public JavaParser createParser(Reader in) {
-        return new JavaParser(new JavaCharStream(in));
+        JavaParser jp = new JavaParser(new JavaCharStream(in));
+        jp.setJdkVersion(4);
+        return jp;
     }
 
     /**

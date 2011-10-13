@@ -22,7 +22,7 @@ public class TargetJDK1_5 implements TargetJDKVersion {
      */
     public JavaParser createParser(InputStream in) {
         JavaParser jp = new JavaParser(new JavaCharStream(in));
-        jp.setJDK15();
+        jp.setJdkVersion(5);
         return jp;
     }
 
@@ -31,7 +31,7 @@ public class TargetJDK1_5 implements TargetJDKVersion {
      */
     public JavaParser createParser(Reader in) {
         JavaParser jp = new JavaParser(new JavaCharStream(in));
-        jp.setJDK15();
+        jp.setJdkVersion(5);
         return jp;
     }
 

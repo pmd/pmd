@@ -19,7 +19,7 @@ public class Java15Parser implements Parser {
 
     public Object parse(Reader source) throws ParseException {
         parser = new JavaParser(new JavaCharStream(source));
-        parser.setJDK15();
+        parser.setJdkVersion(5);
         parser.setExcludeMarker(marker);
         return parser.CompilationUnit();
     }

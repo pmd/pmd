@@ -2,7 +2,7 @@
 /* JavaCCOptions:STATIC=false */
 /** 
  * JSP Parser for PMD.
- * @author Pieter ï¿½ Application Engineers NV/SA ï¿½ http://www.ae.be
+ * @author Pieter  Application Engineers NV/SA  http://www.ae.be
  */
 
 package net.sourceforge.pmd.jsp.ast;

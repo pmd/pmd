@@ -567,4 +567,17 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 	public Object visit(ASTCatchStatement node, Object data) {
 		return visit((SimpleJavaNode)node, data);
 	}
+
+
+    public Object visit(ASTResourceSpecification node, Object data) {
+        return visit((SimpleJavaNode)node, data);
+    }
+
+    public Object visit(ASTResources node, Object data) {
+        return visit((SimpleJavaNode)node, data);
+    }
+
+    public Object visit(ASTResource node, Object data) {
+        return visit((SimpleJavaNode)node, data);
+    }
 }

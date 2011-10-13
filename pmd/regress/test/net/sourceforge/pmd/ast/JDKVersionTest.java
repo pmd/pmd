@@ -1,12 +1,17 @@
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.TargetJDK1_7;
 import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
+import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
 
 import org.junit.Test;
 
@@ -175,6 +180,59 @@ public class JDKVersionTest {
         jp.CompilationUnit();
     }
 
+    @Test
+    public final void testBinaryAndUnderscoresInNumericalLiterals() throws Throwable {
+        new TargetJDK1_7().createParser(new StringReader(JDK17_NUMERICAL_LITERALS)).CompilationUnit();
+    }
+    
+    @Test
+    public final void testStringInSwitch() throws Throwable {
+        new TargetJDK1_7().createParser(new StringReader(JDK17_STRING_IN_SWITCH)).CompilationUnit();
+    }
+    
+    @Test
+    public final void testGenericDiamond() throws Throwable {
+        new TargetJDK1_7().createParser(new StringReader(JDK17_GENERIC_DIAMOND)).CompilationUnit();
+    }
+
+    @Test
+    public final void testTryWithResources() throws Throwable {
+        new TargetJDK1_7().createParser(new StringReader(JDK17_TRY_WITH_RESOURCES)).CompilationUnit();
+    }
+    
+    @Test
+    public final void testTryWithResourcesSemi() throws Throwable {
+        new TargetJDK1_7().createParser(new StringReader(JDK17_TRY_WITH_RESOURCES_SEMI)).CompilationUnit();
+    }
+    
+    @Test
+    public final void testTryWithResourcesMulti() throws Throwable {
+        new TargetJDK1_7().createParser(new StringReader(JDK17_TRY_WITH_RESOURCES_MULTI)).CompilationUnit();
+    }
+    
+    @Test
+    public final void testTryWithResourcesWithAnnotations() throws Throwable {
+        new TargetJDK1_7().createParser(new StringReader(JDK17_TRY_WITH_RESOURCES_WITH_ANNOTATIONS)).CompilationUnit();
+    }
+    
+    @Test
+    public final void testTryWithResourcesWithVisitors() throws Throwable {
+    	SourceTypeHandler sourceTypeHandler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(SourceType.JAVA_17);
+    	ASTCompilationUnit rootNode = (ASTCompilationUnit)sourceTypeHandler.getParser().parse(new StringReader(JDK17_TRY_WITH_RESOURCES));
+    	sourceTypeHandler.getSymbolFacade().start(rootNode);
+    	sourceTypeHandler.getDataFlowFacade().start(rootNode);
+    	sourceTypeHandler.getTypeResolutionFacade(getClass().getClassLoader()).start(rootNode);
+    }
+    
+    @Test
+    public final void testMulticatch() throws Throwable {
+        new TargetJDK1_7().createParser(new StringReader(JDK17_MULTICATCH)).CompilationUnit();
+    }
+    
+    @Test
+    public final void testMulticatchWithAnnotations() throws Throwable {
+        new TargetJDK1_7().createParser(new StringReader(JDK17_MULTICATCH_WITH_ANNOTATIONS)).CompilationUnit();
+    }
 
     private static final String ANNOTATED_LOCALS =
             "public class Foo {" + PMD.EOL +
@@ -346,7 +404,150 @@ public class JDKVersionTest {
             "public class Foo {" + PMD.EOL +
             "  public <T extends E> Foo() {}" + PMD.EOL +
             "}";
-
+    
+    private static final String JDK17_NUMERICAL_LITERALS =
+      "public class Test {" + PMD.EOL +
+      "  int i1 = 0b00011110;" + PMD.EOL +
+      "  int i2 = 0B00011110;" + PMD.EOL +
+      "  int i3 = 0xA;" + PMD.EOL +
+      "  int i4 = 0x1___A_F;" + PMD.EOL +
+      "  int i5 = 0b1;" + PMD.EOL +
+      "  int i6 = 0b1___1_0;" + PMD.EOL +
+      "  int i7 = 0;" + PMD.EOL +
+      "  int i8 = 02;" + PMD.EOL +
+      "  int i9 = 0_123;" + PMD.EOL +
+      "  int i10 = 1;" + PMD.EOL +
+      "  int i11 = 1___3;" + PMD.EOL +
+      "  int i12 = 1_43_43598_7;" + PMD.EOL +
+      "  " + PMD.EOL +
+      "  long l1 = 0b00011110L;" + PMD.EOL +
+      "  long l2 = 0B00011110l;" + PMD.EOL +
+      "  long l3 = 0xAL;" + PMD.EOL +
+      "  long l4 = 0x1___A_FL;" + PMD.EOL +
+      "  long l5 = 0b1L;" + PMD.EOL +
+      "  long l6 = 0b1___1_0L;" + PMD.EOL +
+      "  long l7 = 0l;" + PMD.EOL +
+      "  long l8 = 02L;" + PMD.EOL +
+      "  long l9 = 0_123l;" + PMD.EOL +
+      "  long l10 = 1l;" + PMD.EOL +
+      "  long l11 = 1___3l;" + PMD.EOL +
+      "  long l12 = 1_43_43598_7L;" + PMD.EOL +
+      "  long l13 = 1_43_43598_7;" + PMD.EOL +
+      "  " + PMD.EOL +
+      "  float f1 = .1f;" + PMD.EOL +
+      "  float f2 = 1.f;" + PMD.EOL +
+      "  float f3 = 0f;" + PMD.EOL +
+      "  float f4 = 1e0F;" + PMD.EOL +
+      "  float f5 = 1e0f;" + PMD.EOL +
+      "  float f6 = 12.345F;" + PMD.EOL +
+      "  float f7 = .5____2_1f;" + PMD.EOL +
+      "  float f8 = 1__42__3.f;" + PMD.EOL +
+      "  float f9 = 0__2_4__324f;" + PMD.EOL +
+      "  float f10 = 1_34e0F;" + PMD.EOL +
+      "  float f11 = 1__1_2e0f;" + PMD.EOL +
+      "  float f12 = 2_1___2.3__4_5F;" + PMD.EOL +
+      "  float f13 = 1_34e0__4__3f;" + PMD.EOL +
+      "  float f14 = 1__1_2e00__000_4f;" + PMD.EOL +
+      "  float f15 = 2_1___2.3__4_5e00______0_5F;" + PMD.EOL +
+      "  " + PMD.EOL +
+      "  double d1 = .1d;" + PMD.EOL +
+      "  double d2 = 1.D;" + PMD.EOL +
+      "  double d3 = 0d;" + PMD.EOL +
+      "  double d4 = 1e0D;" + PMD.EOL +
+      "  double d5 = 1e0d;" + PMD.EOL +
+      "  double d6 = 12.345D;" + PMD.EOL +
+      "  double d7 = .5____2_1d;" + PMD.EOL +
+      "  double d8 = 1__42__3.D;" + PMD.EOL +
+      "  double d9 = 0__2_4__324d;" + PMD.EOL +
+      "  double d10 = 1_34e0d;" + PMD.EOL +
+      "  double d11 = 1__1_2e0d;" + PMD.EOL +
+      "  double d12 = 2_1___2.3__4_5D;" + PMD.EOL +
+      "  double d13 = 1_34e0__4__3d;" + PMD.EOL +
+      "  double d14 = 1__1_2e00__000_4d;" + PMD.EOL +
+      "  double d15 = 2_1___2.3__4_5e00______0_5D;" + PMD.EOL +
+      "  double d16 = 0.12___34;" + PMD.EOL +
+      "  " + PMD.EOL +
+      "  float hf1 = 0x.1___AFp1;" + PMD.EOL +
+      "  float hf2 = 0x.1___AFp0__0__0f;" + PMD.EOL +
+      "  float hf3 = 0x2__3_34.4___AFP00_00f;" + PMD.EOL +
+      "  " + PMD.EOL +
+      "  double hd1 = 0x.1___AFp1;" + PMD.EOL +
+      "  double hd2 = 0x.1___AFp0__0__0d;" + PMD.EOL +
+      "  double hd3 = 0x2__3_34.4___AFP00_00d;" + PMD.EOL +
+      "  " + PMD.EOL +
+      "  int doc1 = 1234_5678;" + PMD.EOL +
+      "  long doc2 = 1_2_3_4__5_6_7_8L;" + PMD.EOL +
+      "  int doc3 = 0b0001_0010_0100_1000;" + PMD.EOL +
+      "  double doc4 = 3.141_592_653_589_793d;" + PMD.EOL +
+      "  double doc5 = 0x1.ffff_ffff_ffff_fP1_023;" + PMD.EOL +
+      "}" + PMD.EOL
+      ;
+    
+    private static final String JDK17_STRING_IN_SWITCH =
+      "public class Test {" + PMD.EOL +
+      "	public static void main(String[] args) {" + PMD.EOL +
+      "		String mystr = \"value\" + \"2\";" + PMD.EOL +
+      "		switch (mystr) {" + PMD.EOL +
+      "			case \"value1\":" + PMD.EOL +
+      "				break;" + PMD.EOL +
+      "			case \"value2\":" + PMD.EOL +
+      "				break;" + PMD.EOL +
+      "			default:" + PMD.EOL +
+      "				break;" + PMD.EOL +
+      "		}" + PMD.EOL +
+      "	}" + PMD.EOL +
+      "}" + PMD.EOL
+      ;
+    
+    private static final String JDK17_GENERIC_DIAMOND =
+    	"public class InputJava7Diamond {" + PMD.EOL +
+    	" HashMap<String> map = new HashMap<>();" + PMD.EOL +
+    	"}";
+    
+    private static final String JDK17_TRY_WITH_RESOURCES =
+    	"public class InputJava7TryWithResources {" + PMD.EOL +
+    	" public static void main() {" + PMD.EOL +
+    	"  try (MyResource resource = new MyResource()) { }" + PMD.EOL +
+    	" }" + PMD.EOL +
+    	"}";
+    
+    private static final String JDK17_TRY_WITH_RESOURCES_SEMI =
+    	"public class InputJava7TryWithResources {" + PMD.EOL +
+    	" public static void main() {" + PMD.EOL +
+    	"  try (MyResource resource = new MyResource();) { }" + PMD.EOL +
+    	" }" + PMD.EOL +
+    	"}";
+    
+    private static final String JDK17_TRY_WITH_RESOURCES_MULTI =
+    	"public class InputJava7TryWithResources {" + PMD.EOL +
+    	" public static void main() {" + PMD.EOL +
+    	"  try (MyResource resource = new MyResource(); MyResource2 resource2 = new MyResource2()) { }" + PMD.EOL +
+    	" }" + PMD.EOL +
+    	"}";
+    
+    private static final String JDK17_TRY_WITH_RESOURCES_WITH_ANNOTATIONS =
+    	"public class InputJava7TryWithResources {" + PMD.EOL +
+    	" public static void main() {" + PMD.EOL +
+    	"  try (@SuppressWarnings(\"all\") final MyResource resource = new MyResource()) { }" + PMD.EOL +
+    	" }" + PMD.EOL +
+    	"}";
+    
+    private static final String JDK17_MULTICATCH =
+    	"public class InputJava7Multicatch {" + PMD.EOL +
+    	" public static void main() {" + PMD.EOL +
+    	"  try { }" + PMD.EOL +
+    	"  catch (FileNotFoundException | CustomException e) { }" + PMD.EOL +
+    	" }" + PMD.EOL +
+    	"}";
+    
+    private static final String JDK17_MULTICATCH_WITH_ANNOTATIONS =
+    	"public class InputJava7Multicatch {" + PMD.EOL +
+    	" public static void main() {" + PMD.EOL +
+    	"  try { }" + PMD.EOL +
+    	"  catch (final @SuppressWarnings(\"all\") FileNotFoundException | CustomException e) { }" + PMD.EOL +
+    	" }" + PMD.EOL +
+    	"}";
+    
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(JDKVersionTest.class);
     }

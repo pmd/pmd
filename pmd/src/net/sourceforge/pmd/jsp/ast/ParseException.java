@@ -2,7 +2,7 @@
 /* JavaCCOptions:KEEP_LINE_COL=null */
 /** 
  * JSP Parser for PMD.
- * @author Pieter ï¿½ Application Engineers NV/SA ï¿½ http://www.ae.be
+ * @author Pieter  Application Engineers NV/SA  http://www.ae.be
  */
 
 package net.sourceforge.pmd.jsp.ast;
@@ -200,4 +200,4 @@ public class ParseException extends net.sourceforge.pmd.ast.ParseException {
    }
 
 }
-/* JavaCC - OriginalChecksum=47ba7a613b44c98f64aa3789642241bf (do not edit this line) */
+/* JavaCC - OriginalChecksum=9c314ad748e28ebb5e21bd0f3d412d48 (do not edit this line) */

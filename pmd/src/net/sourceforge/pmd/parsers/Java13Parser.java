@@ -19,7 +19,7 @@ public class Java13Parser implements Parser {
 
     public Object parse(Reader source) throws ParseException {
         parser = new JavaParser(new JavaCharStream(source));
-        parser.setJDK13();
+        parser.setJdkVersion(3);
         parser.setExcludeMarker(marker);
         return parser.CompilationUnit();
     }

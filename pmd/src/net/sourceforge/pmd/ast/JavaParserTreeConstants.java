@@ -94,24 +94,27 @@ public interface JavaParserTreeConstants
   public int JJTTHROWSTATEMENT = 88;
   public int JJTSYNCHRONIZEDSTATEMENT = 89;
   public int JJTTRYSTATEMENT = 90;
-  public int JJTCATCHSTATEMENT = 91;
-  public int JJTFINALLYSTATEMENT = 92;
-  public int JJTASSERTSTATEMENT = 93;
-  public int JJTRUNSIGNEDSHIFT = 94;
-  public int JJTRSIGNEDSHIFT = 95;
-  public int JJTANNOTATION = 96;
-  public int JJTNORMALANNOTATION = 97;
-  public int JJTMARKERANNOTATION = 98;
-  public int JJTSINGLEMEMBERANNOTATION = 99;
-  public int JJTMEMBERVALUEPAIRS = 100;
-  public int JJTMEMBERVALUEPAIR = 101;
-  public int JJTMEMBERVALUE = 102;
-  public int JJTMEMBERVALUEARRAYINITIALIZER = 103;
-  public int JJTANNOTATIONTYPEDECLARATION = 104;
-  public int JJTANNOTATIONTYPEBODY = 105;
-  public int JJTANNOTATIONTYPEMEMBERDECLARATION = 106;
-  public int JJTANNOTATIONMETHODDECLARATION = 107;
-  public int JJTDEFAULTVALUE = 108;
+  public int JJTRESOURCESPECIFICATION = 91;
+  public int JJTRESOURCES = 92;
+  public int JJTRESOURCE = 93;
+  public int JJTCATCHSTATEMENT = 94;
+  public int JJTFINALLYSTATEMENT = 95;
+  public int JJTASSERTSTATEMENT = 96;
+  public int JJTRUNSIGNEDSHIFT = 97;
+  public int JJTRSIGNEDSHIFT = 98;
+  public int JJTANNOTATION = 99;
+  public int JJTNORMALANNOTATION = 100;
+  public int JJTMARKERANNOTATION = 101;
+  public int JJTSINGLEMEMBERANNOTATION = 102;
+  public int JJTMEMBERVALUEPAIRS = 103;
+  public int JJTMEMBERVALUEPAIR = 104;
+  public int JJTMEMBERVALUE = 105;
+  public int JJTMEMBERVALUEARRAYINITIALIZER = 106;
+  public int JJTANNOTATIONTYPEDECLARATION = 107;
+  public int JJTANNOTATIONTYPEBODY = 108;
+  public int JJTANNOTATIONTYPEMEMBERDECLARATION = 109;
+  public int JJTANNOTATIONMETHODDECLARATION = 110;
+  public int JJTDEFAULTVALUE = 111;
 
 
   public String[] jjtNodeName = {
@@ -206,6 +209,9 @@ public interface JavaParserTreeConstants
     "ThrowStatement",
     "SynchronizedStatement",
     "TryStatement",
+    "ResourceSpecification",
+    "Resources",
+    "Resource",
     "CatchStatement",
     "FinallyStatement",
     "AssertStatement",
@@ -226,4 +232,4 @@ public interface JavaParserTreeConstants
     "DefaultValue",
   };
 }
-/* JavaCC - OriginalChecksum=28e68740207e50a892e7959c0ef43ae0 (do not edit this line) */
+/* JavaCC - OriginalChecksum=29b39dcf60c8732d67ff9c7dfd922984 (do not edit this line) */

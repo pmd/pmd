@@ -1,5 +1,6 @@
 ?? ??, 201? - 4.3:
 
+Add support for Java 7 grammer - thanks to Dinesh Bolkensteyn and SonarSource
 Add options --ignore-literals and --ignore-identifiers to the CPD command line task, thanks to Cd-Man
 Fixed character reference in xml report - thanks to Seko
 Add C# support for CPD - thanks to Florian Bauer

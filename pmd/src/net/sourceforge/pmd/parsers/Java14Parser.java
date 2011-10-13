@@ -19,6 +19,7 @@ public class Java14Parser implements Parser {
 
     public Object parse(Reader source) throws ParseException {
         parser = new JavaParser(new JavaCharStream(source));
+        parser.setJdkVersion(4);
         parser.setExcludeMarker(marker);
         return parser.CompilationUnit();
     }
