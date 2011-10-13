@@ -2,7 +2,7 @@
 /* JavaCCOptions:TOKEN_EXTENDS=,KEEP_LINE_COL=null */
 /** 
  * JSP Parser for PMD.
- * @author Pieter  Application Engineers NV/SA  http://www.ae.be
+ * @author Pieter ï¿½ Application Engineers NV/SA ï¿½ http://www.ae.be
  */
 
 package net.sourceforge.pmd.jsp.ast;
@@ -126,4 +126,4 @@ public class Token {
   }
 
 }
-/* JavaCC - OriginalChecksum=aa67d765e813be506da8791e170d6a36 (do not edit this line) */
+/* JavaCC - OriginalChecksum=05c0e8e1123020dec33bf508fa9ba353 (do not edit this line) */

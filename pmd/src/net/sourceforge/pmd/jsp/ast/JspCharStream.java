@@ -2,7 +2,7 @@
 /* JavaCCOptions:STATIC=false */
 /** 
  * JSP Parser for PMD.
- * @author Pieter  Application Engineers NV/SA  http://www.ae.be
+ * @author Pieter ï¿½ Application Engineers NV/SA ï¿½ http://www.ae.be
  */
 
 package net.sourceforge.pmd.jsp.ast;
@@ -474,4 +474,4 @@ public class JspCharStream implements CharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=0cfeecb717597c69bc2c1c86633e8048 (do not edit this line) */
+/* JavaCC - OriginalChecksum=759d44d5c64d85fa76693df3b7982d74 (do not edit this line) */
