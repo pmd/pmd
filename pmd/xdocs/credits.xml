@@ -324,6 +324,7 @@
             <li>Tammo van Lessen - new rule GuardDebugLogging for Jakarta Commons Logging ruleset.</li>
             <li>Steven Christou - patch improving DoNotCallSystemExit rule</li>
             <li>Dinesh Bolkensteyn and SonarSource - Java 7 grammar support</li>
+            <li>Tom Wheeler - contribute a launch script for CPD GUI</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
