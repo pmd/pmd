@@ -308,21 +308,24 @@ method.
             <property name="xpath">
                 <value>
         <![CDATA[
-//MethodDeclarator[
-(
-@Image = 'equals'
-  and count(FormalParameters/*) = 1
-  and not (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-   [@Image = 'Object' or @Image = 'java.lang.Object'])
-)
-or
-@Image='equal'
- and count(FormalParameters/*) = 1
- and (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-  [@Image = 'Object' or @Image = 'java.lang.Object'])
-
+//MethodDeclarator[@Image = 'equals']
+[   
+    (count(FormalParameters/*) = 1
+    and not (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+        [@Image = 'Object' or @Image = 'java.lang.Object'])
+    or not (../ResultType/Type/PrimitiveType[@Image = 'boolean'])
+    )  or  (
+    count(FormalParameters/*) = 2
+    and ../ResultType/Type/PrimitiveType[@Image = 'boolean']
+    and FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
+    )
 ]
-        ]]>
+| //MethodDeclarator[@Image = 'equal']
+[
+    count(FormalParameters/*) = 1
+    and FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+        [@Image = 'Object' or @Image = 'java.lang.Object']
+]           ]]>
                     </value>
                  </property>
               </properties>
@@ -333,6 +336,9 @@ public class Foo {
  // oops, this probably was supposed to be boolean equals
  }
  public boolean equals(String s) {
+ // oops, this probably was supposed to be equals(Object)
+ }
+ public boolean equals(Object o1, Object o2) {
  // oops, this probably was supposed to be equals(Object)
  }
 }
