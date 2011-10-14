@@ -470,6 +470,7 @@ Improved include/exclude pattern matching performance for ends-with type pattern
 Modify (and hopefully fixed) CPD algorithm thanks to a patch from Juan Jesús García de Soria.
 Fixed character reference in xml report - thanks to Seko
 Enhanced SuspiciousEqualsMethodName rule - thanks to Andy Throgmorton
+Add a script to launch CPDGUI on Unix system - thanks to Tom Wheeler
 
 New Java rules:
 

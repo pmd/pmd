@@ -326,6 +326,7 @@
             <li>Cd-Man - patch to improve CPD performance</li>
             <li>Suresh - new rule DontUseFloatTypeForLoopIndices</li>
             <li>Dinesh Bolkensteyn and SonarSource - support Java 7</li>
+            <li>Tom Wheeler - contribute a launch script for CPD GUI</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
