@@ -291,12 +291,11 @@ public class Foo {
        </example>
      </rule>
 
-    <rule
-        name="SuspiciousEqualsMethodName"
-   		language="java"
-        since="2.0"
-        message="The method name and parameter number are suspiciously close to equals(Object)"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
+    <rule name="SuspiciousEqualsMethodName"
+          language="java"
+          since="2.0"
+          message="The method name and parameter number are suspiciously close to equals(Object)"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#SuspiciousEqualsMethodName">
         <description>
 The method name and parameter number are suspiciously close to equals(Object), which can denote an
@@ -305,42 +304,46 @@ intention to override the equals(Object) method.
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>
-        <![CDATA[
-//MethodDeclarator[
-(
-@Image = 'equals'
-  and count(FormalParameters/*) = 1
-  and not (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-   [@Image = 'Object' or @Image = 'java.lang.Object'])
-)
-or
-@Image='equal'
- and count(FormalParameters/*) = 1
- and (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
-  [@Image = 'Object' or @Image = 'java.lang.Object'])
-
+                <value><![CDATA[
+//MethodDeclarator[@Image = 'equals']
+[   
+    (count(FormalParameters/*) = 1
+    and not (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+        [@Image = 'Object' or @Image = 'java.lang.Object'])
+    or not (../ResultType/Type/PrimitiveType[@Image = 'boolean'])
+    )  or  (
+    count(FormalParameters/*) = 2
+    and ../ResultType/Type/PrimitiveType[@Image = 'boolean']
+    and FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
+    )
 ]
-        ]]>
+| //MethodDeclarator[@Image = 'equal']
+[
+    count(FormalParameters/*) = 1
+    and FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+        [@Image = 'Object' or @Image = 'java.lang.Object']
+]           
+]]>
                     </value>
                  </property>
               </properties>
-        <example>
-        <![CDATA[
+        <example><![CDATA[
 public class Foo {
    public int equals(Object o) {
-   // oops, this probably was supposed to be boolean equals
+     // oops, this probably was supposed to be boolean equals
    }
    public boolean equals(String s) {
-   // oops, this probably was supposed to be equals(Object)
+     // oops, this probably was supposed to be equals(Object)
+   }
+   public boolean equals(Object o1, Object o2) {
+     // oops, this probably was supposed to be equals(Object)
    }
 }
-        ]]>
-        </example>
+        ]]></example>
     </rule>
 
     <rule name="AvoidFieldNameMatchingTypeName"
-    		 since="3.0"
+          since="3.0"
           message="It is somewhat confusing to have a field name matching the declaring class name"
           class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingTypeNameRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#AvoidFieldNameMatchingTypeName">
@@ -359,7 +362,7 @@ public class Foo extends Bar {
     </rule>
 
     <rule name="AvoidFieldNameMatchingMethodName"
-    		 since="3.0"
+    	  since="3.0"
           message="Field {0} has the same name as a method"
           class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingMethodNameRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#AvoidFieldNameMatchingMethodName">
@@ -384,10 +387,10 @@ public class Foo {
 
 
     <rule name="NoPackage"
-   		language="java"
-        since="3.3"
-        message="All classes and interfaces must belong to a named package"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
+   	  language="java"
+          since="3.3"
+          message="All classes and interfaces must belong to a named package"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/naming.html#NoPackage">
     <description>
 Detects when a class or interface does not have a package definition.
