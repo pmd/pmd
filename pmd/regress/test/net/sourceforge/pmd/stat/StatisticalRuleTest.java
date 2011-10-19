@@ -46,9 +46,8 @@ import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 /**
  * This class tests the Statistical Rules in PMD.
@@ -721,13 +720,11 @@ public class StatisticalRuleTest  {
     }
 
     @Test
+    // because of random failures during continuous integration,
+    // tests are disabled in regress mode until somebody figures out
+    // what the tests are supposed to measure and why they sometime fail
+    @Ignore("random failures during continuous integration")
     public void testTSM() throws Throwable {
-        if (TestDescriptor.inRegressionTestMode()) {
-            // because of random failures during continuous integration,
-            // tests are disabled in regress mode until somebody figures out
-            // what the tests are supposed to measure and why they sometime fail
-            return;
-        }
         int topScore = randomTopScore();
         verifyResults(randomSigma(expectedTopScore(topScore)), MAX_MINIMUM, topScore, 0, 0);
 

@@ -2,10 +2,10 @@ package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.ParserTst;
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class ParserCornersTest extends ParserTst {
 
@@ -15,11 +15,8 @@ public class ParserCornersTest extends ParserTst {
     }
 
     @Test
+    @Ignore
     public final void testCastLookaheadProblem() throws Throwable {
-        if (TestDescriptor.inRegressionTestMode()) {
-            // skip this test if we're only running regression tests
-            return;
-        }
         parseJava14(CAST_LOOKAHEAD_PROBLEM);
     }
 

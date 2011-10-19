@@ -78,11 +78,21 @@ public class TestDescriptor {
      * Checks whether we are testing for regression problems only.
      * Return value is based on the system property "pmd.regress".
      * 
-     * @return <code>true</code> if system property "pmd.regress" is set to <code>true</code>, <code>false</code> otherwise
+     * @return <code>false</code> if system property "pmd.regress" is set to <code>false</code>, <code>true</code> otherwise
      */
     public static boolean inRegressionTestMode() {
-        //get the "pmd.regress" System property
-        return Boolean.getBoolean("pmd.regress");
+	boolean inRegressionMode = true; // default
+	try {
+	    //get the "pmd.regress" System property
+	    String property = System.getProperty("pmd.regress");
+	    if (property != null) {
+		inRegressionMode = Boolean.parseBoolean(property);
+	    }
+	} catch (IllegalArgumentException e) {
+	} catch (NullPointerException e) {
+	}
+	
+        return inRegressionMode;
     }
 
     public boolean isRegressionTest() {

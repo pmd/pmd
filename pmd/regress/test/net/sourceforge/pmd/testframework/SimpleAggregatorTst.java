@@ -4,6 +4,7 @@
 package test.net.sourceforge.pmd.testframework;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
@@ -66,23 +67,32 @@ public abstract class SimpleAggregatorTst extends RuleTst {
      */
     @Test
     public void testAll() {
-        boolean regressionTest = TestDescriptor.inRegressionTestMode();
+        boolean regressionTestMode = TestDescriptor.inRegressionTestMode();
         ArrayList<Failure> l = new ArrayList<Failure>();
+        List<Description> ignored = new LinkedList<Description>();
         for (Rule r : rules) {
             TestDescriptor[] tests = extractTestsFromXml(r);
             for (TestDescriptor test: tests) {
-                try {
-                    if (!regressionTest || test.isRegressionTest()) {
-                        runTest(test);
-                    }
-                } catch (Throwable t) {
-                    Failure f = CustomXmlTestClassMethodsRunner.createFailure(r, t);
-                    l.add(f);
-                }
+		if (!regressionTestMode || test.isRegressionTest()) {
+		    try {
+			runTest(test);
+		    } catch (Throwable t) {
+			Failure f = CustomXmlTestClassMethodsRunner.createFailure(r, t);
+			l.add(f);
+		    }
+		} else {
+		    // the test is ignored
+		    Description description = CustomXmlTestClassMethodsRunner.createDescription(r,
+			    test.getDescription());
+		    ignored.add(description);
+		}
             }
         }
         for(Failure f: l) {
             CustomXmlTestClassMethodsRunner.addFailure(f);
+        }
+        for (Description d: ignored) {
+            CustomXmlTestClassMethodsRunner.addIgnore(d);
         }
     }
 
@@ -92,15 +102,26 @@ public abstract class SimpleAggregatorTst extends RuleTst {
         }
 
         public static Failure createFailure(Rule rule, Throwable targetException) {
-            return new Failure(Description.createTestDescription(
-                    SimpleAggregatorTst.class, "xml." + rule.getRuleSetName() + '.' + rule.getName()),
+            return new Failure(createDescription(rule, null),
                     targetException);
+        }
+        
+        public static Description createDescription(Rule rule, String testName) {
+            return Description.createTestDescription(
+                    SimpleAggregatorTst.class, "xml." + rule.getRuleSetName() + '.' + rule.getName()
+                    + (testName != null ? ":" + testName : ""));
         }
 
         public static void addFailure(Failure failure) {
             synchronized(CustomXmlTestClassMethodsRunner.class) {
                 NOTIFIER.fireTestFailure(failure);
             }
+        }
+        
+        public static void addIgnore(Description description) {
+            synchronized (CustomXmlTestClassMethodsRunner.class) {
+		NOTIFIER.fireTestIgnored(description);
+	    }
         }
 
         @Override
