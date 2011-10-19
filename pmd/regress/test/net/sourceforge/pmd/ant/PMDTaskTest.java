@@ -6,14 +6,18 @@ package test.net.sourceforge.pmd.ant;
 import org.apache.tools.ant.BuildFileTest;
 import org.junit.Test;
 
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
-
 public class PMDTaskTest extends BuildFileTest {
 
     @Override
     public void setUp() {
         // initialize Ant
         configureProject("regress/test/net/sourceforge/pmd/ant/xml/pmdtasktest.xml");
+        if (!project.getBaseDir().toString().endsWith("pmd/ant/xml")) {
+            // when running from maven, the path needs to be adapted...
+            // FIXME: this is more a workaround than a good solution...
+            project.setBasedir(project.getBaseDir().toString()
+        	    + "/target/test-classes/test/net/sourceforge/pmd/ant/xml");
+        }
     }
 
     @Test
