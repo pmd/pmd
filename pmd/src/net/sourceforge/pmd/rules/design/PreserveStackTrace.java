@@ -18,6 +18,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -46,7 +47,7 @@ public class PreserveStackTrace extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCatchStatement catchStmt, Object data) {
-        String target = ((SimpleNode)catchStmt.jjtGetChild(0).jjtGetChild(1)).getImage();
+        String target = catchStmt.findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getImage();
         // Inspect all the throw stmt inside the catch stmt
         List<ASTThrowStatement> lstThrowStatements = catchStmt.findChildrenOfType(ASTThrowStatement.class);
         for (ASTThrowStatement throwStatement : lstThrowStatements) {

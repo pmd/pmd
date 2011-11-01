@@ -384,5 +384,45 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+21, Java 7's multi-catch, NOK
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class MultiCatch {
+
+  public static void main(String[] args) {
+    try {
+      Class.forName("org.example.Foo").newInstance();
+    } catch (InstantiationException | ClassNotFoundException | IllegalAccessException eMultiCatch) {
+      throw new UnsupportedOperationException(args[0]);
+    }
+  }
+
+}
+     ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+22, Java 7's multi-catch, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class MultiCatch {
+
+  public static void main(String[] args) {
+    try {
+      Class.forName("org.example.Foo").newInstance();
+    } catch (InstantiationException | ClassNotFoundException | IllegalAccessException eMultiCatch) {
+      throw new UnsupportedOperationException(eMultiCatch);
+    }
+  }
+
+}
+     ]]></code>
+    </test-code>
 
 </test-data>
