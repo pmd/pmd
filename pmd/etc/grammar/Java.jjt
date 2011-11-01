@@ -2,7 +2,7 @@
  *
  * Added support for Java 7 language constructs
  *
- * Dinesh Bolkensteyn (SonarSource), 06/11
+ * Dinesh Bolkensteyn (SonarSource), 10/2011
  * ===================================================================
  * Added in support for assert as a name using lookaheads
  *
@@ -143,6 +143,12 @@ public class JavaParser {
   private void checkForBadDiamondUsage() {
   	if (jdkVersion < 7) {
       throw new ParseException("Cannot use the diamond generic notation when running in JDK inferior to 1.7 mode!");
+  	}
+  }
+  
+  private void checkForBadTryWithResourcesUsage() {
+  	if (jdkVersion < 7) {
+      throw new ParseException("Cannot use the try-with-resources notation when running in JDK inferior to 1.7 mode!");
   	}
   }
 
@@ -1968,6 +1974,7 @@ void TryStatement() :
 void ResourceSpecification() :
 {}
 {
+    {checkForBadTryWithResourcesUsage();}
 	"("
 	Resources()
 	(LOOKAHEAD(2) ";")?

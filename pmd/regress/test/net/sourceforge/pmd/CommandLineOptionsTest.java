@@ -26,7 +26,7 @@ public class CommandLineOptionsTest {
     @Test
     public void testTargetJDKVersion() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
-        assertEquals("1.5", opt.getTargetJDK());
+        assertEquals("1.7", opt.getTargetJDK());
         opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-targetjdk", "1.3"});
         assertEquals("1.3", opt.getTargetJDK());
         opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-targetjdk", "1.5"});
