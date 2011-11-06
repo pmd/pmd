@@ -118,8 +118,8 @@ release_tag=$(echo ${version} | sed -e 's/\./_/g' )
 if [ -z ${no_tags} ]; then
     echo "Tagging svn repository using 'pmd_release_${release_tag}'"
 	echo "running 'svn copy -m \"$version release tag\"
-    https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_${release_tag}'"
-	svn copy -m "${version} release tag" https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag
+    https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_${release_tag}'"
+	svn copy -m "${version} release tag"  https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag
 else
 	echo "Skipping svn tag!!!"
 fi
@@ -131,7 +131,7 @@ if [ -z ${no_tags} ]; then
     svn -q export "https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_${release_tag}" "${pmd_src_dir}"
 else
     if [ "${snapshot}" = "true" ] ; then
-        svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.2.x "${pmd_src_dir}"
+        svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x "${pmd_src_dir}"
     fi
 fi
 
