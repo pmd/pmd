@@ -89,6 +89,13 @@ update date and changelog links in project.xml (recent releases section)
 ./docs.sh all
 ./docs.sh upload
 
+(You might need to "violently" upgrade maven 1's pmd plugins from 3.9 to the latest, by
+doing that:
+
+cp lib/pmd-4.3.jar ~/.maven/repository/pmd/jars/pmd-3.9.jar
+
+Yes, I know, this is beyond ugly - and you'll probably go to hell just for reading this line...)
+
 update cpd.jnlp by running:
 
 ant -f bin/build.xml cpdjnlp
