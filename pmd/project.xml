@@ -28,7 +28,7 @@
 
 <h3>Recent releases</h3>
 <p><ul>
-        <li><p>2011-04-11 PMD 4.3 (<a href="https://sourceforge.net/projects/pmd/files/pmd/4.3/">download</a>):
+  <li><p>2011-11-04 PMD 4.3 (<a href="https://sourceforge.net/projects/pmd/files/pmd/4.3/">download</a>):
   <ul>
      <li>Add support for Java 7 grammer - thanks to Dinesh Bolkensteyn and <a href="http://www.sonarsource.com/">SonarSource</a> ;</li>
      <li>Add C# support for CPD - thanks to Florian Bauer ;</li>
