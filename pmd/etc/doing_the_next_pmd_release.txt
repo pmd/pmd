@@ -114,11 +114,11 @@ Getting the new PMD version into Maven Central Repository:
 
   Test it: target/pmd-x.x.x.jar is the file, that is contained in the bundle.
   So we can use it:
-  
+
   java -cp target/pmd-x.x.x.jar:lib/asm-3.2.jar:lib/javacc.jar:lib/jaxen-1.1.1.jar net.sourceforge.pmd.PMD src/net/sourceforge/pmd/PMD.java text unusedcode
 
   This should work: "No problems found!"
-  
+
 
 4. Upload pmd-x.x.x-bundle.jar to https://oss.sonatype.org.
 
