@@ -28,6 +28,13 @@
 
 <h3>Recent releases</h3>
 <p><ul>
+        <li><p>2011-04-11 PMD 4.3 (<a href="https://sourceforge.net/projects/pmd/files/pmd/4.3/">download</a>):
+  <ul>
+     <li>Add support for Java 7 grammer - thanks to Dinesh Bolkensteyn and <a href="http://www.sonarsource.com/">SonarSource</a> ;</li>
+     <li>Add C# support for CPD - thanks to Florian Bauer ;</li>
+     <li>And, as usual, a bunch of bug fixes and a couple new rules (DontCallThreadRun and GuardDebugLogging) (See <a href="https://sourceforge.net/projects/pmd/files/pmd/4.3/">Changelog</a>).</li>
+ </ul></p>
+</li>
 <li>2011-09-14 PMD 4.2.6: bug fixes, new rules (<a href="http://sourceforge.net/projects/pmd/files/pmd/4.2.6/pmd-bin-4.2.6.zip/download">Changelog</a>)</li>
 <li>2009-02-08 PMD 4.2.5: bug fixes, new rule, new Android ruleset (<a href="http://sourceforge.net/project/shownotes.php?release_id=659603&amp;group_id=56262">Changelog</a>)</li>
 <li>2008-10-12 PMD 4.2.4: bug fixes (<a href="http://sourceforge.net/project/shownotes.php?release_id=632850&amp;group_id=56262">Changelog</a>)</li>
