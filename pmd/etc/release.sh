@@ -148,5 +148,4 @@ cd -
 
 echo "Source package generated"
 
-echo "Use the command below to upload to sourceforge"
-echo "rsync -avP -e ssh ${pmd_top_dir}/pmd-src-${version}.zip ${pmd_top_dir}/pmd-bin-${version}.zip xlv@frs.sourceforge.net:uploads/"
+echo "Remains to use sourceforge magnificent brand new gui to upload the files..."
