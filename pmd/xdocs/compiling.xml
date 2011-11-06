@@ -18,15 +18,15 @@ Now you'll need to either check out the source code or download the latest sourc
     <pre>
         [tom@hal building]$ ls -l
         total 5716
-        -rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-4.2.6.zip
-        [tom@hal building]$ unzip -q pmd-src-4.2.6.zip
+        -rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-4.3.zip
+        [tom@hal building]$ unzip -q pmd-src-4.3.zip
         [tom@hal building]$
     </pre>
 </p>
 <p>
     Now cd down into the <code>pmd/bin</code> directory:
     <pre>
-        [tom@hal building]$ cd pmd-4.2.6/bin/
+        [tom@hal building]$ cd pmd-4.3/bin/
         [tom@hal bin]$ ls -l | grep build.xml
         -rw-rw-r--    1 tom      tom          5736 Jun 19 15:36 build.xml
         [tom@hal bin]$

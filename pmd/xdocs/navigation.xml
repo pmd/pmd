@@ -13,9 +13,9 @@
             href="http://sourceforge.net" />
     </links>
     <menu name="Overview">
-        <item name="Download PMD 4.2.6"
+        <item name="Download PMD 4.3"
             href="http://sourceforge.net/projects/pmd/files/pmd/4.2.6/pmd-bin-4.2.6.zip/download" />
-        <item name="What's new in PMD 4.2.6"
+        <item name="What's new in PMD 4.3"
             href="http://sourceforge.net/projects/pmd/files/pmd/4.2.6/changelog.txt/download" />
       <item name="PMD in the news" href="/news.html" />
       <item name="PMD-related products and books" href="/products.html" />

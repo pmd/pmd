@@ -123,7 +123,7 @@
       <ul>
           <li>Name: PMD </li>
           <li>Kind: Tool for directories</li>
-          <li>Executable: /Applications/pmd-4.2.6/bin/pmd.sh</li>
+          <li>Executable: /Applications/pmd-4.3/bin/pmd.sh</li>
           <li>Arguments: $DIRECTORY_PATH$ emacs $USER_ARGUMENTS$</li>
       </ul>
   </ul>
@@ -222,7 +222,7 @@ try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.e
   <li>Menu: Select the "Main menu", "Project views", "Editor menu", and "Search results" checkboxes.</li>
   <li>Program: $JDKPath$\bin\java.exe</li>
   <li>For the next parameter you'll need to plug in the location of your PMD installation and the rulesets you want to use</li>
-  <li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-4.2.6.jar;c:\pmd\lib\asm-3.2.jar;c:\pmd\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD "$FilePath$" ideaj unusedcode,imports "$Sourcepath$" $FileClass$.method $FileName$ </li>
+  <li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-4.3.jar;c:\pmd\lib\asm-3.2.jar;c:\pmd\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD "$FilePath$" ideaj unusedcode,imports "$Sourcepath$" $FileClass$.method $FileName$ </li>
   </ul>
   </ul>
   <p>That's pretty much it.  Now you can right click on a source directory and select PMD, it'll run recursively on the source files, and the results should
@@ -348,7 +348,7 @@ selecting the "Ask for Directory" checkbox.</p>
     <H5><U>Assumptions</U></H5>
     <P><UL>
         <LI>The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed into your machine, and exists in <CODE>D:\java\jdk_142\</CODE>.  This means that <CODE>D:\java\jdk_142\bin\java.exe</CODE> exists.</LI>
-        <LI>PMD version 4.2.6 exists in <CODE>D:\java\pmd-4.2.6\</CODE>.  This means that <CODE>D:\java\pmd-4.2.6\lib\pmd-4.2.6.jar</CODE> (among other jar files in the same directory) exist.</LI>
+        <LI>PMD version 4.3 exists in <CODE>D:\java\pmd-4.3\</CODE>.  This means that <CODE>D:\java\pmd-4.3\lib\pmd-4.3.jar</CODE> (among other jar files in the same directory) exist.</LI>
     </UL></P>
     <H5><U>To integrate into TextPad</U></H5>
     <P><OL>
@@ -362,7 +362,7 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>Expand the <B>Tools</B> branch (if not already) by clicking on the '<CODE>+</CODE>' directly to its left.</LI>
         <LI>In the expanded list, select <B>PMD directory</B>.  This changes the right side of this dialog to the "tool" form.</LI>
         <LI>In the "tool" form, enter these parameters:<UL>
-            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-4.2.6\lib\pmd-4.2.6.jar;D:\java\pmd-4.2.6\lib\asm-3.2.jar;D:\java\pmd-4.2.6\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
+            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-4.3\lib\pmd-4.3.jar;D:\java\pmd-4.3\lib\asm-3.2.jar;D:\java\pmd-4.3\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
             <BR/>(<I>Eliminate the spaces following '<CODE>jaxen-1.1.1.jar;</CODE>' and '<CODE>asm-3.2.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
             <LI><B>Initial Folder:</B>  <CODE>$FileDir</CODE></LI>
             <LI><B>Save all documents first:</B>  <CODE>Checked</CODE></LI>

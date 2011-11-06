@@ -34,7 +34,7 @@ elif [ $option = "all" ]; then
 elif [ $option = "uploadcurrent" ]; then
   echo "Generating and uploading maven artifacts"
   mvn -q source:jar javadoc:jar deploy
-  mvn -q deploy:deploy-file -Durl=scp://shell.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.2.6.jar -DpomFile=pmd-jdk14-pom.xml
+  mvn -q deploy:deploy-file -Durl=scp://shell.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.3.jar -DpomFile=pmd-jdk14-pom.xml
   echo "Generating xdocs and uploading"
   ruby munge_rulesets.rb
   maven -qb pmd:rulesets-index xdoc:generate-from-pom
