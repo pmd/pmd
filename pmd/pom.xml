@@ -206,8 +206,8 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</connection>
-    <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</developerConnection>
+    <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x</connection>
+    <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x</developerConnection>
     <url>http://pmd.svn.sourceforge.net/viewvc/pmd/</url>
   </scm>
   <organization>
