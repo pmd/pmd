@@ -13,12 +13,11 @@
 	<property environment="env"/>
 	<property name="ant.jar" value="${env.ANT_HOME}/lib/ant.jar" />
 	<property name="ant-testutil.jar" value="${env.ANT_HOME}/lib/ant-testutil.jar" />
-
 	<property name="asm.version" value="3.2" />
 	<property name="jaxen.version" value="1.1.1" />
 	<property name="saxon.version" value="9" />
-	<property name="junit.version" value="4.4" />
-	<property name="rhino.version" value="cvs-12122009" />
+    <property name="junit.version" value="4.4" />
+    <property name="rhino.version" value="1.7R3" />
 	<property name="javacc-home.path" value="${dir.lib}" />
 
 	<!--Settings-->
@@ -31,7 +30,7 @@
 			<include name="saxon${saxon.version}.jar" />
 			<include name="asm-${asm.version}.jar" />
 			<include name="junit-${junit.version}.jar" />
-			<include name="js-${rhino.version}.jar" />
+            <include name="rhino-${rhino.version}.jar" />
 		</fileset>
 	</path>
 
