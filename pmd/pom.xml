@@ -258,7 +258,7 @@
                 </includes>
             </resource>
             <resource>
-                <!-- FIXME: find the appropriate mvn property :${project.build.target}/test-classes 
+                <!-- FIXME: find the appropriate mvn property :${project.build.target}/test-classes
                     ... -->
                 <directory>target/test-classes</directory>
                 <includes>
@@ -285,7 +285,7 @@
                     <argLine>-Xmx512m</argLine>
                     <excludes>
                         <exclude>test/net/sourceforge/pmd/lang/java/rule/typeresolution/xml/MyTestCase.java</exclude>
-                        <!-- Come on surefire ! be smart, the following class 
+                        <!-- Come on surefire ! be smart, the following class
                             is not a test to run ! -->
                         <exclude>test/net/sourceforge/pmd/testframework/TestDescriptor.java</exclude>
                     </excludes>
@@ -419,7 +419,7 @@
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.7.1</version>
+            <version>1.8.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ant</groupId>
@@ -488,17 +488,17 @@
                 </reportSets>
             </plugin>
 
-            <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-pmd-plugin</artifactId> 
-                <configuration> <linkXref>true</linkXref> <sourceEncoding>utf-8</sourceEncoding> 
-                <minimumTokens>100</minimumTokens> <targetJdk>1.5</targetJdk> <rulesets> 
-                <ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset> 
+            <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-pmd-plugin</artifactId>
+                <configuration> <linkXref>true</linkXref> <sourceEncoding>utf-8</sourceEncoding>
+                <minimumTokens>100</minimumTokens> <targetJdk>1.5</targetJdk> <rulesets>
+                <ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
                 </rulesets> </configuration> </plugin> -->
 
-            <!-- Emma is a test coverage tools to be used instead of clover. 
-                As the mvn2 plugin is not released yet, the plugin is commented out, so you 
-                build won't fail: You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762 
+            <!-- Emma is a test coverage tools to be used instead of clover.
+                As the mvn2 plugin is not released yet, the plugin is commented out, so you
+                build won't fail: You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762
                 Download the tarball, extract, cd into dir, run $ mvn install. -->
-            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>emma-maven-plugin</artifactId> 
+            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>emma-maven-plugin</artifactId>
                 </plugin> -->
 
             <plugin>
@@ -580,6 +580,4 @@
             </distributionManagement>
         </profile>
     </profiles>
-
 </project>
-

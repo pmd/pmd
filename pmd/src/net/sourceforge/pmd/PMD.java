@@ -155,10 +155,10 @@ public class PMD {
 		    LanguageVersion languageVersion = configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());
 		    ctx.setLanguageVersion(languageVersion);
 		}
-	
+
 		// make sure custom XPath functions are initialized
 		Initializer.initialize();
-	
+
 		try {
 		    // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
 			 if (ruleSets.applies(ctx.getSourceCodeFile())) {
@@ -177,26 +177,26 @@ public class PMD {
 				languageVersionHandler.getSymbolFacade().start(rootNode);
 				end = System.nanoTime();
 				Benchmark.mark(Benchmark.TYPE_SYMBOL_TABLE, end - start, 0);
-		
+
 				Language language = languageVersion.getLanguage();
-		
+
 				if (ruleSets.usesDFA(language)) {
 				    start = System.nanoTime();
 				    languageVersionHandler.getDataFlowFacade().start(rootNode);
 				    end = System.nanoTime();
 				    Benchmark.mark(Benchmark.TYPE_DFA, end - start, 0);
 				}
-		
+
 				if (ruleSets.usesTypeResolution(language)) {
 				    start = System.nanoTime();
 				    languageVersionHandler.getTypeResolutionFacade(configuration.getClassLoader()).start(rootNode);
 				    end = System.nanoTime();
 				    Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
 				}
-		
+
 				List<Node> acus = new ArrayList<Node>();
 				acus.add(rootNode);
-		
+
 				ruleSets.apply(acus, ctx, language);
 			    }
 		} catch (ParseException pe) {
@@ -210,7 +210,7 @@ public class PMD {
 
     private static RuleSets getRuleSets(Configuration configuration, RuleSetFactory factory, long loadRuleStart) {
     	RuleSets ruleSets = null;
-    	
+
     	try {
     		ruleSets = factory.createRuleSets(configuration.getRuleSets());
 		    factory.setWarnDeprecated(false);
@@ -223,24 +223,24 @@ public class PMD {
 		}
 		return ruleSets;
     }
-    
+
     // This method is the main entry point for command line usage.
     private static void doPMD(Configuration configuration) {
-	
+
 		// Load the RuleSets
 		long startLoadRules = System.nanoTime();
 		RuleSetFactory ruleSetFactory = getRulesetFactory(configuration);
-		
+
 		RuleSets ruleSets = getRuleSets(configuration, ruleSetFactory, startLoadRules);
-		if (ruleSets == null) return;		
-	
+		if (ruleSets == null) return;
+
 		Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
 		List<DataSource> files = getApplicableFiles(configuration, languages);
-	
+
 		long reportEnd;
 		Renderer renderer;
 		Writer w = null;
-	
+
 		long reportStart = System.nanoTime();
 		try {
 		    renderer = configuration.createRenderer();
@@ -253,14 +253,14 @@ public class PMD {
 
 		    renderer.setWriter(w);
 		    renderer.start();
-	
+
 		    reportEnd = System.nanoTime();
 		    Benchmark.mark(Benchmark.TYPE_REPORTING, reportEnd - reportStart, 0);
-	
+
 		    RuleContext ctx = new RuleContext();
-	
+
 		    processFiles(configuration, ruleSetFactory, files, ctx, renderers);
-	
+
 		    reportStart = System.nanoTime();
 		    renderer.end();
 		    w.flush();
@@ -271,9 +271,9 @@ public class PMD {
 		    } else {
 			LOG.log(Level.SEVERE, "Exception during processing", e);
 		    }
-	
+
 		    LOG.log(Level.FINE, "Exception during processing", e); //Only displayed when debug logging is on
-	
+
 		    LOG.info(CommandLineOptions.usage());
 		} finally {
 		    IOUtil.closeQuietly(w);
@@ -317,7 +317,7 @@ public class PMD {
 		long start = System.nanoTime();
 		final CommandLineOptions opts = new CommandLineOptions(args);
 		final Configuration configuration = opts.getConfiguration();
-	
+
 		final Level logLevel = configuration.isDebug() ? Level.FINER : Level.INFO;
 		final Handler logHandler = new ConsoleLogHandler();
 		final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, logHandler);
@@ -341,7 +341,7 @@ public class PMD {
 		private final DataSource dataSource;
 		private final String fileName;
 		private final List<Renderer> renderers;
-	
+
 		public PmdRunnable(ExecutorService executor, Configuration configuration, DataSource dataSource,
 			String fileName, List<Renderer> renderers) {
 		    super(configuration);
@@ -350,16 +350,16 @@ public class PMD {
 		    this.fileName = fileName;
 		    this.renderers = renderers;
 		}
-	
+
 		public Report call() {
 		    PmdThread thread = (PmdThread) Thread.currentThread();
-	
+
 		    RuleContext ctx = thread.getRuleContext();
 		    RuleSets rs = thread.getRuleSets(configuration.getRuleSets());
-	
+
 		    Report report = new Report();
 		    ctx.setReport(report);
-	
+
 		    ctx.setSourceCodeFilename(fileName);
 		    ctx.setSourceCodeFile(new File(fileName));
 		    if (LOG.isLoggable(Level.FINE)) {
@@ -368,28 +368,28 @@ public class PMD {
 		    for (Renderer r : renderers) {
 		    	r.startFileAnalysis(dataSource);
 		    }
-	
+
 		    try {
 				InputStream stream = new BufferedInputStream(dataSource.getInputStream());
 				ctx.setLanguageVersion(null);
 				processFile(stream, rs, ctx);
 		    } catch (PMDException pmde) {
 		    	LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
-	
+
 		    	report.addError(new Report.ProcessingError(pmde.getMessage(), fileName));
 		    } catch (IOException ioe) {
 		    	// unexpected exception: log and stop executor service
 		    	LOG.log(Level.FINE, "IOException during processing", ioe);
-	
+
 		    	report.addError(new Report.ProcessingError(ioe.getMessage(), fileName));
-	
+
 		    	executor.shutdownNow();
 		    } catch (RuntimeException re) {
 		    	// unexpected exception: log and stop executor service
 		    	LOG.log(Level.FINE, "RuntimeException during processing", re);
-	
+
 		    	report.addError(new Report.ProcessingError(re.getMessage(), fileName));
-	
+
 		    	executor.shutdownNow();
 		    }
 		    return report;

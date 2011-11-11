@@ -1,5 +1,4 @@
 <project name="pmd" default="test" basedir=".">
-
 	<property file="local.properties" />
 
 	<property name="dir.lib" value="${basedir}/lib" />
@@ -174,7 +173,7 @@
 		<clover-setup initString="${dir.reports}/clover/db/coverage.db">
 			<fileset dir="${dir.src}"/>
 			<fileset dir="${dir.regress}">
-				<include name="test/net/sourceforge/pmd/testframework/**/*.java"/> 
+				<include name="test/net/sourceforge/pmd/testframework/**/*.java"/>
 			</fileset>
 		</clover-setup>
 	</target>
