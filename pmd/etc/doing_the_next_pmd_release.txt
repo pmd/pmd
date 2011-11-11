@@ -1,146 +1,56 @@
+PMD release walkthrough:
 
-make sure code is up to date and everything is in svn:
+Make sure code is up to date and everything is in svn:
 
-ant clean
-svn update
-svn status
+$ mvn clean
+$ svn update
+$ svn status
 
-run version update script at the top level:
+Ensure all the new rules are listed in a rulesets/releases/<version>.xml file
 
-./tools/shell/update_version.sh <version>
+$ mvn package post-site    (order of targets DOES matter)
 
-    tasks implemented by script:
-    update pmd.bat, designer.bat, bgastviewer.*, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-<version>.jar
-    update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-<version>
-    update the release date in the changelog
-    update release number and tag name in project.xml
+Unzip and test manually (just to be on the safe side of the road):
 
-then, run the script that will generate the proper rulesets/rulesets.properties
-
-./tools/shell/updating_rulesets.sh rulesets/rulesets.properties
-	update rulesets/rulesets.properties - add any new ruleset file names
-
-ensure all the new rules are listed in a rulesets/releases/<version>.xml file
-
-ant recompile regress test
-Check in everything
-
-Run all regression tests and various ant tasks:
-
-ant qa
-
-TESTS: Can you run 1 file and get a report
 ./bin/pmd.sh ~/tmp/Test.java xml unusedcode
 ./bin/pmd.sh ~/tmp/Test.java html rulesets/unusedcode.xml
 
-run "./generate_release.sh <version> release" in tools/shell
+Check all changes and tag:
 
-It will run:
+$ svn tag https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
 
-	ant dist
-	mvn site
+Note:
+If you see a bug and fix it, you can delete the release using the following command (and then
+recreate the tag):
+$ svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
 
-	generate the binary zip file
+Public the release on sourceforge:
+- Go to Admin, File Releases, Add release
+- Paste stuff into the changelog/readme boxes
+- Add the pmd-bin-<version>.zip file
+- Add the pmd-src-<version>.zip file
 
-	svn tag if "yes" is pressed
+Upload command below will create and upload the maven artifacts to sourceforge. Login info
+for 'pmd-repo' must be defined in ~/.m2/settings.xml (see the file available in
+tools/config/m2.settings.xml):
 
-	generate the source zip file
+$ ssh your_sf_login,pmd@shell.sourceforge.net create
+...
+$ mvn source:jar javadoc:jar deploy -Psf-release    (order of target DOES matter)
 
-if you see a bug and fix it, you can delete the release using:
-svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
-and then retag it
+(In order to be able to upload the artifacts and the site to sourceforge, you need to have a interactive shell opened
+before)
 
+Update the "download" and "what's new" link in navigation.xml.
 
-Go to Admin, File Releases, Add release
-Paste stuff into the changelog/readme boxes
-Add the pmd-bin-<version>.zip file
-Add the pmd-src-<version>.zip file
-Classify the file
-Click File Releases, Edit Release, set previous version to 'hidden'.
+$ mvn site site:deploy -Psf-release
 
-upload command below will create and upload the maven artifacts to sourceforge. Login info
-for 'pmd-repo' must be defined in ~/.m2/settings.xml:
+Shutdown the sourceforge shell:
 
----8<---8<---
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+$ ssh your_sf_login@shell.sourceforge.net "shutdown"
 
-  <servers>
-    <!-- to upload to sonatype maven central.
-         See https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
-    <server>
-      <id>sonatype-nexus-snapshots</id>
-      <username>your-sonatype-jira-login</username>
-      <password>your-sonatype-jira-password</password>
-    </server>
-    <server>
-      <id>sonatype-nexus-staging</id>
-      <username>your-sonatype-jira-login</username>
-      <password>your-sonatype-jira-password</password>
-    </server>
+Social side of release:
+1) Submit news to SF
+    Go to http://freshmeat.net/
 
-    <server>
-      <id>pmd-repo</id>
-      <username>your-sf-login</username>
-      <password>your-sf-pwd</password>
-      <!-- or use instead of the password your private key with optional passphrase
-      <privateKey>${user.home}/.ssh/id_dsa</privateKey>
-      <passphrase>some_passphrase</passphrase>
-      -->
-    </server>
-    <server>
-      <id>pmd-site</id>
-      <username>your-sf-login</username>
-      <password>your-sf-pwd</password>
-      <!-- or use instead of the password your private key with optional passphrase
-      <privateKey>${user.home}/.ssh/id_dsa</privateKey>
-      <passphrase>some_passphrase</passphrase>
-      -->
-    </server>
-    <server>
-      <id>pmd-snapshot-repo</id>
-      <username>your-sf-login</username>
-      <password>your-sf-pwd</password>
-      <!-- or use instead of the password your private key with optional passphrase
-      <privateKey>${user.home}/.ssh/id_dsa</privateKey>
-      <passphrase>some_passphrase</passphrase>
-      -->
-    </server>
-    <server>
-      <id>pmd-snapshot-site</id>
-      <username>your-sf-login</username>
-      <password>your-sf-pwd</password>
-      <!-- or use instead of the password your private key with optional passphrase
-      <privateKey>${user.home}/.ssh/id_dsa</privateKey>
-      <passphrase>some_passphrase</passphrase>
-      -->
-    </server>
-  </servers>
-
-</settings>
---->8--->8---
-
-
-In order to be able to upload the artifacts and the site to sourceforge, you need to have a interactive shell opened
-before:
-ssh your_sf_login,pmd@shell.sourceforge.net create
-
-
-update the "download" and "what's new" link in navigation.xml
-./docs.sh upload
-
-shutdown the sourceforge shell again
-ssh your_sf_login@shell.sourceforge.net "shutdown"
-
-
-update cpd.jnlp by running:
-
-ant cpdjnlp
-
-
-Submit news to SF
-Go to http://freshmeat.net/
-Submit news to java.net
-Do a blog entry
+2) Facebook, Google+, Twitter, LinkedIn and Xing (add whatever you feel is missing here...)
