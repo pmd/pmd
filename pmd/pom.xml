@@ -305,18 +305,44 @@
                 <version>1.6</version>
                 <inherited>true</inherited>
                 <executions>
+                  <execution>
+                     <id>process-sources</id>
+                     <phase>process-sources</phase>
+                    <configuration>
+                      <tasks>
+                          <copy file="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
+                                toFile="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
+                                overwrite="true">
+                          <filterset>
+                            <filter token="@@VERSION@@" value="${project.version}"/>
+                          </filterset>
+                        </copy>
+                      </tasks>
+                    </configuration>
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+                    </execution>
                     <execution>
                         <id>generate-ruleset-as-xdocs</id>
                         <phase>pre-site</phase>
                         <configuration>
                             <tasks>
-                                <echo>PMD specific tasks: generating
-                                    xdocs</echo>
+                                <echo>PMD specific tasks: generating xdocs</echo>
+                                <mkdir dir="${project.build.directory}/generated-xdocs"/>
+                                <copy toDir="${project.build.directory}/generated-xdocs"
+                                      overwrite="true"
+                                      verbose="true">
+                                  <fileset dir="xdocs"/>
+                                  <filterset>
+                                    <filter token="VERSION" value="${project.version}"/>
+                                  </filterset>
+                                </copy>
                                 <ant antfile="tools/ant/generate-pmd-xdoc.xml">
                                     <property name="target"
-                                        value="xdocs/rules" />
+                                              value="xdocs/rules" />
                                     <property name="lib"
-                                        value="${basedir}/tools/lib" />
+                                              value="${basedir}/tools/lib" />
                                 </ant>
                             </tasks>
                         </configuration>
@@ -324,7 +350,6 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-
                     <execution>
                         <id>move-index-and-delete-generated-xdocs</id>
                         <phase>site</phase>
@@ -336,7 +361,7 @@
                                 <copy
                                     todir="${project.build.directory}/site/images/">
                                     <fileset dir="xdocs/images/"
-                                        includes="**/*.*" />
+                                             includes="**/*.*" />
                                 </copy>
                                 <echo>2. Adding missing text files to
                                     site.</echo>
@@ -361,7 +386,6 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-
                     <execution>
                         <id>pmd-clean</id>
                         <phase>clean</phase>
@@ -381,11 +405,8 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-
-
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-clover2-plugin</artifactId>
@@ -403,13 +424,12 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>2.0.1</version>
                 <configuration>
-                    <xdocDirectory>${basedir}/xdocs</xdocDirectory>
+                    <xdocDirectory>${project.build.directory}/generated-xdocs</xdocDirectory>
                 </configuration>
             </plugin>
 

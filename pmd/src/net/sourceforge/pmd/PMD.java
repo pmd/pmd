@@ -61,7 +61,7 @@ public class PMD {
     private static final Logger LOG = Logger.getLogger(PMD.class.getName());
 
     public static final String EOL = System.getProperty("line.separator", "\n");
-    public static final String VERSION = "5.0-SNAPSHOT";
+    public static final String VERSION = "@@VERSION@@";
     public static final String SUPPRESS_MARKER = "NOPMD";
 
     /**
