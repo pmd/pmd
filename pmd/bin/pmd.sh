@@ -69,7 +69,7 @@ classpath=$CLASSPATH
 
 cd "$CWD"
 
-for jarfile in `ls $LIB_DIR/*.jar`; do
+for jarfile in $(ls $LIB_DIR/*.jar) ; do
     classpath=$classpath:$jarfile
 done
 
