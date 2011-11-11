@@ -24,7 +24,7 @@
       in the artifacts section in the center of the page.</p>
 
       <p>Maven packages are also generated regularly and uploaded to the <a href="http://pmd.sourceforge.net/snapshot/maven2">snapshot repository</a> and
-      to <a href="https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/pmd/5.0-SNAPSHOT/">Sonatypes OSS snapshot repository</a>.</p>
+      to <a href="https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/pmd/">Sonatypes OSS snapshot repository</a>.</p>
 
       <p>You can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
 
