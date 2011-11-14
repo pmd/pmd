@@ -6,33 +6,51 @@ $ mvn clean
 $ svn update
 $ svn status
 
-Ensure all the new rules are listed in a rulesets/releases/<version>.xml file
+Ensure all the new rules are listed in a rulesets/releases/<version>.xml file.
 
-$ mvn package post-site    (order of targets DOES matter)
+Update pom.xml:
+* remove "SNAPSHOT" from the version
+* make sure that scm/*connection are pointing to the subversion tag, that will be created soon.
+
+Update the "download" and "what's new" link in navigation.xml.
+
+Update version/release info in etc/changelog.txt.
+
+$ mvn verify post-site    (order of targets DOES matter)
 
 Unzip and test manually (just to be on the safe side of the road):
 
-./bin/pmd.sh ~/tmp/Test.java xml unusedcode
+./bin/pmd.sh ~/tmp/Test.java xml java-unusedcode
 ./bin/pmd.sh ~/tmp/Test.java html rulesets/unusedcode.xml
 
-Check all changes and tag:
+Check in all (version) changes to trunk:
+$ svn ci -m "pmd: Prepare pmd release <version>"
 
-$ svn tag https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
+Create a tag from trunk:
+$ svn cp https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
 
 Note:
 If you see a bug and fix it, you can delete the release using the following command (and then
 recreate the tag):
 $ svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
 
+Update pom.xml in trunk:
+* increment the version and add "SNAPSHOT"
+* make sure that scm/*connection are pointing to trunk.
+
+Check in the changes to trunk:
+$ svn ci -m "pmd: Increment version to the next SNAPSHOT"
+
+
 Public the release on sourceforge:
 - Go to Admin, File Releases, Add release
 - Paste stuff into the changelog/readme boxes
-- Add the pmd-bin-<version>.zip file
-- Add the pmd-src-<version>.zip file
+- Add the pmd-<version>-bin.zip file
+- Add the pmd-<version>-src.zip file
 
 Upload command below will create and upload the maven artifacts to sourceforge. Login info
-for 'pmd-repo' must be defined in ~/.m2/settings.xml (see the file available in
-tools/config/m2.settings.xml):
+for 'pmd-repo' and 'pmd-site' must be defined in ~/.m2/settings.xml
+(see the file available in tools/config/m2.settings.xml):
 
 $ ssh your_sf_login,pmd@shell.sourceforge.net create
 ...
@@ -41,9 +59,9 @@ $ mvn source:jar javadoc:jar deploy -Psf-release    (order of target DOES matter
 (In order to be able to upload the artifacts and the site to sourceforge, you need to have a interactive shell opened
 before)
 
-Update the "download" and "what's new" link in navigation.xml.
+Upload the site:
 
-$ mvn site site:deploy -Psf-release
+$ mvn site-deploy -Psf-release
 
 Shutdown the sourceforge shell:
 
