@@ -282,14 +282,14 @@ public class PMD {
 		}
     }
 
-	private static RuleSetFactory getRulesetFactory(Configuration configuration) {
+	public static RuleSetFactory getRulesetFactory(Configuration configuration) {
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 		ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
 		ruleSetFactory.setWarnDeprecated(true);
 		return ruleSetFactory;
 	}
 
-	private static List<DataSource> getApplicableFiles(Configuration configuration, Set<Language> languages) {
+	public static List<DataSource> getApplicableFiles(Configuration configuration, Set<Language> languages) {
 		long startFiles = System.nanoTime();
 		LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
 		List<DataSource> files = FileUtil.collectFiles(configuration.getInputPaths(), fileSelector);
@@ -398,60 +398,71 @@ public class PMD {
 
     private static class PmdThreadFactory implements ThreadFactory {
 
-	private final RuleSetFactory ruleSetFactory;
-	private final RuleContext ctx;
-	private final AtomicInteger counter = new AtomicInteger();
-
-	public PmdThreadFactory(RuleSetFactory ruleSetFactory, RuleContext ctx) {
-	    this.ruleSetFactory = ruleSetFactory;
-	    this.ctx = ctx;
-	}
-
-	public Thread newThread(Runnable r) {
-	    PmdThread t = new PmdThread(counter.incrementAndGet(), r, ruleSetFactory, ctx);
-	    threadList.add(t);
-	    return t;
-	}
-
-	public List<PmdThread> threadList = Collections.synchronizedList(new LinkedList<PmdThread>());
+		private final RuleSetFactory ruleSetFactory;
+		private final RuleContext ctx;
+		private final AtomicInteger counter = new AtomicInteger();
+	
+		public PmdThreadFactory(RuleSetFactory ruleSetFactory, RuleContext ctx) {
+		    this.ruleSetFactory = ruleSetFactory;
+		    this.ctx = ctx;
+		}
+	
+		public Thread newThread(Runnable r) {
+		    PmdThread t = new PmdThread(counter.incrementAndGet(), r, ruleSetFactory, ctx);
+		    threadList.add(t);
+		    return t;
+		}
+	
+		public List<PmdThread> threadList = Collections.synchronizedList(new LinkedList<PmdThread>());
 
     }
 
     private static class PmdThread extends Thread {
 
-	public PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory, RuleContext ctx) {
-	    super(r, "PmdThread " + id);
-	    this.id = id;
-	    context = new RuleContext(ctx);
-	    this.ruleSetFactory = ruleSetFactory;
-	}
-
-	private int id;
-	private RuleContext context;
-	private RuleSets rulesets;
-	private RuleSetFactory ruleSetFactory;
-
-	public RuleContext getRuleContext() {
-	    return context;
-	}
-
-	public RuleSets getRuleSets(String rsList) {
-	    if (rulesets == null) {
-		try {
-		    rulesets = ruleSetFactory.createRuleSets(rsList);
-		} catch (Exception e) {
-		    e.printStackTrace();
+		public PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory, RuleContext ctx) {
+		    super(r, "PmdThread " + id);
+		    this.id = id;
+		    context = new RuleContext(ctx);
+		    this.ruleSetFactory = ruleSetFactory;
 		}
-	    }
-	    return rulesets;
-	}
-
-	@Override
-	public String toString() {
-	    return "PmdThread " + id;
-	}
+	
+		private int id;
+		private RuleContext context;
+		private RuleSets rulesets;
+		private RuleSetFactory ruleSetFactory;
+	
+		public RuleContext getRuleContext() {
+		    return context;
+		}
+	
+		public RuleSets getRuleSets(String rsList) {
+		    if (rulesets == null) {
+			try {
+			    rulesets = ruleSetFactory.createRuleSets(rsList);
+			} catch (Exception e) {
+			    e.printStackTrace();
+			}
+		    }
+		    return rulesets;
+		}
+	
+		@Override
+		public String toString() {
+		    return "PmdThread " + id;
+		}
     }
 
+    private static RuleSets createRules(RuleSetFactory factory, Configuration configuration) {
+    	RuleSets rs = null;
+	    try {
+			rs = factory.createRuleSets(configuration.getRuleSets());
+		    } catch (RuleSetNotFoundException rsnfe) {
+				// should not happen: parent already created a ruleset
+		    }
+		    
+	    return rs;
+    }
+    
     /**
      * Run PMD on a list of files using multiple threads.
      */
@@ -482,12 +493,8 @@ public class PMD {
 	}
 
 	if (useMT) {
-	    RuleSets rs = null;
-	    try {
-		rs = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-	    } catch (RuleSetNotFoundException rsnfe) {
-		// should not happen: parent already created a ruleset
-	    }
+	    RuleSets rs = createRules(ruleSetFactory, configuration);
+
 	    rs.start(ctx);
 
 	    PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
@@ -495,115 +502,109 @@ public class PMD {
 	    List<Future<Report>> tasks = new LinkedList<Future<Report>>();
 
 	    for (DataSource dataSource : files) {
-		String niceFileName = dataSource.getNiceFileName(reportShortNames, inputPaths);
-		PmdRunnable r = new PmdRunnable(executor, configuration, dataSource, niceFileName, renderers);
-		Future<Report> future = executor.submit(r);
-		tasks.add(future);
-	    }
+			String niceFileName = dataSource.getNiceFileName(reportShortNames, inputPaths);
+			PmdRunnable r = new PmdRunnable(executor, configuration, dataSource, niceFileName, renderers);
+			Future<Report> future = executor.submit(r);
+			tasks.add(future);
+		    }
 	    executor.shutdown();
 
 	    while (!tasks.isEmpty()) {
-		Future<Report> future = tasks.remove(0);
-		Report report = null;
-		try {
-		    report = future.get();
-		} catch (InterruptedException ie) {
-		    Thread.currentThread().interrupt();
-		    future.cancel(true);
-		} catch (ExecutionException ee) {
-		    Throwable t = ee.getCause();
-		    if (t instanceof RuntimeException) {
-			throw (RuntimeException) t;
-		    } else if (t instanceof Error) {
-			throw (Error) t;
-		    } else {
-			throw new IllegalStateException("PmdRunnable exception", t);
-		    }
-		}
-
-		try {
-		    long start = System.nanoTime();
-		    for (Renderer r : renderers) {
-			r.renderFileReport(report);
-		    }
-		    long end = System.nanoTime();
-		    Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
-		} catch (IOException ioe) {
-		}
+			Future<Report> future = tasks.remove(0);
+			Report report = null;
+			try {
+			    report = future.get();
+			} catch (InterruptedException ie) {
+			    Thread.currentThread().interrupt();
+			    future.cancel(true);
+			} catch (ExecutionException ee) {
+			    Throwable t = ee.getCause();
+			    if (t instanceof RuntimeException) {
+				throw (RuntimeException) t;
+			    } else if (t instanceof Error) {
+				throw (Error) t;
+			    } else {
+				throw new IllegalStateException("PmdRunnable exception", t);
+			    }
+			}
+	
+			render(renderers, report);
 	    }
 
 	    try {
-		rs.end(ctx);
-		long start = System.nanoTime();
-		for (Renderer r : renderers) {
-		    r.renderFileReport(ctx.getReport());
-		}
-		long end = System.nanoTime();
-		Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
-	    } catch (IOException ioe) {
+			rs.end(ctx);
+			long start = System.nanoTime();
+			for (Renderer r : renderers) {
+			    r.renderFileReport(ctx.getReport());
+			}
+			long end = System.nanoTime();
+			Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
+		    } catch (IOException ioe) {
 	    }
 
 	} else {
 	    // single threaded execution
 	    PMD pmd = new PMD(configuration);
 
-	    RuleSets rs = null;
-	    try {
-		rs = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-	    } catch (RuleSetNotFoundException rsnfe) {
-		// should not happen: parent already created a ruleset
-	    }
-	    for (DataSource dataSource : files) {
-		String niceFileName = dataSource.getNiceFileName(reportShortNames, inputPaths);
+	    RuleSets rs = createRules(ruleSetFactory, configuration);
 
-		Report report = new Report();
-		ctx.setReport(report);
-
-		ctx.setSourceCodeFilename(niceFileName);
-		ctx.setSourceCodeFile(new File(niceFileName));
-		if (LOG.isLoggable(Level.FINE)) {
-		    LOG.fine("Processing " + ctx.getSourceCodeFilename());
-		}
-		rs.start(ctx);
-
-		for (Renderer r : renderers) {
-		    r.startFileAnalysis(dataSource);
-		}
-
-		try {
-		    InputStream stream = new BufferedInputStream(dataSource.getInputStream());
-		    ctx.setLanguageVersion(null);
-		    pmd.processFile(stream, rs, ctx);
-		} catch (PMDException pmde) {
-		    LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
-
-		    report.addError(new Report.ProcessingError(pmde.getMessage(), niceFileName));
-		} catch (IOException ioe) {
-		    // unexpected exception: log and stop executor service
-		    LOG.log(Level.FINE, "Unable to read source file", ioe);
-
-		    report.addError(new Report.ProcessingError(ioe.getMessage(), niceFileName));
-		} catch (RuntimeException re) {
-		    // unexpected exception: log and stop executor service
-		    LOG.log(Level.FINE, "RuntimeException while processing file", re);
-
-		    report.addError(new Report.ProcessingError(re.getMessage(), niceFileName));
-		}
-
-		rs.end(ctx);
-
-		try {
-		    long start = System.nanoTime();
-		    for (Renderer r : renderers) {
-			r.renderFileReport(report);
+		for (DataSource dataSource : files) {
+			String niceFileName = dataSource.getNiceFileName(reportShortNames, inputPaths);
+	
+			Report report = new Report();
+			ctx.setReport(report);
+	
+			ctx.setSourceCodeFilename(niceFileName);
+			ctx.setSourceCodeFile(new File(niceFileName));
+			if (LOG.isLoggable(Level.FINE)) {
+			    LOG.fine("Processing " + ctx.getSourceCodeFilename());
+			}
+			rs.start(ctx);
+	
+			for (Renderer r : renderers) {
+			    r.startFileAnalysis(dataSource);
+			}
+	
+			try {
+			    InputStream stream = new BufferedInputStream(dataSource.getInputStream());
+			    ctx.setLanguageVersion(null);
+			    pmd.processFile(stream, rs, ctx);
+			} catch (PMDException pmde) {
+			    LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
+	
+			    report.addError(new Report.ProcessingError(pmde.getMessage(), niceFileName));
+			} catch (IOException ioe) {
+			    // unexpected exception: log and stop executor service
+			    LOG.log(Level.FINE, "Unable to read source file", ioe);
+	
+			    report.addError(new Report.ProcessingError(ioe.getMessage(), niceFileName));
+			} catch (RuntimeException re) {
+			    // unexpected exception: log and stop executor service
+			    LOG.log(Level.FINE, "RuntimeException while processing file", re);
+	
+			    report.addError(new Report.ProcessingError(re.getMessage(), niceFileName));
+			}
+	
+			rs.end(ctx);
+	
+			render(renderers, report);
 		    }
-		    long end = System.nanoTime();
-		    Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
-		} catch (IOException ioe) {
 		}
-	    }
-	}
     }
+
+	private static void render(List<Renderer> renderers, Report report) {
+		
+		long start = System.nanoTime();
+		
+		try {				   
+		    for (Renderer rend : renderers) {
+		    	rend.renderFileReport(report);
+			    }
+			long end = System.nanoTime();
+			Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
+			} catch (IOException ioe) {
+				}
+	}
 
     /**
      * If in debug modus, print the names of the rules.
