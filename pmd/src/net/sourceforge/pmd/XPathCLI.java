@@ -1,15 +1,8 @@
-package net.sourceforge.pmd.util;
+package net.sourceforge.pmd;
 
 import java.io.FileReader;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -21,10 +14,11 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
  * public class Test {
  *  private int x;
  * }
- * $ java net.sourceforge.pmd.util.XPathTest -xpath "//FieldDeclaration" -filename "/home/tom/tmp/Test.java" 
+ * $ java net.sourceforge.pmd.util.XPathTest -xpath "//FieldDeclaration" -filename "/home/tom/tmp/Test.java"
  * Match at line 3 column 11; package name 'foo'; variable name 'x'
  */
-public class XPathTest {
+public class XPathCLI {
+
     public static void main(String[] args) throws Exception {
         String xpath;
         if (args[0].equals("-xpath")) {
