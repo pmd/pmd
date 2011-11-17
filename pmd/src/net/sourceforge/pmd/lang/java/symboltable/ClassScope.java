@@ -10,7 +10,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.util.Applier;
 
 public class ClassScope extends AbstractScope {
 

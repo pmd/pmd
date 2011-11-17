@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import net.sourceforge.pmd.util.Applier;
 
 import java.util.ArrayList;
 import java.util.List;

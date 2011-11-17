@@ -3,7 +3,7 @@
  */
 package test.net.sourceforge.pmd.util;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.util.Applier;
+import net.sourceforge.pmd.lang.java.symboltable.Applier;
 import net.sourceforge.pmd.util.UnaryFunction;
 
 import org.junit.Test;
