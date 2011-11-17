@@ -18,7 +18,11 @@ import net.sourceforge.pmd.util.FileFinder;
 
 public class CPD {
 
-    private Map<String, SourceCode> source = new TreeMap<String, SourceCode>();
+    private static final int MISSING_FILES = 1;
+	private static final int MISSING_ARGS = 2;
+	private static final int MISSING_REQUIRED_ARGUMENT = 3;
+	
+	private Map<String, SourceCode> source = new TreeMap<String, SourceCode>();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
     private int minimumTileSize;
@@ -143,7 +147,8 @@ public class CPD {
         }
         System.out.println("No " + name + " value passed in");
         usage();
-        throw new RuntimeException();
+        System.exit(MISSING_REQUIRED_ARGUMENT);
+        return "";
     }
 
     private static String findOptionalStringValue(String[] args, String name, String defaultValue) {
@@ -171,6 +176,7 @@ public class CPD {
     public static void main(String[] args) {
         if (args.length == 0) {
             usage();
+            System.exit(MISSING_ARGS);
         }
 
         try {
@@ -207,7 +213,7 @@ public class CPD {
             if ( missingFiles ) {
 	            System.out.println("No " + "--files" + " value passed in");
 	            usage();
-	            throw new RuntimeException();
+	            System.exit(MISSING_FILES);
             }
 
             cpd.go();

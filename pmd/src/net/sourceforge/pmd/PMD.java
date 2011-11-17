@@ -70,6 +70,8 @@ public class PMD {
     // FUTURE Move this into the SystemUtils
     private static final boolean MT_SUPPORTED;
 
+	private static final int MISSING_RULESETS = 0;
+
     static {
 		boolean error = false;
 		try {
@@ -220,6 +222,7 @@ public class PMD {
 		} catch (RuleSetNotFoundException rsnfe) {
 		    LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
 		    System.out.println(CommandLineOptions.usage());
+		    System.exit(MISSING_RULESETS);
 		}
 		return ruleSets;
     }
@@ -267,9 +270,9 @@ public class PMD {
 		} catch (Exception e) {
 		    String message = e.getMessage();
 		    if (message != null) {
-			LOG.severe(message);
+		    	LOG.severe(message);
 		    } else {
-			LOG.log(Level.SEVERE, "Exception during processing", e);
+		    	LOG.log(Level.SEVERE, "Exception during processing", e);
 		    }
 
 		    LOG.log(Level.FINE, "Exception during processing", e); //Only displayed when debug logging is on
