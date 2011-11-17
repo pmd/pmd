@@ -1,8 +1,11 @@
 #!/bin/bash
+readonly CLASSNAME="net.sourceforge.pmd.PMD"
 
 usage() {
     echo "Usage:"
-    echo "    $(basename $0) <java-src-file> html|xml|text|vbhtml rulesetfile1[,rulesetfile2[,..]]"
+    echo "    $(basename $0) [-h|-v] <java-src-file> html|xml|text|vbhtml rulesetfile1[,rulesetfile2[,..]]"
+    echo ""
+	echo "-h print this help"
 }
 
 is_cygwin() {
@@ -50,10 +53,11 @@ java_heapsize_settings() {
     esac
 }
 
-if [ -z "$3" ]; then
-    usage
-    exit 1
-fi
+# move to java
+#if [ -z "$3" ]; then
+#    usage
+#    exit 1
+#fi
 
 is_cygwin
 
@@ -67,21 +71,14 @@ convert_cygwin_vars
 
 classpath=$CLASSPATH
 
-cd "$CWD"
+cd "${CWD}"
 
-for jarfile in $(ls $LIB_DIR/*.jar) ; do
+for jarfile in ${LIB_DIR}/*.jar; do
     classpath=$classpath:$jarfile
 done
-
-
-readonly FILE="${1}"
-shift
-readonly FORMAT="${1}"
-shift
-readonly RULESETFILES="$@"
 
 cygwin_paths
 
 java_heapsize_settings
 
-java "${HEAPSIZE}" -cp "${classpath}" net.sourceforge.pmd.PMD $FILE $FORMAT $RULESETFILES
+java "${HEAPSIZE}" -cp "${classpath}" "${CLASSNAME}" ${@}

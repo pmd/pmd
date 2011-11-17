@@ -1,4 +1,12 @@
 #!/bin/bash
+readonly CLASSNAME="net.sourceforge.pmd.util.designer.Designer"
+
+usage() {
+    echo "Usage:"
+    echo "    $(basename $0) [-h]"
+    echo ""
+	echo "-h print this help"
+}
 
 is_cygwin() {
     case "$(uname)" in
@@ -12,6 +20,15 @@ is_cygwin() {
     fi
 }
 
+cygwin_paths() {
+    # For Cygwin, switch paths to Windows format before running java
+    if ${cygwin} ; then
+        JAVA_HOME=$(cygpath --windows "${JAVA_HOME}")
+        classpath=$(cygpath --path --windows "${classpath}")
+        DIRECTORY=$(cygpath --windows "${DIRECTORY}")
+    fi
+}
+
 convert_cygwin_vars() {
     # If cygwin, convert to Unix form before manipulating
     if $cygwin ; then
@@ -22,39 +39,46 @@ convert_cygwin_vars() {
     fi
 }
 
-cygwin_paths() {
-    # For Cygwin, switch paths to Windows format before running java
-    if ${cygwin} ; then
-        JAVA_HOME=$(cygpath --windows "${JAVA_HOME}")
-        classpath=$(cygpath --path --windows "${classpath}")
-        DIRECTORY=$(cygpath --windows "${DIRECTORY}")
-    fi
+java_heapsize_settings() {
+    local heapsize=${HEAPSIZE:-512m}
+    case "${heapsize}" in
+        [1-9]*[mgMG])
+            readonly HEAPSIZE="-Xmx${heapsize}"
+            ;;
+        '')
+            ;;
+        *)
+            echo "HEAPSIZE '${HEAPSIZE}' unknown (try: 512m)"
+            exit 1
+    esac
 }
 
-SCRIPT_DIR=$(dirname $0)
-CWD="$(PWD)"
+# move to java
+#if [ -z "$3" ]; then
+#    usage
+#    exit 1
+#fi
 
 is_cygwin
 
+readonly SCRIPT_DIR=$(dirname ${0})
+CWD="${PWD}"
+
 cd "${SCRIPT_DIR}/../lib"
-LIB_DIR=$(pwd -P)
+readonly LIB_DIR=$(pwd -P)
 
 convert_cygwin_vars
 
-classpath=$CLASSPATH
+classpath="${CLASSPATH}"
 
 cd "${CWD}"
 
 for jarfile in ${LIB_DIR}/*.jar; do
-    classpath=$classpath:$jarfile
+    classpath=${classpath}:${jarfile}
 done
-
-FILE="${1}"
-shift
-FORMAT="${1}"
-shift
-RULESETFILES="$@"
 
 cygwin_paths
 
-java -cp ${classpath} net.sourceforge.pmd.util.designer.Designer
+java_heapsize_settings
+
+java "${HEAPSIZE}" -cp "${classpath}" "${CLASSNAME}" ${@}
