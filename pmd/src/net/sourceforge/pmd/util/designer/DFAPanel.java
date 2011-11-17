@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.util.LineGetter;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class DFAPanel extends JComponent implements ListSelectionListener {

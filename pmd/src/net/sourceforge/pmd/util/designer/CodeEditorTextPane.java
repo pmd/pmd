@@ -3,7 +3,6 @@ package net.sourceforge.pmd.util.designer;
 import javax.swing.JTextPane;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.LineGetter;
 
 public class CodeEditorTextPane extends JTextPane implements LineGetter {
     
