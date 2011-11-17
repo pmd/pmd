@@ -1,25 +1,11 @@
 #!/bin/sh
-
-## This will work in the majority of shells out there...
-
-## This will parse a directory named on the command line and produce a
-## cut and paste report for c++ files in that directory (or 'c', if you
-## set the environment variable LANGUAGE to 'c').
-
-## Note that other rules are only for Java code not C source.
-
-## If you run into java.lang.OutOfMemoryError, try setting the environment
-## variable HEAPSIZE to e.g. 512m
+readonly CLASSNAME="net.sourceforge.pmd.cpd.CPD"
 
 usage() {
     echo "Usage:"
-    echo "$(basename ${0})  <source-directory> [--ignore-literals] [--ignore-identifiers]"
+    echo "    $(basename $0) [-h]"
     echo ""
-    echo "Set language with environment variable LANGUAGE ($(supported_languages))"
-}
-
-supported_languages() {
-    echo "c, cpp, fortran, java, jsp, php, ruby,cs"
+	echo "-h print this help"
 }
 
 is_cygwin() {
@@ -34,16 +20,6 @@ is_cygwin() {
     fi
 }
 
-convert_cygwin_vars() {
-    # If cygwin, convert to Unix form before manipulating
-    if $cygwin ; then
-        [ -n "${JAVA_HOME}" ] &&
-            JAVA_HOME=$(cygpath --unix "${JAVA_HOME}")
-        [ -n "${CLASSPATH}" ] &&
-            CLASSPATH=$(cygpath --path --unix "${CLASSPATH}")
-    fi
-}
-
 cygwin_paths() {
     # For Cygwin, switch paths to Windows format before running java
     if ${cygwin} ; then
@@ -53,16 +29,14 @@ cygwin_paths() {
     fi
 }
 
-language_settings() {
-    readonly LANGUAGE=${LANGUAGE:-cpp}
-    case "${LANGUAGE}" in
-        c|cs|cpp|fortran|java|jsp|php|ruby)
-            echo "Language is set to ${LANGUAGE}"
-            ;;
-        *)
-            echo "Language '${LANGUAGE}' unknown (try: $(supported_languages))"
-            exit 1
-    esac
+convert_cygwin_vars() {
+    # If cygwin, convert to Unix form before manipulating
+    if $cygwin ; then
+        [ -n "${JAVA_HOME}" ] &&
+            JAVA_HOME=$(cygpath --unix "${JAVA_HOME}")
+        [ -n "${CLASSPATH}" ] &&
+            CLASSPATH=$(cygpath --path --unix "${CLASSPATH}")
+    fi
 }
 
 java_heapsize_settings() {
@@ -79,13 +53,11 @@ java_heapsize_settings() {
     esac
 }
 
-DIRECTORY=${1}
-
-if [ -z "${DIRECTORY}" ]; then
-	usage
-    exit 1
-fi
-shift
+# move to java
+#if [ -z "$3" ]; then
+#    usage
+#    exit 1
+#fi
 
 is_cygwin
 
@@ -100,18 +72,13 @@ convert_cygwin_vars
 classpath="${CLASSPATH}"
 
 cd "${CWD}"
+
 for jarfile in ${LIB_DIR}/*.jar; do
     classpath=${classpath}:${jarfile}
 done
 
-java_heapsize_settings
-
-language_settings
-
 cygwin_paths
 
-java "${HEAPSIZE}" -cp "${classpath}" net.sourceforge.pmd.cpd.CPD \
-    --minimum-tokens "${MINIMUM_TOKENS:-100}"\
-    --files "${DIRECTORY}" \
-    --language "${LANGUAGE}" \
-    ${@}
+java_heapsize_settings
+
+java "${HEAPSIZE}" -cp "${classpath}" "${CLASSNAME}" ${@}
