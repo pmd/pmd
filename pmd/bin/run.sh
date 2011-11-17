@@ -36,7 +36,7 @@ cygwin_paths() {
 
 convert_cygwin_vars() {
     # If cygwin, convert to Unix form before manipulating
-    if $cygwin ; then
+    if ${cygwin} ; then
         [ -n "${JAVA_HOME}" ] &&
             JAVA_HOME=$(cygpath --unix "${JAVA_HOME}")
         [ -n "${CLASSPATH}" ] &&
@@ -58,15 +58,34 @@ java_heapsize_settings() {
     esac
 }
 
+
+set_lib_dir() {
+  if [ -z ${LIB_DIR} ]; then
+    local script_dir=$(dirname ${0})
+    local cwd="${PWD}"
+
+    cd "${script_dir}/../lib"
+    readonly LIB_DIR=$(pwd -P)
+    cd "${cwd}"
+  fi
+}
+
+check_lib_dir() {
+  if [ ! -e "${LIB_DIR}" ]; then
+    echo "The jar directory [${LIB_DIR}] does not exist"
+  fi
+}
+
 readonly APPNAME="${1}"
 if [ -z "${APPNAME}" ]; then
     usage
     exit 1
 fi
+shift
 
 case "${APPNAME}" in
   "pmd")
-    readonly CLASSNAME="net.sourceforge.pmd.PMD"
+    readonly CLASSNAME="net.sourceforge.pmd.CLI"
     ;;
   "cpd")
     readonly CLASSNAME="net.sourceforge.pmd.cpd.CPD"
@@ -87,11 +106,8 @@ esac
 
 is_cygwin
 
-SCRIPT_DIR=$(dirname ${0})
-CWD="${PWD}"
-
-cd "${SCRIPT_DIR}/../lib"
-LIB_DIR=$(pwd -P)
+set_lib_dir
+check_lib_dir
 
 convert_cygwin_vars
 
