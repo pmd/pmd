@@ -136,4 +136,6 @@ public interface Renderer extends PropertySource {
      * @throws IOException
      */
     void end() throws IOException;
+    
+    void flush() throws IOException;
 }

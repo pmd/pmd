@@ -3,19 +3,20 @@
  */
 package net.sourceforge.pmd.renderers;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import net.sourceforge.pmd.AbstractPropertySource;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Abstract base class for {@link Renderer} implementations.
  */
 public abstract class AbstractRenderer extends AbstractPropertySource implements Renderer {
-	
+
     protected String name;
     protected String description;
     protected Map<String, String> propertyDefinitions = new LinkedHashMap<String, String>();
@@ -91,13 +92,23 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
      * {@inheritDoc}
      */
     public void setWriter(Writer writer) {
-	this.writer = writer;
+	    this.writer = writer;
     }
 
     /**
      * {@inheritDoc}
      */
     public Writer getWriter() {
-	return writer;
+	    return writer;
+    }
+
+    public void flush()  {
+        try {
+    		this.writer.flush();
+    	} catch (IOException e) {
+    		throw new IllegalStateException(e);
+    	} finally {
+    		IOUtil.closeQuietly(writer);
+    	}
     }
 }
