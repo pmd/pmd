@@ -22,11 +22,12 @@
 
     <fileSet>
         <includes>
-            <include>bgastviewer.*</include>
-            <include>cpd.*</include>
-            <include>cpdgui.*</include>
-            <include>designer.*</include>
-            <include>pmd.*</include>
+            <include>bgastviewer.bat</include>
+            <include>cpd.bat</include>
+            <include>cpdgui.bat</include>
+            <include>designer.bat</include>
+            <include>pmd.bat</include>
+            <include>run.sh</include>
         </includes>
         <directory>bin</directory>
         <outputDirectory>bin</outputDirectory>
