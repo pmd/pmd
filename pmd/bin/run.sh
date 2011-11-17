@@ -1,11 +1,16 @@
-#!/bin/sh
-readonly CLASSNAME="net.sourceforge.pmd.cpd.CPD"
+#!/bin/bash
 
 usage() {
     echo "Usage:"
-    echo "    $(basename $0) [-h]"
+    echo "    $(basename $0) <application-name> [-h|-v] ..."
     echo ""
+    echo "application-name: valid options are: $(valid_app_options)"
 	echo "-h print this help"
+    echo "-v display PMD's version"
+}
+
+valid_app_options () {
+    echo "pmd, cpd, cpdgui, designer,bgastviewer"
 }
 
 is_cygwin() {
@@ -53,28 +58,49 @@ java_heapsize_settings() {
     esac
 }
 
-# move to java
-#if [ -z "$3" ]; then
-#    usage
-#    exit 1
-#fi
+readonly APPNAME="${1}"
+if [ -z "${APPNAME}" ]; then
+    usage
+    exit 1
+fi
+
+case "${APPNAME}" in
+  "pmd")
+    readonly CLASSNAME="net.sourceforge.pmd.PMD"
+    ;;
+  "cpd")
+    readonly CLASSNAME="net.sourceforge.pmd.cpd.CPD"
+    ;;
+  "designer")
+    readonly CLASSNAME="net.sourceforge.pmd.util.designer.Designer"
+    ;;
+  "bgastviewer")
+    readonly CLASSNAME="net.sourceforge.pmd.util.viewer.Viewer"
+    ;;
+  "cpdgui")
+    readonly CLASSNAME="net.sourceforge.pmd.cpd.GUI"
+    ;;
+  *)
+    echo "${APPNAME} is NOT a valid application name, valid options are:$(valid_app_options)"
+    ;;
+esac
 
 is_cygwin
 
-readonly SCRIPT_DIR=$(dirname ${0})
+SCRIPT_DIR=$(dirname ${0})
 CWD="${PWD}"
 
 cd "${SCRIPT_DIR}/../lib"
-readonly LIB_DIR=$(pwd -P)
+LIB_DIR=$(pwd -P)
 
 convert_cygwin_vars
 
-classpath="${CLASSPATH}"
+classpath=$CLASSPATH
 
 cd "${CWD}"
 
 for jarfile in ${LIB_DIR}/*.jar; do
-    classpath=${classpath}:${jarfile}
+    classpath=$classpath:$jarfile
 done
 
 cygwin_paths
