@@ -306,17 +306,18 @@
                 <inherited>true</inherited>
                 <executions>
                   <execution>
-                     <id>process-sources</id>
-                     <phase>process-sources</phase>
+                    <id>process-sources</id>
+                    <phase>process-sources</phase>
                     <configuration>
                       <tasks>
-                          <copy file="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
-                                toFile="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
-                                overwrite="true">
+                        <copy file="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
+                              toFile="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
+                              overwrite="true">
                           <filterset>
                             <filter token="@@VERSION@@" value="${project.version}"/>
                           </filterset>
                         </copy>
+                        <ant antfile="tools/ant/alljavacc.xml"/>
                       </tasks>
                     </configuration>
                     <goals>
