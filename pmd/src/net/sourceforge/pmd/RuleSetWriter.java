@@ -1,6 +1,5 @@
 package net.sourceforge.pmd;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
+import net.sourceforge.pmd.util.IOUtil;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
@@ -45,9 +45,8 @@ public class RuleSetWriter {
 		this.outputStream = outputStream;
     }
 
-    public void close() throws IOException {
-		outputStream.flush();
-		outputStream.close();
+    public void close() {
+    	IOUtil.closeQuietly(outputStream);
     }
 
     public void write(RuleSet ruleSet) {
