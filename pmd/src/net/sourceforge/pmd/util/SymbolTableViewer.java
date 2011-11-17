@@ -7,7 +7,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 public class SymbolTableViewer extends JavaParserVisitorAdapter {
 
     private int depth;
-
+    
     public Object visit(ASTCompilationUnit node, Object data) {
         depth++;
         System.out.println(spaces() + node.getScope());

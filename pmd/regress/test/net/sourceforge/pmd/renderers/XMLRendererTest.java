@@ -113,7 +113,7 @@ public class XMLRendererTest extends RuleTst {
         ctx.setSourceCodeFilename("bar");
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
-        p.processFile(new StringReader(TEST2), new RuleSets(rules), ctx);
+        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST2), new RuleSets(rules), ctx);
         Element root = parseRootElement(report);
         assertEquals("bar", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
         assertEquals("n/a", root.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());

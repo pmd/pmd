@@ -46,7 +46,7 @@ public class XPathCLI {
         ctx.setSourceCodeFilename(filename);
         ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
 
-        pmd.processFile(new FileReader(filename), new RuleSets(ruleSet), ctx);
+        pmd.getSourceCodeProcessor().processSourceCode(new FileReader(filename), new RuleSets(ruleSet), ctx);
 
         for (Iterator<RuleViolation> i = report.iterator(); i.hasNext();) {
             RuleViolation rv = i.next();

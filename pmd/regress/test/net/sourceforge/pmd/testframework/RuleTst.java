@@ -126,7 +126,7 @@ public abstract class RuleTst {
         ctx.setLanguageVersion(languageVersion);
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
-        p.processFile(new StringReader(code), new RuleSets(rules), ctx);
+        p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
     }
 
     /**

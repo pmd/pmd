@@ -22,6 +22,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -151,7 +152,7 @@ public class Benchmark {
             for (DataSource dataSource: dataSources) {
             	reader = new InputStreamReader(dataSource.getInputStream());
             	ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
-            	p.processFile(reader, ruleSets, ctx);
+            	new SourceCodeProcessor(p.getConfiguration()).processSourceCode(reader, ruleSets, ctx);
             	IOUtil.closeQuietly(reader);
             	}
             long end = System.currentTimeMillis();

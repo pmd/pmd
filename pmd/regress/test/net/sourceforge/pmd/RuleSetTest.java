@@ -380,7 +380,7 @@ public class RuleSetTest extends RuleTst {
         ctx.setReport(r);
         ctx.setSourceCodeFilename(file.getName());
         ctx.setSourceCodeFile(file);
-        p.processFile(new StringReader(TEST1), ruleSets, ctx);
+        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST1), ruleSets, ctx);
         assertEquals("Violations", 2, r.size());
 
         // One violation
@@ -395,7 +395,7 @@ public class RuleSetTest extends RuleTst {
 
         r = new Report();
         ctx.setReport(r);
-        p.processFile(new StringReader(TEST1), ruleSets, ctx);
+        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST1), ruleSets, ctx);
         assertEquals("Violations", 1, r.size());
     }
 

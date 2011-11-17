@@ -45,7 +45,7 @@ import test.net.sourceforge.pmd.testframework.TestDescriptor;
          ctx.setLanguageVersion(DEFAULT_LANGUAGE_VERSION);
          RuleSet rules = new RuleSet();
          rules.addRule(rule);
-         p.processFile(new StringReader(TEST3), new RuleSets(rules), ctx);
+         p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
          assertTrue(r.isEmpty());
          assertEquals(r.getSuppressedRuleViolations().size(), 1);
      }

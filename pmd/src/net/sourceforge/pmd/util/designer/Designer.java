@@ -484,11 +484,11 @@ public class Designer implements ClipboardOwner {
 	    pmd.getConfiguration().setDefaultLanguageVersion(languageVersion);
 
 	    try {
-		pmd.processFile(reader, new RuleSets(rs), ctx);
-		//	    } catch (PMDException pmde) {
-		//		loadTreeData(new ExceptionNode(pmde));
-	    } catch (Exception e) {
-		e.printStackTrace();
+			pmd.getSourceCodeProcessor().processSourceCode(reader, new RuleSets(rs), ctx);
+			//	    } catch (PMDException pmde) {
+			//		loadTreeData(new ExceptionNode(pmde));
+		    } catch (Exception e) {
+			e.printStackTrace();
 	    }
 
 	    List<ASTMethodDeclaration> methods = dfaGraphRule.getMethods();

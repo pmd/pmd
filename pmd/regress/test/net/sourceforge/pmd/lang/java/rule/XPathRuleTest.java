@@ -43,7 +43,7 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
          ctx.setSourceCodeFilename("n/a");
          RuleSet rules = new RuleSet();
          rules.addRule(rule);
-         p.processFile(new StringReader(TEST1), new RuleSets(rules), ctx);
+         p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST1), new RuleSets(rules), ctx);
          RuleViolation rv = (RuleViolation) report.iterator().next();
          assertEquals("a", rv.getDescription());
      }
@@ -62,7 +62,7 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
          ctx.setSourceCodeFilename("n/a");
          RuleSet rules = new RuleSet();
          rules.addRule(rule);
-         p.processFile(new StringReader(TEST2), new RuleSets(rules), ctx);
+         p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST2), new RuleSets(rules), ctx);
          RuleViolation rv = (RuleViolation) report.iterator().next();
          assertEquals(3, rv.getBeginLine());
      }

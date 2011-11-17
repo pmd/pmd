@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.java.symboltable.Applier;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableUsageFinderFunction;
