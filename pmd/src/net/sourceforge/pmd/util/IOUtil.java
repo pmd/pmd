@@ -1,8 +1,11 @@
 package net.sourceforge.pmd.util;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 
@@ -47,6 +50,18 @@ public class IOUtil {
     		reader.close();
     	} catch (IOException ex) {
     		//ignore
+    	}
+    }
+    
+    public static Writer createWriter() {
+    	return new OutputStreamWriter(System.out);
+    }
+    
+    public static Writer createWriter(String reportFile) {
+    	try {
+    		return StringUtil.isEmpty(reportFile) ? createWriter()  : new BufferedWriter(new FileWriter(reportFile));
+    	} catch (IOException e) {
+    		throw new IllegalArgumentException(e);
     	}
     }
 }
