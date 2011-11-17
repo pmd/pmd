@@ -64,30 +64,8 @@ public class PMD {
     public static final String VERSION = "@@VERSION@@";
     public static final String SUPPRESS_MARKER = "NOPMD";
 
-    /**
-     * Do we have proper permissions to use multithreading?
-     */
-    // FUTURE Move this into the SystemUtils
-    private static final boolean MT_SUPPORTED;
-
 	private static final int MISSING_RULESETS = 0;
 
-    static {
-		boolean error = false;
-		try {
-		    /*
-		     * ant task ran from Eclipse with jdk 1.5.0 raises an AccessControlException
-		     * when shutdown is called. Standalone pmd or ant from command line are fine.
-		     *
-		     * With jdk 1.6.0, ant task from Eclipse also works.
-		     */
-		    ExecutorService executor = Executors.newFixedThreadPool(1);
-		    executor.shutdown();
-		} catch (RuntimeException e) {
-		    error = true;
-		}
-		MT_SUPPORTED = !error;
-    }
 
     protected final Configuration configuration;
 
@@ -480,7 +458,7 @@ public class PMD {
 	 * ExecutorService can also be disabled if threadCount is not positive, e.g. using the
 	 * "-threads 0" command line option.
 	 */
-	boolean useMT = MT_SUPPORTED && configuration.getThreads() > 0;
+	boolean useMT = configuration.getThreads() > 0;
 
 	if (configuration.isStressTest()) {
 	    // randomize processing order
