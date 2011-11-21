@@ -44,6 +44,41 @@ public class PMD {
 	private final SourceCodeProcessor rulesetsFileProcessor;
 
 	/**
+	 * Create a report, filter out any defective rules, and keep a record of them.
+	 * 
+	 * @param rs
+	 * @param ctx
+	 * @param fileName
+	 * @return
+	 */
+	public static Report setupReport(RuleSets rs, RuleContext ctx, String fileName) {
+		
+		Set<Rule> brokenRules = removeBrokenRules(rs);
+		Report report = Report.createReport(ctx, fileName);
+		
+		for (Rule rule : brokenRules) {
+			report.addConfigError(
+				new Report.RuleConfigurationError(rule, rule.dysfunctionReason())
+				);
+		}
+
+		return report;
+	}
+	
+	
+    private static Set<Rule> removeBrokenRules(RuleSets ruleSets) {
+    	
+    	Set<Rule> brokenRules = new HashSet<Rule>();
+    	ruleSets.removeDysfunctionalRules(brokenRules);
+	    
+	    for (Rule rule : brokenRules) {
+	    	 LOG.log(Level.WARNING, "Removed broken rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());	
+	    }
+	    
+	    return brokenRules;
+    }
+    
+	/**
 	 * Create a PMD instance using a default Configuration. Changes to the
 	 * configuration may be required.
 	 */
@@ -175,7 +210,7 @@ public class PMD {
 
 	}
 	
-	private static List<DataSource> getApplicableFiles(
+	public static List<DataSource> getApplicableFiles(
 			Configuration configuration, Set<Language> languages) {
 		long startFiles = System.nanoTime();
 		LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(

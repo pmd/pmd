@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.processor;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -17,7 +16,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -46,11 +44,8 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 		RuleContext ctx = thread.getRuleContext();
 		RuleSets rs = thread.getRuleSets(configuration.getRuleSets());
 
-		Report report = new Report();
-		ctx.setReport(report);
-
-		ctx.setSourceCodeFilename(fileName);
-		ctx.setSourceCodeFile(new File(fileName));
+		Report report = setupReport(rs, ctx, fileName);
+		
 		if (LOG.isLoggable(Level.FINE)) {
 			LOG.fine("Processing " + ctx.getSourceCodeFilename());
 		}
@@ -99,10 +94,10 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 			this.ruleSetFactory = ruleSetFactory;
 		}
 
-		private int id;
+		private final int id;
 		private RuleContext context;
 		private RuleSets rulesets;
-		private RuleSetFactory ruleSetFactory;
+		private final RuleSetFactory ruleSetFactory;
 
 		public RuleContext getRuleContext() {
 			return context;

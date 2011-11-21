@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,11 +15,22 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.util.DateTimeUtil;
+import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
 
 public class Report {
 
-    public static class ReadableDuration {
+	public static Report createReport(RuleContext ctx, String fileName) {
+		
+		Report report = new Report();
+		ctx.setReport(report);
+		ctx.setSourceCodeFilename(fileName);
+		ctx.setSourceCodeFile(new File(fileName));
+		return report;
+	}	
+	
+	public static class ReadableDuration {
         private final long duration;
 
         public ReadableDuration(long duration) {
@@ -26,36 +38,23 @@ public class Report {
         }
 
         public String getTime() {
-            long seconds = 0;
-            long minutes = 0;
-            long hours = 0;
-
-            if (duration > 1000) {
-                seconds = duration / 1000;
-            }
-
-            if (seconds > 60) {
-                minutes = seconds / 60;
-                seconds = seconds % 60;
-            }
-
-            if (minutes > 60) {
-                hours = minutes / 60;
-                minutes = minutes % 60;
-            }
-
-            StringBuffer res = new StringBuffer();
-            if (hours > 0) {
-                res.append(hours).append("h ");
-            }
-            if (hours > 0 || minutes > 0) {
-                res.append(minutes).append("m ");
-            }
-            res.append(seconds).append('s');
-            return res.toString();
+            return DateTimeUtil.asHoursMinutesSeconds(duration);
         }
     }
+    
+    public static class RuleConfigurationError {
+        private final Rule rule;
+        private final String issue;
 
+        public RuleConfigurationError(Rule theRule, String theIssue) {
+            rule = theRule;
+            issue = theIssue;
+        }
+
+        public Rule rule() { return rule;  }
+        public String issue() { return issue; }
+    }
+    
     public static class ProcessingError {
         private final String msg;
         private final String file;
@@ -113,7 +112,8 @@ public class Report {
     private final List<RuleViolation> violations = new ArrayList<RuleViolation>();
     private final Set<Metric> metrics = new HashSet<Metric>();
     private final List<ReportListener> listeners = new ArrayList<ReportListener>();
-    private final List<ProcessingError> errors = new ArrayList<ProcessingError>();
+    private List<ProcessingError> errors;
+    private List<RuleConfigurationError> configErrors;
     private Map<Integer, String> linesToSuppress = new HashMap<Integer, String>();
     private long start;
     private long end;
@@ -201,10 +201,16 @@ public class Report {
         }
     }
 
+    public void addConfigError(RuleConfigurationError error) {
+    	if (configErrors == null) configErrors = new ArrayList<RuleConfigurationError>();
+    	configErrors.add(error);
+    }
+    
     public void addError(ProcessingError error) {
+    	if (errors == null) errors = new ArrayList<ProcessingError>();
         errors.add(error);
     }
-
+    
     public void merge(Report r) {
         Iterator<ProcessingError> i = r.errors();
         while (i.hasNext()) {
@@ -236,9 +242,17 @@ public class Report {
     }
 
     public boolean isEmpty() {
-        return !violations.iterator().hasNext() && errors.isEmpty();
+        return !violations.iterator().hasNext() && !hasErrors();
     }
 
+    public boolean hasErrors() {
+    	return errors != null;
+    }
+    
+    public boolean hasConfigErrors() {
+    	return configErrors != null;
+    }
+    
     public boolean treeIsEmpty() {
         return !violationTree.iterator().hasNext();
     }
@@ -252,9 +266,13 @@ public class Report {
     }
 
     public Iterator<ProcessingError> errors() {
-        return errors.iterator();
+        return errors == null ? EmptyIterator.instance : errors.iterator();
     }
 
+    public Iterator<RuleConfigurationError> configErrors() {
+        return configErrors == null ? EmptyIterator.instance : errors.iterator();
+    }
+    
     public int treeSize() {
         return violationTree.size();
     }

@@ -60,6 +60,15 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 		}
 		executor.shutdown();
 
+		processReports(renderers, tasks);
+		
+		rs.end(ctx);
+		super.renderReports(renderers,ctx.getReport());
+
+	}
+
+	private void processReports(final List<Renderer> renderers, List<Future<Report>> tasks) throws Error {
+		
 		while (!tasks.isEmpty()) {
 			Future<Report> future = tasks.remove(0);
 			Report report = null;
@@ -82,9 +91,6 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 
 			super.renderReports(renderers, report);
 		}
-		rs.end(ctx);
-		super.renderReports(renderers,ctx.getReport());
-
 	}
 
 }

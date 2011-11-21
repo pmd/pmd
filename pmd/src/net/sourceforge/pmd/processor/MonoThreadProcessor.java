@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.processor;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -19,7 +18,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -51,12 +49,9 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
 		for (DataSource dataSource : files) {
 			String niceFileName = dataSource.getNiceFileName(
 					configuration.isReportShortNames(), configuration.getInputPaths());
-
-			Report report = new Report();
-			ctx.setReport(report);
-
-			ctx.setSourceCodeFilename(niceFileName);
-			ctx.setSourceCodeFile(new File(niceFileName));
+					
+			Report report = PMD.setupReport(rs, ctx, niceFileName);
+			
 			if (LOG.isLoggable(Level.FINE)) {
 				LOG.fine("Processing " + ctx.getSourceCodeFilename());
 			}
