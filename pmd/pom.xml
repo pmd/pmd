@@ -233,7 +233,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <build>
-        <sourceDirectory>src</sourceDirectory>
         <testSourceDirectory>regress</testSourceDirectory>
         <resources>
             <resource>
@@ -317,7 +316,9 @@
                             <filter token="@@VERSION@@" value="${project.version}"/>
                           </filterset>
                         </copy>
-                        <ant antfile="tools/ant/alljavacc.xml"/>
+                        <ant antfile="tools/ant/alljavacc.xml">
+                          <property name="src" value="${project.build.sourceDirectory}"/>
+                        </ant>
                       </tasks>
                     </configuration>
                     <goals>
