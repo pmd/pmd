@@ -28,7 +28,6 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.IOUtil;
@@ -175,7 +174,78 @@ public class PMDTask extends Task {
 	}
 
 	private void doTask() {
-		// Setup ClassLoader
+		
+		setupClassLoader();
+
+		RuleSetFactory ruleSetFactory = validateRulesets();
+
+		if (configuration.getSuppressMarker() != null) {
+			log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
+		}
+
+		startFormatters();
+
+		//log("Setting Language Version " + languageVersion.getShortName(), Project.MSG_VERBOSE);
+
+		// TODO Do we really need all this in a loop over each FileSet?  Seems like a lot of redundancy
+		RuleContext ctx = new RuleContext();
+		Report errorReport = new Report();
+		final AtomicInteger reportSize = new AtomicInteger();
+		final String separator = System.getProperty("file.separator");
+
+		for (FileSet fs : filesets) {
+			List<DataSource> files = new LinkedList<DataSource>();
+			String inputPaths = addProjectFiles(separator, fs, files);
+			configuration.setInputPaths(inputPaths);
+
+			List<Renderer> renderers = setupRenderers(reportSize, inputPaths);
+			try {
+				PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+			} catch (RuntimeException pmde) {
+				handleError(ctx, errorReport, pmde);
+			}
+		}
+
+		int problemCount = reportSize.get();
+		log(problemCount + " problems found", Project.MSG_VERBOSE);
+
+		for (Formatter formatter : formatters) {
+			formatter.end(errorReport);
+		}
+
+		if (failuresPropertyName != null && problemCount > 0) {
+			getProject().setProperty(failuresPropertyName, String.valueOf(problemCount));
+			log("Setting property " + failuresPropertyName + " to " + problemCount, Project.MSG_VERBOSE);
+		}
+
+		if (failOnRuleViolation && problemCount > maxRuleViolations) {
+			throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
+		}
+	}
+
+	private List<Renderer> setupRenderers(AtomicInteger reportSize, String inputPaths) {
+		
+		Renderer logRenderer = createLogRenderer(reportSize, inputPaths);
+		List<Renderer> renderers = new LinkedList<Renderer>();
+		renderers.add(logRenderer);
+		for (Formatter formatter : formatters) {
+			renderers.add(formatter.getRenderer());
+		}
+		return renderers;
+	}
+
+	private void startFormatters() {
+		
+		final String projectDir = getProject().getBaseDir().toString();
+		
+		for (Formatter formatter : formatters) {
+			log("Sending a report to " + formatter, Project.MSG_VERBOSE);
+			formatter.start(projectDir);
+		}
+	}
+
+	private void setupClassLoader() {
+
 		if (classpath == null) {
 			log("Using the normal ClassLoader", Project.MSG_VERBOSE);
 		} else {
@@ -196,7 +266,72 @@ public class PMDTask extends Task {
 		} catch (IOException ioe) {
 			throw new BuildException(ioe.getMessage(), ioe);
 		}
+	}
 
+	private String addProjectFiles(final String separator, FileSet fs, List<DataSource> files) {
+
+		DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+		String[] srcFiles = ds.getIncludedFiles();
+		for (String srcFile : srcFiles) {
+			File file = new File(ds.getBasedir() + separator + srcFile);
+			files.add(new FileDataSource(file));
+		}
+
+		return ds.getBasedir().getPath();
+	}
+
+	private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
+		
+		pmde.printStackTrace();
+		log(pmde.toString(), Project.MSG_VERBOSE);
+		
+		Throwable cause = pmde.getCause();
+
+		if (cause != null) {
+			StringWriter strWriter = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(strWriter);
+			pmde.getCause().printStackTrace(printWriter);
+			log(strWriter.toString(), Project.MSG_VERBOSE);
+			IOUtil.closeQuietly(printWriter);
+			
+			if (StringUtil.isNotEmpty(cause.getMessage())) {
+				log(cause.getMessage(), Project.MSG_VERBOSE);
+			}
+		}
+		
+		if (failOnError) {
+			throw new BuildException(pmde);
+		}
+		errorReport.addError(new Report.ProcessingError(pmde.getMessage(), ctx.getSourceCodeFilename()));
+	}
+
+	private Renderer createLogRenderer(final AtomicInteger reportSize, final String inputPaths) {
+		
+		return new AbstractRenderer("log", "Logging renderer", null) {
+			public void start() {
+				// Nothing to do
+			}
+
+			public void startFileAnalysis(DataSource dataSource) {
+				log("Processing file " + dataSource.getNiceFileName(false, inputPaths), Project.MSG_VERBOSE);
+			}
+
+			public void renderFileReport(Report r) {
+				int size = r.size();
+				if (size > 0) {
+					reportSize.addAndGet(size);
+				}
+			}
+
+			public void end() {
+				// Nothing to do
+			}
+
+			public String defaultFileExtension() { return null;	}	// not relevant
+		};
+	}
+
+	private RuleSetFactory validateRulesets() {
 		// Setup RuleSetFactory and validate RuleSets
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 		ruleSetFactory.setClassLoader(configuration.getClassLoader());
@@ -215,100 +350,7 @@ public class PMDTask extends Task {
 		} catch (RuleSetNotFoundException e) {
 			throw new BuildException(e.getMessage(), e);
 		}
-
-		if (configuration.getSuppressMarker() != null) {
-			log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
-		}
-
-		// Start the Formatters
-		for (Formatter formatter : formatters) {
-			log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-			formatter.start(getProject().getBaseDir().toString());
-		}
-
-		//log("Setting Language Version " + languageVersion.getShortName(), Project.MSG_VERBOSE);
-
-		// TODO Do we really need all this in a loop over each FileSet?  Seems like a lot of redundancy
-		RuleContext ctx = new RuleContext();
-		Report errorReport = new Report();
-		final AtomicInteger reportSize = new AtomicInteger();
-		final String separator = System.getProperty("file.separator");
-		for (FileSet fs : filesets) {
-			List<DataSource> files = new LinkedList<DataSource>();
-			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-			String[] srcFiles = ds.getIncludedFiles();
-			for (String srcFile : srcFiles) {
-				File file = new File(ds.getBasedir() + separator + srcFile);
-				files.add(new FileDataSource(file));
-			}
-
-			final String inputPaths = ds.getBasedir().getPath();
-			configuration.setInputPaths(inputPaths);
-
-			Renderer logRenderer = new AbstractRenderer("log", "Logging renderer", null) {
-				public void start() {
-					// Nothing to do
-				}
-
-				public void startFileAnalysis(DataSource dataSource) {
-					log("Processing file " + dataSource.getNiceFileName(false, inputPaths), Project.MSG_VERBOSE);
-				}
-
-				public void renderFileReport(Report r) {
-					int size = r.size();
-					if (size > 0) {
-						reportSize.addAndGet(size);
-					}
-				}
-
-				public void end() {
-					// Nothing to do
-				}
-
-				public String defaultFileExtension() { return null;	}	// not relevant
-			};
-			List<Renderer> renderers = new LinkedList<Renderer>();
-			renderers.add(logRenderer);
-			for (Formatter formatter : formatters) {
-				renderers.add(formatter.getRenderer());
-			}
-			try {
-				PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);
-			} catch (RuntimeException pmde) {
-				pmde.printStackTrace();
-				log(pmde.toString(), Project.MSG_VERBOSE);
-				if (pmde.getCause() != null) {
-					StringWriter strWriter = new StringWriter();
-					PrintWriter printWriter = new PrintWriter(strWriter);
-					pmde.getCause().printStackTrace(printWriter);
-					log(strWriter.toString(), Project.MSG_VERBOSE);
-					IOUtil.closeQuietly(printWriter);
-				}
-				if (pmde.getCause() != null && pmde.getCause().getMessage() != null) {
-					log(pmde.getCause().getMessage(), Project.MSG_VERBOSE);
-				}
-				if (failOnError) {
-					throw new BuildException(pmde);
-				}
-				errorReport.addError(new Report.ProcessingError(pmde.getMessage(), ctx.getSourceCodeFilename()));
-			}
-		}
-
-		int problemCount = reportSize.get();
-		log(problemCount + " problems found", Project.MSG_VERBOSE);
-
-		for (Formatter formatter : formatters) {
-			formatter.end(errorReport);
-		}
-
-		if (failuresPropertyName != null && problemCount > 0) {
-			getProject().setProperty(failuresPropertyName, String.valueOf(problemCount));
-			log("Setting property " + failuresPropertyName + " to " + problemCount, Project.MSG_VERBOSE);
-		}
-
-		if (failOnRuleViolation && problemCount > maxRuleViolations) {
-			throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
-		}
+		return ruleSetFactory;
 	}
 
 	@Override
