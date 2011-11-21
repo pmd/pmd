@@ -36,9 +36,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * from non-private constructors.
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
- * @todo match parameter types.  Aggressively strips off any package names.  Normal
+ *
+ * TODO match parameter types.  Aggressively strips off any package names.  Normal
  * compares the names as is.
- * @todo What about interface declarations which can have internal classes
+ * TODO What about interface declarations which can have internal classes
  */
 public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRule {
     /**
@@ -621,7 +622,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * on types.  just use name and num of arguments.  will be some false hits,
      * but oh well.
      *
-     * @todo investigate limiting the number of passes through config.
+     * TODO investigate limiting the number of passes through config.
      */
     private boolean evaluateDangerOfMethods(Map<MethodHolder, List<MethodInvocation>> classMethodMap) {
         //check each method if it calls overridable method
@@ -655,7 +656,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * marks constructors dangerous if they call any dangerous methods
      * Requires only a single pass as methods are already marked
      *
-     * @todo optimize by having methods already evaluated somehow!?
+     * TODO optimize by having methods already evaluated somehow!?
      */
     private void evaluateDangerOfConstructors1(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap, Set<MethodHolder> evaluatedMethods) {
         //check each constructor in the class
@@ -735,7 +736,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     /**
-     * This check must be evaluated independelty for each class.  Inner classses
+     * This check must be evaluated independently for each class.  Inner classes
      * get their own EvalPackage in order to perform independent evaluation.
      */
     @Override
@@ -763,7 +764,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * just because it calls an unsafe public constructor.  We want to show only
      * 1 instance of an error, and this would be 2 instances of the same error.
      *
-     * @todo eliminate the redundency
+     * TODO eliminate the redundancy
      */
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
@@ -835,7 +836,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     /**
      * @return A method call on the class passed in, or null if no method call
      *         is found.
-     * @todo Need a better way to match the class and package name to the actual
+     * TODO Need a better way to match the class and package name to the actual
      * method being called.
      */
     private static MethodInvocation findMethod(ASTPrimaryExpression node, String className) {
@@ -851,7 +852,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         //		}
         if (meth != null) {
             //if it's a call on a variable, or on its superclass ignore it.
-            if (meth.getReferenceNames().size() == 0 && !meth.isSuper()) {
+            if (meth.getReferenceNames().isEmpty() && !meth.isSuper()) {
                 //if this list does not contain our class name, then its not referencing our class
                 //this is a cheezy test... but it errs on the side of less false hits.
                 List<String> packClass = meth.getQualifierNames();

@@ -11,7 +11,7 @@ public class DateTimeUtil {
 	/**
 	 * 
 	 * @param milliseconds
-	 * @return
+	 * @return String
 	 */
 	public static String asHoursMinutesSeconds(long milliseconds) {
 		

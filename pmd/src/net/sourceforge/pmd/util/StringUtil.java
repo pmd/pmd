@@ -10,13 +10,12 @@ import java.util.List;
 /**
  * A number of String-specific utility methods for use by PMD or its IDE plugins.
  *
- * @author br
+ * @author BrianRemedios
  */
 public final class StringUtil {
 
 	public static final String[] EMPTY_STRINGS = new String[0];
     private static final boolean SUPPORTS_UTF8 = System.getProperty("net.sourceforge.pmd.supportUTF8", "no").equals("yes");
-
 
     private StringUtil() {}
 
@@ -26,7 +25,7 @@ public final class StringUtil {
      *
      * @param text
      * @param prefixes
-     * @return
+     * @return boolean
      */
     public static boolean startsWithAny(String text, String... prefixes) {
 
@@ -42,7 +41,7 @@ public final class StringUtil {
      *
      * @param text
      * @param tests
-     * @return
+     * @return boolean
      */
     public static boolean isAnyOf(String text, String... tests) {
 
@@ -59,7 +58,7 @@ public final class StringUtil {
      *
      * @param text
      * @param prefixes
-     * @return
+     * @return String
      */
     public static String withoutPrefixes(String text, String... prefixes) {
 
@@ -94,6 +93,11 @@ public final class StringUtil {
     	return true;
     }
 
+    /**
+     *
+     * @param value String
+     * @return boolean
+     */
     public static boolean isNotEmpty(String value) {
     	return !isEmpty(value);
     }
@@ -104,7 +108,7 @@ public final class StringUtil {
      *
      * @param a
      * @param b
-     * @return boolean
+     * @return boolean 
      */
 	public static boolean areSemanticEquals(String a, String b) {
 
@@ -114,6 +118,13 @@ public final class StringUtil {
 		return a.equals(b);
 	}
 
+    /**
+     *
+     * @param original String
+     * @param oldChar char
+     * @param newString String
+     * @return String
+     */
     public static String replaceString(final String original, char oldChar, final String newString) {
 		int index = original.indexOf(oldChar);
 		if (index < 0) {
@@ -133,6 +144,13 @@ public final class StringUtil {
 		}
     }
 
+    /**
+     *
+     * @param original String
+     * @param oldString String
+     * @param newString String
+     * @return String
+     */
     public static String replaceString(final String original, final String oldString, final String newString) {
 		int index = original.indexOf(oldString);
 		if (index < 0) {
@@ -163,6 +181,11 @@ public final class StringUtil {
         appendXmlEscaped(buf, src, SUPPORTS_UTF8);
     }
 
+    /**
+     *
+     * @param string String
+     * @return String
+     */
     public static String htmlEncode(String string) {
         String encoded = replaceString(string, '&', "&amp;");
         encoded = replaceString(encoded, '<', "&lt;");
@@ -175,13 +198,12 @@ public final class StringUtil {
      * @param src
      * @param supportUTF8 override the default setting, whether special characters should be replaced
      * with entities (<code>false</code>) or should be included as is (<code>true</code>).
-     *
-     * @see #appendXmlEscaped(StringBuffer, String)
+     * @see #appendXmlEscaped(StringBuilder, String)
      *
      * TODO - unify the method above with the one below
      *
-     * public to support unit testing - make this package private, once the unit test classes are in the same package.
-     */
+     * public to support unit testing - make this package private, once the unit test classes are in the same package. 
+	 */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
         for (int i = 0; i < src.length(); i++) {

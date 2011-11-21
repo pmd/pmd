@@ -92,7 +92,7 @@ public interface PropertySource {
      * Returns a description of why the receiver may be dysfunctional. Usually due to missing property
      * values or some kind of conflict between values. Returns null if the receiver is ok.
      * 
-     * @return
+     * @return String
      */
     String dysfunctionReason();
 }

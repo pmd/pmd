@@ -54,7 +54,7 @@ public interface Renderer extends PropertySource {
     /**
      * Return the default filename extension to use.
      * 
-     * @return
+     * @return String
      */
     String defaultFileExtension();
     
