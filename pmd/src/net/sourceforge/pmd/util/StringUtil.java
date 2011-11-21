@@ -416,7 +416,7 @@ public final class StringUtil {
          if (length - s.length() > 0) {
              char [] arr = new char[length - s.length()];
              java.util.Arrays.fill(arr, ' ');
-             res = new StringBuffer(length).append(arr).append(s).toString();
+             res = new StringBuilder(length).append(arr).append(s).toString();
          }
          return res;
     }

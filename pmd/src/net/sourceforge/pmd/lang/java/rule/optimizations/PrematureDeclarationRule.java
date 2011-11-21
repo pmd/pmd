@@ -17,9 +17,9 @@ import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
- * Checks for variables that are defined before they are really needed. A reference is
- * deemed to be premature if it is created ahead of a block of code that doesn't
- * use it that also has the ability to return or throw an exception.
+ * Checks for variables in methods that are defined before they are really needed. 
+ * A reference is deemed to be premature if it is created ahead of a block of code 
+ * that doesn't use it that also has the ability to return or throw an exception.
  * 
  * @author Brian Remedios
  * @version $Revision: 1.0 $

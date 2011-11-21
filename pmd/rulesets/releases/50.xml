@@ -43,6 +43,7 @@ This ruleset contains links to rules that are new in PMD v5.0
     <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardDebugLogging"/>
 	<rule ref="rulesets/java/naming.xml/ShortClassName"/>
 	<rule ref="rulesets/java/optimizations.xml/RedundantFieldInitializer"/>
+	<rule ref="rulesets/java/optimizations.xml/PrematureDeclaration"/>
 	<rule ref="rulesets/java/strictexception.xml/AvoidCatchingGenericException"/>
 	<rule ref="rulesets/java/strictexception.xml/AvoidThrowingNewInstanceOfSameException"/>
 	<rule ref="rulesets/java/unnecessary.xml/UselessParentheses"/>
