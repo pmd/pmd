@@ -29,7 +29,7 @@
             <include>pmd.bat</include>
             <include>run.sh</include>
         </includes>
-        <directory>bin</directory>
+        <directory>src/main/scripts</directory>
         <outputDirectory>bin</outputDirectory>
         <fileMode>0755</fileMode>
         <directoryMode>0755</directoryMode>
