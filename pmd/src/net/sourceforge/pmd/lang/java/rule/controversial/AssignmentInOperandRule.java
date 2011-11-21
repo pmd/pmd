@@ -12,6 +12,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
+/**
+ * 
+ *
+ */
 public class AssignmentInOperandRule extends AbstractJavaRule {
 
     private static final BooleanProperty ALLOW_IF_DESCRIPTOR = new BooleanProperty("allowIf",
@@ -38,15 +42,30 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
     public Object visit(ASTExpression node, Object data) {
 	Node parent = node.jjtGetParent();
 	if (((parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR))
-		|| (parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)) || (parent instanceof ASTForStatement
-		&& parent.jjtGetChild(1) == node && !getProperty(ALLOW_FOR_DESCRIPTOR)))
-		&& (node.hasDescendantOfType(ASTAssignmentOperator.class) || (!getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR) && (node
-			.hasDescendantOfType(ASTPreIncrementExpression.class)
-			|| node.hasDescendantOfType(ASTPreDecrementExpression.class) || node
-			.hasDescendantOfType(ASTPostfixExpression.class))))) {
+		|| (parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)) || 
+		(parent instanceof ASTForStatement && parent.jjtGetChild(1) == node && !getProperty(ALLOW_FOR_DESCRIPTOR))) && 
+		(node.hasDescendantOfType(ASTAssignmentOperator.class) || 
+		(!getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR) && 
+		(node.hasDecendantOfAnyType(ASTPreIncrementExpression.class, ASTPreDecrementExpression.class, ASTPostfixExpression.class))))) {
+		
 	    addViolation(data, node);
 	    return data;
 	}
 	return super.visit(node, data);
     }
+    
+    
+	public boolean allowsAllAssignments() {		
+		return 
+			getProperty(ALLOW_IF_DESCRIPTOR) && 
+			getProperty(ALLOW_FOR_DESCRIPTOR) && 
+			getProperty(ALLOW_WHILE_DESCRIPTOR) && 
+			getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR); 
+	}
+
+
+	@Override
+	public String dysfunctionReason() {
+		return allowsAllAssignments() ? "All assignment types allowed, no checks performed" : null;
+	}
 }

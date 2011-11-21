@@ -30,8 +30,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
 	    return data;
 	}
 
-	if (node.hasDescendantOfType(ASTArrayDimsAndInits.class)
-		|| node.hasDescendantOfType(ASTAdditiveExpression.class)) {
+	if (node.hasDecendantOfAnyType(ASTArrayDimsAndInits.class, ASTAdditiveExpression.class)) {
 	    return data;
 	}
 

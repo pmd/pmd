@@ -340,6 +340,18 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
+     * 
+     * @param types
+     * @return
+     */
+    public final boolean hasDecendantOfAnyType(Class<?>... types) {
+    	for (Class<?> type : types) {
+    		if (hasDescendantOfType(type)) return true;
+    	}
+    	return false;
+    }
+    
+    /**
      * {@inheritDoc}
      */
     public List findChildNodesWithXPath(String xpathString) throws JaxenException {

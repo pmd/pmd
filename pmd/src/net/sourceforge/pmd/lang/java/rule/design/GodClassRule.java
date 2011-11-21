@@ -226,9 +226,7 @@ public class GodClassRule extends AbstractJavaRule {
             result = false;
         } else if (nameImage == null && node.getFirstDescendantOfType(ASTPrimaryPrefix.class).usesThisModifier()) {
             result = false;
-        } else if (nameImage == null && node.hasDescendantOfType(ASTLiteral.class)) {
-            result = false;
-        } else if (nameImage == null && node.hasDescendantOfType(ASTAllocationExpression.class)) {
+        } else if (nameImage == null && node.hasDecendantOfAnyType(ASTLiteral.class, ASTAllocationExpression.class)) {
             result = false;
         } else {
             result = true;
