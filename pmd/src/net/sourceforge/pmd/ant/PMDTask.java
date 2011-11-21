@@ -113,8 +113,7 @@ public class PMDTask extends Task {
 	public void addConfiguredVersion(Version version) {
 		LanguageVersion languageVersion = LanguageVersion.findByTerseName(version.getTerseName());
 		if (languageVersion == null) {
-			StringBuilder buf = new StringBuilder();
-			buf.append("The <version> element, if used, must be one of ");
+			StringBuilder buf = new StringBuilder("The <version> element, if used, must be one of ");
 			boolean first = true;
 			for (Language language : Language.values()) {
 				if (language.getVersions().size() > 2) {
@@ -122,9 +121,7 @@ public class PMDTask extends Task {
 						if (!first) {
 							buf.append(", ");
 						}
-						buf.append('\'');
-						buf.append(v.getTerseName());
-						buf.append('\'');
+						buf.append('\'').append(v.getTerseName()).append('\'');
 						first = false;
 					}
 				}
@@ -174,16 +171,36 @@ public class PMDTask extends Task {
 	}
 
 	private void doTask() {
-		
 		setupClassLoader();
 
-		RuleSetFactory ruleSetFactory = validateRulesets();
+		// Setup RuleSetFactory and validate RuleSets
+		RuleSetFactory ruleSetFactory = new RuleSetFactory();
+		ruleSetFactory.setClassLoader(configuration.getClassLoader());
+		try {
+			// This is just used to validate and display rules. Each thread will create its own ruleset
+			ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
+			ruleSetFactory.setWarnDeprecated(true);
+			String ruleSets = configuration.getRuleSets();
+			if (StringUtil.isNotEmpty(ruleSets)) {
+				// Substitute env variables/properties
+				configuration.setRuleSets(getProject().replaceProperties(ruleSets));
+			}
+			RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
+			ruleSetFactory.setWarnDeprecated(false);
+			logRulesUsed(rules);
+		} catch (RuleSetNotFoundException e) {
+			throw new BuildException(e.getMessage(), e);
+		}
 
 		if (configuration.getSuppressMarker() != null) {
 			log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
 		}
 
-		startFormatters();
+		// Start the Formatters
+		for (Formatter formatter : formatters) {
+			log("Sending a report to " + formatter, Project.MSG_VERBOSE);
+			formatter.start(getProject().getBaseDir().toString());
+		}
 
 		//log("Setting Language Version " + languageVersion.getShortName(), Project.MSG_VERBOSE);
 
@@ -195,10 +212,43 @@ public class PMDTask extends Task {
 
 		for (FileSet fs : filesets) {
 			List<DataSource> files = new LinkedList<DataSource>();
-			String inputPaths = addProjectFiles(separator, fs, files);
+			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+			String[] srcFiles = ds.getIncludedFiles();
+			for (String srcFile : srcFiles) {
+				File file = new File(ds.getBasedir() + separator + srcFile);
+				files.add(new FileDataSource(file));
+			}
+
+			final String inputPaths = ds.getBasedir().getPath();
 			configuration.setInputPaths(inputPaths);
 
-			List<Renderer> renderers = setupRenderers(reportSize, inputPaths);
+			Renderer logRenderer = new AbstractRenderer("log", "Logging renderer", null) {
+				public void start() {
+					// Nothing to do
+				}
+
+				public void startFileAnalysis(DataSource dataSource) {
+					log("Processing file " + dataSource.getNiceFileName(false, inputPaths), Project.MSG_VERBOSE);
+				}
+
+				public void renderFileReport(Report r) {
+					int size = r.size();
+					if (size > 0) {
+						reportSize.addAndGet(size);
+					}
+				}
+
+				public void end() {
+					// Nothing to do
+				}
+
+				public String defaultFileExtension() { return null;	}	// not relevant
+			};
+			List<Renderer> renderers = new LinkedList<Renderer>();
+			renderers.add(logRenderer);
+			for (Formatter formatter : formatters) {
+				renderers.add(formatter.getRenderer());
+			}
 			try {
 				PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);
 			} catch (RuntimeException pmde) {
@@ -223,25 +273,29 @@ public class PMDTask extends Task {
 		}
 	}
 
-	private List<Renderer> setupRenderers(AtomicInteger reportSize, String inputPaths) {
+	private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
 		
-		Renderer logRenderer = createLogRenderer(reportSize, inputPaths);
-		List<Renderer> renderers = new LinkedList<Renderer>();
-		renderers.add(logRenderer);
-		for (Formatter formatter : formatters) {
-			renderers.add(formatter.getRenderer());
+		pmde.printStackTrace();
+		log(pmde.toString(), Project.MSG_VERBOSE);
+		
+		Throwable cause = pmde.getCause();
+		
+		if (cause != null) {
+			StringWriter strWriter = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(strWriter);
+			cause.printStackTrace(printWriter);
+			log(strWriter.toString(), Project.MSG_VERBOSE);
+			IOUtil.closeQuietly(printWriter);
+			
+			if (StringUtil.isNotEmpty(cause.getMessage())) {
+				log(cause.getMessage(), Project.MSG_VERBOSE);
+			}
 		}
-		return renderers;
-	}
-
-	private void startFormatters() {
 		
-		final String projectDir = getProject().getBaseDir().toString();
-		
-		for (Formatter formatter : formatters) {
-			log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-			formatter.start(projectDir);
+		if (failOnError) {
+			throw new BuildException(pmde);
 		}
+		errorReport.addError(new Report.ProcessingError(pmde.getMessage(), ctx.getSourceCodeFilename()));
 	}
 
 	private void setupClassLoader() {
@@ -266,91 +320,6 @@ public class PMDTask extends Task {
 		} catch (IOException ioe) {
 			throw new BuildException(ioe.getMessage(), ioe);
 		}
-	}
-
-	private String addProjectFiles(final String separator, FileSet fs, List<DataSource> files) {
-
-		DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-		String[] srcFiles = ds.getIncludedFiles();
-		for (String srcFile : srcFiles) {
-			File file = new File(ds.getBasedir() + separator + srcFile);
-			files.add(new FileDataSource(file));
-		}
-
-		return ds.getBasedir().getPath();
-	}
-
-	private void handleError(RuleContext ctx, Report errorReport, RuntimeException pmde) {
-		
-		pmde.printStackTrace();
-		log(pmde.toString(), Project.MSG_VERBOSE);
-		
-		Throwable cause = pmde.getCause();
-
-		if (cause != null) {
-			StringWriter strWriter = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(strWriter);
-			pmde.getCause().printStackTrace(printWriter);
-			log(strWriter.toString(), Project.MSG_VERBOSE);
-			IOUtil.closeQuietly(printWriter);
-			
-			if (StringUtil.isNotEmpty(cause.getMessage())) {
-				log(cause.getMessage(), Project.MSG_VERBOSE);
-			}
-		}
-		
-		if (failOnError) {
-			throw new BuildException(pmde);
-		}
-		errorReport.addError(new Report.ProcessingError(pmde.getMessage(), ctx.getSourceCodeFilename()));
-	}
-
-	private Renderer createLogRenderer(final AtomicInteger reportSize, final String inputPaths) {
-		
-		return new AbstractRenderer("log", "Logging renderer", null) {
-			public void start() {
-				// Nothing to do
-			}
-
-			public void startFileAnalysis(DataSource dataSource) {
-				log("Processing file " + dataSource.getNiceFileName(false, inputPaths), Project.MSG_VERBOSE);
-			}
-
-			public void renderFileReport(Report r) {
-				int size = r.size();
-				if (size > 0) {
-					reportSize.addAndGet(size);
-				}
-			}
-
-			public void end() {
-				// Nothing to do
-			}
-
-			public String defaultFileExtension() { return null;	}	// not relevant
-		};
-	}
-
-	private RuleSetFactory validateRulesets() {
-		// Setup RuleSetFactory and validate RuleSets
-		RuleSetFactory ruleSetFactory = new RuleSetFactory();
-		ruleSetFactory.setClassLoader(configuration.getClassLoader());
-		try {
-			// This is just used to validate and display rules. Each thread will create its own ruleset
-			ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
-			ruleSetFactory.setWarnDeprecated(true);
-			String ruleSets = configuration.getRuleSets();
-			if (StringUtil.isNotEmpty(ruleSets)) {
-				// Substitute env variables/properties
-				configuration.setRuleSets(getProject().replaceProperties(ruleSets));
-			}
-			RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-			ruleSetFactory.setWarnDeprecated(false);
-			logRulesUsed(rules);
-		} catch (RuleSetNotFoundException e) {
-			throw new BuildException(e.getMessage(), e);
-		}
-		return ruleSetFactory;
 	}
 
 	@Override
