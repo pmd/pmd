@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * that doesn't use it that also has the ability to return or throw an exception.
  * 
  * @author Brian Remedios
- * @version $Revision: 1.0 $
  */
 public class PrematureDeclarationRule extends AbstractJavaRule {
 
@@ -33,7 +32,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
      * @param node ASTLocalVariableDeclaration
      * @param data Object
      * @return Object
-     * @see net.sourceforge.pmd.ast.JavaParserVisitor#visit(ASTLocalVariableDeclaration, Object)
+     * @see net.sourceforge.pmd.lang.java.ast.JavaParserVisitor#visit(ASTLocalVariableDeclaration, Object)
      */
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
     	

@@ -15,6 +15,8 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -49,7 +51,7 @@ public class PMD {
 	 * @param rs
 	 * @param ctx
 	 * @param fileName
-	 * @return
+	 * @return Report
 	 */
 	public static Report setupReport(RuleSets rs, RuleContext ctx, String fileName) {
 		
@@ -66,6 +68,13 @@ public class PMD {
 	}
 	
 	
+    /**
+     * Remove and return the misconfigured rules from the rulesets and
+     * log them for good measure.
+     * 
+     * @param ruleSets RuleSets
+     * @return Set<Rule>
+     */
     private static Set<Rule> removeBrokenRules(RuleSets ruleSets) {
     	
     	Set<Rule> brokenRules = new HashSet<Rule>();
@@ -101,13 +110,17 @@ public class PMD {
 	 * Get the runtime configuration. The configuration can be modified to
 	 * affect how PMD behaves.
 	 * 
-	 * @return The configuration.
-	 * @see Configuration
+	 * @return The configuration. 
+     * @see Configuration 
 	 */
 	public Configuration getConfiguration() {
 		return configuration;
 	}
 
+	/**
+	 *
+	 * @return SourceCodeProcessor
+	 */
 	public SourceCodeProcessor getSourceCodeProcessor() {
 		return rulesetsFileProcessor;
 	}
@@ -129,13 +142,11 @@ public class PMD {
 		if (ruleSets == null)
 			return;
 
-		Set<Language> languages = getApplicableLanguages(configuration,
-				ruleSets);
+		Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
 		List<DataSource> files = getApplicableFiles(configuration, languages);
 
 		long reportStart = System.nanoTime();
-		try {
-			
+		try {			
 			Renderer renderer = configuration.createRenderer();
 			List<Renderer> renderers = new LinkedList<Renderer>();
 			renderers.add(renderer);
@@ -143,8 +154,7 @@ public class PMD {
 			renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
 			renderer.start();
 
-			Benchmark
-					.mark(Benchmark.TYPE_REPORTING, System.nanoTime() - reportStart, 0);
+			Benchmark.mark(Benchmark.TYPE_REPORTING, System.nanoTime() - reportStart, 0);
 
 			RuleContext ctx = new RuleContext();
 
@@ -163,35 +173,42 @@ public class PMD {
 			LOG.log(Level.FINE, "Exception during processing", e);
 			LOG.info(CommandLineOptions.usage());
 		} finally {
-			Benchmark
-					.mark(Benchmark.TYPE_REPORTING, System.nanoTime() - reportStart, 0);
+			Benchmark.mark(Benchmark.TYPE_REPORTING, System.nanoTime() - reportStart, 0);
 		}
 	}
-
 	
 	/**
 	 * Run PMD on a list of files using multiple threads - if more than one is available
 	 * 
+	 * @param configuration Configuration
+	 * @param ruleSetFactory RuleSetFactory
+	 * @param files List<DataSource>
+	 * @param ctx RuleContext
+	 * @param renderers List<Renderer>
 	 */
 	public static void processFiles(final Configuration configuration,
 			final RuleSetFactory ruleSetFactory, final List<DataSource> files,
 			final RuleContext ctx, final List<Renderer> renderers) {
 
-		PMD.sortFiles(configuration, files);
+		sortFiles(configuration, files);
 
 		/*
-		 * Check if multithreaded is supported. ExecutorService can also be
+		 * Check if multithreaded support is available. ExecutorService can also be
 		 * disabled if threadCount is not positive, e.g. using the "-threads 0"
 		 * command line option.
 		 */
-		if ( configuration.getThreads() > 0) {
+		if (configuration.getThreads() > 0) {
 			new MultiThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
 		} else {
 			new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
 		}
 	}
-
 	
+	/**
+	 *
+	 * @param configuration Configuration
+	 * @param files List<DataSource>
+	 */
 	private static void sortFiles(final Configuration configuration, final List<DataSource> files) {
 		if (configuration.isStressTest()) {
 			// randomize processing order
@@ -207,9 +224,14 @@ public class PMD {
 				}
 			});
 		}
-
 	}
 	
+	/**
+	 *
+	 * @param configuration Configuration
+	 * @param languages Set<Language>
+	 * @return List<DataSource>
+	 */
 	public static List<DataSource> getApplicableFiles(
 			Configuration configuration, Set<Language> languages) {
 		long startFiles = System.nanoTime();
@@ -221,23 +243,30 @@ public class PMD {
 		return files;
 	}
 
-	private static Set<Language> getApplicableLanguages(
-			Configuration configuration, RuleSets ruleSets) {
+	/**
+	 *
+	 * @param configuration Configuration
+	 * @param ruleSets RuleSets
+	 * @return Set<Language>
+	 */
+	private static Set<Language> getApplicableLanguages(Configuration configuration, RuleSets ruleSets) {
 		Set<Language> languages = new HashSet<Language>();
+		LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
+		
 		for (Rule rule : ruleSets.getAllRules()) {
 			Language language = rule.getLanguage();
 			if (languages.contains(language))
 				continue;
-			if (RuleSet.applies(rule,
-					configuration.getLanguageVersionDiscoverer()
-							.getDefaultLanguageVersion(language))) {
+			LanguageVersion version = discoverer.getDefaultLanguageVersion(language);
+			if (RuleSet.applies(rule, version)) {
 				languages.add(language);
-				LOG.fine("Using " + language.getShortName());
+				LOG.fine("Using " + language.getShortName() + 
+						" version: " + version.getShortName());
 			}
 		}
 		return languages;
 	}
-	
+
 	private static final int ERROR_STATUS = 1;
 
     /**
@@ -249,6 +278,11 @@ public class PMD {
 		System.exit(run(args));
     }
 
+    /**
+     *
+     * @param args String[]
+     * @return int
+     */
     public static int run(String[] args) { 
     	int status = 0;
 		long start = System.nanoTime();
