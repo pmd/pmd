@@ -197,12 +197,12 @@ public class PMD {
 			// randomize processing order
 			Collections.shuffle(files);
 		} else {
+			final boolean useShortNames = configuration.isReportShortNames();
+			final String inputPaths = configuration.getInputPaths();
 			Collections.sort(files, new Comparator<DataSource>() {
 				public int compare(DataSource left, DataSource right) {
-					String leftString = left
-							.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
-					String rightString = right
-							.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
+					String leftString = left.getNiceFileName(useShortNames, inputPaths);
+					String rightString = right.getNiceFileName(useShortNames, inputPaths);
 					return leftString.compareTo(rightString);
 				}
 			});
@@ -213,8 +213,7 @@ public class PMD {
 	public static List<DataSource> getApplicableFiles(
 			Configuration configuration, Set<Language> languages) {
 		long startFiles = System.nanoTime();
-		LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(
-				languages);
+		LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
 		List<DataSource> files = FileUtil.collectFiles(
 				configuration.getInputPaths(), fileSelector);
 		long endFiles = System.nanoTime();
