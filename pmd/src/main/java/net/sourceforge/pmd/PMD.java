@@ -308,7 +308,8 @@ public class PMD {
 		    if (configuration.isBenchmark()) {
 				long end = System.nanoTime();
 				Benchmarker.mark(Benchmark.TotalPMD, end - start, 0);
-				TextReport report = new TextReport();
+				
+				TextReport report = new TextReport();	// TODO get specified report format from config
 				report.generate(Benchmarker.values(), System.err);
 		    }
 		}

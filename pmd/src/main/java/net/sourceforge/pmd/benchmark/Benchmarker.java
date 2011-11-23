@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -34,9 +35,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 public class Benchmarker {
 
-	private static final int TIME_COLUMN = 48;
-
-    private static class Result implements Comparable<Result> {
+    public static class Result implements Comparable<Result> {
         public Rule rule;
         public long time;
 
@@ -101,7 +100,7 @@ public class Benchmarker {
             }
             Set<Result> results = new TreeSet<Result>();
             RuleSetFactory factory = new RuleSetFactory();
-            if (ruleset.length() > 0) {
+            if (StringUtil.isNotEmpty(ruleset)) {
                 stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
             } else {
                 Iterator<RuleSet> i = factory.getRegisteredRuleSets();
@@ -109,20 +108,10 @@ public class Benchmarker {
                     stress(languageVersion, i.next(), dataSources, results, debug);
                 }
             }
-            System.out.println("=========================================================");
-            System.out.println("Rule\t\t\t\t\t\tTime in ms");
-            System.out.println("=========================================================");
-            for (Result result: results) {
-                StringBuilder out = new StringBuilder(result.rule.getName());
-                while (out.length() < TIME_COLUMN) {
-                    out.append(' ');
-                }
-                out.append(result.time);
-                System.out.println(out.toString());
-            }
+            
+            TextReport report = new TextReport();
+			report.generate(results, System.err);
         }
-
-        System.out.println("=========================================================");
     }
 
     private static void parseStress(LanguageVersion languageVersion, List<DataSource> dataSources) throws IOException {

@@ -3,8 +3,8 @@ package net.sourceforge.pmd.benchmark;
 
 class BenchmarkResult implements Comparable<BenchmarkResult> {
 
-    private final Benchmark type;
-    private final String name;
+    public final Benchmark type;
+    public final String name;
     private long time;
     private long count;
     
@@ -18,22 +18,14 @@ class BenchmarkResult implements Comparable<BenchmarkResult> {
         this.count = count;
     }
 
-    public Benchmark getType() {
-        return type;
-    }
-    public String getName() {
-        return name;
-    }
-    public long getTime() {
-        return time;
-    }
-    public long getCount() {
-        return count;
-    }
+    public long getTime() {     return time;   }
+    public long getCount() {    return count;  }
+    
     public void update(long time, long count) {
         this.time += time;
         this.count += count;
     }
+
     public int compareTo(BenchmarkResult benchmarkResult) {
         int cmp = type.index - benchmarkResult.type.index;
         if (cmp == 0) {
