@@ -81,43 +81,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 		// Extras
 		List<String> extras = new ArrayList<String>();
 
-		// Standard AccessNode extras
-		if (node instanceof AccessNode) {
-			AccessNode accessNode = (AccessNode) node;
-			if (accessNode.isPackagePrivate()) {
-				extras.add("package private");
-			}
-			if (accessNode.isPrivate()) {
-				extras.add("private");
-			}
-			if (accessNode.isPublic()) {
-				extras.add("public");
-			}
-			if (accessNode.isProtected()) {
-				extras.add("protected");
-			}
-			if (accessNode.isAbstract()) {
-				extras.add("abstract");
-			}
-			if (accessNode.isStatic()) {
-				extras.add("static");
-			}
-			if (accessNode.isFinal()) {
-				extras.add("final");
-			}
-			if (accessNode.isSynchronized()) {
-				extras.add("synchronized");
-			}
-			if (accessNode.isNative()) {
-				extras.add("native");
-			}
-			if (accessNode.isStrictfp()) {
-				extras.add("strict");
-			}
-			if (accessNode.isTransient()) {
-				extras.add("transient");
-			}
-		}
+		collectModifiers(node, extras);
 
 		// Standard Dimensionable extras
 		if (node instanceof Dimensionable) {
@@ -220,17 +184,57 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 
 		// Output image and extras
 		if (image != null || !extras.isEmpty()) {
-			writer.print(":");
+			writer.print(':');
 			if (image != null) {
 				writer.print(image);
 			}
 			for (String extra : extras) {
-				writer.print("(");
+				writer.print('(');
 				writer.print(extra);
-				writer.print(")");
+				writer.print(')');
 			}
 		}
 
 		writer.println();
+	}
+
+	private void collectModifiers(JavaNode node, List<String> extras) {
+		// Standard AccessNode extras
+		if (node instanceof AccessNode) {
+			AccessNode accessNode = (AccessNode) node;
+			if (accessNode.isPackagePrivate()) {
+				extras.add("package private");
+			}
+			if (accessNode.isPrivate()) {
+				extras.add("private");
+			}
+			if (accessNode.isPublic()) {
+				extras.add("public");
+			}
+			if (accessNode.isProtected()) {
+				extras.add("protected");
+			}
+			if (accessNode.isAbstract()) {
+				extras.add("abstract");
+			}
+			if (accessNode.isStatic()) {
+				extras.add("static");
+			}
+			if (accessNode.isFinal()) {
+				extras.add("final");
+			}
+			if (accessNode.isSynchronized()) {
+				extras.add("synchronized");
+			}
+			if (accessNode.isNative()) {
+				extras.add("native");
+			}
+			if (accessNode.isStrictfp()) {
+				extras.add("strict");
+			}
+			if (accessNode.isTransient()) {
+				extras.add("transient");
+			}
+		}
 	}
 }
