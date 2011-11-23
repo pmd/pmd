@@ -3,7 +3,8 @@ package net.sourceforge.pmd;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.util.Benchmark;
+import net.sourceforge.pmd.benchmark.Benchmark;
+import net.sourceforge.pmd.benchmark.Benchmarker;
 
 public final class RulesetsFactoryUtils {
 
@@ -19,7 +20,7 @@ public final class RulesetsFactoryUtils {
 			factory.setWarnDeprecated(false);
 			printRuleNamesInDebug(ruleSets);
 			long endLoadRules = System.nanoTime();
-			Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - loadRuleStart, 0);
+			Benchmarker.mark(Benchmark.LoadRules, endLoadRules - loadRuleStart, 0);
 		} catch (RuleSetNotFoundException rsnfe) {
 			LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
 			throw new IllegalArgumentException(rsnfe);

@@ -12,8 +12,9 @@ import java.util.Set;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.benchmark.Benchmark;
+import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.Benchmark;
 
 /**
  * This is a base class for RuleChainVisitor implementations which
@@ -53,7 +54,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         long start = System.nanoTime();
         indexNodes(nodes, ctx);
         long end = System.nanoTime();
-        Benchmark.mark(Benchmark.TYPE_RULE_CHAIN_VISIT, end - start, 1);
+        Benchmarker.mark(Benchmark.RuleChainVisit, end - start, 1);
 
         // For each RuleSet, only if this source file applies
         for (RuleSet ruleSet : ruleSetRules.keySet()) {
@@ -80,7 +81,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
                     visits += ns.size();
                 }
                 end = System.nanoTime();
-                Benchmark.mark(Benchmark.TYPE_RULE_CHAIN_RULE, rule.getName(), end - start, visits);
+                Benchmarker.mark(Benchmark.RuleChainRule, rule.getName(), end - start, visits);
                 start = end;
             }
         }

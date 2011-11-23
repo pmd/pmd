@@ -8,8 +8,9 @@ import java.util.List;
 
 import net.sourceforge.pmd.Configuration;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.benchmark.Benchmark;
+import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.Benchmark;
 
 /**
  * @author Romain Pelisse <belaran@gmail.com>
@@ -30,7 +31,7 @@ public abstract class AbstractPMDProcessor {
 				r.renderFileReport(report);
 			}
 			long end = System.nanoTime();
-			Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
+			Benchmarker.mark(Benchmark.Reporting, end - start, 1);
 		} catch (IOException ioe) {
 			
 		}

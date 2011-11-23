@@ -13,6 +13,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.benchmark.Benchmark;
+import net.sourceforge.pmd.benchmark.Benchmarker;
+import net.sourceforge.pmd.benchmark.TextReport;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -20,7 +23,6 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -154,7 +156,7 @@ public class PMD {
 			renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
 			renderer.start();
 
-			Benchmark.mark(Benchmark.TYPE_REPORTING, System.nanoTime() - reportStart, 0);
+			Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
 
 			RuleContext ctx = new RuleContext();
 
@@ -173,7 +175,7 @@ public class PMD {
 			LOG.log(Level.FINE, "Exception during processing", e);
 			LOG.info(CommandLineOptions.usage());
 		} finally {
-			Benchmark.mark(Benchmark.TYPE_REPORTING, System.nanoTime() - reportStart, 0);
+			Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
 		}
 	}
 	
@@ -239,7 +241,7 @@ public class PMD {
 		List<DataSource> files = FileUtil.collectFiles(
 				configuration.getInputPaths(), fileSelector);
 		long endFiles = System.nanoTime();
-		Benchmark.mark(Benchmark.TYPE_COLLECT_FILES, endFiles - startFiles, 0);
+		Benchmarker.mark(Benchmark.CollectFiles, endFiles - startFiles, 0);
 		return files;
 	}
 
@@ -305,8 +307,9 @@ public class PMD {
 		    LOG.setLevel(oldLogLevel);
 		    if (configuration.isBenchmark()) {
 				long end = System.nanoTime();
-				Benchmark.mark(Benchmark.TYPE_TOTAL_PMD, end - start, 0);
-				System.err.println(Benchmark.report());
+				Benchmarker.mark(Benchmark.TotalPMD, end - start, 0);
+				TextReport report = new TextReport();
+				report.generate(Benchmarker.values(), System.err);
 		    }
 		}
 		return status;

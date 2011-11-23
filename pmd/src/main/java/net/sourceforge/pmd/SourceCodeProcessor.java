@@ -7,6 +7,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.benchmark.Benchmark;
+import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -15,7 +17,6 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
-import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.IOUtil;
 
 public class SourceCodeProcessor {
@@ -90,7 +91,7 @@ public class SourceCodeProcessor {
 		Node rootNode = parser.parse(ctx.getSourceCodeFilename(), sourceCode);
 		ctx.getReport().suppress(parser.getSuppressMap());
 		final long end = System.nanoTime();    	
-		Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);
+		Benchmarker.mark(Benchmark.Parser, end - start, 0);
 		return rootNode;
     }
 
@@ -98,7 +99,7 @@ public class SourceCodeProcessor {
     	long start = System.nanoTime();
 		languageVersionHandler.getSymbolFacade().start(rootNode);
 		long end = System.nanoTime();
-		Benchmark.mark(Benchmark.TYPE_SYMBOL_TABLE, end - start, 0);
+		Benchmarker.mark(Benchmark.SymbolTable, end - start, 0);
     }
     
     private ParserOptions getParserOptions(final LanguageVersionHandler languageVersionHandler) {
@@ -114,7 +115,7 @@ public class SourceCodeProcessor {
 		    final long start = System.nanoTime();
 		    languageVersion.getLanguageVersionHandler().getDataFlowFacade().start(rootNode);
 		    final long end = System.nanoTime();
-		    Benchmark.mark(Benchmark.TYPE_DFA, end - start, 0);
+		    Benchmarker.mark(Benchmark.DFA, end - start, 0);
 		}
 
     }
@@ -125,7 +126,7 @@ public class SourceCodeProcessor {
 		    final long start = System.nanoTime();
 		    languageVersion.getLanguageVersionHandler().getTypeResolutionFacade(configuration.getClassLoader()).start(rootNode);
 		    final long end = System.nanoTime();
-		    Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
+		    Benchmarker.mark(Benchmark.TypeResolution, end - start, 0);
 		}
 
     }

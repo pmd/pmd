@@ -9,11 +9,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.pmd.benchmark.Benchmark;
+import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.Filters;
@@ -186,7 +187,7 @@ public class RuleSet {
 			if (!rule.usesRuleChain() && applies(rule, ctx.getLanguageVersion())) {
 				rule.apply(acuList, ctx);
 				long end = System.nanoTime();
-				Benchmark.mark(Benchmark.TYPE_RULE, rule.getName(), end - start, 1);
+				Benchmarker.mark(Benchmark.Rule, rule.getName(), end - start, 1);
 				start = end;
 			}
 		}
