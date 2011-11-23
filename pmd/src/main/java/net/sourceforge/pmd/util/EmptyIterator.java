@@ -16,13 +16,10 @@ public class EmptyIterator<T extends Object> implements Iterator<T> {
 	
 	private EmptyIterator() {}
 	
-	@Override
 	public boolean hasNext() { return false; }
 
-	@Override
 	public T next() { return null;	}
 
-	@Override
 	public void remove() {	
 		throw new UnsupportedOperationException();
 	}

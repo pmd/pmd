@@ -27,12 +27,10 @@ public class FileProperty extends AbstractProperty<File> {
 		super(theName, theDescription, theDefault, theUIOrder);
 	}
 
-	@Override
 	public Class<File> type() {
 		return File.class;
 	}
 
-	@Override
 	public File valueFrom(String propertyString) throws IllegalArgumentException {
 		
 		return StringUtil.isEmpty(propertyString) ? null : new File(propertyString);

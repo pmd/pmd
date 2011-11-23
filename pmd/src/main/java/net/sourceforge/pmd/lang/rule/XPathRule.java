@@ -42,7 +42,6 @@ public class XPathRule extends AbstractRule {
 	/**
 	 * Apply the rule to all nodes.
 	 */
-	@Override
 	public void apply(List<? extends Node> nodes, RuleContext ctx) {
 		for (Node node : nodes) {
 			evaluate(node, ctx);
