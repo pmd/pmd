@@ -35,8 +35,6 @@ TODO - Release blockers - Must implement before this release can be finished
      /license folder?
 
    DOCUMENTATION:
-   o Copy over the new portions of the v4.3 release changelog to this file to provide
-     a complete history
    o Expand documentation examples which demonstrate use of new RuleSetReferenceId
      capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
      of a Rule reference in places not previously possible (e.g. CMD and Ant).
@@ -500,6 +498,132 @@ New ECMAScript rules:
 
 New XML rules:
 	Basic ruleset: MistypedCDATASection
+
+November 4, 2011 - 4.3:
+
+Add support for Java 7 grammer - thanks to Dinesh Bolkensteyn and SonarSource
+Add options --ignore-literals and --ignore-identifiers to the CPD command line task, thanks to Cd-Man
+Fixed character reference in xml report - thanks to Seko
+Add C# support for CPD - thanks to Florian Bauer
+Fix small bug in Rule Designer UI
+Improve TooManyMethods rule - thanks to a patch from Riku Nykanen
+Improve DoNotCallSystemExit - thanks to a patch from Steven Christou
+Fix false negative for UseArraysAsList when the array was passed as method parameter - thanks to Andy Throgmorton
+Enhanced SuspiciousEqualsMethodName rule - thanks to Andy Throgmorton
+Add a script to launch CPDGUI on Unix system - thanks to Tom Wheeler
+
+New Rule:
+	Basic ruleset: DontCallThreadRun - thanks to Andy Throgmorton
+	Logging with Jakarta Commons ruleset: GuardDebugLogging
+
+September 14, 2011 - 4.2.6:
+Fixed bug 2920057 - False + : CloseRessource whith an external getter
+Fixed bug 1808110 - Fixed performance issue on PreserveStackTrace
+Fixed bug 2832322 -  cpd.xml file tag path attribute should be entity-encoded
+Fixed bug 2590258 - NPE with nicerhtml output
+Fixed bug 2317099 - False + in SimplifyCondition
+Fixed bug 2606609 - False "UnusedImports" positive in package-info.java
+Fixed bug 2645268 - ClassCastException in UselessOperationOnImmutable.getDeclaration
+Fixed bug 2724653 - AvoidThreadGroup reports false positives
+Fixed bug 2835074 - False -: DoubleCheckedLocking with reversed null check
+Fixed bug 2826119 - False +: DoubleCheckedLocking warning with volatile field
+Fixed bug 2904832 - Type resolution not working for ASTType when using an inner class
+
+Modify (and hopefully fixed) CPD algorithm thanks to a patch from Juan Jesús García de Soria.
+Correct -benchmark reporting of Rule visits via the RuleChain
+Fix issue with Type Resolution incorrectly handling of Classes with same name as a java.lang Class.
+The JSP/JSF parser can now parse Unicode input.
+The JSP/JSP parser can now handle <script>...</script> tags.  The AST HtmlScript node contains the content.
+Added Ecmascript as a supported language for CPD.
+Improved include/exclude pattern matching performance for ends-with type patterns.
+
+Dependencies updates: asm updated to 3.2
+
+Android ruleset: CallSuperLast rule now also checks for finish() redefinitions
+
+New rule:
+	Android: DoNotHardCodeSDCard
+	Controversial : AvoidLiteralsInIfCondition (patch 2591627), UseConcurrentHashMap
+	StrictExceptions : AvoidCatchingGenericException, AvoidLosingExceptionInformation
+	Naming : GenericsNaming
+	JSP: NoInlineScript
+
+February 08, 2009 - 4.2.5:
+
+Enhanced logging in the ClassTypeResolver to provide more detailed messaging.
+Fixed bug 2315623 - @SuppressWarnings("PMD.UseSingleton") has no effect
+Fixed bug 2230809 - False +: ClassWithOnlyPrivateConstructorsShouldBeFinal
+Fixed bug 2338341 - ArrayIndexOutOfBoundsException in CPD (on Ruby)
+Fixed bug 2315599 - False +: UseSingleton with class containing constructor
+Fixed bug 1955852 - false positives for UnusedPrivateMethod & UnusedLocalVariable
+Fixed bug 2404700 - UseSingleton should not act on enums
+Fixed bug 2225474 - VariableNamingConventions does not work with nonprimitives
+Fixed bug 1609038 - Xslt report generators break if path contains "java"
+Fixed bug - JUnitTestsShouldIncludeAssert now detects Junit 4 Assert.assert...  constructs
+Fixed bug 2142986 - UselessOverridingMethod doesn't consider annotations
+Fixed bug 2027626 - False + : AvoidFinalLocalVariable
+
+New rule:
+	StrictExceptions : AvoidThrowingNewInstanceOfSameException
+New ruleset:
+	android.xml: new rules specific to the Android platform
+
+October 12, 2008 - 4.2.4:
+
+Fixed bug 1481051 - false + UnusedNullCheckInEquals (and other false positives too)
+Fixed bug 1943204 - Ant task: <ruleset> path should be relative to Ant basedir
+Fixed bug 2139720 - Exception in PMD Rule Designer for inline comments in source
+Fixed patch 2075906 - Add toString() to the rule UnnecessaryWrapperObjectCreation
+Fixed ClassCastException on generic method in BeanMembersShouldSerialize
+Fixed ClassCastException in symbol table code
+
+August 31, 2008 - 4.2.3:
+
+JavaCC generated artifacts updated to JavaCC 4.1d1.
+Java grammar enhanced to include AnnotationMethodDeclaration as parent node of method related children of AnnotationTypeMemberDeclaration
+Fixes for exclude-pattern
+Updates to RuleChain to honor RuleSet exclude-pattern
+Upgrading UselessOperationOnImmutable to detect more use cases, especially on String and fix false positives
+Fixed bug 1988829 - Violation reported without source file name (actually a fix to ConsecutiveLiteralAppends)
+Fixed bug 1989814 - false +: ConsecutiveLiteralAppends
+Fixed bug 1977230 - false positive: UselessOverridingMethod
+Fixed bug 1998185 - BeanMembersShouldSerialize vs @SuppressWarnings("serial")
+Fixed bug 2002722 - false + in UseStringBufferForStringAppends
+Fixed bug 2056318 - False positive for AvoidInstantiatingObjectsInLoops
+Fixed bug 1977438 - False positive for UselessStringValueOf
+Fixed bug 2050064 - False + SuspiciousOctalEscape with backslash literal
+Fixed bug 1556594 - Wonky detection of NullAssignment
+Optimizations and false positive fixes in PreserveStackTrace
+@SuppressWarnings("all") disables all warnings
+All comment types are now stored in ASTCompilationUnit, not just formal ones
+Fixed false negative in UselessOverridingMethod
+Fixed handling of escape characters in UseIndexOfChar and AppendCharacterWithChar
+
+New rule:
+	Basic ruleset:	EmptyInitializer
+
+May 20, 2008 - 4.2.2:
+
+Fixed false positive in UnusedImports: javadoc comments are parsed to check @see and other tags
+Fixed parsing bug: constant fields in annotation classes
+Bug fix: NPE in MoreThanOneLogger
+UnnecessaryParentheses now checks all expressions, not just return statements
+
+April 11, 2008 - 4.2.1:
+
+'41' and '42' shortcuts for rulesets added
+Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
+Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
+Fixed bug 1808110 - PreserveStackTrace
+
+AvoidDuplicateLiteralRule now has 'skipAnnotations' boolean property
+ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
+Update RuleSetWriter to handle non-Apache TRAX implementations, add an option to not use XML Namespaces
+Added file encoding option to CPD GUI, which already existed for the command line and Ant
+bin and java14/bin scripts:
+	retroweaver version was not correct in java14/bin scripts
+	support for extra languages in cpd.sh
+	standard unix scripts can be used with cygwin
 
 March 25, 2008 - 4.2:
 
