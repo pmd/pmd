@@ -129,7 +129,7 @@ public class XmlParser {
 			return null;
 		    }
 		} else if ("getAttributeIterator".equals(method.getName())) {
-		    List<Iterator<Attribute>> iterators = new ArrayList();
+		    List<Iterator<Attribute>> iterators = new ArrayList<Iterator<Attribute>>();
 
 		    // Expose DOM Attributes
 		    final NamedNodeMap attributes = node.getAttributes();

@@ -95,7 +95,7 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     @Override
     public boolean equals(Object obj) {
     	if (obj instanceof PropertyDescriptorWrapper) {
-    	    return this.getPropertyDescriptor().equals(((PropertyDescriptorWrapper) obj).getPropertyDescriptor());
+    	    return this.getPropertyDescriptor().equals(((PropertyDescriptorWrapper<?>) obj).getPropertyDescriptor());
     	} 
     	return this.getPropertyDescriptor().equals(obj);
     }

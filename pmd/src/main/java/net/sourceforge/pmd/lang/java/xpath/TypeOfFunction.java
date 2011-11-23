@@ -23,7 +23,6 @@ public class TypeOfFunction implements Function {
 		new TypeOfFunction());
     }
 
-    @Override
 	public Object call(Context context, List args) throws FunctionCallException {
 		
 		String nodeTypeName = null;

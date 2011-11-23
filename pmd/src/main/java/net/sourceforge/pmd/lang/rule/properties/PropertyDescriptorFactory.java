@@ -73,7 +73,7 @@ public class PropertyDescriptorFactory {
 			return new LongProperty(name, description, min, max, value, 0.0f);
 		} else if ("Long[]".equals(type)) {
 			checkMinMax(name, type, min, max);
-			LongMultiProperty property = new LongMultiProperty(name, description, 0l, 0l, null, 0.0f);
+			LongMultiProperty property = new LongMultiProperty(name, description, 0L, 0L, null, 0.0f);
 			return new LongMultiProperty(name, description, LongProperty.longFrom(min), LongProperty.longFrom(max), property.valueFrom(value), 0.0f);
 
 			// TODO - include legal package names for next four types

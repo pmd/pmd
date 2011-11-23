@@ -43,7 +43,7 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (junitImported == true) {
+        if (junitImported) {
 	    return super.visit(node, data);
 	}
 

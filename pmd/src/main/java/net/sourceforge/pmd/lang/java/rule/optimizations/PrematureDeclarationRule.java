@@ -91,7 +91,8 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
      * @param block ASTBlockStatement
      * @return boolean
      */
-    private boolean hasExit(ASTBlockStatement block) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	private boolean hasExit(ASTBlockStatement block) {
     	
     	List exitBlocks = block.findDescendantsOfType(ASTReturnStatement.class);
     	exitBlocks.addAll(block.findDescendantsOfType(ASTThrowStatement.class));
