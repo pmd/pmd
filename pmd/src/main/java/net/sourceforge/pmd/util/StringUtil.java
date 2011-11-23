@@ -108,7 +108,7 @@ public final class StringUtil {
      *
      * @param a
      * @param b
-     * @return boolean 
+     * @return boolean
      */
 	public static boolean areSemanticEquals(String a, String b) {
 
@@ -202,7 +202,7 @@ public final class StringUtil {
      *
      * TODO - unify the method above with the one below
      *
-     * public to support unit testing - make this package private, once the unit test classes are in the same package. 
+     * public to support unit testing - make this package private, once the unit test classes are in the same package.
 	 */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
@@ -304,7 +304,7 @@ public final class StringUtil {
 	        }
 	        list.add(str.substring(currPos));
 	        return list.toArray(new String[list.size()]);
-	    }
+	 }
 
 
 	/**
@@ -326,7 +326,7 @@ public final class StringUtil {
 	        sb.append(iter.next());
 	    }
 	}
-	
+
 	/**
 	 * Copies the array items onto the string builder each delimited by the separator.
 	 * Does nothing if the array is null or empty.
@@ -337,7 +337,7 @@ public final class StringUtil {
 	 */
 	public static void asStringOn(StringBuilder sb, Object[] items, String separator) {
 
-	    if (items == null | items.length == 0) { return;  }
+	    if (items == null || items.length == 0) { return;  }
 
 	    sb.append(items[0]);
 
@@ -346,7 +346,7 @@ public final class StringUtil {
 	        sb.append(items[i]);
 	    }
 	}
-	
+
 	/**
 	 * Return the length of the shortest string in the array.
 	 * If the collection is empty or any one of them is
@@ -425,7 +425,7 @@ public final class StringUtil {
 			results[i] = strings[i].substring(trimDepth);
 		}
 		return results;
-   }
+    }
 
     /**
      * Left pads a string.

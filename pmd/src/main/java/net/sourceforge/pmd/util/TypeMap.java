@@ -109,10 +109,10 @@ public class TypeMap {
     public Map<Class<?>, String> asInverseWithShortName() {
         Map<Class<?>, String> inverseMap = new HashMap<Class<?>, String>(typesByName.size() / 2);
 
-        Iterator iter = typesByName.entrySet().iterator();
+        Iterator<Map.Entry<String,Class<?>>> iter = typesByName.entrySet().iterator();
         while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            storeShortest(inverseMap, entry.getValue(), (String) entry.getKey());
+            Map.Entry<String,Class<?>> entry = iter.next();
+            storeShortest(inverseMap, entry.getValue(), entry.getKey());
         }
 
         return inverseMap;
@@ -136,7 +136,7 @@ public class TypeMap {
      * @param key
      * @param value
      */
-    private void storeShortest(Map map, Object key, String value) {
+    private void storeShortest(Map<Class<?>, String> map, Class<?> key, String value) {
         String existingValue = (String) map.get(key);
 
         if (existingValue == null) {
