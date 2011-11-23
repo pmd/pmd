@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.lang.java.rule.comments;
 
-import java.util.SortedMap;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
