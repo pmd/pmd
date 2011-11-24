@@ -26,13 +26,11 @@ public class RendererFactory {
 	map.put(XMLRenderer.NAME, XMLRenderer.class);
 	map.put(IDEAJRenderer.NAME, IDEAJRenderer.class);
 	map.put(TextColorRenderer.NAME, TextColorRenderer.class);
-	map.put("papari", TextColorRenderer.class); // TODO Remove when we drop backward compatibility.
 	map.put(TextRenderer.NAME, TextRenderer.class);
 	map.put(TextPadRenderer.NAME, TextPadRenderer.class);
 	map.put(EmacsRenderer.NAME, EmacsRenderer.class);
 	map.put(CSVRenderer.NAME, CSVRenderer.class);
 	map.put(HTMLRenderer.NAME, HTMLRenderer.class);
-	map.put("nicehtml", XSLTRenderer.class); // TODO Remove when we drop backward compatibility.
 	map.put(XSLTRenderer.NAME, XSLTRenderer.class);
 	map.put(YAHTMLRenderer.NAME, YAHTMLRenderer.class);
 	map.put(SummaryHTMLRenderer.NAME, SummaryHTMLRenderer.class);
