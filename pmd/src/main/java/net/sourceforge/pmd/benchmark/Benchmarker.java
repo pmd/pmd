@@ -24,6 +24,8 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -92,7 +94,8 @@ public class Benchmarker {
             System.out.println("Using " +language.getName() + " " + languageVersion.getVersion());
         }
         if (parseOnly) {
-            parseStress(languageVersion, dataSources);
+        	Parser parser = parserFor(languageVersion);
+            parseStress(parser, dataSources, debug);
         } else {
             String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) {
@@ -114,20 +117,34 @@ public class Benchmarker {
         }
     }
 
-    private static void parseStress(LanguageVersion languageVersion, List<DataSource> dataSources) throws IOException {
+    private static Parser parserFor(LanguageVersion languageVersion) {
+    	 LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+         ParserOptions options = languageVersionHandler.getDefaultParserOptions();
+         return languageVersionHandler.getParser(options);        
+    }
+    
+    private static void parseStress(Parser parser, List<DataSource> dataSources, boolean debug) throws IOException {
+                 
         long start = System.currentTimeMillis();
-        for (DataSource dataSource: dataSources) {
-            LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-	    languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(
-		    dataSource.getNiceFileName(false, null), new InputStreamReader(dataSource.getInputStream()));
+
+        for (DataSource dataSource: dataSources) {           
+            parser.parse(
+            	dataSource.getNiceFileName(false, null), 
+            	new InputStreamReader(dataSource.getInputStream()
+            	)
+            );
         }
-        long end = System.currentTimeMillis();
-        long elapsed = end - start;
-        System.out.println("That took " + elapsed + " ms");
+       
+        if (debug) { 
+        	long end = System.currentTimeMillis();
+        	long elapsed = end - start;
+        	System.out.println("That took " + elapsed + " ms");
+        }
     }
 
     private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources, Set<Result> results, boolean debug) throws PMDException, IOException {
-        Collection<Rule> rules = ruleSet.getRules();
+       
+    	Collection<Rule> rules = ruleSet.getRules();
         for (Rule rule: rules) {
             if (debug) {
             	System.out.println("Starting " + rule.getName());

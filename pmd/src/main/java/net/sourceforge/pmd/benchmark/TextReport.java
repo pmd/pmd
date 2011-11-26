@@ -31,7 +31,7 @@ public class TextReport implements BenchmarkReport {
 	 *
 	 * @param stressResults Set<Result>
 	 * @param out PrintStream
-	 * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Set<Result>, PrintStream)
+	 * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Set&lt;Result&gt;, PrintStream)
 	 */
 	public void generate(Set<Result> stressResults, PrintStream out) {
 		
@@ -63,7 +63,7 @@ public class TextReport implements BenchmarkReport {
 	 *
 	 * @param benchmarksByName Map<String,BenchmarkResult>
 	 * @param out PrintStream
-	 * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Map<String,BenchmarkResult>, PrintStream)
+	 * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Map&lt;String,BenchmarkResult&gt;, PrintStream)
 	 */
 	public void generate(Map<String, BenchmarkResult> benchmarksByName, PrintStream out) {
 
