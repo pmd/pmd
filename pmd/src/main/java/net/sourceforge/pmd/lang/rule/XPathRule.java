@@ -39,6 +39,19 @@ public class XPathRule extends AbstractRule {
 		definePropertyDescriptor(VERSION_DESCRIPTOR);
 	}
 
+	public XPathRule(String xPath) {
+		this();
+		setXPath(xPath);
+	}
+	
+	public void setXPath(String xPath) {
+		setProperty(XPathRule.XPATH_DESCRIPTOR, xPath);
+	}
+	
+	public void setVersion(String version) {
+		setProperty(XPathRule.VERSION_DESCRIPTOR, version);
+	}
+	
 	/**
 	 * Apply the rule to all nodes.
 	 */

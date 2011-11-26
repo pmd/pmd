@@ -28,8 +28,7 @@ public class XPathJspRuleTest extends RuleTst {
      */
     @Test
     public void testExpressionMatching() throws Throwable {
-        Rule rule = new XPathRule();
-        rule.setProperty(XPathRule.XPATH_DESCRIPTOR, XPATH_EXPRESSION);
+        Rule rule = new XPathRule(XPATH_EXPRESSION);
         rule.setMessage("Test");
         rule.setLanguage(Language.JSP);
         RuleSet rules = new RuleSet();

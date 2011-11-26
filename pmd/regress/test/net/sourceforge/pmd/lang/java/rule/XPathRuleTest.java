@@ -34,7 +34,7 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
  
      @Test
      public void testPluginname() throws Throwable {
-         rule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//VariableDeclaratorId[string-length(@Image) < 3]");
+         rule.setXPath("//VariableDeclaratorId[string-length(@Image) < 3]");
          rule.setMessage("{0}");
          PMD p = new PMD();
          RuleContext ctx = new RuleContext();
@@ -50,7 +50,7 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
  
      @Test
      public void testVariables() throws Throwable {
-         rule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//VariableDeclaratorId[@Image=$var]");
+         rule.setXPath("//VariableDeclaratorId[@Image=$var]");
          rule.setMessage("Avoid vars");
          StringProperty varDescriptor = new StringProperty("var", "Test var", null, 1.0f);
          rule.definePropertyDescriptor(varDescriptor);
