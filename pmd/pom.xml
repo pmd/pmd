@@ -239,7 +239,7 @@
                 <directory>${basedir}</directory>
                 <includes>
                     <include>rulesets/**/*.xml</include>
-                    <include>rulesets/*.properties</include>
+                    <include>rulesets/**/*.properties</include>
                     <include>etc/pmd-nicerhtml.xsl</include>
                 </includes>
             </resource>
