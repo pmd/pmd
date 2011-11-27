@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import net.sourceforge.pmd.Configuration;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
@@ -23,9 +24,7 @@ import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -36,26 +35,6 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  *
  */
 public class Benchmarker {
-
-    public static class Result implements Comparable<Result> {
-        public Rule rule;
-        public long time;
-
-        public int compareTo(Result other) {
-            if (other.time < time) {
-                return -1;
-            } else if (other.time > time) {
-                return 1;
-            }
-
-            return rule.getName().compareTo(other.rule.getName());
-        }
-
-        public Result(long elapsed, Rule rule) {
-            this.rule = rule;
-            this.time = elapsed;
-        }
-    }
 
     private static boolean findBooleanSwitch(String[] args, String name) {
         for (int i = 0; i < args.length; i++) {
@@ -94,14 +73,14 @@ public class Benchmarker {
             System.out.println("Using " +language.getName() + " " + languageVersion.getVersion());
         }
         if (parseOnly) {
-        	Parser parser = parserFor(languageVersion);
+        	Parser parser = PMD.parserFor(languageVersion, null);
             parseStress(parser, dataSources, debug);
         } else {
             String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) {
         		System.out.println("Checking directory " + srcDir);
             }
-            Set<Result> results = new TreeSet<Result>();
+            Set<RuleDuration> results = new TreeSet<RuleDuration>();
             RuleSetFactory factory = new RuleSetFactory();
             if (StringUtil.isNotEmpty(ruleset)) {
                 stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
@@ -115,12 +94,6 @@ public class Benchmarker {
             TextReport report = new TextReport();
 			report.generate(results, System.err);
         }
-    }
-
-    private static Parser parserFor(LanguageVersion languageVersion) {
-    	 LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-         ParserOptions options = languageVersionHandler.getDefaultParserOptions();
-         return languageVersionHandler.getParser(options);        
     }
     
     private static void parseStress(Parser parser, List<DataSource> dataSources, boolean debug) throws IOException {
@@ -142,7 +115,7 @@ public class Benchmarker {
         }
     }
 
-    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources, Set<Result> results, boolean debug) throws PMDException, IOException {
+    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources, Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
        
     	Collection<Rule> rules = ruleSet.getRules();
         for (Rule rule: rules) {
@@ -152,23 +125,23 @@ public class Benchmarker {
 
             RuleSet working = new RuleSet();
             working.addRule(rule);
-            RuleSets ruleSets = new RuleSets();
-            ruleSets.addRuleSet(working);
+            RuleSets ruleSets = new RuleSets(working);
 
-            PMD p = new PMD();
-            p.getConfiguration().setDefaultLanguageVersion(languageVersion);
+            Configuration config = new Configuration();
+            config.setDefaultLanguageVersion(languageVersion);
+            
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
             Reader reader = null;
             for (DataSource dataSource: dataSources) {
             	reader = new InputStreamReader(dataSource.getInputStream());
             	ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
-            	new SourceCodeProcessor(p.getConfiguration()).processSourceCode(reader, ruleSets, ctx);
+            	new SourceCodeProcessor(config).processSourceCode(reader, ruleSets, ctx);
             	IOUtil.closeQuietly(reader);
             	}
             long end = System.currentTimeMillis();
             long elapsed = end - start;
-            results.add(new Result(elapsed, rule));
+            results.add(new RuleDuration(elapsed, rule));
             if (debug) {
             	System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
             }

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -37,7 +38,7 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
 			RuleContext ctx, List<Renderer> renderers) {
 
 		// single threaded execution
-		PMD pmd = new PMD(configuration);
+//		PMD pmd = new PMD(configuration);
 
 		RuleSets rs = null;
 		try {
@@ -45,10 +46,9 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
 		} catch (RuleSetNotFoundException rsnfe) {
 			// should not happen: parent already created a ruleset
 		}
-
+		
 		for (DataSource dataSource : files) {
-			String niceFileName = dataSource.getNiceFileName(
-					configuration.isReportShortNames(), configuration.getInputPaths());
+			String niceFileName = filenameFrom(dataSource);
 					
 			Report report = PMD.setupReport(rs, ctx, niceFileName);
 			
@@ -62,33 +62,31 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
 			}
 
 			try {
-				InputStream stream = new BufferedInputStream(
-						dataSource.getInputStream());
+				InputStream stream = new BufferedInputStream(dataSource.getInputStream());
 				ctx.setLanguageVersion(null);
-				pmd.getSourceCodeProcessor().processSourceCode(stream, rs, ctx);
+				new SourceCodeProcessor(configuration).processSourceCode(stream, rs, ctx);
 			} catch (PMDException pmde) {
-				LOG.log(Level.FINE, "Error while processing file",
-						pmde.getCause());
+				LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
 
-				report.addError(new Report.ProcessingError(pmde
-						.getMessage(), niceFileName));
+				report.addError(new Report.ProcessingError(pmde.getMessage(), niceFileName));
 			} catch (IOException ioe) {
 				// unexpected exception: log and stop executor service
-				LOG.log(Level.FINE, "Unable to read source file", ioe);
-
-				report.addError(new Report.ProcessingError(
-						ioe.getMessage(), niceFileName));
+				addError(report, "Unable to read source file", ioe, niceFileName);
 			} catch (RuntimeException re) {
 				// unexpected exception: log and stop executor service
-				LOG.log(Level.FINE,
-						"RuntimeException while processing file", re);
-
-				report.addError(new Report.ProcessingError(re.getMessage(),
-						niceFileName));
+				addError(report, "RuntimeException while processing file", re, niceFileName);
 			}
 
 			rs.end(ctx);
 			super.renderReports(renderers, ctx.getReport());
 		}
+	}
+	
+	private void addError(Report report, String msg, Exception ex, String fileName) {
+		LOG.log(Level.FINE,	msg, ex);
+		report.addError(
+				new Report.ProcessingError(ex.getMessage(),
+				fileName)
+				);
 	}
 }

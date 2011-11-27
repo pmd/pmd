@@ -11,6 +11,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * @author Romain Pelisse <belaran@gmail.com>
@@ -20,13 +21,15 @@ public abstract class AbstractPMDProcessor {
 
 	protected final Configuration configuration;
 	
-	public AbstractPMDProcessor(final Configuration configuration) {
+	public AbstractPMDProcessor(Configuration configuration) {
 		this.configuration = configuration;
 	}
 
 	public void renderReports(final List<Renderer> renderers, final Report report) {
-		try {
-			long start = System.nanoTime();
+		
+		long start = System.nanoTime();
+		
+		try {	
 			for (Renderer r : renderers) {
 				r.renderFileReport(report);
 			}
@@ -36,4 +39,12 @@ public abstract class AbstractPMDProcessor {
 			
 		}
 	}
+	
+	protected String filenameFrom(DataSource dataSource) {
+		return dataSource.getNiceFileName(
+			 configuration.isReportShortNames(), 
+			 configuration.getInputPaths()
+			 );
+	}
+
 }

@@ -41,7 +41,7 @@ public class FileDataSource implements DataSource {
                 if (inputFileName.indexOf(FILE_SEPARATOR.charAt(0)) == -1) {
                     return inputFileName;
                 }
-                return trimAnyPathSep(inputFileName.substring(inputFileName.lastIndexOf(System.getProperty("file.separator"))));
+                return trimAnyPathSep(inputFileName.substring(inputFileName.lastIndexOf(FILE_SEPARATOR)));
             }
         } 
 

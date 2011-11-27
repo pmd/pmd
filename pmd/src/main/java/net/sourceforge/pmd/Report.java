@@ -18,6 +18,7 @@ import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.DateTimeUtil;
 import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class Report {
 
@@ -124,20 +125,20 @@ public class Report {
         linesToSuppress = lines;
     }
 
+    private static String keyFor(RuleViolation rv) {
+    	
+    	return StringUtil.isNotEmpty(rv.getPackageName()) ?
+            rv.getPackageName() + '.' + rv.getClassName() :
+        	"";
+    }
+    
     public Map<String, Integer> getCountSummary() {
         Map<String, Integer> summary = new HashMap<String, Integer>();
         for (Iterator<RuleViolation> iter = violationTree.iterator(); iter.hasNext();) {
             RuleViolation rv = iter.next();
-            String key = "";
-            if (rv.getPackageName() != null && rv.getPackageName().length() != 0) {
-                key = rv.getPackageName() + '.' + rv.getClassName();
-            }
+            String key = keyFor(rv);
             Integer o = summary.get(key);
-            if (o == null) {
-                summary.put(key, NumericConstants.ONE);
-            } else {
-                summary.put(key, o+1);
-            }
+            summary.put(key, o==null ? NumericConstants.ONE : o+1);
         }
         return summary;
     }
@@ -145,7 +146,6 @@ public class Report {
     public ReportTree getViolationTree() {
         return this.violationTree;
     }
-
 
     /**
      * @return a Map summarizing the Report: String (rule name) ->Integer (count of violations)

@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -20,6 +22,9 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -47,6 +52,15 @@ public class PMD {
 
 	private final SourceCodeProcessor rulesetsFileProcessor;
 
+    public static Parser parserFor(LanguageVersion languageVersion, Configuration configuration) {
+    	
+    	// TODO Handle Rules having different parser options.
+   	 	LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+        ParserOptions options = languageVersionHandler.getDefaultParserOptions();
+        if (configuration != null) options.setSuppressMarker(configuration.getSuppressMarker());
+        return languageVersionHandler.getParser(options);        
+   }
+	
 	/**
 	 * Create a report, filter out any defective rules, and keep a record of them.
 	 * 
@@ -83,7 +97,7 @@ public class PMD {
     	ruleSets.removeDysfunctionalRules(brokenRules);
 	    
 	    for (Rule rule : brokenRules) {
-	    	 LOG.log(Level.WARNING, "Removed broken rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());	
+	    	 LOG.log(Level.WARNING, "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());	
 	    }
 	    
 	    return brokenRules;
@@ -177,6 +191,51 @@ public class PMD {
 		} finally {
 			Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
 		}
+	}
+
+    public static RuleContext newRuleContext(String sourceCodeFilename, File sourceCodeFile) {
+
+		RuleContext context = new RuleContext();
+		context.setSourceCodeFile(sourceCodeFile);
+		context.setSourceCodeFilename(sourceCodeFilename);
+		context.setReport(new Report());
+		return context;
+	}
+    
+    /**
+     * A callback that would be implemented by IDEs keeping track of PMD's progress
+     * as it evaluates a set of files.
+     * 
+     * @author Brian Remedios
+     */
+	public interface ProgressMonitor {
+		/**
+		 * A status update reporting on current progress. Implementers will
+		 * return true if it is to continue, false otherwise.
+		 * 
+		 * @param total
+		 * @param totalDone
+		 * @return
+		 */
+		boolean status(int total, int totalDone);
+	}
+
+	/**
+	 * An entry point that would typically be used by IDEs intent on providing
+	 * ongoing feedback and the ability to terminate it at will.
+	 * 
+	 * @param configuration
+	 * @param ruleSetFactory
+	 * @param files
+	 * @param ctx
+	 * @param monitor
+	 */
+	public static void processFiles(Configuration configuration,
+			RuleSetFactory ruleSetFactory, Collection<File> files,
+			RuleContext ctx, ProgressMonitor monitor) {
+		
+		// TODO
+		// call the main processFiles with just the new monitor and a single logRenderer
 	}
 	
 	/**

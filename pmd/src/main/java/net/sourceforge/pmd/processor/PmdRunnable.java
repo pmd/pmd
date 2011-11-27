@@ -38,6 +38,13 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 		this.renderers = renderers;
 	}
 
+	private void addError(Report report, Exception ex) {
+		report.addError(
+				new Report.ProcessingError(ex.getMessage(),
+				fileName)
+				);
+	}
+	
 	public Report call() {
 		PmdThread thread = (PmdThread) Thread.currentThread();
 
@@ -59,25 +66,21 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 			ctx.setLanguageVersion(null);
 			this.getSourceCodeProcessor().processSourceCode(stream, rs, ctx);
 		} catch (PMDException pmde) {
-			LOG.log(Level.FINE, "Error while processing file",
-					pmde.getCause());
+			LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
 
-			report.addError(new Report.ProcessingError(pmde.getMessage(),
-					fileName));
+			addError(report, pmde);
 		} catch (IOException ioe) {
 			// unexpected exception: log and stop executor service
 			LOG.log(Level.FINE, "IOException during processing", ioe);
 
-			report.addError(new Report.ProcessingError(ioe.getMessage(),
-					fileName));
+			addError(report, ioe);
 
 			executor.shutdownNow();
 		} catch (RuntimeException re) {
 			// unexpected exception: log and stop executor service
 			LOG.log(Level.FINE, "RuntimeException during processing", re);
 
-			report.addError(new Report.ProcessingError(re.getMessage(),
-					fileName));
+			addError(report, re);
 
 			executor.shutdownNow();
 		}

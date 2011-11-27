@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
@@ -40,7 +39,7 @@ public class SourceCodeProcessor {
      */
     public void processSourceCode(InputStream sourceCode, RuleSets ruleSets, RuleContext ctx) throws PMDException {
 		try {
-		    processSourceCode(new InputStreamReader(sourceCode, this.configuration.getSourceEncoding()), ruleSets, ctx);
+		    processSourceCode(new InputStreamReader(sourceCode, configuration.getSourceEncoding()), ruleSets, ctx);
 		} catch (UnsupportedEncodingException uee) {
 		    throw new PMDException("Unsupported encoding exception: " + uee.getMessage());
 		}
@@ -63,7 +62,7 @@ public class SourceCodeProcessor {
      * @throws PMDException if the input encoding is unsupported, the input stream could
      *                      not be parsed, or other error is encountered.
      */
-    public void processSourceCode(final Reader sourceCode, final RuleSets ruleSets, final RuleContext ctx) throws PMDException {
+    public void processSourceCode(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) throws PMDException {
     	determineLanguage(ctx);
 
 		// make sure custom XPath functions are initialized
@@ -86,55 +85,53 @@ public class SourceCodeProcessor {
     }
 
     
-    private Node parse(final RuleContext ctx, final Reader sourceCode, final Parser parser) {
-		final long start = System.nanoTime();
+    private Node parse(RuleContext ctx, Reader sourceCode, Parser parser) {
+		long start = System.nanoTime();
 		Node rootNode = parser.parse(ctx.getSourceCodeFilename(), sourceCode);
 		ctx.getReport().suppress(parser.getSuppressMap());
-		final long end = System.nanoTime();    	
+		long end = System.nanoTime();    	
 		Benchmarker.mark(Benchmark.Parser, end - start, 0);
 		return rootNode;
     }
 
-    private void symbolFacade(final Node rootNode, final LanguageVersionHandler languageVersionHandler) {
+    private void symbolFacade(Node rootNode, LanguageVersionHandler languageVersionHandler) {
     	long start = System.nanoTime();
 		languageVersionHandler.getSymbolFacade().start(rootNode);
 		long end = System.nanoTime();
 		Benchmarker.mark(Benchmark.SymbolTable, end - start, 0);
     }
     
-    private ParserOptions getParserOptions(final LanguageVersionHandler languageVersionHandler) {
-		// TODO Handle Rules having different parser options.
-		ParserOptions parserOptions = languageVersionHandler.getDefaultParserOptions();
-		parserOptions.setSuppressMarker(configuration.getSuppressMarker());
-		return parserOptions;
-    }
+//    private ParserOptions getParserOptions(final LanguageVersionHandler languageVersionHandler) {
+//		// TODO Handle Rules having different parser options.
+//		ParserOptions parserOptions = languageVersionHandler.getDefaultParserOptions();
+//		parserOptions.setSuppressMarker(configuration.getSuppressMarker());
+//		return parserOptions;
+//    }
 
-    private void usesDFA(final LanguageVersion languageVersion, final Node rootNode, final  RuleSets ruleSets, final Language language ) {
+    private void usesDFA(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets, Language language ) {
 
 		if (ruleSets.usesDFA(language)) {
-		    final long start = System.nanoTime();
+		    long start = System.nanoTime();
 		    languageVersion.getLanguageVersionHandler().getDataFlowFacade().start(rootNode);
-		    final long end = System.nanoTime();
+		    long end = System.nanoTime();
 		    Benchmarker.mark(Benchmark.DFA, end - start, 0);
 		}
-
     }
 
-    private void usesTypeResolution(final LanguageVersion languageVersion, final Node rootNode, final  RuleSets ruleSets, final Language language) {
+    private void usesTypeResolution(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets, Language language) {
 	
 		if (ruleSets.usesTypeResolution(language)) {
-		    final long start = System.nanoTime();
+		    long start = System.nanoTime();
 		    languageVersion.getLanguageVersionHandler().getTypeResolutionFacade(configuration.getClassLoader()).start(rootNode);
-		    final long end = System.nanoTime();
+		    long end = System.nanoTime();
 		    Benchmarker.mark(Benchmark.TypeResolution, end - start, 0);
 		}
-
     }
     
-    private void processSource(final Reader sourceCode, final RuleSets ruleSets, final RuleContext ctx) {
+    private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
 		LanguageVersion languageVersion = ctx.getLanguageVersion();
-		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-		Parser parser = languageVersionHandler.getParser(getParserOptions(languageVersionHandler));
+		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();		
+		Parser parser = PMD.parserFor(languageVersion, configuration);
 		
 		Node rootNode = parse(ctx, sourceCode, parser);
 		symbolFacade(rootNode, languageVersionHandler);
@@ -149,7 +146,7 @@ public class SourceCodeProcessor {
 
 
 
-	private void determineLanguage(final RuleContext ctx) {
+	private void determineLanguage(RuleContext ctx) {
 		// If LanguageVersion of the source file is not known, make a determination
 		if (ctx.getLanguageVersion() == null) {
 		    LanguageVersion languageVersion = configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());

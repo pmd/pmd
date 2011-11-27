@@ -31,7 +31,7 @@ public final class ResourceLoader {
      * @throws RuleSetNotFoundException
      */
     public static InputStream loadResourceAsStream(String name) throws RuleSetNotFoundException {
-        InputStream stream = ResourceLoader.loadResourceAsStream(name, ResourceLoader.class.getClassLoader());
+        InputStream stream = loadResourceAsStream(name, ResourceLoader.class.getClassLoader());
         if (stream == null) {
             throw new RuleSetNotFoundException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
         }

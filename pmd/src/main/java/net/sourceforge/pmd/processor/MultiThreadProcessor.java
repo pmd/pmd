@@ -29,7 +29,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 	public MultiThreadProcessor(final Configuration configuration) {
 		super(configuration);
 	}
-	
+
 	/**
 	 * Run PMD on a list of files using multiple threads.
 	 */
@@ -50,8 +50,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 		List<Future<Report>> tasks = new LinkedList<Future<Report>>();
 
 		for (DataSource dataSource : files) {
-			String niceFileName = dataSource.getNiceFileName(
-					 configuration.isReportShortNames(), configuration.getInputPaths());
+			String niceFileName = filenameFrom(dataSource);
 
 			PmdRunnable r = new PmdRunnable(executor, configuration,
 					dataSource, niceFileName, renderers);

@@ -4,8 +4,6 @@ import java.io.PrintStream;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.benchmark.Benchmarker.Result;
-
 /**
  * 
  * @author Brian Remedios
@@ -17,7 +15,7 @@ public interface BenchmarkReport {
 	 * @param stressResults
 	 * @param out
 	 */
-	void generate(Set<Result> stressResults, PrintStream out);
+	void generate(Set<RuleDuration> stressResults, PrintStream out);
 	
 	/**
 	 * 

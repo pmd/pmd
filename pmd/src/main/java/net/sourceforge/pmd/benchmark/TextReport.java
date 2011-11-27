@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.benchmark.Benchmarker.Result;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -33,13 +32,13 @@ public class TextReport implements BenchmarkReport {
 	 * @param out PrintStream
 	 * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Set&lt;Result&gt;, PrintStream)
 	 */
-	public void generate(Set<Result> stressResults, PrintStream out) {
+	public void generate(Set<RuleDuration> stressResults, PrintStream out) {
 		
 		  out.println("=========================================================");
           out.println("Rule\t\t\t\t\t\tTime in ms");
           out.println("=========================================================");
           
-          for (Result result: stressResults) {
+          for (RuleDuration result: stressResults) {
               StringBuilder buffer = new StringBuilder(result.rule.getName());
               while (buffer.length() < TIME_COLUMN) {
             	  buffer.append(' ');

@@ -1,10 +1,12 @@
 package net.sourceforge.pmd;
 
+import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * To use this, do this:
@@ -32,35 +34,33 @@ public class XPathCLI {
         } else {
             filename = args[3];
         }
-        PMD pmd = new PMD();
-        Rule rule = new XPathRule();
-     //   rule.addProperty("xpath", xpath);
-        rule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpath);
+        
+        Configuration config = new Configuration();
+        
+        Rule rule = new XPathRule(xpath);
         rule.setMessage("Got one!");
         RuleSet ruleSet = new RuleSet();
         ruleSet.addRule(rule);
 
-        Report report = new Report();
-        RuleContext ctx = new RuleContext();
-        ctx.setReport(report);
-        ctx.setSourceCodeFilename(filename);
+        RuleContext ctx = PMD.newRuleContext(filename, new File(filename));
         ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
+        config.setDefaultLanguageVersion(Language.JAVA.getDefaultVersion());
+        
+        new SourceCodeProcessor(config).processSourceCode(new FileReader(filename), new RuleSets(ruleSet), ctx);
 
-        pmd.getSourceCodeProcessor().processSourceCode(new FileReader(filename), new RuleSets(ruleSet), ctx);
-
-        for (Iterator<RuleViolation> i = report.iterator(); i.hasNext();) {
+        for (Iterator<RuleViolation> i = ctx.getReport().iterator(); i.hasNext();) {
             RuleViolation rv = i.next();
-            String res = "Match at line " + rv.getBeginLine() + " column " + rv.getBeginColumn();
-            if (rv.getPackageName() != null && !rv.getPackageName().equals("")) {
-                res += "; package name '" + rv.getPackageName() + "'";
+            StringBuilder sb = new StringBuilder("Match at line " + rv.getBeginLine() + " column " + rv.getBeginColumn());
+            if (StringUtil.isNotEmpty(rv.getPackageName())) {
+                sb.append("; package name '" + rv.getPackageName() + "'");
             }
-            if (rv.getMethodName() != null && !rv.getMethodName().equals("")) {
-                res += "; method name '" + rv.getMethodName() + "'";
+            if (StringUtil.isNotEmpty(rv.getMethodName())) {
+                sb.append("; method name '" + rv.getMethodName() + "'");
             }
-            if (rv.getVariableName() != null && !rv.getVariableName().equals("")) {
-                res += "; variable name '" + rv.getVariableName() + "'";
+            if (StringUtil.isNotEmpty(rv.getVariableName())) {
+                sb.append("; variable name '" + rv.getVariableName() + "'");
             }
-            System.out.println(res);
+            System.out.println(sb.toString());
         }
     }
 }
