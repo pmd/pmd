@@ -4,25 +4,93 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Renderer to comma separated format.
+ * Renderer the results to a comma-delimited text format. All available columns
+ * are present by default. IDEs can enable/disable columns individually (cmd-line
+ * control to follow eventually)
  */
 public class CSVRenderer extends AbstractIncrementingRenderer {
 
+    private String separator;
+    private String cr;
+
+    private CSVWriter<RuleViolation> csvWriter;
+
+    private static final String DefaultSeparator = ",";
+
+    private static final Map<String, BooleanProperty> propertyDescriptorsById = new HashMap<String, BooleanProperty>();
+
     public static final String NAME = "csv";
 
-    private int violationCount = 1;
+    @SuppressWarnings("unchecked")
+	private static final ColumnDescriptor<RuleViolation>[] AllColumns = new ColumnDescriptor[] {
+    	new ColumnDescriptor<RuleViolation>("problem", 	"Problem", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return Integer.toString(idx); }} ),
+    	new ColumnDescriptor<RuleViolation>("package",	"Package", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getPackageName(); }} ),
+    	new ColumnDescriptor<RuleViolation>("file",		"File", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getFilename(); }} ),
+    	new ColumnDescriptor<RuleViolation>("priority",	"Priority", 	new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return Integer.toString(rv.getRule().getPriority().getPriority()); }} ),
+    	new ColumnDescriptor<RuleViolation>("line",		"Line", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return Integer.toString(rv.getBeginLine()); }} ),
+    	new ColumnDescriptor<RuleViolation>("desc",		"Description", 	new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return StringUtil.replaceString(rv.getDescription(), '\"', "'"); }} ),
+    	new ColumnDescriptor<RuleViolation>("ruleSet",	"Rule set", 	new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getRule().getRuleSetName(); }} ),
+    	new ColumnDescriptor<RuleViolation>("rule",		"Rule", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getRule().getName(); }} )
+    	};
+
+
+    private static BooleanProperty booleanPropertyFor(String id, String label) {
+
+    	BooleanProperty prop = propertyDescriptorsById.get(id);
+    	if (prop != null) return prop;
+
+    	prop = new BooleanProperty(label, label, true, 1.0f);
+    	propertyDescriptorsById.put(id, prop);
+    	return prop;
+    }
+
+    public CSVRenderer(Properties properties, ColumnDescriptor<RuleViolation>[] columns, String theSeparator, String theCR) {
+    	super(NAME, "Comma-separated values tabular format.", properties);
+
+    	separator = theSeparator;
+    	cr = theCR;
+
+    	for (ColumnDescriptor<RuleViolation> desc : columns) {
+    		definePropertyDescriptor(booleanPropertyFor(desc.id, desc.title));
+    		}
+    }
+
+    private List<ColumnDescriptor<RuleViolation>> activeColumns() {
+
+    	List<ColumnDescriptor<RuleViolation>> actives = new ArrayList<ColumnDescriptor<RuleViolation>>();
+
+     	for (ColumnDescriptor<RuleViolation> desc : AllColumns) {
+    		BooleanProperty prop = booleanPropertyFor(desc.id, null);
+    		if (getProperty(prop)) {
+    			actives.add(desc);
+    			}
+    		}
+     	return actives;
+    }
+
+    private CSVWriter<RuleViolation> csvWriter() {
+    	if (csvWriter != null) return csvWriter;
+
+    	csvWriter = new CSVWriter<RuleViolation>(activeColumns(), separator, cr);
+    	return csvWriter;
+    }
 
     public CSVRenderer(Properties properties) {
-    	super(NAME, "Comma-separated values tabular format.", properties);
+    	this(properties, AllColumns, DefaultSeparator, PMD.EOL);
     }
 
     /**
@@ -30,53 +98,17 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
      */
     @Override
     public void start() throws IOException {
-    	StringBuilder buf = new StringBuilder(300);
-		quoteAndCommify(buf, "Problem");
-		quoteAndCommify(buf, "Package");
-		quoteAndCommify(buf, "File");
-		quoteAndCommify(buf, "Priority");
-		quoteAndCommify(buf, "Line");
-		quoteAndCommify(buf, "Description");
-		quoteAndCommify(buf, "Rule set");
-		quote(buf, "Rule");
-		buf.append(PMD.EOL);
-		getWriter().write(buf.toString());
+    	csvWriter().writeTitles(getWriter());
     }
 
     public String defaultFileExtension() { return "csv"; }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-    	StringBuilder buf = new StringBuilder(300);
-		Writer writer = getWriter();
-	
-		RuleViolation rv;
-		while (violations.hasNext()) {
-		    buf.setLength(0);
-		    rv = violations.next();
-		    quoteAndCommify(buf, Integer.toString(violationCount));
-		    quoteAndCommify(buf, rv.getPackageName());
-		    quoteAndCommify(buf, rv.getFilename());
-		    quoteAndCommify(buf, Integer.toString(rv.getRule().getPriority().getPriority()));
-		    quoteAndCommify(buf, Integer.toString(rv.getBeginLine()));
-		    quoteAndCommify(buf, StringUtil.replaceString(rv.getDescription(), '\"', "'"));
-		    quoteAndCommify(buf, rv.getRule().getRuleSetName());
-		    quote(buf, rv.getRule().getName());
-		    buf.append(PMD.EOL);
-		    writer.write(buf.toString());
-		    violationCount++;
-		}
+    	csvWriter().writeData(getWriter(), violations);
     }
 
-    private void quote(StringBuilder buffer, String s) {
-    	buffer.append('"').append(s).append('"');
-    }
-
-    private void quoteAndCommify(StringBuilder buffer, String s) {
-		quote(buffer, s);
-		buffer.append(',');
-    }
 }
