@@ -71,6 +71,7 @@ public class RuleGroup implements RuleCollection, Comparable<RuleGroup> {
 		return id == null ? "" : id.toString();
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void sortBy(Comparator ruleComparator) {
 
 	    if (!hasRules()) return;

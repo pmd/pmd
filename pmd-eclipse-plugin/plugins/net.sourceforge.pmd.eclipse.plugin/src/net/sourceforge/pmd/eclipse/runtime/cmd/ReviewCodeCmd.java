@@ -357,7 +357,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             
             final RuleSet ruleSet = rulesetFrom(resource);	//properties.getProjectRuleSet();
             
-            final PMDEngine pmdEngine = getPmdEngineForProject(project);
+        //    final PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = countResourceElement(resource);
             // Could add a property that lets us set the max number to analyze 
             if (properties.isFullBuildEnabled() || targetCount ==1){
@@ -367,7 +367,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 	            final ResourceVisitor visitor = new ResourceVisitor();
 	            visitor.setMonitor(getMonitor());
 	            visitor.setRuleSet(ruleSet);
-	            visitor.setPmdEngine(pmdEngine);
+	     //       visitor.setPmdEngine(pmdEngine);
 	            visitor.setAccumulator(markersByFile);
 	            visitor.setUseTaskMarker(taskMarker);
 	            visitor.setProjectProperties(properties);
@@ -469,7 +469,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             
             RuleSet ruleSet = rulesetFromResourceDelta();	//properties.getProjectRuleSet();
 
-            PMDEngine pmdEngine = getPmdEngineForProject(project);
+   //         PMDEngine pmdEngine = getPmdEngineForProject(project);
             int targetCount = countDeltaElement(resourceDelta);
             // Could add a property that lets us set the max number to analyze 
             if (properties.isFullBuildEnabled() || targetCount == 1){
@@ -479,7 +479,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 	            DeltaVisitor visitor = new DeltaVisitor();
 	            visitor.setMonitor(getMonitor());
 	            visitor.setRuleSet(ruleSet);
-	            visitor.setPmdEngine(pmdEngine);
+	//            visitor.setPmdEngine(pmdEngine);
 	            visitor.setAccumulator(markersByFile);
 	            visitor.setUseTaskMarker(taskMarker);
 	            visitor.setProjectProperties(properties);

@@ -37,17 +37,21 @@ import java.util.Set;
 import java.util.Stack;
 
 import name.herlin.command.Timer;
+import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -71,13 +75,20 @@ public class BaseVisitor {
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
     private Map<IFile, Set<MarkerInfo>> accumulator;
-    private PMDEngine pmdEngine;
+//    private PMDEngine pmdEngine;
     private RuleSet ruleSet;
     private int fileCount;
     private long pmdDuration;
     private IProjectProperties projectProperties;
     protected RuleSet hiddenRules;
 
+    private Configuration configuration;
+    
+    
+    protected Configuration configuration() {
+    	if (configuration == null) configuration = new Configuration();
+    	return configuration;
+    }
     /**
      * The constructor is protected to avoid illegal instantiation
      *
@@ -172,20 +183,20 @@ public class BaseVisitor {
         }
     }
 
-    /**
-     * @return Returns the pmdEngine.
-     */
-    public PMDEngine getPmdEngine() {
-        return pmdEngine;
-    }
-
-    /**
-     * @param pmdEngine
-     *            The pmdEngine to set.
-     */
-    public void setPmdEngine(final PMDEngine pmdEngine) {
-        this.pmdEngine = pmdEngine;
-    }
+//    /**
+//     * @return Returns the pmdEngine.
+//     */
+//    public PMDEngine getPmdEngine() {
+//        return pmdEngine;
+//    }
+//
+//    /**
+//     * @param pmdEngine
+//     *            The pmdEngine to set.
+//     */
+//    public void setPmdEngine(final PMDEngine pmdEngine) {
+//        this.pmdEngine = pmdEngine;
+//    }
 
     /**
      * @return Returns the ruleSet.
@@ -224,6 +235,10 @@ public class BaseVisitor {
         this.projectProperties = projectProperties;
     }
 
+    private boolean isIncluded(IFile file) throws PropertiesException {
+    	return projectProperties.isIncludeDerivedFiles() || !projectProperties.isIncludeDerivedFiles() && !file.isDerived();
+    }
+    
     /**
      * Run PMD against a resource
      *
@@ -233,26 +248,31 @@ public class BaseVisitor {
     protected final void reviewResource(final IResource resource) {
         IFile file = (IFile) resource.getAdapter(IFile.class);
         if (file != null && file.getFileExtension() != null) {
+        	
         	Reader input = null;
             try {
-                boolean included = projectProperties.isIncludeDerivedFiles() || !projectProperties.isIncludeDerivedFiles() && !file.isDerived();
+                boolean included = isIncluded(file);
                 log.debug("Derived files included: " + projectProperties.isIncludeDerivedFiles());
                 log.debug("file " + file.getName() + " is derived: " + file.isDerived());
                 log.debug("file checked: " + included);
 
                 final File sourceCodeFile = file.getRawLocation().toFile();
-                if (getPmdEngine().applies(sourceCodeFile, getRuleSet()) && isFileInWorkingSet(file) && (projectProperties.isIncludeDerivedFiles() || !this.projectProperties.isIncludeDerivedFiles() && !file.isDerived())) {
+                if (included && getRuleSet().applies(sourceCodeFile) && isFileInWorkingSet(file)) {
                     subTask("PMD checking: " + file.getName());
 
+                	LanguageVersion version = PMDPlugin.javaVersionFor(file.getProject());
+                	if (version != null) configuration().setDefaultLanguageVersion(version);
+                	                	
                     Timer timer = new Timer();
 
-                    final RuleContext context = new RuleContext();
-                    context.setSourceCodeFile(sourceCodeFile);
-                    context.setSourceCodeFilename(file.getName());
-                    context.setReport(new Report());
+                    RuleContext context = PMD.newRuleContext(file.getName(), sourceCodeFile);
 
                     input = new InputStreamReader(file.getContents(), file.getCharset());
-                    getPmdEngine().processFile(input, getRuleSet(), context);
+//                    getPmdEngine().processFile(input, getRuleSet(), context);
+//                    getPmdEngine().processFile(sourceCodeFile, getRuleSet(), context);
+
+                    RuleSets rSets = new RuleSets(getRuleSet());
+                    new SourceCodeProcessor(configuration()).processSourceCode(input, rSets, context);
 
                     timer.stop();
                     pmdDuration += timer.getDuration();

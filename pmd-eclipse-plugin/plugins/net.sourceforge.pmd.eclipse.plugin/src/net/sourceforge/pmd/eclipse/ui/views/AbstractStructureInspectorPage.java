@@ -1,16 +1,19 @@
 package net.sourceforge.pmd.eclipse.ui.views;
 
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.Configuration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.cmd.PMDEngine;
 import net.sourceforge.pmd.eclipse.ui.model.FileRecord;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.views.ast.ASTUtil;
@@ -300,11 +303,16 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 			RuleContext ctx = new RuleContext();
 			ctx.setSourceCodeFilename("[scratchpad]");
 	
-			StringReader reader = new StringReader(getDocument().get());
-	
+		//	StringReader reader = new StringReader(getDocument().get());
 			// run PMD using the DFAGraphRule and the Text of the Resource
-			new PMDEngine().processFile(reader, rs, ctx);
+		//	new PMDEngine().processFile(reader, rs, ctx);
 	
+			byte[] bytes = getDocument().get().getBytes();
+			InputStream input = new ByteArrayInputStream(bytes);
+			
+			RuleSets rSets = new RuleSets(rs);
+			new SourceCodeProcessor(new Configuration()).processSourceCode(input, rSets, ctx);
+			
 			// the Rule then can give us the Methods
 			methodList.addAll(dfaGraphRule.getMethods());
 			Collections.sort(methodList, ASTUtil.MethodComparator);

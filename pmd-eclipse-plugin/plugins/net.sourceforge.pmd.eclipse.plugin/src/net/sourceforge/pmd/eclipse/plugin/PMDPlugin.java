@@ -10,12 +10,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.sourceforge.pmd.Configuration;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
 import net.sourceforge.pmd.eclipse.core.ext.RuleSetsExtensionProcessor;
 import net.sourceforge.pmd.eclipse.core.impl.RuleSetManagerImpl;
+import net.sourceforge.pmd.eclipse.runtime.cmd.JavaProjectClassLoader;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesFactory;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
@@ -31,6 +33,8 @@ import net.sourceforge.pmd.eclipse.runtime.writer.impl.WriterFactoryImpl;
 import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Layout;
@@ -47,6 +51,8 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -70,6 +76,8 @@ public class PMDPlugin extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
 
+	private static Map<IProject, IJavaProject> JavaProjectsByIProject = new HashMap<IProject, IJavaProject>();
+	
 	// The shared instance
 	private static PMDPlugin plugin;
 
@@ -96,6 +104,38 @@ public class PMDPlugin extends AbstractUIPlugin {
 		coloursByRGB.put( rgb, color );
 		
 		return color;
+	}
+
+	public static void setJavaClassLoader(Configuration config, IJavaProject javaProject) {
+
+		IPreferences preferences = getDefault().loadPreferences();
+		if (preferences.isProjectBuildPathEnabled()) {
+			config.setClassLoader(new JavaProjectClassLoader(config.getClassLoader(), javaProject));
+		}
+	}
+	
+	/**
+	 * Return the Java language version for the resources found within the specified
+	 * project or null if it isn't a Java project or a Java version we don't support 
+	 * yet.
+	 * 
+	 * @param project
+	 * @return
+	 */
+	public static LanguageVersion javaVersionFor(IProject project) {
+
+		IJavaProject jProject = JavaProjectsByIProject.get(project);
+		if (jProject == null) {
+			jProject = JavaCore.create(project);
+			JavaProjectsByIProject.put(project, jProject);
+		}
+		
+		if (jProject.exists()) {
+			String compilerCompliance = jProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+			return Language.JAVA.getVersion(compilerCompliance);
+		}
+
+		return null;
 	}
 	
 	private void disposeResources() {

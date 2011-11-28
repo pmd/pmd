@@ -37,22 +37,21 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 import name.herlin.command.CommandException;
+import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
@@ -118,30 +117,29 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
      */
     @Override
     public void execute() throws CommandException {
-        IProject project = resource.getProject();
+     //   IProject project = resource.getProject();
         IFile file = (IFile) resource.getAdapter(IFile.class);
         beginTask("PMD checking for rule: " + rule.getName(), 1);
 
         if (file != null) {
             RuleSet ruleSet = new RuleSet();
             ruleSet.addRule(rule);
-            final PMDEngine pmdEngine = getPmdEngineForProject(project);
+  //          final PMDEngine pmdEngine = getPmdEngineForProject(project);
             File sourceCodeFile = file.getFullPath().toFile();
-            if (pmdEngine.applies(sourceCodeFile, ruleSet)) {
+            if (ruleSet.applies(sourceCodeFile)) {
                 try {
-                    context = new RuleContext();
-                    context.setSourceCodeFile(sourceCodeFile);
-                    context.setSourceCodeFilename(file.getName());
-                    context.setReport(new Report());
+                    context = PMD.newRuleContext(file.getName(), sourceCodeFile);
     
-                    Reader input = new InputStreamReader(file.getContents(), file.getCharset());
-                    pmdEngine.processFile(input, ruleSet, context);
-                    input.close();
-                } catch (CoreException e) {
-                    throw new CommandException(e);
+                   // Reader input = new InputStreamReader(file.getContents(), file.getCharset());
+                    RuleSets rSets = new RuleSets(ruleSet);
+                	
+                    new SourceCodeProcessor(new Configuration()).processSourceCode(file.getContents(), rSets, context);
+                  //  input.close();
+//                } catch (CoreException e) {
+//                    throw new CommandException(e);
                 } catch (PMDException e) {
                     throw new CommandException(e);
-                } catch (IOException e) {
+                } catch (CoreException e) {
                     throw new CommandException(e);
                 }
     

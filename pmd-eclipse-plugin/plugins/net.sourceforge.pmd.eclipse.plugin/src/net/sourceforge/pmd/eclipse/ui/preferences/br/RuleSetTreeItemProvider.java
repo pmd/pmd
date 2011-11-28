@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * @author Brian Remedios
  */
+@SuppressWarnings("rawtypes")
 public class RuleSetTreeItemProvider implements ITreeContentProvider {
 
 	private RuleFieldAccessor 				fieldAccessor;
