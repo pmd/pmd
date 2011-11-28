@@ -38,16 +38,10 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 import name.herlin.command.AbstractProcessableCommand;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
-import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 
 /**
  * This is a base implementation for a command inside the PMD plugin.
@@ -277,35 +271,35 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
             monitor.worked(work);
         }
     }
-
-    /**
-     * Return a PMD Engine for that project. The engine is parameterized
-     * according to the target JDK of that project.
-     *
-     * @param project
-     * @return
-     */
-    protected PMDEngine getPmdEngineForProject(IProject project) throws CommandException {
-        IJavaProject javaProject = JavaCore.create(project);
-        PMDEngine pmdEngine = new PMDEngine();
-
-        if (javaProject.exists()) {
-            String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            log.debug("compilerCompliance = " + compilerCompliance);
-
-            LanguageVersion languageVersion = Language.JAVA.getVersion(compilerCompliance);
-            if ( languageVersion == null ) {
-                throw new CommandException("The target JDK, " + compilerCompliance + " is not supported"); // TODO NLS
-            }
-            pmdEngine.setLanguageVersion(languageVersion);
-
-            IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
-            if (preferences.isProjectBuildPathEnabled()) {
-            	pmdEngine.setClassLoader(new JavaProjectClassLoader(pmdEngine.getClassLoader(), javaProject));
-            }
-        } else {
-            throw new CommandException("The project " + project.getName() + " is not a Java project"); // TODO NLS
-        }
-        return pmdEngine;
-    }
+    
+//    /**
+//     * Return a PMD Engine for that project. The engine is parameterized
+//     * according to the target JDK of that project.
+//     *
+//     * @param project
+//     * @return
+//     */
+//    protected PMDEngine getPmdEngineForProject(IProject project) throws CommandException {
+//        IJavaProject javaProject = JavaCore.create(project);
+//        PMDEngine pmdEngine = new PMDEngine();
+//
+//        if (javaProject.exists()) {
+//            String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+//            log.debug("compilerCompliance = " + compilerCompliance);
+//
+//            LanguageVersion languageVersion = Language.JAVA.getVersion(compilerCompliance);
+//            if ( languageVersion == null ) {
+//                throw new CommandException("The target JDK, " + compilerCompliance + " is not supported"); // TODO NLS
+//            }
+//            pmdEngine.setLanguageVersion(languageVersion);
+//
+//            IPreferences preferences = PMDPlugin.getDefault().loadPreferences();
+//            if (preferences.isProjectBuildPathEnabled()) {
+//            	pmdEngine.setClassLoader(new JavaProjectClassLoader(pmdEngine.getClassLoader(), javaProject));
+//            }
+//        } else {
+//            throw new CommandException("The project " + project.getName() + " is not a Java project"); // TODO NLS
+//        }
+//        return pmdEngine;
+//    }
 }
