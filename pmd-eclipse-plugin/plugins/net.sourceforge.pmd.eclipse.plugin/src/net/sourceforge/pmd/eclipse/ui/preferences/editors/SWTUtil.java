@@ -8,6 +8,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Listener;
 /**
@@ -87,6 +88,11 @@ public class SWTUtil {
         return labels;
     }
 
+    public static void deselectAll(Combo combo) {
+    	int count = combo.getItems().length;
+    	for (int i=0; i<count; i++) combo.deselect(i);
+    }
+    
     public static String[] i18lLabelsIn(Object[][] items, int columnIndex) {
 
         String[] labels = labelsIn(items, columnIndex);

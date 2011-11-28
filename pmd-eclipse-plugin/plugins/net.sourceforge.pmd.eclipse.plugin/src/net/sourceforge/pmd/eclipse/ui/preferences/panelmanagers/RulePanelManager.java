@@ -111,12 +111,16 @@ public class RulePanelManager extends AbstractRulePanelManager {
         languageCombo.select(-1);
         priorityCombo.select(-1);
         priorityDisplay.setItems(null);
-        minLanguageVersionCombo.select(-1);
-        maxLanguageVersionCombo.select(-1);
         usesDfaButton.setSelection(false);
         usesTypeResolutionButton.setSelection(false);
+        clearLanguageVersionCombos();
 	}
 
+	private void clearLanguageVersionCombos() {
+		 SWTUtil.deselectAll(minLanguageVersionCombo);
+		 SWTUtil.deselectAll(maxLanguageVersionCombo);
+	}
+	
 	private void showLanguageVersionFields(Language language) {
 
 		int versionCount = language == null ? 0 : language.getVersions().size();
@@ -129,7 +133,9 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		maxLanguageVersionCombo.setVisible(hasVersions);
 
 		if (hasVersions) {
-			List<LanguageVersion> versions = language.getVersions();
+			List<LanguageVersion> versions = new ArrayList<LanguageVersion>();
+			versions.add(null);		// allow no selection
+			versions.addAll(language.getVersions());
 			populate(minLanguageVersionCombo, versions);
 			populate(maxLanguageVersionCombo, versions);
 		}
@@ -138,7 +144,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 	private void populate(Combo field, List<LanguageVersion> versions) {
 		field.removeAll();
 		for (LanguageVersion version : versions) {
-			field.add( version.getName() );
+			field.add(version == null ? "" : version.getName());
 		}
 	}
 
@@ -332,7 +338,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 		        maxLanguageLabel.setLayoutData(lblGD);
 		   
 		        maxLanguageVersionCombo = buildLanguageVersionCombo(dlgArea, false);
-		        maxLanguageVersionCombo.setLayoutData(cmboGD);
+		        maxLanguageVersionCombo.setLayoutData(cmboGD);		        
 	        	        
 	        if (creatingNewRule()) {
 	        	buildPriorityControls(dlgArea);	// put it at the bottom when creating new rules
@@ -536,7 +542,10 @@ public class RulePanelManager extends AbstractRulePanelManager {
  			public void widgetSelected(SelectionEvent event) {
  				if (rules == null) return;
 
- 				final LanguageVersion version = selectedLanguage().getVersions().get(combo.getSelectionIndex());
+ 				final int selIdx = combo.getSelectionIndex();
+ 				final LanguageVersion version = selIdx == 0 ? 
+ 					null :
+ 					selectedLanguage().getVersions().get(selIdx-1);
 
  				RuleVisitor visitor = new RuleVisitor() {
  					public boolean accept(Rule rule) {
@@ -551,7 +560,7 @@ public class RulePanelManager extends AbstractRulePanelManager {
 
  				rules.rulesDo(visitor);
 
- 				valueChanged(null, version.getName());
+ 				valueChanged(null, version == null ? "" : version.getName());
  			}
  		});
 
