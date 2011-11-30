@@ -38,11 +38,19 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 		this.renderers = renderers;
 	}
 
-	private void addError(Report report, Exception ex) {
+	// If we ever end up having a ReportUtil class, this method should be moved there...
+	private static void addError(Report report, Exception ex, String fileName) {
 		report.addError(
 				new Report.ProcessingError(ex.getMessage(),
 				fileName)
 				);
+	}
+
+	private void addErrorAndShutdown(Report report, Exception e, String errorMessage) {
+		// unexpected exception: log and stop executor service
+		LOG.log(Level.FINE, errorMessage, e);
+		addError(report, e, fileName);
+		executor.shutdownNow();
 	}
 	
 	public Report call() {
@@ -67,26 +75,16 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 			this.getSourceCodeProcessor().processSourceCode(stream, rs, ctx);
 		} catch (PMDException pmde) {
 			LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
-
-			addError(report, pmde);
+			addError(report, pmde, fileName);
 		} catch (IOException ioe) {
-			// unexpected exception: log and stop executor service
-			LOG.log(Level.FINE, "IOException during processing", ioe);
+			addErrorAndShutdown(report, ioe, "IOException during processing");
 
-			addError(report, ioe);
-
-			executor.shutdownNow();
 		} catch (RuntimeException re) {
-			// unexpected exception: log and stop executor service
-			LOG.log(Level.FINE, "RuntimeException during processing", re);
-
-			addError(report, re);
-
-			executor.shutdownNow();
+			addErrorAndShutdown(report, re,"RuntimeException during processing");
 		}
 		return report;
 	}
-
+	
 	private static class PmdThread extends Thread {
 
 		public PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory,
