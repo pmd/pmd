@@ -223,7 +223,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 		this.transformer.transform(xml,fileResult);
 		// Fix, removing the xmlns field of each ruleset in the generated xml file.
 		correctXmlMergeFile(mergedFile);
-		System.out.println("Creating index file:" + this.indexRuleSetFilename); //$NON-NLS-1$
+		System.out.println("Creating index file:" + this.indexRuleSetFilename + ", using merged file:" + mergedFile.toString()); //$NON-NLS-1$
 		this.transformer = createTransformer(generateIndexXsl);
 		// Create index from ruleset merge
 		StreamSource src = new StreamSource(mergedFile);
