@@ -12,12 +12,10 @@
        classname="net.sourceforge.pmd.ant.PmdBuildTask">
       <classpath refid="tools.classpath"/>
     </taskdef>
-    <echo>Generating documentation into ${target}</echo>
+    <echo>Generating documentation into ${target}, into ${rules.src}</echo>
     <mkdir       dir="${target}"/>
-    <pmd-build   rulesDirectory="rulesets/java"
+    <pmd-build   rulesDirectory="${rules.src}"
                  target="${target}"/>
-
-
    </target>
 
    <!--
@@ -30,6 +28,7 @@
      <antcall target="generate-xdocs">
        <param name="target"    value="target-test"/>
        <param name="lib"       value="../lib"/>
+       <param name="rules.src" value="../../src/site/xdocs"/>
      </antcall>
    </target>
 
