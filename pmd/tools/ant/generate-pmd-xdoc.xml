@@ -1,34 +1,34 @@
 <project name="generate-jdk4-pom"
-		 default="generate-xdocs">
+     default="generate-xdocs">
 
-	<target name="generate-xdocs">
-		<path id="tools.classpath">
-			<fileset dir="${lib}">
-				<include name="pmd-build-*.jar"/>
-			</fileset>
-		</path>
+  <target name="generate-xdocs">
+    <path id="tools.classpath">
+      <fileset dir="${lib}">
+        <include name="pmd-build-*.jar"/>
+      </fileset>
+    </path>
 
-		<taskdef name="pmd-build"
-			 classname="net.sourceforge.pmd.ant.PmdBuildTask">
-			<classpath refid="tools.classpath"/>
-		</taskdef>
-		<echo>Generating documentation into ${target}</echo>
-		<mkdir dir="${target}"/>
-		<pmd-build 	rulesDirectory="rulesets/java"
-					target="${target}"/>
+    <taskdef name="pmd-build"
+       classname="net.sourceforge.pmd.ant.PmdBuildTask">
+      <classpath refid="tools.classpath"/>
+    </taskdef>
+    <echo>Generating documentation into ${target}</echo>
+    <mkdir       dir="${target}"/>
+    <pmd-build   rulesDirectory="rulesets/java"
+                 target="${target}"/>
 
 
-	 </target>
+   </target>
 
-	 <!--
-	 	Unit test of this task
-	 -->
-	 <target name="test">
+   <!--
+     Unit test of this task
+   -->
+   <target name="test">
 
-	 	<antcall target="generate-xdocs">
-	 		<param name="target"	value="target-test"/>
-	 		<param name="lib"	value="../lib"/>
-	 	</antcall>
-	 </target>
+     <antcall target="generate-xdocs">
+       <param name="target"  value="target-test"/>
+       <param name="lib"  value="../lib"/>
+     </antcall>
+   </target>
 
 </project>
