@@ -231,7 +231,14 @@
     </organization>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--
+             This value actually differs to maven default expectation(src/site/xdoc/) as
+             we need to pre process those and we place them instead in target/generated-xdocs/.
+             If the xdocs files stay in src/site/xdoc/, mvn tries to copy over the generated one,
+             and complains... -->
+        <src.xdocs.dir>src/site/xdocs</src.xdocs.dir>
     </properties>
+
     <build>
         <testSourceDirectory>regress</testSourceDirectory>
         <resources>
@@ -331,18 +338,20 @@
                         <configuration>
                             <tasks>
                                 <echo>PMD specific tasks: generating xdocs</echo>
-                                <mkdir dir="${project.build.directory}/generated-xdocs"/>
-                                <copy toDir="${project.build.directory}/generated-xdocs"
+                                <mkdir dir="${project.build.directory}/generated-xdocs/"/>
+                                <copy toDir="${project.build.directory}/generated-xdocs/"
                                       overwrite="true"
                                       verbose="true">
-                                  <fileset dir="xdocs"/>
+                                      <fileset dir="${src.xdocs.dir}"/>
                                   <filterset>
                                     <filter token="VERSION" value="${project.version}"/>
                                   </filterset>
                                 </copy>
                                 <ant antfile="tools/ant/generate-pmd-xdoc.xml">
+                                    <property name="rules.src"
+                                              value="rulesets/java"/>
                                     <property name="target"
-                                              value="xdocs/rules" />
+                                              value="${project.build.directory}/generated-xdocs/rules" />
                                     <property name="lib"
                                               value="${basedir}/tools/lib" />
                                 </ant>
@@ -362,21 +371,21 @@
                                     directory.</echo>
                                 <copy
                                     todir="${project.build.directory}/site/images/">
-                                    <fileset dir="xdocs/images/"
+                                    <fileset dir="${src.xdocs.dir}/images/"
                                              includes="**/*.*" />
                                 </copy>
                                 <echo>2. Adding missing text files to
                                     site.</echo>
                                 <copy todir="${project.build.directory}/site/">
-                                    <fileset dir="xdocs/"
+                                    <fileset dir="${src.xdocs.dir}/"
                                         includes="**/*.txt" />
                                 </copy>
                                 <echo>3. Deleting useless generated
                                     files.</echo>
                                 <delete>
-                                    <fileset dir="xdocs/rules"
+                                    <fileset dir="${src.xdocs.dir}/rules"
                                         includes="**/*.xml" />
-                                    <fileset dir="xdocs"
+                                    <fileset dir="${src.xdocs.dir}/"
                                         includes="mergedruleset.xml" />
                                     <fileset
                                         dir="${project.build.directory}"
@@ -396,9 +405,9 @@
                                 <echo>PMD specific tasks: cleaning
                                     generated xdocs</echo>
                                 <delete>
-                                    <fileset dir="xdocs/rules"
+                                    <fileset dir="${src.xdocs.dir}/rules"
                                         includes="**/*.xml" />
-                                    <fileset dir="xdocs/"
+                                    <fileset dir="${src.xdocs.dir}/"
                                         includes="mergedruleset.xml" />
                                 </delete>
                             </tasks>
