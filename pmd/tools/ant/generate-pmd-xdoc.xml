@@ -22,12 +22,14 @@
 
    <!--
      Unit test of this task
+
+     Should be run from tools/ant directory
    -->
    <target name="test">
 
      <antcall target="generate-xdocs">
-       <param name="target"  value="target-test"/>
-       <param name="lib"  value="../lib"/>
+       <param name="target"    value="target-test"/>
+       <param name="lib"       value="../lib"/>
      </antcall>
    </target>
 
