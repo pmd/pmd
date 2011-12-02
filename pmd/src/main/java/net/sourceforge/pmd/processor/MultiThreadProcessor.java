@@ -14,7 +14,6 @@ import net.sourceforge.pmd.Configuration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -36,12 +35,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 	public void processFiles(final RuleSetFactory ruleSetFactory, final List<DataSource> files,
 			final RuleContext ctx, final List<Renderer> renderers) {
 
-		RuleSets rs = null;
-		try {
-			rs = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-		} catch (RuleSetNotFoundException rsnfe) {
-			// should not happen: parent already created a ruleset
-		}
+		RuleSets rs = createRuleSets(ruleSetFactory);
 		rs.start(ctx);
 
 		PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);

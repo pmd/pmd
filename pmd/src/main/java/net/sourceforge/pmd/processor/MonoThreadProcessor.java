@@ -16,7 +16,6 @@ import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -38,14 +37,9 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
 			RuleContext ctx, List<Renderer> renderers) {
 
 		// single threaded execution
-//		PMD pmd = new PMD(configuration);
 
-		RuleSets rs = null;
-		try {
-			rs = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-		} catch (RuleSetNotFoundException rsnfe) {
-			// should not happen: parent already created a ruleset
-		}
+		RuleSets rs = createRuleSets(ruleSetFactory);
+		SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 		
 		for (DataSource dataSource : files) {
 			String niceFileName = filenameFrom(dataSource);
@@ -64,7 +58,7 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
 			try {
 				InputStream stream = new BufferedInputStream(dataSource.getInputStream());
 				ctx.setLanguageVersion(null);
-				new SourceCodeProcessor(configuration).processSourceCode(stream, rs, ctx);
+				processor.processSourceCode(stream, rs, ctx);
 			} catch (PMDException pmde) {
 				LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
 
