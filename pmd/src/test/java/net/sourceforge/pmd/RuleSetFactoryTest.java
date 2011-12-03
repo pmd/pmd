@@ -765,7 +765,7 @@ public class RuleSetFactoryTest {
 
 		SAXParser saxParser = saxParserFactory.newSAXParser();
 		ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler(
-				"etc/ruleset_2_0_0.xsd");
+				"src/main/resources/ruleset_2_0_0.xsd");
 		saxParser.parse(inputStream, validateDefaultHandler);
 		inputStream.close();
 		return validateDefaultHandler.isValid();
@@ -810,14 +810,14 @@ public class RuleSetFactoryTest {
 
 		file = "<?xml version=\"1.0\"?>" + PMD.EOL
 				+ "<!DOCTYPE ruleset SYSTEM \"file://"
-				+ System.getProperty("user.dir") + "/etc/ruleset_2_0_0.dtd\">"
+				+ System.getProperty("user.dir") + "/src/main/resources/ruleset_2_0_0.dtd\">"
 				+ PMD.EOL + file;
 
 		inputStream = new ByteArrayInputStream(file.getBytes());
 
 		SAXParser saxParser = saxParserFactory.newSAXParser();
 		ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler(
-				"etc/ruleset_2_0_0.dtd");
+				"src/main/resources/ruleset_2_0_0.dtd");
 		saxParser.parse(inputStream, validateDefaultHandler);
 		inputStream.close();
 		return validateDefaultHandler.isValid();

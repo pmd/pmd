@@ -240,38 +240,6 @@
     </properties>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>${basedir}</directory>
-                <includes>
-                    <include>etc/pmd-nicerhtml.xsl</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/etc</directory>
-                <includes>
-                    <include>ruleset_2_0_0.dtd</include>
-                    <include>ruleset_2_0_0.xsd</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                </includes>
-            </resource>
-            <resource>
-                <!-- FIXME: find the appropriate mvn property :${project.build.target}/test-classes
-                    ... -->
-                <directory>target/test-classes</directory>
-                <includes>
-                    <include>net/sourceforge/pmd/testframework/**/**</include>
-                </includes>
-            </resource>
-        </resources>
         <testResources>
             <testResource>
                 <directory>${basedir}/src/test/java</directory>
