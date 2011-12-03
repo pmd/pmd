@@ -382,7 +382,7 @@
                                 </copy>
                                 <echo>3. Deleting useless generated
                                     files.</echo>
-                                <delete>
+                                <delete quiet="true">
                                     <fileset dir="${src.xdocs.dir}/rules"
                                         includes="**/*.xml" />
                                     <fileset dir="${src.xdocs.dir}/"
@@ -404,7 +404,7 @@
                             <tasks>
                                 <echo>PMD specific tasks: cleaning
                                     generated xdocs</echo>
-                                <delete>
+                                <delete quiet="true">
                                     <fileset dir="${src.xdocs.dir}/rules"
                                         includes="**/*.xml" />
                                     <fileset dir="${src.xdocs.dir}/"
