@@ -240,7 +240,6 @@
     </properties>
 
     <build>
-        <testSourceDirectory>regress</testSourceDirectory>
         <resources>
             <resource>
                 <directory>${basedir}</directory>
@@ -274,14 +273,14 @@
         </resources>
         <testResources>
             <testResource>
-                <directory>${basedir}/regress/</directory>
+                <directory>${basedir}/src/test/java</directory>
                 <includes>
                     <include>**/*.xml</include>
                     <include>**/*.conf</include>
                     <include>**/testdata/*.java</include>
                 </includes>
             </testResource>
-        </testResources>
+        </testResources>        
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
