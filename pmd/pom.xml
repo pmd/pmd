@@ -242,10 +242,11 @@
     <build>
         <resources>
             <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
                 <directory>${basedir}</directory>
                 <includes>
-                    <include>rulesets/**/*.xml</include>
-                    <include>rulesets/**/*.properties</include>
                     <include>etc/pmd-nicerhtml.xsl</include>
                 </includes>
             </resource>
