@@ -242,10 +242,11 @@
     <build>
         <testResources>
             <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+            </testResource>
+            <testResource>
                 <directory>${basedir}/src/test/java</directory>
                 <includes>
-                    <include>**/*.xml</include>
-                    <include>**/*.conf</include>
                     <include>**/testdata/*.java</include>
                 </includes>
             </testResource>

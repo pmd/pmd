@@ -11,7 +11,7 @@ public class PMDTaskTest extends BuildFileTest {
     @Override
     public void setUp() {
         // initialize Ant
-        configureProject("src/test/java/net/sourceforge/pmd/ant/xml/pmdtasktest.xml");
+        configureProject("target/test-classes/net/sourceforge/pmd/ant/xml/pmdtasktest.xml");
         if (!project.getBaseDir().toString().endsWith("pmd/ant/xml")) {
             // when running from maven, the path needs to be adapted...
             // FIXME: this is more a workaround than a good solution...
