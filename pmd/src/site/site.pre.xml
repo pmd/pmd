@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PMD">
+	<bannerLeft>
+		<name>SourceForge</name>
+		<src>images/sflogo.png</src>
+		<href>http://sourceforge.net/</href>
+	</bannerLeft>
+	<bannerRight>
+		<name>pmd-logo</name>
+		<src>images/pmd_logo_small.jpg</src>
+		<href>http://pmd.sourceforge.net/</href>
+        </bannerRight>
+  <body>
+    <breadcrumbs>
+      <item href="http://www.sourceforge.net/" name="SourceForge"/>
+      <item href="http://pmd.sourceforge.net/" name="PMD"/>
+    </breadcrumbs>
+
+    <links>
+      <item href="http://sourceforge.net/projects/pmd" name="SourceForge.net Project Page"/>
+      <item href="http://sourceforge.net" name="Hosted by SourceForge"/>
+    </links>
+    <menu name="Overview">
+      <item href="/index.html" name="Download PMD 5.0"/>
+      <item href="http://hudson.xlv-labs.com/job/PMD-snapshot/changes" name="What's new in PMD 5.0"/>
+<!--
+      <item name="Download PMD 5.0" href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=51441&amp;release_id=524515" />
+      <item name="What's new in PMD 5.0" href="http://sourceforge.net/project/shownotes.php?release_id=524515&amp;group_id=56262" />
+-->
+      <item href="/news.html" name="PMD in the news"/>
+      <item href="/products.html" name="PMD-related products and books"/>
+      <item href="/bestpractices.html" name="Best practices"/>
+      <item href="/future.html" name="Future directions"/>
+      <item href="/similar-projects.html" name="Similar projects"/>
+      <item href="/credits.html" name="Credits"/>
+      <item href="/license.html" name="License"/>
+      <item href="/meaning.html" name="What does 'PMD' mean?"/>
+    </menu>
+    <menu name="Usage">
+      <item href="/installing.html" name="Installation"/>
+      <item href="/running.html" name="Command line usage"/>
+      <item href="/ant-task.html" name="Ant task usage"/>
+      <item href="/maven-plugin.html" name="Maven plugin usage"/>
+      <item href="/mvn-plugin.html" name="Mvn plugin usage"/>
+      <item href="/integrations.html" name="IDE plugin usage"/>
+      <item href="/suppressing.html" name="Suppressing warnings"/>
+      <item href="/cpd.html" name="Finding duplicated code"/>
+      <item href="/jspsupport.html" name="JSP support"/>
+    </menu>
+    <menu name="Customizing PMD">
+        <item href="/compiling.html" name="Compiling PMD"/>
+        <item href="/howtowritearule.html" name="How to write a rule"/>
+        <item href="/xpathruletutorial.html" name="Writing XPath rules"/>
+        <item href="/howtomakearuleset.html" name="How to make a rule set"/>
+        <item href="/howitworks.html" name="How it works"/>
+        <item href="/rule-guidelines.html" name="Rule guidelines"/>
+        <item href="/pmd-developer.html" name="PMD developers information"/>
+    </menu>
+    <menu name="For example">
+      <item href="/scoreboard.html" name="Run PMD on a Sourceforge project"/>
+    </menu>
+    <!-- The rulesets part of navigation will be added during pre-site and the
+         list is build dynamically based on rulesets folder directory layout -->
+
+
+    <menu name="Rule Sets"/>
+
+
+    <!-- *********** -->
+
+    <menu ref="reports"/>
+  </body>
+</project>

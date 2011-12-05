@@ -7,6 +7,10 @@ import static net.sourceforge.pmd.build.util.ConfigUtil.getString;
 import static net.sourceforge.pmd.build.util.XmlUtil.createXmlBackbone;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.transform.dom.DOMSource;
 
 import net.sourceforge.pmd.build.filefilter.DirectoryFileFilter;
 import net.sourceforge.pmd.build.filefilter.RulesetFilenameFilter;
@@ -26,6 +30,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 
 	private String rulesDirectory;
 	private String targetDirectory;
+	private String siteXml;
 
 	private RulesetFileTemplater xmlFileTemplater;
 
@@ -68,6 +73,15 @@ public class RuleSetToDocs implements PmdBuildTools {
 	public void setXmlFileTemplater(RulesetFileTemplater xmlFileTemplater) {
 		this.xmlFileTemplater = xmlFileTemplater;
 	}
+	
+	public String getSiteXml() {
+		return siteXml;
+	}
+
+	public void setSiteXml(String siteXml) {
+		this.siteXml = siteXml;
+	}
+
 
 	/*
 	 * <ol>
@@ -103,8 +117,16 @@ public class RuleSetToDocs implements PmdBuildTools {
 		return rulesDir;
 	}
 
+	private File buildTransformedRulesetDirectory(File ruleset) {
+		return new File(this.targetDirectory +
+						File.separator +
+						ruleset.getParentFile().getName() +
+						File.separator +
+						ruleset.getName());
+	}
+
 	private void processXDocFile(File ruleset) throws PmdBuildException {
-		File targetFile = new File(this.targetDirectory + File.separator + ruleset.getName());
+		final File targetFile = buildTransformedRulesetDirectory(ruleset);
 		System.out.println("Processing file " + ruleset + " into " + targetFile.getAbsolutePath());
 		FileUtil.ensureTargetDirectoryExist(targetFile);
 		convertRuleSetFile(ruleset, targetFile);
@@ -114,14 +136,39 @@ public class RuleSetToDocs implements PmdBuildTools {
 		xmlFileTemplater.transform(ruleset,target,xmlFileTemplater.getRulesetToDocsXsl());
 	}
 
-	public void generateRulesIndex() {
-		System.out.println("Merging all rules into " + this.mergedRuleSetFilename);
-		File mergedFile = new File(this.targetDirectory + File.separator + ".." + File.separator + mergedRuleSetFilename);
-		xmlFileTemplater.transform(createXmlBackbone(xmlFileTemplater), mergedFile, xmlFileTemplater.getMergeRulesetXsl());
+	private void addRulesetsToSiteXml(DOMSource backbone) {
+		File menu = FileUtil.createTempFile("menu.xml");
+		//System.out.println("menu file:" + menu.getAbsolutePath());
+		xmlFileTemplater.transform(backbone,menu,xmlFileTemplater.getCreateRulesetMenuXsl());
+		File site = FileUtil.createTempFile("site.xml");
+		Map<String,String> parameters = new HashMap<String, String>(1);
+		parameters.put("menufile",menu.getAbsoluteFile().toString());
+		File sitePre = new File(this.siteXml);
+		xmlFileTemplater.transform(sitePre,site,"tools/xslt/add-menu-to-site-descriptor.xsl",parameters);
+		//System.out.println("new site descip:" + site.getAbsolutePath());
+
+		FileUtil.move(site, new File("src/site/site.xml"));
+		site.delete();
+		menu.delete();		
+	}
+
+	private DOMSource createMergedFile(File mergedFile) {
+		DOMSource backbone =  createXmlBackbone(xmlFileTemplater);
+		xmlFileTemplater.transform(backbone, mergedFile, xmlFileTemplater.getMergeRulesetXsl());
 		// Fix, removing the xmlns field of each ruleset in the generated xml file.
 		FileUtil.replaceAllInFile(mergedFile, "xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"", "");
 		System.out.println("Creating index file:" + this.indexRuleSetFilename + ", using merged file:" + mergedFile.toString());
+		return backbone;
+	}
+	
+	public void preSiteGeneration() {
+		System.out.println("Merging all rules into " + this.mergedRuleSetFilename);
+		File mergedFile = new File(this.targetDirectory + File.separator + FileUtil.pathToParent + File.separator + mergedRuleSetFilename);
+		DOMSource backbone = createMergedFile(mergedFile);
+		System.out.println("Creating index file:" + this.indexRuleSetFilename + ", using merged file:" + mergedFile.toString());
 		// Create index from ruleset merge
 		xmlFileTemplater.transform(mergedFile,new File(this.targetDirectory + File.separator + indexRuleSetFilename) ,xmlFileTemplater.getGenerateIndexXsl());
+		// Create menu file from merge
+		addRulesetsToSiteXml(backbone);
 	}
 }

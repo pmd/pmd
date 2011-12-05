@@ -19,7 +19,7 @@ public interface PmdBuildTools {
      */
     public abstract void convertRulesets() throws PmdBuildException;
 
-    public abstract void generateRulesIndex() throws PmdBuildException;
+    public abstract void preSiteGeneration() throws PmdBuildException;
 
     /**
      * @return the targetDirectory
@@ -30,4 +30,10 @@ public interface PmdBuildTools {
      * @param targetDirectory the targetDirectory to set
      */
     public abstract void setTargetDirectory(String targetDirectory);
+    
+    /**
+     * 
+     * @param siteXml
+     */
+    public abstract void setSiteXml(String siteXml);
 }
