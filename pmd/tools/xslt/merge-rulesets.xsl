@@ -15,9 +15,13 @@
     <xsl:template match="ruleset">
     	<!--  Opening the appropriate file -->
         <xsl:variable name="filename" select="@file"/>
-        <xsl:variable name="rules_file" select="document($filename)"/>
-        <!--  Adding to our tree all the nodes present there -->
-		<xsl:copy-of select="$rules_file"/>
+        <xsl:element name="language">
+          <xsl:attribute name="name"><xsl:value-of select="@language"/></xsl:attribute>
+
+          <!--  Adding to our tree all the nodes present there -->
+          <xsl:variable name="rules_file" select="document($filename)"/>
+		  <xsl:copy-of select="$rules_file"/>
+		</xsl:element>
     </xsl:template>
 
 </xsl:stylesheet>
