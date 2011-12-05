@@ -21,7 +21,7 @@ import net.sourceforge.pmd.build.xml.RulesetFileTemplater;
  */
 public class RuleSetToDocs implements PmdBuildTools {
 
-	private String indexRuleSetFilename = getString("pmd.build.config.index.filename"); 
+	private String indexRuleSetFilename = getString("pmd.build.config.index.filename");
 	private String mergedRuleSetFilename = getString("pmd.build.config.mergedRuleset.filename");
 
 	private String rulesDirectory;
@@ -60,7 +60,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 	public void setTargetDirectory(String targetDirectory) {
 		this.targetDirectory = targetDirectory;
 	}
-	
+
 	public RulesetFileTemplater getXmlFileTemplater() {
 		return xmlFileTemplater;
 	}
@@ -68,7 +68,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 	public void setXmlFileTemplater(RulesetFileTemplater xmlFileTemplater) {
 		this.xmlFileTemplater = xmlFileTemplater;
 	}
-	
+
 	/*
 	 * <ol>
 	 * 		<li>Initialize the xml factory,</li>
@@ -80,7 +80,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 		xmlFileTemplater = new RulesetFileTemplater(rulesDirectory);
 		System.out.println("Merge xsl:" + xmlFileTemplater.getMergeRulesetXsl());
 	}
-	
+
 	public void convertRulesets() throws PmdBuildException {
 		init();
 		File rulesDir = new File(rulesDirectory);
@@ -93,34 +93,34 @@ public class RuleSetToDocs implements PmdBuildTools {
 	}
 
 	private void recursivelyProcessSubFolder(File rulesDir) throws PmdBuildException  {
-		for ( File folder : FileUtil.filterFilesFrom(rulesDir, new DirectoryFileFilter()) ) 
+		for ( File folder : FileUtil.filterFilesFrom(rulesDir, new DirectoryFileFilter()) )
 			recursivelyProcessSubFolder(processAllXDocsFilesFromDir(folder));
 	}
-	
+
 	private File processAllXDocsFilesFromDir(File rulesDir) throws PmdBuildException {
 		for ( File ruleset : FileUtil.filterFilesFrom(rulesDir, new RulesetFilenameFilter() ) )
 			processXDocFile(ruleset);
 		return rulesDir;
 	}
-		
+
 	private void processXDocFile(File ruleset) throws PmdBuildException {
 		File targetFile = new File(this.targetDirectory + File.separator + ruleset.getName());
-		System.out.println("Processing file " + ruleset + " into " + targetFile.getAbsolutePath()); //$NON-NLS-1$			
+		System.out.println("Processing file " + ruleset + " into " + targetFile.getAbsolutePath());
 		FileUtil.ensureTargetDirectoryExist(targetFile);
 		convertRuleSetFile(ruleset, targetFile);
 	}
-	
+
 	private void convertRuleSetFile(File ruleset,File target) throws PmdBuildException {
 		xmlFileTemplater.transform(ruleset,target,xmlFileTemplater.getRulesetToDocsXsl());
 	}
-	
+
 	public void generateRulesIndex() {
-		System.out.println("Merging all rules into " + this.mergedRuleSetFilename); //$NON-NLS-1$
-		File mergedFile = new File(this.targetDirectory + File.separator + ".." + File.separator + mergedRuleSetFilename); //$NON-NLS-1$		
+		System.out.println("Merging all rules into " + this.mergedRuleSetFilename);
+		File mergedFile = new File(this.targetDirectory + File.separator + ".." + File.separator + mergedRuleSetFilename);
 		xmlFileTemplater.transform(createXmlBackbone(xmlFileTemplater), mergedFile, xmlFileTemplater.getMergeRulesetXsl());
 		// Fix, removing the xmlns field of each ruleset in the generated xml file.
 		FileUtil.replaceAllInFile(mergedFile, "xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"", "");
-		System.out.println("Creating index file:" + this.indexRuleSetFilename + ", using merged file:" + mergedFile.toString()); //$NON-NLS-1$
+		System.out.println("Creating index file:" + this.indexRuleSetFilename + ", using merged file:" + mergedFile.toString());
 		// Create index from ruleset merge
 		xmlFileTemplater.transform(mergedFile,new File(this.targetDirectory + File.separator + indexRuleSetFilename) ,xmlFileTemplater.getGenerateIndexXsl());
 	}
