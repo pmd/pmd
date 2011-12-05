@@ -10,7 +10,8 @@ The Unused Code ruleset contains rules that find unused or ineffective code.
   </description>
 
   <rule name="UnusedPrivateField"
-  		  since="0.1"
+  		since="0.1"
+        language="java"
         message="Avoid unused private fields such as ''{0}''."
         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateFieldRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedPrivateField">
@@ -32,8 +33,9 @@ public class Something {
     </example>
   </rule>
 
-<rule name="UnusedLocalVariable"
-		  since="0.1"
+  <rule name="UnusedLocalVariable"
+        language="java"
+        since="0.1"
         message="Avoid unused local variables such as ''{0}''."
         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedLocalVariable">
@@ -53,8 +55,9 @@ public class Foo {
     </example>
   </rule>
 
-    <rule name="UnusedPrivateMethod"
-    	  since="0.7"
+  <rule name="UnusedPrivateMethod"
+        language="java"
+        since="0.7"
         message="Avoid unused private methods such as ''{0}''."
         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateMethodRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedPrivateMethod">
@@ -73,7 +76,8 @@ public class Something {
 
 
   <rule name="UnusedFormalParameter"
-  		  since="0.8"
+        language="java"
+        since="0.8"
         message="Avoid unused {0} parameters such as ''{1}''."
         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedFormalParameterRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedFormalParameter">
@@ -94,9 +98,10 @@ public class Foo {
   </rule>
 
     <rule name="UnusedModifier"
-    		since="1.02"
-         message="Avoid modifiers which are implied by the context"
-         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedModifierRule"
+          language="java"
+          since="1.02"
+          message="Avoid modifiers which are implied by the context"
+          class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedModifierRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedModifier">
      <description>
 Fields in interfaces are automatically public static final, and methods are public abstract.
@@ -118,5 +123,4 @@ public class Bar {
  ]]>
      </example>
      </rule>
-
-</ruleset>
+ </ruleset>
