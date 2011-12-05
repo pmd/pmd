@@ -320,7 +320,7 @@
                                     <property name="siteXml"
                                               value="src/site/site.pre.xml"/>
                                     <property name="rules.src"
-                                              value="rulesets"/>
+                                              value="src/main/resources/rulesets/"/>
                                     <property name="target"
                                               value="${project.build.directory}/generated-xdocs/rules" />
                                     <property name="lib"
@@ -373,8 +373,7 @@
                         <phase>clean</phase>
                         <configuration>
                             <tasks>
-                                <echo>PMD specific tasks: cleaning
-                                    generated xdocs</echo>
+                                <echo>PMD specific tasks: cleaning  generated xdocs</echo>
                                 <delete quiet="true">
                                     <fileset dir="${src.xdocs.dir}/rules"
                                         includes="**/*.xml" />
