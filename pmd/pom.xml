@@ -317,6 +317,8 @@
                                   </filterset>
                                 </copy>
                                 <ant antfile="tools/ant/generate-pmd-xdoc.xml">
+                                    <property name="siteXml"
+                                              value="src/site/site.pre.xml"/>
                                     <property name="rules.src"
                                               value="rulesets"/>
                                     <property name="target"

@@ -18,8 +18,15 @@ public class PmdBuildTask extends Task {
 
     private String rulesDirectory;
     private String target;
+    private String siteXml;
 
-    private String rulesetToDocs;
+    public String getSiteXml() {
+		return siteXml;
+	}
+	public void setSiteXml(String siteXml) {
+		this.siteXml = siteXml;
+	}
+	private String rulesetToDocs;
     private String mergeRuleset;
     private String rulesIndex;
     private String indexFilename;
@@ -53,11 +60,12 @@ public class PmdBuildTask extends Task {
     public void execute() throws BuildException {
 		PmdBuildTools tool = validate(new RuleSetToDocs());
 		tool.setTargetDirectory(this.target);
+		tool.setSiteXml(siteXml);
 		tool.setRulesDirectory(this.rulesDirectory);
 	
 		try {
 	        	tool.convertRulesets();
-	        	tool.generateRulesIndex();
+	        	tool.preSiteGeneration();
 		}
 		catch ( PmdBuildException e) {
 		    throw new BuildException(e);
@@ -70,6 +78,8 @@ public class PmdBuildTask extends Task {
 		    throw new BuildException("Attribute targetDirectory is not optional");
 		if ( this.rulesDirectory == null || "".equals(this.rulesDirectory) )
 		    throw new BuildException("Attribute rulesDirectory is not optional");
+		if ( this.siteXml == null ||"".equals(siteXml))
+		    throw new BuildException("Attribute siteXml is not optional");
 		// Optional Attributes
 		if ( this.mergedRulesetFilename != null && ! "".equals(this.mergedRulesetFilename) )
 			tool.setMergedRuleSetFilename(this.mergedRulesetFilename);

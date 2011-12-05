@@ -14,7 +14,8 @@
     </taskdef>
     <echo>Generating documentation into ${target}, into ${rules.src}</echo>
     <mkdir       dir="${target}"/>
-    <pmd-build   rulesDirectory="${rules.src}"
+    <pmd-build   siteXml="${siteXml}"
+                 rulesDirectory="${rules.src}"
                  target="${target}"/>
    </target>
 
