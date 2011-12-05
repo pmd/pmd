@@ -250,7 +250,7 @@
                     <include>**/testdata/*.java</include>
                 </includes>
             </testResource>
-        </testResources>        
+        </testResources>
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -306,7 +306,7 @@
                         <phase>pre-site</phase>
                         <configuration>
                             <tasks>
-                                <echo>PMD specific tasks: generating xdocs</echo>
+                                <echo>PMD specific tasks: generating xdocs from rulesets</echo>
                                 <mkdir dir="${project.build.directory}/generated-xdocs/"/>
                                 <copy toDir="${project.build.directory}/generated-xdocs/"
                                       overwrite="true"
@@ -318,7 +318,7 @@
                                 </copy>
                                 <ant antfile="tools/ant/generate-pmd-xdoc.xml">
                                     <property name="rules.src"
-                                              value="rulesets/java"/>
+                                              value="rulesets"/>
                                     <property name="target"
                                               value="${project.build.directory}/generated-xdocs/rules" />
                                     <property name="lib"
