@@ -36,8 +36,9 @@
 
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.rule.AbstractRuleViolation;
 
 /**
  * This is an implementation of IRuleViolation.
@@ -45,123 +46,124 @@ import net.sourceforge.pmd.Rule;
  * This object is used to generate violation reports.
  * 
  * @author Herlin
- *
+ * @author Brian Remedios
  */
 
-public class FakeRuleViolation implements RuleViolation {
-    private String filename = "";
-    private int beginLine;
-    private int beginColumn;
-    private int endLine;
-    private int endColumn;
-    private Rule rule;
-    private String description = "";
-    private String packageName = "";
-    private String methodName = "";
-    private String className = "";
-    private String variableName = "";
+class FakeRuleViolation extends AbstractRuleViolation {
+//    private String filename = "";
+//    private int beginLine;
+//    private int beginColumn;
+//    private int endLine;
+//    private int endColumn;
+//    private Rule rule;
+//    private String description = "";
+//    private String packageName = "";
+//    private String methodName = "";
+//    private String className = "";
+//    private String variableName = "";
     
+	private static final RuleContext DummyContext = new RuleContext();
+	
     /**
      * Default constructor take a rule object to initialize.
      * All other variables have default values to empty;
      * @param rule
      */
-    public FakeRuleViolation(Rule rule) {
-        super();
-        this.rule = rule;
+    public FakeRuleViolation(Rule theRule) {
+        super(theRule, DummyContext, null, null);
     }
 
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getFilename()
-     */
-    public String getFilename() {
-        return filename;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getBeginLine()
-     */
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getBeginColumn()
-     */
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getEndLine()
-     */
-    public int getEndLine() {
-        return endLine;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getEndColumn()
-     */
-    public int getEndColumn() {
-        return endColumn;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getRule()
-     */
-    public Rule getRule() {
-        return rule;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getDescription()
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getPackageName()
-     */
-    public String getPackageName() {
-        return packageName;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getMethodName()
-     */
-    public String getMethodName() {
-        return methodName;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getClassName()
-     */
-    public String getClassName() {
-        return className;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#isSuppressed()
-     */
-    public boolean isSuppressed() {
-        return false;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getVariableName()
-     */
-    public String getVariableName() {
-        return variableName;
-    }
-
-    /**
-     * @param beginColumn The beginColumn to set.
-     */
-    public void setBeginColumn(int beginColumn) {
-        this.beginColumn = beginColumn;
-    }
-
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getFilename()
+//     */
+//    public String getFilename() {
+//        return filename;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getBeginLine()
+//     */
+//    public int getBeginLine() {
+//        return beginLine;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getBeginColumn()
+//     */
+//    public int getBeginColumn() {
+//        return beginColumn;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getEndLine()
+//     */
+//    public int getEndLine() {
+//        return endLine;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getEndColumn()
+//     */
+//    public int getEndColumn() {
+//        return endColumn;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getRule()
+//     */
+//    public Rule getRule() {
+//        return rule;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getDescription()
+//     */
+//    public String getDescription() {
+//        return description;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getPackageName()
+//     */
+//    public String getPackageName() {
+//        return packageName;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getMethodName()
+//     */
+//    public String getMethodName() {
+//        return methodName;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getClassName()
+//     */
+//    public String getClassName() {
+//        return className;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#isSuppressed()
+//     */
+//    public boolean isSuppressed() {
+//        return false;
+//    }
+//
+//    /**
+//     * @see net.sourceforge.pmd.IRuleViolation#getVariableName()
+//     */
+//    public String getVariableName() {
+//        return variableName;
+//    }
+//
+//    /**
+//     * @param beginColumn The beginColumn to set.
+//     */
+//    public void setBeginColumn(int beginColumn) {
+//        this.beginColumn = beginColumn;
+//    }
+//
     /**
      * @param beginLine The beginLine to set.
      */
@@ -216,13 +218,6 @@ public class FakeRuleViolation implements RuleViolation {
      */
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-    }
-
-    /**
-     * @param rule The rule to set.
-     */
-    public void setRule(Rule rule) {
-        this.rule = rule;
     }
 
     /**

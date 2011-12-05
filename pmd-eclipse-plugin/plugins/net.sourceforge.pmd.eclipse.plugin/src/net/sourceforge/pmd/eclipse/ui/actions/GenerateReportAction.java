@@ -1,10 +1,12 @@
 package net.sourceforge.pmd.eclipse.ui.actions;
 
 import name.herlin.command.CommandException;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.RenderReportsCmd;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.reports.ReportManager;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -29,9 +31,29 @@ public class GenerateReportAction extends AbstractUIAction {
     
     private void registerRenderers(RenderReportsCmd cmd) {
     	
+    	ReportManager.loadReportProperties();
+
     	for (Renderer renderer : ReportManager.instance.activeRenderers()) {
     	   cmd.registerRenderer(renderer, DefaultReportName + "." + renderer.defaultFileExtension());
        }
+    }
+    
+    private boolean checkRenderers() {
+    	
+    	StringBuilder errors = new StringBuilder();
+    	
+    	for (Renderer renderer : ReportManager.instance.activeRenderers()) {
+     	   String issue = renderer.dysfunctionReason();
+     	   if (StringUtil.isNotEmpty(issue)) {
+     		  errors.append(renderer.getName()).append(": ");
+     		  errors.append(issue).append("\n");
+     	   }
+        }
+    	
+    	if (errors.length() == 0) return true;
+    	
+    	PMDPlugin.getDefault().showUserError(errors.toString());
+    	return false;
     }
     
     /**
@@ -42,9 +64,12 @@ public class GenerateReportAction extends AbstractUIAction {
         final ISelection sel = targetSelection();
         if (sel instanceof IStructuredSelection) {
             try {
-                final IProject project = getProject((IStructuredSelection) sel);
+                IProject project = getProject((IStructuredSelection) sel);
                 if (project != null) {
-                    final RenderReportsCmd cmd = new RenderReportsCmd();
+                	
+                	if (!checkRenderers()) return;
+                	
+                    RenderReportsCmd cmd = new RenderReportsCmd();
                     cmd.setProject(project);
                     cmd.setUserInitiated(true);
                     registerRenderers(cmd);
@@ -68,17 +93,16 @@ public class GenerateReportAction extends AbstractUIAction {
      * @param selection
      * @return
      */
-    private static IProject getProject(final IStructuredSelection selection) {
-        IProject project = null;
-        final Object object = selection.getFirstElement();
+    private static IProject getProject(IStructuredSelection selection) {
+
+        Object object = selection.getFirstElement();
         if (object != null && object instanceof IAdaptable) {
            final IResource resource = (IResource) ((IAdaptable) object).getAdapter(IResource.class);
            if (resource != null) {
-               project = resource.getProject();
+               return resource.getProject();
            }
         }
-
-        return project;
+        return null;
     }
 
 }

@@ -64,9 +64,10 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageDeclaration;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 
 /**
- * This command produce a HTML report for a project
+ * This command produce a report for a project using the specified renderer. 
  *
  * @author Philippe Herlin
  *
@@ -134,8 +135,8 @@ public class RenderReportsCmd extends AbstractProjectCommand {
 	    }
 	        
         log.debug("   Creating the report file");
-        final IFile reportFile = folder.getFile(reportName);
-        final InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
+        IFile reportFile = folder.getFile(reportName);
+        InputStream contentsStream = new ByteArrayInputStream(reportString.getBytes());
         if (reportFile.exists()) {
             reportFile.setContents(contentsStream, true, false, getMonitor());
         } else {
@@ -195,26 +196,37 @@ public class RenderReportsCmd extends AbstractProjectCommand {
      */
     @Override
     public boolean isReadyToExecute() {
-        return super.isReadyToExecute() && !this.renderers.isEmpty();
+        return super.isReadyToExecute() && !renderers.isEmpty();
     }
 
+    private static void classAndPackageFrom(IMarker marker, FakeRuleViolation violation) throws JavaModelException {
+    	 ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) marker.getResource());
+
+         IPackageDeclaration[] packages = unit.getPackageDeclarations();         
+         violation.setPackageName(packages.length > 0 ? packages[0].getElementName() : "(default)");
+         
+         IType[] types = unit.getAllTypes();
+         violation.setClassName(types.length > 0 ? types[0].getElementName() : marker.getResource().getName());        
+    }
+    
     /**
      * Create a Report object from the markers of a project
      * @param project
      * @return
      */
-    private Report createReport(final IProject project) throws CoreException {
-        final Report report = new Report();
+    private Report createReport(IProject project) throws CoreException {
 
-        final IMarker[] markers = MarkerUtil.findAllMarkers(project);
-        final RuleSet ruleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
+        Report report = new Report();
+
+        IMarker[] markers = MarkerUtil.findAllMarkers(project);
+        RuleSet ruleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
         
         for (IMarker marker : markers) {
-            final String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
-            final Rule rule = ruleSet.getRuleByName(ruleName);
+            String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
+            Rule rule = ruleSet.getRuleByName(ruleName);
 
             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
-            final FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);
+            FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);
 
             // Fill in the rule violation object before adding it to the report
             ruleViolation.setBeginLine(marker.getAttribute(IMarker.LINE_NUMBER, 0));
@@ -224,20 +236,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
             ruleViolation.setDescription(marker.getAttribute(IMarker.MESSAGE, rule.getMessage()));
 
             if (marker.getResource() instanceof IFile) {
-                final ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) marker.getResource());
-                final IPackageDeclaration[] packages = unit.getPackageDeclarations();
-                if (packages.length > 0) {
-                    ruleViolation.setPackageName(packages[0].getElementName());
-                } else {
-                    ruleViolation.setPackageName("(default)");
-                }
-
-                IType[] types = unit.getAllTypes();
-                if (types.length > 0) {
-                    ruleViolation.setClassName(types[0].getElementName());
-                } else {
-                    ruleViolation.setClassName(marker.getResource().getName());
-                }
+            	classAndPackageFrom(marker, ruleViolation);
             }
 
             report.addRuleViolation(ruleViolation);

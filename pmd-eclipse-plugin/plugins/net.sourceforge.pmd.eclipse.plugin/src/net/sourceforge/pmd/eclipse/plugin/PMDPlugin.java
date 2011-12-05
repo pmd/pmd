@@ -265,6 +265,20 @@ public class PMDPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * Helper method to display a non-logged user error
+     */
+    public void showUserError(final String message) {
+
+        Display.getDefault().syncExec(new Runnable() {
+
+            public void run() {
+            	String errTitle = getStringTable().getString(StringKeys.ERROR_TITLE);
+                MessageDialog.openError(Display.getCurrent().getActiveShell(), errTitle, message);
+            }
+        });
+    }
+    
+    /**
      * @return an instance of the string table
      */
     public StringTable getStringTable() {
