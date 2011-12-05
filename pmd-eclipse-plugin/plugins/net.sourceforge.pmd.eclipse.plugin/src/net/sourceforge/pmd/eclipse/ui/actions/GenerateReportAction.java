@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.actions;
 
+import java.util.List;
+
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.cmd.RenderReportsCmd;
@@ -39,10 +41,17 @@ public class GenerateReportAction extends AbstractUIAction {
     }
     
     private boolean checkRenderers() {
+    	    	
+    	List<Renderer> renderers = ReportManager.instance.activeRenderers();
     	
+    	if (renderers.isEmpty()) {
+    		PMDPlugin.getDefault().showUserError("No report renderers selected");
+    		return false;
+    	}    	
+
     	StringBuilder errors = new StringBuilder();
     	
-    	for (Renderer renderer : ReportManager.instance.activeRenderers()) {
+    	for (Renderer renderer : renderers) {
      	   String issue = renderer.dysfunctionReason();
      	   if (StringUtil.isNotEmpty(issue)) {
      		  errors.append(renderer.getName()).append(": ");

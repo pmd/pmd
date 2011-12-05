@@ -1,11 +1,7 @@
 package net.sourceforge.pmd.eclipse.ui.reports;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -20,7 +16,6 @@ import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.FormArranger;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.PerRulePropertyPanelManager;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.jface.preference.PreferencePage;
