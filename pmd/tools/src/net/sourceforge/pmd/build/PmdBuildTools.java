@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.build;
 
-import javax.xml.transform.TransformerException;
 
 public interface PmdBuildTools {
 
@@ -20,7 +19,7 @@ public interface PmdBuildTools {
      */
     public abstract void convertRulesets() throws PmdBuildException;
 
-    public abstract void generateRulesIndex() throws PmdBuildException, TransformerException;
+    public abstract void generateRulesIndex() throws PmdBuildException;
 
     /**
      * @return the targetDirectory

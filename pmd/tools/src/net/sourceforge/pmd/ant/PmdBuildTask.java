@@ -3,8 +3,6 @@
  */
 package net.sourceforge.pmd.ant;
 
-import javax.xml.transform.TransformerException;
-
 import net.sourceforge.pmd.build.PmdBuildException;
 import net.sourceforge.pmd.build.PmdBuildTools;
 import net.sourceforge.pmd.build.RuleSetToDocs;
@@ -63,8 +61,6 @@ public class PmdBuildTask extends Task {
 		}
 		catch ( PmdBuildException e) {
 		    throw new BuildException(e);
-		} catch (TransformerException e) {
-		    throw new BuildException(e);
 		}
     }
 
@@ -76,13 +72,13 @@ public class PmdBuildTask extends Task {
 		    throw new BuildException("Attribute rulesDirectory is not optional");
 		// Optional Attributes
 		if ( this.mergedRulesetFilename != null && ! "".equals(this.mergedRulesetFilename) )
-			tool.setMergedRulesetFilename(this.mergedRulesetFilename);
+			tool.setMergedRuleSetFilename(this.mergedRulesetFilename);
 		if ( this.rulesIndex != null && ! "".equals(this.rulesIndex) )
-			tool.setGenerateIndexXsl(this.rulesIndex);
+			tool.getXmlFileTemplater().setGenerateIndexXsl(this.rulesIndex);
 		if ( this.rulesetToDocs != null && ! "".equals(this.rulesetToDocs) )
-			tool.setRulesetToDocsXsl(this.rulesetToDocs);
+			tool.getXmlFileTemplater().setRulesetToDocsXsl(this.rulesetToDocs);
 		if ( this.mergeRuleset != null && ! "".equals(this.mergeRuleset) )
-			tool.setMergeRulesetXsl(this.mergeRuleset);
+			tool.getXmlFileTemplater().setMergeRulesetXsl(this.mergeRuleset);
 		return tool;
     }
     
