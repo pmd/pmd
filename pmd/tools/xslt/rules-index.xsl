@@ -2,7 +2,7 @@
 <!--
   BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 
   <!--  FUTURE: Externalising text to allow i18n documnetation -->
@@ -23,7 +23,7 @@
               <xsl:sort select="@name"/>
               <li>
                 <a>
-                  <xsl:attribute name="href">#<xsl:value-of select="@name"/></xsl:attribute>
+                  <xsl:attribute name="href">#<xsl:value-of select="translate(normalize-space(@name),' ','_')"/></xsl:attribute>
                   <xsl:value-of select="@name"/>
                 </a>: <xsl:value-of select="description"/>
               </li>
@@ -34,7 +34,7 @@
             <xsl:for-each select="ruleset">
               <xsl:element name="a">
                 <xsl:attribute name="name">
-                  <xsl:value-of select="@name"/>
+                  <xsl:value-of select="translate(normalize-space(@name),' ','_')"/>
                 </xsl:attribute>
               </xsl:element>
               <subsection>
