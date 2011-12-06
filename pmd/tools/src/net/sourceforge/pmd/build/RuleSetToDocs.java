@@ -35,6 +35,15 @@ public class RuleSetToDocs implements PmdBuildTools {
 	private String rulesDirectory;
 	private String targetDirectory;
 	private String siteXml;
+	private String siteXmlTarget;
+
+	public String getSiteXmlTarget() {
+		return siteXmlTarget;
+	}
+
+	public void setSiteXmlTarget(String siteXmlTarget) {
+		this.siteXmlTarget = siteXmlTarget;
+	}
 
 	private RulesetFileTemplater xmlFileTemplater;
 
@@ -85,7 +94,6 @@ public class RuleSetToDocs implements PmdBuildTools {
 	public void setSiteXml(String siteXml) {
 		this.siteXml = siteXml;
 	}
-
 
 	/*
 	 * <ol>
@@ -147,15 +155,14 @@ public class RuleSetToDocs implements PmdBuildTools {
 		File site = FileUtil.createTempFile("site.xml");
 		Map<String,String> parameters = new HashMap<String, String>(1);
 		parameters.put("menufile",menu.getAbsoluteFile().toString());
-		File sitePre = new File(this.siteXml);
+		File sitePre = new File(siteXml);
 		xmlFileTemplater.transform(sitePre,site,"tools/xslt/add-menu-to-site-descriptor.xsl",parameters);
 		logger.fine("new site describ:" + site.getAbsolutePath());
-
-		FileUtil.move(site, new File("src/site/site.xml"));
-		logger.fine(site.getAbsolutePath());
-//		site.delete();
-		logger.fine(site.getAbsolutePath());
-//		menu.delete();
+		FileUtil.move(site, new File(getSiteXmlTarget()));
+		logger.fine("deleting file:" + site.getAbsolutePath());
+		FileUtil.deleteFile(site);
+		logger.fine("deleting file:" + site.getAbsolutePath());
+		FileUtil.deleteFile(menu);
 	}
 
 	private DOMSource createMergedFile(File mergedFile) {

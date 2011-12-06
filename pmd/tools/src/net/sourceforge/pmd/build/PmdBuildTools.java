@@ -30,10 +30,16 @@ public interface PmdBuildTools {
      * @param targetDirectory the targetDirectory to set
      */
     public abstract void setTargetDirectory(String targetDirectory);
-    
+
     /**
-     * 
+     *
      * @param siteXml
      */
     public abstract void setSiteXml(String siteXml);
+
+    /**
+     *
+     * @param siteXmlTaget
+     */
+    public abstract void setSiteXmlTarget(String siteXmlTarget);
 }
