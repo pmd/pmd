@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -70,7 +71,7 @@ public final class FileUtil {
 
 	public static File createDirIfMissing(String dirname) {
 		File dir = new File(dirname);
-		if ( (! dir.exists() && ! dir.mkdir()) ) {// no directory, creating it
+		if ( (! dir.exists() && ! dir.mkdirs()) ) {// no directory, creating it
 			throw new IllegalStateException("Target directory '" +  dir.getAbsolutePath() + "' does not exist and can't be created");
 		}
 		else if ( dir.exists() && dir.isFile() ) {
@@ -133,9 +134,9 @@ public final class FileUtil {
 			if( ! target.canWrite() )
 				throw new IllegalArgumentException("Can't write on existing file " + target.getAbsolutePath());
 		} else {
-			if ( target.delete() ) 
+			if ( target.delete() )
 				throw new IllegalStateException("Can't delete file" + target.getAbsolutePath());
-		}		
+		}
 		// copy file
 		try {
 			target.createNewFile();
@@ -144,5 +145,18 @@ public final class FileUtil {
 			throw new IllegalArgumentException("Can't copy " + source.getAbsolutePath() + " over " + target.getAbsolutePath());
         }
 		return target;
+	}
+
+	public static InputStream createInputStream(String filepath) {
+		if ( filepath == null || "".equals(filepath))
+			return null;
+		File file = new File(filepath);
+		if ( ! file.exists() )
+			return null;
+		try {
+			return new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 }

@@ -26,18 +26,28 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
-*
-* @author Romain PELISSE, belaran@gmail.com
-*
-*/
+ *
+ * @author Romain PELISSE, belaran@gmail.com
+ *
+ */
 public final class XmlUtil {
 
-	private XmlUtil() {};
+	private XmlUtil() {
+	};
 
-	public static Transformer createTransformer(String xsl) throws PmdBuildException {
+	private static InputStream loadXsl(String xsl) {
+		InputStream xslAsStream = FileUtil.createInputStream(xsl);
+		if (xslAsStream == null) {
+			xslAsStream = XmlUtil.class.getResourceAsStream("/" + xsl);
+		}
+		return xslAsStream;
+	}
+
+	public static Transformer createTransformer(String xsl)
+			throws PmdBuildException {
 		try {
 			TransformerFactory factory = TransformerFactory.newInstance();
-			StreamSource src = new StreamSource(xsl);
+			StreamSource src = new StreamSource(loadXsl(xsl));
 			return factory.newTransformer(src);
 		} catch (TransformerConfigurationException e) {
 			throw new PmdBuildException(e);
@@ -46,7 +56,8 @@ public final class XmlUtil {
 
 	public static DOMSource createDomSourceFrom(InputStream inputStream) {
 		try {
-			return new DOMSource(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream));
+			return new DOMSource(DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder().parse(inputStream));
 		} catch (SAXException e) {
 			throw new IllegalStateException(e);
 		} catch (IOException e) {
@@ -59,28 +70,28 @@ public final class XmlUtil {
 	public static DOMSource createXmlBackbone(XmlFileTemplater templater) {
 		Document doc = null;
 		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory
+					.newInstance();
 			DocumentBuilder parser = factory.newDocumentBuilder();
 			doc = parser.newDocument();
 		} catch (ParserConfigurationException e) {
 			throw new IllegalStateException(e);
 		}
 		Element root = doc.createElement("root");
-		doc = templater.doTemplate(doc,root);
+		doc = templater.doTemplate(doc, root);
 		doc.appendChild(root);
 		return new DOMSource(doc);
 	}
 
 	public static String transformDOMToString(DOMSource source) {
-		  try {
-			   // Use a Transformer for output
-			  TransformerFactory tFactory =
-			    TransformerFactory.newInstance();
-			  Transformer transformer = tFactory.newTransformer();
-			  ByteArrayOutputStream sos = new ByteArrayOutputStream();
-			  StreamResult result = new StreamResult(sos);
-			  transformer.transform(source, result);
-			  return sos.toString();
+		try {
+			// Use a Transformer for output
+			TransformerFactory tFactory = TransformerFactory.newInstance();
+			Transformer transformer = tFactory.newTransformer();
+			ByteArrayOutputStream sos = new ByteArrayOutputStream();
+			StreamResult result = new StreamResult(sos);
+			transformer.transform(source, result);
+			return sos.toString();
 		} catch (TransformerException e) {
 			throw new IllegalArgumentException(e);
 		}
