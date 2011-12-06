@@ -156,7 +156,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 		Map<String,String> parameters = new HashMap<String, String>(1);
 		parameters.put("menufile",menu.getAbsoluteFile().toString());
 		File sitePre = new File(siteXml);
-		xmlFileTemplater.transform(sitePre,site,"tools/xslt/add-menu-to-site-descriptor.xsl",parameters);
+		xmlFileTemplater.transform(sitePre,site,xmlFileTemplater.getAddToSiteDescriptorXsl(),parameters);
 		logger.fine("new site describ:" + site.getAbsolutePath());
 		FileUtil.move(site, new File(getSiteXmlTarget()));
 		logger.fine("deleting file:" + site.getAbsolutePath());
