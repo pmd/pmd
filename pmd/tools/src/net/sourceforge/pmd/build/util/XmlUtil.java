@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.build.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -11,8 +12,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import net.sourceforge.pmd.build.PmdBuildException;
@@ -30,7 +33,7 @@ import org.xml.sax.SAXException;
 public final class XmlUtil {
 
 	private XmlUtil() {};
-	
+
 	public static Transformer createTransformer(String xsl) throws PmdBuildException {
 		try {
 			TransformerFactory factory = TransformerFactory.newInstance();
@@ -40,7 +43,7 @@ public final class XmlUtil {
 			throw new PmdBuildException(e);
 		}
 	}
-	
+
 	public static DOMSource createDomSourceFrom(InputStream inputStream) {
 		try {
 			return new DOMSource(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream));
@@ -52,7 +55,7 @@ public final class XmlUtil {
 			throw new IllegalStateException(e);
 		}
 	}
-	
+
 	public static DOMSource createXmlBackbone(XmlFileTemplater templater) {
 		Document doc = null;
 		try {
@@ -67,4 +70,21 @@ public final class XmlUtil {
 		doc.appendChild(root);
 		return new DOMSource(doc);
 	}
+
+	public static String transformDOMToString(DOMSource source) {
+		  try {
+			   // Use a Transformer for output
+			  TransformerFactory tFactory =
+			    TransformerFactory.newInstance();
+			  Transformer transformer = tFactory.newTransformer();
+			  ByteArrayOutputStream sos = new ByteArrayOutputStream();
+			  StreamResult result = new StreamResult(sos);
+			  transformer.transform(source, result);
+			  return sos.toString();
+		} catch (TransformerException e) {
+			throw new IllegalArgumentException(e);
+		}
+
+	}
+
 }
