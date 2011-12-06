@@ -293,7 +293,7 @@
                             <filter token="@@VERSION@@" value="${project.version}"/>
                           </filterset>
                         </copy>
-                        <ant antfile="tools/ant/alljavacc.xml">
+                        <ant antfile="src/main/ant/alljavacc.xml">
                           <property name="src" value="${project.build.sourceDirectory}"/>
                         </ant>
                       </tasks>
@@ -301,6 +301,27 @@
                     <goals>
                       <goal>run</goal>
                     </goals>
+                    </execution>
+                    <execution>
+                      <id>generate-ruleset-as-xdocs</id>
+                      <phase>pre-site</phase>
+                      <configuration>
+                      <tasks>
+                         <echo>PMD specific tasks: generating xdocs from rulesets</echo>
+                         <mkdir dir="${project.build.directory}/generated-xdocs/"/>
+                         <copy toDir="${project.build.directory}/generated-xdocs/"
+                               overwrite="true"
+                               verbose="true">
+                               <fileset dir="${src.xdocs.dir}"/>
+                           <filterset>
+                             <filter token="VERSION" value="${project.version}"/>
+                           </filterset>
+                         </copy>
+                      </tasks>
+		             </configuration>
+		             <goals>
+		               <goal>run</goal>
+		             </goals>
                     </execution>
                     <execution>
                         <id>move-index-and-delete-generated-xdocs</id>
@@ -368,7 +389,7 @@
                 <version>2.5.1</version>
                 <configuration>
                     <jdk>1.6</jdk>
-                    <licenseLocation>tools/config/clover2.license</licenseLocation>
+                    <licenseLocation>licences/clover2.license</licenseLocation>
                 </configuration>
                 <executions>
                     <execution>
@@ -516,7 +537,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <configLocation>tools/config/checkstyle-config.xml</configLocation>
+                    <configLocation>etc/checkstyle-config.xml</configLocation>
                 </configuration>
             </plugin>
 
@@ -550,7 +571,7 @@
                 <artifactId>maven-clover2-plugin</artifactId>
                 <version>2.5.1</version>
                 <configuration>
-                    <licenseLocation>tools/config/clover2.license</licenseLocation>
+                    <licenseLocation>licences/clover2.license</licenseLocation>
                 </configuration>
             </plugin>
         </plugins>
