@@ -14,7 +14,7 @@
     </xsl:template>
 
     <xsl:template match="//menu[@name='Rule Sets']">
-      <xsl:message>Edit existing site.xml with <xsl:value-of select="$menufile"/></xsl:message>
+      <!-- <xsl:message>Edit existing site.xml with <xsl:value-of select="$menufile"/></xsl:message> -->
       <xsl:variable name="items_to_add" select="document($menufile)"/>
       <xsl:copy-of select="$items_to_add"/>
       <xsl:apply-templates/>
