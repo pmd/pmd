@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -26,18 +27,20 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Romain Pelisse <belaran@gmail.com>
  *
  */
 public class RulesetFileTemplater implements XmlFileTemplater {
 
-	private String rulesetToDocsXsl = ConfigUtil.getString("pmd.build.config.xsl.rulesetToDocs"); 
-	private String mergeRulesetXsl = ConfigUtil.getString("pmd.build.config.xsl.mergeRuleset"); 
-	private String generateIndexXsl = ConfigUtil.getString("pmd.build.config.xsl.rulesIndex"); 
-	private String createRulesetMenuXsl = ConfigUtil.getString("pmd.build.config.xsl.createRulesetMenu"); 
-	private String addToSiteDescriptorXsl = ConfigUtil.getString("pmd.build.config.xsladdToSiteDescriptor"); 
-	
+	private static Logger logger = Logger.getLogger(PmdBuildException.class.toString());
+
+	private String rulesetToDocsXsl = ConfigUtil.getString("pmd.build.config.xsl.rulesetToDocs");
+	private String mergeRulesetXsl = ConfigUtil.getString("pmd.build.config.xsl.mergeRuleset");
+	private String generateIndexXsl = ConfigUtil.getString("pmd.build.config.xsl.rulesIndex");
+	private String createRulesetMenuXsl = ConfigUtil.getString("pmd.build.config.xsl.createRulesetMenu");
+	private String addToSiteDescriptorXsl = ConfigUtil.getString("pmd.build.config.xsladdToSiteDescriptor");
+
 	public String getAddToSiteDescriptorXsl() {
 		return addToSiteDescriptorXsl;
 	}
@@ -77,44 +80,44 @@ public class RulesetFileTemplater implements XmlFileTemplater {
 	public void setGenerateIndexXsl(String generateIndexXsl) {
 		this.generateIndexXsl = generateIndexXsl;
 	}
-	
+
 	private final String rulesDirectory;
-	
+
 	public RulesetFileTemplater(String rulesDirectory) {
 		this.rulesDirectory = rulesDirectory;
 	}
-	
+
 	@Override
 	public Document doTemplate(Document doc, Element root) {
 		for ( File dir : FileUtil.filterFilesFrom(FileUtil.existAndIsADirectory(rulesDirectory), new DirectoryFileFilter() )) {
-			System.out.println("Adding directory:" + dir.getAbsolutePath());
+			logger.info("Adding directory:" + dir.getAbsolutePath());
 			doc = addRulesetForEachLanguage(doc, root, dir);
-		}		
-		return doc;
-	}
-	
-	private Document addRulesetForEachLanguage(Document doc,Element root, File directory) {
-		Element language = doc.createElement("language"); 				
-		language.setAttribute("name",directory.getName());
-		language = addEachRuleset(doc, language, directory);
-		if ( language.hasChildNodes() ) 
-			root.appendChild(addEachRuleset(doc, language, directory));
+		}
 		return doc;
 	}
 
-	private Element addEachRuleset(Document doc,Element language, File directory) {		
-		for ( File ruleset : FileUtil.filterFilesFrom(directory, new RulesetFilenameFilter() ) ) {			
-			Element rulesetElement = doc.createElement("ruleset"); 
+	private Document addRulesetForEachLanguage(Document doc,Element root, File directory) {
+		Element language = doc.createElement("language");
+		language.setAttribute("name",directory.getName());
+		language = addEachRuleset(doc, language, directory);
+		if ( language.hasChildNodes() )
+			root.appendChild(language);
+		return doc;
+	}
+
+	private Element addEachRuleset(Document doc,Element language, File directory) {
+		for ( File ruleset : FileUtil.filterFilesFrom(directory, new RulesetFilenameFilter() ) ) {
+			Element rulesetElement = doc.createElement("ruleset");
 			rulesetElement.setAttribute("file",ruleset.getAbsolutePath());
 			rulesetElement.setAttribute("filename",ruleset.getName());
-			rulesetElement.setAttribute("language",directory.getName());			
+			rulesetElement.setAttribute("language",directory.getName());
 			language.appendChild(rulesetElement);
 		}
 		return language;
 	}
-	
+
 	@Override
-	public void transform(File source, File result, String xsl) {		
+	public void transform(File source, File result, String xsl) {
 		transform(source, result, xsl, new HashMap<String, String>(0));
 	}
 
@@ -135,18 +138,16 @@ public class RulesetFileTemplater implements XmlFileTemplater {
 			throw new IllegalStateException(e);
 		} catch (PmdBuildException e) {
 			throw new IllegalStateException(e);
-		}		
+		}
 	}
 
 	@Override
 	public void transform(File source, File result, String xsl,
 			Map<String, String> parameters) {
-		try {			
+		try {
 			this.transform(XmlUtil.createDomSourceFrom(new FileInputStream(source)),result,xsl,parameters);
 		} catch (FileNotFoundException e) {
 			throw new IllegalArgumentException(e);
 		}
-
-		
 	}
 }
