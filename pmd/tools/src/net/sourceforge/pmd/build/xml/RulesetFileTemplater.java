@@ -90,7 +90,7 @@ public class RulesetFileTemplater implements XmlFileTemplater {
 	@Override
 	public Document doTemplate(Document doc, Element root) {
 		for ( File dir : FileUtil.filterFilesFrom(FileUtil.existAndIsADirectory(rulesDirectory), new DirectoryFileFilter() )) {
-			logger.info("Adding directory:" + dir.getAbsolutePath());
+			logger.fine("Adding directory:" + dir.getAbsolutePath());
 			doc = addRulesetForEachLanguage(doc, root, dir);
 		}
 		return doc;
