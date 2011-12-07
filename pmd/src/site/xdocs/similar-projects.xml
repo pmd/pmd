@@ -16,7 +16,7 @@
          <li><a href="http://secure.ucd.ie/products/opensource/ESCJava2/">ESC/Java</a> - Finds null dereference errors, array bounds errors, type cast errors, and race conditions.  Uses Java Modeling Language annotations.</li>
          <li><a href="http://findbugs.sourceforge.net/">FindBugs</a> - works on bytecode, uses BCEL.  Source code uses templates, nifty stuff!</li>
          <li><a href="http://www.hammurapi.org/content/home.html">Hammurapi</a> - Uses ANTLR, excellent documentation, lots of <a href="http://www.hammurapi.org/content/inspectors.html">rules</a></li>
-         <li><a href="http://www.ovmj.org/jamit/index.html">Jamit</a> - bytecode analyzer, nice <a href="http://www.ovmj.org/jamit/data2_classes.php3">graphs</a></li>
+         <li><a href="http://grothoff.org/christian/xtc/jamit/">Jamit</a> - bytecode analyzer, nice graphs</li>
          <li><a href="http://jcsc.sourceforge.net/">JCSC</a> - Does a variety of coding standard checks, uses JavaCC and the GNU Regexp package.</li>
          <li><a href="http://jikes.sourceforge.net/">Jikes</a> - More than a compiler; now it reports code warnings too</li>
          <li><a href="http://jlint.sourceforge.net/">JLint</a> - Written in C++.  Uses data flow analysis and a lock graph to do lots of synchronization checks.  Operates on class files, not source code.</li>
