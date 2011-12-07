@@ -79,9 +79,9 @@
         <td><a href="http://blogs.codehaus.org/people/vmassol/">Vincent Massol</a></td>
     </tr>
 
-  <tr><td><a href="#netbeans">NetBeans/Sun Java Studio Enterprise/Creator</a></td>
-      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-netbeans/">pmd-netbeans</a></td>
-      <td>Radim Kubacki</td>
+  <tr><td><a href="#netbeans">NetBeans</a></td>
+      <td><a href="http://kenai.com/projects/sqe/">SQE</a></td>
+      <td>N/A</td>
   </tr>
 
     <tr><td><a href="#textpad">TextPad</a></td>
@@ -332,15 +332,7 @@ selecting the "Ask for Directory" checkbox.</p>
 
 
         <a name="netbeans"/><subsection name="NetBeans">
-  <p>Here's how to set up the Netbeans plugin:</p>
-  <ul>
-  <li>Download the latest binary release from <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=63621">here</a></li>
-  <li>Unzip the zip file to any directory. You'll see that it contained a .nbm file that encapsulates the plugin.</li>
-  <li>Run NetBeans and click Tools->Update Center</li>
-  <li>Click the 'Install Manually Downloaded Modules' radiobutton and click Next</li>
-  <li>Click the Add buttom and select the .nbm file, then click Next.</li>
-  <li>Click thru the rest of the dialog to install the plugin</li>
-  </ul>
+  <p>The <a href="http://kenai.com/projects/sqe/">SQE</a> project includes PMD integration for NetBeans.</p>
         </subsection>
 
 
