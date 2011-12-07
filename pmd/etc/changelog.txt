@@ -28,6 +28,7 @@ TODO - Release blockers - Must implement before this release can be finished
      pass, will die with an error because they are buggy and need to be fixed.
    o Need to get licenses for Saxon and Rhino in place.  Organize all PMD licenses into a
      /license folder?
+   o Use proper XML API to generate CPD report (see bug entry 1435751)
 
    DOCUMENTATION:
    o Expand documentation examples which demonstrate use of new RuleSetReferenceId
@@ -334,6 +335,7 @@ Add options to to the CPD command line task - Thanks to Cd-Man
 Add C# support for CPD - thanks to Florian Bauer
 Fix small bug in Rule Designer UI
 Performance enhacement when parsing Javadoc (Patch ID: 3217201), thanks to Cd-Man
+Rework the XMLRenderer to use proper XML API and strictly uses the system value for encoding (Fix bug: 1435751)
 
 Other changes:
 Rule property API upgrades:
@@ -412,6 +414,7 @@ Fixed bug 2606609 - False "UnusedImports" positive in package-info.java
 Fixed bug 2645268 - ClassCastException in UselessOperationOnImmutable.getDeclaration
 Fixed bug 2724653 - AvoidThreadGroup reports false positives
 Fixed bug 2904832 - Type resolution not working for ASTType when using an inner class
+Fixed bug 1435751 - XML format does not support UTF-8
 
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 bin and java14/bin scripts:

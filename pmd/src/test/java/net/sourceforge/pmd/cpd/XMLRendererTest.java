@@ -6,15 +6,6 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.Renderer;
-import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.cpd.XMLRenderer;
-
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -22,17 +13,24 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 /**
  * @author Philippe T'Seyen
+ * @author Romain Pelisse <belaran@gmail.com>
+ * 
  */
 public class XMLRendererTest {
 
-	private final static String ENCODING = "utf-8"; // TODO: Switch this to System.getProperties().get("file.encoding"); ?
+	private final static String ENCODING = (String) System.getProperties().get("file.encoding");
 	
     @Test
-    public void test_no_dupes() {
+    public void testWithNoDuplication() {
 
-        Renderer renderer = new XMLRenderer(ENCODING);
+        Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
         String report = renderer.render(list.iterator());
         try {
@@ -48,14 +46,15 @@ public class XMLRendererTest {
     }
 
     @Test
-    public void test_one_dupe() {
-        Renderer renderer = new XMLRenderer("utf-8");
+    public void testWithOneDuplication() {
+        Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
         Match match = new Match(75, new TokenEntry("public", "/var/Foo.java", 48), new TokenEntry("stuff", "/var/Foo.java", 73));
         match.setLineCount(6);
         match.setSourceCodeSlice("code fragment");
         list.add(match);
         String report = renderer.render(list.iterator());
+        System.out.println(report);
         try {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
             NodeList dupes = doc.getElementsByTagName("duplication");
@@ -72,10 +71,8 @@ public class XMLRendererTest {
                 file = file.getNextSibling();
             }
             assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
-
             assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
-            Node actualCode = doc.getElementsByTagName("codefragment").item(0).getFirstChild().getNextSibling();
-            assertEquals("\ncode fragment\n", actualCode.getNodeValue());
+            assertEquals("code fragment", doc.getElementsByTagName("codefragment").item(0).getTextContent());
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -83,8 +80,8 @@ public class XMLRendererTest {
     }
 
     @Test
-    public void testRender_MultipleMatch() {
-        Renderer renderer = new XMLRenderer(ENCODING);
+    public void testRenderWithMultipleMatch() {
+        Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
         Match match1 = new Match(75, new TokenEntry("public", "/var/Foo.java", 48), new TokenEntry("void", "/var/Foo.java", 73));
         match1.setLineCount(6);
@@ -107,15 +104,16 @@ public class XMLRendererTest {
 
     @Test
     public void testRendererEncodedPath() {
-        Renderer renderer = new XMLRenderer("utf-8");
+        Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
-        Match match1 = new Match(75, new TokenEntry("public", "/var/F" + XMLRenderer.BASIC_ESCAPE[2][0] + "oo.java", 48), new TokenEntry("void", "/var/F<oo.java", 73));
+        final String espaceChar = "&lt;";
+        Match match1 = new Match(75, new TokenEntry("public", "/var/F" + '<' + "oo.java", 48), new TokenEntry("void", "/var/F<oo.java", 73));
         match1.setLineCount(6);
         match1.setSourceCodeSlice("code fragment");
         list.add(match1);
         String report = renderer.render(list.iterator());
-        assertTrue(report.contains(XMLRenderer.BASIC_ESCAPE[2][1]));
-    }
+        assertTrue(report.contains(espaceChar));
+    } 
     
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(XMLRendererTest.class);

@@ -48,6 +48,8 @@ public class CPD {
 
     public void setEncoding(String encoding) {
         this.encoding = encoding;
+        if ( ! encoding.equals( System.getProperty("file.encoding") ) )
+        	 System.setProperty("file.encoding", encoding);
     }
 
     public void go() {
@@ -112,11 +114,11 @@ public class CPD {
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
-    public static Renderer getRendererFromString(String name, String encoding) {
+    public static Renderer getRendererFromString(String name /*, String encoding*/) {
         if (name.equalsIgnoreCase("text") || name.equals("")) {
             return new SimpleRenderer();
         } else if ("xml".equals(name)) {
-            return new XMLRenderer(encoding);
+            return new XMLRenderer();
         }  else if ("csv".equals(name)) {
             return new CSVRenderer();
         }  else if ("vs".equals(name)) {
@@ -183,7 +185,10 @@ public class CPD {
 
             String languageString = findOptionalStringValue(args, "--language", "java");
             String formatString = findOptionalStringValue(args, "--format", "text");
-            String encodingString = findOptionalStringValue(args, "--encoding", System.getProperty("file.encoding"));
+            final String systemDefaultEncoding = (String) System.getProperty("file.encoding");
+            String encodingString = findOptionalStringValue(args, "--encoding", systemDefaultEncoding);
+            if ( ! systemDefaultEncoding.equals(encodingString) )
+            	System.setProperty("file.encoding", encodingString);
             int minimumTokens = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
             LanguageFactory f = new LanguageFactory();
             // Pass extra paramteters as System properties to allow language
@@ -191,7 +196,7 @@ public class CPD {
             setSystemProperties(args);
 
             Language language = f.createLanguage(languageString);
-            Renderer renderer = CPD.getRendererFromString(formatString, encodingString);
+            Renderer renderer = CPD.getRendererFromString(formatString);
             CPD cpd = new CPD(minimumTokens, language);
             cpd.setEncoding(encodingString);
 

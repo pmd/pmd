@@ -128,7 +128,7 @@ public class CPDTask extends Task {
         } else if (format.equals(CSV_FORMAT)) {
             return new CSVRenderer();
         }
-        return new XMLRenderer(encoding);
+        return new XMLRenderer();
     }
 
     private void validateFields() throws BuildException {

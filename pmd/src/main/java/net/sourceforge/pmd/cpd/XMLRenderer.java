@@ -3,90 +3,96 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.StringUtil;
-
+import java.io.StringWriter;
 import java.util.Iterator;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Philippe T'Seyen
  */
-public class XMLRenderer implements Renderer {
-
-    private String encoding;
-
-    public XMLRenderer() {
-        this(System.getProperty("file.encoding"));
-    }
-    
-    public XMLRenderer(String e) {
-        encoding = e;
-    }
-    
+public final class XMLRenderer implements Renderer {
+	
 	// FUTURE: Use a XML API - rather than StringBuffer to generate XML Report. 
     // The most convenient would be to use one shipped in the JRE, and this should
     // also allow us to get ride of the encode below, as the XML API choosed will
     // do that for us...
     public String render(Iterator<Match> matches) {
-        StringBuilder buffer = new StringBuilder(300);
+    	Document doc = null;
+    	try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder parser = factory.newDocumentBuilder();
+			doc = parser.newDocument();
+		} catch (ParserConfigurationException e) {
+			throw new IllegalStateException(e);
+		}
+		Element root = doc.createElement("pmd-cpd");
+
+		doc.appendChild(root);
+/*        StringBuilder buffer = new StringBuilder(300);
         buffer.append("<?xml version=\"1.0\" encoding=\"");
         buffer.append(encoding);
         buffer.append("\"?>").append(PMD.EOL);
-        buffer.append("<pmd-cpd>").append(PMD.EOL);
+        buffer.append("<pmd-cpd>").append(PMD.EOL);*/
         Match match;
         while (matches.hasNext()) {
             match = matches.next();
-            buffer.append("<duplication lines=\"");
+            Element duplication = doc.createElement("duplication");
+            duplication.setAttribute("lines", match.getLabel());
+            duplication.setAttribute("tokens", String.valueOf(match.getTokenCount()));
+/*            buffer.append("<duplication lines=\"");
             buffer.append(match.getLineCount());
             buffer.append("\" tokens=\"");
             buffer.append(match.getTokenCount());
-            buffer.append("\">").append(PMD.EOL);
+            buffer.append("\">").append(PMD.EOL);*/
 
             TokenEntry mark;
             for (Iterator<TokenEntry> iterator = match.iterator(); iterator.hasNext();) {
                 mark = iterator.next();
-                buffer.append("<file line=\"");
+                Element file = doc.createElement("file");
+                file.setAttribute("line", String.valueOf(mark.getBeginLine()));
+                file.setAttribute("path", mark.getTokenSrcID());
+                duplication.appendChild(file);
+/*                buffer.append("<file line=\"");
                 buffer.append(mark.getBeginLine());
                 buffer.append("\" path=\"");
                 buffer.append(XMLRenderer.encode(mark.getTokenSrcID()));
-                buffer.append("\"/>").append(PMD.EOL);
+                buffer.append("\"/>").append(PMD.EOL);*/
             }
-            String codeFragment = match.getSourceCodeSlice();
-            if (codeFragment != null) {
-                buffer.append("<codefragment>").append(PMD.EOL);
-                buffer.append("<![CDATA[").append(PMD.EOL);
-                buffer.append(StringUtil.replaceString(codeFragment, "]]>", "]]&gt;")).append(PMD.EOL + "]]>" + PMD.EOL + "</codefragment>" + PMD.EOL);
+            String codeSnipet = match.getSourceCodeSlice();
+            if (codeSnipet != null) {
+            	Element codefragment = doc.createElement("codefragment");
+ /*               buffer.append("<codefragment>").append(PMD.EOL);
+                buffer.append("<![CDATA[").append(PMD.EOL);*/
+//                buffer.append(StringUtil.replaceString(codeFragment, "]]>", "]]&gt;")).append(PMD.EOL + "]]>" + PMD.EOL + "</codefragment>" + PMD.EOL);
+                codefragment.appendChild(doc.createCDATASection(codeSnipet));
+                duplication.appendChild(codefragment);
             }
-            buffer.append("</duplication>").append(PMD.EOL);
+            //buffer.append("</duplication>").append(PMD.EOL);
+            root.appendChild(duplication);
         }
-        buffer.append("</pmd-cpd>");
-        return buffer.toString();
-    }
-
-    /*
-    * <p>Fixes bug : https://sourceforge.net/tracker/?func=detail&aid=2832322&group_id=56262&atid=479921</p>
-    * 
-    * TODO: The following method - and its static arrays - should
-    * most likely be place somewhere else, like some kind of utility
-    * classes to solve issue on encoding.
-	*/
-	private static String encode(String path) {
-		for ( int i = 0; i < BASIC_ESCAPE.length; i++ ) {
-			if ( path.indexOf(BASIC_ESCAPE[i][0]) != -1 ) {
-				path = path.replaceAll(BASIC_ESCAPE[i][0],BASIC_ESCAPE[i][1]);
-			}
+        // 
+        try {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.ENCODING, System.getProperty("file.encoding"));
+        StringWriter writer = new StringWriter();
+        transformer.transform(new DOMSource(doc), new StreamResult(writer));
+        return writer.getBuffer().toString().replaceAll("\n|\r", "");
+        }  catch (TransformerException e) {
+        	throw new IllegalStateException(e);
 		}
-		return path;
-	}
-	
-	/* 
-	 * Cut'n'paster from Apache Commons Lang
-	 * 
-	 */
-	public static final String[][] BASIC_ESCAPE = {
-        {"\"", "&quot;"}, // " - double-quote
-        {"&", "&amp;"},   // & - ampersand
-        {"<", "&lt;"},    // < - less-than
-        {">", "&gt;"},    // > - greater-than
-    };
+    }
 }
