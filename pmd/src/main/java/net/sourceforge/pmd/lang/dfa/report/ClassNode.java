@@ -10,14 +10,14 @@ public class ClassNode extends AbstractReportNode {
     }
 
     public String getClassName() {
-        return this.className;
+        return className;
     }
 
     public boolean equalsNode(AbstractReportNode arg0) {
         if (!(arg0 instanceof ClassNode)) {
             return false;
         }
-        return ((ClassNode) arg0).getClassName().equals(this.className);
+        return ((ClassNode) arg0).getClassName().equals(className);
     }
 
 }

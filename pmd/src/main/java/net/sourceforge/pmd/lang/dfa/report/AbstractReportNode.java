@@ -32,25 +32,25 @@ public abstract class AbstractReportNode {
      * @return null If there isn't any sibling.
      */
     public AbstractReportNode getNextSibling() {
-        if (this.parentNode == null) {
+        if (parentNode == null) {
             return null;
         }
-        int index = this.parentNode.getChildIndex(this);
+        int index = parentNode.getChildIndex(this);
         if (index < 0) {
             return null;
         }
-        if (index >= this.parentNode.childNodes.size() - 1) {
+        if (index >= parentNode.childNodes.size() - 1) {
             return null;
         }
-        return this.parentNode.childNodes.get(index + 1);
+        return parentNode.childNodes.get(index + 1);
     }
 
     /**
      * @return index The index of the x-th child of his parent.
      */
     private int getChildIndex(AbstractReportNode child) {
-        for (int i = 0; i < this.childNodes.size(); i++) {
-            if (this.childNodes.get(i).equals(child)) {
+        for (int i = 0; i < childNodes.size(); i++) {
+            if (childNodes.get(i).equals(child)) {
                 return i;
             }
         }
@@ -61,7 +61,7 @@ public abstract class AbstractReportNode {
      * Adds the child in front of any other childs.
      */
     public void addFirst(AbstractReportNode child) {
-        this.childNodes.add(0, child);
+        childNodes.add(0, child);
         child.parentNode = this;
     }
 
@@ -69,12 +69,12 @@ public abstract class AbstractReportNode {
      * Adds the child at the end.
      */
     public void add(AbstractReportNode child) {
-        this.childNodes.add(child);
+        childNodes.add(child);
         child.parentNode = this;
     }
 
     public void addNumberOfViolation(int number) {
-        this.numberOfViolations += number;
+        numberOfViolations += number;
     }
 
     /**
@@ -98,22 +98,22 @@ public abstract class AbstractReportNode {
     }
 
     public AbstractReportNode getChildAt(int arg0) {
-        if (arg0 >= 0 && arg0 <= this.childNodes.size() - 1) {
-            return this.childNodes.get(arg0);
+        if (arg0 >= 0 && arg0 <= childNodes.size() - 1) {
+            return childNodes.get(arg0);
         }
         return null;
     }
 
     public int getChildCount() {
-        return this.childNodes.size();
+        return childNodes.size();
     }
 
     public AbstractReportNode getParent() {
-        return this.parentNode;
+        return parentNode;
     }
 
     public boolean isLeaf() {
-        return this.childNodes.isEmpty();
+        return childNodes.isEmpty();
     }
 
 }

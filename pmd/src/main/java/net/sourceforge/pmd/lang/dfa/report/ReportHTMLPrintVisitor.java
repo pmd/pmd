@@ -101,72 +101,18 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
             length = packageBuf.length();
         }
 
-
         super.visit(node);
 
-
         if (node instanceof ViolationNode) {
-            ViolationNode vnode = (ViolationNode) node;
-            vnode.getParent().addNumberOfViolation(1);
-            RuleViolation vio = vnode.getRuleViolation();
-            classBuf.append("<tr>" +
-                    " <td>" + vio.getMethodName() + "</td>" +
-                    " <td>" + this.displayRuleViolation(vio) + "</td>" +
-                    "</tr>");
+            renderViolation((ViolationNode)node);
         }
         if (node instanceof ClassNode) {
-            ClassNode cnode = (ClassNode) node;
-            String str = cnode.getClassName();
-
-            classBuf.insert(0,
-                    "<html><head><title>PMD - " + str + "</title></head><body>" + PMD.EOL + 
-                    "<h2>Class View</h2>" +
-                    "<h3 align=\"center\">Class: " + str + "</h3>" +
-                    "<table border=\"\" align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" +
-                    " <tr>" + PMD.EOL + 
-                    "<th>Method</th>" +
-                    "<th>Violation</th>" +
-                    " </tr>" + PMD.EOL);
-
-            classBuf.append("</table>" +
-                    " </body>" +
-                    "</html>");
-
-
-            try {
-                write(str + ".html", classBuf);
-            } catch (Exception e) {
-                throw new RuntimeException("Error while writing HTML report: " + e.getMessage());
-            }
-            classBuf = new StringBuilder();
-
-
-            packageBuf.insert(this.length,
-                    "<tr>" +
-                    " <td>-</td>" +
-                    " <td><a href=\"" + str + ".html\">" + str + "</a></td>" +
-                    " <td>" + node.getNumberOfViolations() + "</td>" +
-                    "</tr>" + PMD.EOL);
-            node.getParent().addNumberOfViolation(node.getNumberOfViolations());
+            renderClass((ClassNode)node);
         }
         if (node instanceof PackageNode) {
-            PackageNode pnode = (PackageNode) node;
-            String str;
-
-            // rootNode
-            if (node.getParent() == null) {
-                str = "Aggregate";
-            } else {           // all the other nodes
-                str = pnode.getPackageName();
-                node.getParent().addNumberOfViolation(node.getNumberOfViolations());
-            }
-
-            packageBuf.insert(length,
-                    "<tr><td><b>" + str + "</b></td>" +
-                    " <td>-</td>" +
-                    " <td>" + node.getNumberOfViolations() + "</td>" +
-                    "</tr>" + PMD.EOL);
+            renderPackage((PackageNode)node);
         }
+        
         // The first node of result tree.
         if (node.getParent() == null) {
             packageBuf.append("</table> </body></html>");
@@ -177,4 +123,68 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
             }
         }
     }
+
+	private void renderViolation(ViolationNode vnode) {
+
+		vnode.getParent().addNumberOfViolation(1);
+		RuleViolation vio = vnode.getRuleViolation();
+		classBuf.append("<tr>" +
+		        " <td>" + vio.getMethodName() + "</td>" +
+		        " <td>" + this.displayRuleViolation(vio) + "</td>" +
+		        "</tr>");
+	}
+
+	private void renderPackage(PackageNode pnode) {
+
+		String str;
+
+		// rootNode
+		if (pnode.getParent() == null) {
+		    str = "Aggregate";
+		} else {           // all the other nodes
+		    str = pnode.getPackageName();
+		    pnode.getParent().addNumberOfViolation(pnode.getNumberOfViolations());
+		}
+
+		packageBuf.insert(length,
+		        "<tr><td><b>" + str + "</b></td>" +
+		        " <td>-</td>" +
+		        " <td>" + pnode.getNumberOfViolations() + "</td>" +
+		        "</tr>" + PMD.EOL);
+	}
+
+	private void renderClass(ClassNode cnode) {
+
+		String str = cnode.getClassName();
+
+		classBuf.insert(0,
+		        "<html><head><title>PMD - " + str + "</title></head><body>" + PMD.EOL + 
+		        "<h2>Class View</h2>" +
+		        "<h3 align=\"center\">Class: " + str + "</h3>" +
+		        "<table border=\"\" align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" +
+		        " <tr>" + PMD.EOL + 
+		        "<th>Method</th>" +
+		        "<th>Violation</th>" +
+		        " </tr>" + PMD.EOL);
+
+		classBuf.append("</table>" +
+		        " </body>" +
+		        "</html>");
+
+
+		try {
+		    write(str + ".html", classBuf);
+		} catch (Exception e) {
+		    throw new RuntimeException("Error while writing HTML report: " + e.getMessage());
+		}
+		classBuf = new StringBuilder();
+
+		packageBuf.insert(this.length,
+		        "<tr>" +
+		        " <td>-</td>" +
+		        " <td><a href=\"" + str + ".html\">" + str + "</a></td>" +
+		        " <td>" + cnode.getNumberOfViolations() + "</td>" +
+		        "</tr>" + PMD.EOL);
+		cnode.getParent().addNumberOfViolation(cnode.getNumberOfViolations());
+	}
 }
