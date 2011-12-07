@@ -33,9 +33,6 @@ TODO - Release blockers - Must implement before this release can be finished
    o Expand documentation examples which demonstrate use of new RuleSetReferenceId
      capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
      of a Rule reference in places not previously possible (e.g. CMD and Ant).
-   o Rule documentation should be automatically generated
-     from the descriptors, be they defined in code or XML, I think the code-based
-     descriptors are not getting seen.
    o Fully document the changed/new command line and Ant configuration options.
    o Need to enhance documentation to cover Global and Language specific
      function namespaces required for XPath 2.0 use (e.g. pmd:matches
