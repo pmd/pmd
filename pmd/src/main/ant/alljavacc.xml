@@ -2,14 +2,14 @@
 
 	<property name="dir.lib" value="${basedir}/lib" />
     <property name="javacc-home.path" value="${dir.lib}" />
+    <property name="javacc-home.path" value="${basedir}/javacchome"/>
+
+    <mkdir dir="${javacc-home.path}"/>
+    <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar"/>
 
     <target name="alljavacc" description="Generates all JavaCC aspects within PMD" depends="dummyjjtree,javajjtree,jspjjtree,cppjavacc"/>
 
     <target name="dummyjjtree" description="Generates the reusable JavaCC aspects">
-        <property name="javacc-home.path" value="${basedir}/javacchome"/>
-
-        <mkdir dir="${javacc-home.path}"/>
-        <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar"/>
 
         <delete dir="${src}/net/sourceforge/pmd/lang/ast/dummy" />
         <mkdir dir="${src}/net/sourceforge/pmd/lang/ast/dummy" />
@@ -41,7 +41,8 @@
 		</replace>
 		<move overwrite="true" file="${src}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java" tofile="${src}/net/sourceforge/pmd/lang/ast/TokenMgrError.java" />
 
-		<delete dir="${src}/net/sourceforge/pmd/lang/ast/dummy" />
+        <delete dir="${src}/net/sourceforge/pmd/lang/ast/dummy" />
+
 	</target>
 
 	<target name="javajjtree" description="Generates the Java parser and AST source filesr">
@@ -137,6 +138,7 @@ public class]]></replacevalue>
 		<replace file="${src}/net/sourceforge/pmd/lang/cpp/ast/CppParserTokenManager.java" token="class CppParserTokenManager" value="class CppParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
 		<delete file="${src}/net/sourceforge/pmd/lang/cpp/ast/CharStream.java" />
 		<delete file="${src}/net/sourceforge/pmd/lang/cpp/ast/ParseException.java" />
-		<delete file="${src}/net/sourceforge/pmd/lang/cpp/ast/TokenMgrError.java" />
+        <delete file="${src}/net/sourceforge/pmd/lang/cpp/ast/TokenMgrError.java" />
+        <delete dir="${javacc-home.path}"/>
 	</target>
 </project>
