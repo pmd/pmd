@@ -3,13 +3,7 @@
 	<property name="pmd.home" value="${user.dir}"/>
     <property name="src"      value="src/main/java"/>
 
-	<path id="pmd.path">
-		<fileset dir="${pmd.home}/lib">
-			<include name="*.jar" />
-		</fileset>
-	</path>
-
-	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.path"/>
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
 
 	<target name="all" depends="testBasic, testInvalidLanguageVersion, testFormatterWithNoToFileAttribute, testNoRuleSets, testNestedRuleset, testFormatterWithProperties, testCommaInRulesetfiles, testRelativeRulesets, testRelativeRulesetsInRulesetfiles, testNoFormattersValidation"/>
 
