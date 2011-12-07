@@ -5,9 +5,15 @@
 
     <target name="alljavacc" description="Generates all JavaCC aspects within PMD" depends="dummyjjtree,javajjtree,jspjjtree,cppjavacc"/>
 
-	<target name="dummyjjtree" description="Generates the reusable JavaCC aspects">
-		<delete dir="${src}/net/sourceforge/pmd/lang/ast/dummy" />
-		<mkdir dir="${src}/net/sourceforge/pmd/lang/ast/dummy" />
+    <target name="dummyjjtree" description="Generates the reusable JavaCC aspects">
+        <property name="javacc-home.path" value="${basedir}/javacchome"/>
+
+        <mkdir dir="${javacc-home.path}"/>
+        <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar"/>
+
+        <delete dir="${src}/net/sourceforge/pmd/lang/ast/dummy" />
+        <mkdir dir="${src}/net/sourceforge/pmd/lang/ast/dummy" />
+        <echo>Using JavaCC home:"${javacc-home.path}</echo>
 		<jjtree target="etc/grammar/dummy.jjt" outputdirectory="${src}/net/sourceforge/pmd/lang/ast/dummy" javacchome="${javacc-home.path}" />
 
 		<!-- Generate CharStream interface -->

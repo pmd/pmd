@@ -230,6 +230,7 @@
         <url>http://pmd.sourceforge.net/</url>
     </organization>
     <properties>
+        <javacc.version>4.1</javacc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--
              This value actually differs to maven default expectation(src/site/xdoc/) as
@@ -295,6 +296,7 @@
                         </copy>
                         <ant antfile="src/main/ant/alljavacc.xml">
                           <property name="src" value="${project.build.sourceDirectory}"/>
+                          <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar"/>
                         </ant>
                       </tasks>
                     </configuration>
@@ -494,6 +496,11 @@
             <version>2.9.1</version>
             <type>jar</type>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+          <groupId>net.java.dev.javacc</groupId>
+          <artifactId>javacc</artifactId>
+          <version>${javacc.version}</version>
         </dependency>
     </dependencies>
 
