@@ -70,7 +70,7 @@ only if you modify the java code.
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.4</version>
+      <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
