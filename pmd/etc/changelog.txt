@@ -417,6 +417,7 @@ Fixed bug 2904832 - Type resolution not working for ASTType when using an inner 
 Fixed bug 1435751 - XML format does not support UTF-8
 Fixed bug 3303811 - Deadlink on "Similar projects" page
 Fixed bug 3017616 - Updated documentation regarding Netbeans plugin - thanks to Jesse Glick
+Fixed bug 3427563 - Deprecated class (android.util.config) - thanks to Lukas Reschke for the patch
 
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 bin and java14/bin scripts:

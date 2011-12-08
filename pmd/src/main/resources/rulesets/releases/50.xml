@@ -22,8 +22,6 @@ This ruleset contains links to rules that are new in PMD v5.0
 
 	<rule ref="rulesets/java/android.xml/CallSuperFirst"/>
 	<rule ref="rulesets/java/android.xml/CallSuperLast"/>
-	<rule ref="rulesets/java/android.xml/ProtectLogD"/>
-	<rule ref="rulesets/java/android.xml/ProtectLogV"/>
 	<rule ref="rulesets/java/basic.xml/CheckSkipResult"/>
 	<rule ref="rulesets/java/basic.xml/ExtendsObject"/>
 	<rule ref="rulesets/java/controversial.xml/AvoidPrefixingMethodParameters"/>
@@ -47,8 +45,8 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/java/strictexception.xml/AvoidCatchingGenericException"/>
 	<rule ref="rulesets/java/strictexception.xml/AvoidThrowingNewInstanceOfSameException"/>
 	<rule ref="rulesets/java/unnecessary.xml/UselessParentheses"/>
-  
+
 	<rule ref="rulesets/xml/basic.xml/MistypedCDATASection"/>
-  
+
 </ruleset>
 

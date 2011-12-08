@@ -31,13 +31,7 @@ To get better results, make sure that the auxclasspath is defined for type resol
   @Image='onStart'
   ]]
     /Block[not(
-      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]) or
-      ((BlockStatement[1]/Statement/IfStatement/Expression[
-  PrimaryExpression/PrimaryPrefix/Name[@Image='Config.LOGD' or @Image='Config.LOGV']
-  or
-  ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Name[@Image='Config.LOGD' or @Image='Config.LOGV']
-         ]) and
-      (BlockStatement[2]/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])))]
+      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]))]
 [ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[
   typeof(@Image, 'android.app.Activity', 'Activity') or
   typeof(@Image, 'android.app.Application', 'Application') or
@@ -95,78 +89,6 @@ public class DummyActivity extends Activity {
 		foo();
 		// missing call to super.onPause()
 	}
-}
-]]>
-    </example>
-  </rule>
-
-  <rule name="ProtectLogD"
-      since="4.2.5" language="java"
-      message="Log.d calls should be protected by checking Config.LOGD first"
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="http://pmd.sourceforge.net/rules/java/android.html#ProtectLogD">
-    <description>Log.d calls should be protected by checking Config.LOGD first</description>
-    <priority>3</priority>
-    <properties>
-      <property name="xpath">
-        <value>
-          <![CDATA[
-//PrimaryPrefix/Name[@Image='Log.d']
-[not(ancestor::IfStatement/Expression[
-  PrimaryExpression/PrimaryPrefix/Name[@Image='Config.LOGD']
-  or
-  ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Name[@Image='Config.LOGD']
-])]
-]]>
-        </value>
-      </property>
-    </properties>
-    <example>
-      <![CDATA[
-public class DummyActivity extends Activity {
-	public void foo() {
-		Log.d("TAG", "msg1");	// call at this point not recommended
-
-		anyMethod();
-
-		if (Config.LOGD) Log.d("TAG", "msg1"); // preferred placement
-    }
-}
-]]>
-    </example>
-  </rule>
-
-  <rule name="ProtectLogV"
-      since="4.2.5" language="java"
-      message="Log.v calls should be protected by checking Config.LOGV first"
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="http://pmd.sourceforge.net/rules/java/android.html#ProtectLogV">
-    <description>Log.v calls should be protected by checking Config.LOGV first</description>
-    <priority>3</priority>
-    <properties>
-      <property name="xpath">
-        <value>
-          <![CDATA[
-//PrimaryPrefix/Name[@Image='Log.v']
-[not(ancestor::IfStatement/Expression[
-  PrimaryExpression/PrimaryPrefix/Name[@Image='Config.LOGV']
-  or
-  ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Name[@Image='Config.LOGV']
-])]
-]]>
-        </value>
-      </property>
-    </properties>
-    <example>
-      <![CDATA[
-public class DummyActivity extends Activity {
-	public void foo() {
-		Log.v("TAG", "msg1"); // call at this point not recommended
-
-		anyMethod();
-
-		if (Config.LOGV) Log.v("TAG", "msg1"); // preferred placement
-		}
 }
 ]]>
     </example>
