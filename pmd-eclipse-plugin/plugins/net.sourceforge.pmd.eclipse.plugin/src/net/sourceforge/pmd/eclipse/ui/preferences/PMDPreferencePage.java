@@ -511,7 +511,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
             public void widgetSelected(SelectionEvent event) {
-				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(getShell());
+				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(getShell(), "Import rules");
 				dialog.open();
 				if (dialog.getReturnCode() == RuleSetSelectionDialog.OK) {
 					try {

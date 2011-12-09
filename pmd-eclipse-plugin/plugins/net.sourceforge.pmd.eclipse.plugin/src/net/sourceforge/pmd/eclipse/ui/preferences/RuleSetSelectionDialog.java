@@ -43,6 +43,7 @@ public class RuleSetSelectionDialog extends Dialog {
     private RuleSet		selectedRuleSet;
     private boolean		importByReference;
     
+    private final String title;
     private final RuleSet[] ruleSets;
     private final String[] ruleSetNames;
     
@@ -55,8 +56,11 @@ public class RuleSetSelectionDialog extends Dialog {
      * Constructor for RuleSetSelectionDialog.
      * @param parentdlgArea
      */
-    public RuleSetSelectionDialog(Shell parent) {
+    public RuleSetSelectionDialog(Shell parent, String theTitle) {
         super(parent);
+        
+        title = theTitle;
+        
         Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         SortedSet<RuleSet> sortedRuleSets = new TreeSet<RuleSet>(new Comparator<RuleSet>() {
             public int compare(RuleSet ruleSet1, RuleSet ruleSet2) {
@@ -115,17 +119,14 @@ public class RuleSetSelectionDialog extends Dialog {
         data.horizontalSpan = 2;
         data.grabExcessHorizontalSpace = true;
         copyButton.setLayoutData(data);
-
-        // Set the window title
-        getShell().setText(getMessage(StringKeys.PREF_RULESET_DIALOG_TITLE));
         
+        getShell().setText(title);
         return dlgArea;
     }
 
-    protected Control createContents(Composite parent) {
-    	Control ctrl = super.createContents(parent);
-        updateControls();        
-        return ctrl;
+    public void create() {
+    	super.create();
+        updateControls();
     }
     
     /**
@@ -233,7 +234,7 @@ public class RuleSetSelectionDialog extends Dialog {
     }
     
     private void updateControls() {
-    	boolean hasItem = inputCombo.getSelectionIndex() > 0;
+    	boolean hasItem = inputCombo.getSelectionIndex() > 0 || StringUtil.isNotEmpty(inputCombo.getText());
     	getButton(IDialogConstants.OK_ID).setEnabled(hasItem);
     }
     

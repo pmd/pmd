@@ -451,10 +451,10 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
 		if (modifyListener != null) modifyListener.setModified();
 	}
 	
-	protected void updateButtonsFor(int[] selectionRatio) {
+	protected void updateButtonsFor(int selections, int totalSelections) {
 		
-		selectAllButton.setEnabled( selectionRatio[0] < selectionRatio[1]);
-		unSelectAllButton.setEnabled( selectionRatio[0] > 0);
+		selectAllButton.setEnabled(selections < totalSelections);
+		unSelectAllButton.setEnabled(selections > 0);
 	}
 		
 	protected abstract void updateCheckControls();

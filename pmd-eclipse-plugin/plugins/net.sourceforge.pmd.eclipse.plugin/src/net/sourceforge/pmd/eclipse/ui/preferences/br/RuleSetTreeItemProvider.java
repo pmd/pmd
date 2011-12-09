@@ -116,12 +116,15 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 
 	private RuleGroup groupFor(Rule rule) {
 		
+		if (fieldAccessor == null) return null;
+
 		Comparable<?> groupId = fieldAccessor.valueFor(rule);
 		return ruleGroups.get(groupId);
 	}
 	
 	/**
-	 * Method getParent.
+	 * Return the effective parent of the element if we can figure it out.
+	 *
 	 * @param element Object
 	 * @return Object
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(Object)
@@ -136,7 +139,9 @@ public class RuleSetTreeItemProvider implements ITreeContentProvider {
 	}
 
 	/**
-	 * Method hasChildren.
+	 * Return whether the element has kids depending on what kind
+	 * of parent it might be.
+	 * 
 	 * @param element Object
 	 * @return boolean
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(Object)

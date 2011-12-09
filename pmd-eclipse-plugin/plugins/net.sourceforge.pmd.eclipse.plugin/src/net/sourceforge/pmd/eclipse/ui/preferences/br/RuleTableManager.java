@@ -373,7 +373,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		
 		button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
-				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(parent.getShell());
+            	//String title = getMessage(StringKeys.PREF_RULESET_DIALOG_TITLE);
+				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(parent.getShell(), "Import rules");
 				dialog.open();
 				if (dialog.getReturnCode() == Window.OK) {
 					doImport(dialog.getSelectedRuleSet(), dialog.isImportByReference());
@@ -384,20 +385,41 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		return button;
 	}
 	
+	private boolean addWithoutDupes(Rule newRule, RuleSet ruleSet) {
+		
+		for (Rule rule : ruleSet.getRules()) {
+			if (rule.equals(newRule)) {
+				return false;
+			}
+		}
+		
+		ruleSet.addRule(newRule);
+		return true;
+	}
+	
+	private void add(RuleSet incomingRuleSet) {
+		
+		Iterator<Rule> iter = incomingRuleSet.getRules().iterator();
+		
+		while (iter.hasNext()) {
+			Rule rule = iter.next();
+			if (addWithoutDupes(rule, ruleSet)) {
+				rule.setRuleSetName(ruleSet.getName());
+				added(rule);
+				}			
+			}
+		
+		ruleSet.addIncludePatterns( incomingRuleSet.getIncludePatterns() );
+		ruleSet.addExcludePatterns( incomingRuleSet.getExcludePatterns() );
+	}
+	
 	private void doImport(RuleSet selectedRuleSet, boolean doByReference) {
 		
 		try {			
 			if (doByReference) {
 				ruleSet.addRuleSetByReference(selectedRuleSet, false);
 			} else {
-				// Set pmd-eclipse as new RuleSet name and add the Rule
-				Iterator<Rule> iter = selectedRuleSet.getRules().iterator();
-				while (iter.hasNext()) {
-					Rule rule = iter.next();
-					rule.setRuleSetName("pmd-elipse");	// FIXME
-					ruleSet.addRule(rule);
-					added(rule);
-				}
+				add(selectedRuleSet);
 			}
 			setModified();
 			try {
@@ -629,8 +651,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 					return isActive(((Rule)item).getName());
 				} else {
 					if (item instanceof RuleGroup) {
-						int[] fraction = selectionRatioIn(((RuleGroup)item).rules());
-						return (fraction[0] > 0) && (fraction[0] == fraction[1]);
+						SelectionStats stats = selectionRatioIn(((RuleGroup)item).rules());
+						return (stats.selectedCount > 0) && stats.allSelected();
 					}
 				}
 				return false;	// should never get here
@@ -640,8 +662,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
 				if (item instanceof Rule) return false;
 				if (item instanceof RuleGroup) {
-					int[] fraction = selectionRatioIn(((RuleGroup)item).rules());
-					return (fraction[0] > 0) && (fraction[0] != fraction[1]);
+					SelectionStats stats = selectionRatioIn(((RuleGroup)item).rules());
+					return (stats.selectedCount > 0) && (!stats.allSelected());
 				}
 				return false;
 			}
@@ -810,7 +832,21 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 	    if (removeRuleButton != null) removeRuleButton.setEnabled(items.length > 0);
 	}
 
-	private int[] selectionRatioIn(Rule[] rules) {
+	private class SelectionStats {
+		public int selectedCount;
+		public int totalCount;
+		public int dysfunctionCount;
+		
+		public SelectionStats(int theSelectedCount, int theTotalCount, int theDysfunctionCount) {
+			selectedCount = theSelectedCount;
+			totalCount = theTotalCount;
+			dysfunctionCount = theDysfunctionCount;
+		}
+		
+		public boolean allSelected() { return selectedCount == totalCount; }
+	}
+	
+	private SelectionStats selectionRatioIn(Rule[] rules) {
 
 		int selectedCount = 0;
 		int dysfunctionCount = 0;
@@ -820,7 +856,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 				if (StringUtil.isNotEmpty(rule.dysfunctionReason())) dysfunctionCount++;
 			}
 		}
-		return new int[] { selectedCount , rules.length, dysfunctionCount };
+		return new SelectionStats(selectedCount , rules.length, dysfunctionCount) ;
 	}
 
 	protected void setAllItemsActive() {
@@ -907,9 +943,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 
 		Rule[] rules = new Rule[ruleSet.size()];
 		rules = ruleSet.getRules().toArray(rules);
-		int[] selectionRatio = selectionRatioIn(rules);
-		boolean hasIssues = selectionRatio[2] > 0;
-		updateButtonsFor(selectionRatio);
+		SelectionStats stats = selectionRatioIn(rules);
+		boolean hasIssues = stats.dysfunctionCount > 0;
+		updateButtonsFor(stats.selectedCount, stats.totalCount);
 		
 		String label = SWTUtil.stringFor(StringKeys.PREF_RULESET_ACTIVE_RULE_COUNT);
 		activeCountDetails(
