@@ -14,10 +14,10 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -35,15 +35,22 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class RuleSetSelectionDialog extends Dialog {
-    protected Combo inputCombo;
-    private Button referenceButton;
-    private Button copyButton;
-    private String importedRuleSetName;
+	
+    private Combo		inputCombo;
+    private Button		referenceButton;
+    private Button		copyButton;
+    private String		importedRuleSetName;
+    private RuleSet		selectedRuleSet;
+    private boolean		importByReference;
+    
     private final RuleSet[] ruleSets;
     private final String[] ruleSetNames;
-    private RuleSet selectedRuleSet;
-    private boolean importByReference;
-
+    
+    private static String labelFor(RuleSet rs) {
+    	String lang = rs.getRules().iterator().next().getLanguage().getShortName();
+    	return lang + " - " + rs.getName();
+    }
+    
     /**
      * Constructor for RuleSetSelectionDialog.
      * @param parentdlgArea
@@ -52,13 +59,8 @@ public class RuleSetSelectionDialog extends Dialog {
         super(parent);
         Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         SortedSet<RuleSet> sortedRuleSets = new TreeSet<RuleSet>(new Comparator<RuleSet>() {
-            @Override
-            public boolean equals(Object arg0) {
-                return false;
-            }
-
             public int compare(RuleSet ruleSet1, RuleSet ruleSet2) {
-                return ruleSet1.getName().compareToIgnoreCase(ruleSet2.getName());
+                return labelFor(ruleSet1).compareToIgnoreCase(labelFor(ruleSet2));
             }
         });
         sortedRuleSets.addAll(registeredRuleSets);
@@ -71,7 +73,7 @@ public class RuleSetSelectionDialog extends Dialog {
             ruleSets[index] = i.next();
             ruleSetNames[index] = ruleSets[index].getName();
             if (!ruleSets[index].getRules().isEmpty()) {
-                ruleSetNames[index] = ruleSets[index].getRules().iterator().next().getLanguage().getShortName() + " - " + ruleSetNames[index];
+                ruleSetNames[index] = labelFor(ruleSets[index]);
             }
             index++;
         }
@@ -116,11 +118,16 @@ public class RuleSetSelectionDialog extends Dialog {
 
         // Set the window title
         getShell().setText(getMessage(StringKeys.PREF_RULESET_DIALOG_TITLE));
-
-
+        
         return dlgArea;
     }
 
+    protected Control createContents(Composite parent) {
+    	Control ctrl = super.createContents(parent);
+        updateControls();        
+        return ctrl;
+    }
+    
     /**
      * Build the labels
      */
@@ -138,6 +145,11 @@ public class RuleSetSelectionDialog extends Dialog {
         combo.setItems(ruleSetNames);
         combo.setText("");
         combo.setToolTipText(getMessage(StringKeys.PREF_RULESETSELECTION_TOOLTIP_RULESET));
+        combo.addSelectionListener(new SelectionAdapter() {
+        	public void widgetSelected(SelectionEvent event) {
+                updateControls();
+            }
+        });
         return combo;
     }
 
@@ -148,16 +160,14 @@ public class RuleSetSelectionDialog extends Dialog {
         Button button = new Button(parent, SWT.PUSH);
         button.setText(getMessage(StringKeys.PREF_RULESETSELECTION_BUTTON_BROWSE));
         button.setEnabled(true);
-        button.addSelectionListener(new SelectionListener() {
+        button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
                 String fileName = dialog.open();
                 if (fileName != null) {
                     inputCombo.setText(fileName);
                 }
-            }
-
-            public void widgetDefaultSelected(SelectionEvent event) {
+                updateControls();
             }
         });
         return button;
@@ -221,7 +231,12 @@ public class RuleSetSelectionDialog extends Dialog {
     public boolean isImportByReference() {
     	return importByReference;
     }
-
+    
+    private void updateControls() {
+    	boolean hasItem = inputCombo.getSelectionIndex() > 0;
+    	getButton(IDialogConstants.OK_ID).setEnabled(hasItem);
+    }
+    
     /**
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
