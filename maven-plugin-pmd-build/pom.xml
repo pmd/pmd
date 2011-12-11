@@ -81,21 +81,20 @@ only if you modify the java code.
     </dependency>
   </dependencies>
 
-
   <reporting>
     <plugins>
-		<plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
+       <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-        	<configuration>
-				<linkXref>true</linkXref>
-				<sourceEncoding>utf-8</sourceEncoding>
-				<minimumTokens>100</minimumTokens>
-				<targetJdk>1.6</targetJdk>
-				<rulesets>
-            		<ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
-				</rulesets>
-        	</configuration>
+            <configuration>
+                <linkXref>true</linkXref>
+                <sourceEncoding>utf-8</sourceEncoding>
+                <minimumTokens>100</minimumTokens>
+                <targetJdk>1.6</targetJdk>
+                <rulesets>
+                    <ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
+                </rulesets>
+            </configuration>
       </plugin>
 
       <plugin>
