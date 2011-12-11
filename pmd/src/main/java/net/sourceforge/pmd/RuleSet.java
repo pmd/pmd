@@ -144,13 +144,10 @@ public class RuleSet {
 		if (StringUtil.isEmpty(ruleSet.getFileName())) {
 			throw new RuntimeException("Adding a rule by reference is not allowed with an empty rule set file name.");
 		}
-		RuleSetReference ruleSetReference = new RuleSetReference();
-		ruleSetReference.setRuleSetFileName(ruleSet.getFileName());
+		RuleSetReference ruleSetReference = new RuleSetReference(ruleSet.getFileName());
 		ruleSetReference.setAllRules(allRules);
 		for (Rule rule : ruleSet.getRules()) {
-			RuleReference ruleReference = new RuleReference();
-			ruleReference.setRule(rule);
-			ruleReference.setRuleSetReference(ruleSetReference);
+			RuleReference ruleReference = new RuleReference(rule, ruleSetReference);
 			rules.add(ruleReference);
 		}
 	}

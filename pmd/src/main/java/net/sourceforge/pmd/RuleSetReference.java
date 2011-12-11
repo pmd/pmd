@@ -11,6 +11,12 @@ public class RuleSetReference {
 	private boolean allRules;
 	private Set<String> excludes = new LinkedHashSet<String>(0);
 
+	public RuleSetReference() {	}
+	
+	public RuleSetReference(String theFilename) {
+		ruleSetFileName = theFilename;
+	}
+	
 	public String getRuleSetFileName() {
 		return ruleSetFileName;
 	}

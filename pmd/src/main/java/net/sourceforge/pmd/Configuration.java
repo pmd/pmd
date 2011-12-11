@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * This class contains the details for the runtime configuration of PMD.
@@ -312,12 +313,27 @@ public class Configuration {
 
     /**
      * Create a Renderer instance based upon the configured reporting options.
-     * @return A Renderer instance.
+     * No writer is created.
+     *
+     * @return renderer
      */
     public Renderer createRenderer() {
-	Renderer renderer = RendererFactory.createRenderer(reportFormat, this.reportProperties);
-	renderer.setShowSuppressedViolations(this.showSuppressedViolations);
-	return renderer;
+    	return createRenderer(false);
+    }
+    
+    /**
+     * Create a Renderer instance based upon the configured reporting options.
+     * If withReportWriter then we'll configure it with a writer for the
+	 * reportFile specified.
+     * 
+     * @param withReportWriter
+     * @return A Renderer instance.
+     */
+    public Renderer createRenderer(boolean withReportWriter) {
+		Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
+		renderer.setShowSuppressedViolations(showSuppressedViolations);
+		if (withReportWriter) renderer.setWriter( IOUtil.createWriter(reportFile) );
+		return renderer;
     }
 
     /**
