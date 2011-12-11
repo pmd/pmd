@@ -46,6 +46,14 @@ only if you modify the java code.
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <id>adangel</id>
+      <name>Andreas Dangel</name>
+      <email>adangel@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
   <build>
      <plugins>
