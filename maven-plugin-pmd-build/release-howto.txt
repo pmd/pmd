@@ -1,0 +1,42 @@
+Release Howto for pmd-build:
+============================
+
+Prerequisites:
+--------------
+* You need to use SVN currently (git / git-svn is not supported at the moment)
+* You need to have a Jira account at Sonatype: https://issues.sonatype.org/
+* You need to have upload permissions to the staging repository for PMD at sonatype: https://issues.sonatype.org/browse/OSSRH-2295
+* For more infos: https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
+* You need a GPG key for signing the artifacts. Use "gpg --list-keys" to see your available keys. Note: Your key must be
+  available through various keyservers.
+* You need to have your settings.xml filled:
+  -> configure the property gpg.keyname and any other property for the maven-gpg-plugin (e.g. via a profile)
+  -> configure the server section (you need to configure your sonatype jira account for server id "sonatype-nexus-staging").
+
+Step by step:
+-------------
+1. Checkout trunk via svn:
+
+svn co https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build
+cd maven-plugin-pmd-build
+ 
+2. Prepare the release (creates a new release tag in SVN).
+   This will be done for you: http://maven.apache.org/plugins/maven-release-plugin/examples/prepare-release.html
+   Maven will ask you about the release version, the tag name and the new version. You can simply hit enter,
+   to use the default values.
+
+mvn release:clean
+mvn release:prepare
+
+3. Perform the release (builds from the tag and deploys the artifact).
+
+mvn release:perform
+
+
+4. Release it via Sonatype Nexus
+ * Login to https://oss.sonatype.org/
+ * Go to Staging Repositories page
+ * Select a staging repository
+ * Click the close button
+
+
