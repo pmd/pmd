@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>pmd</groupId>
+  <groupId>net.sourceforge.pmd</groupId>
   <artifactId>pmd-build</artifactId>
   <name>PMD</name>
-  <version>0.4</version>
+  <version>0.5-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <description>
     <![CDATA[
