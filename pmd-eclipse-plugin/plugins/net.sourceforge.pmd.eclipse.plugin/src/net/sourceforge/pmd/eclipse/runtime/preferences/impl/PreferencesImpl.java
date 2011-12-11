@@ -72,6 +72,8 @@ class PreferencesImpl implements IPreferences {
     private Level 				logLevel;
     private Set<String> 		activeRuleNames = new HashSet<String>();
     private Set<String> 		activeRendererNames = new HashSet<String>();
+    private Set<String> 		activeExclusionPatterns = new HashSet<String>();
+    private Set<String> 		activeInclusionPatterns = new HashSet<String>();
     
     private Map<RulePriority, PriorityDescriptor> uiDescriptorsByPriority = new HashMap<RulePriority, PriorityDescriptor>(5);
     
@@ -251,6 +253,22 @@ class PreferencesImpl implements IPreferences {
 		activeRuleNames = ruleNames;
 	}
 
+	public Set<String> activeExclusionPatterns() {
+		return activeExclusionPatterns;
+	}
+
+	public void activeExclusionPatterns(Set<String> patterns) {
+		activeExclusionPatterns = patterns;
+	}
+	
+	public Set<String> activeInclusionPatterns() {
+		return activeInclusionPatterns;
+	}
+
+	public void activeInclusionPatterns(Set<String> patterns) {
+		activeInclusionPatterns = patterns;
+	}
+	
 	public void setPriorityDescriptor(RulePriority priority, PriorityDescriptor pd) {
 		uiDescriptorsByPriority.put(priority, pd);		
 	}

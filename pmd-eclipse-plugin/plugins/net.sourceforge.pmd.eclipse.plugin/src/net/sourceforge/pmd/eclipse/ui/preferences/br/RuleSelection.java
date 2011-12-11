@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -138,6 +139,20 @@ public class RuleSelection implements RuleCollection {
         return null;     // should not get here
     }
 
+    public Collection<String> ruleGroupNames() {
+    	
+    	if (ruleItems == null) return Collections.emptyList();
+    	
+    	Collection<String> names = new ArrayList<String>();
+    	for (Object item : ruleItems) {
+    		if (item instanceof RuleGroup) {
+    			names.add( ((RuleGroup)item).label() );
+    		}
+    	}
+    	
+    	return names;
+    }
+    
     private static void useDefaultValues(Rule rule) {
     	
     	for (Map.Entry<PropertyDescriptor<?>, Object> entry : Configuration.filteredPropertiesOf(rule).entrySet()) {
@@ -234,10 +249,25 @@ public class RuleSelection implements RuleCollection {
         List<Rule> rules = allRules();
         if (rules.isEmpty()) return 0;
 
-        Collection<Rule> currentRules = ruleSet.getRules();
-        for (Rule rule : rules) currentRules.remove(rule);
+        Set<Rule> rulesAsSet = new HashSet<Rule>();
+        rulesAsSet.addAll(rules);
+       
+        Iterator<Rule> currentRuleIter = ruleSet.getRules().iterator();
+        
+        int removed = 0;
+        while (currentRuleIter.hasNext()) {
+        	Rule curRule = currentRuleIter.next();	// could be rule or a ruleReference
+//        	if (curRule instanceof RuleReference) {
+//        		RuleReference rr = (RuleReference)curRule;
+//        		curRule = rr.getRule();
+//        	}
+        	if (rulesAsSet.contains(curRule)) {
+        		currentRuleIter.remove();
+        		removed++;
+        		}
+        }
 
-        return currentRules.size();
+        return removed;
     }
 
     public List<Rule> allRules() {
@@ -286,5 +316,21 @@ public class RuleSelection implements RuleCollection {
 		};
 		
 		rulesDo(visitor);
+    }
+    
+    public String toString() {
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	Collection<String> rgNames = ruleGroupNames();
+    	if (!rgNames.isEmpty()) {
+    		sb.append("groups: ").append(rgNames.size());
+    	}
+    	
+    	List<Rule> rulz = allRules();
+    	if (!rulz.isEmpty()) {
+    		sb.append(" rules: ").append(rulz.size());
+    	}
+    	return sb.toString();
     }
 }

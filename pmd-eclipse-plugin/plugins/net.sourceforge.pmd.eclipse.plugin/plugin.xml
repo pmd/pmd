@@ -198,6 +198,13 @@
             id="net.sourceforge.pmd.eclipse.ui.preferences.reportsPreferencePage">
       </page>
       
+      <page
+            name="%preferences.filter"
+            category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
+            class="net.sourceforge.pmd.eclipse.ui.filters.FilterPreferencesPage"
+            id="net.sourceforge.pmd.eclipse.ui.preferences.filterPreferencePage">
+      </page>
+      
    </extension>
 
    <extension

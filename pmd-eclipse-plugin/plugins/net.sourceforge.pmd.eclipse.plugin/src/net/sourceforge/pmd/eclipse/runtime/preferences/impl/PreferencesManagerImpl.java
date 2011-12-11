@@ -108,6 +108,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final String LOG_LEVEL                   	= PMDPlugin.PLUGIN_ID + ".log_level";
     private static final String ACTIVE_RULES                	= PMDPlugin.PLUGIN_ID + ".active_rules";
     private static final String ACTIVE_RENDERERS               	= PMDPlugin.PLUGIN_ID + ".active_renderers";
+    private static final String ACTIVE_EXCLUSIONS              	= PMDPlugin.PLUGIN_ID + ".active_exclusions";
+    private static final String ACTIVE_INCLUSIONS              	= PMDPlugin.PLUGIN_ID + ".active_inclusions";
     
     private static final String OLD_PREFERENCE_PREFIX       = "net.sourceforge.pmd.runtime";
     private static final String OLD_PREFERENCE_LOCATION     = "/.metadata/.plugins/org.eclipse.core.runtime/.settings/net.sourceforge.pmd.runtime.prefs";
@@ -168,6 +170,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
         loadLogLevel();
         loadActiveRules();
         loadActiveReportRenderers();
+        loadActiveExclusions();
+        loadActiveInclusions();
         loadRulePriorityDescriptors();
 
         return preferences;
@@ -229,6 +233,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
         storeLogLevel();
         storeActiveRules();
         storeActiveReportRenderers();
+        storeActiveExclusions();
+        storeActiveInclusions();
         storePriorityDescriptors();
     }
 
@@ -312,6 +318,16 @@ class PreferencesManagerImpl implements IPreferencesManager {
         preferences.activeReportRenderers(asStringSet(loadPreferencesStore.getString(ACTIVE_RENDERERS), ","));
     }
     
+    private void loadActiveExclusions() {
+        loadPreferencesStore.setDefault(ACTIVE_EXCLUSIONS, IPreferences.ACTIVE_EXCLUSIONS);
+        preferences.activeExclusionPatterns(asStringSet(loadPreferencesStore.getString(ACTIVE_EXCLUSIONS), ","));
+    }
+    
+    private void loadActiveInclusions() {
+        loadPreferencesStore.setDefault(ACTIVE_INCLUSIONS, IPreferences.ACTIVE_INCLUSIONS);
+        preferences.activeInclusionPatterns(asStringSet(loadPreferencesStore.getString(ACTIVE_INCLUSIONS), ","));
+    }
+    
     private void loadRulePriorityDescriptors() {
     	
     	for (Map.Entry<RulePriority, String> entry : StoreKeysByPriority.entrySet()) {
@@ -354,6 +370,14 @@ class PreferencesManagerImpl implements IPreferencesManager {
     
     private void storeActiveReportRenderers() {
     	storePreferencesStore.setValue(ACTIVE_RENDERERS, asDelimitedString(preferences.activeReportRenderers(), ","));
+    }
+
+    private void storeActiveExclusions() {
+    	storePreferencesStore.setValue(ACTIVE_EXCLUSIONS, asDelimitedString(preferences.activeExclusionPatterns(), ","));
+    }
+    
+    private void storeActiveInclusions() {
+    	storePreferencesStore.setValue(ACTIVE_INCLUSIONS, asDelimitedString(preferences.activeInclusionPatterns(), ","));
     }
     
     private void storeProjectBuildPathEnabled() {

@@ -145,8 +145,7 @@ public class PMDCheckAction extends AbstractUIAction {
 		for (Iterator<?> i = selection.iterator(); i.hasNext();) {
 			Object element = i.next();
 			if (element instanceof AbstractPMDRecord) {
-				final IResource resource = ((AbstractPMDRecord) element)
-						.getResource();
+				IResource resource = ((AbstractPMDRecord) element).getResource();
 				if (resource != null) {
 					cmd.addResource(resource);
 				} else {

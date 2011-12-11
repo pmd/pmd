@@ -136,7 +136,7 @@ public class StringKeys {
     public static final String PREF_RULESET_TAB_RULE = "preference.ruleedit.tab.rule";
     public static final String PREF_RULESET_TAB_PROPERTIES = "preference.ruleedit.tab.properties";
     public static final String PREF_RULESET_TAB_DESCRIPTION = "preference.ruleedit.tab.description";
-    public static final String PREF_RULESET_TAB_FILTERS = "preference.ruleedit.tab.filters";
+    public static final String PREF_RULESET_TAB_EXCLUSIONS = "preference.ruleedit.tab.exclusions";
     public static final String PREF_RULESET_TAB_XPATH = "preference.ruleedit.tab.xpath";
     public static final String PREF_RULESET_TAB_FIXES = "preference.ruleedit.tab.fixes";
     public static final String PREF_RULESET_TAB_EXAMPLES = "preference.ruleedit.tab.examples";

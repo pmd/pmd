@@ -66,6 +66,8 @@ public interface IPreferences {
     Level LOG_LEVEL = Level.WARN;
     String ACTIVE_RULES = "";
     String ACTIVE_RENDERERS = "";
+    String ACTIVE_EXCLUSIONS = "";
+    String ACTIVE_INCLUSIONS = "";
   
     boolean boolFor(String prefId);
     
@@ -206,6 +208,27 @@ public interface IPreferences {
      */
     void activeReportRenderers(Set<String> names);
     
+    /**
+     * 
+     */
+    Set<String> activeExclusionPatterns();
+    
+    /**
+     * 
+     * @param names
+     */
+    void activeExclusionPatterns(Set<String> filterPatterns);
+    
+    /**
+     * 
+     */
+    Set<String> activeInclusionPatterns();
+    
+    /**
+     * 
+     * @param names
+     */
+    void activeInclusionPatterns(Set<String> filterPatterns);
     /**
      * Synchronize the preferences with the preferences store
      */

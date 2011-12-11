@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Shell;
  * Implements a dialog for the user to select a rule set to import
  *
  * @author Philippe Herlin
+ * @author Brian Remedios
  *
  */
 public class RuleSetSelectionDialog extends Dialog {
@@ -178,14 +179,12 @@ public class RuleSetSelectionDialog extends Dialog {
      * Build the reference button
      */
     private Button buildReferenceButton(Composite parent) {
-        final Button button = new Button(parent, SWT.CHECK);
+        final Button button = new Button(parent, SWT.RADIO);
         button.setText(getMessage(StringKeys.PREF_RULESETSELECTION_BUTTON_REFERENCE));
         button.setSelection(true);
         importByReference = true;
         button.addSelectionListener(new SelectionAdapter() {
-            @Override
             public void widgetSelected(SelectionEvent event) {
-            	copyButton.setSelection(false);
             	importByReference = true;
             }
         });
@@ -197,13 +196,11 @@ public class RuleSetSelectionDialog extends Dialog {
      * Build the copy button
      */
     private Button buildCopyButton(Composite parent) {
-        final Button button = new Button(parent, SWT.CHECK);
+        final Button button = new Button(parent, SWT.RADIO);
         button.setText(getMessage(StringKeys.PREF_RULESETSELECTION_BUTTON_COPY));
         button.setSelection(false);
         button.addSelectionListener(new SelectionAdapter() {
-            @Override
             public void widgetSelected(SelectionEvent event) {
-            	referenceButton.setSelection(false);
             	importByReference = false;
             }
         });

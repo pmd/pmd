@@ -89,7 +89,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 				buildRuleTab(folder,    	0, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_RULE), listener),
 			    buildDescriptionTab(folder, 1, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_DESCRIPTION), listener),
 			    buildPropertyTab(folder,    2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_PROPERTIES), listener),
-			    buildUsageTab(folder,       3, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FILTERS), listener),
+			    buildExclusionTab(folder,   3, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXCLUSIONS), listener),
 			    buildXPathTab(folder,       4, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_XPATH), listener),
 //			    buildQuickFixTab(folder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES), listener),
 			    buildExampleTab(folder,     5, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES), listener),
@@ -326,7 +326,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	 * @param index int
 	 * @param title String
 	 */
-	private static RulePropertyManager buildUsageTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
+	private static RulePropertyManager buildExclusionTab(TabFolder parent, int index, String title, ValueChangeListener listener) {
 
 		TabItem tab = new TabItem(parent, 0, index);
 		tab.setText(title);

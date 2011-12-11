@@ -46,5 +46,4 @@ Export-Package: net.sourceforge.pmd,
  net.sourceforge.pmd.eclipse.ui.preferences.br,
  net.sourceforge.pmd.eclipse.ui.views.actions,
  net.sourceforge.pmd.util,
- org.apache.log4j,
- rulesets
+ org.apache.log4j

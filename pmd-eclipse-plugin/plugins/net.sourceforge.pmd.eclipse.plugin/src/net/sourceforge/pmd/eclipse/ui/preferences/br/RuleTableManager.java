@@ -418,6 +418,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		try {			
 			if (doByReference) {
 				ruleSet.addRuleSetByReference(selectedRuleSet, false);
+				ruleSet.addIncludePatterns(selectedRuleSet.getIncludePatterns());
+				ruleSet.addExcludePatterns(selectedRuleSet.getExcludePatterns());
 			} else {
 				add(selectedRuleSet);
 			}
