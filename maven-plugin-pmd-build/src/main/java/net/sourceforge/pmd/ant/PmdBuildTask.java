@@ -19,6 +19,7 @@ public class PmdBuildTask extends Task {
     private String rulesDirectory;
     private String target;
     private String siteXml;
+    private String siteXmlTarget;
 
     public String getSiteXml() {
 		return siteXml;
@@ -26,6 +27,14 @@ public class PmdBuildTask extends Task {
 	public void setSiteXml(String siteXml) {
 		this.siteXml = siteXml;
 	}
+	
+	public String getSiteXmlTarget() {
+		return siteXmlTarget;
+	}
+	public void setSiteXmlTarget(String siteXmlTarget) {
+		this.siteXmlTarget = siteXmlTarget;
+	}
+
 	private String rulesetToDocs;
     private String mergeRuleset;
     private String rulesIndex;
@@ -61,6 +70,7 @@ public class PmdBuildTask extends Task {
 		PmdBuildTools tool = validate(new RuleSetToDocs());
 		tool.setTargetDirectory(this.target);
 		tool.setSiteXml(siteXml);
+		tool.setSiteXmlTarget(this.siteXmlTarget);
 		tool.setRulesDirectory(this.rulesDirectory);
 	
 		try {
