@@ -38,5 +38,8 @@ mvn release:perform
  * Go to Staging Repositories page
  * Select a staging repository
  * Click the close button
+ * Now you can download the artifacts again and verify they are working.
+ * Once you are sure they are working, click "Release" and the artifacts are eventually available through maven central.
+
 
 
