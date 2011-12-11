@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
@@ -12,7 +11,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   <groupId>net.sourceforge.pmd</groupId>
   <artifactId>pmd-build</artifactId>
   <name>PMD Build Plugin</name>
-  <version>0.5-SNAPSHOT</version>
+  <version>0.5</version>
   <packaging>maven-plugin</packaging>
   <description>
     <![CDATA[
@@ -39,9 +38,9 @@ only if you modify the java code.
   </licenses>
   
   <scm>
-    <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build</connection>
-    <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build</developerConnection>
-    <url>http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/maven-plugin-pmd-build</url>
+    <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/tags/maven-plugin-pmd-build/pmd-build-0.5</connection>
+    <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/tags/maven-plugin-pmd-build/pmd-build-0.5</developerConnection>
+    <url>http://pmd.svn.sourceforge.net/viewvc/pmd/tags/maven-plugin-pmd-build/pmd-build-0.5</url>
   </scm>
   
   <developers>
