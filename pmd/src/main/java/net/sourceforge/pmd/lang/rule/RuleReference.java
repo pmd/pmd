@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.Language;
@@ -46,6 +47,10 @@ public class RuleReference extends AbstractDelegateRule {
 	public RuleReference() {
 	}
 
+	public RuleReference(Rule theRule, RuleSetReference theRuleSetReference) {
+		setRule(theRule);
+		ruleSetReference = theRuleSetReference;
+	}
 
 	@Override
 	public void setLanguage(Language language) {
