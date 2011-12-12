@@ -17,6 +17,16 @@ public class PMDASMClassLoaderTest {
         cl = new PMDASMClassLoader(getClass().getClassLoader());
     }
 
+    /**
+     * Determines whether clover was used. Clover will instrument the classes and therefore
+     * increase the number of imports/other classes referenced by the analyzed class...
+     * @param imports the map of imported classes
+     * @return <code>true</code> if clover is found, <code>false</code> otherwise.
+     */
+    private boolean isClover(Map<String, String> imports) {
+    	return imports.values().contains("com_cenqua_clover.Clover");
+    }
+    
     @Test
     public void testLoadClassWithImportOnDemand() throws Exception {
         String className = "net.sourceforge.pmd.typeresolution.ClassWithImportOnDemand";
@@ -24,7 +34,11 @@ public class PMDASMClassLoaderTest {
         assertNotNull(clazz);
         Map<String, String> imports = cl.getImportedClasses(className);
         assertNotNull(imports);
-        assertEquals(4, imports.size());
+        if (isClover(imports)) {
+        	assertEquals(22, imports.size());
+        } else {
+        	assertEquals(4, imports.size());
+        }
         assertEquals("java.util.List", imports.get("List"));
         assertEquals("java.util.ArrayList", imports.get("ArrayList"));
         assertEquals("java.lang.Object", imports.get("Object"));
@@ -38,7 +52,11 @@ public class PMDASMClassLoaderTest {
         assertNotNull(clazz);
         Map<String, String> imports = cl.getImportedClasses(className);
         assertNotNull(imports);
-        assertEquals(8, imports.size());
+        if (isClover(imports)) {
+        	assertEquals(26, imports.size());
+        } else {
+        	assertEquals(8, imports.size());
+        }
         assertEquals("java.util.Iterator", imports.get("Iterator"));
         assertEquals("java.util.Map", imports.get("Map"));
         assertEquals("java.util.Set", imports.get("Set"));
