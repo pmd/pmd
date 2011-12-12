@@ -19,7 +19,7 @@
       <p>A new snapshot of the 5.0 release is generated daily using a <a href="http://jenkins-ci.org/">Jenkins</a> continuous integration server.</p>
       <p>Source and binary packages are available at
 
-      <a href="http://pmd.adabolo.de/job/PMD-snapshot/">http://pmd.adabolo.de/job/PMD-snapshot/</a>
+      <a href="http://pmd.adabolo.de/job/pmd-trunk/">http://pmd.adabolo.de/job/pmd-trunk/</a>
       in the artifacts section in the center of the page.</p>
 
       <p>Maven packages are also generated regularly and uploaded to the <a href="http://pmd.sourceforge.net/snapshot/maven2">snapshot repository</a> and
