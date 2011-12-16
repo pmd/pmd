@@ -30,8 +30,8 @@ public interface FilterColumnUI {
 	};
 
 	ItemColumnDescriptor<String, FilterHolder> include 	= new ItemColumnDescriptor<String, FilterHolder>("", "   Type", SWT.LEFT, 85, false, includeAcc);
-	ItemColumnDescriptor<String, FilterHolder> pmd		= new ItemColumnDescriptor<String, FilterHolder>("", "PMD", 	SWT.LEFT, 55, false, pmdAcc);
-	ItemColumnDescriptor<String, FilterHolder> cpd 		= new ItemColumnDescriptor<String, FilterHolder>("", "CPD", 	SWT.LEFT, 55, false, cpdAcc);
+	ItemColumnDescriptor<String, FilterHolder> pmd		= new ItemColumnDescriptor<String, FilterHolder>("", "PMD", 	SWT.CENTER, 55, false, pmdAcc);
+	ItemColumnDescriptor<String, FilterHolder> cpd 		= new ItemColumnDescriptor<String, FilterHolder>("", "CPD", 	SWT.CENTER, 55, false, cpdAcc);
 	ItemColumnDescriptor<String, FilterHolder> pattern 	= new ItemColumnDescriptor<String, FilterHolder>("", "Pattern", SWT.LEFT, 55, true, patternAcc);
 
 	@SuppressWarnings("rawtypes")

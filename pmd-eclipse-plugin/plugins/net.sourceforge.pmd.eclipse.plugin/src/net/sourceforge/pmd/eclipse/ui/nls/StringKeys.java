@@ -113,6 +113,8 @@ public class StringKeys {
     public static final String PREF_RULESET_GROUPING_NONE = "preference.ruleset.grouping.none";
     public static final String PREF_RULESET_GROUPING_PMD_VERSION = "preference.ruleset.grouping.pmd_version";
     public static final String PREF_RULESET_GROUPING_REGEX = "preference.ruleset.grouping.regex";
+    public static final String PREF_RULESET_BUTTON_ADDFILTER = "preference.ruleset.button.addfilter";
+    public static final String PREF_RULESET_BUTTON_REMOVEFILTER = "preference.ruleset.button.removefilter";
     public static final String PREF_RULESET_BUTTON_ADDRULE = "preference.ruleset.button.addrule";
     public static final String PREF_RULESET_BUTTON_REMOVERULE = "preference.ruleset.button.removerule";
     public static final String PREF_RULESET_BUTTON_EDITRULE = "preference.ruleset.button.editrule";

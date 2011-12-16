@@ -48,12 +48,13 @@ class FilterHolder {
 	public static Boolean boolValueOf(Collection<FilterHolder> holders, Accessor boolAccessor) {
 		Set<Boolean> values = new HashSet<Boolean>();
 		for (FilterHolder fh : holders) values.add(boolAccessor.boolValueFor(fh));
-		return values.size() == 2 ? null : values.iterator().next(); 
+		int valueCount = values.size();
+		return (valueCount == 2 || valueCount == 0) ? null : values.iterator().next(); 
 	}
 	
 	public static String textValueOf(Collection<FilterHolder> holders, Accessor textAccessor) {
 		Set<String> values = new HashSet<String>();
 		for (FilterHolder fh : holders) values.add(textAccessor.textValueFor(fh));
-		return values.size() > 1 ? "" : values.iterator().next(); 
+		return (values.size() == 1) ? values.iterator().next() : ""; 
 	}
 }
