@@ -21,6 +21,7 @@ import net.sourceforge.pmd.eclipse.runtime.writer.WriterException;
 import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.RuleDupeChecker;
 import net.sourceforge.pmd.eclipse.ui.preferences.RuleSetSelectionDialog;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.preferences.panelmanagers.CreateRuleWizard;
@@ -42,6 +43,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -64,7 +66,7 @@ import org.eclipse.swt.widgets.TreeItem;
  *
  * @author Brian Remedios
  */
-public class RuleTableManager extends AbstractTreeTableManager<Rule> implements ValueChangeListener {
+public class RuleTableManager extends AbstractTreeTableManager<Rule> implements ValueChangeListener, RuleDupeChecker {
 
 	private RuleSet						ruleSet;
 
@@ -362,6 +364,25 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		}
 	}
 	
+	private RuleColumnDescriptor newDupeIndicatorColumn() {
+		return new SimpleColumnDescriptor("a", "", SWT.CENTER, 35, null, false, null) {
+
+			public String stringValueFor(Rule rule) { return isDuplicate(rule) ? "X" : ""; }
+			public Image imageFor(Rule rule) {
+				return null;
+			}			
+		};
+	}
+
+	private RuleColumnDescriptor[] ruleImportColumns() {
+		
+		return new RuleColumnDescriptor[] {
+				newDupeIndicatorColumn(),
+				new SimpleColumnDescriptor("a", RuleTableColumns.name.label(), SWT.LEFT, 210, RuleTableColumns.name.accessor(), true, null), 
+				new SimpleColumnDescriptor("a", RuleTableColumns.language.label(), SWT.LEFT, 40, RuleTableColumns.language.accessor(), true, null), 
+				};
+	}
+	
 	/**
 	 * Build the import ruleset button
 	 * @param parent Composite
@@ -373,11 +394,11 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		
 		button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
-            	//String title = getMessage(StringKeys.PREF_RULESET_DIALOG_TITLE);
-				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(parent.getShell(), "Import rules");
+            	RuleColumnDescriptor[] rcd = ruleImportColumns();
+				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(parent.getShell(), "Import rules", rcd, RuleTableManager.this);
 				dialog.open();
 				if (dialog.getReturnCode() == Window.OK) {
-					doImport(dialog.getSelectedRuleSet(), dialog.isImportByReference());
+					doImport(dialog.checkedRules(), dialog.isImportByReference());
 				}
 			}
 		});
@@ -385,16 +406,25 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		return button;
 	}
 	
-	private boolean addWithoutDupes(Rule newRule, RuleSet ruleSet) {
+	public static boolean areSemanticEquals(Rule a, Rule b) {
+		return
+			a.getName().equals(b.getName()) &&
+			a.getLanguage().equals(b.getLanguage());
+	}
+	
+	/**
+	 * Return whether adding the rule arg to the ruleset would
+	 * constitute a duplicate or now.
+	 * 
+	 * @param rule
+	 * @return
+	 */
+	public boolean isDuplicate(Rule otherRule) {
 		
 		for (Rule rule : ruleSet.getRules()) {
-			if (rule.equals(newRule)) {
-				return false;
-			}
+			if (areSemanticEquals(rule, otherRule)) return true;
 		}
-		
-		ruleSet.addRule(newRule);
-		return true;
+		return false;
 	}
 	
 	private void add(RuleSet incomingRuleSet) {
@@ -403,10 +433,9 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		
 		while (iter.hasNext()) {
 			Rule rule = iter.next();
-			if (addWithoutDupes(rule, ruleSet)) {
-				rule.setRuleSetName(ruleSet.getName());
-				added(rule);
-				}			
+			ruleSet.addRule(rule);
+			rule.setRuleSetName(ruleSet.getName());
+			added(rule);			
 			}
 		
 		ruleSet.addIncludePatterns( incomingRuleSet.getIncludePatterns() );
@@ -417,7 +446,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		
 		try {			
 			if (doByReference) {
-				ruleSet.addRuleSetByReference(selectedRuleSet, false);
+				RuleSet filteredRS = new RuleSet();
+				filteredRS.setFileName(selectedRuleSet.getFileName());
+				for (Rule rule : selectedRuleSet.getRules()) {
+					filteredRS.addRule(rule);
+				}
+				ruleSet.addRuleSetByReference(filteredRS, false);
 				ruleSet.addIncludePatterns(selectedRuleSet.getIncludePatterns());
 				ruleSet.addExcludePatterns(selectedRuleSet.getExcludePatterns());
 			} else {

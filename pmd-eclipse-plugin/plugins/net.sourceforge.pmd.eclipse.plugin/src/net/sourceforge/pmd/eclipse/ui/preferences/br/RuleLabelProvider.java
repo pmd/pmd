@@ -60,7 +60,8 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
         }
 
         if (element instanceof Rule) {
-        	String text = columnDescriptors[columnIndex-1].stringValueFor((Rule) element);
+        	RuleColumnDescriptor rcd = columnDescriptors[columnIndex-1];
+        	String text = rcd.stringValueFor((Rule) element);
         	return columnIndex == 1 ? "   " + text : text;
         }
 

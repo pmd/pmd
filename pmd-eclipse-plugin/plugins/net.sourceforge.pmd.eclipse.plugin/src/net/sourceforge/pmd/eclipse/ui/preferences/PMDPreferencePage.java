@@ -36,6 +36,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -511,16 +512,17 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
             public void widgetSelected(SelectionEvent event) {
-				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(getShell(), "Import rules");
+				RuleSetSelectionDialog dialog = new RuleSetSelectionDialog(getShell(), "Import rules", null, null);
+				dialog.getShell().setSize(new Point(400,200));
 				dialog.open();
 				if (dialog.getReturnCode() == RuleSetSelectionDialog.OK) {
 					try {
-						RuleSet selectedRuleSet = dialog.getSelectedRuleSet();
+						RuleSet selectedRules = dialog.checkedRules();
 						if (dialog.isImportByReference()) {
-							ruleSet.addRuleSetByReference(selectedRuleSet, false);
+							ruleSet.addRuleSetByReference(selectedRules, false);
 						} else {
 							// Set pmd-eclipse as new RuleSet name and add the Rule
-							for (Rule rule: selectedRuleSet.getRules()) {
+							for (Rule rule: selectedRules.getRules()) {
 								rule.setRuleSetName("pmd-eclipse");
 								ruleSet.addRule(rule);
 							}

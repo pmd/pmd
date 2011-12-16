@@ -8,6 +8,8 @@ import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
@@ -24,5 +26,6 @@ public interface RuleColumnDescriptor extends ColumnDescriptor {
     String stringValueFor(RuleCollection collection);
     String detailStringFor(Rule rule);
     String detailStringFor(RuleGroup group);
+    TableColumn newTableColumnFor(Table parent, int columnIndex, SortListener sortListener, Map<Integer, List<Listener>> paintListeners);
     TreeColumn newTreeColumnFor(Tree parent, int columnIndex, SortListener sortListener, Map<Integer, List<Listener>> paintListeners);
 }

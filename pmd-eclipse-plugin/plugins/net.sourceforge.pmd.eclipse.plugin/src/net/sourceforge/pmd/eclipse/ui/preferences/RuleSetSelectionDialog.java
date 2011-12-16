@@ -1,20 +1,32 @@
 package net.sourceforge.pmd.eclipse.ui.preferences;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleColumnDescriptor;
+import net.sourceforge.pmd.eclipse.ui.preferences.br.RuleLabelProvider;
 import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -27,6 +39,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 
 /**
  * Implements a dialog for the user to select a rule set to import
@@ -44,23 +58,36 @@ public class RuleSetSelectionDialog extends Dialog {
     private RuleSet		selectedRuleSet;
     private boolean		importByReference;
     
+    private Label		warningField;
+    private CheckboxTableViewer ruleTable;
+    
+    private RuleSet		checkedRules;
+    
+    private final RuleDupeChecker dupeChecker;
     private final String title;
     private final RuleSet[] ruleSets;
     private final String[] ruleSetNames;
+    private final RuleColumnDescriptor[] columns;
     
     private static String labelFor(RuleSet rs) {
-    	String lang = rs.getRules().iterator().next().getLanguage().getShortName();
-    	return lang + " - " + rs.getName();
+    	
+    	Collection<Rule> rules = rs.getRules();
+    	String lang = rules.iterator().next().getLanguage().getShortName();
+    	return lang + " - " + rs.getName() + "  (" + rules.size() + ")";
     }
     
     /**
      * Constructor for RuleSetSelectionDialog.
      * @param parentdlgArea
      */
-    public RuleSetSelectionDialog(Shell parent, String theTitle) {
+    public RuleSetSelectionDialog(Shell parent, String theTitle, RuleColumnDescriptor[] theColumns, RuleDupeChecker theDupeChecker) {
         super(parent);
         
         title = theTitle;
+        dupeChecker = theDupeChecker;
+        columns = theColumns;
+        
+        setShellStyle(getShellStyle() | SWT.RESIZE );
         
         Set<RuleSet> registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         SortedSet<RuleSet> sortedRuleSets = new TreeSet<RuleSet>(new Comparator<RuleSet>() {
@@ -84,13 +111,25 @@ public class RuleSetSelectionDialog extends Dialog {
         }
     }
 
+    protected void configureShell(Shell shell) {
+        super.configureShell(shell);
+
+        shell.setSize(500, 400);
+    }
+    
+	protected boolean isResizable() {
+		return true;
+	}
+	
     /**
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(Composite)
      */
     @Override
     protected Control createDialogArea(Composite parent) {
+    	
         Composite dlgArea = new Composite(parent, SWT.NULL);
-
+        dlgArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+        
         // Layout controls
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 3;
@@ -121,10 +160,87 @@ public class RuleSetSelectionDialog extends Dialog {
         data.grabExcessHorizontalSpace = true;
         copyButton.setLayoutData(data);
         
+        ruleTable = CheckboxTableViewer.newCheckList(dlgArea, SWT.BORDER);
+        data = new GridData(GridData.FILL_BOTH);
+        data.horizontalSpan = 3;
+        ruleTable.getTable().setLayoutData(data);
+        setupRuleTable();
+        
+        warningField = new Label(dlgArea, SWT.NONE);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 3;
+        data.grabExcessHorizontalSpace = true;
+    	warningField.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_RED));
+        warningField.setLayoutData(data);
+        
         getShell().setText(title);
         return dlgArea;
     }
 
+	protected void createCheckBoxColumn(Table table) {
+		
+		TableColumn tc = new TableColumn(table, 0);
+		tc.setWidth(30);
+		tc.setResizable(false);
+		tc.pack();
+		
+//        tc.addListener(SWT.Selection, new Listener() {
+//            public void handleEvent(Event e) {
+//               sortByCheckedItems();
+//            }
+//          });
+	}
+	
+    private void setupRuleTable() {
+    	
+    	Table tbl = ruleTable.getTable();
+    	tbl.setLinesVisible(true);
+		tbl.setHeaderVisible(true);
+
+    	ruleTable.setContentProvider( new IStructuredContentProvider() {
+
+			public Object[] getElements(Object inputElement) {
+				RuleSet rs = selectedRuleset();
+				return rs == null ? new Object[0] : rs.getRules().toArray();
+			}
+
+			public void dispose() {	}
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {	} 		
+    	});
+       	
+    	ruleTable.addCheckStateListener(new ICheckStateListener() {
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				updateControls();				
+			}} );
+    	
+    	createCheckBoxColumn(tbl);
+    	
+    	for (int i=0; i<columns.length; i++) {
+    		columns[i].newTableColumnFor(tbl, i+1, null, null);
+    	}
+       	
+    	ruleTable.setLabelProvider( new RuleLabelProvider(columns) );
+    }
+    
+	private void checkNonDupes() {
+
+		RuleSet rs = selectedRuleset();
+		if (rs == null) {
+			ruleTable.setCheckedElements(new Object[0]);
+			return;
+		}
+		
+		List<Rule> nonDupes = new ArrayList<Rule>();
+
+		for (Rule rule : rs.getRules()) {
+			if (dupeChecker.isDuplicate(rule)) continue;
+			nonDupes.add(rule);
+		}
+
+		ruleTable.setCheckedElements(nonDupes.toArray());
+	}
+    
     public void create() {
     	super.create();
         updateControls();
@@ -150,6 +266,8 @@ public class RuleSetSelectionDialog extends Dialog {
         combo.addSelectionListener(new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent event) {
                 updateControls();
+        		checkNonDupes();
+        		adjustOKButton();
             }
         });
         return combo;
@@ -217,12 +335,24 @@ public class RuleSetSelectionDialog extends Dialog {
     }
 
     /**
-     * @return the selected ruleSet
+     * Return the effective ruleset as the ones selected by the user.
+     * 
+     * @return
      */
-    public RuleSet getSelectedRuleSet() {
-        return selectedRuleSet;
+    private RuleSet getSelectedRules() {
+    	
+    	RuleSet rs = new RuleSet();
+    	rs.setFileName( selectedRuleSet.getFileName() );
+    	rs.addExcludePatterns( selectedRuleSet.getExcludePatterns() );
+    	rs.addIncludePatterns( selectedRuleSet.getIncludePatterns() );
+    	
+    	for (Object rul : ruleTable.getCheckedElements()) {
+    		rs.addRule((Rule) rul);
+    	}
+    	
+    	return rs;
     }
-
+    
     /**
      * @return import by reference
      */
@@ -230,9 +360,74 @@ public class RuleSetSelectionDialog extends Dialog {
     	return importByReference;
     }
     
+    private void adjustOKButton() {
+    	getButton(IDialogConstants.OK_ID).setEnabled(checkedRuleCount() > 0);
+    }
+    
     private void updateControls() {
-    	boolean hasItem = inputCombo.getSelectionIndex() > 0 || StringUtil.isNotEmpty(inputCombo.getText());
-    	getButton(IDialogConstants.OK_ID).setEnabled(hasItem);
+  	   	
+    	updateStatus();
+    	adjustOKButton();
+    }
+    
+    private int checkedRuleCount() {
+    	return ruleTable.getCheckedElements().length;
+    }
+    
+    private void updateStatus() {
+    	
+    	RuleSet candidateRS = selectedRuleset();
+    	if (candidateRS == null) {
+    		warningField.setText("");
+    		ruleTable.getTable().clearAll();
+    		return;
+    	}
+    	
+    	showRules(candidateRS);
+    	
+    	int dupeCount = 0;
+    	
+    	for (Object rule : ruleTable.getCheckedElements()) {
+    		if (dupeChecker.isDuplicate((Rule)rule)) dupeCount++;
+    	}
+    	 
+    	warningField.setText(
+    			dupeCount == 0 ? "" :
+    			"Warning, " + dupeCount + " checked rules already exist in your ruleset");
+    }
+    
+    private void showRules(RuleSet rs) {
+    	
+    	ruleTable.setInput(rs);
+		
+    	TableColumn[] columns = ruleTable.getTable().getColumns();
+		for (TableColumn column : columns) column.pack();
+    }
+    
+    private RuleSet selectedRuleset() {
+    	
+    	 int selectionIndex = inputCombo.getSelectionIndex();
+    	 if (selectionIndex < 0) return null;
+
+         if (selectionIndex == -1) {
+             importedRuleSetName = inputCombo.getText();
+             if (StringUtil.isNotEmpty(importedRuleSetName)) {
+            	 try {
+            		 RuleSetFactory factory = new RuleSetFactory();
+            		 RuleSets rs = factory.createRuleSets(importedRuleSetName);
+            		 return rs.getAllRuleSets()[0];   
+            	 	} catch (RuleSetNotFoundException rsnfe) {
+            	 		warningField.setText( rsnfe.getMessage() );
+            	 		return null;
+            	 	}
+             }
+        } 
+         
+        return ruleSets[selectionIndex];
+    }
+    
+    public RuleSet checkedRules() {
+    	return checkedRules;
     }
     
     /**
@@ -240,20 +435,9 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     @Override
     protected void okPressed() {
-        int selectionIndex = inputCombo.getSelectionIndex();
-        if (selectionIndex == -1) {
-            importedRuleSetName = inputCombo.getText();
-            if (StringUtil.isNotEmpty(importedRuleSetName)) {
-                try {
-                    RuleSetFactory factory = new RuleSetFactory();
-                    selectedRuleSet = factory.createRuleSets(importedRuleSetName).getAllRuleSets()[0];
-                } catch (RuleSetNotFoundException e) {
-                    PMDPlugin.getDefault().showError(getMessage(StringKeys.ERROR_RULESET_NOT_FOUND), e);
-                }
-            }
-        } else {
-            selectedRuleSet = ruleSets[selectionIndex];
-        }
+    	
+    	selectedRuleSet = selectedRuleset();
+    	checkedRules = getSelectedRules();    	
 
         super.okPressed();
     }

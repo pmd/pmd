@@ -1,5 +1,8 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.ui.AbstractColumnDescriptor;
 
@@ -7,6 +10,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
@@ -39,6 +44,19 @@ public abstract class AbstractRuleColumnDescriptor extends AbstractColumnDescrip
         return tc;
     }
 
+    protected TableColumn buildTableColumn(Table parent, final SortListener sortListener) {
+
+        TableColumn tc = super.buildTableColumn(parent);
+
+        tc.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event e) {
+               sortListener.sortBy(accessor(), e.widget);
+            }
+          });
+
+        return tc;
+    }
+    
     protected Object valueFor(Rule rule) {
         return accessor.valueFor(rule);
     }
@@ -64,4 +82,11 @@ public abstract class AbstractRuleColumnDescriptor extends AbstractColumnDescrip
     public String stringValueFor(RuleCollection collection) {
     	return null;	// override in subclasses
     }
+    
+	public TableColumn newTableColumnFor(Table parent, int columnIndex, SortListener sortListener, Map<Integer, List<Listener>> paintListeners) {
+		TableColumn tc = buildTableColumn(parent, sortListener);
+        tc.setText(label());
+       
+        return tc;
+	}
 }
