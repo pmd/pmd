@@ -55,8 +55,6 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage implements 
 
     private BasicTableManager reportTableMgr;
 
- 
-    
     /**
      * Create and initialize the controls of the page
      *
@@ -75,11 +73,9 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage implements 
 
         ReportManager.loadReportProperties();
 
-        // Create groups
-        Group reportGroup = buildReportGroup(composite);
-        Group propertyGroup = buildPropertyGroup(composite);
+        Composite reportGroup = buildReportGroup(composite);
+        Composite propertyGroup = buildPropertyGroup(composite);
 
-        // Layout children
         propertyGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
         reportGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -91,7 +87,7 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage implements 
      * @param parent the parent composite
     
      * @return the group widget */
-    private Group buildPropertyGroup(Composite parent) {
+    private Composite buildPropertyGroup(Composite parent) {
 
         Group group = new Group(parent, SWT.SHADOW_IN);
         group.setText("Properties");
@@ -107,10 +103,10 @@ public class ReportPreferencesPage extends AbstractPMDPreferencePage implements 
      * @param parent the parent composite
     
      * @return the group widget */
-    private Group buildReportGroup(Composite parent) {
+    private Composite buildReportGroup(Composite parent) {
 
-        Group group = new Group(parent, SWT.SHADOW_IN);
-        group.setText("Formats");
+        Composite group = new Composite(parent, SWT.NONE);
+//        group.setText("Formats");
         group.setLayout(new GridLayout(2, false));
 
         IStructuredContentProvider contentProvider = new IStructuredContentProvider() {

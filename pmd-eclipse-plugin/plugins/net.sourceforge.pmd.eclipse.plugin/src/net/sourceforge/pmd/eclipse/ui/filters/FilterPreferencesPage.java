@@ -151,6 +151,8 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		buttonPanel.setLayoutData(new GridData());
 		buildFilterEditor(parent);
 
+		updateControls();
+		
 		return composite;
 	}
 
@@ -167,6 +169,14 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 			holders.add( new FilterHolder(pattern, true, false, true) );
 		}
 		return holders.toArray(new FilterHolder[holders.size()]);
+	}
+	
+	private void enableEditor(boolean flag) {
+		cpdButt.setEnabled(flag);
+		pmdButt.setEnabled(flag);
+		excludeButt.setEnabled(flag);
+		includeButt.setEnabled(flag);
+		patternField.setEnabled(flag);
 	}
 	
 	private List<String> tableFilters(boolean isInclude) {
@@ -589,7 +599,9 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 
 	private void updateControls() {
 		
-		removeButton.setEnabled( !selectedFilters().isEmpty() );
+		boolean hasSelections = !selectedFilters().isEmpty();
+		removeButton.setEnabled( hasSelections );
+		enableEditor(hasSelections);
 	}
 	
 	// ignore these

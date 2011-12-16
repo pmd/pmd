@@ -211,7 +211,7 @@ public class RuleSetSelectionDialog extends Dialog {
        	
     	ruleTable.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
-				updateControls();				
+				ruleChecked();				
 			}} );
     	
     	createCheckBoxColumn(tbl);
@@ -265,14 +265,12 @@ public class RuleSetSelectionDialog extends Dialog {
         combo.setToolTipText(getMessage(StringKeys.PREF_RULESETSELECTION_TOOLTIP_RULESET));
         combo.addSelectionListener(new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent event) {
-                updateControls();
-        		checkNonDupes();
-        		adjustOKButton();
+               ruleSetChanged();
             }
         });
         return combo;
     }
-
+    
     /**
      * Build the browse push button
      */
@@ -284,10 +282,10 @@ public class RuleSetSelectionDialog extends Dialog {
             public void widgetSelected(SelectionEvent event) {
                 FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
                 String fileName = dialog.open();
-                if (fileName != null) {
+                if (StringUtil.isNotEmpty(fileName)) {
                     inputCombo.setText(fileName);
+                    ruleSetChanged();
                 }
-                updateControls();
             }
         });
         return button;
@@ -326,6 +324,13 @@ public class RuleSetSelectionDialog extends Dialog {
         return button;
     }
 
+    private void ruleSetChanged() {
+    	updateRuleTable();
+    	checkNonDupes();
+ 		warningField.setText("");
+ 		adjustOKButton();
+    }
+    
     /**
      * Returns the importedRuleSetName.
      * @return String
@@ -334,6 +339,10 @@ public class RuleSetSelectionDialog extends Dialog {
         return importedRuleSetName;
     }
 
+    private boolean hasCheckedRules() {
+	    return ruleTable.getCheckedElements().length > 0;
+    }
+    
     /**
      * Return the effective ruleset as the ones selected by the user.
      * 
@@ -361,29 +370,34 @@ public class RuleSetSelectionDialog extends Dialog {
     }
     
     private void adjustOKButton() {
-    	getButton(IDialogConstants.OK_ID).setEnabled(checkedRuleCount() > 0);
+    	boolean hasChecks = hasCheckedRules();
+    	getButton(IDialogConstants.OK_ID).setEnabled(hasChecks);
+    }
+    
+    private void ruleChecked() {
+    	updateWarningField();
+    	adjustOKButton();
     }
     
     private void updateControls() {
   	   	
-    	updateStatus();
+    	updateWarningField();
     	adjustOKButton();
     }
     
-    private int checkedRuleCount() {
-    	return ruleTable.getCheckedElements().length;
-    }
-    
-    private void updateStatus() {
+    private void updateRuleTable() {
     	
     	RuleSet candidateRS = selectedRuleset();
     	if (candidateRS == null) {
-    		warningField.setText("");
+ //   		warningField.setText("");
     		ruleTable.getTable().clearAll();
     		return;
     	}
     	
     	showRules(candidateRS);
+    }
+    
+    private boolean updateWarningField() {
     	
     	int dupeCount = 0;
     	
@@ -394,6 +408,8 @@ public class RuleSetSelectionDialog extends Dialog {
     	warningField.setText(
     			dupeCount == 0 ? "" :
     			"Warning, " + dupeCount + " checked rules already exist in your ruleset");
+    	
+    	return dupeCount > 0;
     }
     
     private void showRules(RuleSet rs) {
@@ -407,7 +423,6 @@ public class RuleSetSelectionDialog extends Dialog {
     private RuleSet selectedRuleset() {
     	
     	 int selectionIndex = inputCombo.getSelectionIndex();
-    	 if (selectionIndex < 0) return null;
 
          if (selectionIndex == -1) {
              importedRuleSetName = inputCombo.getText();
@@ -436,6 +451,7 @@ public class RuleSetSelectionDialog extends Dialog {
     @Override
     protected void okPressed() {
     	
+    	// get the selections before the widget goes away
     	selectedRuleSet = selectedRuleset();
     	checkedRules = getSelectedRules();    	
 
