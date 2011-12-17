@@ -10,7 +10,7 @@ usage() {
 }
 
 valid_app_options () {
-    echo "pmd, cpd, cpdgui, designer,bgastviewer"
+    echo "pmd, cpd, cpdgui, designer, bgastviewer"
 }
 
 is_cygwin() {
