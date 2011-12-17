@@ -4,12 +4,14 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -45,7 +47,6 @@ public class PMD {
 	private static final Logger LOG = Logger.getLogger(PMD.class.getName());
 
 	public static final String EOL = System.getProperty("line.separator", "\n");
-	public static final String VERSION = "@@VERSION@@";
 	public static final String SUPPRESS_MARKER = "NOPMD";
 
 	protected final Configuration configuration;
@@ -373,5 +374,20 @@ public class PMD {
 		    }
 		}
 		return status;
+    }
+    
+    public static String VERSION = null;
+    /**
+     * Determines the version from maven's generated pom.properties file.
+     */
+    static {
+    	try {
+    		Properties properties = new Properties();
+    		properties.load(PMD.class.getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd/pom.properties"));
+    		VERSION = properties.getProperty("version");
+    	} catch (IOException e) {
+    		LOG.log(Level.FINE, "Couldn't determine version of PMD", e);
+    		VERSION = "unknown";
+    	}
     }
 }

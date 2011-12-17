@@ -287,13 +287,6 @@
                     <phase>process-sources</phase>
                     <configuration>
                       <target>
-                        <copy file="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
-                              toFile="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
-                              overwrite="true">
-                          <filterset>
-                            <filter token="@@VERSION@@" value="${project.version}"/>
-                          </filterset>
-                        </copy>
                         <ant antfile="src/main/ant/alljavacc.xml">
                           <property name="src" value="${project.build.sourceDirectory}"/>
                           <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar"/>
