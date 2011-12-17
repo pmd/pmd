@@ -85,7 +85,7 @@ shift
 
 case "${APPNAME}" in
   "pmd")
-    readonly CLASSNAME="net.sourceforge.pmd.CLI"
+    readonly CLASSNAME="net.sourceforge.pmd.PMD"
     ;;
   "cpd")
     readonly CLASSNAME="net.sourceforge.pmd.cpd.CPD"
