@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  *
  */
 public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
+
     private static final Logger log = Logger.getLogger(DeltaVisitor.class);
 
     /**
@@ -26,40 +27,43 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
     /**
      * Constructor with monitor
      */
-    public DeltaVisitor(final IProgressMonitor monitor) {
+    public DeltaVisitor(IProgressMonitor monitor) {
         super();
-        this.setMonitor(monitor);
+        setMonitor(monitor);
     }
 
     /**
      * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
      */
-    public boolean visit(final IResourceDelta delta) throws CoreException {
-        boolean fProcessChildren = true;
+    public boolean visit(IResourceDelta delta) throws CoreException {
 
-        if (this.isCanceled()) {
-            fProcessChildren = false;
-        } else {
-            if (delta.getKind() == IResourceDelta.ADDED) {
-                log.debug("Visiting added resource " + delta.getResource().getName());
-                visitAdded(delta.getResource());
-            } else if (delta.getKind() == IResourceDelta.CHANGED) {
-                log.debug("Visiting changed resource " + delta.getResource().getName());
-                visitChanged(delta.getResource());
-            } else { // other kinds are not visited            
-                log.debug("Resource " + delta.getResource().getName() + " not visited.");
-            }
-        }
+    	if (isCanceled()) return false;
 
-        return fProcessChildren;
+    	switch (delta.getKind()) {
+	    	case IResourceDelta.ADDED : {
+	    		log.debug("Visiting added resource " + delta.getResource().getName());
+	    		visitAdded(delta.getResource());
+	    		break;
+	    	}	
+	    	case IResourceDelta.CHANGED : {
+	    		log.debug("Visiting changed resource " + delta.getResource().getName());
+	    		visitChanged(delta.getResource());
+	    		break;
+	    	}
+	    	default : { // other kinds are not visited            
+	    		log.debug("Resource " + delta.getResource().getName() + " not visited.");
+	    	}
+    	}
+
+    	return true;
     }
 
     /**
      * Visit added resource
      * @param resource a new resource
      */
-    private void visitAdded(final IResource resource) {
-        this.reviewResource(resource);
+    private void visitAdded(IResource resource) {
+        reviewResource(resource);
     }
 
     /**
@@ -67,7 +71,7 @@ public class DeltaVisitor extends BaseVisitor implements IResourceDeltaVisitor {
      * @param resource a changed resource
      */
     private void visitChanged(final IResource resource) {
-        this.reviewResource(resource);
+        reviewResource(resource);
     }
 
 }

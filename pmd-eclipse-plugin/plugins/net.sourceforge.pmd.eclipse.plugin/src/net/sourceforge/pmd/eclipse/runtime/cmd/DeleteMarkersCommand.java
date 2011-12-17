@@ -57,11 +57,11 @@ public class DeleteMarkersCommand extends AbstractDefaultCommand {
     public DeleteMarkersCommand() {
         super("DeleteMarkersCommand", "Deletes a possible large number of markers");
 
-        this.setOutputProperties(true);
-        this.setReadOnly(false);
-        this.setTerminated(false);
-        this.setMarkers(null);
-        this.setUserInitiated(false);
+        setOutputProperties(true);
+        setReadOnly(false);
+        setTerminated(false);
+        setMarkers(null);
+        setUserInitiated(false);
     }
 
     public final void setMarkers(IMarker[] theMarkers) { // NOPMD by Sven on 13.11.06 11:43

@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class ReviewAction extends AbstractViolationSelectionAction {
+
     private static final Logger log = Logger.getLogger(ReviewAction.class);
     private IProgressMonitor monitor;
 
@@ -64,13 +65,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
 
         // Get confirmation if multiple markers are selected
         // Not necessary when using PMD style
-        boolean go = true;
-        if (markers.length > 1 && !reviewPmdStyle) {
-            String title = getString(StringKeys.CONFIRM_TITLE);
-            String message = getString(StringKeys.CONFIRM_REVIEW_MULTIPLE_MARKERS);
-            Shell shell = Display.getCurrent().getActiveShell();
-            go = MessageDialog.openConfirm(shell, title, message);
-        }
+        boolean go = confirmForMultiples(markers, reviewPmdStyle);
 
         // If only one marker selected or user has confirmed, review violation
         if (go) {
@@ -92,6 +87,17 @@ public class ReviewAction extends AbstractViolationSelectionAction {
         }
     }
 
+	private static boolean confirmForMultiples(IMarker[] markers, boolean reviewPmdStyle) {
+		boolean go = true;
+        if (markers.length > 1 && !reviewPmdStyle) {
+            String title = getString(StringKeys.CONFIRM_TITLE);
+            String message = getString(StringKeys.CONFIRM_REVIEW_MULTIPLE_MARKERS);
+            Shell shell = Display.getCurrent().getActiveShell();
+            go = MessageDialog.openConfirm(shell, title, message);
+        }
+		return go;
+	}
+
     /**
      * Do the insertion of the review comment
      *
@@ -111,11 +117,9 @@ public class ReviewAction extends AbstractViolationSelectionAction {
 
                     monitorWorked();
 
-                    if (reviewPmdStyle) {
-                        sourceCode = addPmdReviewComment(sourceCode, offset, marker);
-                    } else {
-                        sourceCode = addPluginReviewComment(sourceCode, offset, marker);
-                    }
+                    sourceCode = reviewPmdStyle ? 
+                    		addPmdReviewComment(sourceCode, offset, marker) :
+                        	addPluginReviewComment(sourceCode, offset, marker);
 
                     monitorWorked();
 
@@ -129,24 +133,29 @@ public class ReviewAction extends AbstractViolationSelectionAction {
                 }
 
             }
-        } catch (JavaModelException e) {
-            IJavaModelStatus status = e.getJavaModelStatus();
-            PMDPlugin.getDefault().logError(status);
-            log.warn("Ignoring Java Model Exception : " + status.getMessage());
-            if (log.isDebugEnabled()) {
-                log.debug("   code : " + status.getCode());
-                log.debug("   severity : " + status.getSeverity());
-                IJavaElement[] elements = status.getElements();
-                for (int i = 0; i < elements.length; i++) {
-                    log.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ')');
-                }
-            }
+        } catch (JavaModelException jme) {
+            ignore(jme);
         } catch (CoreException e) {
         	logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, e);
         } catch (IOException e) {
         	logErrorByKey(StringKeys.ERROR_IO_EXCEPTION, e);
         }
     }
+
+	private static void ignore(JavaModelException jme) {
+		
+		IJavaModelStatus status = jme.getJavaModelStatus();
+		PMDPlugin.getDefault().logError(status);
+		log.warn("Ignoring Java Model Exception : " + status.getMessage());
+		if (log.isDebugEnabled()) {
+		    log.debug("   code : " + status.getCode());
+		    log.debug("   severity : " + status.getSeverity());
+		    IJavaElement[] elements = status.getElements();
+		    for (int i = 0; i < elements.length; i++) {
+		        log.debug("   element : " + elements[i].getElementName() + " (" + elements[i].getElementType() + ')');
+		    }
+		}
+	}
 
     /**
      * Get the monitor
@@ -178,7 +187,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     /**
      * Renvoie la position dans le code source du début de la ligne du marqueur
      */
-    private int getMarkerLineStart(String sourceCode, int lineNumber) {
+    private static int getMarkerLineStart(String sourceCode, int lineNumber) {
         int lineStart = 0;
         int currentLine = 1;
         for (lineStart = 0; lineStart < sourceCode.length(); lineStart++) {
@@ -209,7 +218,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     /**
      * Insert a review comment with the Plugin style
      */
-    private String addPluginReviewComment(String sourceCode, int offset, IMarker marker) {
+    private static String addPluginReviewComment(String sourceCode, int offset, IMarker marker) {
 
         // Copy the source code until the violation line not included
         StringBuilder sb = new StringBuilder(sourceCode.substring(0, offset));
@@ -230,7 +239,7 @@ public class ReviewAction extends AbstractViolationSelectionAction {
     /**
      * Insert a review comment with the PMD style
      */
-    private String addPmdReviewComment(String sourceCode, int offset, IMarker marker) {
+    private static String addPmdReviewComment(String sourceCode, int offset, IMarker marker) {
         String result = sourceCode;
 
         // Find the end of line

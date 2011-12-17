@@ -68,7 +68,8 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 	private Button		pmdButt;
 	private Text		patternField;
 	private BasicTableManager reportTableMgr;
-
+	private Collection<Control> editorWidgets = new ArrayList<Control>();
+	
 	private static Image IncludeIcon;
 	private static Image ExcludeIcon;
 
@@ -172,11 +173,10 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 	}
 	
 	private void enableEditor(boolean flag) {
-		cpdButt.setEnabled(flag);
-		pmdButt.setEnabled(flag);
-		excludeButt.setEnabled(flag);
-		includeButt.setEnabled(flag);
-		patternField.setEnabled(flag);
+		
+		for (Control control : editorWidgets) {
+			control.setEnabled(flag);
+		}
 	}
 	
 	private List<String> tableFilters(boolean isInclude) {
@@ -229,9 +229,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				selectedPatterns(filtersIn(selection.toList()));
-				updateControls();
+				patternsSelected();
 			}
 		});
 
@@ -246,6 +244,12 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		return parent;
 	}
 
+	private void patternsSelected() {
+		IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
+		selectedPatterns(filtersIn(selection.toList()));
+		updateControls();
+	}
+	
 	private void selectedPatterns(Collection<FilterHolder> holders) {
 
 		setState(holders, includeButt,  FilterHolder.IncludeAccessor);
@@ -304,7 +308,8 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		Label typeLabel = new Label(editorPanel, SWT.None);
 		typeLabel.setLayoutData( new GridData());
 		typeLabel.setText("Type:");
-
+		editorWidgets.add(typeLabel);
+		
 		excludeButt = createButton(editorPanel, SWT.RADIO, excludeIcon(), "Exclude");
 		excludeButt.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent se) {
@@ -321,10 +326,14 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 			}
 		});
 
+		editorWidgets.add(excludeButt);
+		editorWidgets.add(includeButt);
+		
 		Label contextLabel = new Label(editorPanel, SWT.None);
 		contextLabel.setLayoutData( new GridData());
 		contextLabel.setText("Applies to:");
-
+		editorWidgets.add(contextLabel);
+		
 		pmdButt = createButton(editorPanel, SWT.CHECK, "PMD");
 		pmdButt.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent se) {
@@ -341,10 +350,14 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 			}
 		});
 
+		editorWidgets.add(pmdButt);
+		editorWidgets.add(cpdButt);
+		
 		Label patternLabel = new Label(editorPanel, SWT.None);
 		patternLabel.setLayoutData( new GridData());
 		patternLabel.setText("Pattern:");
-
+		editorWidgets.add(patternLabel);
+		
 		patternField = new Text(editorPanel, SWT.BORDER);
 		patternField.setLayoutData( new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1) );
 		patternField.addFocusListener(new FocusAdapter() {
@@ -353,6 +366,15 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 				tableViewer.refresh();
 			}
 		});
+		editorWidgets.add(patternField);
+		
+		Label spacer = new Label(editorPanel, SWT.None);
+		spacer.setLayoutData( new GridData() );
+		Label description = new Label(editorPanel, SWT.None);
+		description.setLayoutData( new GridData(GridData.FILL, GridData.BEGINNING, true, false, 2, 1) );
+		description.setText("name or path pattern (* = any string, ? = any character)");
+		
+		editorWidgets.add(description);
 	}
 
 	/**
@@ -535,7 +557,14 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 	
 	private void addNewFilter() {
 		FilterHolder newHolder = new FilterHolder(NewFilterPattern, true, false, false);
-		tableViewer.setInput( tableFiltersWith(newHolder) );
+		
+		FilterHolder[] holders = tableFiltersWith(newHolder);
+		tableViewer.setInput( holders );
+		
+		tableViewer.getTable().select(holders.length-1);
+		patternsSelected();
+		patternField.selectAll();
+		patternField.forceFocus();
 	}
 
 	/**

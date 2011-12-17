@@ -84,7 +84,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 	private	MenuItem					useDefaultsItem; 
 	private Button			     		addRuleButton;
 	private Button			     		removeRuleButton;
-
+	private Button						exportRuleSetButton;
 	private RuleSelectionListener		ruleSelectionListener;
 	private ValueResetHandler			resetHandler;
     
@@ -312,22 +312,46 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		button.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent event) {
-				FileDialog dialog = new FileDialog(parent.getShell(), SWT.SAVE);
-				String fileName = dialog.open();
-				if (fileName != null) {
-					try {
-						exportTo(fileName, parent.getShell());
-					} catch (Exception e) {
-						plugin.showError(getMessage(StringKeys.ERROR_EXPORTING_RULESET), e);
-					}
-				}
+				exportSelectedRules();
 			}
-
 		});
 
 		return button;
 	}
 
+	private void exportSelectedRules() {
+		
+		Shell shell = treeViewer.getTree().getShell();
+		
+		FileDialog dialog = new FileDialog(shell, SWT.SAVE);
+		dialog.setText("Export " + ruleSelection.allRules().size() + " rules");
+		
+		String fileName = dialog.open();
+		if (StringUtil.isNotEmpty(fileName)) {
+			try {
+				exportTo(fileName, shell);
+			} catch (Exception e) {
+				plugin.showError(getMessage(StringKeys.ERROR_EXPORTING_RULESET), e);
+			}
+		}
+	}
+	
+	private RuleSet ruleSelectionAsRuleSet() {
+
+		RuleSet rs = new RuleSet();
+		rs.setName( ruleSet.getName() );
+		rs.setDescription( ruleSet.getDescription() );
+		rs.setFileName( ruleSet.getFileName());
+		rs.addExcludePatterns( ruleSet.getExcludePatterns() );
+		rs.addIncludePatterns( ruleSet.getIncludePatterns() );
+
+		for (Rule rule : ruleSelection.allRules()) {
+			rs.addRule(rule);
+		}		
+		
+		return rs;
+	}
+	
 	private void exportTo(String fileName, Shell shell) throws FileNotFoundException, WriterException, IOException {
 		
 		File file = new File(fileName);
@@ -340,7 +364,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		}
 
 		InputDialog input = null;
+		
+		RuleSet ruleSet = null;
+		
 		if (flContinue) {
+			ruleSet = ruleSelectionAsRuleSet();
+			
 			input = new InputDialog(shell,
 					getMessage(StringKeys.PREF_RULESET_DIALOG_TITLE),
 					getMessage(StringKeys.PREF_RULESET_DIALOG_RULESET_DESCRIPTION),
@@ -466,6 +495,8 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		} catch (RuntimeException e) {
 			plugin.showError(getMessage(StringKeys.ERROR_IMPORTING_RULESET), e);
 		}
+		
+		updateCheckControls();
 	}
 	
 	public Composite buildGroupCombo(Composite parent, String comboLabelKey, final Object[][] groupingChoices) {
@@ -541,7 +572,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 		addRuleButton = buildAddRuleButton(composite);
 		removeRuleButton = buildRemoveRuleButton(composite);
 		Button importRuleSetButton = buildImportRuleSetButton(composite);
-		Button exportRuleSetButton = buildExportRuleSetButton(composite);
+		exportRuleSetButton = buildExportRuleSetButton(composite);
 		Button ruleDesignerButton = buildRuleDesignerButton(composite);
 
 		GridData data = new GridData();
@@ -865,7 +896,10 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 	    	ruleSelectionListener.selection(ruleSelection);
 	    }
 
-	    if (removeRuleButton != null) removeRuleButton.setEnabled(items.length > 0);
+	    boolean hasSelections = items.length > 0;
+	    
+	    if (removeRuleButton != null) removeRuleButton.setEnabled(hasSelections);
+	    if (exportRuleSetButton != null) exportRuleSetButton.setEnabled(hasSelections);
 	}
 
 	private class SelectionStats {
@@ -892,7 +926,7 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 				if (StringUtil.isNotEmpty(rule.dysfunctionReason())) dysfunctionCount++;
 			}
 		}
-		return new SelectionStats(selectedCount , rules.length, dysfunctionCount) ;
+		return new SelectionStats(selectedCount, rules.length, dysfunctionCount) ;
 	}
 
 	protected void setAllItemsActive() {

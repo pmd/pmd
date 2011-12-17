@@ -52,6 +52,7 @@ import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
+import net.sourceforge.pmd.lang.Language;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
@@ -91,7 +92,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     private final List<ISchedulingRule> resources = new ArrayList<ISchedulingRule>();
     private IResourceDelta 				resourceDelta;
-    private Map<IFile, Set<MarkerInfo>> markersByFile = new HashMap<IFile, Set<MarkerInfo>>();
+    private Map<IFile, Set<MarkerInfo2>> markersByFile = new HashMap<IFile, Set<MarkerInfo2>>();
     private boolean 					taskMarker;
     private boolean 					openPmdPerspective;
     private int 						ruleCount;
@@ -231,7 +232,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * @return Returns the file markers
      */
-    public Map<IFile, Set<MarkerInfo>> getMarkers() {
+    public Map<IFile, Set<MarkerInfo2>> getMarkers() {
         return markersByFile;
     }
 
@@ -284,7 +285,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     @Override
     public void reset() {
         resources.clear();
-        markersByFile = new HashMap<IFile, Set<MarkerInfo>>();
+        markersByFile = new HashMap<IFile, Set<MarkerInfo2>>();
         setTerminated(false);
         openPmdPerspective = false;
         onErrorIssue = null;
@@ -518,11 +519,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             	if (isCanceled()) break;
                 currentFile = file.getName();
 
-                Set<MarkerInfo> markerInfoSet = markersByFile.get(file);
+                Set<MarkerInfo2> markerInfoSet = markersByFile.get(file);
   //              MarkerUtil.deleteAllMarkersIn(file);
-                for (MarkerInfo markerInfo : markerInfoSet) {                
-                    IMarker marker = file.createMarker(markerInfo.getType());
-                    marker.setAttributes(markerInfo.getAttributeNames(), markerInfo.getAttributeValues());
+                for (MarkerInfo2 markerInfo : markerInfoSet) { 
+                	markerInfo.addAsMarkerTo(file);
                     violationCount++;
                 }
 
@@ -537,7 +537,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             logInfo("" + violationCount + " markers applied on " + count + " files in " + timer.getDuration() + "ms.");
             log.info("End of processing marker directives. " + violationCount + " violations for " + count + " files.");
         }
-
     }
 
     /**
@@ -581,7 +580,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      *
      * @author SebastianRaffel ( 07.05.2005 )
      */
-    private void switchToPmdPerspective() {
+    private static void switchToPmdPerspective() {
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final IPerspectiveRegistry reg = workbench.getPerspectiveRegistry();
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
@@ -598,7 +597,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             boolean fVisitChildren = true;
             count++;
 
-            if (resource instanceof IFile && isJavaFile((IFile) resource)) {
+            if (resource instanceof IFile && isLanguageFile((IFile) resource, Language.JAVA)) {
 
                 fVisitChildren = false;
             }

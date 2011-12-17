@@ -38,6 +38,7 @@ package net.sourceforge.pmd.eclipse.runtime.cmd;
 import name.herlin.command.AbstractProcessableCommand;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
+import net.sourceforge.pmd.lang.Language;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -70,9 +71,20 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     	description = theDescription;
     }
     
+    /**
+     * 
+     * @param file
+     * @return
+     *  @deprecated  we support multiple languages now
+     */
     public static boolean isJavaFile(IFile file) {
     	if (file == null) return false;
     	return "JAVA".equalsIgnoreCase(file.getFileExtension());
+    }
+    
+    public static boolean isLanguageFile(IFile file, Language language) {
+    	if (file == null) return false;
+    	return language.hasExtension(file.getFileExtension());
     }
     
     /**

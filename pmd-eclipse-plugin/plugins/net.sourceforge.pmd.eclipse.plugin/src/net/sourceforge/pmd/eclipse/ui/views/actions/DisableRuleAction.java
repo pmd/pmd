@@ -12,6 +12,11 @@ import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.TableViewer;
 
 public class DisableRuleAction extends AbstractViolationSelectionAction {
@@ -53,21 +58,41 @@ public class DisableRuleAction extends AbstractViolationSelectionAction {
          System.out.println("Violations deleted: " + deletions);
     }
     
+    private List<Rule> disableRulesFor(IMarker[] markers) {
+    	
+    	   List<Rule> rules = MarkerUtil.rulesFor(markers);
+
+           for (Rule rule : rules) {
+           	preferences.isActive(rule.getName(), false);
+           }
+           
+           preferences.sync();	
+           return rules;
+    }
+    
     /**
      * @see org.eclipse.jface.action.IAction#run()
      */
     public void run() {
     	
         final IMarker[] markers = getSelectedViolations();
-        if (markers == null) return;
+        if (markers == null) return;       
         
-        List<Rule> rules = MarkerUtil.rulesFor(markers);
-        for (Rule rule : rules) {
-        	preferences.isActive(rule.getName(), false);
+        try {
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            workspace.run(new IWorkspaceRunnable() {
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    List<Rule> rules = disableRulesFor(markers);        
+                    removeViolationsOf(rules, MarkerUtil.commonProjectsOf(markers) );
+                }
+            }, null);
+        } catch (CoreException ce) {
+        	logErrorByKey(StringKeys.ERROR_CORE_EXCEPTION, ce);
         }
         
-        preferences.sync();
         
-        removeViolationsOf(rules, MarkerUtil.commonProjectsOf(markers) );
+        
+        
+        
     }
 }

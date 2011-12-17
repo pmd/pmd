@@ -4,15 +4,18 @@ v4.0.0 - xxx 2011?
 . New integrated AST View and XPath test area 
 . New rule creation wizard
 . New report preferences panel
+. New file filter panel for exclusion/inclusion entries
 . User-definable rule violation markers 
      Highest priority markers also decorate folders & projects (selectable)
 . Colour syntax highlighting in code viewers/editors
+. Expanded rule import dialog to show incoming rules and any duplicates
+. Export rule function now only exports selected rules
 . Overhauled rule preferences screen
 .    allows users to group/edit rules by multiple criteria
 .    new ability to enable/disable rules without removing them from rulesets
 .    larger editors for the various fields
 .	 support for non-Java languages
-.    group editing of filter exclusion rules
+.    group editing of rule exclusion filters
 .    highlighting of non-default property values
 .    colour-tagged expressions in shown in rule table
 .    new property editors are fully type-aware

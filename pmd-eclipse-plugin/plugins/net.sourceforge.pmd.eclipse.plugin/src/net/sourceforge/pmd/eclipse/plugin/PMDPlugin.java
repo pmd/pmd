@@ -46,6 +46,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
@@ -68,7 +72,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class PMDPlugin extends AbstractUIPlugin {
+public class PMDPlugin extends AbstractUIPlugin implements IResourceChangeListener {
 
 	private static File pluginFolder;
 
@@ -170,16 +174,35 @@ public class PMDPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-        configureLogs(loadPreferences());
+		
+		IPreferences prefs = loadPreferences();
+        configureLogs(prefs);
         registerStandardRuleSets();
         registerAdditionalRuleSets();
+        fileChangeListenerEnabled(prefs.isCheckAfterSaveEnabled());
 	}
-
+	
+	
+	
+	public void fileChangeListenerEnabled(boolean flag) {
+		
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		
+		if (flag) {	
+			workspace.addResourceChangeListener(this);
+			} else {
+				workspace.removeResourceChangeListener(this);
+			}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
+		
+		fileChangeListenerEnabled(false);
+		
 		plugin = null;
 		disposeResources();
 		super.stop(context);
@@ -539,6 +562,15 @@ public class PMDPlugin extends AbstractUIPlugin {
 		addFilesTo(resource, changes);
 		
 		decorator.changed(changes);
+	}
+
+	public void resourceChanged(IResourceChangeEvent event) {
+		
+//		switch (event.getType()) {
+//		case PRE_DELETE: 
+//		case POST_CHANGE:
+//		}
+		
 	}
 
 }

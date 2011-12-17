@@ -515,17 +515,19 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     private void storeRuleSetInStateLocation(RuleSet ruleSet) {
     	OutputStream out = null;
+    	PMDPlugin plugin = PMDPlugin.getDefault();
+    	
         try {
-            IPath ruleSetLocation = PMDPlugin.getDefault().getStateLocation().append(PREFERENCE_RULESET_FILE);
+            IPath ruleSetLocation = plugin.getStateLocation().append(PREFERENCE_RULESET_FILE);
             out = new FileOutputStream(ruleSetLocation.toOSString());
-            IRuleSetWriter writer = PMDPlugin.getDefault().getRuleSetWriter();
+            IRuleSetWriter writer = plugin.getRuleSetWriter();
             writer.write(out, ruleSet);
             out.flush();
             
         } catch (IOException e) {
-            PMDPlugin.getDefault().logError("IO Exception when storing ruleset in state location", e);
+        	plugin.logError("IO Exception when storing ruleset in state location", e);
         } catch (WriterException e) {
-            PMDPlugin.getDefault().logError("General PMD Eclipse Exception when storing ruleset in state location", e);
+        	plugin.logError("General PMD Eclipse Exception when storing ruleset in state location", e);
         } finally {
         	IOUtil.closeQuietly(out);
         }
