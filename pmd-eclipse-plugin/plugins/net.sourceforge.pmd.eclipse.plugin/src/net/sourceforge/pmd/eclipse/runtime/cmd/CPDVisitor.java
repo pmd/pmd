@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -22,6 +23,7 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  *
  */
 public class CPDVisitor implements IResourceVisitor {
+	
     private static final Logger log = Logger.getLogger(CPDVisitor.class);
     private boolean includeDerivedFiles;
     private ResourceWorkingSetFilter workingSetFilter;
@@ -69,27 +71,25 @@ public class CPDVisitor implements IResourceVisitor {
      */
     public boolean visit(IResource resource) throws CoreException {
         log.debug("CPD Visiting " + resource.getName());
-        boolean result = true;
-
+       
         if (resource instanceof IFile) {
-            final IFile file = (IFile) resource;
-            final File ioFile = file.getLocation().toFile();
+            IFile file = (IFile) resource;
+            File ioFile = file.getLocation().toFile();
             try {
-                if (file.getFileExtension() != null
-                        && language.getFileFilter().accept(ioFile, file.getName())
-                        && isFileInWorkingSet(file)
-                                && (includeDerivedFiles
-                                        || !includeDerivedFiles && !file.isDerived())) {
+                if (StringUtil.isNotEmpty(file.getFileExtension())
+                     && language.getFileFilter().accept(ioFile, file.getName())
+                     && isFileInWorkingSet(file)
+                     && (includeDerivedFiles || !file.isDerived())) {
                     log.debug("Add file " + resource.getName());
                     files.add(ioFile);
-                    result = false;
+                    return false;
                 }
             } catch (PropertiesException e) {
                 log.warn("ModelException when adding file " + resource.getName() + " to CPD. Continuing.", e);
             }
         }
 
-        return result;
+        return true;
     }
 
     /**

@@ -176,21 +176,21 @@ public class UpdateProjectPropertiesCmd extends AbstractProjectCommand {
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.setProject(null);
-        this.setPmdEnabled(false);
-        this.setProjectRuleSet(null);
-        this.setRuleSetStoredInProject(false);
-        this.setRuleSetFile(null);
-        this.setIncludeDerivedFiles(false);
-        this.setFullBuildEnabled(true);   // made to match static initializer
-        this.setViolationsAsErrors(true); // 10/2010 changed to true to match static initializer
-        this.setTerminated(false);
+        setProject(null);
+        setPmdEnabled(false);
+        setProjectRuleSet(null);
+        setRuleSetStoredInProject(false);
+        setRuleSetFile(null);
+        setIncludeDerivedFiles(false);
+        setFullBuildEnabled(true);   // made to match static initializer
+        setViolationsAsErrors(true); // 10/2010 changed to true to match static initializer
+        setTerminated(false);
     }
 
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     public boolean isReadyToExecute() {
-        return super.isReadyToExecute() && this.projectRuleSet != null;
+        return super.isReadyToExecute() && projectRuleSet != null;
     }
 }

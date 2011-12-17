@@ -53,11 +53,11 @@ import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.ui.actions.RuleSetUtil;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -124,14 +124,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     	return new RuleSet();
     }
     
-    private Map<Rule, String> faultyRulesIn(RuleSet ruleset) {
+    private Map<Rule, String> misconfiguredRulesIn(RuleSet ruleset) {
     	
     	RuleSet ruleSet = currentRules();
     	
     	Map<Rule, String> faultsByRule = new HashMap<Rule, String>();
     	for (Rule rule : ruleSet.getRules()) {
     		String fault = rule.dysfunctionReason();
-    		if (fault != null) {
+    		if (StringUtil.isNotEmpty(fault)) {
     			faultsByRule.put(rule, fault);
     		}
     	}
@@ -139,12 +139,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     	return faultsByRule;
     }
     
-    private boolean checkForFaultyRules() {
+    private boolean checkForMisconfiguredRules() {
     	
     	RuleSet ruleSet = currentRules();
     	if (ruleSet.getRules().isEmpty()) return true;
     	
-    	Map<Rule, String> faultsByRule = faultyRulesIn(ruleSet);
+    	Map<Rule, String> faultsByRule = misconfiguredRulesIn(ruleSet);
     	if (faultsByRule.isEmpty()) return true;
     	
     	return MessageDialog.openConfirm(
@@ -160,7 +160,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     @Override
     public void execute() throws CommandException {
     	
-    	boolean doReview = checkForFaultyRules();
+    	boolean doReview = checkForMisconfiguredRules();
     	if (!doReview) return;
     	
         log.info("ReviewCode command starting.");

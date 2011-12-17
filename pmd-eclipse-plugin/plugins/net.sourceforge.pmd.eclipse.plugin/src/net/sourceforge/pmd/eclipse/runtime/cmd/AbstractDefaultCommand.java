@@ -40,7 +40,6 @@ import name.herlin.command.CommandException;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.lang.Language;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -55,8 +54,6 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = Logger.getLogger(AbstractDefaultCommand.class);
-
     private boolean readOnly;
     private boolean outputProperties;
     private boolean readyToExecute;
@@ -66,6 +63,16 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     private int stepCount;
     private boolean userInitiated;
 
+//    private static final Logger log = Logger.getLogger(AbstractDefaultCommand.class);
+    
+    public static void logInfo(String message) {
+    	PMDPlugin.getDefault().logInformation(message);
+    }
+
+    public static void logError(String message, Throwable error) {
+    	PMDPlugin.getDefault().logError(message, error);
+    }
+    
     protected AbstractDefaultCommand(String theName, String theDescription) {
     	name = theName;
     	description = theDescription;
@@ -110,13 +117,6 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         return description;
     }
 
-//    /**
-//     * @param description The description to set.
-//     */
-//    public void setDescription(final String description) {
-//        this.description = description;
-//    }
-
     /**
      * @return Returns the name.
      */
@@ -124,13 +124,6 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     public String getName() {
         return name;
     }
-
-//    /**
-//     * @param name The name to set.
-//     */
-//    public void setName(final String name) {
-//        this.name = name;
-//    }
 
     /**
      * @param outputProperties The outputProperties to set.
@@ -181,14 +174,6 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
      */
     public boolean isUserInitiated() {
         return userInitiated;
-    }
-
-    public static void logInfo(String message) {
-    	PMDPlugin.getDefault().logInformation(message);
-    }
-
-    public static void logError(String message, Throwable error) {
-    	PMDPlugin.getDefault().logError(message, error);
     }
     
     /**

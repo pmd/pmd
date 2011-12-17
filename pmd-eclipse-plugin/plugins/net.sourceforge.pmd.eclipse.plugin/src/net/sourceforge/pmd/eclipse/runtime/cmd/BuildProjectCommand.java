@@ -57,9 +57,9 @@ public class BuildProjectCommand extends AbstractProjectCommand {
     public BuildProjectCommand() {
         super("BuildProject", "Rebuild a project.");
         
-        this.setReadOnly(false);
-        this.setOutputProperties(false);
-        this.setTerminated(false);
+        setReadOnly(false);
+        setOutputProperties(false);
+        setTerminated(false);
     }
 
     /**

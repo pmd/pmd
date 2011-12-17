@@ -225,15 +225,7 @@ public class RenderReportsCmd extends AbstractProjectCommand {
             String ruleName = marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_RULENAME, "");
             Rule rule = ruleSet.getRuleByName(ruleName);
 
-            // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
-            FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);
-
-            // Fill in the rule violation object before adding it to the report
-            ruleViolation.setBeginLine(marker.getAttribute(IMarker.LINE_NUMBER, 0));
-            ruleViolation.setEndLine(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, 0));
-            ruleViolation.setVariableName(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, ""));
-            ruleViolation.setFilename(marker.getResource().getProjectRelativePath().toString());
-            ruleViolation.setDescription(marker.getAttribute(IMarker.MESSAGE, rule.getMessage()));
+            FakeRuleViolation ruleViolation = createViolation(marker, rule);
 
             if (marker.getResource() instanceof IFile) {
             	classAndPackageFrom(marker, ruleViolation);
@@ -244,4 +236,18 @@ public class RenderReportsCmd extends AbstractProjectCommand {
 
         return report;
     }
+
+	private static FakeRuleViolation createViolation(IMarker marker, Rule rule) {
+
+		// @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
+		FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);
+
+		// Fill in the rule violation object before adding it to the report
+		ruleViolation.setBeginLine(marker.getAttribute(IMarker.LINE_NUMBER, 0));
+		ruleViolation.setEndLine(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, 0));
+		ruleViolation.setVariableName(marker.getAttribute(PMDRuntimeConstants.KEY_MARKERATT_LINE2, ""));
+		ruleViolation.setFilename(marker.getResource().getProjectRelativePath().toString());
+		ruleViolation.setDescription(marker.getAttribute(IMarker.MESSAGE, rule.getMessage()));
+		return ruleViolation;
+	}
 }

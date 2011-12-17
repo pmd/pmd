@@ -225,6 +225,7 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      * @throws CoreException
      */
     private List<File> findCandidateFiles() throws PropertiesException, CoreException {
+
         final IProjectProperties properties = projectProperties();
         final CPDVisitor visitor = new CPDVisitor();
         visitor.setWorkingSet(properties.getProjectWorkingSet());
