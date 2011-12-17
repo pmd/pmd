@@ -286,7 +286,7 @@
                     <id>process-sources</id>
                     <phase>process-sources</phase>
                     <configuration>
-                      <tasks>
+                      <target>
                         <copy file="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
                               toFile="${project.build.sourceDirectory}/net/sourceforge/pmd/PMD.java"
                               overwrite="true">
@@ -298,7 +298,7 @@
                           <property name="src" value="${project.build.sourceDirectory}"/>
                           <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar"/>
                         </ant>
-                      </tasks>
+                      </target>
                     </configuration>
                     <goals>
                       <goal>run</goal>
@@ -308,7 +308,7 @@
                       <id>generate-ruleset-as-xdocs</id>
                       <phase>pre-site</phase>
                       <configuration>
-                      <tasks>
+                        <target>
                          <echo>PMD specific tasks: generating xdocs from rulesets</echo>
                          <mkdir dir="${project.build.directory}/generated-xdocs/"/>
                          <copy toDir="${project.build.directory}/generated-xdocs/"
@@ -319,17 +319,17 @@
                              <filter token="VERSION" value="${project.version}"/>
                            </filterset>
                          </copy>
-                      </tasks>
-		             </configuration>
-		             <goals>
-		               <goal>run</goal>
-		             </goals>
+                        </target>
+		              </configuration>
+		              <goals>
+		                <goal>run</goal>
+		              </goals>
                     </execution>
                     <execution>
                         <id>move-index-and-delete-generated-xdocs</id>
                         <phase>site</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <echo>PMD site specific tasks</echo>
                                 <echo>1. Copying missing images to site
                                     directory.</echo>
@@ -355,7 +355,7 @@
                                         dir="${project.build.directory}"
                                         includes="site/mergedruleset.html" />
                                 </delete>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
@@ -365,7 +365,7 @@
                         <id>pmd-clean</id>
                         <phase>clean</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <echo>PMD specific tasks: cleaning  generated xdocs</echo>
                                 <delete quiet="true">
                                     <fileset dir="${src.xdocs.dir}/rules"
@@ -373,7 +373,7 @@
                                     <fileset dir="${src.xdocs.dir}/"
                                         includes="mergedruleset.xml" />
                                 </delete>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
