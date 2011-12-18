@@ -29,6 +29,10 @@ class FilterHolder {
 		String textValueFor(FilterHolder fh);
 	}
 	
+	public static final Accessor ExcludeAccessor = new BasicAccessor() {
+		public boolean boolValueFor(FilterHolder fh) { return !fh.isInclude; }
+	};
+	
 	public static final Accessor IncludeAccessor = new BasicAccessor() {
 		public boolean boolValueFor(FilterHolder fh) { return fh.isInclude; }
 	};

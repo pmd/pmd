@@ -3,6 +3,7 @@ package net.sourceforge.pmd.eclipse.ui.filters;
 import net.sourceforge.pmd.eclipse.ui.ItemColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ItemFieldAccessor;
 import net.sourceforge.pmd.eclipse.ui.ItemFieldAccessorAdapter;
+import net.sourceforge.pmd.eclipse.util.Util;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -17,15 +18,15 @@ public interface FilterColumnUI {
 		public Image imageFor(FilterHolder holder) { return FilterPreferencesPage.typeIconFor(holder); }	
 	};
 	
-	ItemFieldAccessor<String, FilterHolder> pmdAcc = new ItemFieldAccessorAdapter<String, FilterHolder>(null) {
+	ItemFieldAccessor<String, FilterHolder> pmdAcc = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.compStr) {
 		public String valueFor(FilterHolder holder) { return holder.forPMD ? "Y" : ""; }
 	};
 	
-	ItemFieldAccessor<String, FilterHolder> cpdAcc = new ItemFieldAccessorAdapter<String, FilterHolder>(null) {
+	ItemFieldAccessor<String, FilterHolder> cpdAcc = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.compStr) {
 		public String valueFor(FilterHolder holder) { return holder.forCPD ? "Y" : ""; }
 	};
 	
-	ItemFieldAccessor<String, FilterHolder> patternAcc = new ItemFieldAccessorAdapter<String, FilterHolder>(null) {
+	ItemFieldAccessor<String, FilterHolder> patternAcc = new ItemFieldAccessorAdapter<String, FilterHolder>(Util.compStr) {
 		public String valueFor(FilterHolder holder) { return holder.pattern; }
 	};
 

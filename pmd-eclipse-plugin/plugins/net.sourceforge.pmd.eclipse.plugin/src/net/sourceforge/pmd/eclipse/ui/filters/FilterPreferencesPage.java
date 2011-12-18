@@ -13,8 +13,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.BasicTableLabelProvider;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
-import net.sourceforge.pmd.eclipse.ui.Shape;
-import net.sourceforge.pmd.eclipse.ui.ShapePainter;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.AbstractPMDPreferencePage;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.BasicTableManager;
@@ -36,13 +34,11 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -58,26 +54,33 @@ import org.eclipse.swt.widgets.Text;
  */
 public class FilterPreferencesPage extends AbstractPMDPreferencePage implements ValueChangeListener, SizeChangeListener {
 
-	private TableViewer tableViewer;
-	private Button 		addButton;
-	private Button		removeButton;
+	private TableViewer 		tableViewer;
+	private Button 				addButton;
+	private Button				removeButton;
 
-	private Button		excludeButt;
-	private Button		includeButt;
-	private Button		cpdButt;
-	private Button		pmdButt;
-	private Text		patternField;
-	private BasicTableManager reportTableMgr;
+	private Button				excludeButt;
+	private Button				includeButt;
+	private Button				cpdButt;
+	private Button				pmdButt;
+	private Text				patternField;
+	
+	private BasicTableManager<FilterHolder> 	reportTableMgr;
 	private Collection<Control> editorWidgets = new ArrayList<Control>();
 	
-	private static Image IncludeIcon;
-	private static Image ExcludeIcon;
+	private static Image IncludeIcon = plugin.getImage("include", "icons/ok.gif");
+	private static Image ExcludeIcon = plugin.getImage("exclude", "icons/forbidden.png");
 
 	private static final String NewFilterPattern = "<finish this>";
-	private static final RGB ProtoTransparentColour = new RGB(1,1,1);	// almost full black, unlikely to be used
 
 	public static Image typeIconFor(FilterHolder holder) {
-		return holder.isInclude ? includeIcon() : excludeIcon();
+		return holder.isInclude ? IncludeIcon : ExcludeIcon;
+	}
+	
+	private static Label createLabel(Composite panel, String text) {
+		Label label = new Label(panel, SWT.None);
+		label.setLayoutData( new GridData());
+		label.setText(text);
+		return label;
 	}
 
 	private static Button createButton(Composite panel, int type, String label) {
@@ -93,38 +96,6 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		butt.setImage(image);
 		butt.setToolTipText(tooltip);
 		return butt;
-	}
-
-	private static Image includeIcon() {
-
-		if (IncludeIcon != null) return IncludeIcon;
-
-		IncludeIcon = ShapePainter.newDrawnImage(
-				Display.getCurrent(), 
-				16, 
-				16, 
-				Shape.plus,
-				ProtoTransparentColour, 
-				new RGB(0,255,0)
-		);
-
-		return IncludeIcon;
-	}
-
-	private static Image excludeIcon() {
-
-		if (ExcludeIcon != null) return ExcludeIcon;
-
-		ExcludeIcon = ShapePainter.newDrawnImage(
-				Display.getCurrent(), 
-				16, 
-				16, 
-				Shape.minus,
-				ProtoTransparentColour, 
-				new RGB(255,0,0)
-		);
-
-		return ExcludeIcon;
 	}
 
 	/**
@@ -205,7 +176,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		};
 		BasicTableLabelProvider labelProvider = new BasicTableLabelProvider(FilterColumnUI.VisibleColumns);
 
-		reportTableMgr = new BasicTableManager("renderers", null, FilterColumnUI.VisibleColumns);
+		reportTableMgr = new BasicTableManager<FilterHolder>("renderers", null, FilterColumnUI.VisibleColumns);
 		tableViewer = reportTableMgr.buildTableViewer(
 				parent,
 				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK
@@ -252,6 +223,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 	
 	private void selectedPatterns(Collection<FilterHolder> holders) {
 
+		setState(holders, excludeButt,  FilterHolder.ExcludeAccessor);
 		setState(holders, includeButt,  FilterHolder.IncludeAccessor);
 		setState(holders, pmdButt,		FilterHolder.PMDAccessor);
 		setState(holders, cpdButt, 		FilterHolder.CPDAccessor);		
@@ -310,15 +282,15 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		typeLabel.setText("Type:");
 		editorWidgets.add(typeLabel);
 		
-		excludeButt = createButton(editorPanel, SWT.RADIO, excludeIcon(), "Exclude");
+		excludeButt = createButton(editorPanel, SWT.RADIO, ExcludeIcon, "Exclude");
 		excludeButt.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent se) {
-				setAllInclude(includeButt.getSelection());
+				setAllInclude(!includeButt.getSelection());
 				tableViewer.refresh();
 			}
 		});
 
-		includeButt = createButton(editorPanel, SWT.RADIO, includeIcon(), "Include");
+		includeButt = createButton(editorPanel, SWT.RADIO, IncludeIcon, "Include");
 		includeButt.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent se) {
 				setAllInclude(includeButt.getSelection());
@@ -329,9 +301,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		editorWidgets.add(excludeButt);
 		editorWidgets.add(includeButt);
 		
-		Label contextLabel = new Label(editorPanel, SWT.None);
-		contextLabel.setLayoutData( new GridData());
-		contextLabel.setText("Applies to:");
+		Label contextLabel = createLabel(editorPanel, "Applies to:");
 		editorWidgets.add(contextLabel);
 		
 		pmdButt = createButton(editorPanel, SWT.CHECK, "PMD");
@@ -353,9 +323,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		editorWidgets.add(pmdButt);
 		editorWidgets.add(cpdButt);
 		
-		Label patternLabel = new Label(editorPanel, SWT.None);
-		patternLabel.setLayoutData( new GridData());
-		patternLabel.setText("Pattern:");
+		Label patternLabel = createLabel(editorPanel, "Pattern:");
 		editorWidgets.add(patternLabel);
 		
 		patternField = new Text(editorPanel, SWT.BORDER);
@@ -368,8 +336,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		});
 		editorWidgets.add(patternField);
 		
-		Label spacer = new Label(editorPanel, SWT.None);
-		spacer.setLayoutData( new GridData() );
+		createLabel(editorPanel, "");	// spacer
 		Label description = new Label(editorPanel, SWT.None);
 		description.setLayoutData( new GridData(GridData.FILL, GridData.BEGINNING, true, false, 2, 1) );
 		description.setText("name or path pattern (* = any string, ? = any character)");
@@ -637,5 +604,4 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 
 	public void addedRows(int newRowCount) { }
 	public void changed(RuleSelection rule, PropertyDescriptor<?> desc,	Object newValue) { }
-
 }
