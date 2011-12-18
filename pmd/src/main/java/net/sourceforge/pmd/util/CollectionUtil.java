@@ -3,6 +3,7 @@ package net.sourceforge.pmd.util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,27 @@ public final class CollectionUtil {
     private CollectionUtil() {
     };
 
+	/**
+	 * Add elements from the source to the target as long as they don't already exist there.
+	 * Return the number of items actually added.
+	 * 
+	 * @param source
+	 * @param target
+	 * @return int
+	 */
+	public static int addWithoutDuplicates(Collection<String> source, Collection<String> target) {
+		
+		int added = 0;
+		
+		for (String item : source) {
+			if (target.contains(item)) continue;
+			target.add(item);
+			added++;
+		}
+		
+		return added;
+	}
+    
     /**
      * Returns the collection type if we recognize it by its short name.
      *

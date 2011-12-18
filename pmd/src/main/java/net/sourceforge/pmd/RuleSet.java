@@ -15,12 +15,14 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.Filters;
 
 /**
- * This class represents a collection of rules.
+ * This class represents a collection of rules along with some optional filter
+ * patterns that can preclude their application on specific files.
  *
  * @see Rule
  */
@@ -31,10 +33,30 @@ public class RuleSet {
 	private String fileName;
 	private String name = "";
 	private String description = "";
+	
+	// TODO should these not be Sets or is their order important?
 	private List<String> excludePatterns = new ArrayList<String>(0);
 	private List<String> includePatterns = new ArrayList<String>(0);
+
 	private Filter<File> filter;
 
+	/**
+	 * A convenience constructor
+	 * 
+	 * @param name
+	 * @param theRules
+	 * @return
+	 */
+	public static RuleSet createFor(String name, Rule... theRules) {
+		
+		RuleSet rs = new RuleSet();
+		rs.setName(name);
+		for (Rule rule : theRules) {
+			rs.addRule(rule);
+		}
+		return rs;
+	}
+	
 	/**
 	 * Returns the number of rules in this ruleset
 	 *
@@ -265,34 +287,60 @@ public class RuleSet {
 		return excludePatterns;
 	}
 
-	public void addExcludePattern(String excludePattern) {
-		this.excludePatterns.add(excludePattern);
+	public void addExcludePattern(String aPattern) {
+
+		if (excludePatterns.contains(aPattern)) return;
+		
+		excludePatterns.add(aPattern);
+		patternsChanged();
+	}
+	
+	public void addExcludePatterns(Collection<String> someExcludePatterns) {
+		
+		int added = CollectionUtil.addWithoutDuplicates(someExcludePatterns, excludePatterns);
+		if (added > 0) patternsChanged();
 	}
 
-	public void addExcludePatterns(List<String> excludePatterns) {
-		this.excludePatterns.addAll(excludePatterns);
-	}
-
-	public void setExcludePatterns(List<String> excludePatterns) {
-		this.excludePatterns = excludePatterns;
+	public void setExcludePatterns(Collection<String> theExcludePatterns) {
+		
+		if (excludePatterns.equals(theExcludePatterns)) return;
+		
+		excludePatterns.clear();
+		CollectionUtil.addWithoutDuplicates(theExcludePatterns, excludePatterns);
+		patternsChanged();
 	}
 
 	public List<String> getIncludePatterns() {
 		return includePatterns;
 	}
 
-	public void addIncludePattern(String includePattern) {
-		this.includePatterns.add(includePattern);
+	public void addIncludePattern(String aPattern) {
+		
+		if (includePatterns.contains(aPattern)) return;
+		
+		includePatterns.add(aPattern);
+		patternsChanged();
 	}
 
-	public void addIncludePatterns(List<String> includePatterns) {
-		this.includePatterns.addAll(includePatterns);
+	public void addIncludePatterns(Collection<String> someIncludePatterns) {
+
+		int added = CollectionUtil.addWithoutDuplicates(someIncludePatterns, includePatterns);
+		if (added > 0) patternsChanged();
 	}
 
-	public void setIncludePatterns(List<String> includePatterns) {
-		this.includePatterns = includePatterns;
+	public void setIncludePatterns(Collection<String> theIncludePatterns) {
+
+		if (includePatterns.equals(theIncludePatterns)) return;
+		
+		includePatterns.clear();
+		CollectionUtil.addWithoutDuplicates(theIncludePatterns, includePatterns);
+		patternsChanged();
 	}
 
+	private void patternsChanged() {
+		filter = null;	// ensure we start with one that reflects the current patterns
+	}
+	
 	/**
 	 * Does any Rule for the given Language use Type Resolution?
 	 * @param language The Language.

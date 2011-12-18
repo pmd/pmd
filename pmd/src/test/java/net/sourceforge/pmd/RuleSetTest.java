@@ -249,6 +249,8 @@ public class RuleSetTest extends RuleTst {
 	ruleSet.addExcludePattern("*");
 	assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
 	assertEquals("Invalid number of patterns", 1, ruleSet.getExcludePatterns().size());
+	ruleSet.addExcludePattern("*");		// try to create a duplicate
+	assertEquals("Invalid number of patterns", 1, ruleSet.getExcludePatterns().size());	
 	assertEquals("Exclude pattern", "*", ruleSet.getExcludePatterns().get(0));
 	assertNotNull("Include patterns", ruleSet.getIncludePatterns());
 	assertEquals("Invalid number of include patterns", 0, ruleSet.getIncludePatterns().size());
@@ -262,6 +264,8 @@ public class RuleSetTest extends RuleTst {
 	RuleSet ruleSet2 = new RuleSet();
 	ruleSet2.addExcludePatterns(ruleSet.getExcludePatterns());
 	assertNotNull("Exclude patterns", ruleSet2.getExcludePatterns());
+	assertEquals("Invalid number of patterns", 2, ruleSet2.getExcludePatterns().size());
+	ruleSet.addExcludePattern(".*");	// try to create a duplicate
 	assertEquals("Invalid number of patterns", 2, ruleSet2.getExcludePatterns().size());
 	assertEquals("Exclude pattern", "*", ruleSet2.getExcludePatterns().get(0));
 	assertEquals("Exclude pattern", ".*", ruleSet2.getExcludePatterns().get(1));
