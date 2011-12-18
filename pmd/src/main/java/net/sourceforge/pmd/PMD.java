@@ -189,7 +189,7 @@ public class PMD {
 				LOG.log(Level.SEVERE, "Exception during processing", e);
 			}
 			LOG.log(Level.FINE, "Exception during processing", e);
-			LOG.info(CommandLineOptions.usage());
+			LOG.info(CommandLineParser.usage());
 		} finally {
 			Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
 		}
@@ -349,7 +349,7 @@ public class PMD {
     public static int run(String[] args) { 
     	int status = 0;
 		long start = System.nanoTime();
-		final CommandLineOptions opts = new CommandLineOptions(args);
+		final CommandLineParser opts = new CommandLineParser(args);
 		final Configuration configuration = opts.getConfiguration();
 
 		final Level logLevel = configuration.isDebug() ? Level.FINER : Level.INFO;
@@ -360,7 +360,7 @@ public class PMD {
 		try {
 		    PMD.doPMD(opts.getConfiguration());
 		} catch (Exception e) {
-			System.out.print(CommandLineOptions.usage());
+			System.out.print(CommandLineParser.usage());
 			System.out.println(e.getMessage());
 			status = ERROR_STATUS;
 		} finally {

@@ -17,6 +17,8 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Command line options parser class.  Produces a Configuration instance to
  * use with PMD processing.
+ * 
+ * @deprecated  - use the new CommandLineParser. Leaving this one here for comparison purposes for now.
  */
 public class CommandLineOptions {
 
