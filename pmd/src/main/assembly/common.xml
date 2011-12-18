@@ -1,0 +1,89 @@
+<component xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/component/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/component/1.1.2 http://maven.apache.org/xsd/component-1.1.2.xsd">
+  
+  <fileSets>
+    <fileSet>
+        <includes>
+            <include>pmd-${project.version}.jar</include>
+        </includes>
+        <directory>${project.build.directory}</directory>
+        <outputDirectory>lib</outputDirectory>
+        <directoryMode>0755</directoryMode>
+        <fileMode>0644</fileMode>
+    </fileSet>
+
+    <fileSet>
+        <includes>
+            <include>bgastviewer.bat</include>
+            <include>cpd.bat</include>
+            <include>cpdgui.bat</include>
+            <include>designer.bat</include>
+            <include>pmd.bat</include>
+        </includes>
+        <directory>src/main/scripts</directory>
+        <outputDirectory>bin</outputDirectory>
+        <fileMode>0755</fileMode>
+        <directoryMode>0755</directoryMode>
+        <lineEnding>dos</lineEnding>
+    </fileSet>
+
+    <fileSet>
+        <includes>
+            <include>run.sh</include>
+        </includes>
+        <directory>src/main/scripts</directory>
+        <outputDirectory>bin</outputDirectory>
+        <fileMode>0755</fileMode>
+        <directoryMode>0755</directoryMode>
+        <lineEnding>unix</lineEnding>
+    </fileSet>
+
+    <fileSet>
+        <includes>
+            <include>LICENSE.txt</include>
+        </includes>
+        <directoryMode>0755</directoryMode>
+        <fileMode>0644</fileMode>
+    </fileSet>
+    <fileSet>
+        <includes>
+            <include>changelog.txt</include>
+        </includes>
+        <directory>etc</directory>
+        <directoryMode>0755</directoryMode>
+        <fileMode>0644</fileMode>
+    </fileSet>
+    <fileSet>
+        <includes>
+            <include>*.xslt</include>
+            <include>*.js</include>
+            <include>*.gif</include>
+            <include>*.css</include>
+        </includes>
+        <directory>etc/xslt</directory>
+        <directoryMode>0755</directoryMode>
+        <fileMode>0644</fileMode>
+    </fileSet>
+
+    <fileSet>
+        <directory>${project.build.directory}/site</directory>
+        <outputDirectory>docs</outputDirectory>
+        <excludes>
+            <exclude>clover/**</exclude>
+        </excludes>
+        <directoryMode>0755</directoryMode>
+        <fileMode>0644</fileMode>
+    </fileSet>
+  </fileSets>
+
+  <dependencySets>
+    <dependencySet>
+        <scope>runtime</scope>
+        <outputDirectory>lib</outputDirectory>
+        <directoryMode>0755</directoryMode>
+        <fileMode>0644</fileMode>
+        <useProjectArtifact>false</useProjectArtifact>
+    </dependencySet>
+  </dependencySets>
+  
+</component>

@@ -7,45 +7,23 @@
   </formats>
 
   <includeBaseDirectory>true</includeBaseDirectory>
-  <baseDirectory>pmd-${project.version}-src</baseDirectory>
+  <baseDirectory>pmd-src-${project.version}</baseDirectory>
+
+  <componentDescriptors>
+    <componentDescriptor>src/main/assembly/common.xml</componentDescriptor>
+  </componentDescriptors>
 
   <fileSets>
     <fileSet>
-        <includes>
-            <include>pmd-${project.version}.jar</include>
-        </includes>
-        <directory>${project.build.directory}</directory>
-        <outputDirectory>lib</outputDirectory>
-        <directoryMode>0755</directoryMode>
-        <fileMode>0644</fileMode>
-    </fileSet>
-
-    <fileSet>
         <useDefaultExcludes>true</useDefaultExcludes>
         <excludes>
-            <exclude>tools/config/clover2.license</exclude>
             <exclude>${project.build.directory}/**</exclude>
             <exclude>.settings/**</exclude>
+            <exclude>.project</exclude>
+            <exclude>.classpath</exclude>
         </excludes>
         <directoryMode>0755</directoryMode>
         <fileMode>0644</fileMode>
     </fileSet>
-
-    <fileSet>
-        <directory>${project.build.directory}/site</directory>
-        <outputDirectory>docs</outputDirectory>
-        <directoryMode>0755</directoryMode>
-        <fileMode>0644</fileMode>
-    </fileSet>
   </fileSets>
-
-  <dependencySets>
-    <dependencySet>
-        <scope>test</scope>
-        <outputDirectory>lib</outputDirectory>
-        <directoryMode>0755</directoryMode>
-        <fileMode>0644</fileMode>
-        <useProjectArtifact>false</useProjectArtifact>
-    </dependencySet>
-  </dependencySets>
 </assembly>
