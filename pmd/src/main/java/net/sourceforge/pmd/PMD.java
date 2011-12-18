@@ -5,6 +5,7 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -376,18 +377,25 @@ public class PMD {
 		return status;
     }
     
-    public static String VERSION = null;
+    public static final String VERSION;
     /**
      * Determines the version from maven's generated pom.properties file.
      */
     static {
-    	try {
-    		Properties properties = new Properties();
-    		properties.load(PMD.class.getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd/pom.properties"));
-    		VERSION = properties.getProperty("version");
-    	} catch (IOException e) {
-    		LOG.log(Level.FINE, "Couldn't determine version of PMD", e);
-    		VERSION = "unknown";
+    	String pmdVersion = null;
+    	InputStream stream = PMD.class.getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd/pom.properties");
+    	if (stream != null) {
+    		try {
+    			Properties properties = new Properties();
+    			properties.load(stream);
+    			pmdVersion = properties.getProperty("version");
+        	} catch (IOException e) {
+        		LOG.log(Level.FINE, "Couldn't determine version of PMD", e);
+        	}
+		}
+    	if (pmdVersion == null) {
+    		pmdVersion = "unknown";
     	}
+    	VERSION = pmdVersion;
     }
 }
