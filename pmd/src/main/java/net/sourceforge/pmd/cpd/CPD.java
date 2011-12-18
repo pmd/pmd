@@ -182,20 +182,18 @@ public class CPD {
         }
 
         try {
-
             String languageString = findOptionalStringValue(args, "--language", "java");
             String formatString = findOptionalStringValue(args, "--format", "text");
             final String systemDefaultEncoding = (String) System.getProperty("file.encoding");
             String encodingString = findOptionalStringValue(args, "--encoding", systemDefaultEncoding);
-            if ( ! systemDefaultEncoding.equals(encodingString) )
-            	System.setProperty("file.encoding", encodingString);
+            if ( ! systemDefaultEncoding.equals(encodingString) ) System.setProperty("file.encoding", encodingString);
             int minimumTokens = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
-            LanguageFactory f = new LanguageFactory();
-            // Pass extra paramteters as System properties to allow language
+
+            // Pass extra parameters as System properties to allow language
             // implementation to retrieve their associate values...
             setSystemProperties(args);
 
-            Language language = f.createLanguage(languageString);
+            Language language = new LanguageFactory().createLanguage(languageString);
             Renderer renderer = CPD.getRendererFromString(formatString);
             CPD cpd = new CPD(minimumTokens, language);
             cpd.setEncoding(encodingString);

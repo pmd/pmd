@@ -53,7 +53,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     	BooleanProperty prop = propertyDescriptorsById.get(id);
     	if (prop != null) return prop;
 
-    	prop = new BooleanProperty(label, label, true, 1.0f);
+    	prop = new BooleanProperty(id, "Include " + label + " column", true, 1.0f);
     	propertyDescriptorsById.put(id, prop);
     	return prop;
     }
@@ -77,6 +77,8 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     		BooleanProperty prop = booleanPropertyFor(desc.id, null);
     		if (getProperty(prop)) {
     			actives.add(desc);
+    			} else {
+//    				System.out.println("disabled: " + prop);
     			}
     		}
      	return actives;
@@ -111,4 +113,13 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     	csvWriter().writeData(getWriter(), violations);
     }
 
+	 /**
+	  * We can't show any violations if we don't have any visible columns.
+	  *
+	  * @see PropertySource#dysfunctionReason()
+	  */
+    @Override
+	 public String dysfunctionReason() {
+		 return activeColumns().isEmpty() ? "No columns selected" : null;
+	 }
 }
