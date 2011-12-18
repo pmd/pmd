@@ -22,28 +22,18 @@ import net.sourceforge.pmd.util.StringUtil;
 public class XPathCLI {
 
     public static void main(String[] args) throws Exception {
-        String xpath;
-        if (args[0].equals("-xpath")) {
-            xpath = args[1];
-        } else {
-            xpath = args[3];
-        }
-        String filename;
-        if (args[0].equals("-file")) {
-            filename = args[1];
-        } else {
-            filename = args[3];
-        }
-        
-        Configuration config = new Configuration();
+
+        String xpath = args[0].equals("-xpath") ? args[1] : args[3];
+        String filename = args[0].equals("-file") ? args[1] : args[3];
         
         Rule rule = new XPathRule(xpath);
         rule.setMessage("Got one!");
-        RuleSet ruleSet = new RuleSet();
-        ruleSet.addRule(rule);
+        RuleSet ruleSet = RuleSet.createFor("", rule);
 
         RuleContext ctx = PMD.newRuleContext(filename, new File(filename));
         ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
+
+        Configuration config = new Configuration();
         config.setDefaultLanguageVersion(Language.JAVA.getDefaultVersion());
         
         new SourceCodeProcessor(config).processSourceCode(new FileReader(filename), new RuleSets(ruleSet), ctx);
