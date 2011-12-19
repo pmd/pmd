@@ -132,7 +132,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
      * @param file a file
      */
     private void generateAST(IFile file) {
-        log.info("Genrating AST for file " + file.getName());
+        log.info("Generating AST for file " + file.getName());
         ByteArrayOutputStream byteArrayOutputStream = null;
         ByteArrayInputStream astInputStream = null;
         try {
@@ -143,17 +143,7 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
             astWriter.write(byteArrayOutputStream, compilationUnit);
             byteArrayOutputStream.flush();
 
-            String name = file.getName();
-            int dotPosition = name.indexOf('.');
-            String astName = name.substring(0, dotPosition) + ".ast";
-
-            IFile astFile = null;
-            IContainer parent = file.getParent();
-            if (parent instanceof IFolder) {
-                astFile = ((IFolder) parent).getFile(astName);
-            } else if (parent instanceof IProject) {
-                astFile = ((IProject) parent).getFile(astName);
-            }
+            IFile astFile = createASTFile(file);
 
             if (astFile != null) {
                 if (astFile.exists()) {
@@ -177,12 +167,34 @@ public class PMDGenerateASTAction extends AbstractUIAction implements IRunnableW
         }
     }
 
+	private static IFile createASTFile(IFile file) {
+
+		String astName = astNameFor(file);
+
+		IFile astFile = null;
+		IContainer parent = file.getParent();
+		if (parent instanceof IFolder) {
+		    astFile = ((IFolder) parent).getFile(astName);
+		} else if (parent instanceof IProject) {
+		    astFile = ((IProject) parent).getFile(astName);
+		}
+		return astFile;
+	}
+
+	private static String astNameFor(IFile file) {
+	
+		String name = file.getName();
+		int dotPosition = name.indexOf('.');
+		String astName = name.substring(0, dotPosition) + ".ast";
+		return astName;
+	}
+
     /**
      * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
      */
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        monitor.beginTask("", this.structuredSelection.size());
-        for (Iterator<?> i = this.structuredSelection.iterator(); i.hasNext();) {
+        monitor.beginTask("", structuredSelection.size());
+        for (Iterator<?> i = structuredSelection.iterator(); i.hasNext();) {
             Object element = i.next();
             if (element instanceof IAdaptable) {
                 IAdaptable adaptable = (IAdaptable) element;
