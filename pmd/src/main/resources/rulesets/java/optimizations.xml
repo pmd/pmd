@@ -15,15 +15,15 @@ These rules deal with different optimizations that generally apply to best pract
           class="net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#LocalVariableCouldBeFinal">
       <description>
-A local variable assigned only can be declared final once.
+A local variable assigned only once can be declared final.
       </description>
         <priority>3</priority>
       <example>
   <![CDATA[
 public class Bar {
 	public void foo () {
-		String a = "a"; //if a will not be assigned again it is better to do this:
-		final String b = "b";
+		String txtA = "a"; 		// if txtA will not be assigned again it is better to do this:
+		final String txtB = "b";
 	}
 }
   ]]>
@@ -58,7 +58,7 @@ public void foo2 (final String param) {	// better, do stuff with param never ass
         class="net.sourceforge.pmd.lang.java.rule.optimizations.AvoidInstantiatingObjectsInLoopsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AvoidInstantiatingObjectsInLoops">
     <description>
-New objects created within loops should be checked to see if they can created outside and reused.
+New objects created within loops should be checked to see if they can created outside them and reused.
     </description>
       <priority>3</priority>
     <example>
@@ -66,7 +66,7 @@ New objects created within loops should be checked to see if they can created ou
 public class Something {
 	public static void main( String as[] ) {  
 		for (int i = 0; i < 10; i++) {
-		Foo f = new Foo(); //Avoid this whenever you can it's really expensive
+		    Foo f = new Foo(); // Avoid this whenever you can it's really expensive
 		}
 	}
 }
@@ -252,7 +252,7 @@ public class Test {
       class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AvoidArrayLoops">
       <description>
-Instead of copying data between two arrays, use System.arraycopy method.
+Instead of manually copying data between two arrays, use the efficient System.arraycopy method instead.
       </description>
       <priority>3</priority>
       <properties>
@@ -367,9 +367,8 @@ String t = Integer.toString(456); 	// preferred approach
 			class="net.sourceforge.pmd.lang.java.rule.optimizations.RedundantFieldInitializerRule"
 			externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#RedundantFieldInitializer">
 		<description>
-Java will initialize fields with defaults so any explicit initialization of those same defaults
-is redundant and results in a larger class file (approximately three additional bytecode 
-instructions per field).
+Java will initialize fields with known default values so any explicit initialization of those same defaults
+is redundant and results in a larger class file (approximately three additional bytecode instructions per field).
 		</description>
               <priority>3</priority>
               <example>
@@ -383,7 +382,7 @@ public class C {
 	long l		= 0;
 	
 	float f		= .0f;    // all possible float literals
-	doable d	= 0d;    // all possible double literals
+	doable d	= 0d;     // all possible double literals
 	Object o	= null;
 	
 	MyClass mca[] = null;
@@ -404,7 +403,7 @@ public class C {
 			class="net.sourceforge.pmd.lang.java.rule.optimizations.PrematureDeclarationRule"
 			externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#PrematureDeclaration">
 		<description>
-Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn'tuse it that also has the ability to return or throw an exception.
+Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn't use it that also has the ability to return or throw an exception.
 		</description>
               <priority>3</priority>
               <example>
