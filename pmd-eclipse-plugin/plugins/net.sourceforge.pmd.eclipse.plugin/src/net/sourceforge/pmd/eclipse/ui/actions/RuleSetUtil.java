@@ -33,7 +33,7 @@ public class RuleSetUtil {
 	 * internal container....oops!  :)
 	 * 
 	 * @param ruleSet
-	 * @param unwantedRuleNames
+	 * @param wantedRuleNames
 	 */
 	public static void retainOnly(RuleSet ruleSet, Set<String> wantedRuleNames) {
 		
@@ -46,6 +46,5 @@ public class RuleSetUtil {
 				rules.remove(rule);
 			}
 		}
-		
 	}
 }

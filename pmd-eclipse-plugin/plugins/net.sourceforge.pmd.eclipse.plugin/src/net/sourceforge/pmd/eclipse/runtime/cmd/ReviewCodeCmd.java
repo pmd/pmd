@@ -445,10 +445,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
          
          RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
          RuleSetUtil.retainOnly(filteredRuleSet, activeRuleNames);
+         filteredRuleSet.setExcludePatterns(preferences.activeExclusionPatterns());
+         filteredRuleSet.setIncludePatterns(preferences.activeInclusionPatterns());
+         
          taskScope(filteredRuleSet.getRules().size(), ruleSet.getRules().size());
          return filteredRuleSet;
     }
-    
     
     private RuleSet rulesetFromResourceDelta() throws PropertiesException, CommandException{
     	

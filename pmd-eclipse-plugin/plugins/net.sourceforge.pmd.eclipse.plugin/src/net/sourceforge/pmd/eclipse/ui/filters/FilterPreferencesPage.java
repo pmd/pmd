@@ -189,7 +189,6 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		tableViewer.setLabelProvider(labelProvider);
 		tableViewer.setContentProvider(contentProvider);
 		table.setHeaderVisible(true);
-		//     labelProvider.addColumnsTo(table);
 
 		tableViewer.setInput( currentFilters() );
 
@@ -528,7 +527,8 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		FilterHolder[] holders = tableFiltersWith(newHolder);
 		tableViewer.setInput( holders );
 		
-		tableViewer.getTable().select(holders.length-1);
+		tableViewer.getTable().setSelection(holders.length-1);
+
 		patternsSelected();
 		patternField.selectAll();
 		patternField.forceFocus();
@@ -559,7 +559,7 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		Object[] selections = sel.toArray();
 		tableViewer.remove(selections);
 	}
-
+	
 	/**
 	 * @return boolean
 	 * @see org.eclipse.jface.preference.IPreferencePage#performOk() */
@@ -570,11 +570,12 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 	    RuleSet ruleSet = ipMgr.getRuleSet();
 	    ruleSet.setExcludePatterns( tableFilters(false) );
 	    ruleSet.setIncludePatterns( tableFilters(true) );
-	    
+		ipMgr.setRuleSet(ruleSet);
+		
 		Set<FilterHolder> filters = currentCheckedFilters();
 		preferences.activeExclusionPatterns( patternsIn(filters, false) );
 		preferences.activeInclusionPatterns( patternsIn(filters, true) );
-
+		
 		preferences.sync();
 	
 		return super.performOk();
