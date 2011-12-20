@@ -15,9 +15,6 @@ There's a whole lot of layers, can we simply things a bit?
 
 Upgrade plugin code to Java 5.
 
-Allow import of a single rule from a RuleSet.
-Warn if Import of a Rule results in a duplicate (what is a duplicate exactly?), allow option to Import All, Import Non Duplicates, or Cancel.
-Warn if newly Added Rule has the name of an existing Rule.
 Warn if non reference Rule looks like it might be a built-in PMD rule, and ask if replace with reference.  On Add?  On Import?  On Upgrade?
 Add Upgrade button, which will check current workspace RuleSet against PMD rules showing differences (new PMD rules, rules in
 Allow checking to see what rules from PMD are missing (useful for upgrade process).

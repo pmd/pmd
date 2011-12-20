@@ -5,6 +5,7 @@ v4.0.0 - xxx 2011?
 . New rule creation wizard
 . New report preferences panel
 . New file filter panel for exclusion/inclusion entries
+. New automatic "Check code on file save" function (off by default)
 . User-definable rule violation markers 
      Highest priority markers also decorate folders & projects (selectable)
 . Colour syntax highlighting in code viewers/editors

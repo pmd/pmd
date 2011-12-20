@@ -46,8 +46,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -72,10 +70,12 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class PMDPlugin extends AbstractUIPlugin implements IResourceChangeListener {
+public class PMDPlugin extends AbstractUIPlugin {
 
 	private static File pluginFolder;
 
+	private FileChangeReviewer changeReviewer;
+	
 	private Map<RGB, Color> coloursByRGB = new HashMap<RGB, Color>();
 
 	public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse.plugin";
@@ -181,17 +181,19 @@ public class PMDPlugin extends AbstractUIPlugin implements IResourceChangeListen
         registerAdditionalRuleSets();
         fileChangeListenerEnabled(prefs.isCheckAfterSaveEnabled());
 	}
-	
-	
-	
+		
 	public void fileChangeListenerEnabled(boolean flag) {
 		
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		
 		if (flag) {	
-			workspace.addResourceChangeListener(this);
+			if (changeReviewer == null) changeReviewer = new FileChangeReviewer();
+			workspace.addResourceChangeListener(changeReviewer);
 			} else {
-				workspace.removeResourceChangeListener(this);
+				if (changeReviewer != null) {
+					workspace.removeResourceChangeListener(changeReviewer);
+					changeReviewer = null;
+					}
 			}
 	}
 	
@@ -562,15 +564,6 @@ public class PMDPlugin extends AbstractUIPlugin implements IResourceChangeListen
 		addFilesTo(resource, changes);
 		
 		decorator.changed(changes);
-	}
-
-	public void resourceChanged(IResourceChangeEvent event) {
-		
-//		switch (event.getType()) {
-//		case PRE_DELETE: 
-//		case POST_CHANGE:
-//		}
-		
 	}
 
 }

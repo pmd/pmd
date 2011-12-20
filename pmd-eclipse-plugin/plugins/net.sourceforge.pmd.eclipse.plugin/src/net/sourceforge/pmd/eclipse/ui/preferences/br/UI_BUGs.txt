@@ -27,7 +27,6 @@ new CPD view
 	
 Preferences
 	General Page
-		Enable 'check code after saving' button when working
 		Refresh whole Eclipse UI to obtain updated RulePriority settings
 		Rework Logging Options section - lose the slider!
 	Preferences window jumps around/resizes when changing rule selections

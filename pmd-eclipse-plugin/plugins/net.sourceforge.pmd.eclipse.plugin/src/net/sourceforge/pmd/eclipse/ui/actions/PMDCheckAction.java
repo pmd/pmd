@@ -167,7 +167,7 @@ public class PMDCheckAction extends AbstractUIAction {
 		}
 
 		// Run the command
-		setupAndExecute(cmd, countElement(selection));
+		setupAndExecute(cmd, countElements(selection));
 	}
 
 	private void addAdaptable(ReviewCodeCmd cmd, IAdaptable adaptable) {
@@ -186,7 +186,7 @@ public class PMDCheckAction extends AbstractUIAction {
      * @param selection a selection
      * @return the element count
      */
-    private int countElement(IStructuredSelection selection) {
+    private int countElements(IStructuredSelection selection) {
         CountVisitor visitor = new CountVisitor();
 
         for (Iterator<?> i = selection.iterator(); i.hasNext();) {

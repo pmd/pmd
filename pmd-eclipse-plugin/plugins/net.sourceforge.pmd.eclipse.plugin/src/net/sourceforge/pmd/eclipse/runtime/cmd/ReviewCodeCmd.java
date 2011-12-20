@@ -36,6 +36,7 @@
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -191,7 +192,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             };
 
             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            workspace.run(action, getschedulingRule(), IWorkspace.AVOID_UPDATE, getMonitor());
+            workspace.run(action, getSchedulingRule(), IWorkspace.AVOID_UPDATE, getMonitor());
 
             // Switch to the PMD perspective if required
             if (openPmdPerspective) {
@@ -239,7 +240,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * @param resource The resource to set.
      */
-    public void setResources(final List<ISchedulingRule> resources) {
+    public void setResources(Collection<ISchedulingRule> resources) {
         resources.clear();
         resources.addAll(resources);
     }
@@ -249,7 +250,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      *
      * @param resource a workbench resource
      */
-    public void addResource(final IResource resource) {
+    public void addResource(IResource resource) {
         if (resource == null) {
             throw new IllegalArgumentException("Resource parameter can not be null");
         }
@@ -260,14 +261,14 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * @param resourceDelta The resourceDelta to set.
      */
-    public void setResourceDelta(final IResourceDelta resourceDelta) {
+    public void setResourceDelta(IResourceDelta resourceDelta) {
         this.resourceDelta = resourceDelta;
     }
 
     /**
      * @param taskMarker The taskMarker to set.
      */
-    public void setTaskMarker(final boolean taskMarker) {
+    public void setTaskMarker(boolean taskMarker) {
         this.taskMarker = taskMarker;
     }
 
@@ -302,7 +303,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     /**
      * @return the scheduling rule needed to apply markers
      */
-    private ISchedulingRule getschedulingRule() {
+    private ISchedulingRule getSchedulingRule() {
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
         ISchedulingRule rule = null;
@@ -548,6 +549,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @return the element count
      */
     private int countResourceElement(IResource resource) {
+    	
+    	if (resource instanceof IFile) {
+    		return isSuitable((IFile)resource) ? 1 : 0;
+    	}
+    	
         final CountVisitor visitor = new CountVisitor();
 
         try {
@@ -589,17 +595,21 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         window.getActivePage().setPerspective(reg.findPerspectiveWithId(PMDRuntimeConstants.ID_PERSPECTIVE));
     }
     
+    private static boolean isSuitable(IFile file) {
+    	return isLanguageFile(file, Language.JAVA);
+    }
+    
     /**
      * Private inner class to count the number of resources or delta elements
      */
     private final class CountVisitor implements IResourceVisitor, IResourceDeltaVisitor {
         public int count = 0;
 
-        public boolean visit(final IResource resource) {
+        public boolean visit(IResource resource) {
             boolean fVisitChildren = true;
             count++;
 
-            if (resource instanceof IFile && isLanguageFile((IFile) resource, Language.JAVA)) {
+            if (resource instanceof IFile && isSuitable((IFile) resource)) {
 
                 fVisitChildren = false;
             }
@@ -608,7 +618,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         }
 
         // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:46
-        public boolean visit(final IResourceDelta delta) {
+        public boolean visit(IResourceDelta delta) {
             count++;
             return true;
         }

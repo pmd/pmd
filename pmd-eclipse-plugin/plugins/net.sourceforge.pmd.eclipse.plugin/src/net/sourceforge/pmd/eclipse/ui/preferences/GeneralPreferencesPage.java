@@ -550,7 +550,6 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Button button = new Button(viewGroup, SWT.CHECK);
         button.setText("Check code after saving");
         button.setSelection(preferences.isCheckAfterSaveEnabled());
-        button.setEnabled(false);	// FIXME - make it real
         return button;
     }
     
@@ -758,6 +757,8 @@ System.out.println("updating icons");
         }
 
         preferences.sync();
+        
+        PMDPlugin.getDefault().fileChangeListenerEnabled(checkCodeOnSave.getSelection());        
         PMDPlugin.getDefault().applyLogPreferences(preferences);
 
         return true;
