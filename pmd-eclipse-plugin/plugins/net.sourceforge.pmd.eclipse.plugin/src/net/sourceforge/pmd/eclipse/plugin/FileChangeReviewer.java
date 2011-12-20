@@ -74,6 +74,8 @@ public class FileChangeReviewer implements IResourceChangeListener {
 			changed(itemsChanged, event.getDelta(), EclipseUtil.DUMMY_MONITOR);
 		}
 		
+		if (itemsChanged.isEmpty()) return;
+		
 		ReviewCodeCmd cmd = new ReviewCodeCmd();	// separate one for each thread
 		cmd.reset();
 		
