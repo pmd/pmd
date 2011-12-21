@@ -146,8 +146,8 @@ Each class should declare at least one constructor.
   <![CDATA[
 public class Foo {
  	// missing constructor
- 	public void doSomething() { ... }
- 	public void doOtherThing { ... }
+  public void doSomething() { ... }
+  public void doOtherThing { ... }
 }
   ]]>
   </example>
@@ -458,7 +458,6 @@ public class ThrDeux {
 	private volatile String var1;	// not suggested
 	private          String var2;	// preferred
 }
-}
 			]]>
 		</example>
 	</rule>
@@ -626,15 +625,15 @@ public class GCCall {
         System.gc();
     }
     
-	public void doSomething() {
+    public void doSomething() {
 		// Explicit gc call !
-		Runtime.getRuntime().gc();
-	}
+       Runtime.getRuntime().gc();
+    }
 
-public explicitGCcall() { // Explicit gc call ! System.gc(); }
+    public explicitGCcall() { // Explicit gc call ! System.gc(); }
 
-public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } }
-
+    public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } 
+}
 			]]>
 		</example>
 	</rule>
@@ -810,11 +809,12 @@ public class MyClass {
   <rule  name="UseConcurrentHashMap"
          language="java"
          since="4.2.6"
-         message="If you run in Java5 and have concurrent access, you should use ConcurrentHashMap implementation"
+         message="If you run in Java5 or newer and have concurrent access, you should use the ConcurrentHashMap implementation"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
          externalInfoUrl="http://pmd.sourceforge.net/rules/java/controversial.html#UseConcurrentHashMap">
     <description>
-Since Java5 brought a new implementation of the Map interface, specially designed for concurrent application.
+Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
+perform efficient map reads without blocking other threads.
     </description>
     <priority>3</priority>
     <properties>
@@ -830,12 +830,12 @@ Since Java5 brought a new implementation of the Map interface, specially designe
 <![CDATA[
 public class ConcurrentApp {
   public void getMyInstance() {
-    Map map = new HashMap(); 
+    Map map1 = new HashMap(); 	// fine for single-threaded access
+    Map map2 = new ConcurrentHashMap();  // preferred for use with multiple threads
   }
 }
 ]]>
     </example>
   </rule>
-
 
 </ruleset>
