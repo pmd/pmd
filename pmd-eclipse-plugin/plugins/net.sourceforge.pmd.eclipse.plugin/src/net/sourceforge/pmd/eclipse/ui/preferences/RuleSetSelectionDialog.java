@@ -139,7 +139,6 @@ public class RuleSetSelectionDialog extends Dialog {
         Label enterRuleSetLabel = buildLabel(dlgArea, getMessage(StringKeys.PREF_RULESETSELECTION_LABEL_ENTER_RULESET));
         GridData data = new GridData();
         data.horizontalSpan = 3;
-        data.widthHint = 200;
         enterRuleSetLabel.setLayoutData(data);
 
         inputCombo = buildInputCombo(dlgArea);

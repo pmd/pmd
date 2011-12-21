@@ -532,14 +532,14 @@
             icon="icons/icon_cpd.gif"
             id="net.sourceforge.pmd.eclipse.ui.views.br.CPDView2"
             name="%view.cpd"/>
-      <view
+<!--      <view
             allowMultiple="false"
             category="net.sourceforge.pmd.eclipse.ui.views"
             class="net.sourceforge.pmd.eclipse.ui.views.rules.RuleEditorView"
             id="net.sourceforge.pmd.eclipse.plugin.ruleEditorView"
             name="Rule Editor (DEBUG ONLY)"
-            restorable="true">
-      </view>
+            restorable="true">  
+      </view>   -->
       <view
             allowMultiple="false"
             category="net.sourceforge.pmd.eclipse.ui.views"
@@ -624,6 +624,31 @@
             id="net.sourceforge.pmd.eclipse.plugin.page1"
             label="Rule search">
       </page>
+   </extension>
+	
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="pmd.ui.review.code"
+            contextId="org.eclipse.wst.xml.occurrences"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F7">
+      </key>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="pmd.ui.commands"
+            defaultHandler="net.sourceforge.pmd.eclipse.ui.actions.ReviewCodeHandler"
+            description="PMD Review code"
+            id="pmd.ui.review.code"
+            name="Review code">
+      </command>
+      <category
+            id="pmd.ui.commands"
+            name="PMD UI Commands">
+      </category>
    </extension>
 
 </plugin>

@@ -12,6 +12,7 @@ import net.sourceforge.pmd.eclipse.ui.StringArranger;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.br.ValueChangeListener;
 import net.sourceforge.pmd.util.ClassUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -70,6 +71,12 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
 		   pb.addHeading(StringKeys.PREF_SUMMARY_LABEL_DESCRIPTION);
 		   pb.addRawText( arranger.format(rule.getDescription()).toString() );
 		   
+		   String url = rule.getExternalInfoUrl();
+		   if (StringUtil.isNotEmpty(url)) {
+			   pb.addRawText(arranger.withIndent("More information can be found "));
+			   pb.addLink("here.\n", url);
+		   }
+		   
 		   Map<PropertyDescriptor<?>, Object> valuesByDescriptor = Configuration.filteredPropertiesOf(rule);
 		   if (!valuesByDescriptor.isEmpty()) {
 			   pb.addHeading(StringKeys.PREF_SUMMARY_LABEL_PARAMETERS);
@@ -87,14 +94,21 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
 		   }
 		   
 		   pb.setLanguage(rule.getLanguage());
-		   
+		 	   
 		   pb.addHeading(StringKeys.PREF_SUMMARY_LABEL_EXAMPLE);
+		   pb.addText("");
 		   for (String example : rule.getExamples()) {
 			   pb.addCode(example.trim());
 			   pb.addText("");
 		   }
 		   
 		   pb.showOn(viewField);
+		   
+		   if (pb.hasLinks()) {
+			  pb.addLinkHandler(viewField);
+		   }
+		   
+		   viewField.setEditable(false);
 	}
 
 	@Override

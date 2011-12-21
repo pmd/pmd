@@ -36,5 +36,9 @@ public interface FilterColumnUI {
 	ItemColumnDescriptor<String, FilterHolder> pattern 	= new ItemColumnDescriptor<String, FilterHolder>("", "Pattern", SWT.LEFT, 55, true, patternAcc);
 
 	@SuppressWarnings("rawtypes")
-	ItemColumnDescriptor[] VisibleColumns = new ItemColumnDescriptor[] { include, pmd, cpd, pattern };
+	ItemColumnDescriptor[] VisibleColumns = new ItemColumnDescriptor[] { 
+		include, 
+		//pmd, cpd, 
+		pattern 
+		};
 }

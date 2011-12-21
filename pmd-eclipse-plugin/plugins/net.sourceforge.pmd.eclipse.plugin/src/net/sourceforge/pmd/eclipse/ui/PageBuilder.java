@@ -1,9 +1,12 @@
 package net.sourceforge.pmd.eclipse.ui;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.eclipse.ui.editors.StyleExtractor;
 import net.sourceforge.pmd.eclipse.ui.editors.SyntaxData;
@@ -16,8 +19,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.browser.IWebBrowser;
 
 /**
  * 
@@ -25,8 +33,10 @@ import org.eclipse.swt.widgets.Display;
  */
 public class PageBuilder {
 
-	private List<int[]> 	headingSpans;
-	private List<int[]> 	codeSpans;
+	private List<int[]> 		headingSpans = new ArrayList<int[]>();
+	private List<int[]> 		codeSpans = new ArrayList<int[]>();
+	private Map<int[], String>	linksBySpan = new HashMap<int[], String>();
+	
 	private StringBuilder 	buffer;
 	
 	private Color 			headingColor;
@@ -62,6 +72,11 @@ public class PageBuilder {
 		codeStyleExtractor = new StyleExtractor(syntax);
 	}
 	
+	public void indentDepth(int aDepth) { indentDepth = aDepth; }
+	public int indentDepth() { return indentDepth; }
+	
+	public boolean hasLinks() { return !linksBySpan.isEmpty(); }
+	
 	public void clear() {
 		
 		buffer.setLength(0);
@@ -70,6 +85,9 @@ public class PageBuilder {
 		}
 		if (codeSpans != null) {
 			codeSpans.clear();
+		}
+		if (linksBySpan != null) {
+			linksBySpan.clear();
 		}
 	}
 	
@@ -94,8 +112,6 @@ public class PageBuilder {
 		
 		String heading = SWTUtil.stringFor(headingKey);
 		
-		if (headingSpans == null) headingSpans = new ArrayList<int[]>();
-
 		int length = buffer.length();
 		if (length > 0) {
 			buffer.append(CR);
@@ -108,12 +124,36 @@ public class PageBuilder {
 	
 	public void addCode(String code) {
 		
-		if (codeSpans == null) codeSpans = new ArrayList<int[]>();
-
 		int length = buffer.length();
 		
 		codeSpans.add( new int[] { length, length + code.length() } );
 		buffer.append(code);
+	}
+	
+	public void addLink(String text, String link) {
+
+		int length = buffer.length();
+		
+		linksBySpan.put(
+				new int[] { length, length + text.length() },
+				link
+				);
+		
+		buffer.append(text);
+	}
+	
+	private String linkAt(int textIndex) {
+		
+		int[] span;
+
+		for (Map.Entry<int[], String> entry : linksBySpan.entrySet()) {
+			span = entry.getKey();
+			if (span[0] <= textIndex && textIndex <= span[1]) {
+				return entry.getValue();
+			}
+		}
+		
+		return null;
 	}
 	
 	public void showOn(StyledText widget) {
@@ -122,21 +162,20 @@ public class PageBuilder {
 		
 		widget.setText(text);
 		
-		StyleRange[] styles = new StyleRange[headingSpans.size()];
+		List<StyleRange> ranges = new ArrayList<StyleRange>();
+		
 		int[] span = null;
 		
-		for (int i=0; i<styles.length; i++) {
+		for (int i=0; i<headingSpans.size(); i++) {
 			span = headingSpans.get(i);
-			styles[i] = new StyleRange(span[0], span[1]-span[0], headingColor, BACKGROUND, SWT.BOLD);
+			ranges.add(  new StyleRange(span[0], span[1]-span[0], headingColor, BACKGROUND, SWT.BOLD) );
 			}
 		
-		if (codeSpans == null) {
-			widget.setStyleRanges(styles);
-			return;
+		for (int[] spn : linksBySpan.keySet()) {
+			StyleRange style =  new StyleRange(spn[0], spn[1]-spn[0], headingColor, BACKGROUND, SWT.UNDERLINE_LINK);
+			style.underline = true;
+			ranges.add(style);
 			}
-	
-		List<StyleRange> ranges = new ArrayList<StyleRange>(styles.length + codeSpans.size());
-		for (StyleRange style : styles) ranges.add(style);
 		
 		String crStr = Character.toString(CR);
 		StyleRange sr = null;
@@ -154,7 +193,40 @@ public class PageBuilder {
 				}
 			}
 		
-		styles = sort(ranges);	// must be in order!
+		StyleRange[] styles = sort(ranges);	// must be in order!
 		widget.setStyleRanges(styles);		
+	}
+	
+	public void addLinkHandler(final StyledText widget) {
+		
+		widget.addListener(SWT.MouseDown, new Listener() {
+			public void handleEvent(Event event) {
+				// It is up to the application to determine when and how a link should be activated.
+				// In this snippet links are activated on mouse down when the control key is held down 
+		//		if ((event.stateMask & SWT.MOD1) != 0) {
+					try {
+						int offset = widget.getOffsetAtLocation(new Point (event.x, event.y));
+						String link = linkAt(offset);
+						if (link != null) {
+							launchBrowser(link);
+						}
+
+					} catch (IllegalArgumentException e) {
+						// no character under event.x, event.y
+					}
+					
+				}
+		//	}
+		});		
+		
+	}
+	
+	private static void launchBrowser(String link) {
+		try {
+			IWebBrowser browser = PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser();
+			browser.openURL(new URL(link));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 	}
 }

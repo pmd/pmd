@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
  * Monitors for changes in the workspace and initiates the ReviewCodeCmd
@@ -71,7 +72,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
 //		case IResourceChangeEvent.PRE_REFRESH: 
 			
 		case IResourceChangeEvent.POST_CHANGE:			
-			changed(itemsChanged, event.getDelta(), EclipseUtil.DUMMY_MONITOR);
+			changed(itemsChanged, event.getDelta(), new NullProgressMonitor());
 		}
 		
 		if (itemsChanged.isEmpty()) return;

@@ -46,6 +46,10 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Tree;
 
+/**
+ * 
+ * @author Brian Remedios
+ */
 public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements RuleSelectionListener, ModifyListener, ValueChangeListener, ValueResetHandler {
 
 	private TabFolder 		     	tabFolder;
@@ -80,20 +84,20 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		{ RuleTableColumns.ruleType,          	StringKeys.PREF_RULESET_COLUMN_RULE_TYPE },
 		{ RuleTableColumns.language,		  		StringKeys.PREF_RULESET_COLUMN_LANGUAGE },
         { RuleTableColumns.filterViolationRegex,	StringKeys.PREF_RULESET_GROUPING_REGEX },
-		{ null, 								  		StringKeys.PREF_RULESET_GROUPING_NONE }
+		{ null, 								  	StringKeys.PREF_RULESET_GROUPING_NONE }
 		};
 	
 	public static RulePropertyManager[] buildPropertyManagersOn(TabFolder folder, ValueChangeListener listener) {
 		
 		return new RulePropertyManager[] {
-				buildRuleTab(folder,    	0, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_RULE), listener),
-			    buildDescriptionTab(folder, 1, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_DESCRIPTION), listener),
+			    buildFullViewTab(folder,    0, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FULLVIEW), listener),
+				buildRuleTab(folder,    	1, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_RULE), listener),
+//			    buildDescriptionTab(folder, 2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_DESCRIPTION), listener),
 			    buildPropertyTab(folder,    2, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_PROPERTIES), listener),
 			    buildExclusionTab(folder,   3, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXCLUSIONS), listener),
 			    buildXPathTab(folder,       4, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_XPATH), listener),
-//			    buildQuickFixTab(folder,    5, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES), listener),
-			    buildExampleTab(folder,     5, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES), listener),
-			    buildFullViewTab(folder,    6, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_FULLVIEW), listener),
+//			    buildQuickFixTab(folder,    6, SWTUtil.stringFor(StringKeys.MSGKEY_PREF_RULESET_TAB_FIXES), listener),
+//			    buildExampleTab(folder,     6, SWTUtil.stringFor(StringKeys.PREF_RULESET_TAB_EXAMPLES), listener),
 			    };
 	}
 	

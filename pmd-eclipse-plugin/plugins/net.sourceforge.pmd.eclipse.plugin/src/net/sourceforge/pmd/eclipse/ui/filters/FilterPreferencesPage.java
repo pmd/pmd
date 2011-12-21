@@ -60,8 +60,8 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 
 	private Button				excludeButt;
 	private Button				includeButt;
-	private Button				cpdButt;
-	private Button				pmdButt;
+//	private Button				cpdButt;
+//	private Button				pmdButt;
 	private Text				patternField;
 	
 	private BasicTableManager<FilterHolder> 	reportTableMgr;
@@ -83,12 +83,12 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		return label;
 	}
 
-	private static Button createButton(Composite panel, int type, String label) {
-		Button butt = new Button(panel, type);
-		butt.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		butt.setText(label);
-		return butt;
-	}
+//	private static Button createButton(Composite panel, int type, String label) {
+//		Button butt = new Button(panel, type);
+//		butt.setLayoutData( new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+//		butt.setText(label);
+//		return butt;
+//	}
 
 	private static Button createButton(Composite panel, int type, Image image, String tooltip) {
 		Button butt = new Button(panel, type);
@@ -224,8 +224,8 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 
 		setState(holders, excludeButt,  FilterHolder.ExcludeAccessor);
 		setState(holders, includeButt,  FilterHolder.IncludeAccessor);
-		setState(holders, pmdButt,		FilterHolder.PMDAccessor);
-		setState(holders, cpdButt, 		FilterHolder.CPDAccessor);		
+//		setState(holders, pmdButt,		FilterHolder.PMDAccessor);
+//		setState(holders, cpdButt, 		FilterHolder.CPDAccessor);		
 		setValue(holders, patternField, FilterHolder.PatternAccessor);
 	}
 
@@ -246,17 +246,17 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		field.setText(text);
 	}
 
-	private void setAllPMD(boolean state) {
-		for (FilterHolder fh : selectedFilters()) {
-			fh.forPMD = state;
-		}
-	}
-
-	private void setAllCPD(boolean state) {
-		for (FilterHolder fh : selectedFilters()) {
-			fh.forCPD = state;
-		}
-	}
+//	private void setAllPMD(boolean state) {
+//		for (FilterHolder fh : selectedFilters()) {
+//			fh.forPMD = state;
+//		}
+//	}
+//
+//	private void setAllCPD(boolean state) {
+//		for (FilterHolder fh : selectedFilters()) {
+//			fh.forCPD = state;
+//		}
+//	}
 
 	private void setAllInclude(boolean state) {
 		for (FilterHolder fh : selectedFilters()) {
@@ -300,27 +300,27 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		editorWidgets.add(excludeButt);
 		editorWidgets.add(includeButt);
 		
-		Label contextLabel = createLabel(editorPanel, "Applies to:");
-		editorWidgets.add(contextLabel);
+//		Label contextLabel = createLabel(editorPanel, "Applies to:");
+//		editorWidgets.add(contextLabel);
 		
-		pmdButt = createButton(editorPanel, SWT.CHECK, "PMD");
-		pmdButt.addSelectionListener( new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent se) {
-				setAllPMD(pmdButt.getSelection());
-				tableViewer.refresh();
-			}
-		});
+//		pmdButt = createButton(editorPanel, SWT.CHECK, "PMD");
+//		pmdButt.addSelectionListener( new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent se) {
+//				setAllPMD(pmdButt.getSelection());
+//				tableViewer.refresh();
+//			}
+//		});
+//
+//		cpdButt = createButton(editorPanel, SWT.CHECK, "CPD");
+//		cpdButt.addSelectionListener( new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent se) {
+//				setAllCPD(cpdButt.getSelection());
+//				tableViewer.refresh();
+//			}
+//		});
 
-		cpdButt = createButton(editorPanel, SWT.CHECK, "CPD");
-		cpdButt.addSelectionListener( new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent se) {
-				setAllCPD(cpdButt.getSelection());
-				tableViewer.refresh();
-			}
-		});
-
-		editorWidgets.add(pmdButt);
-		editorWidgets.add(cpdButt);
+//		editorWidgets.add(pmdButt);
+//		editorWidgets.add(cpdButt);
 		
 		Label patternLabel = createLabel(editorPanel, "Pattern:");
 		editorWidgets.add(patternLabel);

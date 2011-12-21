@@ -20,6 +20,11 @@ public class StringArranger {
 		indentString = theIndent;
 	}
 	
+	public String withIndent(String rawText) {
+		
+		return indentString + rawText;
+	}
+	
 	public StringBuilder format(String rawText) {
 		
 		StringBuilder sb = new StringBuilder();
