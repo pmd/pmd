@@ -11,6 +11,7 @@ import net.sourceforge.pmd.eclipse.ui.ColumnDescriptor;
 import net.sourceforge.pmd.eclipse.ui.ModifyListener;
 import net.sourceforge.pmd.eclipse.ui.PMDUiConstants;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
+import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 import net.sourceforge.pmd.eclipse.ui.views.ChangeRecord;
 import net.sourceforge.pmd.eclipse.util.ResourceManager;
 
@@ -73,6 +74,9 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
 		super(theWidgetId, thePreferences, theColumns);
 	}
 	
+	public Tree getControl() {
+		return treeViewer.getTree();
+	}
 
 	protected String idFor(Object column) {
 		return ((TreeColumn)column).getToolTipText();
@@ -372,6 +376,9 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
 	}
 	
 	protected void activeCountDetails(String msg, Image image) {
+		
+		if (activeCountLabel == null) return;
+		
 		activeCountLabel.setText(msg);
 		activeCountIssue.setImage(image);
 		activeCountIssue.getParent().pack();
@@ -453,8 +460,8 @@ public abstract class AbstractTreeTableManager <T extends Object> extends Abstra
 	
 	protected void updateButtonsFor(int selections, int totalSelections) {
 		
-		selectAllButton.setEnabled(selections < totalSelections);
-		unSelectAllButton.setEnabled(selections > 0);
+		SWTUtil.setEnabled(selectAllButton, selections < totalSelections);
+		SWTUtil.setEnabled(unSelectAllButton, selections > 0);
 	}
 		
 	protected abstract void updateCheckControls();

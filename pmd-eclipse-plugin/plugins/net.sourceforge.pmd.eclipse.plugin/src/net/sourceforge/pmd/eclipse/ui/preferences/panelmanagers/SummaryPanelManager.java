@@ -61,8 +61,12 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
 	
 	@Override
 	protected void adapt() {
-		   Rule rule = soleRule();
-		   
+		  Rule rule = soleRule();
+		  showFor(rule);
+	}
+	
+	public void showFor(Rule rule) {
+		 		   
 		   pb.clear();
 		   
 		   pb.addHeading(StringKeys.PREF_SUMMARY_LABEL_NAME);
@@ -109,6 +113,10 @@ public class SummaryPanelManager extends AbstractRulePanelManager {
 		   }
 		   
 		   viewField.setEditable(false);
+	}
+	
+	public void setVisible(boolean flag) {
+		viewField.setVisible(flag);
 	}
 
 	@Override

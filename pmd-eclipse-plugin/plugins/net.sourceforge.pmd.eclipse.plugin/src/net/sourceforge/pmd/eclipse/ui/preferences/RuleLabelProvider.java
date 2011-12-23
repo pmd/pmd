@@ -34,10 +34,10 @@ public class RuleLabelProvider extends AbstractTableLabelProvider {
                 */
             } else if (columnIndex == 2) {
                 result = rule.getName();
+//            } else if (columnIndex == 3) {
+//                result = rule.getSince();
+//                result = (result == null) ? "n/a" : result;
             } else if (columnIndex == 3) {
-                result = rule.getSince();
-                result = (result == null) ? "n/a" : result;
-            } else if (columnIndex == 4) {
                 result = UISettings.labelFor(rule.getPriority());
             } else if (columnIndex == 5) {
                 result = rule.getDescription();
