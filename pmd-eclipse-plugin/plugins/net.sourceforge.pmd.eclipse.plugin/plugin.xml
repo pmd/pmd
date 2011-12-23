@@ -224,7 +224,7 @@
             adaptable="true"
             name="%properties.pmd"
             nameFilter="*"
-            class="net.sourceforge.pmd.eclipse.ui.properties.PMDPropertyPage"
+            class="net.sourceforge.pmd.eclipse.ui.properties.PMDProjectPropertyPage"
             id="net.sourceforge.pmd.eclipse.ui.properties.pmdPropertyPage">
       </page>
    </extension>
