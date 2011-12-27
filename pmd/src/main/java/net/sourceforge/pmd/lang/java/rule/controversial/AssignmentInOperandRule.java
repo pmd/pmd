@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.rule.controversial;
 
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -13,7 +14,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 /**
- * 
+ *
  *
  */
 public class AssignmentInOperandRule extends AbstractJavaRule {
@@ -31,7 +32,7 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
 	    "allowIncrementDecrement",
 	    "Allow increment or decrement operators within the conditional expression of an if, for, or while statement",
 	    false, 4.0f);
-    
+
     public AssignmentInOperandRule() {
 	definePropertyDescriptor(ALLOW_IF_DESCRIPTOR);
 	definePropertyDescriptor(ALLOW_FOR_DESCRIPTOR);
@@ -39,31 +40,34 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
 	definePropertyDescriptor(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR);
     }
 
-    public Object visit(ASTExpression node, Object data) {
+    @Override
+	public Object visit(ASTExpression node, Object data) {
 	Node parent = node.jjtGetParent();
 	if (((parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR))
-		|| (parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)) || 
-		(parent instanceof ASTForStatement && parent.jjtGetChild(1) == node && !getProperty(ALLOW_FOR_DESCRIPTOR))) && 
-		(node.hasDescendantOfType(ASTAssignmentOperator.class) || 
-		(!getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR) && 
+		|| (parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)) ||
+		(parent instanceof ASTForStatement && parent.jjtGetChild(1) == node && !getProperty(ALLOW_FOR_DESCRIPTOR))) &&
+		(node.hasDescendantOfType(ASTAssignmentOperator.class) ||
+		(!getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR) &&
 		(node.hasDecendantOfAnyType(ASTPreIncrementExpression.class, ASTPreDecrementExpression.class, ASTPostfixExpression.class))))) {
-		
+
 	    addViolation(data, node);
 	    return data;
 	}
 	return super.visit(node, data);
     }
-    
-    
-	public boolean allowsAllAssignments() {		
-		return 
-			getProperty(ALLOW_IF_DESCRIPTOR) && 
-			getProperty(ALLOW_FOR_DESCRIPTOR) && 
-			getProperty(ALLOW_WHILE_DESCRIPTOR) && 
-			getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR); 
+
+
+	public boolean allowsAllAssignments() {
+		return
+			getProperty(ALLOW_IF_DESCRIPTOR) &&
+			getProperty(ALLOW_FOR_DESCRIPTOR) &&
+			getProperty(ALLOW_WHILE_DESCRIPTOR) &&
+			getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR);
 	}
 
-
+	/**
+	 * @see PropertySource#dysfunctionReason()
+	 */
 	@Override
 	public String dysfunctionReason() {
 		return allowsAllAssignments() ? "All assignment types allowed, no checks performed" : null;

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
@@ -58,11 +59,14 @@ public abstract class AbstractDelegateRule implements Rule {
 	public boolean isDeprecated() {
 		return rule.isDeprecated();
 	}
-	
+
+	/**
+	 * @see PropertySource#dysfunctionReason()
+	 */
 	public String dysfunctionReason() {
 		return rule.dysfunctionReason();
 	}
-	
+
 	public Set<PropertyDescriptor<?>> ignoredProperties() {
 		return rule.ignoredProperties();
 	}
@@ -214,11 +218,11 @@ public abstract class AbstractDelegateRule implements Rule {
 	 public void end(RuleContext ctx) {
 		 rule.end(ctx);
 	 }
-	 
+
     /**
      * @see Rule#hasDescriptor(PropertyDescriptor)
      */
-    public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {    	    	
+    public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
     	return rule.hasDescriptor(descriptor);
     }
 }

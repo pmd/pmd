@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.rule.basic;
 
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
@@ -82,14 +83,18 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
 	}
 	return false;
     }
-    
+
 	public boolean checksNothing() {
-		
+
 		return getProperty(CHECK_BREAK_LOOP_TYPES).length == 0 &&
 			getProperty(CHECK_CONTINUE_LOOP_TYPES).length == 0 &&
-			getProperty(CHECK_RETURN_LOOP_TYPES).length == 0 ;		
+			getProperty(CHECK_RETURN_LOOP_TYPES).length == 0 ;
 	}
-	
+
+	/**
+	 * @see PropertySource#dysfunctionReason()
+	 */
+	@Override
 	public String dysfunctionReason() {
 		return checksNothing() ?
 				"All loop types are ignored" :

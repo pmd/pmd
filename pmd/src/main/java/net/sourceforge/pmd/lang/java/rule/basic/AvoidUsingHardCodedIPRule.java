@@ -34,7 +34,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 
     public AvoidUsingHardCodedIPRule() {
 		definePropertyDescriptor(CHECK_ADDRESS_TYPES_DESCRIPTOR);
-	
+
 		addRuleChainVisit(ASTCompilationUnit.class);
 		addRuleChainVisit(ASTLiteral.class);
     }
@@ -61,10 +61,10 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 		if (!node.isStringLiteral()) {
 		    return data;
 		}
-	
+
 		// Remove the quotes
 		final String image = node.getImage().substring(1, node.getImage().length() - 1);
-	
+
 		// Note: We used to check the addresses using InetAddress.getByName(String), but that's extremely slow,
 		// so we created more robust checking methods.
 		if (image.length() > 0) {
@@ -87,12 +87,12 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     protected boolean isIPv4(final char firstChar, final String s) {
 		// Quick check before using Regular Expression
 		// 1) At least 7 characters
-		// 2) 1st character must be a digit from '0' - '9' 
+		// 2) 1st character must be a digit from '0' - '9'
 		// 3) Must contain at least 1 . (period)
 		if (s.length() < 7 || !isLatinDigit(firstChar) || s.indexOf('.') < 0) {
 		    return false;
 		}
-	
+
 		Matcher matcher = IPV4_PATTERN.matcher(s);
 		if (matcher.matches()) {
 		    // All octets in range [0, 255]
@@ -116,7 +116,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 		if (s.length() < 3 || !(isHexCharacter(firstChar) || firstChar == ':') || s.indexOf(':') < 0) {
 		    return false;
 		}
-	
+
 		Matcher matcher = IPV6_PATTERN.matcher(s);
 		if (matcher.matches()) {
 		    // Account for leading or trailing :: before splitting on :
@@ -128,12 +128,12 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 			s = s.substring(0, s.length() - 2);
 			zeroSubstitution = true;
 		    }
-	
-		    // String.split() doesn't produce an empty String in the trailing case, but it does in the leading. 
+
+		    // String.split() doesn't produce an empty String in the trailing case, but it does in the leading.
 		    if (s.endsWith(":")) {
 			return false;
 		    }
-	
+
 		    // All the intermediate parts must be hexidecimal, or
 		    int count = 0;
 		    boolean ipv4Mapped = false;
@@ -165,7 +165,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 			    ipv4Mapped = true;
 			}
 		    }
-	
+
 		    // IPv6 addresses are 128 bit, are we that long?
 		    if (zeroSubstitution) {
 			if (ipv4Mapped) {
@@ -184,12 +184,16 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 		    return false;
 		}
     }
-    
-    
-	public boolean hasChosenAddressTypes() {		
-		return getProperty(CHECK_ADDRESS_TYPES_DESCRIPTOR).length > 0;	
+
+
+	public boolean hasChosenAddressTypes() {
+		return getProperty(CHECK_ADDRESS_TYPES_DESCRIPTOR).length > 0;
 	}
-	
+
+	/**
+	 * @see PropertySource#dysfunctionReason()
+	 */
+	@Override
 	public String dysfunctionReason() {
 		return hasChosenAddressTypes() ?
 				null :

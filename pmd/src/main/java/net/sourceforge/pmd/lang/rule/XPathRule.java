@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_2_0;
 
 import java.util.List;
 
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
@@ -112,8 +113,9 @@ public class XPathRule extends AbstractRule {
 		return StringUtil.isNotEmpty(xPath);
 	}
 
-
-	@Override
+	/**
+	 * @see PropertySource#dysfunctionReason()
+	 */
 	public String dysfunctionReason() {
 		return hasXPathExpression() ? null : "Missing xPath expression";
 	}

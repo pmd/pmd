@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
@@ -122,14 +123,18 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 	}
 	return false;
     }
-    
+
 	public boolean checksNothing() {
-		
-		return 
+
+		return
 			CollectionUtil.isEmpty(getProperty(PACKAGES_DESCRIPTOR)) &&
-			CollectionUtil.isEmpty(getProperty(CLASSES_DESCRIPTOR)) ;		
+			CollectionUtil.isEmpty(getProperty(CLASSES_DESCRIPTOR)) ;
 	}
-	
+
+	/**
+	 * @see PropertySource#dysfunctionReason()
+	 */
+	@Override
 	public String dysfunctionReason() {
 		return checksNothing() ?
 				"No packages or classes specified" :
