@@ -256,6 +256,7 @@ public class ClearReviewsAction extends AbstractUIAction implements IResourceVis
             while (reader.ready()) {
                 String origLine = reader.readLine();
                 String line = origLine.trim();
+                if (line == null) break;
                 int index = origLine.indexOf(PMDRuntimeConstants.PMD_STYLE_REVIEW_COMMENT);
                 int quoteIndex = origLine.indexOf('"');
 

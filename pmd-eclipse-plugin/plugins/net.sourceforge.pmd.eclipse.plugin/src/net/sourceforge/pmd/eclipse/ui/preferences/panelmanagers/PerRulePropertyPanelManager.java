@@ -187,9 +187,8 @@ public class PerRulePropertyPanelManager extends AbstractRulePanelManager implem
         	return warnings;
         }
          
-        warnings.add("Unreferences variables: " + unreferencedVariables.toArray(new String[unreferencedVariables.size()]));
-        
-        
+        warnings.add("Unreferences variables: " + unreferencedVariables);
+
         return warnings;
     }
 }

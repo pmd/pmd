@@ -46,6 +46,7 @@ public class FileChangeReviewer implements IResourceChangeListener {
 		public int hashCode() { return resourceDeltaType.hashCode() + 13 + file.hashCode() + flags; }
 		
 		public boolean equals(Object other) {
+			if (other == null) return false;
 			if (other == this) return true;
 			if (other.getClass() == getClass()) {
 				ResourceChange chg = (ResourceChange)other;

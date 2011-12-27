@@ -25,6 +25,7 @@ public class ShapeDescriptor implements Cloneable {
 	
 	public boolean equals(Object other) {
 		
+		if (other == null) return false;
 		if (this == other) return true;
 		if (other.getClass() != getClass()) return false;
 		

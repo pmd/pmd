@@ -728,7 +728,9 @@ System.out.println("updating icons");
         }
 
         if (checkCodeOnSave != null) {
-            preferences.isCheckAfterSaveEnabled(checkCodeOnSave.getSelection());
+        	boolean doCheck = checkCodeOnSave.getSelection();
+            preferences.isCheckAfterSaveEnabled(doCheck);
+            PMDPlugin.getDefault().fileChangeListenerEnabled(doCheck);
         }
         
         if (useCustomPriorityNames != null) {
@@ -757,7 +759,6 @@ System.out.println("updating icons");
 
         preferences.sync();
         
-        PMDPlugin.getDefault().fileChangeListenerEnabled(checkCodeOnSave.getSelection());        
         PMDPlugin.getDefault().applyLogPreferences(preferences);
 
         return true;

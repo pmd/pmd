@@ -153,8 +153,8 @@ public class ViewMemento {
             contentReader = new BufferedReader(new FileReader(file));
 
             while (contentReader.ready()) {
-                final String line = contentReader.readLine();
-                if (line.length() != 0) {
+                String line = contentReader.readLine();
+                if (line != null && line.length() != 0) {
                     // the first Line of Text has to be the XML-Prefix
                     isXmlFile = XML_PREFIX.equalsIgnoreCase(line);
                     break;

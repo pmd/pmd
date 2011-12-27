@@ -165,11 +165,11 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#setRuleSetFile(String)
      */
 	public void setRuleSetFile(String ruleSetFile) throws PropertiesException {
-        log.debug("Set rule set file for project " + this.project.getName() + ": " + ruleSetFile);
-        this.needRebuild |= this.ruleSetFile == null || !ruleSetFile.equals(ruleSetFile);
+        log.debug("Set rule set file for project " + project.getName() + ": " + ruleSetFile);
+        needRebuild |= this.ruleSetFile == null || !this.ruleSetFile.equals(ruleSetFile);
         this.ruleSetFile = ruleSetFile;
-        if (this.ruleSetStoredInProject && !isRuleSetFileExist()) {
-            throw new PropertiesException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
+        if (ruleSetStoredInProject && !isRuleSetFileExist()) {
+            throw new PropertiesException("The project ruleset file cannot be found for project " + project.getName()); // TODO NLS
         }
 	}
 

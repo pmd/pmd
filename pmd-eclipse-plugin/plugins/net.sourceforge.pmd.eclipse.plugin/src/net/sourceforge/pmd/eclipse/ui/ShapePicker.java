@@ -155,7 +155,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
             
             switch (SWT.LEFT) {	// TODO take from style bits
                 case SWT.CENTER: xOffset = (width / 2) - (itemWidth / 2) - xBoundary + step; break;
-                case SWT.RIGHT: xOffset = width - width - xBoundary; break;
+                case SWT.RIGHT: xOffset = 0 - xBoundary; break;
                 case SWT.LEFT: xOffset = xBoundary + step;
             }            
             
@@ -188,7 +188,7 @@ public class ShapePicker<T extends Object> extends Canvas implements ISelectionP
             
             switch (SWT.LEFT) {	// TODO take from style bits
                 case SWT.CENTER: xOffset = (width / 2) - (itemWidth / 2) - xBoundary + step; break;
-                case SWT.RIGHT: xOffset = width - width - xBoundary; break;
+                case SWT.RIGHT: xOffset = 0 - xBoundary; break;
                 case SWT.LEFT: xOffset = xBoundary + step;
             }
             

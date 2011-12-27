@@ -518,15 +518,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
-			for (IResource irc : kids) {
-				if (irc instanceof IFile) {
-					allKids.add(irc);
-					continue;
-				}
-				if (irc instanceof IFolder) {
-					addFilesTo(irc, allKids);
-				}
-			}	
+			addKids(allKids, kids);	
 			
 			allKids.add(folder);
 			return;
@@ -540,17 +532,24 @@ public class PMDPlugin extends AbstractUIPlugin {
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
-			for (IResource irc : kids) {
-				if (irc instanceof IFile) {
-					allKids.add(irc);
-					continue;
-				}
-				if (irc instanceof IFolder) {
-					addFilesTo(irc, allKids);
-				}
-			}	
+			addKids(allKids, kids);	
 			allKids.add(project);
 			return;
+		}
+	}
+
+	private void addKids(Collection<IResource> allKids, IResource[] kids) {
+		
+		if (kids == null) return;
+		
+		for (IResource irc : kids) {
+			if (irc instanceof IFile) {
+				allKids.add(irc);
+				continue;
+			}
+			if (irc instanceof IFolder) {
+				addFilesTo(irc, allKids);
+			}
 		}
 	}
 	

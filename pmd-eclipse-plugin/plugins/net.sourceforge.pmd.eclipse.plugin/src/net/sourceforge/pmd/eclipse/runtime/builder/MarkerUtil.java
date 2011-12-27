@@ -59,7 +59,7 @@ public class MarkerUtil {
 		            		} catch (CoreException ex) {
 		            			// what do to?
 		            		}
-		            	if (ruleMarkers.length > 0) {
+		            	if (ruleMarkers != null && ruleMarkers.length > 0) {
 		            		foundOne[0] = true;
 		            		return false;
 		            	}
