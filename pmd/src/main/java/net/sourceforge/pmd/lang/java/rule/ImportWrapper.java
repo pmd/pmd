@@ -16,13 +16,17 @@ public class ImportWrapper {
         this.node = node;
     }
 
-
     public boolean equals(Object other) {
-        ImportWrapper i = (ImportWrapper) other;
-        if(name == null && i.getName() == null){
-            return i.getFullName().equals(fullname);
-        }
-        return i.getName().equals(name);
+    	if (other == null) return false;
+    	if (other == this) return true;
+    	if (other instanceof ImportWrapper) {
+	        ImportWrapper i = (ImportWrapper) other;
+	        if(name == null && i.getName() == null){
+	            return i.getFullName().equals(fullname);
+	        }
+	        return i.getName().equals(name);
+    	}
+    	return false;
     }
 
     public int hashCode() {

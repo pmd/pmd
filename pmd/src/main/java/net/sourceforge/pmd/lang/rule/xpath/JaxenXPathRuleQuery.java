@@ -205,17 +205,19 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
     }
 
     private BaseXPath createXPath(String xpathQueryString, Navigator navigator) throws JaxenException {
-	BaseXPath xpath = new BaseXPath(xpathQueryString, navigator);
-	if (properties.size() > 1) {
-	    SimpleVariableContext vc = new SimpleVariableContext();
-	    for (Entry<PropertyDescriptor<?>, Object> e : properties.entrySet()) {
-		if (!"xpath".equals(e.getKey())) {
-		    Object value = e.getValue();
-		    vc.setVariableValue(e.getKey().name(), value != null ? value.toString() : null);
-		}
-	    }
-	    xpath.setVariableContext(vc);
-	}
-	return xpath;
+
+    	BaseXPath xpath = new BaseXPath(xpathQueryString, navigator);
+    	if (properties.size() > 1) {
+    		SimpleVariableContext vc = new SimpleVariableContext();
+    		for (Entry<PropertyDescriptor<?>, Object> e : properties.entrySet()) {
+    			String propName = e.getKey().name();
+    			if (!"xpath".equals(propName)) {
+    				Object value = e.getValue();
+    				vc.setVariableValue(propName, value != null ? value.toString() : null);
+    			}
+    		}
+    		xpath.setVariableContext(vc);
+    	}
+    	return xpath;
     }
 }

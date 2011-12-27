@@ -36,10 +36,11 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
      * @see RuleChainVisitor#add(RuleSet, Rule)
      */
     public void add(RuleSet ruleSet, Rule rule) {
-	if (!ruleSetRules.containsKey(ruleSet)) {
-	    ruleSetRules.put(ruleSet, new ArrayList<Rule>());
-	}
-	ruleSetRules.get(ruleSet).add(rule);
+    	
+		if (!ruleSetRules.containsKey(ruleSet)) {
+		    ruleSetRules.put(ruleSet, new ArrayList<Rule>());
+		}
+		ruleSetRules.get(ruleSet).add(rule);
     }
 
     /**
@@ -57,17 +58,19 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         Benchmarker.mark(Benchmark.RuleChainVisit, end - start, 1);
 
         // For each RuleSet, only if this source file applies
-        for (RuleSet ruleSet : ruleSetRules.keySet()) {
+        for (Map.Entry<RuleSet, List<Rule>> entry : ruleSetRules.entrySet()) {
+        	RuleSet ruleSet = entry.getKey();
             if (!ruleSet.applies(ctx.getSourceCodeFile())) {
-        	continue;
-            }
+	        	continue;
+	            }
+
             // For each rule, allow it to visit the nodes it desires
             start = System.nanoTime();
-            for (Rule rule: ruleSetRules.get(ruleSet)) {
+            for (Rule rule: entry.getValue()) {
                 int visits = 0;
-        	if (!RuleSet.applies(rule, ctx.getLanguageVersion())) {
-        	    continue;
-        	}
+	        	if (!RuleSet.applies(rule, ctx.getLanguageVersion())) {
+	        	    continue;
+	        	}
                 final List<String> nodeNames = rule.getRuleChainVisits();
                 for (int j = 0; j < nodeNames.size(); j++) {
                     List<Node> ns = nodeNameToNodes.get(nodeNames.get(j));

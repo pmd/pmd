@@ -172,8 +172,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 		try {
 		    br = new BufferedReader(getReader(sourceFile));
 		    for (int i = 0; line > i; i++) {
-			code = br.readLine().trim();
-		    }
+		    	String txt = br.readLine();
+				code = txt == null ? "" : txt.trim();
+			    }
 		} catch (IOException ioErr) {
 		    ioErr.printStackTrace();
 		} finally {
