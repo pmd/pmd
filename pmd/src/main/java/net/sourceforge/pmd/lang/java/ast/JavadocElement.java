@@ -19,7 +19,6 @@ public class JavadocElement extends AbstractNode {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return tag.label + " : " + tag.description;
 	}
 }
