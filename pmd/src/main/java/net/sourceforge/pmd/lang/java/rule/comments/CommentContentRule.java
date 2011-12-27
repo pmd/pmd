@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;

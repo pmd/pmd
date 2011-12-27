@@ -11,6 +11,7 @@ import static net.sourceforge.pmd.PropertyDescriptorFields.*;
  * by the subclasses must fit.
  * 
  * @author Brian Remedios
+ * @param <T>
  */
 public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T> implements NumericPropertyDescriptor<T> {
 

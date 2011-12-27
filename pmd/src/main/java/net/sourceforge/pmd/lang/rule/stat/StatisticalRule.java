@@ -4,7 +4,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.stat.Metric;
 
 /**
  * This interface tags a Rule as being a Statistical rule, producing various

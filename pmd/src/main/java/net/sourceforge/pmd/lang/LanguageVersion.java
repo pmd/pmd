@@ -152,7 +152,7 @@ public enum LanguageVersion {
 
     /**
      * Returns if this LanguageVersion is the default version for the Language.
-     * @return <code>true<code> if this is the default version for the Language,
+     * @return <code>true</code> if this is the default version for the Language,
      * <code>false</code> otherwise.
      */
     public boolean isDefaultVersion() {

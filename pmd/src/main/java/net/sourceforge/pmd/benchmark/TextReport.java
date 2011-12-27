@@ -68,8 +68,8 @@ public class TextReport implements BenchmarkReport {
 
 		List<BenchmarkResult> results = new ArrayList<BenchmarkResult>(benchmarksByName.values());
 
-		long totalTime[] = new long[Benchmark.TotalPMD.index + 1];
-		long totalCount[] = new long[Benchmark.TotalPMD.index + 1];
+		long[] totalTime = new long[Benchmark.TotalPMD.index + 1];
+		long[] totalCount = new long[Benchmark.TotalPMD.index + 1];
 
 		for (BenchmarkResult benchmarkResult: results) {
 			totalTime[benchmarkResult.type.index] += benchmarkResult.getTime();

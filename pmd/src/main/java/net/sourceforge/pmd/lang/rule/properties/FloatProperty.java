@@ -18,7 +18,7 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
 	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FloatProperty>(float.class, numberFieldTypesByKey) {
 
 		public FloatProperty createWith(Map<String, String> valuesById) {
-			final String minMax[] = minMaxFrom(valuesById);
+			final String[] minMax = minMaxFrom(valuesById);
 			return new FloatProperty(
 					nameIn(valuesById),
 					descriptionIn(valuesById),

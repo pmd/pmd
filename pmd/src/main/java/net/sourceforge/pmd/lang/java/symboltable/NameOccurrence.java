@@ -199,8 +199,11 @@ public class NameOccurrence {
 
     @Override
     public boolean equals(Object o) {
-        NameOccurrence n = (NameOccurrence) o;
-        return n.getImage().equals(getImage());
+    	if (o instanceof NameOccurrence) {
+    		NameOccurrence n = (NameOccurrence) o;
+    		return n.getImage().equals(getImage());
+    		}
+    	return false;
     }
 
     @Override

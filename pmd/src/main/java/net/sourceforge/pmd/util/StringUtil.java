@@ -277,7 +277,7 @@ public final class StringUtil {
 		    return new String[] { source };
 		}
 
-		String results[] = new String[delimiterCount+1];
+		String[] results = new String[delimiterCount+1];
 
 		int i = 0;
 		int offset = 0;

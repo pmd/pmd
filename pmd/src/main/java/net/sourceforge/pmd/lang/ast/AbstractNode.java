@@ -32,7 +32,7 @@ public abstract class AbstractNode implements Node {
     private Object userData;
 
     public AbstractNode(int id) {
-	this.id = id;
+    	this.id = id;
     }
 
     public AbstractNode(int id, int theBeginLine, int theEndLine, int theBeginColumn, int theEndColumn) {
@@ -55,34 +55,34 @@ public abstract class AbstractNode implements Node {
     }
 
     public void jjtSetParent(Node parent) {
-	this.parent = parent;
+    	this.parent = parent;
     }
 
     public Node jjtGetParent() {
-	return parent;
+    	return parent;
     }
 
     public void jjtAddChild(Node child, int index) {
-	if (children == null) {
-	    children = new Node[index + 1];
-	} else if (index >= children.length) {
-	    Node newChildren[] = new Node[index + 1];
-	    System.arraycopy(children, 0, newChildren, 0, children.length);
-	    children = newChildren;
-	}
-	children[index] = child;
+		if (children == null) {
+		    children = new Node[index + 1];
+		} else if (index >= children.length) {
+		    Node[] newChildren = new Node[index + 1];
+		    System.arraycopy(children, 0, newChildren, 0, children.length);
+		    children = newChildren;
+		}
+		children[index] = child;
     }
 
     public Node jjtGetChild(int index) {
-	return children[index];
+    	return children[index];
     }
 
     public int jjtGetNumChildren() {
-	return children == null ? 0 : children.length;
+    	return children == null ? 0 : children.length;
     }
 
     public int jjtGetId() {
-	return id;
+    	return id;
     }
 
     /**
@@ -93,7 +93,7 @@ public abstract class AbstractNode implements Node {
     public abstract String toString();
 
     public String getImage() {
-	return image;
+    	return image;
     }
 
     public void setImage(String image) {

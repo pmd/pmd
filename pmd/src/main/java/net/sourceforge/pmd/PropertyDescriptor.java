@@ -9,6 +9,7 @@ import java.util.Map;
  * serialization, and default values for any specific datatypes.
  * 
  * @author Brian Remedios
+ * @param <T>
  */
 public interface PropertyDescriptor<T extends Object> extends Comparable<PropertyDescriptor<?>> {
 	/**

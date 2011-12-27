@@ -12,6 +12,7 @@ import java.util.List;
  * A generic writer that formats input items into rows and columns per the provided column descriptors.
  *
  * @author Brian Remedios
+ * @param <T>
  */
 public class CSVWriter<T extends Object>  {
 

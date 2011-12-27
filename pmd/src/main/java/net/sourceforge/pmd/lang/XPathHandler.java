@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.lang;
 
 import net.sf.saxon.sxpath.IndependentContext;
-import net.sourceforge.pmd.lang.xpath.Initializer;
 
 import org.jaxen.Navigator;
 

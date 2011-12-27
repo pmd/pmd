@@ -10,6 +10,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * If you can come up with a better name...
  * 
  * @author Brian Remedios
+ * @param <T>
  */
 public abstract class AbstractScalarProperty<T> extends AbstractProperty<T> {
 

@@ -7,6 +7,7 @@ import java.util.Map;
  * be problematic without specifying a unique delimiter that won't appear in the value set.
  * 
  * @author Brian Remedios
+ * @param <T>
  */
 public abstract class AbstractDelimitedProperty<T> extends AbstractProperty<T> {
 

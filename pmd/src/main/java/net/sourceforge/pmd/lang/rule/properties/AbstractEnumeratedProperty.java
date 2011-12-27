@@ -9,6 +9,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * @author Brian Remedios
+ * @param <T>
  */
 public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<T> {
 

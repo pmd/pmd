@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * in an editor widget.
  * 
  * @author Brian Remedios
+ * @param <E>
  */
 public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object> {
 	

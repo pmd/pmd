@@ -14,6 +14,7 @@ import static net.sourceforge.pmd.PropertyDescriptorFields.*;
  * made.
  * 
  * @author Brian Remedios
+ * @param <T>
  */
 public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 

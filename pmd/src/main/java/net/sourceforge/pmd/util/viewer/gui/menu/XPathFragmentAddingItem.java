@@ -1,10 +1,11 @@
 package net.sourceforge.pmd.util.viewer.gui.menu;
 
-import net.sourceforge.pmd.util.viewer.model.ViewerModel;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JMenuItem;
+
+import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 
 
 /**
@@ -13,9 +14,7 @@ import java.awt.event.ActionListener;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
-public class XPathFragmentAddingItem
-        extends JMenuItem
-        implements ActionListener {
+public class XPathFragmentAddingItem extends JMenuItem implements ActionListener {
     private ViewerModel model;
     private String fragment;
 

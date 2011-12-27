@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * And the allowed class <code>org.sample.SampleInterface</code>.
  * <p>
  * This rule can be used to ensure that all classes within the
- * <code>org.sample</em> package and its sub-packages are not used outside of
+ * <code>org.sample</code> package and its sub-packages are not used outside of
  * the <code>org.sample</code> package hierarchy.  Further, the only allowed
  * usage outside of a class in the <code>org.sample</code> hierarchy would be
  * via <code>org.sample.SampleInterface</code>.

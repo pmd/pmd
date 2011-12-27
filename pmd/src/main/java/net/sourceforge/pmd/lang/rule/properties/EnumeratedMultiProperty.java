@@ -17,6 +17,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * in an editor widget.
  * 
  * @author Brian Remedios
+ * @param <E>
  */
 public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Object[]> {
 	

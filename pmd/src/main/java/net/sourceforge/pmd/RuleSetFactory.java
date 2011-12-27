@@ -669,7 +669,7 @@ public class RuleSetFactory {
 	 * Determine if the specified rule element will represent a Rule with the given name. 
 	 * @param ruleElement The rule element.
 	 * @param ruleName The Rule name.
-	 * @return <code>true</code> if the Rule would have the given name, <code>false<code> otherwise.
+	 * @return <code>true</code> if the Rule would have the given name, <code>false</code> otherwise.
 	 */
 	private boolean isRuleName(Element ruleElement, String ruleName) {
 		if (ruleElement.hasAttribute("name")) {

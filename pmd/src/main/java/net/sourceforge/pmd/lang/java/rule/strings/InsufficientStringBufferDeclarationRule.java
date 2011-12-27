@@ -208,6 +208,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             block = node.getFirstParentOfType(ASTFormalParameter.class);
             if (block != null) {
                 iConstructorLength = -1;
+            } else {
+            	return DEFAULT_BUFFER_SIZE;
             }
         }
 

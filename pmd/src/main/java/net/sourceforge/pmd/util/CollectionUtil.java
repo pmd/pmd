@@ -237,7 +237,8 @@ public final class CollectionUtil {
 
     /**
      * Returns true if both arrays are if both are null or have zero-length,
-     * otherwise return the .equals() result on the pair.
+     * otherwise return the false if their respective elements are not
+     * equal by position.
      *
      * @param <T>
      * @param a
@@ -248,7 +249,14 @@ public final class CollectionUtil {
 
         if (a == null) { return isEmpty(b); }
         if (b == null) { return isEmpty(a); }
-        return a.equals(b);
+        
+        if (a.length != b.length) return false;
+        
+        for (int i=0; i<a.length; i++) {
+        	if (!areEqual(a[i], b[i])) return false;
+        }
+        
+        return true;
     }
 
     /**

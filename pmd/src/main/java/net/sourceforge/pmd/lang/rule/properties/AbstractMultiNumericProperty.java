@@ -3,6 +3,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 /**
  * 
  * @author Brian Remedios
+ * @param <T>
  */
 public abstract class AbstractMultiNumericProperty<T> extends AbstractNumericProperty<T> {
 

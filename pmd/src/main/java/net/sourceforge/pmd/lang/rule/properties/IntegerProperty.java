@@ -18,7 +18,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
 	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<IntegerProperty>(Integer.class, numberFieldTypesByKey) {
 
 		public IntegerProperty createWith(Map<String, String> valuesById) {
-			final String minMax[] = minMaxFrom(valuesById);		
+			final String[] minMax = minMaxFrom(valuesById);		
 			return new IntegerProperty(
 					nameIn(valuesById),
 					descriptionIn(valuesById),

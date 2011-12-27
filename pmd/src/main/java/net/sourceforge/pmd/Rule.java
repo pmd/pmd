@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
@@ -70,7 +69,7 @@ public interface Rule extends PropertySource {
      * and will be completely removed in a future version of PMD</li>
      * <li>or, has been renamed/moved and the old name will be completely
      * removed in a future version of PMD</li>
-     * <ul>
+     * </ul>
      */
     boolean isDeprecated();
     

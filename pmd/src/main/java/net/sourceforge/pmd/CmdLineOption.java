@@ -8,6 +8,7 @@ package net.sourceforge.pmd;
  * TODO future: incorporate command-specific error handling
  * 
  * @author Brian Remedios
+ * @param <T>
  */
 public class CmdLineOption<T extends Object> {
 

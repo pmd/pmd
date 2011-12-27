@@ -13,6 +13,7 @@ import static net.sourceforge.pmd.PropertyDescriptorFields.*;
 /**
  *
  * @author Brian Remedios
+ * @param <T>
  */
 public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 

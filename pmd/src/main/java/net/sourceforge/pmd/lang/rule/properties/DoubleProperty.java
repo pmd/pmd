@@ -19,7 +19,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
 	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<DoubleProperty>(Double.class, numberFieldTypesByKey) {
 
 		public DoubleProperty createWith(Map<String, String> valuesById) {
-			final String minMax[] = minMaxFrom(valuesById);
+			final String[] minMax = minMaxFrom(valuesById);
 			return new DoubleProperty(
 					nameIn(valuesById),
 					descriptionIn(valuesById),
