@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.java.symboltable.Applier;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableUsageFinderFunction;
-import net.sourceforge.pmd.lang.java.symboltable.Applier;
 
 import org.junit.Test;
 public class VariableUsageFinderFunctionTest {

@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.typeresolution;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassWithImportOnDemand {
 

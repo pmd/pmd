@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.cpd.*;
 
 import org.junit.Test;
 public class LanguageFactoryTest {

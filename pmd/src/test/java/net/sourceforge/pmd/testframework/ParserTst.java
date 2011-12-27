@@ -40,7 +40,7 @@ public abstract class ParserTst {
             return collection;
         }
 
-        public Object invoke(Object proxy, Method method, Object params[]) throws Throwable {
+        public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
             if (method.getName().equals("visit")) {
                 if (clazz.isInstance(params[0])) {
                     collection.add((E) params[0]);

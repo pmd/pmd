@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.typeresolution;
 
-import java.util.*;
+import java.util.Map;
 
 public class ClassWithImportInnerOnDemand {
 

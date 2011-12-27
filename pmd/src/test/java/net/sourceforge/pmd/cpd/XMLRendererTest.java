@@ -63,14 +63,15 @@ public class XMLRendererTest {
             while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
                 file = file.getNextSibling();
             }
-            assertEquals("48", file.getAttributes().getNamedItem("line").getNodeValue());
-            assertEquals("/var/Foo.java", file.getAttributes().getNamedItem("path").getNodeValue());
-
-            file = file.getNextSibling();
-            while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
-                file = file.getNextSibling();
+            if (file != null) {
+            	assertEquals("48", file.getAttributes().getNamedItem("line").getNodeValue());
+                assertEquals("/var/Foo.java", file.getAttributes().getNamedItem("path").getNodeValue());
+	            file = file.getNextSibling();
+	            while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
+	                file = file.getNextSibling();
+	            }
             }
-            assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
+            if (file != null) assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
             assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
             assertEquals("code fragment", doc.getElementsByTagName("codefragment").item(0).getTextContent());
         } catch (Exception e) {

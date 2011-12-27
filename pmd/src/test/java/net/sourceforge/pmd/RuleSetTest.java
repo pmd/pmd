@@ -225,22 +225,22 @@ public class RuleSetTest extends RuleTst {
     
     @Test
     public void testLanguageApplies() {
-	RuleSet ruleSet = new RuleSet();
+
 	Rule rule = new MockRule();
 
 	rule.setLanguage(Language.ECMASCRIPT);
-	assertFalse("Different languages should not apply", ruleSet.applies(rule, LanguageVersion.JAVA_15));
+	assertFalse("Different languages should not apply", RuleSet.applies(rule, LanguageVersion.JAVA_15));
 
 	rule.setLanguage(Language.JAVA);
-	assertTrue("Same language with no min/max should apply", ruleSet.applies(rule, LanguageVersion.JAVA_15));
+	assertTrue("Same language with no min/max should apply", RuleSet.applies(rule, LanguageVersion.JAVA_15));
 
 	rule.setMinimumLanguageVersion(LanguageVersion.JAVA_15);
-	assertTrue("Same language with valid min only should apply", ruleSet.applies(rule, LanguageVersion.JAVA_15));
+	assertTrue("Same language with valid min only should apply", RuleSet.applies(rule, LanguageVersion.JAVA_15));
 
 	rule.setMaximumLanguageVersion(LanguageVersion.JAVA_16);
-	assertTrue("Same language with valid min and max should apply", ruleSet.applies(rule, LanguageVersion.JAVA_15));
-	assertFalse("Same language with outside range of min/max should not apply", ruleSet.applies(rule, LanguageVersion.JAVA_14));
-	assertFalse("Same language with outside range of min/max should not apply", ruleSet.applies(rule, LanguageVersion.JAVA_17));
+	assertTrue("Same language with valid min and max should apply", RuleSet.applies(rule, LanguageVersion.JAVA_15));
+	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageVersion.JAVA_14));
+	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageVersion.JAVA_17));
     }
 
     @Test

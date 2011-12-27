@@ -31,14 +31,14 @@ public class PMDCoverageTest {
      * @param commandLine
      */
     private void runPmd(String commandLine) {
-    	String args[];
+    	String[] args;
     	args = commandLine.split("\\s");
 
     	File f = null;
     	try {
     		f = File.createTempFile("pmd", ".txt");
     		int n = args.length;
-    		String a[] = new String[n + 2];
+    		String[] a = new String[n + 2];
     		System.arraycopy(args, 0, a, 0, n);
     		a[n] = "-reportfile";
     		a[n + 1] = f.getAbsolutePath();
@@ -50,7 +50,7 @@ public class PMDCoverageTest {
     	} catch (IOException ioe) {
     		fail("Problem creating temporary file: " + ioe.getLocalizedMessage());
     	} finally {
-    		f.delete();
+    		if (f != null) f.delete();
     	}
     }
 

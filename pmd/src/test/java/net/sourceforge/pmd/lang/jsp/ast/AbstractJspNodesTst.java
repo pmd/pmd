@@ -59,9 +59,9 @@ public abstract class AbstractJspNodesTst {
             if ((null == clazz) || (clazz.equals(node.getClass()))) {
                 nodes.add((T)node);
             }
-        }
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            addNodeAndSubnodes(node.jjtGetChild(i), nodes, clazz);
+	        for (int i=0; i < node.jjtGetNumChildren(); i++) {
+	            addNodeAndSubnodes(node.jjtGetChild(i), nodes, clazz);
+	        }
         }
     }
 

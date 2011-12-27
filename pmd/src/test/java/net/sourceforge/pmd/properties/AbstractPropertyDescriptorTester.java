@@ -63,71 +63,71 @@ public abstract class AbstractPropertyDescriptorTester {
 	@Test
 	public void testConstructors() {
 		
-		PropertyDescriptor desc = createProperty(false);
+		PropertyDescriptor<?> desc = createProperty(false);
 		assertNotNull(desc);
-		
+
 		try {
 			createBadProperty(false);
-			
+
 		} catch (Exception ex) {
 			return;	// caught ok
 		}
-		
+
 		Assert.fail("uncaught constructor exception");
 	}
-	
+
     @Test
     public void testAsDelimitedString() {
-		
+
 		Object testValue = createValue(multiValueCount);
 		PropertyDescriptor pmdProp = createProperty(true);
-		
+
 		String storeValue = pmdProp.asDelimitedString(testValue);
-		
+
 		Object returnedValue = pmdProp.valueFrom(storeValue);
-		
+
 		assertTrue(CollectionUtil.areEqual(returnedValue, testValue));
 	}
-	
+
     @Test
     public void testValueFrom() {
-		
+
 		Object testValue = createValue(1);
 		PropertyDescriptor pmdProp = createProperty(false);
-		
+
 		String storeValue = pmdProp.asDelimitedString(testValue);
-		
+
 		Object returnedValue = pmdProp.valueFrom(storeValue);
-		
+
 		assertTrue(CollectionUtil.areEqual(returnedValue, testValue));
 	}
 	
 	
     @Test
     public void testErrorFor() {
-		
+
 		Object testValue = createValue(1);
-		PropertyDescriptor pmdProp = createProperty(false);		// plain vanilla property & valid test value
+		PropertyDescriptor<?> pmdProp = createProperty(false);		// plain vanilla property & valid test value
 		String errorMsg = pmdProp.errorFor(testValue);
 		assertNull(errorMsg, errorMsg);			
-		
+
 		testValue = createValue(multiValueCount);				// multi-value property, all valid test values
 		pmdProp = createProperty(true);
 		errorMsg = pmdProp.errorFor(testValue);
 		assertNull(errorMsg, errorMsg);
-		
+
     }
     
     @Test
     public void testErrorForBad() {
-    	
-    	PropertyDescriptor pmdProp = createProperty(false);    	
+
+    	PropertyDescriptor<?> pmdProp = createProperty(false);    	
 		Object testValue = createBadValue(1);
 		String errorMsg = pmdProp.errorFor(testValue);			// bad value should result in an error
 		if (errorMsg == null) {
 			Assert.fail("uncaught bad value: " + testValue);
 		}
-				
+
 		testValue = createBadValue(multiValueCount);			// multi-value prop, several bad values
 		pmdProp = createProperty(true);
 		errorMsg = pmdProp.errorFor(testValue);
@@ -135,29 +135,29 @@ public abstract class AbstractPropertyDescriptorTester {
 			Assert.fail("uncaught bad value in: " + testValue);
 		}
 	}
-	
+
     @Test
     public void testType() {
-		
-		PropertyDescriptor pmdProp = createProperty(false);
+
+		PropertyDescriptor<?> pmdProp = createProperty(false);
 
 		assertNotNull(pmdProp.type());
 	}
-	
+
     public static boolean randomBool() {
     	return ((Math.random() * 100) % 2) == 0;
     }
-    
+
 	/**
 	 * Method randomInt.
 	 * @return int
 	 */
 	public static int randomInt() {
-		
+
 		int randomVal = (int) (Math.random() * 100 + 1D);
 		return randomVal + (int) (Math.random() * 100000D);
 	}
-	
+
 	/**
 	 * Method randomInt.
 	 * @param min int

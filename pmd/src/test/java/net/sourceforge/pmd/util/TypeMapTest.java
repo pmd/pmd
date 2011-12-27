@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
-import net.sourceforge.pmd.util.TypeMap;
 
 import org.junit.Test;
 

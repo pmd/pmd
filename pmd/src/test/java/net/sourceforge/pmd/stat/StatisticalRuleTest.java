@@ -86,7 +86,7 @@ public class StatisticalRuleTest  {
 
     private static final int POINTS = 100;
 
-    private DataPoint points[] = new DataPoint[POINTS];
+    private DataPoint[] points = new DataPoint[POINTS];
     private MockStatisticalRule IUT = null;
     private String testName = "";//FIXME - why/when was this added. It was never set.
     private Random random = new Random();
