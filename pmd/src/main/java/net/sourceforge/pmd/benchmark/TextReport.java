@@ -12,8 +12,8 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * 
- * 
+ *
+ *
  */
 public class TextReport implements BenchmarkReport {
 
@@ -25,19 +25,19 @@ public class TextReport implements BenchmarkReport {
 	public TextReport() {
 
 	}
-	
+
 	/**
 	 *
 	 * @param stressResults Set<Result>
 	 * @param out PrintStream
-	 * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Set&lt;Result&gt;, PrintStream)
+	 * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Set<Result>, PrintStream)
 	 */
 	public void generate(Set<RuleDuration> stressResults, PrintStream out) {
-		
+
 		  out.println("=========================================================");
           out.println("Rule\t\t\t\t\t\tTime in ms");
           out.println("=========================================================");
-          
+
           for (RuleDuration result: stressResults) {
               StringBuilder buffer = new StringBuilder(result.rule.getName());
               while (buffer.length() < TIME_COLUMN) {
@@ -46,7 +46,7 @@ public class TextReport implements BenchmarkReport {
               buffer.append(result.time);
               out.println(out.toString());
           }
-          
+
           out.println("=========================================================");
 	}
 
@@ -57,12 +57,12 @@ public class TextReport implements BenchmarkReport {
 	public void report(Map<String, BenchmarkResult> benchmarksByName) {
 		generate(benchmarksByName, System.out);
 	}
-	
+
 	/**
 	 *
 	 * @param benchmarksByName Map<String,BenchmarkResult>
 	 * @param out PrintStream
-	 * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Map&lt;String,BenchmarkResult&gt;, PrintStream)
+	 * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Map<String,BenchmarkResult>, PrintStream)
 	 */
 	public void generate(Map<String, BenchmarkResult> benchmarksByName, PrintStream out) {
 
@@ -96,7 +96,7 @@ public class TextReport implements BenchmarkReport {
 			while (buf2.length() <= NAME_COLUMN_WIDTH) {
 				buf2.append(' ');
 			}
-			String result = MessageFormat.format("{0,number,0.000}", Double.valueOf(benchmarkResult.getTime()/1000000000.0)); 
+			String result = MessageFormat.format("{0,number,0.000}", Double.valueOf(benchmarkResult.getTime()/1000000000.0));
 			buf2.append(StringUtil.lpad(result, VALUE_COLUMN_WIDTH));
 			if (benchmarkResult.type.index <= Benchmark.RuleChainRule.index) {
 				buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,###,###,###,###,###}", benchmarkResult.getCount()), 20));
@@ -147,10 +147,10 @@ public class TextReport implements BenchmarkReport {
 			}
 			buf.appendLn(buf2.toString());
 		}
-		
+
 		out.print(buf.toString());
 	}
-	
+
 	/**
 	 *
 	 * @param timeTotals long[]

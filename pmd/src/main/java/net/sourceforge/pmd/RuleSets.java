@@ -39,8 +39,8 @@ public class RuleSets {
      * @param ruleSet the RuleSet
      */
     public RuleSets(RuleSet ruleSet) {
-	this();
-	addRuleSet(ruleSet);
+		this();
+		addRuleSet(ruleSet);
     }
 
     /**
@@ -51,8 +51,8 @@ public class RuleSets {
      * @param ruleSet the RuleSet
      */
     public void addRuleSet(RuleSet ruleSet) {
-	ruleSets.add(ruleSet);
-	ruleChain.add(ruleSet);
+		ruleSets.add(ruleSet);
+		ruleChain.add(ruleSet);
     }
 
     /**
@@ -61,11 +61,11 @@ public class RuleSets {
      * @return RuleSet[]
      */
     public RuleSet[] getAllRuleSets() {
-	return ruleSets.toArray(new RuleSet[ruleSets.size()]);
+    	return ruleSets.toArray(new RuleSet[ruleSets.size()]);
     }
 
     public Iterator<RuleSet> getRuleSetsIterator() {
-	return ruleSets.iterator();
+    	return ruleSets.iterator();
     }
 
     /**
@@ -74,11 +74,11 @@ public class RuleSets {
      * @return Set
      */
     public Set<Rule> getAllRules() {
-	Set<Rule> result = new HashSet<Rule>();
-	for (RuleSet r : ruleSets) {
-	    result.addAll(r.getRules());
-	}
-	return result;
+		Set<Rule> result = new HashSet<Rule>();
+		for (RuleSet r : ruleSets) {
+		    result.addAll(r.getRules());
+		}
+		return result;
     }
 
     /**
@@ -88,21 +88,21 @@ public class RuleSets {
      * @return <code>true</code> if the file should be checked, <code>false</code> otherwise
      */
     public boolean applies(File file) {
-	for (RuleSet ruleSet : ruleSets) {
-	    if (ruleSet.applies(file)) {
-		return true;
-	    }
-	}
-	return false;
+		for (RuleSet ruleSet : ruleSets) {
+		    if (ruleSet.applies(file)) {
+			return true;
+		    }
+		}
+		return false;
     }
 
     /**
      * Notify all rules of the start of processing.
      */
     public void start(RuleContext ctx) {
-	for (RuleSet ruleSet : ruleSets) {
-	    ruleSet.start(ctx);
-	}
+		for (RuleSet ruleSet : ruleSets) {
+		    ruleSet.start(ctx);
+		}
     }
 
     /**
@@ -116,21 +116,21 @@ public class RuleSets {
      * @param language the Language of the source
      */
     public void apply(List<Node> acuList, RuleContext ctx, Language language) {
-	ruleChain.apply(acuList, ctx, language);
-	for (RuleSet ruleSet : ruleSets) {
-	    if (ruleSet.applies(ctx.getSourceCodeFile())) {
-		ruleSet.apply(acuList, ctx);
-	    }
-	}
+		ruleChain.apply(acuList, ctx, language);
+		for (RuleSet ruleSet : ruleSets) {
+		    if (ruleSet.applies(ctx.getSourceCodeFile())) {
+			ruleSet.apply(acuList, ctx);
+		    }
+		}
     }
 
     /**
      * Notify all rules of the end of processing.
      */
     public void end(RuleContext ctx) {
-	for (RuleSet ruleSet : ruleSets) {
-	    ruleSet.end(ctx);
-	}
+		for (RuleSet ruleSet : ruleSets) {
+		    ruleSet.end(ctx);
+		}
     }
 
     /**
@@ -141,36 +141,40 @@ public class RuleSets {
      * @return true if any rule in the RuleSet needs the DFA layer
      */
     public boolean usesDFA(Language language) {
-	for (RuleSet ruleSet : ruleSets) {
-	    if (ruleSet.usesDFA(language)) {
-		return true;
-	    }
-	}
-	return false;
+		for (RuleSet ruleSet : ruleSets) {
+		    if (ruleSet.usesDFA(language)) {
+			return true;
+		    }
+		}
+		return false;
     }
 
     /**
-     * Returns the Rule with the given name
+     * Returns the first Rule found with the given name.
      *
-     * @param ruleName the name of the rule to find
+     * Note: Since we support multiple languages, rule names 
+	 * are not expected to be unique within any specific
+	 * ruleset.
+	 * 
+     * @param ruleName the exact name of the rule to find
      * @return the rule or null if not found
      */
     public Rule getRuleByName(String ruleName) {
-	Rule rule = null;
-	for (Iterator<RuleSet> i = ruleSets.iterator(); i.hasNext() && rule == null;) {
-	    RuleSet ruleSet = i.next();
-	    rule = ruleSet.getRuleByName(ruleName);
-	}
-	return rule;
+		Rule rule = null;
+		for (Iterator<RuleSet> i = ruleSets.iterator(); i.hasNext() && rule == null;) {
+		    RuleSet ruleSet = i.next();
+		    rule = ruleSet.getRuleByName(ruleName);
+		}
+		return rule;
     }
 
     public boolean usesTypeResolution(Language language) {
-	for (RuleSet ruleSet : ruleSets) {
-	    if (ruleSet.usesTypeResolution(language)) {
-		return true;
-	    }
-	}
-	return false;
+		for (RuleSet ruleSet : ruleSets) {
+		    if (ruleSet.usesTypeResolution(language)) {
+			return true;
+		    }
+		}
+		return false;
     }
     
 	/**

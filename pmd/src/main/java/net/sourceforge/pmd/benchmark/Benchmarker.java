@@ -3,7 +3,6 @@ package net.sourceforge.pmd.benchmark;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +30,7 @@ import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
- * 
+ *
  *
  */
 public class Benchmarker {
@@ -55,7 +54,7 @@ public class Benchmarker {
     }
 
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
-    	
+
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
         Language language = Language.JAVA;
         LanguageVersion languageVersion = language.getVersion(targetjdk);
@@ -90,25 +89,25 @@ public class Benchmarker {
                     stress(languageVersion, i.next(), dataSources, results, debug);
                 }
             }
-            
+
             TextReport report = new TextReport();
 			report.generate(results, System.err);
         }
     }
-    
+
     private static void parseStress(Parser parser, List<DataSource> dataSources, boolean debug) throws IOException {
-                 
+
         long start = System.currentTimeMillis();
 
-        for (DataSource dataSource: dataSources) {           
+        for (DataSource dataSource: dataSources) {
             parser.parse(
-            	dataSource.getNiceFileName(false, null), 
+            	dataSource.getNiceFileName(false, null),
             	new InputStreamReader(dataSource.getInputStream()
             	)
             );
         }
-       
-        if (debug) { 
+
+        if (debug) {
         	long end = System.currentTimeMillis();
         	long elapsed = end - start;
         	System.out.println("That took " + elapsed + " ms");
@@ -116,9 +115,8 @@ public class Benchmarker {
     }
 
     private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources, Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
-       
-    	Collection<Rule> rules = ruleSet.getRules();
-        for (Rule rule: rules) {
+
+        for (Rule rule: ruleSet.getRules()) {
             if (debug) {
             	System.out.println("Starting " + rule.getName());
             }
@@ -129,7 +127,7 @@ public class Benchmarker {
 
             Configuration config = new Configuration();
             config.setDefaultLanguageVersion(languageVersion);
-            
+
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
             Reader reader = null;

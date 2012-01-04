@@ -15,8 +15,8 @@ These rules check the security guidelines from Sun, published at http://java.sun
           class="net.sourceforge.pmd.lang.java.rule.sunsecure.MethodReturnsInternalArrayRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/sunsecure.html#MethodReturnsInternalArray">
       <description>
-Exposing internal arrays directly allows the user to modify some code that could be critical.
-It is safer to return a copy of the array.
+Exposing internal arrays to the caller violates object encapsulation since elements can be 
+removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
       </description>
         <priority>3</priority>
       <example>
@@ -39,7 +39,7 @@ public class SecureSystem {
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/sunsecure.html#ArrayIsStoredDirectly">
       <description>
 Constructors and methods receiving arrays should clone objects and store the copy.
-This prevents that future changes from the user affect the internal functionality.
+This prevents future changes from the user from affecting the original array.
       </description>
         <priority>3</priority>
       <example>

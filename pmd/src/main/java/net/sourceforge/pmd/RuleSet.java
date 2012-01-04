@@ -129,9 +129,13 @@ public class RuleSet {
 	}
 
 	/**
-	 * Returns the Rule with the given name
+	 * Returns the first Rule found with the given name (case-sensitive).
+	 * 
+	 * Note: Since we support multiple languages, rule names 
+	 * are not expected to be unique within any specific
+	 * ruleset.
 	 *
-	 * @param ruleName the name of the rule to find
+	 * @param ruleName the exact name of the rule to find
 	 * @return the rule or null if not found
 	 */
 	public Rule getRuleByName(String ruleName) {
