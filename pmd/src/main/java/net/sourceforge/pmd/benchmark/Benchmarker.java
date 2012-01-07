@@ -35,6 +35,11 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 public class Benchmarker {
 
+    /**
+     * @param args String[]
+     * @param name String
+     * @return boolean
+     */
     private static boolean findBooleanSwitch(String[] args, String name) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals(name)) {
@@ -44,6 +49,13 @@ public class Benchmarker {
         return false;
     }
 
+    /**
+     *
+     * @param args String[]
+     * @param name String
+     * @param defaultValue String
+     * @return String
+     */
     private static String findOptionalStringValue(String[] args, String name, String defaultValue) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals(name)) {
@@ -53,6 +65,13 @@ public class Benchmarker {
         return defaultValue;
     }
 
+    /**
+     *
+     * @param args String[]
+     * @throws RuleSetNotFoundException
+     * @throws IOException
+     * @throws PMDException
+     */
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
 
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
@@ -95,6 +114,12 @@ public class Benchmarker {
         }
     }
 
+    /**
+     * @param parser Parser
+     * @param dataSources List<DataSource>
+     * @param debug boolean
+     * @throws IOException
+     */
     private static void parseStress(Parser parser, List<DataSource> dataSources, boolean debug) throws IOException {
 
         long start = System.currentTimeMillis();
@@ -114,6 +139,15 @@ public class Benchmarker {
         }
     }
 
+    /**
+     * @param languageVersion LanguageVersion
+     * @param ruleSet RuleSet
+     * @param dataSources List<DataSource>
+     * @param results Set<RuleDuration>
+     * @param debug boolean
+     * @throws PMDException
+     * @throws IOException
+     */
     private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources, Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
 
         for (Rule rule: ruleSet.getRules()) {
@@ -148,10 +182,22 @@ public class Benchmarker {
 
     private static final Map<String, BenchmarkResult> BenchmarksByName = new HashMap<String, BenchmarkResult>();
 
+    /**
+     * @param type Benchmark
+     * @param time long
+     * @param count long
+     */
     public static void mark(Benchmark type, long time, long count) {
         mark(type, null, time, count);
     }
 
+    /**
+     *
+     * @param type Benchmark
+     * @param name String
+     * @param time long
+     * @param count long
+     */
     public synchronized static void mark(Benchmark type, String name, long time, long count) {
         String typeName = type.name;
         if (typeName != null && name != null) {
@@ -173,6 +219,10 @@ public class Benchmarker {
         BenchmarksByName.clear();
     }
 
+    /**
+     *
+     * @return Map<String,BenchmarkResult>
+     */
     public static Map<String, BenchmarkResult> values() {
     	return BenchmarksByName;
     }
