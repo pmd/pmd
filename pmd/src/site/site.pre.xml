@@ -22,7 +22,7 @@
     </links>
     <menu name="Overview">
       <item href="/index.html" name="Download PMD 5.0"/>
-      <item href="http://hudson.xlv-labs.com/job/PMD-snapshot/changes" name="What's new in PMD 5.0"/>
+      <item href="http://pmd.adabolo.de/job/pmd-trunk/changes" name="What's new in PMD 5.0"/>
 <!--
       <item name="Download PMD 5.0" href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=51441&amp;release_id=524515" />
       <item name="What's new in PMD 5.0" href="http://sourceforge.net/project/shownotes.php?release_id=524515&amp;group_id=56262" />
