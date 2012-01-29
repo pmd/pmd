@@ -8,10 +8,6 @@ $ svn status
 
 Ensure all the new rules are listed in a rulesets/releases/<version>.xml file.
 
-Update pom.xml:
-* remove "SNAPSHOT" from the version
-* make sure that scm/*connection are pointing to the subversion tag, that will be created soon.
-
 Update the "download" and "what's new" link in navigation.xml.
 
 Update version/release info in etc/changelog.txt.
@@ -26,20 +22,44 @@ Unzip and test manually (just to be on the safe side of the road):
 Check in all (version) changes to trunk:
 $ svn ci -m "pmd: Prepare pmd release <version>"
 
-Create a tag from trunk:
-$ svn cp https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
+
+Let the maven create a release branch (note - this is of course not needed if you are already on a release/maintenance
+branch). Maven will automatically increase the version in trunk.
+
+$ mvn release:branch -DbranchName=<version>.x
+
+Now checkout the created branch.
+
+$ svn co https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/<version>.x
+$ cd <version>.x
+
+Now let maven create a release tag.
+
+$ mvn release:clean release:prepare
+
+The next command will checkout PMD from the tag just created and will build and deploy it
+to sonatype OSS repositories:
+
+$ mvn release:perform
+
 
 Note:
-If you see a bug and fix it, you can delete the release using the following command (and then
-recreate the tag):
-$ svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
+If you see a bug and fix it, you can rollback the release
+(see http://maven.apache.org/plugins/maven-release-plugin/examples/rollback-release.html):
+$ mvn release:rollback
+You probably need to delete the release tag manually using the following command (and then
+start again with release:clean release:prepare):
+$ svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd-<version>
 
-Update pom.xml in trunk:
-* increment the version and add "SNAPSHOT"
-* make sure that scm/*connection are pointing to trunk.
 
-Check in the changes to trunk:
-$ svn ci -m "pmd: Increment version to the next SNAPSHOT"
+Finally, in order to publish the release to Maven central, you need to release PMD via Sonatype Nexus:
+- Login to https://oss.sonatype.org/
+- Go to Staging Repositories page
+- Select a staging repository
+- Click the close button
+- Now you can download the artifacts again and verify they are working.
+- Once you are sure they are working, click "Release" and the artifacts are eventually available through maven central.
+
 
 
 Public the release on sourceforge:
@@ -50,11 +70,11 @@ Public the release on sourceforge:
 
 Upload command below will create and upload the maven artifacts to sourceforge. Login info
 for 'pmd-repo' and 'pmd-site' must be defined in ~/.m2/settings.xml
-(see the file available in tools/config/m2.settings.xml):
+(see the file available in ../../maven-plugin-pmd-build/config/m2.settings.xml):
 
 $ ssh your_sf_login,pmd@shell.sourceforge.net create
 ...
-$ mvn source:jar javadoc:jar deploy -Psf-release    (order of target DOES matter)
+$ mvn deploy -Psf-release
 
 (In order to be able to upload the artifacts and the site to sourceforge, you need to have a interactive shell opened
 before)

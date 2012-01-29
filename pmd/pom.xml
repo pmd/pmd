@@ -223,7 +223,7 @@
     <scm>
         <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</connection>
         <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</developerConnection>
-        <url>http://pmd.svn.sourceforge.net/viewvc/pmd/</url>
+        <url>http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd</url>
     </scm>
     <organization>
         <name>InfoEther</name>
@@ -456,6 +456,14 @@
                 </execution>
               </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <branchBase>https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/</branchBase>
+                    <tagBase>https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/</tagBase>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -609,6 +617,44 @@
                     <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs</url>
                 </site>
             </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                      <inherited>true</inherited>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-source-plugin</artifactId>
+                      <executions>
+                        <execution>
+                          <id>attach-sources</id>
+                          <goals>
+                            <goal>jar</goal>
+                          </goals>
+                        </execution>
+                      </executions>
+                    </plugin>
+                    <plugin>
+                      <inherited>true</inherited>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-javadoc-plugin</artifactId>
+                      <executions>
+                        <execution>
+                          <id>attach-javadocs</id>
+                          <goals>
+                              <goal>jar</goal>
+                          </goals>
+                        </execution>
+                      </executions>
+                    </plugin>
+                    <plugin>
+                      <inherited>true</inherited>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-deploy-plugin</artifactId>
+                      <configuration>
+                          <updateReleaseInfo>true</updateReleaseInfo>
+                      </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <profile>
