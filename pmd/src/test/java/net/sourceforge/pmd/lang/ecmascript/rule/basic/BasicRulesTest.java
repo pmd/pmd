@@ -19,6 +19,8 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 	addRule(RULESET, "InnaccurateNumericLiteral");
 	addRule(RULESET, "ScopeForInVariable");
 	addRule(RULESET, "UnreachableCode");
+	addRule(RULESET, "EqualComparison");
+	addRule(RULESET, "GlobalVariable");
     }
 
     public static junit.framework.Test suite() {
