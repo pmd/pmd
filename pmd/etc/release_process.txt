@@ -6,7 +6,7 @@ $ mvn clean
 $ svn update
 $ svn status
 
-Ensure all the new rules are listed in a rulesets/releases/<version>.xml file.
+Ensure all the new rules are listed in a src/main/resources/rulesets/releases/<version>.xml file.
 
 Update the "download" and "what's new" link in navigation.xml.
 

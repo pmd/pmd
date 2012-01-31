@@ -1,6 +1,6 @@
-??? ??, 2010 - 5.0
+January 31, 2012 - 5.0-alpha
 
-TODO - Release blockers - Must implement before this release can be finished
+TODO - Release blockers - Must implement before this release can be finally finished
 
    CODE:
    o PropertyDescriptor final tasks:
