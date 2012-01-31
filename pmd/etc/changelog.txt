@@ -1,4 +1,4 @@
-January 31, 2012 - 5.0-alpha
+???? ??, 2012 - 5.0:
 
 TODO - Release blockers - Must implement before this release can be finally finished
 
@@ -40,6 +40,9 @@ TODO - Release blockers - Must implement before this release can be finally fini
      and pmd-java:typeof).
 
 ---
+
+
+January 31, 2012 - 5.0-alpha:
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
 as RuleSet XML compatibility. Also the maven coordinates (groupId) have been changed.
@@ -487,7 +490,7 @@ New JSP rules:
 	Basic ruleset: NoInlineScript
 
 New ECMAScript rules:
-	Basic ruleset: AssignmentInOperand,ConsistentReturn,InnaccurateNumericLiteral,ScopeForInVariable,UnreachableCode
+	Basic ruleset: AssignmentInOperand,ConsistentReturn,InnaccurateNumericLiteral,ScopeForInVariable,UnreachableCode,EqualComparison,GlobalVariable
 	Braces ruleset: ForLoopsMustUseBraces,IfStmtsMustUseBraces,IfElseStmtsMustUseBraces,WhileLoopsMustUseBraces
 	Unnecessary ruleset: UnnecessaryParentheses,UnnecessaryBlock
 

@@ -8,7 +8,7 @@ $ svn status
 
 Ensure all the new rules are listed in a src/main/resources/rulesets/releases/<version>.xml file.
 
-Update the "download" and "what's new" link in navigation.xml.
+Update the "download" and "what's new" link in site.pre.xml.
 
 Update version/release info in etc/changelog.txt.
 
@@ -16,15 +16,17 @@ $ mvn verify post-site    (order of targets DOES matter)
 
 Unzip and test manually (just to be on the safe side of the road):
 
-./bin/pmd.sh ~/tmp/Test.java xml java-unusedcode
-./bin/pmd.sh ~/tmp/Test.java html rulesets/unusedcode.xml
+./bin/run.sh pmd ~/tmp/Test.java xml java-unusedcode
+./bin/run.sh pmd ~/tmp/Test.java html rulesets/java/unusedcode.xml
 
 Check in all (version) changes to trunk:
 $ svn ci -m "pmd: Prepare pmd release <version>"
 
 
-Let the maven create a release branch (note - this is of course not needed if you are already on a release/maintenance
-branch). Maven will automatically increase the version in trunk.
+Let maven create a release branch (note - this is of course not needed if you are already on a release/maintenance
+branch). Maven will automatically increase the version in trunk. In case you create a alpha/preview release and you
+want to stay with the current version in trunk, use these
+additional properties: -DupdateBranchVersions=true -DupdateWorkingCopyVersions=false
 
 $ mvn release:branch -DbranchName=<version>.x
 
@@ -36,6 +38,8 @@ $ cd <version>.x
 Now let maven create a release tag.
 
 $ mvn release:clean release:prepare
+
+Note: For the tag/label name we currently use this naming pattern: pmd_release_<major-version>_<minor-version>
 
 The next command will checkout PMD from the tag just created and will build and deploy it
 to sonatype OSS repositories:
@@ -62,11 +66,11 @@ Finally, in order to publish the release to Maven central, you need to release P
 
 
 
-Public the release on sourceforge:
-- Go to Admin, File Releases, Add release
-- Paste stuff into the changelog/readme boxes
+Publish the release on sourceforge:
+- Go to Files, to folder "pmd", create a new subfolder for the new version
 - Add the pmd-<version>-bin.zip file
 - Add the pmd-<version>-src.zip file
+- Add the file etc/changelog.txt as ReadMe.txt file
 
 Upload command below will create and upload the maven artifacts to sourceforge. Login info
 for 'pmd-repo' and 'pmd-site' must be defined in ~/.m2/settings.xml
