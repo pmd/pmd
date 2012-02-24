@@ -52,4 +52,21 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+3372128: False positive: ArrayIsStoredDirectly
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public final void setExcludeStatus(String[] excludeStatus) {
+    if (excludeStatus != null) {
+      this.excludeStatus = Arrays.asList(excludeStatus.clone());
+    } else {
+      this.excludeStatus = null;
+    }
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>
