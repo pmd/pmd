@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.Scope;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
-import net.sourceforge.pmd.lang.rule.AbstractRuleViolation;
+import net.sourceforge.pmd.lang.rule.ParametizedRuleViolation;
 
 /**
  * This is a Java RuleViolation. It knows how to try to extract the following
@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRuleViolation;
  * <li>Suppression indicator</li>
  * </ul>
  */
-public class JavaRuleViolation extends AbstractRuleViolation {
+public class JavaRuleViolation extends ParametizedRuleViolation<JavaNode> {
 
 	public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message, int beginLine, int endLine) {
 		this(rule, ctx, node, message);
