@@ -26,6 +26,8 @@ TODO - Release blockers - Must implement before this release can be finally fini
      function namespaces required for XPath 2.0 use (e.g. pmd:matches
      and pmd-java:typeof).
 
+Fixed bug 3470274: Using Label for lines in XMLRenderer
+
 ---
 
 
