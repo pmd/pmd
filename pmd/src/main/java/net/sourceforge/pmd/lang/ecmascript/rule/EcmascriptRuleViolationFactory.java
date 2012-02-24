@@ -8,7 +8,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptNode;
-import net.sourceforge.pmd.lang.rule.ParametizedRuleViolation;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 
 public final class EcmascriptRuleViolationFactory extends AbstractRuleViolationFactory {
@@ -21,7 +21,7 @@ public final class EcmascriptRuleViolationFactory extends AbstractRuleViolationF
     @SuppressWarnings("rawtypes")
 	@Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-	return new ParametizedRuleViolation<EcmascriptNode>(rule, ruleContext, (EcmascriptNode) node, message);
+	return new ParametricRuleViolation<EcmascriptNode>(rule, ruleContext, (EcmascriptNode) node, message);
     }
     
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class ParametizedRuleViolation<T extends Node> implements RuleViolation {
+public class ParametricRuleViolation<T extends Node> implements RuleViolation {
 
     protected final Rule rule;
     protected final String description;
@@ -31,12 +31,12 @@ public class ParametizedRuleViolation<T extends Node> implements RuleViolation {
     protected String variableName = "";
 
     // FUTURE Fix to understand when a violation _must_ have a Node, and when it must not (to prevent erroneous Rules silently logging w/o a Node).  Modify RuleViolationFactory to support identifying without a Node, and update Rule base classes too.
-    public ParametizedRuleViolation(Rule rule, RuleContext ctx, T node, String message) {
-	this.rule = rule;
-	this.description = message;
-	this.filename = ctx.getSourceCodeFilename();
-	if (this.filename == null) {
-	    this.filename = "";
+    public ParametricRuleViolation(Rule theRule, RuleContext ctx, T node, String message) {
+	rule = theRule;
+	description = message;
+	filename = ctx.getSourceCodeFilename();
+	if (filename == null) {
+	    filename = "";
 	}
 	if (node != null) {
 	    beginLine = node.getBeginLine();
@@ -46,8 +46,10 @@ public class ParametizedRuleViolation<T extends Node> implements RuleViolation {
 	}
 
 	// Apply Rule specific suppressions
-	if (node != null && rule != null)
+	if (node != null && rule != null) {
 		setSuppression(rule, node);
+	}
+	
     }
 
     private void setSuppression(Rule rule, T node) {
@@ -68,22 +70,21 @@ public class ParametizedRuleViolation<T extends Node> implements RuleViolation {
     }
 
     protected String expandVariables(String message) {
-	if (message.indexOf("${") >= 0) {
+    	
+    	if (message.indexOf("${") < 0) return message;
+    	
 	    StringBuilder buf = new StringBuilder(message);
 	    int startIndex = -1;
 	    while ((startIndex = buf.indexOf("${", startIndex + 1)) >= 0) {
-		final int endIndex = buf.indexOf("}", startIndex);
-		if (endIndex >= 0) {
-		    final String name = buf.substring(startIndex + 2, endIndex);
-		    if (isVariable(name)) {
-			buf.replace(startIndex, endIndex + 1, getVariableValue(name));
+			final int endIndex = buf.indexOf("}", startIndex);
+			if (endIndex >= 0) {
+			    final String name = buf.substring(startIndex + 2, endIndex);
+			    if (isVariable(name)) {
+			    	buf.replace(startIndex, endIndex + 1, getVariableValue(name));
+			    	}
+				}
 		    }
-		}
-	    }
-	    return buf.toString();
-	} else {
-	    return message;
-	}
+	    return buf.toString();	 
     }
 
     protected boolean isVariable(String name) {
