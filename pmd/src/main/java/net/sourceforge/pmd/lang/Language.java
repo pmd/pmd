@@ -57,7 +57,7 @@ public enum Language {
 
     /**
      * Language constructor.
-     * 
+     *
      * @param name The name of this Language.  Must not be <code>null</code>.
      * @param shortName The short name of this Language, if <code>null</code> the
      * name will be used at the short name.
@@ -128,7 +128,7 @@ public enum Language {
     }
 
     /**
-     * Get the list of file extensions associated with this Language. 
+     * Get the list of file extensions associated with this Language.
      * @return List of file extensions.
      */
     public List<String> getExtensions() {
@@ -255,7 +255,7 @@ public enum Language {
 	}
 	return null;
     }
-    
+
     /**
      * Return a comma separated list of Language terse names.
      * @param languages The languages.

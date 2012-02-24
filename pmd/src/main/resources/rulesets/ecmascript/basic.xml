@@ -220,12 +220,12 @@ function bar() {
 	   return x;
    }();
 
-   // 'p' is trashed and has value of 'dirty'! 
+   // 'p' is trashed and has value of 'dirty'!
 }
 ]]>
       </example>
     </rule>
-    
+
     <rule name="EqualComparison"
           language="ecmascript"
           since="5.0"
@@ -241,7 +241,12 @@ function bar() {
             <property name="xpath">
                 <value>
  <![CDATA[
-//InfixExpression[(@Image = "==" or @Image = "!=") and (child::KeywordLiteral[@Image = "true" or @Image = "false"] or child::NumberLiteral)]
+//InfixExpression[(@Image = "==" or @Image = "!=") 
+  and 
+ (child::KeywordLiteral[@Image = "true" or @Image = "false"] 
+ or 
+ child::NumberLiteral)
+]
 ]]>
                 </value>
             </property>
@@ -256,8 +261,6 @@ if (someVar === true) {
 if (someVar !== 3) {
   ...
 }
-
-
 // Bad
 if (someVar == true) {
   ...
@@ -270,7 +273,7 @@ if (someVar != 3) {
 ]]>
       </example>
     </rule>
-    
+
     <rule name="GlobalVariable"
           message="Avoid using global variables"
           language="ecmascript"
@@ -295,14 +298,14 @@ Global variables can lead to side-effects that are hard to debug.
 <![CDATA[
 function(arg) {
     notDeclaredVariable = 1; // this will create a global variable and trigger the rule
-    
+
     var someVar = 1; // this is a local variable, that's ok
-    
+
     window.otherGlobal = 2; // this will not trigger the rule, although it is a global variable.
 }
 ]]>
         </example>
     </rule>
-    
-    
+
+
 </ruleset>
