@@ -35,79 +35,83 @@ import org.junit.Test;
 
 public class CommandLineParserTest {
 
+	private static String languageVersionIn(CommandLineParser parser) {
+		return parser.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString();
+	}
+	
     @Test
     public void testLang() {
 	// Testing command line default behavior (no -lang option, means Java 1.5)
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "basic"});
-        assertEquals("LanguageVersion[Java 1.7]", opt.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString());
-        opt = new CommandLineParser(new String[]{"file", "format", "ruleset", "-version","java", "1.3"});
-        assertEquals("LanguageVersion[Java 1.3]", opt.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString());
-        opt = new CommandLineParser(new String[]{"file", "format", "ruleset", "-version","java", "1.5"});
-        assertEquals("LanguageVersion[Java 1.5]", opt.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString());
-        opt = new CommandLineParser(new String[]{"file", "format", "ruleset", "-version","java", "1.6"});
-        assertEquals("LanguageVersion[Java 1.6]", opt.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString());
-        opt = new CommandLineParser(new String[]{"-version","java","1.6","file", "format", "ruleset"});
-        assertEquals("LanguageVersion[Java 1.6]", opt.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString());
-        opt = new CommandLineParser(new String[]{"file", "format", "ruleset","-version","java","1.7"});
-        assertEquals("LanguageVersion[Java 1.7]", opt.getConfiguration().getLanguageVersionDiscoverer().getDefaultLanguageVersion(Language.JAVA).toString());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "basic"});
+        assertEquals("LanguageVersion[Java 1.7]", languageVersionIn(parser));
+        parser = new CommandLineParser(new String[]{"file", "format", "ruleset", "-version","java", "1.3"});
+        assertEquals("LanguageVersion[Java 1.3]", languageVersionIn(parser));
+        parser = new CommandLineParser(new String[]{"file", "format", "ruleset", "-version","java", "1.5"});
+        assertEquals("LanguageVersion[Java 1.5]", languageVersionIn(parser));
+        parser = new CommandLineParser(new String[]{"file", "format", "ruleset", "-version","java", "1.6"});
+        assertEquals("LanguageVersion[Java 1.6]", languageVersionIn(parser));
+        parser = new CommandLineParser(new String[]{"-version","java","1.6","file", "format", "ruleset"});
+        assertEquals("LanguageVersion[Java 1.6]", languageVersionIn(parser));
+        parser = new CommandLineParser(new String[]{"file", "format", "ruleset","-version","java","1.7"});
+        assertEquals("LanguageVersion[Java 1.7]", languageVersionIn(parser));
     }
 
     @Test
     public void testDebug() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "basic", "-debug"});
-        assertTrue(opt.getConfiguration().isDebug());
-        opt = new CommandLineParser(new String[]{"-debug", "file", "format", "basic"});
-        assertTrue(opt.getConfiguration().isDebug());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "basic", "-debug"});
+        assertTrue(parser.getConfiguration().isDebug());
+        parser = new CommandLineParser(new String[]{"-debug", "file", "format", "basic"});
+        assertTrue(parser.getConfiguration().isDebug());
     }
 
     @Test
     public void testSuppressMarker() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "basic", "-suppressmarker", "FOOBAR"});
-        assertEquals("FOOBAR", opt.getConfiguration().getSuppressMarker());
-        opt = new CommandLineParser(new String[]{"-suppressmarker", "FOOBAR", "file", "format", "basic"});
-        assertEquals("FOOBAR", opt.getConfiguration().getSuppressMarker());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "basic", "-suppressmarker", "FOOBAR"});
+        assertEquals("FOOBAR", parser.getConfiguration().getSuppressMarker());
+        parser = new CommandLineParser(new String[]{"-suppressmarker", "FOOBAR", "file", "format", "basic"});
+        assertEquals("FOOBAR", parser.getConfiguration().getSuppressMarker());
     }
 
     @Test
     public void testShortNames() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "basic", "-shortnames"});
-        assertTrue(opt.getConfiguration().isReportShortNames());
-        opt = new CommandLineParser(new String[]{"-shortnames", "file", "format", "basic"});
-        assertTrue(opt.getConfiguration().isReportShortNames());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "basic", "-shortnames"});
+        assertTrue(parser.getConfiguration().isReportShortNames());
+        parser = new CommandLineParser(new String[]{"-shortnames", "file", "format", "basic"});
+        assertTrue(parser.getConfiguration().isReportShortNames());
     }
 
     @Test
     public void testEncoding() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "basic"});
-        assertEquals(Charset.forName(opt.getConfiguration().getSourceEncoding()), Charset.forName(new InputStreamReader(System.in).getEncoding()));
-        opt = new CommandLineParser(new String[]{"file", "format", "ruleset", "-encoding", "UTF-8"});
-        assertEquals(opt.getConfiguration().getSourceEncoding(), "UTF-8");
-        opt = new CommandLineParser(new String[]{"-encoding", "UTF-8", "file", "format", "ruleset"});
-        assertEquals(opt.getConfiguration().getSourceEncoding(), "UTF-8");
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "basic"});
+        assertEquals(Charset.forName(parser.getConfiguration().getSourceEncoding()), Charset.forName(new InputStreamReader(System.in).getEncoding()));
+        parser = new CommandLineParser(new String[]{"file", "format", "ruleset", "-encoding", "UTF-8"});
+        assertEquals(parser.getConfiguration().getSourceEncoding(), "UTF-8");
+        parser = new CommandLineParser(new String[]{"-encoding", "UTF-8", "file", "format", "ruleset"});
+        assertEquals(parser.getConfiguration().getSourceEncoding(), "UTF-8");
     }
 
     @Test
     public void testInputFileName() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "basic"});
-        assertEquals("file", opt.getConfiguration().getInputPaths());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "basic"});
+        assertEquals("file", parser.getConfiguration().getInputPaths());
     }
 
     @Test
     public void testReportFormat() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "basic"});
-        assertEquals("format", opt.getConfiguration().getReportFormat());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "basic"});
+        assertEquals("format", parser.getConfiguration().getReportFormat());
     }
 
     @Test
     public void testRulesets() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "java-basic"});
-        assertEquals("rulesets/java/basic.xml", opt.getConfiguration().getRuleSets());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "java-basic"});
+        assertEquals("rulesets/java/basic.xml", parser.getConfiguration().getRuleSets());
     }
 
     @Test
     public void testCommaSeparatedFiles() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file1,file2,file3", "format", "basic"});
-        assertEquals("file1,file2,file3", opt.getConfiguration().getInputPaths());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file1,file2,file3", "format", "basic"});
+        assertEquals("file1,file2,file3", parser.getConfiguration().getInputPaths());
     }
 
     @Test(expected = RuntimeException.class)
@@ -123,91 +127,91 @@ public class CommandLineParserTest {
     @Test
     public void testReportFile(){
     	
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "basic", "-reportfile", "foo.txt"});
-        assertSame("foo.txt", opt.getConfiguration().getReportFile());
-        opt = new CommandLineParser(new String[]{"-reportfile", "foo.txt", "file", "format", "basic"});
-        assertSame("foo.txt", opt.getConfiguration().getReportFile());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "basic", "-reportfile", "foo.txt"});
+        assertSame("foo.txt", parser.getConfiguration().getReportFile());
+        parser = new CommandLineParser(new String[]{"-reportfile", "foo.txt", "file", "format", "basic"});
+        assertSame("foo.txt", parser.getConfiguration().getReportFile());
     }
 
     @Test
     public void testThreads() {
 
-		CommandLineParser opt = new CommandLineParser(new String[] { "file", "format", "basic", "-threads", "2" });
-		assertEquals(2, opt.getConfiguration().getThreads());
-		opt = new CommandLineParser(new String[] { "-threads", "2", "file", "format", "basic" });
-		assertEquals(2, opt.getConfiguration().getThreads());
+		CommandLineParser parser = new CommandLineParser(new String[] { "file", "format", "basic", "-threads", "2" });
+		assertEquals(2, parser.getConfiguration().getThreads());
+		parser = new CommandLineParser(new String[] { "-threads", "2", "file", "format", "basic" });
+		assertEquals(2, parser.getConfiguration().getThreads());
 	}
 
     @Test
     public void testRenderer() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "xml", "basic"});
-        Renderer renderer = opt.getConfiguration().createRenderer();
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "xml", "basic"});
+        Renderer renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof XMLRenderer);
-        opt = new CommandLineParser(new String[]{"file", "html", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "html", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof HTMLRenderer);
-        opt = new CommandLineParser(new String[]{"file", "text", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "text", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof TextRenderer);
-        opt = new CommandLineParser(new String[]{"file", "emacs", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "emacs", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof EmacsRenderer);
-        opt = new CommandLineParser(new String[]{"file", "csv", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "csv", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof CSVRenderer);
-        opt = new CommandLineParser(new String[]{"file", "vbhtml", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "vbhtml", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof VBHTMLRenderer);
-        opt = new CommandLineParser(new String[]{"file", "yahtml", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "yahtml", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof YAHTMLRenderer);
-        opt = new CommandLineParser(new String[]{"file", "ideaj", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "ideaj", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof IDEAJRenderer);
-        opt = new CommandLineParser(new String[]{"file", "summaryhtml", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "summaryhtml", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof SummaryHTMLRenderer);
-        opt = new CommandLineParser(new String[]{"file", "textcolor", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "textcolor", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof TextColorRenderer);
-        opt = new CommandLineParser(new String[]{"file", "textpad", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "textpad", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof TextPadRenderer);
-        opt = new CommandLineParser(new String[]{"file", "xml", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "xml", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof XMLRenderer);
-        opt = new CommandLineParser(new String[]{"file", "xslt", "basic"});
-        renderer = opt.getConfiguration().createRenderer();
+        parser = new CommandLineParser(new String[]{"file", "xslt", "basic"});
+        renderer = parser.getConfiguration().createRenderer();
         assertTrue(renderer instanceof XSLTRenderer);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalArgument1() {
-        CommandLineParser opt = new CommandLineParser(new String[] { "file", "", "basic" });
-        opt.getConfiguration().createRenderer();
+        CommandLineParser parser = new CommandLineParser(new String[] { "file", "", "basic" });
+        parser.getConfiguration().createRenderer();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void illegalArgument2() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "fiddlefaddle", "basic"});
-        opt.getConfiguration().createRenderer();
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "fiddlefaddle", "basic"});
+        parser.getConfiguration().createRenderer();
     }
     
     @Test
     public void testOptionsFirst(){
-		CommandLineParser opt = new CommandLineParser(new String[] { "-threads", "2", "-debug", "file", "format", "java-basic" });
-		assertEquals(2, opt.getConfiguration().getThreads());
-        assertEquals("file", opt.getConfiguration().getInputPaths());
-        assertEquals("format", opt.getConfiguration().getReportFormat());
-        assertEquals("rulesets/java/basic.xml", opt.getConfiguration().getRuleSets());
-        assertTrue(opt.getConfiguration().isDebug());
+		CommandLineParser parser = new CommandLineParser(new String[] { "-threads", "2", "-debug", "file", "format", "java-basic" });
+		assertEquals(2, parser.getConfiguration().getThreads());
+        assertEquals("file", parser.getConfiguration().getInputPaths());
+        assertEquals("format", parser.getConfiguration().getReportFormat());
+        assertEquals("rulesets/java/basic.xml", parser.getConfiguration().getRuleSets());
+        assertTrue(parser.getConfiguration().isDebug());
     }
 
     @Test
     public void testAuxilaryClasspath() {
-	CommandLineParser opt = new CommandLineParser(new String[] { "-auxclasspath", "/classpath", "file", "format",
+	CommandLineParser parser = new CommandLineParser(new String[] { "-auxclasspath", "/classpath", "file", "format",
 		"basic" });
-	ClassLoader classLoader = opt.getConfiguration().getClassLoader();
+	ClassLoader classLoader = parser.getConfiguration().getClassLoader();
 	assertTrue("classloader is ClasspathClassLoader", classLoader instanceof ClasspathClassLoader);
 	URL[] urls = ((ClasspathClassLoader) classLoader).getURLs();
 	assertEquals("urls length", 1, urls.length);
@@ -222,10 +226,10 @@ public class CommandLineParserTest {
 
     @Test
     public void testShowSuppressed() {
-        CommandLineParser opt = new CommandLineParser(new String[]{"file", "format", "basic"});
-        assertFalse(opt.getConfiguration().isShowSuppressedViolations());
-        opt = new CommandLineParser(new String[]{"-showsuppressed", "file", "format", "basic"});
-        assertTrue(opt.getConfiguration().isShowSuppressedViolations());
+        CommandLineParser parser = new CommandLineParser(new String[]{"file", "format", "basic"});
+        assertFalse(parser.getConfiguration().isShowSuppressedViolations());
+        parser = new CommandLineParser(new String[]{"-showsuppressed", "file", "format", "basic"});
+        assertTrue(parser.getConfiguration().isShowSuppressedViolations());
     }
 
     public static junit.framework.Test suite() {

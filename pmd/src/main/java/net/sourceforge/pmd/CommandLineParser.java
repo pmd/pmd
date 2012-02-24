@@ -95,7 +95,14 @@ public class CommandLineParser {
 		return configuration;
 	}
 
+	public static String jarName() {
+		return "pmd-" + PMD.VERSION + ".jar";
+	}
+	
 	public static String usage() {
+		
+		final String launchCmd = "java -jar " + jarName();
+		
 		return PMD.EOL
 				+ PMD.EOL
 				+ "Mandatory arguments:"																+ PMD.EOL
@@ -104,22 +111,22 @@ public class CommandLineParser {
 				+ "3) A ruleset filename or a comma-delimited string of ruleset filenames"				+ PMD.EOL
 				+ PMD.EOL
 				+ "For example: "																		+ PMD.EOL
-				+ "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html unusedcode"	+ PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code html unusedcode"						+ PMD.EOL
 				+ PMD.EOL
 				+ "Optional arguments that may be put before or after the mandatory arguments: "		+ PMD.EOL
 				+ PMDParameters.allOptionDescriptions("  ", PMD.EOL) 									+ PMD.EOL
 				+ "Available report formats and their configuration properties are:"					+ PMD.EOL
 				+ getReports()																			+ PMD.EOL
 				+ "For example on windows: "															+ PMD.EOL
-				+ "c:\\> java -jar pmd-" + PMD.VERSION	+ ".jar c:\\my\\source\\code text unusedcode,imports -version java 1.5 -debug"			+ PMD.EOL
-				+ "c:\\> java -jar pmd-" + PMD.VERSION	+ ".jar c:\\my\\source\\code xml basic,design -encoding UTF-8"							+ PMD.EOL
-				+ "c:\\> java -jar pmd-" + PMD.VERSION	+ ".jar c:\\my\\source\\code html typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL
-				+ "c:\\> java -jar pmd-" + PMD.VERSION	+ ".jar c:\\my\\source\\code html typeresolution -auxclasspath file:///C:/my/classpathfile"		  + PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code text unusedcode,imports -version java 1.5 -debug"			+ PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code xml basic,design -encoding UTF-8"							+ PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code html typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code html typeresolution -auxclasspath file:///C:/my/classpathfile"		  + PMD.EOL
 				+ PMD.EOL
 				+ "For example on *nix: "				+ PMD.EOL
-				+ "$ java -jar pmd-" + PMD.VERSION	+ ".jar /home/workspace/src/main/java/code nicehtml basic,design"						+ PMD.EOL
-				+ "$ java -jar pmd-" + PMD.VERSION	+ ".jar /home/workspace/src/main/java/code nicehtml basic,design -xslt my-own.xsl"		+ PMD.EOL
-				+ "$ java -jar pmd-" + PMD.VERSION	+ ".jar /home/workspace/src/main/java/code nicehtml typeresolution -auxclasspath commons-collections.jar:derby.jar"
+				+ "$ " + launchCmd + " /home/workspace/src/main/java/code nicehtml basic,design"						+ PMD.EOL
+				+ "$ " + launchCmd + " /home/workspace/src/main/java/code nicehtml basic,design -xslt my-own.xsl"		+ PMD.EOL
+				+ "$ " + launchCmd + " /home/workspace/src/main/java/code nicehtml typeresolution -auxclasspath commons-collections.jar:derby.jar"
 				+ PMD.EOL + PMD.EOL;
 	}
 
