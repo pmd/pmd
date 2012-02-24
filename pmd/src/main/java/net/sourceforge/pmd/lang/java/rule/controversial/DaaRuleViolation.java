@@ -14,32 +14,22 @@ import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
  * is required for showing what variable produces the UR DD or DU anomaly.
  *  
  * @author Sven Jacob
- *
+ * @author Brian Remedios
  */
 public class DaaRuleViolation extends JavaRuleViolation {
-    private String variableName;
-    private int beginLine;
-    private int endLine;
-    private String type;
+
+    private final String variableName;
+    private final String type;
     
     public DaaRuleViolation(Rule rule, RuleContext ctx, Node node, String type, String msg, String var, int beginLine, int endLine) {
         super(rule, ctx, (JavaNode)node, msg);
         this.variableName = var;
-        this.beginLine = beginLine;
-        this.endLine = endLine;
+        setLines(beginLine, endLine);
         this.type = type;
     }
 	
     public String getVariableName() {
         return variableName;
-    }
-	
-    public int getBeginLine() {
-        return beginLine;
-    }
-	
-    public int getEndLine() {
-        return endLine;
     }
     
     public String getType() {

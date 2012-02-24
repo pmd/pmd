@@ -49,18 +49,8 @@ public class JavaRuleViolation extends ParametizedRuleViolation<JavaNode> {
 			packageName = sourceFileScope.getPackageName() == null ? ""	: sourceFileScope.getPackageName();
 
 			// Class name is built from enclosing ClassScopes
-			String qualifiedName = null;
-			for (ASTClassOrInterfaceDeclaration parent : node.getParentsOfType(ASTClassOrInterfaceDeclaration.class)) {
-				if (qualifiedName == null) {
-					qualifiedName = parent.getScope().getEnclosingClassScope().getClassName();
-				} else {
-					qualifiedName = parent.getScope().getEnclosingClassScope().getClassName()
-							+ "$" + qualifiedName;
-				}
-			}
-			if (qualifiedName != null) {
-				className = qualifiedName;
-			}
+			setClassNameFrom(node);
+			
 			// Method name comes from 1st enclosing MethodScope
 			if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
 				methodName = scope.getEnclosingMethodScope().getName();
@@ -85,6 +75,22 @@ public class JavaRuleViolation extends ParametizedRuleViolation<JavaNode> {
 					parent = parent.jjtGetParent();
 				}
 			}
+		}
+	}
+
+	private void setClassNameFrom(JavaNode node) {
+		
+		String qualifiedName = null;
+		for (ASTClassOrInterfaceDeclaration parent : node.getParentsOfType(ASTClassOrInterfaceDeclaration.class)) {
+			String clsName = parent.getScope().getEnclosingClassScope().getClassName();
+			if (qualifiedName == null) {
+				qualifiedName = clsName;
+			} else {
+				qualifiedName = clsName + '$' + qualifiedName;
+			}
+		}
+		if (qualifiedName != null) {
+			className = qualifiedName;
 		}
 	}
 

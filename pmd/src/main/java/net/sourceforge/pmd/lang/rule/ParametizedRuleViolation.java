@@ -10,11 +10,12 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class ParametizedRuleViolation<T extends Node> implements RuleViolation {
 
-    protected Rule rule;
-    protected String description;
+    protected final Rule rule;
+    protected final String description;
     protected boolean suppressed;
     protected String filename;
 
@@ -24,10 +25,10 @@ public class ParametizedRuleViolation<T extends Node> implements RuleViolation {
     protected int endLine;
     protected int endColumn;
 
-    protected String packageName;
-    protected String className;
-    protected String methodName;
-    protected String variableName;
+    protected String packageName = "";
+    protected String className = "";
+    protected String methodName = "";
+    protected String variableName = "";
 
     // FUTURE Fix to understand when a violation _must_ have a Node, and when it must not (to prevent erroneous Rules silently logging w/o a Node).  Modify RuleViolationFactory to support identifying without a Node, and update Rule base classes too.
     public ParametizedRuleViolation(Rule rule, RuleContext ctx, T node, String message) {
@@ -38,34 +39,32 @@ public class ParametizedRuleViolation<T extends Node> implements RuleViolation {
 	    this.filename = "";
 	}
 	if (node != null) {
-	    this.beginLine = node.getBeginLine();
-	    this.beginColumn = node.getBeginColumn();
-	    this.endLine = node.getEndLine();
-	    this.endColumn = node.getEndColumn();
+	    beginLine = node.getBeginLine();
+	    beginColumn = node.getBeginColumn();
+	    endLine = node.getEndLine();
+	    endColumn = node.getEndColumn();
 	}
-	this.packageName = "";
-	this.className = "";
-	this.methodName = "";
-	this.variableName = "";
 
 	// Apply Rule specific suppressions
-	if (node != null && rule != null) {
-	    // Regex
-	    String regex = rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
-	    if (regex != null && description != null) {
-		if (Pattern.matches(regex, description)) {
-		    suppressed = true;
-		}
-	    }
+	if (node != null && rule != null)
+		setSuppression(rule, node);
+    }
 
-	    // XPath
-	    if (!suppressed) {
-		String xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
-		if (xpath != null) {
-		    suppressed = node.hasDescendantMatchingXPath(xpath);
-		}
-	    }
-	}
+    private void setSuppression(Rule rule, T node) {
+    
+    	String regex = rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);	// Regex
+    	if (regex != null && description != null) {
+    		if (Pattern.matches(regex, description)) {
+    			suppressed = true;
+    		}
+    	}
+    
+    	if (!suppressed) {	// XPath
+    		String xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
+    		if (xpath != null) {
+    			suppressed = node.hasDescendantMatchingXPath(xpath);
+    		}
+    	}
     }
 
     protected String expandVariables(String message) {
@@ -88,8 +87,9 @@ public class ParametizedRuleViolation<T extends Node> implements RuleViolation {
     }
 
     protected boolean isVariable(String name) {
-	return "variableName".equals(name) || "methodName".equals(name) || "className".equals(name)
-		|| "packageName".equals(name) || rule.getPropertyDescriptor(name) != null;
+    	return 
+    		StringUtil.isAnyOf(name, "variableName", "methodName", "className", "packageName") ||
+    		rule.getPropertyDescriptor(name) != null;
     }
 
     protected String getVariableValue(String name) {
@@ -116,7 +116,7 @@ public class ParametizedRuleViolation<T extends Node> implements RuleViolation {
     }
 
     public boolean isSuppressed() {
-	return this.suppressed;
+	return suppressed;
     }
 
     public String getFilename() {
