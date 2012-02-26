@@ -55,6 +55,7 @@
         <item href="/howitworks.html" name="How it works"/>
         <item href="/rule-guidelines.html" name="Rule guidelines"/>
         <item href="/pmd-developer.html" name="PMD developers information"/>
+        <item href="/pmd-release-process.html" name="PMD Release Process"/>
     </menu>
     <menu name="For example">
       <item href="/scoreboard.html" name="Run PMD on a Sourceforge project"/>
