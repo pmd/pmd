@@ -13,19 +13,6 @@
 
     <module name="TreeWalker">
 
-		<!-- RegexpHeader -->
-		<!--
-			Assert if header is :
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-		   -->
-        <module name="RegexpHeader">
-            <property
-                name="header"
-                value="^\/\*\*[ ]*$\n^[ ]+\*[ ]+BSD-style license; for more info see http:\/\/pmd.sourceforge.net/license.html[ ]*\n[ ]+\*\/[ ]*$"/>
-        </module>
-
          <!-- JDocHtmlValid, JDocHeader -->
         <module name="JavadocStyle">
             <property name="checkFirstSentence" value="false"/>
@@ -56,5 +43,19 @@
         <module name="AvoidStarImport">
             <property name="severity"   value="error"/>
         </module>
-	</module>
+    </module>
+    
+    <!-- RegexpHeader -->
+    <!--
+            Assert if header is :
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+    -->
+    <module name="RegexpHeader">
+        <property
+            name="header"
+            value="^\/\*\*[ ]*$\n^[ ]+\*[ ]+BSD-style license; for more info see http:\/\/pmd.sourceforge.net/license.html[ ]*\n[ ]+\*\/[ ]*$"/>
+    </module>
+
 </module>
