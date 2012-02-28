@@ -80,4 +80,20 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+[3394465] False positive for UselessStringValueOf
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class TestClass {
+
+  public void testMethod() {
+    char[] idFormat = {'0', '0', '0', '0', '0'};
+    String abc = "1" + String.valueOf(idFormat);
+    System.out.println(abc); // Output 100000
+ }
+}
+        ]]></code>
+    </test-code>
 </test-data>

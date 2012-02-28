@@ -27,6 +27,7 @@ TODO - Release blockers - Must implement before this release can be finally fini
      and pmd-java:typeof).
 
 Fixed bug 3470274: Using Label for lines in XMLRenderer
+Fixed bug 3175710: NPE in InsufficientStringBufferDeclaration
 
 ---
 
