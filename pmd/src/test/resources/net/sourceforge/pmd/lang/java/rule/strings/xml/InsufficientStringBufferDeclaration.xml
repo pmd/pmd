@@ -12,7 +12,7 @@ public class Foo {
        StringBuffer sb = new StringBuffer(16);
        sb.append("foo");
    }
-   
+
    public void bar2() {
        StringBuilder sb = new StringBuilder(16);
        sb.append("foo");
@@ -33,7 +33,7 @@ public class Foo {
   sb.append("World");
   sb.append("How are you today world");
  }
- 
+
  public void bar2() {
   StringBuilder sb = new StringBuilder();
   sb.append("Hello");
@@ -56,7 +56,7 @@ public class Foo {
   sb.append("World");
   sb.append("How are you today world");
  }
- 
+
  public void bar2(List l) {
   StringBuilder sb = new StringBuilder(l.size());
   sb.append("Hello");
@@ -80,7 +80,7 @@ public class Foo {
   sb.append("World");
   sb.append("How are you today world");
  }
- 
+
  public void bar2(List l) {
   int x = 3;
   StringBuilder sb = new StringBuilder(x);
@@ -105,7 +105,7 @@ public class Foo {
   sb = new StringBuffer(23);
   sb.append("How are you today world");
  }
- 
+
  public void bar2(List l) {
   int x = 3;
   StringBuilder sb = new StringBuilder(5);
@@ -153,7 +153,7 @@ public class Foo {
             sb.append("123456789");
         }
     }
-    
+
     public void bar2(List l) {
         StringBuilder sb = new StringBuilder();
         if(true){
@@ -222,7 +222,7 @@ public class Foo {
   sb.append(l.get(2));
   sb.append(l.toString());
  }
- 
+
  public void bar2(List l) {
   StringBuilder sb = new StringBuilder(0);
   sb.append(l.get(2));
@@ -336,7 +336,7 @@ public class Foo {
        StringBuffer sb = new StringBuffer();
        sb.append(12345);
  }
- 
+
   public void bar2() {
        StringBuilder sb = new StringBuilder();
        sb.append(12345);
@@ -575,7 +575,7 @@ public class Foo {
            }
        } else {
            sb.append("A compound if");
-       } 
+       }
     }
     public void bar2(List l) {
         StringBuilder sb = new StringBuilder();
@@ -589,7 +589,7 @@ public class Foo {
            }
        } else {
            sb.append("A compound if");
-       } 
+       }
     }
 }
      ]]></code>
@@ -613,7 +613,7 @@ public class Foo {
            }
        } else {
            sb.append("A compound if");
-       } 
+       }
        sb.append("Push");
     }
     public void bar2(List l) {
@@ -628,7 +628,7 @@ public class Foo {
            }
        } else {
            sb.append("A compound if");
-       } 
+       }
        sb.append("Push");
     }
 }
@@ -753,7 +753,7 @@ public class Foo {
        sb.append((char) 0x0041);
    } else {
        sb.append((char) 0x0041);
-   } 
+   }
  }
  public void bar2(int i) {
   StringBuilder sb = new StringBuilder(1);
@@ -765,7 +765,7 @@ public class Foo {
        sb.append((char) 0x0041);
    } else {
        sb.append((char) 0x0041);
-   } 
+   }
  }
 }
      ]]></code>
@@ -785,7 +785,7 @@ public class Foo {
    sb1.append(
 	);
  }
- 
+
  public void bar2(char longnamedchar) {
   StringBuilder sb = new StringBuilder(132+42);
    sb.append(
@@ -885,7 +885,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-37, Initialization with multiply - bug 1743938 
+37, Initialization with multiply - bug 1743938
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -930,6 +930,20 @@ public class Foo {
   sb.append("Hello world");
   sb.append("Hello world");
  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3175710: NPE in InsufficientStringBufferDeclaration
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void test() {
+    StringBuffer sbLegend = new StringBuffer();
+    sbLegend.append("foo").toString();
+  }
 }
      ]]></code>
     </test-code>

@@ -45,7 +45,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     }
 
     public static final int DEFAULT_BUFFER_SIZE = 16;	// as specified in StringBuffer & StringBuilder
-    
+
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isEither(node.getNameDeclaration(), StringBuffer.class, StringBuilder.class)) {
@@ -181,17 +181,21 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
     private int processNode(Node sn) {
         int anticipatedLength = 0;
-        ASTPrimaryPrefix xn = sn.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-        if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0) instanceof ASTLiteral) {
-            String str = xn.jjtGetChild(0).getImage();
-            if (str != null) {
-	            if(isLiteral(str)){
-	                anticipatedLength += str.length() - 2;
-	            } else if(str.startsWith("0x")){
-	                anticipatedLength += 1;
-	            } else {
-	                anticipatedLength += str.length();
-	            }
+        if ( sn != null ) {
+            ASTPrimaryPrefix xn = sn.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+            if ( xn != null ) {
+                if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0) instanceof ASTLiteral) {
+                    String str = xn.jjtGetChild(0).getImage();
+                    if (str != null) {
+	                    if(isLiteral(str)){
+	                        anticipatedLength += str.length() - 2;
+	                    } else if(str.startsWith("0x")){
+	                    anticipatedLength += 1;
+	                    } else {
+	                        anticipatedLength += str.length();
+	                    }
+                    }
+                }
             }
         }
         return anticipatedLength;
@@ -258,7 +262,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
 
     private int getInitialLength(Node node) {
-	
+
     	Node block = node.getFirstParentOfType(ASTBlockStatement.class);
 
         if (block == null) {
