@@ -88,4 +88,25 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+3496028: False-
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void m() {
+    switch (s) {
+     case 0 :
+      s2 = s ;
+      case 1 :
+     s2 = (short)(s + 1);
+      break;
+    default :
+   s2 = (short)(s + 2);
+  }
+ }
+}
+     ]]></code>
+  </test-code>
 </test-data>
