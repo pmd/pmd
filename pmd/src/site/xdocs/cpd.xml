@@ -137,8 +137,8 @@ $ java -Xmx512m net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/lo
        </source>
 
        </subsection>
-
-     <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
+   <p>Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0). This behavior has been introduced to ease CPD integration into scrips or
+       hook, such as SVN hooks.</p>
 
    </section>
   </body>

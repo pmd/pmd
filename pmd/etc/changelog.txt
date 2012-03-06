@@ -29,6 +29,11 @@ TODO - Release blockers - Must implement before this release can be finally fini
 Fixed bug 3470274: Using Label for lines in XMLRenderer
 Fixed bug 3175710: NPE in InsufficientStringBufferDeclaration
 
+
+CPD:
+- Exit with status code 4 when CPD detects code duplication (Patch ID: 3497021)
+
+
 ---
 
 

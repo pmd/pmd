@@ -21,7 +21,8 @@ public class CPD {
     private static final int MISSING_FILES = 1;
 	private static final int MISSING_ARGS = 2;
 	private static final int MISSING_REQUIRED_ARGUMENT = 3;
-	
+	private static final int DUPLICATE_CODE_FOUND = 4;
+
 	private Map<String, SourceCode> source = new TreeMap<String, SourceCode>();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
@@ -220,7 +221,10 @@ public class CPD {
             }
 
             cpd.go();
-            System.out.println(renderer.render(cpd.getMatches()));
+            if(cpd.getMatches().hasNext()) {
+                System.out.println(renderer.render(cpd.getMatches()));
+                System.exit(DUPLICATE_CODE_FOUND);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

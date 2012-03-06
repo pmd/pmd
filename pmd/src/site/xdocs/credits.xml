@@ -327,6 +327,7 @@
             <li>Suresh - new rule DontUseFloatTypeForLoopIndices</li>
             <li>Dinesh Bolkensteyn and SonarSource - Java 7 grammar support</li>
             <li>Tom Wheeler - contribute a launch script for CPD GUI</li>
+            <li>Remi Delmas - change CPD CLI to return a non null value when code duplication is found.</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
