@@ -29,7 +29,7 @@ final class Version {
     }
 
     public static String version() {
-        return "4.2.5.2.0";
+        return "10.1.3.4300";
     }
 
     static String getJdevHome() {

@@ -64,6 +64,14 @@
                   <url path="lib/"/>
                </list>
             </hash>
+            <hash>
+               <list n="pattern-filters">
+                  <string v="+**"/>
+               </list>
+               <list n="url-path">
+                  <url path="conf/"/>
+               </list>
+            </hash>
          </list>
          <list n="url-path"/>
       </hash>
@@ -108,13 +116,13 @@
             <value n="custom" v="false"/>
             <value n="javaOptions" v=""/>
             <value n="name" v="Default"/>
-            <url n="targetURL" path="../../../../../../../Oracle/10gJD10134/jdev/bin/jdev.conf"/>
+            <url n="targetURL" protocol="file" path="/Oracle/10gJD10134/jdev/bin/jdev.conf"/>
          </hash>
          <hash n="Verbose">
             <value n="custom" v="false"/>
             <value n="javaOptions" v="-verbose:class"/>
             <value n="name" v="Verbose"/>
-            <url n="targetURL" path="../../../../../../../Oracle/10gJD10134/jdev/bin/jdev.conf"/>
+            <url n="targetURL" protocol="file" path="/Oracle/10gJD10134/jdev/bin/jdev.conf"/>
          </hash>
       </hash>
       <list n="runConfigurationList">
@@ -125,30 +133,42 @@
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
       <list n="exportedReferences">
          <hash>
-            <url n="id" path="../../../../../../../Oracle/10gJD10133/jdev/system/oracle.jdeveloper.10.1.3.41.57/PMD 4.2.5.library"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
             <value n="id" v="JDeveloper Extension SDK"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
             <value n="id" v="Oracle Java Compiler"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <value n="id" v="Pmd-4.3.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
-      <hash n="internalDefinitions"/>
+      <hash n="internalDefinitions">
+         <list n="libraryDefinitions">
+            <hash>
+               <list n="classPath">
+                  <url path="lib/pmd-4.3.jar" jar-entry=""/>
+               </list>
+               <value n="deployedByDefault" v="true"/>
+               <value n="description" v="Pmd-4.3.jar"/>
+               <value n="id" v="Pmd-4.3.jar"/>
+               <value n="locked" v="true"/>
+            </hash>
+         </list>
+      </hash>
       <list n="libraryReferences">
-         <hash>
-            <url n="id" path="../../../../../../../Oracle/10gJD10133/jdev/system/oracle.jdeveloper.10.1.3.41.57/PMD 4.2.5.library"/>
-            <value n="isJDK" v="false"/>
-         </hash>
          <hash>
             <value n="id" v="JDeveloper Extension SDK"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
             <value n="id" v="Oracle Java Compiler"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <value n="id" v="Pmd-4.3.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>

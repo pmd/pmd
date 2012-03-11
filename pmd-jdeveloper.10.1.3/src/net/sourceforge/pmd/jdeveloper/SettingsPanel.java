@@ -51,8 +51,7 @@ import oracle.ide.panels.TraversableContext;
 public class SettingsPanel extends DefaultTraversablePanel {
 
     private static final String PLUGIN_HOME =
-        "/extensions/net.sourceforge.pmd.jdeveloper." + Version.version() +
-        "/conf/";
+        "/extensions/net.sourceforge.pmd.jdeveloper/conf/";
     private static final String PLUGIN_PROPS =
         PLUGIN_HOME + "pmd.plugin.properties";
     private static final String RULE_PROPS =
