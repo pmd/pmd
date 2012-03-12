@@ -26,7 +26,7 @@ public class JavaTokenizer implements Tokenizer {
     }
 
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-	StringBuffer buffer = sourceCode.getCodeBuffer();
+	StringBuilder buffer = sourceCode.getCodeBuffer();
 
 	/*
 	I'm doing a sort of State pattern thing here where

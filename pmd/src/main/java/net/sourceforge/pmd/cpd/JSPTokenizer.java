@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.jsp.ast.Token;
 public class JSPTokenizer implements Tokenizer {
 
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-	StringBuffer buffer = sourceCode.getCodeBuffer();
+	StringBuilder buffer = sourceCode.getCodeBuffer();
 	LanguageVersionHandler languageVersionHandler = Language.JSP.getDefaultVersion().getLanguageVersionHandler();
 	TokenManager tokenMgr = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
 		.getTokenManager(sourceCode.getFileName(), new StringReader(buffer.toString()));

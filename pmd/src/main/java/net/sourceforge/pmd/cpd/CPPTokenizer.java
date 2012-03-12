@@ -15,7 +15,7 @@ import net.sourceforge.pmd.util.IOUtil;
 public class CPPTokenizer implements Tokenizer {
 
 	public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-		StringBuffer buffer = sourceCode.getCodeBuffer();
+		StringBuilder buffer = sourceCode.getCodeBuffer();
 		StringReader reader = null;
 		try {
 			LanguageVersionHandler languageVersionHandler = LanguageVersion.CPP.getLanguageVersionHandler();

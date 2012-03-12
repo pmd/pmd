@@ -113,12 +113,11 @@ public class SourceCode {
 	return cl.getCode();
     }
 
-    public StringBuffer getCodeBuffer() {
-	StringBuffer sb = new StringBuffer();
+    public StringBuilder getCodeBuffer() {
+	StringBuilder sb = new StringBuilder();
 	List<String> lines = cl.getCode();
 	for (String line : lines) {
-	    sb.append(line);
-	    sb.append(PMD.EOL);
+	    sb.append(line).append(PMD.EOL);
 	}
 	return sb;
     }

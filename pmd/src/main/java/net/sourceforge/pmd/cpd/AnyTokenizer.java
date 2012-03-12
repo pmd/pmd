@@ -19,7 +19,7 @@ public class AnyTokenizer implements Tokenizer {
     public static final String TOKENS = " \t!#$%^&*(){}-=+<>/\\`~;:";
 
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        StringBuffer sb = sourceCode.getCodeBuffer();
+        StringBuilder sb = sourceCode.getCodeBuffer();
         BufferedReader reader = new BufferedReader(new CharArrayReader(sb.toString().toCharArray()));
         try {
             int lineNumber = 1;

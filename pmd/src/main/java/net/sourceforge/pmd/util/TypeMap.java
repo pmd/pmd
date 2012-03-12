@@ -137,7 +137,7 @@ public class TypeMap {
      * @param value
      */
     private void storeShortest(Map<Class<?>, String> map, Class<?> key, String value) {
-        String existingValue = (String) map.get(key);
+        String existingValue = map.get(key);
 
         if (existingValue == null) {
             map.put(key, value);
