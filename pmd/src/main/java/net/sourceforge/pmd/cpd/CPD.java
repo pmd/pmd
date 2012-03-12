@@ -149,7 +149,7 @@ public class CPD {
             }
         }
         System.out.println("No " + name + " value passed in");
-        usage();
+        showUsage();
         System.exit(MISSING_REQUIRED_ARGUMENT);
         return "";
     }
@@ -178,14 +178,14 @@ public class CPD {
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            usage();
+        	showUsage();
             System.exit(MISSING_ARGS);
         }
 
         try {
             String languageString = findOptionalStringValue(args, "--language", "java");
             String formatString = findOptionalStringValue(args, "--format", "text");
-            final String systemDefaultEncoding = (String) System.getProperty("file.encoding");
+            final String systemDefaultEncoding = System.getProperty("file.encoding");
             String encodingString = findOptionalStringValue(args, "--encoding", systemDefaultEncoding);
             if ( ! systemDefaultEncoding.equals(encodingString) ) System.setProperty("file.encoding", encodingString);
             int minimumTokens = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
@@ -216,7 +216,7 @@ public class CPD {
 
             if ( missingFiles ) {
 	            System.out.println("No " + "--files" + " value passed in");
-	            usage();
+	            showUsage();
 	            System.exit(MISSING_FILES);
             }
 
@@ -230,7 +230,7 @@ public class CPD {
         }
     }
 
-    private static void usage() {
+    private static void showUsage() {
         System.out.println("Usage:");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv|vs)] [--skip-duplicate-files] ");
         System.out.println("i.e: ");
