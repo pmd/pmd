@@ -40,19 +40,17 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleSetWriter;
+import net.sourceforge.pmd.RuleSets;
 
-import oracle.ide.Ide;
 import oracle.ide.panels.DefaultTraversablePanel;
 import oracle.ide.panels.TraversableContext;
 
 
-public class SettingsPanel extends DefaultTraversablePanel {
+public class PmdSettingsPanel extends DefaultTraversablePanel {
 
     private static final String PLUGIN_HOME =
-        "/extensions/net.sourceforge.pmd.jdeveloper." + Version.version() +
-        "/conf/";
+        "/extensions/net.sourceforge.pmd.jdeveloper/conf/";
     private static final String PLUGIN_PROPS =
         PLUGIN_HOME + "pmd.plugin.properties";
     private static final String RULE_PROPS =
@@ -86,15 +84,15 @@ public class SettingsPanel extends DefaultTraversablePanel {
 
     private class FindListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent evt) {
-            FileDialog fdlg =
+        public void actionPerformed(final ActionEvent evt) {
+            final FileDialog fdlg =
                 new FileDialog(new Frame(), "Find", FileDialog.LOAD);
             fdlg.setVisible(true);
-            String selected = fdlg.getDirectory() + fdlg.getFile();
+            final String selected = fdlg.getDirectory() + fdlg.getFile();
             if (fdlg.getFile() == null) {
                 return;
             }
-            selectedRulesSeparateFileNameField.setText(selected);
+            rulesSeparateFile.setText(selected);
         }
     }
 
@@ -178,41 +176,42 @@ public class SettingsPanel extends DefaultTraversablePanel {
     public static final String SEL_FILENAME = "pmd.settings.separate.name";
 
     private final transient JTextArea exampleTextArea = new JTextArea(10, 50);
-    private JCheckBox selectedRulesStoredSeparatelyBox;
-    private JTextField selectedRulesSeparateFileNameField = new JTextField(30);
-    private transient SelectedRules rules;
+    private transient JCheckBox rulesStoredSepBox;
+    private final transient JTextField rulesSeparateFile = new JTextField(30);
+    private transient PmdSelectedRules rules;
     private transient JList rulesList;
     private static FileStorage pluginProps =
         new FileStorage(new File(Version.getJdevHome() + PLUGIN_PROPS));
 
     public static SettingsStorage createSettingsStorage() {
+        FileStorage fileStorage = new FileStorage(new File(Version.getJdevHome() + RULE_PROPS));
         try {
             if (Boolean.valueOf(pluginProps.load(STORED_SEPARATELY)).booleanValue()) {
-                return new FileStorage(new File(pluginProps.load(SEL_FILENAME)));
+                fileStorage = new FileStorage(new File(pluginProps.load(SEL_FILENAME)));
             }
         } catch (SettingsException se) {
             Util.logMessage(se.getStackTrace());
-            Util.showError(se, Plugin.PMD_TITLE);
+            Util.showError(se, PmdAddin.PMD_TITLE);
         }
-        return new FileStorage(new File(Version.getJdevHome() + RULE_PROPS));
+        return fileStorage;
     }
 
 
     public void onEntry(final TraversableContext tcon) {
         removeAll();
         try {
-            rules = new SelectedRules(createSettingsStorage());
+            rules = new PmdSelectedRules(createSettingsStorage());
         } catch (RuleSetNotFoundException rsne) {
             Util.logMessage(rsne.getStackTrace());
-            Util.showError(rsne, Plugin.PMD_TITLE);
+            Util.showError(rsne, PmdAddin.PMD_TITLE);
         }
 
         try {
-            selectedRulesStoredSeparatelyBox =
+            rulesStoredSepBox =
                     new JCheckBox("", Boolean.valueOf(pluginProps.load(STORED_SEPARATELY)).booleanValue());
         } catch (SettingsException se) {
             Util.logMessage(se.getStackTrace());
-            Util.showError(se, Plugin.PMD_TITLE);
+            Util.showError(se, PmdAddin.PMD_TITLE);
         }
         final JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(createTopPanel(), BorderLayout.NORTH);
@@ -263,40 +262,40 @@ public class SettingsPanel extends DefaultTraversablePanel {
     private JPanel createTopPanel() {
 
         try {
-            selectedRulesSeparateFileNameField.setText(pluginProps.load(SEL_FILENAME));
-            selectedRulesStoredSeparatelyBox.setSelected(Boolean.valueOf(pluginProps.load(STORED_SEPARATELY)).booleanValue());
+            rulesSeparateFile.setText(pluginProps.load(SEL_FILENAME));
+            rulesStoredSepBox.setSelected(Boolean.valueOf(pluginProps.load(STORED_SEPARATELY)).booleanValue());
         } catch (SettingsException se) {
             Util.logMessage(se.getStackTrace());
-            Util.showError(se, Plugin.PMD_TITLE);
+            Util.showError(se, PmdAddin.PMD_TITLE);
         }
-        JPanel topPanel = new JPanel(new BorderLayout());
-        JPanel customStoragePanel = new JPanel(new BorderLayout());
-        customStoragePanel.setBorder(BorderFactory.createTitledBorder("Settings storage"));
+        final JPanel topPanel = new JPanel(new BorderLayout());
+        final JPanel custStoragePanel = new JPanel(new BorderLayout());
+        custStoragePanel.setBorder(BorderFactory.createTitledBorder("Settings storage"));
 
-        JPanel customStorageCheckBoxPanel = new JPanel();
-        customStorageCheckBoxPanel.add(new JLabel("Use centrally managed rule settings?"));
-        customStorageCheckBoxPanel.add(selectedRulesStoredSeparatelyBox);
-        customStoragePanel.add(customStorageCheckBoxPanel, BorderLayout.NORTH);
+        final JPanel custStorCheckBox = new JPanel();
+        custStorCheckBox.add(new JLabel("Use centrally managed rule settings?"));
+        custStorCheckBox.add(rulesStoredSepBox);
+        custStoragePanel.add(custStorCheckBox, BorderLayout.NORTH);
 
-        JPanel customStorageTextFieldPanel = new JPanel();
-        customStorageTextFieldPanel.add(new JLabel("File:"));
-        customStorageTextFieldPanel.add(selectedRulesSeparateFileNameField);
-        JButton findButton = new JButton("Find file");
+        final JPanel custStorTxtField = new JPanel();
+        custStorTxtField.add(new JLabel("File:"));
+        custStorTxtField.add(rulesSeparateFile);
+        final JButton findButton = new JButton("Find file");
         findButton.addActionListener(new FindListener());
-        customStorageTextFieldPanel.add(findButton);
+        custStorTxtField.add(findButton);
 
-        customStoragePanel.add(customStorageTextFieldPanel,
+        custStoragePanel.add(custStorTxtField,
                                BorderLayout.SOUTH);
-        topPanel.add(customStoragePanel, BorderLayout.CENTER);
+        topPanel.add(custStoragePanel, BorderLayout.CENTER);
         return topPanel;
     }
 
     public void onExit(final TraversableContext tcon) {
         final Properties properties = new Properties();
         properties.setProperty(STORED_SEPARATELY,
-                               String.valueOf(selectedRulesStoredSeparatelyBox.isSelected()));
+                               String.valueOf(rulesStoredSepBox.isSelected()));
         properties.setProperty(SEL_FILENAME,
-                               selectedRulesSeparateFileNameField.getText());
+                               rulesSeparateFile.getText());
         try {
             pluginProps.save(properties);
             rules.save(createSettingsStorage());
@@ -324,7 +323,7 @@ public class SettingsPanel extends DefaultTraversablePanel {
             ruleSets = factory.createRuleSets(fileLocation);
         } catch (RuleSetNotFoundException e) {
             Util.logMessage(e.getStackTrace());
-            Util.showError(e, Plugin.PMD_TITLE);
+            Util.showError(e, PmdAddin.PMD_TITLE);
         }
         if (ruleSets == null) {
             Util.logMessage("No rules to import");
@@ -363,7 +362,7 @@ public class SettingsPanel extends DefaultTraversablePanel {
             outputStream.flush();
         } catch (IOException e) {
             Util.logMessage(e.getStackTrace());
-            Util.showError(e, Plugin.PMD_TITLE);
+            Util.showError(e, PmdAddin.PMD_TITLE);
         } finally {
             if (outputStream != null) {
                 try {
@@ -371,7 +370,7 @@ public class SettingsPanel extends DefaultTraversablePanel {
                     outputStream.close();
                 } catch (IOException e) {
                     Util.logMessage(e.getStackTrace());
-                    Util.showError(e, Plugin.PMD_TITLE);
+                    Util.showError(e, PmdAddin.PMD_TITLE);
                 }
             }
         }

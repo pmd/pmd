@@ -14,7 +14,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
 
-public class SelectedRules {
+public class PmdSelectedRules {
 
     // Rule -> JCheckBox
     private final transient Map<Rule, JCheckBox> rules = 
@@ -24,7 +24,7 @@ public class SelectedRules {
                 }
             });
 
-    public SelectedRules(final SettingsStorage settings) throws RuleSetNotFoundException {
+    public PmdSelectedRules(final SettingsStorage settings) throws RuleSetNotFoundException {
         final RuleSetFactory rsf = new RuleSetFactory();
         for (final Iterator<RuleSet> iter = rsf.getRegisteredRuleSets(); 
              iter.hasNext(); ) {
@@ -49,7 +49,7 @@ public class SelectedRules {
         final SettingsException exc = 
             new SettingsException("Couldn't find a rule that mapped to the passed in JCheckBox " + 
                                   candidate);
-        Util.showError(exc, Plugin.PMD_TITLE);
+        Util.showError(exc, PmdAddin.PMD_TITLE);
         return null;
     }
 
@@ -87,7 +87,7 @@ public class SelectedRules {
             box.setSelected(load(settings, name));
         } catch (SettingsException se) {
             Util.logMessage(se.getStackTrace());
-            Util.showError(se, Plugin.PMD_TITLE);
+            Util.showError(se, PmdAddin.PMD_TITLE);
         }
         return box;
     }

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension xmlns="http://jcp.org/jsr/198/extension-manifest"
+           id="net.sourceforge.pmd.jdeveloper" version="11.1.1"
+           esdk-version="1.0">
+  <name>PMD JDeveloper Extension</name>
+  <owner>Torsten Kleiber</owner>
+  <dependencies>
+    <import>oracle.ide</import>
+    <import>oracle.ide.ceditor</import>
+    <import>oracle.jdeveloper</import>
+    <import>oracle.javacore</import>
+  </dependencies>
+  <classpaths>
+    <classpath>net.sourceforge.pmd.jdeveloper/lib/asm-3.2.jar</classpath>
+    <classpath>net.sourceforge.pmd.jdeveloper/lib/jaxen-1.1.1.jar</classpath>
+    <classpath>net.sourceforge.pmd.jdeveloper/lib/pmd-4.3.jar</classpath>
+    <!--classpath>../../ide/extensions/oracle.ide.ceditor.jar</classpath-->
+    <!--classpath>../../ide/extensions/oracle.ide.jar</classpath-->
+    <classpath>../../ide/lib/idert.jar</classpath>
+    <classpath>../../ide/lib/javatools.jar</classpath>
+    <!--classpath>../../jdev/extensions/oracle.javacore.jar</classpath-->
+    <classpath>../../../oracle_common/modules/oracle.javatools_11.1.1/javatools-nodeps.jar</classpath>
+  </classpaths>
+  <hooks>
+    <jdeveloper-hook xmlns="http://xmlns.oracle.com/jdeveloper/1013/extension">
+      <addins>
+        <addin>net.sourceforge.pmd.jdeveloper.PmdAddin</addin>
+      </addins>
+      <actions>
+        <action id="net.sourceforge.pmd.jdeveloper.CheckPmd">
+          <properties>
+            <property name="Name">PMD</property>
+            <property name="SmallIcon">res:/net/sourceforge/pmd/jdeveloper/icons/pmd-icon-16.png</property>
+          </properties>
+          <controller-class>net.sourceforge.pmd.jdeveloper.PmdController</controller-class>
+          <command-class>net.sourceforge.pmd.jdeveloper.PmdCommand</command-class>
+        </action>
+      </actions>
+      <context-menu-listeners>
+        <site idref="navigator">
+          <listener-class>net.sourceforge.pmd.jdeveloper.PmdContextMenuListener</listener-class>
+        </site>
+        <site idref="editor">
+          <listener-class>net.sourceforge.pmd.jdeveloper.PmdContextMenuListener</listener-class>
+        </site>
+        <site idref="explorer">
+          <listener-class>net.sourceforge.pmd.jdeveloper.PmdContextMenuListener</listener-class>
+        </site>
+      </context-menu-listeners>
+    </jdeveloper-hook>
+    <menu-hook>
+      <menus>
+        <menubar id="javax.ide.view.MAIN_WINDOW_MENUBAR_ID">
+          <menu id="javax.ide.FILE_MENU_ID">
+            <section id="net.sourceforge.pmd.jdeveloper.menu.section"
+                     before="javax.ide.NEW_SECTION_ID">
+              <item action-ref="net.sourceforge.pmd.jdeveloper.CheckPmd"></item>
+            </section>
+          </menu>
+        </menubar>
+      </menus>
+      <toolbars>
+        <toolbar id="javax.ide.view.MAIN_WINDOW_TOOLBAR_ID">
+          <section id="net.sourceforge.pmd.jdeveloper.toolbar.section"
+                   after="javax.ide.NEW_SECTION_ID">
+            <item action-ref="net.sourceforge.pmd.jdeveloper.CheckPmd"></item>
+          </section>
+        </toolbar>
+      </toolbars>
+    </menu-hook>
+    <feature-hook>
+      <description>Provides integrated support for PMD 4.2.5 in JDeveloper 11g.</description>
+      <optional>false</optional>
+    </feature-hook>
+    <settings-ui-hook xmlns="http://xmlns.oracle.com/ide/extension">
+      <page id="net.sourceforge.pmd.jdeveloper.SettingsPanel"
+            parent-idref="/preferences">
+        <label>PMD</label>
+        <traversable-class>net.sourceforge.pmd.jdeveloper.PmdSettingsPanel</traversable-class>
+      </page>
+    </settings-ui-hook>
+  </hooks>
+</extension>

@@ -42,27 +42,28 @@ public class FileStorage implements SettingsStorage {
             fos.close();
         } catch (FileNotFoundException e) {
             Util.logMessage(e.getStackTrace());
-            Util.showError(e, Plugin.PMD_TITLE);
+            Util.showError(e, PmdAddin.PMD_TITLE);
         } catch (IOException e) {
             Util.logMessage(e.getStackTrace());
-            Util.showError(e, Plugin.PMD_TITLE);
+            Util.showError(e, PmdAddin.PMD_TITLE);
         }
     }
 
     public String load(final String key) throws SettingsException {
+        String sRet = "false";
         try {
             if (file.exists()) {
                 final Properties properties = new Properties();
                 final FileInputStream fis = new FileInputStream(file);
                 properties.load(fis);
                 fis.close();
-                return properties.getProperty(key);
+                sRet = properties.getProperty(key);
             }
         } catch (IOException e) {
             Util.logMessage(e.getStackTrace());
-            Util.showError(e, Plugin.PMD_TITLE);
+            Util.showError(e, PmdAddin.PMD_TITLE);
         }
-        return "false";
+        return sRet;
     }
 
 }

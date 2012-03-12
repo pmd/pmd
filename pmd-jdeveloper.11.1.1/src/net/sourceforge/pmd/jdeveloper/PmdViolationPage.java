@@ -5,10 +5,10 @@ import java.util.List;
 import oracle.jdeveloper.compiler.CompilerPage;
 
 
-public class RuleViolationPage extends CompilerPage {
+public class PmdViolationPage extends CompilerPage {
 
-    public RuleViolationPage() {
-        super(Plugin.PMD_TITLE, Plugin.PMD_TITLE, null);
+    public PmdViolationPage() {
+        super(PmdAddin.PMD_TITLE, PmdAddin.PMD_TITLE, null);
     }
 
     public void add(final List list) {

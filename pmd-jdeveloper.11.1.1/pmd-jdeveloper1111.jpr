@@ -77,7 +77,7 @@
    <value n="dvt-graph-visible-to-rendered" v="true"/>
    <hash n="extensiondtProperties">
       <value n="extensiondt.manageclasspath" v="true"/>
-      <url n="extensiondt.manifest" path="etc/extension.xml"/>
+      <url n="extensiondt.manifest" path="src/META-INF/extension.xml"/>
    </hash>
    <hash n="oracle.adfdtinternal.model.ide.settings.ADFMSettings">
       <hash n="adfmContentSet">
@@ -135,6 +135,8 @@
    </hash>
    <hash n="oracle.jdeveloper.compiler.OjcConfiguration">
       <value n="internalEncoding" v="Cp1252"/>
+      <value n="source" v="Default"/>
+      <value n="target" v="Default"/>
    </hash>
    <hash n="oracle.jdeveloper.deploy.dt.DeploymentProfiles">
       <hash n="profileDefinitions">
@@ -287,13 +289,13 @@
             <value n="custom" v="false"/>
             <value n="javaOptions" v=""/>
             <value n="name" v="Default"/>
-            <url n="targetURL" path="../../../../../../../Oracle/11gJD111110/jdeveloper/jdev/bin/jdev.conf"/>
+            <url n="targetURL" protocol="file" path="/Oracle/11gJD111110/jdeveloper/jdev/bin/jdev.conf"/>
          </hash>
          <hash n="Verbose">
             <value n="custom" v="false"/>
             <value n="javaOptions" v="-verbose:class"/>
             <value n="name" v="Verbose"/>
-            <url n="targetURL" path="../../../../../../../Oracle/11gJD111110/jdeveloper/jdev/bin/jdev.conf"/>
+            <url n="targetURL" protocol="file" path="/Oracle/11gJD111110/jdeveloper/jdev/bin/jdev.conf"/>
          </hash>
       </hash>
       <list n="runConfigurationList">
@@ -304,22 +306,26 @@
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
       <list n="exportedReferences">
          <hash>
-            <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.0.22.49.49/o.jdeveloper/pmd-4.2.5.library"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.1.33.54.07/o.jdeveloper/Extension SDK Documentation.library"/>
+            <value n="id" v="Pmd-4.3.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
-      <hash n="internalDefinitions"/>
+      <hash n="internalDefinitions">
+         <list n="libraryDefinitions">
+            <hash>
+               <list n="classPath">
+                  <url path="lib/pmd-4.3.jar" jar-entry=""/>
+               </list>
+               <value n="deployedByDefault" v="true"/>
+               <value n="description" v="Pmd-4.3.jar"/>
+               <value n="id" v="Pmd-4.3.jar"/>
+               <value n="locked" v="true"/>
+            </hash>
+         </list>
+      </hash>
       <list n="libraryReferences">
          <hash>
-            <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.0.22.49.49/o.jdeveloper/pmd-4.2.5.library"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.1.33.54.07/o.jdeveloper/Extension SDK Documentation.library"/>
+            <value n="id" v="Pmd-4.3.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
@@ -357,5 +363,8 @@
             <url path="toplink/"/>
          </list>
       </hash>
+   </hash>
+   <hash n="ResourceBundleOptions">
+      <list n="RegisteredResourceBundles"/>
    </hash>
 </jpr:project>
