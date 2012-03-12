@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<extension xmlns="http://jcp.org/jsr/198/extension-manifest" id="net.sourceforge.pmd.jdeveloper" version="4.2.6.4"
+<extension xmlns="http://jcp.org/jsr/198/extension-manifest" id="net.sourceforge.pmd.jdeveloper" version="11.1.2.4300"
            esdk-version="1.0">
     <name>PMD JDeveloper Extension</name>
     <owner>Torsten Kleiber</owner>
@@ -113,7 +113,7 @@
                 <menus>
                     <menubar id="javax.ide.view.MAIN_WINDOW_MENUBAR_ID">
                         <menu id="javax.ide.FILE_MENU_ID">
-                            <section id="esdksample.customsection" before="javax.ide.NEW_SECTION_ID">
+                            <section id="net.sourceforge.pmd.jdeveloper.menu.section" before="javax.ide.NEW_SECTION_ID">
                                 <item action-ref="net.sourceforge.pmd.jdeveloper.CheckPmd"></item>
                             </section>
                         </menu>
@@ -121,7 +121,7 @@
                 </menus>
                 <toolbars>
                     <toolbar id="javax.ide.view.MAIN_WINDOW_TOOLBAR_ID">
-                        <section id="javax.ide.tck.toolbar.testsection" after="javax.ide.NEW_SECTION_ID">
+                        <section id="net.sourceforge.pmd.jdeveloper.toolbar.section" after="javax.ide.NEW_SECTION_ID">
                             <item action-ref="net.sourceforge.pmd.jdeveloper.CheckPmd"></item>
                         </section>
                     </toolbar>
@@ -137,7 +137,7 @@
     </trigger-hooks>
     <hooks>
         <feature-hook>
-            <description>Provides integrated support for PMD 4.2.5 in JDeveloper 11g.</description>
+            <description>Provides integrated support for PMD 4.3 in JDeveloper 11g.</description>
             <optional>true</optional>
         </feature-hook>
         <jdeveloper-hook xmlns="http://xmlns.oracle.com/jdeveloper/1013/extension">

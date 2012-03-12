@@ -40,8 +40,7 @@ import oracle.jdeveloper.model.JavaSourceNode;
 public class PmdCommand extends Command {
 
     public static final int RUN_PMD_CMD_ID = Ide.findCmdID("net.sourceforge.pmd.jdeveloper.CheckPmd");
-    private transient final PmdViolationPage pmdViolationPage = new PmdViolationPage();
-    private transient final  Map pmdFileToNodeMap = new HashMap(); // whew, this is kludgey
+    private transient Map pmdFileToNodeMap = new HashMap(); // whew, this is kludgey
 
     public PmdCommand() {
         super(RUN_PMD_CMD_ID);
@@ -90,7 +89,7 @@ public class PmdCommand extends Command {
     }
 
     private void addLogPage() {
-        LogManager.getLogManager().addPage(pmdViolationPage);
+        LogManager.getLogManager().addPage(PmdAddin.pmdViolationPage);
         LogManager.getLogManager().showLog();
         PmdAddin.added = true;
     }
@@ -115,8 +114,8 @@ public class PmdCommand extends Command {
     }
 
     private void render(final RuleContext ctx) {
-        pmdViolationPage.show();
-        pmdViolationPage.clearAll();
+        PmdAddin.pmdViolationPage.show();
+        PmdAddin.pmdViolationPage.clearAll();
         if (ctx.getReport().isEmpty()) {
             JOptionPane.showMessageDialog(null, "No problems found", PmdAddin.PMD_TITLE,
                                           JOptionPane.INFORMATION_MESSAGE);
@@ -132,7 +131,7 @@ public class PmdCommand extends Command {
                 list.add(new IdeLog.Message(Ide.getActiveWorkspace(), Ide.getActiveProject(), new IdeStorage(node),
                                             viol.getDescription(), 2, viol.getBeginLine(), viol.getBeginColumn()));
             }
-            pmdViolationPage.add(list);
+            PmdAddin.pmdViolationPage.add(list);
         }
     }
 }

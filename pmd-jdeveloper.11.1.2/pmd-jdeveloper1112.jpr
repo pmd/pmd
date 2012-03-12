@@ -158,6 +158,7 @@
    <hash n="oracle.jdeveloper.compiler.ant.AntConfiguration"/>
    <hash n="oracle.jdeveloper.compiler.OjcConfiguration">
       <value n="internalEncoding" v="Cp1252"/>
+      <value n="target" v="1.7"/>
    </hash>
    <hash n="oracle.jdeveloper.deploy.dt.DeploymentProfiles">
       <hash n="profileDefinitions">
@@ -167,7 +168,7 @@
                   <url path="src/META-INF/MANIFEST.MF"/>
                </list>
                <value n="bundleSymbolicName" v="net.sourceforge.pmd.jdeveloper"/>
-               <value n="bundleVersion" v="4.2.6.4"/>
+               <value n="bundleVersion" v="11.1.2.4260"/>
                <value n="hasManifest" v="true"/>
             </hash>
             <hash n="exportDefinition">
@@ -334,7 +335,7 @@
             <value n="javaOptions" v=""/>
             <value n="name" v="Default"/>
             <value n="programArguments" v="-clean"/>
-            <value n="targetURL"/>
+            <url n="targetURL" protocol="file" path="/C:/Oracle/11gJD11120/jdeveloper/jdev/bin/jdev.conf"/>
          </hash>
          <hash n="Verbose">
             <value n="custom" v="false"/>
@@ -351,7 +352,7 @@
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
       <list n="exportedReferences">
          <hash>
-            <value n="id" v="Pmd-4.2.6.jar"/>
+            <value n="id" v="Pmd-4.3.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
@@ -359,18 +360,18 @@
          <list n="libraryDefinitions">
             <hash>
                <list n="classPath">
-                  <url path="lib/pmd-4.2.6.jar" jar-entry=""/>
+                  <url path="lib/pmd-4.3.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Pmd-4.2.6.jar"/>
-               <value n="id" v="Pmd-4.2.6.jar"/>
+               <value n="description" v="Pmd-4.3.jar"/>
+               <value n="id" v="Pmd-4.3.jar"/>
                <value n="locked" v="true"/>
             </hash>
          </list>
       </hash>
       <list n="libraryReferences">
          <hash>
-            <value n="id" v="Pmd-4.2.6.jar"/>
+            <value n="id" v="Pmd-4.3.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>

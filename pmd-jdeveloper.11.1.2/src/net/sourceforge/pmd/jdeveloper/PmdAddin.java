@@ -10,6 +10,7 @@ public class PmdAddin implements Addin {
 
     public static final String PMD_TITLE = "PMD";
     public static boolean added = false;
+    public static PmdViolationPage pmdViolationPage;
     
     @Override
     public void initialize() {
@@ -19,6 +20,7 @@ public class PmdAddin implements Addin {
                     Ide.getVersionInfo().addComponent(PMD_TITLE, "JDeveloper Extension " + Version.version());
                 }
             }, true);
+        pmdViolationPage = new PmdViolationPage();
     }
 
 }

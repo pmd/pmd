@@ -40,18 +40,17 @@ public class PmdSelectedRules {
     }
 
     public Rule getRule(final JCheckBox candidate) {
-        Rule retRule = null;
         for (Rule rule: rules.keySet()) {
             final JCheckBox box = rules.get(rule);
             if (box.equals(candidate)) {
-                retRule = rule;
+                return rule;
             }
         }
         final SettingsException exc = 
             new SettingsException("Couldn't find a rule that mapped to the passed in JCheckBox " + 
                                   candidate);
         Util.showError(exc, PmdAddin.PMD_TITLE);
-        return retRule;
+        return null;
     }
 
     public JCheckBox get(final Object key) {

@@ -1,178 +1,152 @@
-<project name="pmd-jdeveloper1112" default="compile" basedir="../">
-    <!-- property section start -->
-    <property name="config" value="config/"/>
-    <property name="src" value="src/"/>
-    <property name="etc" value="etc/"/>
-    <property name="pmdjar" value="pmd-4.2.6.jar"/>
-    <property name="jaxenjar" value="jaxen-1.1.1.jar"/>
-    <property name="asmjar" value="asm-3.2.jar"/>
-    <!-- first to third number for the pmd plugin -->
-    <!-- fourth number JDeveloper Version 1:9.0.5-10.1.2, 2:10.1.3, 3:11.1.1, 4. 11.1.2-->
-    <!-- fifth number minor version number for the JDeveloper Plugin -->
-    <property name="pluginversion" value="4.2.6.4"/>
-    <property name="mainclass" value="net.sourceforge.pmd.jdeveloper"/>
-    <property name="oracle.commons" value="../../../Oracle/JDev111200/oracle_common"/>
-    <property name="jdeveloper.dir" value="../../../Oracle/JDev111200/jdeveloper"/>
-    <property name="jdeveloper.ext.subdir" value="jdev/extensions"/>
-    <property name="releases.dir" value="../releases"/>
-    <property name="uploadbundle.scp.user" value="***"/>
-    <property name="uploadbundle.scp.pwd" value="***"/>
-    <property name="upload.ftp.pwd" value=""/>
-    <!-- builded properties -->
-    <property name="jdeveloper.install.dir" value="${jdeveloper.dir}/${jdeveloper.ext.subdir}"/>
-    <property name="release.jarname" value="${mainclass}.jar"/>
-    <property name="release.zipname" value="${ant.project.name}-bin-${pluginversion}.zip"/>
-    <property name="release.src.zipname" value="${ant.project.name}-src-${pluginversion}.zip"/>
-    <property name="deploy.dirname" value="${jdeveloper.install.dir}/${mainclass}"/>
-    <property name="deploy.dirname.lib" value="${deploy.dirname}/lib"/>
-    <property name="deploy.dirname.conf" value="${deploy.dirname}/conf"/>
-    <property name="release.dirname" value="tmp"/>
-    <property name="release.dirname.lib" value="${release.dirname}/lib"/>
-    <property name="release.dirname.conf" value="${release.dirname}/conf"/>
-    <property name="release.jarname" value="${mainclass}.jar"/>
-    <property name="bundle.filename" value="${ant.project.name}-bundle-${pluginversion}.zip"/>
-    <!-- property section end -->
-    <path id="project.class.path">
-        <pathelement location="lib/${pmdjar}"/>
-        <pathelement location="${jdeveloper.dir}/ide/extensions/oracle.ide.ceditor.jar"/>
-        <pathelement location="${jdeveloper.dir}/ide/extensions/oracle.ide.jar"/>
-        <pathelement location="${jdeveloper.dir}/ide/lib/idert.jar"/>
-        <pathelement location="${jdeveloper.dir}/ide/lib/javax-ide.jar"/>
-        <pathelement location="${jdeveloper.dir}/ide/lib/javatools.jar"/>
-        <pathelement location="${jdeveloper.dir}/jdev/extensions/oracle.jdeveloper.build.jar"/>
-        <pathelement location="${jdeveloper.dir}/jdev/extensions/oracle.jdeveloper.java.core.jar"/>
-        <pathelement location="${oracle.commons}/modules/oracle.javatools_11.1.1/javatools-nodeps.jar"/>
-        <!--TODO Delete pathelement location="build"/-->
-    </path>
-    <target name="delete">
-        <delete file="lib/${release.jarname}"/>
-        <delete dir="build"/>
-        <delete dir="classes"/>
-    </target>
-    <target name="deletedeployed">
-        <delete dir="${deploy.dirname}"/>
-        <delete file="${jdeveloper.install.dir}/${release.jarname}"/>
-    </target>
-    <target name="compile">
-        <mkdir dir="build"/>
-        <javac srcdir="${src}" destdir="build" debug="on" deprecation="on">
-            <classpath refid="project.class.path"/>
-            <!--compilerarg value="-Xlint:unchecked"/-->
-        </javac>
-    </target>
-    <target name="jar" depends="compile">
-        <delete dir="build/META-INF/"/>
-        <mkdir dir="build/META-INF"/>
-        <copy file="src/META-INF/extension.xml" todir="build/META-INF/"/>
-        <patternset id="copy.patterns">
-            <include name="**/***/*.png"/>
-        </patternset>
-        <copy todir="build/">
-            <fileset dir="src">
-                <patternset refid="copy.patterns"/>
-            </fileset>
-        </copy>
-        <jar destfile="lib/${release.jarname}">
-            <metainf dir="build" includes="extension.xml"/>
-            <manifest>
-                <attribute name="Require-Bundle"
-                           value="oracle.ide.ceditor,oracle.jdeveloper.build,oracle.jdeveloper.java.core,oracle.icons,oracle.ide,oracle.idert,oracle.javatools,oracle.javatools-nodeps,oracle.javaxide"/>
-                <attribute name="Bundle-ClassPath"
-                           value=".,external:$ORACLE_HOME$/jdeveloper/jdev/extensions/net.sourceforge.pmd.jdeveloper/lib/${pmdjar},external:$ORACLE_HOME$/jdeveloper/jdev/extensions/net.sourceforge.pmd.jdeveloper/lib/${jaxenjar},external:$ORACLE_HOME$/jdeveloper/jdev/extensions/net.sourceforge.pmd.jdeveloper/lib/${asmjar}"/>
-                <attribute name="Bundle-Version" value="${pluginversion}"/>
-                <attribute name="Bundle-ManifestVersion" value="2"/>
-                <attribute name="Bundle-SymbolicName" value="${mainclass}"/>
-            </manifest>
-            <fileset dir="build" excludes="**/*.di,**/*.i"/>
-        </jar>
-    </target>
-    <target name="deploy" depends="delete,deletedeployed,jar">
-        <mkdir dir="${jdeveloper.install.dir}"/>
-        <copy file="lib/${release.jarname}" todir="${jdeveloper.install.dir}"/>
-        <copy file="lib/${pmdjar}" todir="${deploy.dirname.lib}"/>
-        <copy file="lib/${jaxenjar}" todir="${deploy.dirname.lib}"/>
-        <copy file="lib/${asmjar}" todir="${deploy.dirname.lib}"/>
-        <copy file="conf/pmd.plugin.properties" todir="${deploy.dirname.conf}"/>
-        <copy file="conf/pmd.rule.properties" todir="${deploy.dirname.conf}"/>
-    </target>
-    <target name="release" depends="clean,jar">
-        <mkdir dir="${release.dirname}/lib"/>
-        <copy file="lib/${release.jarname}" todir="${release.dirname}/"/>
-        <copy file="lib/${pmdjar}" todir="${release.dirname.lib}"/>
-        <copy file="lib/${jaxenjar}" todir="${release.dirname.lib}"/>
-        <copy file="lib/${asmjar}" todir="${release.dirname.lib}"/>
-        <copy file="conf/pmd.plugin.properties" todir="${release.dirname.conf}"/>
-        <copy file="conf/pmd.rule.properties" todir="${release.dirname.conf}"/>
-        <zip destfile="${release.zipname}" basedir="${release.dirname}/"/>
-        <move file="${release.zipname}" todir="${releases.dir}"/>
-        <delete dir="tmp"/>
-    </target>
-    <target name="releasesrc" depends="delete">
-        <zip destfile="${release.src.zipname}" basedir="."/>
-        <move file="${release.src.zipname}" todir="${releases.dir}"/>
-    </target>
-    <target name="clean" depends="delete,compile"></target>
-    <target name="tomserver" depends="release">
-        <echo message="Uploading zip file"></echo>
-        <exec executable="scp" os="Linux">
-            <arg line=" ${releases.dir}/${release.zipname} tom@infoether.com:public_html/"/>
-        </exec>
-    </target>
-    <target name="bundle" depends="clean,jar">
-        <delete dir="update-center-bundle/"/>
-        <mkdir dir="update-center-bundle/META-INF"/>
-        <copy file="etc/bundle.xml" todir="update-center-bundle/META-INF/"/>
-        <copy file="etc/center.xml" todir="update-center-bundle/"/>
-        <copy file="lib/${release.jarname}" todir="update-center-bundle/"/>
-        <copy file="lib/${pmdjar}" todir="update-center-bundle/${mainclass}.${pluginversion}/lib/"/>
-        <copy file="lib/${jaxenjar}" todir="update-center-bundle/${mainclass}.${pluginversion}/lib/"/>
-        <copy file="lib/${asmjar}" todir="update-center-bundle/${mainclass}.${pluginversion}/lib/"/>
-        <copy file="conf/pmd.plugin.properties" todir="update-center-bundle/${mainclass}.${pluginversion}/conf"/>
-        <copy file="conf/pmd.rule.properties" todir="update-center-bundle/${mainclass}.${pluginversion}/conf"/>
-        <zip destfile="update-center-bundle/${bundle.filename}" basedir="update-center-bundle">
-            <exclude name="center.xml"/>
-        </zip>
-        <delete>
-            <fileset dir="update-center-bundle" includes="*.jar"/>
-        </delete>
-        <delete dir="update-center-bundle/${mainclass}.${pluginversion}"/>
-        <delete dir="update-center-bundle/lib"/>
-        <delete dir="update-center-bundle/META-INF"/>
-        <move file="update-center-bundle/${bundle.filename}" todir="${releases.dir}"/>
-    </target>
-    <target name="upload" depends="release,releasesrc,bundle">
-        <ftp server="upload.sourceforge.net" userid="anonymous" password="${upload.ftp.pwd}" remotedir="incoming"
-             binary="true" passive="true">
-            <fileset dir="${release.dir}" includes="${ant.project.name}*${pluginversion}.zip"/>
-        </ftp>
-    </target>
-    <target name="uploadbundle" depends="bundle">
-        <echo message="Uploading center.xml file"></echo>
-        <scp file="${release.dir}/update-center-bundle/center.xml"
-             todir="${uploadbundle.scp.user}@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"
-             password="${uploadbundle.scp.pwd}" trust="true"></scp>
-    </target>
+<project name="pmd-jdeveloper" default="compile" basedir="../">
+  <!-- property section start -->
+  <property name="config" value="config/"/>
+  <property name="src" value="src/"/>
+  <property name="etc" value="etc/"/>
+  <property name="pmdjar" value="pmd-4.3.jar"/>
+  <property name="jaxenjar" value="jaxen-1.1.1.jar"/>
+  <property name="asmjar" value="asm-3.2.jar"/>
+  <!-- first to third number for jdeveloper family -->
+  <!-- fourth number concat of pmd version (e.g. 4.2.6) and build number (e.g. 0): 4260-->
+  <!-- fifth number minor version number for the JDeveloper Plugin -->
+  <property name="pluginversion" value="11.1.2.4300"/>
+  <property name="mainclass" value="net.sourceforge.pmd.jdeveloper"/>
+  <!-- TODO Set oracle.commons dynamic -->
+  <property name="oracle.commons" value="C:\Oracle\11gJD11121\oracle_common\"/>
+  <property name="jdeveloper.dir" value="${oracle.home}"/>
+  <property name="jdeveloper.ext.subdir" value="jdev/extensions"/>
+  <property name="releases.dir" value="../releases"/>
+  <property name="uploadbundle.scp.user" value="***"/>
+  <property name="uploadbundle.scp.pwd" value="***"/>
+  <property name="upload.ftp.pwd" value=""/>
+  <!-- builded properties -->
+  <property name="jdeveloper.install.dir" value="${jdeveloper.dir}${jdeveloper.ext.subdir}"/>
+  <property name="release.jarname" value="${mainclass}.jar"/>
+  <property name="release.zipname" value="${ant.project.name}-bin-${pluginversion}.zip"/>
+  <property name="release.src.zipname" value="${ant.project.name}-src-${pluginversion}.zip"/>
+  <property name="deploy.dirname" value="${jdeveloper.install.dir}/${mainclass}"/>
+  <property name="deploy.dirname.lib" value="${deploy.dirname}/lib"/>
+  <property name="deploy.dirname.conf" value="${deploy.dirname}/conf"/>
+  <property name="release.dirname" value="tmp"/>
+  <property name="release.dirname.lib" value="${release.dirname}/lib"/>
+  <property name="release.dirname.conf" value="${release.dirname}/conf"/>
+  <property name="release.jarname" value="${mainclass}.jar"/>
+  <property name="bundle.dirname" value="bundle"/>
+  <property name="bundle.dirname.lib" value="${bundle.dirname}/${mainclass}/lib"/>
+  <property name="bundle.dirname.conf" value="${bundle.dirname}/${mainclass}/conf"/>
+  <property name="bundle.filename" value="${ant.project.name}-bundle-${pluginversion}.zip"/>
+  <!-- property section end -->
+  <path id="project.class.path">
+    <pathelement location="lib/${pmdjar}"/>
+    <pathelement location="${jdeveloper.dir}ide/extensions/oracle.ide.ceditor.jar"/>
+    <pathelement location="${jdeveloper.dir}ide/extensions/oracle.ide.jar"/>
+    <pathelement location="${jdeveloper.dir}ide/lib/idert.jar"/>
+    <pathelement location="${jdeveloper.dir}ide/lib/javax-ide.jar"/>
+    <pathelement location="${jdeveloper.dir}ide/lib/javatools.jar"/>
+    <pathelement location="${jdeveloper.dir}jdev/extensions/oracle.jdeveloper.build.jar"/>
+    <pathelement location="${jdeveloper.dir}jdev/extensions/oracle.jdeveloper.java.core.jar"/>
+    <pathelement location="${oracle.commons}modules/oracle.javatools_11.1.1/javatools-nodeps.jar"/>
+  </path>
+  <target name="delete">
+    <delete file="lib/${release.jarname}"/>
+    <delete dir="build"/>
+    <delete dir="classes"/>
+  </target>
+  <target name="deletedeployed">
+    <delete dir="${deploy.dirname}"/>
+    <delete file="${jdeveloper.install.dir}/${release.jarname}"/>
+  </target>
+  <target name="compile">
+    <mkdir dir="build"/>
+    <javac srcdir="${src}" destdir="build" debug="on" deprecation="on">
+      <classpath refid="project.class.path"/>
+      <!--compilerarg value="-Xlint:unchecked"/-->
+    </javac>
+  </target>
+  <target name="jar" depends="compile">
+    <delete dir="build/META-INF/"/>
+    <mkdir dir="build/META-INF"/>
+    <copy file="src/META-INF/extension.xml" todir="build/META-INF/"/>
+    <patternset id="copy.patterns">
+      <include name="**/***/*.png"/>
+    </patternset>
+    <copy todir="build/">
+      <fileset dir="src">
+        <patternset refid="copy.patterns"/>
+      </fileset>
+    </copy>
+    <jar destfile="lib/${release.jarname}">
+      <metainf dir="build" includes="extension.xml"/>
+      <manifest>
+        <attribute name="Require-Bundle"
+                   value="oracle.ide.ceditor,oracle.jdeveloper.build,oracle.jdeveloper.java.core,oracle.icons,oracle.ide,oracle.idert,oracle.javatools,oracle.javatools-nodeps,oracle.javaxide"/>
+        <attribute name="Bundle-ClassPath"
+                   value=".,external:$ORACLE_HOME$/jdeveloper/jdev/extensions/net.sourceforge.pmd.jdeveloper/lib/${pmdjar},external:$ORACLE_HOME$/jdeveloper/jdev/extensions/net.sourceforge.pmd.jdeveloper/lib/${jaxenjar},external:$ORACLE_HOME$/jdeveloper/jdev/extensions/net.sourceforge.pmd.jdeveloper/lib/${asmjar}"/>
+        <attribute name="Bundle-Version" value="${pluginversion}"/>
+        <attribute name="Bundle-ManifestVersion" value="2"/>
+        <attribute name="Bundle-SymbolicName" value="${mainclass}"/>
+      </manifest>
+      <fileset dir="build" excludes="**/*.di,**/*.i"/>
+    </jar>
+  </target>
+  <target name="deploy" depends="delete,deletedeployed,jar">
+    <mkdir dir="${jdeveloper.install.dir}"/>
+    <copy file="lib/${release.jarname}" todir="${jdeveloper.install.dir}"/>
+    <copy file="lib/${pmdjar}" todir="${deploy.dirname.lib}"/>
+    <copy file="lib/${jaxenjar}" todir="${deploy.dirname.lib}"/>
+    <copy file="lib/${asmjar}" todir="${deploy.dirname.lib}"/>
+    <copy file="conf/pmd.plugin.properties" todir="${deploy.dirname.conf}"/>
+    <copy file="conf/pmd.rule.properties" todir="${deploy.dirname.conf}"/>
+  </target>
+  <target name="release" depends="clean,jar">
+    <mkdir dir="${release.dirname.lib}"/>
+    <copy file="lib/${release.jarname}" todir="${release.dirname}/"/>
+    <copy file="lib/${pmdjar}" todir="${release.dirname.lib}"/>
+    <copy file="lib/${jaxenjar}" todir="${release.dirname.lib}"/>
+    <copy file="lib/${asmjar}" todir="${release.dirname.lib}"/>
+    <copy file="conf/pmd.plugin.properties" todir="${release.dirname.conf}"/>
+    <copy file="conf/pmd.rule.properties" todir="${release.dirname.conf}"/>
+    <zip destfile="${release.zipname}" basedir="${release.dirname}/"/>
+    <move file="${release.zipname}" todir="${releases.dir}"/>
+    <delete dir="tmp"/>
+  </target>
+  <target name="releasesrc" depends="delete">
+    <zip destfile="${release.src.zipname}" basedir="."/>
+    <move file="${release.src.zipname}" todir="${releases.dir}"/>
+  </target>
+  <target name="clean" depends="delete,compile"></target>
+  <target name="tomserver" depends="release">
+    <echo message="Uploading zip file"></echo>
+    <exec executable="scp" os="Linux">
+      <arg line=" ${releases.dir}/${release.zipname} tom@infoether.com:public_html/"/>
+    </exec>
+  </target>
+  <target name="bundle" depends="clean,jar">
+    <mkdir dir="${releases.dir}"/>
+    <mkdir dir="${bundle.dirname}/META-INF"/>
+    <copy file="etc/bundle.xml" todir="${bundle.dirname}/META-INF/"/>
+    <copy file="etc/center.xml" todir="${bundle.dirname}/"/>
+    <copy file="lib/${release.jarname}" todir="${bundle.dirname}/"/>
+    <copy file="lib/${pmdjar}" todir="${bundle.dirname.lib}/"/>
+    <copy file="lib/${jaxenjar}" todir="${bundle.dirname.lib}/"/>
+    <copy file="lib/${asmjar}" todir="${bundle.dirname.lib}/"/>
+    <copy file="conf/pmd.plugin.properties" todir="${bundle.dirname.conf}"/>
+    <copy file="conf/pmd.rule.properties" todir="${bundle.dirname.conf}"/>
+    <zip destfile="${releases.dir}/${bundle.filename}" basedir="${bundle.dirname}">
+      <exclude name="center.xml"/>
+    </zip>
+    <delete dir="${bundle.dirname}/"/>
+  </target>
+  <target name="upload" depends="release,releasesrc,bundle">
+    <ftp server="upload.sourceforge.net" userid="anonymous" password="${upload.ftp.pwd}" remotedir="incoming"
+         binary="true" passive="true">
+      <fileset dir="${release.dir}" includes="${ant.project.name}*${pluginversion}.zip"/>
+    </ftp>
+  </target>
+  <target name="uploadbundle" depends="bundle">
+    <echo message="Uploading center.xml file"></echo>
+    <scp file="${release.dir}/update-center-bundle/center.xml"
+         todir="${uploadbundle.scp.user}@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"
+         password="${uploadbundle.scp.pwd}" trust="true"></scp>
+  </target>
 </project>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -29,7 +29,7 @@ final class Version {
     }
 
     public static String version() {
-        return "4.2.6.4"; // NOPMD
+        return "11.1.2.4300"; // NOPMD
     }
 
     public static String getJdevHome() {

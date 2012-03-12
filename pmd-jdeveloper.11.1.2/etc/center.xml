@@ -2,33 +2,33 @@
 <updates version="1.0" xmlns="http://xmlns.oracle.com/jdeveloper/updatecenter">
   <update id="net.sourceforge.pmd.jdeveloper" xmlns="http://xmlns.oracle.com/jdeveloper/update">
     <name>PMD JDeveloper Extension</name>
-    <version>4.2.5.2.0</version>
+    <version>10.1.3.4300</version>
     <author>Torsten Kleiber</author>
     <author-url>http://pmd.sourceforge.net</author-url>
-    <description>Provides integrated support for PMD 4.2.5 in JDeveloper 10.1.3 - 11g Technology Preview 1.</description>
-    <bundle-url>http://downloads.sourceforge.net/pmd/pmd-jdeveloper1013-bundle-4.2.5.2.0.zip</bundle-url>
+    <description>Provides integrated support for PMD 4.3 in JDeveloper 10.1.3 - 11g Technology Preview 1.</description>
+    <bundle-url>http://downloads.sourceforge.net/pmd/pmd-jdeveloper-bundle-10.1.3.4300.zip</bundle-url>
     <requirements>
       <requires-extension id="oracle.jdeveloper" minVersion="10.1.3.00" maxVersion="11.1.1.0.20.45" />        
     </requirements>
   </update>
   <update id="net.sourceforge.pmd.jdeveloper" xmlns="http://xmlns.oracle.com/jdeveloper/update">
     <name>PMD JDeveloper Extension</name>
-    <version>4.2.5.3.0</version>
+    <version>11.1.1.4300</version>
     <author>Torsten Kleiber</author>
     <author-url>http://pmd.sourceforge.net</author-url>
-    <description>Provides integrated support for PMD 4.2.5 in JDeveloper 11g Release 1.</description>
-    <bundle-url>http://downloads.sourceforge.net/pmd/pmd-jdeveloper1111-bundle-4.2.5.3.0.zip</bundle-url>
+    <description>Provides integrated support for PMD 4.3 in JDeveloper 11g Release 1.</description>
+    <bundle-url>http://downloads.sourceforge.net/pmd/pmd-jdeveloper-bundle-11.1.1.4300.zip</bundle-url>
     <requirements>
-      <requires-extension id="oracle.jdeveloper" minVersion="11.1.1.0.31.51.56" maxVersion="11.1.1.99" />        
+      <requires-extension id="oracle.jdeveloper" minVersion="11.1.1.6.38.61.92" maxVersion="11.1.1.99" />        
     </requirements>
   </update>
   <update id="net.sourceforge.pmd.jdeveloper" xmlns="http://xmlns.oracle.com/jdeveloper/update">
     <name>PMD JDeveloper Extension</name>
-    <version>4.2.6.4</version>
+    <version>11.1.2.4300</version>
     <author>Torsten Kleiber</author>
     <author-url>http://pmd.sourceforge.net</author-url>
-    <description>Provides integrated support for PMD 4.2.5 in JDeveloper 11g Release 2.</description>
-    <bundle-url>http://downloads.sourceforge.net/pmd/pmd-jdeveloper1112-bundle-4.2.6.4.zip</bundle-url>
+    <description>Provides integrated support for PMD 4.3 in JDeveloper 11g Release 2.</description>
+    <bundle-url>http://downloads.sourceforge.net/pmd/pmd-jdeveloper-bundle-11.1.2.4300.zip</bundle-url>
     <requirements>
       <requires-extension id="oracle.jdeveloper" minVersion="11.1.2.0.38.60.17" maxVersion="11.1.2.99" />        
     </requirements>
