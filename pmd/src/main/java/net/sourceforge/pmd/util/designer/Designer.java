@@ -88,7 +88,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -482,7 +482,7 @@ public class Designer implements ClipboardOwner {
 			RuleContext ctx = new RuleContext();
 			ctx.setSourceCodeFilename("[no filename]." + languageVersion.getLanguage().getExtensions().get(0));
 			StringReader reader = new StringReader(codeEditorPane.getText());
-			Configuration config = new Configuration();
+			PMDConfiguration config = new PMDConfiguration();
 			config.setDefaultLanguageVersion(languageVersion);
 
 			try {

@@ -14,7 +14,7 @@ import java.nio.charset.Charset;
 
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.CommandLineParser;
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.EmacsRenderer;
@@ -216,7 +216,7 @@ public class CommandLineParserTest {
 	URL[] urls = ((ClasspathClassLoader) classLoader).getURLs();
 	assertEquals("urls length", 1, urls.length);
 	assertTrue("url[0]", urls[0].toString().endsWith("/classpath"));
-	assertEquals("parent classLoader", Configuration.class.getClassLoader(), classLoader.getParent());
+	assertEquals("parent classLoader", PMDConfiguration.class.getClassLoader(), classLoader.getParent());
     }
 
     @Test(expected = IllegalArgumentException.class)

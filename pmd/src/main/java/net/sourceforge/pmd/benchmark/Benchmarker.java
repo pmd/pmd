@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
@@ -159,7 +159,7 @@ public class Benchmarker {
             working.addRule(rule);
             RuleSets ruleSets = new RuleSets(working);
 
-            Configuration config = new Configuration();
+            PMDConfiguration config = new PMDConfiguration();
             config.setDefaultLanguageVersion(languageVersion);
 
             RuleContext ctx = new RuleContext();

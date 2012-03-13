@@ -28,7 +28,7 @@ public final class RulesetsFactoryUtils {
 		return ruleSets;
 	}
 
-	public static RuleSetFactory getRulesetFactory(Configuration configuration) {
+	public static RuleSetFactory getRulesetFactory(PMDConfiguration configuration) {
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 		ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
 		ruleSetFactory.setWarnDeprecated(true);

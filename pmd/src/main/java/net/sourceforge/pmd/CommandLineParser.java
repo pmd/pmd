@@ -22,7 +22,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class CommandLineParser {
 
-	private final Configuration configuration = new Configuration();
+	private final PMDConfiguration configuration = new PMDConfiguration();
 
 	private static final int MIN_ARG_COUNT = 3;		// # of mandatory args required
 
@@ -91,7 +91,7 @@ public class CommandLineParser {
 		}
 	}
 
-	public Configuration getConfiguration() {
+	public PMDConfiguration getConfiguration() {
 		return configuration;
 	}
 

@@ -21,98 +21,98 @@ public class PMDParameters {
 	
 	// Common to PMD & CPD
 
-	private static CmdLineOption<Configuration> Debug = new CmdLineOption<Configuration>("debug",				
+	private static CmdLineOption<PMDConfiguration> Debug = new CmdLineOption<PMDConfiguration>("debug",				
 			"prints debugging information", 
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setDebug(true);
 				}
 			});
-	private static CmdLineOption<Configuration> Encoding = new CmdLineOption<Configuration>("encoding",			
+	private static CmdLineOption<PMDConfiguration> Encoding = new CmdLineOption<PMDConfiguration>("encoding",			
 			"specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)", 1, 
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setSourceEncoding(args[idx + 1]);
 				}
 			});
 
 	// PMD-only options
 	
-	private static CmdLineOption<Configuration> Threads = new CmdLineOption<Configuration>("threads",				
+	private static CmdLineOption<PMDConfiguration> Threads = new CmdLineOption<PMDConfiguration>("threads",				
 			"specifies the number of threads to create", 1, 
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setThreads(parseInt(args[idx], args[idx + 1]));
 				}
 			});
 
-	private static CmdLineOption<Configuration> Benchmark = new CmdLineOption<Configuration>("benchmark",		
+	private static CmdLineOption<PMDConfiguration> Benchmark = new CmdLineOption<PMDConfiguration>("benchmark",		
 			"output a benchmark report upon completion; default to System.err",
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setBenchmark(true);
 				}
 			});
-	private static CmdLineOption<Configuration> Stress = new CmdLineOption<Configuration>("stress",			
+	private static CmdLineOption<PMDConfiguration> Stress = new CmdLineOption<PMDConfiguration>("stress",			
 			"performs a stress test", 
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setStressTest(true);
 				}
 			});
-	private static CmdLineOption<Configuration> RptShortNames = new CmdLineOption<Configuration>("shortnames", 	
+	private static CmdLineOption<PMDConfiguration> RptShortNames = new CmdLineOption<PMDConfiguration>("shortnames", 	
 			"prints shortened filenames in the report",
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setReportShortNames(true);
 				}
 			});
-	private static CmdLineOption<Configuration> ShowSuppressed = new CmdLineOption<Configuration>("showsuppressed", 	
+	private static CmdLineOption<PMDConfiguration> ShowSuppressed = new CmdLineOption<PMDConfiguration>("showsuppressed", 	
 			"report should show suppressed rule violations",
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setShowSuppressedViolations(true);
 				}
 			});
-	private static CmdLineOption<Configuration> SuppressMarker = new CmdLineOption<Configuration>("suppressmarker",	
+	private static CmdLineOption<PMDConfiguration> SuppressMarker = new CmdLineOption<PMDConfiguration>("suppressmarker",	
 			"specifies the String that marks the a line which PMD should ignore; default is NOPMD", 1,
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setSuppressMarker(args[idx + 1]);
 				}
 			});
-	private static CmdLineOption<Configuration> MinPriority = new CmdLineOption<Configuration>("minimumpriority",	
+	private static CmdLineOption<PMDConfiguration> MinPriority = new CmdLineOption<PMDConfiguration>("minimumpriority",	
 			"rule priority threshold; rules with lower priority than they will not be used", 1, 
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setMinimumPriority(parseMinimumPriority(args[idx + 1]));
 				}
 			});
-	private static CmdLineOption<Configuration> Property = new CmdLineOption<Configuration>("property",			
+	private static CmdLineOption<PMDConfiguration> Property = new CmdLineOption<PMDConfiguration>("property",			
 			"{name} {value}: define a property for the report", 2,
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.getReportProperties().put(args[idx+1], args[idx+2]);
 				}
 			});
-	private static CmdLineOption<Configuration> ReportFile = new CmdLineOption<Configuration>("reportfile",		
+	private static CmdLineOption<PMDConfiguration> ReportFile = new CmdLineOption<PMDConfiguration>("reportfile",		
 			"send report output to a file; default to System.out", 1,
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setReportFile(args[idx + 1]);
 				}
 			});
-	private static CmdLineOption<Configuration> Version = new CmdLineOption<Configuration>("version",				
+	private static CmdLineOption<PMDConfiguration> Version = new CmdLineOption<PMDConfiguration>("version",				
 			"{name} {version}: specify version of a language PMD should use", 2, 
-			new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					cfg.setDefaultLanguageVersion(parseLanguageVersion(args, idx));
 				}
 			});
-	private static CmdLineOption<Configuration> AuxClasspath = new CmdLineOption<Configuration>("auxclasspath",	
+	private static CmdLineOption<PMDConfiguration> AuxClasspath = new CmdLineOption<PMDConfiguration>("auxclasspath",	
 			"specifies the classpath for libraries used by the source code (used by type resolution)\n(alternatively, a 'file://' URL to a text file containing path elements on consecutive lines)",
-			1, new Applicator<Configuration>() {
-				public void apply(Configuration cfg, String[] args, int idx) {
+			1, new Applicator<PMDConfiguration>() {
+				public void apply(PMDConfiguration cfg, String[] args, int idx) {
 					setClassPath(cfg, args[idx + 1]);
 				}
 			});
@@ -177,7 +177,7 @@ public class PMDParameters {
 		}
 	}
 	
-	private static void setClassPath(Configuration cfg, String classPath) {
+	private static void setClassPath(PMDConfiguration cfg, String classPath) {
 		try {
 			cfg.prependClasspath(classPath);
 		} catch (IOException e) {

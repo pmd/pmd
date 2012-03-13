@@ -6,7 +6,7 @@ package net.sourceforge.pmd.processor;
 import java.io.IOException;
 import java.util.List;
 
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -22,16 +22,16 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 public abstract class AbstractPMDProcessor {
 
-	protected final Configuration configuration;
-	
-	public AbstractPMDProcessor(Configuration configuration) {
+	protected final PMDConfiguration configuration;
+
+	public AbstractPMDProcessor(PMDConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
 	public void renderReports(final List<Renderer> renderers, final Report report) {
 		
 		long start = System.nanoTime();
-		
+
 		try {	
 			for (Renderer r : renderers) {
 				r.renderFileReport(report);
@@ -39,10 +39,10 @@ public abstract class AbstractPMDProcessor {
 			long end = System.nanoTime();
 			Benchmarker.mark(Benchmark.Reporting, end - start, 1);
 		} catch (IOException ioe) {
-			
+
 		}
 	}
-	
+
 	protected String filenameFrom(DataSource dataSource) {
 		return dataSource.getNiceFileName(
 			 configuration.isReportShortNames(), 

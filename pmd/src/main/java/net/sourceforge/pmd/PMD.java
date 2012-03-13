@@ -50,11 +50,11 @@ public class PMD {
 	public static final String EOL = System.getProperty("line.separator", "\n");
 	public static final String SUPPRESS_MARKER = "NOPMD";
 
-	protected final Configuration configuration;
+	protected final PMDConfiguration configuration;
 
 	private final SourceCodeProcessor rulesetsFileProcessor;
 
-    public static Parser parserFor(LanguageVersion languageVersion, Configuration configuration) {
+    public static Parser parserFor(LanguageVersion languageVersion, PMDConfiguration configuration) {
     	
     	// TODO Handle Rules having different parser options.
    	 	LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
@@ -110,7 +110,7 @@ public class PMD {
 	 * configuration may be required.
 	 */
 	public PMD() {
-		this(new Configuration());
+		this(new PMDConfiguration());
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class PMD {
 	 * @param configuration
 	 *            The runtime Configuration of PMD to use.
 	 */
-	public PMD(Configuration configuration) {
+	public PMD(PMDConfiguration configuration) {
 		this.configuration = configuration;
 		this.rulesetsFileProcessor = new SourceCodeProcessor(configuration);
 	}
@@ -129,9 +129,9 @@ public class PMD {
 	 * affect how PMD behaves.
 	 * 
 	 * @return The configuration. 
-     * @see Configuration 
+     * @see PMDConfiguration 
 	 */
-	public Configuration getConfiguration() {
+	public PMDConfiguration getConfiguration() {
 		return configuration;
 	}
 
@@ -148,7 +148,7 @@ public class PMD {
 	 * 
 	 * @param configuration
 	 */
-	public static void doPMD(Configuration configuration) {
+	public static void doPMD(PMDConfiguration configuration) {
 
 		// Load the RuleSets
 		long startLoadRules = System.nanoTime();
@@ -232,7 +232,7 @@ public class PMD {
 	 * @param ctx
 	 * @param monitor
 	 */
-	public static void processFiles(Configuration configuration,
+	public static void processFiles(PMDConfiguration configuration,
 			RuleSetFactory ruleSetFactory, Collection<File> files,
 			RuleContext ctx, ProgressMonitor monitor) {
 		
@@ -249,7 +249,7 @@ public class PMD {
 	 * @param ctx RuleContext
 	 * @param renderers List<Renderer>
 	 */
-	public static void processFiles(final Configuration configuration,
+	public static void processFiles(final PMDConfiguration configuration,
 			final RuleSetFactory ruleSetFactory, final List<DataSource> files,
 			final RuleContext ctx, final List<Renderer> renderers) {
 
@@ -272,7 +272,7 @@ public class PMD {
 	 * @param configuration Configuration
 	 * @param files List<DataSource>
 	 */
-	private static void sortFiles(final Configuration configuration, final List<DataSource> files) {
+	private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
 		if (configuration.isStressTest()) {
 			// randomize processing order
 			Collections.shuffle(files);
@@ -296,7 +296,7 @@ public class PMD {
 	 * @return List<DataSource>
 	 */
 	public static List<DataSource> getApplicableFiles(
-			Configuration configuration, Set<Language> languages) {
+			PMDConfiguration configuration, Set<Language> languages) {
 		long startFiles = System.nanoTime();
 		LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
 		List<DataSource> files = FileUtil.collectFiles(
@@ -312,7 +312,7 @@ public class PMD {
 	 * @param ruleSets RuleSets
 	 * @return Set<Language>
 	 */
-	private static Set<Language> getApplicableLanguages(Configuration configuration, RuleSets ruleSets) {
+	private static Set<Language> getApplicableLanguages(PMDConfiguration configuration, RuleSets ruleSets) {
 		Set<Language> languages = new HashSet<Language>();
 		LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 		
@@ -350,7 +350,7 @@ public class PMD {
     	int status = 0;
 		long start = System.nanoTime();
 		final CommandLineParser opts = new CommandLineParser(args);
-		final Configuration configuration = opts.getConfiguration();
+		final PMDConfiguration configuration = opts.getConfiguration();
 
 		final Level logLevel = configuration.isDebug() ? Level.FINER : Level.INFO;
 		final Handler logHandler = new ConsoleLogHandler();

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 public final class MonoThreadProcessor extends AbstractPMDProcessor {
 
-	public MonoThreadProcessor(Configuration configuration) {
+	public MonoThreadProcessor(PMDConfiguration configuration) {
 		super(configuration);
 	}
 
@@ -75,7 +75,7 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
 			super.renderReports(renderers, ctx.getReport());
 		}
 	}
-	
+
 	private void addError(Report report, String msg, Exception ex, String fileName) {
 		LOG.log(Level.FINE,	msg, ex);
 		report.addError(

@@ -11,7 +11,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
@@ -27,7 +27,7 @@ public class ConfigurationTest {
 
     @Test
     public void testSuppressMarker() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default suppress marker", PMD.SUPPRESS_MARKER, configuration.getSuppressMarker());
 	configuration.setSuppressMarker("CUSTOM_MARKER");
 	assertEquals("Changed suppress marker", "CUSTOM_MARKER", configuration.getSuppressMarker());
@@ -35,7 +35,7 @@ public class ConfigurationTest {
 
     @Test
     public void testThreads() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default threads", Runtime.getRuntime().availableProcessors(), configuration.getThreads());
 	configuration.setThreads(0);
 	assertEquals("Changed threads", 0, configuration.getThreads());
@@ -43,24 +43,24 @@ public class ConfigurationTest {
 
     @Test
     public void testClassLoader() throws IOException {
-	Configuration configuration = new Configuration();
-	assertEquals("Default ClassLoader", Configuration.class.getClassLoader(), configuration.getClassLoader());
+	PMDConfiguration configuration = new PMDConfiguration();
+	assertEquals("Default ClassLoader", PMDConfiguration.class.getClassLoader(), configuration.getClassLoader());
 	configuration.prependClasspath("some.jar");
 	assertEquals("Prepended ClassLoader class", ClasspathClassLoader.class, configuration.getClassLoader()
 		.getClass());
 	URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
 	assertEquals("urls length", 1, urls.length);
 	assertTrue("url[0]", urls[0].toString().endsWith("/some.jar"));
-	assertEquals("parent classLoader", Configuration.class.getClassLoader(), configuration.getClassLoader()
+	assertEquals("parent classLoader", PMDConfiguration.class.getClassLoader(), configuration.getClassLoader()
 		.getParent());
 	configuration.setClassLoader(null);
-	assertEquals("Revert to default ClassLoader", Configuration.class.getClassLoader(), configuration
+	assertEquals("Revert to default ClassLoader", PMDConfiguration.class.getClassLoader(), configuration
 		.getClassLoader());
     }
 
     @Test
     public void testLanguageVersionDiscoverer() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
 	assertEquals("Default Java version", LanguageVersion.JAVA_17, languageVersionDiscoverer
 		.getDefaultLanguageVersion(Language.JAVA));
@@ -71,7 +71,7 @@ public class ConfigurationTest {
 
     @Test
     public void testRuleSets() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default RuleSets", null, configuration.getRuleSets());
 	configuration.setRuleSets("/rulesets/basic.xml");
 	assertEquals("Changed RuleSets", "/rulesets/basic.xml", configuration.getRuleSets());
@@ -79,7 +79,7 @@ public class ConfigurationTest {
 
     @Test
     public void testMinimumPriority() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default minimum priority", RulePriority.LOW, configuration.getMinimumPriority());
 	configuration.setMinimumPriority(RulePriority.HIGH);
 	assertEquals("Changed minimum priority", RulePriority.HIGH, configuration.getMinimumPriority());
@@ -87,7 +87,7 @@ public class ConfigurationTest {
 
     @Test
     public void testSourceEncoding() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default source encoding", System.getProperty("file.encoding"), configuration.getSourceEncoding());
 	configuration.setSourceEncoding("some_other_encoding");
 	assertEquals("Changed source encoding", "some_other_encoding", configuration.getSourceEncoding());
@@ -95,7 +95,7 @@ public class ConfigurationTest {
 
     @Test
     public void testInputPaths() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default input paths", null, configuration.getInputPaths());
 	configuration.setInputPaths("a,b,c");
 	assertEquals("Changed input paths", "a,b,c", configuration.getInputPaths());
@@ -103,7 +103,7 @@ public class ConfigurationTest {
 
     @Test
     public void testReportShortNames() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default report short names", false, configuration.isReportShortNames());
 	configuration.setReportShortNames(true);
 	assertEquals("Changed report short names", true, configuration.isReportShortNames());
@@ -111,7 +111,7 @@ public class ConfigurationTest {
 
     @Test
     public void testReportFormat() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default report format", null, configuration.getReportFormat());
 	configuration.setReportFormat("csv");
 	assertEquals("Changed report format", "csv", configuration.getReportFormat());
@@ -119,7 +119,7 @@ public class ConfigurationTest {
 
     @Test
     public void testCreateRenderer() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	configuration.setReportFormat("csv");
 	Renderer renderer = configuration.createRenderer();
 	assertEquals("Renderer class", CSVRenderer.class, renderer.getClass());
@@ -133,7 +133,7 @@ public class ConfigurationTest {
 
     @Test
     public void testReportFile() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default report file", null, configuration.getReportFile());
 	configuration.setReportFile("somefile");
 	assertEquals("Changed report file", "somefile", configuration.getReportFile());
@@ -141,7 +141,7 @@ public class ConfigurationTest {
 
     @Test
     public void testShowSuppressedViolations() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default show suppressed violations", false, configuration.isShowSuppressedViolations());
 	configuration.setShowSuppressedViolations(true);
 	assertEquals("Changed show suppressed violations", true, configuration.isShowSuppressedViolations());
@@ -149,7 +149,7 @@ public class ConfigurationTest {
 
     @Test
     public void testReportProperties() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default report properties size", 0, configuration.getReportProperties().size());
 	configuration.getReportProperties().put("key", "value");
 	assertEquals("Changed report properties size", 1, configuration.getReportProperties().size());
@@ -160,7 +160,7 @@ public class ConfigurationTest {
 
     @Test
     public void testDebug() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default debug", false, configuration.isDebug());
 	configuration.setDebug(true);
 	assertEquals("Changed debug", true, configuration.isDebug());
@@ -168,7 +168,7 @@ public class ConfigurationTest {
 
     @Test
     public void testStressTest() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default stress test", false, configuration.isStressTest());
 	configuration.setStressTest(true);
 	assertEquals("Changed stress test", true, configuration.isStressTest());
@@ -176,7 +176,7 @@ public class ConfigurationTest {
 
     @Test
     public void testBenchmark() {
-	Configuration configuration = new Configuration();
+	PMDConfiguration configuration = new PMDConfiguration();
 	assertEquals("Default benchmark", false, configuration.isBenchmark());
 	configuration.setBenchmark(true);
 	assertEquals("Changed benchmark", true, configuration.isBenchmark());

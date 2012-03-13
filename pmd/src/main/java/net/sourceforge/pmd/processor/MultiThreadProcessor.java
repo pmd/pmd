@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 public class MultiThreadProcessor extends AbstractPMDProcessor {
 
 
-	public MultiThreadProcessor(final Configuration configuration) {
+	public MultiThreadProcessor(final PMDConfiguration configuration) {
 		super(configuration);
 	}
 
@@ -56,7 +56,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 		processReports(renderers, tasks);
 		
 		rs.end(ctx);
-		super.renderReports(renderers,ctx.getReport());
+		super.renderReports(renderers, ctx.getReport());
 
 	}
 

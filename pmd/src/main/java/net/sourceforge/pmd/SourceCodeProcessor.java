@@ -20,9 +20,9 @@ import net.sourceforge.pmd.util.IOUtil;
 
 public class SourceCodeProcessor {
 
-    private final Configuration configuration;
+    private final PMDConfiguration configuration;
 
-    public SourceCodeProcessor(Configuration configuration) {
+    public SourceCodeProcessor(PMDConfiguration configuration) {
     	this.configuration = configuration;
     }
     
@@ -54,7 +54,7 @@ public class SourceCodeProcessor {
      * Language on the RuleContext, or set it to <code>null</code> first.
      *
      * @see RuleContext#setLanguageVersion(LanguageVersion)
-     * @see Configuration#getLanguageVersionOfFile(String)
+     * @see PMDConfiguration#getLanguageVersionOfFile(String)
      *
      * @param sourceCode The Reader to analyze.
      * @param ruleSets The collection of rules to process against the file.

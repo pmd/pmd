@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -52,7 +52,7 @@ public class PMDTask extends Task {
 	private Path auxClasspath;
 	private final List<Formatter> formatters = new ArrayList<Formatter>();
 	private final List<FileSet> filesets = new ArrayList<FileSet>();
-	private final Configuration configuration = new Configuration();
+	private final PMDConfiguration configuration = new PMDConfiguration();
 	private boolean failOnError;
 	private boolean failOnRuleViolation;
 	private int maxRuleViolations = 0;

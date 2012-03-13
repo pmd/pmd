@@ -33,7 +33,7 @@ public class XPathCLI {
         RuleContext ctx = PMD.newRuleContext(filename, new File(filename));
         ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
 
-        Configuration config = new Configuration();
+        PMDConfiguration config = new PMDConfiguration();
         config.setDefaultLanguageVersion(Language.JAVA.getDefaultVersion());
         
         new SourceCodeProcessor(config).processSourceCode(new FileReader(filename), new RuleSets(ruleSet), ctx);

@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -29,7 +29,7 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 	private final List<Renderer> renderers;
 
 	public PmdRunnable(ExecutorService executor,
-			Configuration configuration, DataSource dataSource,
+			PMDConfiguration configuration, DataSource dataSource,
 			String fileName, List<Renderer> renderers) {
 		super(configuration);
 		this.executor = executor;
