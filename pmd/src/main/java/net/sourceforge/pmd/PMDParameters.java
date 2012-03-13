@@ -35,6 +35,9 @@ public class PMDParameters {
 					cfg.setSourceEncoding(args[idx + 1]);
 				}
 			});
+
+	// PMD-only options
+	
 	private static CmdLineOption<Configuration> Threads = new CmdLineOption<Configuration>("threads",				
 			"specifies the number of threads to create", 1, 
 			new Applicator<Configuration>() {
@@ -42,9 +45,6 @@ public class PMDParameters {
 					cfg.setThreads(parseInt(args[idx], args[idx + 1]));
 				}
 			});
-
-	
-	// PMD-only options
 
 	private static CmdLineOption<Configuration> Benchmark = new CmdLineOption<Configuration>("benchmark",		
 			"output a benchmark report upon completion; default to System.err",

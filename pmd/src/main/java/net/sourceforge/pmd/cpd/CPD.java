@@ -20,42 +20,30 @@ public class CPD {
 
     private static final int MISSING_FILES = 1;
 	private static final int MISSING_ARGS = 2;
-	private static final int MISSING_REQUIRED_ARGUMENT = 3;
 	private static final int DUPLICATE_CODE_FOUND = 4;
 
+	private CPDConfiguration configuration;
+	
 	private Map<String, SourceCode> source = new TreeMap<String, SourceCode>();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
-    private int minimumTileSize;
     private MatchAlgorithm matchAlgorithm;
-    private Language language;
-    private boolean skipDuplicates;
-    public static boolean debugEnable = false;
-    private String encoding = System.getProperty("file.encoding");
 
-
-    public CPD(int minimumTileSize, Language language) {
-        this.minimumTileSize = minimumTileSize;
-        this.language = language;
-    }
-
-    public void skipDuplicates() {
-        this.skipDuplicates = true;
+    public CPD(CPDConfiguration theConfiguration) {
+    	configuration = theConfiguration;
     }
 
     public void setCpdListener(CPDListener cpdListener) {
         this.listener = cpdListener;
     }
 
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-        if ( ! encoding.equals( System.getProperty("file.encoding") ) )
-        	 System.setProperty("file.encoding", encoding);
-    }
-
     public void go() {
         TokenEntry.clearImages();
-        matchAlgorithm = new MatchAlgorithm(source, tokens, minimumTileSize, listener);
+        matchAlgorithm = new MatchAlgorithm(
+        		source, tokens, 
+        		configuration.minimumTileSize(), 
+        		listener
+        		);
         matchAlgorithm.findMatches();
     }
 
@@ -87,14 +75,14 @@ public class CPD {
         }
         FileFinder finder = new FileFinder();
         // TODO - could use SourceFileSelector here
-        add(finder.findFilesFrom(dir, language.getFileFilter(), recurse));
+        add(finder.findFilesFrom(dir, configuration.filenameFilter(), recurse));
     }
 
     private Set<String> current = new HashSet<String>();
 
     private void add(int fileCount, File file) throws IOException {
 
-        if (skipDuplicates) {
+        if (configuration.skipDuplicates()) {
             // TODO refactor this thing into a separate class
             String signature = file.getName() + '_' + file.length();
             if (current.contains(signature)) {
@@ -110,62 +98,14 @@ public class CPD {
         }
 
         listener.addedFile(fileCount, file);
-        SourceCode sourceCode = new SourceCode(new SourceCode.FileCodeLoader(file, encoding));
-        language.getTokenizer().tokenize(sourceCode, tokens);
+        SourceCode sourceCode = configuration.sourceCodeFor(file);
+        configuration.tokenizer().tokenize(sourceCode, tokens);
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
-    public static Renderer getRendererFromString(String name /*, String encoding*/) {
-        if (name.equalsIgnoreCase("text") || name.equals("")) {
-            return new SimpleRenderer();
-        } else if ("xml".equals(name)) {
-            return new XMLRenderer();
-        }  else if ("csv".equals(name)) {
-            return new CSVRenderer();
-        }  else if ("vs".equals(name)) {
-            return new VSRenderer();
-        }
-        try {
-            return (Renderer) Class.forName(name).newInstance();
-        } catch (Exception e) {
-            System.out.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
-        }
-        return new SimpleRenderer();
-    }
-
-    private static boolean findBooleanSwitch(String[] args, String name) {
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static String findRequiredStringValue(String[] args, String name) {
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals(name)) {
-                return args[i + 1];
-            }
-        }
-        System.out.println("No " + name + " value passed in");
-        showUsage();
-        System.exit(MISSING_REQUIRED_ARGUMENT);
-        return "";
-    }
-
-    private static String findOptionalStringValue(String[] args, String name, String defaultValue) {
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals(name)) {
-                return args[i + 1];
-            }
-        }
-        return defaultValue;
-    }
-
     private static void setSystemProperties(String[] args) {
-        boolean ignoreLiterals = findBooleanSwitch(args, "--ignore-literals"),
-        ignoreIdentifiers = findBooleanSwitch(args, "--ignore-identifiers");
+        boolean ignoreLiterals = CPDConfiguration.findBooleanSwitch(args, "--ignore-literals"),
+        ignoreIdentifiers = CPDConfiguration.findBooleanSwitch(args, "--ignore-identifiers");
         Properties properties = System.getProperties();
         if (ignoreLiterals) {
             properties.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
@@ -183,26 +123,14 @@ public class CPD {
         }
 
         try {
-            String languageString = findOptionalStringValue(args, "--language", "java");
-            String formatString = findOptionalStringValue(args, "--format", "text");
-            final String systemDefaultEncoding = System.getProperty("file.encoding");
-            String encodingString = findOptionalStringValue(args, "--encoding", systemDefaultEncoding);
-            if ( ! systemDefaultEncoding.equals(encodingString) ) System.setProperty("file.encoding", encodingString);
-            int minimumTokens = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
+        	CPDConfiguration config = new CPDConfiguration(args);
 
             // Pass extra parameters as System properties to allow language
             // implementation to retrieve their associate values...
             setSystemProperties(args);
-
-            Language language = new LanguageFactory().createLanguage(languageString);
-            Renderer renderer = CPD.getRendererFromString(formatString);
-            CPD cpd = new CPD(minimumTokens, language);
-            cpd.setEncoding(encodingString);
-
-            boolean skipDuplicateFiles = findBooleanSwitch(args, "--skip-duplicate-files");
-            if (skipDuplicateFiles) {
-                cpd.skipDuplicates();
-            }
+           
+            CPD cpd = new CPD(config);
+            
             /* FIXME: Improve this !!!	*/
             boolean missingFiles = true;
             for (int position = 0; position < args.length; position++) {
@@ -221,8 +149,8 @@ public class CPD {
             }
 
             cpd.go();
-            if(cpd.getMatches().hasNext()) {
-                System.out.println(renderer.render(cpd.getMatches()));
+            if (cpd.getMatches().hasNext()) {
+                System.out.println(config.renderer().render(cpd.getMatches()));
                 System.exit(DUPLICATE_CODE_FOUND);
             }
         } catch (Exception e) {
@@ -230,7 +158,7 @@ public class CPD {
         }
     }
 
-    private static void showUsage() {
+    public static void showUsage() {
         System.out.println("Usage:");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv|vs)] [--skip-duplicate-files] ");
         System.out.println("i.e: ");

@@ -78,7 +78,7 @@ import net.sourceforge.pmd.util.IOUtil;
  *          {@link #isBenchmark()}</li>
  * </ul>
  */
-public class Configuration {
+public class Configuration extends AbstractConfiguration {
 
     // General behavior options
     private String suppressMarker = PMD.SUPPRESS_MARKER;
@@ -89,7 +89,6 @@ public class Configuration {
     // Rule and source file options
     private String ruleSets;
     private RulePriority minimumPriority = RulePriority.LOW;
-    private String sourceEncoding = System.getProperty("file.encoding");
     private String inputPaths;
 
     // Reporting options
@@ -99,8 +98,6 @@ public class Configuration {
     private Properties reportProperties = new Properties();
     private boolean showSuppressedViolations = false;
 
-    // Special behavior options
-    private boolean debug;
     private boolean stressTest;
     private boolean benchmark;
 
@@ -263,21 +260,6 @@ public class Configuration {
 	this.minimumPriority = minimumPriority;
     }
 
-    /**
-     * Get the character encoding of source files.
-     * @return The character encoding.
-     */
-    public String getSourceEncoding() {
-	return sourceEncoding;
-    }
-
-    /**
-     * Set the character encoding of source files.
-     * @param sourceEncoding The character encoding.
-     */
-    public void setSourceEncoding(String sourceEncoding) {
-	this.sourceEncoding = sourceEncoding;
-    }
 
     /**
      * Get the comma separated list of input paths to process for source files.
@@ -402,24 +384,6 @@ public class Configuration {
      */
     public void setReportProperties(Properties reportProperties) {
 	this.reportProperties = reportProperties;
-    }
-
-    /**
-     * Return the debug indicator.  If this value is <code>true</code>
-     * then PMD will log debug information.
-     * @return <code>true</code> if debug logging is enbaled, <code>false</code> otherwise.
-     */
-    public boolean isDebug() {
-	return debug;
-    }
-
-    /**
-     * Set the debug indicator.
-     * @param debug The debug indicator to set.
-     * @see #isDebug()
-     */
-    public void setDebug(boolean debug) {
-	this.debug = debug;
     }
 
     /**

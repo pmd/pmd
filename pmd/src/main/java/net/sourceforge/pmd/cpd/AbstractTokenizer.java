@@ -38,9 +38,10 @@ public abstract class AbstractTokenizer implements Tokenizer {
                     if (downcaseString) {
                         token = new StringBuilder(token.toString().toLowerCase());
                     }
-                    if ( CPD.debugEnable ) {
-                    	System.out.println("Token added:" + token.toString());
-                    }
+// need to re-think how to link this                    
+//                    if ( CPD.debugEnable ) {
+//                    	System.out.println("Token added:" + token.toString());
+//                    }
                     tokenEntries.add(new TokenEntry(token.toString(),
                             tokens.getFileName(),
                             lineNumber)

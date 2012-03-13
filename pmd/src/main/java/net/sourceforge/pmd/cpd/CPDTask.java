@@ -56,8 +56,10 @@ public class CPDTask extends Task {
             log("Starting run, minimumTokenCount is " + minimumTokenCount, Project.MSG_INFO);
 
             log("Tokenizing files", Project.MSG_INFO);
-            CPD cpd = new CPD(minimumTokenCount, createLanguage());
-            cpd.setEncoding(encoding);
+            CPDConfiguration config = new CPDConfiguration(
+            		minimumTokenCount, createLanguage(), encoding
+            		);
+            CPD cpd = new CPD(config);
             tokenizeFiles(cpd);
 
             log("Starting to analyze code", Project.MSG_INFO);

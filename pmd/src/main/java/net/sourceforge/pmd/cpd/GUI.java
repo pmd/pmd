@@ -554,8 +554,11 @@ public class GUI implements CPDListener {
             p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
             LanguageConfig conf = languageConfigFor((String)languageBox.getSelectedItem());
             Language language = conf.languageFor(new LanguageFactory(), p);
-            CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()), language);
-            cpd.setEncoding(encodingField.getText());
+            CPDConfiguration config = new CPDConfiguration(
+            		Integer.parseInt(minimumLengthField.getText()), 
+            		language, encodingField.getText()
+            		);
+            CPD cpd = new CPD(config);
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
             phaseLabel.setText("");
