@@ -17,6 +17,7 @@
     <xsl:element name="item">
       <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
       <xsl:attribute name="collapse"><xsl:value-of select="'false'"/></xsl:attribute>
+      <xsl:attribute name="href">/rules/index.html</xsl:attribute>
 
       <xsl:apply-templates/>
     </xsl:element>

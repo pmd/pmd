@@ -112,6 +112,7 @@ only if you modify the java code.
        <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
+            <version>2.6</version>
             <configuration>
                 <linkXref>true</linkXref>
                 <sourceEncoding>utf-8</sourceEncoding>
