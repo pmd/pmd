@@ -11,7 +11,7 @@
   <groupId>net.sourceforge.pmd</groupId>
   <artifactId>pmd-build</artifactId>
   <name>PMD Build Plugin</name>
-  <version>0.6-SNAPSHOT</version>
+  <version>0.6</version>
   <packaging>maven-plugin</packaging>
   <description>
     <![CDATA[
@@ -38,9 +38,9 @@ only if you modify the java code.
   </licenses>
   
   <scm>
-    <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build</connection>
-    <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build</developerConnection>
-    <url>http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/maven-plugin-pmd-build</url>
+    <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/tags/maven-plugin-pmd-build/pmd-build-0.6</connection>
+    <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/tags/maven-plugin-pmd-build/pmd-build-0.6</developerConnection>
+    <url>http://pmd.svn.sourceforge.net/viewvc/pmd/tags/maven-plugin-pmd-build/pmd-build-0.6</url>
   </scm>
   
   <developers>
