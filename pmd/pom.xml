@@ -603,7 +603,7 @@
                 <site>
                     <id>pmd-site</id>
                     <name>Default Site</name>
-                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs</url>
+                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/pmd-${project.version}</url>
                 </site>
             </distributionManagement>
             <build>
