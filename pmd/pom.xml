@@ -254,7 +254,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.9</version>
+                <version>2.12</version>
                 <configuration>
                     <forkMode>once</forkMode>
                     <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
@@ -278,7 +278,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.6</version>
+                <version>1.7</version>
                 <inherited>true</inherited>
                 <executions>
                   <execution>
@@ -386,7 +386,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>2.0.1</version>
+                <version>3.0</version>
                 <configuration>
                     <xdocDirectory>${project.build.directory}/generated-xdocs</xdocDirectory>
                 </configuration>
@@ -515,13 +515,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.1</version>
+                <version>2.3</version>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.5</version>
+                <version>2.8.1</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -557,7 +557,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.1.1</version>
+                <version>2.4</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -576,8 +576,8 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.4.3</version>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.12</version>
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
@@ -585,6 +585,7 @@
                 <version>2.5.1</version>
                 <configuration>
                     <licenseLocation>licences/clover2.license</licenseLocation>
+                    <reportDescriptor>etc/default-clover-report.xml</reportDescriptor>
                 </configuration>
             </plugin>
         </plugins>
@@ -669,7 +670,7 @@
                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
-                        <version>2.6</version>
+                        <version>2.7.1</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
