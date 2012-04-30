@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -88,8 +89,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
@@ -99,6 +100,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -367,6 +370,16 @@ public class Designer implements ClipboardOwner {
 			}
 			return tooltip;
 		}
+
+		public List<String> getAttributes() {
+			List<String> result = new LinkedList<String>();
+			AttributeAxisIterator attributeAxisIterator = new AttributeAxisIterator(node);
+			while (attributeAxisIterator.hasNext()) {
+				Attribute attribute = attributeAxisIterator.next();
+				result.add(attribute.getName() + "=" + attribute.getStringValue());
+			}
+			return result;
+		}
 	}
 
 	private TreeCellRenderer createNoImageTreeCellRenderer() {
@@ -617,6 +630,14 @@ public class Designer implements ClipboardOwner {
 						}
 					}
 				}
+
+				List<String> attributes = astTreeNode.getAttributes();
+				DefaultMutableTreeNode attributesNode = new DefaultMutableTreeNode("Attributes (accessible via XPath):");
+				selectedAstTreeNode.add(attributesNode);
+				for (String attribute : attributes) {
+					attributesNode.add(new DefaultMutableTreeNode(attribute));
+				}
+
 				loadSymbolTableTreeData(symbolTableTreeNode);
 			}
 		}
