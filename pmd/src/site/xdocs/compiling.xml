@@ -11,49 +11,62 @@
 <section name="Requirements">
   <ul>
     <li>JDK 1.5 or higher</li>
-    <li><a href="http://ant.apache.org/bindownload.cgi">Apache Ant</a> 1.7.0 or higher</li>
-    <li><a href="http://www.junit.org/">JUnit</a> 4.0 or higher (included in the lib directory)</li>
+    <li><a href="http://maven.apache.org">Apache Maven</a> 2 or later.</li>
   </ul>
 </section>
 <section name="Compiling PMD">
 <p>
 You'll need to either check out the source code or download the latest source release.
     Assuming you've got the latest source release, unzip it to a directory:
-    <pre>
-        [tom@hal building]$ ls -l
-        total 5716
-        -rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-@VERSION@.zip
-        [tom@hal building]$ unzip -q pmd-src-@VERSION@.zip
-        [tom@hal building]$
-    </pre>
+    <source>
+[tom@hal building]$ ls -l
+total 5716
+-rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-@VERSION@.zip
+[tom@hal building]$ unzip -q pmd-src-@VERSION@.zip
+[tom@hal building]$
+    </source>
 </p>
 <p>
     Now cd down into the <code>pmd</code> directory:
-    <pre>
-        [tom@hal building]$ cd pmd-@VERSION@
-        [tom@hal bin]$ ls -l | grep build.xml
-        -rw-rw-r--    1 tom      tom          5736 Jun 19 15:36 build.xml
-        [tom@hal bin]$
-    </pre>
+    <source>
+[tom@hal building]$ cd pmd-src-@VERSION@
+[tom@hal pmd-src-@VERSION@]$ ls -l | grep pom.xml
+-rw-rw-r--    1 tom      tom          29357 Jan 31 20:00 pom.xml
+[tom@hal pmd-src-@VERSION@]$
+    </source>
 </p>
 <p>
-    There's our Ant build file... let's compile!
-    <pre>
-        [tom@hal bin]$ ant compile
-        Buildfile: build.xml
+    That's the project configuration for maven... let's compile!
+    <source>
+[tom@hal pmd-src-@VERSION@]$ mvn clean package
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building PMD 5.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+...
+Results :
 
-        compile:
-            [javac] Compiling 509 source files to /home/tom/data/pmd/pmd/build
+Tests run: 829, Failures: 0, Errors: 0, Skipped: 9
 
-        BUILD SUCCESSFUL
-        Total time: 6 seconds
-        [tom@hal bin]$
-    </pre>
+[INFO] 
+[INFO] --- maven-jar-plugin:2.3.1:jar (default-jar) @ pmd ---
+[INFO] Building jar: target/pmd-5.0-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1:41.062s
+[INFO] Finished at: Mon Apr 30 09:36:12 CEST 2012
+[INFO] Final Memory: 13M/187M
+[INFO] ------------------------------------------------------------------------
+[tom@hal pmd-src-@VERSION@]$
+    </source>
 </p>
 <p>
     Notes:
     <ul>
-        <li>The rules that have already been written are specified in the rulesets/ directory in the
+        <li>The rules that have already been written are specified in the src/main/resources/rulesets/ directory in the
             source distribution.  They're also in the jar file that's included with both the
             source and binary distributions.</li>
     </ul>

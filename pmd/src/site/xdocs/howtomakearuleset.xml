@@ -40,30 +40,30 @@ Say you want to pick specific rules from various rule sets and customize them.  
   </description>
 
   <!-- We'll use the entire 'strings' ruleset -->
-  <rule ref="rulesets/strings.xml"/>
+  <rule ref="rulesets/java/strings.xml"/>
 
   <!-- Here's some rules we'll specify one at a time -->
-  <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
-  <rule ref="rulesets/unusedcode.xml/UnusedPrivateField"/>
-  <rule ref="rulesets/imports.xml/DuplicateImports"/>
-  <rule ref="rulesets/basic.xml/UnnecessaryConversionTemporary"/>
+  <rule ref="rulesets/java/unusedcode.xml/UnusedLocalVariable"/>
+  <rule ref="rulesets/java/unusedcode.xml/UnusedPrivateField"/>
+  <rule ref="rulesets/java/imports.xml/DuplicateImports"/>
+  <rule ref="rulesets/java/basic.xml/UnnecessaryConversionTemporary"/>
 
   <!-- We want to customize this rule a bit, change the message and raise the priority  -->
   <rule
-   ref="rulesets/basic.xml/EmptyCatchBlock"
+   ref="rulesets/java/basic.xml/EmptyCatchBlock"
    message="Must handle exceptions">
     <priority>2</priority>
   </rule>
 
   <!-- Now we'll customize a rule's property value -->
-  <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
+  <rule ref="rulesets/java/codesize.xml/CyclomaticComplexity">
     <properties>
         <property name="reportLevel" value="5"/>
     </properties>
   </rule>
 
   <!-- We want everything from braces.xml except WhileLoopsMustUseBraces -->
-  <rule ref="rulesets/braces.xml">
+  <rule ref="rulesets/java/braces.xml">
     <exclude name="WhileLoopsMustUseBraces"/>
   </rule>
 </ruleset>]]></source>
@@ -80,7 +80,7 @@ Say you want to pick specific rules from various rule sets and customize them.  
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>Just the braces rules I like</description>
-  <rule ref="rulesets/braces.xml">
+  <rule ref="rulesets/java/braces.xml">
     <exclude name="WhileLoopsMustUseBraces"/>
     <exclude name="IfElseStmtsMustUseBraces"/>
   </rule>
@@ -111,7 +111,7 @@ Say you want to pick specific rules from various rule sets and customize them.  
             <subsection name="Reference it in your Ant task">
                 <p>You can specify the full path to your custom ruleset name alongside
         of the built-in PMD rulesets - like this:</p>
-                <source><![CDATA[<pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/design.xml,rulesets/unusedcode.xml">
+                <source><![CDATA[<pmd rulesetfiles="/home/tom/data/pmd/pmd/rulesets/java/design.xml,rulesets/java/unusedcode.xml">
   <formatter type="xml" toFile="foo.xml"/>
   <fileset dir="/home/tom/data/pmd/pmd/src">
     <include name="**/*.java"/>

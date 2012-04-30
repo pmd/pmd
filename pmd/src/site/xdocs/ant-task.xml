@@ -110,8 +110,8 @@
 <target name="pmd">
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
  <pmd shortFilenames="true">
-  <ruleset>rulesets/design.xml</ruleset>
-  <ruleset>basic</ruleset>
+  <ruleset>rulesets/java/design.xml</ruleset>
+  <ruleset>java-basic</ruleset>
   <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
   <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
    <include name="java/lang/*.java"/>
@@ -151,7 +151,7 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="imports">
+    <pmd rulesetfiles="java-imports">
         <formatter type="html" toFile="pmd_report.html" toConsole="true"/>
         <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
             <include name="**/*.java"/>
@@ -168,7 +168,7 @@
 
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="imports.xml,unusedcode">
+    <pmd rulesetfiles="rulesets/java/imports.xml,java-unusedcode">
         <formatter type="xml" toFile="c:\pmd_report.xml"/>
         <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
             <include name="**/*.java"/>
@@ -184,7 +184,7 @@
 <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
 
 <target name="pmd">
-    <pmd rulesetfiles="rulesets/design.xml">
+    <pmd rulesetfiles="rulesets/java/design.xml">
         <formatter type="com.mycompany.MyRenderer" toFile="foo.html"/>
         <fileset dir="/path/to/java/src">
             <include name="**/*.java"/>
@@ -207,7 +207,7 @@
 <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
 
 <target name="pmd">
-      <pmd rulesetfiles="rulesets/design.xml">
+      <pmd rulesetfiles="rulesets/java/design.xml">
           <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
           <fileset dir="/path/to/java/src">
               <include name="**/*.java"/>
@@ -233,7 +233,7 @@ Complete build sequence is [pmd, copy, cppjavacc, cpd, delete,
 
 pmd:
       [pmd] Using the normal ClassLoader
-      [pmd] Using these rulesets: rulesets/imports.xml
+      [pmd] Using these rulesets: rulesets/java/imports.xml
       [pmd] Using rule DontImportJavaLang
       [pmd] Using rule UnusedImports
       [pmd] Using rule ImportFromSamePackage
@@ -258,7 +258,7 @@ Total time: 2 seconds
 <![CDATA[
 <target name="pmd">
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
- <pmd rulesetfiles="basic" shortFilenames="true">
+ <pmd rulesetfiles="java-basic" shortFilenames="true">
   <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
   <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
    <include name="java/lang/*.java"/>
@@ -273,7 +273,7 @@ Total time: 2 seconds
 <![CDATA[
 <target name="pmd">
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
- <pmd rulesetfiles="basic" shortFilenames="true">
+ <pmd rulesetfiles="java-basic" shortFilenames="true">
   <formatter type="html" toFile="pmd_report.html" linePrefix=".line"/>
   <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
    <include name="java/lang/*.java"/>

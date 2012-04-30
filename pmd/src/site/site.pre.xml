@@ -58,7 +58,7 @@
         <item href="/pmd-release-process.html" name="PMD Release Process"/>
     </menu>
     <menu name="For example">
-      <item href="/scoreboard.html" name="Run PMD on a Sourceforge project"/>
+      <item href="http://pmd.sourceforge.net/scoreboard.html" name="Run PMD on a Sourceforge project"/>
     </menu>
     <!-- The rulesets part of navigation will be added during pre-site and the
          list is build dynamically based on rulesets folder directory layout -->

@@ -10,10 +10,10 @@
    <section name="Running PMD via command line">
    	<subsection name="Basic usage">
    		<ul>
-    		<li>Type pmd [filename|jar or zip file containing source code|directory] [report format] [ruleset file], i.e:</li>
+    		<li><strong>Windows:</strong> Type &quot;pmd [filename|jar or zip file containing source code|directory] [report format] [ruleset file]&quot;, i.e:</li>
     		<br/>
     			<source>
-C:\tmp\pmd-@VERSION@\pmd\bin&gt;pmd c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
+C:\tmp\pmd-@VERSION@\pmd\bin&gt;pmd c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/java/unusedcode.xml
 &lt;?xml version="1.0"?&gt;&lt;pmd&gt;
 &lt;file name="c:\data\pmd\pmd\test-data\Unused1.java"&gt;
 &lt;violation line="5" rule="UnusedLocalVariable"&gt;
@@ -25,26 +25,39 @@ C:\tmp\pmd-@VERSION@\pmd\bin&gt;
 				</source>
        <p>You can pass a file name, a directory name, or a jar or zip file name containing Java source code to PMD.</p>
        <p>Also, the PMD binary distribution includes the ruleset files
-       inside the jar file - even though the "rulesets/unusedcode.xml" parameter
+       inside the jar file - even though the "rulesets/java/unusedcode.xml" parameter
  above looks like a filesystem reference, it's really being used by a getResourceAsStream() call
  to load it out of the PMD jar file.  And the same applies to the example below.</p>
 
        <li>If you want to run PMD without the batch file, you can do a:</li>
        <source>
-C:\data\pmd\pmd>java -cp lib\pmd-@VERSION@.jar;lib\jaxen-1.1.1.jar;lib\asm-3.2.jar
+C:\tmp\pmd-@VERSION@\pmd&gt;java -Djava.ext.dirs=lib 
                      net.sourceforge.pmd.PMD
                      c:\j2sdk1.4.1_01\src\java\lang xml
-                     rulesets/imports.xml
+                     rulesets/java/imports.xml
        </source>
 		<br/>
-	</ul>
-	</subsection>
+		<li><strong>Linux:</strong> Type &quot;./run.sh pmd [filename|jar or zip file containing source code|directory] [report format] [ruleset file]&quot;, i.e:</li>
+		<br/>
+			<source>
+/home/user/tmp/pmd-@VERSION@/pmd/bin&gt;./run.sh pmd /home/user/data/pmd/pmd/test-data/Unused1.java xml rulesets/java/unusedcode.xml
+&lt;?xml version="1.0"?&gt;&lt;pmd&gt;
+&lt;file name="/home/user/data/pmd/pmd/test-data/Unused1.java"&gt;
+&lt;violation line="5" rule="UnusedLocalVariable"&gt;
+Avoid unused local variables such as 'fr'
+&lt;/violation&gt;
+&lt;/file&gt;&lt;/pmd&gt;
+
+/home/user/tmp/pmd-@VERSION@/pmd/bin&gt;
+				</source>
+        </ul>
+    </subsection>
 	<subsection name="Other options">
 		<ul>
 	    	<li>Notice that in this case the output is in XML, so you can redirect it to a file and optionally transform it via XSLT</li>
 	        <li>You can also use shortened names to refer to the built-in rulesets, like this:</li>
 				<source>
-java net.sourceforge.pmd.PMD /path/to/source text basic,imports,unusedcode
+java net.sourceforge.pmd.PMD /path/to/source text java-basic,java-imports,java-unusedcode
        			</source>
        		<li>The command line interface also accepts the following optional arguments:</li>
          	<ul>
@@ -72,7 +85,7 @@ java net.sourceforge.pmd.PMD /path/to/source text basic,imports,unusedcode
 	</p>
 	<p>Here is a simple example of 'nicehtml' feature usage:
 				<source>
-java net.sourceforge.pmd.PMD /path/to/source nicehtml basic,imports,unusedcode -xslt my-own-stylesheet.xsl
+java net.sourceforge.pmd.PMD /path/to/source nicehtml java-basic,java-imports,java-unusedcode -xslt my-own-stylesheet.xsl
        			</source>
 		<i>Note that the stylesheet should be a readable file for PMD.</i>
 	</p>

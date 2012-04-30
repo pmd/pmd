@@ -35,7 +35,7 @@
 
          <subsection name="Data flow analysis (DFA)">
              <p>Raik Schroeder, a graduate student at
-                 <a href="http://www.fh-stralsund.de/fh_stralsund/powerslave,id,223,nodeid,.html">Fachhochschule Stralsund</a>,
+                 <a href="http://www.fh-stralsund.de/">Fachhochschule Stralsund</a>,
     has written a DFA layer that should enable us to write some more complicated rules - stuff like
     common subexpression elimination, loop invariant code motion (and code hoisting suggestions), shrink wrapping, and partial redundancy elimination.
    The code is currently in CVS in the net.sourceforge.pmd.dfa packages, and we're going through

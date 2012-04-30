@@ -13,11 +13,11 @@
        <p>Running every ruleset will result in a huge number of rule violations, most of which will be unimportant.
  Having to sort through a thousand line report to find the few you're really interested in takes
  all the fun out of things.</p>
-       <p>Instead, start with some of the obvious rulesets - just run <a href="rules/unusedcode.html">unusedcode</a>
+       <p>Instead, start with some of the obvious rulesets - just run <a href="rules/java/unusedcode.html">unusedcode</a>
            and fix any unused locals and fields.
- Then, run <a href="rules/basic.html">basic</a> and fix all the empty <code>if</code> statements and such-like.
-           Then peruse the <a href="rules/design.html">design</a> and
- <a href="rules/controversial.html">controversial</a> rulesets and use the ones
+ Then, run <a href="rules/java/basic.html">basic</a> and fix all the empty <code>if</code> statements and such-like.
+           Then peruse the <a href="rules/java/design.html">design</a> and
+ <a href="rules/java/controversial.html">controversial</a> rulesets and use the ones
            you like <a href="howtomakearuleset.html">via a custom ruleset.</a></p>
    </subsection>
 
@@ -32,7 +32,7 @@
            and soon you'll be fixing problems much faster.</p>
        </subsection>
 
-     <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
+     <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/projects/pmd/forums/forum/188192">here</a>.  Thanks!</p>
    </section>
   </body>
 </document>

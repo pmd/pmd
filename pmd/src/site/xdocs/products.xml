@@ -31,8 +31,8 @@
               <br/>
           <li><a href="http://pmdapplied.com">PMD Applied</a> - the official manual; get an extra copy for the home!  Or office!  Whatever!</li>
               <br/>
-					<li><a href="http://www.oreilly.com/catalog/9780596510237/">Checking Java Programs</a> - by Ian Darwin; also discusses FindBugs.</li>
-							<br/>
+          <li><a href="http://www.oreilly.com/catalog/9780596510237/">Checking Java Programs</a> - by Ian Darwin; also discusses FindBugs.</li>
+              <br/>
           <li><a href="http://www.amazon.com/gp/product/0321286081/qid=1145894533/sr=2-1/ref=pd_bbs_b_2_1/002-6820206-1468015?s=books&amp;v=glance&amp;n=283155">Sustainable Software Development: An Agile Perspective</a> - by Kevin Tate, discusses both PMD and CPD</li>
               <br/>
           <li><a href="http://www.amazon.com/gp/product/0321375777/sr=8-1/qid=1145894415/ref=pd_bbs_1/002-6820206-1468015?%5Fencoding=UTF8">High-Assurance Design: Architecting Secure and Reliable Enterprise Applications</a> - by Cliff Berg, mentions PMD in a discussion of static analysis utilities</li>
@@ -46,10 +46,11 @@
           <li><a href="http://www.amazon.com/exec/obidos/tg/detail/-/0672325624/ref=ase_interncom-20/103-5706126-6692649?v=glance&amp;s=book">Extreme Programming With Ant</a></li>
           </ul>
       </subsection>
-      <subsection name="article">
-        <ul>
-	  <li><a href="http://www.unixgarden.com/index.php/programmation/verifier-votre-code-java-avec-pmd">An introduction to PMD (in French)</a></li>
-	</ul>
+      <subsection name="Articles">
+          <ul>
+              <br/>
+          <li><a href="http://www.unixgarden.com/index.php/programmation/verifier-votre-code-java-avec-pmd">An introduction to PMD (in French)</a></li>
+          </ul>
       </subsection>
       </section>
   </body>

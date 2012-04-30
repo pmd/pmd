@@ -111,22 +111,22 @@ public class CommandLineParser {
 				+ "3) A ruleset filename or a comma-delimited string of ruleset filenames"				+ PMD.EOL
 				+ PMD.EOL
 				+ "For example: "																		+ PMD.EOL
-				+ "c:\\> " + launchCmd + " c:\\my\\source\\code html unusedcode"						+ PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code html java-unusedcode"					+ PMD.EOL
 				+ PMD.EOL
 				+ "Optional arguments that may be put before or after the mandatory arguments: "		+ PMD.EOL
 				+ PMDParameters.allOptionDescriptions("  ", PMD.EOL) 									+ PMD.EOL
 				+ "Available report formats and their configuration properties are:"					+ PMD.EOL
 				+ getReports()																			+ PMD.EOL
 				+ "For example on windows: "															+ PMD.EOL
-				+ "c:\\> " + launchCmd + " c:\\my\\source\\code text unusedcode,imports -version java 1.5 -debug"			+ PMD.EOL
-				+ "c:\\> " + launchCmd + " c:\\my\\source\\code xml basic,design -encoding UTF-8"							+ PMD.EOL
-				+ "c:\\> " + launchCmd + " c:\\my\\source\\code html typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL
-				+ "c:\\> " + launchCmd + " c:\\my\\source\\code html typeresolution -auxclasspath file:///C:/my/classpathfile"		  + PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code text java-unusedcode,java-imports -version java 1.5 -debug" + PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code xml java-basic,java-design -encoding UTF-8"					+ PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code html java-typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL
+				+ "c:\\> " + launchCmd + " c:\\my\\source\\code html java-typeresolution -auxclasspath file:///C:/my/classpathfile" + PMD.EOL
 				+ PMD.EOL
 				+ "For example on *nix: "				+ PMD.EOL
-				+ "$ " + launchCmd + " /home/workspace/src/main/java/code nicehtml basic,design"						+ PMD.EOL
-				+ "$ " + launchCmd + " /home/workspace/src/main/java/code nicehtml basic,design -xslt my-own.xsl"		+ PMD.EOL
-				+ "$ " + launchCmd + " /home/workspace/src/main/java/code nicehtml typeresolution -auxclasspath commons-collections.jar:derby.jar"
+				+ "$ " + launchCmd + " /home/workspace/src/main/java/code nicehtml java-basic,java-design"				+ PMD.EOL
+				+ "$ " + launchCmd + " /home/workspace/src/main/java/code nicehtml java-basic,java-design -xslt my-own.xsl" + PMD.EOL
+				+ "$ " + launchCmd + " /home/workspace/src/main/java/code nicehtml java-typeresolution -auxclasspath commons-collections.jar:derby.jar"
 				+ PMD.EOL + PMD.EOL;
 	}
 
