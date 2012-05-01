@@ -1,41 +1,10 @@
-???? ??, 2012 - 5.0:
-
-TODO - Release blockers - Must implement before this release can be finally finished
-
-   CODE:
-   o PropertyDescriptor final tasks:
-      - Find some way to have them appear in the online documentation for the rules
-        that have them. Ideally we want to ensure we define them in one place only.
-      - Report renderers now inherit from PropertySource so we should migrate the
-        old-style property references to use the new style. Ensure we remain
-        compatible with the online arguments that get passed in.
-   o Need to refactor the test framework to more readily support for multiple
-     Languages (too Java-centric at the moment).  Then, need start adding tests
-     for the new XML language and other new languages.
-   o Need the modify RuleViolation, RuleViolationFactory, and Rule base classes
-     to recognize the difference between violations which require a Node, and
-     those without.  This is to make certain that Rules which require and do not
-     pass, will die with an error because they are buggy and need to be fixed.
-
-   DOCUMENTATION:
-   o Expand documentation examples which demonstrate use of new RuleSetReferenceId
-     capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
-     of a Rule reference in places not previously possible (e.g. CMD and Ant).
-   o Fully document the changed/new command line and Ant configuration options.
-   o Need to enhance documentation to cover Global and Language specific
-     function namespaces required for XPath 2.0 use (e.g. pmd:matches
-     and pmd-java:typeof).
+May, 1, 2012 - 5.0.0:
 
 Fixed bug 3470274: Using Label for lines in XMLRenderer
 Fixed bug 3175710: NPE in InsufficientStringBufferDeclaration
 
-
 CPD:
 - Exit with status code 4 when CPD detects code duplication (Patch ID: 3497021)
-
-
----
-
 
 January 31, 2012 - 5.0-alpha:
 
@@ -458,7 +427,7 @@ The RuleSet XML Schema namespace is now: http://pmd.sourceforge.net/ruleset/2.0.
 The RuleSet XML Schema is located in the source at: etc/ruleset_2_0_0.xsd
 The RuleSet DTD is located in the source at: etc/ruleset_2_0_0.dtd
 Improved include/exclude pattern matching performance for ends-with type patterns.
-Modify (and hopefully fixed) CPD algorithm thanks to a patch from Juan Jesús García de Soria.
+Modify (and hopefully fixed) CPD algorithm thanks to a patch from Juan JesÃºs GarcÃ­a de Soria.
 Fixed character reference in xml report - thanks to Seko
 Enhanced SuspiciousEqualsMethodName rule - thanks to Andy Throgmorton
 Add a script to launch CPDGUI on Unix system - thanks to Tom Wheeler
@@ -522,7 +491,7 @@ Fixed bug 2835074 - False -: DoubleCheckedLocking with reversed null check
 Fixed bug 2826119 - False +: DoubleCheckedLocking warning with volatile field
 Fixed bug 2904832 - Type resolution not working for ASTType when using an inner class
 
-Modify (and hopefully fixed) CPD algorithm thanks to a patch from Juan Jesús García de Soria.
+Modify (and hopefully fixed) CPD algorithm thanks to a patch from Juan JesÃºs GarcÃ­a de Soria.
 Correct -benchmark reporting of Rule visits via the RuleChain
 Fix issue with Type Resolution incorrectly handling of Classes with same name as a java.lang Class.
 The JSP/JSF parser can now parse Unicode input.
