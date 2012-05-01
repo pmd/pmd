@@ -14,9 +14,47 @@
         <li>Overcomplicated expressions - unnecessary if statements, for loops that could be while loops</li>
         <li>Duplicate code - copied/pasted code means copied/pasted bugs</li>
       </ul>
+      
+      <p>You can <b><a href="http://sourceforge.net/projects/pmd/files/">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
+      <p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
+    
+      <h3>Recent releases</h3>
+      <p><ul>
+        <li><p>2012-05-01 PMD 5.0.0: major version supporting additional languages and new rules (<a href="https://sourceforge.net/projects/pmd/files/pmd/5.0.0/">Changelog</a>)
+        <ul>
+            <li>Additional languages support (Java, JavaScript, XML, XSL, JSP)</li>
+            <li>Many bug fixes and new rules</li>
+            <li>Internal refactoring which breaks compatibility, but adds generic support for additional languages.</li>
+            <li>Maven coordinates have been changed: <a href="http://search.maven.org/#search|ga|1|g%3A%22net.sourceforge.pmd%22%20a%3A%22pmd%22">net.sourceforge.pmd:pmd</a></li>
+            <li>For details, see the <a href="https://sourceforge.net/projects/pmd/files/pmd/5.0.0/">Changelog</a>.</li>
+        </ul></p>
+        <p><em>Note: PMD 5 is not backwards compatible with PMD 4.x.</em></p>
+        </li>
+        <li><p>2011-11-04 PMD 4.3 (<a href="https://sourceforge.net/projects/pmd/files/pmd/4.3/">download</a>):
+        <ul>
+           <li>Add support for Java 7 grammer - thanks to Dinesh Bolkensteyn and <a href="http://www.sonarsource.com/">SonarSource</a> ;</li>
+           <li>Add C# support for CPD - thanks to Florian Bauer ;</li>
+           <li>And, as usual, a bunch of bug fixes and a couple new rules (DontCallThreadRun and GuardDebugLogging) (See <a href="https://sourceforge.net/projects/pmd/files/pmd/4.3/">Changelog</a>).</li>
+        </ul>
+        <em>Note: default JDK setting for PMD is now Java 7.</em>
+      </p>
+      </li>
+      <li>2011-09-14 PMD 4.2.6: bug fixes, new rules (<a href="http://sourceforge.net/projects/pmd/files/pmd/4.2.6/pmd-bin-4.2.6.zip/download">Changelog</a>)</li>
+      <li>2009-02-08 PMD 4.2.5: bug fixes, new rule, new Android ruleset (<a href="http://sourceforge.net/project/shownotes.php?release_id=659603&amp;group_id=56262">Changelog</a>)</li>
+      <li>2008-10-12 PMD 4.2.4: bug fixes (<a href="http://sourceforge.net/project/shownotes.php?release_id=632850&amp;group_id=56262">Changelog</a>)</li>
+      <li>2008-08-31 PMD 4.2.3: yet more bug fixes (<a href="http://sourceforge.net/project/shownotes.php?release_id=623284&amp;group_id=56262">Changelog</a>)</li>
+      <li>2008-05-20 PMD 4.2.2: more bug fixes on the 4.2 branch (<a href="http://sourceforge.net/project/shownotes.php?release_id=600660&amp;group_id=56262">Changelog</a>)</li>
+      <li>2008-04-11 PMD 4.2.1: bug fixes (<a href="http://sourceforge.net/project/shownotes.php?release_id=591563&amp;group_id=56262">Changelog</a>)</li>
+      </ul></p>
+      
+      <h3>Future releases</h3>
+      <p>The next development version will be PMD 5.1. We will release other 5.0.x versions
+      with bug fixes if needed.</p>
+      <p>A <a href="http://pmd.sourceforge.net/snapshot">snapshot</a> of the web site for the new version is generated daily by our continuous integration server. Early access versions can also be downloaded from there.</p>
+
 
       <h3>Download (early access)</h3>
-      <p>A new snapshot of the 5.0 release is generated daily using a <a href="http://jenkins-ci.org/">Jenkins</a> continuous integration server.</p>
+      <p>A new snapshot of the 5.1 release is generated daily using a <a href="http://jenkins-ci.org/">Jenkins</a> continuous integration server.</p>
       <p>Source and binary packages are available at
 
       <a href="http://pmd.adabolo.de/job/pmd-trunk/">http://pmd.adabolo.de/job/pmd-trunk/</a>
@@ -24,12 +62,6 @@
 
       <p>Maven packages are also generated regularly and uploaded to the <a href="http://pmd.sourceforge.net/snapshot/maven2">snapshot repository</a> and
       to <a href="https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/pmd/">Sonatypes OSS snapshot repository</a>.</p>
-
-      <p>You can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
-
-      <h3>Integrations</h3>
-      <p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator,
-           IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
 
     </section>
   </body>
