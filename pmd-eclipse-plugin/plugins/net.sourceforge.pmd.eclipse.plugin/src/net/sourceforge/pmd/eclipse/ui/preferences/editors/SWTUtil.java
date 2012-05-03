@@ -8,8 +8,11 @@ import java.util.Set;
 
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 /**
  *
@@ -30,6 +33,28 @@ public class SWTUtil {
     public static void logError(String message, Throwable error) {
     	plugin.logError(message, error);
     }    
+    
+    /**
+     * Let the buttons operate as a radio group, with only one button
+     * selected at a time.
+     * 
+     * @param buttons
+     */
+    public static void asRadioButtons(final Collection<Button> buttons) {
+    	
+    	Listener listener = new Listener() {
+    		public void handleEvent(Event e) {
+    			for (Button button : buttons) {    				
+    				if (e.widget != button) {
+    					button.setSelection (false);
+    				}
+    			}
+    			((Button) e.widget).setSelection (true);
+    		}
+    	};
+    	
+    	for (Button button : buttons) button.addListener(SWT.Selection, listener);
+    }
     
 	// TODO move this to to Collections utility
 	public static Set<String> asStringSet(String input, char separator) {

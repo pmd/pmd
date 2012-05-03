@@ -45,7 +45,7 @@ public abstract class AbstractPMDAction extends Action {
 		return PMDPlugin.getDefault().loadPreferences();
 	}
 	
-	protected void logErrorByKey(String errorId, Throwable error) {
+	protected static void logErrorByKey(String errorId, Throwable error) {
 		PMDPlugin.getDefault().logError(getString(errorId), error);
 	}
 }
