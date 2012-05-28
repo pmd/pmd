@@ -32,9 +32,9 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-one break
+one break, but two cases + one default case - so 2 missing breaks and one expected problem.
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
 	void main() {
@@ -88,7 +88,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 3496028: False-
      ]]></description>
@@ -97,15 +97,17 @@ public class Foo {
 public class Foo {
   public void m() {
     switch (s) {
-     case 0 :
-      s2 = s ;
+      case 0 :
+        s2 = s ;
+        // missing break here!
       case 1 :
-     s2 = (short)(s + 1);
-      break;
-    default :
-   s2 = (short)(s + 2);
+        s2 = (short)(s + 1);
+        break;
+      default :
+        s2 = (short)(s + 2);
+        // and missing break here!
+    }
   }
- }
 }
      ]]></code>
   </test-code>

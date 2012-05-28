@@ -896,11 +896,10 @@ may indicate problematic behaviour.
               <value>
     <![CDATA[
 //SwitchStatement
-[count(.//BreakStatement)=0]
-[count(SwitchLabel) > 0]
-[count(BlockStatement/Statement/ReturnStatement)
+[(count(.//BreakStatement)
+ + count(BlockStatement/Statement/ReturnStatement)
  + count(BlockStatement/Statement/ThrowStatement)
-     < count (SwitchLabel)]
+     < count (SwitchLabel))]
     ]]>
               </value>
           </property>
@@ -914,8 +913,10 @@ public void bar(int status) {
         // break; hm, should this be commented out?
       case NEW:
         doNew();
+        // is this really a fall-through?
       case REMOVED:
         doRemoved();
+        // what happens if you add another case after this one?
     }
 }
 ]]>
