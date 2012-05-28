@@ -881,14 +881,14 @@ public class Foo {
     </rule>
 
     <rule name="MissingBreakInSwitch"
-   		language="java"
-    		 since="3.0"
+          language="java"
+          since="3.0"
           message="A switch statement does not contain a break"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/java/design.html#MissingBreakInSwitch">
       <description>
 Switch statements without break or return statements for each case option
-may indicate problematic behaviour.
+may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
       </description>
       <priority>3</priority>
       <properties>
@@ -899,7 +899,9 @@ may indicate problematic behaviour.
 [(count(.//BreakStatement)
  + count(BlockStatement/Statement/ReturnStatement)
  + count(BlockStatement/Statement/ThrowStatement)
-     < count (SwitchLabel))]
+ + count(SwitchLabel[name(following-sibling::node()) = 'SwitchLabel'])
+ + count(SwitchLabel[count(following-sibling::node()) = 0 or count(child::node()) = 0])
+  < count (SwitchLabel))]
     ]]>
               </value>
           </property>
@@ -917,6 +919,10 @@ public void bar(int status) {
       case REMOVED:
         doRemoved();
         // what happens if you add another case after this one?
+      case OTHER: // empty case - this is interpreted as an intentional fall-through
+      case ERROR:
+        doErrorHandling();
+        break;
     }
 }
 ]]>
