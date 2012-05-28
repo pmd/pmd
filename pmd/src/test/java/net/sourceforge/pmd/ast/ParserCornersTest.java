@@ -19,6 +19,24 @@ public class ParserCornersTest extends ParserTst {
     public final void testCastLookaheadProblem() throws Throwable {
         parseJava14(CAST_LOOKAHEAD_PROBLEM);
     }
+    
+    /**
+     * Tests a specific generic notation for calling methods.
+     * See: https://jira.codehaus.org/browse/MPMD-139
+     */
+    @Test
+    @Ignore
+    public void testGenericsProblem() {
+    	parseJava15(GENERICS_PROBLEM);
+    	parseJava17(GENERICS_PROBLEM);
+    }
+    
+    private static final String GENERICS_PROBLEM =
+    		"public class Test {" + PMD.EOL +
+    		" public void test() {" + PMD.EOL +
+    		"   String o = super.<String> doStuff(\"\");" + PMD.EOL +
+    		" }" + PMD.EOL +
+    		"}";
 
     private static final String ABSTRACT_METHOD_LEVEL_CLASS_DECL =
             "public class Test {" + PMD.EOL +
