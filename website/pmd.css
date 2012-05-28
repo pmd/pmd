@@ -1,0 +1,68 @@
+body {
+    margin: 10px 30px;
+    background: lightgray;
+    color: black;
+    font-family: sans-serif;
+}
+
+h3 {
+    background: lightblue;
+    color: black;
+    border-radius: 5px;
+    border: 2px blue solid;
+    padding: 3px 5px;
+}
+
+.container {
+    border-radius: 15px;
+    padding: 20px;
+    background: white;
+    color: black;
+}
+
+.row {
+    width: 100%;
+    clear: both;
+}
+
+.column-1 {
+    width: 100%;
+}
+
+.column-3 {
+    width: 30%;
+    margin-right: 3%;
+    min-width: 300px;
+    float: left;
+}
+
+.column-2-3 {
+    width: 63%;
+    margin-right: 3%;
+    float: left;
+}
+
+.no-margin {
+    margin-right: 0px;
+}
+
+.footer {
+    font-size: 60%;
+    text-align: right;
+}
+
+.center {
+    text-align: center;
+}
+
+.description {
+    font-family: serif;
+    width: 70%;
+    margin: 3em auto;
+    font-size: 140%;
+}
+
+a.externalLink {
+    background: url("external.png") no-repeat scroll right center transparent;
+    padding-right: 18px;
+}
