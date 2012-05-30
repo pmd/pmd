@@ -27,8 +27,13 @@ TODO - Release blockers - Must implement before this release can be finally fini
      and pmd-java:typeof).
 
 
+Fixed bug 3424397: Unable to parse
+Fixed bug 3530124: pmd: parsing of generic method call with super fails
+Fixed bug 3496028: pmd-4.2.6: MissingBreakInSwitch fails to report violation
+
 May, 1, 2012 - 5.0.0:
 
+Fixed bug 3515487: Inconsistent reference to ruleset file in documentation
 Fixed bug 3470274: Using Label for lines in XMLRenderer
 Fixed bug 3175710: NPE in InsufficientStringBufferDeclaration
 
