@@ -31,7 +31,7 @@ To get better results, make sure that the auxclasspath is defined for type resol
   @Image='onStart'
   ]]
     /Block[not(
-      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]))]
+      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]))]
 [ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[
   typeof(@Image, 'android.app.Activity', 'Activity') or
   typeof(@Image, 'android.app.Application', 'Application') or
@@ -72,7 +72,7 @@ public class DummyActivity extends Activity {
   @Image='onTerminate'
   ]]
    /Block/BlockStatement[last()]
-    [not(Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])]
+    [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])]
 [ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[
   typeof(@Image, 'android.app.Activity', 'Activity') or
   typeof(@Image, 'android.app.Application', 'Application') or

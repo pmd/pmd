@@ -57,8 +57,9 @@ If the finalize() is implemented, it should do something besides just calling su
    /Block[count(BlockStatement)=1]
      /BlockStatement[
        Statement/StatementExpression/PrimaryExpression
-      /PrimaryPrefix[@Image="finalize"]
-      ]
+       [./PrimaryPrefix[@SuperModifier='true']]
+       [./PrimarySuffix[@Image='finalize']]
+     ]
 ]]>
                 </value>
             </property>
@@ -123,10 +124,17 @@ a block whose last statement is NOT a call to super.finalize -->
 //MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
    /Block
       /BlockStatement[last()]
-      [not(Statement/StatementExpression/PrimaryExpression/PrimaryPrefix[@Image='finalize'])]
+      [not(Statement/StatementExpression/PrimaryExpression
+            [./PrimaryPrefix[@SuperModifier='true']]
+            [./PrimarySuffix[@Image='finalize']]
+          )
+      ]
       [not(Statement/TryStatement/FinallyStatement
-       /Block/BlockStatement/Statement/StatementExpression
-        /PrimaryExpression/PrimaryPrefix[@Image='finalize'])]
+       /Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
+            [./PrimaryPrefix[@SuperModifier='true']]
+            [./PrimarySuffix[@Image='finalize']]
+          )
+      ]
 ]]>
                 </value>
             </property>

@@ -1,11 +1,13 @@
 package net.sourceforge.pmd.lang.java.rule.finalizers;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
 
@@ -35,7 +37,12 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
     }
 
     public Object visit(ASTPrimaryPrefix pp, Object ctx) {
-        if (pp.getImage() == null || !pp.getImage().endsWith("finalize")) {
+        List<ASTPrimarySuffix> primarySuffixes = pp.jjtGetParent().findChildrenOfType(ASTPrimarySuffix.class);
+        ASTPrimarySuffix firstSuffix = null;
+        if (primarySuffixes.size() > 0) {
+            firstSuffix = primarySuffixes.get(0);
+        }
+        if (firstSuffix == null || firstSuffix.getImage() == null || !firstSuffix.getImage().endsWith("finalize")) {
             return super.visit(pp, ctx);
         }
         MethodScope meth = pp.getScope().getEnclosingMethodScope();

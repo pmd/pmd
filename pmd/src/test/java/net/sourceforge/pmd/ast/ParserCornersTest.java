@@ -1,9 +1,15 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.ast;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.testframework.ParserTst;
+import net.sourceforge.pmd.util.IOUtil;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -15,7 +21,6 @@ public class ParserCornersTest extends ParserTst {
     }
 
     @Test
-    @Ignore
     public final void testCastLookaheadProblem() throws Throwable {
         parseJava14(CAST_LOOKAHEAD_PROBLEM);
     }
@@ -25,10 +30,31 @@ public class ParserCornersTest extends ParserTst {
      * See: https://jira.codehaus.org/browse/MPMD-139
      */
     @Test
-    @Ignore
     public void testGenericsProblem() {
     	parseJava15(GENERICS_PROBLEM);
     	parseJava17(GENERICS_PROBLEM);
+    }
+    
+    @Test
+    public void testParsersCases() {
+    	String test = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases.java");
+    	parseJava17(test);
+    }
+    
+    private String readAsString(String resource) {
+    	InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
+    	StringBuilder sb = new StringBuilder();
+    	int c;
+    	try {
+        	while((c = in.read()) != -1) {
+        		sb.append((char)c);
+        	}
+    	} catch (IOException e) {
+    		// ignored
+    	} finally {
+    		IOUtil.closeQuietly(in);
+    	}
+    	return sb.toString();
     }
     
     private static final String GENERICS_PROBLEM =
