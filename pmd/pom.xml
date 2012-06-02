@@ -506,6 +506,10 @@
                     <artifactId>xalan</artifactId>
                     <groupId>xalan</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>icu4j</artifactId>
+                    <groupId>com.ibm.icu</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -570,11 +574,22 @@
                 </reportSets>
             </plugin>
 
-            <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-pmd-plugin</artifactId>
-                <configuration> <linkXref>true</linkXref> <sourceEncoding>utf-8</sourceEncoding>
-                <minimumTokens>100</minimumTokens> <targetJdk>1.5</targetJdk> <rulesets>
-                <ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
-                </rulesets> </configuration> </plugin> -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.7.1</version>
+                <configuration>
+                    <linkXref>true</linkXref>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.6</targetJdk>
+                    <rulesets>
+                        <!--  once the pmd plugin is migrated to pmd-5, we should be able to use the current dogfood configuration -->
+<!--                        <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset> -->
+                        <ruleset>https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x/rulesets/internal/dogfood.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
 
             <!-- Emma is a test coverage tools to be used instead of clover.
                 As the mvn2 plugin is not released yet, the plugin is commented out, so you
