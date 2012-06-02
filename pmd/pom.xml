@@ -218,6 +218,15 @@
                 <picUrl>http://belaran.eu/wordpress/wp-content/uploads/2008/05/RomainPELISSE.jpg</picUrl>
             </properties>
         </developer>
+        <developer>
+            <id>adangel</id>
+            <name>Andreas Dangel</name>
+            <email>adangel@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
     </developers>
     <scm>
         <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</connection>
