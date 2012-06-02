@@ -29,15 +29,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSetReferenceId;
-import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule;
@@ -45,6 +36,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.ResourceLoader;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -52,7 +44,35 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class RuleSetFactoryTest {
-
+	private static SAXParserFactory saxParserFactory;
+	private static ValidateDefaultHandler validateDefaultHandlerXsd;
+	private static ValidateDefaultHandler validateDefaultHandlerDtd;
+	private static SAXParser saxParser;
+	
+	@BeforeClass
+	public static void init() throws Exception {
+    	saxParserFactory = SAXParserFactory.newInstance();
+    	saxParserFactory.setValidating(true);
+    	saxParserFactory.setNamespaceAware(true);
+    	
+		// Hope we're using Xerces, or this may not work!
+		// Note: Features are listed here
+		// http://xerces.apache.org/xerces2-j/features.html
+		saxParserFactory.setFeature("http://xml.org/sax/features/validation",
+				true);
+		saxParserFactory.setFeature(
+				"http://apache.org/xml/features/validation/schema", true);
+		saxParserFactory
+				.setFeature(
+						"http://apache.org/xml/features/validation/schema-full-checking",
+						true);
+    	
+    	validateDefaultHandlerXsd = new ValidateDefaultHandler("src/main/resources/ruleset_2_0_0.xsd");
+    	validateDefaultHandlerDtd = new ValidateDefaultHandler("src/main/resources/ruleset_2_0_0.dtd");
+    	
+    	saxParser = saxParserFactory.newSAXParser();
+	}
+	
 	@Test
 	public void testRuleSetFileName() throws RuleSetNotFoundException {
 		RuleSet rs = loadRuleSet(EMPTY_RULESET);
@@ -572,8 +592,8 @@ public class RuleSetFactoryTest {
 			SAXException {
 
 		// Load original XML
-		String xml1 = readFullyToString(ResourceLoader.loadResourceAsStream(fileName));
-		// System.out.println("xml1: " + xml1);
+//		String xml1 = readFullyToString(ResourceLoader.loadResourceAsStream(fileName));
+//		System.out.println("xml1: " + xml1);
 
 		// Load the original RuleSet
 		RuleSet ruleSet1 = loadRuleSetByFileName(fileName);
@@ -589,8 +609,7 @@ public class RuleSetFactoryTest {
 		// Read RuleSet from XML, first time
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 		RuleSet ruleSet2 = ruleSetFactory
-				.createRuleSet(createRuleSetReferenceId(new String(
-						outputStream1.toByteArray())));
+				.createRuleSet(createRuleSetReferenceId(xml2));
 
 		// Do write/read a 2nd time, just to be sure
 
@@ -604,32 +623,31 @@ public class RuleSetFactoryTest {
 
 		// Read RuleSet from XML, second time
 		RuleSet ruleSet3 = ruleSetFactory
-				.createRuleSet(createRuleSetReferenceId(new String(
-						outputStream2.toByteArray())));
+				.createRuleSet(createRuleSetReferenceId(xml3));
 
 		// The 2 written XMLs should all be valid w.r.t Schema/DTD
 		assertTrue(
-				"1st roundtrip RuleSet XML is not valid against Schema",
+				"1st roundtrip RuleSet XML is not valid against Schema (filename: " + fileName + ")",
 				validateAgainstSchema(new ByteArrayInputStream(xml2.getBytes())));
 		assertTrue(
-				"2nd roundtrip RuleSet XML is not valid against Schema",
+				"2nd roundtrip RuleSet XML is not valid against Schema (filename: " + fileName + ")",
 				validateAgainstSchema(new ByteArrayInputStream(xml3.getBytes())));
-		assertTrue("1st roundtrip RuleSet XML is not valid against DTD",
+		assertTrue("1st roundtrip RuleSet XML is not valid against DTD (filename: " + fileName + ")",
 				validateAgainstDtd(new ByteArrayInputStream(xml2.getBytes())));
-		assertTrue("2nd roundtrip RuleSet XML is not valid against DTD",
+		assertTrue("2nd roundtrip RuleSet XML is not valid against DTD (filename: " + fileName + ")",
 				validateAgainstDtd(new ByteArrayInputStream(xml3.getBytes())));
 
 		// All 3 versions of the RuleSet should be the same
 		assertEqualsRuleSet(
-				"Original RuleSet and 1st roundtrip Ruleset not the same",
+				"Original RuleSet and 1st roundtrip Ruleset not the same (filename: " + fileName + ")",
 				ruleSet1, ruleSet2);
 		assertEqualsRuleSet(
-				"1st roundtrip Ruleset and 2nd roundtrip RuleSet not the same",
+				"1st roundtrip Ruleset and 2nd roundtrip RuleSet not the same (filename: " + fileName + ")",
 				ruleSet2, ruleSet3);
 
 		// It's hard to compare the XML DOMs. At least the roundtrip ones should
 		// textually be the same.
-		assertEquals("1st roundtrip RuleSet XML and 2nd roundtrip RuleSet XML",
+		assertEquals("1st roundtrip RuleSet XML and 2nd roundtrip RuleSet XML (filename: " + fileName + ")",
 				xml2, xml3);
 	}
 
@@ -747,28 +765,10 @@ public class RuleSetFactoryTest {
 	private boolean validateAgainstSchema(InputStream inputStream)
 			throws IOException, RuleSetNotFoundException,
 			ParserConfigurationException, SAXException {
-		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-		saxParserFactory.setValidating(true);
-		saxParserFactory.setNamespaceAware(true);
-
-		// Hope we're using Xerces, or this may not work!
-		// Note: Features are listed here
-		// http://xerces.apache.org/xerces2-j/features.html
-		saxParserFactory.setFeature("http://xml.org/sax/features/validation",
-				true);
-		saxParserFactory.setFeature(
-				"http://apache.org/xml/features/validation/schema", true);
-		saxParserFactory
-				.setFeature(
-						"http://apache.org/xml/features/validation/schema-full-checking",
-						true);
-
-		SAXParser saxParser = saxParserFactory.newSAXParser();
-		ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler(
-				"src/main/resources/ruleset_2_0_0.xsd");
-		saxParser.parse(inputStream, validateDefaultHandler);
+		
+		saxParser.parse(inputStream, validateDefaultHandlerXsd.resetValid());
 		inputStream.close();
-		return validateDefaultHandler.isValid();
+		return validateDefaultHandlerXsd.isValid();
 	}
 
 	private boolean validateAgainstDtd(String fileName) throws IOException,
@@ -786,26 +786,19 @@ public class RuleSetFactoryTest {
 	private boolean validateAgainstDtd(InputStream inputStream)
 			throws IOException, RuleSetNotFoundException,
 			ParserConfigurationException, SAXException {
-		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-		saxParserFactory.setValidating(true);
-		saxParserFactory.setNamespaceAware(true);
-
+		
 		// Read file into memory
 		String file = readFullyToString(inputStream);
 
 		// Remove XML Schema stuff, replace with DTD
 		file = file.replaceAll("<\\?xml [ a-zA-Z0-9=\".-]*\\?>", "");
 		file = file.replaceAll(
-				"xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"", "");
+				"xmlns=\"" + RuleSetWriter.RULESET_NS_URI + "\"", "");
 		file = file.replaceAll(
 				"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "");
 		file = file
 				.replaceAll(
-						"xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\"",
-						"");
-		file = file
-				.replaceAll(
-						"xsi:noNamespaceSchemaLocation=\"http://pmd.sourceforge.net/ruleset_2_0_0.xsd\"",
+						"xsi:schemaLocation=\"" + RuleSetWriter.RULESET_NS_URI + " http://pmd.sourceforge.net/ruleset_2_0_0.xsd\"",
 						"");
 
 		file = "<?xml version=\"1.0\"?>" + PMD.EOL
@@ -815,17 +808,14 @@ public class RuleSetFactoryTest {
 
 		inputStream = new ByteArrayInputStream(file.getBytes());
 
-		SAXParser saxParser = saxParserFactory.newSAXParser();
-		ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler(
-				"src/main/resources/ruleset_2_0_0.dtd");
-		saxParser.parse(inputStream, validateDefaultHandler);
+		saxParser.parse(inputStream, validateDefaultHandlerDtd.resetValid());
 		inputStream.close();
-		return validateDefaultHandler.isValid();
+		return validateDefaultHandlerDtd.isValid();
 	}
 
 	private String readFullyToString(InputStream inputStream)
 			throws IOException {
-		StringBuffer buf = new StringBuffer(64 * 1024);
+		StringBuilder buf = new StringBuilder(64 * 1024);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				inputStream));
 		String line;
@@ -852,12 +842,17 @@ public class RuleSetFactoryTest {
 		return ruleSetFileNames;
 	}
 
-	private class ValidateDefaultHandler extends DefaultHandler {
+	private static class ValidateDefaultHandler extends DefaultHandler {
 		private final String validateDocument;
 		private boolean valid = true;
 
 		public ValidateDefaultHandler(String validateDocument) {
 			this.validateDocument = validateDocument;
+		}
+		
+		public ValidateDefaultHandler resetValid() {
+			valid = true;
+			return this;
 		}
 
 		public boolean isValid() {
@@ -904,10 +899,10 @@ public class RuleSetFactoryTest {
 		}
 	}
 
-	private InputStream loadResourceAsStream(String resource)
+	private static InputStream loadResourceAsStream(String resource)
 			throws RuleSetNotFoundException {
 		InputStream inputStream = ResourceLoader.loadResourceAsStream(resource,
-				this.getClass().getClassLoader());
+				RuleSetFactoryTest.class.getClassLoader());
 		if (inputStream == null) {
 			throw new RuleSetNotFoundException(
 					"Can't find resource "

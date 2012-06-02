@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+  targetNamespace="http://pmd.sourceforge.net/ruleset/2.0.0"
+  elementFormDefault="qualified">
+
+  <xs:element name="ruleset">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="description" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="exclude-pattern" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element ref="include-pattern" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element ref="rule" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="description" type="xs:string">
+  </xs:element>
+
+  <xs:element name="include-pattern" type="xs:string">
+  </xs:element>
+
+  <xs:element name="exclude-pattern" type="xs:string">
+  </xs:element>
+
+  <xs:element name="rule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="description" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="priority" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="properties" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="exclude" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element ref="example" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="language" type="xs:string" use="optional" />
+      <xs:attribute name="minimumLanguageVersion" type="xs:string" use="optional" />
+      <xs:attribute name="maximumLanguageVersion" type="xs:string" use="optional" />
+      <xs:attribute name="name" type="xs:ID" use="optional" />
+      <xs:attribute name="since" type="xs:string" use="optional" />
+      <xs:attribute name="ref" type="xs:string" use="optional" />
+      <xs:attribute name="message" type="xs:string" use="optional" />
+      <xs:attribute name="externalInfoUrl" type="xs:string" use="optional" />
+      <xs:attribute name="class" type="xs:NMTOKEN" use="optional" />
+      <xs:attribute name="dfa" type="xs:boolean" use="optional" />  <!-- rule uses dataflow analysis -->
+      <xs:attribute name="typeResolution" type="xs:boolean" default="false" use="optional" />
+      <xs:attribute name="deprecated" type="xs:boolean" default="false" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="example" type="xs:string"/>
+
+  <!-- Default priority is the lowest -->
+  <xs:element name="priority" type="xs:int" default="5"/>
+
+  <xs:element name="properties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="property" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="property">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="value" minOccurs="0" maxOccurs="1" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="value" type="xs:string" use="optional" />
+      <xs:attribute name="description" type="xs:string" use="optional" />
+      <xs:attribute name="type" type="xs:string" use="optional" />
+      <xs:attribute name="delimiter" type="xs:string" use="optional" />
+      <xs:attribute name="min" type="xs:string" use="optional" />
+      <xs:attribute name="max" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="value" type="xs:string">
+  </xs:element>
+
+  <xs:element name="exclude">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
