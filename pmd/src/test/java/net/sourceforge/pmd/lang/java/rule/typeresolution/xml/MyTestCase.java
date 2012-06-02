@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.rule.typeresolution.xml;
 
+import org.junit.Ignore;
 import junit.framework.TestCase;
 
 /**
@@ -10,6 +11,7 @@ import junit.framework.TestCase;
  *      
  *      The file is already excluded from maven/surefire.
  */
+@Ignore
 public class MyTestCase extends TestCase {
 
 }

@@ -291,12 +291,6 @@
                 <configuration>
                     <forkMode>once</forkMode>
                     <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
-                    <excludes>
-                        <exclude>net/sourceforge/pmd/lang/java/rule/typeresolution/xml/MyTestCase.java</exclude>
-                        <!-- Come on surefire ! be smart, the following class
-                            is not a test to run ! -->
-                        <exclude>net/sourceforge/pmd/testframework/TestDescriptor.java</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
