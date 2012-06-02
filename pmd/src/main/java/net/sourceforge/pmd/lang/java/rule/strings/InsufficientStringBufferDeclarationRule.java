@@ -12,6 +12,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
@@ -23,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
@@ -171,12 +173,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         return anticipatedLength;
     }
 
-    private static final boolean isLiteral(String str) {
-        if (str.length() == 0) {
-            return false;
-        }
-        char c = str.charAt(0);
-        return c == '"' || c == '\'';
+    private static final boolean isStringOrCharLiteral(ASTLiteral literal) {
+    	return literal.isStringLiteral() || literal.isCharLiteral();
     }
 
     private int processNode(Node sn) {
@@ -185,12 +183,21 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             ASTPrimaryPrefix xn = sn.getFirstDescendantOfType(ASTPrimaryPrefix.class);
             if ( xn != null ) {
                 if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0) instanceof ASTLiteral) {
+                	ASTLiteral literal = (ASTLiteral) xn.jjtGetChild(0);
                     String str = xn.jjtGetChild(0).getImage();
                     if (str != null) {
-	                    if(isLiteral(str)){
+	                    if(isStringOrCharLiteral(literal)){
 	                        anticipatedLength += str.length() - 2;
-	                    } else if(str.startsWith("0x")){
-	                    anticipatedLength += 1;
+	                    } else if(literal.isIntLiteral() && str.startsWith("0x")){
+	                    	// but only if we are not inside a cast expression
+	                    	Node parentNode = literal.jjtGetParent().jjtGetParent().jjtGetParent();
+							if (parentNode instanceof ASTCastExpression
+	                    		&& parentNode.getFirstChildOfType(ASTType.class).getType() == char.class) {
+	                    		anticipatedLength += 1;
+	                    	} else {
+    	                    	// e.g. 0xdeadbeef -> will be converted to a base 10 integer string: 3735928559
+    	                    	anticipatedLength += String.valueOf(Long.parseLong(str.substring(2), 16)).length();
+	                    	}
 	                    } else {
 	                        anticipatedLength += str.length();
 	                    }
@@ -198,6 +205,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 }
             }
         }
+        StringBuffer sb = new StringBuffer();
+        sb.append(3);
         return anticipatedLength;
     }
 
@@ -234,14 +243,18 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 iConstructorLength = -1;
             }
         } else if (literals.size() == 1) {
-            String str = literals.get(0).getImage();
+        	ASTLiteral literal = literals.get(0);
+            String str = literal.getImage();
             if (str == null) {
                 iConstructorLength = 0;
-            } else if (isLiteral(str)) {
+            } else if (isStringOrCharLiteral(literal)) {
                 // since it's not taken into account
                 // anywhere. only count the extra 16
                 // characters
                 iConstructorLength = 14 + str.length(); // don't add the constructor's length,
+            } else if (literal.isIntLiteral() && str.startsWith("0x")) {
+            	// bug 3516101 - the string could be a hex number
+            	iConstructorLength = Integer.parseInt(str.substring(2), 16);
             } else {
                 iConstructorLength = Integer.parseInt(str);
             }
@@ -271,10 +284,11 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 block = node.getFirstParentOfType(ASTFormalParameter.class);
             }
         }
-        List<ASTLiteral> literal = block.findDescendantsOfType(ASTLiteral.class);
-        if (literal.size() == 1) {
-            String str = literal.get(0).getImage();
-            if (str != null && isLiteral(str)) {
+        List<ASTLiteral> literals = block.findDescendantsOfType(ASTLiteral.class);
+        if (literals.size() == 1) {
+        	ASTLiteral literal = literals.get(0);
+            String str = literal.getImage();
+            if (str != null && isStringOrCharLiteral(literal)) {
                 return str.length() - 2; // take off the quotes
             }
         }

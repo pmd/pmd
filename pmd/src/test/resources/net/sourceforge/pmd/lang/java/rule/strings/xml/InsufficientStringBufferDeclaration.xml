@@ -947,4 +947,39 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>
+3516101: InsufficientStringBufferDeclaration fails to parse hex
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void testStringBufferWithHexInt() {
+        StringBuffer myVar = new StringBuffer(0x44);
+        StringBuilder myVar2 = new StringBuilder(0x44);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+Append a hex int
+        </description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void testStringBufferWithHexInt() {
+        // 0xdeadbeef == 3735928559.length() = 10
+
+        StringBuffer myVar = new StringBuffer();
+        myVar.append(0xdeadbeef);
+        myVar.append(0xdeadbeef);
+
+        StringBuilder myVar2 = new StringBuilder();
+        myVar2.append(0xdeadbeef);
+        myVar2.append(0xdeadbeef);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
