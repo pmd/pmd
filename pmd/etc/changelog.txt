@@ -27,6 +27,7 @@ TODO - Release blockers - Must implement before this release can be finally fini
      and pmd-java:typeof).
 
 
+Fixed bug 2410201: False+ AvoidReassigningParameters
 Fixed bug 3526212: pmd-5.0.0: ImmutableField false positive on self-inc/dec
 Fixed bug 3526992: pmd-5.0.0: False + UselessParentheses
 Fixed bug 3523614: newline characters stripped from CPD data in PMD 5.0.0

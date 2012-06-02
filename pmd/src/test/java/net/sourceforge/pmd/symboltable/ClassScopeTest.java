@@ -221,6 +221,42 @@ public class ClassScopeTest extends STBBaseTst {
         }
     }
 
+    /**
+     * Test case for bug report #2410201
+     */
+    @Test
+    public void testNestedClassFieldAndParameter() {
+    	parseCode(NESTED_CLASS_FIELD_AND_PARAM);
+    	ASTMethodDeclaration node = acu.getFirstDescendantOfType(ASTMethodDeclaration.class);
+    	Map<VariableNameDeclaration, List<NameOccurrence>> vd = node.getScope().getVariableDeclarations();
+    	assertEquals(1, vd.size());
+    	
+    	for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vd.entrySet()) {
+    		assertEquals("field", entry.getKey().getImage());
+    		
+    		List<NameOccurrence> occurrences = entry.getValue();
+			assertEquals(2, occurrences.size());
+			NameOccurrence no1 = occurrences.get(0);
+			assertEquals(8, no1.getLocation().getBeginLine());
+			NameOccurrence no2 = occurrences.get(1);
+			assertEquals(9, no2.getLocation().getBeginLine());
+    	}
+    	
+    }
+
+    private static final String NESTED_CLASS_FIELD_AND_PARAM =
+            "public class Foo {" + PMD.EOL +
+            " class Test {" + PMD.EOL +
+            "   public String field;" + PMD.EOL +
+            "   public Test t;" + PMD.EOL +
+            " }" + PMD.EOL +
+            " public void foo(String field) {" + PMD.EOL +
+            "   Test t = new Test();" + PMD.EOL +
+            "   t.field = field;" + PMD.EOL +
+            "   t.t.field = field;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
     private static final String METHOD_USAGE_SEEN2 =
             "public class Foo {" + PMD.EOL +
             " public void baz() {" + PMD.EOL +
