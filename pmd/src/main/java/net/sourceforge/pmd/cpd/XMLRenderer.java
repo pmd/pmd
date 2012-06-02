@@ -41,10 +41,13 @@ public final class XMLRenderer implements Renderer {
         try {
 	        TransformerFactory tf = TransformerFactory.newInstance();
 	        Transformer transformer = tf.newTransformer();
+	        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 	        transformer.setOutputProperty(OutputKeys.ENCODING, System.getProperty("file.encoding"));
+	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "codefragment");
 	        StringWriter writer = new StringWriter();
 	        transformer.transform(new DOMSource(doc), new StreamResult(writer));
-	        return writer.getBuffer().toString().replaceAll("\n|\r", "");
+	        return writer.getBuffer().toString();
         }  catch (TransformerException e) {
         	throw new IllegalStateException(e);
 		}

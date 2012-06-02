@@ -51,10 +51,9 @@ public class XMLRendererTest {
         List<Match> list = new ArrayList<Match>();
         Match match = new Match(75, new TokenEntry("public", "/var/Foo.java", 48), new TokenEntry("stuff", "/var/Foo.java", 73));
         match.setLineCount(6);
-        match.setSourceCodeSlice("code fragment");
+        match.setSourceCodeSlice("code\nfragment");
         list.add(match);
         String report = renderer.render(list.iterator());
-        System.out.println(report);
         try {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
             NodeList dupes = doc.getElementsByTagName("duplication");
@@ -73,7 +72,7 @@ public class XMLRendererTest {
             }
             if (file != null) assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
             assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
-            assertEquals("code fragment", doc.getElementsByTagName("codefragment").item(0).getTextContent());
+            assertEquals("code\nfragment", doc.getElementsByTagName("codefragment").item(0).getTextContent());
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
