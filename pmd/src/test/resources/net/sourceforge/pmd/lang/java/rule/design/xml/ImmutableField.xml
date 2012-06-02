@@ -310,4 +310,27 @@ public class MyClass {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>
+3526212, pmd-5.0.0: ImmutableField false positive on self-inc/dec
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class pmd_inc {
+    private int test;
+
+    public pmd_inc() {
+        this.test = 2;
+    }
+
+    public int get_test() {
+        return this.test;
+    }
+
+    public void inc_test(int val) {
+        this.test += val;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
