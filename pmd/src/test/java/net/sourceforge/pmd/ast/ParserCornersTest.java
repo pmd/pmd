@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.testframework.ParserTst;
 import net.sourceforge.pmd.util.IOUtil;
 
@@ -37,8 +38,11 @@ public class ParserCornersTest extends ParserTst {
     
     @Test
     public void testParsersCases() {
-    	String test = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases.java");
-    	parseJava17(test);
+    	String test15 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases.java");
+    	parseJava15(test15);
+    	
+    	String test17 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases17.java");
+    	parseJava17(test17);
     }
     
     private String readAsString(String resource) {

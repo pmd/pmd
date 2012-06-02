@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.ast;
 
 /*
  * This file is to test the JavaCC java grammer, whether we can parse specific java constructs without
@@ -57,7 +56,7 @@ public class ParserCornerCases extends Superclass {
 		this();
 	}
 
-	public void testGeneric() {
+	public strictfp void testGeneric() {
 		String o = super.<String> doStuff("foo");
 		String v = this.<String> thisGeneric("bar");
 	}
