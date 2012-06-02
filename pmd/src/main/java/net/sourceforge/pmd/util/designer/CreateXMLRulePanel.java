@@ -13,6 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This class is responsible for creating the
@@ -27,6 +28,10 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener{
     private JTextArea xpathQueryArea = new JTextArea();
     private CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
 
+    private static void appendLn(StringBuilder sb, String text) {
+    	sb.append(text).append(PMD.EOL);
+    }
+    
     public CreateXMLRulePanel(JTextArea xpathQueryArea, CodeEditorTextPane codeEditorPane){
     	super();
     	this.xpathQueryArea = xpathQueryArea;
@@ -99,10 +104,6 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener{
         repaint();
     }
 
-    private void appendLn(StringBuffer sb, String text) {
-    	sb.append(text).append(PMD.EOL);
-    }
-
     /**
      * We let our class implement the ActionListener interface
      * and use it to generate the xml code when the user presses
@@ -110,14 +111,17 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener{
      *
      */
     public void actionPerformed(ActionEvent exception) {
-        StringBuffer buffer = new StringBuffer(200);
+    	
+    	boolean hasXPathQuery = StringUtil.isNotEmpty(xpathQueryArea.getText());
+    	
+        StringBuilder buffer = new StringBuilder(200);
         appendLn(buffer, "<rule  name=\"" + rulenameField.getText() + '\"');
         appendLn(buffer, "  message=\"" + rulemsgField.getText() + '\"');
-        appendLn(buffer, "  class=\"" + (xpathQueryArea.getText().length() == 0 ? "" : "net.sourceforge.pmd.lang.rule.XPathRule") + "\">");
+        appendLn(buffer, "  class=\"" + (hasXPathQuery ? "net.sourceforge.pmd.lang.rule.XPathRule" : "") + "\">");
         appendLn(buffer, "  <description>");
         appendLn(buffer, "  " + ruledescField.getText());
         appendLn(buffer, "  </description>");
-        if (xpathQueryArea.getText().length() != 0) {
+        if (hasXPathQuery) {
         	appendLn(buffer, "  <properties>");
         	appendLn(buffer, "    <property name=\"xpath\">");
         	appendLn(buffer, "    <value>");
