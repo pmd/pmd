@@ -26,6 +26,23 @@ import org.w3c.dom.Element;
  */
 public final class XMLRenderer implements Renderer {
 
+	private String encoding = System.getProperty("file.encoding");
+
+	/**
+	 * Creates a XML Renderer with the default (platform dependent) encoding.
+	 */
+	public XMLRenderer() {
+		// default constructor
+	}
+
+	/**
+	 * Creates a XML Renderer with a specific output encoding.
+	 * @param encoding the encoding to use
+	 */
+	public XMLRenderer(String encoding) {
+		this.encoding = encoding;
+	}
+
 	private Document createDocument() {
     	try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
@@ -42,7 +59,7 @@ public final class XMLRenderer implements Renderer {
 	        TransformerFactory tf = TransformerFactory.newInstance();
 	        Transformer transformer = tf.newTransformer();
 	        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-	        transformer.setOutputProperty(OutputKeys.ENCODING, System.getProperty("file.encoding"));
+	        transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
 	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 	        transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "codefragment");
 	        StringWriter writer = new StringWriter();

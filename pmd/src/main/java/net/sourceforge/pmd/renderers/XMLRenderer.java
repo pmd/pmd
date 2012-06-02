@@ -36,6 +36,11 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 		}
     }
 
+    public XMLRenderer(String encoding) {
+    	this(new Properties());
+    	this.encoding = encoding;
+    }
+
     public String defaultFileExtension() { return "xml"; }
     
     /**
