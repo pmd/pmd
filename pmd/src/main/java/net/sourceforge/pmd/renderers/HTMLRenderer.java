@@ -16,6 +16,10 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Renderer to basic HTML format.
+ * 
+ * FIXME: this class should just work with the XMLRenderer and then apply 
+ * 		an XSLT transformation + stylesheet. No need to hard-code HTML
+ * 		markup here.
  */
 public class HTMLRenderer extends AbstractIncrementingRenderer {
 
