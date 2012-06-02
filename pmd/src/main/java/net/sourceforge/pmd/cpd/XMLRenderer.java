@@ -26,13 +26,13 @@ import org.w3c.dom.Element;
  */
 public final class XMLRenderer implements Renderer {
 
-	private String encoding = System.getProperty("file.encoding");
+	private final String encoding;
 
 	/**
 	 * Creates a XML Renderer with the default (platform dependent) encoding.
 	 */
 	public XMLRenderer() {
-		// default constructor
+		this(System.getProperty("file.encoding"));
 	}
 
 	/**
@@ -45,8 +45,7 @@ public final class XMLRenderer implements Renderer {
 
 	private Document createDocument() {
     	try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder parser = factory.newDocumentBuilder();
 			return parser.newDocument();
 		} catch (ParserConfigurationException e) {
