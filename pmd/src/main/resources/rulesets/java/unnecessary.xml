@@ -237,7 +237,7 @@ public class Test {
     count(./CastExpression)=0 and
     count(./EqualityExpression)=0]
 |
-//Expression/AdditiveExpression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and count(./CastExpression)=0]
+//Expression/AdditiveExpression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and not(./CastExpression) and not(./ConditionalExpression)]
 |
 //Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and

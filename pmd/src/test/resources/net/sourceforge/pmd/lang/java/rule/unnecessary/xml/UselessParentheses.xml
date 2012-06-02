@@ -164,4 +164,20 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+3526992, false +. In this case the parentheses must stay.
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void testMethod() {
+        String oneDay = "day";
+        String moreDays = "days";
+        int dayCount = 4;
+        String description = dayCount + " " + (dayCount == 1 ? oneDay : moreDays);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
