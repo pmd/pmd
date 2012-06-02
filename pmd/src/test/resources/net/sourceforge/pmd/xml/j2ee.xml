@@ -14,7 +14,7 @@
    since="3.7"
    message="In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead."
    class="net.sourceforge.pmd.lang.rule.XPathRule"
-   externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#UseProperClassLoader">
+   externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#UseProperClassLoader">
    <description>
     In J2EE getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
    </description>
@@ -43,7 +43,7 @@ public class Foo {
         since="4.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="SessionBean or MessageBean should be suffixed by Bean"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#MDBAndSessionBeanNamingConvention">
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#MDBAndSessionBeanNamingConvention">
         <description>
         The EJB Specification state that any MessageDrivenBean or SessionBean should be suffixed by Bean.
         </description>
@@ -87,7 +87,7 @@ public class Foo {
         since="4.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Remote Home interface of a Session EJB should be suffixed by 'Home'"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#RemoteSessionInterfaceNamingConvention">
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#RemoteSessionInterfaceNamingConvention">
         <description>
         Remote Home interface of a Session EJB should be suffixed by 'Home'.
         </description>
@@ -131,7 +131,7 @@ public class Foo {
         since="4.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="The Local Interface of a Session EJB should be suffixed by 'Local'"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#LocalInterfaceSessionNamingConvention">
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#LocalInterfaceSessionNamingConvention">
         <description>
         The Local Interface of a Session EJB should be suffixed by 'Local'.
         </description>
@@ -175,7 +175,7 @@ public class Foo {
         since="4.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="The Local Home interface of a Session EJB should be suffixed by 'LocalHome'"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#LocalHomeNamingConvention">
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#LocalHomeNamingConvention">
         <description>
         The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
         </description>
@@ -219,7 +219,7 @@ public class Foo {
         since="4.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Remote Interface of a Session EJB should NOT be suffixed"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#RemoteInterfaceNamingConvention">
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#RemoteInterfaceNamingConvention">
         <description>
         Remote Interface of a Session EJB should NOT be suffixed.
         </description>
@@ -271,7 +271,7 @@ public class Foo {
       since="4.1"
     	message="System.exit() should not be used in J2EE/JEE apps"
     	class="net.sourceforge.pmd.lang.rule.XPathRule"
-    	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#DoNotCallSystemExit">
+    	externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#DoNotCallSystemExit">
     	<description><![CDATA[
 Web applications should not call System.exit(), since only the web container or the
 application server should stop the JVM.
@@ -300,7 +300,7 @@ public class Foo {
       since="4.1"
     	message="EJB's shouldn't have non-final static fields"
     	class="net.sourceforge.pmd.lang.rule.XPathRule"
-    	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#StaticEJBFieldShouldBeFinal">
+    	externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#StaticEJBFieldShouldBeFinal">
     	<description>
 According to the J2EE specification (p.494), an EJB should not have any static fields
 with write access. However, static read only fields are allowed. This ensures proper
@@ -347,7 +347,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
         since="4.1"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="To be compliant to J2EE, a webapp should not use any thread."
-    	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#NoThreadInJ2EEContainer">
+    	externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#NoThreadInJ2EEContainer">
         <description>
             <![CDATA[
                 The J2EE specification explicitly forbid use of threads.

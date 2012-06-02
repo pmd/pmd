@@ -13,7 +13,7 @@ The Clone Implementation ruleset contains a collection of rules that find questi
     		since="1.4"
          message="Object clone() should be implemented with super.clone()"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/clone.html#ProperCloneImplementation">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#ProperCloneImplementation">
      <description>
 Object clone() should be implemented with super.clone().
      </description>
@@ -51,7 +51,7 @@ class Foo{
     		since="1.9"
          message="clone() method should throw CloneNotSupportedException"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-         externalInfoUrl="http://pmd.sourceforge.net/rules/java/clone.html#CloneThrowsCloneNotSupportedException">
+         externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneThrowsCloneNotSupportedException">
          <description>
 The method clone() should throw a CloneNotSupportedException.
          </description>
@@ -91,7 +91,7 @@ and count(NameList/Name[contains
     	  since="1.9"
         message="clone() method should be implemented only if implementing Cloneable interface"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/clone.html#CloneMethodMustImplementCloneable">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneMethodMustImplementCloneable">
         <description>
 The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a final method that only throws CloneNotSupportedException.
         </description>

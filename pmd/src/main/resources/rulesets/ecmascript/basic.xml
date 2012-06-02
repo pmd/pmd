@@ -12,7 +12,7 @@
       since="5.0"
       message="Avoid assignments in operands"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/controversial.html#AssignmentInOperand">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/controversial.html#AssignmentInOperand">
 <description>
 Avoid assignments in operands; this can make code more complicated and harder to read.  This is sometime
 indicative of the bug where the assignment operator '=' was used instead of the equality operator '=='.
@@ -63,7 +63,7 @@ function getX() {
     		  since="5.0"
        message="A ''return'', ''break'', ''continue'', or ''throw'' statement should be the last in a block."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/basic.html#UnreachableCode">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#UnreachableCode">
       <description>
 A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
 will never execute.  This is a bug, or extremely poor style.
@@ -105,7 +105,7 @@ function bar() {
     		  since="5.0"
        message="The numeric literal ''{0}'' will have at different value at runtime."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/basic.html#InnaccurateNumericLiteral">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#InnaccurateNumericLiteral">
       <description>
 The numeric literal will have at different value at runtime, which can happen if you provide too much
 precision in a floating point number.  This may result in numeric calculations being in error.
@@ -141,7 +141,7 @@ var z = 1.12345678901234567; // Not good
     		  since="5.0"
        message="A function should not mix 'return' statements with and without a result."
           class="net.sourceforge.pmd.lang.ecmascript.rule.basic.ConsistentReturnRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/basic.html#ConsistentReturn">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#ConsistentReturn">
       <description>
 ECMAScript does provide for return types on functions, and therefore there is no solid rule as to their usage.
 However, when a function does use returns they should all have a value, or all with no value.  Mixed return
@@ -174,7 +174,7 @@ function bar() {
           since="5.0"
           message="The for-in loop variable ''{0}'' should be explicitly scoped with 'var' to avoid pollution."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/basic.html#UnreachableCode">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#UnreachableCode">
       <description>
 A for-in loop in which the variable name is not explicitly scoped to the enclosing scope with the 'var' keyword can
 refer to a variable in an enclosing scope outside the nearest enclosing scope.  This will overwrite the
@@ -230,7 +230,7 @@ function bar() {
           since="5.0"
           message="Use '==='/'!==' to compare with true/false or Numbers"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/basic.html#EqualComparison">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#EqualComparison">
       <description>
       Using == in condition may lead to unexpected results, as the variables are automatically casted to be of the
       same type. The === operator avoids the casting.
@@ -278,7 +278,7 @@ if (someVar != 3) {
           language="ecmascript"
           since="5.0"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/basic.html#GlobalVariable">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#GlobalVariable">
     <description>
 This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
 Global variables can lead to side-effects that are hard to debug.

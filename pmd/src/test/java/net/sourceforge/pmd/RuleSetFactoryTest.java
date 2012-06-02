@@ -475,7 +475,7 @@ public class RuleSetFactoryTest {
 							+ " is missing 'externalInfoURL' attribute"
 							+ PMD.EOL;
 				} else {
-					String expectedExternalInfoURL = "http://pmd.sourceforge.net/rules/"
+					String expectedExternalInfoURL = "http://pmd.sourceforge.net/snapshot/rules/"
 							+ fileName.replaceAll("rulesets/", "").replaceAll(
 									".xml", "") + ".html#" + rule.getName();
 					if (!expectedExternalInfoURL.equals(rule

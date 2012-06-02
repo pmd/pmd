@@ -12,7 +12,7 @@ These rules deal with different optimizations that generally apply to best pract
     	 since="2.2"
 	    message="Local variable ''{0}'' could be declared final"
           class="net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#LocalVariableCouldBeFinal">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#LocalVariableCouldBeFinal">
       <description>
 A local variable assigned only once can be declared final.
       </description>
@@ -33,7 +33,7 @@ public class Bar {
     		 since="2.2"
           message="Parameter ''{0}'' is not assigned and could be declared final"
           class="net.sourceforge.pmd.lang.java.rule.optimizations.MethodArgumentCouldBeFinalRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#MethodArgumentCouldBeFinal">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#MethodArgumentCouldBeFinal">
       <description>
 A method argument that is never re-assigned within the method can be declared final.
       </description>
@@ -55,7 +55,7 @@ public void foo2 (final String param) {	// better, do stuff with param never ass
   		  since="2.2"
         message="Avoid instantiating new objects inside loops"
         class="net.sourceforge.pmd.lang.java.rule.optimizations.AvoidInstantiatingObjectsInLoopsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AvoidInstantiatingObjectsInLoops">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#AvoidInstantiatingObjectsInLoops">
     <description>
 New objects created within loops should be checked to see if they can created outside them and reused.
     </description>
@@ -78,7 +78,7 @@ public class Something {
     		 since="3.0"
           message="Use ArrayList instead of Vector"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseArrayListInsteadOfVector">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#UseArrayListInsteadOfVector">
       <description>
 ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
       </description>
@@ -110,7 +110,7 @@ public class SimpleTest extends TestCase {
     		 since="3.1"
           message="This call to String.startsWith can be rewritten using String.charAt(0)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#SimplifyStartsWith">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#SimplifyStartsWith">
       <description>
 Since it passes in a literal of length 1, calls to (string).startsWith can be rewritten using (string).charAt(0)
 at the expense of some readability.
@@ -154,7 +154,7 @@ public class Foo {
     		 since="3.1"
           message="Prefer StringBuffer over += for concatenating strings"
           class="net.sourceforge.pmd.lang.java.rule.optimizations.UseStringBufferForStringAppendsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseStringBufferForStringAppends">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#UseStringBufferForStringAppends">
            <description>
 The use of the '+=' operator for appending strings causes the JVM to create and use an internal StringBuffer.
 If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or 
@@ -182,7 +182,7 @@ public class Foo {
      since="3.5"
      message="Use asList instead of tight loops"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UseArraysAsList">
+      externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#UseArraysAsList">
      <description>
 The java.util.Arrays class has a "asList" method that should be used when you want to create a new List from
 an array of objects. It is faster than executing a loop to copy all the elements of the array one by one.
@@ -249,7 +249,7 @@ public class Test {
       since="3.5"
       message="System.arraycopy is more efficient"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AvoidArrayLoops">
+      externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#AvoidArrayLoops">
       <description>
 Instead of manually copying data between two arrays, use the efficient System.arraycopy method instead.
       </description>
@@ -304,7 +304,7 @@ public class Test {
           since="3.8"
           message="Unnecessary wrapper object creation"
           class="net.sourceforge.pmd.lang.java.rule.optimizations.UnnecessaryWrapperObjectCreationRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#UnnecessaryWrapperObjectCreation">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#UnnecessaryWrapperObjectCreation">
       <description>
 Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
 just to create the primitive forms. Using these avoids the cost of creating objects that also need to be 
@@ -336,7 +336,7 @@ public int convert(String s) {
         since="4.0"
         message="Do not add empty strings"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#AddEmptyString">
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#AddEmptyString">
         <description>
 The conversion of literals to strings by concatenating them with empty strings is inefficient.
 It is much better to use one of the type-specific toString() methods instead.
@@ -364,7 +364,7 @@ String t = Integer.toString(456); 	// preferred approach
 			since="5.0"
 			message="Avoid using redundant field initializer for ''${variableName}''"
 			class="net.sourceforge.pmd.lang.java.rule.optimizations.RedundantFieldInitializerRule"
-			externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#RedundantFieldInitializer">
+			externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#RedundantFieldInitializer">
 		<description>
 Java will initialize fields with known default values so any explicit initialization of those same defaults
 is redundant and results in a larger class file (approximately three additional bytecode instructions per field).
@@ -400,7 +400,7 @@ public class C {
 			since="5.0"
 			message="Avoid declaring a variable if it is unreferenced before a possible exit point."
 			class="net.sourceforge.pmd.lang.java.rule.optimizations.PrematureDeclarationRule"
-			externalInfoUrl="http://pmd.sourceforge.net/rules/java/optimizations.html#PrematureDeclaration">
+			externalInfoUrl="${pmd.website.baseurl}/rules/java/optimizations.html#PrematureDeclaration">
 		<description>
 Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn't use it that also has the ability to return or throw an exception.
 		</description>

@@ -13,7 +13,7 @@ These rules deal with different problems that can occur with import statements.
   		  since="0.5"
         message="Avoid duplicate imports such as ''{0}''"
         class="net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#DuplicateImports">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#DuplicateImports">
     <description>
 Duplicate or overlapping import statements should be avoided.
     </description>
@@ -31,7 +31,7 @@ public class Foo {}
   		  since="0.5"
         message="Avoid importing anything from the package 'java.lang'"
         class="net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#DontImportJavaLang">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#DontImportJavaLang">
     <description>
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
     </description>
@@ -55,7 +55,7 @@ public class Foo {}
   		  since="1.0"
         message="Avoid unused imports such as ''{0}''"
         class="net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#UnusedImports">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#UnusedImports">
     <description>
 Avoid the use of unused import statements to prevent unwanted dependencies.
     </description>
@@ -73,7 +73,7 @@ public class Foo {}
     		since="1.02"
          message="No need to import a type that lives in the same package"
          class="net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#ImportFromSamePackage">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#ImportFromSamePackage">
      <description>
 There is no need to import a type that lives in the same package.
      </description>
@@ -95,7 +95,7 @@ There is no need to import a type that lives in the same package.
 	      since="4.1"
         	class="net.sourceforge.pmd.lang.rule.XPathRule"
         	message="Too many static imports may lead to messy code"
-       		externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#TooManyStaticImports">
+       		externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#TooManyStaticImports">
        		<description><![CDATA[
 If you overuse the static import feature, it can make your program unreadable and 
 unmaintainable, polluting its namespace with all the static members you import. 
@@ -126,7 +126,7 @@ import static Yoko; // Too much !
 	      since="5.0"
         	class="net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule"
         	message="Unnecessary use of fully qualified name ''{0}'' due to existing import ''{1}''"
-       		externalInfoUrl="http://pmd.sourceforge.net/rules/java/imports.html#UnnecessaryFullyQualifiedName">
+       		externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#UnnecessaryFullyQualifiedName">
        		<description><![CDATA[
 Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
 which is covered by an import statement is redundant.  Consider using the non-fully qualified name.

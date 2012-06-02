@@ -13,7 +13,7 @@ This ruleset regroups a collection of good practices regarding XPath querying an
     	      since="5.0"
               message="The xpath concat() function accepts as many arguments as required, you may be able to factorize this expression"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-         externalInfoUrl="http://pmd.sourceforge.net/rules/xml/basic.html#UseConcatOnce">
+         externalInfoUrl="${pmd.website.baseurl}/rules/xml/basic.html#UseConcatOnce">
      <description>
 The XPath concat() functions accepts as many arguments as required so you can have "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
      </description>
@@ -42,7 +42,7 @@ The XPath concat() functions accepts as many arguments as required so you can ha
            since="5.0"
            message="Axis navigation has the largest impact when writing an XPath query."
            class="net.sourceforge.pmd.lang.rule.XPathRule"
-           externalInfoUrl="http://pmd.sourceforge.net/rules/xml/basic.html#AvoidAxisNavigation">
+           externalInfoUrl="${pmd.website.baseurl}/rules/xml/basic.html#AvoidAxisNavigation">
      <description>
 Avoid using the 'following' or 'preceeding' axes whenever possible, as these can cut through 100% of the document in the worst case.  Also, try to avoid using 'descendant' or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means cutting through 100% of the document. 
      </description>

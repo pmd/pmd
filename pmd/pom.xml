@@ -246,6 +246,7 @@
              If the xdocs files stay in src/site/xdoc/, mvn tries to copy over the generated one,
              and complains... -->
         <src.xdocs.dir>src/site/xdocs</src.xdocs.dir>
+        <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot</pmd.website.baseurl>
     </properties>
 
     <build>
@@ -260,6 +261,12 @@
                 </includes>
             </testResource>
         </testResources>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
@@ -268,6 +275,16 @@
             </extension>
         </extensions>
         <plugins>
+            <plugin>
+              <artifactId>maven-resources-plugin</artifactId>
+              <version>2.5</version>
+              <configuration>
+                <useDefaultDelimiters>false</useDefaultDelimiters>
+                <delimiters>
+                    <delimiter>${*}</delimiter>
+                </delimiters>
+              </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12</version>
@@ -466,6 +483,7 @@
                 <configuration>
                     <branchBase>https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/</branchBase>
                     <tagBase>https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/</tagBase>
+                    <releaseProfiles>pmd-release</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>
@@ -619,6 +637,12 @@
 
     <profiles>
         <profile>
+            <id>pmd-release</id>
+            <properties>
+                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}</pmd.website.baseurl>
+            </properties>
+        </profile>
+        <profile>
             <id>sf-release</id>
             <distributionManagement>
                 <repository>
@@ -632,6 +656,9 @@
                     <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/pmd-${project.version}</url>
                 </site>
             </distributionManagement>
+            <properties>
+                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}</pmd.website.baseurl>
+            </properties>
             <build>
                 <plugins>
                     <plugin>

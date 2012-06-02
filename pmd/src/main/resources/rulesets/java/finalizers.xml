@@ -14,7 +14,7 @@ These rules deal with different problems that can occur with finalizers.
     		 since="1.5"
           message="Avoid empty finalize methods"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#EmptyFinalizer">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#EmptyFinalizer">
        <description>
 Empty finalize methods serve no purpose and should be removed.
        </description>
@@ -43,7 +43,7 @@ public class Foo {
     		 since="1.5"
           message="Finalize should do something besides just calling super.finalize()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#FinalizeOnlyCallsSuperFinalize">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#FinalizeOnlyCallsSuperFinalize">
        <description>
 If the finalize() is implemented, it should do something besides just calling super.finalize().
        </description>
@@ -77,7 +77,7 @@ protected void finalize() {
 		since="1.5"
       message="Finalize methods should not be overloaded"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#FinalizeOverloaded">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#FinalizeOverloaded">
    <description>
 Methods named finalize() should not have parameters.  It is confusing and most likely an attempt to
 overload Object.finalize(). It will not be called by the VM.
@@ -109,7 +109,7 @@ public class Foo {
     		 since="1.5"
           message="Last statement in finalize method should be a call to super.finalize()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#FinalizeDoesNotCallSuperFinalize">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#FinalizeDoesNotCallSuperFinalize">
        <description>
 If the finalize() is implemented, its last action should be to call super.finalize.
        </description>
@@ -153,7 +153,7 @@ protected void finalize() {
     		 since="1.1"
           message="If you override finalize(), make it protected"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#FinalizeShouldBeProtected">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#FinalizeShouldBeProtected">
       <description>
 When overriding the finalize(), the new method should be set as protected.  If made public, 
 other classes may invoke it at inappropriate times.
@@ -183,7 +183,7 @@ public void finalize() {
     		 since="3.0"
           message="Avoid calling finalize() explicitly"
           class="net.sourceforge.pmd.lang.java.rule.finalizers.AvoidCallingFinalizeRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/finalizers.html#AvoidCallingFinalize">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#AvoidCallingFinalize">
       <description>
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
 that there are no more references to the object. It should not be invoked by application logic.
