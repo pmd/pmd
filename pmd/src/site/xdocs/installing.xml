@@ -43,7 +43,7 @@
                       [tom@hal tmp]$
                   </source>
           </p>
-          <p>Note that the PMD jar file contains the <a href="cpd.html">CPD</a> utility as well.</p>
+          <p>Note that the PMD jar file contains the <a href="cpd-usage.html">CPD</a> utility as well.</p>
       </subsection>
     </section>
   </body>

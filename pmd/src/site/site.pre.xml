@@ -63,7 +63,7 @@
       <item href="/mvn-plugin.html" name="Mvn plugin usage"/>
       <item href="/integrations.html" name="IDE plugin usage"/>
       <item href="/suppressing.html" name="Suppressing warnings"/>
-      <item href="/cpd.html" name="Finding duplicated code"/>
+      <item href="/cpd-usage.html" name="Finding duplicated code"/>
       <item href="/jspsupport.html" name="JSP support"/>
     </menu>
     <menu name="Customizing PMD">
