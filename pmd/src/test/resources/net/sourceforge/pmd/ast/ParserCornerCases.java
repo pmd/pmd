@@ -69,3 +69,30 @@ public class ParserCornerCases extends Superclass {
 		return (byte[].class);
 	}
 }
+
+/**
+ * Test case from http://jira.codehaus.org/browse/MPMD-126
+ */
+class PmdTestParent {
+	public PmdTestParent(Object obj) {}
+}
+
+class PmdTestChild extends PmdTestParent {
+
+	public PmdTestChild() {
+		// the following line produced a parsing problem
+		super(new Object() {
+
+			public Object create() {
+
+				Object memoryMonitor = null;
+
+				if (memoryMonitor == null) {
+					memoryMonitor = new Object();
+				}
+
+				return memoryMonitor;
+			}
+		});
+	}
+}
