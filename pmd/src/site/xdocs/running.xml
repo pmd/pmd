@@ -7,8 +7,24 @@
   </properties>
 
   <body>
-   <section name="Running PMD via command line">
-   	<subsection name="Basic usage">
+    <section name="Running PMD via command line">
+    <subsection name="On Linux and other UNIX based operating system...">
+    <p>PMD comes with several command line utilities. Previously, each of them had its own start up script, but this has been
+        greatly simplified since PMD 5.0... at least for Unix systems. There is now only one script, called "run.sh", inside
+        the bin/ directory of PMD distribution.</p>
+    <p>The first argument is the name of the utility you want to execute ('pmd', 'designer',...) and the other arguments are
+        specific to the utility used.</p>
+    <source>
+$ ./bin/run.sh pmd ../../../src/main/java/ text rulesets/java/basic.xml  -version java 1.7
+.../src/main/java/net/sourceforge/pmd/RuleSet.java:123  These nested if statements could be combined
+.../src/main/java/net/sourceforge/pmd/RuleSet.java:231  Useless parentheses.
+.../src/main/java/net/sourceforge/pmd/RuleSet.java:232  Useless parentheses.
+.../src/main/java/net/sourceforge/pmd/RuleSet.java:357  These nested if statements could be combined
+.../src/main/java/net/sourceforge/pmd/RuleSetWriter.java:66     Avoid empty catch blocks
+.../src/main/java/net/sourceforge/pmd/RuleSetWriter.java:269    Useless parentheses.
+   </source>
+    </subsection>
+   	<subsection name="Basic usage for Windows">
    		<ul>
     		<li><strong>Windows:</strong> Type &quot;pmd [filename|jar or zip file containing source code|directory] [report format] [ruleset file]&quot;, i.e:</li>
     		<br/>
