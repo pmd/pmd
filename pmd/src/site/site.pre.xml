@@ -79,6 +79,9 @@
     <menu name="For example">
       <item href="http://pmd.sourceforge.net/scoreboard.html" name="Run PMD on a Sourceforge project"/>
     </menu>
+    <menu name="Misc.">
+      <item href="http://webhostinggeeks.com/science/xpath-sourceforge-ka" name="XPath tutorial (Gregorian)"/>
+    </menu>
     <!-- The rulesets part of navigation will be added during pre-site and the
          list is build dynamically based on rulesets folder directory layout -->
 
