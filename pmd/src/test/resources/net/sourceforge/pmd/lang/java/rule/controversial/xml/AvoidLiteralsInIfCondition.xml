@@ -25,4 +25,16 @@ public class PrimitiveType {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description>allow null literal</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MyClass {
+  public void myMethod(Object foo) {
+    if(foo != null) {
+    }
+  }
+}
+    ]]></code>
+  </test-code>
 </test-data>
