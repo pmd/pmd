@@ -37,6 +37,7 @@ Fixed bug 3109408: String.InefficientStringBuffering false +
 Fixed bug 3424397: Unable to parse
 Fixed bug 3530124: pmd: parsing of generic method call with super fails
 Fixed bug 3496028: pmd-4.2.6: MissingBreakInSwitch fails to report violation
+Fixed bug 3484404: Invalid NPath calculation in return statement. Thanks to Prabhjot Singh for the patch.
 
 May, 1, 2012 - 5.0.0:
 
