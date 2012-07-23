@@ -266,6 +266,12 @@
                 <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+			<resource>
+	            <directory>${basedir}/src/main/java</directory>
+	            <includes>
+	                <include>**/*.properties</include>
+	            </includes>
+	        </resource>
         </resources>
         <extensions>
             <extension>

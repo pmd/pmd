@@ -106,7 +106,11 @@ public class]]></replacevalue>
 		<delete file="${src}/net/sourceforge/pmd/lang/jsp/ast/ParseException.java" />
 		<jjtree target="etc/grammar/JspParser.jjt" outputdirectory="${src}/net/sourceforge/pmd/lang/jsp/ast/" javacchome="${javacc-home.path}" />
 		<!-- Ensure generated using CharStream interface -->
-		<javacc static="false" usercharstream="true" unicodeinput="true" javaunicodeescape="false" target="${src}/net/sourceforge/pmd/lang/jsp/ast/JspParser.jj" outputdirectory="${src}/net/sourceforge/pmd/lang/jsp/ast" javacchome="${javacc-home.path}" />
+		<javacc static="false" usercharstream="true" 
+			unicodeinput="true" javaunicodeescape="false" 
+			target="${src}/net/sourceforge/pmd/lang/jsp/ast/JspParser.jj" 
+			outputdirectory="${src}/net/sourceforge/pmd/lang/jsp/ast" 
+			javacchome="${javacc-home.path}"  />
 		<delete file="${src}/net/sourceforge/pmd/lang/jsp/ast/JspParser.jj" />
 		<delete file="${src}/net/sourceforge/pmd/lang/jsp/ast/Node.java" />
 		<delete file="${src}/net/sourceforge/pmd/lang/jsp/ast/SimpleNode.java" />
