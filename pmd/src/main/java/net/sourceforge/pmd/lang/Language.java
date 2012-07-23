@@ -44,6 +44,14 @@ public enum Language {
     JAVA("Java", null, "java", JavaRuleChainVisitor.class, "java"),
     JSP("Java Server Pages", "JSP", "jsp", JspRuleChainVisitor.class, "jsp"),
     PHP("PHP: Hypertext Preprocessor", "PHP", "php", null, "php", "class"),
+    PLSQL("PLSQL", null, "plsql", null
+         ,"sql", "trg", "prc","fnc"
+	 ,"pld" // Oracle*Forms 
+	 ,"pls" ,"plh" ,"plb" // Packages
+	 ,"pck" ,"pks" ,"pkh" ,"pkb" // Packages
+	 ,"typ" ,"tyb" // Object Types
+	 ,"tps" ,"tpb" // Object Types
+         ),
     RUBY("Ruby", null, "ruby", null, "rb", "cgi", "class"),
     XSL("XSL", null, "xsl", XmlRuleChainVisitor.class, "xsl", "xslt"),
     XML("XML", null, "xml", XmlRuleChainVisitor.class, "xml");

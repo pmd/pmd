@@ -8,7 +8,7 @@ import java.util.Properties;
 public class LanguageFactory {
 
 	// TODO derive and provide this at runtime instead, used by outside IDEs
-   public static String[] supportedLanguages = new String[]{"java", "jsp", "cpp", "c", "php", "ruby","fortran", "ecmascript","cs" };
+   public static String[] supportedLanguages = new String[]{"java", "jsp", "cpp", "c", "php", "ruby","fortran", "ecmascript","cs" ,"plsql" };
    
    private static final String SUFFIX = "Language";
    public static final String EXTENSION = "extension";
@@ -25,9 +25,12 @@ public class LanguageFactory {
      // First, we look for a parser following this syntax 'RubyLanguage'
      Language implementation;
      try {
+       System.err.println("LanguageFactory info - attempting to load language \"" + language + "\""  );
        implementation = this.dynamicLanguageImplementationLoad(this.languageConventionSyntax(language));
        if ( implementation == null )
        {
+         System.err.println("LanguageFactory warn - failed to load language \"" + this.languageConventionSyntax(language) + "\""  );
+         System.err.println("LanguageFactory info - attempting to load language \"" + language.toUpperCase() + "\""  );
          // if it failed, we look for a parser following this syntax 'CPPLanguage'
          implementation = this.dynamicLanguageImplementationLoad(language.toUpperCase());
          //TODO: Should we try to break the coupling with PACKAGE by try to load the class
@@ -36,6 +39,7 @@ public class LanguageFactory {
          {
            // No proper implementation
            // FIXME: We should log a warning, shouldn't we ?
+	   System.err.println("LanguageFactory warn - failed to load language \"" + language.toUpperCase() + "\" ; defaulting to AnyLanguage "  );
            return new AnyLanguage(language);
          }
        }
@@ -60,8 +64,14 @@ public class LanguageFactory {
     private Language dynamicLanguageImplementationLoad(String language) throws InstantiationException, IllegalAccessException
     {
         try {
+            String searchClassName = PACKAGE + language + SUFFIX;
+            System.err.println("Searching for \""+searchClassName+"\" using " + this.getClass().getCanonicalName());
+            ClassLoader classLoader =  this.getClass().getClassLoader();
+            System.err.println(".............. \""+searchClassName+"\" using ClassLoader=" + classLoader);
+            System.err.println(".............. \""+searchClassName+"\" using " + classLoader.getClass().getCanonicalName());
             return (Language) this.getClass().getClassLoader().loadClass(
                 PACKAGE + language + SUFFIX).newInstance();
+            //return (Language) classLoader.loadClass(searchClassName);
         } catch (ClassNotFoundException e) {
             // No class found, returning default implementation
             // FIXME: There should be somekind of log of this

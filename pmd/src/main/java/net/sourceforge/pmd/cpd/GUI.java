@@ -118,6 +118,18 @@ public class GUI implements CPDListener {
 										public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cs"); }
 										public boolean ignoreLiteralsByDefault() { return false; }
 										public String[] extensions() { return new String[] {".cs" }; };	} },
+		{"PLSQL", 			 new LanguageConfig() {
+										public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("plsql"); }
+										public boolean ignoreLiteralsByDefault() { return false; }
+										public String[] extensions() { return new String[] {".sql"
+										                                                    ,".trg"
+																    ,".prc",".fnc"
+																    ,".pld"
+																    ,".pls",".plh",".plb"
+																    ,".pck",".pks",".pkh",".pkb"
+																    ,".typ",".tyb"
+																    ,".tps",".tpb"
+																    }; };	} },
 		};
 	
 	private static final int		DEFAULT_CPD_MINIMUM_LENGTH = 75;
