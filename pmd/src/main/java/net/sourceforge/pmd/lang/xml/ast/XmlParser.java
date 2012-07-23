@@ -54,8 +54,10 @@ public class XmlParser {
 	    documentBuilderFactory.setNamespaceAware(parserOptions.isNamespaceAware());
 	    documentBuilderFactory.setValidating(parserOptions.isValidating());
 	    documentBuilderFactory.setXIncludeAware(parserOptions.isXincludeAware());
+	    
 
 	    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+	    documentBuilder.setEntityResolver(parserOptions.getEntityResolver());
 	    Document document = documentBuilder.parse(new InputSource(reader));
 	    return document;
 	} catch (ParserConfigurationException e) {

@@ -10,6 +10,12 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
  */
 public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspParserConstants {/*@bgen(jjtree)*/
   protected JJTJspParserState jjtree = new JJTJspParserState();
+
+        /**
+	* Counter used to keep track of unclosed tags
+	*/
+        private OpenTagRegister tagRegister = new OpenTagRegister();
+
         /**
 	 * Return the contents of a quote.
 	 * @param quote String - starting and ending with " or '
@@ -136,7 +142,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
   }
 
 /**
- * Everything between a start-tag and the corresponding end-tag of an element.
+ * Everything between a start-tag and the corresponding end-tag of an element (if an end tag exists).
  */
   final public void Content() throws ParseException {
  /*@bgen(jjtree) Content */
@@ -144,26 +150,6 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case EL_EXPRESSION:
-      case UNPARSED_TEXT:
-        Text();
-        break;
-      case TAG_START:
-      case COMMENT_START:
-      case CDATA_START:
-      case JSP_COMMENT_START:
-      case JSP_DECLARATION_START:
-      case JSP_EXPRESSION_START:
-      case JSP_SCRIPTLET_START:
-      case JSP_DIRECTIVE_START:
-        ContentElementPossiblyWithText();
-        break;
-      default:
-        jj_la1[4] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
       label_3:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -175,13 +161,36 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
         case JSP_EXPRESSION_START:
         case JSP_SCRIPTLET_START:
         case JSP_DIRECTIVE_START:
+        case HTML_SCRIPT_START:
+        case EL_EXPRESSION:
+        case UNPARSED_TEXT:
           ;
           break;
         default:
-          jj_la1[5] = jj_gen;
+          jj_la1[4] = jj_gen;
           break label_3;
         }
-        ContentElementPossiblyWithText();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case EL_EXPRESSION:
+        case UNPARSED_TEXT:
+          Text();
+          break;
+        case TAG_START:
+        case COMMENT_START:
+        case CDATA_START:
+        case JSP_COMMENT_START:
+        case JSP_DECLARATION_START:
+        case JSP_EXPRESSION_START:
+        case JSP_SCRIPTLET_START:
+        case JSP_DIRECTIVE_START:
+        case HTML_SCRIPT_START:
+          ContentElement();
+          break;
+        default:
+          jj_la1[5] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
       }
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -205,10 +214,10 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
   }
 
 /**
- * A single (non-text) element that can occur between a start- and end-tag of an element.
- * Possibly followed by text.
+ * A single (non-text) element that can occur between a start-tag and end-tag of an element.
+ * 
  */
-  final public void ContentElementPossiblyWithText() throws ParseException {
+  final public void ContentElement() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case COMMENT_START:
       CommentTag();
@@ -234,19 +243,13 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     case JSP_DIRECTIVE_START:
       JspDirective();
       break;
+    case HTML_SCRIPT_START:
+      HtmlScript();
+      break;
     default:
       jj_la1[6] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case EL_EXPRESSION:
-    case UNPARSED_TEXT:
-      Text();
-      break;
-    default:
-      jj_la1[7] = jj_gen;
-      ;
     }
   }
 
@@ -266,7 +269,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           ;
           break;
         default:
-          jj_la1[8] = jj_gen;
+          jj_la1[7] = jj_gen;
           break label_4;
         }
         JspDirectiveAttribute();
@@ -402,10 +405,10 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           break;
         case EL_EXPRESSION:
           tmp = ElExpression();
-                                       content.append(tmp);
+                                   content.append(tmp);
           break;
         default:
-          jj_la1[9] = jj_gen;
+          jj_la1[8] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -415,31 +418,31 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           ;
           break;
         default:
-          jj_la1[10] = jj_gen;
+          jj_la1[9] = jj_gen;
           break label_5;
         }
       }
-          jjtree.closeNodeScope(jjtn000, true);
-          jjtc000 = false;
-          jjtn000.setImage(content.toString());
+                  jjtree.closeNodeScope(jjtn000, true);
+                  jjtc000 = false;
+                 jjtn000.setImage(content.toString());
     } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            {if (true) throw (RuntimeException)jjte000;}
-          }
-          if (jjte000 instanceof ParseException) {
-            {if (true) throw (ParseException)jjte000;}
-          }
-          {if (true) throw (Error)jjte000;}
+            if (jjtc000) {
+              jjtree.clearNodeScope(jjtn000);
+              jjtc000 = false;
+            } else {
+              jjtree.popNode();
+            }
+            if (jjte000 instanceof RuntimeException) {
+              {if (true) throw (RuntimeException)jjte000;}
+            }
+            if (jjte000 instanceof ParseException) {
+              {if (true) throw (ParseException)jjte000;}
+            }
+            {if (true) throw (Error)jjte000;}
     } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
+            if (jjtc000) {
+              jjtree.closeNodeScope(jjtn000, true);
+            }
     }
   }
 
@@ -458,6 +461,25 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
           }
+    }
+    throw new RuntimeException("Missing return statement in function");
+  }
+
+  final public String UnparsedTextNoWhitespace() throws ParseException {
+ /*@bgen(jjtree) UnparsedText */
+  ASTUnparsedText jjtn000 = new ASTUnparsedText(this, JJTUNPARSEDTEXT);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);Token t;
+    try {
+      t = jj_consume_token(UNPARSED_TEXT_NO_WHITESPACE);
+    jjtree.closeNodeScope(jjtn000, true);
+    jjtc000 = false;
+                jjtn000.setImage(t.image);
+                {if (true) return t.image;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
     }
     throw new RuntimeException("Missing return statement in function");
   }
@@ -583,7 +605,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           ;
           break;
         default:
-          jj_la1[11] = jj_gen;
+          jj_la1[10] = jj_gen;
           break label_6;
         }
         t = jj_consume_token(UNPARSED);
@@ -608,13 +630,15 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
  /*@bgen(jjtree) Element */
         ASTElement jjtn000 = new ASTElement(this, JJTELEMENT);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);Token startTagName;
-        Token endTagName;
+        jjtree.openNodeScope(jjtn000);Token startTag;
+        Token endTag;
         String tagName;
     try {
       jj_consume_token(TAG_START);
-      startTagName = jj_consume_token(TAG_NAME);
-                                tagName = startTagName.image; jjtn000.setName(tagName);
+      startTag = jj_consume_token(TAG_NAME);
+                                        tagName = startTag.image;
+                                                                jjtn000.setName(tagName);
+                                                                tagRegister.openTag(jjtn000);
       label_7:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -622,7 +646,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           ;
           break;
         default:
-          jj_la1[12] = jj_gen;
+          jj_la1[11] = jj_gen;
           break label_7;
         }
         Attribute();
@@ -630,75 +654,29 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case TAG_END:
         jj_consume_token(TAG_END);
-                        jjtn000.setEmpty(false);
-
-                        // Content in a <script> element needs special treatment (like a comment or CDataSection).
-                        // Tell the TokenManager to start looking for the body of a script element.  In this
-                        // state all text will be consumed by the next token up to the closing </script> tag.
-                        // This is a context sensitive switch for the token manager, not something one can
-                        // express using normal JavaCC syntax.  Hence the hoop jumping.
-                                if ("script".equalsIgnoreCase(startTagName.image)) {
-                                        token_source.SwitchTo(HtmlScriptContentState);
-                                }
+                             jjtn000.setEmpty(false);
+        Content();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case TAG_START:
-        case COMMENT_START:
-        case CDATA_START:
-        case JSP_COMMENT_START:
-        case JSP_DECLARATION_START:
-        case JSP_EXPRESSION_START:
-        case JSP_SCRIPTLET_START:
-        case JSP_DIRECTIVE_START:
-        case EL_EXPRESSION:
-        case UNPARSED_TEXT:
-        case HTML_SCRIPT_CONTENT:
-        case HTML_SCRIPT_END_TAG:
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case HTML_SCRIPT_CONTENT:
-          case HTML_SCRIPT_END_TAG:
-            HtmlScript();
-            break;
-          case TAG_START:
-          case COMMENT_START:
-          case CDATA_START:
-          case JSP_COMMENT_START:
-          case JSP_DECLARATION_START:
-          case JSP_EXPRESSION_START:
-          case JSP_SCRIPTLET_START:
-          case JSP_DIRECTIVE_START:
-          case EL_EXPRESSION:
-          case UNPARSED_TEXT:
-            Content();
-            break;
-          default:
-            jj_la1[13] = jj_gen;
-            jj_consume_token(-1);
-            throw new ParseException();
-          }
+        case ENDTAG_START:
+          jj_consume_token(ENDTAG_START);
+          endTag = jj_consume_token(TAG_NAME);
+                                               tagRegister.closeTag(endTag.image);
+          jj_consume_token(TAG_END);
           break;
         default:
-          jj_la1[14] = jj_gen;
+          jj_la1[12] = jj_gen;
           ;
         }
-        jj_consume_token(ENDTAG_START);
-        endTagName = jj_consume_token(TAG_NAME);
-                        if (! tagName.equalsIgnoreCase(endTagName.image)) {
-                                {if (true) throw new StartAndEndTagMismatchException(
-                                        startTagName.beginLine, startTagName.beginColumn,
-                                        startTagName.image,
-                                        endTagName.beginLine, endTagName.beginColumn,
-                                        endTagName.image  );}
-                        }
-        jj_consume_token(TAG_END);
         break;
       case TAG_SLASHEND:
         jj_consume_token(TAG_SLASHEND);
-                          jjtree.closeNodeScope(jjtn000, true);
-                          jjtc000 = false;
-                          jjtn000.setEmpty(true);
+                                  jjtree.closeNodeScope(jjtn000, true);
+                                  jjtc000 = false;
+                                  jjtn000.setEmpty(true);
+                                                  jjtn000.setUnclosed(false);
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[13] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -765,7 +743,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);StringBuffer content = new StringBuffer();
         String tmp;
-        Token t;
+        Token t = null ;
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DOUBLE_QUOTE:
@@ -780,7 +758,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
             ;
             break;
           default:
-            jj_la1[16] = jj_gen;
+            jj_la1[14] = jj_gen;
             break label_8;
           }
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -793,7 +771,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
             tmp = QuoteIndependentAttributeValueContent();
             break;
           default:
-            jj_la1[17] = jj_gen;
+            jj_la1[15] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
@@ -808,7 +786,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
                                                                     content.append(t.image.substring(0, 1));
           break;
         default:
-          jj_la1[18] = jj_gen;
+          jj_la1[16] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -825,7 +803,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
             ;
             break;
           default:
-            jj_la1[19] = jj_gen;
+            jj_la1[17] = jj_gen;
             break label_9;
           }
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -838,11 +816,11 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
             tmp = QuoteIndependentAttributeValueContent();
             break;
           default:
-            jj_la1[20] = jj_gen;
+            jj_la1[18] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
-                            content.append(tmp);
+                          content.append(tmp);
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ENDING_SINGLE_QUOTE:
@@ -853,10 +831,46 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
                                                                  content.append(t.image.substring(0, 1));
           break;
         default:
-          jj_la1[21] = jj_gen;
+          jj_la1[19] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
+        break;
+      case NO_QUOTE_NO_WHITESPACE:
+        jj_consume_token(NO_QUOTE_NO_WHITESPACE);
+        label_10:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case EL_EXPRESSION_IN_ATTRIBUTE:
+          case VALUE_BINDING_IN_ATTRIBUTE:
+          case JSP_EXPRESSION_IN_ATTRIBUTE:
+          case UNPARSED_TEXT_NO_WHITESPACE:
+            ;
+            break;
+          default:
+            jj_la1[20] = jj_gen;
+            break label_10;
+          }
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case UNPARSED_TEXT_NO_WHITESPACE:
+            tmp = UnparsedTextNoWhitespace();
+            break;
+          case EL_EXPRESSION_IN_ATTRIBUTE:
+          case VALUE_BINDING_IN_ATTRIBUTE:
+          case JSP_EXPRESSION_IN_ATTRIBUTE:
+            tmp = QuoteIndependentAttributeValueContent();
+            break;
+          default:
+            jj_la1[21] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
+                                  content.append(tmp);
+        }
+        jj_consume_token(ENDING_WHITESPACE);
+        break;
+      case IN_ATTR_WHITESPACE:
+        jj_consume_token(IN_ATTR_WHITESPACE);
         break;
       default:
         jj_la1[22] = jj_gen;
@@ -939,7 +953,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
         Token t;
     try {
       jj_consume_token(COMMENT_START);
-      label_10:
+      label_11:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case COMMENT_TEXT:
@@ -947,7 +961,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           break;
         default:
           jj_la1[24] = jj_gen;
-          break label_10;
+          break label_11;
         }
         t = jj_consume_token(COMMENT_TEXT);
                          content.append(t.image);
@@ -972,7 +986,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
       jj_consume_token(DECL_START);
       t = jj_consume_token(TAG_NAME);
                    jjtn000.setName(t.image);
-      label_11:
+      label_12:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATTR_NAME:
@@ -980,7 +994,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           break;
         default:
           jj_la1[25] = jj_gen;
-          break label_11;
+          break label_12;
         }
         Attribute();
       }
@@ -1107,25 +1121,68 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
         ASTHtmlScript jjtn000 = new ASTHtmlScript(this, JJTHTMLSCRIPT);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);StringBuffer content = new StringBuffer();
+        String tagName;
         Token t;
     try {
-      label_12:
+      jj_consume_token(HTML_SCRIPT_START);
+
+      label_13:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case HTML_SCRIPT_CONTENT:
+        case ATTR_NAME:
           ;
           break;
         default:
           jj_la1[30] = jj_gen;
-          break label_12;
+          break label_13;
         }
-        t = jj_consume_token(HTML_SCRIPT_CONTENT);
-                                      content.append(t.image);
+        Attribute();
       }
-      jj_consume_token(HTML_SCRIPT_END_TAG);
-                  jjtree.closeNodeScope(jjtn000, true);
-                  jjtc000 = false;
-                        jjtn000.setImage(content.toString().trim());
+
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case TAG_END:
+        jj_consume_token(TAG_END);
+                                                     token_source.SwitchTo(HtmlScriptContentState);
+        label_14:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case HTML_SCRIPT_CONTENT:
+            ;
+            break;
+          default:
+            jj_la1[31] = jj_gen;
+            break label_14;
+          }
+          t = jj_consume_token(HTML_SCRIPT_CONTENT);
+                                         content.append(t.image);
+        }
+        jj_consume_token(HTML_SCRIPT_END_TAG);
+                                                  jjtree.closeNodeScope(jjtn000, true);
+                                                  jjtc000 = false;
+                                          jjtn000.setImage(content.toString().trim());
+        break;
+      case TAG_SLASHEND:
+        jj_consume_token(TAG_SLASHEND);
+        break;
+      default:
+        jj_la1[32] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            {if (true) throw (RuntimeException)jjte000;}
+          }
+          if (jjte000 instanceof ParseException) {
+            {if (true) throw (ParseException)jjte000;}
+          }
+          {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -1147,36 +1204,147 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     finally { jj_save(1, xla); }
   }
 
-  private boolean jj_3R_22() {
-    if (jj_3R_26()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(48)) jj_scanpos = xsp;
+  private boolean jj_3R_49() {
+    if (jj_scan_token(UNPARSED_TEXT_NO_SINGLE_QUOTES)) return true;
     return false;
   }
 
-  private boolean jj_3R_16() {
-    if (jj_scan_token(DOCTYPE_DECL_START)) return true;
-    if (jj_scan_token(WHITESPACES)) return true;
-    if (jj_scan_token(NAME)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(48)) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_22()) jj_scanpos = xsp;
-    if (jj_scan_token(DOCTYPE_DECL_END)) return true;
+  private boolean jj_3R_29() {
+    if (jj_scan_token(COMMENT_TEXT)) return true;
     return false;
   }
 
   private boolean jj_3R_25() {
-    if (jj_scan_token(ATTR_NAME)) return true;
-    if (jj_scan_token(ATTR_EQ)) return true;
-    if (jj_3R_28()) return true;
+    if (jj_scan_token(COMMENT_START)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_29()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_scan_token(COMMENT_END)) return true;
     return false;
   }
 
-  private boolean jj_3R_41() {
-    if (jj_scan_token(UNPARSED_TEXT_NO_DOUBLE_QUOTES)) return true;
+  private boolean jj_3R_23() {
+    if (jj_3R_26()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_56() {
+    if (jj_scan_token(JSP_EXPRESSION_IN_ATTRIBUTE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_53() {
+    if (jj_3R_56()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_52() {
+    if (jj_3R_55()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_51() {
+    if (jj_3R_54()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_20() {
+    if (jj_3R_26()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_50() {
+    if (jj_scan_token(UNPARSED_TEXT_NO_WHITESPACE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_45() {
+    if (jj_3R_50()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_48() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_51()) {
+    jj_scanpos = xsp;
+    if (jj_3R_52()) {
+    jj_scanpos = xsp;
+    if (jj_3R_53()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_40() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_45()) {
+    jj_scanpos = xsp;
+    if (jj_3R_46()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_22() {
+    if (jj_3R_25()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_17() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_22()) {
+    jj_scanpos = xsp;
+    if (jj_3R_23()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_39() {
+    if (jj_scan_token(DOLLAR_OR_HASH_SINGLE_QUOTE)) return true;
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_17()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_3R_18()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_43() {
+    if (jj_3R_49()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_37() {
+    if (jj_scan_token(DOLLAR_OR_HASH_DOUBLE_QUOTE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_38() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_43()) {
+    jj_scanpos = xsp;
+    if (jj_3R_44()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_15() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_19()) {
+    jj_scanpos = xsp;
+    if (jj_3R_20()) return true;
+    }
     return false;
   }
 
@@ -1185,90 +1353,12 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     return false;
   }
 
-  private boolean jj_3R_14() {
-    if (jj_scan_token(DECL_START)) return true;
-    if (jj_scan_token(TAG_NAME)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_19()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(DECL_END)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_21() {
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_43() {
-    if (jj_scan_token(UNPARSED_TEXT_NO_SINGLE_QUOTES)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_27() {
-    if (jj_scan_token(COMMENT_TEXT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_23() {
-    if (jj_scan_token(COMMENT_START)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_27()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(COMMENT_END)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_49() {
-    if (jj_scan_token(JSP_EXPRESSION_IN_ATTRIBUTE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_46() {
-    if (jj_3R_49()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_45() {
+  private boolean jj_3R_42() {
     if (jj_3R_48()) return true;
     return false;
   }
 
-  private boolean jj_3R_44() {
-    if (jj_3R_47()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_20() {
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_20()) {
-    jj_scanpos = xsp;
-    if (jj_3R_21()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_40() {
-    if (jj_3R_42()) return true;
-    return false;
-  }
-
-  private boolean jj_3_2() {
+  private boolean jj_3_1() {
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
@@ -1278,127 +1368,53 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     return false;
   }
 
-  private boolean jj_3R_36() {
-    if (jj_scan_token(DOLLAR_OR_HASH_SINGLE_QUOTE)) return true;
+  private boolean jj_3R_35() {
+    if (jj_scan_token(NO_QUOTE_NO_WHITESPACE)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_40()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_scan_token(ENDING_WHITESPACE)) return true;
     return false;
   }
 
-  private boolean jj_3R_13() {
+  private boolean jj_3R_41() {
+    if (jj_3R_47()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_36() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_17()) {
+    if (jj_3R_41()) {
     jj_scanpos = xsp;
-    if (jj_3R_18()) return true;
+    if (jj_3R_42()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_17() {
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_39() {
-    if (jj_3R_43()) return true;
     return false;
   }
 
   private boolean jj_3R_34() {
-    if (jj_scan_token(DOLLAR_OR_HASH_DOUBLE_QUOTE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_42() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_44()) {
-    jj_scanpos = xsp;
-    if (jj_3R_45()) {
-    jj_scanpos = xsp;
-    if (jj_3R_46()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_35() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_39()) {
-    jj_scanpos = xsp;
-    if (jj_3R_40()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_13()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_38() {
-    if (jj_3R_42()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_37() {
-    if (jj_3R_41()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_33() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_37()) {
-    jj_scanpos = xsp;
-    if (jj_3R_38()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_32() {
     if (jj_scan_token(SINGLE_QUOTE)) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_35()) { jj_scanpos = xsp; break; }
+      if (jj_3R_38()) { jj_scanpos = xsp; break; }
     }
     xsp = jj_scanpos;
-    if (jj_scan_token(69)) {
+    if (jj_scan_token(75)) {
     jj_scanpos = xsp;
-    if (jj_3R_36()) return true;
+    if (jj_3R_39()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_24() {
-    if (jj_scan_token(JSP_COMMENT_START)) return true;
-    if (jj_scan_token(JSP_COMMENT_CONTENT)) return true;
-    if (jj_scan_token(JSP_COMMENT_END)) return true;
+  private boolean jj_3R_54() {
+    if (jj_scan_token(EL_EXPRESSION_IN_ATTRIBUTE)) return true;
     return false;
   }
 
-  private boolean jj_3R_31() {
-    if (jj_scan_token(DOUBLE_QUOTE)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_33()) { jj_scanpos = xsp; break; }
-    }
-    xsp = jj_scanpos;
-    if (jj_scan_token(72)) {
-    jj_scanpos = xsp;
-    if (jj_3R_34()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_30() {
+  private boolean jj_3R_32() {
     if (jj_scan_token(PUBLIC)) return true;
     if (jj_scan_token(WHITESPACES)) return true;
     if (jj_scan_token(QUOTED_LITERAL)) return true;
@@ -1407,8 +1423,25 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     return false;
   }
 
-  private boolean jj_3R_47() {
-    if (jj_scan_token(EL_EXPRESSION_IN_ATTRIBUTE)) return true;
+  private boolean jj_3R_33() {
+    if (jj_scan_token(DOUBLE_QUOTE)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_36()) { jj_scanpos = xsp; break; }
+    }
+    xsp = jj_scanpos;
+    if (jj_scan_token(78)) {
+    jj_scanpos = xsp;
+    if (jj_3R_37()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_26() {
+    if (jj_scan_token(JSP_COMMENT_START)) return true;
+    if (jj_scan_token(JSP_COMMENT_CONTENT)) return true;
+    if (jj_scan_token(JSP_COMMENT_END)) return true;
     return false;
   }
 
@@ -1422,25 +1455,91 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     return false;
   }
 
-  private boolean jj_3R_26() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_29()) {
-    jj_scanpos = xsp;
-    if (jj_3R_30()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_29() {
+  private boolean jj_3R_31() {
     if (jj_scan_token(SYSTEM)) return true;
     if (jj_scan_token(WHITESPACES)) return true;
     if (jj_scan_token(QUOTED_LITERAL)) return true;
     return false;
   }
 
-  private boolean jj_3R_48() {
+  private boolean jj_3R_55() {
     if (jj_scan_token(VALUE_BINDING_IN_ATTRIBUTE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_30() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_33()) {
+    jj_scanpos = xsp;
+    if (jj_3R_34()) {
+    jj_scanpos = xsp;
+    if (jj_3R_35()) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(69)) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_24() {
+    if (jj_3R_28()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(50)) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_18() {
+    if (jj_scan_token(DOCTYPE_DECL_START)) return true;
+    if (jj_scan_token(WHITESPACES)) return true;
+    if (jj_scan_token(NAME)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(50)) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_24()) jj_scanpos = xsp;
+    if (jj_scan_token(DOCTYPE_DECL_END)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_47() {
+    if (jj_scan_token(UNPARSED_TEXT_NO_DOUBLE_QUOTES)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_46() {
+    if (jj_3R_48()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_27() {
+    if (jj_scan_token(ATTR_NAME)) return true;
+    if (jj_scan_token(ATTR_EQ)) return true;
+    if (jj_3R_30()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_21() {
+    if (jj_3R_27()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_44() {
+    if (jj_3R_48()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_16() {
+    if (jj_scan_token(DECL_START)) return true;
+    if (jj_scan_token(TAG_NAME)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_21()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_scan_token(DECL_END)) return true;
     return false;
   }
 
@@ -1454,7 +1553,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[31];
+  final private int[] jj_la1 = new int[33];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -1464,13 +1563,13 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x11000000,0x11000000,0x11000000,0x11000000,0xf9400000,0xf9400000,0xf9400000,0x0,0x0,0x0,0x0,0x0,0x0,0xf9400000,0xf9400000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x22000000,0x22000000,0x22000000,0x22000000,0xf2800000,0xf2800000,0xf2800000,0x0,0x0,0x0,0x0,0x0,0x1000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x7,0x1,0x1,0x6,0x10,0x6,0x6,0x400000,0x4000000,0x7,0x7,0x28000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x10000,0x10000,0xc0000,0xc0000,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x1f,0x1f,0x7,0x40,0x18,0x18,0x1000000,0x10000000,0x0,0xa0000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000000,0x40000,0x40000,0x300000,0x300000,0x10000000,0x0,0xa0000000,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000,0x6000,0x0,0x21c,0x21c,0x500,0x5c,0x5c,0xa0,0x3,0x1c,0x1000,0x0,0x0,0x0,0x0,0x0,0x2000,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x81c0,0x81c0,0x14000,0x11c0,0x11c0,0x2800,0x5c0,0x5c0,0x3c,0x1c0,0x40000,0x0,0x0,0x0,0x0,0x0,0x0,0x80000,0x0,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[2];
   private boolean jj_rescan = false;
@@ -1482,7 +1581,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1493,7 +1592,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1503,7 +1602,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1514,7 +1613,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1626,12 +1725,12 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[79];
+    boolean[] la1tokens = new boolean[85];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 31; i++) {
+    for (int i = 0; i < 33; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1646,7 +1745,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
         }
       }
     }
-    for (int i = 0; i < 79; i++) {
+    for (int i = 0; i < 85; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

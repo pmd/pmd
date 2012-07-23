@@ -19,7 +19,7 @@ Scripts should be part of Tag Libraries, rather than part of JSP pages.
 			<property name="xpath">
 				<value>
 					<![CDATA[ 
-// Element [ upper-case(@Name)="SCRIPT" and (@EndLine - @BeginLine > 10) ]
+// HtmlScript [ (@EndLine - @BeginLine > 10) ]
 				]]>
 				</value>
 			</property>

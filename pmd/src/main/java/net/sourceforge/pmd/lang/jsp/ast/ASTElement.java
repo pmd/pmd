@@ -15,9 +15,14 @@ public class ASTElement extends AbstractJspNode {
      * Flag indicating that the element consists of one tag ("<... />").
      */
     private boolean empty; //
-
-
+    
     /**
+     * Flag indicating that the parser did not find a proper ending marker 
+     * or ending tag for this element
+     */
+    private boolean unclosed;
+
+	/**
      * @return boolean - true if the element has a namespace-prefix, false otherwise
      */
     public boolean isHasNamespacePrefix() {
@@ -65,6 +70,14 @@ public class ASTElement extends AbstractJspNode {
     public boolean isEmpty() {
         return empty;
     }
+
+    public boolean isUnclosed() {
+		return unclosed;
+	}
+
+	public void setUnclosed(boolean unclosed) {
+		this.unclosed = unclosed;
+	}
 
     /**
      * @param empty The empty to set.
