@@ -328,6 +328,8 @@
             <li>Dinesh Bolkensteyn and SonarSource - Java 7 grammar support</li>
             <li>Tom Wheeler - contribute a launch script for CPD GUI</li>
             <li>Remi Delmas - change CPD CLI to return a non null value when code duplication is found.</li>
+            <li>Victor Bucutea - Improved JSP parser to be less strict with not valid XML documents (like HTML).</li>
+            <li>Prabhjot Singh - Fixed bug 3484404: Invalid NPath calculation in return statement.</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
