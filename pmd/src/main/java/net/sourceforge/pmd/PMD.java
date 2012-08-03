@@ -49,6 +49,8 @@ public class PMD {
 
 	public static final String EOL = System.getProperty("line.separator", "\n");
 	public static final String SUPPRESS_MARKER = "NOPMD";
+	public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
+	public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
 	protected final PMDConfiguration configuration;
 
@@ -334,11 +336,22 @@ public class PMD {
 
     /**
      * Entry to invoke PMD as command line tool
-     * 
+     *
      * @param args
      */
     public static void main(String[] args) {
-		System.exit(run(args));
+    	if ( isExitAfterRunSet() )
+    		System.exit(run(args));
+    	else
+    		setStatusCode(run(args));
+    }
+
+    private static boolean isExitAfterRunSet() {
+    	return (System.getenv(NO_EXIT_AFTER_RUN) == null ? false : true);
+    }
+
+    private static void setStatusCode(int statusCode) {
+    	System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
     }
 
     /**
