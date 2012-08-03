@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -24,7 +26,7 @@ import net.sourceforge.pmd.util.filter.OrFilter;
 public final class FileUtil {
 
     private FileUtil() {}
-    
+
     /**
      * Helper method to get a filename without its extension
      * @param fileName String
@@ -40,7 +42,7 @@ public final class FileUtil {
 
         return name;
     }
-    
+
     /**
      * Collects a list of DataSources using a comma separated list of input file
      * locations to process.  If a file location is a directory, the directory
@@ -98,5 +100,27 @@ public final class FileUtil {
 	    }
 	}
 	return dataSources;
+    }
+
+    /**
+     * Handy method to find a certain pattern into a file. While this method lives in the FileUtils, it was
+     * designed with with unit test in mind (to check result redirected into a file)
+     *
+     * @param file
+     * @param pattern
+     * @return
+     */
+    public static boolean findPatternInFile( final File file, final String pattern ) {
+
+    	Pattern regexp = Pattern.compile(pattern);
+    	Matcher matcher = regexp.matcher("");
+
+    	FileIterable it = new FileIterable(file);
+    	for ( String line : it ){
+    		matcher.reset( line ); //reset the input
+    		if ( matcher.find() )
+    			return true;
+    	}
+    	return false;
     }
 }
