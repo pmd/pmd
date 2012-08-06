@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 
@@ -51,9 +52,7 @@ public class PMDCommandLineInterface {
 			for ( String command : jcommander.getCommands().keySet() )
 				allCommandsDescription += jcommander.getCommandDescription(command) + PMD.EOL;
 		}		
-		final String WINDOWS_PROMPT = "c:\\> ";
-		final String WINDOWS_PATH_TO_CODE = "c:\\my\\source\\code";
-		final String UNIX_PROMPT = "$ ";
+		
 		// TODO: Externalize that to a file available within the classpath ? - with a poor's man templating ?
 		String fullText = PMD.EOL
 		+ "Mandatory arguments:"																+ PMD.EOL
@@ -65,6 +64,8 @@ public class PMDCommandLineInterface {
 		+ "c:\\> " + launchCmd + " c:\\my\\source\\code html java-unusedcode"					+ PMD.EOL
 		+ PMD.EOL;
 		
+		fullText += supportedVersions() + PMD.EOL;
+		
 		if ( allCommandsDescription != null ) {
 			fullText += "Optional arguments that may be put before or after the mandatory arguments: "		+ PMD.EOL
 					+ allCommandsDescription							 									+ PMD.EOL;
@@ -72,20 +73,54 @@ public class PMDCommandLineInterface {
 		
 		fullText += "Available report formats and their configuration properties are:"					+ PMD.EOL
 		+ getReports()																			+ PMD.EOL
-		+ "For example on windows: "															+ PMD.EOL
+		+ getExamples(launchCmd) + PMD.EOL
+		+ PMD.EOL + PMD.EOL;
+			
+		return fullText += usage.toString();
+	}
+
+	private static String getExamples(String launchCmd) {
+		return getWindowsExample(launchCmd) + getUnixExample(launchCmd);		
+	}
+	
+	private static String getWindowsExample(String launchCmd) {
+		final String WINDOWS_PROMPT = "c:\\> ";
+		final String WINDOWS_PATH_TO_CODE = "c:\\my\\source\\code";
+
+		return "For example on windows: "															+ PMD.EOL
 		+ WINDOWS_PROMPT + launchCmd + " -dir" + WINDOWS_PATH_TO_CODE + "-format text java-unusedcode,java-imports -version 1.5 -language java -debug" + PMD.EOL
 		+ WINDOWS_PROMPT + launchCmd + " -dir" + WINDOWS_PATH_TO_CODE + "-f xml -rulesets java-basic,java-design -encoding UTF-8"					+ PMD.EOL
 		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-rulesets java-typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL
 		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-f html java-typeresolution -auxclasspath file:///C:/my/classpathfile" + PMD.EOL
-		+ PMD.EOL
-		+ "For example on *nix: "				+ PMD.EOL
+		+ PMD.EOL;
+	}
+	
+	private static String getUnixExample(String launchCmd) {
+		final String UNIX_PROMPT = "$ ";
+		return "For example on *nix: "				+ PMD.EOL
 		+ UNIX_PROMPT + launchCmd + " -dir /home/workspace/src/main/java/code -f nicehtml -rulesets java-basic,java-design"				+ PMD.EOL
 		+ UNIX_PROMPT + launchCmd + " -d ./src/main/java/code -f nicehtml -r java-basic,java-design -xslt my-own.xsl" + PMD.EOL
 		+ UNIX_PROMPT + launchCmd + " -d ./src/main/java/code -f nicehtml -r java-typeresolution -auxclasspath commons-collections.jar:derby.jar"
-		+ PMD.EOL + PMD.EOL;
-			
-		fullText += usage.toString();
-		return fullText;
+		+ PMD.EOL;
+	}
+	
+	private static String supportedVersions() {
+		String supportedVersion = "Languages and version suported:" + PMD.EOL;
+		for ( LanguageVersion version : LanguageVersion.values() ) {
+			supportedVersion += version.getName() + ", ";
+		}
+		supportedVersion += PMD.EOL;
+		supportedVersion += "Note that some language are not supported by PMD - only by CPD" + PMD.EOL;
+		return supportedVersion;
+	}
+
+	/**
+	 * For testing purpose only... 
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		System.out.println(PMDCommandLineInterface.buildUsageText());
 	}
 	
 	public static String jarName() {
