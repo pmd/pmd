@@ -1,15 +1,12 @@
 package net.sourceforge.pmd.cli;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 
+import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
@@ -34,7 +31,7 @@ public class PMDParameters {
 	@Parameter(names= {"-encoding", "-e"} , description = "specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)")
 	private String encoding = "UTF-8";
 	
-	@Parameter(names = {"-threads", "-t"}, description = "set the number of threads used by PMD")
+	@Parameter(names = {"-threads", "-t"}, description = "set the number of threads used by PMD", validateWith=PositiveIntegerValidator.class)
 	private Integer threads = 1;
 	
 	@Parameter(names = {"-benchmark", "-b"}, description = "Benchmark mode - output a benchmark report upon completion; default to System.err")
@@ -87,6 +84,14 @@ public class PMDParameters {
 		}
 	}
 
+	class PositiveIntegerValidator implements IParameterValidator {
+		
+		public void validate(String name, String value) throws ParameterException {
+			if ( Integer.valueOf(value) < 0 ) 
+				throw new ParameterException("Parameter " + name + " should be positive (found " + value +")");
+		}
+	}
+	
 	class RulePriorityConverter implements IStringConverter<RulePriority> {
 
 		public int validate(String value) throws ParameterException {
