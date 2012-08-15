@@ -40,6 +40,10 @@ Fixed bug 3484404: Invalid NPath calculation in return statement. Thanks to Prab
 Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 Fixed bgastviewer not working. Thanks to Victor Bucutea.
 
+New Ecmascript rules:
+
+	Basic ruleset: AvoidTrailingComma
+
 May, 1, 2012 - 5.0.0:
 
 Fixed bug 3515487: Inconsistent reference to ruleset file in documentation
