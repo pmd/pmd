@@ -15,23 +15,24 @@
 
 <subsection name="Preparations">
 <p>
-Make sure code is up to date and everything is in svn:
+Make sure code is up to date and everything is committed and pushed with git:
 </p>
 
 <source>
 $ mvn clean
-$ svn update
-$ svn status
+$ git pull
+$ git status
 </source>
 
-<p>Ensure all the new rules are listed in a src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</p>
+<p>Ensure all the new rules are listed in a
+src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</p>
 
 <p>Update the "download" and "what's new" link in site.pre.xml.</p>
 
 <p>Update version/release info in etc/changelog.txt.</p>
 
 <source>
-$ mvn verify post-site    (order of targets DOES matter)
+$ mvn verify post-site    #(order of targets DOES matter)
 </source>
 
 <p>Unzip and test manually (just to be on the safe side of the road):</p>
@@ -41,46 +42,60 @@ $ mvn verify post-site    (order of targets DOES matter)
 ./bin/run.sh pmd ~/tmp/Test.java html rulesets/java/unusedcode.xml
 </source>
 
-<p>Check in all (version) changes to trunk:</p>
+<p>Check in all (version) changes to branch master:</p>
 <source>
-$ svn ci -m "pmd: Prepare pmd release &lt;version&gt;"
+$ git commit -a -m "pmd: Prepare pmd release &lt;version&gt;"
 </source>
 </subsection>
 
 <subsection name="Release Branch">
 <p>
-Let maven create a release branch (note - this is of course not needed if you are already on a release/maintenance
-branch). Maven will automatically increase the version in trunk. In case you create a alpha/preview release and you
-want to stay with the current version in trunk, use these
-additional properties: -DupdateBranchVersions=true -DupdateWorkingCopyVersions=false</p>
+Let maven create a release branch (note - this is of course not needed if you
+are already on a release/maintenance branch). Maven will automatically increase
+the version in branch master. In case you create a alpha/preview release and you
+want to stay with the current version in master, use these
+additional properties:
+-DupdateBranchVersions=true -DupdateWorkingCopyVersions=false</p>
 
 <source>
-$ mvn release:branch -DbranchName=&lt;version&gt;.x
+$ mvn release:branch -DbranchName=pmd/&lt;version&gt;.x -DpushChanges=false
 </source>
+
+Note: The property pushChanges is set to false, so that we can manually
+push all changes done during the release at the end, when we are sure,
+that everything is fine.
 </subsection>
 
 <subsection name="Create a release">
 <p>Now checkout the created branch.</p>
 
 <source>
-$ svn co https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/&lt;version&gt;.x
-$ cd &lt;version&gt;.x
+$ git checkout pmd/&lt;version&gt;.x
 </source>
 
 <p>Now let maven create a release tag.</p>
 
 <source>
-$ mvn release:clean release:prepare
+$ mvn release:clean release:prepare -DpushChanges=false
 </source>
 
-<p>Note: For the tag/label name we currently use this naming pattern: pmd_release_&lt;major-version&gt;_&lt;minor-version&gt;</p>
+<p>Note: For the tag/label name we currently use this naming pattern:
+pmd_releases/&lt;major-version&gt;.&lt;minor-version&gt;.&lt;micro-version&gt;</p>
 
-<p>The next command will checkout PMD from the tag just created and will build and deploy it
-to sonatype OSS repositories:
+<p>The next command will checkout PMD from the tag just created and will build
+and deploy it to sonatype OSS repositories:
 </p>
 
 <source>
 $ mvn release:perform
+</source>
+
+<h4>Push your local changes</h4>
+<p>If everything is fine, you can push your local changes.</p>
+<source>
+$ git push origin master
+$ git push origin pmd/&lt;version&gt;.x
+$ git push origin tag pmd_releases/&lt;version&gt;
 </source>
 
 <h4>Rollback</h4>
@@ -93,20 +108,22 @@ $ mvn release:rollback
 <p>You probably need to delete the release tag manually using the following command (and then
 start again with release:clean release:prepare):</p>
 <source>
-$ svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd-&lt;version&gt;
+$ git tag -d pmd_releases/&lt;version&gt;
 </source>
 </subsection>
 
 <subsection name="Publish artifacts">
 <p>
-Finally, in order to publish the release to Maven central, you need to release PMD via Sonatype Nexus:</p>
+Finally, in order to publish the release to Maven central,
+you need to release PMD via Sonatype Nexus:</p>
 <ul>
 <li>Login to <a href="https://oss.sonatype.org/">https://oss.sonatype.org/</a></li>
 <li>Go to Staging Repositories page</li>
 <li>Select a staging repository</li>
 <li>Click the close button</li>
 <li>Now you can download the artifacts again and verify they are working.</li>
-<li>Once you are sure they are working, click "Release" and the artifacts are eventually available through maven central.</li>
+<li>Once you are sure they are working, click "Release" and the artifacts are
+eventually available through maven central.</li>
 </ul>
 
 
@@ -119,10 +136,10 @@ Finally, in order to publish the release to Maven central, you need to release P
 </ul>
 
 <p>
-Upload command below will create and upload the maven artifacts to sourceforge. Login info
-for 'pmd-repo' and 'pmd-site' must be defined in ~/.m2/settings.xml
+Upload command below will create and upload the maven artifacts to sourceforge.
+Login info for 'pmd-repo' and 'pmd-site' must be defined in ~/.m2/settings.xml
 (see the file available in
-<a href="https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build/config/m2.settings.xml">maven-plugin-pmd-build/config/m2.settings.xml</a>):</p>
+<a href="https://github.com/pmd/pmd/blob/master/maven-plugin-pmd-build/config/m2.settings.xml">maven-plugin-pmd-build/config/m2.settings.xml</a>):</p>
 
 <source>
 $ ssh your_sf_login,pmd@shell.sourceforge.net create
@@ -130,9 +147,8 @@ $ ssh your_sf_login,pmd@shell.sourceforge.net create
 $ mvn deploy -Psf-release
 </source>
 
-<p>
-(In order to be able to upload the artifacts and the site to sourceforge, you need to have a interactive shell opened
-before)</p>
+<p>(In order to be able to upload the artifacts and the site to sourceforge,
+you need to have a interactive shell opened before)</p>
 </subsection>
 
 <subsection name="Site Upload">
@@ -148,9 +164,10 @@ $ ssh your_sf_login@shell.sourceforge.net "shutdown"
 </source>
 </subsection>
 
-<subsection name="Social side of release:">
+<subsection name="Social side of release">
 <ol>
-<li>Submit news to SF: Go to <a href="http://freshmeat.net/">http://freshmeat.net/</a></li>
+<li>Submit news to SF on the <a href="https://sourceforge.net/news/?group_id=56262">PMD Project News</a> page.</li>
+<li>Go to <a href="http://freshmeat.net/">http://freshmeat.net/</a></li>
 <li>Facebook, Google+, Twitter, LinkedIn and Xing (add whatever you feel is missing here...)</li>
 </ol>
 </subsection>
