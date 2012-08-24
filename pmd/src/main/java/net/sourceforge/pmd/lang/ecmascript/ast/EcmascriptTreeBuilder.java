@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -44,6 +45,7 @@ import org.mozilla.javascript.ast.NumberLiteral;
 import org.mozilla.javascript.ast.ObjectLiteral;
 import org.mozilla.javascript.ast.ObjectProperty;
 import org.mozilla.javascript.ast.ParenthesizedExpression;
+import org.mozilla.javascript.ast.ParseProblem;
 import org.mozilla.javascript.ast.PropertyGet;
 import org.mozilla.javascript.ast.RegExpLiteral;
 import org.mozilla.javascript.ast.ReturnStatement;
@@ -128,11 +130,18 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	}
     }
 
+    protected List<ParseProblem> parseProblems;
+    protected Map<ParseProblem, TrailingCommaNode> parseProblemToNode = new HashMap<ParseProblem, TrailingCommaNode>();
+
     // The nodes having children built.
     protected Stack<Node> nodes = new Stack<Node>();
 
     // The Rhino nodes with children to build.
     protected Stack<AstNode> parents = new Stack<AstNode>();
+
+    public EcmascriptTreeBuilder(List<ParseProblem> parseProblems) {
+	this.parseProblems = parseProblems;
+    }
 
     protected EcmascriptNode createNodeAdapter(AstNode node) {
 	try {
@@ -152,6 +161,17 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
     }
 
     public EcmascriptNode build(AstNode astNode) {
+	EcmascriptNode node = buildInternal(astNode);
+
+	// Set all the trailing comma nodes
+	for (TrailingCommaNode trailingCommaNode : parseProblemToNode.values()) {
+	    trailingCommaNode.setTrailingComma(true);
+	}
+
+	return node;
+    }
+
+    protected EcmascriptNode buildInternal(AstNode astNode) {
 	// Create a Node
 	EcmascriptNode node = createNodeAdapter(astNode);
 
@@ -161,6 +181,8 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	    parent.jjtAddChild(node, parent.jjtGetNumChildren());
 	    node.jjtSetParent(parent);
 	}
+	
+	handleParseProblems(node);
 
 	// Build the children...
 	nodes.push(node);
@@ -176,8 +198,31 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	if (parents.peek() == node) {
 	    return true;
 	} else {
-	    build(node);
+	    buildInternal(node);
 	    return false;
+	}
+    }
+
+    private void handleParseProblems(EcmascriptNode node) {
+	if (node instanceof TrailingCommaNode) {
+	    TrailingCommaNode trailingCommaNode = (TrailingCommaNode) node;
+	    int nodeStart = node.getNode().getAbsolutePosition();
+	    int nodeEnd = nodeStart + node.getNode().getLength() - 1;
+	    for (ParseProblem parseProblem : parseProblems) {
+		// The node overlaps the comma (i.e. end of the problem)?
+		int problemStart = parseProblem.getFileOffset();
+		int commaPosition = parseProblem.getFileOffset() + parseProblem.getLength() - 1;
+		if (nodeStart <= commaPosition && commaPosition <= nodeEnd) {
+		    if ("Trailing comma is not legal in an ECMA-262 object initializer".equals(parseProblem.getMessage())) {
+			// Report on the shortest code block containing the
+			// problem (i.e. inner most code in nested structures).
+			EcmascriptNode currentNode = (EcmascriptNode) parseProblemToNode.get(parseProblem);
+			if (currentNode == null || node.getNode().getLength() < currentNode.getNode().getLength()) {
+			    parseProblemToNode.put(parseProblem, trailingCommaNode);
+			}
+		    }
+		}
+	    }
 	}
     }
 }

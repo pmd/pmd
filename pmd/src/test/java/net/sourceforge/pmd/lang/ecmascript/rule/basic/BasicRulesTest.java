@@ -15,6 +15,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
     @Before
     public void setUp() {
 	addRule(RULESET, "AssignmentInOperand");
+	addRule(RULESET, "AvoidTrailingComma");
 	addRule(RULESET, "ConsistentReturn");
 	addRule(RULESET, "InnaccurateNumericLiteral");
 	addRule(RULESET, "ScopeForInVariable");
