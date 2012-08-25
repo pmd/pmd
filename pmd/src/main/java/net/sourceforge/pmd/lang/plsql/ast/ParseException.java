@@ -29,7 +29,7 @@ package net.sourceforge.pmd.lang.plsql.ast;
  * You can modify this class to customize your error reporting
  * mechanisms so long as you retain the public fields.
  */
-public class ParseException extends net.sourceforge.pmd.lang.ast.ParseException {
+public class ParseException extends Exception {
 
   /**
    * The version identifier for this Serializable class.

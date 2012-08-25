@@ -31,7 +31,7 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
       throws ParseException {
 
     PLSQLParser parser = new PLSQLParser(System.in);
-    SimpleNode simpleNode = parser.input();
+    parser.input();
 
     String s;
     s = "qwerty";
@@ -54,15 +54,15 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
 /**
  * 2006-05-22 - Matthias Hendler - added globalBody()
  */
-  final public SimpleNode input() throws ParseException {
-                      /*@bgen(jjtree) input */
-  ASTinput jjtn000 = new ASTinput(this, JJTINPUT);
+  final public void input() throws ParseException {
+                /*@bgen(jjtree) input */
+  SimpleNode jjtn000 = new SimpleNode(JJTINPUT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       label_1:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 2:
         case 3:
         case ALTER:
@@ -128,7 +128,7 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
         } else if (jj_2_6(6)) {
           triggerUnit();
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case ALTER:
             alterTrigger();
             break;
@@ -178,7 +178,7 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
           case SELECT:
           case UPDATE:
           case WITH:
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case SELECT:
               jj_consume_token(SELECT);
               break;
@@ -225,7 +225,7 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
         }
         label_2:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 1:
             ;
             break;
@@ -237,9 +237,6 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
         }
       }
       jj_consume_token(0);
-  jjtree.closeNodeScope(jjtn000, true);
-  jjtc000 = false;
-  {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -259,16 +256,15 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
             jjtree.closeNodeScope(jjtn000, true);
           }
     }
-    throw new Error("Missing return statement in function");
   }
 
   final public void sqlPlusCommand() throws ParseException {
                          /*@bgen(jjtree) sqlPlusCommand */
-  ASTsqlPlusCommand jjtn000 = new ASTsqlPlusCommand(this, JJTSQLPLUSCOMMAND);
+  SimpleNode jjtn000 = new SimpleNode(JJTSQLPLUSCOMMAND);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 2:
         jj_consume_token(2);
         break;
@@ -405,7 +401,7 @@ void attachLibrary() :
  */
   final public void global() throws ParseException {
  /*@bgen(jjtree) global */
-  ASTglobal jjtn000 = new ASTglobal(this, JJTGLOBAL);
+  SimpleNode jjtn000 = new SimpleNode(JJTGLOBAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -445,11 +441,11 @@ void attachLibrary() :
  */
   final public void globalBlock() throws ParseException {
  /*@bgen(jjtree) globalBlock */
-  ASTglobalBlock jjtn000 = new ASTglobalBlock(this, JJTGLOBALBLOCK);
+  SimpleNode jjtn000 = new SimpleNode(JJTGLOBALBLOCK);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DECLARE:
         jj_consume_token(DECLARE);
         declarativeSection();
@@ -461,7 +457,7 @@ void attachLibrary() :
       jj_consume_token(BEGIN);
       label_3:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 5:
         case 13:
         case 18:
@@ -710,7 +706,7 @@ void attachLibrary() :
         }
         statement();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case EXCEPTION:
         exceptionHandler();
         break;
@@ -743,14 +739,14 @@ void attachLibrary() :
 
   final public void packageSpec() throws ParseException {
  /*@bgen(jjtree) packageSpec */
-  ASTpackageSpec jjtn000 = new ASTpackageSpec(this, JJTPACKAGESPEC);
+  SimpleNode jjtn000 = new SimpleNode(JJTPACKAGESPEC);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CREATE:
         jj_consume_token(CREATE);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OR:
           jj_consume_token(OR);
           jj_consume_token(REPLACE);
@@ -772,10 +768,10 @@ void attachLibrary() :
         ;
       }
       ID();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case AUTHID:
         jj_consume_token(AUTHID);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CURRENT_USER:
           jj_consume_token(CURRENT_USER);
           break;
@@ -792,13 +788,13 @@ void attachLibrary() :
         jj_la1[11] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case WRAPPED:
         wrappedObject();
         break;
       case AS:
       case IS:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IS:
           jj_consume_token(IS);
           break;
@@ -812,7 +808,7 @@ void attachLibrary() :
         }
         declarativeSection();
         jj_consume_token(END);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case REPLACE:
         case DEFINER:
         case CURRENT_USER:
@@ -1175,14 +1171,14 @@ void attachLibrary() :
 
   final public void packageBody() throws ParseException {
  /*@bgen(jjtree) packageBody */
-  ASTpackageBody jjtn000 = new ASTpackageBody(this, JJTPACKAGEBODY);
+  SimpleNode jjtn000 = new SimpleNode(JJTPACKAGEBODY);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CREATE:
         jj_consume_token(CREATE);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OR:
           jj_consume_token(OR);
           jj_consume_token(REPLACE);
@@ -1196,7 +1192,7 @@ void attachLibrary() :
         jj_la1[16] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PACKAGE:
         jj_consume_token(PACKAGE);
         break;
@@ -1216,13 +1212,13 @@ void attachLibrary() :
         ;
       }
       ID();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case WRAPPED:
         wrappedObject();
         break;
       case AS:
       case IS:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IS:
           jj_consume_token(IS);
           break;
@@ -1235,12 +1231,12 @@ void attachLibrary() :
           throw new ParseException();
         }
         declarativeSection();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case BEGIN:
           jj_consume_token(BEGIN);
           label_4:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 5:
             case 13:
             case 18:
@@ -1489,7 +1485,7 @@ void attachLibrary() :
             }
             statement();
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case EXCEPTION:
             exceptionHandler();
             break;
@@ -1503,7 +1499,7 @@ void attachLibrary() :
           ;
         }
         jj_consume_token(END);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case REPLACE:
         case DEFINER:
         case CURRENT_USER:
@@ -1866,11 +1862,11 @@ void attachLibrary() :
 
   final public void declarativeUnit() throws ParseException {
  /*@bgen(jjtree) declarativeUnit */
-  ASTdeclarativeUnit jjtn000 = new ASTdeclarativeUnit(this, JJTDECLARATIVEUNIT);
+  SimpleNode jjtn000 = new SimpleNode(JJTDECLARATIVEUNIT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PRAGMA:
         pragma();
         break;
@@ -1887,7 +1883,7 @@ void attachLibrary() :
         } else if (jj_2_15(2)) {
           cursorSpec();
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case CURSOR:
             cursorBody();
             break;
@@ -1943,13 +1939,13 @@ void attachLibrary() :
 
   final public void declarativeSection() throws ParseException {
  /*@bgen(jjtree) declarativeSection */
-  ASTdeclarativeSection jjtn000 = new ASTdeclarativeSection(this, JJTDECLARATIVESECTION);
+  SimpleNode jjtn000 = new SimpleNode(JJTDECLARATIVESECTION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       label_5:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case REPLACE:
         case DEFINER:
         case CURRENT_USER:
@@ -2309,7 +2305,7 @@ void attachLibrary() :
 
   final public void CompilationDeclarationFragment() throws ParseException {
  /*@bgen(jjtree) CompilationDeclarationFragment */
-  ASTCompilationDeclarationFragment jjtn000 = new ASTCompilationDeclarationFragment(this, JJTCOMPILATIONDECLARATIONFRAGMENT);
+  SimpleNode jjtn000 = new SimpleNode(JJTCOMPILATIONDECLARATIONFRAGMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2318,7 +2314,7 @@ void attachLibrary() :
       jj_consume_token(CC_THEN);
       label_6:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case REPLACE:
         case DEFINER:
         case CURRENT_USER:
@@ -2654,7 +2650,7 @@ void attachLibrary() :
           jj_la1[27] = jj_gen;
           break label_6;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case REPLACE:
         case DEFINER:
         case CURRENT_USER:
@@ -2998,7 +2994,7 @@ void attachLibrary() :
       }
       label_7:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CC_ELSIF:
           ;
           break;
@@ -3011,7 +3007,7 @@ void attachLibrary() :
         jj_consume_token(CC_THEN);
         label_8:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -3347,7 +3343,7 @@ void attachLibrary() :
             jj_la1[30] = jj_gen;
             break label_8;
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -3692,7 +3688,7 @@ void attachLibrary() :
       }
       label_9:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CC_ELSE:
           ;
           break;
@@ -3703,7 +3699,7 @@ void attachLibrary() :
         jj_consume_token(CC_ELSE);
         label_10:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -4039,7 +4035,7 @@ void attachLibrary() :
             jj_la1[33] = jj_gen;
             break label_10;
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -4415,14 +4411,14 @@ void attachLibrary() :
  */
   final public void programUnit() throws ParseException {
  /*@bgen(jjtree) programUnit */
-  ASTprogramUnit jjtn000 = new ASTprogramUnit(this, JJTPROGRAMUNIT);
+  SimpleNode jjtn000 = new SimpleNode(JJTPROGRAMUNIT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CREATE:
         jj_consume_token(CREATE);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OR:
           jj_consume_token(OR);
           jj_consume_token(REPLACE);
@@ -4436,7 +4432,7 @@ void attachLibrary() :
         jj_la1[36] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FUNCTION:
         jj_consume_token(FUNCTION);
         break;
@@ -4455,7 +4451,7 @@ void attachLibrary() :
         ;
       }
       ID();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case WRAPPED:
         wrappedObject();
         break;
@@ -4472,7 +4468,7 @@ void attachLibrary() :
       case RETURN:
         label_11:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 5:
             ;
             break;
@@ -4484,7 +4480,7 @@ void attachLibrary() :
           parameterDeclaration();
           label_12:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 6:
               ;
               break;
@@ -4497,7 +4493,7 @@ void attachLibrary() :
           }
           jj_consume_token(7);
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case RETURN:
           jj_consume_token(RETURN);
           datatype();
@@ -4508,7 +4504,7 @@ void attachLibrary() :
         }
         label_13:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case AUTHID:
           case DETERMINISTIC:
           case PARALLEL_ENABLE:
@@ -4520,10 +4516,10 @@ void attachLibrary() :
             jj_la1[41] = jj_gen;
             break label_13;
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case AUTHID:
             jj_consume_token(AUTHID);
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case CURRENT_USER:
               jj_consume_token(CURRENT_USER);
               break;
@@ -4541,7 +4537,7 @@ void attachLibrary() :
             break;
           case PARALLEL_ENABLE:
             jj_consume_token(PARALLEL_ENABLE);
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 5:
               parallel_clause();
               break;
@@ -4549,11 +4545,11 @@ void attachLibrary() :
               jj_la1[43] = jj_gen;
               ;
             }
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case USING:
               jj_consume_token(USING);
               ID();
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 3:
                 jj_consume_token(3);
                 ID();
@@ -4570,15 +4566,15 @@ void attachLibrary() :
             break;
           case PIPELINED:
             jj_consume_token(PIPELINED);
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case CLUSTER:
             case ORDER:
             case USING:
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case USING:
                 jj_consume_token(USING);
                 ID();
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 3:
                   jj_consume_token(3);
                   ID();
@@ -4590,7 +4586,7 @@ void attachLibrary() :
                 break;
               case CLUSTER:
               case ORDER:
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case ORDER:
                   jj_consume_token(ORDER);
                   break;
@@ -4602,7 +4598,7 @@ void attachLibrary() :
                   jj_consume_token(-1);
                   throw new ParseException();
                 }
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case REPLACE:
                 case DEFINER:
                 case CURRENT_USER:
@@ -4940,7 +4936,7 @@ void attachLibrary() :
                 ID();
                 label_14:
                 while (true) {
-                  switch (jj_nt.kind) {
+                  switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                   case 6:
                     ;
                     break;
@@ -4966,12 +4962,12 @@ void attachLibrary() :
             break;
           case RESULT_CACHE:
             jj_consume_token(RESULT_CACHE);
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case RELIES_ON:
               jj_consume_token(RELIES_ON);
               jj_consume_token(5);
               ID();
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 3:
                 jj_consume_token(3);
                 ID();
@@ -4982,7 +4978,7 @@ void attachLibrary() :
               }
               label_15:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 6:
                   ;
                   break;
@@ -4992,7 +4988,7 @@ void attachLibrary() :
                 }
                 jj_consume_token(6);
                 ID();
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 3:
                   jj_consume_token(3);
                   ID();
@@ -5015,7 +5011,7 @@ void attachLibrary() :
             throw new ParseException();
           }
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case AGGREGATE:
           jj_consume_token(AGGREGATE);
           jj_consume_token(USING);
@@ -5025,10 +5021,10 @@ void attachLibrary() :
           jj_la1[57] = jj_gen;
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case AS:
         case IS:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IS:
             jj_consume_token(IS);
             break;
@@ -5043,7 +5039,7 @@ void attachLibrary() :
           if (jj_2_17(2)) {
             callSpecTail();
           } else {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case REPLACE:
             case DEFINER:
             case CURRENT_USER:
@@ -5377,7 +5373,7 @@ void attachLibrary() :
               jj_consume_token(BEGIN);
               label_16:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 5:
                 case 13:
                 case 18:
@@ -5626,7 +5622,7 @@ void attachLibrary() :
                 }
                 statement();
               }
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case EXCEPTION:
                 exceptionHandler();
                 break;
@@ -5635,7 +5631,7 @@ void attachLibrary() :
                 ;
               }
               jj_consume_token(END);
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case REPLACE:
               case DEFINER:
               case CURRENT_USER:
@@ -6010,14 +6006,14 @@ void attachLibrary() :
 
   final public void parameterDeclaration() throws ParseException {
  /*@bgen(jjtree) parameterDeclaration */
-  ASTparameterDeclaration jjtn000 = new ASTparameterDeclaration(this, JJTPARAMETERDECLARATION);
+  SimpleNode jjtn000 = new SimpleNode(JJTPARAMETERDECLARATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       ID();
       if (jj_2_20(2)) {
         if (jj_2_19(2)) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case OUT:
             jj_consume_token(OUT);
             break;
@@ -6036,7 +6032,7 @@ void attachLibrary() :
             ;
           }
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IN:
             jj_consume_token(IN);
             break;
@@ -6049,7 +6045,7 @@ void attachLibrary() :
       } else {
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 8:
         jj_consume_token(8);
         break;
@@ -6293,10 +6289,10 @@ void attachLibrary() :
         jj_consume_token(-1);
         throw new ParseException();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 9:
       case _DEFAULT:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 9:
           jj_consume_token(9);
           jj_consume_token(10);
@@ -6338,11 +6334,11 @@ void attachLibrary() :
 
   final public SimpleNode datatype() throws ParseException {
  /*@bgen(jjtree) datatype */
-  ASTdatatype jjtn000 = new ASTdatatype(this, JJTDATATYPE);
+  SimpleNode jjtn000 = new SimpleNode(JJTDATATYPE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CC_IF:
         CompilationDataType();
         break;
@@ -6351,7 +6347,7 @@ void attachLibrary() :
         if (jj_2_22(2)) {
           scalar_datatype_name();
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -6567,7 +6563,7 @@ void attachLibrary() :
               ;
             }
             qualifiedName();
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 2:
               jj_consume_token(2);
               qualifiedName();
@@ -6576,10 +6572,10 @@ void attachLibrary() :
               jj_la1[70] = jj_gen;
               ;
             }
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 11:
               jj_consume_token(11);
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case TYPE:
                 jj_consume_token(TYPE);
                 break;
@@ -6631,7 +6627,7 @@ void attachLibrary() :
 
   final public SimpleNode CompilationDataType() throws ParseException {
  /*@bgen(jjtree) CompilationDataType */
-  ASTCompilationDataType jjtn000 = new ASTCompilationDataType(this, JJTCOMPILATIONDATATYPE);
+  SimpleNode jjtn000 = new SimpleNode(JJTCOMPILATIONDATATYPE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -6641,7 +6637,7 @@ void attachLibrary() :
       datatype();
       label_17:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CC_ELSIF:
           ;
           break;
@@ -6656,7 +6652,7 @@ void attachLibrary() :
       }
       label_18:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CC_ELSE:
           ;
           break;
@@ -6695,11 +6691,11 @@ void attachLibrary() :
 
   final public SimpleNode collection_type_name() throws ParseException {
  /*@bgen(jjtree) collection_type_name */
-  ASTcollection_type_name jjtn000 = new ASTcollection_type_name(this, JJTCOLLECTION_TYPE_NAME);
+  SimpleNode jjtn000 = new SimpleNode(JJTCOLLECTION_TYPE_NAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case TABLE:
         jj_consume_token(TABLE);
         break;
@@ -6718,7 +6714,7 @@ void attachLibrary() :
       if (jj_2_23(2)) {
         jj_consume_token(5);
         numericLiteral();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 6:
           jj_consume_token(6);
           numericLiteral();
@@ -6727,7 +6723,7 @@ void attachLibrary() :
           jj_la1[78] = jj_gen;
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CHAR:
           jj_consume_token(CHAR);
           break;
@@ -6735,7 +6731,7 @@ void attachLibrary() :
           jj_la1[79] = jj_gen;
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case BYTE:
           jj_consume_token(BYTE);
           break;
@@ -6774,11 +6770,11 @@ void attachLibrary() :
 
   final public SimpleNode scalar_datatype_name() throws ParseException {
  /*@bgen(jjtree) scalar_datatype_name */
-  ASTscalar_datatype_name jjtn000 = new ASTscalar_datatype_name(this, JJTSCALAR_DATATYPE_NAME);
+  SimpleNode jjtn000 = new SimpleNode(JJTSCALAR_DATATYPE_NAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BFILE_BASE:
         jj_consume_token(BFILE_BASE);
         break;
@@ -6862,7 +6858,7 @@ void attachLibrary() :
       case CLOB:
       case NCLOB:
       case CHARACTER:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CHAR:
           jj_consume_token(CHAR);
           break;
@@ -6875,7 +6871,7 @@ void attachLibrary() :
             jj_consume_token(LONG);
             jj_consume_token(RAW);
           } else {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case LONG:
               jj_consume_token(LONG);
               break;
@@ -6945,7 +6941,7 @@ void attachLibrary() :
           jj_consume_token(INTERVAL);
           jj_consume_token(DAY);
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case TIME:
             jj_consume_token(TIME);
             break;
@@ -6967,7 +6963,7 @@ void attachLibrary() :
       if (jj_2_27(2)) {
         jj_consume_token(5);
         numericLiteral();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 6:
           jj_consume_token(6);
           UnaryExpression(true);
@@ -6976,7 +6972,7 @@ void attachLibrary() :
           jj_la1[85] = jj_gen;
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CHAR:
           jj_consume_token(CHAR);
           break;
@@ -6984,7 +6980,7 @@ void attachLibrary() :
           jj_la1[86] = jj_gen;
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case BYTE:
           jj_consume_token(BYTE);
           break;
@@ -6996,11 +6992,11 @@ void attachLibrary() :
       } else {
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case TO:
       case WITH:
       case CHARACTER:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CHARACTER:
           jj_consume_token(CHARACTER);
           jj_consume_token(SET);
@@ -7067,11 +7063,11 @@ void attachLibrary() :
 
   final public SimpleNode DateTimeLiteral() throws ParseException {
  /*@bgen(jjtree) DateTimeLiteral */
-  ASTDateTimeLiteral jjtn000 = new ASTDateTimeLiteral(this, JJTDATETIMELITERAL);
+  SimpleNode jjtn000 = new SimpleNode(JJTDATETIMELITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INTERVAL:
         jj_consume_token(INTERVAL);
         break;
@@ -7083,7 +7079,7 @@ void attachLibrary() :
         jj_consume_token(-1);
         throw new ParseException();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CHARACTER_LITERAL:
         jj_consume_token(CHARACTER_LITERAL);
         break;
@@ -7095,14 +7091,14 @@ void attachLibrary() :
         jj_consume_token(-1);
         throw new ParseException();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DAY:
       case HOUR:
       case MINUTE:
       case MONTH:
       case SECOND:
       case YEAR:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case YEAR:
           jj_consume_token(YEAR);
           break;
@@ -7138,13 +7134,13 @@ void attachLibrary() :
       } else {
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case TO:
       case WITH:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case WITH:
           jj_consume_token(WITH);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case LOCAL:
             jj_consume_token(LOCAL);
             break;
@@ -7157,7 +7153,7 @@ void attachLibrary() :
           break;
         case TO:
           jj_consume_token(TO);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case YEAR:
             jj_consume_token(YEAR);
             break;
@@ -7226,7 +7222,7 @@ void attachLibrary() :
 
   final public void exceptionHandler() throws ParseException {
  /*@bgen(jjtree) exceptionHandler */
-  ASTexceptionHandler jjtn000 = new ASTexceptionHandler(this, JJTEXCEPTIONHANDLER);
+  SimpleNode jjtn000 = new SimpleNode(JJTEXCEPTIONHANDLER);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -7242,7 +7238,7 @@ void attachLibrary() :
         qualifiedName();
         label_20:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case OR:
             ;
             break;
@@ -7257,7 +7253,7 @@ void attachLibrary() :
         label_21:
         while (true) {
           statement();
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 5:
           case 13:
           case 18:
@@ -7506,7 +7502,7 @@ void attachLibrary() :
           }
         }
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case WHEN:
         jj_consume_token(WHEN);
         jj_consume_token(OTHERS);
@@ -7514,7 +7510,7 @@ void attachLibrary() :
         label_22:
         while (true) {
           statement();
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 5:
           case 13:
           case 18:
@@ -7790,7 +7786,7 @@ void attachLibrary() :
 
   final public void skip2NextTerminator(String initiator,String terminator) throws ParseException {
  /*@bgen(jjtree) skip2NextTerminator */
-  ASTskip2NextTerminator jjtn000 = new ASTskip2NextTerminator(this, JJTSKIP2NEXTTERMINATOR);
+  SimpleNode jjtn000 = new SimpleNode(JJTSKIP2NEXTTERMINATOR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t = getToken(1);
   int count = (initiator == null) ? 0 : 1;
@@ -7818,7 +7814,7 @@ void attachLibrary() :
 */
   final public void skip2NextOccurrence(String target) throws ParseException {
  /*@bgen(jjtree) skip2NextOccurrence */
-  ASTskip2NextOccurrence jjtn000 = new ASTskip2NextOccurrence(this, JJTSKIP2NEXTOCCURRENCE);
+  SimpleNode jjtn000 = new SimpleNode(JJTSKIP2NEXTOCCURRENCE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token nextToken = getToken(1);
   while (!nextToken.image.equals(target)
@@ -7845,7 +7841,7 @@ void attachLibrary() :
 */
   final public void skipPastNextOccurrence(String target) throws ParseException {
  /*@bgen(jjtree) skipPastNextOccurrence */
-  ASTskipPastNextOccurrence jjtn000 = new ASTskipPastNextOccurrence(this, JJTSKIPPASTNEXTOCCURRENCE);
+  SimpleNode jjtn000 = new SimpleNode(JJTSKIPPASTNEXTOCCURRENCE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t = null;
   skip2NextOccurrence(target) ;
@@ -7866,7 +7862,7 @@ void attachLibrary() :
 */
   final public void skip2NextTokenOccurrence(int target) throws ParseException {
  /*@bgen(jjtree) skip2NextTokenOccurrence */
-  ASTskip2NextTokenOccurrence jjtn000 = new ASTskip2NextTokenOccurrence(this, JJTSKIP2NEXTTOKENOCCURRENCE);
+  SimpleNode jjtn000 = new SimpleNode(JJTSKIP2NEXTTOKENOCCURRENCE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token nextToken = getToken(1);
   while (nextToken.kind!=target
@@ -7893,7 +7889,7 @@ void attachLibrary() :
 */
   final public void skipPastNextTokenOccurrence(int target) throws ParseException {
  /*@bgen(jjtree) skipPastNextTokenOccurrence */
-  ASTskipPastNextTokenOccurrence jjtn000 = new ASTskipPastNextTokenOccurrence(this, JJTSKIPPASTNEXTTOKENOCCURRENCE);
+  SimpleNode jjtn000 = new SimpleNode(JJTSKIPPASTNEXTTOKENOCCURRENCE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t = null;
   skip2NextTokenOccurrence(target) ;
@@ -7914,7 +7910,7 @@ void attachLibrary() :
 */
   final public SimpleNode read2NextOccurrence(String target) throws ParseException {
  /*@bgen(jjtree) read2NextOccurrence */
-  ASTread2NextOccurrence jjtn000 = new ASTread2NextOccurrence(this, JJTREAD2NEXTOCCURRENCE);
+  SimpleNode jjtn000 = new SimpleNode(JJTREAD2NEXTOCCURRENCE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);StringBuffer sb = new StringBuffer();
   Token nextToken = getToken(1);
@@ -7943,7 +7939,7 @@ void attachLibrary() :
 */
   final public SimpleNode readPastNextOccurrence(String target) throws ParseException {
  /*@bgen(jjtree) readPastNextOccurrence */
-  ASTreadPastNextOccurrence jjtn000 = new ASTreadPastNextOccurrence(this, JJTREADPASTNEXTOCCURRENCE);
+  SimpleNode jjtn000 = new SimpleNode(JJTREADPASTNEXTOCCURRENCE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);StringBuffer sb = new StringBuffer();
   Token t = null;
@@ -7967,11 +7963,11 @@ void attachLibrary() :
  */
   final public void sqlStatement(String initiator, String terminator) throws ParseException {
  /*@bgen(jjtree) sqlStatement */
-  ASTsqlStatement jjtn000 = new ASTsqlStatement(this, JJTSQLSTATEMENT);
+  SimpleNode jjtn000 = new SimpleNode(JJTSQLSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SELECT:
         jj_consume_token(SELECT);
         break;
@@ -8075,7 +8071,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
  */
   final public void wrappedObject() throws ParseException {
  /*@bgen(jjtree) wrappedObject */
-  ASTwrappedObject jjtn000 = new ASTwrappedObject(this, JJTWRAPPEDOBJECT);
+  SimpleNode jjtn000 = new SimpleNode(JJTWRAPPEDOBJECT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -8111,13 +8107,13 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
  */
   final public void statement() throws ParseException {
  /*@bgen(jjtree) statement */
-  ASTstatement jjtn000 = new ASTstatement(this, JJTSTATEMENT);
+  SimpleNode jjtn000 = new SimpleNode(JJTSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       if (jj_2_36(2147483647)) {
         sqlStatement(null,";");
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 4:
           jj_consume_token(4);
           break;
@@ -8126,10 +8122,10 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           ;
         }
       } else {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CASE:
           jj_consume_token(CASE);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 5:
           case 18:
           case 19:
@@ -8360,7 +8356,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           }
           label_23:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case WHEN:
               ;
               break;
@@ -8374,7 +8370,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             label_24:
             while (true) {
               statement();
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 5:
               case 13:
               case 18:
@@ -8625,7 +8621,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           }
           label_25:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case ELSE:
               ;
               break;
@@ -8637,7 +8633,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             label_26:
             while (true) {
               statement();
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 5:
               case 13:
               case 18:
@@ -8888,7 +8884,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           }
           jj_consume_token(END);
           jj_consume_token(CASE);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IDENTIFIER:
             jj_consume_token(IDENTIFIER);
             break;
@@ -8905,7 +8901,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           label_27:
           while (true) {
             statement();
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 5:
             case 13:
             case 18:
@@ -9155,7 +9151,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           }
           label_28:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case ELSIF:
               ;
               break;
@@ -9169,7 +9165,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             label_29:
             while (true) {
               statement();
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 5:
               case 13:
               case 18:
@@ -9420,7 +9416,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           }
           label_30:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case ELSE:
               ;
               break;
@@ -9432,7 +9428,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             label_31:
             while (true) {
               statement();
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 5:
               case 13:
               case 18:
@@ -9689,7 +9685,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           jj_consume_token(FOR);
           ID();
           jj_consume_token(IN);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REVERSE:
             jj_consume_token(REVERSE);
             break;
@@ -9698,7 +9694,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             ;
           }
           Expression();
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 12:
             jj_consume_token(12);
             Expression();
@@ -9711,7 +9707,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           label_32:
           while (true) {
             statement();
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 5:
             case 13:
             case 18:
@@ -9961,7 +9957,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           }
           jj_consume_token(END);
           jj_consume_token(LOOP);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IDENTIFIER:
             jj_consume_token(IDENTIFIER);
             break;
@@ -9975,10 +9971,10 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           jj_consume_token(FORALL);
           ID();
           jj_consume_token(IN);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case INDICES:
           case VALUES:
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case INDICES:
               jj_consume_token(INDICES);
               break;
@@ -10215,7 +10211,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           case STRING_LITERAL:
           case QUOTED_LITERAL:
             Expression();
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 12:
               jj_consume_token(12);
               Expression();
@@ -10230,7 +10226,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             jj_consume_token(-1);
             throw new ParseException();
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case SAVE:
             jj_consume_token(SAVE);
             jj_consume_token(EXCEPTIONS);
@@ -10249,7 +10245,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             label_33:
             while (true) {
               statement();
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 5:
               case 13:
               case 18:
@@ -10499,7 +10495,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             }
             jj_consume_token(END);
             jj_consume_token(LOOP);
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case IDENTIFIER:
               jj_consume_token(IDENTIFIER);
               break;
@@ -10509,7 +10505,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             }
             jj_consume_token(4);
           } else {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case WHILE:
               jj_consume_token(WHILE);
               Expression();
@@ -10517,7 +10513,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               label_34:
               while (true) {
                 statement();
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 5:
                 case 13:
                 case 18:
@@ -10767,7 +10763,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               }
               jj_consume_token(END);
               jj_consume_token(LOOP);
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case IDENTIFIER:
                 jj_consume_token(IDENTIFIER);
                 break;
@@ -10784,7 +10780,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               break;
             case RETURN:
               jj_consume_token(RETURN);
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 5:
               case 18:
               case 19:
@@ -11017,17 +11013,17 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               break;
             case EXIT:
               jj_consume_token(EXIT);
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case WHEN:
               case IDENTIFIER:
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case WHEN:
                   jj_consume_token(WHEN);
                   Expression();
                   break;
                 case IDENTIFIER:
                   jj_consume_token(IDENTIFIER);
-                  switch (jj_nt.kind) {
+                  switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                   case WHEN:
                     jj_consume_token(WHEN);
                     Expression();
@@ -11051,7 +11047,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               break;
             case RAISE:
               jj_consume_token(RAISE);
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case REPLACE:
               case DEFINER:
               case CURRENT_USER:
@@ -11276,7 +11272,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               break;
             case OPEN:
               jj_consume_token(OPEN);
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 5:
               case 18:
               case 19:
@@ -11505,17 +11501,17 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
                 jj_la1[132] = jj_gen;
                 ;
               }
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case FOR:
                 jj_consume_token(FOR);
                 Expression();
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case USING:
                   jj_consume_token(USING);
                   Expression();
                   label_35:
                   while (true) {
-                    switch (jj_nt.kind) {
+                    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                     case 6:
                       ;
                       break;
@@ -11541,7 +11537,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             case FETCH:
               jj_consume_token(FETCH);
               qualifiedName();
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case BULK:
                 jj_consume_token(BULK);
                 jj_consume_token(COLLECT);
@@ -11554,7 +11550,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               Expression();
               label_36:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 6:
                   ;
                   break;
@@ -11565,7 +11561,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
                 jj_consume_token(6);
                 Expression();
               }
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case LIMIT:
                 jj_consume_token(LIMIT);
                 Expression();
@@ -11584,7 +11580,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               break;
             case BEGIN:
             case DECLARE:
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case DECLARE:
                 jj_consume_token(DECLARE);
                 declarativeSection();
@@ -11596,7 +11592,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               jj_consume_token(BEGIN);
               label_37:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 5:
                 case 13:
                 case 18:
@@ -11845,7 +11841,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
                 }
                 statement();
               }
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case EXCEPTION:
                 exceptionHandler();
                 break;
@@ -11854,7 +11850,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
                 ;
               }
               jj_consume_token(END);
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case IDENTIFIER:
                 jj_consume_token(IDENTIFIER);
                 break;
@@ -11882,7 +11878,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               jj_consume_token(CC_THEN);
               label_38:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 5:
                 case 13:
                 case 18:
@@ -12133,7 +12129,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               }
               label_39:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case CC_ELSIF:
                   ;
                   break;
@@ -12147,7 +12143,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
                 label_40:
                 while (true) {
                   statement();
-                  switch (jj_nt.kind) {
+                  switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                   case 5:
                   case 13:
                   case 18:
@@ -12398,7 +12394,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               }
               label_41:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case CC_ELSE:
                   ;
                   break;
@@ -12410,7 +12406,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
                 label_42:
                 while (true) {
                   statement();
-                  switch (jj_nt.kind) {
+                  switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                   case 5:
                   case 13:
                   case 18:
@@ -12918,7 +12914,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 
   final public void subtype_definition() throws ParseException {
  /*@bgen(jjtree) subtype_definition */
-        ASTsubtype_definition jjtn000 = new ASTsubtype_definition(this, JJTSUBTYPE_DEFINITION);
+        SimpleNode jjtn000 = new SimpleNode(JJTSUBTYPE_DEFINITION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);Token start, subtype_name=null, constraint=null, base_type=null;
         Token collection = null, collection2 = null;
@@ -12926,16 +12922,16 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
         SimpleNode baseType = null, returnType = null, indexBy = null, string = null;
         int lastField = 0;
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SUBTYPE:
         jj_consume_token(SUBTYPE);
         qualifiedID();
         jj_consume_token(IS);
         datatype();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 5:
         case RANGE:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 5:
             jj_consume_token(5);
             jj_consume_token(IDENTIFIER);
@@ -12957,7 +12953,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           jj_la1[151] = jj_gen;
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case NOT:
           jj_consume_token(NOT);
           jj_consume_token(NULL);
@@ -12970,7 +12966,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       case TYPE:
         jj_consume_token(TYPE);
         qualifiedID();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IS:
           jj_consume_token(IS);
           break;
@@ -12984,7 +12980,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
         }
         if (jj_2_38(2)) {
           jj_consume_token(NEW);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case CHAR_BASE:
             jj_consume_token(CHAR_BASE);
             break;
@@ -13009,14 +13005,14 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             throw new ParseException();
           }
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case OBJECT:
             jj_consume_token(OBJECT);
             jj_consume_token(5);
             fieldDeclaration();
             label_43:
             while (true) {
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 6:
                 ;
                 break;
@@ -13035,7 +13031,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             fieldDeclaration();
             label_44:
             while (true) {
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 6:
                 ;
                 break;
@@ -13051,7 +13047,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           case TABLE:
           case VARRAY:
           case VARYING:
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case TABLE:
               jj_consume_token(TABLE);
               break;
@@ -13067,7 +13063,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               jj_consume_token(-1);
               throw new ParseException();
             }
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 5:
               jj_consume_token(5);
               numericLiteral();
@@ -13079,7 +13075,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             }
             jj_consume_token(OF);
             datatype();
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case NOT:
               jj_consume_token(NOT);
               jj_consume_token(NULL);
@@ -13088,7 +13084,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
               jj_la1[159] = jj_gen;
               ;
             }
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case INDEX:
               jj_consume_token(INDEX);
               jj_consume_token(BY);
@@ -13102,7 +13098,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           case REF:
             jj_consume_token(REF);
             jj_consume_token(CURSOR);
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case RETURN:
               jj_consume_token(RETURN);
               datatype();
@@ -13117,7 +13113,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             Expression();
             label_45:
             while (true) {
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 6:
                 ;
                 break;
@@ -13396,7 +13392,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 
   final public void fieldDeclaration() throws ParseException {
  /*@bgen(jjtree) fieldDeclaration */
-        ASTfieldDeclaration jjtn000 = new ASTfieldDeclaration(this, JJTFIELDDECLARATION);
+        SimpleNode jjtn000 = new SimpleNode(JJTFIELDDECLARATION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);Token name;
         SimpleNode dataType;
@@ -13404,10 +13400,10 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
     try {
       ID();
       datatype();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case NOT:
       case NULL:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case NOT:
           jj_consume_token(NOT);
           break;
@@ -13421,10 +13417,10 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
         jj_la1[166] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 9:
       case _DEFAULT:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 9:
           jj_consume_token(9);
           jj_consume_token(10);
@@ -13466,7 +13462,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 
   final public void collection_type_definition() throws ParseException {
                                      /*@bgen(jjtree) collection_type_definition */
-  ASTcollection_type_definition jjtn000 = new ASTcollection_type_definition(this, JJTCOLLECTION_TYPE_DEFINITION);
+  SimpleNode jjtn000 = new SimpleNode(JJTCOLLECTION_TYPE_DEFINITION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -13480,7 +13476,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 
   final public void collectionDeclaration() throws ParseException {
                                 /*@bgen(jjtree) collectionDeclaration */
-  ASTcollectionDeclaration jjtn000 = new ASTcollectionDeclaration(this, JJTCOLLECTIONDECLARATION);
+  SimpleNode jjtn000 = new SimpleNode(JJTCOLLECTIONDECLARATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -13494,7 +13490,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 
   final public void objectDeclaration() throws ParseException {
                             /*@bgen(jjtree) objectDeclaration */
-  ASTobjectDeclaration jjtn000 = new ASTobjectDeclaration(this, JJTOBJECTDECLARATION);
+  SimpleNode jjtn000 = new SimpleNode(JJTOBJECTDECLARATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -13509,17 +13505,17 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 /** Java stored procedure, external function*/
   final public void callSpecTail() throws ParseException {
                        /*@bgen(jjtree) callSpecTail */
-  ASTcallSpecTail jjtn000 = new ASTcallSpecTail(this, JJTCALLSPECTAIL);
+  SimpleNode jjtn000 = new SimpleNode(JJTCALLSPECTAIL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case EXTERNAL:
         jj_consume_token(EXTERNAL);
         break;
       case LANGUAGE:
         jj_consume_token(LANGUAGE);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
           jj_consume_token(IDENTIFIER);
           break;
@@ -13539,7 +13535,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       }
       label_46:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case WITH:
         case LIBRARY:
         case NAME:
@@ -13550,10 +13546,10 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           jj_la1[171] = jj_gen;
           break label_46;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case LIBRARY:
           jj_consume_token(LIBRARY);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IDENTIFIER:
             jj_consume_token(IDENTIFIER);
             break;
@@ -13568,10 +13564,10 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
             jj_consume_token(-1);
             throw new ParseException();
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 3:
             jj_consume_token(3);
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case IDENTIFIER:
               jj_consume_token(IDENTIFIER);
               break;
@@ -13594,7 +13590,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
           break;
         case NAME:
           jj_consume_token(NAME);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IDENTIFIER:
             jj_consume_token(IDENTIFIER);
             break;
@@ -13651,7 +13647,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 /** Cursor (common part of specification and body) */
   final public void cursorUnit() throws ParseException {
  /*@bgen(jjtree) cursorUnit */
-  ASTcursorUnit jjtn000 = new ASTcursorUnit(this, JJTCURSORUNIT);
+  SimpleNode jjtn000 = new SimpleNode(JJTCURSORUNIT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -13659,7 +13655,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       ID();
       label_47:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 5:
           ;
           break;
@@ -13671,7 +13667,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
         parameterDeclaration();
         label_48:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -13684,7 +13680,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
         }
         jj_consume_token(7);
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case RETURN:
         jj_consume_token(RETURN);
         datatype();
@@ -13693,12 +13689,12 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
         jj_la1[179] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IS:
         jj_consume_token(IS);
         label_49:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 5:
             ;
             break;
@@ -13738,7 +13734,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 
   final public void cursorSpec() throws ParseException {
                       /*@bgen(jjtree) cursorSpec */
-  ASTcursorSpec jjtn000 = new ASTcursorSpec(this, JJTCURSORSPEC);
+  SimpleNode jjtn000 = new SimpleNode(JJTCURSORSPEC);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -13766,7 +13762,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 
   final public void cursorBody() throws ParseException {
                       /*@bgen(jjtree) cursorBody */
-  ASTcursorBody jjtn000 = new ASTcursorBody(this, JJTCURSORBODY);
+  SimpleNode jjtn000 = new SimpleNode(JJTCURSORBODY);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -13806,14 +13802,14 @@ String expression() :
 */
   final public SimpleNode Expression() throws ParseException {
  /*@bgen(jjtree) Expression */
-  ASTExpression jjtn000 = new ASTExpression(this, JJTEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       if (jj_2_39(2147483647)) {
         Assignment();
       } else {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 5:
         case 18:
         case 19:
@@ -14073,7 +14069,7 @@ String expression() :
 
   final public SimpleNode CompilationExpression() throws ParseException {
  /*@bgen(jjtree) CompilationExpression */
-  ASTCompilationExpression jjtn000 = new ASTCompilationExpression(this, JJTCOMPILATIONEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTCOMPILATIONEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -14083,7 +14079,7 @@ String expression() :
       Expression();
       label_50:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CC_ELSIF:
           ;
           break;
@@ -14098,7 +14094,7 @@ String expression() :
       }
       label_51:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CC_ELSE:
           ;
           break;
@@ -14137,7 +14133,7 @@ String expression() :
 
   final public SimpleNode Assignment() throws ParseException {
  /*@bgen(jjtree) Assignment */
-  ASTAssignment jjtn000 = new ASTAssignment(this, JJTASSIGNMENT);
+  SimpleNode jjtn000 = new SimpleNode(JJTASSIGNMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -14172,12 +14168,12 @@ String expression() :
 
   final public SimpleNode CaseExpression() throws ParseException {
  /*@bgen(jjtree) CaseExpression */
-  ASTCaseExpression jjtn000 = new ASTCaseExpression(this, JJTCASEEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTCASEEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(CASE);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 5:
       case 18:
       case 19:
@@ -14412,7 +14408,7 @@ String expression() :
         Expression();
         jj_consume_token(THEN);
         Expression();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case WHEN:
           ;
           break;
@@ -14421,7 +14417,7 @@ String expression() :
           break label_52;
         }
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ELSE:
         jj_consume_token(ELSE);
         Expression();
@@ -14461,17 +14457,17 @@ LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
 */
   final public SimpleNode LikeExpression() throws ParseException {
  /*@bgen(jjtree) LikeExpression */
-  ASTLikeExpression jjtn000 = new ASTLikeExpression(this, JJTLIKEEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTLIKEEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       PrimaryExpression();
       jj_consume_token(LIKE);
       StringExpression();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ESCAPE:
         jj_consume_token(ESCAPE);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CHARACTER_LITERAL:
           jj_consume_token(CHARACTER_LITERAL);
           break;
@@ -14490,7 +14486,7 @@ LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
       }
       label_53:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 3:
           ;
           break;
@@ -14528,17 +14524,17 @@ LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
 
   final public SimpleNode TrimExpression() throws ParseException {
  /*@bgen(jjtree) TrimExpression */
-  ASTTrimExpression jjtn000 = new ASTTrimExpression(this, JJTTRIMEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTTRIMEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(TRIM);
       jj_consume_token(5);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BOTH:
       case LEADING:
       case TRAILING:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case LEADING:
           jj_consume_token(LEADING);
           break;
@@ -14558,7 +14554,7 @@ LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
         jj_la1[192] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 5:
       case REPLACE:
       case DEFINER:
@@ -14817,11 +14813,11 @@ CAST ( Expression AS datatype)
 */
   final public SimpleNode ObjectExpression() throws ParseException {
  /*@bgen(jjtree) ObjectExpression */
-  ASTObjectExpression jjtn000 = new ASTObjectExpression(this, JJTOBJECTEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTOBJECTEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CAST:
         jj_consume_token(CAST);
         break;
@@ -14835,7 +14831,7 @@ CAST ( Expression AS datatype)
       }
       jj_consume_token(5);
       Expression();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case AT:
         jj_consume_token(AT);
         jj_consume_token(TIME);
@@ -14851,7 +14847,7 @@ CAST ( Expression AS datatype)
       jj_consume_token(7);
       label_54:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 3:
           ;
           break;
@@ -14889,14 +14885,14 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode ConditionalOrExpression() throws ParseException {
  /*@bgen(jjtree) ConditionalOrExpression */
-  ASTConditionalOrExpression jjtn000 = new ASTConditionalOrExpression(this, JJTCONDITIONALOREXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTCONDITIONALOREXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       ConditionalAndExpression();
       label_55:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OR:
           ;
           break;
@@ -14934,14 +14930,14 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode ConditionalAndExpression() throws ParseException {
  /*@bgen(jjtree) ConditionalAndExpression */
-  ASTConditionalAndExpression jjtn000 = new ASTConditionalAndExpression(this, JJTCONDITIONALANDEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTCONDITIONALANDEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       EqualityExpression();
       label_56:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case AND:
           ;
           break;
@@ -14979,14 +14975,14 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode EqualityExpression() throws ParseException {
  /*@bgen(jjtree) EqualityExpression */
-  ASTEqualityExpression jjtn000 = new ASTEqualityExpression(this, JJTEQUALITYEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTEQUALITYEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       RelationalExpression();
       label_57:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 10:
         case 15:
         case IS:
@@ -14996,7 +14992,7 @@ CAST ( Expression AS datatype)
           jj_la1[199] = jj_gen;
           break label_57;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 10:
           jj_consume_token(10);
           break;
@@ -15044,14 +15040,14 @@ CAST ( Expression AS datatype)
  */
   final public SimpleNode RelationalExpression() throws ParseException {
  /*@bgen(jjtree) RelationalExpression */
-  ASTRelationalExpression jjtn000 = new ASTRelationalExpression(this, JJTRELATIONALEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTRELATIONALEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       AdditiveExpression();
       label_58:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 16:
         case 17:
         case BETWEEN:
@@ -15068,13 +15064,13 @@ CAST ( Expression AS datatype)
           jj_la1[201] = jj_gen;
           break label_58;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 16:
         case 17:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 16:
             jj_consume_token(16);
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 17:
               jj_consume_token(17);
               break;
@@ -15091,7 +15087,7 @@ CAST ( Expression AS datatype)
             jj_consume_token(-1);
             throw new ParseException();
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 10:
             jj_consume_token(10);
             break;
@@ -15107,7 +15103,7 @@ CAST ( Expression AS datatype)
         case MEMBER:
         case NOT:
         case SUBMULTISET:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case NOT:
             jj_consume_token(NOT);
             break;
@@ -15115,7 +15111,7 @@ CAST ( Expression AS datatype)
             jj_la1[205] = jj_gen;
             ;
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IN:
             jj_consume_token(IN);
             break;
@@ -15130,7 +15126,7 @@ CAST ( Expression AS datatype)
             break;
           case MEMBER:
           case SUBMULTISET:
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case MEMBER:
               jj_consume_token(MEMBER);
               break;
@@ -15142,7 +15138,7 @@ CAST ( Expression AS datatype)
               jj_consume_token(-1);
               throw new ParseException();
             }
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case OF:
               jj_consume_token(OF);
               break;
@@ -15159,7 +15155,7 @@ CAST ( Expression AS datatype)
           break;
         case MULTISET:
           jj_consume_token(MULTISET);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case EXCEPT:
             jj_consume_token(EXCEPT);
             break;
@@ -15174,10 +15170,10 @@ CAST ( Expression AS datatype)
             jj_consume_token(-1);
             throw new ParseException();
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case ALL:
           case DISTINCT:
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case DISTINCT:
               jj_consume_token(DISTINCT);
               break;
@@ -15201,10 +15197,10 @@ CAST ( Expression AS datatype)
           throw new ParseException();
         }
         AdditiveExpression();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ESCAPE:
           jj_consume_token(ESCAPE);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case CHARACTER_LITERAL:
             jj_consume_token(CHARACTER_LITERAL);
             break;
@@ -15249,14 +15245,14 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode AdditiveExpression() throws ParseException {
  /*@bgen(jjtree) AdditiveExpression */
-  ASTAdditiveExpression jjtn000 = new ASTAdditiveExpression(this, JJTADDITIVEEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTADDITIVEEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       MultiplicativeExpression();
       label_59:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 18:
         case 19:
         case 20:
@@ -15266,7 +15262,7 @@ CAST ( Expression AS datatype)
           jj_la1[215] = jj_gen;
           break label_59;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 18:
           jj_consume_token(18);
           break;
@@ -15310,14 +15306,14 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode StringExpression() throws ParseException {
  /*@bgen(jjtree) StringExpression */
-  ASTStringExpression jjtn000 = new ASTStringExpression(this, JJTSTRINGEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTSTRINGEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       PrimaryExpression();
       label_60:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 20:
           ;
           break;
@@ -15355,14 +15351,14 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode MultiplicativeExpression() throws ParseException {
  /*@bgen(jjtree) MultiplicativeExpression */
-  ASTMultiplicativeExpression jjtn000 = new ASTMultiplicativeExpression(this, JJTMULTIPLICATIVEEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTMULTIPLICATIVEEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       UnaryExpression(true);
       label_61:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 1:
         case 21:
         case 22:
@@ -15373,7 +15369,7 @@ CAST ( Expression AS datatype)
           jj_la1[218] = jj_gen;
           break label_61;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 21:
           jj_consume_token(21);
           break;
@@ -15420,14 +15416,14 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode UnaryExpression(boolean isUnarySign) throws ParseException {
  /*@bgen(jjtree) UnaryExpression */
-  ASTUnaryExpression jjtn000 = new ASTUnaryExpression(this, JJTUNARYEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTUNARYEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 18:
       case 19:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 18:
           jj_consume_token(18);
           break;
@@ -15694,11 +15690,11 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode UnaryExpressionNotPlusMinus() throws ParseException {
  /*@bgen(jjtree) UnaryExpressionNotPlusMinus */
-  ASTUnaryExpressionNotPlusMinus jjtn000 = new ASTUnaryExpressionNotPlusMinus(this, JJTUNARYEXPRESSIONNOTPLUSMINUS);
+  SimpleNode jjtn000 = new SimpleNode(JJTUNARYEXPRESSIONNOTPLUSMINUS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case NOT:
         jj_consume_token(NOT);
         UnaryExpression(false);
@@ -15960,11 +15956,11 @@ CAST ( Expression AS datatype)
  */
   final public SimpleNode PrimaryExpression() throws ParseException {
  /*@bgen(jjtree) PrimaryExpression */
-  ASTPrimaryExpression jjtn000 = new ASTPrimaryExpression(this, JJTPRIMARYEXPRESSION);
+  SimpleNode jjtn000 = new SimpleNode(JJTPRIMARYEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case NEW_DOT:
         jj_consume_token(NEW_DOT);
         qualifiedID();
@@ -16190,7 +16186,7 @@ CAST ( Expression AS datatype)
           jj_consume_token(NEW);
           PrimaryPrefix();
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 5:
           case REPLACE:
           case DEFINER:
@@ -16458,11 +16454,11 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode PrimaryPrefix() throws ParseException {
  /*@bgen(jjtree) PrimaryPrefix */
-  ASTPrimaryPrefix jjtn000 = new ASTPrimaryPrefix(this, JJTPRIMARYPREFIX);
+  SimpleNode jjtn000 = new SimpleNode(JJTPRIMARYPREFIX);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FALSE:
       case INTERVAL:
       case NULL:
@@ -16484,7 +16480,7 @@ CAST ( Expression AS datatype)
         } else if (jj_2_45(2147483647)) {
           ObjectExpression();
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -16713,13 +16709,13 @@ CAST ( Expression AS datatype)
               skip2NextTerminator("(",")");
               jj_consume_token(7);
             } else {
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 5:
                 jj_consume_token(5);
                 Expression();
                 label_63:
                 while (true) {
-                  switch (jj_nt.kind) {
+                  switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                   case 6:
                     ;
                     break;
@@ -16768,11 +16764,11 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode PrimarySuffix() throws ParseException {
  /*@bgen(jjtree) PrimarySuffix */
-  ASTPrimarySuffix jjtn000 = new ASTPrimarySuffix(this, JJTPRIMARYSUFFIX);
+  SimpleNode jjtn000 = new SimpleNode(JJTPRIMARYSUFFIX);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 3:
         jj_consume_token(3);
         qualifiedID();
@@ -16783,14 +16779,14 @@ CAST ( Expression AS datatype)
         break;
       case AT:
         jj_consume_token(AT);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case LOCAL:
           jj_consume_token(LOCAL);
           break;
         case TIME:
           jj_consume_token(TIME);
           jj_consume_token(ZONE);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case DBTIMEZONE:
             jj_consume_token(DBTIMEZONE);
             break;
@@ -17068,11 +17064,11 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode Literal() throws ParseException {
  /*@bgen(jjtree) Literal */
-  ASTLiteral jjtn000 = new ASTLiteral(this, JJTLITERAL);
+  SimpleNode jjtn000 = new SimpleNode(JJTLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case UNSIGNED_NUMERIC_LITERAL:
         numericLiteral();
         break;
@@ -17125,7 +17121,7 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode StringLiteral() throws ParseException {
  /*@bgen(jjtree) StringLiteral */
-        ASTStringLiteral jjtn000 = new ASTStringLiteral(this, JJTSTRINGLITERAL);
+        SimpleNode jjtn000 = new SimpleNode(JJTSTRINGLITERAL);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);Token thisToken = null;
         StringBuffer literal = new StringBuffer() ;
@@ -17180,11 +17176,11 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode BooleanLiteral() throws ParseException {
  /*@bgen(jjtree) BooleanLiteral */
-  ASTBooleanLiteral jjtn000 = new ASTBooleanLiteral(this, JJTBOOLEANLITERAL);
+  SimpleNode jjtn000 = new SimpleNode(JJTBOOLEANLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case TRUE:
         jj_consume_token(TRUE);
         break;
@@ -17209,7 +17205,7 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode NullLiteral() throws ParseException {
  /*@bgen(jjtree) NullLiteral */
-  ASTNullLiteral jjtn000 = new ASTNullLiteral(this, JJTNULLLITERAL);
+  SimpleNode jjtn000 = new SimpleNode(JJTNULLLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -17227,11 +17223,11 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode MultiSetCondition() throws ParseException {
  /*@bgen(jjtree) MultiSetCondition */
-  ASTMultiSetCondition jjtn000 = new ASTMultiSetCondition(this, JJTMULTISETCONDITION);
+  SimpleNode jjtn000 = new SimpleNode(JJTMULTISETCONDITION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A:
         jj_consume_token(A);
         jj_consume_token(SET);
@@ -17262,7 +17258,7 @@ CAST ( Expression AS datatype)
 */
   final public SimpleNode numericLiteral() throws ParseException {
  /*@bgen(jjtree) numericLiteral */
-  ASTnumericLiteral jjtn000 = new ASTnumericLiteral(this, JJTNUMERICLITERAL);
+  SimpleNode jjtn000 = new SimpleNode(JJTNUMERICLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -17280,7 +17276,7 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode Name() throws ParseException {
  /*@bgen(jjtree) Name */
-  ASTName jjtn000 = new ASTName(this, JJTNAME);
+  SimpleNode jjtn000 = new SimpleNode(JJTNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -17292,7 +17288,7 @@ CAST ( Expression AS datatype)
         } else {
           break label_64;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 3:
           jj_consume_token(3);
           break;
@@ -17333,14 +17329,14 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode qualifiedName() throws ParseException {
  /*@bgen(jjtree) qualifiedName */
-  ASTqualifiedName jjtn000 = new ASTqualifiedName(this, JJTQUALIFIEDNAME);
+  SimpleNode jjtn000 = new SimpleNode(JJTQUALIFIEDNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       unqualifiedID();
       label_65:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 3:
           ;
           break;
@@ -17378,12 +17374,12 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode Arguments() throws ParseException {
  /*@bgen(jjtree) Arguments */
-  ASTArguments jjtn000 = new ASTArguments(this, JJTARGUMENTS);
+  SimpleNode jjtn000 = new SimpleNode(JJTARGUMENTS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(5);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 5:
       case 18:
       case 19:
@@ -17640,14 +17636,14 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode ArgumentList() throws ParseException {
  /*@bgen(jjtree) ArgumentList */
-  ASTArgumentList jjtn000 = new ASTArgumentList(this, JJTARGUMENTLIST);
+  SimpleNode jjtn000 = new SimpleNode(JJTARGUMENTLIST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       Argument();
       label_66:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 6:
           ;
           break;
@@ -17685,13 +17681,13 @@ CAST ( Expression AS datatype)
 
   final public SimpleNode Argument() throws ParseException {
  /*@bgen(jjtree) Argument */
-  ASTArgument jjtn000 = new ASTArgument(this, JJTARGUMENT);
+  SimpleNode jjtn000 = new SimpleNode(JJTARGUMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       if (jj_2_51(2)) {
         unqualifiedID();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 23:
           jj_consume_token(23);
           break;
@@ -17707,10 +17703,10 @@ CAST ( Expression AS datatype)
         ;
       }
       Expression();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case USING:
         jj_consume_token(USING);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CHAR_CS:
           jj_consume_token(CHAR_CS);
           break;
@@ -17757,7 +17753,7 @@ CAST ( Expression AS datatype)
 // ============================================================================
   final public void variableOrConstantDeclaration() throws ParseException {
  /*@bgen(jjtree) variableOrConstantDeclaration */
-  ASTvariableOrConstantDeclaration jjtn000 = new ASTvariableOrConstantDeclaration(this, JJTVARIABLEORCONSTANTDECLARATION);
+  SimpleNode jjtn000 = new SimpleNode(JJTVARIABLEORCONSTANTDECLARATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -17768,10 +17764,10 @@ CAST ( Expression AS datatype)
         ;
       }
       datatype();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case NOT:
       case NULL:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case NOT:
           jj_consume_token(NOT);
           break;
@@ -17785,10 +17781,10 @@ CAST ( Expression AS datatype)
         jj_la1[243] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 9:
       case _DEFAULT:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 9:
           jj_consume_token(9);
           jj_consume_token(10);
@@ -17831,7 +17827,7 @@ CAST ( Expression AS datatype)
 
   final public void datatypeDeclaration() throws ParseException {
                               /*@bgen(jjtree) datatypeDeclaration */
-  ASTdatatypeDeclaration jjtn000 = new ASTdatatypeDeclaration(this, JJTDATATYPEDECLARATION);
+  SimpleNode jjtn000 = new SimpleNode(JJTDATATYPEDECLARATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -17845,12 +17841,12 @@ CAST ( Expression AS datatype)
 
   final public void pragma() throws ParseException {
  /*@bgen(jjtree) pragma */
-  ASTpragma jjtn000 = new ASTpragma(this, JJTPRAGMA);
+  SimpleNode jjtn000 = new SimpleNode(JJTPRAGMA);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(PRAGMA);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SERIALLY_REUSABLE:
         jj_consume_token(SERIALLY_REUSABLE);
         break;
@@ -17870,7 +17866,7 @@ CAST ( Expression AS datatype)
         label_67:
         while (true) {
           jj_consume_token(6);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -18207,7 +18203,7 @@ CAST ( Expression AS datatype)
             jj_consume_token(-1);
             throw new ParseException();
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -18223,10 +18219,10 @@ CAST ( Expression AS datatype)
         jj_consume_token(5);
         jj_consume_token(IDENTIFIER);
         jj_consume_token(6);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 18:
         case 19:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 18:
             jj_consume_token(18);
             break;
@@ -18252,7 +18248,7 @@ CAST ( Expression AS datatype)
         jj_consume_token(IDENTIFIER);
         jj_consume_token(6);
         ID();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 6:
           jj_consume_token(6);
           numericLiteral();
@@ -18504,7 +18500,7 @@ CAST ( Expression AS datatype)
 
   final public void exceptionDeclaration() throws ParseException {
  /*@bgen(jjtree) exceptionDeclaration */
-  ASTexceptionDeclaration jjtn000 = new ASTexceptionDeclaration(this, JJTEXCEPTIONDECLARATION);
+  SimpleNode jjtn000 = new SimpleNode(JJTEXCEPTIONDECLARATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -18534,7 +18530,7 @@ CAST ( Expression AS datatype)
 
   final public void parallel_clause() throws ParseException {
  /*@bgen(jjtree) parallel_clause */
-  ASTparallel_clause jjtn000 = new ASTparallel_clause(this, JJTPARALLEL_CLAUSE);
+  SimpleNode jjtn000 = new SimpleNode(JJTPARALLEL_CLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -18542,13 +18538,13 @@ CAST ( Expression AS datatype)
       jj_consume_token(PARTITION);
       ID();
       jj_consume_token(BY);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ANY:
         jj_consume_token(ANY);
         break;
       case HASH:
       case RANGE:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case HASH:
           jj_consume_token(HASH);
           break;
@@ -18564,7 +18560,7 @@ CAST ( Expression AS datatype)
         ID();
         label_68:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -18583,10 +18579,10 @@ CAST ( Expression AS datatype)
         throw new ParseException();
       }
       jj_consume_token(7);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CLUSTER:
       case ORDER:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ORDER:
           jj_consume_token(ORDER);
           break;
@@ -18603,7 +18599,7 @@ CAST ( Expression AS datatype)
         ID();
         label_69:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -18650,12 +18646,12 @@ CAST ( Expression AS datatype)
 // SRT *
   final public void table() throws ParseException {
  /*@bgen(jjtree) table */
-  ASTtable jjtn000 = new ASTtable(this, JJTTABLE);
+  SimpleNode jjtn000 = new SimpleNode(JJTTABLE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(CREATE);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case GLOBAL:
         jj_consume_token(GLOBAL);
         jj_consume_token(TEMPORARY);
@@ -18676,7 +18672,7 @@ CAST ( Expression AS datatype)
       tableColumn();
       label_70:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 6:
           ;
           break;
@@ -18691,7 +18687,7 @@ CAST ( Expression AS datatype)
       if (jj_2_54(2)) {
         jj_consume_token(ON);
         jj_consume_token(COMMIT);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case DELETE:
           jj_consume_token(DELETE);
           break;
@@ -18707,7 +18703,7 @@ CAST ( Expression AS datatype)
       } else {
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 4:
         jj_consume_token(4);
         break;
@@ -18738,13 +18734,13 @@ CAST ( Expression AS datatype)
 
   final public void tableColumn() throws ParseException {
  /*@bgen(jjtree) tableColumn */
-  ASTtableColumn jjtn000 = new ASTtableColumn(this, JJTTABLECOLUMN);
+  SimpleNode jjtn000 = new SimpleNode(JJTTABLECOLUMN);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       ID();
       datatype();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case _DEFAULT:
         jj_consume_token(_DEFAULT);
         Expression();
@@ -18753,10 +18749,10 @@ CAST ( Expression AS datatype)
         jj_la1[262] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case NOT:
       case NULL:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case NOT:
           jj_consume_token(NOT);
           break;
@@ -18793,12 +18789,12 @@ CAST ( Expression AS datatype)
 
   final public void view() throws ParseException {
  /*@bgen(jjtree) view */
-  ASTview jjtn000 = new ASTview(this, JJTVIEW);
+  SimpleNode jjtn000 = new SimpleNode(JJTVIEW);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(CREATE);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case OR:
         jj_consume_token(OR);
         jj_consume_token(REPLACE);
@@ -18807,10 +18803,10 @@ CAST ( Expression AS datatype)
         jj_la1[265] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FORCE:
       case NO:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case NO:
           jj_consume_token(NO);
           break;
@@ -18832,13 +18828,13 @@ CAST ( Expression AS datatype)
         ;
       }
       ID();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 5:
         jj_consume_token(5);
         viewColumn();
         label_71:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -18857,7 +18853,7 @@ CAST ( Expression AS datatype)
       }
       jj_consume_token(AS);
       statement();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 4:
         jj_consume_token(4);
         break;
@@ -18892,7 +18888,7 @@ CAST ( Expression AS datatype)
 
   final public void viewColumn() throws ParseException {
  /*@bgen(jjtree) viewColumn */
-  ASTviewColumn jjtn000 = new ASTviewColumn(this, JJTVIEWCOLUMN);
+  SimpleNode jjtn000 = new SimpleNode(JJTVIEWCOLUMN);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -18920,17 +18916,17 @@ CAST ( Expression AS datatype)
 
   final public void comment() throws ParseException {
  /*@bgen(jjtree) comment */
-  ASTcomment jjtn000 = new ASTcomment(this, JJTCOMMENT);
+  SimpleNode jjtn000 = new SimpleNode(JJTCOMMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(COMMENT);
       jj_consume_token(ON);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INDEXTYPE:
       case OPERATOR:
       case TABLE:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case TABLE:
           jj_consume_token(TABLE);
           break;
@@ -18972,7 +18968,7 @@ CAST ( Expression AS datatype)
       }
       jj_consume_token(IS);
       jj_consume_token(STRING_LITERAL);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 4:
         jj_consume_token(4);
         break;
@@ -19004,7 +19000,7 @@ CAST ( Expression AS datatype)
 // SRT * /
   final public void typeMethod() throws ParseException {
  /*@bgen(jjtree) typeMethod */
-  ASTtypeMethod jjtn000 = new ASTtypeMethod(this, JJTTYPEMETHOD);
+  SimpleNode jjtn000 = new SimpleNode(JJTTYPEMETHOD);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -19013,7 +19009,7 @@ CAST ( Expression AS datatype)
 
       label_72:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case FINAL:
         case INSTANTIABLE:
         case NOT:
@@ -19024,7 +19020,7 @@ CAST ( Expression AS datatype)
           jj_la1[274] = jj_gen;
           break label_72;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case NOT:
           jj_consume_token(NOT);
           break;
@@ -19032,7 +19028,7 @@ CAST ( Expression AS datatype)
           jj_la1[275] = jj_gen;
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OVERRIDING:
           jj_consume_token(OVERRIDING);
           break;
@@ -19048,10 +19044,10 @@ CAST ( Expression AS datatype)
           throw new ParseException();
         }
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MAP:
       case ORDER:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case MAP:
           jj_consume_token(MAP);
           break;
@@ -19068,7 +19064,7 @@ CAST ( Expression AS datatype)
         jj_la1[278] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CONSTRUCTOR:
         jj_consume_token(CONSTRUCTOR);
         break;
@@ -19083,7 +19079,7 @@ CAST ( Expression AS datatype)
         jj_consume_token(-1);
         throw new ParseException();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FUNCTION:
         jj_consume_token(FUNCTION);
         break;
@@ -19104,7 +19100,7 @@ CAST ( Expression AS datatype)
       ID();
       label_73:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 5:
           ;
           break;
@@ -19116,7 +19112,7 @@ CAST ( Expression AS datatype)
         parameterDeclaration();
         label_74:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -19129,7 +19125,7 @@ CAST ( Expression AS datatype)
         }
         jj_consume_token(7);
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case RETURN:
         jj_consume_token(RETURN);
         datatype();
@@ -19138,7 +19134,7 @@ CAST ( Expression AS datatype)
         jj_la1[283] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DETERMINISTIC:
         jj_consume_token(DETERMINISTIC);
         break;
@@ -19146,7 +19142,7 @@ CAST ( Expression AS datatype)
         jj_la1[284] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PARALLEL_ENABLE:
         jj_consume_token(PARALLEL_ENABLE);
         break;
@@ -19154,7 +19150,7 @@ CAST ( Expression AS datatype)
         jj_la1[285] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PIPELINED:
         jj_consume_token(PIPELINED);
         break;
@@ -19162,7 +19158,7 @@ CAST ( Expression AS datatype)
         jj_la1[286] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case RESULT_CACHE:
         jj_consume_token(RESULT_CACHE);
         break;
@@ -19170,10 +19166,10 @@ CAST ( Expression AS datatype)
         jj_la1[287] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case AS:
       case IS:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IS:
           jj_consume_token(IS);
           break;
@@ -19185,11 +19181,11 @@ CAST ( Expression AS datatype)
           jj_consume_token(-1);
           throw new ParseException();
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case LANGUAGE:
         case EXTERNAL:
           callSpecTail();
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 4:
             jj_consume_token(4);
             break;
@@ -19529,7 +19525,7 @@ CAST ( Expression AS datatype)
           jj_consume_token(BEGIN);
           label_75:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 5:
             case 13:
             case 18:
@@ -19778,7 +19774,7 @@ CAST ( Expression AS datatype)
             }
             statement();
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case EXCEPTION:
             exceptionHandler();
             break;
@@ -19787,7 +19783,7 @@ CAST ( Expression AS datatype)
             ;
           }
           jj_consume_token(END);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -20155,14 +20151,14 @@ CAST ( Expression AS datatype)
 
   final public void typeSpec() throws ParseException {
  /*@bgen(jjtree) typeSpec */
-  ASTtypeSpec jjtn000 = new ASTtypeSpec(this, JJTTYPESPEC);
+  SimpleNode jjtn000 = new SimpleNode(JJTTYPESPEC);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CREATE:
         jj_consume_token(CREATE);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OR:
           jj_consume_token(OR);
           jj_consume_token(REPLACE);
@@ -20192,7 +20188,7 @@ CAST ( Expression AS datatype)
       }
       if (jj_2_61(2)) {
         jj_consume_token(AUTHID);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case CURRENT_USER:
           jj_consume_token(CURRENT_USER);
           break;
@@ -20207,11 +20203,11 @@ CAST ( Expression AS datatype)
       } else {
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case AS:
       case IS:
       case UNDER:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case UNDER:
           jj_consume_token(UNDER);
           if (jj_2_62(2)) {
@@ -20225,7 +20221,7 @@ CAST ( Expression AS datatype)
         default:
           jj_la1[304] = jj_gen;
           if (jj_2_63(2)) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case IS:
               jj_consume_token(IS);
               break;
@@ -20239,7 +20235,7 @@ CAST ( Expression AS datatype)
             }
             jj_consume_token(OBJECT);
           } else if (jj_2_64(2)) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case IS:
               jj_consume_token(IS);
               break;
@@ -20256,7 +20252,7 @@ CAST ( Expression AS datatype)
             jj_consume_token(24);
             jj_consume_token(USING);
             jj_consume_token(LIBRARY);
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case IDENTIFIER:
               jj_consume_token(IDENTIFIER);
               break;
@@ -20271,10 +20267,10 @@ CAST ( Expression AS datatype)
               jj_consume_token(-1);
               throw new ParseException();
             }
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 3:
               jj_consume_token(3);
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case IDENTIFIER:
                 jj_consume_token(IDENTIFIER);
                 break;
@@ -20295,7 +20291,7 @@ CAST ( Expression AS datatype)
               ;
             }
           } else if (jj_2_65(2)) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case IS:
               jj_consume_token(IS);
               break;
@@ -20331,7 +20327,7 @@ CAST ( Expression AS datatype)
       } else {
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case WRAPPED:
         wrappedObject();
         break;
@@ -20339,12 +20335,12 @@ CAST ( Expression AS datatype)
         jj_la1[306] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 5:
         jj_consume_token(5);
         label_76:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -20681,7 +20677,7 @@ CAST ( Expression AS datatype)
           if (jj_2_67(2)) {
             typeMethod();
           } else {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case REPLACE:
             case DEFINER:
             case CURRENT_USER:
@@ -21022,7 +21018,7 @@ CAST ( Expression AS datatype)
         }
         label_77:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -21031,7 +21027,7 @@ CAST ( Expression AS datatype)
             break label_77;
           }
           jj_consume_token(6);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case CONSTRUCTOR:
           case FINAL:
           case INSTANTIABLE:
@@ -21048,7 +21044,7 @@ CAST ( Expression AS datatype)
             if (jj_2_68(2)) {
               attributeDeclaration();
             } else {
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case PRAGMA:
                 pragma_clause();
                 break;
@@ -21068,7 +21064,7 @@ CAST ( Expression AS datatype)
       }
       label_78:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case FINAL:
         case INSTANTIABLE:
         case NOT:
@@ -21079,7 +21075,7 @@ CAST ( Expression AS datatype)
           jj_la1[313] = jj_gen;
           break label_78;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case NOT:
           jj_consume_token(NOT);
           break;
@@ -21087,7 +21083,7 @@ CAST ( Expression AS datatype)
           jj_la1[314] = jj_gen;
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case FINAL:
           jj_consume_token(FINAL);
           break;
@@ -21105,7 +21101,7 @@ CAST ( Expression AS datatype)
       }
       label_79:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ALTER:
           ;
           break;
@@ -21115,10 +21111,10 @@ CAST ( Expression AS datatype)
         }
         alterTypeSpec();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 1:
       case 4:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 4:
           jj_consume_token(4);
           break;
@@ -21132,7 +21128,7 @@ CAST ( Expression AS datatype)
         }
         label_80:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case ALTER:
             ;
             break;
@@ -21141,7 +21137,7 @@ CAST ( Expression AS datatype)
             break label_80;
           }
           alterTypeSpec();
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 1:
             jj_consume_token(1);
             break;
@@ -21182,7 +21178,7 @@ CAST ( Expression AS datatype)
 
   final public void alterTypeSpec() throws ParseException {
  /*@bgen(jjtree) alterTypeSpec */
-  ASTalterTypeSpec jjtn000 = new ASTalterTypeSpec(this, JJTALTERTYPESPEC);
+  SimpleNode jjtn000 = new SimpleNode(JJTALTERTYPESPEC);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -21191,7 +21187,7 @@ CAST ( Expression AS datatype)
       qualifiedName();
       label_81:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 6:
         case ADD:
         case DROP:
@@ -21202,11 +21198,11 @@ CAST ( Expression AS datatype)
           jj_la1[321] = jj_gen;
           break label_81;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 6:
         case ADD:
         case MODIFY:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             jj_consume_token(6);
             break;
@@ -21214,7 +21210,7 @@ CAST ( Expression AS datatype)
             jj_la1[322] = jj_gen;
             ;
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case ADD:
             jj_consume_token(ADD);
             break;
@@ -21228,7 +21224,7 @@ CAST ( Expression AS datatype)
           }
           label_82:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case CONSTRUCTOR:
             case FINAL:
             case INSTANTIABLE:
@@ -21244,7 +21240,7 @@ CAST ( Expression AS datatype)
               jj_consume_token(ATTRIBUTE);
               label_83:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 5:
                   ;
                   break;
@@ -21257,7 +21253,7 @@ CAST ( Expression AS datatype)
               attributeDeclaration();
               label_84:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 6:
                   ;
                   break;
@@ -21270,7 +21266,7 @@ CAST ( Expression AS datatype)
               }
               label_85:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 7:
                   ;
                   break;
@@ -21295,7 +21291,7 @@ CAST ( Expression AS datatype)
               jj_consume_token(-1);
               throw new ParseException();
             }
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case ATTRIBUTE:
             case CONSTRUCTOR:
             case ELEMENT:
@@ -21317,7 +21313,7 @@ CAST ( Expression AS datatype)
           }
           break;
         case DROP:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             jj_consume_token(6);
             break;
@@ -21328,12 +21324,12 @@ CAST ( Expression AS datatype)
           jj_consume_token(DROP);
           label_86:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case ATTRIBUTE:
               jj_consume_token(ATTRIBUTE);
               label_87:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 5:
                   ;
                   break;
@@ -21346,7 +21342,7 @@ CAST ( Expression AS datatype)
               attribute();
               label_88:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 6:
                   ;
                   break;
@@ -21359,7 +21355,7 @@ CAST ( Expression AS datatype)
               }
               label_89:
               while (true) {
-                switch (jj_nt.kind) {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case 7:
                   ;
                   break;
@@ -21386,7 +21382,7 @@ CAST ( Expression AS datatype)
               jj_consume_token(-1);
               throw new ParseException();
             }
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case ATTRIBUTE:
             case CONSTRUCTOR:
             case FINAL:
@@ -21411,12 +21407,12 @@ CAST ( Expression AS datatype)
           throw new ParseException();
         }
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case REPLACE:
         jj_consume_token(REPLACE);
         if (jj_2_69(2)) {
           jj_consume_token(AUTHID);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case CURRENT_USER:
             jj_consume_token(CURRENT_USER);
             break;
@@ -21431,7 +21427,7 @@ CAST ( Expression AS datatype)
         } else {
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IS:
           jj_consume_token(IS);
           break;
@@ -21448,7 +21444,7 @@ CAST ( Expression AS datatype)
         if (jj_2_70(2)) {
           typeMethod();
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -21785,7 +21781,7 @@ CAST ( Expression AS datatype)
         }
         label_90:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -21797,7 +21793,7 @@ CAST ( Expression AS datatype)
           if (jj_2_71(2)) {
             typeMethod();
           } else {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case REPLACE:
             case DEFINER:
             case CURRENT_USER:
@@ -22141,7 +22137,7 @@ CAST ( Expression AS datatype)
       }
       label_91:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case FINAL:
         case INSTANTIABLE:
         case NOT:
@@ -22152,7 +22148,7 @@ CAST ( Expression AS datatype)
           jj_la1[342] = jj_gen;
           break label_91;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case NOT:
           jj_consume_token(NOT);
           break;
@@ -22160,7 +22156,7 @@ CAST ( Expression AS datatype)
           jj_la1[343] = jj_gen;
           ;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case FINAL:
           jj_consume_token(FINAL);
           break;
@@ -22176,10 +22172,10 @@ CAST ( Expression AS datatype)
           throw new ParseException();
         }
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CASCADE:
       case INVALIDATE:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case INVALIDATE:
           jj_consume_token(INVALIDATE);
           break;
@@ -22187,7 +22183,7 @@ CAST ( Expression AS datatype)
           jj_consume_token(CASCADE);
           label_92:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case CONVERT:
             case INCLUDING:
             case NOT:
@@ -22197,10 +22193,10 @@ CAST ( Expression AS datatype)
               jj_la1[345] = jj_gen;
               break label_92;
             }
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case INCLUDING:
             case NOT:
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case NOT:
                 jj_consume_token(NOT);
                 break;
@@ -22223,10 +22219,10 @@ CAST ( Expression AS datatype)
               throw new ParseException();
             }
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case EXCEPTIONS:
           case FORCE:
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case FORCE:
               jj_consume_token(FORCE);
               break;
@@ -22304,7 +22300,7 @@ void typeBody()  :
 **/
   final public void attributeDeclaration() throws ParseException {
  /*@bgen(jjtree) attributeDeclaration */
-  ASTattributeDeclaration jjtn000 = new ASTattributeDeclaration(this, JJTATTRIBUTEDECLARATION);
+  SimpleNode jjtn000 = new SimpleNode(JJTATTRIBUTEDECLARATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -22333,7 +22329,7 @@ void typeBody()  :
 
   final public void attribute() throws ParseException {
  /*@bgen(jjtree) attribute */
-  ASTattribute jjtn000 = new ASTattribute(this, JJTATTRIBUTE);
+  SimpleNode jjtn000 = new SimpleNode(JJTATTRIBUTE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -22364,12 +22360,12 @@ void typeBody()  :
 */
   final public void pragma_clause() throws ParseException {
  /*@bgen(jjtree) pragma_clause */
-  ASTpragma_clause jjtn000 = new ASTpragma_clause(this, JJTPRAGMA_CLAUSE);
+  SimpleNode jjtn000 = new SimpleNode(JJTPRAGMA_CLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(PRAGMA);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SERIALLY_REUSABLE:
         jj_consume_token(SERIALLY_REUSABLE);
         break;
@@ -22383,7 +22379,7 @@ void typeBody()  :
         label_93:
         while (true) {
           jj_consume_token(6);
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -22720,7 +22716,7 @@ void typeBody()  :
             jj_consume_token(-1);
             throw new ParseException();
           }
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -22736,10 +22732,10 @@ void typeBody()  :
         jj_consume_token(5);
         jj_consume_token(IDENTIFIER);
         jj_consume_token(6);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 18:
         case 19:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 18:
             jj_consume_token(18);
             break;
@@ -22871,14 +22867,14 @@ tps_body:
 */
   final public void triggerUnit() throws ParseException {
  /*@bgen(jjtree) triggerUnit */
-  ASTtriggerUnit jjtn000 = new ASTtriggerUnit(this, JJTTRIGGERUNIT);
+  SimpleNode jjtn000 = new SimpleNode(JJTTRIGGERUNIT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CREATE:
         jj_consume_token(CREATE);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OR:
           jj_consume_token(OR);
           jj_consume_token(REPLACE);
@@ -22900,7 +22896,7 @@ tps_body:
         ;
       }
       ID();
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BEFORE:
         jj_consume_token(BEFORE);
         break;
@@ -22918,11 +22914,11 @@ tps_body:
         jj_consume_token(-1);
         throw new ParseException();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DELETE:
       case INSERT:
       case UPDATE:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case DELETE:
           jj_consume_token(DELETE);
           break;
@@ -22942,7 +22938,7 @@ tps_body:
           ID();
           label_94:
           while (true) {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 6:
               ;
               break;
@@ -22986,7 +22982,7 @@ tps_body:
       }
       label_95:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OR:
           ;
           break;
@@ -22995,11 +22991,11 @@ tps_body:
           break label_95;
         }
         jj_consume_token(OR);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case DELETE:
         case INSERT:
         case UPDATE:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case DELETE:
             jj_consume_token(DELETE);
             break;
@@ -23019,7 +23015,7 @@ tps_body:
             ID();
             label_96:
             while (true) {
-              switch (jj_nt.kind) {
+              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
               case 6:
                 ;
                 break;
@@ -23063,7 +23059,7 @@ tps_body:
         }
       }
       jj_consume_token(ON);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DATABASE:
         jj_consume_token(DATABASE);
         break;
@@ -23082,7 +23078,7 @@ tps_body:
           }
           ID();
         } else {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case REPLACE:
           case DEFINER:
           case CURRENT_USER:
@@ -23424,12 +23420,12 @@ tps_body:
           }
         }
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case REFERENCING:
         jj_consume_token(REFERENCING);
         label_97:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case OLD:
             jj_consume_token(OLD);
             break;
@@ -23446,7 +23442,7 @@ tps_body:
           }
           jj_consume_token(AS);
           ID();
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case NEW:
           case OLD:
           case PARENT:
@@ -23462,7 +23458,7 @@ tps_body:
         jj_la1[371] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FOREACHROW:
         jj_consume_token(FOREACHROW);
         break;
@@ -23470,14 +23466,14 @@ tps_body:
         jj_la1[372] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case REVERSE:
       case FORWARD:
       case CROSSEDITION:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case REVERSE:
         case FORWARD:
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case FORWARD:
             jj_consume_token(FORWARD);
             break;
@@ -23500,10 +23496,10 @@ tps_body:
         jj_la1[375] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FOLLOWS:
       case PRECEDES:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case FOLLOWS:
           jj_consume_token(FOLLOWS);
           break;
@@ -23524,7 +23520,7 @@ tps_body:
         ID();
         label_98:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 6:
             ;
             break;
@@ -23546,10 +23542,10 @@ tps_body:
         jj_la1[378] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DISABLE:
       case ENABLE:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ENABLE:
           jj_consume_token(ENABLE);
           break;
@@ -23566,7 +23562,7 @@ tps_body:
         jj_la1[380] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case WHEN:
         jj_consume_token(WHEN);
         jj_consume_token(5);
@@ -23577,7 +23573,7 @@ tps_body:
         jj_la1[381] = jj_gen;
         ;
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CALL:
         jj_consume_token(CALL);
         PrimaryExpression();
@@ -23588,7 +23584,7 @@ tps_body:
         break;
       case BEGIN:
       case DECLARE:
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case DECLARE:
           jj_consume_token(DECLARE);
           declarativeSection();
@@ -23600,7 +23596,7 @@ tps_body:
         jj_consume_token(BEGIN);
         label_99:
         while (true) {
-          switch (jj_nt.kind) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 5:
           case 13:
           case 18:
@@ -23849,7 +23845,7 @@ tps_body:
           }
           statement();
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case EXCEPTION:
           exceptionHandler();
           break;
@@ -23858,7 +23854,7 @@ tps_body:
           ;
         }
         jj_consume_token(END);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case REPLACE:
         case DEFINER:
         case CURRENT_USER:
@@ -24221,11 +24217,11 @@ tps_body:
 
   final public void timing_point_section() throws ParseException {
  /*@bgen(jjtree) timing_point_section */
-  ASTtiming_point_section jjtn000 = new ASTtiming_point_section(this, JJTTIMING_POINT_SECTION);
+  SimpleNode jjtn000 = new SimpleNode(JJTTIMING_POINT_SECTION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BEFORE:
         jj_consume_token(BEFORE);
         break;
@@ -24240,7 +24236,7 @@ tps_body:
         jj_consume_token(-1);
         throw new ParseException();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STATEMENT:
         jj_consume_token(STATEMENT);
         break;
@@ -24258,7 +24254,7 @@ tps_body:
       label_100:
       while (true) {
         statement();
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 5:
         case 13:
         case 18:
@@ -24507,7 +24503,7 @@ tps_body:
         }
       }
       jj_consume_token(END);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BEFORE:
         jj_consume_token(BEFORE);
         break;
@@ -24522,7 +24518,7 @@ tps_body:
         jj_consume_token(-1);
         throw new ParseException();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STATEMENT:
         jj_consume_token(STATEMENT);
         break;
@@ -24562,7 +24558,7 @@ tps_body:
 
   final public void compound_trigger_block() throws ParseException {
  /*@bgen(jjtree) compound_trigger_block */
-  ASTcompound_trigger_block jjtn000 = new ASTcompound_trigger_block(this, JJTCOMPOUND_TRIGGER_BLOCK);
+  SimpleNode jjtn000 = new SimpleNode(JJTCOMPOUND_TRIGGER_BLOCK);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -24570,7 +24566,7 @@ tps_body:
       jj_consume_token(TRIGGER);
       label_101:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case REPLACE:
         case DEFINER:
         case CURRENT_USER:
@@ -24905,7 +24901,7 @@ tps_body:
           jj_la1[392] = jj_gen;
           break label_101;
         }
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case AFTER:
         case BEFORE:
         case INSTEADOF:
@@ -24925,7 +24921,7 @@ tps_body:
           } else if (jj_2_83(2)) {
             cursorSpec();
           } else {
-            switch (jj_nt.kind) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case CURSOR:
               cursorBody();
               break;
@@ -24946,7 +24942,7 @@ tps_body:
         }
       }
       jj_consume_token(END);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case REPLACE:
       case DEFINER:
       case CURRENT_USER:
@@ -25310,11 +25306,11 @@ ON
 */
   final public void non_dml_trigger() throws ParseException {
  /*@bgen(jjtree) non_dml_trigger */
-  ASTnon_dml_trigger jjtn000 = new ASTnon_dml_trigger(this, JJTNON_DML_TRIGGER);
+  SimpleNode jjtn000 = new SimpleNode(JJTNON_DML_TRIGGER);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BEFORE:
         jj_consume_token(BEFORE);
         break;
@@ -25326,7 +25322,7 @@ ON
         jj_consume_token(-1);
         throw new ParseException();
       }
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ALTER:
       case COMMENT:
       case CREATE:
@@ -25358,7 +25354,7 @@ ON
       }
       label_102:
       while (true) {
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OR:
           ;
           break;
@@ -25367,7 +25363,7 @@ ON
           break label_102;
         }
         jj_consume_token(OR);
-        switch (jj_nt.kind) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ALTER:
         case COMMENT:
         case CREATE:
@@ -25399,7 +25395,7 @@ ON
         }
       }
       jj_consume_token(ON);
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DATABASE:
         jj_consume_token(DATABASE);
         break;
@@ -25764,11 +25760,11 @@ ON
 
   final public SimpleNode ddl_event() throws ParseException {
                          /*@bgen(jjtree) ddl_event */
-  ASTddl_event jjtn000 = new ASTddl_event(this, JJTDDL_EVENT);
+  SimpleNode jjtn000 = new SimpleNode(JJTDDL_EVENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ALTER:
         jj_consume_token(ALTER);
         break;
@@ -25831,11 +25827,11 @@ ON
 
   final public SimpleNode database_event() throws ParseException {
                               /*@bgen(jjtree) database_event */
-  ASTdatabase_event jjtn000 = new ASTdatabase_event(this, JJTDATABASE_EVENT);
+  SimpleNode jjtn000 = new SimpleNode(JJTDATABASE_EVENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STARTUP:
         jj_consume_token(STARTUP);
         break;
@@ -25872,11 +25868,11 @@ ON
 
   final public SimpleNode non_dml_event() throws ParseException {
                              /*@bgen(jjtree) non_dml_event */
-  ASTnon_dml_event jjtn000 = new ASTnon_dml_event(this, JJTNON_DML_EVENT);
+  SimpleNode jjtn000 = new SimpleNode(JJTNON_DML_EVENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ALTER:
       case COMMENT:
       case CREATE:
@@ -25940,7 +25936,7 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 */
   final public void alterTrigger() throws ParseException {
  /*@bgen(jjtree) alterTrigger */
-  ASTalterTrigger jjtn000 = new ASTalterTrigger(this, JJTALTERTRIGGER);
+  SimpleNode jjtn000 = new SimpleNode(JJTALTERTRIGGER);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -25975,11 +25971,11 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 //SRT 2011-04-17 - START 
   final public SimpleNode KEYWORD_RESERVED() throws ParseException {
                                  /*@bgen(jjtree) KEYWORD_RESERVED */
-  ASTKEYWORD_RESERVED jjtn000 = new ASTKEYWORD_RESERVED(this, JJTKEYWORD_RESERVED);
+  SimpleNode jjtn000 = new SimpleNode(JJTKEYWORD_RESERVED);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ALL:
         jj_consume_token(ALL);
         break;
@@ -26238,11 +26234,11 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 
   final public SimpleNode KEYWORD_UNRESERVED() throws ParseException {
                                    /*@bgen(jjtree) KEYWORD_UNRESERVED */
-  ASTKEYWORD_UNRESERVED jjtn000 = new ASTKEYWORD_UNRESERVED(this, JJTKEYWORD_UNRESERVED);
+  SimpleNode jjtn000 = new SimpleNode(JJTKEYWORD_UNRESERVED);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FALSE:
         jj_consume_token(FALSE);
         break;
@@ -26841,11 +26837,11 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
  */
   final public SimpleNode ID() throws ParseException {
                   /*@bgen(jjtree) ID */
-  ASTID jjtn000 = new ASTID(this, JJTID);
+  SimpleNode jjtn000 = new SimpleNode(JJTID);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IDENTIFIER:
         jj_consume_token(IDENTIFIER);
         break;
@@ -27477,11 +27473,11 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
  */
   final public SimpleNode unqualifiedID() throws ParseException {
                              /*@bgen(jjtree) unqualifiedID */
-  ASTunqualifiedID jjtn000 = new ASTunqualifiedID(this, JJTUNQUALIFIEDID);
+  SimpleNode jjtn000 = new SimpleNode(JJTUNQUALIFIEDID);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IDENTIFIER:
         jj_consume_token(IDENTIFIER);
         break;
@@ -27762,11 +27758,11 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
  */
   final public SimpleNode qualifiedID() throws ParseException {
                            /*@bgen(jjtree) qualifiedID */
-  ASTqualifiedID jjtn000 = new ASTqualifiedID(this, JJTQUALIFIEDID);
+  SimpleNode jjtn000 = new SimpleNode(JJTQUALIFIEDID);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IDENTIFIER:
         jj_consume_token(IDENTIFIER);
         break;
@@ -28209,11 +28205,11 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 
   final public SimpleNode typeKeyword() throws ParseException {
                            /*@bgen(jjtree) typeKeyword */
-  ASTtypeKeyword jjtn000 = new ASTtypeKeyword(this, JJTTYPEKEYWORD);
+  SimpleNode jjtn000 = new SimpleNode(JJTTYPEKEYWORD);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BFILE_BASE:
         jj_consume_token(BFILE_BASE);
         break;
@@ -28448,11 +28444,11 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 
   final public SimpleNode javaInterfaceClass() throws ParseException {
                                   /*@bgen(jjtree) javaInterfaceClass */
-  ASTjavaInterfaceClass jjtn000 = new ASTjavaInterfaceClass(this, JJTJAVAINTERFACECLASS);
+  SimpleNode jjtn000 = new SimpleNode(JJTJAVAINTERFACECLASS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch (jj_nt.kind) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SQLDATA_CLASS:
         jj_consume_token(SQLDATA_CLASS);
         break;
@@ -28486,7 +28482,7 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
  */
   final public SimpleNode equalsOldIDNewID(SimpleNode pOldID) throws ParseException {
  /*@bgen(jjtree) equalsOldIDNewID */
-        ASTequalsOldIDNewID jjtn000 = new ASTequalsOldIDNewID(this, JJTEQUALSOLDIDNEWID);
+        SimpleNode jjtn000 = new SimpleNode(JJTEQUALSOLDIDNEWID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);SimpleNode newID;
         Token oldIDToken;
@@ -29111,6 +29107,29 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     try { return !jj_3_84(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(83, xla); }
+  }
+
+  private boolean jj_3R_274() {
+    if (jj_scan_token(TIME)) return true;
+    if (jj_scan_token(ZONE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(398)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(399)) {
+    jj_scanpos = xsp;
+    if (jj_3R_389()) {
+    jj_scanpos = xsp;
+    if (jj_3R_390()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_197() {
+    if (jj_3R_275()) return true;
+    return false;
   }
 
   private boolean jj_3R_196() {
@@ -35143,29 +35162,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_274() {
-    if (jj_scan_token(TIME)) return true;
-    if (jj_scan_token(ZONE)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(398)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(399)) {
-    jj_scanpos = xsp;
-    if (jj_3R_389()) {
-    jj_scanpos = xsp;
-    if (jj_3R_390()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_197() {
-    if (jj_3R_275()) return true;
-    return false;
-  }
-
   /** Generated Token Manager. */
   public PLSQLParserTokenManager token_source;
   SimpleCharStream jj_input_stream;
@@ -35173,6 +35169,7 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
   public Token token;
   /** Next token. */
   public Token jj_nt;
+  private int jj_ntk;
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
@@ -35262,7 +35259,7 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new PLSQLParserTokenManager(jj_input_stream);
     token = new Token();
-    token.next = jj_nt = token_source.getNextToken();
+    jj_ntk = -1;
     jj_gen = 0;
     for (int i = 0; i < 411; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
@@ -35277,7 +35274,7 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
     token = new Token();
-    token.next = jj_nt = token_source.getNextToken();
+    jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
     for (int i = 0; i < 411; i++) jj_la1[i] = -1;
@@ -35289,7 +35286,7 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     jj_input_stream = new SimpleCharStream(stream, 1, 1);
     token_source = new PLSQLParserTokenManager(jj_input_stream);
     token = new Token();
-    token.next = jj_nt = token_source.getNextToken();
+    jj_ntk = -1;
     jj_gen = 0;
     for (int i = 0; i < 411; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
@@ -35300,7 +35297,7 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     jj_input_stream.ReInit(stream, 1, 1);
     token_source.ReInit(jj_input_stream);
     token = new Token();
-    token.next = jj_nt = token_source.getNextToken();
+    jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
     for (int i = 0; i < 411; i++) jj_la1[i] = -1;
@@ -35311,7 +35308,7 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
   public PLSQLParser(PLSQLParserTokenManager tm) {
     token_source = tm;
     token = new Token();
-    token.next = jj_nt = token_source.getNextToken();
+    jj_ntk = -1;
     jj_gen = 0;
     for (int i = 0; i < 411; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
@@ -35321,7 +35318,7 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
   public void ReInit(PLSQLParserTokenManager tm) {
     token_source = tm;
     token = new Token();
-    token.next = jj_nt = token_source.getNextToken();
+    jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
     for (int i = 0; i < 411; i++) jj_la1[i] = -1;
@@ -35329,9 +35326,10 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
-    Token oldToken = token;
-    if ((token = jj_nt).next != null) jj_nt = jj_nt.next;
-    else jj_nt = jj_nt.next = token_source.getNextToken();
+    Token oldToken;
+    if ((oldToken = token).next != null) token = token.next;
+    else token = token.next = token_source.getNextToken();
+    jj_ntk = -1;
     if (token.kind == kind) {
       jj_gen++;
       if (++jj_gc > 100) {
@@ -35346,7 +35344,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       }
       return token;
     }
-    jj_nt = token;
     token = oldToken;
     jj_kind = kind;
     throw generateParseException();
@@ -35378,8 +35375,9 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 
 /** Get the next Token. */
   final public Token getNextToken() {
-    if ((token = jj_nt).next != null) jj_nt = jj_nt.next;
-    else jj_nt = jj_nt.next = token_source.getNextToken();
+    if (token.next != null) token = token.next;
+    else token = token.next = token_source.getNextToken();
+    jj_ntk = -1;
     jj_gen++;
     return token;
   }
@@ -35392,6 +35390,13 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       else t = t.next = token_source.getNextToken();
     }
     return t;
+  }
+
+  private int jj_ntk() {
+    if ((jj_nt=token.next) == null)
+      return (jj_ntk = (token.next=token_source.getNextToken()).kind);
+    else
+      return (jj_ntk = jj_nt.kind);
   }
 
   private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();

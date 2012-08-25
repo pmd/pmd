@@ -11,7 +11,6 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleChainVisitor;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleChainVisitor;
 import net.sourceforge.pmd.lang.jsp.rule.JspRuleChainVisitor;
-import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 import net.sourceforge.pmd.lang.xml.rule.XmlRuleChainVisitor;
 
@@ -45,7 +44,7 @@ public enum Language {
     JAVA("Java", null, "java", JavaRuleChainVisitor.class, "java"),
     JSP("Java Server Pages", "JSP", "jsp", JspRuleChainVisitor.class, "jsp"),
     PHP("PHP: Hypertext Preprocessor", "PHP", "php", null, "php", "class"),
-    PLSQL("PLSQL", null, "plsql", PLSQLRuleChainVisitor.class
+    PLSQL("PLSQL", null, "plsql", null
          ,"sql", "trg", "prc","fnc"
 	 ,"pld" // Oracle*Forms 
 	 ,"pls" ,"plh" ,"plb" // Packages

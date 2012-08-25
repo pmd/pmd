@@ -36,15 +36,6 @@ options {
 	BUILD_TOKEN_MANAGER = true;
 	SANITY_CHECK = true;
 	FORCE_LA_CHECK = false;
-
-  CACHE_TOKENS = true;
-
-
-  MULTI = true; 
-  VISITOR = true;
-  NODE_USES_PARSER = true; 
-  NODE_PACKAGE="net.sourceforge.pmd.lang.plsql.ast";
-
 }
 
 PARSER_BEGIN(PLSQLParser)
@@ -107,7 +98,7 @@ PARSER_END(PLSQLParser)
 /**
  * 2006-05-22 - Matthias Hendler - added globalBody()
  */
-SimpleNode input() : {}
+void input() : {}
 {
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
@@ -125,10 +116,9 @@ SimpleNode input() : {}
 	 ("/")*
 	)*
 	<EOF>
-      { return jjtThis ; }
 }
 
-SimpleNode sqlPlusCommand() : {}
+void sqlPlusCommand() : {}
 {
   // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
   // SQLPLUS commands
@@ -164,7 +154,6 @@ SimpleNode sqlPlusCommand() : {}
   )
   skip2NextTokenOccurrence(EOL) //Tracker Issue 1433480 skip until next EOL Special Token   
   //[";" | "-"]
-      { return jjtThis ; }
 }
 
 /*
@@ -192,7 +181,7 @@ void attachLibrary() :
  *
  * 2006-05-17 - Matthias Hendler - added
  */
-SimpleNode global()  :
+void global()  :
 { 
 }
 {
@@ -206,7 +195,6 @@ SimpleNode global()  :
 	)
 
 
-      { return jjtThis ; }
 }
 
 
@@ -216,7 +204,7 @@ SimpleNode global()  :
  * 
  * 2006-05-17 - Matthias Hendler - added
  */
-SimpleNode globalBlock()  :
+void globalBlock()  :
 { 
 }
 {
@@ -226,12 +214,11 @@ SimpleNode globalBlock()  :
 	]
 	
 	<BEGIN> (statement())* (exceptionHandler())? <END> ";"
-      { return jjtThis ; }
 }
 
 
 
-SimpleNode packageSpec()  :
+void packageSpec()  :
 { }
 {
 	[<CREATE> [<OR> <REPLACE>]]
@@ -252,10 +239,9 @@ SimpleNode packageSpec()  :
 	    <END> [ID()] ";" 
 	  )
 	)
-      { return jjtThis ; }
 }
 
-SimpleNode packageBody()  :
+void packageBody()  :
 { }
 {
 	[<CREATE> [<OR> <REPLACE>]]
@@ -278,7 +264,7 @@ SimpleNode packageBody()  :
 	)
 }
 
-SimpleNode declarativeUnit()  :
+void declarativeUnit()  :
 {}
 {
 		pragma() |
@@ -297,19 +283,17 @@ SimpleNode declarativeUnit()  :
 		programUnit() 
 		|typeMethod() //SRT 20110523
 		|CompilationDeclarationFragment() 
-      { return jjtThis ; }
 }
 
-SimpleNode declarativeSection()  :
+void declarativeSection()  :
 {}
 {
 	(
 		declarativeUnit() 
 	)*
-      { return jjtThis ; }
 }
 
-SimpleNode CompilationDeclarationFragment()  :
+void CompilationDeclarationFragment()  :
 { 
 }
 {
@@ -338,7 +322,9 @@ SimpleNode CompilationDeclarationFragment()  :
 	  )*
 	  <CC_END> 
 	)
-      { return jjtThis ; }
+ { 
+   return ;
+ }
 }
 
 
@@ -349,7 +335,7 @@ SimpleNode CompilationDeclarationFragment()  :
  *								   custom tags which he can evaluate in the XSLT.
  *                                 This methode also documents global functions/procedures.
  */
-SimpleNode programUnit()  :
+void programUnit()  :
 {
 }
 {
@@ -404,10 +390,9 @@ SimpleNode programUnit()  :
 
 	) //UnwrappedCode
 	) 
-      { return jjtThis ; }
 }
 
-SimpleNode parameterDeclaration()  :
+void parameterDeclaration()  :
 {
 }
 {
@@ -416,7 +401,6 @@ SimpleNode parameterDeclaration()  :
 	( LOOKAHEAD(2) ( LOOKAHEAD(2) ( (<OUT>|(<IN> <OUT>)) (LOOKAHEAD(2) <NOCOPY>  )? ) | <IN> ) )?
 	("..."    | datatype())    
 	( (":" "="|<_DEFAULT>) Expression() )?
-      { return jjtThis ; }
 }
 
 
@@ -659,13 +643,12 @@ SimpleNode DateTimeLiteral() :
       }
 }
 
-SimpleNode exceptionHandler() :
+void exceptionHandler() :
 {}
 {
 	<EXCEPTION>
 		( LOOKAHEAD(2) <WHEN> qualifiedName() (<OR> qualifiedName())* <THEN> (statement())+ )*
 		[ <WHEN> <OTHERS> <THEN> (statement())+ ]
-      { return jjtThis ; }
 }
 
 void skip2NextTerminator(String initiator,String terminator) :
@@ -787,7 +770,7 @@ SimpleNode readPastNextOccurrence(String target) :
 /**
  * 2006-05-24 - Matthias Hendler - added MERGE
  */
-SimpleNode sqlStatement(String initiator, String terminator)  :
+void sqlStatement(String initiator, String terminator)  :
 {}
 {
 	(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>)
@@ -863,7 +846,7 @@ void wrappedObject()  :
 /**
  * 2006-05-24 - Matthias Hendler - added MERGE, EXECUTE choice and LOOKAHEAD at <LOOP>
  */
-SimpleNode statement()  :
+void statement()  :
 {}
 {
 	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) sqlStatement(null,";") [";"] 
@@ -912,10 +895,9 @@ SimpleNode statement()  :
 		<CC_END> 
 	| <CC_ERROR> Expression() <CC_END> 
         | Expression() ";"
-      { return jjtThis ; }
 }
 
-SimpleNode subtype_definition()  :
+void subtype_definition()  :
 {
 	Token start, subtype_name=null, constraint=null, base_type=null;
 	Token collection = null, collection2 = null;
@@ -973,7 +955,7 @@ SimpleNode subtype_definition()  :
 	";"
 }
 
-SimpleNode fieldDeclaration()  :
+void fieldDeclaration()  :
 {
 	Token name;
 	SimpleNode dataType;
@@ -981,15 +963,14 @@ SimpleNode fieldDeclaration()  :
 }
 {
 	ID() datatype() [[<NOT>] <NULL>] [ (":" "=" | <_DEFAULT>) Expression() ]  
-      { return jjtThis ; }
 }
 
-SimpleNode collection_type_definition() : {} { <IDENTIFIER> { return jjtThis ; } }
-SimpleNode collectionDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
-SimpleNode objectDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
+void collection_type_definition() : {} { <IDENTIFIER> }
+void collectionDeclaration() : {} { <IDENTIFIER> }
+void objectDeclaration() : {} { <IDENTIFIER> }
 
 /** Java stored procedure, external function*/
-SimpleNode callSpecTail() : {
+void callSpecTail() : {
 }
 {
 	// /* <LANGUAGE> (/*"C"*/<IDENTIFIER> | <JAVA>)
@@ -1073,7 +1054,6 @@ SimpleNode callSpecTail() : {
    return;
   }
   */
-      { return jjtThis ; }
 }
 
 
@@ -1082,7 +1062,7 @@ SimpleNode callSpecTail() : {
 
 
 /** Cursor (common part of specification and body) */
-SimpleNode cursorUnit()  :
+void cursorUnit()  :
 {
 }
 {
@@ -1093,20 +1073,17 @@ SimpleNode cursorUnit()  :
 	]
 	)
 	[<IS> ("(")* sqlStatement(null,";")] ";"
-      { return jjtThis ; }
 }
 
-SimpleNode cursorSpec()  : {}
+void cursorSpec()  : {}
 {
 	cursorUnit()
-      { return jjtThis ; }
 }
 
-SimpleNode cursorBody()  : {}
+void cursorBody()  : {}
 {
 	cursorUnit()
 //	<IS> /*<SQL_STATEMENT>*/
-      { return jjtThis ; }
 }
 
 
@@ -1757,7 +1734,7 @@ SimpleNode Argument() :
 // D E C L A R A T I O N S
 // ============================================================================
 
-SimpleNode variableOrConstantDeclaration() :
+void variableOrConstantDeclaration() :
 { 
 }
 {
@@ -1769,9 +1746,9 @@ SimpleNode variableOrConstantDeclaration() :
 	] ";"
 }
 
-SimpleNode datatypeDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
+void datatypeDeclaration() : {} { <IDENTIFIER> }
 
-SimpleNode pragma() :
+void pragma() :
 { 
 }
 {
@@ -1795,13 +1772,13 @@ SimpleNode pragma() :
 	";"
 }
 
-SimpleNode exceptionDeclaration() :
+void exceptionDeclaration() :
 { }
 {
 	ID() <EXCEPTION> ";"
 }
 
-SimpleNode parallel_clause() :
+void parallel_clause() :
 {
 }
 {
@@ -1825,7 +1802,7 @@ SimpleNode parallel_clause() :
  */
 
 // SRT *
-SimpleNode table()  :
+void table()  :
 
 { 
 }
@@ -1840,7 +1817,7 @@ SimpleNode table()  :
   
 }
 
-SimpleNode tableColumn()  :
+void tableColumn()  :
 { 
 }
 {
@@ -1849,7 +1826,7 @@ SimpleNode tableColumn()  :
 
 
 
-SimpleNode view()  :
+void view()  :
 { 
 }
 {
@@ -1865,13 +1842,13 @@ SimpleNode view()  :
   
 }
 
-SimpleNode viewColumn()  :
+void viewColumn()  :
 { }
 {
   ID()
 }
 
-SimpleNode comment()  :
+void comment()  :
 { 
 }
 {
@@ -1886,7 +1863,7 @@ SimpleNode comment()  :
 
 
 
-SimpleNode typeMethod()  :
+void typeMethod()  :
 {
 }
 {
@@ -1938,7 +1915,7 @@ SimpleNode typeMethod()  :
 }
 
 
-SimpleNode typeSpec()  :
+void typeSpec()  :
 { 
 }
 {
@@ -2023,7 +2000,7 @@ SimpleNode typeSpec()  :
 }
 
 
-SimpleNode alterTypeSpec()  :
+void alterTypeSpec()  :
 { 
 }
 {
@@ -2169,7 +2146,7 @@ SimpleNode alterTypeSpec()  :
 
 
 /*
-SimpleNode typeBody()  :
+void typeBody()  :
 { Token name=null; }
 {
 	[<CREATE> [<OR> <REPLACE>]]
@@ -2196,29 +2173,27 @@ SimpleNode typeBody()  :
 /**
   * Method 
 **/
-SimpleNode attributeDeclaration() :
+void attributeDeclaration() :
 { 
 }
 {
 	ID()  datatype()
-      { return jjtThis ; }
 }
 
 
 
-SimpleNode attribute() :
+void attribute() :
 { 
 }
 {
 	ID()  
-      { return jjtThis ; }
 }
 
 
 /*
  This was quick cut from PRAGMA
 */
-SimpleNode pragma_clause() :
+void pragma_clause() :
 { 
 }
 {
@@ -2235,7 +2210,6 @@ SimpleNode pragma_clause() :
 		|
 		<INTERFACE> "(" <IDENTIFIER> "," <IDENTIFIER> "," numericLiteral() ")"
 	)
-      { return jjtThis ; }
 }
 
 /** 
@@ -2312,7 +2286,7 @@ tps_body:
 (EXCEPTION exception_handler )*
 
 */
-SimpleNode triggerUnit()  :
+void triggerUnit()  :
 {
 }
 {
@@ -2369,11 +2343,10 @@ SimpleNode triggerUnit()  :
 	  )
 	//| //<CALL> routine 
 	)
-      { return jjtThis ; }
 }
 
 
-SimpleNode timing_point_section()  :
+void timing_point_section()  :
 {
 }
 {
@@ -2390,12 +2363,11 @@ SimpleNode timing_point_section()  :
  {
   //Add a TRIGGER ENTRY for each timing point section 
  }
-      { return jjtThis ; }
 }
 
 
 
-SimpleNode compound_trigger_block()  :
+void compound_trigger_block()  :
 {
 }
 {
@@ -2425,7 +2397,6 @@ SimpleNode compound_trigger_block()  :
   )
 
   <END> [ID()] ";"
-      { return jjtThis ; }
 }
 
 
@@ -2436,7 +2407,7 @@ non_dml_trigger :
 ON
 (DATABASE | [schema.]SCHEMA
 */
-SimpleNode non_dml_trigger()  :
+void non_dml_trigger()  :
 {
 }
 {
@@ -2445,7 +2416,6 @@ SimpleNode non_dml_trigger()  :
  ( <OR> ( ddl_event() | database_event() ) )*
  <ON> 
  (<DATABASE> | [LOOKAHEAD(2) ID()"."] <SCHEMA>)
-      { return jjtThis ; }
 }
 
 
@@ -2495,7 +2465,7 @@ enabling or disabling the trigger.
 
 Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 */
-SimpleNode alterTrigger()  :
+void alterTrigger()  :
 {}
 {
 	<ALTER> <TRIGGER>

@@ -21,7 +21,7 @@ package net.sourceforge.pmd.lang.plsql.ast;
 import java.io.*;
 
 /** Token Manager. */
-public class PLSQLParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager implements PLSQLParserConstants
+public class PLSQLParserTokenManager implements PLSQLParserConstants
 {
 
   /** Debug output. */
@@ -3238,19 +3238,7 @@ static final long[] jjbitVec2 = {
    0x0L, 0x0L, 0xffffffffffffffffL, 0xffffffffffffffffL
 };
 static final long[] jjbitVec3 = {
-   0x0L, 0x0L, 0x100000000000000L, 0x80000000000000L
-};
-static final long[] jjbitVec4 = {
-   0x0L, 0x0L, 0x60000L, 0x0L
-};
-static final long[] jjbitVec5 = {
-   0x0L, 0x0L, 0x0L, 0x40L
-};
-static final long[] jjbitVec6 = {
-   0x201000000000000L, 0x0L, 0x0L, 0x0L
-};
-static final long[] jjbitVec7 = {
-   0x4L, 0x0L, 0x0L, 0x0L
+   0x0L, 0x0L, 0x0L, 0x2000000000000000L
 };
 private int jjMoveNfa_0(int startState, int curPos)
 {
@@ -4112,16 +4100,8 @@ private static final boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, lo
 {
    switch(hiByte)
    {
-      case 0:
+      case 255:
          return ((jjbitVec3[i2] & l2) != 0L);
-      case 1:
-         return ((jjbitVec4[i2] & l2) != 0L);
-      case 2:
-         return ((jjbitVec5[i2] & l2) != 0L);
-      case 32:
-         return ((jjbitVec6[i2] & l2) != 0L);
-      case 251:
-         return ((jjbitVec7[i2] & l2) != 0L);
       default :
          return false;
    }

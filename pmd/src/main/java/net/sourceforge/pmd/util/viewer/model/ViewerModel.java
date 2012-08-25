@@ -8,9 +8,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
-//import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-//import net.sourceforge.pmd.lang.java.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -36,9 +35,9 @@ public class ViewerModel {
      */
     public void commitSource(String source, LanguageVersion languageVersion) {
 	LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-	Node node =  languageVersionHandler
+	ASTCompilationUnit compilationUnit = (ASTCompilationUnit) languageVersionHandler
 		.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(source));
-	rootNode = node;
+	rootNode = compilationUnit;
 	fireViewerModelEvent(new ViewerModelEvent(this, ViewerModelEvent.CODE_RECOMPILED));
     }
 
@@ -58,13 +57,8 @@ public class ViewerModel {
      * @param evaluator object which requests the evaluation
      */
     public void evaluateXPathExpression(String xPath, Object evaluator) throws ParseException, JaxenException {
-	System.err.println("SRT: xPath="+xPath);
-	System.err.println("SRT: evaluator="+evaluator);
 	XPath xpath = new BaseXPath(xPath, new DocumentNavigator());
-	System.err.println("SRT: xpath="+xpath);
-	System.err.println("SRT: rootNode="+rootNode);
 	evaluationResults = xpath.selectNodes(rootNode);
-	System.err.println("SRT: evaluationResults="+evaluationResults);
 	fireViewerModelEvent(new ViewerModelEvent(evaluator, ViewerModelEvent.PATH_EXPRESSION_EVALUATED));
     }
 
