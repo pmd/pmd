@@ -64,7 +64,6 @@ public class ContinuationReader extends Reader {
 					in.unread(c2);
 				}
 			}
-			System.out.println((off + count) + ": <" + ((char) c1) + ">");
 			cbuf[off + count] = (char) c1;
 			count++;
 		}
