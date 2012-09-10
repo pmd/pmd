@@ -32,7 +32,7 @@ To disable annotations, add ignore_annotations=true to the cpd properties.  Just
 
 ## Start Using It?
 If you can't wait for this to get integrated into the main pmd project, you can start now.
-Feel free to pull and build it.  Additionally you can include noexcuses in your Maven project via: 
+Feel free to pull and build it.  Additionally you can include it in your Maven project via: 
 ```
 <dependency>
   <groupId>com.tacitknowledge</groupId>
