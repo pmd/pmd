@@ -81,7 +81,7 @@ public class PLSQLParser {
       throws ParseException {
 
     PLSQLParser parser = new PLSQLParser(System.in);
-    parser.input();
+    SimpleNode simpleNode = parser.Input();
 
     String s;
     s = "qwerty";
@@ -107,20 +107,20 @@ PARSER_END(PLSQLParser)
 /**
  * 2006-05-22 - Matthias Hendler - added globalBody()
  */
-SimpleNode input() : {}
+SimpleNode Input() : {}
 {
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
-	 (LOOKAHEAD(6) packageSpec()  
-	 | LOOKAHEAD(6) packageBody()  
-	 | LOOKAHEAD(6) typeSpec()  
-	 | LOOKAHEAD(6) table()  
-	 | LOOKAHEAD(6) view()   
-	 | LOOKAHEAD(6) triggerUnit()  
-	 | alterTrigger()  
-	 | global()  
-	 | sqlPlusCommand() 
-	 |(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) skipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
+	 (LOOKAHEAD(6) PackageSpecification()  
+	 | LOOKAHEAD(6) PackageBody()  
+	 | LOOKAHEAD(6) TypeSpecification()  
+	 | LOOKAHEAD(6) Table()  
+	 | LOOKAHEAD(6) View()   
+	 | LOOKAHEAD(6) TriggerUnit()  
+	 | AlterTrigger()  
+	 | Global()  
+	 | SqlPlusCommand() 
+	 |(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
 	 )	
 	 ("/")*
 	)*
@@ -128,8 +128,9 @@ SimpleNode input() : {}
       { return jjtThis ; }
 }
 
-SimpleNode sqlPlusCommand() : {}
+SimpleNode SqlPlusCommand() : {}
 {
+  (
   // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
   // SQLPLUS commands
   ( "@" 
@@ -162,9 +163,10 @@ SimpleNode sqlPlusCommand() : {}
   // Attach Library 
   | "." <ATTACH>
   )
-  skip2NextTokenOccurrence(EOL) //Tracker Issue 1433480 skip until next EOL Special Token   
+  Skip2NextTokenOccurrence(EOL) //Tracker Issue 1433480 skip until next EOL Special Token   
   //[";" | "-"]
-      { return jjtThis ; }
+    )
+    { return jjtThis ; }
 }
 
 /*
@@ -192,7 +194,7 @@ void attachLibrary() :
  *
  * 2006-05-17 - Matthias Hendler - added
  */
-SimpleNode global()  :
+SimpleNode Global()  :
 { 
 }
 {
@@ -202,7 +204,7 @@ SimpleNode global()  :
 	  Still wrap the trigger in a fake package but make the package name dependent on the actual schema 
 	  defaulting to the globalPackageName if it cannot be found 
 	*/
-	(LOOKAHEAD ([<DECLARE> declarativeSection()] <BEGIN>) globalBlock() | LOOKAHEAD (4) programUnit() 
+	(LOOKAHEAD ( ( Label() )* [<DECLARE> DeclarativeSection()] <BEGIN>) Block() | LOOKAHEAD (4) ProgramUnit() 
 	)
 
 
@@ -211,100 +213,107 @@ SimpleNode global()  :
 
 
 
-/**
- * Static blocks like package initializers.
- * 
- * 2006-05-17 - Matthias Hendler - added
- */
-SimpleNode globalBlock()  :
+SimpleNode Block()  :
 { 
 }
 {
-	[
-		<DECLARE>
-		declarativeSection()
-	]
-	
-	<BEGIN> (statement())* (exceptionHandler())? <END> ";"
-      { return jjtThis ; }
+    // Included as part of statement() 
+    [
+    <DECLARE>
+    DeclarativeSection()
+    ]
+    
+    <BEGIN> 
+    (Statement())* 
+    (ExceptionHandler())? 
+    <END> [ <IDENTIFIER> ] // Optional END Identifier has to match the label 
+    { return jjtThis ; }
 }
 
 
 
-SimpleNode packageSpec()  :
+SimpleNode PackageSpecification()  :
 { }
 {
+      (
 	[<CREATE> [<OR> <REPLACE>]]
-	<PACKAGE> objectNameDeclaration()
+	<PACKAGE> ObjectNameDeclaration()
 
 	(<AUTHID> (<CURRENT_USER> | <DEFINER>))?
 
         (
 	  (
-	    wrappedObject()
+	    WrappedObject()
 	  )
 	  |
 	  (
 	    (<IS> | <AS>)
 
-	    declarativeSection()
+	    DeclarativeSection()
 
 	    <END> [ID()] ";" 
 	  )
 	)
+      )
       { return jjtThis ; }
 }
 
-SimpleNode packageBody()  :
+SimpleNode PackageBody()  :
 { }
 {
+    (
 	[<CREATE> [<OR> <REPLACE>]]
-	( <PACKAGE> | <TYPE> ) <BODY> objectNameDeclaration()
+	( <PACKAGE> | <TYPE> ) <BODY> ObjectNameDeclaration()
 
 	(
 	  (
-	    wrappedObject()
+	    WrappedObject()
 	  )
 	  |
 	  (
 	    (<IS> | <AS>)
 
-	    declarativeSection() //SRT 20110524 Allow PLDOc in Type Bodies 
+	    DeclarativeSection() //SRT 20110524 Allow PLDOc in Type Bodies 
 
 						    
-	  [ <BEGIN> (statement())* (exceptionHandler())? ] <END> [ID()] ";" 
+	  [ <BEGIN> (Statement())* (ExceptionHandler())? ] <END> [ID()] ";" 
 	  
 	  )
 	)
+    )
+    { return jjtThis ; }
 }
 
-SimpleNode declarativeUnit()  :
+SimpleNode DeclarativeUnit()  :
 {}
 {
-		pragma() |
+    (
+		Pragma() |
 		LOOKAHEAD(2)
-		exceptionDeclaration() |
-		LOOKAHEAD((<TYPE>|<SUBTYPE>) qualifiedID() (<IS> | <AS> )  ) //SRT 20110616 - make sue soen't break object type
-		subtype_definition() |
-		LOOKAHEAD((<FUNCTION>|<PROCEDURE>) qualifiedID() ) //SRT 20111117 - Special case of parameterless methods:choose method in preference to variable 
-		programUnit()  |
+		ExceptionDeclaration() |
+		LOOKAHEAD((<TYPE>|<SUBTYPE>) QualifiedID() (<IS> | <AS> )  ) //SRT 20110616 - make sue soen't break object type
+		SubTypeDefinition() |
+		LOOKAHEAD((<FUNCTION>|<PROCEDURE>) QualifiedID() ) //SRT 20111117 - Special case of parameterless methods:choose method in preference to variable 
+		ProgramUnit()  |
 		LOOKAHEAD(4)
-		variableOrConstantDeclaration() |
+		VariableOrConstantDeclaration() |
 		LOOKAHEAD(2)
-		cursorSpec() |
-		cursorBody() |
-		collectionDeclaration() |
-		programUnit() 
-		|typeMethod() //SRT 20110523
+		CursorSpecification() |
+		CursorBody() |
+		CollectionDeclaration() |
+		//ProgramUnit() 
+		//|TypeMethod() 
+                MethodDeclaration()
 		|CompilationDeclarationFragment() 
-      { return jjtThis ; }
+    )
+    { return jjtThis ; }
 }
 
-SimpleNode declarativeSection()  :
+SimpleNode DeclarativeSection()  :
 {}
 {
 	(
-		declarativeUnit() 
+		DeclarativeUnit() 
 	)*
       { return jjtThis ; }
 }
@@ -317,7 +326,7 @@ SimpleNode CompilationDeclarationFragment()  :
 	  <CC_IF>  
 	  ConditionalOrExpression()  
 	  <CC_THEN>  
-	    (declarativeUnit()
+	    (DeclarativeUnit()
 	     | <CC_ERROR> Expression() <CC_END> 
 	    )* 
 
@@ -325,14 +334,14 @@ SimpleNode CompilationDeclarationFragment()  :
 	    <CC_ELSIF> 
 	    ConditionalOrExpression() 
 	    <CC_THEN> 
-	    (declarativeUnit()
+	    (DeclarativeUnit()
 	     | <CC_ERROR> Expression() <CC_END> 
 	    )* 
 	  )* 
 
 	  ( 
 	    <CC_ELSE> 
-	    (declarativeUnit()
+	    (DeclarativeUnit()
 	     | <CC_ERROR> Expression() <CC_END> 
 	    )* 
 	  )*
@@ -349,7 +358,7 @@ SimpleNode CompilationDeclarationFragment()  :
  *								   custom tags which he can evaluate in the XSLT.
  *                                 This methode also documents global functions/procedures.
  */
-SimpleNode programUnit()  :
+SimpleNode ProgramUnit()  :
 {
 }
 {
@@ -357,7 +366,7 @@ SimpleNode programUnit()  :
 
 	[<CREATE> [<OR> <REPLACE>]]
 
-        methodDeclarator()
+        MethodDeclarator()
 
 	/*
 	//SRT 20110516  Cope with AUTHID  for schema level functions and procedures 
@@ -365,7 +374,7 @@ SimpleNode programUnit()  :
 	*/
 
 	( (<AUTHID> ( <CURRENT_USER> | <DEFINER> ) ) | <DETERMINISTIC> 
-	    | <PARALLEL_ENABLE>  [ parallel_clause() ] [ <USING> ID() ["." ID()] ] 
+	    | <PARALLEL_ENABLE>  [ ParallelClause() ] [ <USING> ID() ["." ID()] ] 
 	   | <PIPELINED> [ ( <USING> ID() ["." ID()] ) 
 	                   |  //20110531
 			   (( <ORDER> | <CLUSTER> ) [ID()] <BY> "(" ID() ( "," ID() )*  ")" ) 
@@ -382,22 +391,21 @@ SimpleNode programUnit()  :
 		//SRT (<IS> | <AS>)
 		(
 			LOOKAHEAD(2)
-			callSpecTail() //{ System.err.println("Found callSpecTail") ; }
+			CallSpecTail() //{ System.err.println("Found CallSpecTail") ; }
 			|
 			(
-				declarativeSection()
-				<BEGIN> (statement())* (exceptionHandler())? <END> [ID()]
+				DeclarativeSection()
+				<BEGIN> (Statement())* (ExceptionHandler())? <END> [ID()]
 			)
 		)
 	]
 	";" //SRT 20110416 { System.err.println("Found terminating semi-colon") ; }
 
 	) //UnwrappedCode
-	) 
       { return jjtThis ; }
 }
 
-SimpleNode objectNameDeclaration() :
+SimpleNode ObjectNameDeclaration() :
 {}
 {
   (LOOKAHEAD(2) ID()".")? ID()
@@ -405,86 +413,89 @@ SimpleNode objectNameDeclaration() :
 }
 
 
-SimpleNode parameterDeclaration()  :
+SimpleNode FormalParameter()  :
 {
 }
 {
+   (
 	ID()
 	// the order of outer "|" is important !
 	( LOOKAHEAD(2) ( LOOKAHEAD(2) ( (<OUT>|(<IN> <OUT>)) (LOOKAHEAD(2) <NOCOPY>  )? ) | <IN> ) )?
-	("..."    | datatype())    
+	("..."    | Datatype())    
 	( (":" "="|<_DEFAULT>) Expression() )?
-      { return jjtThis ; }
+   )
+   { return jjtThis ; }
 }
 
 
 
-SimpleNode methodDeclarator() :
+SimpleNode MethodDeclaration() :
+{}
+{
+  (
+   ProgramUnit()
+   |
+   TypeMethod()
+  )
+  { return jjtThis ; }
+}
+
+
+SimpleNode MethodDeclarator() :
 {}
 {
   ( <FUNCTION> 
-    objectNameDeclaration() 
+    ObjectNameDeclaration() 
     (
-      [ FormalParameters() ]
-      <RETURN> datatype() 
+      WrappedObject()
       |
-      wrappedObject()
+      [ FormalParameters() ]
+      <RETURN> Datatype() 
     )
   | <PROCEDURE> 
-    objectNameDeclaration() 
+    ObjectNameDeclaration() 
     (
-      [ FormalParameters() ]
+      WrappedObject()
       |
-      wrappedObject()
+      [ FormalParameters() ]
     )
   )
+  { return jjtThis ; }
 }
 
 
-SimpleNode formalParameters() :
+SimpleNode FormalParameters() :
 {}
 {
-  "(" [ parameterDeclaration() ( "," parameterDeclaration() )* ] ")"
+  (
+  "(" [ FormalParameter() ( "," FormalParameter() )* ] ")"
+  )
   { return jjtThis ; }
 }
 
 
 
-SimpleNode objectNameDeclaration() :
+
+SimpleNode VariableOrConstantDeclarator() :
 {}
 {
-  (LOOKAHEAD(2) ID()".")? ID()
-  { return jjtThis ; }
-}
-
-
-SimpleNode variableOrConstantDeclaration() :
-{ 
-}
-{
-  variableOrConstantDeclarator() ";"
-  { return jjtThis ; }
-}
-
-
-SimpleNode variableOrConstantDeclarator() :
-{}
-{
-  variableOrConstantDeclaratorId() 
-  [LOOKAHEAD(2) <CONSTANT> ] datatype()
+  (
+  VariableOrConstantDeclaratorId() 
+  [LOOKAHEAD(2) <CONSTANT> ] Datatype()
   [[<NOT>] <NULL>]
-  [ ( ":" "=" | <_DEFAULT> )  variableOrConstantInitializer() ]
+  [ ( ":" "=" | <_DEFAULT> )  VariableOrConstantInitializer() ]
+  )
   { return jjtThis ; }
 }
 
-SimpleNode variableOrConstantDeclaratorId() :
+SimpleNode VariableOrConstantDeclaratorId() :
 {}
 {
   ID()
   { return jjtThis ; }
 }
 
-SimpleNode variableOrConstantInitializer() :
+SimpleNode VariableOrConstantInitializer() :
 {}
 {
  Expression()
@@ -493,19 +504,19 @@ SimpleNode variableOrConstantInitializer() :
 
 
 
-SimpleNode datatype() :
+SimpleNode Datatype() :
 { 
 }
 {
 	(
 		// this should be first
 		CompilationDataType() |
-		LOOKAHEAD(2) scalar_datatype_name()
+		LOOKAHEAD(2) ScalarDataTypeName()
 		|
 		(
-		  ( [LOOKAHEAD(2) <REF>] qualifiedName() 
+		  ( [LOOKAHEAD(2) <REF>] QualifiedName() 
 		    //Bug 35352414 - datatype may include dblink 
-		    ["@" qualifiedName()  ]
+		    ["@" QualifiedName()  ]
 		    ["%" (<TYPE>|<ROWTYPE>)] )
 		)
 	)
@@ -520,18 +531,18 @@ SimpleNode CompilationDataType() :
 	  <CC_IF>  
 	  ConditionalOrExpression()  
 	  <CC_THEN>  
-	  datatype()  
+	  Datatype()  
 
 	  ( 
 	    <CC_ELSIF>  
 	    ConditionalOrExpression()   
 	    <CC_THEN>  
-	    datatype()  
+	    Datatype()  
 	  )* 
 
 	  ( 
 	    <CC_ELSE>  
-	    datatype()   
+	    Datatype()   
 	  )*
 
 	  <CC_END>  
@@ -541,29 +552,32 @@ SimpleNode CompilationDataType() :
  }
 }
 
-SimpleNode collection_type_name() :
+SimpleNode CollectionTypeName() :
 { 
 }
 {
+     (
      (
 	// Collection types
   	<TABLE> | <VARRAY> | (<VARYING><ARRAY> ) 
      )
 
-	(LOOKAHEAD(2) "(" numericLiteral() 
-		["," numericLiteral() ]
+	(LOOKAHEAD(2) "(" NumericLiteral() 
+		["," NumericLiteral() ]
 		[ <CHAR> ]
 		[ <BYTE> ]
 	")" )?
 
-      { return jjtThis ; }
+     )
+     { return jjtThis ; }
 }
 
 
-SimpleNode scalar_datatype_name() :
+SimpleNode ScalarDataTypeName() :
 { 
 }
 {
+   (
 	(
 	//Base types used in SYS.STANDARD
 	<BFILE_BASE> |
@@ -616,7 +630,7 @@ SimpleNode scalar_datatype_name() :
       (<SELF><AS><RESULT> )  //SRT Added to support CONSTRUCTOR methods 
      )
 
-	(LOOKAHEAD(2) "(" numericLiteral() 
+	(LOOKAHEAD(2) "(" NumericLiteral() 
 		["," UnaryExpression(true) ] //NUMBERS may have negative precision
 		[ <CHAR> ]
 		[ <BYTE> ]
@@ -653,13 +667,14 @@ SimpleNode scalar_datatype_name() :
     LOOKAHEAD(2) (<TO><MONTH> ) |
     LOOKAHEAD(2) (<TO><SECOND>  
 			(
-			  LOOKAHEAD(2) "(" numericLiteral() 
+			  LOOKAHEAD(2) "(" NumericLiteral() 
 					")" 
 			)?
                  )
    ]
 
-      { return jjtThis; }
+   )
+   { return jjtThis; }
 }
 
 SimpleNode DateTimeLiteral() :
@@ -678,6 +693,7 @@ SimpleNode DateTimeLiteral() :
       constraint unit1 always longer than unit2, i.e. DAY is longer than MINUTE
       so can have DAY to MINUTE, but not MINUTE to DAY
   */
+    (
 	(
         <INTERVAL> 
 	|<TIMESTAMP> 
@@ -698,7 +714,7 @@ SimpleNode DateTimeLiteral() :
         )?
         
 
-	(LOOKAHEAD(2) "(" numericLiteral()  
+	(LOOKAHEAD(2) "(" NumericLiteral()  
 	")"  
         )?
 
@@ -717,29 +733,29 @@ SimpleNode DateTimeLiteral() :
          | <SECOND>
         )
          
-	(LOOKAHEAD(2) "(" numericLiteral()  
+	(LOOKAHEAD(2) "(" NumericLiteral()  
 	")"  
         )?
     )
    ]
-/*
-*/
-
-      { 
-      return jjtThis ;
-      }
+   )
+   { 
+    return jjtThis ;
+   }
 }
 
-SimpleNode exceptionHandler() :
+SimpleNode ExceptionHandler() :
 {}
 {
+      (
 	<EXCEPTION>
-		( LOOKAHEAD(2) <WHEN> qualifiedName() (<OR> qualifiedName())* <THEN> (statement())+ )*
-		[ <WHEN> <OTHERS> <THEN> (statement())+ ]
+		( LOOKAHEAD(2) <WHEN> QualifiedName() (<OR> QualifiedName())* <THEN> (Statement())+ )*
+		[ <WHEN> <OTHERS> <THEN> (Statement())+ ]
+      )
       { return jjtThis ; }
 }
 
-void skip2NextTerminator(String initiator,String terminator) :
+void Skip2NextTerminator(String initiator,String terminator) :
 {
   Token t = getToken(1);
   int count = (initiator == null) ? 0 : 1;
@@ -759,7 +775,7 @@ void skip2NextTerminator(String initiator,String terminator) :
 /*
  Read Tokens up to but not including the target String. 
 */
-void skip2NextOccurrence(String target) :
+void Skip2NextOccurrence(String target) :
 {
   Token nextToken = getToken(1);
   while (!nextToken.image.equals(target)
@@ -778,10 +794,10 @@ void skip2NextOccurrence(String target) :
 /*
  Read Tokens up to and including the target String. 
 */
-void skipPastNextOccurrence(String target) :
+void SkipPastNextOccurrence(String target) :
 {
   Token t = null;
-  skip2NextOccurrence(target) ;
+  Skip2NextOccurrence(target) ;
   t = getNextToken(); // Chomp this one 
 }
 {
@@ -791,7 +807,7 @@ void skipPastNextOccurrence(String target) :
 /*
  Read Tokens up to but not including the target Token.kind. 
 */
-void skip2NextTokenOccurrence(int target) :
+void Skip2NextTokenOccurrence(int target) :
 {
   Token nextToken = getToken(1);
   while (nextToken.kind!=target
@@ -810,10 +826,10 @@ void skip2NextTokenOccurrence(int target) :
 /*
  Read Tokens up to and including the target Token.kind. 
 */
-void skipPastNextTokenOccurrence(int target) :
+void SkipPastNextTokenOccurrence(int target) :
 {
   Token t = null;
-  skip2NextTokenOccurrence(target) ;
+  Skip2NextTokenOccurrence(target) ;
   t = getNextToken(); // Chomp this one 
 }
 {
@@ -823,7 +839,7 @@ void skipPastNextTokenOccurrence(int target) :
 /*
  Read Tokens up to but not including the target String. 
 */
-SimpleNode read2NextOccurrence(String target) :
+SimpleNode Read2NextOccurrence(String target) :
 {
   StringBuffer sb = new StringBuffer();
   Token nextToken = getToken(1);
@@ -843,11 +859,11 @@ SimpleNode read2NextOccurrence(String target) :
 /*
  Read Tokens up to and including the target String. 
 */
-SimpleNode readPastNextOccurrence(String target) :
+SimpleNode ReadPastNextOccurrence(String target) :
 {
   StringBuffer sb = new StringBuffer();
   Token t = null;
-  sb.append(read2NextOccurrence(target)) ;
+  sb.append(Read2NextOccurrence(target)) ;
   t = getNextToken(); // Chomp this one 
   sb.append(t.image);
 }
@@ -858,11 +874,14 @@ SimpleNode readPastNextOccurrence(String target) :
 /**
  * 2006-05-24 - Matthias Hendler - added MERGE
  */
-SimpleNode sqlStatement(String initiator, String terminator)  :
+SimpleNode SqlStatement(String initiator, String terminator)  :
 {}
 {
 	(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>)
-	skip2NextTerminator(initiator,terminator)
+	Skip2NextTerminator(initiator,terminator)
+	{
+          return jjtThis ;
+	}
 }
 
 
@@ -905,7 +924,7 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 
 
 
-void wrappedObject()  :
+void WrappedObject()  :
 {}
 {
 	<WRAPPED>
@@ -934,59 +953,207 @@ void wrappedObject()  :
 /**
  * 2006-05-24 - Matthias Hendler - added MERGE, EXECUTE choice and LOOKAHEAD at <LOOP>
  */
-SimpleNode statement()  :
+SimpleNode UnlabelledStatement()  :
 {}
 {
-	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) sqlStatement(null,";") [";"] 
-		| <CASE> ( Expression() )?
-                ( <WHEN> Expression() <THEN> (statement())+ )*
-		( <ELSE> (statement())+ )*
-		<END> <CASE>  [<IDENTIFIER>]  ";"
-	| <IF> Expression() <THEN> (statement())+
-		( <ELSIF> Expression() <THEN> (statement())+ )*
-		( <ELSE> (statement())+ )*
-		<END> <IF> ";"
-	| <FOR> ID() <IN> [<REVERSE>] Expression()[".."Expression()] <LOOP> (statement())+ <END> <LOOP> [<IDENTIFIER>] ";"
-	| <FORALL> ID() <IN> 
+       (
+	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"] 
+	| CaseStatement()  ";"
+	| IfStatement()  ";"
+	| ForStatement()  ";"
+	| ForAllStatement()  ";"
+	| LoopStatement()  ";"
+	| WhileStatement()  ";"
+	| GotoStatement()  ";"
+	| ReturnStatement()  ";"
+	| ExitStatement()  ";"
+	| RaiseStatement()  ";"
+	| CloseStatement()  ";"
+	| OpenStatement()  ";"
+	| FetchStatement()  ";"
+	| Block()  ";"
+	| EmbeddedSqlStatement()  ";"
+	| PipelineStatement()  ";"
+	| ConditionalCompilationStatement()  ";"
+        | Expression() ";"
+      )
+      { return jjtThis ; }
+}
+
+
+SimpleNode Statement()  :
+{}
+{
+      (
+       //SQl Developer compiler allows 0, 1 or many labels immediately before a statement 
+       //SQl Developer compiler requires a statement after a sequence of labels  
+       ( Label() )*
+       UnlabelledStatement()
+      )
+      { return jjtThis ; }
+}
+
+SimpleNode CaseStatement()  :
+{}
+{
+       (
+	 <CASE> ( Expression() )?
+	( <WHEN> Expression() <THEN> (Statement())+ )*
+	( <ELSE> (Statement())+ )*
+	<END> <CASE>  [<IDENTIFIER>]  
+       )
+      { return jjtThis ; }
+}
+
+SimpleNode LoopStatement()  :
+{}
+{
+       <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
+      { return jjtThis ; }
+}
+
+/** Scope rule: the loop index only exists within the Loop */
+SimpleNode ForStatement()  :
+{}
+{
+	 <FOR> ForIndex() <IN> [<REVERSE>] Expression()[".."Expression()] <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
+      { return jjtThis ; }
+}
+
+SimpleNode WhileStatement()  :
+{}
+{
+	 <WHILE> Expression() <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
+      { return jjtThis ; }
+}
+
+SimpleNode IfStatement()  :
+{}
+{
+	<IF> Expression() <THEN> (Statement())+
+		( <ELSIF> Expression() <THEN> (Statement())+ )*
+		( <ELSE> (Statement())+ )*
+	<END> <IF> 
+      { return jjtThis ; }
+}
+
+/** Scope rule: the loop index only exists within the statement */
+/**
+ForIndex is declared implicitly, unlike most variables or constants.
+*/
+SimpleNode ForIndex()  :
+{}
+{
+ ID() 
+ { return jjtThis ; }
+}
+
+/**
+ForAllIndex is declared implicitly, unlike most variables or constants.
+*/
+SimpleNode ForAllIndex()  :
+{}
+{
+ ID() 
+ { return jjtThis ; }
+}
+
+SimpleNode ForAllStatement()  :
+{}
+{
+	 <FORALL> ForAllIndex() <IN> 
 			    (
 	                     ( <INDICES> | <VALUES> ) <OF> Expression() // Add support for sparse collections
 	                     | Expression() [".." Expression()]
 			    )
-			    [ <SAVE> <EXCEPTIONS> ] sqlStatement(null,";") ";"
-	| LOOKAHEAD(2) <LOOP> (statement())+ <END> <LOOP> [<IDENTIFIER>] ";"
-	| <WHILE> Expression() <LOOP> (statement())+ <END> <LOOP> [<IDENTIFIER>] ";"
-	//
-	| <GOTO> qualifiedName() ";"
-	| <RETURN> [Expression()] ";"
-	| <EXIT> [<WHEN> Expression() | <IDENTIFIER> [<WHEN> Expression()]] ";"
-	| <RAISE> [qualifiedName()] ";"
-	//
-	| <CLOSE> qualifiedName() ";"
-	| <OPEN> [Expression()]
-		//[LOOKAHEAD(functionCall()) functionCall() | qualifiedName()]
-		[<FOR> Expression() [<USING> Expression() ("," Expression())*]] ";"
-	| <FETCH> qualifiedName() [<BULK> <COLLECT>]
-	  //MMUE 04/08/2005 <INTO> (LOOKAHEAD(functionCall()) functionCall() | qualifiedName()) ("," (LOOKAHEAD(functionCall()) functionCall() | qualifiedName()))* ";"
-	  <INTO> Expression() ("," Expression())* [<LIMIT> Expression()] ";"
-	//
-	| "<<" <IDENTIFIER> ">>" statement()
-	| [<DECLARE> declarativeSection()] <BEGIN> (statement())* (exceptionHandler())? <END> [<IDENTIFIER>] ";"
-	//
-  | <EXECUTE> <IMMEDIATE> StringLiteral() /* <STRING_LITERAL> */ ";"
-	//SRT 20110429 | <EXECUTE> <IMMEDIATE> StringExpression()  [<USING> Expression() ("," Expression())*] ";"
-	// PIPELINED FUNCTION OUTPUT
-	| <PIPE> <ROW> Expression()  ";"
-	// CONDITIONAL COMPILATION 
-	| <CC_IF> ConditionalOrExpression() <CC_THEN> (statement())*
-		( <CC_ELSIF> ConditionalOrExpression() <CC_THEN> (statement())+ )*
-		( <CC_ELSE> (statement())+ )*
-		<CC_END> 
-	| <CC_ERROR> Expression() <CC_END> 
-        | Expression() ";"
+			    [ <SAVE> <EXCEPTIONS> ] SqlStatement(null,";") 
       { return jjtThis ; }
 }
 
-SimpleNode subtype_definition()  :
+SimpleNode GotoStatement()  :
+{}
+{
+	<GOTO> QualifiedName() 
+      { return jjtThis ; }
+}
+
+SimpleNode ReturnStatement()  :
+{}
+{
+	<RETURN> [Expression()] 
+      { return jjtThis ; }
+}
+
+SimpleNode ExitStatement()  :
+{}
+{
+	<EXIT> [<WHEN> Expression() | <IDENTIFIER> [<WHEN> Expression()]] 
+      { return jjtThis ; }
+}
+
+SimpleNode RaiseStatement()  :
+{}
+{
+	 <RAISE> [QualifiedName()] 
+	//
+      { return jjtThis ; }
+}
+
+SimpleNode CloseStatement()  :
+{}
+{
+      <CLOSE> QualifiedName() 
+      { return jjtThis ; }
+}
+
+SimpleNode OpenStatement()  :
+{}
+{
+	 <OPEN> [Expression()]
+		//[LOOKAHEAD(functionCall()) functionCall() | QualifiedName()]
+		[<FOR> Expression() [<USING> Expression() ("," Expression())*]] 
+      { return jjtThis ; }
+}
+
+SimpleNode FetchStatement()  :
+{}
+{
+	 <FETCH> QualifiedName() [<BULK> <COLLECT>]
+	  //MMUE 04/08/2005 <INTO> (LOOKAHEAD(functionCall()) functionCall() | QualifiedName()) ("," (LOOKAHEAD(functionCall()) functionCall() | QualifiedName()))* ";"
+	  <INTO> Expression() ("," Expression())* [<LIMIT> Expression()] 
+	//
+      { return jjtThis ; }
+}
+
+SimpleNode EmbeddedSqlStatement()  :
+{}
+{
+   <EXECUTE> <IMMEDIATE> StringLiteral() /* <STRING_LITERAL> */ 
+	//SRT 20110429 | <EXECUTE> <IMMEDIATE> StringExpression()  [<USING> Expression() ("," Expression())*] ";"
+	// PIPELINED FUNCTION OUTPUT
+      { return jjtThis ; }
+}
+
+SimpleNode PipelineStatement()  :
+{}
+{
+	<PIPE> <ROW> Expression()  
+      { return jjtThis ; }
+}
+
+SimpleNode ConditionalCompilationStatement()  :
+{}
+{
+	( <CC_IF> ConditionalOrExpression() <CC_THEN> (Statement())*
+		( <CC_ELSIF> ConditionalOrExpression() <CC_THEN> (Statement())+ )*
+		( <CC_ELSE> (Statement())+ )*
+		<CC_END> 
+	 | <CC_ERROR> Expression() <CC_END> 
+	)
+      { return jjtThis ; }
+}
+
+SimpleNode SubTypeDefinition()  :
 {
 	Token start, subtype_name=null, constraint=null, base_type=null;
 	Token collection = null, collection2 = null;
@@ -998,8 +1165,8 @@ SimpleNode subtype_definition()  :
 
 	(
 		( 
-		  <SUBTYPE> qualifiedID() // SRT 20110605 to Parse SYS.standars ned to allow nprmally reserved words which are low-level types 
-			<IS> datatype() 
+		  <SUBTYPE> QualifiedID() // SRT 20110605 to Parse SYS.standard need to allow normally reserved words which are low-level types 
+			<IS> Datatype() 
 			[
 			  ( "(" <IDENTIFIER> ")") // SRT 20110604 [<NOT> <NULL> ]
 			  |
@@ -1008,7 +1175,7 @@ SimpleNode subtype_definition()  :
 			[<NOT> <NULL> ] //SRT 20110604
 		)
 		 |
-		( <TYPE> qualifiedID() // SRT 20110605 to Parse SYS.standars ned to allow nprmally reserved words which are low-level types 
+		( <TYPE> QualifiedID() // SRT 20110605 to Parse SYS.standars ned to allow nprmally reserved words which are low-level types 
 			(<IS>|<AS>)
 			(
 				LOOKAHEAD(2) <NEW> (
@@ -1022,14 +1189,14 @@ SimpleNode subtype_definition()  :
 				  
 				|
 				//SRT 20110606 SYS.STANDRD 
-				(<OBJECT>  "(" fieldDeclaration() ("," fieldDeclaration())* ")" )
+				(<OBJECT>  "(" FieldDeclaration() ("," FieldDeclaration())* ")" )
 				|
-				(<RECORD>  "(" fieldDeclaration() ("," fieldDeclaration())* ")" )
+				(<RECORD>  "(" FieldDeclaration() ("," FieldDeclaration())* ")" )
 				|
-				((<TABLE> | <VARRAY> | <VARYING> <ARRAY>)["(" numericLiteral() ")"]
-				<OF> datatype() (<NOT> <NULL>)? (<INDEX> <BY> datatype())?)
+				((<TABLE> | <VARRAY> | <VARYING> <ARRAY>)["(" NumericLiteral() ")"]
+				<OF> Datatype() (<NOT> <NULL>)? (<INDEX> <BY> Datatype())?)
 				|
-				<REF> <CURSOR> [<RETURN> datatype()]
+				<REF> <CURSOR> [<RETURN> Datatype()]
 				//Enumeration 
 				| ( "(" 
 				      Expression()  
@@ -1037,30 +1204,31 @@ SimpleNode subtype_definition()  :
 				    ")"  
 			          )
 				//Alias for existing type  
-				| datatype() 
+				| Datatype() 
 			)
 		)
 	)
 	";"
+      { return jjtThis ; }
 }
 
-SimpleNode fieldDeclaration()  :
+SimpleNode FieldDeclaration()  :
 {
 	Token name;
 	SimpleNode dataType;
 	SimpleNode defaultValue = null;
 }
 {
-	ID() datatype() [[<NOT>] <NULL>] [ (":" "=" | <_DEFAULT>) Expression() ]  
+	ID() Datatype() [[<NOT>] <NULL>] [ (":" "=" | <_DEFAULT>) Expression() ]  
       { return jjtThis ; }
 }
 
-SimpleNode collection_type_definition() : {} { <IDENTIFIER> { return jjtThis ; } }
-SimpleNode collectionDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
-SimpleNode objectDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
+SimpleNode CollectionTypeDefinition() : {} { <IDENTIFIER> { return jjtThis ; } }
+SimpleNode CollectionDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
+SimpleNode ObjectDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
 
 /** Java stored procedure, external function*/
-SimpleNode callSpecTail() : {
+SimpleNode CallSpecTail() : {
 }
 {
 	// /* <LANGUAGE> (/*"C"*/<IDENTIFIER> | <JAVA>)
@@ -1077,8 +1245,8 @@ SimpleNode callSpecTail() : {
 		  )
 		  |
 		  ( <NAME> (<IDENTIFIER>  | <QUOTED_LITERAL> /* C */| StringLiteral() /* JAVA */ ) )
-		  //SRT 20110517  Need to cope with  callSpecTails in ObjectTypes  // skip2NextTerminator(null,";") 
-		  //skipPastNextOccurrence(")") // Read until we have eaten the closing bracket ")" 
+		  //SRT 20110517  Need to cope with  CallSpecTails in ObjectTypes  // Skip2NextTerminator(null,";") 
+		  //SkipPastNextOccurrence(")") // Read until we have eaten the closing bracket ")" 
 		  |
 		  (
 		    <WITH> <CONTEXT>
@@ -1086,13 +1254,10 @@ SimpleNode callSpecTail() : {
 		  |
 		  (
 		    <PARAMETERS>
-		    skipPastNextOccurrence(")") // Read until we have eaten the closing bracket ")" 
+		    SkipPastNextOccurrence(")") // Read until we have eaten the closing bracket ")" 
 		  )
 		)*
 	)
-	{
-		return;
-	}
 
 	/* ### or:
 		<LIBRARY> library_name
@@ -1153,29 +1318,29 @@ SimpleNode callSpecTail() : {
 
 
 /** Cursor (common part of specification and body) */
-SimpleNode cursorUnit()  :
+SimpleNode CursorUnit()  :
 {
 }
 {
 	(
 	<CURSOR> ID()
-	[ formalParameters() ] 
-	[<RETURN> datatype()
+	[ FormalParameters() ] 
+	[<RETURN> Datatype()
 	]
 	)
-	[<IS> ("(")* sqlStatement(null,";")] ";"
+	[<IS> ("(")* SqlStatement(null,";")] ";"
       { return jjtThis ; }
 }
 
-SimpleNode cursorSpec()  : {}
+SimpleNode CursorSpecification()  : {}
 {
-	cursorUnit()
+	CursorUnit()
       { return jjtThis ; }
 }
 
-SimpleNode cursorBody()  : {}
+SimpleNode CursorBody()  : {}
 {
-	cursorUnit()
+	CursorUnit()
 //	<IS> /*<SQL_STATEMENT>*/
       { return jjtThis ; }
 }
@@ -1334,7 +1499,7 @@ SimpleNode ObjectExpression() :
 	 <AT> <TIME> <ZONE> PrimaryExpression() 
 	]
 	<AS>  
-	( datatype()   )
+	( Datatype()   )
 	")"  
   )
   ( "." Expression() )*
@@ -1543,7 +1708,7 @@ SimpleNode UnaryExpressionNotPlusMinus() :
 
 /**
  * 2006-05-23 - Matthias Hendler - Added lookahead otherwise warning encountered.
- *                                 Warning arised while adding methode triggerUnit(). 
+ *                                 Warning arised while adding methode TriggerUnit(). 
  * 2011-04-27 - SRT - Add optional NEW Keyword to cope with Object Type constructors
  */
 SimpleNode PrimaryExpression() :
@@ -1551,7 +1716,7 @@ SimpleNode PrimaryExpression() :
 {
   ( 
     ( // Explicitly cope with case where "NEW" is a Primary Prefix, such as in a Trigger WHEN clause  
-	    (<NEW_DOT> qualifiedID()  )   
+	    (<NEW_DOT> QualifiedID()  )   
       )
     |
     (
@@ -1580,10 +1745,10 @@ SimpleNode PrimaryPrefix() :
 | LOOKAHEAD(ObjectExpression() ) ( ObjectExpression() )  //SRT 20110604
 //| LOOKAHEAD(LikeExpression()) ( string = LikeExpression() ) { sb.append(string) ; } //SRT 20110604 
 | ( Name() )  
-| LOOKAHEAD(<SELECT>) (<SELECT>)   skip2NextTerminator(null,";")  
-| LOOKAHEAD(("(")+ <SELECT>) ("(")   skip2NextTerminator("(",")") ")"   
-| LOOKAHEAD(<WITH>) (<WITH>)   skip2NextTerminator(null,";")  
-| LOOKAHEAD(("(")+ <WITH>) ("(")   skip2NextTerminator("(",")") ")"   
+| LOOKAHEAD(<SELECT>) (<SELECT>)   Skip2NextTerminator(null,";")  
+| LOOKAHEAD(("(")+ <SELECT>) ("(")   Skip2NextTerminator("(",")") ")"   
+| LOOKAHEAD(<WITH>) (<WITH>)   Skip2NextTerminator(null,";")  
+| LOOKAHEAD(("(")+ <WITH>) ("(")   Skip2NextTerminator("(",")") ")"   
 |
   ("(" )  
   (Expression() )  
@@ -1603,12 +1768,12 @@ SimpleNode PrimarySuffix() :
 { }
 {
   (
-  (".")   (qualifiedID() ) 
+  (".")   (QualifiedID() ) 
   //Bug 3535118 - Method call may include dblink 
   //String dblink = null;
-  //["@" dblink = qualifiedName() {sb.append("@"); sb.append(dblink); } ]
+  //["@" dblink = QualifiedName() {sb.append("@"); sb.append(dblink); } ]
   | //Possible dblink 
-  ("@")   (qualifiedID() ) 
+  ("@")   (QualifiedID() ) 
   | //Possible Date Time Expression - Bug 3553725  
   ( <AT> (   <LOCAL> 
           | ( <TIME> <ZONE> ( <DBTIMEZONE> | <SESSIONTIMEZONE> | StringLiteral() | Expression() ) )
@@ -1626,7 +1791,7 @@ SimpleNode Literal() :
 { }
 {
   (
-  numericLiteral() 
+  NumericLiteral() 
 |
   <CHARACTER_LITERAL> 
 |
@@ -1688,7 +1853,7 @@ SimpleNode  StringLiteral() :
      if (!thisToken.image.endsWith(terminator))
      {
        //Loop until we find atoken that ends with a single-quote precede by the terminator
-       literal.append(readPastNextOccurrence(terminator));
+       literal.append(ReadPastNextOccurrence(terminator));
      }
    }
   }
@@ -1740,7 +1905,7 @@ SimpleNode MultiSetCondition() :
 * E.g. "+1" would be valid literal, which make parsing of "i+1" impossible
 * (here, we have tokens "i", "+" and "1")
 */
-SimpleNode numericLiteral() :
+SimpleNode NumericLiteral() :
 { }
 {
 	(
@@ -1752,29 +1917,44 @@ SimpleNode numericLiteral() :
 	}
 }
 
+/** This cannot be a token because these are valid labels '<< next_msg >>", '<<"OUTER LOOP">>'  
+*/
+SimpleNode Label() :
+{ 
+}
+{
+	(
+	"<<" UnqualifiedID() ">>" 
+	)
+	{ 
+   return jjtThis;
+	}
+}
+
+
 SimpleNode Name() :
 {
 }
 {
-  //unqualifiedID() (LOOKAHEAD(2) ("." | "%") qualifiedID())*
-  (unqualifiedID()) 
+  //UnqualifiedID() (LOOKAHEAD(2) ("." | "%") QualifiedID())*
+  (UnqualifiedID()) 
   (
    LOOKAHEAD(2) 
-    ("."  | "%" ) //qualifiedID() 
-    qualifiedID() 
+    ("."  | "%" ) //QualifiedID() 
+    QualifiedID() 
   )*
   {
   return jjtThis;
   }
 }
 
-SimpleNode qualifiedName() :
+SimpleNode QualifiedName() :
 {
 }
 {
   //Essentially unchanged as it previously returned a String 
-	(unqualifiedID()) 
-	( ("." qualifiedID())  )*
+	(UnqualifiedID()) 
+	( ("." QualifiedID())  )*
 	{ 
 	 return jjtThis ; 
 	}
@@ -1809,8 +1989,8 @@ SimpleNode Argument() :
 {
 }
 {
-	//[LOOKAHEAD(2) unqualifiedID() "=>"] Expression()
-	[LOOKAHEAD(2) (unqualifiedID())  ("=>" | <AS> )  ] 
+	//[LOOKAHEAD(2) UnqualifiedID() "=>"] Expression()
+	[LOOKAHEAD(2) (UnqualifiedID())  ("=>" | <AS> )  ] 
         (Expression() )  
 	//Allow Using CharacterSet suffix clause  
 	[
@@ -1827,22 +2007,18 @@ SimpleNode Argument() :
 // ============================================================================
 // D E C L A R A T I O N S
 // ============================================================================
-
-SimpleNode variableOrConstantDeclaration() :
+SimpleNode VariableOrConstantDeclaration() :
 { 
 }
 {
-	ID() [LOOKAHEAD(2) <CONSTANT> ] datatype()
-	[[<NOT>] <NULL>]
-	[
-	//SRT 20110427 (":=" | <_DEFAULT>) Expression()
-	(":" "=" | <_DEFAULT>) (Expression() )
-	] ";"
+  VariableOrConstantDeclarator() ";"
+  { return jjtThis ; }
 }
 
-SimpleNode datatypeDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
 
-SimpleNode pragma() :
+SimpleNode DatatypeDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
+
+SimpleNode Pragma() :
 { 
 }
 {
@@ -1857,22 +2033,24 @@ SimpleNode pragma() :
 		<RESTRICT_REFERENCES> "(" (ID() /*| <_DEFAULT>*/)
 		("," (ID() | StringLiteral() /* 20110526 <STRING_LITERAL> */ ) )+	")"
 		|
-		<EXCEPTION_INIT> "(" <IDENTIFIER> "," ["+"|"-"] numericLiteral() ")"
+		<EXCEPTION_INIT> "(" <IDENTIFIER> "," ["+"|"-"] NumericLiteral() ")"
 		|
-		<INTERFACE> "(" <IDENTIFIER> "," ID() [ "," numericLiteral() ] ")"
+		<INTERFACE> "(" <IDENTIFIER> "," ID() [ "," NumericLiteral() ] ")"
 		| //SRT 20110531 
-		qualifiedName() "(" readPastNextOccurrence(")") 
+		QualifiedName() "(" ReadPastNextOccurrence(")") 
 	)
 	";"
+      { return jjtThis ; }
 }
 
-SimpleNode exceptionDeclaration() :
+SimpleNode ExceptionDeclaration() :
 { }
 {
 	ID() <EXCEPTION> ";"
+      { return jjtThis ; }
 }
 
-SimpleNode parallel_clause() :
+SimpleNode ParallelClause() :
 {
 }
 {
@@ -1887,6 +2065,7 @@ SimpleNode parallel_clause() :
     )
     [ ( <ORDER> | <CLUSTER> ) <BY> "(" ID() ( "," ID() )*  ")" ] 
 
+      { return jjtThis ; }
 }
 
 // Copyright (C) 2002 Albert Tumanov
@@ -1896,53 +2075,57 @@ SimpleNode parallel_clause() :
  */
 
 // SRT *
-SimpleNode table()  :
+SimpleNode Table()  :
 
 { 
 }
 {
   <CREATE> [<GLOBAL> <TEMPORARY>]
-  <TABLE> objectNameDeclaration()
-  "(" tableColumn() ("," tableColumn())* ")"
+  <TABLE> ObjectNameDeclaration()
+  "(" TableColumn() ("," TableColumn())* ")"
   [LOOKAHEAD(2) <ON> <COMMIT> (<DELETE> | <PRESERVE>) <ROWS>]
   //### [physicalProperties()]
   //### [tableProperties()]
   [";"]
   
+      { return jjtThis ; }
 }
 
-SimpleNode tableColumn()  :
+SimpleNode TableColumn()  :
 { 
 }
 {
-  ID() datatype() [<_DEFAULT> Expression()] [[<NOT> ] <NULL>]
+  ID() Datatype() [<_DEFAULT> Expression()] [[<NOT> ] <NULL>]
+      { return jjtThis ; }
 }
 
 
 
-SimpleNode view()  :
+SimpleNode View()  :
 { 
 }
 {
   <CREATE> [<OR> <REPLACE>]
   [[<NO>] <FORCE>]
-  <VIEW> objectNameDeclaration()
-  ["(" viewColumn() ("," viewColumn())* ")"]
+  <VIEW> ObjectNameDeclaration()
+  ["(" ViewColumn() ("," ViewColumn())* ")"]
   //### OF ... WITH OBJECT IDENTIFIER...
   <AS>
-  statement() //SRT select()
+  Statement() //SRT select()
   //### WITH ...
   (";" | "/")
   
+      { return jjtThis ; }
 }
 
-SimpleNode viewColumn()  :
+SimpleNode ViewColumn()  :
 { }
 {
   ID()
+      { return jjtThis ; }
 }
 
-SimpleNode comment()  :
+SimpleNode Comment()  :
 { 
 }
 {
@@ -1952,12 +2135,13 @@ SimpleNode comment()  :
   )
   <IS> <STRING_LITERAL>
   [";"]
+      { return jjtThis ; }
 }
 // SRT * /
 
 
 
-SimpleNode typeMethod()  :
+SimpleNode TypeMethod()  :
 {
 }
 {
@@ -1977,7 +2161,7 @@ SimpleNode typeMethod()  :
 	(<CONSTRUCTOR> | <MEMBER> | <STATIC> ) 
 
 
-        methodDeclarator()
+        MethodDeclarator()
 
 
 	[<DETERMINISTIC>]
@@ -1990,27 +2174,28 @@ SimpleNode typeMethod()  :
 	        
 		(<IS> | <AS>)
 		(
-		  callSpecTail()
+		  CallSpecTail()
  		  [ ";" ] // This only exists in the type body
 		  | // SRT 20110524 Not really a Declaration any more ...  
 		  (
-			declarativeSection()
-			 <BEGIN> (statement())* (exceptionHandler())?  <END> [ID()] 
+			DeclarativeSection()
+			 <BEGIN> (Statement())* (ExceptionHandler())?  <END> [ID()] 
 			 ";" // This only exists in the type body
 		  )
 		)
 	]
         
 
+      { return jjtThis ; }
 }
 
 
-SimpleNode typeSpec()  :
+SimpleNode TypeSpecification()  :
 { 
 }
 {
 	[<CREATE> [<OR> <REPLACE>]]
-	<TYPE> objectNameDeclaration()
+	<TYPE> ObjectNameDeclaration()
 
         // incomplete_type_spec (empty) 
         // object_type_spec
@@ -2033,12 +2218,12 @@ SimpleNode typeSpec()  :
 
         [
 		( 
-		    <UNDER> objectNameDeclaration()  //SUBTYPE
+		    <UNDER> ObjectNameDeclaration()  //SUBTYPE
 		  | LOOKAHEAD(2) (<IS> | <AS> )   <OBJECT>  // OBJECT TYPE
 		  | LOOKAHEAD(2) (<IS> | <AS> )   <OPAQUE> <VARYING> "(*)" // OPAQUE TYPE
 		                                                                <USING> <LIBRARY>  (<IDENTIFIER> | <QUOTED_LITERAL> | StringLiteral() )
 			                                                                             [ "." (<IDENTIFIER> | <QUOTED_LITERAL> | StringLiteral() ) ]
-		  | LOOKAHEAD(2) (<IS> | <AS> ) collection_type_name() <OF> datatype() 
+		  | LOOKAHEAD(2) (<IS> | <AS> ) CollectionTypeName() <OF> Datatype() 
 
 		) 
 	]
@@ -2047,23 +2232,23 @@ SimpleNode typeSpec()  :
 	[ 
 	 LOOKAHEAD(8)   
 	//tokenIsAsUnder=
-	//<EXTERNAL> "NAME" <IDENTIFIER> <LANGUAGE> <JAVA> <USING> <IDENTIFIER> //javaInterfaceClass() //(<SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS> ) 
-	<EXTERNAL> <IDENTIFIER> <IDENTIFIER> <LANGUAGE> <JAVA> <USING> <IDENTIFIER> //javaInterfaceClass() //(<SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS> ) 
+	//<EXTERNAL> "NAME" <IDENTIFIER> <LANGUAGE> <JAVA> <USING> <IDENTIFIER> //JavaInterfaceClass() //(<SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS> ) 
+	<EXTERNAL> <IDENTIFIER> <IDENTIFIER> <LANGUAGE> <JAVA> <USING> <IDENTIFIER> //JavaInterfaceClass() //(<SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS> ) 
 	] 
 
 	[
-	  wrappedObject()
+	  WrappedObject()
 	]
 
         // //incomplete OBJECT TYPE and COLLECTION TYPEs will not have this 
         [
 		("(" )
                 //Try matching against keywords first to allow FINCTION and procedure as a fallback
-		(LOOKAHEAD(2)  typeMethod() | attributeDeclaration() 
-		 | pragma_clause()
+		(LOOKAHEAD(2)  TypeMethod() | AttributeDeclaration() 
+		 | PragmaClause()
 		)* //SRT 20111125 This part may be completely empty if is a subtype which is effectively an alias for the supertype 
-		( "," (  typeMethod() | LOOKAHEAD(2) attributeDeclaration() 
-		      | pragma_clause()
+		( "," (  TypeMethod() | LOOKAHEAD(2) AttributeDeclaration() 
+		      | PragmaClause()
 		      ) 
 		)*
 
@@ -2079,23 +2264,24 @@ SimpleNode typeSpec()  :
 	)*
 
         //Original Type Specification may be followed by a series of modifications
-        ( alterTypeSpec() ) *
+        ( AlterTypeSpec() ) *
 
 
         [
 	(";" | "/" )
-        ( alterTypeSpec() ( "/" | ";" ) )* //SRT 20110529 There may be more after the first terminator 
+        ( AlterTypeSpec() ( "/" | ";" ) )* //SRT 20110529 There may be more after the first terminator 
         ]
 	 
+      { return jjtThis ; }
 }
 
 
-SimpleNode alterTypeSpec()  :
+SimpleNode AlterTypeSpec()  :
 { 
 }
 {
 	<ALTER> 
-	<TYPE> qualifiedName() 
+	<TYPE> QualifiedName() 
 
         // REPLACE invoker_rights_clause AS OBJECT 
         //alter_method_spec 
@@ -2104,44 +2290,43 @@ SimpleNode alterTypeSpec()  :
          //SRT 20110529 Each ALTER TYPE statement may contaon 0 or more ADD or DROP clause 
          //When more than one clause exists, each clause is separated by comma ","  
        (
-       (
          [","] 
+       (
         (<ADD> | <MODIFY> ) 
         (
 	      // Move typeMethidMatching above attribure matvhing becausse FUNCTION is a valid attribute name 
              ( 
-		 (typeMethod()  )
+		 (TypeMethod()  )
 		  //( "," ( typeMethod(,typeVersion, tokenAlterTypeString) ) )*
              )
             |
             (
                   <ATTRIBUTE>
 		   ( "("  )*
-		    (attributeDeclaration() ) 
-		    ( "," ( attributeDeclaration() ) )*
+		    (AttributeDeclaration() ) 
+		    ( "," ( AttributeDeclaration() ) )*
 		   ( ")"  )*
             )
             |
-            (<LIMIT> numericLiteral() )
+            (<LIMIT> NumericLiteral() )
             |
-            ( <ELEMENT> <TYPE> datatype() )
+            ( <ELEMENT> <TYPE> Datatype() )
         )+
        )
        |
        (
-         [","] 
         (<DROP>) 
         (
             (
                   <ATTRIBUTE>
 		   ( "("  )*
-		    (attribute() ) 
-		    ( "," ( attribute() ) )*
+		    (Attribute() ) 
+		    ( "," ( Attribute() ) )*
 		   ( ")"  )*
             )
             |
              ( 
-		 (typeMethod() ) 
+		 (TypeMethod() ) 
 		  //( "," ( typeMethod(,typeVersion, tokenAlterTypeString) ) )*
              )
         )+
@@ -2155,15 +2340,15 @@ SimpleNode alterTypeSpec()  :
           }
           | 
           (<DROP> ( 
-		 (typeMethod() ) 
-		  ( "," ( typeMethod() ) )*
+		 (TypeMethod() ) 
+		  ( "," ( TypeMethod() ) )*
                  )
                  |
                  (
                   <ATTRIBUTE>
 		   [ "("  ]
-		    (qualifiedName() ) 
-		    ( "," ( qualifiedName() ) )*
+		    (QualifiedName() ) 
+		    ( "," ( QualifiedName() ) )*
 		   [ ")"  ]
                  )
           
@@ -2172,9 +2357,9 @@ SimpleNode alterTypeSpec()  :
           //alter_collection_clause 
 	  (        
           <MODIFY> 
-            (<LIMIT> tokenCollectionSize = numericLiteral() )
+            (<LIMIT> tokenCollectionSize = NumericLiteral() )
             |
-            ( <ELEMENT> <TYPE> baseType = datatype() )
+            ( <ELEMENT> <TYPE> baseType = Datatype() )
 	  )        
         |
 */
@@ -2190,8 +2375,8 @@ SimpleNode alterTypeSpec()  :
 
 		("(" )
 
-		(LOOKAHEAD(2) typeMethod() | attributeDeclaration() ) 
-		( "," ( LOOKAHEAD(2) typeMethod() | attributeDeclaration() ) )*
+		(LOOKAHEAD(2) TypeMethod() | AttributeDeclaration() ) 
+		( "," ( LOOKAHEAD(2) TypeMethod() | AttributeDeclaration() ) )*
 
 		")" 
 	]        
@@ -2226,17 +2411,18 @@ SimpleNode alterTypeSpec()  :
             
               [
                 [ <FORCE> ]
-                <EXCEPTIONS> <INTO> qualifiedName()
+                <EXCEPTIONS> <INTO> QualifiedName()
               ]
             )
         ] 
 
+      { return jjtThis ; }
 }
 
 
 
 /*
-SimpleNode typeBody()  :
+SimpleNode TypeBody()  :
 { Token name=null; }
 {
 	[<CREATE> [<OR> <REPLACE>]]
@@ -2245,15 +2431,15 @@ SimpleNode typeBody()  :
 
 	(
 	  (
-	    wrappedObject() 
+	    WrappedObject() 
 	  )
 	  |
 	  (
 	    (<IS> | <AS>)
 
-		    declarativeSection() //SRT 20110524 Allow PLDOc in Type Bodies 
+		    DeclarativeSection() //SRT 20110524 Allow PLDOc in Type Bodies 
 
-	    [ <BEGIN> (statement())* (exceptionHandler())? ] <END> [ID()] ";" 
+	    [ <BEGIN> (Statement())* (ExceptionHandler())? ] <END> [ID()] ";" 
 	  )
 	)
 }
@@ -2263,17 +2449,17 @@ SimpleNode typeBody()  :
 /**
   * Method 
 **/
-SimpleNode attributeDeclaration() :
+SimpleNode AttributeDeclaration() :
 { 
 }
 {
-	ID()  datatype()
+	ID()  Datatype()
       { return jjtThis ; }
 }
 
 
 
-SimpleNode attribute() :
+SimpleNode Attribute() :
 { 
 }
 {
@@ -2285,7 +2471,7 @@ SimpleNode attribute() :
 /*
  This was quick cut from PRAGMA
 */
-SimpleNode pragma_clause() :
+SimpleNode PragmaClause() :
 { 
 }
 {
@@ -2298,9 +2484,9 @@ SimpleNode pragma_clause() :
 		<RESTRICT_REFERENCES> "(" (ID() /*| <_DEFAULT>*/)
 		("," (ID() | StringLiteral() /* 20110526 <STRING_LITERAL> */) )+	")"
 		|
-		<EXCEPTION_INIT> "(" <IDENTIFIER> "," ["+"|"-"] numericLiteral() ")"
+		<EXCEPTION_INIT> "(" <IDENTIFIER> "," ["+"|"-"] NumericLiteral() ")"
 		|
-		<INTERFACE> "(" <IDENTIFIER> "," <IDENTIFIER> "," numericLiteral() ")"
+		<INTERFACE> "(" <IDENTIFIER> "," <IDENTIFIER> "," NumericLiteral() ")"
 	)
       { return jjtThis ; }
 }
@@ -2339,7 +2525,7 @@ FOR dml_event_clause
 
 non_dml_trigger :
 (BEFORE> |<AFTER> ) 
-(ddl_event | database_event) ( OR (ddl_event | database_event))*
+(DDLEvent | database_event) ( OR (DDLEvent | database_event))*
 ON
 (DATABASE | [schema.]SCHEMA
 
@@ -2379,13 +2565,13 @@ tps_body:
 (EXCEPTION exception_handler )*
 
 */
-SimpleNode triggerUnit()  :
+SimpleNode TriggerUnit()  :
 {
 }
 {
 	[<CREATE> [<OR> <REPLACE>]]
 	
-	(<TRIGGER>) objectNameDeclaration()
+	(<TRIGGER>) ObjectNameDeclaration()
 
 	// simple_dml_trigger | compound_dml_trigger | non_dml_trigger 
 	// simple_dml_trigger : 
@@ -2393,9 +2579,9 @@ SimpleNode triggerUnit()  :
 	)
 
 	//dml_event_clause 
-	( ((<DELETE> | <INSERT> | <UPDATE>) [LOOKAHEAD(6)<OF> ID() ("," ID() )*] ) | non_dml_event()   ) 
+	( ((<DELETE> | <INSERT> | <UPDATE>) [LOOKAHEAD(6)<OF> ID() ("," ID() )*] ) | NonDMLEvent()   ) 
 	
-	( <OR> ( ((<DELETE> | <INSERT> | <UPDATE>) [LOOKAHEAD(6)<OF> ID() ("," ID() )* ] ) | non_dml_event() )  )*
+	( <OR> ( ((<DELETE> | <INSERT> | <UPDATE>) [LOOKAHEAD(6)<OF> ID() ("," ID() )* ] ) | NonDMLEvent() )  )*
 	
 	<ON> 
 	(
@@ -2423,24 +2609,17 @@ SimpleNode triggerUnit()  :
 	(
 	 <CALL> PrimaryExpression() ";"
 	 //compound_trigger_block 
-	| compound_trigger_block()
+	| CompoundTriggerBlock()
 
 	|//plsql_block  
-	  (
-	    [
-	    <DECLARE>
-		    declarativeSection()
-	    ]
-	    
-	    <BEGIN> (statement())* (exceptionHandler())? <END> [ID()] ";"
-	  )
+	  Block() ";"
 	//| //<CALL> routine 
 	)
       { return jjtThis ; }
 }
 
 
-SimpleNode timing_point_section()  :
+SimpleNode TriggerTimingPointSection()  :
 {
 }
 {
@@ -2451,7 +2630,7 @@ SimpleNode timing_point_section()  :
  )  
  <IS> 
  <BEGIN>
- (statement())+ 
+ (Statement())+ 
  <END>  ( <BEFORE> | <AFTER> | <INSTEADOF> ) ( <STATEMENT> | <EACH> <ROW>) ";"
  )
  {
@@ -2462,7 +2641,7 @@ SimpleNode timing_point_section()  :
 
 
 
-SimpleNode compound_trigger_block()  :
+SimpleNode CompoundTriggerBlock()  :
 {
 }
 {
@@ -2470,22 +2649,22 @@ SimpleNode compound_trigger_block()  :
 
   (
     //Problems making the declaration optional
-    //declarativeSection()
-    //(timing_point_section())+
+    //DeclarativeSection()
+    //(TriggerTimingPointSection())+
     	(
-               timing_point_section()|
-		pragma() |
+               TriggerTimingPointSection()|
+		Pragma() |
 		LOOKAHEAD(2)
-		exceptionDeclaration() |
+		ExceptionDeclaration() |
 		LOOKAHEAD(2)
-		subtype_definition() |
+		SubTypeDefinition() |
 		LOOKAHEAD(4)
-		variableOrConstantDeclaration() |
+		VariableOrConstantDeclaration() |
 		LOOKAHEAD(2)
-		cursorSpec() |
-		cursorBody() |
-		collectionDeclaration() |
-		programUnit() 
+		CursorSpecification() |
+		CursorBody() |
+		CollectionDeclaration() |
+		ProgramUnit() 
 	)*
 
 
@@ -2499,24 +2678,24 @@ SimpleNode compound_trigger_block()  :
 /*
 non_dml_trigger :
 (BEFORE> |<AFTER> ) 
-(ddl_event | database_event) ( OR (ddl_event | database_event))*
+(DDLEvent | database_event) ( OR (DDLEvent | database_event))*
 ON
 (DATABASE | [schema.]SCHEMA
 */
-SimpleNode non_dml_trigger()  :
+SimpleNode NonDMLTrigger()  :
 {
 }
 {
  ( <BEFORE> | <AFTER> ) 
- ( ddl_event() | database_event() )
- ( <OR> ( ddl_event() | database_event() ) )*
+ ( DDLEvent() | DatabaseEvent() )
+ ( <OR> ( DDLEvent() | DatabaseEvent() ) )*
  <ON> 
  (<DATABASE> | [LOOKAHEAD(2) ID()"."] <SCHEMA>)
       { return jjtThis ; }
 }
 
 
-SimpleNode ddl_event(): {}
+SimpleNode DDLEvent(): {}
 {
   ( <ALTER> 
   | <ANALYZE> 
@@ -2537,7 +2716,7 @@ SimpleNode ddl_event(): {}
 }
 
 
-SimpleNode database_event(): {}
+SimpleNode DatabaseEvent(): {}
 {
   ( <STARTUP>
   | <SHUTDOWN> 
@@ -2549,9 +2728,9 @@ SimpleNode database_event(): {}
   { return jjtThis; }
 }
 
-SimpleNode non_dml_event(): {}
+SimpleNode NonDMLEvent(): {}
 {
-  (ddl_event() | database_event()) 
+  (DDLEvent() | DatabaseEvent()) 
   { return jjtThis; }
 }
 
@@ -2562,11 +2741,11 @@ enabling or disabling the trigger.
 
 Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 */
-SimpleNode alterTrigger()  :
+void AlterTrigger()  :
 {}
 {
 	<ALTER> <TRIGGER>
-	skip2NextTerminator(null,";") 
+	Skip2NextTerminator(null,";") 
 	";"
 	{
 		return;
@@ -2579,7 +2758,7 @@ SimpleNode alterTrigger()  :
 
 SKIP :
 {
-        //Tracker Issue 1433480 - skip2 and skipPast need to be able to check for EOL - so the characters 
+        //Tracker Issue 1433480 - Skip2 and SkipPast need to be able to check for EOL - so the characters 
 	//cannot be SKIPped
 	//" " | "\t" | "\n" | "\r" | "\f"
 	" " | "\t" | "\f"
@@ -2599,7 +2778,7 @@ SPECIAL_TOKEN :
 	<SINGLE_LINE_COMMENT: "--"(~["\n","\r"])* ("\n"|"\r"|"\r\n")?>
 }
 
-//Tracker Issue 1433480 - skip2 and skipPast need to be able to check for EOL - so it cannot be SKIPped
+//Tracker Issue 1433480 - Skip2 and SkipPast need to be able to check for EOL - so it cannot be SKIPped
 SPECIAL_TOKEN :
 {
 	<EOL: ("\n"|"\r"|"\r\n") >
@@ -4061,7 +4240,7 @@ SimpleNode KEYWORD_UNRESERVED (): {}
 //| <SESSIONS_PER_USER>
 | <SESSIONTIMEZONE>
 //| <SESSIONTZNAME>
-| <SET> //SET is defined as a reserved word but is used in "SYS"."DBMS_RESULT_CACHE_API" as a function name and as a pragma parameter
+| <SET> //SET is defined as a reserved word but is used in "SYS"."DBMS_RESULT_CACHE_API" as a function name and as a Pragma parameter
 //| <SET_TO_JOIN>
 //| <SETS>
 //| <SETTINGS>
@@ -4486,7 +4665,7 @@ SimpleNode ID(): {}
 /**
  * 2006-05-20 - Matthias Hendler - added <OLD>, <NEW>, <LOOP>, <INT>
  */
-SimpleNode unqualifiedID(): {}
+SimpleNode UnqualifiedID(): {}
 {
 	(
 		<IDENTIFIER>
@@ -4519,7 +4698,7 @@ SimpleNode unqualifiedID(): {}
 /**
  * 2006-05-20 - Matthias Hendler - added <LIMIT>
  */
-SimpleNode qualifiedID(): {}
+SimpleNode QualifiedID(): {}
 {
 	(
 		<IDENTIFIER>
@@ -4747,7 +4926,7 @@ SimpleNode qualifiedID(): {}
 	{ jjtThis.value = token ; return jjtThis ; }
 }
 
-SimpleNode typeKeyword(): {}
+SimpleNode TypeKeyword(): {}
 {
 	(
 	<BFILE_BASE> |
@@ -4782,7 +4961,7 @@ SimpleNode typeKeyword(): {}
 	{ jjtThis.value = token ; return jjtThis ; }
 }
 
-SimpleNode javaInterfaceClass(): {}
+SimpleNode JavaInterfaceClass(): {}
 {
 	(
           <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
@@ -4799,7 +4978,7 @@ SimpleNode javaInterfaceClass(): {}
  * 2006-05-18 - Matthias Hendler - added: Just for understanding javacc and not used,
  *                                        cause to many closing ENDs (IDENTIFIER) were mistyped.
  */
-SimpleNode equalsOldIDNewID(SimpleNode pOldID) :
+SimpleNode EqualsOldIDNewID(SimpleNode pOldID) :
 {
 	SimpleNode newID;
 	Token oldIDToken;
