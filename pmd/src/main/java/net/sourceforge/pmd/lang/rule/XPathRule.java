@@ -71,8 +71,6 @@ public class XPathRule extends AbstractRule {
 	 */
 	public void evaluate(Node node, RuleContext data) {
 		init();
-		System.err.println("Node="+node);
-		System.err.println("Data="+data);
 		List<Node> nodes = xpathRuleQuery.evaluate(node, data);
 		if (nodes != null) {
 			for (Node n : nodes) {

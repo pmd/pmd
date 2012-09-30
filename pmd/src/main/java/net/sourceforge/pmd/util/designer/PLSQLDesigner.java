@@ -275,11 +275,9 @@ public class PLSQLDesigner implements ClipboardOwner {
 
 		public ASTTreeNode(Node theNode) {
 			node = theNode;
-			System.err.println("SRT: ASTTreeNode node="+node);
 
 			Node parent = node.jjtGetParent();
 			if (parent != null) {
-				System.err.println("SRT: ASTTreeNode using parent="+parent);
 				this.parent = new ASTTreeNode(parent);
 			}
 		}
@@ -290,7 +288,6 @@ public class PLSQLDesigner implements ClipboardOwner {
 		}
 
 		public int getChildCount() {
-			System.err.println("SRT: ASTTreeNode getChildCount="+node.jjtGetNumChildren());
 			return node.jjtGetNumChildren();
 		}
 
@@ -315,7 +312,6 @@ public class PLSQLDesigner implements ClipboardOwner {
 
 		public Enumeration<ASTTreeNode> children() {
 
-			System.err.println("SRT: ASTTreeNode children");
 			if (getChildCount() > 0) {
 				getChildAt(0); // force it to build kids
 			}
@@ -468,15 +464,10 @@ public class PLSQLDesigner implements ClipboardOwner {
 	}
 
 	private void loadASTTreeData(TreeNode rootNode) {
-		System.err.println("SRT: loadASTTreeData settingModel with rootNode="+rootNode);
 		DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
-		System.err.println("SRT: loadASTTreeData settingModel with DefaultTreeModel="+treeModel);
 		astTreeWidget.setModel(treeModel);
-		System.err.println("SRT: loadASTTreeData settingRootVisible");
 		astTreeWidget.setRootVisible(true);
-		System.err.println("SRT: loadASTTreeData expandingAll");
 		astTreeWidget.expandAll(true);
-		System.err.println("SRT: loadASTTreeData expandeeAll");
 	}
 
 	private void loadSymbolTableTreeData(TreeNode rootNode) {
@@ -509,9 +500,9 @@ public class PLSQLDesigner implements ClipboardOwner {
 
 			System.err.println("SRT: ShowListener loadingAstTreeData");
 			loadASTTreeData(tn);
-			//SRTSystem.err.println("SRT: ShowListener loadingSymbolTableTreeData");
-			//SRTloadSymbolTableTreeData(null);
-			//SRTSystem.err.println("SRT: ShowListener loadedSymbolTableTreeData");
+			System.err.println("SRT: ShowListener loadingSymbolTableTreeData");
+			loadSymbolTableTreeData(null);
+			System.err.println("SRT: ShowListener loadedSymbolTableTreeData");
 		}
 	}
 

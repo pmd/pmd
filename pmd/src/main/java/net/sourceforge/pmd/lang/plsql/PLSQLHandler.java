@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 //import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-//import net.sourceforge.pmd.lang.input.ast.DumpFacade;
+import net.sourceforge.pmd.lang.plsql.ast.DumpFacade;
 import net.sourceforge.pmd.lang.plsql.PLSQLParser;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
 //import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
@@ -92,14 +92,14 @@ public class PLSQLHandler extends AbstractLanguageVersionHandler {
 	    }
 	};
     }
+    */
 
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
-		new DumpFacade().initializeWith(writer, prefix, recurse, (Node) rootNode);
+		new DumpFacade().initializeWith(writer, prefix, recurse, (SimpleNode) rootNode);
 	    }
 	};
     }
-    */
 }
