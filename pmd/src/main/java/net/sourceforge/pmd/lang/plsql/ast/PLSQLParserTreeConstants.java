@@ -6,140 +6,193 @@ public interface PLSQLParserTreeConstants
   public int JJTINPUT = 0;
   public int JJTSQLPLUSCOMMAND = 1;
   public int JJTGLOBAL = 2;
-  public int JJTGLOBALBLOCK = 3;
-  public int JJTPACKAGESPEC = 4;
+  public int JJTBLOCK = 3;
+  public int JJTPACKAGESPECIFICATION = 4;
   public int JJTPACKAGEBODY = 5;
   public int JJTDECLARATIVEUNIT = 6;
   public int JJTDECLARATIVESECTION = 7;
   public int JJTCOMPILATIONDECLARATIONFRAGMENT = 8;
   public int JJTPROGRAMUNIT = 9;
-  public int JJTPARAMETERDECLARATION = 10;
-  public int JJTDATATYPE = 11;
-  public int JJTCOMPILATIONDATATYPE = 12;
-  public int JJTCOLLECTION_TYPE_NAME = 13;
-  public int JJTSCALAR_DATATYPE_NAME = 14;
-  public int JJTDATETIMELITERAL = 15;
-  public int JJTEXCEPTIONHANDLER = 16;
-  public int JJTSKIP2NEXTTERMINATOR = 17;
-  public int JJTSKIP2NEXTOCCURRENCE = 18;
-  public int JJTSKIPPASTNEXTOCCURRENCE = 19;
-  public int JJTSKIP2NEXTTOKENOCCURRENCE = 20;
-  public int JJTSKIPPASTNEXTTOKENOCCURRENCE = 21;
-  public int JJTREAD2NEXTOCCURRENCE = 22;
-  public int JJTREADPASTNEXTOCCURRENCE = 23;
-  public int JJTSQLSTATEMENT = 24;
-  public int JJTWRAPPEDOBJECT = 25;
-  public int JJTSTATEMENT = 26;
-  public int JJTSUBTYPE_DEFINITION = 27;
-  public int JJTFIELDDECLARATION = 28;
-  public int JJTCOLLECTION_TYPE_DEFINITION = 29;
-  public int JJTCOLLECTIONDECLARATION = 30;
-  public int JJTOBJECTDECLARATION = 31;
-  public int JJTCALLSPECTAIL = 32;
-  public int JJTCURSORUNIT = 33;
-  public int JJTCURSORSPEC = 34;
-  public int JJTCURSORBODY = 35;
-  public int JJTEXPRESSION = 36;
-  public int JJTCOMPILATIONEXPRESSION = 37;
-  public int JJTASSIGNMENT = 38;
-  public int JJTCASEEXPRESSION = 39;
-  public int JJTLIKEEXPRESSION = 40;
-  public int JJTTRIMEXPRESSION = 41;
-  public int JJTOBJECTEXPRESSION = 42;
-  public int JJTCONDITIONALOREXPRESSION = 43;
-  public int JJTCONDITIONALANDEXPRESSION = 44;
-  public int JJTEQUALITYEXPRESSION = 45;
-  public int JJTRELATIONALEXPRESSION = 46;
-  public int JJTADDITIVEEXPRESSION = 47;
-  public int JJTSTRINGEXPRESSION = 48;
-  public int JJTMULTIPLICATIVEEXPRESSION = 49;
-  public int JJTUNARYEXPRESSION = 50;
-  public int JJTUNARYEXPRESSIONNOTPLUSMINUS = 51;
-  public int JJTPRIMARYEXPRESSION = 52;
-  public int JJTPRIMARYPREFIX = 53;
-  public int JJTPRIMARYSUFFIX = 54;
-  public int JJTLITERAL = 55;
-  public int JJTSTRINGLITERAL = 56;
-  public int JJTBOOLEANLITERAL = 57;
-  public int JJTNULLLITERAL = 58;
-  public int JJTMULTISETCONDITION = 59;
-  public int JJTNUMERICLITERAL = 60;
-  public int JJTNAME = 61;
-  public int JJTQUALIFIEDNAME = 62;
-  public int JJTARGUMENTS = 63;
-  public int JJTARGUMENTLIST = 64;
-  public int JJTARGUMENT = 65;
-  public int JJTVARIABLEORCONSTANTDECLARATION = 66;
-  public int JJTDATATYPEDECLARATION = 67;
-  public int JJTPRAGMA = 68;
-  public int JJTEXCEPTIONDECLARATION = 69;
-  public int JJTPARALLEL_CLAUSE = 70;
-  public int JJTTABLE = 71;
-  public int JJTTABLECOLUMN = 72;
-  public int JJTVIEW = 73;
-  public int JJTVIEWCOLUMN = 74;
-  public int JJTCOMMENT = 75;
-  public int JJTTYPEMETHOD = 76;
-  public int JJTTYPESPEC = 77;
-  public int JJTALTERTYPESPEC = 78;
-  public int JJTATTRIBUTEDECLARATION = 79;
-  public int JJTATTRIBUTE = 80;
-  public int JJTPRAGMA_CLAUSE = 81;
-  public int JJTTRIGGERUNIT = 82;
-  public int JJTTIMING_POINT_SECTION = 83;
-  public int JJTCOMPOUND_TRIGGER_BLOCK = 84;
-  public int JJTNON_DML_TRIGGER = 85;
-  public int JJTDDL_EVENT = 86;
-  public int JJTDATABASE_EVENT = 87;
-  public int JJTNON_DML_EVENT = 88;
-  public int JJTALTERTRIGGER = 89;
-  public int JJTKEYWORD_RESERVED = 90;
-  public int JJTKEYWORD_UNRESERVED = 91;
-  public int JJTID = 92;
-  public int JJTUNQUALIFIEDID = 93;
-  public int JJTQUALIFIEDID = 94;
-  public int JJTTYPEKEYWORD = 95;
-  public int JJTJAVAINTERFACECLASS = 96;
-  public int JJTEQUALSOLDIDNEWID = 97;
+  public int JJTOBJECTNAMEDECLARATION = 10;
+  public int JJTFORMALPARAMETER = 11;
+  public int JJTMETHODDECLARATION = 12;
+  public int JJTMETHODDECLARATOR = 13;
+  public int JJTFORMALPARAMETERS = 14;
+  public int JJTVARIABLEORCONSTANTDECLARATOR = 15;
+  public int JJTVARIABLEORCONSTANTDECLARATORID = 16;
+  public int JJTVARIABLEORCONSTANTINITIALIZER = 17;
+  public int JJTDATATYPE = 18;
+  public int JJTCOMPILATIONDATATYPE = 19;
+  public int JJTCOLLECTIONTYPENAME = 20;
+  public int JJTSCALARDATATYPENAME = 21;
+  public int JJTDATETIMELITERAL = 22;
+  public int JJTEXCEPTIONHANDLER = 23;
+  public int JJTSKIP2NEXTTERMINATOR = 24;
+  public int JJTSKIP2NEXTOCCURRENCE = 25;
+  public int JJTSKIPPASTNEXTOCCURRENCE = 26;
+  public int JJTSKIP2NEXTTOKENOCCURRENCE = 27;
+  public int JJTSKIPPASTNEXTTOKENOCCURRENCE = 28;
+  public int JJTREAD2NEXTOCCURRENCE = 29;
+  public int JJTREADPASTNEXTOCCURRENCE = 30;
+  public int JJTSQLSTATEMENT = 31;
+  public int JJTWRAPPEDOBJECT = 32;
+  public int JJTUNLABELLEDSTATEMENT = 33;
+  public int JJTSTATEMENT = 34;
+  public int JJTCASESTATEMENT = 35;
+  public int JJTLOOPSTATEMENT = 36;
+  public int JJTFORSTATEMENT = 37;
+  public int JJTWHILESTATEMENT = 38;
+  public int JJTIFSTATEMENT = 39;
+  public int JJTFORINDEX = 40;
+  public int JJTFORALLINDEX = 41;
+  public int JJTFORALLSTATEMENT = 42;
+  public int JJTGOTOSTATEMENT = 43;
+  public int JJTRETURNSTATEMENT = 44;
+  public int JJTEXITSTATEMENT = 45;
+  public int JJTRAISESTATEMENT = 46;
+  public int JJTCLOSESTATEMENT = 47;
+  public int JJTOPENSTATEMENT = 48;
+  public int JJTFETCHSTATEMENT = 49;
+  public int JJTEMBEDDEDSQLSTATEMENT = 50;
+  public int JJTPIPELINESTATEMENT = 51;
+  public int JJTCONDITIONALCOMPILATIONSTATEMENT = 52;
+  public int JJTSUBTYPEDEFINITION = 53;
+  public int JJTFIELDDECLARATION = 54;
+  public int JJTCOLLECTIONTYPEDEFINITION = 55;
+  public int JJTCOLLECTIONDECLARATION = 56;
+  public int JJTOBJECTDECLARATION = 57;
+  public int JJTCALLSPECTAIL = 58;
+  public int JJTCURSORUNIT = 59;
+  public int JJTCURSORSPECIFICATION = 60;
+  public int JJTCURSORBODY = 61;
+  public int JJTEXPRESSION = 62;
+  public int JJTCOMPILATIONEXPRESSION = 63;
+  public int JJTASSIGNMENT = 64;
+  public int JJTCASEEXPRESSION = 65;
+  public int JJTLIKEEXPRESSION = 66;
+  public int JJTTRIMEXPRESSION = 67;
+  public int JJTOBJECTEXPRESSION = 68;
+  public int JJTCONDITIONALOREXPRESSION = 69;
+  public int JJTCONDITIONALANDEXPRESSION = 70;
+  public int JJTEQUALITYEXPRESSION = 71;
+  public int JJTRELATIONALEXPRESSION = 72;
+  public int JJTADDITIVEEXPRESSION = 73;
+  public int JJTSTRINGEXPRESSION = 74;
+  public int JJTMULTIPLICATIVEEXPRESSION = 75;
+  public int JJTUNARYEXPRESSION = 76;
+  public int JJTUNARYEXPRESSIONNOTPLUSMINUS = 77;
+  public int JJTPRIMARYEXPRESSION = 78;
+  public int JJTPRIMARYPREFIX = 79;
+  public int JJTPRIMARYSUFFIX = 80;
+  public int JJTLITERAL = 81;
+  public int JJTSTRINGLITERAL = 82;
+  public int JJTBOOLEANLITERAL = 83;
+  public int JJTNULLLITERAL = 84;
+  public int JJTMULTISETCONDITION = 85;
+  public int JJTNUMERICLITERAL = 86;
+  public int JJTLABEL = 87;
+  public int JJTNAME = 88;
+  public int JJTQUALIFIEDNAME = 89;
+  public int JJTARGUMENTS = 90;
+  public int JJTARGUMENTLIST = 91;
+  public int JJTARGUMENT = 92;
+  public int JJTVARIABLEORCONSTANTDECLARATION = 93;
+  public int JJTDATATYPEDECLARATION = 94;
+  public int JJTPRAGMA = 95;
+  public int JJTEXCEPTIONDECLARATION = 96;
+  public int JJTPARALLELCLAUSE = 97;
+  public int JJTTABLE = 98;
+  public int JJTTABLECOLUMN = 99;
+  public int JJTVIEW = 100;
+  public int JJTVIEWCOLUMN = 101;
+  public int JJTCOMMENT = 102;
+  public int JJTTYPEMETHOD = 103;
+  public int JJTTYPESPECIFICATION = 104;
+  public int JJTALTERTYPESPEC = 105;
+  public int JJTATTRIBUTEDECLARATION = 106;
+  public int JJTATTRIBUTE = 107;
+  public int JJTPRAGMACLAUSE = 108;
+  public int JJTTRIGGERUNIT = 109;
+  public int JJTTRIGGERTIMINGPOINTSECTION = 110;
+  public int JJTCOMPOUNDTRIGGERBLOCK = 111;
+  public int JJTNONDMLTRIGGER = 112;
+  public int JJTDDLEVENT = 113;
+  public int JJTDATABASEEVENT = 114;
+  public int JJTNONDMLEVENT = 115;
+  public int JJTALTERTRIGGER = 116;
+  public int JJTKEYWORD_RESERVED = 117;
+  public int JJTKEYWORD_UNRESERVED = 118;
+  public int JJTID = 119;
+  public int JJTUNQUALIFIEDID = 120;
+  public int JJTQUALIFIEDID = 121;
+  public int JJTTYPEKEYWORD = 122;
+  public int JJTJAVAINTERFACECLASS = 123;
+  public int JJTEQUALSOLDIDNEWID = 124;
 
 
   public String[] jjtNodeName = {
-    "input",
-    "sqlPlusCommand",
-    "global",
-    "globalBlock",
-    "packageSpec",
-    "packageBody",
-    "declarativeUnit",
-    "declarativeSection",
+    "Input",
+    "SqlPlusCommand",
+    "Global",
+    "Block",
+    "PackageSpecification",
+    "PackageBody",
+    "DeclarativeUnit",
+    "DeclarativeSection",
     "CompilationDeclarationFragment",
-    "programUnit",
-    "parameterDeclaration",
-    "datatype",
+    "ProgramUnit",
+    "ObjectNameDeclaration",
+    "FormalParameter",
+    "MethodDeclaration",
+    "MethodDeclarator",
+    "FormalParameters",
+    "VariableOrConstantDeclarator",
+    "VariableOrConstantDeclaratorId",
+    "VariableOrConstantInitializer",
+    "Datatype",
     "CompilationDataType",
-    "collection_type_name",
-    "scalar_datatype_name",
+    "CollectionTypeName",
+    "ScalarDataTypeName",
     "DateTimeLiteral",
-    "exceptionHandler",
-    "skip2NextTerminator",
-    "skip2NextOccurrence",
-    "skipPastNextOccurrence",
-    "skip2NextTokenOccurrence",
-    "skipPastNextTokenOccurrence",
-    "read2NextOccurrence",
-    "readPastNextOccurrence",
-    "sqlStatement",
-    "wrappedObject",
-    "statement",
-    "subtype_definition",
-    "fieldDeclaration",
-    "collection_type_definition",
-    "collectionDeclaration",
-    "objectDeclaration",
-    "callSpecTail",
-    "cursorUnit",
-    "cursorSpec",
-    "cursorBody",
+    "ExceptionHandler",
+    "Skip2NextTerminator",
+    "Skip2NextOccurrence",
+    "SkipPastNextOccurrence",
+    "Skip2NextTokenOccurrence",
+    "SkipPastNextTokenOccurrence",
+    "Read2NextOccurrence",
+    "ReadPastNextOccurrence",
+    "SqlStatement",
+    "WrappedObject",
+    "UnlabelledStatement",
+    "Statement",
+    "CaseStatement",
+    "LoopStatement",
+    "ForStatement",
+    "WhileStatement",
+    "IfStatement",
+    "ForIndex",
+    "ForAllIndex",
+    "ForAllStatement",
+    "GotoStatement",
+    "ReturnStatement",
+    "ExitStatement",
+    "RaiseStatement",
+    "CloseStatement",
+    "OpenStatement",
+    "FetchStatement",
+    "EmbeddedSqlStatement",
+    "PipelineStatement",
+    "ConditionalCompilationStatement",
+    "SubTypeDefinition",
+    "FieldDeclaration",
+    "CollectionTypeDefinition",
+    "CollectionDeclaration",
+    "ObjectDeclaration",
+    "CallSpecTail",
+    "CursorUnit",
+    "CursorSpecification",
+    "CursorBody",
     "Expression",
     "CompilationExpression",
     "Assignment",
@@ -164,44 +217,45 @@ public interface PLSQLParserTreeConstants
     "BooleanLiteral",
     "NullLiteral",
     "MultiSetCondition",
-    "numericLiteral",
+    "NumericLiteral",
+    "Label",
     "Name",
-    "qualifiedName",
+    "QualifiedName",
     "Arguments",
     "ArgumentList",
     "Argument",
-    "variableOrConstantDeclaration",
-    "datatypeDeclaration",
-    "pragma",
-    "exceptionDeclaration",
-    "parallel_clause",
-    "table",
-    "tableColumn",
-    "view",
-    "viewColumn",
-    "comment",
-    "typeMethod",
-    "typeSpec",
-    "alterTypeSpec",
-    "attributeDeclaration",
-    "attribute",
-    "pragma_clause",
-    "triggerUnit",
-    "timing_point_section",
-    "compound_trigger_block",
-    "non_dml_trigger",
-    "ddl_event",
-    "database_event",
-    "non_dml_event",
-    "alterTrigger",
+    "VariableOrConstantDeclaration",
+    "DatatypeDeclaration",
+    "Pragma",
+    "ExceptionDeclaration",
+    "ParallelClause",
+    "Table",
+    "TableColumn",
+    "View",
+    "ViewColumn",
+    "Comment",
+    "TypeMethod",
+    "TypeSpecification",
+    "AlterTypeSpec",
+    "AttributeDeclaration",
+    "Attribute",
+    "PragmaClause",
+    "TriggerUnit",
+    "TriggerTimingPointSection",
+    "CompoundTriggerBlock",
+    "NonDMLTrigger",
+    "DDLEvent",
+    "DatabaseEvent",
+    "NonDMLEvent",
+    "AlterTrigger",
     "KEYWORD_RESERVED",
     "KEYWORD_UNRESERVED",
     "ID",
-    "unqualifiedID",
-    "qualifiedID",
-    "typeKeyword",
-    "javaInterfaceClass",
-    "equalsOldIDNewID",
+    "UnqualifiedID",
+    "QualifiedID",
+    "TypeKeyword",
+    "JavaInterfaceClass",
+    "EqualsOldIDNewID",
   };
 }
-/* JavaCC - OriginalChecksum=a363ff9d15ee53eafab8b6f649a2ea39 (do not edit this line) */
+/* JavaCC - OriginalChecksum=b2a2579a7a7d9170078a1bb2807ce982 (do not edit this line) */

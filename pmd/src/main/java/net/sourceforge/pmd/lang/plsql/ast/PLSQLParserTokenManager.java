@@ -23,7 +23,12 @@ import java.io.*;
 /** Token Manager. */
 public class PLSQLParserTokenManager implements PLSQLParserConstants
 {
+	private String fileName ; 
 
+	public void setFileName(String fileName)
+	{
+	 this.fileName = fileName;
+	}
   /** Debug output. */
   public  java.io.PrintStream debugStream = System.out;
   /** Set debug output. */
@@ -48,7 +53,7 @@ private int jjMoveStringLiteralDfa0_0()
          jjmatchedKind = 25;
          return jjMoveNfa_0(3, 0);
       case 33:
-         jjmatchedKind = 15;
+         jjmatchedKind = 13;
          return jjMoveNfa_0(3, 0);
       case 36:
          return jjMoveStringLiteralDfa1_0(0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x1fff8L, 0x0L);
@@ -62,16 +67,16 @@ private int jjMoveStringLiteralDfa0_0()
          jjmatchedKind = 7;
          return jjMoveNfa_0(3, 0);
       case 42:
-         jjmatchedKind = 22;
-         return jjMoveStringLiteralDfa1_0(0x200000L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L);
+         jjmatchedKind = 20;
+         return jjMoveStringLiteralDfa1_0(0x80000L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L);
       case 43:
-         jjmatchedKind = 18;
+         jjmatchedKind = 16;
          return jjMoveNfa_0(3, 0);
       case 44:
          jjmatchedKind = 6;
          return jjMoveNfa_0(3, 0);
       case 45:
-         jjmatchedKind = 19;
+         jjmatchedKind = 17;
          return jjMoveNfa_0(3, 0);
       case 46:
          jjmatchedKind = 3;
@@ -86,14 +91,14 @@ private int jjMoveStringLiteralDfa0_0()
          jjmatchedKind = 4;
          return jjMoveNfa_0(3, 0);
       case 60:
-         jjmatchedKind = 16;
-         return jjMoveStringLiteralDfa1_0(0x2000L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L);
+         jjmatchedKind = 14;
+         return jjMoveStringLiteralDfa1_0(0x200000L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L);
       case 61:
          jjmatchedKind = 10;
          return jjMoveStringLiteralDfa1_0(0x800000L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L);
       case 62:
-         jjmatchedKind = 17;
-         return jjMoveStringLiteralDfa1_0(0x4000L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L);
+         jjmatchedKind = 15;
+         return jjMoveStringLiteralDfa1_0(0x400000L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L);
       case 64:
          jjmatchedKind = 2;
          return jjMoveNfa_0(3, 0);
@@ -171,7 +176,7 @@ private int jjMoveStringLiteralDfa0_0()
       case 122:
          return jjMoveStringLiteralDfa1_0(0x0L, 0x0L, 0x0L, 0x0L, 0x100000000000000L, 0x0L, 0x0L);
       case 124:
-         return jjMoveStringLiteralDfa1_0(0x100000L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L);
+         return jjMoveStringLiteralDfa1_0(0x40000L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L, 0x0L);
       default :
          return jjMoveNfa_0(3, 0);
    }
@@ -185,9 +190,9 @@ private int jjMoveStringLiteralDfa1_0(long active0, long active1, long active2, 
    switch(curChar)
    {
       case 42:
-         if ((active0 & 0x200000L) != 0L)
+         if ((active0 & 0x80000L) != 0L)
          {
-            jjmatchedKind = 21;
+            jjmatchedKind = 19;
             jjmatchedPos = 1;
          }
          else if ((active0 & 0x20000000L) != 0L)
@@ -204,16 +209,16 @@ private int jjMoveStringLiteralDfa1_0(long active0, long active1, long active2, 
          }
          return jjMoveStringLiteralDfa2_0(active0, 0x100L, active1, 0L, active2, 0L, active3, 0L, active4, 0L, active5, 0L, active6, 0L);
       case 60:
-         if ((active0 & 0x2000L) != 0L)
+         if ((active0 & 0x200000L) != 0L)
          {
-            jjmatchedKind = 13;
+            jjmatchedKind = 21;
             jjmatchedPos = 1;
          }
          break;
       case 62:
-         if ((active0 & 0x4000L) != 0L)
+         if ((active0 & 0x400000L) != 0L)
          {
-            jjmatchedKind = 14;
+            jjmatchedKind = 22;
             jjmatchedPos = 1;
          }
          else if ((active0 & 0x800000L) != 0L)
@@ -354,9 +359,9 @@ private int jjMoveStringLiteralDfa1_0(long active0, long active1, long active2, 
          }
          return jjMoveStringLiteralDfa2_0(active0, 0x8000000000000000L, active1, 0L, active2, 0L, active3, 0L, active4, 0x2000e0L, active5, 0L, active6, 0L);
       case 124:
-         if ((active0 & 0x100000L) != 0L)
+         if ((active0 & 0x40000L) != 0L)
          {
-            jjmatchedKind = 20;
+            jjmatchedKind = 18;
             jjmatchedPos = 1;
          }
          break;
@@ -3238,7 +3243,19 @@ static final long[] jjbitVec2 = {
    0x0L, 0x0L, 0xffffffffffffffffL, 0xffffffffffffffffL
 };
 static final long[] jjbitVec3 = {
-   0x0L, 0x0L, 0x0L, 0x2000000000000000L
+   0x0L, 0x0L, 0x100000000000000L, 0x80000000000000L
+};
+static final long[] jjbitVec4 = {
+   0x0L, 0x0L, 0x60000L, 0x0L
+};
+static final long[] jjbitVec5 = {
+   0x0L, 0x0L, 0x0L, 0x40L
+};
+static final long[] jjbitVec6 = {
+   0x201000000000000L, 0x0L, 0x0L, 0x0L
+};
+static final long[] jjbitVec7 = {
+   0x4L, 0x0L, 0x0L, 0x0L
 };
 private int jjMoveNfa_0(int startState, int curPos)
 {
@@ -4100,8 +4117,16 @@ private static final boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, lo
 {
    switch(hiByte)
    {
-      case 255:
+      case 0:
          return ((jjbitVec3[i2] & l2) != 0L);
+      case 1:
+         return ((jjbitVec4[i2] & l2) != 0L);
+      case 2:
+         return ((jjbitVec5[i2] & l2) != 0L);
+      case 32:
+         return ((jjbitVec6[i2] & l2) != 0L);
+      case 251:
+         return ((jjbitVec7[i2] & l2) != 0L);
       default :
          return false;
    }
@@ -4110,8 +4135,8 @@ private static final boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, lo
 /** Token literal values. */
 public static final String[] jjstrLiteralImages = {
 "", "\57", "\100", "\56", "\73", "\50", "\54", "\51", "\56\56\56", "\72", 
-"\75", "\45", "\56\56", "\74\74", "\76\76", "\41", "\74", "\76", "\53", "\55", 
-"\174\174", "\52\52", "\52", "\75\76", "\50\52\51", null, null, null, null, null, null, 
+"\75", "\45", "\56\56", "\41", "\74", "\76", "\53", "\55", "\174\174", "\52\52", 
+"\52", "\74\74", "\76\76", "\75\76", "\50\52\51", null, null, null, null, null, null, 
 null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
 null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
 null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
