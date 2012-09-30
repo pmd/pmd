@@ -134,15 +134,10 @@ public class PLSQLDesigner implements ClipboardOwner {
 		Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
 		//Node node = parser.parse(null, new StringReader(codeEditorPane.getText()));
 		String source = codeEditorPane.getText();
-		System.err.println("SRT: getCompilationUnit source="+source);
 		Node node = parser.parse(null, new StringReader(source));
-		System.err.println("SRT: getCompilationUnit parser returns="+node);
 
-		System.err.println("SRT: getCompilationUnit gettingSymbolFacade");
 		languageVersionHandler.getSymbolFacade().start(node);
-		System.err.println("SRT: getCompilationUnit gettingTypeResolutionFacade");
 		languageVersionHandler.getTypeResolutionFacade(null).start(node);
-		System.err.println("SRT: getCompilationUnit returning ="+node);
 		return node;
 	}
 
@@ -471,15 +466,10 @@ public class PLSQLDesigner implements ClipboardOwner {
 	}
 
 	private void loadSymbolTableTreeData(TreeNode rootNode) {
-		System.err.println("SRT: loadSymbolTableTreeData called with rootNode="+rootNode);
 		if (rootNode != null) {
-			System.err.println("SRT: SymbolTableTree settingModel");
 			symbolTableTreeWidget.setModel(new DefaultTreeModel(rootNode));
-			System.err.println("SRT: SymbolTableTree expandingAll");
 			symbolTableTreeWidget.expandAll(true);
-			System.err.println("SRT: SymbolTableTree expandedAll");
 		} else {
-			System.err.println("SRT: SymbolTableTree rootNode is null");
 			symbolTableTreeWidget.setModel(null);
 		}
 	}
@@ -489,20 +479,14 @@ public class PLSQLDesigner implements ClipboardOwner {
 			TreeNode tn;
 			try {
 				Node lastCompilationUnit = getCompilationUnit();
-				System.err.println("SRT: ShowListener lastCompilationUnit="+lastCompilationUnit);
 				tn = new ASTTreeNode(lastCompilationUnit);
-				System.err.println("SRT: ShowListener astTreeNode="+tn);
 			} catch (ParseException pe) {
-				System.err.println("SRT: ShowListener lastCompilationUnit Exception");
 				pe.printStackTrace(System.err);
 				tn = new ExceptionNode(pe);
 			}
 
-			System.err.println("SRT: ShowListener loadingAstTreeData");
 			loadASTTreeData(tn);
-			System.err.println("SRT: ShowListener loadingSymbolTableTreeData");
 			loadSymbolTableTreeData(null);
-			System.err.println("SRT: ShowListener loadedSymbolTableTreeData");
 		}
 	}
 
