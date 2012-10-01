@@ -18770,7 +18770,7 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
- jjtn000.setImage(simpleNode.getImage()) ;
+   if (null!=simpleNode) { jjtn000.setImage(simpleNode.getImage()) ; }
  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
