@@ -233,11 +233,13 @@ SimpleNode Block()  :
 
 
 SimpleNode PackageSpecification()  :
-{ }
+{ 
+ SimpleNode simpleNode = null ;
+}
 {
       (
 	[<CREATE> [<OR> <REPLACE>]]
-	<PACKAGE> ObjectNameDeclaration()
+	<PACKAGE> simpleNode = ObjectNameDeclaration()
 
 	(<AUTHID> (<CURRENT_USER> | <DEFINER>))?
 
@@ -255,15 +257,17 @@ SimpleNode PackageSpecification()  :
 	  )
 	)
       )
-      { return jjtThis ; }
+      { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 SimpleNode PackageBody()  :
-{ }
+{ 
+ SimpleNode simpleNode = null ;
+}
 {
     (
 	[<CREATE> [<OR> <REPLACE>]]
-	( <PACKAGE> | <TYPE> ) <BODY> ObjectNameDeclaration()
+	( <PACKAGE> | <TYPE> ) <BODY> simpleNode = ObjectNameDeclaration()
 
 	(
 	  (
@@ -281,7 +285,7 @@ SimpleNode PackageBody()  :
 	  )
 	)
     )
-    { return jjtThis ; }
+    { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 SimpleNode DeclarativeUnit()  :
@@ -406,25 +410,27 @@ SimpleNode ProgramUnit()  :
 }
 
 SimpleNode ObjectNameDeclaration() :
-{}
+{SimpleNode schemaName = null, objectName = null ; }
 {
-  (LOOKAHEAD(2) ID()".")? ID()
+  [ LOOKAHEAD(2) schemaName = ID() "." ] objectName = ID() 
+  { jjtThis.setImage(  (null == schemaName) ?  objectName.getImage() : (schemaName.getImage() + "." + objectName.getImage() )  )  ; }
   { return jjtThis ; }
 }
 
 
 SimpleNode FormalParameter()  :
 {
+ SimpleNode simpleNode = null ;
 }
 {
    (
-	ID()
+	simpleNode = ID()
 	// the order of outer "|" is important !
 	( LOOKAHEAD(2) ( LOOKAHEAD(2) ( (<OUT>|(<IN> <OUT>)) (LOOKAHEAD(2) <NOCOPY>  )? ) | <IN> ) )?
 	("..."    | Datatype())    
 	( (":" "="|<_DEFAULT>) Expression() )?
    )
-   { return jjtThis ; }
+   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 
@@ -442,10 +448,12 @@ SimpleNode MethodDeclaration() :
 
 
 SimpleNode MethodDeclarator() :
-{}
+{
+ SimpleNode simpleNode = null ;
+}
 {
   ( <FUNCTION> 
-    ObjectNameDeclaration() 
+    simpleNode = ObjectNameDeclaration() 
     (
       WrappedObject()
       |
@@ -453,131 +461,158 @@ SimpleNode MethodDeclarator() :
       <RETURN> Datatype() 
     )
   | <PROCEDURE> 
-    ObjectNameDeclaration() 
+    simpleNode = ObjectNameDeclaration() 
     (
       WrappedObject()
       |
       [ FormalParameters() ]
     )
   )
-  { return jjtThis ; }
+  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 
 SimpleNode FormalParameters() :
-{}
+{
+ SimpleNode simpleNode = null ;
+ StringBuffer sb = new StringBuffer();
+}
 {
   (
-  "(" [ FormalParameter() ( "," FormalParameter() )* ] ")"
+  "("  {sb.append("(");}
+      [ simpleNode = FormalParameter() { sb.append(simpleNode.getImage());}
+        ( "," simpleNode = FormalParameter() { sb.append(","+simpleNode.getImage());}  )* 
+      ] 
+   ")"{sb.append(")");}
   )
-  { return jjtThis ; }
+  { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
 }
 
 
 
 
 SimpleNode VariableOrConstantDeclarator() :
-{}
+{
+ SimpleNode simpleNode = null ;
+ StringBuffer sb = new StringBuffer();
+}
 {
   (
-  VariableOrConstantDeclaratorId() 
-  [LOOKAHEAD(2) <CONSTANT> ] Datatype()
-  [[<NOT>] <NULL>]
-  [ ( ":" "=" | <_DEFAULT> )  VariableOrConstantInitializer() ]
+  simpleNode = VariableOrConstantDeclaratorId() { sb.append(simpleNode.getImage());}
+  [LOOKAHEAD(2) <CONSTANT> {sb.append(" " + token.image);} ] simpleNode = Datatype() { sb.append(" " + simpleNode.getImage());}
+  [[<NOT> {sb.append(" " + token.image);} ] <NULL> {sb.append(" " + token.image);} ]
+  [ ( ":" "=" {sb.append(" :=");}| <_DEFAULT> {sb.append(" " + token.image);})  
+    simpleNode = VariableOrConstantInitializer() { sb.append(" " + simpleNode.getImage());}
+  ]
   )
-  { return jjtThis ; }
+  { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
 }
 
 SimpleNode VariableOrConstantDeclaratorId() :
-{}
 {
-  ID()
-  { return jjtThis ; }
+ SimpleNode simpleNode = null ;
+}
+{
+  simpleNode = ID()
+  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 SimpleNode VariableOrConstantInitializer() :
-{}
 {
- Expression()
-  { return jjtThis ; }
+ SimpleNode simpleNode = null ;
 }
+{
+ simpleNode = Expression()
+  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
+}
+
 
 
 
 SimpleNode Datatype() :
 { 
+ SimpleNode simpleNode = null ;
+ StringBuffer sb = new StringBuffer();
 }
 {
 	(
 		// this should be first
-		CompilationDataType() |
-		LOOKAHEAD(2) ScalarDataTypeName()
+		simpleNode = CompilationDataType() {sb.append(simpleNode.getImage());} |
+		LOOKAHEAD(2) simpleNode = ScalarDataTypeName() {sb.append(simpleNode.getImage());} 
 		|
 		(
-		  ( [LOOKAHEAD(2) <REF>] QualifiedName() 
+		  ( [LOOKAHEAD(2) <REF>  {sb.append(token.image);}  ] simpleNode = QualifiedName() {sb.append(simpleNode.getImage());} 
 		    //Bug 35352414 - datatype may include dblink 
-		    ["@" QualifiedName()  ]
-		    ["%" (<TYPE>|<ROWTYPE>)] )
+		    ["@" simpleNode = QualifiedName() {sb.append("@"+simpleNode.getImage());}  ]
+		    ["%" (<TYPE>|<ROWTYPE>){sb.append("%"+token.image);} ] 
+                  )
 		)
 	)
-	{ return jjtThis; }
+	{ jjtThis.setImage(sb.toString()) ;  return jjtThis; }
 }
+
 
 SimpleNode CompilationDataType() :
 { 
+  SimpleNode simpleNode = null; 
+  StringBuffer sb = new StringBuffer() ;
 }
 {
 	(
-	  <CC_IF>  
-	  ConditionalOrExpression()  
-	  <CC_THEN>  
-	  Datatype()  
+	  <CC_IF> {sb.append(" "); sb.append(token.image) ; } 
+	  simpleNode= ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
+	  <CC_THEN> {sb.append(" "); sb.append(token.image); } 
+	  simpleNode = Datatype() {sb.append(" "); sb.append(simpleNode.getImage()); } 
 
 	  ( 
-	    <CC_ELSIF>  
-	    ConditionalOrExpression()   
-	    <CC_THEN>  
-	    Datatype()  
+	    <CC_ELSIF> {sb.append(" "); sb.append(token.image); } 
+	    simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }  
+	    <CC_THEN> {sb.append(" "); sb.append(token.image); } 
+	    simpleNode = Datatype() {sb.append(" "); sb.append(simpleNode.getImage()); } 
 	  )* 
 
 	  ( 
-	    <CC_ELSE>  
-	    Datatype()   
+	    <CC_ELSE> {sb.append(" "); sb.append(token.image); } 
+	    simpleNode = Datatype()  {sb.append(" "); sb.append(simpleNode.getImage()); } 
 	  )*
 
-	  <CC_END>  
+	  <CC_END> {sb.append(" "); sb.append(token.image); } 
 	)
  { 
- return jjtThis ;
+ jjtThis.setImage(sb.toString()) ;  return jjtThis;
  }
 }
 
 SimpleNode CollectionTypeName() :
-{ 
+{ SimpleNode size=null, precision=null;
+	StringBuffer sb = new StringBuffer();
 }
 {
-     (
      (
 	// Collection types
-  	<TABLE> | <VARRAY> | (<VARYING><ARRAY> ) 
+  	<TABLE> | <VARRAY> | (<VARYING><ARRAY> {sb.append( "VARYING ARRAY") ;}) 
      )
 
-	(LOOKAHEAD(2) "(" NumericLiteral() 
-		["," NumericLiteral() ]
-		[ <CHAR> ]
-		[ <BYTE> ]
-	")" )?
+    {
+      if (sb.length() ==  0) {
+        sb.append(token.toString());
+      }
+    }
+	(LOOKAHEAD(2) "(" size=NumericLiteral() {sb.append( "(" + size);}
+		["," precision=NumericLiteral() {sb.append( "," + precision);}]
+		[ <CHAR> {sb.append( " CHAR") ;}]
+		[ <BYTE> {sb.append( " BYTE") ;}]
+	")" {sb.append( ")");})?
 
-     )
-     { return jjtThis ; }
+      { jjtThis.setImage(sb.toString()) ;  return jjtThis; }
 }
-
 
 SimpleNode ScalarDataTypeName() :
-{ 
+{ SimpleNode size=null, precision=null ;
+	StringBuffer name = new StringBuffer();
+	SimpleNode characterSet = null;
 }
 {
-   (
 	(
 	//Base types used in SYS.STANDARD
 	<BFILE_BASE> |
@@ -588,7 +623,7 @@ SimpleNode ScalarDataTypeName() :
 	<NUMBER_BASE> | 
 
 	// scalar types - numeric:
-  	<BINARY_INTEGER> | <DEC> | <DECIMAL> | (<DOUBLE><PRECISION> ) |
+  	<BINARY_INTEGER> | <DEC> | <DECIMAL> | (<DOUBLE><PRECISION> {name.append("DOUBLE PRECISION");}) |
   	<FLOAT> | <INT> | <INTEGER> | <NATURAL> |
 	<NATURALN> | <NUMBER> | <NUMERIC> | <PLS_INTEGER> | <POSITIVE> | <POSITIVEN> | <REAL> | <SIGNTYPE> |
 	<SMALLINT> |
@@ -598,7 +633,7 @@ SimpleNode ScalarDataTypeName() :
 	  (
 	  <CHAR> | <CHARACTER> 
 	  //SRT | LOOKAHEAD(2) (<LONG><RAW> {name = "LONG RAW";}) | LOOKAHEAD(2) <LONG> | 
-	  | LOOKAHEAD(2) (<LONG><RAW> ) | <LONG> | 
+	  | LOOKAHEAD(2) (<LONG><RAW> {name.append("LONG RAW");}) | <LONG> | 
 	  <NCHAR> | <NVARCHAR2> | <RAW> | <ROWID> |
 	  <STRING> | <UROWID> | <VARCHAR> | <VARCHAR2> | <CLOB> | <NCLOB> 
 	  )
@@ -618,23 +653,28 @@ SimpleNode ScalarDataTypeName() :
 
 	// reference types
   	<SYS_REFCURSOR> | //SRT Added to support pre-defined weak REF CURSOR
-  	(<REF><CURSOR> ) |
+  	(<REF><CURSOR> {name.append("REF CURSOR");}) |
 	//<REF> object_type - defined elsewhere
 
 	// scalar types - date/time:
 	<DATE> |
-        LOOKAHEAD(2) (<INTERVAL><YEAR> ) |
-        LOOKAHEAD(2) (<INTERVAL><DAY> ) |
+        LOOKAHEAD(2) (<INTERVAL><YEAR> {name.append("INTERVAL YEAR");}) |
+        LOOKAHEAD(2) (<INTERVAL><DAY> {name.append("INTERVAL DAY");}) |
 	<TIME> |
 	<TIMESTAMP> |
-      (<SELF><AS><RESULT> )  //SRT Added to support CONSTRUCTOR methods 
+        (<SELF><AS><RESULT> {name.append("SELF AS RESULT");})  //SRT Added to support CONSTRUCTOR methods 
      )
 
-	(LOOKAHEAD(2) "(" NumericLiteral() 
-		["," UnaryExpression(true) ] //NUMBERS may have negative precision
-		[ <CHAR> ]
-		[ <BYTE> ]
-	")" )?
+    {
+      if (name.length() == 0 ) {
+        name.append(token.toString());
+      }
+    }
+	(LOOKAHEAD(2) "(" size=NumericLiteral() {name.append("("); name.append(size.getImage()) ;}
+		["," precision=UnaryExpression(true) {name.append(",") ; name.append(precision.getImage()) ;}] //NUMBERS may have negative precision
+		[ <CHAR> {name.append(" CHAR") ;}]
+		[ <BYTE> {name.append(" BYTE") ;}]
+	")" {name.append( ")") ;})?
 
         /*
 	    LOOKAHEAD(3) (<DAY><TO><SECOND> {name += " DAY TO SECOND";}) |
@@ -660,25 +700,27 @@ SimpleNode ScalarDataTypeName() :
       */
 
 
-    (<CHARACTER> <SET> Name()  ) |
+    (<CHARACTER> <SET> characterSet = Name() {name.append( " CHARACTER SET ") ;  name.append(characterSet.getImage()) ;} ) |
 	  
-    LOOKAHEAD(4) (<WITH><LOCAL><TIME><ZONE> ) |
-    LOOKAHEAD(3) (<WITH><TIME><ZONE> ) |
-    LOOKAHEAD(2) (<TO><MONTH> ) |
-    LOOKAHEAD(2) (<TO><SECOND>  
+    LOOKAHEAD(4) (<WITH><LOCAL><TIME><ZONE> {name.append(" WITH LOCAL TIME ZONE");}) |
+    LOOKAHEAD(3) (<WITH><TIME><ZONE> {name.append( " WITH TIME ZONE");}) |
+    LOOKAHEAD(2) (<TO><MONTH> {name.append( " TO MONTH");}) |
+    LOOKAHEAD(2) (<TO><SECOND> {name.append( " TO SECOND");} 
 			(
-			  LOOKAHEAD(2) "(" NumericLiteral() 
-					")" 
+			  LOOKAHEAD(2) "(" precision=NumericLiteral() {name.append( "(" + precision) ;}
+					")" {name.append( ")");}
 			)?
                  )
    ]
 
-   )
-   { return jjtThis; }
+      { jjtThis.setImage(name.toString()) ;  return jjtThis; }
 }
 
 SimpleNode DateTimeLiteral() :
 { 
+ Token t = null ; 
+ SimpleNode simpleNode = null ;
+ StringBuffer sb = new StringBuffer() ; 
 }
 {
   /*
@@ -698,12 +740,13 @@ SimpleNode DateTimeLiteral() :
         <INTERVAL> 
 	|<TIMESTAMP> 
         )
+        { sb.append(token.image); }
         
 
         (
          // 20110526 <STRING_LITERAL> 
-         <CHARACTER_LITERAL>  
-         |StringLiteral()  
+         <CHARACTER_LITERAL>  { sb.append(" ");  sb.append(token.image); }
+         |simpleNode = StringLiteral(){ sb.append(" ");  sb.append(simpleNode.getImage()); }  
         )
         (  <YEAR>  
          | <MONTH>
@@ -712,19 +755,26 @@ SimpleNode DateTimeLiteral() :
          | <MINUTE>
          | <SECOND>
         )?
+        { 
+           if (null != t)
+           {
+            sb.append(" ");  sb.append(token.image); 
+            t = null; 
+           }
+        }
         
 
-	(LOOKAHEAD(2) "(" NumericLiteral()  
-	")"  
+	(LOOKAHEAD(2) "(" simpleNode = NumericLiteral()  { sb.append("(");  sb.append(simpleNode.getImage()); }
+	")"  { sb.append("}"); }
         )?
 
 
     [
-     (<WITH>  
-      (<LOCAL>  )? 
-      <TIME><ZONE> 
+     (<WITH> {sb.append(" "); sb.append(token.toString()) ;}   
+      (<LOCAL>   {sb.append(" "); sb.append(token.toString()) ;} )? 
+      <TIME><ZONE> {sb.append(" "); sb.append("TIME ZONE") ;}  
      ) 
-    |(<TO>  
+    |(<TO> {sb.append(" "); sb.append(token.toString()) ;} 
         (  <YEAR>  
          | <MONTH>
          | <DAY>
@@ -732,15 +782,16 @@ SimpleNode DateTimeLiteral() :
          | <MINUTE>
          | <SECOND>
         )
+        { sb.append(token.image); }
          
-	(LOOKAHEAD(2) "(" NumericLiteral()  
-	")"  
+	(LOOKAHEAD(2) "(" simpleNode = NumericLiteral()  { sb.append("(");  sb.append(simpleNode.getImage()); }
+	")"   { sb.append("}"); }
         )?
     )
    ]
    )
    { 
-    return jjtThis ;
+    jjtThis.setImage(sb.toString()) ;  return jjtThis ;
    }
 }
 
@@ -853,7 +904,7 @@ SimpleNode Read2NextOccurrence(String target) :
   }
 }
 {
-	{ jjtThis.value = sb.toString(); return jjtThis ;}
+	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
 }
 
 /*
@@ -868,7 +919,7 @@ SimpleNode ReadPastNextOccurrence(String target) :
   sb.append(t.image);
 }
 {
-	{ jjtThis.value = sb.toString(); return jjtThis ;}
+	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
 }
 
 /**
@@ -1042,20 +1093,24 @@ SimpleNode IfStatement()  :
 ForIndex is declared implicitly, unlike most variables or constants.
 */
 SimpleNode ForIndex()  :
-{}
 {
- ID() 
- { return jjtThis ; }
+ SimpleNode simpleNode = null ;
+}
+{
+ simpleNode = ID() 
+ { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 /**
 ForAllIndex is declared implicitly, unlike most variables or constants.
 */
 SimpleNode ForAllIndex()  :
-{}
 {
- ID() 
- { return jjtThis ; }
+ SimpleNode simpleNode = null;
+}
+{
+ simpleNode = ID() 
+ { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 SimpleNode ForAllStatement()  :
@@ -1157,15 +1212,16 @@ SimpleNode SubTypeDefinition()  :
 {
 	Token start, subtype_name=null, constraint=null, base_type=null;
 	Token collection = null, collection2 = null;
+	SimpleNode name = null;
 	SimpleNode startElement = null, endElement = null;
-	SimpleNode baseType = null, returnType = null, indexBy = null, string = null;
+	SimpleNode baseType = null, returnType = null, indexBy = null ;
 	int lastField = 0;
 }
 {
 
 	(
 		( 
-		  <SUBTYPE> QualifiedID() // SRT 20110605 to Parse SYS.standard need to allow normally reserved words which are low-level types 
+		  <SUBTYPE> name = QualifiedID() // SRT 20110605 to Parse SYS.standard need to allow normally reserved words which are low-level types 
 			<IS> Datatype() 
 			[
 			  ( "(" <IDENTIFIER> ")") // SRT 20110604 [<NOT> <NULL> ]
@@ -1175,7 +1231,7 @@ SimpleNode SubTypeDefinition()  :
 			[<NOT> <NULL> ] //SRT 20110604
 		)
 		 |
-		( <TYPE> QualifiedID() // SRT 20110605 to Parse SYS.standars ned to allow nprmally reserved words which are low-level types 
+		( <TYPE> name = QualifiedID() // SRT 20110605 to Parse SYS.standars ned to allow nprmally reserved words which are low-level types 
 			(<IS>|<AS>)
 			(
 				LOOKAHEAD(2) <NEW> (
@@ -1209,23 +1265,23 @@ SimpleNode SubTypeDefinition()  :
 		)
 	)
 	";"
-      { return jjtThis ; }
+      { jjtThis.setImage(name.getImage()) ;  return jjtThis ; }
 }
 
 SimpleNode FieldDeclaration()  :
 {
-	Token name;
+	SimpleNode name;
 	SimpleNode dataType;
 	SimpleNode defaultValue = null;
 }
 {
-	ID() Datatype() [[<NOT>] <NULL>] [ (":" "=" | <_DEFAULT>) Expression() ]  
-      { return jjtThis ; }
+	name = ID() Datatype() [[<NOT>] <NULL>] [ (":" "=" | <_DEFAULT>) Expression() ]  
+      { jjtThis.setImage(name.getImage()) ;  return jjtThis ; }
 }
 
-SimpleNode CollectionTypeDefinition() : {} { <IDENTIFIER> { return jjtThis ; } }
-SimpleNode CollectionDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
-SimpleNode ObjectDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
+SimpleNode CollectionTypeDefinition() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
+SimpleNode CollectionDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
+SimpleNode ObjectDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
 
 /** Java stored procedure, external function*/
 SimpleNode CallSpecTail() : {
@@ -1320,16 +1376,17 @@ SimpleNode CallSpecTail() : {
 /** Cursor (common part of specification and body) */
 SimpleNode CursorUnit()  :
 {
+ SimpleNode simpleNode = null ;
 }
 {
 	(
-	<CURSOR> ID()
+	<CURSOR> simpleNode = ID()
 	[ FormalParameters() ] 
 	[<RETURN> Datatype()
 	]
 	)
 	[<IS> ("(")* SqlStatement(null,";")] ";"
-      { return jjtThis ; }
+      { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 SimpleNode CursorSpecification()  : {}
@@ -1362,82 +1419,87 @@ String expression() :
 
 
 
+
 SimpleNode Expression() :
 { 
+  SimpleNode simpleNode = null; 
+  StringBuffer sb = new StringBuffer() ;
 }
 {
 	// Need syntactic lookahead to discriminate between Assignment and a procedure call
 	(
-  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (Assignment())   
-	| (ConditionalOrExpression() )    
-	| (CompilationExpression() )    
+  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment()) {sb.append(simpleNode.getImage());  }  
+	| (simpleNode = ConditionalOrExpression() )  {sb.append(simpleNode.getImage()); }  
+	| (simpleNode = CompilationExpression() )  {sb.append(simpleNode.getImage()); }  
 	)
  { 
- return jjtThis; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode CompilationExpression() :
 { 
+  SimpleNode simpleNode = null; 
+  StringBuffer sb = new StringBuffer() ;
 }
 {
 	(
-	  <CC_IF>  
-	  ConditionalOrExpression()  
-	  <CC_THEN>  
-	  Expression()  
+	  <CC_IF> {sb.append(" "); sb.append(token.image) ; } 
+	   ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
+	  <CC_THEN> {sb.append(" "); sb.append(token.image); } 
+	  simpleNode = Expression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
 
 	  ( 
-	    <CC_ELSIF>  
-	    ConditionalOrExpression()   
-	    <CC_THEN>  
-	    Expression()  
+	    <CC_ELSIF> {sb.append(" "); sb.append(token.image); } 
+	    simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }  
+	    <CC_THEN> {sb.append(" "); sb.append(token.image); } 
+	    simpleNode = Expression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
 	  )* 
 
 	  ( 
-	    <CC_ELSE>  
-	    Expression()   
+	    <CC_ELSE> {sb.append(" "); sb.append(token.image); } 
+	    simpleNode = Expression()  {sb.append(" "); sb.append(simpleNode.getImage()); } 
 	  )*
 
-	  <CC_END>  
+	  <CC_END> {sb.append(" "); sb.append(token.image); } 
 	)
  { 
- return jjtThis;
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 
 SimpleNode Assignment() :
-{ }
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
-  (PrimaryExpression() )  
-  (":" "="  )  
-  (Expression())  
+  (simpleNode = PrimaryExpression() ) {sb.append(simpleNode.getImage());} 
+  (":" "="  ) {sb.append(" := ");} 
+  (simpleNode = Expression()) {sb.append(simpleNode.getImage());} 
   )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode CaseExpression() :
-{ }
+{ Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
-	<CASE>  
-	( Expression()   )?
-          ( <WHEN>  
-	        Expression() 
-	     <THEN>  
-	        Expression()  
+	thisToken = <CASE> { sb.append(thisToken.image);} 
+	( simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )?
+          ( thisToken = <WHEN> { sb.append("  "); sb.append(thisToken.image); } 
+	        simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
+	     thisToken = <THEN>  { sb.append(" "); sb.append(thisToken.image); }
+	          Expression() { sb.append(" "); sb.append(simpleNode.getImage()); } 
 	   )+
-	  [ <ELSE>  
-	        Expression() 
+	  [ thisToken = <ELSE> { sb.append(" "); sb.append(thisToken.image);} 
+	        Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
 	  ]
-	  <END> 
+	  thisToken = <END> { sb.append(" "); sb.append(thisToken.image);}
   )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
@@ -1445,41 +1507,41 @@ SimpleNode CaseExpression() :
 LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
 */
 SimpleNode LikeExpression() :
-{ }
+{ Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
-        PrimaryExpression() 
-	(<LIKE> )  
+        simpleNode = PrimaryExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
+	(thisToken = <LIKE> ) { sb.append(thisToken.image);} 
 	//["(" { sb.append("(");} ]
-	( StringExpression()   )
+	( simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )
 	//[ ")" { sb.append(")");} ]
 	[
-	<ESCAPE>  
-	(  <CHARACTER_LITERAL>  
-	  | StringLiteral()   
+	<ESCAPE> { sb.append(" ESCAPE ");} 
+	(  <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.toString()); }  
+	  | simpleNode = StringLiteral() { sb.append(" "); sb.append(simpleNode.getImage()); }  
 	)
 	]
   )
-  ( "." Expression()  )*
+  ( "." simpleNode = Expression() { sb.append("."); sb.append(simpleNode.getImage()); } )*
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode TrimExpression() :
-{ }
+{ Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
-	(<TRIM> )  
-	"("  
-	 [ ( <LEADING> | <TRAILING> | <BOTH> )  ]
-	 [ StringExpression()  ]
-	 ( <FROM>  )   
-	 StringExpression()   
-	")"  
+	(thisToken = <TRIM> ) { sb.append(thisToken.image);} 
+	"(" { sb.append("(");} 
+	 [ ( <LEADING> | <TRAILING> | <BOTH> ){ sb.append(" "); sb.append(token.toString()); }  ]
+	 [ simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
+	 ( <FROM>  )  { sb.append(thisToken.image);} 
+	 simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }  
+	")" { sb.append(")");} 
   )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
@@ -1489,74 +1551,74 @@ TREAT ( Expression AS datatype)
 CAST ( Expression AS datatype)
 */
 SimpleNode ObjectExpression() :
-{ }
+{ Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
-	(<CAST> | <TREAT> )  
-	"("  
-	( Expression()   )
+	(thisToken = <CAST> | thisToken = <TREAT> ) { sb.append(thisToken.image);} 
+	"(" { sb.append("(");} 
+	( simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )
 	[
-	 <AT> <TIME> <ZONE> PrimaryExpression() 
+	 <AT> <TIME> <ZONE> simpleNode = PrimaryExpression() { sb.append(" AT TIME ZONE "); sb.append(simpleNode.getImage()); }
 	]
-	<AS>  
-	( Datatype()   )
-	")"  
+	<AS> { sb.append(" AS ");} 
+	( simpleNode = Datatype() { sb.append(" "); sb.append(simpleNode.getImage()); }  )
+	")" { sb.append(")");} 
   )
   ( "." Expression() )*
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode ConditionalOrExpression() :
-{ }
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
-  (ConditionalAndExpression() ) 
-  ( (<OR>)   
-    (ConditionalAndExpression() ) 
+  (simpleNode = ConditionalAndExpression() ) { sb.append(simpleNode.getImage());}
+  ( (<OR>) {sb.append(" OR ");}  
+    (simpleNode = ConditionalAndExpression() ) {sb.append(simpleNode.getImage());}
   )*
   )
  { 
- return jjtThis ;
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode ConditionalAndExpression() :
-{ }
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
-   (EqualityExpression() ) 
-   ( (<AND> )   
-     (EqualityExpression() ) 
+   (simpleNode = EqualityExpression() ) { sb.append(simpleNode.getImage());}
+   ( (<AND> ) {sb.append(" AND ");}  
+     (simpleNode = EqualityExpression() ) { sb.append(simpleNode.getImage());}
    )*
   )
  { 
- return jjtThis ;
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode EqualityExpression() :
-{ }
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
 	  (
-	   RelationalExpression() 
-	  )  
+	   simpleNode = RelationalExpression() 
+	  ) {sb.append(simpleNode.getImage());} 
 	  ( 
-	   ( ("=" ) 
-	   | ("!" "=" ) 
+	   ( ("=" ) {sb.append(" = ");}
+	   | ("!" "=" ) {sb.append(" != ");}
 	   // Now unde RelationalExpression | ("<" ">" ) {sb.append(" <> ");}
-	   | (<IS>)   
+	   | (<IS>) {sb.append(" IS ");}  
            )
 	   (
-	   RelationalExpression() 
-	   )  
+	   simpleNode = RelationalExpression() 
+	   ) {sb.append(simpleNode.getImage());} 
 	  )*
   )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
@@ -1564,249 +1626,258 @@ SimpleNode EqualityExpression() :
  * 2006-05-23 - Matthias Hendler - added FROM
  */
 SimpleNode RelationalExpression() :
-{ }
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
  (
   //AdditiveExpression() ( ( "<" | ">" | "<=" | ">=" | [<NOT>] (<IN> | <BETWEEN> | <LIKE> | <FROM>) ) AdditiveExpression() )*
-  (AdditiveExpression() ) 
+  (simpleNode = AdditiveExpression() ) { sb.append(simpleNode.getImage()); }
   ( 
    ( 
       (
 	(
-	    (("<" )  
-	     [">"   ] // <> 
+	    (("<" ) { sb.append("<"); } 
+	     [">"  { sb.append(">"); } ] // <> 
 	    )
-	  | (">" ) 
+	  | (">" ) { sb.append(">"); }
 	)
-	[ ("=" )  ]
+	[ ("=" ) { sb.append("="); } ]
     
       )
-       
-   | [(<NOT>) ] 
-     ((<IN>)  
-     | (<BETWEEN> ) 
-     | (<LIKE> ) 
-     | (<FROM>) 
+      { sb.append(" "); } 
+   | [(<NOT>) { sb.append(" NOT "); }] 
+     ((<IN>) { sb.append(" IN "); } 
+     | (<BETWEEN> ) { sb.append(" BETWEEN "); }
+     | (<LIKE> ) { sb.append(" LIKE "); }
+     | (<FROM>) { sb.append(" FROM "); }
      | (
 	 (
-	   (<MEMBER>) 
+	   (<MEMBER>) { sb.append(" MEMBER "); }
 	   |
-	   (<SUBMULTISET>) 
+	   (<SUBMULTISET>) { sb.append(" SUBMULTISET "); }
 	 )
-         [ <OF>  ]
+         [ <OF> { sb.append(" OF "); } ]
        )
      ) 
     // MULTISET Operators 
     | ( 
-       <MULTISET>   
-       (   <EXCEPT>    
-         | <INTERSECT>   
-	 | <UNION>      
+       <MULTISET> { sb.append (" MULTISET " );}  
+       (   <EXCEPT>  { sb.append (" EXCEPT " );}  
+         | <INTERSECT>  { sb.append (" INTERSECT " );} 
+	 | <UNION>  { sb.append (" UNION " ); }    
        )
-       [   <DISTINCT>   
-         | <ALL>     
+       [   <DISTINCT>  { sb.append (" DISTINCT " );} 
+         | <ALL>  { sb.append (" ALL " );}   
        ]
      ) 
    ) 
-   (AdditiveExpression() ) 
+   (AdditiveExpression() ) { sb.append(simpleNode.getImage()); }
    [
-	<ESCAPE>  
-	(  <CHARACTER_LITERAL>  
-	  | StringLiteral()   
+	<ESCAPE> { sb.append(" ESCAPE ");} 
+	(  <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.toString()); }  
+	  | simpleNode = StringLiteral() { sb.append(" "); sb.append(simpleNode.getImage()); }  
 	)
    ]
   )*
  )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode AdditiveExpression() :
-{ }
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
  (
-  (MultiplicativeExpression() ) 
+  (simpleNode = MultiplicativeExpression() ) { sb.append(simpleNode.getImage()); }
   ( 
-    ( ("+" ) 
-    | ("-" ) 
-    | ("||" ) 
+    ( ("+" ) { sb.append(" + "); }
+    | ("-" ) { sb.append(" - "); }
+    | ("||" ) { sb.append(" || "); }
     ) 
-    (MultiplicativeExpression() ) 
+    (simpleNode = MultiplicativeExpression() ) { sb.append(simpleNode.getImage()); }
   )*
  )
  { 
- return jjtThis ;
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode StringExpression() :
-{ }
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
  (
-  (PrimaryExpression() ) 
+  (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
   ( 
-     ("||" ) 
-    (PrimaryExpression() ) 
+     ("||" ) { sb.append(" || "); }
+    (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
   )*
  )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
-SimpleNode  MultiplicativeExpression() :
-{ }
+SimpleNode MultiplicativeExpression() :
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
 
   //UnaryExpression() ( ( "*" | "/" | <MOD> ) UnaryExpression() )*
  (
-  (UnaryExpression(true) ) 
+  (simpleNode = UnaryExpression(true) ) { sb.append(simpleNode.getImage()); }
   ( 
-    ( ("**"  )  //Exponentiation 
-    | ("*"  ) 
-    | ("/"  ) 
-    | (<MOD>  ) 
+    ( ("**"  ) { sb.append(" ** "); } //Exponentiation 
+    | ("*"  ) { sb.append(" * "); }
+    | ("/"  ) { sb.append(" / "); }
+    | (<MOD>  ) { sb.append(" MOD "); }
     ) 
-    (UnaryExpression(true) ) 
+    (simpleNode = UnaryExpression(true) ) { sb.append(simpleNode.getImage()); }
   )*
  )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode UnaryExpression(boolean isUnarySign) :
-{ }
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
  (
-   ( ("+" ) 
-   | ("-" ) 
+   ( ("+" ) { sb.append(isUnarySign ? " +" : " + "); }
+   | ("-" ) { sb.append(isUnarySign ? " -" : " - "); }
    ) 
-   (UnaryExpression(false) ) 
+   (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
   |
-   (UnaryExpressionNotPlusMinus() ) 
+   (simpleNode = UnaryExpressionNotPlusMinus() ) { sb.append(simpleNode.getImage()); }
  )
  { 
- return jjtThis ;
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode UnaryExpressionNotPlusMinus() :
-{ }
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
-  (<NOT>)  
-  (UnaryExpression(false) ) 
+  (<NOT>) {sb.append(" NOT "); } 
+  (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
   |
-   (PrimaryExpression() ) 
+   (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
   )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 /**
  * 2006-05-23 - Matthias Hendler - Added lookahead otherwise warning encountered.
- *                                 Warning arised while adding methode TriggerUnit(). 
+ *                                 Warning arised while adding methode triggerUnit(). 
  * 2011-04-27 - SRT - Add optional NEW Keyword to cope with Object Type constructors
  */
 SimpleNode PrimaryExpression() :
-{} 
+{ Token thisToken ; SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+}
 {
   ( 
     ( // Explicitly cope with case where "NEW" is a Primary Prefix, such as in a Trigger WHEN clause  
-	    (<NEW_DOT> QualifiedID()  )   
+	    (<NEW_DOT> simpleNode = QualifiedID()  ) { sb.append(" NEW."); sb.append(simpleNode.getImage()); }  
       )
     |
     (
       LOOKAHEAD( <NEW>  PrimaryPrefix() ) // Lookahead so that we can recover and treat NEW as an identifier 
-        <NEW>  (PrimaryPrefix() )   
-      |       (PrimaryPrefix() )   
+        <NEW> { sb.append(" NEW "); } (simpleNode = PrimaryPrefix() ) {sb.append(simpleNode.getImage());}  
+      |       (simpleNode = PrimaryPrefix() ) {sb.append(simpleNode.getImage());}  
 	  
 	  )
-	  ( LOOKAHEAD(2) (PrimarySuffix() )   )*
+	  ( LOOKAHEAD(2) (simpleNode = PrimarySuffix() ) { sb.append(simpleNode.getImage()); }  )*
   )
 
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode PrimaryPrefix() :
-{ 
+{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; 
+
 }
 {
 (
-  ( Literal() )  
-| LOOKAHEAD(MultiSetCondition()) MultiSetCondition()
-| LOOKAHEAD(TrimExpression()) TrimExpression() //SRT 20110613.3
-| LOOKAHEAD(CaseExpression()) ( CaseExpression() )  //SRT 20110520
-| LOOKAHEAD(ObjectExpression() ) ( ObjectExpression() )  //SRT 20110604
-//| LOOKAHEAD(LikeExpression()) ( string = LikeExpression() ) { sb.append(string) ; } //SRT 20110604 
-| ( Name() )  
-| LOOKAHEAD(<SELECT>) (<SELECT>)   Skip2NextTerminator(null,";")  
-| LOOKAHEAD(("(")+ <SELECT>) ("(")   Skip2NextTerminator("(",")") ")"   
-| LOOKAHEAD(<WITH>) (<WITH>)   Skip2NextTerminator(null,";")  
-| LOOKAHEAD(("(")+ <WITH>) ("(")   Skip2NextTerminator("(",")") ")"   
+  ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; } 
+| LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
+| LOOKAHEAD(TrimExpression()) simpleNode = TrimExpression() //SRT 20110613.3
+| LOOKAHEAD(CaseExpression()) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
+| LOOKAHEAD(ObjectExpression() ) ( simpleNode = ObjectExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
+//| LOOKAHEAD(LikeExpression()) ( simpleNode = LikeExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604 
+| ( simpleNode =Name() ) { sb.append(simpleNode.getImage()) ; } 
+| LOOKAHEAD(<SELECT>) (<SELECT>) {sb.append("SELECT ..."); }  Skip2NextTerminator(null,";")  
+| LOOKAHEAD(("(")+ <SELECT>) ("(") {sb.append("(SELECT ..."); }  Skip2NextTerminator("(",")") ")"   
+| LOOKAHEAD(<WITH>) (<WITH>) {sb.append("WITH ..."); }  Skip2NextTerminator(null,";")  
+| LOOKAHEAD(("(")+ <WITH>) ("(") {sb.append("(WITH ..."); }  Skip2NextTerminator("(",")") ")"   
 |
-  ("(" )  
-  (Expression() )  
+  ("(" ) {sb.append("("); } 
+  (simpleNode = Expression() ) {sb.append(simpleNode.getImage()); } 
   (
-    (",")   
-    (Expression() )  
+    (",") {sb.append(", "); }  
+    (simpleNode = Expression() ) {sb.append(simpleNode.getImage()); } 
   )* 
-  (")")  
+  (")") {sb.append(")"); } 
 
 )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
 SimpleNode PrimarySuffix() :
-{ }
+{ SimpleNode suffixNode = null ; SimpleNode arguments = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
-  (".")   (QualifiedID() ) 
+  (".") {sb.append(".");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.toString()) ; }
   //Bug 3535118 - Method call may include dblink 
   //String dblink = null;
-  //["@" dblink = QualifiedName() {sb.append("@"); sb.append(dblink); } ]
+  //["@" dblink = qualifiedName() {sb.append("@"); sb.append(dblink); } ]
   | //Possible dblink 
-  ("@")   (QualifiedID() ) 
-  | //Possible Date Time Expression - Bug 3553725  
-  ( <AT> (   <LOCAL> 
-          | ( <TIME> <ZONE> ( <DBTIMEZONE> | <SESSIONTIMEZONE> | StringLiteral() | Expression() ) )
-         )   
-  ) 
+  ("@") {sb.append("@");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.toString()) ; }
   |
-  ( Arguments() ) 
+  ( arguments = Arguments() ) {sb.append(arguments) ; }
   )
  { 
- return jjtThis ; 
+ jjtThis.setImage(sb.toString()); return jjtThis; 
  }
 }
 
+
 SimpleNode Literal() :
-{ }
+{ 
+ SimpleNode simpleNode = null;
+ Token t = null ;
+}
 {
   (
-  NumericLiteral() 
+  simpleNode = NumericLiteral() 
 |
-  <CHARACTER_LITERAL> 
+  t = <CHARACTER_LITERAL> 
 |
   //<STRING_LITERAL> {literal = token.toString(); }
-  StringLiteral() //SRT 2010526 Cope with Q-QuotedStrings
+  simpleNode = StringLiteral() //SRT 2010526 Cope with Q-QuotedStrings
 |
-  BooleanLiteral()
+  simpleNode = BooleanLiteral()
 |
-  NullLiteral()
+  simpleNode = NullLiteral()
 |
-  DateTimeLiteral()
+  simpleNode = DateTimeLiteral()
   )
 
  { 
- return jjtThis ; 
+   if (null != simpleNode)
+   {
+     jjtThis.setImage( simpleNode.getImage() ) ;  
+   }
+   else if (null != t)
+   {
+     jjtThis.setImage( t.image ) ;  
+   }
+   return jjtThis ; 
  }
 }
 
@@ -1858,7 +1929,7 @@ SimpleNode  StringLiteral() :
    }
   }
  )
- { jjtThis.value = literal ; return jjtThis ; }
+ { jjtThis.setImage(literal.toString()) ;  jjtThis.value = literal.toString() ; return jjtThis ; }
 }
 
 
@@ -1906,14 +1977,17 @@ SimpleNode MultiSetCondition() :
 * (here, we have tokens "i", "+" and "1")
 */
 SimpleNode NumericLiteral() :
-{ }
+{ 
+ Token t = null ;
+}
 {
 	(
 	  //Essentially unchanged, as it previouly returned a Token 
-		<UNSIGNED_NUMERIC_LITERAL>
+		t = <UNSIGNED_NUMERIC_LITERAL>
 	)
 	{ 
-	 return jjtThis; 
+	 jjtThis.setImage(t.image) ;  
+         return jjtThis; 
 	}
 }
 
@@ -1921,41 +1995,49 @@ SimpleNode NumericLiteral() :
 */
 SimpleNode Label() :
 { 
+ SimpleNode simpleNode = null;
 }
 {
 	(
-	"<<" UnqualifiedID() ">>" 
+	"<<" simpleNode = UnqualifiedID() ">>" 
 	)
 	{ 
-   return jjtThis;
+        jjtThis.setImage( simpleNode.getImage() ) ;  
+        return jjtThis;
 	}
 }
 
 
 SimpleNode Name() :
 {
+ SimpleNode simpleNode = null;
+ StringBuffer sb = new StringBuffer();
 }
 {
   //UnqualifiedID() (LOOKAHEAD(2) ("." | "%") QualifiedID())*
-  (UnqualifiedID()) 
+  (simpleNode = UnqualifiedID()  { sb.append(simpleNode.getImage()) ; } ) 
   (
    LOOKAHEAD(2) 
-    ("."  | "%" ) //QualifiedID() 
-    QualifiedID() 
+    ("."  { sb.append(".") ; } | "%" { sb.append("%") ; }) //QualifiedID() 
+    simpleNode = QualifiedID()  { sb.append(simpleNode.getImage()) ; }
   )*
   {
+  jjtThis.setImage(sb.toString()) ;  
   return jjtThis;
   }
 }
 
 SimpleNode QualifiedName() :
 {
+ SimpleNode simpleNode = null;
+ StringBuffer sb = new StringBuffer();
 }
 {
   //Essentially unchanged as it previously returned a String 
-	(UnqualifiedID()) 
-	( ("." QualifiedID())  )*
+	(simpleNode = UnqualifiedID() { sb.append(simpleNode.getImage()) ; } ) 
+	( ("." simpleNode = QualifiedID())  { sb.append(".") ; sb.append(simpleNode.getImage()) ; } )*
 	{ 
+         jjtThis.setImage(sb.toString()) ;  
 	 return jjtThis ; 
 	}
 }
@@ -1987,10 +2069,11 @@ SimpleNode ArgumentList() :
 
 SimpleNode Argument() :
 {
+ SimpleNode simpleNode = null;
 }
 {
 	//[LOOKAHEAD(2) UnqualifiedID() "=>"] Expression()
-	[LOOKAHEAD(2) (UnqualifiedID())  ("=>" | <AS> )  ] 
+	[LOOKAHEAD(2) (simpleNode = UnqualifiedID())  ("=>" | <AS> )  ] 
         (Expression() )  
 	//Allow Using CharacterSet suffix clause  
 	[
@@ -1998,6 +2081,7 @@ SimpleNode Argument() :
 	   ( <CHAR_CS> | <NCHAR_CS>  )   
 	]
  { 
+ if (null != simpleNode) { jjtThis.setImage(simpleNode.getImage()) ; }
  return jjtThis ; 
  }
 }
@@ -2016,7 +2100,13 @@ SimpleNode VariableOrConstantDeclaration() :
 }
 
 
-SimpleNode DatatypeDeclaration() : {} { <IDENTIFIER> { return jjtThis ; } }
+SimpleNode DatatypeDeclaration() : 
+{
+ Token t ;
+} 
+{ t = <IDENTIFIER> 
+  { jjtThis.setImage(t.image) ;  return jjtThis ; } 
+}
 
 SimpleNode Pragma() :
 { 
@@ -2044,10 +2134,12 @@ SimpleNode Pragma() :
 }
 
 SimpleNode ExceptionDeclaration() :
-{ }
+{ 
+ SimpleNode simpleNode = null;
+}
 {
-	ID() <EXCEPTION> ";"
-      { return jjtThis ; }
+	simpleNode = ID() <EXCEPTION> ";"
+      { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 SimpleNode ParallelClause() :
@@ -2192,10 +2284,11 @@ SimpleNode TypeMethod()  :
 
 SimpleNode TypeSpecification()  :
 { 
+ SimpleNode simpleNode = null;
 }
 {
 	[<CREATE> [<OR> <REPLACE>]]
-	<TYPE> ObjectNameDeclaration()
+	<TYPE> simpleNode = ObjectNameDeclaration()
 
         // incomplete_type_spec (empty) 
         // object_type_spec
@@ -2272,16 +2365,17 @@ SimpleNode TypeSpecification()  :
         ( AlterTypeSpec() ( "/" | ";" ) )* //SRT 20110529 There may be more after the first terminator 
         ]
 	 
-      { return jjtThis ; }
+      { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 
 SimpleNode AlterTypeSpec()  :
 { 
+ SimpleNode simpleNode = null;
 }
 {
 	<ALTER> 
-	<TYPE> QualifiedName() 
+	<TYPE> simpleNode = QualifiedName() 
 
         // REPLACE invoker_rights_clause AS OBJECT 
         //alter_method_spec 
@@ -2416,7 +2510,7 @@ SimpleNode AlterTypeSpec()  :
             )
         ] 
 
-      { return jjtThis ; }
+      { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 
@@ -2451,20 +2545,22 @@ SimpleNode TypeBody()  :
 **/
 SimpleNode AttributeDeclaration() :
 { 
+ SimpleNode simpleNode = null;
 }
 {
-	ID()  Datatype()
-      { return jjtThis ; }
+	simpleNode = ID()  Datatype()
+      { jjtThis.setImage(simpleNode.getImage()) ;   return jjtThis ; }
 }
 
 
 
 SimpleNode Attribute() :
 { 
+ SimpleNode simpleNode = null;
 }
 {
-	ID()  
-      { return jjtThis ; }
+      simpleNode = ID()  
+      { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 
@@ -2712,7 +2808,7 @@ SimpleNode DDLEvent(): {}
   | <TRUNCATE>
   | <DDL>
   )
-  { return jjtThis; }
+	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 
@@ -2725,7 +2821,7 @@ SimpleNode DatabaseEvent(): {}
   | <SERVERERROR> 
   | <SUSPEND> 
   )
-  { return jjtThis; }
+	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 SimpleNode NonDMLEvent(): {}
@@ -3373,7 +3469,7 @@ SimpleNode KEYWORD_RESERVED (): {}
 | <WHERE>
 | <WITH>
 )
- {jjtThis.value = token ; return jjtThis ;}
+ { jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 SimpleNode KEYWORD_UNRESERVED (): {}
@@ -4457,7 +4553,7 @@ SimpleNode KEYWORD_UNRESERVED (): {}
 | <SYS_REFCURSOR> //Not a keyword - just a type defined in standard 
 )
 
-{ jjtThis.value = token ; return jjtThis ; }
+{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 //SRT 2011-04-17 - END  */
@@ -4659,7 +4755,7 @@ SimpleNode ID(): {}
 		//20120427 | <MODIFY>
 		//SRT 20110524 | <SELF> 
 	)
-	{ jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 /**
@@ -4692,7 +4788,7 @@ SimpleNode UnqualifiedID(): {}
 		//| <RESULT>
 	        //| KEYWORD_UNRESERVED()  //SRT 2011-04-17
 	)
-	{ jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 /**
@@ -4923,7 +5019,7 @@ SimpleNode QualifiedID(): {}
 		//| <LIMIT>		 
 	        //| KEYWORD_UNRESERVED()  //SRT 2011-04-17
 	)
-	{ jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 SimpleNode TypeKeyword(): {}
@@ -4958,7 +5054,7 @@ SimpleNode TypeKeyword(): {}
 	<YEAR> | <LOCAL> | <WITH> | <ZONE>
 	| <JAVA_INTERFACE_CLASS> | <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
         )
-	{ jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 SimpleNode JavaInterfaceClass(): {}
@@ -4966,7 +5062,7 @@ SimpleNode JavaInterfaceClass(): {}
 	(
           <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
         )
-	{ return jjtThis; }
+	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 
