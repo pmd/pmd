@@ -44,6 +44,31 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
 //    System.err.println(s + " -> " + parser.purifyIdentifier(s));
   }
 
+    /** Act on the Node when opening scope. 
+    */
+    void jjtreeOpenNodeScope(Node n)
+    {
+    }
+
+    /** Act on the Node when closing scope. 
+    */
+    void jjtreeCloseNodeScope(Node n)
+    {
+      //Set the Nodes' beginLine,beginColumn,endLine,endColumn fields from the generic 
+	//System.err.println("jjtreeCloseNodeScope: getBeginLine()" + n.getBeginLine());
+	//System.err.println("jjtreeCloseNodeScope: getBeginColumn()" + n.getBeginColumn());
+	//System.err.println("jjtreeCloseNodeScope: getEndLine()" + n.getEndLine());
+	//System.err.println("jjtreeCloseNodeScope: getEndColumn()" + n.getEndColumn());
+
+        Token firstToken = ((SimpleNode) n).jjtGetFirstToken();
+        Token lastToken  = ((SimpleNode) n).jjtGetLastToken();
+
+        ((SimpleNode) n).testingOnly__setBeginLine(firstToken.beginLine);
+        ((SimpleNode) n).testingOnly__setBeginColumn(firstToken.beginColumn);
+        ((SimpleNode) n).testingOnly__setEndLine((null==lastToken) ? firstToken.endLine : lastToken.endLine);
+        ((SimpleNode) n).testingOnly__setEndColumn((null==lastToken) ? firstToken.endColumn : lastToken.endColumn);
+    }
+
 /**
  * 2006-05-22 - Matthias Hendler - Added parsing of triggers and global functions/procedures
  *                                 Refactored printing of custom tags into the XML/DOM.
@@ -54,11 +79,13 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
 /**
  * 2006-05-22 - Matthias Hendler - added globalBody()
  */
-  final public SimpleNode Input() throws ParseException {
-                      /*@bgen(jjtree) Input */
+  final public ASTInput Input() throws ParseException {
+                    /*@bgen(jjtree) Input */
   ASTInput jjtn000 = new ASTInput(this, JJTINPUT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       label_1:
       while (true) {
@@ -239,6 +266,8 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
       jj_consume_token(0);
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -257,16 +286,20 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode SqlPlusCommand() throws ParseException {
-                               /*@bgen(jjtree) SqlPlusCommand */
+  final public ASTSqlPlusCommand SqlPlusCommand() throws ParseException {
+                                      /*@bgen(jjtree) SqlPlusCommand */
   ASTSqlPlusCommand jjtn000 = new ASTSqlPlusCommand(this, JJTSQLPLUSCOMMAND);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case 2:
@@ -359,6 +392,8 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
       Skip2NextTokenOccurrence(EOL);
       jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
       {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -377,6 +412,8 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
@@ -407,11 +444,13 @@ void attachLibrary() :
  *
  * 2006-05-17 - Matthias Hendler - added
  */
-  final public SimpleNode Global() throws ParseException {
+  final public ASTGlobal Global() throws ParseException {
  /*@bgen(jjtree) Global */
   ASTGlobal jjtn000 = new ASTGlobal(this, JJTGLOBAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       if (jj_2_7(2147483647)) {
         Block();
@@ -423,6 +462,8 @@ void attachLibrary() :
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -441,16 +482,20 @@ void attachLibrary() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Block() throws ParseException {
+  final public ASTBlock Block() throws ParseException {
  /*@bgen(jjtree) Block */
   ASTBlock jjtn000 = new ASTBlock(this, JJTBLOCK);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case DECLARE:
@@ -732,6 +777,8 @@ void attachLibrary() :
       }
       jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
       {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
       if (jjtc000) {
@@ -750,16 +797,20 @@ void attachLibrary() :
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
       }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode PackageSpecification() throws ParseException {
+  final public ASTPackageSpecification PackageSpecification() throws ParseException {
  /*@bgen(jjtree) PackageSpecification */
  ASTPackageSpecification jjtn000 = new ASTPackageSpecification(this, JJTPACKAGESPECIFICATION);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
     try {
       switch (jj_nt.kind) {
       case CREATE:
@@ -1162,6 +1213,8 @@ void attachLibrary() :
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
         if (jjtc000) {
@@ -1180,16 +1233,20 @@ void attachLibrary() :
     } finally {
         if (jjtc000) {
           jjtree.closeNodeScope(jjtn000, true);
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
         }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode PackageBody() throws ParseException {
+  final public ASTPackageBody PackageBody() throws ParseException {
  /*@bgen(jjtree) PackageBody */
  ASTPackageBody jjtn000 = new ASTPackageBody(this, JJTPACKAGEBODY);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
     try {
       switch (jj_nt.kind) {
       case CREATE:
@@ -1851,6 +1908,8 @@ void attachLibrary() :
       }
       jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
       jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
       if (jjtc000) {
@@ -1869,16 +1928,20 @@ void attachLibrary() :
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
       }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode DeclarativeUnit() throws ParseException {
+  final public ASTDeclarativeUnit DeclarativeUnit() throws ParseException {
  /*@bgen(jjtree) DeclarativeUnit */
   ASTDeclarativeUnit jjtn000 = new ASTDeclarativeUnit(this, JJTDECLARATIVEUNIT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case PRAGMA:
@@ -1930,6 +1993,8 @@ void attachLibrary() :
       }
       jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
       {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
       if (jjtc000) {
@@ -1948,16 +2013,20 @@ void attachLibrary() :
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
       }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode DeclarativeSection() throws ParseException {
+  final public ASTDeclarativeSection DeclarativeSection() throws ParseException {
  /*@bgen(jjtree) DeclarativeSection */
   ASTDeclarativeSection jjtn000 = new ASTDeclarativeSection(this, JJTDECLARATIVESECTION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       label_5:
       while (true) {
@@ -2300,6 +2369,8 @@ void attachLibrary() :
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -2318,16 +2389,20 @@ void attachLibrary() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CompilationDeclarationFragment() throws ParseException {
+  final public ASTCompilationDeclarationFragment CompilationDeclarationFragment() throws ParseException {
  /*@bgen(jjtree) CompilationDeclarationFragment */
   ASTCompilationDeclarationFragment jjtn000 = new ASTCompilationDeclarationFragment(this, JJTCOMPILATIONDECLARATIONFRAGMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(CC_IF);
       ConditionalOrExpression();
@@ -4401,6 +4476,8 @@ void attachLibrary() :
       jj_consume_token(CC_END);
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -4419,6 +4496,8 @@ void attachLibrary() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -4430,11 +4509,13 @@ void attachLibrary() :
  *								   custom tags which he can evaluate in the XSLT.
  *                                 This methode also documents global functions/procedures.
  */
-  final public SimpleNode ProgramUnit() throws ParseException {
+  final public ASTProgramUnit ProgramUnit() throws ParseException {
  /*@bgen(jjtree) ProgramUnit */
   ASTProgramUnit jjtn000 = new ASTProgramUnit(this, JJTPROGRAMUNIT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case CREATE:
@@ -5931,6 +6012,8 @@ void attachLibrary() :
       jj_consume_token(4);
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -5949,16 +6032,20 @@ void attachLibrary() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ObjectNameDeclaration() throws ParseException {
+  final public ASTObjectNameDeclaration ObjectNameDeclaration() throws ParseException {
  /*@bgen(jjtree) ObjectNameDeclaration */
  ASTObjectNameDeclaration jjtn000 = new ASTObjectNameDeclaration(this, JJTOBJECTNAMEDECLARATION);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode schemaName = null, objectName = null ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode schemaName = null, objectName = null ;
     try {
       if (jj_2_15(2)) {
         schemaName = ID();
@@ -5970,6 +6057,8 @@ void attachLibrary() :
     jjtn000.setImage(  (null == schemaName) ?  objectName.getImage() : (schemaName.getImage() + "." + objectName.getImage() )  )  ;
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -5988,16 +6077,20 @@ void attachLibrary() :
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode FormalParameter() throws ParseException {
+  final public ASTFormalParameter FormalParameter() throws ParseException {
  /*@bgen(jjtree) FormalParameter */
  ASTFormalParameter jjtn000 = new ASTFormalParameter(this, JJTFORMALPARAMETER);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
     try {
       simpleNode = ID();
       if (jj_2_18(2)) {
@@ -6302,6 +6395,8 @@ void attachLibrary() :
       }
      jjtree.closeNodeScope(jjtn000, true);
      jjtc000 = false;
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
      jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
      if (jjtc000) {
@@ -6320,16 +6415,20 @@ void attachLibrary() :
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
+       jjtreeCloseNodeScope(jjtn000);
+       jjtn000.jjtSetLastToken(getToken(0));
      }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode MethodDeclaration() throws ParseException {
+  final public ASTMethodDeclaration MethodDeclaration() throws ParseException {
  /*@bgen(jjtree) MethodDeclaration */
   ASTMethodDeclaration jjtn000 = new ASTMethodDeclaration(this, JJTMETHODDECLARATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case CREATE:
@@ -6355,6 +6454,8 @@ void attachLibrary() :
       }
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6373,16 +6474,20 @@ void attachLibrary() :
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode MethodDeclarator() throws ParseException {
+  final public ASTMethodDeclarator MethodDeclarator() throws ParseException {
  /*@bgen(jjtree) MethodDeclarator */
  ASTMethodDeclarator jjtn000 = new ASTMethodDeclarator(this, JJTMETHODDECLARATOR);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
     try {
       switch (jj_nt.kind) {
       case FUNCTION:
@@ -6437,6 +6542,8 @@ void attachLibrary() :
       }
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6455,16 +6562,20 @@ void attachLibrary() :
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode FormalParameters() throws ParseException {
+  final public ASTFormalParameters FormalParameters() throws ParseException {
  /*@bgen(jjtree) FormalParameters */
  ASTFormalParameters jjtn000 = new ASTFormalParameters(this, JJTFORMALPARAMETERS);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
  StringBuffer sb = new StringBuffer();
     try {
       jj_consume_token(5);
@@ -6821,6 +6932,8 @@ void attachLibrary() :
        sb.append(")");
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     jjtn000.setImage(sb.toString()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6839,16 +6952,20 @@ void attachLibrary() :
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode VariableOrConstantDeclarator() throws ParseException {
+  final public ASTVariableOrConstantDeclarator VariableOrConstantDeclarator() throws ParseException {
  /*@bgen(jjtree) VariableOrConstantDeclarator */
  ASTVariableOrConstantDeclarator jjtn000 = new ASTVariableOrConstantDeclarator(this, JJTVARIABLEORCONSTANTDECLARATOR);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
  StringBuffer sb = new StringBuffer();
     try {
       simpleNode = VariableOrConstantDeclaratorId();
@@ -6907,6 +7024,8 @@ void attachLibrary() :
       }
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     jjtn000.setImage(sb.toString()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6925,20 +7044,26 @@ void attachLibrary() :
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode VariableOrConstantDeclaratorId() throws ParseException {
+  final public ASTVariableOrConstantDeclaratorId VariableOrConstantDeclaratorId() throws ParseException {
  /*@bgen(jjtree) VariableOrConstantDeclaratorId */
  ASTVariableOrConstantDeclaratorId jjtn000 = new ASTVariableOrConstantDeclaratorId(this, JJTVARIABLEORCONSTANTDECLARATORID);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
     try {
       simpleNode = ID();
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6957,20 +7082,26 @@ void attachLibrary() :
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode VariableOrConstantInitializer() throws ParseException {
+  final public ASTVariableOrConstantInitializer VariableOrConstantInitializer() throws ParseException {
  /*@bgen(jjtree) VariableOrConstantInitializer */
  ASTVariableOrConstantInitializer jjtn000 = new ASTVariableOrConstantInitializer(this, JJTVARIABLEORCONSTANTINITIALIZER);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
     try {
       simpleNode = Expression();
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -6989,16 +7120,20 @@ void attachLibrary() :
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Datatype() throws ParseException {
+  final public ASTDatatype Datatype() throws ParseException {
  /*@bgen(jjtree) Datatype */
  ASTDatatype jjtn000 = new ASTDatatype(this, JJTDATATYPE);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
  StringBuffer sb = new StringBuffer();
     try {
       switch (jj_nt.kind) {
@@ -7272,6 +7407,8 @@ void attachLibrary() :
       }
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(sb.toString()) ;  {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -7290,16 +7427,20 @@ void attachLibrary() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CompilationDataType() throws ParseException {
+  final public ASTCompilationDataType CompilationDataType() throws ParseException {
  /*@bgen(jjtree) CompilationDataType */
   ASTCompilationDataType jjtn000 = new ASTCompilationDataType(this, JJTCOMPILATIONDATATYPE);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
   StringBuffer sb = new StringBuffer() ;
     try {
       jj_consume_token(CC_IF);
@@ -7348,6 +7489,8 @@ void attachLibrary() :
                     sb.append(" "); sb.append(token.image);
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()) ;  {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -7366,16 +7509,20 @@ void attachLibrary() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CollectionTypeName() throws ParseException {
+  final public ASTCollectionTypeName CollectionTypeName() throws ParseException {
  /*@bgen(jjtree) CollectionTypeName */
   ASTCollectionTypeName jjtn000 = new ASTCollectionTypeName(this, JJTCOLLECTIONTYPENAME);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode size=null, precision=null;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode size=null, precision=null;
         StringBuffer sb = new StringBuffer();
     try {
       switch (jj_nt.kind) {
@@ -7437,6 +7584,8 @@ void attachLibrary() :
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(sb.toString()) ;  {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
        if (jjtc000) {
@@ -7455,16 +7604,20 @@ void attachLibrary() :
     } finally {
        if (jjtc000) {
          jjtree.closeNodeScope(jjtn000, true);
+         jjtreeCloseNodeScope(jjtn000);
+         jjtn000.jjtSetLastToken(getToken(0));
        }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ScalarDataTypeName() throws ParseException {
+  final public ASTScalarDataTypeName ScalarDataTypeName() throws ParseException {
  /*@bgen(jjtree) ScalarDataTypeName */
   ASTScalarDataTypeName jjtn000 = new ASTScalarDataTypeName(this, JJTSCALARDATATYPENAME);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode size=null, precision=null ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode size=null, precision=null ;
         StringBuffer name = new StringBuffer();
         SimpleNode characterSet = null;
     try {
@@ -7753,6 +7906,8 @@ void attachLibrary() :
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(name.toString()) ;  {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -7771,17 +7926,21 @@ void attachLibrary() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode DateTimeLiteral() throws ParseException {
+  final public ASTDateTimeLiteral DateTimeLiteral() throws ParseException {
  /*@bgen(jjtree) DateTimeLiteral */
  ASTDateTimeLiteral jjtn000 = new ASTDateTimeLiteral(this, JJTDATETIMELITERAL);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);Token t = null ;
- SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));Token t = null ;
+ SimpleNode simpleNode = null ;
  StringBuffer sb = new StringBuffer() ;
     try {
       switch (jj_nt.kind) {
@@ -7931,6 +8090,8 @@ void attachLibrary() :
       }
      jjtree.closeNodeScope(jjtn000, true);
      jjtc000 = false;
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
     jjtn000.setImage(sb.toString()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
       if (jjtc000) {
@@ -7949,16 +8110,20 @@ void attachLibrary() :
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
       }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ExceptionHandler() throws ParseException {
+  final public ASTExceptionHandler ExceptionHandler() throws ParseException {
  /*@bgen(jjtree) ExceptionHandler */
   ASTExceptionHandler jjtn000 = new ASTExceptionHandler(this, JJTEXCEPTIONHANDLER);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(EXCEPTION);
       label_18:
@@ -8499,6 +8664,8 @@ void attachLibrary() :
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
         if (jjtc000) {
@@ -8517,6 +8684,8 @@ void attachLibrary() :
     } finally {
         if (jjtc000) {
           jjtree.closeNodeScope(jjtn000, true);
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
         }
     }
     throw new Error("Missing return statement in function");
@@ -8526,7 +8695,9 @@ void attachLibrary() :
  /*@bgen(jjtree) Skip2NextTerminator */
   ASTSkip2NextTerminator jjtn000 = new ASTSkip2NextTerminator(this, JJTSKIP2NEXTTERMINATOR);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token t = getToken(1);
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token t = getToken(1);
   int count = (initiator == null) ? 0 : 1;
   if(t.image.equals(initiator)) count++;
   while (count > 0 || !t.image.equals(terminator))
@@ -8539,10 +8710,14 @@ void attachLibrary() :
     try {
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           {if (true) return;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
   }
@@ -8554,7 +8729,9 @@ void attachLibrary() :
  /*@bgen(jjtree) Skip2NextOccurrence */
   ASTSkip2NextOccurrence jjtn000 = new ASTSkip2NextOccurrence(this, JJTSKIP2NEXTOCCURRENCE);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token nextToken = getToken(1);
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token nextToken = getToken(1);
   while (!nextToken.image.equals(target)
          && (null == nextToken.specialToken || !nextToken.specialToken.image.equals(target) ) //In case the target is a Special Token
          && nextToken.kind!=EOF //SRT 20110521 - Prevent endless loop when target does not exist in the input stream
@@ -8566,10 +8743,14 @@ void attachLibrary() :
     try {
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           {if (true) return;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
   }
@@ -8581,16 +8762,22 @@ void attachLibrary() :
  /*@bgen(jjtree) SkipPastNextOccurrence */
   ASTSkipPastNextOccurrence jjtn000 = new ASTSkipPastNextOccurrence(this, JJTSKIPPASTNEXTOCCURRENCE);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token t = null;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token t = null;
   Skip2NextOccurrence(target) ;
   t = getNextToken();
     try {
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           {if (true) return;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
   }
@@ -8602,7 +8789,9 @@ void attachLibrary() :
  /*@bgen(jjtree) Skip2NextTokenOccurrence */
   ASTSkip2NextTokenOccurrence jjtn000 = new ASTSkip2NextTokenOccurrence(this, JJTSKIP2NEXTTOKENOCCURRENCE);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token nextToken = getToken(1);
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token nextToken = getToken(1);
   while (nextToken.kind!=target
          && (null == nextToken.specialToken || nextToken.specialToken.kind!=target ) //In case the target is a Special Token
          && nextToken.kind!=EOF //SRT 20110521 - Prevent endless loop when target does not exist in the input stream
@@ -8614,10 +8803,14 @@ void attachLibrary() :
     try {
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           {if (true) return;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
   }
@@ -8629,16 +8822,22 @@ void attachLibrary() :
  /*@bgen(jjtree) SkipPastNextTokenOccurrence */
   ASTSkipPastNextTokenOccurrence jjtn000 = new ASTSkipPastNextTokenOccurrence(this, JJTSKIPPASTNEXTTOKENOCCURRENCE);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token t = null;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token t = null;
   Skip2NextTokenOccurrence(target) ;
   t = getNextToken();
     try {
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           {if (true) return;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
   }
@@ -8646,11 +8845,13 @@ void attachLibrary() :
 /*
  Read Tokens up to but not including the target String. 
 */
-  final public SimpleNode Read2NextOccurrence(String target) throws ParseException {
+  final public ASTRead2NextOccurrence Read2NextOccurrence(String target) throws ParseException {
  /*@bgen(jjtree) Read2NextOccurrence */
   ASTRead2NextOccurrence jjtn000 = new ASTRead2NextOccurrence(this, JJTREAD2NEXTOCCURRENCE);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);StringBuffer sb = new StringBuffer();
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));StringBuffer sb = new StringBuffer();
   Token nextToken = getToken(1);
   while (!nextToken.image.equals(target)
          && nextToken.kind!=EOF
@@ -8663,10 +8864,14 @@ void attachLibrary() :
     try {
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(sb.toString()) ;  jjtn000.value = sb.toString(); {if (true) return jjtn000 ;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -8675,11 +8880,13 @@ void attachLibrary() :
 /*
  Read Tokens up to and including the target String. 
 */
-  final public SimpleNode ReadPastNextOccurrence(String target) throws ParseException {
+  final public ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) throws ParseException {
  /*@bgen(jjtree) ReadPastNextOccurrence */
   ASTReadPastNextOccurrence jjtn000 = new ASTReadPastNextOccurrence(this, JJTREADPASTNEXTOCCURRENCE);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);StringBuffer sb = new StringBuffer();
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));StringBuffer sb = new StringBuffer();
   Token t = null;
   sb.append(Read2NextOccurrence(target)) ;
   t = getNextToken(); // Chomp this one 
@@ -8687,10 +8894,14 @@ void attachLibrary() :
     try {
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(sb.toString()) ;  jjtn000.value = sb.toString(); {if (true) return jjtn000 ;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -8699,11 +8910,13 @@ void attachLibrary() :
 /**
  * 2006-05-24 - Matthias Hendler - added MERGE
  */
-  final public SimpleNode SqlStatement(String initiator, String terminator) throws ParseException {
+  final public ASTSqlStatement SqlStatement(String initiator, String terminator) throws ParseException {
  /*@bgen(jjtree) SqlStatement */
   ASTSqlStatement jjtn000 = new ASTSqlStatement(this, JJTSQLSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case SELECT:
@@ -8752,6 +8965,8 @@ void attachLibrary() :
       Skip2NextTerminator(initiator,terminator);
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -8770,6 +8985,8 @@ void attachLibrary() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -8816,10 +9033,14 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
   ASTWrappedObject jjtn000 = new ASTWrappedObject(this, JJTWRAPPEDOBJECT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(WRAPPED);
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
            Token nextToken;
 
                 nextToken = getToken(1); //ReadAhead
@@ -8836,6 +9057,8 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
   }
@@ -8847,11 +9070,13 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 /**
  * 2006-05-24 - Matthias Hendler - added MERGE, EXECUTE choice and LOOKAHEAD at <LOOP>
  */
-  final public SimpleNode UnlabelledStatement() throws ParseException {
+  final public ASTUnlabelledStatement UnlabelledStatement() throws ParseException {
  /*@bgen(jjtree) UnlabelledStatement */
   ASTUnlabelledStatement jjtn000 = new ASTUnlabelledStatement(this, JJTUNLABELLEDSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       if (jj_2_35(2147483647)) {
         SqlStatement(null,";");
@@ -9162,6 +9387,8 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
          if (jjtc000) {
@@ -9180,16 +9407,20 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
     } finally {
          if (jjtc000) {
            jjtree.closeNodeScope(jjtn000, true);
+           jjtreeCloseNodeScope(jjtn000);
+           jjtn000.jjtSetLastToken(getToken(0));
          }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Statement() throws ParseException {
+  final public ASTStatement Statement() throws ParseException {
  /*@bgen(jjtree) Statement */
   ASTStatement jjtn000 = new ASTStatement(this, JJTSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       label_22:
       while (true) {
@@ -9206,6 +9437,8 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       UnlabelledStatement();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
         if (jjtc000) {
@@ -9224,16 +9457,20 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
     } finally {
         if (jjtc000) {
           jjtree.closeNodeScope(jjtn000, true);
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
         }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CaseStatement() throws ParseException {
+  final public ASTCaseStatement CaseStatement() throws ParseException {
  /*@bgen(jjtree) CaseStatement */
   ASTCaseStatement jjtn000 = new ASTCaseStatement(this, JJTCASESTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(CASE);
       switch (jj_nt.kind) {
@@ -10005,6 +10242,8 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
          if (jjtc000) {
@@ -10023,16 +10262,20 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
     } finally {
          if (jjtc000) {
            jjtree.closeNodeScope(jjtn000, true);
+           jjtreeCloseNodeScope(jjtn000);
+           jjtn000.jjtSetLastToken(getToken(0));
          }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode LoopStatement() throws ParseException {
+  final public ASTLoopStatement LoopStatement() throws ParseException {
  /*@bgen(jjtree) LoopStatement */
   ASTLoopStatement jjtn000 = new ASTLoopStatement(this, JJTLOOPSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(LOOP);
       label_27:
@@ -10298,6 +10541,8 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
          if (jjtc000) {
@@ -10316,17 +10561,21 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
     } finally {
          if (jjtc000) {
            jjtree.closeNodeScope(jjtn000, true);
+           jjtreeCloseNodeScope(jjtn000);
+           jjtn000.jjtSetLastToken(getToken(0));
          }
     }
     throw new Error("Missing return statement in function");
   }
 
 /** Scope rule: the loop index only exists within the Loop */
-  final public SimpleNode ForStatement() throws ParseException {
+  final public ASTForStatement ForStatement() throws ParseException {
  /*@bgen(jjtree) ForStatement */
   ASTForStatement jjtn000 = new ASTForStatement(this, JJTFORSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(FOR);
       ForIndex();
@@ -10613,6 +10862,8 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
            if (jjtc000) {
@@ -10631,16 +10882,20 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
     } finally {
            if (jjtc000) {
              jjtree.closeNodeScope(jjtn000, true);
+             jjtreeCloseNodeScope(jjtn000);
+             jjtn000.jjtSetLastToken(getToken(0));
            }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode WhileStatement() throws ParseException {
+  final public ASTWhileStatement WhileStatement() throws ParseException {
  /*@bgen(jjtree) WhileStatement */
   ASTWhileStatement jjtn000 = new ASTWhileStatement(this, JJTWHILESTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(WHILE);
       Expression();
@@ -10908,6 +11163,8 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
            if (jjtc000) {
@@ -10926,16 +11183,20 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
     } finally {
            if (jjtc000) {
              jjtree.closeNodeScope(jjtn000, true);
+             jjtreeCloseNodeScope(jjtn000);
+             jjtn000.jjtSetLastToken(getToken(0));
            }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode IfStatement() throws ParseException {
+  final public ASTIfStatement IfStatement() throws ParseException {
  /*@bgen(jjtree) IfStatement */
   ASTIfStatement jjtn000 = new ASTIfStatement(this, JJTIFSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(IF);
       Expression();
@@ -11723,6 +11984,8 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
       jj_consume_token(IF);
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -11741,6 +12004,8 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -11750,15 +12015,19 @@ v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 /**
 ForIndex is declared implicitly, unlike most variables or constants.
 */
-  final public SimpleNode ForIndex() throws ParseException {
+  final public ASTForIndex ForIndex() throws ParseException {
  /*@bgen(jjtree) ForIndex */
  ASTForIndex jjtn000 = new ASTForIndex(this, JJTFORINDEX);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
     try {
       simpleNode = ID();
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
    jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -11777,6 +12046,8 @@ ForIndex is declared implicitly, unlike most variables or constants.
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
@@ -11785,15 +12056,19 @@ ForIndex is declared implicitly, unlike most variables or constants.
 /**
 ForAllIndex is declared implicitly, unlike most variables or constants.
 */
-  final public SimpleNode ForAllIndex() throws ParseException {
+  final public ASTForAllIndex ForAllIndex() throws ParseException {
  /*@bgen(jjtree) ForAllIndex */
  ASTForAllIndex jjtn000 = new ASTForAllIndex(this, JJTFORALLINDEX);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
     try {
       simpleNode = ID();
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
    jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -11812,16 +12087,20 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ForAllStatement() throws ParseException {
+  final public ASTForAllStatement ForAllStatement() throws ParseException {
  /*@bgen(jjtree) ForAllStatement */
   ASTForAllStatement jjtn000 = new ASTForAllStatement(this, JJTFORALLSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(FORALL);
       ForAllIndex();
@@ -12093,6 +12372,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       SqlStatement(null,";");
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
            if (jjtc000) {
@@ -12111,21 +12392,27 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
            if (jjtc000) {
              jjtree.closeNodeScope(jjtn000, true);
+             jjtreeCloseNodeScope(jjtn000);
+             jjtn000.jjtSetLastToken(getToken(0));
            }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode GotoStatement() throws ParseException {
+  final public ASTGotoStatement GotoStatement() throws ParseException {
  /*@bgen(jjtree) GotoStatement */
   ASTGotoStatement jjtn000 = new ASTGotoStatement(this, JJTGOTOSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(GOTO);
       QualifiedName();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -12144,16 +12431,20 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ReturnStatement() throws ParseException {
+  final public ASTReturnStatement ReturnStatement() throws ParseException {
  /*@bgen(jjtree) ReturnStatement */
   ASTReturnStatement jjtn000 = new ASTReturnStatement(this, JJTRETURNSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(RETURN);
       switch (jj_nt.kind) {
@@ -12387,6 +12678,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -12405,16 +12698,20 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ExitStatement() throws ParseException {
+  final public ASTExitStatement ExitStatement() throws ParseException {
  /*@bgen(jjtree) ExitStatement */
   ASTExitStatement jjtn000 = new ASTExitStatement(this, JJTEXITSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(EXIT);
       switch (jj_nt.kind) {
@@ -12449,6 +12746,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -12467,16 +12766,20 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode RaiseStatement() throws ParseException {
+  final public ASTRaiseStatement RaiseStatement() throws ParseException {
  /*@bgen(jjtree) RaiseStatement */
   ASTRaiseStatement jjtn000 = new ASTRaiseStatement(this, JJTRAISESTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(RAISE);
       switch (jj_nt.kind) {
@@ -12697,6 +13000,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
            if (jjtc000) {
@@ -12715,21 +13020,27 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
            if (jjtc000) {
              jjtree.closeNodeScope(jjtn000, true);
+             jjtreeCloseNodeScope(jjtn000);
+             jjtn000.jjtSetLastToken(getToken(0));
            }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CloseStatement() throws ParseException {
+  final public ASTCloseStatement CloseStatement() throws ParseException {
  /*@bgen(jjtree) CloseStatement */
   ASTCloseStatement jjtn000 = new ASTCloseStatement(this, JJTCLOSESTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(CLOSE);
       QualifiedName();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
         if (jjtc000) {
@@ -12748,16 +13059,20 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
         if (jjtc000) {
           jjtree.closeNodeScope(jjtn000, true);
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
         }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode OpenStatement() throws ParseException {
+  final public ASTOpenStatement OpenStatement() throws ParseException {
  /*@bgen(jjtree) OpenStatement */
   ASTOpenStatement jjtn000 = new ASTOpenStatement(this, JJTOPENSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(OPEN);
       switch (jj_nt.kind) {
@@ -13022,6 +13337,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
            if (jjtc000) {
@@ -13040,16 +13357,20 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
            if (jjtc000) {
              jjtree.closeNodeScope(jjtn000, true);
+             jjtreeCloseNodeScope(jjtn000);
+             jjtn000.jjtSetLastToken(getToken(0));
            }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode FetchStatement() throws ParseException {
+  final public ASTFetchStatement FetchStatement() throws ParseException {
  /*@bgen(jjtree) FetchStatement */
   ASTFetchStatement jjtn000 = new ASTFetchStatement(this, JJTFETCHSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(FETCH);
       QualifiedName();
@@ -13088,6 +13409,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
            if (jjtc000) {
@@ -13106,22 +13429,28 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
            if (jjtc000) {
              jjtree.closeNodeScope(jjtn000, true);
+             jjtreeCloseNodeScope(jjtn000);
+             jjtn000.jjtSetLastToken(getToken(0));
            }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode EmbeddedSqlStatement() throws ParseException {
+  final public ASTEmbeddedSqlStatement EmbeddedSqlStatement() throws ParseException {
  /*@bgen(jjtree) EmbeddedSqlStatement */
   ASTEmbeddedSqlStatement jjtn000 = new ASTEmbeddedSqlStatement(this, JJTEMBEDDEDSQLSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(EXECUTE);
       jj_consume_token(IMMEDIATE);
       StringLiteral();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
      if (jjtc000) {
@@ -13140,22 +13469,28 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
+       jjtreeCloseNodeScope(jjtn000);
+       jjtn000.jjtSetLastToken(getToken(0));
      }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode PipelineStatement() throws ParseException {
+  final public ASTPipelineStatement PipelineStatement() throws ParseException {
  /*@bgen(jjtree) PipelineStatement */
   ASTPipelineStatement jjtn000 = new ASTPipelineStatement(this, JJTPIPELINESTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(PIPE);
       jj_consume_token(ROW);
       Expression();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -13174,16 +13509,20 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ConditionalCompilationStatement() throws ParseException {
+  final public ASTConditionalCompilationStatement ConditionalCompilationStatement() throws ParseException {
  /*@bgen(jjtree) ConditionalCompilationStatement */
   ASTConditionalCompilationStatement jjtn000 = new ASTConditionalCompilationStatement(this, JJTCONDITIONALCOMPILATIONSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case CC_IF:
@@ -13983,6 +14322,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -14001,20 +14342,24 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode SubTypeDefinition() throws ParseException {
+  final public ASTSubTypeDefinition SubTypeDefinition() throws ParseException {
  /*@bgen(jjtree) SubTypeDefinition */
         ASTSubTypeDefinition jjtn000 = new ASTSubTypeDefinition(this, JJTSUBTYPEDEFINITION);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);Token start, subtype_name=null, constraint=null, base_type=null;
+        jjtree.openNodeScope(jjtn000);
+        jjtreeOpenNodeScope(jjtn000);
+        jjtn000.jjtSetFirstToken(getToken(1));Token start, subtype_name=null, constraint=null, base_type=null;
         Token collection = null, collection2 = null;
         SimpleNode name = null;
         SimpleNode startElement = null, endElement = null;
-        SimpleNode baseType = null, returnType = null, indexBy = null, string = null;
+        SimpleNode baseType = null, returnType = null, indexBy = null ;
         int lastField = 0;
     try {
       switch (jj_nt.kind) {
@@ -14466,6 +14811,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       jj_consume_token(4);
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(name.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -14484,16 +14831,20 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode FieldDeclaration() throws ParseException {
+  final public ASTFieldDeclaration FieldDeclaration() throws ParseException {
  /*@bgen(jjtree) FieldDeclaration */
         ASTFieldDeclaration jjtn000 = new ASTFieldDeclaration(this, JJTFIELDDECLARATION);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);SimpleNode name;
+        jjtree.openNodeScope(jjtn000);
+        jjtreeOpenNodeScope(jjtn000);
+        jjtn000.jjtSetFirstToken(getToken(1));SimpleNode name;
         SimpleNode dataType;
         SimpleNode defaultValue = null;
     try {
@@ -14540,6 +14891,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(name.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -14558,71 +14911,93 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CollectionTypeDefinition() throws ParseException {
-                                         /*@bgen(jjtree) CollectionTypeDefinition */
-                                         ASTCollectionTypeDefinition jjtn000 = new ASTCollectionTypeDefinition(this, JJTCOLLECTIONTYPEDEFINITION);
-                                         boolean jjtc000 = true;
-                                         jjtree.openNodeScope(jjtn000);Token t = null ;
+  final public ASTCollectionTypeDefinition CollectionTypeDefinition() throws ParseException {
+                                                          /*@bgen(jjtree) CollectionTypeDefinition */
+                                                          ASTCollectionTypeDefinition jjtn000 = new ASTCollectionTypeDefinition(this, JJTCOLLECTIONTYPEDEFINITION);
+                                                          boolean jjtc000 = true;
+                                                          jjtree.openNodeScope(jjtn000);
+                                                          jjtreeOpenNodeScope(jjtn000);
+                                                          jjtn000.jjtSetFirstToken(getToken(1));Token t = null ;
     try {
       t = jj_consume_token(IDENTIFIER);
-                                                                                 jjtree.closeNodeScope(jjtn000, true);
-                                                                                 jjtc000 = false;
-                                                                                 jjtn000.setImage(t.image) ;  {if (true) return jjtn000 ;}
+                                                                                                  jjtree.closeNodeScope(jjtn000, true);
+                                                                                                  jjtc000 = false;
+                                                                                                  jjtreeCloseNodeScope(jjtn000);
+                                                                                                  jjtn000.jjtSetLastToken(getToken(0));
+                                                                                                  jjtn000.setImage(t.image) ;  {if (true) return jjtn000 ;}
     } finally {
-                                                                if (jjtc000) {
-                                                                  jjtree.closeNodeScope(jjtn000, true);
-                                                                }
+                                                                                 if (jjtc000) {
+                                                                                   jjtree.closeNodeScope(jjtn000, true);
+                                                                                   jjtreeCloseNodeScope(jjtn000);
+                                                                                   jjtn000.jjtSetLastToken(getToken(0));
+                                                                                 }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CollectionDeclaration() throws ParseException {
-                                      /*@bgen(jjtree) CollectionDeclaration */
-                                      ASTCollectionDeclaration jjtn000 = new ASTCollectionDeclaration(this, JJTCOLLECTIONDECLARATION);
-                                      boolean jjtc000 = true;
-                                      jjtree.openNodeScope(jjtn000);Token t = null ;
+  final public ASTCollectionDeclaration CollectionDeclaration() throws ParseException {
+                                                    /*@bgen(jjtree) CollectionDeclaration */
+                                                    ASTCollectionDeclaration jjtn000 = new ASTCollectionDeclaration(this, JJTCOLLECTIONDECLARATION);
+                                                    boolean jjtc000 = true;
+                                                    jjtree.openNodeScope(jjtn000);
+                                                    jjtreeOpenNodeScope(jjtn000);
+                                                    jjtn000.jjtSetFirstToken(getToken(1));Token t = null ;
     try {
       t = jj_consume_token(IDENTIFIER);
-                                                                              jjtree.closeNodeScope(jjtn000, true);
-                                                                              jjtc000 = false;
-                                                                              jjtn000.setImage(t.image) ;  {if (true) return jjtn000 ;}
+                                                                                            jjtree.closeNodeScope(jjtn000, true);
+                                                                                            jjtc000 = false;
+                                                                                            jjtreeCloseNodeScope(jjtn000);
+                                                                                            jjtn000.jjtSetLastToken(getToken(0));
+                                                                                            jjtn000.setImage(t.image) ;  {if (true) return jjtn000 ;}
     } finally {
-                                                             if (jjtc000) {
-                                                               jjtree.closeNodeScope(jjtn000, true);
-                                                             }
+                                                                           if (jjtc000) {
+                                                                             jjtree.closeNodeScope(jjtn000, true);
+                                                                             jjtreeCloseNodeScope(jjtn000);
+                                                                             jjtn000.jjtSetLastToken(getToken(0));
+                                                                           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ObjectDeclaration() throws ParseException {
-                                  /*@bgen(jjtree) ObjectDeclaration */
-                                  ASTObjectDeclaration jjtn000 = new ASTObjectDeclaration(this, JJTOBJECTDECLARATION);
-                                  boolean jjtc000 = true;
-                                  jjtree.openNodeScope(jjtn000);Token t = null ;
+  final public ASTObjectDeclaration ObjectDeclaration() throws ParseException {
+                                            /*@bgen(jjtree) ObjectDeclaration */
+                                            ASTObjectDeclaration jjtn000 = new ASTObjectDeclaration(this, JJTOBJECTDECLARATION);
+                                            boolean jjtc000 = true;
+                                            jjtree.openNodeScope(jjtn000);
+                                            jjtreeOpenNodeScope(jjtn000);
+                                            jjtn000.jjtSetFirstToken(getToken(1));Token t = null ;
     try {
       t = jj_consume_token(IDENTIFIER);
-                                                                          jjtree.closeNodeScope(jjtn000, true);
-                                                                          jjtc000 = false;
-                                                                          jjtn000.setImage(t.image) ;  {if (true) return jjtn000 ;}
+                                                                                    jjtree.closeNodeScope(jjtn000, true);
+                                                                                    jjtc000 = false;
+                                                                                    jjtreeCloseNodeScope(jjtn000);
+                                                                                    jjtn000.jjtSetLastToken(getToken(0));
+                                                                                    jjtn000.setImage(t.image) ;  {if (true) return jjtn000 ;}
     } finally {
-                                                         if (jjtc000) {
-                                                           jjtree.closeNodeScope(jjtn000, true);
-                                                         }
+                                                                   if (jjtc000) {
+                                                                     jjtree.closeNodeScope(jjtn000, true);
+                                                                     jjtreeCloseNodeScope(jjtn000);
+                                                                     jjtn000.jjtSetLastToken(getToken(0));
+                                                                   }
     }
     throw new Error("Missing return statement in function");
   }
 
 /** Java stored procedure, external function*/
-  final public SimpleNode CallSpecTail() throws ParseException {
-                             /*@bgen(jjtree) CallSpecTail */
+  final public ASTCallSpecTail CallSpecTail() throws ParseException {
+                                  /*@bgen(jjtree) CallSpecTail */
   ASTCallSpecTail jjtn000 = new ASTCallSpecTail(this, JJTCALLSPECTAIL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case EXTERNAL:
@@ -14737,6 +15112,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -14755,17 +15132,21 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
 /** Cursor (common part of specification and body) */
-  final public SimpleNode CursorUnit() throws ParseException {
+  final public ASTCursorUnit CursorUnit() throws ParseException {
  /*@bgen(jjtree) CursorUnit */
  ASTCursorUnit jjtn000 = new ASTCursorUnit(this, JJTCURSORUNIT);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
     try {
       jj_consume_token(CURSOR);
       simpleNode = ID();
@@ -14810,6 +15191,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
       jj_consume_token(4);
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -14828,20 +15211,26 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CursorSpecification() throws ParseException {
-                                     /*@bgen(jjtree) CursorSpecification */
+  final public ASTCursorSpecification CursorSpecification() throws ParseException {
+                                                 /*@bgen(jjtree) CursorSpecification */
   ASTCursorSpecification jjtn000 = new ASTCursorSpecification(this, JJTCURSORSPECIFICATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       CursorUnit();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -14860,20 +15249,26 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CursorBody() throws ParseException {
-                            /*@bgen(jjtree) CursorBody */
+  final public ASTCursorBody CursorBody() throws ParseException {
+                               /*@bgen(jjtree) CursorBody */
   ASTCursorBody jjtn000 = new ASTCursorBody(this, JJTCURSORBODY);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       CursorUnit();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -14892,6 +15287,8 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -14909,11 +15306,13 @@ String expression() :
 	{ return ""; }
 }
 */
-  final public SimpleNode Expression() throws ParseException {
+  final public ASTExpression Expression() throws ParseException {
  /*@bgen(jjtree) Expression */
   ASTExpression jjtn000 = new ASTExpression(this, JJTEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
   StringBuffer sb = new StringBuffer() ;
     try {
       if (jj_2_37(2147483647)) {
@@ -15157,6 +15556,8 @@ String expression() :
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -15175,22 +15576,26 @@ String expression() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CompilationExpression() throws ParseException {
+  final public ASTCompilationExpression CompilationExpression() throws ParseException {
  /*@bgen(jjtree) CompilationExpression */
   ASTCompilationExpression jjtn000 = new ASTCompilationExpression(this, JJTCOMPILATIONEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
   StringBuffer sb = new StringBuffer() ;
     try {
       jj_consume_token(CC_IF);
                    sb.append(" "); sb.append(token.image) ;
-      simpleNode = ConditionalOrExpression();
-                                             sb.append(" "); sb.append(simpleNode.getImage());
+      ConditionalOrExpression();
+                                      sb.append(" "); sb.append(simpleNode.getImage());
       jj_consume_token(CC_THEN);
                      sb.append(" "); sb.append(token.image);
       simpleNode = Expression();
@@ -15233,6 +15638,8 @@ String expression() :
                     sb.append(" "); sb.append(token.image);
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -15251,16 +15658,20 @@ String expression() :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Assignment() throws ParseException {
+  final public ASTAssignment Assignment() throws ParseException {
  /*@bgen(jjtree) Assignment */
   ASTAssignment jjtn000 = new ASTAssignment(this, JJTASSIGNMENT);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       simpleNode = PrimaryExpression();
                                        sb.append(simpleNode.getImage());
@@ -15271,6 +15682,8 @@ String expression() :
                                sb.append(simpleNode.getImage());
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -15289,16 +15702,20 @@ String expression() :
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CaseExpression() throws ParseException {
+  final public ASTCaseExpression CaseExpression() throws ParseException {
  /*@bgen(jjtree) CaseExpression */
   ASTCaseExpression jjtn000 = new ASTCaseExpression(this, JJTCASEEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       thisToken = jj_consume_token(CASE);
                              sb.append(thisToken.image);
@@ -15540,8 +15957,8 @@ String expression() :
                                             sb.append(" "); sb.append(simpleNode.getImage());
         thisToken = jj_consume_token(THEN);
                                    sb.append(" "); sb.append(thisToken.image);
-        simpleNode = Expression();
-                                        sb.append(" "); sb.append(simpleNode.getImage());
+        Expression();
+                                 sb.append(" "); sb.append(simpleNode.getImage());
         switch (jj_nt.kind) {
         case WHEN:
           ;
@@ -15566,6 +15983,8 @@ String expression() :
                               sb.append(" "); sb.append(thisToken.image);
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -15584,6 +16003,8 @@ String expression() :
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
@@ -15592,11 +16013,13 @@ String expression() :
 /*
 LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
 */
-  final public SimpleNode LikeExpression() throws ParseException {
+  final public ASTLikeExpression LikeExpression() throws ParseException {
  /*@bgen(jjtree) LikeExpression */
   ASTLikeExpression jjtn000 = new ASTLikeExpression(this, JJTLIKEEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       simpleNode = PrimaryExpression();
                                            sb.append(" "); sb.append(simpleNode.getImage());
@@ -15643,6 +16066,8 @@ LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -15661,16 +16086,20 @@ LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode TrimExpression() throws ParseException {
+  final public ASTTrimExpression TrimExpression() throws ParseException {
  /*@bgen(jjtree) TrimExpression */
   ASTTrimExpression jjtn000 = new ASTTrimExpression(this, JJTTRIMEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       thisToken = jj_consume_token(TRIM);
                                 sb.append(thisToken.image);
@@ -15935,6 +16364,8 @@ LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
               sb.append(")");
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -15953,6 +16384,8 @@ LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
@@ -15962,11 +16395,13 @@ LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
 TREAT ( Expression AS datatype)
 CAST ( Expression AS datatype)
 */
-  final public SimpleNode ObjectExpression() throws ParseException {
+  final public ASTObjectExpression ObjectExpression() throws ParseException {
  /*@bgen(jjtree) ObjectExpression */
   ASTObjectExpression jjtn000 = new ASTObjectExpression(this, JJTOBJECTEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       switch (jj_nt.kind) {
       case CAST:
@@ -16018,6 +16453,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -16036,16 +16473,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ConditionalOrExpression() throws ParseException {
+  final public ASTConditionalOrExpression ConditionalOrExpression() throws ParseException {
  /*@bgen(jjtree) ConditionalOrExpression */
   ASTConditionalOrExpression jjtn000 = new ASTConditionalOrExpression(this, JJTCONDITIONALOREXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       simpleNode = ConditionalAndExpression();
                                                sb.append(simpleNode.getImage());
@@ -16066,6 +16507,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -16084,16 +16527,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ConditionalAndExpression() throws ParseException {
+  final public ASTConditionalAndExpression ConditionalAndExpression() throws ParseException {
  /*@bgen(jjtree) ConditionalAndExpression */
   ASTConditionalAndExpression jjtn000 = new ASTConditionalAndExpression(this, JJTCONDITIONALANDEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       simpleNode = EqualityExpression();
                                           sb.append(simpleNode.getImage());
@@ -16114,6 +16561,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -16132,16 +16581,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode EqualityExpression() throws ParseException {
+  final public ASTEqualityExpression EqualityExpression() throws ParseException {
  /*@bgen(jjtree) EqualityExpression */
   ASTEqualityExpression jjtn000 = new ASTEqualityExpression(this, JJTEQUALITYEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       simpleNode = RelationalExpression();
              sb.append(simpleNode.getImage());
@@ -16181,6 +16634,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -16199,6 +16654,8 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
@@ -16207,11 +16664,13 @@ CAST ( Expression AS datatype)
 /**
  * 2006-05-23 - Matthias Hendler - added FROM
  */
-  final public SimpleNode RelationalExpression() throws ParseException {
+  final public ASTRelationalExpression RelationalExpression() throws ParseException {
  /*@bgen(jjtree) RelationalExpression */
   ASTRelationalExpression jjtn000 = new ASTRelationalExpression(this, JJTRELATIONALEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       simpleNode = AdditiveExpression();
                                          sb.append(simpleNode.getImage());
@@ -16385,8 +16844,8 @@ CAST ( Expression AS datatype)
           jj_consume_token(-1);
           throw new ParseException();
         }
-        simpleNode = AdditiveExpression();
-                                    sb.append(simpleNode.getImage());
+        AdditiveExpression();
+                             sb.append(simpleNode.getImage());
         switch (jj_nt.kind) {
         case ESCAPE:
           jj_consume_token(ESCAPE);
@@ -16413,6 +16872,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -16431,16 +16892,20 @@ CAST ( Expression AS datatype)
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode AdditiveExpression() throws ParseException {
+  final public ASTAdditiveExpression AdditiveExpression() throws ParseException {
  /*@bgen(jjtree) AdditiveExpression */
   ASTAdditiveExpression jjtn000 = new ASTAdditiveExpression(this, JJTADDITIVEEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       simpleNode = MultiplicativeExpression();
                                                sb.append(simpleNode.getImage());
@@ -16479,6 +16944,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -16497,16 +16964,20 @@ CAST ( Expression AS datatype)
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode StringExpression() throws ParseException {
+  final public ASTStringExpression StringExpression() throws ParseException {
  /*@bgen(jjtree) StringExpression */
   ASTStringExpression jjtn000 = new ASTStringExpression(this, JJTSTRINGEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       simpleNode = PrimaryExpression();
                                         sb.append(simpleNode.getImage());
@@ -16527,6 +16998,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -16545,16 +17018,20 @@ CAST ( Expression AS datatype)
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode MultiplicativeExpression() throws ParseException {
+  final public ASTMultiplicativeExpression MultiplicativeExpression() throws ParseException {
  /*@bgen(jjtree) MultiplicativeExpression */
   ASTMultiplicativeExpression jjtn000 = new ASTMultiplicativeExpression(this, JJTMULTIPLICATIVEEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       simpleNode = UnaryExpression(true);
                                           sb.append(simpleNode.getImage());
@@ -16598,6 +17075,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -16616,16 +17095,20 @@ CAST ( Expression AS datatype)
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode UnaryExpression(boolean isUnarySign) throws ParseException {
+  final public ASTUnaryExpression UnaryExpression(boolean isUnarySign) throws ParseException {
  /*@bgen(jjtree) UnaryExpression */
   ASTUnaryExpression jjtn000 = new ASTUnaryExpression(this, JJTUNARYEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       switch (jj_nt.kind) {
       case 16:
@@ -16876,6 +17359,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -16894,16 +17379,20 @@ CAST ( Expression AS datatype)
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode UnaryExpressionNotPlusMinus() throws ParseException {
+  final public ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() throws ParseException {
  /*@bgen(jjtree) UnaryExpressionNotPlusMinus */
   ASTUnaryExpressionNotPlusMinus jjtn000 = new ASTUnaryExpressionNotPlusMinus(this, JJTUNARYEXPRESSIONNOTPLUSMINUS);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       switch (jj_nt.kind) {
       case NOT:
@@ -17140,6 +17629,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -17158,6 +17649,8 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
@@ -17168,11 +17661,13 @@ CAST ( Expression AS datatype)
  *                                 Warning arised while adding methode triggerUnit(). 
  * 2011-04-27 - SRT - Add optional NEW Keyword to cope with Object Type constructors
  */
-  final public SimpleNode PrimaryExpression() throws ParseException {
+  final public ASTPrimaryExpression PrimaryExpression() throws ParseException {
  /*@bgen(jjtree) PrimaryExpression */
   ASTPrimaryExpression jjtn000 = new ASTPrimaryExpression(this, JJTPRIMARYEXPRESSION);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token thisToken ; SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));Token thisToken ; SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       switch (jj_nt.kind) {
       case NEW_DOT:
@@ -17648,6 +18143,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -17666,16 +18163,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode PrimaryPrefix() throws ParseException {
+  final public ASTPrimaryPrefix PrimaryPrefix() throws ParseException {
  /*@bgen(jjtree) PrimaryPrefix */
   ASTPrimaryPrefix jjtn000 = new ASTPrimaryPrefix(this, JJTPRIMARYPREFIX);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
     try {
       switch (jj_nt.kind) {
       case FALSE:
@@ -17971,6 +18472,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
   if (jjtc000) {
@@ -17989,16 +18492,20 @@ CAST ( Expression AS datatype)
     } finally {
   if (jjtc000) {
     jjtree.closeNodeScope(jjtn000, true);
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
   }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode PrimarySuffix() throws ParseException {
+  final public ASTPrimarySuffix PrimarySuffix() throws ParseException {
  /*@bgen(jjtree) PrimarySuffix */
   ASTPrimarySuffix jjtn000 = new ASTPrimarySuffix(this, JJTPRIMARYSUFFIX);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);SimpleNode suffixNode = null ; SimpleNode arguments = null; StringBuffer sb = new StringBuffer() ;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));SimpleNode suffixNode = null ; SimpleNode arguments = null; StringBuffer sb = new StringBuffer() ;
     try {
       switch (jj_nt.kind) {
       case 3:
@@ -18024,6 +18531,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  jjtn000.setImage(sb.toString()); {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -18042,16 +18551,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Literal() throws ParseException {
+  final public ASTLiteral Literal() throws ParseException {
  /*@bgen(jjtree) Literal */
  ASTLiteral jjtn000 = new ASTLiteral(this, JJTLITERAL);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
  Token t = null ;
     try {
       switch (jj_nt.kind) {
@@ -18083,6 +18596,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
    if (null != simpleNode)
    {
      jjtn000.setImage( simpleNode.getImage() ) ;
@@ -18109,16 +18624,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode StringLiteral() throws ParseException {
+  final public ASTStringLiteral StringLiteral() throws ParseException {
  /*@bgen(jjtree) StringLiteral */
         ASTStringLiteral jjtn000 = new ASTStringLiteral(this, JJTSTRINGLITERAL);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);Token thisToken = null;
+        jjtree.openNodeScope(jjtn000);
+        jjtreeOpenNodeScope(jjtn000);
+        jjtn000.jjtSetFirstToken(getToken(1));Token thisToken = null;
         StringBuffer literal = new StringBuffer() ;
         char startDelimiter ;
         char endDelimiter ;
@@ -18160,20 +18679,26 @@ CAST ( Expression AS datatype)
    }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
    jjtn000.setImage(literal.toString()) ;  jjtn000.value = literal.toString() ; {if (true) return jjtn000 ;}
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode BooleanLiteral() throws ParseException {
+  final public ASTBooleanLiteral BooleanLiteral() throws ParseException {
  /*@bgen(jjtree) BooleanLiteral */
   ASTBooleanLiteral jjtn000 = new ASTBooleanLiteral(this, JJTBOOLEANLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case TRUE:
@@ -18189,38 +18714,50 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
    {if (true) return jjtn000;}
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode NullLiteral() throws ParseException {
+  final public ASTNullLiteral NullLiteral() throws ParseException {
  /*@bgen(jjtree) NullLiteral */
   ASTNullLiteral jjtn000 = new ASTNullLiteral(this, JJTNULLLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(NULL);
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
   {if (true) return jjtn000 ;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode MultiSetCondition() throws ParseException {
+  final public ASTMultiSetCondition MultiSetCondition() throws ParseException {
  /*@bgen(jjtree) MultiSetCondition */
   ASTMultiSetCondition jjtn000 = new ASTMultiSetCondition(this, JJTMULTISETCONDITION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case A:
@@ -18237,10 +18774,14 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
   {if (true) return jjtn000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
@@ -18251,21 +18792,27 @@ CAST ( Expression AS datatype)
 * E.g. "+1" would be valid literal, which make parsing of "i+1" impossible
 * (here, we have tokens "i", "+" and "1")
 */
-  final public SimpleNode NumericLiteral() throws ParseException {
+  final public ASTNumericLiteral NumericLiteral() throws ParseException {
  /*@bgen(jjtree) NumericLiteral */
  ASTNumericLiteral jjtn000 = new ASTNumericLiteral(this, JJTNUMERICLITERAL);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);Token t = null ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));Token t = null ;
     try {
       //Essentially unchanged, as it previouly returned a Token 
                       t = jj_consume_token(UNSIGNED_NUMERIC_LITERAL);
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
          jjtn000.setImage(t.image) ;
          {if (true) return jjtn000;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -18273,17 +18820,21 @@ CAST ( Expression AS datatype)
 
 /** This cannot be a token because these are valid labels '<< next_msg >>", '<<"OUTER LOOP">>'  
 */
-  final public SimpleNode Label() throws ParseException {
+  final public ASTLabel Label() throws ParseException {
  /*@bgen(jjtree) Label */
  ASTLabel jjtn000 = new ASTLabel(this, JJTLABEL);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
     try {
       jj_consume_token(21);
       simpleNode = UnqualifiedID();
       jj_consume_token(22);
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage( simpleNode.getImage() ) ;
         {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
@@ -18303,16 +18854,20 @@ CAST ( Expression AS datatype)
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Name() throws ParseException {
+  final public ASTName Name() throws ParseException {
  /*@bgen(jjtree) Name */
  ASTName jjtn000 = new ASTName(this, JJTNAME);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
  StringBuffer sb = new StringBuffer();
     try {
       simpleNode = UnqualifiedID();
@@ -18344,6 +18899,8 @@ CAST ( Expression AS datatype)
       }
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
   jjtn000.setImage(sb.toString()) ;
   {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
@@ -18363,16 +18920,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode QualifiedName() throws ParseException {
+  final public ASTQualifiedName QualifiedName() throws ParseException {
  /*@bgen(jjtree) QualifiedName */
  ASTQualifiedName jjtn000 = new ASTQualifiedName(this, JJTQUALIFIEDNAME);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
  StringBuffer sb = new StringBuffer();
     try {
       simpleNode = UnqualifiedID();
@@ -18393,6 +18954,8 @@ CAST ( Expression AS datatype)
       }
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
          jjtn000.setImage(sb.toString()) ;
          {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
@@ -18412,16 +18975,20 @@ CAST ( Expression AS datatype)
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Arguments() throws ParseException {
+  final public ASTArguments Arguments() throws ParseException {
  /*@bgen(jjtree) Arguments */
   ASTArguments jjtn000 = new ASTArguments(this, JJTARGUMENTS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(5);
       switch (jj_nt.kind) {
@@ -18656,6 +19223,8 @@ CAST ( Expression AS datatype)
       jj_consume_token(7);
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -18674,16 +19243,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ArgumentList() throws ParseException {
+  final public ASTArgumentList ArgumentList() throws ParseException {
  /*@bgen(jjtree) ArgumentList */
   ASTArgumentList jjtn000 = new ASTArgumentList(this, JJTARGUMENTLIST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       Argument();
       label_63:
@@ -18701,6 +19274,8 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -18719,16 +19294,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Argument() throws ParseException {
+  final public ASTArgument Argument() throws ParseException {
  /*@bgen(jjtree) Argument */
  ASTArgument jjtn000 = new ASTArgument(this, JJTARGUMENT);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode = null;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
     try {
       if (jj_2_49(2)) {
         simpleNode = UnqualifiedID();
@@ -18770,7 +19349,9 @@ CAST ( Expression AS datatype)
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
-   if (null!=simpleNode) { jjtn000.setImage(simpleNode.getImage()) ; }
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
+ if (null != simpleNode) { jjtn000.setImage(simpleNode.getImage()) ; }
  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -18789,6 +19370,8 @@ CAST ( Expression AS datatype)
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -18797,16 +19380,20 @@ CAST ( Expression AS datatype)
 // ============================================================================
 // D E C L A R A T I O N S
 // ============================================================================
-  final public SimpleNode VariableOrConstantDeclaration() throws ParseException {
+  final public ASTVariableOrConstantDeclaration VariableOrConstantDeclaration() throws ParseException {
  /*@bgen(jjtree) VariableOrConstantDeclaration */
   ASTVariableOrConstantDeclaration jjtn000 = new ASTVariableOrConstantDeclaration(this, JJTVARIABLEORCONSTANTDECLARATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       VariableOrConstantDeclarator();
       jj_consume_token(4);
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -18825,34 +19412,44 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode DatatypeDeclaration() throws ParseException {
+  final public ASTDatatypeDeclaration DatatypeDeclaration() throws ParseException {
  /*@bgen(jjtree) DatatypeDeclaration */
  ASTDatatypeDeclaration jjtn000 = new ASTDatatypeDeclaration(this, JJTDATATYPEDECLARATION);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);Token t ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));Token t ;
     try {
       t = jj_consume_token(IDENTIFIER);
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     jjtn000.setImage(t.image) ;  {if (true) return jjtn000 ;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Pragma() throws ParseException {
+  final public ASTPragma Pragma() throws ParseException {
  /*@bgen(jjtree) Pragma */
   ASTPragma jjtn000 = new ASTPragma(this, JJTPRAGMA);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(PRAGMA);
       switch (jj_nt.kind) {
@@ -19488,6 +20085,8 @@ CAST ( Expression AS datatype)
       jj_consume_token(4);
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -19506,22 +20105,28 @@ CAST ( Expression AS datatype)
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ExceptionDeclaration() throws ParseException {
+  final public ASTExceptionDeclaration ExceptionDeclaration() throws ParseException {
  /*@bgen(jjtree) ExceptionDeclaration */
  ASTExceptionDeclaration jjtn000 = new ASTExceptionDeclaration(this, JJTEXCEPTIONDECLARATION);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
     try {
       simpleNode = ID();
       jj_consume_token(EXCEPTION);
       jj_consume_token(4);
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -19540,16 +20145,20 @@ CAST ( Expression AS datatype)
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ParallelClause() throws ParseException {
+  final public ASTParallelClause ParallelClause() throws ParseException {
  /*@bgen(jjtree) ParallelClause */
   ASTParallelClause jjtn000 = new ASTParallelClause(this, JJTPARALLELCLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(5);
       jj_consume_token(PARTITION);
@@ -19635,6 +20244,8 @@ CAST ( Expression AS datatype)
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
       if (jjtc000) {
@@ -19653,6 +20264,8 @@ CAST ( Expression AS datatype)
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
       }
     }
     throw new Error("Missing return statement in function");
@@ -19665,11 +20278,13 @@ CAST ( Expression AS datatype)
  */
 
 // SRT *
-  final public SimpleNode Table() throws ParseException {
+  final public ASTTable Table() throws ParseException {
  /*@bgen(jjtree) Table */
   ASTTable jjtn000 = new ASTTable(this, JJTTABLE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(CREATE);
       switch (jj_nt.kind) {
@@ -19728,6 +20343,8 @@ CAST ( Expression AS datatype)
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -19746,16 +20363,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode TableColumn() throws ParseException {
+  final public ASTTableColumn TableColumn() throws ParseException {
  /*@bgen(jjtree) TableColumn */
   ASTTableColumn jjtn000 = new ASTTableColumn(this, JJTTABLECOLUMN);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       ID();
       Datatype();
@@ -19787,6 +20408,8 @@ CAST ( Expression AS datatype)
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -19805,16 +20428,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode View() throws ParseException {
+  final public ASTView View() throws ParseException {
  /*@bgen(jjtree) View */
   ASTView jjtn000 = new ASTView(this, JJTVIEW);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(CREATE);
       switch (jj_nt.kind) {
@@ -19884,6 +20511,8 @@ CAST ( Expression AS datatype)
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -19902,20 +20531,26 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode ViewColumn() throws ParseException {
+  final public ASTViewColumn ViewColumn() throws ParseException {
  /*@bgen(jjtree) ViewColumn */
   ASTViewColumn jjtn000 = new ASTViewColumn(this, JJTVIEWCOLUMN);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       ID();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -19934,16 +20569,20 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Comment() throws ParseException {
+  final public ASTComment Comment() throws ParseException {
  /*@bgen(jjtree) Comment */
   ASTComment jjtn000 = new ASTComment(this, JJTCOMMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(COMMENT);
       jj_consume_token(ON);
@@ -20003,6 +20642,8 @@ CAST ( Expression AS datatype)
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -20021,17 +20662,21 @@ CAST ( Expression AS datatype)
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
 // SRT * /
-  final public SimpleNode TypeMethod() throws ParseException {
+  final public ASTTypeMethod TypeMethod() throws ParseException {
  /*@bgen(jjtree) TypeMethod */
   ASTTypeMethod jjtn000 = new ASTTypeMethod(this, JJTTYPEMETHOD);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
         getToken(1);
         //System.err.println("typeMethod: Result of getToken(1) is \"" + startToken.toString() + "\"" );
@@ -21105,6 +21750,8 @@ CAST ( Expression AS datatype)
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -21123,16 +21770,20 @@ CAST ( Expression AS datatype)
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode TypeSpecification() throws ParseException {
+  final public ASTTypeSpecification TypeSpecification() throws ParseException {
  /*@bgen(jjtree) TypeSpecification */
  ASTTypeSpecification jjtn000 = new ASTTypeSpecification(this, JJTTYPESPECIFICATION);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
     try {
       switch (jj_nt.kind) {
       case CREATE:
@@ -22124,6 +22775,8 @@ CAST ( Expression AS datatype)
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -22142,16 +22795,20 @@ CAST ( Expression AS datatype)
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode AlterTypeSpec() throws ParseException {
+  final public ASTAlterTypeSpec AlterTypeSpec() throws ParseException {
  /*@bgen(jjtree) AlterTypeSpec */
  ASTAlterTypeSpec jjtn000 = new ASTAlterTypeSpec(this, JJTALTERTYPESPEC);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
     try {
       jj_consume_token(ALTER);
       jj_consume_token(TYPE);
@@ -23214,6 +23871,8 @@ CAST ( Expression AS datatype)
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -23232,13 +23891,15 @@ CAST ( Expression AS datatype)
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
 /*
-SimpleNode TypeBody()  :
+ASTTypeBody TypeBody()  :
 { Token name=null; }
 {
 	[<CREATE> [<OR> <REPLACE>]]
@@ -23265,16 +23926,20 @@ SimpleNode TypeBody()  :
 /**
   * Method 
 **/
-  final public SimpleNode AttributeDeclaration() throws ParseException {
+  final public ASTAttributeDeclaration AttributeDeclaration() throws ParseException {
  /*@bgen(jjtree) AttributeDeclaration */
  ASTAttributeDeclaration jjtn000 = new ASTAttributeDeclaration(this, JJTATTRIBUTEDECLARATION);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
     try {
       simpleNode = ID();
       Datatype();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(simpleNode.getImage()) ;   {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -23293,20 +23958,26 @@ SimpleNode TypeBody()  :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode Attribute() throws ParseException {
+  final public ASTAttribute Attribute() throws ParseException {
  /*@bgen(jjtree) Attribute */
  ASTAttribute jjtn000 = new ASTAttribute(this, JJTATTRIBUTE);
  boolean jjtc000 = true;
- jjtree.openNodeScope(jjtn000);SimpleNode simpleNode ;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null;
     try {
       simpleNode = ID();
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
         if (jjtc000) {
@@ -23325,6 +23996,8 @@ SimpleNode TypeBody()  :
     } finally {
         if (jjtc000) {
           jjtree.closeNodeScope(jjtn000, true);
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
         }
     }
     throw new Error("Missing return statement in function");
@@ -23333,11 +24006,13 @@ SimpleNode TypeBody()  :
 /*
  This was quick cut from PRAGMA
 */
-  final public SimpleNode PragmaClause() throws ParseException {
+  final public ASTPragmaClause PragmaClause() throws ParseException {
  /*@bgen(jjtree) PragmaClause */
   ASTPragmaClause jjtn000 = new ASTPragmaClause(this, JJTPRAGMACLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(PRAGMA);
       switch (jj_nt.kind) {
@@ -23747,6 +24422,8 @@ SimpleNode TypeBody()  :
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -23765,6 +24442,8 @@ SimpleNode TypeBody()  :
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -23844,11 +24523,13 @@ tps_body:
 (EXCEPTION exception_handler )*
 
 */
-  final public SimpleNode TriggerUnit() throws ParseException {
+  final public ASTTriggerUnit TriggerUnit() throws ParseException {
  /*@bgen(jjtree) TriggerUnit */
   ASTTriggerUnit jjtn000 = new ASTTriggerUnit(this, JJTTRIGGERUNIT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case CREATE:
@@ -24567,6 +25248,8 @@ tps_body:
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -24585,16 +25268,20 @@ tps_body:
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode TriggerTimingPointSection() throws ParseException {
+  final public ASTTriggerTimingPointSection TriggerTimingPointSection() throws ParseException {
  /*@bgen(jjtree) TriggerTimingPointSection */
   ASTTriggerTimingPointSection jjtn000 = new ASTTriggerTimingPointSection(this, JJTTRIGGERTIMINGPOINTSECTION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case BEFORE:
@@ -24910,6 +25597,8 @@ tps_body:
 
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -24928,16 +25617,20 @@ tps_body:
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode CompoundTriggerBlock() throws ParseException {
+  final public ASTCompoundTriggerBlock CompoundTriggerBlock() throws ParseException {
  /*@bgen(jjtree) CompoundTriggerBlock */
   ASTCompoundTriggerBlock jjtn000 = new ASTCompoundTriggerBlock(this, JJTCOMPOUNDTRIGGERBLOCK);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(COMPOUND);
       jj_consume_token(TRIGGER);
@@ -25655,6 +26348,8 @@ tps_body:
       jj_consume_token(4);
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -25673,6 +26368,8 @@ tps_body:
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
@@ -25685,11 +26382,13 @@ non_dml_trigger :
 ON
 (DATABASE | [schema.]SCHEMA
 */
-  final public SimpleNode NonDMLTrigger() throws ParseException {
+  final public ASTNonDMLTrigger NonDMLTrigger() throws ParseException {
  /*@bgen(jjtree) NonDMLTrigger */
   ASTNonDMLTrigger jjtn000 = new ASTNonDMLTrigger(this, JJTNONDMLTRIGGER);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case BEFORE:
@@ -26120,6 +26819,8 @@ ON
       }
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
+        jjtreeCloseNodeScope(jjtn000);
+        jjtn000.jjtSetLastToken(getToken(0));
         {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
@@ -26138,16 +26839,20 @@ ON
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
+     jjtreeCloseNodeScope(jjtn000);
+     jjtn000.jjtSetLastToken(getToken(0));
    }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode DDLEvent() throws ParseException {
-                        /*@bgen(jjtree) DDLEvent */
+  final public ASTDDLEvent DDLEvent() throws ParseException {
+                         /*@bgen(jjtree) DDLEvent */
   ASTDDLEvent jjtn000 = new ASTDDLEvent(this, JJTDDLEVENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case ALTER:
@@ -26201,20 +26906,26 @@ ON
       }
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(token.toString()) ; jjtn000.value = token ; {if (true) return jjtn000 ;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode DatabaseEvent() throws ParseException {
-                             /*@bgen(jjtree) DatabaseEvent */
+  final public ASTDatabaseEvent DatabaseEvent() throws ParseException {
+                                   /*@bgen(jjtree) DatabaseEvent */
   ASTDatabaseEvent jjtn000 = new ASTDatabaseEvent(this, JJTDATABASEEVENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case STARTUP:
@@ -26242,20 +26953,26 @@ ON
       }
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(token.toString()) ; jjtn000.value = token ; {if (true) return jjtn000 ;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode NonDMLEvent() throws ParseException {
-                           /*@bgen(jjtree) NonDMLEvent */
+  final public ASTNonDMLEvent NonDMLEvent() throws ParseException {
+                               /*@bgen(jjtree) NonDMLEvent */
   ASTNonDMLEvent jjtn000 = new ASTNonDMLEvent(this, JJTNONDMLEVENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case ALTER:
@@ -26289,6 +27006,8 @@ ON
       }
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
     {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -26307,6 +27026,8 @@ ON
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
+      jjtreeCloseNodeScope(jjtn000);
+      jjtn000.jjtSetLastToken(getToken(0));
     }
     }
     throw new Error("Missing return statement in function");
@@ -26324,6 +27045,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
   ASTAlterTrigger jjtn000 = new ASTAlterTrigger(this, JJTALTERTRIGGER);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       jj_consume_token(ALTER);
       jj_consume_token(TRIGGER);
@@ -26331,6 +27054,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       jj_consume_token(4);
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
                 {if (true) return;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -26349,16 +27074,20 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
   }
 
 //SRT 2011-04-17 - START 
-  final public SimpleNode KEYWORD_RESERVED() throws ParseException {
-                                 /*@bgen(jjtree) KEYWORD_RESERVED */
+  final public ASTKEYWORD_RESERVED KEYWORD_RESERVED() throws ParseException {
+                                          /*@bgen(jjtree) KEYWORD_RESERVED */
   ASTKEYWORD_RESERVED jjtn000 = new ASTKEYWORD_RESERVED(this, JJTKEYWORD_RESERVED);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case ALL:
@@ -26608,20 +27337,26 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       }
    jjtree.closeNodeScope(jjtn000, true);
    jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
    jjtn000.setImage(token.toString()) ; jjtn000.value = token ; {if (true) return jjtn000 ;}
     } finally {
   if (jjtc000) {
     jjtree.closeNodeScope(jjtn000, true);
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
   }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode KEYWORD_UNRESERVED() throws ParseException {
-                                   /*@bgen(jjtree) KEYWORD_UNRESERVED */
+  final public ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED() throws ParseException {
+                                              /*@bgen(jjtree) KEYWORD_UNRESERVED */
   ASTKEYWORD_UNRESERVED jjtn000 = new ASTKEYWORD_UNRESERVED(this, JJTKEYWORD_UNRESERVED);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case FALSE:
@@ -27207,10 +27942,14 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       }
   jjtree.closeNodeScope(jjtn000, true);
   jjtc000 = false;
+  jjtreeCloseNodeScope(jjtn000);
+  jjtn000.jjtSetLastToken(getToken(0));
   jjtn000.setImage(token.toString()) ; jjtn000.value = token ; {if (true) return jjtn000 ;}
     } finally {
   if (jjtc000) {
     jjtree.closeNodeScope(jjtn000, true);
+    jjtreeCloseNodeScope(jjtn000);
+    jjtn000.jjtSetLastToken(getToken(0));
   }
     }
     throw new Error("Missing return statement in function");
@@ -27220,11 +27959,13 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 /**
  * 2006-05-20 - Matthias Hendler - added <OLD> and <PARENT>  
  */
-  final public SimpleNode ID() throws ParseException {
-                  /*@bgen(jjtree) ID */
+  final public ASTID ID() throws ParseException {
+             /*@bgen(jjtree) ID */
   ASTID jjtn000 = new ASTID(this, JJTID);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case IDENTIFIER:
@@ -27830,6 +28571,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       }
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(token.toString()) ; jjtn000.value = token ; {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -27848,6 +28591,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -27856,11 +28601,13 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 /**
  * 2006-05-20 - Matthias Hendler - added <OLD>, <NEW>, <LOOP>, <INT>
  */
-  final public SimpleNode UnqualifiedID() throws ParseException {
-                             /*@bgen(jjtree) UnqualifiedID */
+  final public ASTUnqualifiedID UnqualifiedID() throws ParseException {
+                                   /*@bgen(jjtree) UnqualifiedID */
   ASTUnqualifiedID jjtn000 = new ASTUnqualifiedID(this, JJTUNQUALIFIEDID);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case IDENTIFIER:
@@ -28115,6 +28862,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       }
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(token.toString()) ; jjtn000.value = token ; {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -28133,6 +28882,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -28141,11 +28892,13 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
 /**
  * 2006-05-20 - Matthias Hendler - added <LIMIT>
  */
-  final public SimpleNode QualifiedID() throws ParseException {
-                           /*@bgen(jjtree) QualifiedID */
+  final public ASTQualifiedID QualifiedID() throws ParseException {
+                               /*@bgen(jjtree) QualifiedID */
   ASTQualifiedID jjtn000 = new ASTQualifiedID(this, JJTQUALIFIEDID);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case IDENTIFIER:
@@ -28565,6 +29318,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       }
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(token.toString()) ; jjtn000.value = token ; {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -28583,16 +29338,20 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode TypeKeyword() throws ParseException {
-                           /*@bgen(jjtree) TypeKeyword */
+  final public ASTTypeKeyword TypeKeyword() throws ParseException {
+                               /*@bgen(jjtree) TypeKeyword */
   ASTTypeKeyword jjtn000 = new ASTTypeKeyword(this, JJTTYPEKEYWORD);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case BFILE_BASE:
@@ -28818,20 +29577,26 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       }
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(token.toString()) ; jjtn000.value = token ; {if (true) return jjtn000 ;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
   }
 
-  final public SimpleNode JavaInterfaceClass() throws ParseException {
-                                  /*@bgen(jjtree) JavaInterfaceClass */
+  final public ASTJavaInterfaceClass JavaInterfaceClass() throws ParseException {
+                                             /*@bgen(jjtree) JavaInterfaceClass */
   ASTJavaInterfaceClass jjtn000 = new ASTJavaInterfaceClass(this, JJTJAVAINTERFACECLASS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
     try {
       switch (jj_nt.kind) {
       case SQLDATA_CLASS:
@@ -28850,10 +29615,14 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       }
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
           jjtn000.setImage(token.toString()) ; jjtn000.value = token ; {if (true) return jjtn000 ;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -28869,13 +29638,17 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
  /*@bgen(jjtree) EqualsOldIDNewID */
         ASTEqualsOldIDNewID jjtn000 = new ASTEqualsOldIDNewID(this, JJTEQUALSOLDIDNEWID);
         boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);SimpleNode newID;
+        jjtree.openNodeScope(jjtn000);
+        jjtreeOpenNodeScope(jjtn000);
+        jjtn000.jjtSetFirstToken(getToken(1));SimpleNode newID;
         Token oldIDToken;
         Token newIDToken;
     try {
       newID = ID();
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
+          jjtreeCloseNodeScope(jjtn000);
+          jjtn000.jjtSetLastToken(getToken(0));
                 oldIDToken = (Token) pOldID.value ;
                 newIDToken = (Token) newID.value ;
                 if (oldIDToken.image.equals(newIDToken.image)) {
@@ -28901,6 +29674,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
+            jjtreeCloseNodeScope(jjtn000);
+            jjtn000.jjtSetLastToken(getToken(0));
           }
     }
     throw new Error("Missing return statement in function");
@@ -29431,25 +30206,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     finally { jj_save(74, xla); }
   }
 
-  private boolean jj_3R_173() {
-    if (jj_3R_240()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_201() {
-    if (jj_scan_token(ELSE)) return true;
-    if (jj_3R_202()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_200() {
-    if (jj_scan_token(WHEN)) return true;
-    if (jj_3R_202()) return true;
-    if (jj_scan_token(THEN)) return true;
-    if (jj_3R_202()) return true;
-    return false;
-  }
-
   private boolean jj_3R_111() {
     Token xsp;
     xsp = jj_scanpos;
@@ -29856,6 +30612,14 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     }
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_200() {
+    if (jj_scan_token(WHEN)) return true;
+    if (jj_3R_202()) return true;
+    if (jj_scan_token(THEN)) return true;
+    if (jj_3R_202()) return true;
     return false;
   }
 
@@ -35702,6 +36466,17 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     if (jj_scan_token(FROM)) return true;
     if (jj_3R_198()) return true;
     if (jj_scan_token(7)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_173() {
+    if (jj_3R_240()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_201() {
+    if (jj_scan_token(ELSE)) return true;
+    if (jj_3R_202()) return true;
     return false;
   }
 

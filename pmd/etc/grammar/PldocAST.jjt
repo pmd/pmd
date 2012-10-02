@@ -44,6 +44,11 @@ options {
   VISITOR = true;
   NODE_USES_PARSER = true; 
   NODE_PACKAGE="net.sourceforge.pmd.lang.plsql.ast";
+  NODE_EXTENDS="net.sourceforge.pmd.lang.ast.AbstractNode" ;
+  
+  TRACK_TOKENS = true; // record the first and last token of each SimpleNode  
+  NODE_SCOPE_HOOK = true ; 
+
 
 }
 
@@ -94,6 +99,25 @@ public class PLSQLParser {
 //    System.err.println(s + " -> " + parser.purifyIdentifier(s));
   }
 
+    /** Act on the Node when opening scope. 
+    */
+    void jjtreeOpenNodeScope(Node n)
+    {
+    }
+
+    /** Act on the Node when closing scope. 
+    */
+    void jjtreeCloseNodeScope(Node n)
+    {
+      //Set the Nodes' beginLine,beginColumn,endLine,endColumn fields from the generic 
+        Token firstToken = ((SimpleNode) n).jjtGetFirstToken();
+        Token lastToken  = ((SimpleNode) n).jjtGetLastToken();
+
+        ((SimpleNode) n).testingOnly__setBeginLine(firstToken.beginLine);
+        ((SimpleNode) n).testingOnly__setBeginColumn(firstToken.beginColumn);
+        ((SimpleNode) n).testingOnly__setEndLine((null==lastToken) ? firstToken.endLine : lastToken.endLine);
+        ((SimpleNode) n).testingOnly__setEndColumn((null==lastToken) ? firstToken.endColumn : lastToken.endColumn);
+    }
 }
 
 PARSER_END(PLSQLParser)
@@ -107,7 +131,7 @@ PARSER_END(PLSQLParser)
 /**
  * 2006-05-22 - Matthias Hendler - added globalBody()
  */
-SimpleNode Input() : {}
+ASTInput Input() : {}
 {
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
@@ -128,7 +152,7 @@ SimpleNode Input() : {}
       { return jjtThis ; }
 }
 
-SimpleNode SqlPlusCommand() : {}
+ASTSqlPlusCommand SqlPlusCommand() : {}
 {
   (
   // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
@@ -194,7 +218,7 @@ void attachLibrary() :
  *
  * 2006-05-17 - Matthias Hendler - added
  */
-SimpleNode Global()  :
+ASTGlobal Global()  :
 { 
 }
 {
@@ -213,7 +237,7 @@ SimpleNode Global()  :
 
 
 
-SimpleNode Block()  :
+ASTBlock Block()  :
 { 
 }
 {
@@ -232,7 +256,7 @@ SimpleNode Block()  :
 
 
 
-SimpleNode PackageSpecification()  :
+ASTPackageSpecification PackageSpecification()  :
 { 
  SimpleNode simpleNode = null ;
 }
@@ -260,7 +284,7 @@ SimpleNode PackageSpecification()  :
       { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
-SimpleNode PackageBody()  :
+ASTPackageBody PackageBody()  :
 { 
  SimpleNode simpleNode = null ;
 }
@@ -288,7 +312,7 @@ SimpleNode PackageBody()  :
     { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
-SimpleNode DeclarativeUnit()  :
+ASTDeclarativeUnit DeclarativeUnit()  :
 {}
 {
     (
@@ -313,7 +337,7 @@ SimpleNode DeclarativeUnit()  :
     { return jjtThis ; }
 }
 
-SimpleNode DeclarativeSection()  :
+ASTDeclarativeSection DeclarativeSection()  :
 {}
 {
 	(
@@ -322,7 +346,7 @@ SimpleNode DeclarativeSection()  :
       { return jjtThis ; }
 }
 
-SimpleNode CompilationDeclarationFragment()  :
+ASTCompilationDeclarationFragment CompilationDeclarationFragment()  :
 { 
 }
 {
@@ -362,7 +386,7 @@ SimpleNode CompilationDeclarationFragment()  :
  *								   custom tags which he can evaluate in the XSLT.
  *                                 This methode also documents global functions/procedures.
  */
-SimpleNode ProgramUnit()  :
+ASTProgramUnit ProgramUnit()  :
 {
 }
 {
@@ -409,7 +433,7 @@ SimpleNode ProgramUnit()  :
       { return jjtThis ; }
 }
 
-SimpleNode ObjectNameDeclaration() :
+ASTObjectNameDeclaration ObjectNameDeclaration() :
 {SimpleNode schemaName = null, objectName = null ; }
 {
   [ LOOKAHEAD(2) schemaName = ID() "." ] objectName = ID() 
@@ -418,7 +442,7 @@ SimpleNode ObjectNameDeclaration() :
 }
 
 
-SimpleNode FormalParameter()  :
+ASTFormalParameter FormalParameter()  :
 {
  SimpleNode simpleNode = null ;
 }
@@ -435,7 +459,7 @@ SimpleNode FormalParameter()  :
 
 
 
-SimpleNode MethodDeclaration() :
+ASTMethodDeclaration MethodDeclaration() :
 {}
 {
   (
@@ -447,7 +471,7 @@ SimpleNode MethodDeclaration() :
 }
 
 
-SimpleNode MethodDeclarator() :
+ASTMethodDeclarator MethodDeclarator() :
 {
  SimpleNode simpleNode = null ;
 }
@@ -472,7 +496,7 @@ SimpleNode MethodDeclarator() :
 }
 
 
-SimpleNode FormalParameters() :
+ASTFormalParameters FormalParameters() :
 {
  SimpleNode simpleNode = null ;
  StringBuffer sb = new StringBuffer();
@@ -491,7 +515,7 @@ SimpleNode FormalParameters() :
 
 
 
-SimpleNode VariableOrConstantDeclarator() :
+ASTVariableOrConstantDeclarator VariableOrConstantDeclarator() :
 {
  SimpleNode simpleNode = null ;
  StringBuffer sb = new StringBuffer();
@@ -508,7 +532,7 @@ SimpleNode VariableOrConstantDeclarator() :
   { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
 }
 
-SimpleNode VariableOrConstantDeclaratorId() :
+ASTVariableOrConstantDeclaratorId VariableOrConstantDeclaratorId() :
 {
  SimpleNode simpleNode = null ;
 }
@@ -517,7 +541,7 @@ SimpleNode VariableOrConstantDeclaratorId() :
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
-SimpleNode VariableOrConstantInitializer() :
+ASTVariableOrConstantInitializer VariableOrConstantInitializer() :
 {
  SimpleNode simpleNode = null ;
 }
@@ -529,7 +553,7 @@ SimpleNode VariableOrConstantInitializer() :
 
 
 
-SimpleNode Datatype() :
+ASTDatatype Datatype() :
 { 
  SimpleNode simpleNode = null ;
  StringBuffer sb = new StringBuffer();
@@ -552,7 +576,7 @@ SimpleNode Datatype() :
 }
 
 
-SimpleNode CompilationDataType() :
+ASTCompilationDataType CompilationDataType() :
 { 
   SimpleNode simpleNode = null; 
   StringBuffer sb = new StringBuffer() ;
@@ -583,7 +607,7 @@ SimpleNode CompilationDataType() :
  }
 }
 
-SimpleNode CollectionTypeName() :
+ASTCollectionTypeName CollectionTypeName() :
 { SimpleNode size=null, precision=null;
 	StringBuffer sb = new StringBuffer();
 }
@@ -607,7 +631,7 @@ SimpleNode CollectionTypeName() :
       { jjtThis.setImage(sb.toString()) ;  return jjtThis; }
 }
 
-SimpleNode ScalarDataTypeName() :
+ASTScalarDataTypeName ScalarDataTypeName() :
 { SimpleNode size=null, precision=null ;
 	StringBuffer name = new StringBuffer();
 	SimpleNode characterSet = null;
@@ -716,7 +740,7 @@ SimpleNode ScalarDataTypeName() :
       { jjtThis.setImage(name.toString()) ;  return jjtThis; }
 }
 
-SimpleNode DateTimeLiteral() :
+ASTDateTimeLiteral DateTimeLiteral() :
 { 
  Token t = null ; 
  SimpleNode simpleNode = null ;
@@ -795,7 +819,7 @@ SimpleNode DateTimeLiteral() :
    }
 }
 
-SimpleNode ExceptionHandler() :
+ASTExceptionHandler ExceptionHandler() :
 {}
 {
       (
@@ -890,7 +914,7 @@ void SkipPastNextTokenOccurrence(int target) :
 /*
  Read Tokens up to but not including the target String. 
 */
-SimpleNode Read2NextOccurrence(String target) :
+ASTRead2NextOccurrence Read2NextOccurrence(String target) :
 {
   StringBuffer sb = new StringBuffer();
   Token nextToken = getToken(1);
@@ -910,7 +934,7 @@ SimpleNode Read2NextOccurrence(String target) :
 /*
  Read Tokens up to and including the target String. 
 */
-SimpleNode ReadPastNextOccurrence(String target) :
+ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) :
 {
   StringBuffer sb = new StringBuffer();
   Token t = null;
@@ -925,7 +949,7 @@ SimpleNode ReadPastNextOccurrence(String target) :
 /**
  * 2006-05-24 - Matthias Hendler - added MERGE
  */
-SimpleNode SqlStatement(String initiator, String terminator)  :
+ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 {}
 {
 	(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>)
@@ -1004,7 +1028,7 @@ void WrappedObject()  :
 /**
  * 2006-05-24 - Matthias Hendler - added MERGE, EXECUTE choice and LOOKAHEAD at <LOOP>
  */
-SimpleNode UnlabelledStatement()  :
+ASTUnlabelledStatement UnlabelledStatement()  :
 {}
 {
        (
@@ -1032,7 +1056,7 @@ SimpleNode UnlabelledStatement()  :
 }
 
 
-SimpleNode Statement()  :
+ASTStatement Statement()  :
 {}
 {
       (
@@ -1044,7 +1068,7 @@ SimpleNode Statement()  :
       { return jjtThis ; }
 }
 
-SimpleNode CaseStatement()  :
+ASTCaseStatement CaseStatement()  :
 {}
 {
        (
@@ -1056,7 +1080,7 @@ SimpleNode CaseStatement()  :
       { return jjtThis ; }
 }
 
-SimpleNode LoopStatement()  :
+ASTLoopStatement LoopStatement()  :
 {}
 {
        <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
@@ -1064,21 +1088,21 @@ SimpleNode LoopStatement()  :
 }
 
 /** Scope rule: the loop index only exists within the Loop */
-SimpleNode ForStatement()  :
+ASTForStatement ForStatement()  :
 {}
 {
 	 <FOR> ForIndex() <IN> [<REVERSE>] Expression()[".."Expression()] <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
       { return jjtThis ; }
 }
 
-SimpleNode WhileStatement()  :
+ASTWhileStatement WhileStatement()  :
 {}
 {
 	 <WHILE> Expression() <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
       { return jjtThis ; }
 }
 
-SimpleNode IfStatement()  :
+ASTIfStatement IfStatement()  :
 {}
 {
 	<IF> Expression() <THEN> (Statement())+
@@ -1092,7 +1116,7 @@ SimpleNode IfStatement()  :
 /**
 ForIndex is declared implicitly, unlike most variables or constants.
 */
-SimpleNode ForIndex()  :
+ASTForIndex ForIndex()  :
 {
  SimpleNode simpleNode = null ;
 }
@@ -1104,7 +1128,7 @@ SimpleNode ForIndex()  :
 /**
 ForAllIndex is declared implicitly, unlike most variables or constants.
 */
-SimpleNode ForAllIndex()  :
+ASTForAllIndex ForAllIndex()  :
 {
  SimpleNode simpleNode = null;
 }
@@ -1113,7 +1137,7 @@ SimpleNode ForAllIndex()  :
  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
-SimpleNode ForAllStatement()  :
+ASTForAllStatement ForAllStatement()  :
 {}
 {
 	 <FORALL> ForAllIndex() <IN> 
@@ -1125,28 +1149,28 @@ SimpleNode ForAllStatement()  :
       { return jjtThis ; }
 }
 
-SimpleNode GotoStatement()  :
+ASTGotoStatement GotoStatement()  :
 {}
 {
 	<GOTO> QualifiedName() 
       { return jjtThis ; }
 }
 
-SimpleNode ReturnStatement()  :
+ASTReturnStatement ReturnStatement()  :
 {}
 {
 	<RETURN> [Expression()] 
       { return jjtThis ; }
 }
 
-SimpleNode ExitStatement()  :
+ASTExitStatement ExitStatement()  :
 {}
 {
 	<EXIT> [<WHEN> Expression() | <IDENTIFIER> [<WHEN> Expression()]] 
       { return jjtThis ; }
 }
 
-SimpleNode RaiseStatement()  :
+ASTRaiseStatement RaiseStatement()  :
 {}
 {
 	 <RAISE> [QualifiedName()] 
@@ -1154,14 +1178,14 @@ SimpleNode RaiseStatement()  :
       { return jjtThis ; }
 }
 
-SimpleNode CloseStatement()  :
+ASTCloseStatement CloseStatement()  :
 {}
 {
       <CLOSE> QualifiedName() 
       { return jjtThis ; }
 }
 
-SimpleNode OpenStatement()  :
+ASTOpenStatement OpenStatement()  :
 {}
 {
 	 <OPEN> [Expression()]
@@ -1170,7 +1194,7 @@ SimpleNode OpenStatement()  :
       { return jjtThis ; }
 }
 
-SimpleNode FetchStatement()  :
+ASTFetchStatement FetchStatement()  :
 {}
 {
 	 <FETCH> QualifiedName() [<BULK> <COLLECT>]
@@ -1180,7 +1204,7 @@ SimpleNode FetchStatement()  :
       { return jjtThis ; }
 }
 
-SimpleNode EmbeddedSqlStatement()  :
+ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
    <EXECUTE> <IMMEDIATE> StringLiteral() /* <STRING_LITERAL> */ 
@@ -1189,14 +1213,14 @@ SimpleNode EmbeddedSqlStatement()  :
       { return jjtThis ; }
 }
 
-SimpleNode PipelineStatement()  :
+ASTPipelineStatement PipelineStatement()  :
 {}
 {
 	<PIPE> <ROW> Expression()  
       { return jjtThis ; }
 }
 
-SimpleNode ConditionalCompilationStatement()  :
+ASTConditionalCompilationStatement ConditionalCompilationStatement()  :
 {}
 {
 	( <CC_IF> ConditionalOrExpression() <CC_THEN> (Statement())*
@@ -1208,7 +1232,7 @@ SimpleNode ConditionalCompilationStatement()  :
       { return jjtThis ; }
 }
 
-SimpleNode SubTypeDefinition()  :
+ASTSubTypeDefinition SubTypeDefinition()  :
 {
 	Token start, subtype_name=null, constraint=null, base_type=null;
 	Token collection = null, collection2 = null;
@@ -1268,7 +1292,7 @@ SimpleNode SubTypeDefinition()  :
       { jjtThis.setImage(name.getImage()) ;  return jjtThis ; }
 }
 
-SimpleNode FieldDeclaration()  :
+ASTFieldDeclaration FieldDeclaration()  :
 {
 	SimpleNode name;
 	SimpleNode dataType;
@@ -1279,12 +1303,12 @@ SimpleNode FieldDeclaration()  :
       { jjtThis.setImage(name.getImage()) ;  return jjtThis ; }
 }
 
-SimpleNode CollectionTypeDefinition() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
-SimpleNode CollectionDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
-SimpleNode ObjectDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
+ASTCollectionTypeDefinition CollectionTypeDefinition() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
+ASTCollectionDeclaration CollectionDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
+ASTObjectDeclaration ObjectDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
 
 /** Java stored procedure, external function*/
-SimpleNode CallSpecTail() : {
+ASTCallSpecTail CallSpecTail() : {
 }
 {
 	// /* <LANGUAGE> (/*"C"*/<IDENTIFIER> | <JAVA>)
@@ -1374,7 +1398,7 @@ SimpleNode CallSpecTail() : {
 
 
 /** Cursor (common part of specification and body) */
-SimpleNode CursorUnit()  :
+ASTCursorUnit CursorUnit()  :
 {
  SimpleNode simpleNode = null ;
 }
@@ -1389,13 +1413,13 @@ SimpleNode CursorUnit()  :
       { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
-SimpleNode CursorSpecification()  : {}
+ASTCursorSpecification CursorSpecification()  : {}
 {
 	CursorUnit()
       { return jjtThis ; }
 }
 
-SimpleNode CursorBody()  : {}
+ASTCursorBody CursorBody()  : {}
 {
 	CursorUnit()
 //	<IS> /*<SQL_STATEMENT>*/
@@ -1420,7 +1444,7 @@ String expression() :
 
 
 
-SimpleNode Expression() :
+ASTExpression Expression() :
 { 
   SimpleNode simpleNode = null; 
   StringBuffer sb = new StringBuffer() ;
@@ -1437,7 +1461,7 @@ SimpleNode Expression() :
  }
 }
 
-SimpleNode CompilationExpression() :
+ASTCompilationExpression CompilationExpression() :
 { 
   SimpleNode simpleNode = null; 
   StringBuffer sb = new StringBuffer() ;
@@ -1469,7 +1493,7 @@ SimpleNode CompilationExpression() :
 }
 
 
-SimpleNode Assignment() :
+ASTAssignment Assignment() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
@@ -1482,7 +1506,7 @@ SimpleNode Assignment() :
  }
 }
 
-SimpleNode CaseExpression() :
+ASTCaseExpression CaseExpression() :
 { Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
@@ -1506,7 +1530,7 @@ SimpleNode CaseExpression() :
 /*
 LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
 */
-SimpleNode LikeExpression() :
+ASTLikeExpression LikeExpression() :
 { Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
@@ -1528,7 +1552,7 @@ SimpleNode LikeExpression() :
  }
 }
 
-SimpleNode TrimExpression() :
+ASTTrimExpression TrimExpression() :
 { Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
@@ -1550,7 +1574,7 @@ SimpleNode TrimExpression() :
 TREAT ( Expression AS datatype)
 CAST ( Expression AS datatype)
 */
-SimpleNode ObjectExpression() :
+ASTObjectExpression ObjectExpression() :
 { Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
@@ -1570,7 +1594,7 @@ SimpleNode ObjectExpression() :
  }
 }
 
-SimpleNode ConditionalOrExpression() :
+ASTConditionalOrExpression ConditionalOrExpression() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
@@ -1584,7 +1608,7 @@ SimpleNode ConditionalOrExpression() :
  }
 }
 
-SimpleNode ConditionalAndExpression() :
+ASTConditionalAndExpression ConditionalAndExpression() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
@@ -1598,7 +1622,7 @@ SimpleNode ConditionalAndExpression() :
  }
 }
 
-SimpleNode EqualityExpression() :
+ASTEqualityExpression EqualityExpression() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
@@ -1625,7 +1649,7 @@ SimpleNode EqualityExpression() :
 /**
  * 2006-05-23 - Matthias Hendler - added FROM
  */
-SimpleNode RelationalExpression() :
+ASTRelationalExpression RelationalExpression() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
  (
@@ -1684,7 +1708,7 @@ SimpleNode RelationalExpression() :
  }
 }
 
-SimpleNode AdditiveExpression() :
+ASTAdditiveExpression AdditiveExpression() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
  (
@@ -1702,7 +1726,7 @@ SimpleNode AdditiveExpression() :
  }
 }
 
-SimpleNode StringExpression() :
+ASTStringExpression StringExpression() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
  (
@@ -1717,7 +1741,7 @@ SimpleNode StringExpression() :
  }
 }
 
-SimpleNode MultiplicativeExpression() :
+ASTMultiplicativeExpression MultiplicativeExpression() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
 
@@ -1738,7 +1762,7 @@ SimpleNode MultiplicativeExpression() :
  }
 }
 
-SimpleNode UnaryExpression(boolean isUnarySign) :
+ASTUnaryExpression UnaryExpression(boolean isUnarySign) :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
  (
@@ -1754,7 +1778,7 @@ SimpleNode UnaryExpression(boolean isUnarySign) :
  }
 }
 
-SimpleNode UnaryExpressionNotPlusMinus() :
+ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
@@ -1773,7 +1797,7 @@ SimpleNode UnaryExpressionNotPlusMinus() :
  *                                 Warning arised while adding methode triggerUnit(). 
  * 2011-04-27 - SRT - Add optional NEW Keyword to cope with Object Type constructors
  */
-SimpleNode PrimaryExpression() :
+ASTPrimaryExpression PrimaryExpression() :
 { Token thisToken ; SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
 }
 {
@@ -1796,7 +1820,7 @@ SimpleNode PrimaryExpression() :
  }
 }
 
-SimpleNode PrimaryPrefix() :
+ASTPrimaryPrefix PrimaryPrefix() :
 { SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; 
 
 }
@@ -1828,7 +1852,7 @@ SimpleNode PrimaryPrefix() :
  }
 }
 
-SimpleNode PrimarySuffix() :
+ASTPrimarySuffix PrimarySuffix() :
 { SimpleNode suffixNode = null ; SimpleNode arguments = null; StringBuffer sb = new StringBuffer() ; }
 {
   (
@@ -1847,7 +1871,7 @@ SimpleNode PrimarySuffix() :
 }
 
 
-SimpleNode Literal() :
+ASTLiteral Literal() :
 { 
  SimpleNode simpleNode = null;
  Token t = null ;
@@ -1881,7 +1905,7 @@ SimpleNode Literal() :
  }
 }
 
-SimpleNode  StringLiteral() :
+ASTStringLiteral  StringLiteral() :
 {
 	Token thisToken = null;
 	StringBuffer literal = new StringBuffer() ; 
@@ -1933,7 +1957,7 @@ SimpleNode  StringLiteral() :
 }
 
 
-SimpleNode BooleanLiteral() :
+ASTBooleanLiteral BooleanLiteral() :
 {}
 {
   //Essentially unchanged
@@ -1945,7 +1969,7 @@ SimpleNode BooleanLiteral() :
  { return jjtThis; }
 }
 
-SimpleNode NullLiteral() :
+ASTNullLiteral NullLiteral() :
 {}
 {
   //Essentially unchanged
@@ -1957,7 +1981,7 @@ SimpleNode NullLiteral() :
  }
 }
 
-SimpleNode MultiSetCondition() :
+ASTMultiSetCondition MultiSetCondition() :
 {}
 {
   //Essentially unchanged
@@ -1976,7 +2000,7 @@ SimpleNode MultiSetCondition() :
 * E.g. "+1" would be valid literal, which make parsing of "i+1" impossible
 * (here, we have tokens "i", "+" and "1")
 */
-SimpleNode NumericLiteral() :
+ASTNumericLiteral NumericLiteral() :
 { 
  Token t = null ;
 }
@@ -1993,7 +2017,7 @@ SimpleNode NumericLiteral() :
 
 /** This cannot be a token because these are valid labels '<< next_msg >>", '<<"OUTER LOOP">>'  
 */
-SimpleNode Label() :
+ASTLabel Label() :
 { 
  SimpleNode simpleNode = null;
 }
@@ -2008,7 +2032,7 @@ SimpleNode Label() :
 }
 
 
-SimpleNode Name() :
+ASTName Name() :
 {
  SimpleNode simpleNode = null;
  StringBuffer sb = new StringBuffer();
@@ -2027,7 +2051,7 @@ SimpleNode Name() :
   }
 }
 
-SimpleNode QualifiedName() :
+ASTQualifiedName QualifiedName() :
 {
  SimpleNode simpleNode = null;
  StringBuffer sb = new StringBuffer();
@@ -2042,7 +2066,7 @@ SimpleNode QualifiedName() :
 	}
 }
 
-SimpleNode Arguments() :
+ASTArguments Arguments() :
 {
 }
 {
@@ -2055,7 +2079,7 @@ SimpleNode Arguments() :
  }
 }
 
-SimpleNode ArgumentList() :
+ASTArgumentList ArgumentList() :
 {
 }
 {
@@ -2067,7 +2091,7 @@ SimpleNode ArgumentList() :
  }
 }
 
-SimpleNode Argument() :
+ASTArgument Argument() :
 {
  SimpleNode simpleNode = null;
 }
@@ -2091,7 +2115,7 @@ SimpleNode Argument() :
 // ============================================================================
 // D E C L A R A T I O N S
 // ============================================================================
-SimpleNode VariableOrConstantDeclaration() :
+ASTVariableOrConstantDeclaration VariableOrConstantDeclaration() :
 { 
 }
 {
@@ -2100,7 +2124,7 @@ SimpleNode VariableOrConstantDeclaration() :
 }
 
 
-SimpleNode DatatypeDeclaration() : 
+ASTDatatypeDeclaration DatatypeDeclaration() : 
 {
  Token t ;
 } 
@@ -2108,7 +2132,7 @@ SimpleNode DatatypeDeclaration() :
   { jjtThis.setImage(t.image) ;  return jjtThis ; } 
 }
 
-SimpleNode Pragma() :
+ASTPragma Pragma() :
 { 
 }
 {
@@ -2133,7 +2157,7 @@ SimpleNode Pragma() :
       { return jjtThis ; }
 }
 
-SimpleNode ExceptionDeclaration() :
+ASTExceptionDeclaration ExceptionDeclaration() :
 { 
  SimpleNode simpleNode = null;
 }
@@ -2142,7 +2166,7 @@ SimpleNode ExceptionDeclaration() :
       { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
-SimpleNode ParallelClause() :
+ASTParallelClause ParallelClause() :
 {
 }
 {
@@ -2167,7 +2191,7 @@ SimpleNode ParallelClause() :
  */
 
 // SRT *
-SimpleNode Table()  :
+ASTTable Table()  :
 
 { 
 }
@@ -2183,7 +2207,7 @@ SimpleNode Table()  :
       { return jjtThis ; }
 }
 
-SimpleNode TableColumn()  :
+ASTTableColumn TableColumn()  :
 { 
 }
 {
@@ -2193,7 +2217,7 @@ SimpleNode TableColumn()  :
 
 
 
-SimpleNode View()  :
+ASTView View()  :
 { 
 }
 {
@@ -2210,14 +2234,14 @@ SimpleNode View()  :
       { return jjtThis ; }
 }
 
-SimpleNode ViewColumn()  :
+ASTViewColumn ViewColumn()  :
 { }
 {
   ID()
       { return jjtThis ; }
 }
 
-SimpleNode Comment()  :
+ASTComment Comment()  :
 { 
 }
 {
@@ -2233,7 +2257,7 @@ SimpleNode Comment()  :
 
 
 
-SimpleNode TypeMethod()  :
+ASTTypeMethod TypeMethod()  :
 {
 }
 {
@@ -2282,7 +2306,7 @@ SimpleNode TypeMethod()  :
 }
 
 
-SimpleNode TypeSpecification()  :
+ASTTypeSpecification TypeSpecification()  :
 { 
  SimpleNode simpleNode = null;
 }
@@ -2369,7 +2393,7 @@ SimpleNode TypeSpecification()  :
 }
 
 
-SimpleNode AlterTypeSpec()  :
+ASTAlterTypeSpec AlterTypeSpec()  :
 { 
  SimpleNode simpleNode = null;
 }
@@ -2516,7 +2540,7 @@ SimpleNode AlterTypeSpec()  :
 
 
 /*
-SimpleNode TypeBody()  :
+ASTTypeBody TypeBody()  :
 { Token name=null; }
 {
 	[<CREATE> [<OR> <REPLACE>]]
@@ -2543,7 +2567,7 @@ SimpleNode TypeBody()  :
 /**
   * Method 
 **/
-SimpleNode AttributeDeclaration() :
+ASTAttributeDeclaration AttributeDeclaration() :
 { 
  SimpleNode simpleNode = null;
 }
@@ -2554,7 +2578,7 @@ SimpleNode AttributeDeclaration() :
 
 
 
-SimpleNode Attribute() :
+ASTAttribute Attribute() :
 { 
  SimpleNode simpleNode = null;
 }
@@ -2567,7 +2591,7 @@ SimpleNode Attribute() :
 /*
  This was quick cut from PRAGMA
 */
-SimpleNode PragmaClause() :
+ASTPragmaClause PragmaClause() :
 { 
 }
 {
@@ -2661,7 +2685,7 @@ tps_body:
 (EXCEPTION exception_handler )*
 
 */
-SimpleNode TriggerUnit()  :
+ASTTriggerUnit TriggerUnit()  :
 {
 }
 {
@@ -2715,7 +2739,7 @@ SimpleNode TriggerUnit()  :
 }
 
 
-SimpleNode TriggerTimingPointSection()  :
+ASTTriggerTimingPointSection TriggerTimingPointSection()  :
 {
 }
 {
@@ -2737,7 +2761,7 @@ SimpleNode TriggerTimingPointSection()  :
 
 
 
-SimpleNode CompoundTriggerBlock()  :
+ASTCompoundTriggerBlock CompoundTriggerBlock()  :
 {
 }
 {
@@ -2778,7 +2802,7 @@ non_dml_trigger :
 ON
 (DATABASE | [schema.]SCHEMA
 */
-SimpleNode NonDMLTrigger()  :
+ASTNonDMLTrigger NonDMLTrigger()  :
 {
 }
 {
@@ -2791,7 +2815,7 @@ SimpleNode NonDMLTrigger()  :
 }
 
 
-SimpleNode DDLEvent(): {}
+ASTDDLEvent DDLEvent(): {}
 {
   ( <ALTER> 
   | <ANALYZE> 
@@ -2812,7 +2836,7 @@ SimpleNode DDLEvent(): {}
 }
 
 
-SimpleNode DatabaseEvent(): {}
+ASTDatabaseEvent DatabaseEvent(): {}
 {
   ( <STARTUP>
   | <SHUTDOWN> 
@@ -2824,7 +2848,7 @@ SimpleNode DatabaseEvent(): {}
 	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
-SimpleNode NonDMLEvent(): {}
+ASTNonDMLEvent NonDMLEvent(): {}
 {
   (DDLEvent() | DatabaseEvent()) 
   { return jjtThis; }
@@ -3385,7 +3409,7 @@ TOKEN :
 }
 
 //SRT 2011-04-17 - START 
-SimpleNode KEYWORD_RESERVED (): {}
+ASTKEYWORD_RESERVED KEYWORD_RESERVED (): {}
 {
 // PL/SQL RESERVED WORDS - V$RESERVED.RESERVED='Y' 
 ( <ALL>
@@ -3472,7 +3496,7 @@ SimpleNode KEYWORD_RESERVED (): {}
  { jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
-SimpleNode KEYWORD_UNRESERVED (): {}
+ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N' 
 (<FALSE>
@@ -4560,7 +4584,7 @@ SimpleNode KEYWORD_UNRESERVED (): {}
 /**
  * 2006-05-20 - Matthias Hendler - added <OLD> and <PARENT>  
  */
-SimpleNode ID(): {}
+ASTID ID(): {}
 {
 	(<IDENTIFIER>
 		| <QUOTED_LITERAL>
@@ -4761,7 +4785,7 @@ SimpleNode ID(): {}
 /**
  * 2006-05-20 - Matthias Hendler - added <OLD>, <NEW>, <LOOP>, <INT>
  */
-SimpleNode UnqualifiedID(): {}
+ASTUnqualifiedID UnqualifiedID(): {}
 {
 	(
 		<IDENTIFIER>
@@ -4794,7 +4818,7 @@ SimpleNode UnqualifiedID(): {}
 /**
  * 2006-05-20 - Matthias Hendler - added <LIMIT>
  */
-SimpleNode QualifiedID(): {}
+ASTQualifiedID QualifiedID(): {}
 {
 	(
 		<IDENTIFIER>
@@ -5022,7 +5046,7 @@ SimpleNode QualifiedID(): {}
 	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
-SimpleNode TypeKeyword(): {}
+ASTTypeKeyword TypeKeyword(): {}
 {
 	(
 	<BFILE_BASE> |
@@ -5057,7 +5081,7 @@ SimpleNode TypeKeyword(): {}
 	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
-SimpleNode JavaInterfaceClass(): {}
+ASTJavaInterfaceClass JavaInterfaceClass(): {}
 {
 	(
           <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
