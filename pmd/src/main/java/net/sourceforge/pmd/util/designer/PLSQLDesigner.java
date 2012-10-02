@@ -685,8 +685,17 @@ public class PLSQLDesigner implements ClipboardOwner {
 				if (Proxy.isProxyClass(value.getClass())) {
 					name = value.toString();
 				}
+				try
+				{
 				sb.append(name).append(" at line ").append(node.getBeginLine()).append(" column ").append(
 						node.getBeginColumn()).append(PMD.EOL);
+				}
+				catch(Exception e)
+				{
+					System.err.println("SRT: getListCellRenderComponent"+node.toString()+"/"+node.getImage());
+					e.printStackTrace(System.err);
+					sb.append(node.toString());
+				}
 				text = sb.toString();
 			} else {
 				text = value.toString();
@@ -906,14 +915,14 @@ public class PLSQLDesigner implements ClipboardOwner {
 		JButton b = new JButton("Go");
 		b.setMnemonic('g');
 		b.addActionListener(new ShowListener());
-		/*SRTb.addActionListener(new XPathListener());
-		//SRT b.addActionListener(new DFAListener());
+		b.addActionListener(new XPathListener());
+		/*SRT b.addActionListener(new DFAListener());
+		*/ 
 		b.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveSettings();
 			}
 		});
-		*/ 
 		return b;
 	}
 
