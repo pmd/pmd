@@ -692,7 +692,6 @@ public class PLSQLDesigner implements ClipboardOwner {
 				}
 				catch(Exception e)
 				{
-					System.err.println("SRT: getListCellRenderComponent"+node.toString()+"/"+node.getImage());
 					e.printStackTrace(System.err);
 					sb.append(node.toString());
 				}
