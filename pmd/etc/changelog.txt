@@ -38,8 +38,12 @@ Fixed bug 3530124: pmd: parsing of generic method call with super fails
 Fixed bug 3496028: pmd-4.2.6: MissingBreakInSwitch fails to report violation
 Fixed bug 3484404: Invalid NPath calculation in return statement. Thanks to Prabhjot Singh for the patch.
 Fixed bug 3560464: c/c++ \ as a continuation character not supported
-Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 Fixed bgastviewer not working. Thanks to Victor Bucutea.
+Fixed bug 3524607: Problem with implementation of getPackageNameImage method
+Fixed bug 3539585: AvoidLiteralsInIfCondition must NOT consider null
+Fixed bug 3539117: jnlp link for CPD is wrong
+
+Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 
 New Ecmascript rules:
 
