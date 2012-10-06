@@ -33,6 +33,7 @@ import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.SystemUtils;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
@@ -262,7 +263,7 @@ public class PMD {
 		 * disabled if threadCount is not positive, e.g. using the "-threads 0"
 		 * command line option.
 		 */
-		if (configuration.getThreads() > 0) {
+		if (SystemUtils.MT_SUPPORTED && configuration.getThreads() > 0) {
 			new MultiThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
 		} else {
 			new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);

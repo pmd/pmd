@@ -39,6 +39,7 @@ Fixed bug 3496028: pmd-4.2.6: MissingBreakInSwitch fails to report violation
 Fixed bug 3484404: Invalid NPath calculation in return statement. Thanks to Prabhjot Singh for the patch.
 Fixed bug 3560464: c/c++ \ as a continuation character not supported
 Fixed bug 3574133: False+ : SingularField
+Fixed bug 3565001: Regression of Crash in PMDTask due to multithreading (Eclipse and Java 1.5)
 Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 Fixed bgastviewer not working. Thanks to Victor Bucutea.
 
