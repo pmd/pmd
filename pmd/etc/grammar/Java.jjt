@@ -1,5 +1,10 @@
 /**
+ * Enhance grammar to use LocalVariableDeclaration in a for-each loop.
+ * This enhances the symbol table to recognize variables declared in such
+ * a for-each loop.
  *
+ * Andreas Dangel 10/2012
+ * ===================================================================
  * Fix parser problem #3530124 with generics
  *
  * Modified the grammar, so that the different usages of generics work.
@@ -1911,7 +1916,7 @@ void ForStatement() :
 (
       LOOKAHEAD(Modifiers() Type() <IDENTIFIER> ":")
       {checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
-      Modifiers() Type() <IDENTIFIER> ":" Expression()
+      Modifiers() LocalVariableDeclaration() ":" Expression()
 |
   [ ForInit() ] ";"
   [ Expression() ] ";"
