@@ -330,6 +330,7 @@
             <li>Remi Delmas - change CPD CLI to return a non null value when code duplication is found.</li>
             <li>Victor Bucutea - Improved JSP parser to be less strict with not valid XML documents (like HTML).</li>
             <li>Prabhjot Singh - Fixed bug 3484404: Invalid NPath calculation in return statement.</li>
+            <li>Roman - Fixed bug 3546093: Type resolution very slow for big project.</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

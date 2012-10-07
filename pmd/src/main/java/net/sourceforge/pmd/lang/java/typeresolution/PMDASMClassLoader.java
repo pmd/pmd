@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,13 @@ import org.objectweb.asm.ClassReader;
  * cache, large codebases consumed a lot of memory and slowed down greatly when
  * approaching 3,000 classes. I'm adding this comment in case someone is looking
  * at this code and thinks a cache may help.
+ *
+ * see: git show 9e7deee88f63870a1de2cd86458278a027deb6d6
+ *
+ * However, there seems to be a big performance improvement by caching
+ * the negative cases only. The cache is shared between loadClass and getImportedClasses,
+ * as they are using the same (parent) class loader, e.g. if the class foo.Bar cannot be loaded,
+ * then the resource foo/Bar.class will not exist, too.
  */
 public class PMDASMClassLoader extends ClassLoader {
 
@@ -27,7 +35,21 @@ public class PMDASMClassLoader extends ClassLoader {
     	super(parent);
     }
 
-    private Set<String> dontBother = new HashSet<String>();
+    /** Caches the names of the classes that we can't load or that don't exist. */
+    private Set<String> dontBother = Collections.synchronizedSet(new HashSet<String>());
+
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+	if (dontBother.contains(name)) {
+	    throw new ClassNotFoundException(name);
+	}
+	try {
+	    return super.loadClass(name);
+	} catch (ClassNotFoundException e) {
+	    dontBother.add(name);
+	    throw e;
+	}
+    }
 
     public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
 
