@@ -8,6 +8,10 @@
   <property name="eclipse.pde.version" value="3.4.1.R34x_v20080805"/>
   <property name="eclipse.launcher.version" value="1.0.101.R34x_v20080819"/>
 
+  <!-- setting builder property to either buildDirectory or basedir as this is broken on my box -->
+  <property name="builder" value="${buildDirectory}"/>
+  <property name="builder" value="${basedir}"/>
+
   <target name="clean">
     <antcall target="clean-features" />
     <delete quiet="true">
