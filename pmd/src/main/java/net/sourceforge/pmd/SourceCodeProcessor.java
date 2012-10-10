@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
@@ -112,7 +113,8 @@ public class SourceCodeProcessor {
 
 		if (ruleSets.usesDFA(language)) {
 		    long start = System.nanoTime();
-		    languageVersion.getLanguageVersionHandler().getDataFlowFacade().start(rootNode);
+		    VisitorStarter dataFlowFacade = languageVersion.getLanguageVersionHandler().getDataFlowFacade();
+		    dataFlowFacade.start(rootNode);
 		    long end = System.nanoTime();
 		    Benchmarker.mark(Benchmark.DFA, end - start, 0);
 		}
