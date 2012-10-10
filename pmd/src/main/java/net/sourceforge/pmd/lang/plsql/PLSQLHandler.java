@@ -4,7 +4,7 @@ import java.io.Writer;
 
 import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
-//import net.sourceforge.pmd.lang.DataFlowHandler;
+import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.DumpFacade;
 import net.sourceforge.pmd.lang.plsql.PLSQLParser;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
-//import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
+import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 //import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
@@ -38,13 +38,6 @@ public class PLSQLHandler extends AbstractLanguageVersionHandler {
         return new PLSQLParser(parserOptions);
     }
 
-    /*
-    @Override
-    public DataFlowHandler getDataFlowHandler() {
-	return new JavaDataFlowHandler();
-    }
-    */
-
     @Override
     public XPathHandler getXPathHandler() {
 	return new AbstractASTXPathHandler() {
@@ -63,16 +56,19 @@ public class PLSQLHandler extends AbstractLanguageVersionHandler {
 	return PLSQLRuleViolationFactory.INSTANCE;
     }
 
-    /*
+    @Override
+    public DataFlowHandler getDataFlowHandler() {
+	return new PLSQLDataFlowHandler();
+    }
+
     @Override
     public VisitorStarter getDataFlowFacade() {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
-		new DataFlowFacade().initializeWith(getDataFlowHandler(), (ASTinput) rootNode);
+		new DataFlowFacade().initializeWith(getDataFlowHandler(), (ASTInput) rootNode);
 	    }
 	};
     }
-    */
 
     @Override
     public VisitorStarter getSymbolFacade() {

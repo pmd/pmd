@@ -104,6 +104,8 @@ import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.plsql.ast.ParseException;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 //import net.sourceforge.pmd.lang.plsql.ast.AccessNode;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
 import net.sourceforge.pmd.lang.plsql.symboltable.ClassNameDeclaration;
@@ -132,7 +134,7 @@ public class PLSQLDesigner implements ClipboardOwner {
 	private Node getCompilationUnit() {
 		LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
 		Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
-		//Node node = parser.parse(null, new StringReader(codeEditorPane.getText()));
+		//SRT Node node = parser.parse(null, new StringReader(codeEditorPane.getText()));
 		String source = codeEditorPane.getText();
 		Node node = parser.parse(null, new StringReader(source));
 
@@ -493,10 +495,10 @@ public class PLSQLDesigner implements ClipboardOwner {
 	private class DFAListener implements ActionListener {
 		public void actionPerformed(ActionEvent ae) {
 
-			DFAGraphRule dfaGraphRule = new DFAGraphRule();
+			DFAPLSQLGraphRule dfaGraphRule = new DFAPLSQLGraphRule();
 			RuleSet rs = new RuleSet();
 			LanguageVersion languageVersion = getLanguageVersion();
-			if (languageVersion.getLanguage().equals(Language.JAVA)) {
+			if (languageVersion.getLanguage().equals(Language.PLSQL)) {
 				rs.addRule(dfaGraphRule);
 			}
 			RuleContext ctx = new RuleContext();
@@ -513,13 +515,12 @@ public class PLSQLDesigner implements ClipboardOwner {
 				e.printStackTrace();
 			}
 
-			/*
-			List<ASTMethodDeclaration> methods = dfaGraphRule.getMethods();
-			if (methods != null && !methods.isEmpty()) {
-				dfaPanel.resetTo(methods, codeEditorPane);
+			//List<ASTMethodDeclaration> methods = dfaGraphRule.getMethods();
+			List<ASTProgramUnit> programUnits = dfaGraphRule.getProgramUnits();
+			if (programUnits != null && !programUnits.isEmpty()) {
+				dfaPanel.resetTo(programUnits, codeEditorPane);
 				dfaPanel.repaint();
 			}
-			*/
 		}
 	}
 
@@ -725,7 +726,7 @@ public class PLSQLDesigner implements ClipboardOwner {
 	private final ButtonGroup xpathVersionButtonGroup = new ButtonGroup();
 	private final TreeWidget symbolTableTreeWidget = new TreeWidget(new Object[0]);
 	private final JFrame frame = new JFrame("PMD Rule PLSQLDesigner (v " + PMD.VERSION + ')');
-	private final DFAPanel dfaPanel = new DFAPanel();
+	private final DFAPLSQLPanel dfaPanel = new DFAPLSQLPanel();
 	private final JRadioButtonMenuItem[] languageVersionMenuItems = new JRadioButtonMenuItem[getSupportedLanguageVersions().length];
 
 	public PLSQLDesigner(String[] args) {
@@ -915,8 +916,7 @@ public class PLSQLDesigner implements ClipboardOwner {
 		b.setMnemonic('g');
 		b.addActionListener(new ShowListener());
 		b.addActionListener(new XPathListener());
-		/*SRT b.addActionListener(new DFAListener());
-		*/ 
+		b.addActionListener(new DFAListener());
 		b.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveSettings();
@@ -1001,8 +1001,9 @@ public class PLSQLDesigner implements ClipboardOwner {
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 	}
 
+	//SRT keep initial settngs separate to allow side-by-side comparisons
 	private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
-	+ System.getProperty("file.separator") + ".pmd_designer.xml";
+	+ System.getProperty("file.separator") + ".pmd_plsqldesigner.xml";
 
 	private void loadSettings() {
 		try {

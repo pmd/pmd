@@ -17,5 +17,20 @@ class ASTMethodDeclaration extends SimpleNode {
   public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
+
+
+  /**
+   * Gets the name of the method.
+   *
+   * @return a String representing the name of the method
+   */
+  public String getMethodName() {
+      ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
+      if (md != null) {
+    return md.getImage();
+	}
+    return null;
+   }
+
 }
 /* JavaCC - OriginalChecksum=1a1499fc11627211f4558564c6dcd74d (do not edit this line) */

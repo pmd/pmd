@@ -24,9 +24,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	return node.getScope().getEnclosingClassScope();
     }
 
-    //public String getTypeImage() {
-	//return ((Node) getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).getImage();
-    //}
+    /* SRT public String getTypeImage() {
+	return ((Node) getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).getImage();
+    }*/
 
     /**
      * Note that an array of primitive types (int[]) is a reference type.
@@ -34,6 +34,14 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
     //public boolean isReferenceType() {
 	//return ((Node) getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0) instanceof ASTDatatype;
     //}
+
+
+    public AccessNode getAccessNodeParent() {
+	if (node.jjtGetParent() instanceof ASTFormalParameter) {
+	    return (AccessNode) node.jjtGetParent();
+	}
+	return (AccessNode) node.jjtGetParent().jjtGetParent();
+    }
 
     public ASTVariableOrConstantDeclaratorId getDeclaratorId() {
 	return (ASTVariableOrConstantDeclaratorId) node;
@@ -56,10 +64,10 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	catch (Exception e)
 	{
 		e.printStackTrace(System.err);
-		System.err.println("n.node="+n.node);
-		System.err.println("n.node.getImage="+n.node.getImage());
-		System.err.println("node="+node);
-		System.err.println("node.getImage="+node.getImage());
+		System.err.println("SRT: n.node="+n.node);
+		System.err.println("SRT: n.node.getImage="+n.node.getImage());
+		System.err.println("SRT: node="+node);
+		System.err.println("SRT: node.getImage="+node.getImage());
 		return false;
 	}
     }

@@ -1,9 +1,61 @@
-package net.sourceforge.pmd.lang.plsql.ast;
+package net.sourceforge.pmd.lang.plsql.rule;
 
+import java.util.List;
 
-public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.plsql.ast.*;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
+
+public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor, ImmutableLanguage
 {
 
+  
+    public AbstractPLSQLRule() {
+	super.setLanguage(Language.PLSQL);
+	// Enable Type Resolution on PLSQL Rules by default
+	super.setUsesTypeResolution();
+    }
+
+    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+	visitAll(nodes, ctx);
+    }
+
+    protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
+	for (Object element : nodes) {
+	    ASTInput node = (ASTInput) element;
+	    visit(node, ctx);
+	}
+    }
+
+    /**
+     * Gets the Image of the first parent node of type
+     * ASTClassOrInterfaceDeclaration or <code>null</code>
+     *
+     * @param node
+     *            the node which will be searched
+     */
+    protected final String getDeclaringType(Node node) {
+	/* SRT ASTClassOrInterfaceDeclaration c = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+	if (c != null) {
+	    return c.getImage();
+	}*/
+	return null;
+    }
+
+    public static boolean isQualifiedName(Node node) {
+	return node.getImage().indexOf('.') != -1;
+    }
+
+    public static boolean importsPackage(ASTInput node, String packageName) {
+	return false;
+    }
+
+  /*
+   * Duplicate PLSQLParserVisitor API 
+   */
   public Object visit(SimpleNode node, Object data) { 
 	node.childrenAccept(this, data);
         return null;

@@ -39,6 +39,7 @@ public interface PLSQLParserVisitor
   public Object visit(ASTWrappedObject node, Object data);
   public Object visit(ASTUnlabelledStatement node, Object data);
   public Object visit(ASTStatement node, Object data);
+  public Object visit(ASTLabelledStatement node, Object data);
   public Object visit(ASTCaseStatement node, Object data);
   public Object visit(ASTLoopStatement node, Object data);
   public Object visit(ASTForStatement node, Object data);
@@ -49,6 +50,7 @@ public interface PLSQLParserVisitor
   public Object visit(ASTForAllStatement node, Object data);
   public Object visit(ASTGotoStatement node, Object data);
   public Object visit(ASTReturnStatement node, Object data);
+  public Object visit(ASTContinueStatement node, Object data);
   public Object visit(ASTExitStatement node, Object data);
   public Object visit(ASTRaiseStatement node, Object data);
   public Object visit(ASTCloseStatement node, Object data);
@@ -130,4 +132,4 @@ public interface PLSQLParserVisitor
   public Object visit(ASTJavaInterfaceClass node, Object data);
   public Object visit(ASTEqualsOldIDNewID node, Object data);
 }
-/* JavaCC - OriginalChecksum=2999b418f4b4cfef28a14cf7ececd644 (do not edit this line) */
+/* JavaCC - OriginalChecksum=69bd2d0353bfa3301182d7d5cd5d0109 (do not edit this line) */

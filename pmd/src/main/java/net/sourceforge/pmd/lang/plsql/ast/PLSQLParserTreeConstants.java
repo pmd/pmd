@@ -38,96 +38,98 @@ public interface PLSQLParserTreeConstants
   public int JJTWRAPPEDOBJECT = 32;
   public int JJTUNLABELLEDSTATEMENT = 33;
   public int JJTSTATEMENT = 34;
-  public int JJTCASESTATEMENT = 35;
-  public int JJTLOOPSTATEMENT = 36;
-  public int JJTFORSTATEMENT = 37;
-  public int JJTWHILESTATEMENT = 38;
-  public int JJTIFSTATEMENT = 39;
-  public int JJTFORINDEX = 40;
-  public int JJTFORALLINDEX = 41;
-  public int JJTFORALLSTATEMENT = 42;
-  public int JJTGOTOSTATEMENT = 43;
-  public int JJTRETURNSTATEMENT = 44;
-  public int JJTEXITSTATEMENT = 45;
-  public int JJTRAISESTATEMENT = 46;
-  public int JJTCLOSESTATEMENT = 47;
-  public int JJTOPENSTATEMENT = 48;
-  public int JJTFETCHSTATEMENT = 49;
-  public int JJTEMBEDDEDSQLSTATEMENT = 50;
-  public int JJTPIPELINESTATEMENT = 51;
-  public int JJTCONDITIONALCOMPILATIONSTATEMENT = 52;
-  public int JJTSUBTYPEDEFINITION = 53;
-  public int JJTFIELDDECLARATION = 54;
-  public int JJTCOLLECTIONTYPEDEFINITION = 55;
-  public int JJTCOLLECTIONDECLARATION = 56;
-  public int JJTOBJECTDECLARATION = 57;
-  public int JJTCALLSPECTAIL = 58;
-  public int JJTCURSORUNIT = 59;
-  public int JJTCURSORSPECIFICATION = 60;
-  public int JJTCURSORBODY = 61;
-  public int JJTEXPRESSION = 62;
-  public int JJTCOMPILATIONEXPRESSION = 63;
-  public int JJTASSIGNMENT = 64;
-  public int JJTCASEEXPRESSION = 65;
-  public int JJTLIKEEXPRESSION = 66;
-  public int JJTTRIMEXPRESSION = 67;
-  public int JJTOBJECTEXPRESSION = 68;
-  public int JJTCONDITIONALOREXPRESSION = 69;
-  public int JJTCONDITIONALANDEXPRESSION = 70;
-  public int JJTEQUALITYEXPRESSION = 71;
-  public int JJTRELATIONALEXPRESSION = 72;
-  public int JJTADDITIVEEXPRESSION = 73;
-  public int JJTSTRINGEXPRESSION = 74;
-  public int JJTMULTIPLICATIVEEXPRESSION = 75;
-  public int JJTUNARYEXPRESSION = 76;
-  public int JJTUNARYEXPRESSIONNOTPLUSMINUS = 77;
-  public int JJTPRIMARYEXPRESSION = 78;
-  public int JJTPRIMARYPREFIX = 79;
-  public int JJTPRIMARYSUFFIX = 80;
-  public int JJTLITERAL = 81;
-  public int JJTSTRINGLITERAL = 82;
-  public int JJTBOOLEANLITERAL = 83;
-  public int JJTNULLLITERAL = 84;
-  public int JJTMULTISETCONDITION = 85;
-  public int JJTNUMERICLITERAL = 86;
-  public int JJTLABEL = 87;
-  public int JJTNAME = 88;
-  public int JJTQUALIFIEDNAME = 89;
-  public int JJTARGUMENTS = 90;
-  public int JJTARGUMENTLIST = 91;
-  public int JJTARGUMENT = 92;
-  public int JJTVARIABLEORCONSTANTDECLARATION = 93;
-  public int JJTDATATYPEDECLARATION = 94;
-  public int JJTPRAGMA = 95;
-  public int JJTEXCEPTIONDECLARATION = 96;
-  public int JJTPARALLELCLAUSE = 97;
-  public int JJTTABLE = 98;
-  public int JJTTABLECOLUMN = 99;
-  public int JJTVIEW = 100;
-  public int JJTVIEWCOLUMN = 101;
-  public int JJTCOMMENT = 102;
-  public int JJTTYPEMETHOD = 103;
-  public int JJTTYPESPECIFICATION = 104;
-  public int JJTALTERTYPESPEC = 105;
-  public int JJTATTRIBUTEDECLARATION = 106;
-  public int JJTATTRIBUTE = 107;
-  public int JJTPRAGMACLAUSE = 108;
-  public int JJTTRIGGERUNIT = 109;
-  public int JJTTRIGGERTIMINGPOINTSECTION = 110;
-  public int JJTCOMPOUNDTRIGGERBLOCK = 111;
-  public int JJTNONDMLTRIGGER = 112;
-  public int JJTDDLEVENT = 113;
-  public int JJTDATABASEEVENT = 114;
-  public int JJTNONDMLEVENT = 115;
-  public int JJTALTERTRIGGER = 116;
-  public int JJTKEYWORD_RESERVED = 117;
-  public int JJTKEYWORD_UNRESERVED = 118;
-  public int JJTID = 119;
-  public int JJTUNQUALIFIEDID = 120;
-  public int JJTQUALIFIEDID = 121;
-  public int JJTTYPEKEYWORD = 122;
-  public int JJTJAVAINTERFACECLASS = 123;
-  public int JJTEQUALSOLDIDNEWID = 124;
+  public int JJTLABELLEDSTATEMENT = 35;
+  public int JJTCASESTATEMENT = 36;
+  public int JJTLOOPSTATEMENT = 37;
+  public int JJTFORSTATEMENT = 38;
+  public int JJTWHILESTATEMENT = 39;
+  public int JJTIFSTATEMENT = 40;
+  public int JJTFORINDEX = 41;
+  public int JJTFORALLINDEX = 42;
+  public int JJTFORALLSTATEMENT = 43;
+  public int JJTGOTOSTATEMENT = 44;
+  public int JJTRETURNSTATEMENT = 45;
+  public int JJTCONTINUESTATEMENT = 46;
+  public int JJTEXITSTATEMENT = 47;
+  public int JJTRAISESTATEMENT = 48;
+  public int JJTCLOSESTATEMENT = 49;
+  public int JJTOPENSTATEMENT = 50;
+  public int JJTFETCHSTATEMENT = 51;
+  public int JJTEMBEDDEDSQLSTATEMENT = 52;
+  public int JJTPIPELINESTATEMENT = 53;
+  public int JJTCONDITIONALCOMPILATIONSTATEMENT = 54;
+  public int JJTSUBTYPEDEFINITION = 55;
+  public int JJTFIELDDECLARATION = 56;
+  public int JJTCOLLECTIONTYPEDEFINITION = 57;
+  public int JJTCOLLECTIONDECLARATION = 58;
+  public int JJTOBJECTDECLARATION = 59;
+  public int JJTCALLSPECTAIL = 60;
+  public int JJTCURSORUNIT = 61;
+  public int JJTCURSORSPECIFICATION = 62;
+  public int JJTCURSORBODY = 63;
+  public int JJTEXPRESSION = 64;
+  public int JJTCOMPILATIONEXPRESSION = 65;
+  public int JJTASSIGNMENT = 66;
+  public int JJTCASEEXPRESSION = 67;
+  public int JJTLIKEEXPRESSION = 68;
+  public int JJTTRIMEXPRESSION = 69;
+  public int JJTOBJECTEXPRESSION = 70;
+  public int JJTCONDITIONALOREXPRESSION = 71;
+  public int JJTCONDITIONALANDEXPRESSION = 72;
+  public int JJTEQUALITYEXPRESSION = 73;
+  public int JJTRELATIONALEXPRESSION = 74;
+  public int JJTADDITIVEEXPRESSION = 75;
+  public int JJTSTRINGEXPRESSION = 76;
+  public int JJTMULTIPLICATIVEEXPRESSION = 77;
+  public int JJTUNARYEXPRESSION = 78;
+  public int JJTUNARYEXPRESSIONNOTPLUSMINUS = 79;
+  public int JJTPRIMARYEXPRESSION = 80;
+  public int JJTPRIMARYPREFIX = 81;
+  public int JJTPRIMARYSUFFIX = 82;
+  public int JJTLITERAL = 83;
+  public int JJTSTRINGLITERAL = 84;
+  public int JJTBOOLEANLITERAL = 85;
+  public int JJTNULLLITERAL = 86;
+  public int JJTMULTISETCONDITION = 87;
+  public int JJTNUMERICLITERAL = 88;
+  public int JJTLABEL = 89;
+  public int JJTNAME = 90;
+  public int JJTQUALIFIEDNAME = 91;
+  public int JJTARGUMENTS = 92;
+  public int JJTARGUMENTLIST = 93;
+  public int JJTARGUMENT = 94;
+  public int JJTVARIABLEORCONSTANTDECLARATION = 95;
+  public int JJTDATATYPEDECLARATION = 96;
+  public int JJTPRAGMA = 97;
+  public int JJTEXCEPTIONDECLARATION = 98;
+  public int JJTPARALLELCLAUSE = 99;
+  public int JJTTABLE = 100;
+  public int JJTTABLECOLUMN = 101;
+  public int JJTVIEW = 102;
+  public int JJTVIEWCOLUMN = 103;
+  public int JJTCOMMENT = 104;
+  public int JJTTYPEMETHOD = 105;
+  public int JJTTYPESPECIFICATION = 106;
+  public int JJTALTERTYPESPEC = 107;
+  public int JJTATTRIBUTEDECLARATION = 108;
+  public int JJTATTRIBUTE = 109;
+  public int JJTPRAGMACLAUSE = 110;
+  public int JJTTRIGGERUNIT = 111;
+  public int JJTTRIGGERTIMINGPOINTSECTION = 112;
+  public int JJTCOMPOUNDTRIGGERBLOCK = 113;
+  public int JJTNONDMLTRIGGER = 114;
+  public int JJTDDLEVENT = 115;
+  public int JJTDATABASEEVENT = 116;
+  public int JJTNONDMLEVENT = 117;
+  public int JJTALTERTRIGGER = 118;
+  public int JJTKEYWORD_RESERVED = 119;
+  public int JJTKEYWORD_UNRESERVED = 120;
+  public int JJTID = 121;
+  public int JJTUNQUALIFIEDID = 122;
+  public int JJTQUALIFIEDID = 123;
+  public int JJTTYPEKEYWORD = 124;
+  public int JJTJAVAINTERFACECLASS = 125;
+  public int JJTEQUALSOLDIDNEWID = 126;
 
 
   public String[] jjtNodeName = {
@@ -166,6 +168,7 @@ public interface PLSQLParserTreeConstants
     "WrappedObject",
     "UnlabelledStatement",
     "Statement",
+    "LabelledStatement",
     "CaseStatement",
     "LoopStatement",
     "ForStatement",
@@ -176,6 +179,7 @@ public interface PLSQLParserTreeConstants
     "ForAllStatement",
     "GotoStatement",
     "ReturnStatement",
+    "ContinueStatement",
     "ExitStatement",
     "RaiseStatement",
     "CloseStatement",
@@ -258,4 +262,4 @@ public interface PLSQLParserTreeConstants
     "EqualsOldIDNewID",
   };
 }
-/* JavaCC - OriginalChecksum=b2a2579a7a7d9170078a1bb2807ce982 (do not edit this line) */
+/* JavaCC - OriginalChecksum=9e22d9572409714262d73943b9629f77 (do not edit this line) */
