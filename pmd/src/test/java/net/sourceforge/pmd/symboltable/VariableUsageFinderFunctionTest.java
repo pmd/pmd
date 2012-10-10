@@ -33,7 +33,7 @@ public class VariableUsageFinderFunctionTest {
 
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(declarations);
         Applier.apply(f, vars.iterator());
-        Map p = f.getUsed();
+        Map<VariableNameDeclaration, List<NameOccurrence>> p = f.getUsed();
         assertEquals(1, p.size());
     }
 

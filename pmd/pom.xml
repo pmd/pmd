@@ -229,9 +229,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</connection>
-        <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</developerConnection>
-        <url>http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd</url>
+        <connection>scm:git:git://github.com/pmd/pmd.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
+        <url>https://github.com/pmd/pmd</url>
     </scm>
     <organization>
         <name>InfoEther</name>

@@ -33,6 +33,7 @@ import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.SystemUtils;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
@@ -49,6 +50,8 @@ public class PMD {
 
 	public static final String EOL = System.getProperty("line.separator", "\n");
 	public static final String SUPPRESS_MARKER = "NOPMD";
+	public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
+	public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
 	protected final PMDConfiguration configuration;
 
@@ -260,7 +263,7 @@ public class PMD {
 		 * disabled if threadCount is not positive, e.g. using the "-threads 0"
 		 * command line option.
 		 */
-		if (configuration.getThreads() > 0) {
+		if (SystemUtils.MT_SUPPORTED && configuration.getThreads() > 0) {
 			new MultiThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
 		} else {
 			new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
@@ -334,11 +337,22 @@ public class PMD {
 
     /**
      * Entry to invoke PMD as command line tool
-     * 
+     *
      * @param args
      */
     public static void main(String[] args) {
-		System.exit(run(args));
+    	if ( isExitAfterRunSet() )
+    		System.exit(run(args));
+    	else
+    		setStatusCode(run(args));
+    }
+
+    private static boolean isExitAfterRunSet() {
+    	return (System.getenv(NO_EXIT_AFTER_RUN) == null ? false : true);
+    }
+
+    private static void setStatusCode(int statusCode) {
+    	System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
     }
 
     /**

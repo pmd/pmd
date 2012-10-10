@@ -5,7 +5,9 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ObjectLiteral;
 
-public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral> implements DestructuringNode {
+public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral> implements DestructuringNode, TrailingCommaNode {
+    private boolean trailingComma;
+
     public ASTObjectLiteral(ObjectLiteral objectLiteral) {
 	super(objectLiteral);
     }
@@ -23,5 +25,13 @@ public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral> impl
 
     public boolean isDestructuring() {
 	return node.isDestructuring();
+    }
+
+    public boolean isTrailingComma() {
+	return trailingComma;
+    }
+
+    public void setTrailingComma(boolean trailingComma) {
+	this.trailingComma = trailingComma;
     }
 }

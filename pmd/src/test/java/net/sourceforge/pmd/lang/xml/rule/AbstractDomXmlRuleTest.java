@@ -1,6 +1,9 @@
 package net.sourceforge.pmd.lang.xml.rule;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.lang.xml.rule.AbstractDomXmlRule;
 
+import org.jaxen.JaxenException;
 import org.junit.Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CharacterData;
@@ -30,153 +34,210 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
 public class AbstractDomXmlRuleTest {
-    @Test
-    public void testVisit() throws Exception {
-	String source = "<?xml version=\"1.0\"?><?mypi?><!DOCTYPE testDoc [<!ENTITY entity \"e\">]><!--Comment--><foo abc=\"abc\"><bar>TEXT</bar><![CDATA[cdata!]]>&gt;&entity;&lt;</foo>";
-	XmlParserOptions parserOptions = new XmlParserOptions();
-	parserOptions.setExpandEntityReferences(false);
-	Parser parser = Language.XML.getDefaultVersion().getLanguageVersionHandler().getParser(parserOptions);
-	XmlNode xmlNode = (XmlNode) parser.parse(null, new StringReader(source));
-	List<XmlNode> nodes = new ArrayList<XmlNode>();
-	nodes.add(xmlNode);
 
-	MyRule rule = new MyRule();
-	rule.apply(nodes, null);
+	@Test
+	public void testVisit() throws Exception {
+		String source = "<?xml version=\"1.0\"?><?mypi?><!DOCTYPE testDoc [<!ENTITY entity \"e\">]><!--Comment--><foo abc=\"abc\"><bar>TEXT</bar><![CDATA[cdata!]]>&gt;&entity;&lt;</foo>";
+		XmlParserOptions parserOptions = new XmlParserOptions();
+		parserOptions.setExpandEntityReferences(false);
+		Parser parser = Language.XML.getDefaultVersion()
+				.getLanguageVersionHandler().getParser(parserOptions);
+		XmlNode xmlNode = (XmlNode) parser
+				.parse(null, new StringReader(source));
+		List<XmlNode> nodes = new ArrayList<XmlNode>();
+		nodes.add(xmlNode);
 
-	List<org.w3c.dom.Node> visited = rule.visitedNodes.get("Attr");
-	assertEquals(1, visited.size());
-	assertEquals("abc", visited.get(0).getLocalName());
+		MyRule rule = new MyRule();
+		rule.apply(nodes, null);
 
-	visited = rule.visitedNodes.get("CharacterData");
-	assertEquals(1, visited.size());
-	assertEquals("cdata!", ((CharacterData) visited.get(0)).getData());
+		List<org.w3c.dom.Node> visited = rule.visitedNodes.get("Attr");
+		assertEquals(1, visited.size());
+		assertEquals("abc", visited.get(0).getLocalName());
 
-	visited = rule.visitedNodes.get("Comment");
-	assertEquals("Comment", ((Comment) visited.get(0)).getData());
+		visited = rule.visitedNodes.get("CharacterData");
+		assertEquals(1, visited.size());
+		assertEquals("cdata!", ((CharacterData) visited.get(0)).getData());
 
-	visited = rule.visitedNodes.get("Document");
-	assertEquals(1, visited.size());
+		visited = rule.visitedNodes.get("Comment");
+		assertEquals("Comment", ((Comment) visited.get(0)).getData());
 
-	visited = rule.visitedNodes.get("DocumentType");
-	assertEquals("testDoc", ((DocumentType) visited.get(0)).getName());
+		visited = rule.visitedNodes.get("Document");
+		assertEquals(1, visited.size());
 
-	visited = rule.visitedNodes.get("Element");
-	assertEquals(2, visited.size());
-	assertEquals("foo", visited.get(0).getLocalName());
-	assertEquals("bar", visited.get(1).getLocalName());
+		visited = rule.visitedNodes.get("DocumentType");
+		assertEquals("testDoc", ((DocumentType) visited.get(0)).getName());
 
-	// TODO Figure out how to trigger this.
-	// visited = rule.visitedNodes.get("Entity");
-	// assertEquals(0, visited.size());
+		visited = rule.visitedNodes.get("Element");
+		assertEquals(2, visited.size());
+		assertEquals("foo", visited.get(0).getLocalName());
+		assertEquals("bar", visited.get(1).getLocalName());
 
-	visited = rule.visitedNodes.get("EntityReference");
-	assertEquals(1, visited.size());
-	assertEquals("entity", ((EntityReference) visited.get(0)).getNodeName());
+		// TODO Figure out how to trigger this.
+		// visited = rule.visitedNodes.get("Entity");
+		// assertEquals(0, visited.size());
 
-	// TODO Figure out how to trigger this.
-	// visited = rule.visitedNodes.get("Notation");
-	// assertEquals(0, visited.size());
+		visited = rule.visitedNodes.get("EntityReference");
+		assertEquals(1, visited.size());
+		assertEquals("entity", ((EntityReference) visited.get(0)).getNodeName());
 
-	visited = rule.visitedNodes.get("ProcessingInstruction");
-	assertEquals(1, visited.size());
-	assertEquals("mypi", ((ProcessingInstruction) visited.get(0)).getTarget());
+		// TODO Figure out how to trigger this.
+		// visited = rule.visitedNodes.get("Notation");
+		// assertEquals(0, visited.size());
 
-	visited = rule.visitedNodes.get("Text");
-	assertEquals(4, visited.size());
-	assertEquals("TEXT", ((Text) visited.get(0)).getData());
-	assertEquals(">", ((Text) visited.get(1)).getData());
-	assertEquals("e", ((Text) visited.get(2)).getData());
-	assertEquals("<", ((Text) visited.get(3)).getData());
-    }
+		visited = rule.visitedNodes.get("ProcessingInstruction");
+		assertEquals(1, visited.size());
+		assertEquals("mypi",
+				((ProcessingInstruction) visited.get(0)).getTarget());
 
-    private static class MyRule extends AbstractDomXmlRule {
-	final Map<String, List<org.w3c.dom.Node>> visitedNodes = new HashMap<String, List<org.w3c.dom.Node>>();
-
-	public MyRule() {
+		visited = rule.visitedNodes.get("Text");
+		assertEquals(4, visited.size());
+		assertEquals("TEXT", ((Text) visited.get(0)).getData());
+		assertEquals(">", ((Text) visited.get(1)).getData());
+		assertEquals("e", ((Text) visited.get(2)).getData());
+		assertEquals("<", ((Text) visited.get(3)).getData());
 	}
 
-	private void visit(String key, org.w3c.dom.Node node) {
-	    List<org.w3c.dom.Node> nodes = visitedNodes.get(key);
-	    if (nodes == null) {
-		nodes = new ArrayList<org.w3c.dom.Node>();
-		visitedNodes.put(key, nodes);
-	    }
-	    nodes.add(node);
+	@Test
+	public void dtdIsNotLookedUp() {
+		String source = "<!DOCTYPE struts-config PUBLIC "
+				+ " \"-//Apache Software Foundation//DTD Struts Configuration 1.1//EN \" "
+				+ " \"http://jakarta.inexistinghost.org/struts/dtds/struts-config_1_1.dtd\" >"
+				+ "<struts-config/>";
+		XmlParserOptions parserOptions = new XmlParserOptions();
+		parserOptions.setLookupDescriptorDoc(false);
+		Parser parser = Language.XML.getDefaultVersion()
+				.getLanguageVersionHandler().getParser(parserOptions);
+		XmlNode xmlNode = (XmlNode) parser
+				.parse(null, new StringReader(source));
+		// no exception should be thrown
+
+		MyRule rule = new MyRule();
+		List<XmlNode> nodes = new ArrayList<XmlNode>();
+		nodes.add(xmlNode);
+		rule.apply(nodes, null);
+				
+		// first element is still parsed
+		assertNotNull(rule.visitedNodes.get("Element"));
+
 	}
 
-	@Override
-	public void apply(List<? extends Node> nodes, RuleContext ctx) {
-	    super.apply(nodes, ctx);
+	@Test
+	public void xsdIsNotLookedUp() {
+		String source = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "
+				+ "<web-app xmlns=\"http://java.sun.com/xml/ns/javaee\" "
+				+ "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+				+ "xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.inexisting.com/xml/ns/javaee/web-app_2_5.xsd\" "
+				+ "version=\"2.5\">" + "</web-app>";
+		XmlParserOptions parserOptions = new XmlParserOptions();
+		Parser parser = Language.XML.getDefaultVersion()
+				.getLanguageVersionHandler().getParser(parserOptions);
+		XmlNode xmlNode = (XmlNode) parser
+				.parse(null, new StringReader(source));
+		// no exception should be thrown
+		// first element is still parsed
+		MyRule rule = new MyRule();
+		List<XmlNode> nodes = new ArrayList<XmlNode>();
+		nodes.add(xmlNode);
+		rule.apply(nodes, null);
+		
+		assertNotNull(rule.visitedNodes.get("Element"));
+
 	}
 
-	@Override
-	protected void visit(XmlNode node, Attr attr, RuleContext ctx) {
-	    visit("Attr", attr);
-	    super.visit(node, attr, ctx);
+	private static class MyRule extends AbstractDomXmlRule {
+		final Map<String, List<org.w3c.dom.Node>> visitedNodes = new HashMap<String, List<org.w3c.dom.Node>>();
+
+		public MyRule() {
+			
+		}
+
+		private void visit(String key, org.w3c.dom.Node node) {
+			List<org.w3c.dom.Node> nodes = visitedNodes.get(key);
+			if (nodes == null) {
+				nodes = new ArrayList<org.w3c.dom.Node>();
+				visitedNodes.put(key, nodes);
+			}
+			nodes.add(node);
+		}
+
+		@Override
+		public void apply(List<? extends Node> nodes, RuleContext ctx) {
+			super.apply(nodes, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, Attr attr, RuleContext ctx) {
+			visit("Attr", attr);
+			super.visit(node, attr, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, CharacterData characterData,
+				RuleContext ctx) {
+			visit("CharacterData", characterData);
+			super.visit(node, characterData, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, Comment comment, RuleContext ctx) {
+			visit("Comment", comment);
+			super.visit(node, comment, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, Document document, RuleContext ctx) {
+			visit("Document", document);
+			super.visit(node, document, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, DocumentType documentType,
+				RuleContext ctx) {
+			visit("DocumentType", documentType);
+			super.visit(node, documentType, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, Element element, RuleContext ctx) {
+			visit("Element", element);
+			super.visit(node, element, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, Entity entity, RuleContext ctx) {
+			visit("Entity", entity);
+			super.visit(node, entity, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, EntityReference entityReference,
+				RuleContext ctx) {
+			visit("EntityReference", entityReference);
+			super.visit(node, entityReference, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, Notation notation, RuleContext ctx) {
+			visit("Notation", notation);
+			super.visit(node, notation, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node,
+				ProcessingInstruction processingInstruction, RuleContext ctx) {
+			visit("ProcessingInstruction", processingInstruction);
+			super.visit(node, processingInstruction, ctx);
+		}
+
+		@Override
+		protected void visit(XmlNode node, Text text, RuleContext ctx) {
+			visit("Text", text);
+			super.visit(node, text, ctx);
+		}
 	}
 
-	@Override
-	protected void visit(XmlNode node, CharacterData characterData, RuleContext ctx) {
-	    visit("CharacterData", characterData);
-	    super.visit(node, characterData, ctx);
+	public static junit.framework.Test suite() {
+		return new junit.framework.JUnit4TestAdapter(
+				AbstractDomXmlRuleTest.class);
 	}
-
-	@Override
-	protected void visit(XmlNode node, Comment comment, RuleContext ctx) {
-	    visit("Comment", comment);
-	    super.visit(node, comment, ctx);
-	}
-
-	@Override
-	protected void visit(XmlNode node, Document document, RuleContext ctx) {
-	    visit("Document", document);
-	    super.visit(node, document, ctx);
-	}
-
-	@Override
-	protected void visit(XmlNode node, DocumentType documentType, RuleContext ctx) {
-	    visit("DocumentType", documentType);
-	    super.visit(node, documentType, ctx);
-	}
-
-	@Override
-	protected void visit(XmlNode node, Element element, RuleContext ctx) {
-	    visit("Element", element);
-	    super.visit(node, element, ctx);
-	}
-
-	@Override
-	protected void visit(XmlNode node, Entity entity, RuleContext ctx) {
-	    visit("Entity", entity);
-	    super.visit(node, entity, ctx);
-	}
-
-	@Override
-	protected void visit(XmlNode node, EntityReference entityReference, RuleContext ctx) {
-	    visit("EntityReference", entityReference);
-	    super.visit(node, entityReference, ctx);
-	}
-
-	@Override
-	protected void visit(XmlNode node, Notation notation, RuleContext ctx) {
-	    visit("Notation", notation);
-	    super.visit(node, notation, ctx);
-	}
-
-	@Override
-	protected void visit(XmlNode node, ProcessingInstruction processingInstruction, RuleContext ctx) {
-	    visit("ProcessingInstruction", processingInstruction);
-	    super.visit(node, processingInstruction, ctx);
-	}
-
-	@Override
-	protected void visit(XmlNode node, Text text, RuleContext ctx) {
-	    visit("Text", text);
-	    super.visit(node, text, ctx);
-	}
-    }
-
-    public static junit.framework.Test suite() {
-	return new junit.framework.JUnit4TestAdapter(AbstractDomXmlRuleTest.class);
-    }
 }

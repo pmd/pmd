@@ -35,170 +35,184 @@ public interface JspParserConstants {
   /** RegularExpression Id. */
   int NO_WHITESPACE_OR_LT_OR_DOLLAR = 12;
   /** RegularExpression Id. */
-  int NO_LT_OR_DOLLAR = 13;
+  int DOLLAR_OR_HASH = 13;
   /** RegularExpression Id. */
-  int DOLLAR = 14;
+  int NO_OPENBRACE = 14;
   /** RegularExpression Id. */
-  int NO_OPENBRACE_OR_LT = 15;
+  int NO_LT_OR_DOLLAR_OR_HASH = 15;
   /** RegularExpression Id. */
-  int TEXT_IN_EL = 16;
+  int NO_ENDTAG_START = 16;
   /** RegularExpression Id. */
-  int EL_ESCAPE = 17;
+  int TEXT_IN_EL = 17;
   /** RegularExpression Id. */
-  int NO_JSP_COMMENT_END = 18;
+  int EL_ESCAPE = 18;
   /** RegularExpression Id. */
-  int NO_JSP_TAG_END = 19;
+  int NO_JSP_COMMENT_END = 19;
   /** RegularExpression Id. */
-  int TAG_START = 22;
+  int NO_JSP_TAG_END = 20;
   /** RegularExpression Id. */
-  int ENDTAG_START = 23;
+  int TAG_START = 23;
   /** RegularExpression Id. */
-  int COMMENT_START = 24;
+  int ENDTAG_START = 24;
   /** RegularExpression Id. */
-  int DECL_START = 25;
+  int COMMENT_START = 25;
   /** RegularExpression Id. */
-  int DOCTYPE_DECL_START = 26;
+  int DECL_START = 26;
   /** RegularExpression Id. */
-  int CDATA_START = 27;
+  int DOCTYPE_DECL_START = 27;
   /** RegularExpression Id. */
-  int JSP_COMMENT_START = 28;
+  int CDATA_START = 28;
   /** RegularExpression Id. */
-  int JSP_DECLARATION_START = 29;
+  int JSP_COMMENT_START = 29;
   /** RegularExpression Id. */
-  int JSP_EXPRESSION_START = 30;
+  int JSP_DECLARATION_START = 30;
   /** RegularExpression Id. */
-  int JSP_SCRIPTLET_START = 31;
+  int JSP_EXPRESSION_START = 31;
   /** RegularExpression Id. */
-  int JSP_DIRECTIVE_START = 32;
+  int JSP_SCRIPTLET_START = 32;
   /** RegularExpression Id. */
-  int EL_EXPRESSION = 33;
+  int JSP_DIRECTIVE_START = 33;
   /** RegularExpression Id. */
-  int UNPARSED_TEXT = 34;
+  int HTML_SCRIPT_START = 34;
   /** RegularExpression Id. */
-  int JSP_DIRECTIVE_NAME = 35;
+  int EL_EXPRESSION = 35;
   /** RegularExpression Id. */
-  int JSP_DIRECTIVE_ATTRIBUTE_NAME = 36;
+  int UNPARSED_TEXT = 36;
   /** RegularExpression Id. */
-  int JSP_DIRECTIVE_ATTRIBUTE_EQUALS = 37;
+  int JSP_DIRECTIVE_NAME = 37;
   /** RegularExpression Id. */
-  int JSP_DIRECTIVE_ATTRIBUTE_VALUE = 38;
+  int JSP_DIRECTIVE_ATTRIBUTE_NAME = 38;
   /** RegularExpression Id. */
-  int JSP_DIRECTIVE_END = 39;
+  int JSP_DIRECTIVE_ATTRIBUTE_EQUALS = 39;
   /** RegularExpression Id. */
-  int JSP_SCRIPTLET_END = 40;
+  int JSP_DIRECTIVE_ATTRIBUTE_VALUE = 40;
   /** RegularExpression Id. */
-  int JSP_SCRIPTLET = 41;
+  int JSP_DIRECTIVE_END = 41;
   /** RegularExpression Id. */
-  int JSP_EXPRESSION_END = 42;
+  int JSP_SCRIPTLET_END = 42;
   /** RegularExpression Id. */
-  int JSP_EXPRESSION = 43;
+  int JSP_SCRIPTLET = 43;
   /** RegularExpression Id. */
-  int JSP_DECLARATION_END = 44;
+  int JSP_EXPRESSION_END = 44;
   /** RegularExpression Id. */
-  int JSP_DECLARATION = 45;
+  int JSP_EXPRESSION = 45;
   /** RegularExpression Id. */
-  int JSP_COMMENT_END = 46;
+  int JSP_DECLARATION_END = 46;
   /** RegularExpression Id. */
-  int JSP_COMMENT_CONTENT = 47;
+  int JSP_DECLARATION = 47;
   /** RegularExpression Id. */
-  int WHITESPACES = 48;
+  int JSP_COMMENT_END = 48;
   /** RegularExpression Id. */
-  int NAME = 49;
+  int JSP_COMMENT_CONTENT = 49;
   /** RegularExpression Id. */
-  int PUBLIC = 50;
+  int WHITESPACES = 50;
   /** RegularExpression Id. */
-  int SYSTEM = 51;
+  int NAME = 51;
   /** RegularExpression Id. */
-  int DOCTYPE_DECL_END = 52;
+  int PUBLIC = 52;
   /** RegularExpression Id. */
-  int QUOTED_LITERAL = 53;
+  int SYSTEM = 53;
   /** RegularExpression Id. */
-  int UNPARSED = 54;
+  int DOCTYPE_DECL_END = 54;
   /** RegularExpression Id. */
-  int CDATA_END = 55;
+  int QUOTED_LITERAL = 55;
   /** RegularExpression Id. */
-  int TAG_NAME = 56;
+  int UNPARSED = 56;
   /** RegularExpression Id. */
-  int LST_ERROR = 57;
+  int CDATA_END = 57;
   /** RegularExpression Id. */
-  int ATTR_NAME = 58;
+  int TAG_NAME = 58;
   /** RegularExpression Id. */
-  int TAG_END = 59;
+  int LST_ERROR = 59;
   /** RegularExpression Id. */
-  int DECL_END = 60;
+  int ATTR_NAME = 60;
   /** RegularExpression Id. */
-  int TAG_SLASHEND = 61;
+  int TAG_END = 61;
   /** RegularExpression Id. */
-  int ATTR_EQ = 62;
+  int DECL_END = 62;
   /** RegularExpression Id. */
-  int IN_TAG_ERROR = 63;
+  int TAG_SLASHEND = 63;
   /** RegularExpression Id. */
-  int SINGLE_QUOTE = 64;
+  int ATTR_EQ = 64;
   /** RegularExpression Id. */
-  int DOUBLE_QUOTE = 65;
+  int IN_TAG_ERROR = 65;
   /** RegularExpression Id. */
-  int EL_EXPRESSION_IN_ATTRIBUTE = 66;
+  int SINGLE_QUOTE = 66;
   /** RegularExpression Id. */
-  int VALUE_BINDING_IN_ATTRIBUTE = 67;
+  int DOUBLE_QUOTE = 67;
   /** RegularExpression Id. */
-  int JSP_EXPRESSION_IN_ATTRIBUTE = 68;
+  int NO_QUOTE_NO_WHITESPACE = 68;
   /** RegularExpression Id. */
-  int ENDING_SINGLE_QUOTE = 69;
+  int IN_ATTR_WHITESPACE = 69;
   /** RegularExpression Id. */
-  int UNPARSED_TEXT_NO_SINGLE_QUOTES = 70;
+  int EL_EXPRESSION_IN_ATTRIBUTE = 70;
   /** RegularExpression Id. */
-  int DOLLAR_OR_HASH_SINGLE_QUOTE = 71;
+  int VALUE_BINDING_IN_ATTRIBUTE = 71;
   /** RegularExpression Id. */
-  int ENDING_DOUBLE_QUOTE = 72;
+  int JSP_EXPRESSION_IN_ATTRIBUTE = 72;
   /** RegularExpression Id. */
-  int UNPARSED_TEXT_NO_DOUBLE_QUOTES = 73;
+  int ENDING_WHITESPACE = 73;
   /** RegularExpression Id. */
-  int DOLLAR_OR_HASH_DOUBLE_QUOTE = 74;
+  int UNPARSED_TEXT_NO_WHITESPACE = 74;
   /** RegularExpression Id. */
-  int COMMENT_END = 75;
+  int ENDING_SINGLE_QUOTE = 75;
   /** RegularExpression Id. */
-  int COMMENT_TEXT = 76;
+  int UNPARSED_TEXT_NO_SINGLE_QUOTES = 76;
   /** RegularExpression Id. */
-  int HTML_SCRIPT_CONTENT = 77;
+  int DOLLAR_OR_HASH_SINGLE_QUOTE = 77;
   /** RegularExpression Id. */
-  int HTML_SCRIPT_END_TAG = 78;
+  int ENDING_DOUBLE_QUOTE = 78;
+  /** RegularExpression Id. */
+  int UNPARSED_TEXT_NO_DOUBLE_QUOTES = 79;
+  /** RegularExpression Id. */
+  int DOLLAR_OR_HASH_DOUBLE_QUOTE = 80;
+  /** RegularExpression Id. */
+  int COMMENT_END = 81;
+  /** RegularExpression Id. */
+  int COMMENT_TEXT = 82;
+  /** RegularExpression Id. */
+  int HTML_SCRIPT_CONTENT = 83;
+  /** RegularExpression Id. */
+  int HTML_SCRIPT_END_TAG = 84;
 
   /** Lexical state. */
-  int HtmlScriptContentState = 0;
+  int CommentState = 0;
   /** Lexical state. */
-  int CommentState = 1;
+  int AttrValueNoQuotesState = 1;
   /** Lexical state. */
   int AttrValueBetweenDoubleQuotesState = 2;
   /** Lexical state. */
   int AttrValueBetweenSingleQuotesState = 3;
   /** Lexical state. */
-  int StartTagState = 4;
+  int AttrValueState = 4;
   /** Lexical state. */
-  int CDataState = 5;
+  int StartTagState = 5;
   /** Lexical state. */
-  int DocTypeExternalIdState = 6;
+  int CDataState = 6;
   /** Lexical state. */
-  int DocTypeState = 7;
+  int DocTypeExternalIdState = 7;
   /** Lexical state. */
-  int JspCommentState = 8;
+  int DocTypeState = 8;
   /** Lexical state. */
-  int JspDeclarationState = 9;
+  int JspCommentState = 9;
   /** Lexical state. */
-  int JspExpressionState = 10;
+  int JspDeclarationState = 10;
   /** Lexical state. */
-  int JspScriptletState = 11;
+  int JspExpressionState = 11;
   /** Lexical state. */
-  int InTagState = 12;
+  int JspScriptletState = 12;
   /** Lexical state. */
-  int AfterTagState = 13;
+  int HtmlScriptContentState = 13;
   /** Lexical state. */
-  int AttrValueState = 14;
+  int InTagState = 14;
   /** Lexical state. */
-  int JspDirectiveAttributesState = 15;
+  int AfterTagState = 15;
   /** Lexical state. */
-  int JspDirectiveState = 16;
+  int JspDirectiveAttributesState = 16;
   /** Lexical state. */
-  int DEFAULT = 17;
+  int JspDirectiveState = 17;
+  /** Lexical state. */
+  int DEFAULT = 18;
 
   /** Literal token values. */
   String[] tokenImage = {
@@ -215,15 +229,16 @@ public interface JspParserConstants {
     "<NEWLINE>",
     "<QUOTE>",
     "<NO_WHITESPACE_OR_LT_OR_DOLLAR>",
-    "<NO_LT_OR_DOLLAR>",
-    "\"$\"",
-    "<NO_OPENBRACE_OR_LT>",
+    "<DOLLAR_OR_HASH>",
+    "<NO_OPENBRACE>",
+    "<NO_LT_OR_DOLLAR_OR_HASH>",
+    "<NO_ENDTAG_START>",
     "<TEXT_IN_EL>",
     "<EL_ESCAPE>",
     "<NO_JSP_COMMENT_END>",
     "<NO_JSP_TAG_END>",
-    "<token of kind 20>",
     "<token of kind 21>",
+    "<token of kind 22>",
     "\"<\"",
     "\"</\"",
     "\"<!--\"",
@@ -235,6 +250,7 @@ public interface JspParserConstants {
     "\"<%=\"",
     "\"<%\"",
     "\"<%@\"",
+    "\"<script\"",
     "<EL_EXPRESSION>",
     "<UNPARSED_TEXT>",
     "<JSP_DIRECTIVE_NAME>",
@@ -268,9 +284,13 @@ public interface JspParserConstants {
     "<IN_TAG_ERROR>",
     "\"\\\'\"",
     "\"\\\"\"",
+    "<NO_QUOTE_NO_WHITESPACE>",
+    "<IN_ATTR_WHITESPACE>",
     "<EL_EXPRESSION_IN_ATTRIBUTE>",
     "<VALUE_BINDING_IN_ATTRIBUTE>",
     "<JSP_EXPRESSION_IN_ATTRIBUTE>",
+    "\" \"",
+    "<UNPARSED_TEXT_NO_WHITESPACE>",
     "\"\\\'\"",
     "<UNPARSED_TEXT_NO_SINGLE_QUOTES>",
     "<DOLLAR_OR_HASH_SINGLE_QUOTE>",
