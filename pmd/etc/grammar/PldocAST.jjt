@@ -1033,6 +1033,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 {
        (
 	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"] 
+	| LOOKAHEAD(3)  ContinueStatement()  ";" // CONTINUE keyword was added in 11G, so Oracle compilation supports CONTINUE as a variable name
 	| CaseStatement()  ";"
 	| IfStatement()  ";"
 	| ForStatement()  ";"
@@ -1062,10 +1063,33 @@ ASTStatement Statement()  :
       (
        //SQl Developer compiler allows 0, 1 or many labels immediately before a statement 
        //SQl Developer compiler requires a statement after a sequence of labels  
-       ( Label() )*
+       LabelledStatement() 
+       |
        UnlabelledStatement()
       )
       { return jjtThis ; }
+}
+
+/*
+LabelledStatement created solely to conform with PMD Java AST (for PMD DataFlow Analysis - DFA)
+N.B. equivalent Java AST* class is ASTLabeledStatement (single "l" rather than double "ll")
+*/
+ASTLabelledStatement LabelledStatement()  :
+{
+SimpleNode simpleNode = null ; 
+}
+{
+      (
+       //SQl Developer compiler allows 0, 1 or many labels immediately before a statement 
+       //SQl Developer compiler requires a statement after a sequence of labels  
+       //Use the last label 
+       (simpleNode = Label() )+
+       UnlabelledStatement()
+      )
+      { 
+        jjtThis.setImage( simpleNode.getImage() ) ;  
+       return jjtThis ; 
+      }
 }
 
 ASTCaseStatement CaseStatement()  :
@@ -1150,10 +1174,12 @@ ASTForAllStatement ForAllStatement()  :
 }
 
 ASTGotoStatement GotoStatement()  :
-{}
 {
-	<GOTO> QualifiedName() 
-      { return jjtThis ; }
+ SimpleNode label = null ;  
+}
+{
+	<GOTO> label = QualifiedName() 
+      { jjtThis.setImage(label.getImage()) ; return jjtThis ; }
 }
 
 ASTReturnStatement ReturnStatement()  :
@@ -1163,26 +1189,37 @@ ASTReturnStatement ReturnStatement()  :
       { return jjtThis ; }
 }
 
-ASTExitStatement ExitStatement()  :
-{}
+ASTContinueStatement ContinueStatement()  :
 {
-	<EXIT> [<WHEN> Expression() | <IDENTIFIER> [<WHEN> Expression()]] 
-      { return jjtThis ; }
+ SimpleNode label = null ;  
+}
+{
+	<CONTINUE> [ label = UnqualifiedID() ] [ <WHEN> Expression() ] 
+      { if (null != label) { jjtThis.setImage(label.getImage()) ; } return jjtThis ; }
+}
+
+ASTExitStatement ExitStatement()  :
+{
+ SimpleNode label = null ;  
+}
+{
+	<EXIT> [ label = UnqualifiedID() ] [ <WHEN> Expression() ] 
+      { if (null != label) { jjtThis.setImage(label.getImage()) ; } return jjtThis ; }
 }
 
 ASTRaiseStatement RaiseStatement()  :
-{}
+{SimpleNode exception = null ;  }
 {
-	 <RAISE> [QualifiedName()] 
-	//
-      { return jjtThis ; }
+       <RAISE> [exception = QualifiedName()] 
+      { if (null != exception) { jjtThis.setImage(exception.getImage()) ; }  return jjtThis ; }
 }
 
 ASTCloseStatement CloseStatement()  :
-{}
+{SimpleNode cursor = null ;  
+}
 {
-      <CLOSE> QualifiedName() 
-      { return jjtThis ; }
+      <CLOSE> cursor = QualifiedName() 
+      { jjtThis.setImage(cursor.getImage()) ; return jjtThis ; }
 }
 
 ASTOpenStatement OpenStatement()  :
@@ -2992,6 +3029,7 @@ TOKEN [IGNORE_CASE]:
 <CONNECT: "CONNECT"> |
 <CONSTANT: "CONSTANT"> |
 <CONSTRUCTOR: "CONSTRUCTOR"> |
+<CONTINUE: "CONTINUE"> |
 <CONVERT: "CONVERT"> |
 <CREATE: "CREATE"> |
 <CURRENT: "CURRENT"> |
@@ -3647,7 +3685,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <CONTENT>
 //| <CONTENTS>
 | <CONTEXT>
-//| <CONTINUE>
+| <CONTINUE> 
 //| <CONTROLFILE>
 | <CONVERT>
 | <COPY>
@@ -3755,6 +3793,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <EVENTS>
 | <EXCEPT>
 | <EXCEPTIONS>
+| <EXIT>
 //| <EXCHANGE>
 //| <EXCLUDING>
 //| <EXECUTE>
@@ -4644,7 +4683,7 @@ ASTID ID(): {}
 		| <EXCLUSIVE> //SYNTAX //RESERVED WORD 
 		| <EXECUTE> //SYNTAX 
 		| <EXISTS> //SYNTAX //RESERVED WORD 
-		| <EXIT> //SYNTAX 
+		//| <EXIT> //SYNTAX 
 		//20120501 | <EXTENDS> 
 		| <FETCH> //SYNTAX 
 		| <FLOAT> //SYNTAX //RESERVED WORD 
@@ -4895,7 +4934,7 @@ ASTQualifiedID QualifiedID(): {}
 		//<EXCLUSIVE>
 		| <EXECUTE>
 		| <EXISTS>
-		| <EXIT>
+		//| <EXIT>
 		//20120501 | <EXTENDS>
 		//<FETCH>
 		| <FLOAT>
