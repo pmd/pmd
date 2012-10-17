@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 
 /**
@@ -40,6 +41,12 @@ public class DataFlowFacade extends PLSQLParserVisitorAdapter {
     }
 
     public Object visit(ASTProgramUnit node, Object data) {
+        sbf.buildDataFlowFor(node);
+        vav.compute(node);
+        return data;
+    }
+
+    public Object visit(ASTTypeMethod node, Object data) {
         sbf.buildDataFlowFor(node);
         vav.compute(node);
         return data;

@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 
 public class PLSQLDataFlowNode extends AbstractDataFlowNode {
 
@@ -21,7 +22,7 @@ public class PLSQLDataFlowNode extends AbstractDataFlowNode {
 
     public String toString() {
 	String res = "DataFlowNode: line " + this.getLine() + ", ";
-	if (node instanceof ASTProgramUnit || node instanceof ASTTriggerUnit /* || node instanceof ASTConstructorDeclaration */) {
+	if (node instanceof ASTProgramUnit || node instanceof ASTTypeMethod || node instanceof ASTTriggerUnit /* || node instanceof ASTConstructorDeclaration */) {
 	    res += (node instanceof ASTProgramUnit) ? "(method)" : "(trigger)";
 	} else {
 	    res = super.toString();

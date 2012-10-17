@@ -2,6 +2,8 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=true,VISITOR=true,TRACK_TOKENS=true,NODE_PREFIX=AST,NODE_EXTENDS=net.sourceforge.pmd.lang.ast.AbstractNode,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import java.util.List;
+
 public
 class ASTMethodDeclaration extends SimpleNode {
   public ASTMethodDeclaration(int id) {
@@ -25,7 +27,14 @@ class ASTMethodDeclaration extends SimpleNode {
    * @return a String representing the name of the method
    */
   public String getMethodName() {
-      ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
+       //SRT ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
+		List<ASTMethodDeclarator> methodDeclarators = findDescendantsOfType(ASTMethodDeclarator.class);
+	ASTMethodDeclarator md = null;
+	if (!methodDeclarators.isEmpty() )
+	{
+	  //Use first Declarator in the list 
+	  md = methodDeclarators.get(0);
+	}
       if (md != null) {
     return md.getImage();
 	}

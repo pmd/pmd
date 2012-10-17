@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantInitializer;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
@@ -41,6 +42,12 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
     }
 
     public void compute(ASTProgramUnit node) {
+	if (node.jjtGetParent() instanceof ASTPackageBody) {
+	    this.computeNow(node);
+	}
+    }
+
+    public void compute(ASTTypeMethod node) {
 	if (node.jjtGetParent() instanceof ASTPackageBody) {
 	    this.computeNow(node);
 	}

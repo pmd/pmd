@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTRaiseStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
@@ -53,7 +54,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
     }
 
     public void buildDataFlowFor(SimpleNode node) {
-        if (!(node instanceof ASTMethodDeclaration) && !(node instanceof ASTProgramUnit) && !(node instanceof ASTTriggerUnit) /* SRT && !(node instanceof ASTConstructorDeclaration) */) {
+        if (!(node instanceof ASTMethodDeclaration) && !(node instanceof ASTProgramUnit) && !(node instanceof ASTTypeMethod) && !(node instanceof ASTTriggerUnit) /* SRT && !(node instanceof ASTConstructorDeclaration) */) {
             throw new RuntimeException("Can't build a data flow for anything other than a Method or a Trigger");
         }
 

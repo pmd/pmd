@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
+import java.util.List;
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -32,6 +33,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCompoundTriggerBlock;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchStatement;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTTryStatement;
@@ -229,8 +231,103 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 
 
 
+    /*
     @Override
-    //SRT public Object visit(ASTMethodDeclaration node, Object data) {
+    public Object visit(ASTMethodDeclaration node, Object data) {
+	createMethodScope(node);
+	//
+	 // A method declaration my be-
+	 //   ASTProgramUnit - a standalone or packaged FUNCTION or PROCEDURE 
+	 //   ASTTypeMethod - an OBJECT TYPE method  
+	 //  
+	 //  The Method declarator is below the  ASTProgramUnit / ASTTypeMethod 
+	 ///
+	List<ASTMethodDeclarator> methodDeclarators = node.findDescendantsOfType(ASTMethodDeclarator.class);
+	if (!methodDeclarators.isEmpty() )
+	{
+	  //Use first Declarator in the list 
+	  ASTMethodDeclarator md = methodDeclarators.get(0);
+            System.err.println("SRT - ClassScope skipped for Schema-level method: methodName=" 
+		               + node.getMethodName()
+		               + "; Image=" + node.getImage()
+		              );
+	   
+	}
+	//ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
+	// A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level 
+	try
+	{
+	  node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
+	}
+	catch (Exception e)
+	{
+	  //@TODO possibly add to a pseudo-ClassScope equivalent to the Schema name 
+	  System.err.println("SRT - ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
+	  if("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage()))
+	  {
+            System.err.println("SRT - ClassScope skipped for Schema-level method: methodName=" 
+		               + node.getMethodName()
+		               + "; Image=" + node.getImage()
+		              );
+	   
+	    //A File-level/Schema-level object may have a Schema-name explicitly specified in the declaration 
+	    ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
+	    if( 1 < on.jjtGetNumChildren())
+	    {
+              ASTID schemaName = on.getFirstChildOfType(ASTID.class);
+	      System.err.println("SRT - SchemaName for Schema-level method: methodName=" 
+				 + node.getMethodName()
+				 + "; Image=" + node.getImage()
+				 + "is " + schemaName.getImage()
+				);
+	     
+	    }
+	  }
+	}
+	cont(node);
+	return data;
+    }
+    */
+
+    @Override
+    public Object visit(ASTTypeMethod node, Object data) {
+	createMethodScope(node);
+	ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
+	// A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level 
+	try
+	{
+	  node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
+	}
+	catch (Exception e)
+	{
+	  //@TODO possibly add to a pseudo-ClassScope equivalent to the Schema name 
+	  System.err.println("SRT - ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
+	  if("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage()))
+	  {
+            System.err.println("SRT - ClassScope skipped for Schema-level method: methodName=" 
+		               + node.getMethodName()
+		               + "; Image=" + node.getImage()
+		              );
+	   
+	    //A File-level/Schema-level object may have a Schema-name explicitly specified in the declaration 
+	    ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
+	    if( 1 < on.jjtGetNumChildren())
+	    {
+              ASTID schemaName = on.getFirstChildOfType(ASTID.class);
+	      System.err.println("SRT - SchemaName for Schema-level method: methodName=" 
+				 + node.getMethodName()
+				 + "; Image=" + node.getImage()
+				 + "is " + schemaName.getImage()
+				);
+	     
+	    }
+	  }
+	}
+	cont(node);
+	return data;
+    }
+
+    @Override
     public Object visit(ASTProgramUnit node, Object data) {
 	createMethodScope(node);
 	ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
