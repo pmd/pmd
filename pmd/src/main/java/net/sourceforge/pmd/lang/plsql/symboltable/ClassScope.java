@@ -150,6 +150,15 @@ public class ClassScope extends AbstractScope {
 
         List<String> images = new ArrayList<String>();
         images.add(occurrence.getImage());
+
+	if (null==occurrence.getImage()) {
+		System.err.println("SRT: occurrence==" +occurrence.toString() 
+			+ "with Argumanet Count == "+occurrence.getArgumentCount()
+			+ " for className="+className
+			) ;
+	}
+
+	
         if (occurrence.getImage().startsWith(className)) {
             images.add(clipClassName(occurrence.getImage()));
         }

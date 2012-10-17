@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTBlock;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTClassOrInterfaceBodyDeclaration;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDeclarativeUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTID;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTEnumDeclaration;
@@ -22,11 +23,15 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.plsql.ast.ASTObjectNameDeclaration;
+import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTObjectDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTCompoundTriggerBlock;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchStatement;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTTryStatement;
@@ -175,6 +180,26 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 	return data;
     }
 
+    /*
+    @Override
+    public Object visit(ASTCompoundTriggerBlock node, Object data) {
+	createMethodScope(node);
+	ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
+	node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
+	cont(node);
+	return data;
+    }
+    */
+
+    @Override
+    public Object visit(ASTTriggerTimingPointSection node, Object data) {
+	createMethodScope(node);
+	//SRT Treat a Timing Point Section like a packaged FUNCTION or PROCEDURE
+	node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(node));
+	cont(node);
+	return data;
+    }
+
     //@Override
     //public Object visit(ASTEnumDeclaration node, Object data) {
 	//createClassScope(node);
@@ -205,10 +230,40 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    //SRT public Object visit(ASTMethodDeclaration node, Object data) {
+    public Object visit(ASTProgramUnit node, Object data) {
 	createMethodScope(node);
 	ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
-	node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
+	// A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level 
+	try
+	{
+	  node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
+	}
+	catch (Exception e)
+	{
+	  //@TODO possibly add to a pseudo-ClassScope equivalent to the Schema name 
+	  System.err.println("SRT - ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
+	  if("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage()))
+	  {
+            System.err.println("SRT - ClassScope skipped for Schema-level method: methodName=" 
+		               + node.getMethodName()
+		               + "; Image=" + node.getImage()
+		              );
+	   
+	    //A File-level/Schema-level object may have a Schema-name explicitly specified in the declaration 
+	    ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
+	    if( 1 < on.jjtGetNumChildren())
+	    {
+              ASTID schemaName = on.getFirstChildOfType(ASTID.class);
+	      System.err.println("SRT - SchemaName for Schema-level method: methodName=" 
+				 + node.getMethodName()
+				 + "; Image=" + node.getImage()
+				 + "is " + schemaName.getImage()
+				);
+	     
+	    }
+	  }
+	}
 	cont(node);
 	return data;
     }

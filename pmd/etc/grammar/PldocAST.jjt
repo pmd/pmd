@@ -228,7 +228,7 @@ ASTGlobal Global()  :
 	  Still wrap the trigger in a fake package but make the package name dependent on the actual schema 
 	  defaulting to the globalPackageName if it cannot be found 
 	*/
-	(LOOKAHEAD ( ( Label() )* [<DECLARE> DeclarativeSection()] <BEGIN>) Block() | LOOKAHEAD (4) ProgramUnit() 
+	(LOOKAHEAD ( ( Label() )* [<DECLARE> DeclarativeSection()] <BEGIN>) Block() ";" | LOOKAHEAD (4) ProgramUnit() 
 	)
 
 
@@ -396,6 +396,9 @@ ASTProgramUnit ProgramUnit()  :
 
         MethodDeclarator()
 
+        (
+        WrappedObject()
+        |
 	/*
 	//SRT 20110516  Cope with AUTHID  for schema level functions and procedures 
 	(tokenIsAs=<AUTHID> (<CURRENT_USER> | <DEFINER>))?
@@ -430,6 +433,7 @@ ASTProgramUnit ProgramUnit()  :
 	";" //SRT 20110416 { System.err.println("Found terminating semi-colon") ; }
 
 	) //UnwrappedCode
+	) 
       { return jjtThis ; }
 }
 
@@ -479,16 +483,30 @@ ASTMethodDeclarator MethodDeclarator() :
   ( <FUNCTION> 
     simpleNode = ObjectNameDeclaration() 
     (
-      WrappedObject()
-      |
       [ FormalParameters() ]
-      <RETURN> Datatype() 
+
+      {
+        Token nextToken; 
+	nextToken = getToken(1); //ReadAhead
+        if (!nextToken.image.equalsIgnoreCase("WRAPPED") 
+	    && 
+	    !nextToken.image.equalsIgnoreCase("RETURN")
+	   )
+        {
+          throw new ParseException("FUNCTION must RETURN a value or must be WRAPPED : found \""
+		                              + nextToken.image
+		                              + "\" at line "+nextToken.beginLine
+		                              + ", column "+nextToken.beginColumn 
+		                             );
+        }
+      }
+       // There is no RETURN for a WRAPPED object
+      [ <RETURN> Datatype() ]
+      
     )
   | <PROCEDURE> 
     simpleNode = ObjectNameDeclaration() 
     (
-      WrappedObject()
-      |
       [ FormalParameters() ]
     )
   )
@@ -1050,7 +1068,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| Block()  ";"
 	| EmbeddedSqlStatement()  ";"
 	| PipelineStatement()  ";"
-	| ConditionalCompilationStatement()  ";"
+	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules 
         | Expression() ";"
       )
       { return jjtThis ; }
@@ -1506,7 +1524,7 @@ ASTCompilationExpression CompilationExpression() :
 {
 	(
 	  <CC_IF> {sb.append(" "); sb.append(token.image) ; } 
-	   ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
+	   simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
 	  <CC_THEN> {sb.append(" "); sb.append(token.image); } 
 	  simpleNode = Expression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
 

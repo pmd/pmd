@@ -7,11 +7,22 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTPrimitiveType;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     public MethodNameDeclaration(ASTMethodDeclarator node) {
+        super(node);
+    }
+
+    /** Treat a TimingPointSection within a Compound Trigger like a 
+     *  packaged FUNCTION or PROCEDURE.
+     *  SRT 
+     * 
+     * @param node 
+     */
+    public MethodNameDeclaration(ASTTriggerTimingPointSection node) {
         super(node);
     }
 
@@ -73,8 +84,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         }
 
         // compare parameter types
-        ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
-        ASTFormalParameters otherParams = (ASTFormalParameters) other.node.jjtGetChild(0);
+        //SRT ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
+        //SRT ASTFormalParameters otherParams = (ASTFormalParameters) other.node.jjtGetChild(0);
+        ASTFormalParameters myParams = node.getFirstDescendantOfType(ASTFormalParameters.class) ;
+        ASTFormalParameters otherParams = other.node.getFirstDescendantOfType(ASTFormalParameters.class) ;
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
             ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.jjtGetChild(i);
@@ -117,7 +130,19 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     @Override
     public int hashCode() {
+	try 
+	{
         return node.getImage().hashCode() + ((ASTMethodDeclarator) node).getParameterCount();
+	}
+	catch (Exception e)
+	{
+	  System.err.println("SRT: MethodNameDeclaration problem for " + node);
+	  System.err.println("SRT: ... " + node.getClass().getCanonicalName()
+		             +" => "+ node.getBeginLine()+"/"+node.getBeginColumn()
+		  );	
+	  //throw e;
+	  return 0; 
+	}
     }
 
     @Override
