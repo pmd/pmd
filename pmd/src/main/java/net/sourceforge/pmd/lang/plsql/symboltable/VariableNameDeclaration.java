@@ -21,7 +21,18 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 
     @Override
     public Scope getScope() {
-	return node.getScope().getEnclosingClassScope();
+	//SRT return node.getScope().getEnclosingClassScope();
+	try {
+	  return node.getScope().getEnclosingClassScope();
+	}
+	catch (Exception e)
+	{
+	  System.err.println("This Node does not have an enclosing Class: "
+		              + node.getBeginLine() + "/" + node.getBeginColumn()
+		              + " => " + node.getImage()
+		             );
+          return null; //SRT a cop-out 
+	}
     }
 
     /* SRT public String getTypeImage() {

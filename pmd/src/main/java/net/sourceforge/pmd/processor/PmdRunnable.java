@@ -74,7 +74,7 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 			ctx.setLanguageVersion(null);
 			this.getSourceCodeProcessor().processSourceCode(stream, rs, ctx);
 		} catch (PMDException pmde) {
-			LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
+			LOG.log(Level.FINE, "Error while processing file: "+fileName, pmde.getCause());
 			addError(report, pmde, fileName);
 		} catch (IOException ioe) {
 			addErrorAndShutdown(report, ioe, "IOException during processing");
