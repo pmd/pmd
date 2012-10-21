@@ -41,6 +41,7 @@ Fixed bug 1025: Regression of Crash in PMDTask due to multithreading (Eclipse an
 Fixed bug 1017: Type resolution very slow for big project. Thanks to Roman for the patch.
 Fixed bug 1036: Documentation: default threshold values removed from v5.0
 Fixed bug 1035: UseObjectForClearerAPI has misspelled message
+Fixed bug 1031: false DontImportJavaLang
 Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 Fixed bgastviewer not working. Thanks to Victor Bucutea.
 
