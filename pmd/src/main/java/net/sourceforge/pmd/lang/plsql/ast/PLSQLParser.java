@@ -6535,17 +6535,16 @@ void attachLibrary() :
         }
         Token nextToken;
         nextToken = getToken(1); //ReadAhead
-        if (!nextToken.image.equalsIgnoreCase("WRAPPED") 
-	    && 
-	    !nextToken.image.equalsIgnoreCase("RETURN")
-	   )
+        if (!nextToken.image.equalsIgnoreCase("WRAPPED")
+            &&
+            !nextToken.image.equalsIgnoreCase("RETURN")
+           )
         {
-          {if (true) throw new ParseException("FUNCTION must RETURN a value or must be WRAPPED : found \""
-		                              + nextToken.image
-		                              + "\" at line "+nextToken.beginLine
-		                              + ", column "+nextToken.beginColumn 
-		                             );
-	  }
+          {if (true) throw new ParseException("FUNCTION must RETURN a value or must be WRAPPED : found \u005c""
+                                              + nextToken.image
+                                              + "\u005c" at line "+nextToken.beginLine
+                                              + ", column "+nextToken.beginColumn
+                                             );}
         }
         switch (jj_nt.kind) {
         case RETURN:
@@ -25374,11 +25373,11 @@ tps_body:
 */
   final public ASTTriggerUnit TriggerUnit() throws ParseException {
  /*@bgen(jjtree) TriggerUnit */
-  ASTTriggerUnit jjtn000 = new ASTTriggerUnit(this, JJTTRIGGERUNIT);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-  jjtreeOpenNodeScope(jjtn000);
-  jjtn000.jjtSetFirstToken(getToken(1));
+ ASTTriggerUnit jjtn000 = new ASTTriggerUnit(this, JJTTRIGGERUNIT);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));SimpleNode simpleNode = null ;
     try {
       switch (jj_nt.kind) {
       case CREATE:
@@ -25398,7 +25397,7 @@ tps_body:
         ;
       }
       jj_consume_token(TRIGGER);
-      ObjectNameDeclaration();
+      simpleNode = ObjectNameDeclaration();
       switch (jj_nt.kind) {
       case BEFORE:
         jj_consume_token(BEFORE);
@@ -26100,7 +26099,7 @@ tps_body:
         jjtc000 = false;
         jjtreeCloseNodeScope(jjtn000);
         jjtn000.jjtSetLastToken(getToken(0));
-        {if (true) return jjtn000 ;}
+        jjtn000.setImage(simpleNode.getImage()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -26127,11 +26126,11 @@ tps_body:
 
   final public ASTTriggerTimingPointSection TriggerTimingPointSection() throws ParseException {
  /*@bgen(jjtree) TriggerTimingPointSection */
-  ASTTriggerTimingPointSection jjtn000 = new ASTTriggerTimingPointSection(this, JJTTRIGGERTIMINGPOINTSECTION);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-  jjtreeOpenNodeScope(jjtn000);
-  jjtn000.jjtSetFirstToken(getToken(1));
+ ASTTriggerTimingPointSection jjtn000 = new ASTTriggerTimingPointSection(this, JJTTRIGGERTIMINGPOINTSECTION);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+ jjtreeOpenNodeScope(jjtn000);
+ jjtn000.jjtSetFirstToken(getToken(1));StringBuffer sb = new StringBuffer();
     try {
       switch (jj_nt.kind) {
       case BEFORE:
@@ -26148,6 +26147,7 @@ tps_body:
         jj_consume_token(-1);
         throw new ParseException();
       }
+                                        sb.append(token.image) ;
       switch (jj_nt.kind) {
       case STATEMENT:
         jj_consume_token(STATEMENT);
@@ -26161,6 +26161,7 @@ tps_body:
         jj_consume_token(-1);
         throw new ParseException();
       }
+                                     sb.append(" "); sb.append(token.image) ;
       jj_consume_token(IS);
       jj_consume_token(BEGIN);
       label_94:
@@ -26446,11 +26447,11 @@ tps_body:
       }
       jj_consume_token(4);
 
-        jjtree.closeNodeScope(jjtn000, true);
-        jjtc000 = false;
-        jjtreeCloseNodeScope(jjtn000);
-        jjtn000.jjtSetLastToken(getToken(0));
-        {if (true) return jjtn000 ;}
+   jjtree.closeNodeScope(jjtn000, true);
+   jjtc000 = false;
+   jjtreeCloseNodeScope(jjtn000);
+   jjtn000.jjtSetLastToken(getToken(0));
+   jjtn000.setImage(sb.toString()) ;  {if (true) return jjtn000 ;}
     } catch (Throwable jjte000) {
    if (jjtc000) {
      jjtree.clearNodeScope(jjtn000);
@@ -31674,13 +31675,13 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3_74() {
-    if (jj_3R_108()) return true;
+  private boolean jj_3R_233() {
+    if (jj_3R_231()) return true;
     return false;
   }
 
-  private boolean jj_3R_233() {
-    if (jj_3R_231()) return true;
+  private boolean jj_3_74() {
+    if (jj_3R_108()) return true;
     return false;
   }
 
@@ -31716,14 +31717,14 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_573() {
-    if (jj_scan_token(6)) return true;
-    if (jj_3R_204()) return true;
+  private boolean jj_3R_159() {
+    if (jj_3R_231()) return true;
     return false;
   }
 
-  private boolean jj_3R_159() {
-    if (jj_3R_231()) return true;
+  private boolean jj_3R_573() {
+    if (jj_scan_token(6)) return true;
+    if (jj_3R_204()) return true;
     return false;
   }
 
@@ -31936,11 +31937,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_404() {
-    if (jj_3R_129()) return true;
-    return false;
-  }
-
   private boolean jj_3R_232() {
     Token xsp;
     xsp = jj_scanpos;
@@ -31951,6 +31947,11 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     if (jj_scan_token(291)) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_404() {
+    if (jj_3R_129()) return true;
     return false;
   }
 
@@ -31968,17 +31969,17 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3_69() {
+    if (jj_scan_token(NESTED)) return true;
+    if (jj_scan_token(TABLE)) return true;
+    return false;
+  }
+
   private boolean jj_3R_366() {
     if (jj_scan_token(RAISE)) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_406()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3_69() {
-    if (jj_scan_token(NESTED)) return true;
-    if (jj_scan_token(TABLE)) return true;
     return false;
   }
 
@@ -32004,16 +32005,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_365() {
-    if (jj_scan_token(EXIT)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_404()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_405()) jj_scanpos = xsp;
-    return false;
-  }
-
   private boolean jj_3R_158() {
     Token xsp;
     xsp = jj_scanpos;
@@ -32026,6 +32017,16 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     }
     xsp = jj_scanpos;
     if (jj_3_65()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_365() {
+    if (jj_scan_token(EXIT)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_404()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_405()) jj_scanpos = xsp;
     return false;
   }
 
@@ -32055,12 +32056,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_230()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_559() {
-    if (jj_scan_token(SAVE)) return true;
-    if (jj_scan_token(EXCEPTIONS)) return true;
     return false;
   }
 
@@ -32099,6 +32094,12 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     if (jj_3R_161()) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_559() {
+    if (jj_scan_token(SAVE)) return true;
+    if (jj_scan_token(EXCEPTIONS)) return true;
     return false;
   }
 
@@ -34293,11 +34294,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3_16() {
-    if (jj_scan_token(NOCOPY)) return true;
-    return false;
-  }
-
   private boolean jj_3R_337() {
     if (jj_scan_token(5)) return true;
     Token xsp;
@@ -34307,8 +34303,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_489() {
-    if (jj_3R_111()) return true;
+  private boolean jj_3_16() {
+    if (jj_scan_token(NOCOPY)) return true;
     return false;
   }
 
@@ -34317,15 +34313,14 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_279() {
-    if (jj_scan_token(RETURN)) return true;
-    if (jj_3R_206()) return true;
+  private boolean jj_3R_489() {
+    if (jj_3R_111()) return true;
     return false;
   }
 
-  private boolean jj_3R_112() {
-    if (jj_scan_token(IN)) return true;
-    if (jj_scan_token(OUT)) return true;
+  private boolean jj_3R_279() {
+    if (jj_scan_token(RETURN)) return true;
+    if (jj_3R_206()) return true;
     return false;
   }
 
@@ -34354,13 +34349,19 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_278() {
-    if (jj_3R_337()) return true;
+  private boolean jj_3R_112() {
+    if (jj_scan_token(IN)) return true;
+    if (jj_scan_token(OUT)) return true;
     return false;
   }
 
   private boolean jj_3R_344() {
     if (jj_scan_token(NULL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_278() {
+    if (jj_3R_337()) return true;
     return false;
   }
 
@@ -34378,39 +34379,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     if (jj_3R_278()) jj_scanpos = xsp;
     xsp = jj_scanpos;
     if (jj_3R_279()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_536() {
-    if (jj_scan_token(6)) return true;
-    if (jj_3R_111()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_488() {
-    if (jj_3R_302()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_165() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_236()) {
-    jj_scanpos = xsp;
-    if (jj_3R_237()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_17() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(202)) {
-    jj_scanpos = xsp;
-    if (jj_3R_112()) return true;
-    }
-    xsp = jj_scanpos;
-    if (jj_3_16()) jj_scanpos = xsp;
     return false;
   }
 
@@ -35000,6 +34968,49 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3R_536() {
+    if (jj_scan_token(6)) return true;
+    if (jj_3R_111()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_488() {
+    if (jj_3R_302()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_165() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_236()) {
+    jj_scanpos = xsp;
+    if (jj_3R_237()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_343() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(277)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(115)) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3_17() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(202)) {
+    jj_scanpos = xsp;
+    if (jj_3R_112()) return true;
+    }
+    xsp = jj_scanpos;
+    if (jj_3_16()) jj_scanpos = xsp;
+    return false;
+  }
+
   private boolean jj_3R_539() {
     if (jj_3R_206()) return true;
     return false;
@@ -35017,16 +35028,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_537()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_343() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(277)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(115)) return true;
-    }
     return false;
   }
 
@@ -35198,6 +35199,11 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3R_342() {
+    if (jj_scan_token(STRING_LITERAL)) return true;
+    return false;
+  }
+
   private boolean jj_3R_240() {
     Token xsp;
     xsp = jj_scanpos;
@@ -35229,11 +35235,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     jj_scanpos = xsp;
     if (jj_3R_384()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_342() {
-    if (jj_scan_token(STRING_LITERAL)) return true;
     return false;
   }
 
@@ -35320,11 +35321,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_166() {
-    if (jj_3R_215()) return true;
-    return false;
-  }
-
   private boolean jj_3R_294() {
     if (jj_3R_345()) return true;
     return false;
@@ -35335,34 +35331,26 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_164() {
-    if (jj_scan_token(CREATE)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_235()) jj_scanpos = xsp;
-    return false;
-  }
-
   private boolean jj_3R_292() {
     if (jj_3R_343()) return true;
     return false;
   }
 
-  private boolean jj_3R_105() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_164()) jj_scanpos = xsp;
-    if (jj_3R_165()) return true;
-    xsp = jj_scanpos;
-    if (jj_3R_166()) {
-    jj_scanpos = xsp;
-    if (jj_3R_167()) return true;
-    }
+  private boolean jj_3R_166() {
+    if (jj_3R_215()) return true;
     return false;
   }
 
   private boolean jj_3R_291() {
     if (jj_3R_342()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_164() {
+    if (jj_scan_token(CREATE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_235()) jj_scanpos = xsp;
     return false;
   }
 
@@ -35393,10 +35381,34 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3R_105() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_164()) jj_scanpos = xsp;
+    if (jj_3R_165()) return true;
+    xsp = jj_scanpos;
+    if (jj_3R_166()) {
+    jj_scanpos = xsp;
+    if (jj_3R_167()) return true;
+    }
+    return false;
+  }
+
   private boolean jj_3R_474() {
     if (jj_scan_token(CC_ERROR)) return true;
     if (jj_3R_204()) return true;
     if (jj_scan_token(CC_END)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_196() {
+    if (jj_3R_256()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_195() {
+    if (jj_scan_token(2)) return true;
+    if (jj_3R_107()) return true;
     return false;
   }
 
@@ -35432,14 +35444,22 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_196() {
-    if (jj_3R_256()) return true;
+  private boolean jj_3R_194() {
+    if (jj_scan_token(3)) return true;
+    if (jj_3R_107()) return true;
     return false;
   }
 
-  private boolean jj_3R_195() {
-    if (jj_scan_token(2)) return true;
-    if (jj_3R_107()) return true;
+  private boolean jj_3R_122() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_194()) {
+    jj_scanpos = xsp;
+    if (jj_3R_195()) {
+    jj_scanpos = xsp;
+    if (jj_3R_196()) return true;
+    }
+    }
     return false;
   }
 
@@ -35470,12 +35490,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_194() {
-    if (jj_scan_token(3)) return true;
-    if (jj_3R_107()) return true;
-    return false;
-  }
-
   private boolean jj_3R_446() {
     if (jj_scan_token(CC_ERROR)) return true;
     if (jj_3R_204()) return true;
@@ -35488,16 +35502,14 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_122() {
+  private boolean jj_3_48() {
     Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_194()) {
-    jj_scanpos = xsp;
-    if (jj_3R_195()) {
-    jj_scanpos = xsp;
-    if (jj_3R_196()) return true;
+    if (jj_scan_token(5)) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_scan_token(5)) { jj_scanpos = xsp; break; }
     }
-    }
+    if (jj_scan_token(WITH)) return true;
     return false;
   }
 
@@ -35513,17 +35525,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     jj_scanpos = xsp;
     if (jj_3R_446()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3_48() {
-    Token xsp;
-    if (jj_scan_token(5)) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_scan_token(5)) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(WITH)) return true;
     return false;
   }
 
@@ -35543,27 +35544,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_380() {
-    if (jj_scan_token(CC_IF)) return true;
-    if (jj_3R_297()) return true;
-    if (jj_scan_token(CC_THEN)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_421()) { jj_scanpos = xsp; break; }
-    }
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_422()) { jj_scanpos = xsp; break; }
-    }
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_423()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(CC_END)) return true;
-    return false;
-  }
-
   private boolean jj_3_45() {
     if (jj_scan_token(SELECT)) return true;
     return false;
@@ -35572,11 +35552,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
   private boolean jj_3R_255() {
     if (jj_scan_token(6)) return true;
     if (jj_3R_204()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_234() {
-    if (jj_3R_277()) return true;
     return false;
   }
 
@@ -35612,10 +35587,36 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3R_380() {
+    if (jj_scan_token(CC_IF)) return true;
+    if (jj_3R_297()) return true;
+    if (jj_scan_token(CC_THEN)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_421()) { jj_scanpos = xsp; break; }
+    }
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_422()) { jj_scanpos = xsp; break; }
+    }
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_423()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_scan_token(CC_END)) return true;
+    return false;
+  }
+
   private boolean jj_3R_192() {
     if (jj_scan_token(5)) return true;
     if (jj_3R_254()) return true;
     if (jj_scan_token(7)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_234() {
+    if (jj_3R_277()) return true;
     return false;
   }
 
@@ -35625,15 +35626,46 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3R_190() {
+    if (jj_scan_token(5)) return true;
+    if (jj_3R_254()) return true;
+    if (jj_scan_token(7)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_189() {
+    if (jj_scan_token(SELECT)) return true;
+    if (jj_3R_254()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_188() {
+    if (jj_3R_253()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_187() {
+    if (jj_3R_126()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_186() {
+    if (jj_3R_125()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_185() {
+    if (jj_3R_124()) return true;
+    return false;
+  }
+
   private boolean jj_3R_336() {
     if (jj_3R_380()) return true;
     return false;
   }
 
-  private boolean jj_3R_190() {
-    if (jj_scan_token(5)) return true;
-    if (jj_3R_254()) return true;
-    if (jj_scan_token(7)) return true;
+  private boolean jj_3R_184() {
+    if (jj_3R_123()) return true;
     return false;
   }
 
@@ -35646,9 +35678,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_189() {
-    if (jj_scan_token(SELECT)) return true;
-    if (jj_3R_254()) return true;
+  private boolean jj_3R_183() {
+    if (jj_3R_252()) return true;
     return false;
   }
 
@@ -35668,11 +35699,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_188() {
-    if (jj_3R_253()) return true;
-    return false;
-  }
-
   private boolean jj_3_10() {
     Token xsp;
     xsp = jj_scanpos;
@@ -35686,56 +35712,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     jj_scanpos = xsp;
     if (jj_scan_token(50)) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_187() {
-    if (jj_3R_126()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_334() {
-    if (jj_3R_378()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_186() {
-    if (jj_3R_125()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_333() {
-    if (jj_3R_377()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_185() {
-    if (jj_3R_124()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_184() {
-    if (jj_3R_123()) return true;
-    return false;
-  }
-
-  private boolean jj_3_13() {
-    if (jj_3R_109()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_183() {
-    if (jj_3R_252()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_264() {
-    if (jj_3R_302()) return true;
-    return false;
-  }
-
-  private boolean jj_3_12() {
-    if (jj_3R_108()) return true;
     return false;
   }
 
@@ -35776,8 +35752,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_332() {
-    if (jj_3R_105()) return true;
+  private boolean jj_3R_334() {
+    if (jj_3R_378()) return true;
     return false;
   }
 
@@ -35792,8 +35768,33 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3R_333() {
+    if (jj_3R_377()) return true;
+    return false;
+  }
+
   private boolean jj_3R_251() {
     if (jj_3R_121()) return true;
+    return false;
+  }
+
+  private boolean jj_3_13() {
+    if (jj_3R_109()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_264() {
+    if (jj_3R_302()) return true;
+    return false;
+  }
+
+  private boolean jj_3_12() {
+    if (jj_3R_108()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_332() {
+    if (jj_3R_105()) return true;
     return false;
   }
 
@@ -35807,19 +35808,14 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_330() {
-    if (jj_3R_376()) return true;
-    return false;
-  }
-
   private boolean jj_3R_250() {
     if (jj_scan_token(NEW)) return true;
     if (jj_3R_121()) return true;
     return false;
   }
 
-  private boolean jj_3R_263() {
-    if (jj_3R_156()) return true;
+  private boolean jj_3R_330() {
+    if (jj_3R_376()) return true;
     return false;
   }
 
@@ -35833,6 +35829,27 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     while (true) {
       xsp = jj_scanpos;
       if (jj_3_40()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_181() {
+    if (jj_scan_token(NEW_DOT)) return true;
+    if (jj_3R_107()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_263() {
+    if (jj_3R_156()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_120() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_181()) {
+    jj_scanpos = xsp;
+    if (jj_3R_182()) return true;
     }
     return false;
   }
@@ -35871,12 +35888,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_181() {
-    if (jj_scan_token(NEW_DOT)) return true;
-    if (jj_3R_107()) return true;
-    return false;
-  }
-
   private boolean jj_3_8() {
     if (jj_3R_105()) return true;
     return false;
@@ -35894,19 +35905,14 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_120() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_181()) {
-    jj_scanpos = xsp;
-    if (jj_3R_182()) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3R_217() {
     if (jj_scan_token(OR)) return true;
     if (jj_scan_token(REPLACE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_513() {
+    if (jj_3R_120()) return true;
     return false;
   }
 
@@ -35927,27 +35933,14 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_142() {
-    if (jj_3R_215()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_513() {
-    if (jj_3R_120()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_141() {
-    if (jj_scan_token(CREATE)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_217()) jj_scanpos = xsp;
-    return false;
-  }
-
   private boolean jj_3R_512() {
     if (jj_scan_token(NOT)) return true;
     if (jj_3R_429()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_142() {
+    if (jj_3R_215()) return true;
     return false;
   }
 
@@ -35961,8 +35954,21 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3R_141() {
+    if (jj_scan_token(CREATE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_217()) jj_scanpos = xsp;
+    return false;
+  }
+
   private boolean jj_3R_216() {
     if (jj_3R_111()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_456() {
+    if (jj_3R_484()) return true;
     return false;
   }
 
@@ -35982,11 +35988,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     jj_scanpos = xsp;
     if (jj_3R_143()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_456() {
-    if (jj_3R_484()) return true;
     return false;
   }
 
@@ -36016,6 +36017,16 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3R_429() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_455()) {
+    jj_scanpos = xsp;
+    if (jj_3R_456()) return true;
+    }
+    return false;
+  }
+
   private boolean jj_3R_140() {
     Token xsp;
     xsp = jj_scanpos;
@@ -36034,32 +36045,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
   private boolean jj_3R_214() {
     if (jj_scan_token(OR)) return true;
     if (jj_scan_token(REPLACE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_429() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_455()) {
-    jj_scanpos = xsp;
-    if (jj_3R_456()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_139() {
-    if (jj_3R_215()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_138() {
-    if (jj_scan_token(AUTHID)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(37)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(36)) return true;
-    }
     return false;
   }
 
@@ -36288,11 +36273,8 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_136() {
-    if (jj_scan_token(CREATE)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_214()) jj_scanpos = xsp;
+  private boolean jj_3R_139() {
+    if (jj_3R_215()) return true;
     return false;
   }
 
@@ -36311,18 +36293,13 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_97() {
+  private boolean jj_3R_138() {
+    if (jj_scan_token(AUTHID)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_136()) jj_scanpos = xsp;
-    if (jj_scan_token(PACKAGE)) return true;
-    if (jj_3R_137()) return true;
-    xsp = jj_scanpos;
-    if (jj_3R_138()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_139()) {
+    if (jj_scan_token(37)) {
     jj_scanpos = xsp;
-    if (jj_3R_140()) return true;
+    if (jj_scan_token(36)) return true;
     }
     return false;
   }
@@ -36344,9 +36321,27 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_104() {
-    if (jj_scan_token(DECLARE)) return true;
-    if (jj_3R_163()) return true;
+  private boolean jj_3R_136() {
+    if (jj_scan_token(CREATE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_214()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_97() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_136()) jj_scanpos = xsp;
+    if (jj_scan_token(PACKAGE)) return true;
+    if (jj_3R_137()) return true;
+    xsp = jj_scanpos;
+    if (jj_3R_138()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_139()) {
+    jj_scanpos = xsp;
+    if (jj_3R_140()) return true;
+    }
     return false;
   }
 
@@ -36360,6 +36355,23 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
+  private boolean jj_3R_104() {
+    if (jj_scan_token(DECLARE)) return true;
+    if (jj_3R_163()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_208() {
+    if (jj_3R_241()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_257() {
+    if (jj_scan_token(18)) return true;
+    if (jj_3R_120()) return true;
+    return false;
+  }
+
   private boolean jj_3R_411() {
     if (jj_3R_302()) return true;
     return false;
@@ -36370,19 +36382,18 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3R_208() {
-    if (jj_3R_241()) return true;
-    return false;
-  }
-
   private boolean jj_3R_103() {
     if (jj_3R_162()) return true;
     return false;
   }
 
-  private boolean jj_3R_257() {
-    if (jj_scan_token(18)) return true;
+  private boolean jj_3R_200() {
     if (jj_3R_120()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_257()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 
@@ -36401,33 +36412,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
   private boolean jj_3R_409() {
     if (jj_scan_token(DECLARE)) return true;
     if (jj_3R_163()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_370() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_409()) jj_scanpos = xsp;
-    if (jj_scan_token(BEGIN)) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_410()) { jj_scanpos = xsp; break; }
-    }
-    xsp = jj_scanpos;
-    if (jj_3R_411()) jj_scanpos = xsp;
-    if (jj_scan_token(END)) return true;
-    xsp = jj_scanpos;
-    if (jj_scan_token(408)) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_200() {
-    if (jj_3R_120()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_257()) { jj_scanpos = xsp; break; }
-    }
     return false;
   }
 
@@ -36486,6 +36470,23 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     }
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_370() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_409()) jj_scanpos = xsp;
+    if (jj_scan_token(BEGIN)) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_410()) { jj_scanpos = xsp; break; }
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_411()) jj_scanpos = xsp;
+    if (jj_scan_token(END)) return true;
+    xsp = jj_scanpos;
+    if (jj_scan_token(408)) jj_scanpos = xsp;
     return false;
   }
 
@@ -36784,16 +36785,6 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
     return false;
   }
 
-  private boolean jj_3_2() {
-    if (jj_3R_98()) return true;
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    if (jj_3R_97()) return true;
-    return false;
-  }
-
   private boolean jj_3R_390() {
     if (jj_3R_427()) return true;
     Token xsp;
@@ -36801,6 +36792,16 @@ Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
       xsp = jj_scanpos;
       if (jj_3R_428()) { jj_scanpos = xsp; break; }
     }
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_3R_98()) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_97()) return true;
     return false;
   }
 
