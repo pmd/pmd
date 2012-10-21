@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.build;
 
+import java.net.URL;
+
 
 public interface PmdBuildTools {
 
@@ -42,4 +44,12 @@ public interface PmdBuildTools {
      * @param siteXmlTaget
      */
     public abstract void setSiteXmlTarget(String siteXmlTarget);
+
+    /**
+     * Configures the classpath to use to analyze the properties of rules.
+     * @param runtimeClasspath
+     * @see RuntimeRulePropertiesAnalyzer
+     */
+    public void setRuntimeClasspath(URL[] runtimeClasspath);
+
 }
