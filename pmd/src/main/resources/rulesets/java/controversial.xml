@@ -762,7 +762,7 @@ public void downCastPrimitiveType() {
 
   <rule  name="UseObjectForClearerAPI"
          language="java" since="4.2.6"
-         message="Rather than using a lot of String arguments, consider using a container objet for those values."
+         message="Rather than using a lot of String arguments, consider using a container object for those values."
          class="net.sourceforge.pmd.lang.rule.XPathRule"
          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#UseObjectForClearerAPI">
     <description>
