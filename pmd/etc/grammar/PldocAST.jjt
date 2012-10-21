@@ -2742,11 +2742,12 @@ tps_body:
 */
 ASTTriggerUnit TriggerUnit()  :
 {
+ SimpleNode simpleNode = null ;
 }
 {
 	[<CREATE> [<OR> <REPLACE>]]
 	
-	(<TRIGGER>) ObjectNameDeclaration()
+	(<TRIGGER>) simpleNode = ObjectNameDeclaration()
 
 	// simple_dml_trigger | compound_dml_trigger | non_dml_trigger 
 	// simple_dml_trigger : 
@@ -2790,19 +2791,18 @@ ASTTriggerUnit TriggerUnit()  :
 	  Block() ";"
 	//| //<CALL> routine 
 	)
-      { return jjtThis ; }
+      { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 
 ASTTriggerTimingPointSection TriggerTimingPointSection()  :
 {
+ StringBuffer sb = new StringBuffer();
 }
 {
  (
- ( <BEFORE> | <AFTER> | <INSTEADOF> )  
- (   <STATEMENT>  
-   | <EACH> <ROW>  
- )  
+ ( <BEFORE> | <AFTER> | <INSTEADOF> ) { sb.append(token.image) ; }  
+ (   <STATEMENT>  | <EACH> <ROW>  ) {sb.append(" "); sb.append(token.image) ; }  
  <IS> 
  <BEGIN>
  (Statement())+ 
@@ -2811,7 +2811,7 @@ ASTTriggerTimingPointSection TriggerTimingPointSection()  :
  {
   //Add a TRIGGER ENTRY for each timing point section 
  }
-      { return jjtThis ; }
+ { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
 }
 
 
