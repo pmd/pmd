@@ -42,6 +42,7 @@ Fixed bug 1017: Type resolution very slow for big project. Thanks to Roman for t
 Fixed bug 1036: Documentation: default threshold values removed from v5.0
 Fixed bug 1035: UseObjectForClearerAPI has misspelled message
 Fixed bug 1031: false DontImportJavaLang
+Fixed bug 1034: UseConcurrentHashMap flags calls to methods that return Map
 Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 Fixed bgastviewer not working. Thanks to Victor Bucutea.
 
