@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.ant;
 
+import java.net.URL;
+
 import net.sourceforge.pmd.build.PmdBuildException;
 import net.sourceforge.pmd.build.PmdBuildTools;
 import net.sourceforge.pmd.build.RuleSetToDocs;
@@ -20,7 +22,14 @@ public class PmdBuildTask extends Task {
     private String target;
     private String siteXml;
     private String siteXmlTarget;
+    private URL[] runtimeClasspath;
 
+    public URL[] getRuntimeClasspath() {
+	return runtimeClasspath;
+    }
+    public void setRuntimeClasspath(URL[] runtimeClasspath) {
+	this.runtimeClasspath = runtimeClasspath;
+    }
     public String getSiteXml() {
 		return siteXml;
 	}
@@ -72,6 +81,7 @@ public class PmdBuildTask extends Task {
 		tool.setSiteXml(siteXml);
 		tool.setSiteXmlTarget(this.siteXmlTarget);
 		tool.setRulesDirectory(this.rulesDirectory);
+		tool.setRuntimeClasspath(runtimeClasspath);
 	
 		try {
 	        	tool.convertRulesets();
@@ -90,6 +100,9 @@ public class PmdBuildTask extends Task {
 		    throw new BuildException("Attribute rulesDirectory is not optional");
 		if ( this.siteXml == null ||"".equals(siteXml))
 		    throw new BuildException("Attribute siteXml is not optional");
+		if ( this.runtimeClasspath == null || "".equals(runtimeClasspath)) {
+		    throw new BuildException("Attribute pmdClasspath is not optional");
+		}
 		// Optional Attributes
 		if ( this.mergedRulesetFilename != null && ! "".equals(this.mergedRulesetFilename) )
 			tool.setMergedRuleSetFilename(this.mergedRulesetFilename);

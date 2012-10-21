@@ -7,6 +7,9 @@ import static net.sourceforge.pmd.build.util.ConfigUtil.getString;
 import static net.sourceforge.pmd.build.util.XmlUtil.createXmlBackbone;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -18,6 +21,10 @@ import net.sourceforge.pmd.build.filefilter.RulesetFilenameFilter;
 import net.sourceforge.pmd.build.util.FileUtil;
 import net.sourceforge.pmd.build.util.XmlUtil;
 import net.sourceforge.pmd.build.xml.RulesetFileTemplater;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A small class to convert files from pmd rulesets fmt to xdoc fmt
@@ -36,6 +43,16 @@ public class RuleSetToDocs implements PmdBuildTools {
 	private String targetDirectory;
 	private String siteXml;
 	private String siteXmlTarget;
+	private URL[] runtimeClasspath;
+	private RuntimeRulePropertiesAnalyzer ruleAnalyzer;
+
+	public URL[] getRuntimeClasspath() {
+	    return runtimeClasspath;
+	}
+
+	public void setRuntimeClasspath(URL[] runtimeClasspath) {
+	    this.runtimeClasspath = runtimeClasspath;
+	}
 
 	public String getSiteXmlTarget() {
 		return siteXmlTarget;
@@ -104,6 +121,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 	private void init() throws PmdBuildException {
 		FileUtil.createDirIfMissing(targetDirectory);
 		xmlFileTemplater = new RulesetFileTemplater(rulesDirectory);
+		ruleAnalyzer = new RuntimeRulePropertiesAnalyzer(runtimeClasspath);
 		logger.fine("Merge xsl:" + xmlFileTemplater.getMergeRulesetXsl());
 	}
 
@@ -145,7 +163,19 @@ public class RuleSetToDocs implements PmdBuildTools {
 	}
 
 	private void convertRuleSetFile(File ruleset,File target) throws PmdBuildException {
-		xmlFileTemplater.transform(ruleset,target,xmlFileTemplater.getRulesetToDocsXsl());
+	    try {
+		DOMSource dom = XmlUtil.createDomSourceFrom(new FileInputStream(ruleset));
+		Document document = (Document)dom.getNode();
+		NodeList rules = document.getElementsByTagName("rule");
+		for (int i = 0; i < rules.getLength(); i++) {
+		    Node rule = rules.item(i);
+		    ruleAnalyzer.analyze(document, rule);
+		}
+
+		xmlFileTemplater.transform(dom,target,xmlFileTemplater.getRulesetToDocsXsl());
+	    } catch (FileNotFoundException e) {
+		throw new IllegalArgumentException(e);
+	    }
 	}
 
 	private void addRulesetsToSiteXml(DOMSource backbone) {
