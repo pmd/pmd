@@ -24,21 +24,21 @@ TODO - Release blockers - Must implement before this release can be finally fini
      function namespaces required for XPath 2.0 use (e.g. pmd:matches
      and pmd-java:typeof).
 
-Fixed bug 2410201: False+ AvoidReassigningParameters
-Fixed bug 3526212: pmd-5.0.0: ImmutableField false positive on self-inc/dec
-Fixed bug 3526992: pmd-5.0.0: False + UselessParentheses
-Fixed bug 3523614: newline characters stripped from CPD data in PMD 5.0.0
-Fixed bug 3516101: InsufficientStringBufferDeclaration fails to parse hex
-Fixed bug 1503099: InefficientStringBuffering bug false +
-Fixed bug 3109408: String.InefficientStringBuffering false +
-Fixed bug 3424397: Unable to parse
-Fixed bug 3530124: pmd: parsing of generic method call with super fails
-Fixed bug 3496028: pmd-4.2.6: MissingBreakInSwitch fails to report violation
-Fixed bug 3484404: Invalid NPath calculation in return statement. Thanks to Prabhjot Singh for the patch.
-Fixed bug 3560464: c/c++ \ as a continuation character not supported
-Fixed bug 3574133: False+ : SingularField
-Fixed bug 3565001: Regression of Crash in PMDTask due to multithreading (Eclipse and Java 1.5)
-Fixed bug 3546093: Type resolution very slow for big project. Thanks to Roman for the patch.
+Fixed bug  820: False+ AvoidReassigningParameters
+Fixed bug 1008: pmd-5.0.0: ImmutableField false positive on self-inc/dec
+Fixed bug 1009: pmd-5.0.0: False + UselessParentheses
+Fixed bug 1003: newline characters stripped from CPD data in PMD 5.0.0
+Fixed bug 1001: InsufficientStringBufferDeclaration fails to parse hex
+Fixed bug  522: InefficientStringBuffering bug false +
+Fixed bug  953: String.InefficientStringBuffering false +
+Fixed bug  981: Unable to parse
+Fixed bug 1010: pmd: parsing of generic method call with super fails
+Fixed bug  996: pmd-4.2.6: MissingBreakInSwitch fails to report violation
+Fixed bug  993: Invalid NPath calculation in return statement. Thanks to Prabhjot Singh for the patch.
+Fixed bug 1023: c/c++ \ as a continuation character not supported
+Fixed bug 1033: False+ : SingularField
+Fixed bug 1025: Regression of Crash in PMDTask due to multithreading (Eclipse and Java 1.5)
+Fixed bug 1017: Type resolution very slow for big project. Thanks to Roman for the patch.
 Fixed bug 1036: Documentation: default threshold values removed from v5.0
 Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 Fixed bgastviewer not working. Thanks to Victor Bucutea.
