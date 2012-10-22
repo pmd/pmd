@@ -38,9 +38,9 @@ only if you modify the java code.
   </licenses>
   
   <scm>
-    <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build</connection>
-    <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build</developerConnection>
-    <url>http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/maven-plugin-pmd-build</url>
+    <connection>scm:git:git://github.com/pmd/pmd.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
+    <url>https://github.com/pmd/pmd</url>
   </scm>
   
   <developers>
@@ -73,9 +73,13 @@ only if you modify the java code.
        </plugin>
        
        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
+          <version>2.3.2</version>
           <configuration>
-            <tagBase>https://pmd.svn.sourceforge.net/svnroot/pmd/tags/maven-plugin-pmd-build</tagBase>
+            <tagNameFormat>@{project.artifactId}/@{project.version}</tagNameFormat>
+            <pushChanges>false</pushChanges>
+            <localCheckout>true</localCheckout>
           </configuration>
        </plugin>
     </plugins>
