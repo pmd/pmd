@@ -508,6 +508,8 @@
                 <version>2.3.2</version>
                 <configuration>
                     <releaseProfiles>pmd-release</releaseProfiles>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
                 </configuration>
             </plugin>
         </plugins>

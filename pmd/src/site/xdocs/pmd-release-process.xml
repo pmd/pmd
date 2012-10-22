@@ -58,12 +58,14 @@ additional properties:
 -DupdateBranchVersions=true -DupdateWorkingCopyVersions=false</p>
 
 <source>
-$ mvn release:branch -DbranchName=pmd/&lt;version&gt;.x -DpushChanges=false
+$ mvn release:branch -DbranchName=pmd/&lt;version&gt;.x
 </source>
 
+<p>
 Note: The property pushChanges is set to false, so that we can manually
 push all changes done during the release at the end, when we are sure,
 that everything is fine.
+</p>
 </subsection>
 
 <subsection name="Create a release">
@@ -76,7 +78,8 @@ $ git checkout pmd/&lt;version&gt;.x
 <p>Now let maven create a release tag.</p>
 
 <source>
-$ mvn release:clean release:prepare -DpushChanges=false
+$ mvn release:clean
+$ mvn release:prepare
 </source>
 
 <p>Note: For the tag/label name we currently use this naming pattern:
@@ -166,8 +169,8 @@ $ ssh your_sf_login@shell.sourceforge.net "shutdown"
 
 <subsection name="Social side of release">
 <ol>
-<li>Submit news to SF on the <a href="https://sourceforge.net/news/?group_id=56262">PMD Project News</a> page.</li>
-<li>Go to <a href="http://freshmeat.net/">http://freshmeat.net/</a></li>
+<li>Submit news to SF on the <a href="http://sourceforge.net/p/pmd/news/">PMD Project News</a> page.</li>
+<li>Go to <a href="http://freecode.com/projects/pmd">freecode</a> (former freshmeat.net)</li>
 <li>Facebook, Google+, Twitter, LinkedIn and Xing (add whatever you feel is missing here...)</li>
 </ol>
 </subsection>
