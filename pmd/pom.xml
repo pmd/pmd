@@ -29,7 +29,7 @@
   </description>
     <url>http://pmd.sourceforge.net/</url>
     <issueManagement>
-        <url>http://sourceforge.net/tracker/?group_id=56262</url>
+        <url>http://sourceforge.net/p/pmd/bugs/</url>
     </issueManagement>
     <ciManagement>
         <notifiers>
