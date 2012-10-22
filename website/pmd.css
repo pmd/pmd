@@ -1,5 +1,5 @@
 body {
-    margin: 10px 30px;
+    margin: 10px 10px;
     background: lightgray;
     color: black;
     font-family: sans-serif;
@@ -11,6 +11,11 @@ h3 {
     border-radius: 5px;
     border: 2px blue solid;
     padding: 3px 5px;
+}
+
+#pmd-logo {
+    width: 100%;
+    max-width: 360px;
 }
 
 .container {
@@ -57,7 +62,7 @@ h3 {
 
 .description {
     font-family: serif;
-    width: 70%;
+    width: 85%;
     margin: 3em auto;
     font-size: 140%;
 }

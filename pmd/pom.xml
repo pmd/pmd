@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
@@ -240,11 +241,10 @@
     <properties>
         <javacc.version>4.1</javacc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!--
-             This value actually differs to maven default expectation(src/site/xdoc/) as
-             we need to pre process those and we place them instead in target/generated-xdocs/.
-             If the xdocs files stay in src/site/xdoc/, mvn tries to copy over the generated one,
-             and complains... -->
+        <!-- This value actually differs to maven default expectation(src/site/xdoc/)
+            as we need to pre process those and we place them instead in target/generated-xdocs/.
+            If the xdocs files stay in src/site/xdoc/, mvn tries to copy over the generated
+            one, and complains... -->
         <src.xdocs.dir>src/site/xdocs</src.xdocs.dir>
         <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot</pmd.website.baseurl>
     </properties>
@@ -276,14 +276,14 @@
         </extensions>
         <plugins>
             <plugin>
-              <artifactId>maven-resources-plugin</artifactId>
-              <version>2.5</version>
-              <configuration>
-                <useDefaultDelimiters>false</useDefaultDelimiters>
-                <delimiters>
-                    <delimiter>${*}</delimiter>
-                </delimiters>
-              </configuration>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <delimiters>
+                        <delimiter>${*}</delimiter>
+                    </delimiters>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -303,44 +303,69 @@
             </plugin>
 
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-javacc-generated-sources</id>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/javacc</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
                 <inherited>true</inherited>
                 <executions>
-                  <execution>
-                    <id>process-sources</id>
-                    <phase>process-sources</phase>
-                    <configuration>
-                      <target>
-                        <ant antfile="src/main/ant/alljavacc.xml">
-                          <property name="src" value="${project.build.sourceDirectory}" />
-                          <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
-                        </ant>
-                      </target>
-                    </configuration>
-                    <goals>
-                      <goal>run</goal>
-                    </goals>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <ant antfile="src/main/ant/alljavacc.xml">
+                                    <property name="target"
+                                        value="${project.build.directory}/generated-sources/javacc" />
+                                    <property name="javacc.jar"
+                                        value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
+                                </ant>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                     <execution>
-                      <id>generate-ruleset-as-xdocs</id>
-                      <phase>pre-site</phase>
-                      <configuration>
-                        <target>
-                         <echo>PMD specific tasks: generating xdocs from rulesets</echo>
-                         <mkdir dir="${project.build.directory}/generated-xdocs/" />
-                         <copy toDir="${project.build.directory}/generated-xdocs/" overwrite="true" verbose="true">
-                               <fileset dir="${src.xdocs.dir}" />
-                           <filterset>
-                             <filter token="VERSION" value="${project.version}" />
-                           </filterset>
-                         </copy>
-                        </target>
-		              </configuration>
-		              <goals>
-		                <goal>run</goal>
-		              </goals>
+                        <id>generate-ruleset-as-xdocs</id>
+                        <phase>pre-site</phase>
+                        <configuration>
+                            <target>
+                                <echo>PMD specific tasks: generating xdocs from rulesets</echo>
+                                <mkdir
+                                    dir="${project.build.directory}/generated-xdocs/" />
+                                <copy
+                                    toDir="${project.build.directory}/generated-xdocs/"
+                                    overwrite="true" verbose="true">
+                                    <fileset dir="${src.xdocs.dir}" />
+                                    <filterset>
+                                        <filter token="VERSION"
+                                            value="${project.version}" />
+                                    </filterset>
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                     <execution>
                         <id>move-index-and-delete-generated-xdocs</id>
@@ -348,22 +373,26 @@
                         <configuration>
                             <target>
                                 <echo>PMD site specific tasks</echo>
-                                <echo>1. Copying missing images to site
-                                    directory.</echo>
-                                <copy todir="${project.build.directory}/site/images/">
-                                    <fileset dir="${src.xdocs.dir}/images/" includes="**/*.*" />
+                                <echo>1. Copying missing images to site directory.</echo>
+                                <copy
+                                    todir="${project.build.directory}/site/images/">
+                                    <fileset dir="${src.xdocs.dir}/images/"
+                                        includes="**/*.*" />
                                 </copy>
-                                <echo>2. Adding missing text files to
-                                    site.</echo>
+                                <echo>2. Adding missing text files to site.</echo>
                                 <copy todir="${project.build.directory}/site/">
-                                    <fileset dir="${src.xdocs.dir}/" includes="**/*.txt" />
+                                    <fileset dir="${src.xdocs.dir}/"
+                                        includes="**/*.txt" />
                                 </copy>
-                                <echo>3. Deleting useless generated
-                                    files.</echo>
+                                <echo>3. Deleting useless generated files.</echo>
                                 <delete quiet="true">
-                                    <fileset dir="${src.xdocs.dir}/rules" includes="**/*.xml" />
-                                    <fileset dir="${src.xdocs.dir}/" includes="mergedruleset.xml" />
-                                    <fileset dir="${project.build.directory}" includes="site/mergedruleset.html" />
+                                    <fileset dir="${src.xdocs.dir}/rules"
+                                        includes="**/*.xml" />
+                                    <fileset dir="${src.xdocs.dir}/"
+                                        includes="mergedruleset.xml" />
+                                    <fileset
+                                        dir="${project.build.directory}"
+                                        includes="site/mergedruleset.html" />
                                 </delete>
                             </target>
                         </configuration>
@@ -376,10 +405,12 @@
                         <phase>clean</phase>
                         <configuration>
                             <target>
-                                <echo>PMD specific tasks: cleaning  generated xdocs</echo>
+                                <echo>PMD specific tasks: cleaning generated xdocs</echo>
                                 <delete quiet="true">
-                                    <fileset dir="${src.xdocs.dir}/rules" includes="**/*.xml" />
-                                    <fileset dir="${src.xdocs.dir}/" includes="mergedruleset.xml" />
+                                    <fileset dir="${src.xdocs.dir}/rules"
+                                        includes="**/*.xml" />
+                                    <fileset dir="${src.xdocs.dir}/"
+                                        includes="mergedruleset.xml" />
                                 </delete>
                             </target>
                         </configuration>
@@ -389,10 +420,9 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- As Clover can be quite an hassle, know that you can skip it
-                 by using the following option when running mvn:
-                   $ mvn clean -Dmaven.clover.skip=true site
-            -->
+            <!-- As Clover can be quite an hassle, know that you can skip 
+                it by using the following option when running mvn: $ mvn clean -Dmaven.clover.skip=true 
+                site -->
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-clover2-plugin</artifactId>
@@ -425,11 +455,12 @@
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archiverConfig>
-                      <defaultDirectoryMode>493</defaultDirectoryMode> <!-- 0755 -->
+                        <defaultDirectoryMode>493</defaultDirectoryMode> <!-- 0755 -->
                     </archiverConfig>
                 </configuration>
                 <executions>
-                    <!-- needs to run after the site, as the site documentation will be included in the zip files -->
+                    <!-- needs to run after the site, as the site documentation 
+                        will be included in the zip files -->
                     <execution>
                         <id>build-bin-dist</id>
                         <phase>post-site</phase>
@@ -459,28 +490,60 @@
                 </executions>
             </plugin>
             <plugin>
-              <groupId>net.sourceforge.pmd</groupId>
-              <artifactId>pmd-build</artifactId>
-              <version>0.7-SNAPSHOT</version>
-              <executions>
-                <execution>
-                <phase>pre-site</phase>
-                <goals>
-                  <goal>pmd-pre-site</goal>
-                </goals>
-                </execution>
-              </executions>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-build</artifactId>
+                <version>0.7-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>pmd-pre-site</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
-                    <branchBase>https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/</branchBase>
-                    <tagBase>https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/</tagBase>
                     <releaseProfiles>pmd-release</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse 
+                    m2e settings only. It has no influence on the Maven build itself. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-antrun-plugin</artifactId>
+                                        <versionRange>[1.7,)</versionRange>
+                                        <goals>
+                                            <goal>run</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute>
+                                            <runOnIncremental>false</runOnIncremental>
+                                            <runOnConfiguration>true</runOnConfiguration>
+                                        </execute>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <dependencies>
         <dependency>
@@ -546,9 +609,9 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-          <groupId>net.java.dev.javacc</groupId>
-          <artifactId>javacc</artifactId>
-          <version>${javacc.version}</version>
+            <groupId>net.java.dev.javacc</groupId>
+            <artifactId>javacc</artifactId>
+            <version>${javacc.version}</version>
         </dependency>
     </dependencies>
 
@@ -568,7 +631,9 @@
                     <reportSet>
                         <reports>
                             <report>javadoc</report>
-                            <!-- FIXME: The following report fails <report>test-javadoc</report> -->
+                            <!-- FIXME: The following report fails
+                            <report>test-javadoc</report>
+                            -->
                         </reports>
                     </reportSet>
                 </reportSets>
@@ -584,18 +649,19 @@
                     <minimumTokens>100</minimumTokens>
                     <targetJdk>1.6</targetJdk>
                     <rulesets>
-                        <!--  once the pmd plugin is migrated to pmd-5, we should be able to use the current dogfood configuration -->
-<!--                        <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset> -->
+                        <!-- once the pmd plugin is migrated to pmd-5, we
+                            should be able to use the current dogfood configuration -->
+                        <!-- <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset> -->
                         <ruleset>https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x/rulesets/internal/dogfood.xml</ruleset>
                     </rulesets>
                 </configuration>
             </plugin>
 
-            <!-- Emma is a test coverage tools to be used instead of clover.
-                As the mvn2 plugin is not released yet, the plugin is commented out, so you
-                build won't fail: You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762
+            <!-- Emma is a test coverage tools to be used instead of clover. 
+                As the mvn2 plugin is not released yet, the plugin is commented out, so you 
+                build won't fail: You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762 
                 Download the tarball, extract, cd into dir, run $ mvn install. -->
-            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>emma-maven-plugin</artifactId>
+            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>emma-maven-plugin</artifactId> 
                 </plugin> -->
 
             <plugin>
@@ -671,38 +737,38 @@
             <build>
                 <plugins>
                     <plugin>
-                      <inherited>true</inherited>
-                      <groupId>org.apache.maven.plugins</groupId>
-                      <artifactId>maven-source-plugin</artifactId>
-                      <executions>
-                        <execution>
-                          <id>attach-sources</id>
-                          <goals>
-                            <goal>jar</goal>
-                          </goals>
-                        </execution>
-                      </executions>
+                        <inherited>true</inherited>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
-                      <inherited>true</inherited>
-                      <groupId>org.apache.maven.plugins</groupId>
-                      <artifactId>maven-javadoc-plugin</artifactId>
-                      <executions>
-                        <execution>
-                          <id>attach-javadocs</id>
-                          <goals>
-                              <goal>jar</goal>
-                          </goals>
-                        </execution>
-                      </executions>
+                        <inherited>true</inherited>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
-                      <inherited>true</inherited>
-                      <groupId>org.apache.maven.plugins</groupId>
-                      <artifactId>maven-deploy-plugin</artifactId>
-                      <configuration>
-                          <updateReleaseInfo>true</updateReleaseInfo>
-                      </configuration>
+                        <inherited>true</inherited>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <updateReleaseInfo>true</updateReleaseInfo>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -729,14 +795,16 @@
             <id>reports</id>
             <build>
                 <plugins>
-                   <plugin>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
                         <version>2.7.1</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
-                                <goals><goal>pmd</goal></goals>
+                                <goals>
+                                    <goal>pmd</goal>
+                                </goals>
                             </execution>
                         </executions>
                         <configuration>
@@ -744,8 +812,9 @@
                             <minimumTokens>100</minimumTokens>
                             <targetJdk>1.6</targetJdk>
                             <rulesets>
-                                <!--  once the pmd plugin is migrated to pmd-5, we should be able to use the current dogfood configuration -->
-<!--                                 <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset> -->
+                                <!-- once the pmd plugin is migrated to pmd-5, 
+                                    we should be able to use the current dogfood configuration -->
+                                <!-- <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset> -->
                                 <ruleset>https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x/rulesets/internal/dogfood.xml</ruleset>
                             </rulesets>
                         </configuration>
@@ -757,7 +826,9 @@
                         <executions>
                             <execution>
                                 <phase>verify</phase>
-                                <goals><goal>checkstyle</goal></goals>
+                                <goals>
+                                    <goal>checkstyle</goal>
+                                </goals>
                             </execution>
                         </executions>
                         <configuration>
