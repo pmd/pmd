@@ -26,15 +26,15 @@ public final class SystemUtils {
 	     * With jdk 1.6.0, ant task from Eclipse also works.
 	     *
 	     * Bugs related to this hack:
-	     * 3565001
-	     * 1701832
+	     * http://sourceforge.net/p/pmd/bugs/1025/
+	     * http://sourceforge.net/p/pmd/bugs/670/
 	     */
 	    ExecutorService executor = Executors.newFixedThreadPool(1);
 	    executor.shutdown();
 	} catch (RuntimeException e) {
 	    error = true;
 	    System.err.println("Disabling multithreading - consider to upgrade to java 1.6");
-	    System.err.println("See also: http://sourceforge.net/tracker/?func=detail&atid=479921&aid=1701832&group_id=56262");
+	    System.err.println("See also: http://sourceforge.net/p/pmd/bugs/670/");
 	}
 	MT_SUPPORTED = !error;
     }
