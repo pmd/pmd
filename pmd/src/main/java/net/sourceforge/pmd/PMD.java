@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.benchmark.TextReport;
+import net.sourceforge.pmd.cli.PMDCommandLineInterface;
+import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -50,8 +52,6 @@ public class PMD {
 
 	public static final String EOL = System.getProperty("line.separator", "\n");
 	public static final String SUPPRESS_MARKER = "NOPMD";
-	public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
-	public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
 	protected final PMDConfiguration configuration;
 
@@ -192,12 +192,14 @@ public class PMD {
 				LOG.log(Level.SEVERE, "Exception during processing", e);
 			}
 			LOG.log(Level.FINE, "Exception during processing", e);
-			LOG.info(CommandLineParser.usage());
+			LOG.info(PMDCommandLineInterface.buildUsageText());
 		} finally {
 			Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
 		}
 	}
 
+	
+	
     public static RuleContext newRuleContext(String sourceCodeFilename, File sourceCodeFile) {
 
 		RuleContext context = new RuleContext();
@@ -341,20 +343,9 @@ public class PMD {
      * @param args
      */
     public static void main(String[] args) {
-    	if ( isExitAfterRunSet() )
-    		System.exit(run(args));
-    	else
-    		setStatusCode(run(args));
+    	PMDCommandLineInterface.run(args);
     }
-
-    private static boolean isExitAfterRunSet() {
-    	return (System.getenv(NO_EXIT_AFTER_RUN) == null ? false : true);
-    }
-
-    private static void setStatusCode(int statusCode) {
-    	System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
-    }
-
+    
     /**
      *
      * @param args String[]
@@ -363,24 +354,24 @@ public class PMD {
     public static int run(String[] args) { 
     	int status = 0;
 		long start = System.nanoTime();
-		final CommandLineParser opts = new CommandLineParser(args);
-		final PMDConfiguration configuration = opts.getConfiguration();
-
-		final Level logLevel = configuration.isDebug() ? Level.FINER : Level.INFO;
+		final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
+		final PMDConfiguration configuration = PMDParameters.transformParametersIntoConfiguration(params);
+	
+		final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
 		final Handler logHandler = new ConsoleLogHandler();
 		final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, logHandler);
 		final Level oldLogLevel = LOG.getLevel();
 		LOG.setLevel(logLevel); //Need to do this, since the static logger has already been initialized at this point
 		try {
-		    PMD.doPMD(opts.getConfiguration());
+		    PMD.doPMD(configuration);
 		} catch (Exception e) {
-			System.out.print(CommandLineParser.usage());
+			PMDCommandLineInterface.buildUsageText();
 			System.out.println(e.getMessage());
 			status = ERROR_STATUS;
 		} finally {
 		    logHandlerManager.close();
 		    LOG.setLevel(oldLogLevel);
-		    if (configuration.isBenchmark()) {
+		    if (params.isBenchmark()) {
 				long end = System.nanoTime();
 				Benchmarker.mark(Benchmark.TotalPMD, end - start, 0);
 				
@@ -390,8 +381,8 @@ public class PMD {
 		}
 		return status;
     }
-    
-    public static final String VERSION;
+
+	public static final String VERSION;
     /**
      * Determines the version from maven's generated pom.properties file.
      */

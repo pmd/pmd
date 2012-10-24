@@ -1,9 +1,17 @@
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.cli;
 
 import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.StringUtil;
