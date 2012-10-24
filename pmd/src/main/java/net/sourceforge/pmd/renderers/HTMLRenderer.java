@@ -35,7 +35,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     boolean colorize = true;
 
     public HTMLRenderer(Properties properties) {
-		super(NAME, "HTML format", properties);
+		super(NAME, "HTML format");
 	
 		linkPrefix = properties.getProperty(LINK_PREFIX);
 		linePrefix = properties.getProperty(LINE_PREFIX);

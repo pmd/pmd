@@ -23,7 +23,7 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public YAHTMLRenderer(Properties properties) {
 	// YA = Yet Another?
-	super(NAME, "Yet Another HTML format.", properties);
+	super(NAME, "Yet Another HTML format.");
 	defineProperty(OUTPUT_DIR, "Output directory.");
 
 	this.outputDir = properties.getProperty(OUTPUT_DIR);

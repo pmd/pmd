@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
@@ -36,8 +35,8 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
      */
     protected List<Report.SuppressedViolation> suppressed = new LinkedList<Report.SuppressedViolation>();
 
-    public AbstractIncrementingRenderer(String name, String description, Properties properties) {
-	super(name, description, properties);
+    public AbstractIncrementingRenderer(String name, String description) {
+	super(name, description);
     }
 
     /**

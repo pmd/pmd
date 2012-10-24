@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -67,10 +66,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 
     private String colorReset = "";
 
-    public TextColorRenderer(Properties properties) {
+    public TextColorRenderer() {
 	// This Renderer was originally submitted by Adrian Papari and was called the "PapariTextRenderer" pre-PMD 5.0.
-	super(NAME, "Text format, with color support (requires ANSI console support, e.g. xterm, rxvt, etc.).",
-		properties);
+	super(NAME, "Text format, with color support (requires ANSI console support, e.g. xterm, rxvt, etc.).");
 	defineProperty(COLOR, "Enables colors with anything other than 'false' or '0'.");
     }
 

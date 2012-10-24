@@ -33,7 +33,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 	private static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
 	public IDEAJRenderer(Properties properties) {
-		super(NAME, "IntelliJ IDEA integration.", properties);
+		super(NAME, "IntelliJ IDEA integration.");
 		super.defineProperty(SOURCE_PATH, "Source path.");
 		super.defineProperty(CLASS_AND_METHOD_NAME,	"Class and Method name, pass '.method' when processing a directory.");
 		super.defineProperty(FILE_NAME, "File name.");

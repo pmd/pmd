@@ -18,9 +18,13 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String LINK_PREFIX = HTMLRenderer.LINK_PREFIX;
     public static final String LINE_PREFIX = HTMLRenderer.LINE_PREFIX;
+    
+    private Properties properties;
 
     public SummaryHTMLRenderer(Properties properties) {
-	super(NAME, "Summary HTML format.", properties);
+	super(NAME, "Summary HTML format.");
+	
+	this.properties = properties;
 
 	// These properties are defined here, but used by the HTMLRenderer
 	super.defineProperty(HTMLRenderer.LINK_PREFIX, "Path to HTML source.");

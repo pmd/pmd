@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.AbstractPropertySource;
 import net.sourceforge.pmd.util.IOUtil;
@@ -20,14 +19,12 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     protected String name;
     protected String description;
     protected Map<String, String> propertyDefinitions = new LinkedHashMap<String, String>();
-    protected Properties properties;
     protected boolean showSuppressedViolations = true;
     protected Writer writer;
 
-    public AbstractRenderer(String name, String description, Properties properties) {
+    public AbstractRenderer(String name, String description) {
 		this.name = name;
 		this.description = description;
-		this.properties = properties;
     }
 
     /**

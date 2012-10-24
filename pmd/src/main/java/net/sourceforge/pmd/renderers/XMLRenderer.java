@@ -28,7 +28,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     protected String encoding = "UTF-8";
 
     public XMLRenderer(Properties properties) {
-		super(NAME, "XML format.", properties);
+		super(NAME, "XML format.");
 		defineProperty(ENCODING, "XML encoding format, defaults to UTF-8.");
 	
 		if (properties.containsKey(ENCODING)) {
