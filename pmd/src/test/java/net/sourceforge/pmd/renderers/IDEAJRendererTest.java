@@ -1,19 +1,15 @@
 package net.sourceforge.pmd.renderers;
 
-import java.util.Properties;
-
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.renderers.IDEAJRenderer;
-import net.sourceforge.pmd.renderers.Renderer;
 
 public class IDEAJRendererTest extends AbstractRendererTst {
 
     public Renderer getRenderer() {
-	Properties properties = new Properties();
-	properties.put(IDEAJRenderer.SOURCE_PATH, "");
-	properties.put(IDEAJRenderer.CLASS_AND_METHOD_NAME, "Foo <init>");
-	properties.put(IDEAJRenderer.FILE_NAME, "Foo.java");
-        return new IDEAJRenderer(properties);
+	Renderer result = new IDEAJRenderer();
+	result.setProperty(IDEAJRenderer.SOURCE_PATH, "");
+	result.setProperty(IDEAJRenderer.CLASS_AND_METHOD_NAME, "Foo <init>");
+	result.setProperty(IDEAJRenderer.FILE_NAME, "Foo.java");
+	return result;
     }
 
     public String getExpected() {

@@ -5,7 +5,6 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 
@@ -16,19 +15,13 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "summaryhtml";
 
-    public static final String LINK_PREFIX = HTMLRenderer.LINK_PREFIX;
-    public static final String LINE_PREFIX = HTMLRenderer.LINE_PREFIX;
-    
-    private Properties properties;
-
-    public SummaryHTMLRenderer(Properties properties) {
+    public SummaryHTMLRenderer() {
 	super(NAME, "Summary HTML format.");
-	
-	this.properties = properties;
 
-	// These properties are defined here, but used by the HTMLRenderer
-	super.defineProperty(HTMLRenderer.LINK_PREFIX, "Path to HTML source.");
-	super.defineProperty(HTMLRenderer.LINE_PREFIX, "Prefix for line number anchor in the source file.");
+	// Note: we define the same properties as HTML Renderer
+	// we have to copy the values later from this renderer to the HTML Renderer
+	definePropertyDescriptor(HTMLRenderer.LINK_PREFIX);
+	definePropertyDescriptor(HTMLRenderer.LINE_PREFIX);
     }
 
     public String defaultFileExtension() { return "html"; }
@@ -42,7 +35,12 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
 	renderSummary();
 	writer.write("<h2><center>Detail</h2></center>");
 	writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL);
-	new HTMLRenderer(properties).renderBody(writer, report);
+
+	HTMLRenderer htmlRenderer = new HTMLRenderer();
+	htmlRenderer.setProperty(HTMLRenderer.LINK_PREFIX, getProperty(HTMLRenderer.LINK_PREFIX));
+	htmlRenderer.setProperty(HTMLRenderer.LINE_PREFIX, getProperty(HTMLRenderer.LINE_PREFIX));
+	htmlRenderer.renderBody(writer, report);
+
 	writer.write("</table></body></html>" + PMD.EOL);
     }
 

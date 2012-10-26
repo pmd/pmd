@@ -16,11 +16,13 @@ public class PapariTextRendererTest extends AbstractRendererTst {
     }
     
     public Renderer getRenderer() {
-        return new TextColorRenderer(){
+        TextColorRenderer result = new TextColorRenderer(){
             protected Reader getReader(String sourceFile) throws FileNotFoundException {
                 return new StringReader("public class Foo {}");
             }
         };
+        result.setProperty(TextColorRenderer.COLOR, "false");
+        return result;
     }
 
     public String getExpected() {
