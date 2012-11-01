@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import name.herlin.command.CommandException;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.cmd.ReviewCodeCmd;
 
 import org.eclipse.core.resources.IFile;
@@ -11,6 +12,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -79,10 +81,11 @@ public class FileChangeReviewer implements IResourceChangeListener {
 		if (itemsChanged.isEmpty()) return;
 		
 		ReviewCodeCmd cmd = new ReviewCodeCmd();	// separate one for each thread
+		cmd.clearExistingMarkersBeforeApplying(true);
 		cmd.reset();
 		
 		for (ResourceChange chg : itemsChanged) cmd.addResource(chg.file);
-		
+				
 		try {
 			cmd.performExecute();
 		} catch (CommandException e) {
