@@ -19,4 +19,15 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1034 UseConcurrentHashMap flags calls to methods that return Map</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void m() {
+        final Map myMap = myObject.methodThatReturnMap();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

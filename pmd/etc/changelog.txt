@@ -40,6 +40,13 @@ Fixed bug 1033: False+ : SingularField
 Fixed bug 1025: Regression of Crash in PMDTask due to multithreading (Eclipse and Java 1.5)
 Fixed bug 1017: Type resolution very slow for big project. Thanks to Roman for the patch.
 Fixed bug 1036: Documentation: default threshold values removed from v5.0
+Fixed bug 1035: UseObjectForClearerAPI has misspelled message
+Fixed bug 1031: false DontImportJavaLang
+Fixed bug 1034: UseConcurrentHashMap flags calls to methods that return Map
+Fixed bug 1006: Problem with implementation of getPackageNameImage method
+Fixed bug 1014: AvoidLiteralsInIfCondition must NOT consider null
+Fixed bug 1013: jnlp link for CPD is wrong
+
 Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 Fixed bgastviewer not working. Thanks to Victor Bucutea.
 
