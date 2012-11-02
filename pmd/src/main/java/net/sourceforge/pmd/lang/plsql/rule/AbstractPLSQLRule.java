@@ -82,12 +82,27 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     }
 
 
+  public Object visit(ASTCaseWhenClause node, Object data) { 
+        return visit((SimpleNode) node, data); 
+    }
+
+
   public Object visit(ASTCloseStatement node, Object data) { 
         return visit((SimpleNode) node, data); 
     }
 
 
   public Object visit(ASTConditionalCompilationStatement node, Object data) { 
+        return visit((SimpleNode) node, data); 
+    }
+
+
+  public Object visit(ASTElseClause node, Object data) { 
+        return visit((SimpleNode) node, data); 
+    }
+
+
+  public Object visit(ASTElsifClause node, Object data) { 
         return visit((SimpleNode) node, data); 
     }
 

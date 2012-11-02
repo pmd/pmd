@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -28,6 +29,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
+   private final static Logger LOGGER = Logger.getLogger(DFAPLSQLPanel.class.getName()); 
 
     public static class DFACanvas extends JPanel {
 
@@ -123,7 +125,7 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 	    if (node == null) {
 		return;
 	    }
-	    System.err.println("SRT:Node ==" + node.getClass().getCanonicalName());
+	    LOGGER.finest("Node ==" + node.getClass().getCanonicalName());
 	    DataFlowNode dataFlowNode = node.getDataFlowNode();
 
 	    List<DataFlowNode> flow = node.getDataFlowNode().getFlow();

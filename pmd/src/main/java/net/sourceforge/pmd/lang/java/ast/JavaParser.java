@@ -4633,8 +4633,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       if (jj_2_46(2147483647)) {
        checkForBadJDK15ForLoopSyntaxArgumentsUsage();
         Modifiers();
-        Type();
-        jj_consume_token(IDENTIFIER);
+        LocalVariableDeclaration();
         jj_consume_token(COLON);
         Expression();
       } else {
@@ -6464,12 +6463,6 @@ jjtn000.setModifiers(modifiers);
     finally { jj_save(53, xla); }
   }
 
-  private boolean jj_3R_233() {
-    if (jj_3R_244()) return true;
-    if (jj_3R_92()) return true;
-    return false;
-  }
-
   private boolean jj_3R_92() {
     if (jj_3R_147()) return true;
     Token xsp;
@@ -8116,8 +8109,7 @@ jjtn000.setModifiers(modifiers);
 
   private boolean jj_3R_374() {
     if (jj_3R_98()) return true;
-    if (jj_3R_73()) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_3R_180()) return true;
     if (jj_scan_token(COLON)) return true;
     if (jj_3R_92()) return true;
     return false;
@@ -9652,6 +9644,12 @@ jjtn000.setModifiers(modifiers);
 
   private boolean jj_3R_255() {
     if (jj_scan_token(ASSIGN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_233() {
+    if (jj_3R_244()) return true;
+    if (jj_3R_92()) return true;
     return false;
   }
 

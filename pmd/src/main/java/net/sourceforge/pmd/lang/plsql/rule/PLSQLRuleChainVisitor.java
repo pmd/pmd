@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.plsql.rule;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -13,6 +14,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
 public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
+   private final static Logger LOGGER = Logger.getLogger(PLSQLRuleChainVisitor.class.getName()); 
 
 	protected void indexNodes(List<Node> nodes, RuleContext ctx) {
 		PLSQLParserVisitor plsqlParserVistor = new PLSQLParserVisitorAdapter() {
@@ -31,10 +33,10 @@ public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
 
 	protected void visit(Rule rule, Node node, RuleContext ctx) {
 		// Rule better either be a PLSQLParserVisitor, or a XPathRule
-		System.err.println("Rule="+rule);
-		System.err.println("Node="+node);
-		System.err.println("RuleContext="+ctx);
-		System.err.println("Rule Classname="+rule.getClass().getCanonicalName());
+		LOGGER.finest("Rule="+rule);
+		LOGGER.finest("Node="+node);
+		LOGGER.finest("RuleContext="+ctx);
+		LOGGER.finest("Rule Classname="+rule.getClass().getCanonicalName());
 		if (rule instanceof XPathRule) {
 			((XPathRule)rule).evaluate(node, ctx);
 		} else {

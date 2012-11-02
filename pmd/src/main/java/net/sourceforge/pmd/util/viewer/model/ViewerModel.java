@@ -3,6 +3,7 @@ package net.sourceforge.pmd.util.viewer.model;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -17,6 +18,7 @@ import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
 public class ViewerModel {
+    private final static Logger LOGGER = Logger.getLogger(ViewerModel.class.getName()); 
 
     private List<ViewerModelListener> listeners;
     private Node rootNode;
@@ -60,21 +62,21 @@ public class ViewerModel {
     public void evaluateXPathExpression(String xPath, Object evaluator) throws ParseException, JaxenException {
 	try 
 	{
-	System.err.println("SRT: xPath="+xPath);
-	System.err.println("SRT: evaluator="+evaluator);
+	LOGGER.finest("xPath="+xPath);
+	LOGGER.finest("evaluator="+evaluator);
 	XPath xpath = new BaseXPath(xPath, new DocumentNavigator());
-	System.err.println("SRT: xpath="+xpath);
-	System.err.println("SRT: rootNode="+rootNode);
+	LOGGER.finest("xpath="+xpath);
+	LOGGER.finest("rootNode="+rootNode);
 	try
 	{
 		evaluationResults = xpath.selectNodes(rootNode);
 	}
 	catch (Exception e)
 	{
-		System.err.println("selectNodes problem:");
+		LOGGER.finest("selectNodes problem:");
 		e.printStackTrace(System.err);
 	}
-	System.err.println("SRT: evaluationResults="+evaluationResults);
+	LOGGER.finest("evaluationResults="+evaluationResults);
 	fireViewerModelEvent(new ViewerModelEvent(evaluator, ViewerModelEvent.PATH_EXPRESSION_EVALUATED));
 	}
 	catch (JaxenException je)

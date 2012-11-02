@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -22,6 +23,7 @@ import java.util.List;
  *         first inner nested scope.
  */
 public class SequenceChecker {
+    private final static Logger LOGGER = Logger.getLogger(SequenceChecker.class.getPackage().getName()); 
 
     /*
      * Element of logical structure of brace nodes.
@@ -61,6 +63,10 @@ public class SequenceChecker {
 
 	public boolean hasMoreSteps() {
 	    return this.nextSteps.size() > 1;
+	}
+
+	public String toString() {
+	 return "NodeType=" + type + ", lastStep=" + lastStep;
 	}
     }
 
@@ -155,34 +161,59 @@ public class SequenceChecker {
      * is found or the list is empty the method returns false.
      */
     public boolean run() {
+        LOGGER.entering(this.getClass().getCanonicalName(),"run");
 	this.aktStatus = root;
 	this.firstIndex = 0;
 	this.lastIndex = 0;
 	boolean lookAhead = false;
 
-	for (int i = 0; i < this.bracesList.size(); i++) {
+	for (int i = 0, l = 0; i < this.bracesList.size(); l++, i++) {
+            LOGGER.finest("Processing bracesList(l,i)=("+l+","+i+")");
 	    StackObject so = bracesList.get(i);
 	    aktStatus = this.aktStatus.step(so.getType());
+
+            LOGGER.finest("StackObject of Type="+so.getType());
+            LOGGER.finest("DataFlowNode "+ so.getDataFlowNode().getLine() + " with index=" 
+                           + so.getDataFlowNode().getIndex()
+                         );
+
+            LOGGER.finest("aktStatus="+aktStatus);
 
 	    if (aktStatus == null) {
 		if (lookAhead) {
 		    this.lastIndex = i - 1;
+                    LOGGER.finest("aktStatus is NULL: Empty sequence or no sequence found");
+                    LOGGER.exiting(this.getClass().getCanonicalName(),"run", false);
 		    return false;
 		}
-		this.aktStatus = root;
-		this.firstIndex = i;
-		i--;
-		continue;
+                else if (l > this.bracesList.size() )
+                {
+                  LOGGER.severe("aktStatus is NULL: in repeating loop, abort "+i);
+                  LOGGER.exiting(this.getClass().getCanonicalName(),"run", false);
+                  return false;
+                }
+                else {
+                  LOGGER.finest("aktStatus is NULL: resetting aktStatus,firstIndex and loop index i "+i);
+                  this.aktStatus = root;
+                  this.firstIndex = i;
+                  i--;
+                  LOGGER.finest("aktStatus is NULL: continue i==" +i);
+                  continue;
+                }
 	    } else {
 		if (aktStatus.isLastStep() && !aktStatus.hasMoreSteps()) {
 		    this.lastIndex = i;
+                    LOGGER.finest("aktStatus is NOT NULL: lastStep and no moreSteps ");
+                    LOGGER.exiting(this.getClass().getCanonicalName(),"run", false);
 		    return false;
 		} else if (aktStatus.isLastStep() && aktStatus.hasMoreSteps()) {
 		    lookAhead = true;
 		    this.lastIndex = i;
+                    LOGGER.finest("aktStatus is NOT NULL: set lookAhead on");
 		}
 	    }
 	}
+        LOGGER.exiting(this.getClass().getCanonicalName(),"run", this.firstIndex == this.lastIndex);
 	return this.firstIndex == this.lastIndex;
     }
 

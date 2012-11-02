@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -56,6 +57,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
  * entity that has a scope.
  */
 public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
+    private final static Logger LOGGER = Logger.getLogger(ScopeAndDeclarationFinder.class.getName()); 
 
     /**
      * A stack of scopes reflecting the scope hierarchy when a node is visited.
@@ -196,7 +198,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     @Override
     public Object visit(ASTTriggerTimingPointSection node, Object data) {
 	createMethodScope(node);
-	//SRT Treat a Timing Point Section like a packaged FUNCTION or PROCEDURE
+	//Treat a Timing Point Section like a packaged FUNCTION or PROCEDURE
 	node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(node));
 	cont(node);
 	return data;
@@ -247,7 +249,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 	{
 	  //Use first Declarator in the list 
 	  ASTMethodDeclarator md = methodDeclarators.get(0);
-            System.err.println("SRT - ClassScope skipped for Schema-level method: methodName=" 
+            LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" 
 		               + node.getMethodName()
 		               + "; Image=" + node.getImage()
 		              );
@@ -262,10 +264,10 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 	catch (Exception e)
 	{
 	  //@TODO possibly add to a pseudo-ClassScope equivalent to the Schema name 
-	  System.err.println("SRT - ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
+	  LOGGER.finest("ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
 	  if("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage()))
 	  {
-            System.err.println("SRT - ClassScope skipped for Schema-level method: methodName=" 
+            LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" 
 		               + node.getMethodName()
 		               + "; Image=" + node.getImage()
 		              );
@@ -275,7 +277,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 	    if( 1 < on.jjtGetNumChildren())
 	    {
               ASTID schemaName = on.getFirstChildOfType(ASTID.class);
-	      System.err.println("SRT - SchemaName for Schema-level method: methodName=" 
+	      LOGGER.finest("SchemaName for Schema-level method: methodName=" 
 				 + node.getMethodName()
 				 + "; Image=" + node.getImage()
 				 + "is " + schemaName.getImage()
@@ -289,8 +291,8 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     }
     */
 
-    @Override
-    public Object visit(ASTTypeMethod node, Object data) {
+@Override
+public Object visit(ASTTypeMethod node, Object data) {
 	createMethodScope(node);
 	ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
 	// A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level 
@@ -301,10 +303,10 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 	catch (Exception e)
 	{
 	  //@TODO possibly add to a pseudo-ClassScope equivalent to the Schema name 
-	  System.err.println("SRT - ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
+	  LOGGER.finest("ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
 	  if("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage()))
 	  {
-            System.err.println("SRT - ClassScope skipped for Schema-level method: methodName=" 
+            LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" 
 		               + node.getMethodName()
 		               + "; Image=" + node.getImage()
 		              );
@@ -314,7 +316,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 	    if( 1 < on.jjtGetNumChildren())
 	    {
               ASTID schemaName = on.getFirstChildOfType(ASTID.class);
-	      System.err.println("SRT - SchemaName for Schema-level method: methodName=" 
+	      LOGGER.finest("SchemaName for Schema-level method: methodName=" 
 				 + node.getMethodName()
 				 + "; Image=" + node.getImage()
 				 + "is " + schemaName.getImage()
@@ -325,7 +327,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 	}
 	cont(node);
 	return data;
-    }
+  }
 
     @Override
     public Object visit(ASTProgramUnit node, Object data) {
@@ -339,10 +341,10 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 	catch (Exception e)
 	{
 	  //@TODO possibly add to a pseudo-ClassScope equivalent to the Schema name 
-	  System.err.println("SRT - ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
+	  LOGGER.finest("ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
 	  if("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage()))
 	  {
-            System.err.println("SRT - ClassScope skipped for Schema-level method: methodName=" 
+            LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" 
 		               + node.getMethodName()
 		               + "; Image=" + node.getImage()
 		              );
@@ -352,7 +354,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 	    if( 1 < on.jjtGetNumChildren())
 	    {
               ASTID schemaName = on.getFirstChildOfType(ASTID.class);
-	      System.err.println("SRT - SchemaName for Schema-level method: methodName=" 
+	      LOGGER.finest("SchemaName for Schema-level method: methodName=" 
 				 + node.getMethodName()
 				 + "; Image=" + node.getImage()
 				 + "is " + schemaName.getImage()

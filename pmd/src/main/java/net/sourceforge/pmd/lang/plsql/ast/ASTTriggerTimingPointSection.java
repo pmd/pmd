@@ -12,6 +12,17 @@ class ASTTriggerTimingPointSection extends SimpleNode {
     super(p, id);
   }
 
+  
+    @Override
+    public int hashCode() {
+      return getImage().hashCode() ;
+	
+    }
+
+    @Override
+    public String toString() {
+        return "Timing Point Section " + getImage() + ", line " + getBeginLine() ;
+    }
 
   /** Accept the visitor. **/
   public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {

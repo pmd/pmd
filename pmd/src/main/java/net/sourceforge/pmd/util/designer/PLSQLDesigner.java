@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -127,6 +128,7 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 public class PLSQLDesigner implements ClipboardOwner {
+   private final static Logger LOGGER = Logger.getLogger(PLSQLDesigner.class.getName()); 
 
 	private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Arrays.asList(getSupportedLanguageVersions())
 	.indexOf(Language.JAVA.getDefaultVersion());

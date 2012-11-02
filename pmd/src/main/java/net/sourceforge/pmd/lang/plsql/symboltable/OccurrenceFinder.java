@@ -3,9 +3,11 @@ package net.sourceforge.pmd.lang.plsql.symboltable;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 
+import java.util.logging.Logger;
 import java.util.List;
 
 public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
+    private final static Logger LOGGER = Logger.getLogger(OccurrenceFinder.class.getName()); 
 
     public Object visit(ASTPrimaryExpression node, Object data) {
         NameFinder nameFinder = new NameFinder(node);
@@ -29,7 +31,16 @@ public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
                 }
             } else {
                 // now we've got a scope we're starting with, so work from there
-                search.execute(decl.getScope());
+                Scope scope = decl.getScope();
+                if (null == scope) 
+                {
+                  LOGGER.finest("NameOccurrence has no Scope:" 
+                                      + decl.getClass().getCanonicalName() 
+                                      +"=>"+decl.getImage()
+                                    );
+                  break;
+                }
+                search.execute(scope);
                 decl = search.getResult();
 
                 if (decl == null) {

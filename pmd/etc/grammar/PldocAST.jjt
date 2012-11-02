@@ -1115,10 +1115,31 @@ ASTCaseStatement CaseStatement()  :
 {
        (
 	 <CASE> ( Expression() )?
-	( <WHEN> Expression() <THEN> (Statement())+ )*
-	( <ELSE> (Statement())+ )*
+	( CaseWhenClause() )*
+	[ ElseClause() ]
 	<END> <CASE>  [<IDENTIFIER>]  
        )
+      { return jjtThis ; }
+}
+
+ASTCaseWhenClause CaseWhenClause()  :
+{}
+{
+	<WHEN> Expression() <THEN> (Statement())+ 
+      { return jjtThis ; }
+}
+
+ASTElseClause ElseClause()  :
+{}
+{
+	<ELSE> (Statement())+ 
+      { return jjtThis ; }
+}
+
+ASTElsifClause ElsifClause()  :
+{}
+{
+      <ELSIF>  Expression() <THEN> (Statement())+ 
       { return jjtThis ; }
 }
 
@@ -1148,8 +1169,8 @@ ASTIfStatement IfStatement()  :
 {}
 {
 	<IF> Expression() <THEN> (Statement())+
-		( <ELSIF> Expression() <THEN> (Statement())+ )*
-		( <ELSE> (Statement())+ )*
+	( ElsifClause() {jjtThis.setHasElse();} )*
+	[ ElseClause() {jjtThis.setHasElse();} ]
 	<END> <IF> 
       { return jjtThis ; }
 }

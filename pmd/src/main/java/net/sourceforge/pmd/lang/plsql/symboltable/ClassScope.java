@@ -6,12 +6,14 @@ package net.sourceforge.pmd.lang.plsql.symboltable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 
 public class ClassScope extends AbstractScope {
+   private final static Logger LOGGER = Logger.getLogger(ClassScope.class.getName()); 
 
     protected Map<ClassNameDeclaration, List<NameOccurrence>> classNames = new HashMap<ClassNameDeclaration, List<NameOccurrence>>();
     protected Map<MethodNameDeclaration, List<NameOccurrence>> methodNames = new HashMap<MethodNameDeclaration, List<NameOccurrence>>();
@@ -152,7 +154,7 @@ public class ClassScope extends AbstractScope {
         images.add(occurrence.getImage());
 
 	if (null==occurrence.getImage()) {
-		System.err.println("SRT: occurrence==" +occurrence.toString() 
+		LOGGER.finest("occurrence==" +occurrence.toString() 
 			+ "with Argumanet Count == "+occurrence.getArgumentCount()
 			+ " for className="+className
 			) ;

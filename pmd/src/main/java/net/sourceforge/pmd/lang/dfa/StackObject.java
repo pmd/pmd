@@ -21,4 +21,10 @@ public class StackObject {
     public int getType() {
         return this.type;
     }
+
+    public String toString()
+    {
+     return ( "StackObject: type="  + type + ", node=" + node.toString() );
+
+    }
 }

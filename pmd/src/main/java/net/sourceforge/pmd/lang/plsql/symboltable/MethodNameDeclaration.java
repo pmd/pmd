@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
+import java.util.logging.Logger;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
@@ -11,6 +13,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTPrimitiveType;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
+   private final static Logger LOGGER = Logger.getLogger(MethodNameDeclaration.class.getName()); 
 
     public MethodNameDeclaration(ASTMethodDeclarator node) {
         super(node);
@@ -132,21 +135,22 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     public int hashCode() {
 	try 
 	{
-        return node.getImage().hashCode() + ((ASTMethodDeclarator) node).getParameterCount();
+        return node.hashCode(); //SRT node.getImage().hashCode() + ((ASTMethodDeclarator) node).getParameterCount();
 	}
 	catch (Exception e)
 	{
-	  System.err.println("SRT: MethodNameDeclaration problem for " + node);
-	  System.err.println("SRT: ... " + node.getClass().getCanonicalName()
-		             +" => "+ node.getBeginLine()+"/"+node.getBeginColumn()
-		  );	
-	  //throw e;
+	  LOGGER.finest("MethodNameDeclaration problem for " + node
+			 +" of class " + node.getClass().getCanonicalName()
+		         +" => "+ node.getBeginLine()+"/"+node.getBeginColumn()
+			);	
+	  //@TODO SRT restore the thrown exception - throw e;
 	  return 0; 
 	}
     }
 
     @Override
     public String toString() {
-        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " + ((ASTMethodDeclarator) node).getParameterCount();
+        //SRT return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " + ((ASTMethodDeclarator) node).getParameterCount();
+        return node.toString();
     }
 }

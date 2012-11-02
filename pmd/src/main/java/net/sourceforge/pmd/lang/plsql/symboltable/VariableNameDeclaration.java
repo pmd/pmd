@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
+import java.util.logging.Logger;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTPrimitiveType;
@@ -14,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 //import net.sourceforge.pmd.lang.java.ast.TypeNode;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration {
+   private final static Logger LOGGER = Logger.getLogger(VariableNameDeclaration.class.getName()); 
 
     public VariableNameDeclaration(ASTVariableOrConstantDeclaratorId node) {
 	super(node);
@@ -27,7 +30,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	}
 	catch (Exception e)
 	{
-	  System.err.println("This Node does not have an enclosing Class: "
+	  LOGGER.finest("This Node does not have an enclosing Class: "
 		              + node.getBeginLine() + "/" + node.getBeginColumn()
 		              + " => " + node.getImage()
 		             );
@@ -75,10 +78,10 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	catch (Exception e)
 	{
 		e.printStackTrace(System.err);
-		System.err.println("SRT: n.node="+n.node);
-		System.err.println("SRT: n.node.getImage="+n.node.getImage());
-		System.err.println("SRT: node="+node);
-		System.err.println("SRT: node.getImage="+node.getImage());
+		LOGGER.finest("n.node="+n.node);
+		LOGGER.finest("n.node.getImage="+n.node.getImage());
+		LOGGER.finest("node="+node);
+		LOGGER.finest("node.getImage="+node.getImage());
 		return false;
 	}
     }
@@ -91,13 +94,13 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	}
 	catch(Exception e)
 	{
-		System.err.println("VariableNameDeclaration: node="
+		LOGGER.finest("VariableNameDeclaration: node="
 			           +node
 			);
-		System.err.println("VariableNameDeclaration: node,getImage="
+		LOGGER.finest("VariableNameDeclaration: node,getImage="
 			           +node.getImage()
 			);
-		//System.err.println("... "
+		//LOGGER.finest("... "
 		//	           +" from "+node.getBeginLine() +"@"+node.getBeginColumn()
 		//	           +" to "+node.getEndLine() +"@"+node.getEndColumn()
 		//	);

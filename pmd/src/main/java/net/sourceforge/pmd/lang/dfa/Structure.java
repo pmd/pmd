@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.DataFlowHandler;
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *         and 2 stacks to link the nodes to each other.
  */
 public class Structure {
+    private final static Logger LOGGER = Logger.getLogger(Structure.class.getName()); 
 
     private final DataFlowHandler dataFlowHandler;
     private List<DataFlowNode> dataFlow = new ArrayList<DataFlowNode>();
@@ -79,6 +81,19 @@ public class Structure {
 
     public List<StackObject> getContinueBreakReturnStack() {
 	return continueBreakReturnStack;
+    }
+
+    public String dump() {
+      StringBuffer stringDump = new StringBuffer() ; 
+      stringDump.append ("Data Flow Analysis Structure:\n");
+      stringDump.append ("    Edge Nodes:");
+      for (StackObject stackObject  : continueBreakReturnStack )
+	stringDump.append ("\nCBR =>" +  stackObject.toString());
+      stringDump.append ("\n    Scope Nodes:");
+      for (StackObject stackObject  : braceStack )
+	stringDump.append ("\nCBR =>" +  stackObject.toString());
+
+      return stringDump.toString();
     }
 
 }

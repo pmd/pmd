@@ -16,6 +16,19 @@ class ASTMethodDeclarator extends SimpleNode {
    return this.jjtGetChild(0).jjtGetNumChildren();
   }
 
+  
+  
+    @Override
+    public int hashCode() {
+      return getImage().hashCode() + getParameterCount();
+	
+    }
+
+    @Override
+    public String toString() {
+      return "Method " + getImage() + ", line " + getBeginLine() + ", params = " + getParameterCount();
+    }
+
 
   /** Accept the visitor. **/
   public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
