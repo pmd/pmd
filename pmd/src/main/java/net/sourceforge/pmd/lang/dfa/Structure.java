@@ -69,6 +69,10 @@ public class Structure {
 		|| type == NodeType.CONTINUE_STATEMENT || type == NodeType.THROW_STATEMENT) {
 	    // ugly solution - stores the type information in two ways
 	    continueBreakReturnStack.push(obj);
+            LOGGER.finest("continueBreakReturnStack: line " + node.getNode().getBeginLine() 
+                          + ", column " + node.getNode().getBeginColumn() 
+                          +" - " + node.toString()
+                         );
 	} else {
 	    braceStack.push(obj);
 	}
@@ -84,15 +88,18 @@ public class Structure {
     }
 
     public String dump() {
-      StringBuffer stringDump = new StringBuffer() ; 
+      StringBuilder stringDump = new StringBuilder() ; 
       stringDump.append ("Data Flow Analysis Structure:\n");
       stringDump.append ("    Edge Nodes:");
       for (StackObject stackObject  : continueBreakReturnStack )
+      {
 	stringDump.append ("\nCBR =>" +  stackObject.toString());
+      }
       stringDump.append ("\n    Scope Nodes:");
       for (StackObject stackObject  : braceStack )
+      {
 	stringDump.append ("\nCBR =>" +  stackObject.toString());
-
+      }
       return stringDump.toString();
     }
 
