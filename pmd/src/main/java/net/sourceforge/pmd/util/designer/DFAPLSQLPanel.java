@@ -125,7 +125,7 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 	    if (node == null) {
 		return;
 	    }
-	    LOGGER.finest("Node ==" + node.getClass().getCanonicalName());
+	    LOGGER.finest("paintComponent Node ==" + node.getClass().getCanonicalName());
 	    DataFlowNode dataFlowNode = node.getDataFlowNode();
 
 	    List<DataFlowNode> flow = node.getDataFlowNode().getFlow();

@@ -167,6 +167,12 @@ public class SequenceChecker {
 	this.lastIndex = 0;
 	boolean lookAhead = false;
 
+        /*
+         *There are 2 loop indexes:-
+         * i which may be reset 
+         * l serves as a control to cope with invalid lists of StackObjects,
+         * preventing infinite loops within the SequenceChecker: 
+         */
 	for (int i = 0, l = 0; i < this.bracesList.size(); l++, i++) {
             LOGGER.finest("Processing bracesList(l,i)=("+l+","+i+")");
 	    StackObject so = bracesList.get(i);
