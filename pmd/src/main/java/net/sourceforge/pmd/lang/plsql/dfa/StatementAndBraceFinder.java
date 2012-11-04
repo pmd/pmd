@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.plsql.dfa;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -209,6 +210,11 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             dataFlow.createNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
             LOGGER.finest("pushOnStack parent IF_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        } else if (node.jjtGetParent() instanceof ASTElsifClause) {
+            LOGGER.finest("parent (Elsif) IF_EXPR at  " + node.getBeginLine() +", column " + node.getBeginColumn());
+            dataFlow.createNewNode(node); // START IF
+            dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
+            LOGGER.finest("pushOnStack parent (Elsif) IF_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
             dataFlow.createNewNode(node); // START WHILE
             dataFlow.pushOnStack(NodeType.WHILE_EXPR, dataFlow.getLast());
@@ -218,9 +224,17 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
             LOGGER.finest("pushOnStack parent SWITCH_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTForStatement) {
-            dataFlow.createNewNode(node); // FOR EXPR
-            dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
-            LOGGER.finest("pushOnStack parent FOR_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            /* A PL/SQL loop control:
+             *  [<REVERSE>] Expression()[".."Expression()] 
+             * 
+             */
+            if (node.equals( node.jjtGetParent().getFirstChildOfType(ASTExpression.class) ) )
+            {
+              dataFlow.createNewNode(node); // FOR EXPR
+              dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
+              LOGGER.finest("pushOnStack parent FOR_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            }
+            LOGGER.finest("parent (ASTForStatement): line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTLoopStatement) {
             dataFlow.createNewNode(node); // DO EXPR
             dataFlow.pushOnStack(NodeType.DO_EXPR, dataFlow.getLast());
@@ -248,6 +262,52 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return super.visit(node, data);
     } 
 
+    /**
+     *  PL/SQL does not have a do/while statement or repeat/until statement: the equivalent is a LOOP statement.
+     *  A PL/SQL LOOP statement is exited using an explicit EXIT ( == break;) statement
+     * It does not have a test expression, so the Java control processing (on the expression) does not fire.
+     * The best way to cope it to push a DO_EXPR after the loop.
+     */
+    public Object visit(ASTLoopStatement node, Object data) {
+        LOGGER.finest("entry ASTLoopStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        if (!(data instanceof Structure)) {
+            LOGGER.finest("immediate return ASTLoopStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            return data;
+        }
+        Structure dataFlow = (Structure) data;
+
+        //process the contents on the LOOP statement 
+        super.visit(node, data);
+
+        dataFlow.createNewNode(node);
+        dataFlow.pushOnStack(NodeType.DO_EXPR, dataFlow.getLast());
+        LOGGER.finest("pushOnStack (ASTLoopStatement) DO_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        return data;
+    } 
+
+    /**
+     * A PL/SQL WHILE statement includes the LOOP statement and all Expressions within it:  
+     * it does not have a single test expression, so the Java control processing (on the Expression) fires for each 
+     * Expression in the LOOP.
+     * The best way to cope it to push a WHILE_LAST_STATEMENT after the WhileStatement has been processed.
+     */
+    public Object visit(ASTWhileStatement node, Object data) {
+        LOGGER.finest("entry ASTWhileStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        if (!(data instanceof Structure)) {
+            LOGGER.finest("immediate return ASTWhileStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            return data;
+        }
+        Structure dataFlow = (Structure) data;
+
+        //process the contents on the WHILE statement 
+        super.visit(node, data);
+
+        dataFlow.createNewNode(node);
+        dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack (ASTWhileStatement) WHILE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        return data;
+    } 
+
     /* SRT public Object visit(ASTForUpdate node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -271,13 +331,21 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
 
         if (node.jjtGetParent() instanceof ASTForStatement) {
-            this.addForExpressionNode(node, dataFlow);
-            dataFlow.pushOnStack(NodeType.FOR_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
-            LOGGER.finest("pushOnStack FOR_BEFORE_FIRST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            ASTForStatement st = (ASTForStatement) node.jjtGetParent(); 
+            if (node.equals(st.getFirstChildOfType(ASTStatement.class)))
+            {
+              this.addForExpressionNode(node, dataFlow);
+              dataFlow.pushOnStack(NodeType.FOR_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
+              LOGGER.finest("pushOnStack FOR_BEFORE_FIRST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            }
         } else if (node.jjtGetParent() instanceof ASTLoopStatement) {
-            dataFlow.pushOnStack(NodeType.DO_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
-            dataFlow.createNewNode(node.jjtGetParent());
-            LOGGER.finest("pushOnStack DO_BEFORE_FIRST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            ASTLoopStatement st = (ASTLoopStatement) node.jjtGetParent(); 
+            if (node.equals(st.getFirstChildOfType(ASTStatement.class)))
+            {
+              dataFlow.pushOnStack(NodeType.DO_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
+              dataFlow.createNewNode(node.jjtGetParent());
+              LOGGER.finest("pushOnStack DO_BEFORE_FIRST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            }
         }
 
         super.visit(node, data);
@@ -288,25 +356,46 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
          */
         if (node.jjtGetParent() instanceof ASTIfStatement) {
             ASTIfStatement st = (ASTIfStatement) node.jjtGetParent();
-            if (null == st.getFirstChildOfType(ASTElseClause.class) ) {
+            if (null == st.getFirstChildOfType(ASTElseClause.class) && null == st.getFirstChildOfType(ASTElsifClause.class)  ) {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
-                LOGGER.finest("pushOnStack IF_LAST_STATEMENT_WITHOUT_ELSE: line " + node.getBeginLine() +", column " + node.getBeginColumn());
-            } else if (null != st.getFirstChildOfType(ASTElseClause.class) && !st.jjtGetChild(1).equals( (Node) node)) {
+                LOGGER.finest("pushOnStack (If) IF_LAST_STATEMENT_WITHOUT_ELSE: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            } else if ( ( null != st.getFirstChildOfType(ASTElseClause.class) 
+                          || 
+                          null != st.getFirstChildOfType(ASTElsifClause.class)  
+                        )
+                       && !st.jjtGetChild(1).equals( (Node) node)) {
                 dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
-                LOGGER.finest("pushOnStack ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+                LOGGER.finest("pushOnStack (If) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             } else {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
-                LOGGER.finest("pushOnStack IF_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+                LOGGER.finest("pushOnStack (If) IF_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             }
+        } else if (node.jjtGetParent() instanceof ASTElsifClause) {
+            ASTElsifClause elsif = (ASTElsifClause) node.jjtGetParent();
+            ASTIfStatement ifst = (ASTIfStatement) elsif.jjtGetParent();
+            dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
+                LOGGER.finest("pushOnStack (Elsif) IF_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            //dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
+            //    LOGGER.finest("pushOnStack (Elsif) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTElseClause) {
             dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
-                LOGGER.finest("pushOnStack ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
-        } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
+                LOGGER.finest("pushOnStack (Else) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        } /* SRT else if (node.jjtGetParent() instanceof ASTWhileStatement) {
             dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
                 LOGGER.finest("pushOnStack WHILE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
-        } else if (node.jjtGetParent() instanceof ASTForStatement) {
+        } */ else if (node.jjtGetParent() instanceof ASTForStatement ) {
+            ASTForStatement statement = (ASTForStatement) node.jjtGetParent();
+            List<ASTStatement> children = statement.findChildrenOfType(ASTStatement.class);
+            LOGGER.finest("(LastChildren): size " + children.size() );
+            ASTStatement lastChild = children.get(children.size()-1);
+            //lastChild = children.get(children.lastIndexOf(ASTStatement.class));
+
+            // Push on stack if this Node is the LAST Statement associated with the FOR Statment
+            if ( node.equals(lastChild) )
+            {
             dataFlow.pushOnStack(NodeType.FOR_END, dataFlow.getLast());
-                LOGGER.finest("pushOnStack FOR_END: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+                LOGGER.finest("pushOnStack (LastChildStatemnt) FOR_END: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            }
         } else if (node.jjtGetParent() instanceof ASTLabelledStatement) {
             dataFlow.pushOnStack(NodeType.LABEL_LAST_STATEMENT, dataFlow.getLast());
                 LOGGER.finest("pushOnStack LABEL_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
@@ -325,7 +414,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
 
-    /*SRT public Object visit(ASTSwitchLabel node, Object data) {
+    /*SRT 
+     * public Object visit(ASTCaseWhenClause node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
         }
@@ -338,8 +428,34 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         }
         return data;
     }
+    * 
     */
+      //Could be part of IfStatement or CaseStatement
+      public Object visit(ASTElseClause node, Object data) {
+        if (!(data instanceof Structure)) {
+            return data;
+        }
+        Structure dataFlow = (Structure) data;
+        super.visit(node, data);
+        if (node.jjtGetParent() instanceof ASTCaseStatement) {
+            dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
+        } else {
+            dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
+        }
+        return data;
+    }
 
+      public Object visit(ASTElsifClause node, Object data) {
+        if (!(data instanceof Structure)) {
+            return data;
+        }
+        Structure dataFlow = (Structure) data;
+        LOGGER.finest("ElsifClause) super.visit line" );
+        super.visit(node, data);
+        dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack (ElsifClause) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        return data;
+    }
 
     public Object visit(ASTContinueStatement node, Object data) {
         if (!(data instanceof Structure)) {
