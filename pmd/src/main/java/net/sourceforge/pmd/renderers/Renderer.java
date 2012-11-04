@@ -24,11 +24,10 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * 	<li>{@link Renderer#end()}</li>
  * </ol>
  * <p>
- * An implementation of the Renderer interface is expected to have a constructor
- * which takes a single {@link java.util.Properties} argument.  This is to allow
- * easy factory creation and initialization of the Renderer, as well as to
- * provide flexibility with regards to initialization in subclasses of the
- * Renderer.
+ * An implementation of the Renderer interface is expected to have a default constructor.
+ * Properties should be defined using the {@link #definePropertyDescriptor(net.sourceforge.pmd.PropertyDescriptor)}
+ * method. After the instance is created, the property values are set. This means, you won't
+ * have access to property values in your constructor.
  */
 // TODO Are implementations expected to be thread-safe?
 public interface Renderer extends PropertySource {
@@ -70,6 +69,7 @@ public interface Renderer extends PropertySource {
      * corresponding value being a description.
      * @return The configuration property definition map.
      */
+    @Deprecated // use PropertySource.getPropertyDescriptors() instead
     Map<String, String> getPropertyDefinitions();
 
     /**

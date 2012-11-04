@@ -6,7 +6,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -19,8 +18,8 @@ public class TextRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "text";
 
-    public TextRenderer(Properties properties) {
-    	super(NAME, "Text format.", properties);
+    public TextRenderer() {
+    	super(NAME, "Text format.");
     }
 
     

@@ -1,17 +1,13 @@
 package net.sourceforge.pmd.renderers;
 
-import java.util.Properties;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.renderers.HTMLRenderer;
-import net.sourceforge.pmd.renderers.Renderer;
 
 public class HTMLRendererTest extends AbstractRendererTst {
 
     @Override
     public Renderer getRenderer() {
-        return new HTMLRenderer(new Properties());
+        return new HTMLRenderer();
     }
 
     @Override

@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.AbstractPropertySource;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
@@ -19,15 +19,15 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     protected String name;
     protected String description;
+
+    @Deprecated // use PropertySource.getPropertyDescriptors() instead
     protected Map<String, String> propertyDefinitions = new LinkedHashMap<String, String>();
-    protected Properties properties;
     protected boolean showSuppressedViolations = true;
     protected Writer writer;
 
-    public AbstractRenderer(String name, String description, Properties properties) {
+    public AbstractRenderer(String name, String description) {
 		this.name = name;
 		this.description = description;
-		this.properties = properties;
     }
 
     /**
@@ -61,6 +61,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     /**
      * {@inheritDoc}
      */
+    @Deprecated // use PropertySource.getPropertyDescriptors() instead
     public Map<String, String> getPropertyDefinitions() {
 	return propertyDefinitions;
     }
@@ -70,7 +71,10 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
      * @param name The property name.
      * @param description The description of the property.
      */
+    @Deprecated // please use AbstractPropertySource.definePropertyDescriptor() directly instead
     protected void defineProperty(String name, String description) {
+	StringProperty propertyDescriptor = new StringProperty(name, description, null, 0);
+	definePropertyDescriptor(propertyDescriptor);
 	propertyDefinitions.put(name, description);
     }
 
