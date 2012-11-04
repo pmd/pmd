@@ -222,7 +222,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         } else if (node.jjtGetParent() instanceof ASTCaseStatement) {
             dataFlow.createNewNode(node); // START SWITCH
             dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
-            LOGGER.finest("pushOnStack parent SWITCH_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            LOGGER.finest("pushOnStack parent SWITCH_START: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTForStatement) {
             /* A PL/SQL loop control:
              *  [<REVERSE>] Expression()[".."Expression()] 
@@ -378,8 +378,13 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             //dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
             //    LOGGER.finest("pushOnStack (Elsif) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTElseClause) {
-            dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
-                LOGGER.finest("pushOnStack (Else) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            if (node.jjtGetParent().jjtGetParent() instanceof ASTCaseStatement) {
+                dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
+                LOGGER.finest("pushOnStack (Else-Below Case) SWITCH_LAST_DEFAULT_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            } else {
+              dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
+              LOGGER.finest("pushOnStack (Else-Belowi If) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            }
         } /* SRT else if (node.jjtGetParent() instanceof ASTWhileStatement) {
             dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
                 LOGGER.finest("pushOnStack WHILE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
@@ -414,22 +419,20 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
 
-    /*SRT 
-     * public Object visit(ASTCaseWhenClause node, Object data) {
+      public Object visit(ASTCaseWhenClause node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
         }
         Structure dataFlow = (Structure) data;
-        //super.visit(node, data);
-        if (node.jjtGetNumChildren() == 0) {
-            dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
-        } else {
-            dataFlow.pushOnStack(NodeType.CASE_LAST_STATEMENT, dataFlow.getLast());
-        }
+        super.visit(node, data);
+        dataFlow.pushOnStack(NodeType.CASE_LAST_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack CASE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        dataFlow.createNewNode(node);
+        dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack (ASTCaseWhenClause) BREAK_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return data;
     }
-    * 
-    */
+     
       //Could be part of IfStatement or CaseStatement
       public Object visit(ASTElseClause node, Object data) {
         if (!(data instanceof Structure)) {
@@ -438,10 +441,15 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         super.visit(node, data);
         if (node.jjtGetParent() instanceof ASTCaseStatement) {
-            dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
-        } else {
+            //dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
+            //LOGGER.finest("pushOnStack (ASTElseClause) SWITCH_LAST_DEFAULT_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            dataFlow.createNewNode(node);
+            dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
+            LOGGER.finest("pushOnStack (ASTElseClause) BREAK_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        } /* else {
             dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
-        }
+            LOGGER.finest("pushOnStack (ASTElseClause) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        } */
         return data;
     }
 
