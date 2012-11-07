@@ -46,6 +46,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTPipelineStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTRaiseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSqlStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
+import net.sourceforge.pmd.lang.plsql.ast.ASTUnlabelledStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
@@ -323,7 +324,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
 //  BRANCH OUT
 
     public Object visit(ASTStatement node, Object data) {
-        LOGGER.finest("entry ASTStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        LOGGER.finest("entry ASTStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn() + " -> " + node.getClass().getCanonicalName());
         if (!(data instanceof Structure)) {
             LOGGER.finest("immediate return ASTStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             return data;
@@ -403,7 +404,24 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             }
         } else if (node.jjtGetParent() instanceof ASTLabelledStatement) {
             dataFlow.pushOnStack(NodeType.LABEL_LAST_STATEMENT, dataFlow.getLast());
-                LOGGER.finest("pushOnStack LABEL_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            LOGGER.finest("pushOnStack LABEL_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        } 
+        LOGGER.finest("exit ASTStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn() 
+                       + " -> " + node.getClass().getCanonicalName() 
+                       + " ->-> " + node.jjtGetParent().getClass().getCanonicalName() 
+                );
+        return data;
+    }
+
+    public Object visit(ASTUnlabelledStatement node, Object data) {
+        if (!(data instanceof Structure)) {
+            return data;
+        }
+        Structure dataFlow = (Structure) data;
+        super.visit(node, data);
+        if (node.jjtGetParent() instanceof ASTLabelledStatement) {
+            dataFlow.pushOnStack(NodeType.LABEL_LAST_STATEMENT, dataFlow.getLast());
+            LOGGER.finest("pushOnStack (ASTUnlabelledStatement) LABEL_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } 
         return data;
     }
@@ -465,6 +483,13 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
 
+    /**
+     * Treat a PLSQL CONTINUE like a Java "continue"
+     * 
+     * @param node
+     * @param data
+     * @return 
+     */
     public Object visit(ASTContinueStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -472,12 +497,12 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
-        LOGGER.finest("pushOnStack CONTINUE_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        LOGGER.finest("pushOnStack (ASTContinueStatement) CONTINUE_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return super.visit(node, data);
     }
 
     /**
-     * Treat a PLSQL GOTO like a Java "break"
+     * Treat a PLSQL EXIT like a Java "break"
      * 
      * @param node
      * @param data
@@ -490,12 +515,12 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
-        LOGGER.finest("pushOnStack BREAK_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        LOGGER.finest("pushOnStack (ASTExitStatement) BREAK_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return super.visit(node, data);
     }
 	
     /**
-     * Treat a PLSQL GOTO like a Java "break"
+     * Treat a PLSQL GOTO like a Java "continue"
      * 
      * @param node
      * @param data
@@ -507,8 +532,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         }
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
-        dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
-        LOGGER.finest("pushOnStack BREAK_STATEMENT (GOTO): line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack (ASTGotoStatement) CONTINUE_STATEMENT (GOTO): line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return super.visit(node, data);
     }
 
