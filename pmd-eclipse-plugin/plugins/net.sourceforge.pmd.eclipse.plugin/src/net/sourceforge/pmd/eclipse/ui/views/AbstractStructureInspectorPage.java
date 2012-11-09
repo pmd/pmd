@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -311,7 +311,7 @@ public abstract class AbstractStructureInspectorPage extends Page implements IPr
 			InputStream input = new ByteArrayInputStream(bytes);
 			
 			RuleSets rSets = new RuleSets(rs);
-			new SourceCodeProcessor(new Configuration()).processSourceCode(input, rSets, ctx);
+			new SourceCodeProcessor(new PMDConfiguration()).processSourceCode(input, rSets, ctx);
 			
 			// the Rule then can give us the Methods
 			methodList.addAll(dfaGraphRule.getMethods());

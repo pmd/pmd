@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -110,7 +110,7 @@ public class PMDPlugin extends AbstractUIPlugin {
 		return color;
 	}
 
-	public static void setJavaClassLoader(Configuration config, IJavaProject javaProject) {
+	public static void setJavaClassLoader(PMDConfiguration config, IJavaProject javaProject) {
 
 		IPreferences preferences = getDefault().loadPreferences();
 		if (preferences.isProjectBuildPathEnabled()) {
@@ -450,6 +450,7 @@ public class PMDPlugin extends AbstractUIPlugin {
      *
      */
     private void registerStandardRuleSets() {
+
         final RuleSetFactory factory = new RuleSetFactory();
         try {
             Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();

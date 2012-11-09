@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import name.herlin.command.CommandException;
-import net.sourceforge.pmd.Configuration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
@@ -133,7 +133,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                    // Reader input = new InputStreamReader(file.getContents(), file.getCharset());
                     RuleSets rSets = new RuleSets(ruleSet);
                 	
-                    new SourceCodeProcessor(new Configuration()).processSourceCode(file.getContents(), rSets, context);
+                    new SourceCodeProcessor(new PMDConfiguration()).processSourceCode(file.getContents(), rSets, context);
                   //  input.close();
 //                } catch (CoreException e) {
 //                    throw new CommandException(e);

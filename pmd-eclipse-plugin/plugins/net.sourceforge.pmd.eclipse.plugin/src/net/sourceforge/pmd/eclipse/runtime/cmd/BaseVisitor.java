@@ -37,8 +37,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import name.herlin.command.Timer;
-import net.sourceforge.pmd.Configuration;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -82,11 +82,11 @@ public class BaseVisitor {
     private IProjectProperties projectProperties;
     protected RuleSet hiddenRules;
 
-    private Configuration configuration;
+    private PMDConfiguration configuration;
     
     
-    protected Configuration configuration() {
-    	if (configuration == null) configuration = new Configuration();
+    protected PMDConfiguration configuration() {
+    	if (configuration == null) configuration = new PMDConfiguration();
     	return configuration;
     }
     /**
