@@ -1,4 +1,11 @@
 Release notes for the PMD Eclipse Plugin
+
+v4.0.0 - November 8 2012
+
+Numerous changes & bugfixes
+Latest 5.0.1 snapshot of PMD itself
+Compatibility with Eclipse Juno
+
 ----------------------------------------
 v3.2.5 - October 13 2008
 ------------------------
