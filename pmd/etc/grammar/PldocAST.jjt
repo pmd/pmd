@@ -1079,8 +1079,8 @@ ASTStatement Statement()  :
 {}
 {
       (
-       //SQl Developer compiler allows 0, 1 or many labels immediately before a statement 
-       //SQl Developer compiler requires a statement after a sequence of labels  
+       //SQL Developer compiler allows 0, 1 or many labels immediately before a statement 
+       //SQL Developer compiler requires a statement after a sequence of labels  
        LabelledStatement() 
        |
        UnlabelledStatement()
@@ -1098,8 +1098,8 @@ SimpleNode simpleNode = null ;
 }
 {
       (
-       //SQl Developer compiler allows 0, 1 or many labels immediately before a statement 
-       //SQl Developer compiler requires a statement after a sequence of labels  
+       //SQL Developer compiler allows 0, 1 or many labels immediately before a statement 
+       //SQL Developer compiler requires a statement after a sequence of labels  
        //Use the last label 
        (simpleNode = Label() )+
        UnlabelledStatement()
