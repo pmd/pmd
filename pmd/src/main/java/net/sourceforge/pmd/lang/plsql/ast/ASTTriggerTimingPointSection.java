@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 public
-class ASTTriggerTimingPointSection extends SimpleNode {
+class ASTTriggerTimingPointSection extends SimpleNode implements ExecutableCode {
   public ASTTriggerTimingPointSection(int id) {
     super(id);
   }
@@ -24,6 +24,15 @@ class ASTTriggerTimingPointSection extends SimpleNode {
         return "Timing Point Section " + getImage() + ", line " + getBeginLine() ;
     }
 
+    /** 
+     * return executable's name. 
+     * @return 
+     */
+    public String getMethodName() {
+        return getImage() ;
+    }
+
+    
   /** Accept the visitor. **/
   public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
     return visitor.visit(this, data);

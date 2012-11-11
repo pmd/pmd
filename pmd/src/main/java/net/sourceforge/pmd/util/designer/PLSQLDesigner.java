@@ -104,9 +104,10 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.plsql.ast.ParseException;
-import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
+//SRT import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
+//SRT import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
+//SRT import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 //import net.sourceforge.pmd.lang.plsql.ast.AccessNode;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
 import net.sourceforge.pmd.lang.plsql.symboltable.ClassNameDeclaration;
@@ -518,9 +519,9 @@ public class PLSQLDesigner implements ClipboardOwner {
 			}
 
 			//List<ASTMethodDeclaration> methods = dfaGraphRule.getMethods();
-			List<ASTProgramUnit> programUnits = dfaGraphRule.getProgramUnits();
-			if (programUnits != null && !programUnits.isEmpty()) {
-				dfaPanel.resetTo(programUnits, codeEditorPane);
+			List<ExecutableCode> executables = dfaGraphRule.getExecutables();
+			if (executables != null && !executables.isEmpty()) {
+				dfaPanel.resetTo(executables, codeEditorPane);
 				dfaPanel.repaint();
 			}
 		}

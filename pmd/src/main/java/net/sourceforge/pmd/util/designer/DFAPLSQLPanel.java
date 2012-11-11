@@ -26,10 +26,11 @@ import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
-   private final static Logger LOGGER = Logger.getLogger(DFAPLSQLPanel.class.getName()); 
+    private final static Logger LOGGER = Logger.getLogger(DFAPLSQLPanel.class.getName()); 
 
     public static class DFACanvas extends JPanel {
 
@@ -120,13 +121,22 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 
 	@Override
 	public void paintComponent(Graphics g) {
+            LOGGER.entering(  DFAPLSQLPanel.class.getCanonicalName(), "paintComponent");
 	    super.paintComponent(g);
 
 	    if (node == null) {
 		return;
 	    }
-	    LOGGER.finest("paintComponent Node ==" + node.getClass().getCanonicalName());
+	    LOGGER.finest("paintComponent Node ==" + node.getClass().getCanonicalName()
+                        + " @ Line " + node.getBeginLine() + ", column " + node.getBeginColumn()
+                         );
 	    DataFlowNode dataFlowNode = node.getDataFlowNode();
+	    if (dataFlowNode == null) {
+              LOGGER.severe("paintComponent Node has null DataFlowNode: " 
+                          + " Node=" + node.getImage() + " of type " + node.getClass().getCanonicalName()
+                          + " @ Line " + node.getBeginLine() + ", column = " + node.getBeginColumn()
+                           );
+	    }
 
 	    List<DataFlowNode> flow = node.getDataFlowNode().getFlow();
 	    FontMetrics fm = g.getFontMetrics();
@@ -160,6 +170,7 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 		String childIndices = childIndicesOf(inode, ", ");
 		g.drawString(childIndices, x - 3 * NODE_DIAMETER, y + NODE_RADIUS - 2);
 	    }
+            LOGGER.exiting(  DFAPLSQLPanel.class.getCanonicalName(), "paintComponent");
 	}
 
 	public void setCode(LineGetter h) {
@@ -251,13 +262,13 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 
     private static class ElementWrapper {
 	//SRT private ASTMethodDeclaration node;
-	private ASTProgramUnit node;
+	private ExecutableCode node;
 
-	public ElementWrapper(ASTProgramUnit node) {
+	public ElementWrapper(ExecutableCode node) {
 	    this.node = node;
 	}
 
-	public ASTProgramUnit getNode() {
+	public ExecutableCode getNode() {
 	    return node;
 	}
 
@@ -323,14 +334,15 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
     }
     */
 
-    public void resetTo(List<ASTProgramUnit> newNodes, LineGetter lines) {
+    public void resetTo(List<ExecutableCode> newNodes, LineGetter lines) {
 	dfaCanvas.setCode(lines);
 	nodes.clear();
-	for (ASTProgramUnit md : newNodes) {
+	for (ExecutableCode md : newNodes) {
 	    nodes.addElement(new ElementWrapper(md));
 	}
 	nodeList.setSelectedIndex(0);
 	dfaCanvas.setMethod(newNodes.get(0));
 	repaint();
     }
+
 }

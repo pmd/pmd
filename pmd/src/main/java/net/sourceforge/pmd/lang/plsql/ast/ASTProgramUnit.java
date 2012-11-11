@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 public
-class ASTProgramUnit extends SimpleNode {
+class ASTProgramUnit extends SimpleNode implements ExecutableCode {
   public ASTProgramUnit(int id) {
     super(id);
   }
@@ -24,6 +24,7 @@ class ASTProgramUnit extends SimpleNode {
    *
    * @return a String representing the name of the method
    */
+  @Override
   public String getMethodName() {
       ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
       if (md != null) {

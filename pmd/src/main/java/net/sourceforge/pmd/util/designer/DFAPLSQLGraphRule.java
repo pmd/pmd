@@ -7,8 +7,10 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
+import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 
 public class DFAPLSQLGraphRule extends AbstractPLSQLRule {
@@ -17,6 +19,7 @@ public class DFAPLSQLGraphRule extends AbstractPLSQLRule {
     private List<ASTProgramUnit> programUnits;
     private List<ASTTriggerUnit> triggerUnits;
     private List<ASTTypeMethod> typeMethods;
+    private List<ExecutableCode> executables;
     // SRT private List<ASTConstructorDeclaration> constructors;
 
     public DFAPLSQLGraphRule() {
@@ -34,6 +37,10 @@ public class DFAPLSQLGraphRule extends AbstractPLSQLRule {
 
     public List<ASTTriggerUnit> getTriggerUnits() {
 	return this.triggerUnits;
+    }
+
+    public List<ExecutableCode> getExecutables() {
+	return this.executables;
     }
 
     /* SRT public List<ASTConstructorDeclaration> getConstructors() {
@@ -55,17 +62,28 @@ public class DFAPLSQLGraphRule extends AbstractPLSQLRule {
     @Override
     public Object visit(ASTTriggerUnit node, Object data) {
 	triggerUnits.add(node);
+	executables.add(node);
 	return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTProgramUnit node, Object data) {
 	programUnits.add(node);
+	executables.add(node);
 	return super.visit(node, data);
     }
+   
     @Override
     public Object visit(ASTTypeMethod node, Object data) {
 	typeMethods.add(node);
+	executables.add(node);
+	return super.visit(node, data);
+    }
+
+   
+    @Override
+    public Object visit(ASTTriggerTimingPointSection node, Object data) {
+	executables.add(node);
 	return super.visit(node, data);
     }
 
@@ -81,6 +99,7 @@ public class DFAPLSQLGraphRule extends AbstractPLSQLRule {
 	programUnits = new ArrayList<ASTProgramUnit>();
 	triggerUnits = new ArrayList<ASTTriggerUnit>();
 	typeMethods = new ArrayList<ASTTypeMethod>();
+        executables = new ArrayList<ExecutableCode>();
 	//constructors = new ArrayList<ASTConstructorDeclaration>();
 	return super.visit(acu, data);
     }

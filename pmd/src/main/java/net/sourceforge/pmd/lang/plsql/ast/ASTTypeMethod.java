@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 public
-class ASTTypeMethod extends SimpleNode {
+class ASTTypeMethod extends SimpleNode implements ExecutableCode {
   public ASTTypeMethod(int id) {
     super(id);
   }

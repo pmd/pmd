@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 public
-class ASTTriggerUnit extends SimpleNode {
+class ASTTriggerUnit extends SimpleNode implements ExecutableCode {
   public ASTTriggerUnit(int id) {
     super(id);
   }
@@ -12,6 +12,14 @@ class ASTTriggerUnit extends SimpleNode {
     super(p, id);
   }
 
+  /**
+   * Gets the name of the trigger.
+   *
+   * @return a String representing the name of the trigger
+   */
+  public String getMethodName() {
+     return getImage();
+   }
 
   /** Accept the visitor. **/
   public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
