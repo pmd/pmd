@@ -34,7 +34,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 		              + node.getBeginLine() + "/" + node.getBeginColumn()
 		              + " => " + node.getImage()
 		             );
-          return null; //SRT a cop-out 
+          return null; //@TODO SRT a cop-out 
 	}
     }
 
@@ -54,7 +54,13 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	if (node.jjtGetParent() instanceof ASTFormalParameter) {
 	    return (AccessNode) node.jjtGetParent();
 	}
+	  LOGGER.severe("getAccessNodeParent: "
+		              + node.getClass().getCanonicalName() + " -> "
+		              + node.jjtGetParent().getClass().getCanonicalName() + " -> "
+		              + node.jjtGetParent().jjtGetParent().getClass().getCanonicalName()
+		             );
 	return (AccessNode) node.jjtGetParent().jjtGetParent();
+	//return null ; // @TODO (AccessNode) node.jjtGetParent().jjtGetParent();
     }
 
     public ASTVariableOrConstantDeclaratorId getDeclaratorId() {

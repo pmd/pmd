@@ -45,6 +45,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTOpenStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPipelineStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTRaiseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSqlStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTUnlabelledStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
@@ -71,7 +72,18 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
 
     public void buildDataFlowFor(SimpleNode node) {
         LOGGER.entering(this.getClass().getCanonicalName(),"buildDataFlowFor");
-        if (!(node instanceof ASTMethodDeclaration) && !(node instanceof ASTProgramUnit) && !(node instanceof ASTTypeMethod) && !(node instanceof ASTTriggerUnit) /* SRT && !(node instanceof ASTConstructorDeclaration) */) {
+        LOGGER.finest("buildDataFlowFor: node class " 
+                      + node.getClass().getCanonicalName() + " @ line " 
+                      + node.getBeginLine() 
+                      +", column " + node.getBeginColumn()
+                      + " --- " + new Throwable().getStackTrace()
+                );
+        if (!(node instanceof ASTMethodDeclaration) 
+             && !(node instanceof ASTProgramUnit) 
+             && !(node instanceof ASTTypeMethod) 
+             && !(node instanceof ASTTriggerUnit)
+             && !(node instanceof ASTTriggerTimingPointSection)
+            /* SRT && !(node instanceof ASTConstructorDeclaration) */) {
             throw new RuntimeException("Can't build a data flow for anything other than a Method or a Trigger");
         }
 

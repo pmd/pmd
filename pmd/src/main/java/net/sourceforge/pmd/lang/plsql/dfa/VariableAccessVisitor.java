@@ -13,12 +13,14 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
+import net.sourceforge.pmd.lang.plsql.ast.ASTCompoundTriggerBlock;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantInitializer;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
@@ -42,7 +44,9 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
     }
 
     public void compute(ASTProgramUnit node) {
-	if (node.jjtGetParent() instanceof ASTPackageBody) {
+	if (node.jjtGetParent() instanceof ASTPackageBody 
+            || node.jjtGetParent() instanceof ASTCompoundTriggerBlock // Treat Compound Trigger as a Package Body 
+           ) {
 	    this.computeNow(node);
 	}
     }
@@ -54,6 +58,10 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
     }
 
     public void compute(ASTTriggerUnit node) {
+	    this.computeNow(node);
+    }
+
+    public void compute(ASTTriggerTimingPointSection node) {
 	    this.computeNow(node);
     }
 
@@ -83,10 +91,10 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
 	    for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : declarations.entrySet()) {
 		VariableNameDeclaration vnd = entry.getKey();
 
-		if (vnd.getAccessNodeParent() instanceof ASTFormalParameter) {
+		if (vnd.getNode().jjtGetParent() instanceof ASTFormalParameter) {
 		    // no definition/undefinition/references for parameters
 		    continue;
-		} else if (((Node) vnd.getAccessNodeParent()).getFirstDescendantOfType(ASTVariableOrConstantInitializer.class) != null) {
+		} else if (  vnd.getNode().jjtGetParent().getFirstDescendantOfType(ASTVariableOrConstantInitializer.class) != null) {
 		    // add definition for initialized variables
 		    addVariableAccess(vnd.getNode(), new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()),
 			    inode.getFlow());

@@ -20,12 +20,16 @@ public class NameFinder {
     private List<NameOccurrence> names = new ArrayList<NameOccurrence>();
 
     public NameFinder(ASTPrimaryExpression node) {
-        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
-        //if (prefix.usesSuperModifier()) {
-        //    add(new NameOccurrence(prefix, "super"));
-        //} else 
-	if (prefix.usesSelfModifier()) {
-            add(new NameOccurrence(prefix, "this"));
+        SimpleNode simpleNode = (SimpleNode) node.jjtGetChild(0);
+        if (simpleNode instanceof ASTPrimaryPrefix) 
+        {
+          ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) simpleNode ;
+          //if (prefix.usesSuperModifier()) {
+          //    add(new NameOccurrence(prefix, "super"));
+          //} else 
+          if (prefix.usesSelfModifier()) {
+              add(new NameOccurrence(prefix, "this"));
+          }
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             checkForNameChild((SimpleNode)node.jjtGetChild(i));

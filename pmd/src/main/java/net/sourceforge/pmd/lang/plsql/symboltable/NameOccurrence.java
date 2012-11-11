@@ -4,15 +4,15 @@
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
+import net.sourceforge.pmd.lang.plsql.ast.ASTName;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTPostfixExpression;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTPreDecrementExpression;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryPrefix;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
 
 public class NameOccurrence {
@@ -81,32 +81,44 @@ public class NameOccurrence {
         } else if (location.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
             primaryExpression = location.jjtGetParent().jjtGetParent().jjtGetParent();
         } else {
-            throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
+            throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimaryExpression as parent or grandparent. " 
+                    + " Node = " +  location.getClass().getCanonicalName() 
+                    + ", Parent = " +  location.jjtGetParent().getClass().getCanonicalName() 
+                    + " and grandparent = " + location.jjtGetParent().jjtGetParent().getClass().getCanonicalName()
+                    + " @ line = " + location.getBeginLine() + ", column = " + location.getBeginColumn()
+                    );
         }
 
+        /*
         if (isStandAlonePostfix(primaryExpression)) {
             return true;
         }
+        */
 
         if (primaryExpression.jjtGetNumChildren() <= 1) {
             return false;
         }
 
+        /*
         if (!(primaryExpression.jjtGetChild(1) instanceof ASTAssignmentOperator)) {
             return false;
         }
+        */
 
         if (isPartOfQualifiedName() /* or is an array type */) {
             return false;
         }
 
+        /*
         if (isCompoundAssignment(primaryExpression)) {
             return false;
         }
+        */
 
         return true;
     }
 
+    /*
     private boolean isCompoundAssignment(Node primaryExpression) {
         return ((ASTAssignmentOperator) primaryExpression.jjtGetChild(1)).isCompound();
     }
@@ -123,6 +135,7 @@ public class NameOccurrence {
 
         return thirdChildHasDottedName(primaryExpression);
     }
+    */
 
     private boolean thirdChildHasDottedName(Node primaryExpression) {
         Node thirdChild = primaryExpression.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
@@ -137,6 +150,7 @@ public class NameOccurrence {
      *
      * @return true, if the occurrence is self-assignment, false, otherwise.
      */
+    /*
     @SuppressWarnings("PMD.AvoidBranchingStatementAsLastInLoop")
     public boolean isSelfAssignment() {
         Node l = location;
@@ -169,7 +183,9 @@ public class NameOccurrence {
             return gp instanceof ASTPreDecrementExpression || gp instanceof ASTPreIncrementExpression || gp instanceof ASTPostfixExpression;
         }
     }
+    */
 
+    /*
     private boolean hasAssignmentOperator(Node node) {
         if (node instanceof ASTStatementExpression || node instanceof ASTExpression) {
             if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTAssignmentOperator) {
@@ -178,6 +194,7 @@ public class NameOccurrence {
         }
         return false;
     }
+    */
 
     /**
      * Simply return true is the image is equal to keyword 'this' or 'super'.
@@ -193,6 +210,7 @@ public class NameOccurrence {
      *
      * @return true, if keyword is used, false otherwise.
      */
+    /*
     public boolean useThisOrSuper() {
 		Node node = location.jjtGetParent();
 		if ( node instanceof ASTPrimaryExpression ) {
@@ -204,6 +222,7 @@ public class NameOccurrence {
 		}
     	return image.startsWith(THIS_DOT) || image.startsWith(SUPER_DOT);
     }
+    */
 
     @Override
     public boolean equals(Object o) {

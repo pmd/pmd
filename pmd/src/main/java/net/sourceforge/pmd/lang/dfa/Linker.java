@@ -194,7 +194,7 @@ public class Linker {
     }
 
     private DataFlowNode getNodeToBreakStatement(DataFlowNode node) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"getNodeToBreakSttement");
+        LOGGER.entering(this.getClass().getCanonicalName(),"getNodeToBreakStatement");
 	// What about breaks to labels above if statements?
 	List<DataFlowNode> bList = node.getFlow();
 	int findEnds = 1; // ignore ends of other for's while's etc.
