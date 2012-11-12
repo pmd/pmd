@@ -42,6 +42,8 @@ public class DataFlowFacade extends PLSQLParserVisitorAdapter {
                       +", column " + node.getBeginColumn()
                       + " --- " + new Throwable().getStackTrace()
                 );
+
+        super.visit(node, data) ;
         sbf.buildDataFlowFor(node);
         vav.compute(node);
         LOGGER.exiting(CLASS_PATH,"visit(ASTMethodDeclaration)");
