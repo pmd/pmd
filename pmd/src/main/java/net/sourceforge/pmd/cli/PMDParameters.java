@@ -4,12 +4,14 @@ import java.util.Properties;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
 import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.validators.PositiveInteger;
 
 public class PMDParameters {
 
@@ -31,7 +33,7 @@ public class PMDParameters {
 	@Parameter(names= {"-encoding", "-e"} , description = "specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)")
 	private String encoding = "UTF-8";
 	
-	@Parameter(names = {"-threads", "-t"}, description = "set the number of threads used by PMD", validateWith=PositiveIntegerValidator.class)
+	@Parameter(names = {"-threads", "-t"}, description = "set the number of threads used by PMD", validateWith=PositiveInteger.class)
 	private Integer threads = 1;
 	
 	@Parameter(names = {"-benchmark", "-b"}, description = "Benchmark mode - output a benchmark report upon completion; default to System.err")
@@ -59,10 +61,10 @@ public class PMDParameters {
 	private String reportfile = null;
 	
 	@Parameter(names = {"-version","-v"}, description = "specify version of a language PMD should use")
-	private String version = "1.7";
+	private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion();
 	
 	@Parameter(names = {"-language", "-l"}, description = "specify version of a language PMD should use")
-	private String language = "java";
+	private String language = Language.getDefaultLanguage().getTerseName();
 
 	@Parameter(names = "auxclasspath", description = "specifies the classpath for libraries used by the source code (used by type resolution)\n(alternatively, a 'file://' URL to a text file containing path elements on consecutive lines")
 	private String auxclasspath;	
@@ -81,14 +83,6 @@ public class PMDParameters {
 			String propertyValue = value.substring(indexOfSeparator);
 			properties.put(propertyName, propertyValue);
 			return properties;
-		}
-	}
-
-	class PositiveIntegerValidator implements IParameterValidator {
-		
-		public void validate(String name, String value) throws ParameterException {
-			if ( Integer.valueOf(value) < 0 ) 
-				throw new ParameterException("Parameter " + name + " should be positive (found " + value +")");
 		}
 	}
 	

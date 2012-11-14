@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
@@ -104,13 +105,9 @@ public class PMDCommandLineInterface {
 	}
 	
 	private static String supportedVersions() {
-		String supportedVersion = "Languages and version suported:" + PMD.EOL;
-		for ( LanguageVersion version : LanguageVersion.values() ) {
-			supportedVersion += version.getName() + ", ";
-		}
-		supportedVersion += PMD.EOL;
-		supportedVersion += "Note that some language are not supported by PMD - only by CPD" + PMD.EOL;
-		return supportedVersion;
+		return "Languages and version suported:" + PMD.EOL +
+				Language.commaSeparatedTerseNames(Language.findWithRuleSupport()) + PMD.EOL +
+				"Note that some language are not supported by PMD - only by CPD" + PMD.EOL;
 	}
 
 	/**
