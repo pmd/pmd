@@ -60,7 +60,7 @@ public class PMDCommandLineInterface {
 		+ "3) A ruleset filename or a comma-delimited string of ruleset filenames"				+ PMD.EOL
 		+ PMD.EOL
 		+ "For example: "																		+ PMD.EOL
-		+ "c:\\> " + launchCmd + " c:\\my\\source\\code html java-unusedcode"					+ PMD.EOL
+		+ "c:\\> " + launchCmd + "-d c:\\my\\source\\code -f html -R java-unusedcode"					+ PMD.EOL
 		+ PMD.EOL;
 		
 		fullText += supportedVersions() + PMD.EOL;
@@ -87,10 +87,10 @@ public class PMDCommandLineInterface {
 		final String WINDOWS_PATH_TO_CODE = "c:\\my\\source\\code";
 
 		return "For example on windows: "															+ PMD.EOL
-		+ WINDOWS_PROMPT + launchCmd + " -dir" + WINDOWS_PATH_TO_CODE + "-format text java-unusedcode,java-imports -version 1.5 -language java -debug" + PMD.EOL
+		+ WINDOWS_PROMPT + launchCmd + " -dir" + WINDOWS_PATH_TO_CODE + "-format text -R java-unusedcode,java-imports -version 1.5 -language java -debug" + PMD.EOL
 		+ WINDOWS_PROMPT + launchCmd + " -dir" + WINDOWS_PATH_TO_CODE + "-f xml -rulesets java-basic,java-design -encoding UTF-8"					+ PMD.EOL
 		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-rulesets java-typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL
-		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-f html java-typeresolution -auxclasspath file:///C:/my/classpathfile" + PMD.EOL
+		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-f html -R java-typeresolution -auxclasspath -d file:///C:/my/classpathfile" + PMD.EOL
 		+ PMD.EOL;
 	}
 	
