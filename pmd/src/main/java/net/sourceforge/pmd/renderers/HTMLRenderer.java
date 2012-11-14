@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -25,20 +25,20 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "html";
 
-    public static final String LINK_PREFIX = "linkPrefix";
-    public static final String LINE_PREFIX = "linePrefix";
+    public static final StringProperty LINE_PREFIX = new StringProperty("linePrefix", "Prefix for line number anchor in the source file.", null, 1);
+    public static final StringProperty LINK_PREFIX = new StringProperty("linkPrefix", "Path to HTML source.", null, 0);
 
-    private final String linkPrefix;
-    private final String linePrefix;
+    private String linkPrefix;
+    private String linePrefix;
 
     private int violationCount = 1;
     boolean colorize = true;
 
-    public HTMLRenderer(Properties properties) {
-		super(NAME, "HTML format", properties);
+    public HTMLRenderer() {
+		super(NAME, "HTML format");
 	
-		linkPrefix = properties.getProperty(LINK_PREFIX);
-		linePrefix = properties.getProperty(LINE_PREFIX);
+		definePropertyDescriptor(LINK_PREFIX);
+		definePropertyDescriptor(LINE_PREFIX);
     }
 
     public String defaultFileExtension() { return "html"; }
@@ -51,6 +51,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
      * @throws IOException
      */
     public void renderBody(Writer writer, Report report) throws IOException {
+		linkPrefix = getProperty(LINK_PREFIX);
+		linePrefix = getProperty(LINE_PREFIX);
+
 		writer.write("<center><h3>PMD report</h3></center>");
 		writer.write("<center><h3>Problems found</h3></center>");
 		writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL

@@ -3,10 +3,6 @@
 TODO - Release blockers - Must implement before this release can be finally finished
 
    CODE:
-   o PropertyDescriptor final tasks:
-      - Report renderers now inherit from PropertySource so we should migrate the
-        old-style property references to use the new style. Ensure we remain
-        compatible with the online arguments that get passed in.
    o Need to refactor the test framework to more readily support for multiple
      Languages (too Java-centric at the moment).  Then, need start adding tests
      for the new XML language and other new languages.

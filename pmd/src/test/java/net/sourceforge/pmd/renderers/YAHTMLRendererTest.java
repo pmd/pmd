@@ -2,12 +2,9 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -51,9 +48,9 @@ public class YAHTMLRendererTest extends AbstractRendererTst {
 
     @Override
     public Renderer getRenderer() {
-	Properties properties = new  Properties();
-	properties.put(YAHTMLRenderer.OUTPUT_DIR, outputDir);
-        return new YAHTMLRenderer(properties);
+	Renderer result = new YAHTMLRenderer();
+	result.setProperty(YAHTMLRenderer.OUTPUT_DIR, outputDir);
+        return result;
     }
 
     @Override

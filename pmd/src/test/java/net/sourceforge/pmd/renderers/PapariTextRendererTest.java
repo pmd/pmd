@@ -4,12 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.TextColorRenderer;
 
 public class PapariTextRendererTest extends AbstractRendererTst {
 
@@ -19,11 +16,13 @@ public class PapariTextRendererTest extends AbstractRendererTst {
     }
     
     public Renderer getRenderer() {
-        return new TextColorRenderer(new Properties()){
+        TextColorRenderer result = new TextColorRenderer(){
             protected Reader getReader(String sourceFile) throws FileNotFoundException {
                 return new StringReader("public class Foo {}");
             }
         };
+        result.setProperty(TextColorRenderer.COLOR, "false");
+        return result;
     }
 
     public String getExpected() {

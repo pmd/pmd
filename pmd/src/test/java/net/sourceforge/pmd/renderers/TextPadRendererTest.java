@@ -3,18 +3,14 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import java.util.Properties;
-
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.TextPadRenderer;
 
 
 public class TextPadRendererTest extends AbstractRendererTst{
 
     @Override
     public Renderer getRenderer() {
-        return new TextPadRenderer(new Properties());
+        return new TextPadRenderer();
     }
 
     @Override

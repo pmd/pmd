@@ -222,7 +222,7 @@ public class PMDTask extends Task {
 			final String inputPaths = ds.getBasedir().getPath();
 			configuration.setInputPaths(inputPaths);
 
-			Renderer logRenderer = new AbstractRenderer("log", "Logging renderer", null) {
+			Renderer logRenderer = new AbstractRenderer("log", "Logging renderer") {
 				public void start() {
 					// Nothing to do
 				}

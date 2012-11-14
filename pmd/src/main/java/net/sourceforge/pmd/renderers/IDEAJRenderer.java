@@ -7,40 +7,35 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
  * Renderer for IntelliJ IDEA integration.
  */
 public class IDEAJRenderer extends AbstractIncrementingRenderer {
 
-	private final String sourcePath;
-	private final String classAndMethodName;
-	private final String fileName;
+	private String classAndMethodName;
+	private String fileName;
 
 	public static final String NAME = "ideaj";
 
-	public static final String FILE_NAME = "fileName";
-	public static final String SOURCE_PATH = "sourcePath";
-	public static final String CLASS_AND_METHOD_NAME = "classAndMethodName";
+	public static final StringProperty FILE_NAME = new StringProperty("fileName", "File name.", "", 0);
+	public static final StringProperty SOURCE_PATH = new StringProperty("sourcePath", "Source path.", "", 1);
+	public static final StringProperty CLASS_AND_METHOD_NAME = new StringProperty("classAndMethodName", "Class and Method name, pass '.method' when processing a directory.", "", 2);
 
 	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	private static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
-	public IDEAJRenderer(Properties properties) {
-		super(NAME, "IntelliJ IDEA integration.", properties);
-		super.defineProperty(SOURCE_PATH, "Source path.");
-		super.defineProperty(CLASS_AND_METHOD_NAME,	"Class and Method name, pass '.method' when processing a directory.");
-		super.defineProperty(FILE_NAME, "File name.");
-
-		sourcePath = properties.getProperty(SOURCE_PATH);
-		classAndMethodName = properties.getProperty(CLASS_AND_METHOD_NAME);
-		fileName = properties.getProperty(FILE_NAME);
+	public IDEAJRenderer() {
+		super(NAME, "IntelliJ IDEA integration.");
+		definePropertyDescriptor(FILE_NAME);
+		definePropertyDescriptor(SOURCE_PATH);
+		definePropertyDescriptor(CLASS_AND_METHOD_NAME);
 	}
 
 	 public String defaultFileExtension() { return "txt"; }
@@ -50,6 +45,9 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 	 */
 	@Override
 	public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
+	    classAndMethodName = getProperty(CLASS_AND_METHOD_NAME);
+	    fileName = getProperty(FILE_NAME);
+
 		Writer writer = getWriter();
 		if (".method".equals(classAndMethodName)) {
 			// working on a directory tree
@@ -61,7 +59,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 	}
 
 	private void renderDirectoy(Writer writer, Iterator<RuleViolation> violations) throws IOException {
-		SourcePath sourcePath = new SourcePath(this.sourcePath);
+		SourcePath sourcePath = new SourcePath(getProperty(SOURCE_PATH));
 		StringBuilder buf = new StringBuilder();
 		while (violations.hasNext()) {
 			buf.setLength(0);
