@@ -37,7 +37,6 @@ public class PMDCommandLineInterface {
 		} catch (ParameterException e) {
 			System.out.println(buildUsageText());
 			System.out.println(e.getMessage());
-			System.exit(1);
 		}
 		return arguments;
 	}
