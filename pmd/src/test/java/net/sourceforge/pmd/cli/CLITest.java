@@ -15,7 +15,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.FileUtil;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -25,58 +24,60 @@ import org.junit.Test;
  */
 public class CLITest {
 
-	private static final String TEST_OUPUT_DIRECTORY = "target/cli-tests";
-	
+	private static final String TEST_OUPUT_DIRECTORY = "target/cli-tests/";
+
+	// Points toward a folder without any source files, to avoid actually PMD and slowing down tests
+	private static final String SOURCE_FOLDER = "src/main/resources";
+
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUp() throws Exception {
-		System.setProperty(PMD.NO_EXIT_AFTER_RUN, "true");
+		System.setProperty(PMDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
 		File testOuputDir = new File(TEST_OUPUT_DIRECTORY);
-		testOuputDir.delete();
-		assertTrue("failed to create output directory for test:" + testOuputDir.getAbsolutePath(),testOuputDir.mkdirs());
+		testOuputDir.mkdirs();
+		//assertTrue("failed to create output directory for test:" + testOuputDir.getAbsolutePath(),);
 	}
-	
+
 	private void createTestOutputFile(String filename) {
 		try {
 			PrintStream out = new PrintStream(new FileOutputStream(filename));
-			System.setOut(out); 
+			System.setOut(out);
 			System.setErr(out);
 		} catch (FileNotFoundException e) {
 			fail("Can't create file " + filename + " for test.");
 		}
 	}
-	
+
 	@Test
 	public void minimalArgs() {
-		String[] args = { "src/main/resources","xml", "java-basic,java-design"};
+		String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-basic,java-design"};
 		runTest(args,"minimalArgs");
 	}
 
 	@Test
 	public void usingDebug() {
-		String[] args = { "src/main/resources","text", "java-basic,java-design","-debug"};
-		runTest(args,"minimalArgsWithDebug");	
+		String[] args = { "-d", SOURCE_FOLDER, "-f" ,"text","-R", "java-basic,java-design","-debug"};
+		runTest(args,"minimalArgsWithDebug");
 	}
-	
-	
+
+
 	@Test
 	public void changeJavaVersion() {
-		String[] args = { "src/main/resources","text", "java-basic,java-design", "-version", "java","1.5", "-debug"};
+		String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-basic,java-design", "-version","1.5", "-language", "java", "-debug"};
 		String resultFilename = runTest(args, "chgJavaVersion");
 		assertTrue("Invalid Java version",FileUtil.findPatternInFile(new File(resultFilename), "Using Java version: Java 1.5"));
 	}
-	
+
 	@Test
-	@Ignore // FIXME: fix CLI to take EcmaScript into account
 	public void useEcmaScript() {
-		String[] args = { "src/main/resources","xml", "java-basic,java-design", "-version", "ecmascript","3", "-debug"};
+		String[] args = { "-d", SOURCE_FOLDER, "-f", "xml", "-R", "ecmascript-basic", "-version","3","-l", "ecmascript", "-debug"};
 		String resultFilename = runTest(args,"useEcmaScript");
-		assertTrue("Invalid Java version",FileUtil.findPatternInFile(new File(resultFilename), "Using Java version: EcmaScript 3"));
+		assertTrue("Invalid Java version",FileUtil.findPatternInFile(new File(resultFilename), "Using Ecmascript version: Ecmascript 3"));
 	}
-	
-	private String runTest(String[] args, String testname) {	
+
+	private String runTest(String[] args, String testname) {
 		String filename = TEST_OUPUT_DIRECTORY + testname + ".txt";
 		long start = System.currentTimeMillis();
 		createTestOutputFile(filename);
@@ -92,13 +93,13 @@ public class CLITest {
 			PMD.main(args);
 		} catch (Exception e) {
 			e.printStackTrace();
-			fail("Exception occurs while running PMD CLI with following args:" + args);			
-		}		
+			fail("Exception occurs while running PMD CLI with following args:" + args);
+		}
 	}
-	
+
 	private void checkStatusCode() {
-		int statusCode = Integer.valueOf(System.getProperty(PMD.STATUS_CODE_PROPERTY));
+		int statusCode = Integer.valueOf(System.getProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY));
 		if ( statusCode > 0 )
-			fail("PMD failed with status code:" + statusCode);		
+			fail("PMD failed with status code:" + statusCode);
 	}
 }

@@ -25,14 +25,14 @@ import net.sourceforge.pmd.lang.xml.XmlHandler;
  * <p>
  * The following are key components of a LanguageVersion in PMD:
  * <ul>
- * 	<li>Language - The Language with which this version is associated</li>
- * 	<li>Short name - The common short form of the Language</li>
- * 	<li>Terse name - The shortest and simplest possible form of the Language
- * 		name, generally used for Rule configuration</li>
- * 	<li>Extensions - File extensions associated with the Language</li>
- * 	<li>Rule Chain Visitor - The RuleChainVisitor implementation used for this
- * 		Language</li>
- * 	<li>Versions - The LanguageVersions associated with the Language</li>
+ *     <li>Language - The Language with which this version is associated</li>
+ *     <li>Short name - The common short form of the Language</li>
+ *     <li>Terse name - The shortest and simplest possible form of the Language
+ *         name, generally used for Rule configuration</li>
+ *     <li>Extensions - File extensions associated with the Language</li>
+ *     <li>Rule Chain Visitor - The RuleChainVisitor implementation used for this
+ *         Language</li>
+ *     <li>Versions - The LanguageVersions associated with the Language</li>
  * </ul>
  *
  * @see LanguageVersion
@@ -75,30 +75,30 @@ public enum LanguageVersion {
      * version for the Language, otherwise this is not the default version.
      */
     private LanguageVersion(Language language, String version, LanguageVersionHandler languageVersionHandler,
-	    boolean defaultVersion) {
-	if (language == null) {
-	    throw new IllegalArgumentException("Language must not be null.");
-	}
-	if (version == null) {
-	    throw new IllegalArgumentException("Version must not be null.");
-	}
-	this.language = language;
-	this.version = version;
-	this.languageVersionHandler = languageVersionHandler;
-	this.defaultVersion = defaultVersion;
+        boolean defaultVersion) {
+    if (language == null) {
+        throw new IllegalArgumentException("Language must not be null.");
+    }
+    if (version == null) {
+        throw new IllegalArgumentException("Version must not be null.");
+    }
+    this.language = language;
+    this.version = version;
+    this.languageVersionHandler = languageVersionHandler;
+    this.defaultVersion = defaultVersion;
 
-	// Sanity check: There can only be a single default version per Language
-	if (defaultVersion) {
-	    for (LanguageVersion languageVersion : language.getVersions()) {
-		if (languageVersion.isDefaultVersion()) {
-		    throw new IllegalArgumentException(languageVersion.getLanguage() + " already has default "
-			    + languageVersion + ", not " + version);
-		}
-	    }
-	}
-	language.getVersions().add(this);
-	// Make sure they are sorted (likely already are due to enum initialization order, but just in case)
-	Collections.sort(language.getVersions());
+    // Sanity check: There can only be a single default version per Language
+    if (defaultVersion) {
+        for (LanguageVersion languageVersion : language.getVersions()) {
+        if (languageVersion.isDefaultVersion()) {
+            throw new IllegalArgumentException(languageVersion.getLanguage() + " already has default "
+                + languageVersion + ", not " + version);
+        }
+        }
+    }
+    language.getVersions().add(this);
+    // Make sure they are sorted (likely already are due to enum initialization order, but just in case)
+    Collections.sort(language.getVersions());
     }
 
     /**
@@ -106,7 +106,7 @@ public enum LanguageVersion {
      * @return The Language for this LanguageVersion.
      */
     public Language getLanguage() {
-	return language;
+    return language;
     }
 
     /**
@@ -114,7 +114,7 @@ public enum LanguageVersion {
      * @return The version String for this LanguageVersion.
      */
     public String getVersion() {
-	return version;
+    return version;
     }
 
     /**
@@ -123,7 +123,7 @@ public enum LanguageVersion {
      * @return The name of this LanguageVersion.
      */
     public String getName() {
-	return version.length() > 0 ? language.getName() + ' ' + version : language.getName();
+    return version.length() > 0 ? language.getName() + ' ' + version : language.getName();
     }
 
     /**
@@ -132,7 +132,7 @@ public enum LanguageVersion {
      * @return The short name of this LanguageVersion.
      */
     public String getShortName() {
-	return version.length() > 0 ? language.getShortName() + ' ' + version : language.getShortName();
+    return version.length() > 0 ? language.getShortName() + ' ' + version : language.getShortName();
     }
 
     /**
@@ -141,7 +141,7 @@ public enum LanguageVersion {
      * @return The terse name of this LanguageVersion.
      */
     public String getTerseName() {
-	return version.length() > 0 ? language.getTerseName() + ' ' + version : language.getTerseName();
+    return version.length() > 0 ? language.getTerseName() + ' ' + version : language.getTerseName();
     }
 
     /**
@@ -149,7 +149,7 @@ public enum LanguageVersion {
      * @return The LanguageVersionHandler for this LanguageVersion.
      */
     public LanguageVersionHandler getLanguageVersionHandler() {
-	return languageVersionHandler;
+    return languageVersionHandler;
     }
 
     /**
@@ -158,7 +158,7 @@ public enum LanguageVersion {
      * <code>false</code> otherwise.
      */
     public boolean isDefaultVersion() {
-	return defaultVersion;
+    return defaultVersion;
     }
 
     /**
@@ -166,7 +166,7 @@ public enum LanguageVersion {
      */
     @Override
     public String toString() {
-	return "LanguageVersion[" + language.getName() + " " + version + ']';
+    return "LanguageVersion[" + language.getName() + " " + version + ']';
     }
 
     /**
@@ -177,12 +177,12 @@ public enum LanguageVersion {
      * no LanguageVersion with this terse name.
      */
     public static LanguageVersion findByTerseName(String terseName) {
-	for (LanguageVersion languageVersion : LanguageVersion.values()) {
-	    if (terseName.equals(languageVersion.getTerseName())) {
-		return languageVersion;
-	    }
-	}
-	return null;
+    for (LanguageVersion languageVersion : LanguageVersion.values()) {
+        if (terseName.equals(languageVersion.getTerseName())) {
+        return languageVersion;
+        }
+    }
+    return null;
     }
 
 
@@ -193,15 +193,14 @@ public enum LanguageVersion {
      * @return A list of versions associated with the terse name.
      */
     public static List<LanguageVersion> findVersionsForLanguageTerseName(String languageTerseName) {
-	List<LanguageVersion> versionsAvailable = new ArrayList<LanguageVersion>(0);
-	for (LanguageVersion languageVersion : LanguageVersion.values()) {
-	    if (languageVersion.getLanguage().getTerseName().equals(languageTerseName)) {
-		versionsAvailable.add(languageVersion);
-	    }
-	}
-	return versionsAvailable;
+        List<LanguageVersion> versionsAvailable = new ArrayList<LanguageVersion>(0);
+        for (LanguageVersion languageVersion : LanguageVersion.values()) {
+            if (languageVersion.getLanguage().getTerseName().equals(languageTerseName)) {
+            versionsAvailable.add(languageVersion);
+            }
+        }
+        return versionsAvailable;
     }
-
 
     /**
      * Return a comma-separated list of LanguageVersion terse names.
@@ -210,16 +209,16 @@ public enum LanguageVersion {
      */
     public static String commaSeparatedTerseNames(List<LanguageVersion> languageVersions) {
 
-    	if (languageVersions == null || languageVersions.isEmpty()) {
-    		return "";
-    	}
+        if (languageVersions == null || languageVersions.isEmpty()) {
+            return "";
+        }
 
-    	StringBuilder builder = new StringBuilder();
-    	builder.append(languageVersions.get(0).getTerseName());
-    	for (int i=1; i<languageVersions.size(); i++) {
-    		builder.append(", ").append(languageVersions.get(i).getTerseName());
-    	}
-    	return builder.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append(languageVersions.get(0).getTerseName());
+        for (int i=1; i<languageVersions.size(); i++) {
+            builder.append(", ").append(languageVersions.get(i).getTerseName());
+        }
+        return builder.toString();
     }
 
     /**
@@ -228,6 +227,6 @@ public enum LanguageVersion {
      * @return the proper instance of LanguageVersion
      */
     public static LanguageVersion getDefaultVersion() {
-	return LanguageVersion.JAVA_15;
+        return LanguageVersion.JAVA_15;
     }
 }

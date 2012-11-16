@@ -8,11 +8,11 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -22,23 +22,16 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "xml";
 
-    public static final String ENCODING = "encoding";
+    public static final StringProperty ENCODING = new StringProperty("encoding", "XML encoding format, defaults to UTF-8.", "UTF-8", 0);
 
-    // FIXME - hardcoded character encoding, booooooo
-    protected String encoding = "UTF-8";
-
-    public XMLRenderer(Properties properties) {
-		super(NAME, "XML format.", properties);
-		defineProperty(ENCODING, "XML encoding format, defaults to UTF-8.");
-	
-		if (properties.containsKey(ENCODING)) {
-		    encoding = properties.getProperty(ENCODING);
-		}
+    public XMLRenderer() {
+		super(NAME, "XML format.");
+		definePropertyDescriptor(ENCODING);
     }
 
     public XMLRenderer(String encoding) {
-    	this(new Properties());
-    	this.encoding = encoding;
+	this();
+	setProperty(ENCODING, encoding);
     }
 
     public String defaultFileExtension() { return "xml"; }
@@ -48,6 +41,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
      */
     @Override
     public void start() throws IOException {
+		String encoding = getProperty(ENCODING);
+
 		Writer writer = getWriter();
 		StringBuilder buf = new StringBuilder(500);
 		buf.append("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>").append(PMD.EOL);

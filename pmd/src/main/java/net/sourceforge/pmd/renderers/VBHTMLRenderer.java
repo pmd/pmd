@@ -6,7 +6,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -20,8 +19,8 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "vbhtml";
 
-    public VBHTMLRenderer(Properties properties) {
-    	super(NAME, "Vladimir Bossicard HTML format.", properties);
+    public VBHTMLRenderer() {
+    	super(NAME, "Vladimir Bossicard HTML format.");
     }
 
     public String defaultFileExtension() { return "vb.html"; }

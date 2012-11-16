@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,7 +21,6 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 import org.junit.Test;
@@ -120,7 +118,7 @@ public class XMLRendererTest extends RuleTst {
     }
 
     private Element parseRootElement(Report rpt) throws SAXException, IOException, ParserConfigurationException {
-	String result = ReportTest.render(new XMLRenderer(new Properties()), rpt);
+	String result = ReportTest.render(new XMLRenderer(), rpt);
         return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(result))).getDocumentElement();
     }
 
