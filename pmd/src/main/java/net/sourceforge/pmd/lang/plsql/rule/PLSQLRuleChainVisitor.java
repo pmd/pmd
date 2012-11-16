@@ -15,8 +15,10 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 
 public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
    private final static Logger LOGGER = Logger.getLogger(PLSQLRuleChainVisitor.class.getName()); 
+   private final static String CLASS_PATH = PLSQLRuleChainVisitor.class.getName(); 
 
 	protected void indexNodes(List<Node> nodes, RuleContext ctx) {
+                LOGGER.entering(CLASS_PATH,"indexNodes");
 		PLSQLParserVisitor plsqlParserVistor = new PLSQLParserVisitorAdapter() {
 			// Perform a visitation of the AST to index nodes which need
 			// visiting by type
@@ -29,18 +31,22 @@ public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
 		for (int i = 0; i < nodes.size(); i++) {
 			plsqlParserVistor.visit((ASTInput)nodes.get(i), ctx);
 		}
+                LOGGER.exiting(CLASS_PATH,"indexNodes");
 	}
 
 	protected void visit(Rule rule, Node node, RuleContext ctx) {
+                LOGGER.entering(CLASS_PATH,"visit");
 		// Rule better either be a PLSQLParserVisitor, or a XPathRule
-		LOGGER.finest("Rule="+rule);
-		LOGGER.finest("Node="+node);
-		LOGGER.finest("RuleContext="+ctx);
-		LOGGER.finest("Rule Classname="+rule.getClass().getCanonicalName());
+		LOGGER.fine("Rule="+rule);
+		LOGGER.fine("Node="+node);
+		LOGGER.fine("RuleContext="+ctx);
+		LOGGER.fine("Rule Classname="+rule.getClass().getCanonicalName());
+		LOGGER.fine("Rule Name="+rule.getName());
 		if (rule instanceof XPathRule) {
 			((XPathRule)rule).evaluate(node, ctx);
 		} else {
 			((SimpleNode)node).jjtAccept((PLSQLParserVisitor)rule, ctx);
 		}
+                LOGGER.exiting(CLASS_PATH,"visit");
 	}
 }
