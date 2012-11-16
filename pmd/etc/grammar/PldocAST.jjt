@@ -111,7 +111,16 @@ public class PLSQLParser {
     {
       //Set the Nodes' beginLine,beginColumn,endLine,endColumn fields from the generic 
         Token firstToken = ((SimpleNode) n).jjtGetFirstToken();
+        /*
+         The generated code sets the last token after closing the scope, so getLastToken 
+         cannot be used to identify the last Token: use getToken(0) instead. 
+         <code>
+	      jjtreeCloseNodeScope(jjtn000);
+	      jjtn000.jjtSetLastToken(getToken(0));
+         </code>
         Token lastToken  = ((SimpleNode) n).jjtGetLastToken();
+        */
+        Token lastToken  = getToken(0);
 
         ((SimpleNode) n).testingOnly__setBeginLine(firstToken.beginLine);
         ((SimpleNode) n).testingOnly__setBeginColumn(firstToken.beginColumn);
@@ -1938,6 +1947,18 @@ ASTPrimarySuffix PrimarySuffix() :
   //["@" dblink = qualifiedName() {sb.append("@"); sb.append(dblink); } ]
   | //Possible dblink 
   ("@") {sb.append("@");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.toString()) ; }
+  | //Possible Date Time Expression - Bug 3553725  
+  ( <AT> {sb.append(" "); sb.append(token.image.toUpperCase());}  
+          (  <LOCAL> {sb.append(" "); sb.append(token.image.toUpperCase());}
+            | ( <TIME> <ZONE> {sb.append(" TIME ZONE");} 
+                ( <DBTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
+		  | <SESSIONTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
+		  | suffixNode = StringLiteral() {sb.append(" "); sb.append(suffixNode.toString());}
+		  | suffixNode = Expression() {sb.append(" "); sb.append(suffixNode.toString());}
+                )
+	      )
+         )   
+  ) 
   |
   ( arguments = Arguments() ) {sb.append(arguments) ; }
   )

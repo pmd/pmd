@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.plsql;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserTokenManager;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleCharStream;
 
