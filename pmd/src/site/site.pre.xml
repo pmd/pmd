@@ -77,7 +77,7 @@
         <item href="/pmd-release-process.html" name="PMD Release Process"/>
     </menu>
     <menu name="For example">
-      <item href="http://pmd.sourceforge.net/scoreboard.html" name="Run PMD on a Sourceforge project"/>
+      <item href="../scoreboard.html" name="Run PMD on a Sourceforge project"/>
     </menu>
     <menu name="Misc.">
       <item href="http://webhostinggeeks.com/science/xpath-sourceforge-ka" name="XPath tutorial (Gregorian)"/>

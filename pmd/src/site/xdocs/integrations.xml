@@ -10,12 +10,12 @@
       <subsection name="Summary">
 <table>
   <tr><td><b>IDE</b></td>
-      <td><b>SVN Module</b></td>
+      <td><b>Source Code</b></td>
       <td><b>Maintainers</b></td>
       </tr>
 
     <tr><td><a href="#bluej">BlueJ</a></td>
-        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-bluej/">pmd-bluej</a></td>
+        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
@@ -25,17 +25,17 @@
     </tr>
 
   <tr><td><a href="#eclipse">Eclipse</a></td>
-      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-eclipse-plugin/">pmd-eclipse</a></td>
+      <td><a href="https://github.com/pmd/pmd/tree/master/pmd-eclipse-plugin/">pmd-eclipse</a></td>
       <td>Philippe Herlin</td>
   </tr>
 
   <tr><td><a href="#emacs">Emacs</a></td>
-      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-emacs/">pmd-emacs</a></td>
+      <td><a href="https://github.com/pmd/pmd/tree/master/pmd-emacs/">pmd-emacs</a></td>
       <td>Nascif Abousalh Neto</td>
   </tr>
 
     <tr><td><a href="#gel">Gel</a></td>
-        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-gel/">pmd-gel</a></td>
+        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-gel/">pmd-gel</a></td>
         <td>Andrei Lumianski</td>
     </tr>
 
@@ -50,7 +50,7 @@
     </tr>
 
   <tr><td><a href="#jbuilder">JBuilder</a></td>
-      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jbuilder/">pmd-jbuilder</a></td>
+      <td><a href="https://github.com/pmd/pmd/tree/master/pmd-jbuilder/">pmd-jbuilder</a></td>
       <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
   </tr>
 
@@ -60,23 +60,23 @@
     </tr>
 
     <tr><td><a href="#jdeveloper">JDeveloper</a></td>
-        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jdeveloper/">pmd-jdeveloper</a></td>
+        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-jdeveloper/">pmd-jdeveloper</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
     <tr><td><a href="#jedit">JEdit</a></td>
-        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jedit/">pmd-jedit</a></td>
+        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-jedit/">pmd-jedit</a></td>
         <td>Jiger Patel</td>
     </tr>
 
     <tr><td><a href="#maven">Maven</a></td>
         <td>N/A</td>
-        <td><a href="http://blogs.codehaus.org/people/vmassol/">Vincent Massol</a></td>
+        <td>N/A</td>
     </tr>
 
     <tr><td><a href="#maven2">Maven 2</a></td>
         <td>N/A</td>
-        <td><a href="http://blogs.codehaus.org/people/vmassol/">Vincent Massol</a></td>
+        <td><a href="http://maven.apache.org/plugins/maven-pmd-plugin/">apache.org / maven</a></td>
     </tr>
 
   <tr><td><a href="#netbeans">NetBeans</a></td>
@@ -107,24 +107,24 @@
         <a name="bluej"/><subsection name="BlueJ">
   <p>
   <a href="http://bluej.org/">BlueJ</a> is a teaching IDE.  To install the PMD extension for BlueJ, download
- the <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=169167">PMDExtension jar file</a>
+ the <a href="http://sourceforge.net/projects/pmd/files/pmd-bluej/pmd-bluej-1.0/">PMDExtension jar file</a>
  and place it in your <code>bluej/lib/extensions/</code> directory.
   </p>
         </subsection>
 
 
         <a name="codeguide"/><subsection name="Code Guide">
-  <p>Here's how to set up PMD with Omnicore's CodeGuide (taken from <a href="http://sourceforge.net/forum/forum.php?thread_id=1098291&amp;forum_id=188193">here</a>):
+  <p>Here's how to set up PMD with Omnicore's CodeGuide:
  </p>
   <ul>
-      <li>Download the PMD zip file from <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=51441">here</a></li>
+      <li>Download the PMD zip file from <a href="http://sourceforge.net/projects/pmd/files/pmd/">here</a></li>
       <li>Unpack the zip file to your local disk. I put it in /Applications/</li>
       <li>Add the following tool to CodeGuide (Tools->Configure Tools->New):</li>
       <ul>
           <li>Name: PMD </li>
           <li>Kind: Tool for directories</li>
-          <li>Executable: /Applications/pmd-@VERSION@/bin/pmd.sh</li>
-          <li>Arguments: $DIRECTORY_PATH$ emacs $USER_ARGUMENTS$</li>
+          <li>Executable: /Applications/pmd-bin-@VERSION@/bin/run.sh</li>
+          <li>Arguments: pmd -d $DIRECTORY_PATH$ -f emacs $USER_ARGUMENTS$</li>
       </ul>
   </ul>
   <p>Now you can right click on a source directory, select the PMD tool and a dialog box will appear.
@@ -142,16 +142,16 @@
 
 
       <a name="eclipse"/><subsection name="Eclipse">
-<P>To install the PMD plugin for Eclipse:</P>
+<p>To install the PMD plugin for Eclipse:</p>
 <ul>
     <li>Start Eclipse and open a project</li>
     <li>Select "Help"->"Software Updates"->"Find and Install"</li>
     <li>Click "Next", then click "New remote site"</li>
-    <li>Enter "PMD" into the Name field and "http://pmd.sf.net/eclipse" into the URL field</li>
+    <li>Enter "PMD" into the Name field and <a href="http://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/">http://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/</a> into the URL field</li>
     <li>Click through the rest of the dialog boxes to install the plugin</li>
 </ul>
-<P>Alternatively, you can download the latest zip file and follow the above procedures
-except for using "New local site" and browsing to the downloaded zip file.</P>
+<p>Alternatively, you can download the latest zip file and follow the above procedures
+except for using "New local site" and browsing to the downloaded zip file.</p>
 <p>
 To configure PMD, select "Windows"->"Preferences", then select PMD.
 </p>
@@ -242,7 +242,7 @@ try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.e
 <p>
 To enable this OpenTool in JBuilder:</p>
  <ul>
-     <li>Download the <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=53028">latest binary release</a>.</li>
+     <li>Download the <a href="http://sourceforge.net/projects/pmd/files/pmd/">latest binary release</a>.</li>
      <li>Unzip it into your <code>jbuilder/lib/ext/</code> directory</li>
      <li>Restart JBuilder</li>
  </ul>
@@ -293,17 +293,17 @@ a Java source file or a .jpr file (i.e., a project file) and
 select PMD.  Any rule violations should show up in a
 LogWindow at the bottom of the screen.
   </p>
-           <P>To install the extension for JDeveloper 10.1.3, use JDeveloper's built in "update center"
+           <p>To install the extension for JDeveloper 10.1.3, use JDeveloper's built in "update center"
                functionality. Fire up JDeveloper, click "Help", click "Check for Updates",
  then click "Add" to add a new update center and enter:
-<UL>
-<LI>Name: PMD Update Center</LI>
-<LI>Location: http://pmd.sf.net/center.xml</LI>
-</UL>
-</P>
-            <P>Click your way through the ensuing dialogs and you'll install the plugin.  Note
+<ul>
+<li>Name: PMD Update Center</li>
+<li>Location: <a href="http://pmd.sourceforge.net/center.xml">http://pmd.sourceforge.net/center.xml</a></li>
+</ul>
+</p>
+            <p>Click your way through the ensuing dialogs and you'll install the plugin.  Note
             that I've set up the plugin for the latest JDeveloper 10.1.3 EA, so if you're using an earlier
-            preview release of 10.1.3 it might not work.</P>
+            preview release of 10.1.3 it might not work.</p>
         </subsection>
 
 
@@ -322,11 +322,11 @@ selecting the "Ask for Directory" checkbox.</p>
 
 
         <a name="maven"/><subsection name="Maven">
-<p>Please see <a href="http://maven.apache.org/reference/plugins/pmd/">the Maven plugins web site</a> for more information.</p>
+<p>Please see <a href="http://maven.apache.org/maven-1.x/plugins/pmd/">the Maven plugins web site</a> for more information.</p>
 </subsection>
 
         <a name="maven2"/><subsection name="Maven 2">
-<p>Please see <a href="http://maven.apache.org/plugins/maven-pmd-plugin/project-info.html">the Maven 2 plugin
+<p>Please see <a href="http://maven.apache.org/plugins/maven-pmd-plugin/index.html">the Maven 2 plugin
  web site</a> for more information.  Also, the bug tracker for this plugin is <a href="http://jira.codehaus.org/browse/MPMD">here</a>.</p>
 </subsection>
 
@@ -337,60 +337,60 @@ selecting the "Ask for Directory" checkbox.</p>
 
 
         <a name="textpad"/><subsection name="TextPad">
-    <H5><U>Assumptions</U></H5>
-    <P><UL>
-        <LI>The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed into your machine, and exists in <CODE>D:\java\jdk_142\</CODE>.  This means that <CODE>D:\java\jdk_142\bin\java.exe</CODE> exists.</LI>
-        <LI>PMD version 5.0 exists in <CODE>D:\java\pmd-@VERSION@\</CODE>.  This means that <CODE>D:\java\pmd-@VERSION@\lib\pmd-@VERSION@.jar</CODE> (among other jar files in the same directory) exist.</LI>
-    </UL></P>
-    <H5><U>To integrate into TextPad</U></H5>
-    <P><OL>
-        <LI>In the <B>Configure</B> menu, choose <B>Preferences...</B>.  This opens the Preferences dialog</LI>
-        <LI>In the left pane of the Preferences dialog, choose the <B>Tools</B> branch by clicking on the <I>word</I> "Tools".</LI>
-        <LI>On the far right of the dialog, click on the <B>Add</B> button, and then select <B>Program...</B> from the drop-down.  This opens the standard Windows Open File dialog.</LI>
-        <LI>Type <CODE>D:\java\jdk_142\bin\java.exe</CODE> and click the <B>Open</B> button.  In the center pane of the Preferences dialog, an item "Java" has now been added, and is currently selected.</LI>
-        <LI>Click the word Java, which makes the word editable.  Select the entire word, and type "PMD directory".  Press Return</LI>
-        <LI>Repeat steps three through five, but type "PMD file", instead of "PMD directory".</LI>
-        <LI>Click <B>Apply</B>.</LI>
-        <LI>Expand the <B>Tools</B> branch (if not already) by clicking on the '<CODE>+</CODE>' directly to its left.</LI>
-        <LI>In the expanded list, select <B>PMD directory</B>.  This changes the right side of this dialog to the "tool" form.</LI>
-        <LI>In the "tool" form, enter these parameters:<UL>
-            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-@VERSION@\lib\pmd-@VERSION@.jar;D:\java\pmd-@VERSION@\lib\asm-3.2.jar;D:\java\pmd-@VERSION@\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
-            <BR/>(<I>Eliminate the spaces following '<CODE>jaxen-1.1.1.jar;</CODE>' and '<CODE>asm-3.2.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
-            <LI><B>Initial Folder:</B>  <CODE>$FileDir</CODE></LI>
-            <LI><B>Save all documents first:</B>  <CODE>Checked</CODE></LI>
-            <LI><B>Capture output:</B>  <CODE>Checked</CODE></LI>
-            <LI><B><I>All other checkboxes</I>:</B>  Unchecked</LI>
-            <LI><B>Regular expression to match output:</B>  <CODE>^\([^(]+\)(\([0-9]+\),</CODE></LI>
-            <LI><B>Registers/File:</B> <CODE>1</CODE></LI>
-            <LI><B>Registers/Line:</B> <CODE>2</CODE></LI>
-        </UL></LI>
-        <LI>In the expanded list, select <B>PMD file</B>.</LI>
-        <LI>In the "tool" form, enter the same parameters as above, except replace '<CODE>$FileDir</CODE>' with '<CODE>$File</CODE>', in the Parameters textbox.</LI>
-        <LI>To save your work (truly, given a quirk of TextPad), click on <B>OK</B>, which closes the Preferences dialog.  Restart TextPad and re-open the Preferences dialog.</LI>
-        <LI>Go back to both the "PMD directory" and "PMD file" Tools branches, and replace '<CODE>E:\directory\my_pmd_ruleset.xml</CODE>' with the ruleset of your choice.  For example, <CODE>basic</CODE>.</LI>
-        <LI>Go to the <B>Keyboard</B> branch in the left pane (above <B>Tools</B>), which changes the right side to the "keyboard configuration" form.</LI>
-        <LI>In the <B>Categories</B> list box, select <B>Tools</B>.</LI>
-        <LI>In the <B>Command</B> list box, select <B>PMD directory</B>.</LI>
-        <LI>Put your cursor into the <B>Press new shortcut key</B>, and type your desired key command.  For example <CODE>Ctrl+Page Up</CODE></LI>
-        <LI>Click <B>Assign</B>.</LI>
-        <LI>In the <B>Command</B> list box, select <B>PMD file</B>.</LI>
-        <LI>Put your cursor into the <B>Press new shortcut key</B>, and type your desired key command.  For example <CODE>Ctrl+Page Down</CODE></LI>
-        <LI>Click <B>Assign</B>.</LI>
-        <LI>Save your work again:  Click on <B>OK</B>, which closes the Preferences dialog, and then restart TextPad.</LI>
-    </OL></P>
-    <H5><U>To run PMD against a single Java file</U></H5>
-    <P><OL>
-        <LI>In TextPad, open any Java file.</LI>
-        <LI>Click <CODE>Ctrl+Page Down</CODE>.  This opens an empty, read-only text document (titled "Command Results").  When PMD completes its analysis, this document will be populated with a listing of violated rules (or "Command completed successfully" indicating no violations).</LI>
-        <LI>Double click any line to go to it.</LI>
-    </OL></P>
-    <H5><U>To run PMD against a directory of Java files</U></H5>
-    <P><OL>
-        <LI>In TextPad, open <I>any</I> file in the <I>root</I> directory you wish to analyze.  Unfortunately, you'll need to create a dummy file, if no file exists there.</LI>
-        <LI>Click <CODE>Ctrl+Page Up</CODE>.  This opens an empty, read-only text document (titled "Command Results").  When PMD completes its analysis, this document will be populated with a listing of violated rules (or "Command completed successfully" indicating no violations).</LI>
-        <LI>Double click any line to go to it.</LI>
-    </OL></P>
-    <P><I>Because directory analysis may take a while, you may choose to cancel this operation.  Do so by closing the (blank Command Results) document, and then confirming that, "yes, I do really want to exit the tool".</I></P>
+    <h5><u>Assumptions</u></h5>
+    <p><ul>
+        <li>The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed into your machine, and exists in <code>D:\java\jdk_142\</code>.  This means that <code>D:\java\jdk_142\bin\java.exe</code> exists.</li>
+        <li>PMD version 5.0 exists in <code>D:\java\pmd-bin-@VERSION@\</code>.  This means that <code>D:\java\pmd-bin-@VERSION@\lib\pmd-@VERSION@.jar</code> (among other jar files in the same directory) exist.</li>
+    </ul></p>
+    <h5><u>To integrate into TextPad</u></h5>
+    <p><ol>
+        <li>In the <b>Configure</b> menu, choose <b>Preferences...</b>.  This opens the Preferences dialog</li>
+        <li>In the left pane of the Preferences dialog, choose the <b>Tools</b> branch by clicking on the <i>word</i> "Tools".</li>
+        <li>On the far right of the dialog, click on the <b>Add</b> button, and then select <b>Program...</b> from the drop-down.  This opens the standard Windows Open File dialog.</li>
+        <li>Type <code>D:\java\jdk_142\bin\java.exe</code> and click the <b>Open</b> button.  In the center pane of the Preferences dialog, an item "Java" has now been added, and is currently selected.</li>
+        <li>Click the word Java, which makes the word editable.  Select the entire word, and type "PMD directory".  Press Return</li>
+        <li>Repeat steps three through five, but type "PMD file", instead of "PMD directory".</li>
+        <li>Click <b>Apply</b>.</li>
+        <li>Expand the <b>Tools</b> branch (if not already) by clicking on the '<code>+</code>' directly to its left.</li>
+        <li>In the expanded list, select <b>PMD directory</b>.  This changes the right side of this dialog to the "tool" form.</li>
+        <li>In the "tool" form, enter these parameters:<ul>
+            <li><b>Parameters:</b>  <code>-classpath D:\java\pmd-bin-@VERSION@\lib\pmd-@VERSION@.jar;D:\java\pmd-bin-@VERSION@\lib\asm-3.2.jar;D:\java\pmd-bin-@VERSION@\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d <i><b>$FileDir</b></i> -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug</code>
+            <br/>(<i>Eliminate the spaces following '<code>jaxen-1.1.1.jar;</code>' and '<code>asm-3.2.jar;</code>'.  They are there to prevent the text from exceeding the right side of your screen</i>)</li>
+            <li><b>Initial Folder:</b>  <code>$FileDir</code></li>
+            <li><b>Save all documents first:</b>  <code>Checked</code></li>
+            <li><b>Capture output:</b>  <code>Checked</code></li>
+            <li><b><i>All other checkboxes</i>:</b>  Unchecked</li>
+            <li><b>Regular expression to match output:</b>  <code>^\([^(]+\)(\([0-9]+\),</code></li>
+            <li><b>Registers/File:</b> <code>1</code></li>
+            <li><b>Registers/Line:</b> <code>2</code></li>
+        </ul></li>
+        <li>In the expanded list, select <b>PMD file</b>.</li>
+        <li>In the "tool" form, enter the same parameters as above, except replace '<code>$FileDir</code>' with '<code>$File</code>', in the Parameters textbox.</li>
+        <li>To save your work (truly, given a quirk of TextPad), click on <b>OK</b>, which closes the Preferences dialog.  Restart TextPad and re-open the Preferences dialog.</li>
+        <li>Go back to both the "PMD directory" and "PMD file" Tools branches, and replace '<code>E:\directory\my_pmd_ruleset.xml</code>' with the ruleset of your choice.  For example, <code>basic</code>.</li>
+        <li>Go to the <b>Keyboard</b> branch in the left pane (above <b>Tools</b>), which changes the right side to the "keyboard configuration" form.</li>
+        <li>In the <b>Categories</b> list box, select <b>Tools</b>.</li>
+        <li>In the <b>Command</b> list box, select <b>PMD directory</b>.</li>
+        <li>Put your cursor into the <b>Press new shortcut key</b>, and type your desired key command.  For example <code>Ctrl+Page Up</code></li>
+        <li>Click <b>Assign</b>.</li>
+        <li>In the <b>Command</b> list box, select <b>PMD file</b>.</li>
+        <li>Put your cursor into the <b>Press new shortcut key</b>, and type your desired key command.  For example <code>Ctrl+Page Down</code></li>
+        <li>Click <b>Assign</b>.</li>
+        <li>Save your work again:  Click on <b>OK</b>, which closes the Preferences dialog, and then restart TextPad.</li>
+    </ol></p>
+    <h5><u>To run PMD against a single Java file</u></h5>
+    <p><ol>
+        <li>In TextPad, open any Java file.</li>
+        <li>Click <code>Ctrl+Page Down</code>.  This opens an empty, read-only text document (titled "Command Results").  When PMD completes its analysis, this document will be populated with a listing of violated rules (or "Command completed successfully" indicating no violations).</li>
+        <li>Double click any line to go to it.</li>
+    </ol></p>
+    <h5><u>To run PMD against a directory of Java files</u></h5>
+    <p><ol>
+        <li>In TextPad, open <i>any</i> file in the <i>root</i> directory you wish to analyze.  Unfortunately, you'll need to create a dummy file, if no file exists there.</li>
+        <li>Click <code>Ctrl+Page Up</code>.  This opens an empty, read-only text document (titled "Command Results").  When PMD completes its analysis, this document will be populated with a listing of violated rules (or "Command completed successfully" indicating no violations).</li>
+        <li>Double click any line to go to it.</li>
+    </ol></p>
+    <p><i>Because directory analysis may take a while, you may choose to cancel this operation.  Do so by closing the (blank Command Results) document, and then confirming that, "yes, I do really want to exit the tool".</i></p>
 </subsection>
 
 

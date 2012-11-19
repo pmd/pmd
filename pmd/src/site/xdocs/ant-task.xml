@@ -90,11 +90,11 @@
        </tr>
        <tr>
            <td>linkPrefix</td>
-           <td>Used for linking to online HTMLized source (like <a href="http://pmd.sourceforge.net/xref/index.html">this</a>).  See example below.</td>
+           <td>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html">this</a>).  See example below.</td>
        </tr>
        <tr>
            <td>linePrefix</td>
-           <td>Used for linking to online HTMLized source (like <a href="http://pmd.sourceforge.net/xref/index.html#line102">this</a>).  See example below.</td>
+           <td>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html#102">this</a>).  See example below.</td>
        </tr>
  </table>
 

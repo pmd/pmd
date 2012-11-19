@@ -13,9 +13,9 @@
       <p>Want to know what's coming ? Or, better, wanna contribute ? Here is the page listing what are our plans - when we have ones,
           for the future of PMD. It also give you hints at part of the code we would like to clean - that you may want to clean to
           contribute to the project !</p>
-      <p>Of course, an easy way to contribute is too check out the <a href="https://sourceforge.net/tracker/?group_id=56262&amp;atid=479921">
+      <p>Of course, an easy way to contribute is too check out the <a href="http://sourceforge.net/p/pmd/bugs/">
          bug tracker</a> and see if you can fix some issues - some could be quite easy, we simply have not the time to look at them all !</p>
-      <p>At last, if you want to contribute, register on the <a href="https://sourceforge.net/mailarchive/forum.php?forum_name=pmd-devel">pmd-devel</a>
+      <p>At last, if you want to contribute, register on the <a href="http://sourceforge.net/mailarchive/forum.php?forum_name=pmd-devel">pmd-devel</a>
           mailing list, and come discuss with us !</p>
   	<subsection name="Roadmap">
         <p>This roadmap contains all the different 'workshops' PMD's developers are working right now.
@@ -94,7 +94,7 @@
   mapping is not 1-1, but 1-many, we'd need to deal with this accordingly.</li>
 
 <li>Additional changes to Rule organization within RuleSets as discussed on
-    <a href="http://sourceforge.net/forum/forum.php?thread_id=1323593&amp;forum_id=188194">
+    <a href="http://sourceforge.net/p/pmd/discussion/188194/thread/b840897c">
         this forum thread</a>.</li>
 <li>Figure out a way to allow Rules to deal with parentheses and blocks, which
   introduce certain repetitive (and generally ignorable for most Rules)
