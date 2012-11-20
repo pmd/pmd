@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 
@@ -261,6 +262,31 @@ public Object visit(ASTPackageBody node, Object data) {
   }
 
   @Override
+public Object visit(ASTTriggerUnit node, Object data) {
+    LOGGER.entering(CLASS_PATH,"visit(ASTTriggerUnit)");
+
+    entryStack.push( new Entry( node ) );
+    super.visit( node, data );
+    Entry classEntry = entryStack.pop();
+    LOGGER.finest("ASTTriggerUnit: ComplexityAverage==" + classEntry.getComplexityAverage() 
+                   +", highestDecisionPoint=" 
+                   + classEntry.highestDecisionPoints
+                 );
+    if ( showClassesComplexity ) {
+	    if ( classEntry.getComplexityAverage() >= reportLevel
+	        || classEntry.highestDecisionPoints >= reportLevel ) {
+	      addViolation( data, node, new String[] {
+	          "class",
+	          node.getImage(),
+	          classEntry.getComplexityAverage() + " (Highest = "
+	              + classEntry.highestDecisionPoints + ')' } );
+	    }
+    }
+    LOGGER.exiting(CLASS_PATH,"visit(ASTTriggerUnit)");
+    return data;
+  }
+
+@Override
 public Object visit(ASTProgramUnit node, Object data) {
     LOGGER.entering(CLASS_PATH,"visit(ASTProgramUnit)");
     entryStack.push( new Entry( node ) );
@@ -273,13 +299,29 @@ public Object visit(ASTProgramUnit node, Object data) {
     if ( showMethodsComplexity ) {
 	    //Entry methodEntry = entryStack.pop();
 	    int methodDecisionPoints = methodEntry.decisionPoints;
-	    Entry classEntry = entryStack.peek();
-	    classEntry.methodCount++;
-	    classEntry.bumpDecisionPoints( methodDecisionPoints );
+            if ( 
+                    null != node.getFirstParentOfType(ASTPackageBody.class) //PackageBody (including Object Type Body)
+                    || null != node.getFirstParentOfType(ASTTriggerUnit.class) //Trigger of any form
+                    //@TODO || null != node.getFirstParentOfType(ASTProgramUnit.class) //Another Procedure
+                    //@TODO || null != node.getFirstParentOfType(ASTTypeMethod.class) //Another Type method
+               )
+            {
+              /* @TODO This does not cope with nested methods 
+               * We need the outer most 
+               * ASTPackageBody
+               * ASTTriggerUni
+               * ASTProgramUnit
+               * ASTTypeMethod
+               * 
+               */
+              Entry classEntry = entryStack.peek();
+              classEntry.methodCount++;
+              classEntry.bumpDecisionPoints( methodDecisionPoints );
 
-	    if ( methodDecisionPoints > classEntry.highestDecisionPoints ) {
-	      classEntry.highestDecisionPoints = methodDecisionPoints;
-	    }
+              if ( methodDecisionPoints > classEntry.highestDecisionPoints ) {
+                classEntry.highestDecisionPoints = methodDecisionPoints;
+              }
+            }
 
 	    ASTMethodDeclarator methodDeclarator = null;
 	    for ( int n = 0; n < node.jjtGetNumChildren(); n++ ) {
@@ -300,26 +342,35 @@ public Object visit(ASTProgramUnit node, Object data) {
     return data;
   }
 
-  @Override
-public Object visit(ASTTriggerUnit node, Object data) {
-    LOGGER.entering(CLASS_PATH,"visit(ASTTriggerUnit)");
+@Override
+public Object visit(ASTTypeMethod node, Object data) {
+    LOGGER.entering(CLASS_PATH,"visit(ASTTypeMethod)");
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     Entry methodEntry = entryStack.pop();
-    LOGGER.fine("ASTTriggerUnit: ComplexityAverage==" + methodEntry.getComplexityAverage() 
+    LOGGER.finest("ASTProgramUnit: ComplexityAverage==" + methodEntry.getComplexityAverage() 
                    +", highestDecisionPoint=" 
                    + methodEntry.highestDecisionPoints
                  );
     if ( showMethodsComplexity ) {
 	    //Entry methodEntry = entryStack.pop();
 	    int methodDecisionPoints = methodEntry.decisionPoints;
-	    Entry classEntry = entryStack.peek();
-	    classEntry.methodCount++;
-	    classEntry.bumpDecisionPoints( methodDecisionPoints );
+            if ( 
+               null != node.getFirstParentOfType(ASTPackageBody.class) //PackageBody (including Object Type Body)
+               )
+            {
+              /* @TODO This does not cope with nested methods 
+               * We need the outer most 
+               * ASTPackageBody
+               */
+              Entry classEntry = entryStack.peek();
+              classEntry.methodCount++;
+              classEntry.bumpDecisionPoints( methodDecisionPoints );
 
-	    if ( methodDecisionPoints > classEntry.highestDecisionPoints ) {
-	      classEntry.highestDecisionPoints = methodDecisionPoints;
-	    }
+              if ( methodDecisionPoints > classEntry.highestDecisionPoints ) {
+                classEntry.highestDecisionPoints = methodDecisionPoints;
+              }
+            }
 
 	    ASTMethodDeclarator methodDeclarator = null;
 	    for ( int n = 0; n < node.jjtGetNumChildren(); n++ ) {
@@ -336,9 +387,10 @@ public Object visit(ASTTriggerUnit node, Object data) {
 	            String.valueOf( methodEntry.decisionPoints ) } );
 	      }
     }
-    LOGGER.exiting(CLASS_PATH,"visit(ASTTriggerUnit)");
+    LOGGER.exiting(CLASS_PATH,"visit(ASTTypeMethod)");
     return data;
   }
+
 
   @Override
 public Object visit(ASTTriggerTimingPointSection node, Object data) {

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTElseClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
@@ -105,6 +106,22 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
     }
 
     @Override
+    public Object visit(ASTTypeMethod node, Object data) {
+        LOGGER.entering(CLASS_PATH,"visit(ASTTypeMethod)");
+	int npath = complexityMultipleOf(node, 1, data);
+
+	DataPoint point = new DataPoint();
+	point.setNode(node);
+	point.setScore(1.0 * npath);
+	point.setMessage(getMessage());
+	addDataPoint(point);
+
+        LOGGER.finest("NPath complexity:  " + npath + " for line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        LOGGER.exiting(CLASS_PATH,"visit(ASTTypeMethod)", npath);
+	return Integer.valueOf(npath);
+    }
+
+    @Override
     public Object visit(ASTTriggerUnit node, Object data) {
         LOGGER.entering(CLASS_PATH,"visit(ASTTriggerUnit)");
 	int npath = complexityMultipleOf(node, 1, data);
@@ -174,7 +191,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	}
         */
 
-        /* @TODO Any explicit Elsif clause(s) and Else clause are includde in the list of statements 
+        /* @TODO Any explicit Elsif clause(s) and Else clause are included in the list of statements 
 	// add path for not taking if
 	if (null ==  node.getFirstChildOfType(ASTElsifClause.class) ) // !node.hasElse()!node.hasElse()) 
         {
