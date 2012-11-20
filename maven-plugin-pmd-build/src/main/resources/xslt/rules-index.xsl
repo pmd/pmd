@@ -40,7 +40,7 @@
               <subsection>
                 <xsl:attribute name="name"><xsl:value-of select="@name"/> (<xsl:value-of select="$language"/>)</xsl:attribute>
                 <ul>
-                  <xsl:for-each select="./rule">
+                  <xsl:for-each select="./rule[@name]">
                     <li> <xsl:value-of select="@name"/>: <xsl:value-of select="description"/></li>
                   </xsl:for-each>
                 </ul>
