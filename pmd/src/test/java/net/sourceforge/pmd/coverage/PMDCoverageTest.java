@@ -27,7 +27,7 @@ public class PMDCoverageTest {
 	 */
 	@Test
 	public void testPmdOptions() {
-		runPmd("src/main/java/net/sourceforge/pmd/lang/java/rule/design text rulesets/internal/all-java.xml -version java 1.5 -stress -benchmark");
+		runPmd("-d src/main/java/net/sourceforge/pmd/lang/java/rule/design -f text -R rulesets/internal/all-java.xml -version 1.5 -language java -stress -benchmark");
 	}
 
 	/**
@@ -49,9 +49,6 @@ public class PMDCoverageTest {
 			a[n + 1] = f.getAbsolutePath();
 			args = a;
 
-			File file  = new File("/dev/null");  
-		    PrintStream printStream = new PrintStream(new FileOutputStream(file));
-		    System.setOut(printStream);
 			PMD.run(args);
 
 			// FIXME: check that output doesn't have parsing errors

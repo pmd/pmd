@@ -33,7 +33,7 @@
 		</document>
 	</xsl:template>
 
-	<xsl:template match="rule">
+	<xsl:template match="rule[@name]">
 		<xsl:variable name="rulename" select="@name"/>
 		<xsl:variable name="classname" select="@class"/>
 

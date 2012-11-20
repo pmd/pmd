@@ -5,7 +5,7 @@
         <author email="rpelisse@users.sourceforge.net">Romain Pelisse</author>
         <title>PMD Properties</title>
     </properties>
-
+<body>
 <section name="Informations for PMD developer">
 <p>Some piece of information handy to PMD developers. Clearly not everything, but some useful bits :)</p>
 <subsection name="PMD properties">
@@ -13,39 +13,39 @@
 
 	<p>The subsystem implements the following property constructors with the leading name and description arguments not shown:</p>
 	<ol>
-		<li>BooleanProperty(…, boolean defaultValue, float uiOrder)</li>
-		<li>BooleanProperty(…, boolean[] defaultValues, uiOrder, maxValues) BooleanProperty(…, Boolean[] defaultValues, float uiOrder, int maxValues)</li>
-		<li>IntegerProperty(…, int defaultValue, float uiOrder)</li>
-		<li>IntegerProperty(…, int[]defaultValues, float uiOrder, int maxValues) IntegerProperty(…, Integer[] defaultValues, float uiOrder, int maxValues)</li>
+		<li>BooleanProperty(..., boolean defaultValue, float uiOrder)</li>
+		<li>BooleanProperty(..., boolean[] defaultValues, uiOrder, maxValues) BooleanProperty(..., Boolean[] defaultValues, float uiOrder, int maxValues)</li>
+		<li>IntegerProperty(..., int defaultValue, float uiOrder)</li>
+		<li>IntegerProperty(..., int[]defaultValues, float uiOrder, int maxValues) IntegerProperty(..., Integer[] defaultValues, float uiOrder, int maxValues)</li>
 		<li>FloatProperty</li>
-		<li>FloatProperty(…, float defaultValue, float uiOrder)</li>
-		<li>FloatProperty(…, float[]defaultValues, float uiOrder, int maxValues) FloatProperty(…, Float[] defaultValues, float uiOrder, int maxValues)</li>
+		<li>FloatProperty(..., float defaultValue, float uiOrder)</li>
+		<li>FloatProperty(..., float[]defaultValues, float uiOrder, int maxValues) FloatProperty(..., Float[] defaultValues, float uiOrder, int maxValues)</li>
 		<li>DoubleProperty</li>
-		<li>DoubleProperty(…, int defaultValue, float uiOrder)</li>
-		<li>DoubleProperty (…, double[]defaultValues, float uiOrder, int maxValues) DoubleProperty (…, Double[] defaultValues, float uiOrder, int maxValues)</li>
+		<li>DoubleProperty(..., int defaultValue, float uiOrder)</li>
+		<li>DoubleProperty (..., double[]defaultValues, float uiOrder, int maxValues) DoubleProperty (..., Double[] defaultValues, float uiOrder, int maxValues)</li>
 
 		<li>StringProperty</li>
-		<li>StringProperty(…, String defaultValue, float uiOrder)</li>
-		<li>StringProperty(…, String[] defaultValues, float uiOrder, char delimiter)</li>
+		<li>StringProperty(..., String defaultValue, float uiOrder)</li>
+		<li>StringProperty(..., String[] defaultValues, float uiOrder, char delimiter)</li>
 	</ol>
 	<p>
 	The delimiter character is used in the serialized string and cannot be part of the property value strings.</p>
 	<ol>
-		<li>TypeProperty(…, Class defaultValue, float uiOrder)</li>
-		<li>TypeProperty(…, Class[]defaultValues, float uiOrder)</li>
+		<li>TypeProperty(..., Class defaultValue, float uiOrder)</li>
+		<li>TypeProperty(..., Class[]defaultValues, float uiOrder)</li>
 	</ol>
 	<p><i>(PMD doesn’t currently support full type resolution at the moment)</i></p>
 
 	<ol>
-		<li>CharacterProperty(…, char defaultValue, float uiOrder)</li>
-		<li>CharacterProperty(…, char[] defaultValues, float uiOrder, char delimiter)</li>
-		<li>CharacterProperty(…, Character[] defaultValues, float uiOrder, char delimiter)</li>
-		<li>CharacterProperty(…, String defaultValues, float uiOrder, char delimiter)</li>
+		<li>CharacterProperty(..., char defaultValue, float uiOrder)</li>
+		<li>CharacterProperty(..., char[] defaultValues, float uiOrder, char delimiter)</li>
+		<li>CharacterProperty(..., Character[] defaultValues, float uiOrder, char delimiter)</li>
+		<li>CharacterProperty(..., String defaultValues, float uiOrder, char delimiter)</li>
 	</ol>
 	<p>The delimiter character is used in the serialized string and cannot be part of the property value characters.</p>
 	<ol>
-		<li>EnumeratedProperty(…, Object[][] values, float uiOrder)</li>
-		<li>EnumeratedProperty(…, Object[][] values, float uiOrder, int maxValues)</li>
+		<li>EnumeratedProperty(..., Object[][] values, float uiOrder)</li>
+		<li>EnumeratedProperty(..., Object[][] values, float uiOrder, int maxValues)</li>
 	</ol>
 	<p>
 	The 2D value array holds the label-value tuples in the order that they should be presented in the UI widget. See usage below.</p>
@@ -84,7 +84,7 @@ protected Map propertiesByName() {
 return propertyDescriptorsByName;
 };
 
-// rule body methods…
+// rule body methods...
 }
 ]]>
 		</source>
@@ -173,4 +173,5 @@ mixedItems,
 		<li>Figure out the best way to add the rowCount value to the StringProperty constructor</li>
 	</ol>
 </section>
+</body>
 </document>

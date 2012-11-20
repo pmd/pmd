@@ -47,4 +47,6 @@ public class JumbledIncrementerRule1 {
  ]]>
      </example>
      </rule>
+
+     <rule deprecated="true" ref="rulesets/java/codesize.xml/NPathComplexity"/>
 </ruleset>

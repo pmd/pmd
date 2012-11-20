@@ -1,24 +1,4 @@
 ???? ??, 2012 - 5.1.0:
- 
-TODO - Release blockers - Must implement before this release can be finally finished
-
-   CODE:
-   o Need to refactor the test framework to more readily support for multiple
-     Languages (too Java-centric at the moment).  Then, need start adding tests
-     for the new XML language and other new languages.
-   o Need the modify RuleViolation, RuleViolationFactory, and Rule base classes
-     to recognize the difference between violations which require a Node, and
-     those without.  This is to make certain that Rules which require and do not
-     pass, will die with an error because they are buggy and need to be fixed.
-
-   DOCUMENTATION:
-   o Expand documentation examples which demonstrate use of new RuleSetReferenceId
-     capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
-     of a Rule reference in places not previously possible (e.g. CMD and Ant).
-   o Fully document the changed/new command line and Ant configuration options.
-   o Need to enhance documentation to cover Global and Language specific
-     function namespaces required for XPath 2.0 use (e.g. pmd:matches
-     and pmd-java:typeof).
 
 Fixed bug  820: False+ AvoidReassigningParameters
 Fixed bug 1008: pmd-5.0.0: ImmutableField false positive on self-inc/dec
@@ -43,12 +23,14 @@ Fixed bug 1006: Problem with implementation of getPackageNameImage method
 Fixed bug 1014: AvoidLiteralsInIfCondition must NOT consider null
 Fixed bug 1013: jnlp link for CPD is wrong
 
+Improved command line interface (CLI) parsing - Note: this breaks compatibility, but should be easy to fix.
 Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 Fixed bgastviewer not working. Thanks to Victor Bucutea.
 
 New Ecmascript rules:
 
 	Basic ruleset: AvoidTrailingComma
+
 
 May, 1, 2012 - 5.0.0:
 

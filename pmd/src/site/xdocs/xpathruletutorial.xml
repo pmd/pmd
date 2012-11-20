@@ -18,7 +18,7 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
     </p>
     </subsection>
     <subsection name="What is the Abstract Syntax Tree (AST)?">
-    <p>From <a href="http://foldoc.doc.ic.ac.uk/foldoc/foldoc.cgi?abstract+syntax+tree">FOLDOC</a> an AST is 'A data structure
+    <p>From <a href="http://foldoc.org/abstract+syntax+tree">FOLDOC</a> an AST is 'A data structure
     representing something which has been parsed, often used as
     a compiler or interpreter's internal representation of a
     program while it is being optimised and from which code

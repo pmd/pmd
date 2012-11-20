@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,6 +34,12 @@ public class PmdPreSiteTest extends AbstractMojoTestCase {
 
 	String codeSizeRuleset = IOUtils.toString(new File("target/unit/sample-pmd/target/generated-xdocs/rules/java/codesize.xml").toURI());
 	assertTrue(codeSizeRuleset.contains("minimum"));
+
+	String basicRuleset = IOUtils.toString(new File("target/unit/sample-pmd/target/generated-xdocs/rules/java/basic.xml").toURI());
+	assertEquals(1, StringUtils.countMatches(basicRuleset, "<subsection"));
+
+	String indexPage = IOUtils.toString(new File("target/unit/sample-pmd/target/generated-xdocs/rules/index.xml").toURI());
+	assertFalse(indexPage.contains("<li>: </li>"));
 
 	String site = IOUtils.toString(new File("target/unit/sample-pmd/src/site/site.xml").toURI());
 	assertTrue(site.contains("<item name=\"Basic\""));
