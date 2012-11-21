@@ -52,4 +52,9 @@ public class ExcessiveLengthRule extends AbstractStatisticalPLSQLRule {
         //LOGGER.exiting(CLASS_PATH,"visit(SimpleNode)");
 	return node.childrenAccept(this, data);
     }
+
+    @Override
+    public Object[] getViolationParameters(DataPoint point) {
+	return new String[] { String.valueOf((int) point.getScore()) };
+    }
 }

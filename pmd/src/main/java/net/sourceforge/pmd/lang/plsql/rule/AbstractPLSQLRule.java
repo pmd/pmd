@@ -43,10 +43,31 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
      *            the node which will be searched
      */
     protected final String getDeclaringType(Node node) {
-	/* SRT ASTClassOrInterfaceDeclaration c = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-	if (c != null) {
+	SimpleNode c;  
+
+        /*
+         * Choose the Object Type
+         */
+	if (null != (c = node.getFirstParentOfType(ASTPackageSpecification.class))) {
 	    return c.getImage();
-	}*/
+	}
+        else 
+	if (null != (c = node.getFirstParentOfType(ASTTypeSpecification.class))) {
+	    return c.getImage();
+	}
+        else 
+	if (null != (c = node.getFirstParentOfType(ASTPackageBody.class))) {
+	    return c.getImage();
+	}
+        else 
+	if (null != (c = node.getFirstParentOfType(ASTTriggerUnit.class))) {
+	    return c.getImage();
+	}
+        else //Finally Schema-level Methods 
+	if (null != (c = node.getFirstParentOfType(ASTProgramUnit.class))) {
+	    return c.getImage();
+	}
+
 	return null;
     }
 

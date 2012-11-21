@@ -184,4 +184,8 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 	return countNodeChildren(node, data);
     }
 
+    @Override
+    public Object[] getViolationParameters(DataPoint point) {
+	return new String[] { String.valueOf((int) point.getScore()) };
+    }
 }
