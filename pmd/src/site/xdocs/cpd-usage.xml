@@ -22,7 +22,7 @@
          </ul>
           <p>Each rewrite made it much faster, and now it can process the JDK 1.4 java.* packages in about 4 seconds (on my workstation, at least).</p>
      <p>Here's a <a href="images/screenshot_cpd.png">screenshot</a> of CPD after running on the JDK java.lang package.</p>
-     <p>Note that CPD works with Java, JSP, C, C++, Fortran and PHP code. Your own language is missing ? See how to add it <a href="cpd-parser-howto.html">here</a></p>
+     <p>Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code. Your own language is missing ? See how to add it <a href="cpd-parser-howto.html">here</a></p>
      <p>CPD is included with PMD, which you can download <a href="http://sourceforge.net/projects/pmd/files/pmd/">here</a>.
          Or, if you have <a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>, you can <a href="http://pmd.sourceforge.net/cpd.jnlp">run CPD by clicking here</a>.
      </p>
@@ -76,7 +76,7 @@
   </tr>
   <tr>
     <td valign="top">language</td>
-    <td valign="top">Flag to select the appropriate language (e.g. <code>cpp</code>, <code>cs</code> <code>java</code>, <code>php</code>, <code>ruby</code>, and <code>ecmascript</code>); defaults to <code>java</code>.</td>
+    <td valign="top">Flag to select the appropriate language (e.g. <code>cpp</code>, <code>cs</code>, <code>java</code>, <code>php</code>, <code>ruby</code>, and <code>ecmascript</code>); defaults to <code>java</code>.</td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>

@@ -6,8 +6,8 @@ package net.sourceforge.pmd.cpd;
 import java.io.BufferedReader;
 import java.io.CharArrayReader;
 import java.io.IOException;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * This class does a best-guess try-anything tokenization.
@@ -37,6 +37,11 @@ public class CsTokenizer implements Tokenizer {
 				case ' ':
 				case '\t':
 				case '\r':
+					ic = reader.read();
+					break;
+
+					// ignore semicolons
+				case ';':
 					ic = reader.read();
 					break;
 
@@ -114,12 +119,15 @@ public class CsTokenizer implements Tokenizer {
 						if(ic == -1)
 							break;
 						b.append((char)ic);
-						if(ic == '\\')
-							b.append((char)reader.read());
+						if(ic == '\\') {
+							int next = reader.read();
+							if (next != -1) b.append((char)next);
+						}
 					}
-					b.append((char)ic);
+					if (ic != -1) b.append((char)ic);
 					tokenEntries.add(new TokenEntry(b.toString(), sourceCode.getFileName(), line));
 					ic = reader.read();
+					break;
 					
 					// / /= /*...*/ //...
 				case '/':
@@ -128,7 +136,7 @@ public class CsTokenizer implements Tokenizer {
 					case '*':
 						int state = 1;
 						b = new StringBuilder();
-						b.append(c);
+						b.append("/*");
 						
 						while((ic = reader.read()) != -1)
 						{
@@ -142,25 +150,29 @@ public class CsTokenizer implements Tokenizer {
 							}
 							else
 							{
-								if(c == '/')
+								if(c == '/') {
+									ic = reader.read();
 									break;
-								else if(c != '*')
+								} else if(c != '*') {
 									state = 1;
+								}
 							}
 						}
-						tokenEntries.add(new TokenEntry(b.toString(), sourceCode.getFileName(), line));
+						// ignore the /* comment
+						//tokenEntries.add(new TokenEntry(b.toString(), sourceCode.getFileName(), line));
 						break;
 						
 					case '/':
 						b = new StringBuilder();
-						b.append(c);
+						b.append("//");
 						while((ic = reader.read()) != '\n')
 						{
 							if(ic==-1)
 								break;
 							b.append((char)ic);
 						}
-						tokenEntries.add(new TokenEntry(b.toString(), sourceCode.getFileName(), line));
+						// ignore the // comment
+						//tokenEntries.add(new TokenEntry(b.toString(), sourceCode.getFileName(), line));
 						break;
 						
 					case '=':
@@ -217,9 +229,10 @@ public class CsTokenizer implements Tokenizer {
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+		    IOUtil.closeQuietly(reader);
+		    tokenEntries.add(TokenEntry.getEOF());
 		}
-		tokenEntries.add(TokenEntry.getEOF());
     }
 }

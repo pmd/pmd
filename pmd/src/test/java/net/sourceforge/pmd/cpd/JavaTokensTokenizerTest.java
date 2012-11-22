@@ -5,10 +5,6 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.JavaTokenizer;
-import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.cpd.Tokens;
 
 import org.junit.Test;
 
@@ -22,6 +18,15 @@ public class JavaTokensTokenizerTest {
         tokenizer.tokenize(sourceCode, tokens);
         assertEquals(6, tokens.size());
         assertEquals("public class Foo {}", sourceCode.getSlice(1, 1));
+    }
+
+    @Test
+    public void testCommentsIgnored() throws Throwable {
+        Tokenizer tokenizer = new JavaTokenizer();
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("public class Foo { // class Bar */ \n }"));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(sourceCode, tokens);
+        assertEquals(6, tokens.size());
     }
 
     @Test
