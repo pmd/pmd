@@ -78,26 +78,32 @@ public class JavaTokensTokenizerTest {
         assertEquals(6, tokens.size());
     }
 
-//    @Test
-//    public void testIgnoreComments() throws Throwable {
-//        JavaTokenizer t = new JavaTokenizer();
-//        t.setIgnoreAnnotations(false);
-//        SourceCode sourceCode = new SourceCode(
-//                new SourceCode.StringCodeLoader(
-//                    "package foo.bar.baz;" +
-//                    PMD.EOL +
-//                    "/*****" +
-//                    PMD.EOL +
-//                    " * ugh" +
-//                    PMD.EOL +
-//                    " *****/" +
-//                    PMD.EOL +
-//                    "public class Foo {}"
-//                ));
-//        Tokens tokens = new Tokens();
-//        t.tokenize(sourceCode, tokens);
-//        assertEquals(6, tokens.size());
-//    }
+    /**
+     * Comments are discarded already by the Java parser.
+     * It would be nice, however, to use simple comments like
+     * //CPD-START or //CPD-END
+     * to enable discard-mode of CPD
+     */
+    @Test
+    public void testIgnoreComments() {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        SourceCode sourceCode = new SourceCode(
+                new SourceCode.StringCodeLoader(
+                    "package foo.bar.baz;" +
+                    PMD.EOL +
+                    "/*****" +
+                    PMD.EOL +
+                    " * ugh" +
+                    PMD.EOL +
+                    " *****/" +
+                    PMD.EOL +
+                    "public class Foo {}"
+                ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        assertEquals(6, tokens.size());
+    }
 
     @Test
     public void testDiscardOneLineAnnotationWithParams() throws Throwable {
