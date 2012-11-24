@@ -109,30 +109,33 @@ public interface PLSQLParserTreeConstants
   public int JJTTABLE = 103;
   public int JJTTABLECOLUMN = 104;
   public int JJTVIEW = 105;
-  public int JJTVIEWCOLUMN = 106;
-  public int JJTCOMMENT = 107;
-  public int JJTTYPEMETHOD = 108;
-  public int JJTTYPESPECIFICATION = 109;
-  public int JJTALTERTYPESPEC = 110;
-  public int JJTATTRIBUTEDECLARATION = 111;
-  public int JJTATTRIBUTE = 112;
-  public int JJTPRAGMACLAUSE = 113;
-  public int JJTTRIGGERUNIT = 114;
-  public int JJTTRIGGERTIMINGPOINTSECTION = 115;
-  public int JJTCOMPOUNDTRIGGERBLOCK = 116;
-  public int JJTNONDMLTRIGGER = 117;
-  public int JJTDDLEVENT = 118;
-  public int JJTDATABASEEVENT = 119;
-  public int JJTNONDMLEVENT = 120;
-  public int JJTALTERTRIGGER = 121;
-  public int JJTKEYWORD_RESERVED = 122;
-  public int JJTKEYWORD_UNRESERVED = 123;
-  public int JJTID = 124;
-  public int JJTUNQUALIFIEDID = 125;
-  public int JJTQUALIFIEDID = 126;
-  public int JJTTYPEKEYWORD = 127;
-  public int JJTJAVAINTERFACECLASS = 128;
-  public int JJTEQUALSOLDIDNEWID = 129;
+  public int JJTSYNONYM = 106;
+  public int JJTDIRECTORY = 107;
+  public int JJTDATABASELINK = 108;
+  public int JJTVIEWCOLUMN = 109;
+  public int JJTCOMMENT = 110;
+  public int JJTTYPEMETHOD = 111;
+  public int JJTTYPESPECIFICATION = 112;
+  public int JJTALTERTYPESPEC = 113;
+  public int JJTATTRIBUTEDECLARATION = 114;
+  public int JJTATTRIBUTE = 115;
+  public int JJTPRAGMACLAUSE = 116;
+  public int JJTTRIGGERUNIT = 117;
+  public int JJTTRIGGERTIMINGPOINTSECTION = 118;
+  public int JJTCOMPOUNDTRIGGERBLOCK = 119;
+  public int JJTNONDMLTRIGGER = 120;
+  public int JJTDDLEVENT = 121;
+  public int JJTDATABASEEVENT = 122;
+  public int JJTNONDMLEVENT = 123;
+  public int JJTALTERTRIGGER = 124;
+  public int JJTKEYWORD_RESERVED = 125;
+  public int JJTKEYWORD_UNRESERVED = 126;
+  public int JJTID = 127;
+  public int JJTUNQUALIFIEDID = 128;
+  public int JJTQUALIFIEDID = 129;
+  public int JJTTYPEKEYWORD = 130;
+  public int JJTJAVAINTERFACECLASS = 131;
+  public int JJTEQUALSOLDIDNEWID = 132;
 
 
   public String[] jjtNodeName = {
@@ -242,6 +245,9 @@ public interface PLSQLParserTreeConstants
     "Table",
     "TableColumn",
     "View",
+    "Synonym",
+    "Directory",
+    "DatabaseLink",
     "ViewColumn",
     "Comment",
     "TypeMethod",
@@ -268,4 +274,4 @@ public interface PLSQLParserTreeConstants
     "EqualsOldIDNewID",
   };
 }
-/* JavaCC - OriginalChecksum=16ddbee8ec80557aeaea279e8cc3aabf (do not edit this line) */
+/* JavaCC - OriginalChecksum=3360baaf4722edd57f5734d5c62c05db (do not edit this line) */

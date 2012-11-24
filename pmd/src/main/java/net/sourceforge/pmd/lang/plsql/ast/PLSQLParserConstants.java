@@ -769,47 +769,57 @@ public interface PLSQLParserConstants {
   /** RegularExpression Id. */
   int SESSIONTIMEZONE = 400;
   /** RegularExpression Id. */
-  int GERMAN_SPECIAL_CHARACTERS = 401;
+  int AUTHENTICATED = 401;
   /** RegularExpression Id. */
-  int LETTER = 402;
+  int LINK = 402;
   /** RegularExpression Id. */
-  int DIGIT = 403;
+  int SHARED = 403;
   /** RegularExpression Id. */
-  int _CHARACTER = 404;
+  int DIRECTORY = 404;
   /** RegularExpression Id. */
-  int _CHARACTER_WO_ASTERISK = 405;
+  int USER = 405;
   /** RegularExpression Id. */
-  int SPECIAL_CHARACTERS = 406;
+  int GERMAN_SPECIAL_CHARACTERS = 406;
   /** RegularExpression Id. */
-  int DELIMITER = 407;
+  int LETTER = 407;
   /** RegularExpression Id. */
-  int IDENTIFIER = 408;
+  int DIGIT = 408;
   /** RegularExpression Id. */
-  int UNSIGNED_NUMERIC_LITERAL = 409;
+  int _CHARACTER = 409;
   /** RegularExpression Id. */
-  int FLOAT_LITERAL = 410;
+  int _CHARACTER_WO_ASTERISK = 410;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 411;
+  int SPECIAL_CHARACTERS = 411;
   /** RegularExpression Id. */
-  int _WHATEVER_CHARACTER_WO_ASTERISK = 412;
+  int DELIMITER = 412;
   /** RegularExpression Id. */
-  int CHARACTER_LITERAL = 413;
+  int IDENTIFIER = 413;
   /** RegularExpression Id. */
-  int STRING_LITERAL = 414;
+  int UNSIGNED_NUMERIC_LITERAL = 414;
   /** RegularExpression Id. */
-  int _WHATEVER_CHARACTER_WO_QUOTE = 415;
+  int FLOAT_LITERAL = 415;
   /** RegularExpression Id. */
-  int QUOTED_LITERAL = 416;
+  int INTEGER_LITERAL = 416;
   /** RegularExpression Id. */
-  int SQLDATA_CLASS = 417;
+  int _WHATEVER_CHARACTER_WO_ASTERISK = 417;
   /** RegularExpression Id. */
-  int CUSTOMDATUM_CLASS = 418;
+  int CHARACTER_LITERAL = 418;
   /** RegularExpression Id. */
-  int ORADATA_CLASS = 419;
+  int STRING_LITERAL = 419;
   /** RegularExpression Id. */
-  int JAVA_INTERFACE_CLASS = 420;
+  int _WHATEVER_CHARACTER_WO_QUOTE = 420;
   /** RegularExpression Id. */
-  int SQLPLUS_TERMINATOR = 421;
+  int QUOTED_LITERAL = 421;
+  /** RegularExpression Id. */
+  int SQLDATA_CLASS = 422;
+  /** RegularExpression Id. */
+  int CUSTOMDATUM_CLASS = 423;
+  /** RegularExpression Id. */
+  int ORADATA_CLASS = 424;
+  /** RegularExpression Id. */
+  int JAVA_INTERFACE_CLASS = 425;
+  /** RegularExpression Id. */
+  int SQLPLUS_TERMINATOR = 426;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -1223,6 +1233,11 @@ public interface PLSQLParserConstants {
     "\"CROSSEDITION\"",
     "\"DBTIMEZONE\"",
     "\"SESSIONTIMEZONE\"",
+    "\"AUTHENTICATED\"",
+    "\"LINK\"",
+    "\"SHARED\"",
+    "\"DIRECTORY\"",
+    "\"USER\"",
     "<GERMAN_SPECIAL_CHARACTERS>",
     "<LETTER>",
     "<DIGIT>",

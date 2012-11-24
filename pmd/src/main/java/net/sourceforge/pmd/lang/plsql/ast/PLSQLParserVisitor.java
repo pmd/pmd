@@ -110,6 +110,9 @@ public interface PLSQLParserVisitor
   public Object visit(ASTTable node, Object data);
   public Object visit(ASTTableColumn node, Object data);
   public Object visit(ASTView node, Object data);
+  public Object visit(ASTSynonym node, Object data);
+  public Object visit(ASTDirectory node, Object data);
+  public Object visit(ASTDatabaseLink node, Object data);
   public Object visit(ASTViewColumn node, Object data);
   public Object visit(ASTComment node, Object data);
   public Object visit(ASTTypeMethod node, Object data);
@@ -135,4 +138,4 @@ public interface PLSQLParserVisitor
   public Object visit(ASTJavaInterfaceClass node, Object data);
   public Object visit(ASTEqualsOldIDNewID node, Object data);
 }
-/* JavaCC - OriginalChecksum=5b32d3bd56287848ea9aaf63ae47dd64 (do not edit this line) */
+/* JavaCC - OriginalChecksum=8229345c736f1788952f71a3f2925f00 (do not edit this line) */

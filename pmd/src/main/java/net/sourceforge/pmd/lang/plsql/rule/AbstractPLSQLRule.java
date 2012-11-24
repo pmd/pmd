@@ -88,6 +88,18 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     }
 
   
+  public Object visit(ASTDatabaseLink node, Object data) { 
+        return visit((SimpleNode) node, data); 
+    }
+
+  public Object visit(ASTDirectory node, Object data) { 
+        return visit((SimpleNode) node, data); 
+    }
+
+  public Object visit(ASTSynonym node, Object data) { 
+        return visit((SimpleNode) node, data); 
+    }
+
   public Object visit(ASTBlock node, Object data) { 
         return visit((SimpleNode) node, data); 
     }
