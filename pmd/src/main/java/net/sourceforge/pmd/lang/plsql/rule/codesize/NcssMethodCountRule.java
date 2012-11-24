@@ -6,7 +6,7 @@ import net.sourceforge.pmd.stat.DataPoint;
 /**
  * Non-commented source statement counter for methods.
  * 
- * @author Jason Bennett
+ * Analogous to and cribbed from {@link net.sourceforge.pmd.lang.java.rule.codesize.NcssMethodCountRule}.
  */
 public class NcssMethodCountRule extends AbstractNcssCountRule {
 
