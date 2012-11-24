@@ -1,30 +1,22 @@
-/* Copyright (c) 2012 Albert Tumanov
-All rights reserved.
+/* Copyright (C) 2002 Albert Tumanov
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 */
 
+// $Header: /cvsroot/pldoc/sources/src/javacc/Parser.jj,v 1.2 2003/10/30 20:59:25 dvoytenko Exp $
 //
 options {
 	DEBUG_PARSER = false ;
@@ -62,30 +54,21 @@ options {
 
 PARSER_BEGIN(PLSQLParser)
 
-/* Copyright (c) 2012 Albert Tumanov
-All rights reserved.
+/* Copyright (C) 2002 Albert Tumanov
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 */
 
@@ -128,7 +111,7 @@ public class PLSQLParser {
     {
       //Set the Nodes' beginLine,beginColumn,endLine,endColumn fields from the generic 
         Token firstToken = ((SimpleNode) n).jjtGetFirstToken();
-        /*
+       /*
          The generated code sets the last token after closing the scope, so getLastToken 
          cannot be used to identify the last Token: use getToken(0) instead. 
          <code>
@@ -138,6 +121,7 @@ public class PLSQLParser {
         Token lastToken  = ((SimpleNode) n).jjtGetLastToken();
         */
         Token lastToken  = getToken(0);
+
 
         ((SimpleNode) n).testingOnly__setBeginLine(firstToken.beginLine);
         ((SimpleNode) n).testingOnly__setBeginColumn(firstToken.beginColumn);
@@ -929,11 +913,42 @@ void SkipPastNextOccurrence(String target) :
 void Skip2NextTokenOccurrence(int target) :
 {
   Token nextToken = getToken(1);
+  Token specToken = null ;
   while (nextToken.kind!=target
 	 && (null == nextToken.specialToken || nextToken.specialToken.kind!=target ) //In case the target is a Special Token
 	 && nextToken.kind!=EOF //SRT 20110521 - Prevent endless loop when target does not exist in the input stream
         )
   {
+    /*
+	Check if the target appears as a SpecialToken 
+
+
+	nextToken.specialToken points to the _LAST_ of any SpecialTokens before the current normal Token.
+
+	It is the head of a doubly-linked list:
+
+	The ${specialToken}.specialToken field POINTS BACKWARDS TOWARDS the FIRST occurring SpecialToken
+	The ${specialToken}.next field POINTS FORWARDS to to the LAST occurring SpecialToken
+
+	This means that if the program is interested in a specific SpecialToken, it must examine the linked list for every Token which has nexToken.specialToken != null.
+    
+    */
+    specToken = nextToken.specialToken;
+    if (null!= specToken) 
+    {
+	//Walk backwards through the list looking for this Token as a Special Token 
+        while (specToken != null && specToken.kind != target) 
+	{
+		specToken = specToken.specialToken;
+	}
+
+	//We have found the target as a SpecialToken - break out of normal Token search
+        if (specToken.kind != target) 
+	{
+		break;
+        }
+    }
+
     nextToken = getNextToken();
     nextToken = getToken(1);
   }
@@ -1968,11 +1983,11 @@ ASTPrimarySuffix PrimarySuffix() :
   ( <AT> {sb.append(" "); sb.append(token.image.toUpperCase());}  
           (  <LOCAL> {sb.append(" "); sb.append(token.image.toUpperCase());}
             | ( <TIME> <ZONE> {sb.append(" TIME ZONE");} 
-                ( <DBTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
+		(   <DBTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
 		  | <SESSIONTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
 		  | suffixNode = StringLiteral() {sb.append(" "); sb.append(suffixNode.toString());}
 		  | suffixNode = Expression() {sb.append(" "); sb.append(suffixNode.toString());}
-                )
+		) 
 	      )
          )   
   ) 
@@ -3009,7 +3024,8 @@ MORE :
 
 SPECIAL_TOKEN :
 {
-	<SINGLE_LINE_COMMENT: "--"(~["\n","\r"])* ("\n"|"\r"|"\r\n")?>
+        //Remove terminating EOL from Single Comment Token definition: it causes failurs if no other newline exists before next production 
+	<SINGLE_LINE_COMMENT: "--"(~["\n","\r"])* > 
 }
 
 //Tracker Issue 1433480 - Skip2 and SkipPast need to be able to check for EOL - so it cannot be SKIPped
