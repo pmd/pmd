@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.cli;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -66,7 +67,7 @@ public class PMDParameters {
 	@Parameter(names = {"-language", "-l"}, description = "specify version of a language PMD should use")
 	private String language = Language.getDefaultLanguage().getTerseName();
 
-	@Parameter(names = "auxclasspath", description = "specifies the classpath for libraries used by the source code (used by type resolution)\n(alternatively, a 'file://' URL to a text file containing path elements on consecutive lines")
+	@Parameter(names = "-auxclasspath", description = "specifies the classpath for libraries used by the source code (used by type resolution)\n(alternatively, a 'file://' URL to a text file containing path elements on consecutive lines")
 	private String auxclasspath;	
 	
 	class PropertyConverter implements IStringConverter<Properties> {
@@ -119,6 +120,11 @@ public class PMDParameters {
     	for ( LanguageVersion language : LanguageVersion.findVersionsForLanguageTerseName( params.getLanguage() ) ) {
         	configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(language.getLanguage().getVersion(params.getVersion()));    		
     	}
+        try {
+            configuration.prependClasspath(params.getAuxclasspath());
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Invalid auxiliary classpath: " + e.getMessage(), e);
+        }
 		return configuration;
 	}
 	
