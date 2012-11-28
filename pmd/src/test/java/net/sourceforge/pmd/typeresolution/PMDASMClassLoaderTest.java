@@ -17,7 +17,7 @@ public class PMDASMClassLoaderTest {
     
     @Before
     public void setUp() throws Exception {
-        cl = new PMDASMClassLoader(getClass().getClassLoader());
+        cl = PMDASMClassLoader.getInstance(getClass().getClassLoader());
     }
 
     /**
@@ -78,7 +78,7 @@ public class PMDASMClassLoaderTest {
     @Test
     public void testCachingOfNotFoundClasses() throws Exception {
 	MockedClassLoader mockedClassloader = new MockedClassLoader();
-	PMDASMClassLoader cl = new PMDASMClassLoader(mockedClassloader);
+	PMDASMClassLoader cl = PMDASMClassLoader.getInstance(mockedClassloader);
 	String notExistingClassname = "that.clazz.doesnot.Exist";
 	try {
 	    cl.loadClass(notExistingClassname);
@@ -116,7 +116,7 @@ public class PMDASMClassLoaderTest {
     @Test
     public void testCachingMemoryConsumption() throws Exception {
 	MockedClassLoader mockedClassLoader = new MockedClassLoader();
-	PMDASMClassLoader cl = new PMDASMClassLoader(mockedClassLoader);
+	PMDASMClassLoader cl = PMDASMClassLoader.getInstance(mockedClassLoader);
 
 	Runtime runtime = Runtime.getRuntime();
 	System.gc();

@@ -30,16 +30,32 @@ import org.objectweb.asm.ClassReader;
  * then the resource foo/Bar.class will not exist, too.
  */
 public class PMDASMClassLoader extends ClassLoader {
+    
+    private static PMDASMClassLoader cachedPMDASMClassLoader;
+    private static ClassLoader cachedClassLoader;
+    
+    /**
+     * A new PMDASMClassLoader is created for each compilation unit, this method allows to reuse the same
+     * PMDASMClassLoader across all the compilation units.
+     */
+    public static synchronized PMDASMClassLoader getInstance(ClassLoader parent) {
+        if (parent == cachedClassLoader) return cachedPMDASMClassLoader;
+        cachedClassLoader = parent;
+        cachedPMDASMClassLoader = new PMDASMClassLoader(parent);
+        return cachedPMDASMClassLoader;
+    }
+    
+    //
 
-    public PMDASMClassLoader(ClassLoader parent) {
+    private PMDASMClassLoader(ClassLoader parent) {
     	super(parent);
     }
 
     /** Caches the names of the classes that we can't load or that don't exist. */
-    private Set<String> dontBother = Collections.synchronizedSet(new HashSet<String>());
+    private final Set<String> dontBother = new HashSet<String>();
 
     @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
+    public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {
 	if (dontBother.contains(name)) {
 	    throw new ClassNotFoundException(name);
 	}
