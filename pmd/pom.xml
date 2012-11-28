@@ -492,7 +492,7 @@
             <plugin>
                 <groupId>net.sourceforge.pmd</groupId>
                 <artifactId>pmd-build</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>0.7</version>
                 <executions>
                     <execution>
                         <phase>pre-site</phase>
