@@ -58,15 +58,16 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 			image = String.valueOf(((ASTBooleanLiteral) node).isTrue());
 		} else if (node instanceof ASTPrimaryPrefix) {
 			ASTPrimaryPrefix primaryPrefix = (ASTPrimaryPrefix) node;
+			String result = null;
 			if (primaryPrefix.usesSuperModifier()) {
-				image = "super." + image;
+				result = "super";
 			} else if (primaryPrefix.usesThisModifier()) {
-				if (image == null) {
-					image = "this";
-				} else {
-					image = "this." + image;
-				}
+				result = "this";
 			}
+			if (image != null) {
+				result += "." + image;
+			}
+			image = result;
 		} else if (node instanceof ASTPrimarySuffix) {
 			ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) node;
 			if (primarySuffix.isArrayDereference()) {

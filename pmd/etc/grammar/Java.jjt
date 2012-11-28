@@ -1,5 +1,19 @@
 /**
+ * Enhance grammar to use LocalVariableDeclaration in a for-each loop.
+ * This enhances the symbol table to recognize variables declared in such
+ * a for-each loop.
  *
+ * Andreas Dangel 10/2012
+ * ===================================================================
+ * Fix parser problem #3530124 with generics
+ *
+ * Modified the grammar, so that the different usages of generics work.
+ * Adjusted the rules, that use "super", as super is no longer a PrimarySuffix.
+ * It's now either a ExplicitConstructorInvocation or a PrimaryPrefix.
+ * See also test case ParserCornersTest/testParsersCases
+ *
+ * Andreas Dangel 05/2012
+ * ===================================================================
  * Added support for Java 7 language constructs
  *
  * Dinesh Bolkensteyn (SonarSource), 10/2011
@@ -70,6 +84,9 @@ options {
   VISITOR = true;
   NODE_USES_PARSER = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
+
+  //DEBUG_PARSER = true;
+  //DEBUG_LOOKAHEAD = true;
 }
 
 PARSER_BEGIN(JavaParser)
@@ -1371,9 +1388,11 @@ Token t;}
 void ExplicitConstructorInvocation() :
 {}
 {
-  LOOKAHEAD("this"  Arguments() ";") "this" {jjtThis.setIsThis();} Arguments() ";"
+  LOOKAHEAD("this" Arguments() ";") "this" {jjtThis.setIsThis();} Arguments() ";"
 |
-  [ LOOKAHEAD(2) PrimaryExpression() "." "super" "(" ] ( "super" | "this" ) Arguments() ";"
+  LOOKAHEAD(TypeArguments() "this" Arguments() ";") TypeArguments() "this" {jjtThis.setIsThis();} Arguments() ";"
+|
+  [ LOOKAHEAD(PrimaryExpression() ".") PrimaryExpression() "." ] [ TypeArguments() ] "super" {jjtThis.setIsSuper();} Arguments() ";"
 }
 
 void Initializer() :
@@ -1682,7 +1701,7 @@ void PrimaryPrefix() :
 {
   Literal()
 | "this" {jjtThis.setUsesThisModifier();}
-| "super" {jjtThis.setUsesSuperModifier();} "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+| "super" {jjtThis.setUsesSuperModifier();}
 | "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
@@ -1692,7 +1711,6 @@ void PrimaryPrefix() :
 void PrimarySuffix() :
 {Token t;}
 { LOOKAHEAD(2) "." "this"
-| LOOKAHEAD(2) "." "super"
 | LOOKAHEAD(2) "." AllocationExpression()
 | LOOKAHEAD(3) MemberSelector()
 | "[" Expression() "]" {jjtThis.setIsArrayDereference();}
@@ -1898,7 +1916,7 @@ void ForStatement() :
 (
       LOOKAHEAD(Modifiers() Type() <IDENTIFIER> ":")
       {checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
-      Modifiers() Type() <IDENTIFIER> ":" Expression()
+      Modifiers() LocalVariableDeclaration() ":" Expression()
 |
   [ ForInit() ] ";"
   [ Expression() ] ";"

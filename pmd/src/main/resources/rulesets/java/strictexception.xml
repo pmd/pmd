@@ -3,8 +3,7 @@
 <ruleset name="Strict Exceptions"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
 These rules provide some strict guidelines about throwing and catching exceptions.
   </description>
@@ -13,7 +12,7 @@ These rules provide some strict guidelines about throwing and catching exception
    		since="1.2"
          message="A catch statement should never catch throwable since it includes errors."
           class="net.sourceforge.pmd.lang.java.rule.strictexception.AvoidCatchingThrowableRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidCatchingThrowable">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#AvoidCatchingThrowable">
       <description>
 Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as 
 OutOfMemoryError that should be exposed and managed separately.
@@ -36,7 +35,7 @@ public void bar() {
    		since="1.2"
          message="A method/constructor shouldn't explicitly throw java.lang.Exception"
           class="net.sourceforge.pmd.lang.java.rule.strictexception.SignatureDeclareThrowsExceptionRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#SignatureDeclareThrowsException">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#SignatureDeclareThrowsException">
       <description>
 Methods that declare the generic Exception as a possible throwable are not very helpful since their
 failure modes are unclear. Use a class derived from RuntimeException or a more specific checked exception.
@@ -54,7 +53,7 @@ public void foo() throws Exception {
     		 since="1.8"
           message="Avoid using exceptions as flow control."
           class="net.sourceforge.pmd.lang.java.rule.strictexception.ExceptionAsFlowControlRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#ExceptionAsFlowControl">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#ExceptionAsFlowControl">
       <description>
 Using Exceptions as form of flow control is not recommended as they obscure true exceptions when debugging.
 Either add the necessary validation or use an alternate control structure.
@@ -82,7 +81,7 @@ public void bar() {
 	 since="1.8"
     message="Avoid catching NullPointerException; consider removing the cause of the NPE."
     class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidCatchingNPE">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#AvoidCatchingNPE">
     <description>
 Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the 
 original error, causing other, more subtle problems later on.
@@ -116,7 +115,7 @@ public class Foo {
       since="1.8"
       message="Avoid throwing raw exception types."
       class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidThrowingRawExceptionTypes">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#AvoidThrowingRawExceptionTypes">
     <description>
 Avoid throwing certain exception types. Rather than throw a raw RuntimeException, Throwable,
 Exception, or Error, use a subclassed exception or error instead.
@@ -156,7 +155,7 @@ public class Foo {
     	  since="1.8"
         message="Avoid throwing null pointer exceptions."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidThrowingNullPointerException">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#AvoidThrowingNullPointerException">
       <description>
 Avoid throwing NullPointerExceptions. These are confusing because most people will assume that the
 virtual machine threw it. Consider using an IllegalArgumentException instead; this will be
@@ -188,7 +187,7 @@ public class Foo {
     since="3.8"
     message="A catch statement that catches an exception only to rethrow it should be avoided."
     class="net.sourceforge.pmd.lang.rule.XPathRule"
-    externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidRethrowingException">
+    externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#AvoidRethrowingException">
     <description>
 Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
     </description>
@@ -223,7 +222,7 @@ public void bar() {
     since="4.0"
     message="Exceptions should not extend java.lang.Error"
     class="net.sourceforge.pmd.lang.rule.XPathRule"
-    externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#DoNotExtendJavaLangError">
+    externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#DoNotExtendJavaLangError">
     <description>
       <![CDATA[
 Errors are system exceptions. Do not extend them.
@@ -250,7 +249,7 @@ public class Foo extends Error { }
 	       since="4.2"
 		    message="A throw statement in a finally block makes the control flow hard to understand."
 		    class="net.sourceforge.pmd.lang.rule.XPathRule"
-		    externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#DoNotThrowExceptionInFinally">
+		    externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#DoNotThrowExceptionInFinally">
     	<description>
 			<![CDATA[
 Throwing exceptions within a 'finally' block is confusing since they may mask other exceptions 
@@ -289,7 +288,7 @@ public class Foo {
   <rule name="AvoidThrowingNewInstanceOfSameException"
     since="4.2.5" language="java"
     message="A catch statement that catches an exception only to wrap it in a new instance of the same type of exception and throw it should be avoided"
-    externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidThrowingNewInstanceOfSameException"
+    externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#AvoidThrowingNewInstanceOfSameException"
     class="net.sourceforge.pmd.lang.rule.XPathRule">
     <description>
 Catch blocks that merely rethrow a caught exception wrapped inside a new instance of the same type only add to
@@ -329,7 +328,7 @@ public void bar() {
   <rule  name="AvoidCatchingGenericException"
     since="4.2.6" language="java"
     message="Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block"
-    externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidCatchingGenericException"
+    externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#AvoidCatchingGenericException"
     class="net.sourceforge.pmd.lang.rule.XPathRule">
     <description>
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
@@ -372,7 +371,7 @@ public class PrimitiveType {
 	<rule name="AvoidLosingExceptionInformation"
 		since="4.2.6" language="java"
 		message="Avoid statements in a catch block that invoke accessors on the exception without using the information"
-		externalInfoUrl="http://pmd.sourceforge.net/rules/java/strictexception.html#AvoidLosingExceptionInformation"
+		externalInfoUrl="${pmd.website.baseurl}/rules/java/strictexception.html#AvoidLosingExceptionInformation"
 		class="net.sourceforge.pmd.lang.rule.XPathRule">
 		<description>
 Statements in a catch block that invoke accessors on the exception without using the information

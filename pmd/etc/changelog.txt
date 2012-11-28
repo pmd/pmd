@@ -1,5 +1,49 @@
+???? ??, 2012 - 5.0.1:
+
+Fixed bug  820: False+ AvoidReassigningParameters
+Fixed bug 1008: pmd-5.0.0: ImmutableField false positive on self-inc/dec
+Fixed bug 1009: pmd-5.0.0: False + UselessParentheses
+Fixed bug 1003: newline characters stripped from CPD data in PMD 5.0.0
+Fixed bug 1001: InsufficientStringBufferDeclaration fails to parse hex
+Fixed bug  522: InefficientStringBuffering bug false +
+Fixed bug  953: String.InefficientStringBuffering false +
+Fixed bug  981: Unable to parse
+Fixed bug 1010: pmd: parsing of generic method call with super fails
+Fixed bug  996: pmd-4.2.6: MissingBreakInSwitch fails to report violation
+Fixed bug  993: Invalid NPath calculation in return statement. Thanks to Prabhjot Singh for the patch.
+Fixed bug 1023: c/c++ \ as a continuation character not supported
+Fixed bug 1033: False+ : SingularField
+Fixed bug 1025: Regression of Crash in PMDTask due to multithreading (Eclipse and Java 1.5)
+Fixed bug 1017: Type resolution very slow for big project. Thanks to Roman for the patch.
+Fixed bug 1036: Documentation: default threshold values removed from v5.0
+Fixed bug 1035: UseObjectForClearerAPI has misspelled message
+Fixed bug 1031: false DontImportJavaLang
+Fixed bug 1034: UseConcurrentHashMap flags calls to methods that return Map
+Fixed bug 1006: Problem with implementation of getPackageNameImage method
+Fixed bug 1014: AvoidLiteralsInIfCondition must NOT consider null
+Fixed bug 1013: jnlp link for CPD is wrong
+
+PMD Command Line Changes:
+  Improved command line interface (CLI) parsing using JCommander.
+  Note: this breaks compatibility, but should be easy to fix.
+  With "-d" you specify nowtThe source files / source directory to be scanned.
+  With "-f" you select the report format (like text, html, ...)
+  With "-R" you select the rulesets to be used.
+  Example: pmd -d c:\data\pmd\pmd\test-data\Unused1.java -f xml -R rulesets/java/unusedcode.xml
+
+Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
+Fixed bgastviewer not working. Thanks to Victor Bucutea.
+Improved CPD: Support in CPD for IgnoreAnnotations and SuppressWarnings("CPD-START"). Thanks to Matthew Short.
+Fixed C# support for CPD - thanks to TIOBE Software.
+
+New Ecmascript rules:
+
+	Basic ruleset: AvoidTrailingComma
+
+
 May, 1, 2012 - 5.0.0:
 
+Fixed bug 3515487: Inconsistent reference to ruleset file in documentation
 Fixed bug 3470274: Using Label for lines in XMLRenderer
 Fixed bug 3175710: NPE in InsufficientStringBufferDeclaration
 

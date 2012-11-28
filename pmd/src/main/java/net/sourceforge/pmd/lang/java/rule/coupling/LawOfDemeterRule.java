@@ -13,6 +13,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -209,7 +210,10 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             
             if (SCOPE_LOCAL.equals(baseScope)) {
                 Assignment lastAssignment = determineLastAssignment();
-                if (lastAssignment != null && !lastAssignment.allocation && !lastAssignment.iterator) {
+                if (lastAssignment != null
+                    && !lastAssignment.allocation
+                    && !lastAssignment.iterator
+                    && !lastAssignment.forLoop) {
                     violation = true;
                     violationReason = REASON_OBJECT_NOT_CREATED_LOCALLY;
                 }
@@ -289,7 +293,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 if (variableDeclaratorId.hasImageEqualTo(baseName)) {
                     boolean allocationFound = declarator.getFirstDescendantOfType(ASTAllocationExpression.class) != null;
                     boolean iterator = isIterator();
-                    assignments.add(new Assignment(declarator.getBeginLine(), allocationFound, iterator));
+                    boolean forLoop = isForLoop(declarator);
+                    assignments.add(new Assignment(declarator.getBeginLine(), allocationFound, iterator, forLoop));
                 }
             }
             
@@ -298,7 +303,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 if (stmt.hasImageEqualTo(SIMPLE_ASSIGNMENT_OPERATOR)) {
                     boolean allocationFound = stmt.jjtGetParent().getFirstDescendantOfType(ASTAllocationExpression.class) != null;
                     boolean iterator = isIterator();
-                    assignments.add(new Assignment(stmt.getBeginLine(), allocationFound, iterator));
+                    assignments.add(new Assignment(stmt.getBeginLine(), allocationFound, iterator, false));
                 }
             }
             
@@ -319,6 +324,10 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             return iterator;
         }
         
+        private boolean isForLoop(ASTVariableDeclarator declarator) {
+            return declarator.jjtGetParent().jjtGetParent() instanceof ASTForStatement;
+        }
+
         public ASTPrimaryExpression getExpression() {
             return expression;
         }
@@ -351,17 +360,19 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private int line;
         private boolean allocation;
         private boolean iterator;
+        private boolean forLoop;
         
-        public Assignment(int line, boolean allocation, boolean iterator) {
+        public Assignment(int line, boolean allocation, boolean iterator, boolean forLoop) {
             this.line = line;
             this.allocation = allocation;
             this.iterator = iterator;
+            this.forLoop = forLoop;
         }
         
         @Override
         public String toString() {
             return "assignment: line=" + line + " allocation:" + allocation
-                + " iterator:" + iterator;
+                + " iterator:" + iterator + " forLoop: " + forLoop;
         }
 
         public int compareTo(Assignment o) {

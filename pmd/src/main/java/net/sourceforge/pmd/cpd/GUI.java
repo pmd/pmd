@@ -79,45 +79,42 @@ public class GUI implements CPDListener {
 		{ "CSV (tab)",	new Renderer() { public String render(Iterator<Match> items) { return new CSVRenderer('\t').render(items); } } }
 		};
 	
-	private interface LanguageConfig {
-		Language languageFor(LanguageFactory lf, Properties p);
-		boolean ignoreLiteralsByDefault();
-		String[] extensions();
+	private static abstract class LanguageConfig {
+		public abstract Language languageFor(LanguageFactory lf, Properties p);
+		public boolean canIgnoreIdentifiers() { return false; }
+		public boolean canIgnoreLiterals() { return false; }
+		public boolean canIgnoreAnnotations() { return false; }
+		public abstract String[] extensions();
 	};
 	
 	private static final Object[][] LANGUAGE_SETS = new Object[][] {
 		{"Java", 			new LanguageConfig() { 
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("java"); }
-									public boolean ignoreLiteralsByDefault() { return true; }
+									public boolean canIgnoreIdentifiers() { return true; }
+									public boolean canIgnoreLiterals() { return true; }
+									public boolean canIgnoreAnnotations() { return true; }
 									public String[] extensions() { return new String[] {".java", ".class" }; }; } },
 		{"JSP", 			new LanguageConfig() { 
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("jsp"); }
-									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".jsp" }; }; } },
 		{"C++", 			new LanguageConfig() { 
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cpp"); }
-									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".cpp", ".c" }; }; } },
 		{"Ruby",			new LanguageConfig() { 
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("ruby"); }
-									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".rb" }; }; } },
 		{"Fortran",			new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("fortran"); }
-									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".rb" }; }; } },
 		{"by extension...", new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.BY_EXTENSION, p); }
-									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {"" }; }; } },
 		{"PHP", 			new LanguageConfig() { 
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("php"); }
-									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".php" }; };	} },
 		{"C#", 			    new LanguageConfig() {
-										public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cs"); }
-										public boolean ignoreLiteralsByDefault() { return false; }
-										public String[] extensions() { return new String[] {".cs" }; };	} },
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cs"); }
+									public String[] extensions() { return new String[] {".cs" }; };	} },
 		};
 	
 	private static final int		DEFAULT_CPD_MINIMUM_LENGTH = 75;
@@ -258,7 +255,9 @@ public class GUI implements CPDListener {
     private JProgressBar tokenizingFilesBar = new JProgressBar();
     private JTextArea resultsTextArea		= new JTextArea();
     private JCheckBox recurseCheckbox		= new JCheckBox("", true);
+    private JCheckBox ignoreIdentifiersCheckbox = new JCheckBox("", false);
     private JCheckBox ignoreLiteralsCheckbox = new JCheckBox("", false);
+    private JCheckBox ignoreAnnotationsCheckbox = new JCheckBox("", false);
     private JComboBox languageBox			= new JComboBox();
     private JTextField extensionField		= new JTextField();
     private JLabel extensionLabel			= new JLabel("Extension:", SwingConstants.RIGHT);
@@ -341,7 +340,9 @@ public class GUI implements CPDListener {
     }
 
     private void adjustLanguageControlsFor(LanguageConfig current) {
-    	 ignoreLiteralsCheckbox.setEnabled(current.ignoreLiteralsByDefault());
+         ignoreIdentifiersCheckbox.setEnabled(current.canIgnoreIdentifiers());
+         ignoreLiteralsCheckbox.setEnabled(current.canIgnoreLiterals());
+         ignoreAnnotationsCheckbox.setEnabled(current.canIgnoreAnnotations());
          extensionField.setText(current.extensions()[0]);
          boolean enableExtension = current.extensions()[0].length() == 0;
          extensionField.setEnabled(enableExtension);
@@ -378,8 +379,22 @@ public class GUI implements CPDListener {
         helper.add(extensionField);
 
         helper.nextRow();
-        helper.addLabel("Ignore literals and identifiers?");
+        helper.addLabel("Ignore literals?");
         helper.add(ignoreLiteralsCheckbox);
+        helper.addLabel("");
+        helper.addLabel("");
+        helper.nextRow();
+
+        helper.nextRow();
+        helper.addLabel("Ignore identifiers?");
+        helper.add(ignoreIdentifiersCheckbox);
+        helper.addLabel("");
+        helper.addLabel("");
+        helper.nextRow();
+
+        helper.nextRow();
+        helper.addLabel("Ignore annotations?");
+        helper.add(ignoreAnnotationsCheckbox);
         helper.add(goButton);
         helper.add(cxButton);
         helper.nextRow();
@@ -550,7 +565,9 @@ public class GUI implements CPDListener {
             setProgressControls(true);
 
             Properties p = new Properties();
+            p.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, String.valueOf(ignoreIdentifiersCheckbox.isSelected()));
             p.setProperty(JavaTokenizer.IGNORE_LITERALS, String.valueOf(ignoreLiteralsCheckbox.isSelected()));
+            p.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, String.valueOf(ignoreAnnotationsCheckbox.isSelected()));
             p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
             LanguageConfig conf = languageConfigFor((String)languageBox.getSelectedItem());
             Language language = conf.languageFor(new LanguageFactory(), p);

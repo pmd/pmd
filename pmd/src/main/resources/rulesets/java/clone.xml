@@ -3,8 +3,7 @@
 <ruleset name="Clone Implementation"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
 The Clone Implementation ruleset contains a collection of rules that find questionable usages of the clone() method.
   </description>
@@ -14,7 +13,7 @@ The Clone Implementation ruleset contains a collection of rules that find questi
     		since="1.4"
          message="Object clone() should be implemented with super.clone()"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/clone.html#ProperCloneImplementation">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#ProperCloneImplementation">
      <description>
 Object clone() should be implemented with super.clone().
      </description>
@@ -52,7 +51,7 @@ class Foo{
     		since="1.9"
          message="clone() method should throw CloneNotSupportedException"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-         externalInfoUrl="http://pmd.sourceforge.net/rules/java/clone.html#CloneThrowsCloneNotSupportedException">
+         externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneThrowsCloneNotSupportedException">
          <description>
 The method clone() should throw a CloneNotSupportedException.
          </description>
@@ -92,7 +91,7 @@ and count(NameList/Name[contains
     	  since="1.9"
         message="clone() method should be implemented only if implementing Cloneable interface"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/clone.html#CloneMethodMustImplementCloneable">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneMethodMustImplementCloneable">
         <description>
 The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a final method that only throws CloneNotSupportedException.
         </description>

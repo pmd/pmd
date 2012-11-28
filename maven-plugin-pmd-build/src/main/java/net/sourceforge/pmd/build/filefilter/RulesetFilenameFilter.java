@@ -5,6 +5,7 @@ package net.sourceforge.pmd.build.filefilter;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -15,8 +16,13 @@ import java.io.FilenameFilter;
 public class RulesetFilenameFilter implements FilenameFilter {
 
 	// FUTURE: Make this somehow configurable ? Turn into an array passed by constructor ?
-	// TODO: move to compiled regex to improve perf.
-	private static final String[] patterns = { "^[0-9][0-9].*\\.xml", "^.*dogfood.*\\.xml", "^all-.*\\.xml", "^migrating_.*\\.xml", "^pmdspecific.xml"} ;
+	private static final Pattern EXCLUDE = Pattern.compile(
+		"(^[0-9][0-9].*\\.xml)" +
+		"|(^.*dogfood.*\\.xml)" +
+		"|(^all-.*\\.xml)" +
+		"|(^migrating_.*\\.xml)" +
+		"|(^pmdspecific.xml)"
+	);
 	
 	public boolean accept(File file, String name) {
 	    if ( doesNotMatchExcludeNames(name) ) 
@@ -26,10 +32,6 @@ public class RulesetFilenameFilter implements FilenameFilter {
 	}
 	
 	private boolean doesNotMatchExcludeNames(String name) {
-		for ( String pattern : patterns ) {
-			if ( name.matches(pattern))
-				return false;
-		}
-		return true;
+	    return !EXCLUDE.matcher(name).matches();
 	}
 }

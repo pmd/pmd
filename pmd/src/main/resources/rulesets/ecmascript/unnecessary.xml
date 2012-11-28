@@ -3,8 +3,7 @@
 <ruleset name="Unnecessary"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
 The Unnecessary Ruleset contains a collection of rules for unnecessary code.
   </description>
@@ -14,7 +13,7 @@ The Unnecessary Ruleset contains a collection of rules for unnecessary code.
         since="5.0"
         message="Unnecessary parentheses."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/unnecessary.html#UnnecessaryParentheses">
+        externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/unnecessary.html#UnnecessaryParentheses">
     <description>Unnecessary parentheses should be removed.</description>
     <priority>4</priority>
     <properties>
@@ -40,7 +39,7 @@ var z = ((1 + 1)); // Bad
         since="5.0"
         message="Unnecessary block."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/unnecessary.html#UnnecessaryParentheses">
+        externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/unnecessary.html#UnnecessaryParentheses">
     <description>An unnecessary Block is present.  Such Blocks are often used in other languages to
     introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
     be misleading.  Considering removing this unnecessary Block.</description>

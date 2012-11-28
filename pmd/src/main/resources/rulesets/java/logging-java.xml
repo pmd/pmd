@@ -3,8 +3,7 @@
 <ruleset name="Java Logging"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
 The Java Logging ruleset contains a collection of rules that find questionable usages of the logger.
@@ -14,7 +13,7 @@ The Java Logging ruleset contains a collection of rules that find questionable u
     	   since="2.0"
          message="Class contains more than one logger."
          class="net.sourceforge.pmd.lang.java.rule.logging.MoreThanOneLoggerRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#MoreThanOneLogger">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#MoreThanOneLogger">
      <description>
 Normally only one logger is used in each class.
      </description>
@@ -36,7 +35,7 @@ public class Foo {
      		since="2.0"
          message="The Logger variable declaration does not contain the static and final modifiers"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#LoggerIsNotStaticFinal">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#LoggerIsNotStaticFinal">
      <description>
 In most cases, the Logger reference can be declared as static and final.
      </description>
@@ -107,7 +106,7 @@ When many log statements are used, it is convenient to surround them with an if 
     		since="2.1"
          message="System.out.print is used"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#SystemPrintln">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#SystemPrintln">
      <description>
 References to System.(out|err).print are usually intended for debugging purposes and can remain in
 the codebase even in production code. By using a logger one can enable/disable this behaviour at
@@ -146,7 +145,7 @@ class Foo{
     		  since="3.2"
            message="Avoid printStackTrace(); use a logger call instead."
            class="net.sourceforge.pmd.lang.rule.XPathRule"
-		   externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-java.html#AvoidPrintStackTrace">
+		   externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#AvoidPrintStackTrace">
            <description>
 Avoid printStackTrace(); use a logger call instead.
            </description>

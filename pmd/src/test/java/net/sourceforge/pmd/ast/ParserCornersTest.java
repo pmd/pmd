@@ -1,9 +1,16 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.testframework.ParserTst;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.junit.Ignore;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.testframework.ParserTst;
+import net.sourceforge.pmd.util.IOUtil;
+
 import org.junit.Test;
 
 
@@ -15,10 +22,51 @@ public class ParserCornersTest extends ParserTst {
     }
 
     @Test
-    @Ignore
     public final void testCastLookaheadProblem() throws Throwable {
         parseJava14(CAST_LOOKAHEAD_PROBLEM);
     }
+    
+    /**
+     * Tests a specific generic notation for calling methods.
+     * See: https://jira.codehaus.org/browse/MPMD-139
+     */
+    @Test
+    public void testGenericsProblem() {
+    	parseJava15(GENERICS_PROBLEM);
+    	parseJava17(GENERICS_PROBLEM);
+    }
+    
+    @Test
+    public void testParsersCases() {
+    	String test15 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases.java");
+    	parseJava15(test15);
+    	
+    	String test17 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases17.java");
+    	parseJava17(test17);
+    }
+    
+    private String readAsString(String resource) {
+    	InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
+    	StringBuilder sb = new StringBuilder();
+    	int c;
+    	try {
+        	while((c = in.read()) != -1) {
+        		sb.append((char)c);
+        	}
+    	} catch (IOException e) {
+    		// ignored
+    	} finally {
+    		IOUtil.closeQuietly(in);
+    	}
+    	return sb.toString();
+    }
+    
+    private static final String GENERICS_PROBLEM =
+    		"public class Test {" + PMD.EOL +
+    		" public void test() {" + PMD.EOL +
+    		"   String o = super.<String> doStuff(\"\");" + PMD.EOL +
+    		" }" + PMD.EOL +
+    		"}";
 
     private static final String ABSTRACT_METHOD_LEVEL_CLASS_DECL =
             "public class Test {" + PMD.EOL +

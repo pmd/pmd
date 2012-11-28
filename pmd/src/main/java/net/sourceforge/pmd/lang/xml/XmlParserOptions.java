@@ -1,5 +1,12 @@
 package net.sourceforge.pmd.lang.xml;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
@@ -28,6 +35,15 @@ public class XmlParserOptions extends ParserOptions {
 	    Boolean.FALSE, 8.0f);
     public static final BooleanProperty XINCLUDE_AWARE_DESCRIPTOR = new BooleanProperty("xincludeAware",
 	    "Specifies that the XML parser will process XInclude markup.", Boolean.FALSE, 9.0f);
+    public static final BooleanProperty LOOKUP_DESCRIPTOR_DTD = new BooleanProperty("xincludeAware",
+    	    "Specifies whether XML parser will attempt to lookup the DTD.", Boolean.TRUE, 10.0f);
+    
+    public static final EntityResolver SILENT_ENTITY_RESOLVER = new EntityResolver() {
+		public InputSource resolveEntity(String publicId, String systemId)
+				throws SAXException, IOException {
+			return new InputSource( new ByteArrayInputStream( "".getBytes() ) );
+		}
+	};
 
     private boolean coalescing;
     private boolean expandEntityReferences;
@@ -36,6 +52,7 @@ public class XmlParserOptions extends ParserOptions {
     private boolean namespaceAware;
     private boolean validating;
     private boolean xincludeAware;
+    private boolean lookupDescriptorDoc;
 
     public XmlParserOptions() {
 	this.coalescing = COALESCING_DESCRIPTOR.defaultValue().booleanValue();
@@ -46,6 +63,7 @@ public class XmlParserOptions extends ParserOptions {
 	this.namespaceAware = NAMESPACE_AWARE_DESCRIPTOR.defaultValue().booleanValue();
 	this.validating = VALIDATING_DESCRIPTOR.defaultValue().booleanValue();
 	this.xincludeAware = XINCLUDE_AWARE_DESCRIPTOR.defaultValue().booleanValue();
+	this.lookupDescriptorDoc = LOOKUP_DESCRIPTOR_DTD.defaultValue().booleanValue();
     }
 
     public XmlParserOptions(Rule rule) {
@@ -56,9 +74,30 @@ public class XmlParserOptions extends ParserOptions {
 	this.namespaceAware = rule.getProperty(NAMESPACE_AWARE_DESCRIPTOR);
 	this.validating = rule.getProperty(VALIDATING_DESCRIPTOR);
 	this.xincludeAware = rule.getProperty(XINCLUDE_AWARE_DESCRIPTOR);
+	this.lookupDescriptorDoc = rule.getProperty(LOOKUP_DESCRIPTOR_DTD);
+    }
+    
+    /**
+     * 
+     * @return the configured entity resolver. If {@link #lookupDescriptorDoc} is false
+     * it would normally force the XML parser to use its own resolver
+     */
+    public EntityResolver getEntityResolver(){
+    	if (!lookupDescriptorDoc)
+    		return SILENT_ENTITY_RESOLVER;
+    	else 
+    		return null;
     }
 
-    public boolean isCoalescing() {
+    public boolean isLookupDescriptorDoc() {
+		return lookupDescriptorDoc;
+	}
+
+	public void setLookupDescriptorDoc(boolean lookupDescriptorDoc) {
+		this.lookupDescriptorDoc = lookupDescriptorDoc;
+	}
+
+	public boolean isCoalescing() {
 	return this.coalescing;
     }
 

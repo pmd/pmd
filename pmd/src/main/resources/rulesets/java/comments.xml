@@ -3,8 +3,7 @@
 <ruleset name="Comments"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
 Rules intended to catch errors related to code comments
@@ -14,7 +13,7 @@ Rules intended to catch errors related to code comments
     		  since="5.0"
         message="Comment is required"
         class="net.sourceforge.pmd.lang.java.rule.comments.CommentRequiredRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/comments.html#CommentRequired">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/comments.html#CommentRequired">
     <description>
 Denotes whether comments are required (or unwanted) for specific language elements.
     </description>
@@ -34,7 +33,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
     		  since="5.0"
         message="Comment is too large"
         class="net.sourceforge.pmd.lang.java.rule.comments.CommentSizeRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/comments.html#CommentSize">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/comments.html#CommentSize">
     <description>
 Determines whether the dimensions of non-header comments found are within the specified limits.
     </description>
@@ -65,7 +64,7 @@ Determines whether the dimensions of non-header comments found are within the sp
     		  since="5.0"
      message="Invalid words or phrases found."
      class="net.sourceforge.pmd.lang.java.rule.comments.CommentContentRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/comments.html#CommentContent">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/comments.html#CommentContent">
      <description>
 A rule for the politically correct... we don't want to offend anyone.
   </description>

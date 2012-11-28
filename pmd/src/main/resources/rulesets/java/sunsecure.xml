@@ -3,8 +3,7 @@
 <ruleset name="Security Code Guidelines"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
 These rules check the security guidelines from Sun, published at http://java.sun.com/security/seccodeguide.html#gcg
   </description>
@@ -13,7 +12,7 @@ These rules check the security guidelines from Sun, published at http://java.sun
     	    since="2.2"
           message="Returning ''{0}'' may expose an internal array."
           class="net.sourceforge.pmd.lang.java.rule.sunsecure.MethodReturnsInternalArrayRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/sunsecure.html#MethodReturnsInternalArray">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/sunsecure.html#MethodReturnsInternalArray">
       <description>
 Exposing internal arrays to the caller violates object encapsulation since elements can be 
 removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
@@ -36,7 +35,7 @@ public class SecureSystem {
     	  since="2.2"
         message="The user-supplied array ''{0}'' is stored directly."
           class="net.sourceforge.pmd.lang.java.rule.sunsecure.ArrayIsStoredDirectlyRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/sunsecure.html#ArrayIsStoredDirectly">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/sunsecure.html#ArrayIsStoredDirectly">
       <description>
 Constructors and methods receiving arrays should clone objects and store the copy.
 This prevents future changes from the user from affecting the original array.

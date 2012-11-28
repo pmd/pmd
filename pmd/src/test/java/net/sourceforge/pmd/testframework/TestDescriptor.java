@@ -8,9 +8,12 @@ import java.util.Properties;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
+import org.junit.Ignore;
+
 /**
  * Stores the information required to run a complete test.
  */
+@Ignore("this is not a unit test")
 public class TestDescriptor {
     private Rule rule;
     private Properties properties;

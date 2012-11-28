@@ -10,7 +10,7 @@ options {
 	USER_CHAR_STREAM = true;
 	NODE_USES_PARSER=true;
 	UNICODE_INPUT=true;
-	  
+	FORCE_LA_CHECK = false;	  
 	IGNORE_CASE = true; 
 	STATIC = false; 
 	
@@ -30,6 +30,12 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
  */
 public class JspParser {
 
+
+	/**
+	* Counter used to keep track of unclosed tags
+	*/
+	private OpenTagRegister tagRegister = new OpenTagRegister();
+	
 	/**
 	 * Return the contents of a quote.
 	 * @param quote String - starting and ending with " or '
@@ -64,7 +70,7 @@ PARSER_END(JspParser)
  *    non-whitespace is found.
  *    This is only for tags, not for xml-comments, declarations, etc.
  * - AfterTagState : this is the state entered after the closing ">" of a tag,
- *    or xml-comment or declaration, until some non-whitespace is found.
+ *    or xml-comment or declaration, until some non-whitespace is found
  * - CommentState : the state between "<!--" and "-->"
  * - DeclarationState : the state between "<?" or "<!" and ">"
  * - CDataState : the state between "<![DATA[" and "]]>"
@@ -110,16 +116,16 @@ PARSER_END(JspParser)
 | <#WHITESPACE: ( " " | "\t" | "\n" | "\r" ) >
 | <#NEWLINE:    ( "\r\n" | "\r" | "\n" ) >
 | <#QUOTE:      ( "'" | "\"" )>
-| <#NO_WHITESPACE_OR_LT_OR_DOLLAR: (~[" ", "\t", "\n", "\r", "<", "$"])>
-| <#NO_LT_OR_DOLLAR: (~["<", "$"])>
-| <#DOLLAR: ("$")>
-| <#NO_OPENBRACE_OR_LT: (~["<", "{"]) >
+| <#NO_WHITESPACE_OR_LT_OR_DOLLAR: (~[" ", "\t", "\n", "\r", "<", "$", "#"])>
+| <#DOLLAR_OR_HASH: ("$" | "#")>
+| <#NO_OPENBRACE: (~["{"]) >
+| <#NO_LT_OR_DOLLAR_OR_HASH: (~["<","$","#"])>
+| <#NO_ENDTAG_START: (~["<"]~["/"]) >
 | <#TEXT_IN_EL: (~["}", "'", "\""])+ >
 | <#EL_ESCAPE: ("\\${" | "\\#{") >
 
 	// anything but --%>
 | <#NO_JSP_COMMENT_END: (~["-"] | "-" ~["-"] | "--" ~["%"] | "--%" ~[">"])+ > 
-
 | <#NO_JSP_TAG_END: ( ~["%"] | ("%" ~[">"]) )+ >
 }
 
@@ -129,7 +135,7 @@ PARSER_END(JspParser)
   < (<WHITESPACE>)+ >
 }
 
-<AttrValueState, AfterTagState, InTagState> SPECIAL_TOKEN :
+<AfterTagState, InTagState, HtmlScriptContentState> SPECIAL_TOKEN :
 {
   < (<WHITESPACE>)+ >
 }
@@ -147,12 +153,19 @@ PARSER_END(JspParser)
 | <JSP_EXPRESSION_START: 	"<%=" 		>   : JspExpressionState
 | <JSP_SCRIPTLET_START:		"<%" 		>	: JspScriptletState
 | <JSP_DIRECTIVE_START:		"<%@"		> 	: JspDirectiveState
+| <HTML_SCRIPT_START:       "<script"   >   : InTagState
 }
 
 <AfterTagState> TOKEN :
-{
-	<EL_EXPRESSION: "${" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" >
-|	<UNPARSED_TEXT: (<NO_LT_OR_DOLLAR>|<DOLLAR><NO_OPENBRACE_OR_LT>|<EL_ESCAPE>)+ >
+{	
+	<EL_EXPRESSION: 
+					( "${" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}")
+						|
+					("#{" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}")
+					>
+|	<UNPARSED_TEXT: ( <NO_LT_OR_DOLLAR_OR_HASH>|
+					  <DOLLAR_OR_HASH><NO_OPENBRACE>|
+					  <EL_ESCAPE>)+ >
 }
 
 <JspDirectiveState> TOKEN :
@@ -226,7 +239,7 @@ PARSER_END(JspParser)
 <InTagState> TOKEN :
 {
   <ATTR_NAME: <IDENTIFIER> >
-| <TAG_END: ">" >                       : AfterTagState
+| <TAG_END: ">"            >            : AfterTagState
 | <DECL_END: ("?>" | "!>") >            : AfterTagState
 | <TAG_SLASHEND: "/>" >                 : AfterTagState
 | <ATTR_EQ: "=" >                       : AttrValueState
@@ -235,15 +248,24 @@ PARSER_END(JspParser)
 
 <AttrValueState> TOKEN :
 {
-	<SINGLE_QUOTE: "'"> : AttrValueBetweenSingleQuotesState
-|	<DOUBLE_QUOTE: "\""> : AttrValueBetweenDoubleQuotesState
+  <SINGLE_QUOTE: "'"> : AttrValueBetweenSingleQuotesState
+| <DOUBLE_QUOTE: "\""> : AttrValueBetweenDoubleQuotesState
+| <NO_QUOTE_NO_WHITESPACE: ~["\"","'"," "] > { input_stream.backup(1);} : AttrValueNoQuotesState
+| <IN_ATTR_WHITESPACE: [" "] > : InTagState //support for empty attributes
 }
 
-<AttrValueBetweenSingleQuotesState, AttrValueBetweenDoubleQuotesState> TOKEN:
+<AttrValueBetweenSingleQuotesState, AttrValueBetweenDoubleQuotesState,AttrValueNoQuotesState> TOKEN:
 {
 	<EL_EXPRESSION_IN_ATTRIBUTE: "${" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" >
 |	<VALUE_BINDING_IN_ATTRIBUTE: "#{" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" >
 |	<JSP_EXPRESSION_IN_ATTRIBUTE: "<%=" <NO_JSP_TAG_END> "%>" >
+}
+
+<AttrValueNoQuotesState> TOKEN :
+{
+     <ENDING_WHITESPACE: " " >: InTagState
+|    <UNPARSED_TEXT_NO_WHITESPACE: ( ~["$", "#", " "] |(["$", "#"] ~["{"]) | <EL_ESCAPE> )+ >
+
 }
 
 <AttrValueBetweenSingleQuotesState> TOKEN :
@@ -270,15 +292,8 @@ PARSER_END(JspParser)
 
 <HtmlScriptContentState> TOKEN :
 {
-	<HTML_SCRIPT_CONTENT: (~[]) >
-	| <HTML_SCRIPT_END_TAG : "</script" | "</Script" | "</SCRIPT">
-	{
-		// We've done a custom lookahead for the closing </script> and found it.
-		// Put it back into the input stream, so it can be processed normally.
-		input_stream.backup(8);
-		image.setLength(image.length() - 8); // kill the "<script"
-		matchedToken.image = image.toString();
-	} : AfterTagState
+		 <HTML_SCRIPT_CONTENT: (~[]) >
+		| <HTML_SCRIPT_END_TAG : "</script" | "</Script" | "</SCRIPT">  : AfterTagState
 }
 
 /** ******************************************************************** */
@@ -317,21 +332,19 @@ void Prolog() #void :
 }
 
 /**
- * Everything between a start-tag and the corresponding end-tag of an element.
+ * Everything between a start-tag and the corresponding end-tag of an element (if an end tag exists).
  */
 void Content() :
 {}
-{
-	// TODO: can this be refactored for more simplicity?
-	( Text() | ContentElementPossiblyWithText()	)
-	( ContentElementPossiblyWithText() )*
+{ 
+	( Text() | ContentElement()	)*
 }
 
 /**
- * A single (non-text) element that can occur between a start- and end-tag of an element.
- * Possibly followed by text.
+ * A single (non-text) element that can occur between a start-tag and end-tag of an element.
+ * 
  */
-void ContentElementPossiblyWithText() #void :
+void ContentElement() #void :
 {}
 {
 	( 
@@ -342,9 +355,9 @@ void ContentElementPossiblyWithText() #void :
 	  | JspDeclaration() 
 	  | JspExpression() 
 	  | JspScriptlet()
-	  | JspDirective()
+	  | JspDirective() 
+      | HtmlScript()
 	)
-	( Text() )?
 }
 
 void JspDirective() :
@@ -409,22 +422,38 @@ void Text() :
 	StringBuffer content = new StringBuffer();
 	String tmp;
 }
-{
-	(	tmp = UnparsedText() { content.append(tmp); }
-	  |	tmp = ElExpression() { content.append(tmp); }
-	)+
-	{ jjtThis.setImage(content.toString()); }
+{	 
+	  (	
+	  	tmp = UnparsedText() { content.append(tmp); }
+	  | tmp = ElExpression() { content.append(tmp); }
+	  )+
+		{jjtThis.setImage(content.toString());}
+	  
 }
 
 String UnparsedText() :
 { Token t; }
-{
+{   
 	t = <UNPARSED_TEXT> 
-	{ 
+	{
 		jjtThis.setImage(t.image); 
 		return t.image;
 	}
 }
+
+String UnparsedTextNoWhitespace() #UnparsedText :
+{ Token t;}
+{
+  (
+    t = <UNPARSED_TEXT_NO_WHITESPACE>
+  )
+  {
+		jjtThis.setImage(t.image); 
+		return t.image;
+  }
+}
+
+  
 
 /**
  * Text that contains no single quotes, and that does not contain the start
@@ -505,48 +534,37 @@ void CData() :
  */
 void Element() :
 {
-	Token startTagName;
-	Token endTagName;
+	Token startTag;
+	Token endTag;
 	String tagName;
 }
 {
-    <TAG_START> 
-    startTagName = <TAG_NAME> { tagName = startTagName.image; jjtThis.setName(tagName); }
-    (Attribute())*
-    ( 
-    	(<TAG_END> 
-    		{
-    			jjtThis.setEmpty(false);
+    (
+	      (
+	        <TAG_START> 
+	    	startTag = <TAG_NAME> { tagName = startTag.image;
+	    							jjtThis.setName(tagName);
+	    							tagRegister.openTag(jjtThis);
+	    							}
+	   	  )
+	      (Attribute())*
+	      ( 
+	    	(
+	    	  <TAG_END>{ jjtThis.setEmpty(false);}
 
-		    	// Content in a <script> element needs special treatment (like a comment or CDataSection).
-		    	// Tell the TokenManager to start looking for the body of a script element.  In this
-		    	// state all text will be consumed by the next token up to the closing </script> tag.
-		    	// This is a context sensitive switch for the token manager, not something one can
-		    	// express using normal JavaCC syntax.  Hence the hoop jumping.
-				if ("script".equalsIgnoreCase(startTagName.image)) {
-					token_source.SwitchTo(HtmlScriptContentState);
-				}
-    		}
-    	
-   		(HtmlScript() | Content())?
-    	
-    	<ENDTAG_START> 
-    	endTagName = <TAG_NAME> 
-    		{ 
-    			if (! tagName.equalsIgnoreCase(endTagName.image)) {
-    				throw new StartAndEndTagMismatchException(
-    					startTagName.beginLine, startTagName.beginColumn,
-    					startTagName.image,
-    					endTagName.beginLine, endTagName.beginColumn,
-    					endTagName.image  );
-    			}
-    		}
-    	<TAG_END>)
-    	
-     	| 
-     	
-     	(<TAG_SLASHEND> { jjtThis.setEmpty(true); })
-    )
+		   	 (Content())
+		    	
+			 (<ENDTAG_START> 
+			  endTag = <TAG_NAME> {tagRegister.closeTag(endTag.image);}
+		      <TAG_END>)?
+	    	)
+	   		|  
+	     	(<TAG_SLASHEND> { jjtThis.setEmpty(true);
+	     					  jjtThis.setUnclosed(false);
+	     					}
+	     	)  
+	      )
+   )
 }
 
 void Attribute() : 
@@ -568,7 +586,7 @@ void AttributeValue() :
 {
 	StringBuffer content = new StringBuffer();
 	String tmp;
-	Token t;
+	Token t = null ;
 }
 {
   	(
@@ -582,13 +600,20 @@ void AttributeValue() :
 		)
 		|
 	  	( 	<SINGLE_QUOTE>
-		  	( ( tmp = UnparsedTextNoSingleQuotes()
-			  |	tmp = QuoteIndependentAttributeValueContent()
-			) { content.append(tmp); } )*
+		  	( ( tmp = UnparsedTextNoSingleQuotes() | tmp = QuoteIndependentAttributeValueContent() )
+		  	{ content.append(tmp); } )*
 			( 	<ENDING_SINGLE_QUOTE> 
 			  | t = <DOLLAR_OR_HASH_SINGLE_QUOTE>  { content.append(t.image.substring(0, 1)); }
 			 ) 
 		)
+		|
+	  	( <NO_QUOTE_NO_WHITESPACE>
+		  	( ( tmp = UnparsedTextNoWhitespace() | tmp = QuoteIndependentAttributeValueContent() )
+		  		{ content.append(tmp); }
+		  	)*
+			( <ENDING_WHITESPACE> ) 
+		)
+		| <IN_ATTR_WHITESPACE> 
 	)
 	{ jjtThis.setImage( content.toString() );
 	}
@@ -677,12 +702,21 @@ void DoctypeExternalId() :
 void HtmlScript() :
 {
 	StringBuffer content = new StringBuffer();
+	String tagName;
 	Token t;
 }
 {
-	(t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); })*
-	<HTML_SCRIPT_END_TAG>
-		{
-			jjtThis.setImage(content.toString().trim());
-		}
+  	<HTML_SCRIPT_START>         {}
+  	(Attribute() )*             {}
+  	(
+  	  (
+  	   <TAG_END>				    {token_source.SwitchTo(HtmlScriptContentState);}
+  	   (t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); })*
+	   <HTML_SCRIPT_END_TAG>		{ jjtThis.setImage(content.toString().trim());}
+	  )
+	|
+	  (
+	    <TAG_SLASHEND>
+	  )
+	)	
 }

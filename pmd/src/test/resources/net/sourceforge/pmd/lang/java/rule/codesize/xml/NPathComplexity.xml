@@ -39,4 +39,35 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+test case for bug 3484404 (Invalid NPath calculation in return statement)
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Bar
+{
+    public void x(boolean x, boolean y)
+    {
+        z(
+            (x ? 1 : 2),
+            (y ? 3 : 4)
+        );
+    }
+
+    public int y(boolean x, boolean y)
+    {
+        return z(
+            (x ? 1 : 2),
+            (y ? 3 : 4)
+        );
+    }
+
+    public int z(int x, int y)
+    {
+        return x + y;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

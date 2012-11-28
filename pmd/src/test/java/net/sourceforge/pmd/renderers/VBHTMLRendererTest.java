@@ -1,17 +1,13 @@
 package net.sourceforge.pmd.renderers;
 
-import java.util.Properties;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 
 public class VBHTMLRendererTest extends AbstractRendererTst {
 
     @Override
     public Renderer getRenderer() {
-        return new VBHTMLRenderer(new Properties());
+        return new VBHTMLRenderer();
     }
 
     @Override

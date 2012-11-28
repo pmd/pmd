@@ -6,7 +6,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.Properties;
 
 import net.sourceforge.pmd.RuleViolation;
 
@@ -19,8 +18,8 @@ public class EmacsRenderer extends AbstractIncrementingRenderer {
 
     protected static final String EOL = System.getProperty("line.separator", "\n");
 
-    public EmacsRenderer(Properties properties) {
-    	super(NAME, "GNU Emacs integration.", properties);
+    public EmacsRenderer() {
+    	super(NAME, "GNU Emacs integration.");
     }
 
     public String defaultFileExtension() { return "emacs"; }

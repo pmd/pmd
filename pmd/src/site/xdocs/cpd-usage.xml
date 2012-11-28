@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author email="tom@infoether.com">Tom Copeland</author>
+    <title>Finding copied and pasted code</title>
+  </properties>
+
+  <body>
+   <section name="Finding duplicate code">
+       <subsection name="Overview">
+     <p>Duplicate code can be hard to find, especially in a large project.  But PMD's Copy/Paste Detector (CPD) can find it for you!
+        CPD has been through three major incarnations:</p>
+         <ul>
+             <li>First we wrote it using a variant of Michael Wise's Greedy String Tiling algorithm (our variant is described
+         <a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">here</a>)</li>
+             <li>Then it was completely
+         rewritten by Brian Ewins using the
+         <a href="http://dogma.net/markn/articles/bwt/bwt.htm">Burrows-Wheeler transform</a></li>
+             <li>Finally, it was rewritten by Steve Hawkins to use the
+         <a href="http://www.nist.gov/dads/HTML/karpRabin.html">Karp-Rabin</a> string matching algorithm.</li>
+         </ul>
+          <p>Each rewrite made it much faster, and now it can process the JDK 1.4 java.* packages in about 4 seconds (on my workstation, at least).</p>
+     <p>Here's a <a href="images/screenshot_cpd.png">screenshot</a> of CPD after running on the JDK java.lang package.</p>
+     <p>Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code. Your own language is missing ? See how to add it <a href="cpd-parser-howto.html">here</a></p>
+     <p>CPD is included with PMD, which you can download <a href="http://sourceforge.net/projects/pmd/files/pmd/">here</a>.
+         Or, if you have <a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>, you can <a href="http://pmd.sourceforge.net/cpd.jnlp">run CPD by clicking here</a>.
+     </p>
+     <p><a href="./cpdresults.txt">Here</a> are the duplicates CPD found in the JDK 1.4 source code.</p>
+     <p><a href="./cpp_cpdresults.txt">Here</a> are the duplicates CPD found in the APACHE_2_0_BRANCH branch of Apache
+         (just the <code>httpd-2.0/server/</code> directory).</p>
+       </subsection>
+
+       <subsection name="Ant task">
+       <p>Andy Glover wrote an Ant task for CPD; here's how to use it:</p>
+       <source>
+<![CDATA[
+<target name="cpd">
+    <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
+    <cpd minimumTokenCount="100" outputFile="/home/tom/cpd.txt">
+        <fileset dir="/home/tom/tmp/ant">
+            <include name="**/*.java"/>
+        </fileset>
+    </cpd>
+</target>
+]]>
+       </source>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">The character set encoding (e.g., UTF-8) to use when reading the source code files, but also when producing the report. A piece of warning, even if you set properly the encoding value, let's say to UTF-8, but you are running CPD encoded with CP1252, you may end up with not UTF-8 file. Indeed, CPD copy piece of source code in its report directly, therefore, the source files keep their encoding.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">format</td>
+    <td valign="top">The format of the report (e.g. <code>csv</code>, <code>text</code>, <code>xml</code>); defaults to <code>text</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">ignoreLiterals</td>
+    <td valign="top">if <code>true</code>, CPD ignores literal
+ value differences when evaluating a duplicate block.  This means that <code>foo=42;</code> and <code>foo=43;</code>
+ will be seen as equivalent.  You may want to run PMD with this option off to start with and
+           then switch it on to see what it turns up; defaults to <code>false</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">ignoreIdentifiers</td>
+    <td valign="top">Similar to <code>ignoreLiterals</code> but for identifiers; i.e., variable names, methods names, and so forth; defaults to <code>false</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">ignoreAnnotations</td>
+    <td valign="top">Ignore annotations. More and more modern frameworks use annotations on classes and methods, which can be very redundant and trigger CPD matches. With J2EE (CDI, Transaction Handling, etc) and Spring (everything) annotations become very redundant. Often classes or methods have the same 5-6 lines of annotations. This causes false positives.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">language</td>
+    <td valign="top">Flag to select the appropriate language (e.g. <code>cpp</code>, <code>cs</code>, <code>java</code>, <code>php</code>, <code>ruby</code>, and <code>ecmascript</code>); defaults to <code>java</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">minimumtokencount</td>
+    <td valign="top">A positive integer indicating the minimum duplicate size.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">outputfile</td>
+    <td valign="top">The destination file for the report. If not specified the console will be used instead.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+       <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e.:</p>
+  <source>
+ ant -v -f mybuildfile.xml cpd
+  </source>
+           <p>Also, you can get an HTML report from CPD by using the XSLT script in pmd/etc/xslt/cpdhtml.xslt.  Just run
+ the CPD task as usual and right after it invoke the Ant XSLT script like this:</p>
+<source>
+<![CDATA[
+<xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
+]]>
+</source>
+       </subsection>
+
+       <subsection name="Command line usage">
+           <p>To run CPD from the command line, just give it the minimum duplicate size and the source directory:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java
+           </source>
+           <p>You can also specify the language:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/source --language cpp
+           </source>
+           <p>You may wish to check sources that are stored in different directories:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
+           </source>
+			<p><span style="font-style : italic;">There should be no limit to the number of '--files', you may add... But if you stumble one, please tell us !</span></p>
+           <p>And if you're checking a C source tree with duplicate files in different architecture directories
+           you can skip those using --skip-duplicate-files:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
+           </source>
+           <p>You can also the encoding to use when parsing files:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java --encoding utf-16le
+           </source>
+           <p>You can also specify a report format - here we're using the XML report:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java --format net.sourceforge.pmd.cpd.XMLRenderer
+           </source>
+       <p>The default format is a text report, and there's also a <code>net.sourceforge.pmd.cpd.CSVRenderer</code> report.</p>
+ <p>Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:</p>
+       <source>
+$ java -Xmx512m net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java
+       </source>
+
+   <p>Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0). This behavior has been introduced to ease CPD integration into scrips or
+       hook, such as SVN hooks.</p>
+       </subsection>
+
+       <subsection name="Suppression">
+       By adding the annotations <strong>@SuppressWarnings("CPD-START")</strong> and <strong>@SuppressWarnings("CPD-END")</strong>
+       all code within will be ignored by CPD - thus you can avoid false positivs.
+       This provides the ability to ignore sections of source code, such as switch/case statements or parameterized factories.
+       <source>
+    //enable suppression
+    @SuppressWarnings("CPD-START")
+    public Object someParameterizedFactoryMethod(int x) throws Exception {
+        // any code here will be ignored for the duplication detection
+    }
+    //disable suppression
+    @SuppressWarnings("CPD-END)
+    public void nextMethod() {
+    }
+       </source>
+       </subsection>
+   </section>
+  </body>
+</document>
+
+

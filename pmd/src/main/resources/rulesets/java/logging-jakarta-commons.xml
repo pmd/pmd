@@ -3,8 +3,7 @@
 <ruleset name="Jakarta Commons Logging"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
 The Jakarta Commons Logging ruleset contains a collection of rules that find questionable usages of that framework.
   </description>
@@ -14,7 +13,7 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
 		  since="3.2"
         message="Use the correct logging statement for logging exceptions"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-jakarta-commons.html#UseCorrectExceptionLogging">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#UseCorrectExceptionLogging">
 		<description>
 To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
         </description>
@@ -52,7 +51,7 @@ public class Main {
          since="3.3"
          message="Logger should be defined private static final and have the correct class"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-jakarta-commons.html#ProperLogger">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#ProperLogger">
              <description>
 A logger should normally be defined private static final and be associated with the correct class.
 Private final Log log; is also allowed for rare cases where loggers need to be passed around, 
@@ -94,7 +93,7 @@ public class Foo {
           since="4.3"
           message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/logging-jakarta-commons.html#GuardDebugLogging">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#GuardDebugLogging">
         <description>
             When log messages are composed by concatenating strings, the whole section should be guarded
             by a isDebugEnabled() check to avoid performance and memory issues.

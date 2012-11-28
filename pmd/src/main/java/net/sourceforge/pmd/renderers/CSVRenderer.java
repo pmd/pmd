@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
@@ -58,8 +58,8 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     	return prop;
     }
 
-    public CSVRenderer(Properties properties, ColumnDescriptor<RuleViolation>[] columns, String theSeparator, String theCR) {
-    	super(NAME, "Comma-separated values tabular format.", properties);
+    public CSVRenderer(ColumnDescriptor<RuleViolation>[] columns, String theSeparator, String theCR) {
+    	super(NAME, "Comma-separated values tabular format.");
 
     	separator = theSeparator;
     	cr = theCR;
@@ -91,8 +91,8 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     	return csvWriter;
     }
 
-    public CSVRenderer(Properties properties) {
-    	this(properties, AllColumns, DefaultSeparator, PMD.EOL);
+    public CSVRenderer() {
+    	this( AllColumns, DefaultSeparator, PMD.EOL);
     }
 
     /**

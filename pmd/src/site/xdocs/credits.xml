@@ -34,10 +34,10 @@
         </subsection>
         <subsection name="Committers emeritus">
         <ul>
-            <li><a href="http://www.hi.is/~gthb/">Gunnlaugur Thor Briem</a> - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
+            <li>Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
             <li><a href="http://dcraine.blogspot.com/">David Craine</a> - JBuilder plugin</li>
             <li>Tom Burke - Eclipse plugin</li>
-            <li><a href="http://www.stinky.com/alex/">Alex Chaffee</a> - various bugfixes and features</li>
+            <li>Alex Chaffee - various bugfixes and features</li>
             <li>Siegfried Goeschl - original Maven plugin, various bugfixes and features</li>
             <li>Don Leckie - The PMD GUI</li>
             <li><a href="http://richkilmer.blogs.com/">Rich Kilmer</a> - logo design</li>
@@ -51,7 +51,7 @@
             <li>Pieter Vanraemdonck - JSP grammar/integration/documentation, DontNestJsfInJstlIteration, NoLongScripts, NoScriptlets, NoInlineStyleInformation, NoClassAttribute, NoJspForward</li>
             <li>Raik Schroeder - data flow analyis layer, YAHTMLRenderer</li>
             <li>Steve Hawkins - rewrite of CPD based on Karp-Rabin string matching</li>
-            <li><a href="http://www.jroller.com/comments/soxbox/Weblog">Daniel Sheppard</a> - XPath engine integration concept and implementation, advice on Jaxen extension function naming</li>
+            <li>Daniel Sheppard - XPath engine integration concept and implementation, advice on Jaxen extension function naming</li>
             <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform, fixed DocumentNavigator bug</li>
         </ul>
         </subsection>
@@ -107,7 +107,7 @@
             <li>Levent Gurses - Suggested JSP support for the copy/paste detector</li>
             <li>Neil Cafferkey - Reported a typo in AssignmentInOperand</li>
             <li>Noel Grandin - bug report for ImmutableField, bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
-            <li><a href="http://www.orablogs.com/olaf/">Olaf Heimburger</a> - wrote the UseProperClassLoader rule, code changes to get JDeveloper plugin working under JDev 10.1.3 EA, reported a possible NPE in ReportTree</li>
+            <li>Olaf Heimburger - wrote the UseProperClassLoader rule, code changes to get JDeveloper plugin working under JDev 10.1.3 EA, reported a possible NPE in ReportTree</li>
             <li>Mohammad Farooq - Reported new JavaNCSS URL</li>
             <li>Jeff Jensen - Reported missing XML schema references in documentation, wrote new XML schema, reported missing schema refs in example rulesets, suggested posting XML schema on PMD site, discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>Christopher Stach - bug report for VariableNamingConventions, bug report for CallSuperInConstructor, many bug reports for rules that didn't handle Java 1.5 constructs</li>
@@ -144,7 +144,7 @@
             <li><a href="http://www.jroller.com/page/Fester">Wim Deblauwe</a> - suggested UseAssertNullInsteadOfAssertTrue, bug report 1373510 for UseAssertSameInsteadOfAssertTrue, suggested putting property names/values in generated docs, UselessOverridingMethod, reported bug in JUnitTestsShouldContainAsserts, front page and "how to make a ruleset" patches, noted problems with web site rule index, bug report for JUnitTestsShouldContainAsserts, Clover license coordination and implementation, UseCorrectExceptionLogging, coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with Java 1.5 params, Java 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Sean Montgomery - bug report 1371980 for InefficientStringBuffering</li>
             <li>Jean-Marc Vanel - suggested enhancements to the PMD scoreboard</li>
-            <li><a href="http://www.websoup.net/">Andriy Rozeluk</a> - suggested UseStringBufferLength, bug report 1306180 for AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
+            <li>Andriy Rozeluk - suggested UseStringBufferLength, bug report 1306180 for AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Bruno Juillet - suggested reporting suppressed warnings, bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Derek Hofmann - suggestion for adding --skip-duplicate-files option for CPD, bug report for CPD skipping header files when in C/C++ mode</li>
             <li>Mark Holczhammer - bug report for InefficientStringBuffering</li>
@@ -155,7 +155,7 @@
             <li>Eduard Naum - fixed JDK 1.3 runtime problems in Eclipse plugin</li>
             <li>Jacques Lebourgeois - fix for UTF8 characters in Eclipse plugin</li>
             <li>dvholten - suggestions for improving OverrideBothEqualsAndHashcode, formatting suggestions for HTML report, test cases for ConstructorCallsOverridableMethod, reported several NullAssignment bugs</li>
-            <li><a href="http://www.orablogs.com/duffblog/">Brian Duff</a> - helped get Oracle JDeveloper plugin working</li>
+            <li>Brian Duff - helped get Oracle JDeveloper plugin working</li>
             <li>Sivakumar Mambakkam - bug report 1314086 for missing name in SimpleRuleSetNameMapper</li>
             <li>Rodrigo Ruiz - bug report 1312723 for FieldDeclaration nodes inside interfaces, bug report 1312754 for pmd.bat option handling, bug report 1312720 (and code fix!) for DefaultPackage, bug report 1309235 for TooManyFields</li>
             <li><a href="http://blogs.teamb.com/LoriOlson/">Lori Olson</a> - JBuilder plugin suggestions and prerelease tests, found copy/paste bug in rule descriptions</li>
@@ -190,9 +190,9 @@
             <li>Christophe Mourette - Reported JDK 1.3 problem with XMLRenderer</li>
 			<li>Alex Givant - caught documentation bug</li>
             <li><a href="http://justlooking.recursion.org/">Luke Francl</a> - suggested UnnecessaryParentheses rule, numerous <b>high quality</b> feature suggestions and bug reports</li>
-            <li><a href="http://www.cs.umd.edu/~daveho/">David Hovemeyer</a> - reported missing labelled stmt images, a nice patch to let PMD process code in jar/zip files</li>
+            <li>David Hovemeyer - reported missing labelled stmt images, a nice patch to let PMD process code in jar/zip files</li>
             <li>Peter 'Bruno' Kofler - reported bug #1146116 for JUnitTestsShouldIncludeAssert </li>
-            <li><a href="http://jdj.sys-con.com/author/298Blut.htm">Zev Blut</a> - nice patch to add Ruby support to CPD</li>
+            <li>Zev Blut - nice patch to add Ruby support to CPD</li>
             <li>Christopher Judd - a nice patch to the XSLT that adds a summary</li>
             <li>John Meagher - suggested the rule 'MissingSerialVersionUID' and provided the implementation for it</li>
             <li>John Austin - patch to fix mispeling in Eclipse plugin message</li>
@@ -200,7 +200,7 @@
             <li>Leszek Migdal - reported documentation mistake for Eclipse plugin</li>
             <li>Hakan Civelek - an order-of-magnitude optimization to the SystemOutPrintln rule</li>
             <li>John Heintz - Added "any language" support to CPD.</li>
-            <li><a href="http://www-ag-mayer.informatik.uni-kl.de/~gurres/">Harald Gurres</a> - cleaned up the symbol table code with a very nice patch</li>
+            <li>Harald Gurres - cleaned up the symbol table code with a very nice patch</li>
             <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>
             <li>Lars Gregori - reported a bug in the Ant task docs</li>
@@ -218,7 +218,7 @@
             <li>Enno Derksen - enhancements to VariableNamingConventionsRule</li>
             <li>Michael Haggerty - bug reports for FinalizeDoesNotCallSuperFinalize and UnusedModifier</li>
             <li>Phil Shaw - documentation suggestions</li>
-            <li><a href="https://javacc.dev.java.net/">Sreenivasa Viswanadha</a> - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
+            <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
             <li>Austin Moore - Integration with Omnicore's CodeGuide IDE</li>
             <li>Matt Inger - CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException</li>
             <li>Morgan Schweers - Javascript highlighter for the PMD scoreboard</li>
@@ -232,7 +232,7 @@
             <li>Doug Tillman - correction to finalizers.xml examples</li>
             <li>Luis Alberto Domínguez Ruiz - bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Chad Loder - SuspiciousOctalEscapeRule, EmptyStatementNotInLoop, SuspiciousHashcodeMethodName, NonCaseLabelInSwitchStatement, DefaultLabelNotLastInSwitchStmt, NonStaticInitializer, ExplicitCallToFinalize, MethodWithSameNameAsEnclosingClassRuleTest, FinalizeDoesNotCallSuperFinalize, FinalizeOverloaded, FinalizeOnlyCallsSuperFinalize, UnconditionalIfStatement, AvoidDollarSigns, EmptyStaticInitializer, EmptyFinalizerMethod rule, DontImportSun rule, improvements to ASTBooleanLiteral</li>
-            <li><a href="http://www.blizzy.de/blog/page/blizzy/blizzog">Maik Schreiber</a> - AccessNode bug report, other bug reports</li>
+            <li>Maik Schreiber - AccessNode bug report, other bug reports</li>
             <li>Lokesh Gupta - improvements to the AST viewer</li>
             <li><a href="http://www.oreillynet.com/cs/catalog/view/au/960?x-t=book.view">Jesse Glick</a> - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>
@@ -241,7 +241,7 @@
             <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
             <li><a href="http://www.bossicard.com/">Vladimir Bossicard</a> - suggested AbstractNamingRule, test package organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Ken Foskey - noticed bad link</li>
-            <li><a href="http://www.bejug.org/confluenceBeJUG/display/BeJUG/Stephan+Janssen">Stephan Janssen</a> - promoted PMD for <a href="https://jjguidelines.dev.java.net/">JJGuidelines</a></li>
+            <li><a href="http://www.bejug.org/confluenceBeJUG/display/BeJUG/Stephan+Janssen">Stephan Janssen</a> - promoted PMD for <a href="http://web.archive.org/web/20070701124257/https://jjguidelines.dev.java.net/">JJGuidelines</a></li>
             <li>Ron Sidi - bug reports</li>
             <li>David Koontz - suggestions for tweaking PMD command line options</li>
             <li>Jeff Epstein - TextPad integration and tests</li>
@@ -292,7 +292,7 @@
             <li>David Whitmore - parser bug report</li>
             <li>David Campbell - detailed bugs reports, Ant task refactoring, documentation tweaks</li>
             <li>Michael Sutherland - bug report in IfStmtMustUseBracesRule</li>
-            <li><a href="http://www.cac.science.ru.nl/people/egonw/">Egon Willighagen</a> - PMD scoreboard suggestion</li>
+            <li>Egon Willighagen - PMD scoreboard suggestion</li>
             <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
             <li>Frederic Harper - bug report and subsequent troubleshooting</li>
             <li><a href="http://www.henricson.se/mats/">Mats Henricson</a> - an XSLT script and several bug reports</li>
@@ -306,7 +306,7 @@
             <li>Sean Sullivan - rule suggestions</li>
             <li>Dale Vissar - rule suggestions</li>
             <li><a href="http://www.informatik.uni-trier.de/~ley/db/indices/a-tree/c/Copeland:Alina.html">Alina Copeland</a> - PMD scoreboard formulas, pmd-dcpd optimizations</li>
-            <li><a href="http://blogs.codehaus.org/people/vmassol/">Vincent Massol</a> - bug reports, design suggestions, feature suggestions, Maven guidance</li>
+            <li>Vincent Massol - bug reports, design suggestions, feature suggestions, Maven guidance</li>
             <li>Peter Donald - design suggestions</li>
             <li>Liam Holohan - bug reports</li>
             <li>Ralph Schaer - bug reports and verification</li>
@@ -328,6 +328,11 @@
             <li>Dinesh Bolkensteyn and SonarSource - Java 7 grammar support</li>
             <li>Tom Wheeler - contribute a launch script for CPD GUI</li>
             <li>Remi Delmas - change CPD CLI to return a non null value when code duplication is found.</li>
+            <li>Victor Bucutea - Improved JSP parser to be less strict with not valid XML documents (like HTML).</li>
+            <li>Prabhjot Singh - Fixed bug 3484404: Invalid NPath calculation in return statement.</li>
+            <li>Roman - Fixed bug 3546093: Type resolution very slow for big project.</li>
+            <li>Florian Bauer - Add C# support for CPD.</li>
+            <li>Matthew Short - Support in CPD for IgnoreAnnotations and SuppressWarnings("CPD-START").</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

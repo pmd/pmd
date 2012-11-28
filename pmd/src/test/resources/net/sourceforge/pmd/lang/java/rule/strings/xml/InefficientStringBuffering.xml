@@ -332,18 +332,38 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <!--test-code>
+    <test-code>
+        <description><![CDATA[
+3109408, false + with adding two integers in constructor
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void method() {
+        int initialSizeGlobal = (int) (profilingContext.m_profileItems.size() * (150.0 * 0.30));
+        int initialSizeDetail = s_profiling_details_enabled ? profilingContext.m_overallProfileItems.size() * 150 : 0;
+        StringBuilder sb = new StringBuilder(initialSizeGlobal + initialSizeDetail);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
         <description><![CDATA[
 1503099, adding two integers
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar(int a, int b) {
+ public void bar(int a, int b, long c, long d) {
   StringBuffer buf = new StringBuffer();
   buf.append(a + b);
+  buf.append(c - d);
+  
+  String str1 = "a";
+  String str2 = "b";
+  StringBuffer sb = new StringBuffer(str1.length() + str2.length());
  }
 }
      ]]></code>
-    </test-code-->
+    </test-code>
 </test-data>

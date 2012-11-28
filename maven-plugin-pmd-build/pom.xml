@@ -11,7 +11,7 @@
   <groupId>net.sourceforge.pmd</groupId>
   <artifactId>pmd-build</artifactId>
   <name>PMD Build Plugin</name>
-  <version>0.7-SNAPSHOT</version>
+  <version>0.8-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <description>
     <![CDATA[
@@ -38,9 +38,10 @@ only if you modify the java code.
   </licenses>
   
   <scm>
-    <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build</connection>
-    <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/maven-plugin-pmd-build</developerConnection>
-    <url>http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/maven-plugin-pmd-build</url>
+    <connection>scm:git:git://github.com/pmd/pmd.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
+    <url>https://github.com/pmd/pmd</url>
+    <tag>HEAD</tag>
   </scm>
   
   <developers>
@@ -73,13 +74,22 @@ only if you modify the java code.
        </plugin>
        
        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
+          <version>2.3.2</version>
           <configuration>
-            <tagBase>https://pmd.svn.sourceforge.net/svnroot/pmd/tags/maven-plugin-pmd-build</tagBase>
+            <tagNameFormat>@{project.artifactId}/@{project.version}</tagNameFormat>
+            <pushChanges>false</pushChanges>
+            <localCheckout>true</localCheckout>
           </configuration>
        </plugin>
     </plugins>
   </build>
+
+  <properties>
+    <mavenVersion>3.0.3</mavenVersion>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.ant</groupId>
@@ -87,21 +97,45 @@ only if you modify the java code.
       <version>1.8.2</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>${mavenVersion}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>${mavenVersion}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-compat</artifactId>
+      <version>${mavenVersion}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <version>2.0</version>
-      <scope>provided</scope>
-    </dependency>
+
     <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
+        <version>2.1</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.apache.maven.plugin-testing</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
         <version>2.1</version>
         <scope>test</scope>
     </dependency>

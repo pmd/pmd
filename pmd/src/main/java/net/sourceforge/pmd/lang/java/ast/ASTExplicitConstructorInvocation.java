@@ -20,7 +20,11 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
     }
 
     public int getArgumentCount() {
-        return ((ASTArguments) this.jjtGetChild(0)).getArgumentCount();
+    	if (this.jjtGetNumChildren() == 1) {
+    		return ((ASTArguments) this.jjtGetChild(0)).getArgumentCount();
+    	} else {
+    		return ((ASTArguments) this.jjtGetChild(1)).getArgumentCount();
+    	}
     }
 
     private String thisOrSuper;

@@ -3,8 +3,7 @@
 <ruleset name="Unused Code"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
 The Unused Code ruleset contains rules that find unused or ineffective code.
   </description>
@@ -14,7 +13,7 @@ The Unused Code ruleset contains rules that find unused or ineffective code.
         language="java"
         message="Avoid unused private fields such as ''{0}''."
         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateFieldRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedPrivateField">
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/unusedcode.html#UnusedPrivateField">
     <description>
 Detects when a private field is declared and/or assigned a value, but not used.
     </description>
@@ -38,7 +37,7 @@ public class Something {
         since="0.1"
         message="Avoid unused local variables such as ''{0}''."
         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedLocalVariable">
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/unusedcode.html#UnusedLocalVariable">
     <description>
 Detects when a local variable is declared and/or assigned, but not used.
     </description>
@@ -60,7 +59,7 @@ public class Foo {
         since="0.7"
         message="Avoid unused private methods such as ''{0}''."
         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateMethodRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedPrivateMethod">
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/unusedcode.html#UnusedPrivateMethod">
     <description>
 Unused Private Method detects when a private method is declared but is unused.
     </description>
@@ -80,7 +79,7 @@ public class Something {
         since="0.8"
         message="Avoid unused {0} parameters such as ''{1}''."
         class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedFormalParameterRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedFormalParameter">
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/unusedcode.html#UnusedFormalParameter">
     <description>
 Avoid passing parameters to methods or constructors without actually referencing them in the method body.
     </description>
@@ -102,7 +101,7 @@ public class Foo {
           since="1.02"
           message="Avoid modifiers which are implied by the context"
           class="net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedModifierRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/unusedcode.html#UnusedModifier">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/unusedcode.html#UnusedModifier">
      <description>
 Fields in interfaces are automatically public static final, and methods are public abstract.
 Classes or interfaces nested in an interface are automatically public and static (all nested interfaces are automatically static).

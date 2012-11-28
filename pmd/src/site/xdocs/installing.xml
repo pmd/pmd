@@ -38,12 +38,12 @@
                       [tom@hal tmp]$ unzip -q pmd-bin-@VERSION@.zip
                       [tom@hal tmp]$ ls -l
                       total 4640
-                      drwxrwxr-x    5 tom      tom          4096 Apr 17 16:38 pmd-@VERSION@
+                      drwxrwxr-x    5 tom      tom          4096 Apr 17 16:38 pmd-bin-@VERSION@
                       -rw-rw-r--    1 tom      tom       4733312 Jun  9 15:44 pmd-bin-@VERSION@.zip
                       [tom@hal tmp]$
                   </source>
           </p>
-          <p>Note that the PMD jar file contains the <a href="cpd.html">CPD</a> utility as well.</p>
+          <p>Note that the PMD jar file contains the <a href="cpd-usage.html">CPD</a> utility as well.</p>
       </subsection>
     </section>
   </body>

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.cpp;
 
 import java.io.Reader;
@@ -13,7 +16,7 @@ public class CppTokenManager implements TokenManager {
     private final CppParserTokenManager tokenManager;
 
     public CppTokenManager(Reader source) {
-	tokenManager = new CppParserTokenManager(new SimpleCharStream(source));
+	tokenManager = new CppParserTokenManager(new SimpleCharStream(new ContinuationReader(source)));
     }
 
     public Object getNextToken() {

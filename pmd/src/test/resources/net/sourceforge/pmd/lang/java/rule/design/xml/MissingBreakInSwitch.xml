@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-one case
+one case, which is not empty
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -10,6 +10,7 @@ public class Foo {
 	void main() {
 		switch(i) {
 		case 1:
+			doSomething();
 		default:
 		}
 	}
@@ -32,8 +33,17 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-one break
+one break, but two cases + one default case. But there is an intentional fall through -
+because there are no statemenets between case 1 and case 2.
      ]]></description>
+     <!--
+        Indeed if there is no statement between the two cases, then no break
+    should be expected between those cases.
+    In C, there is a MISRA rule 15.2 which states:
+
+    "An unconditional break statement shall terminate every non-empty
+    switch clause"
+     -->
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -88,7 +98,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 3496028: False-
      ]]></description>
@@ -97,15 +107,17 @@ public class Foo {
 public class Foo {
   public void m() {
     switch (s) {
-     case 0 :
-      s2 = s ;
+      case 0 :
+        s2 = s ;
+        // missing break here!
       case 1 :
-     s2 = (short)(s + 1);
-      break;
-    default :
-   s2 = (short)(s + 2);
+        s2 = (short)(s + 1);
+        break;
+      default :
+        s2 = (short)(s + 2);
+        // and missing break here!
+    }
   }
- }
 }
      ]]></code>
   </test-code>

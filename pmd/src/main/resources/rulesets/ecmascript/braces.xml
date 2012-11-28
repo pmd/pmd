@@ -3,8 +3,7 @@
 <ruleset name="Braces"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
 The Braces Ruleset contains a collection of braces rules.
   </description>
@@ -14,7 +13,7 @@ The Braces Ruleset contains a collection of braces rules.
    		since="5.0"
          message="Avoid using if statements without curly braces"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/braces.html#IfStmtsMustUseBraces">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#IfStmtsMustUseBraces">
      <description>
 Avoid using if statements without using curly braces.
      </description>
@@ -47,7 +46,7 @@ if (foo)
       	  since="5.0"
            message="Avoid using 'if...else' statements without curly braces"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/braces.html#IfElseStmtsMustUseBraces">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#IfElseStmtsMustUseBraces">
        <description>
 Avoid using if..else statements without using curly braces.
        </description>
@@ -86,7 +85,7 @@ else
     		 since="5.0"
           message="Avoid using 'while' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/braces.html#WhileLoopsMustUseBraces">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#WhileLoopsMustUseBraces">
       <description>
 Avoid using 'while' statements without using curly braces.
       </description>
@@ -119,7 +118,7 @@ while (true)
      		  since="5.0"
            message="Avoid using 'for' statements without curly braces"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/ecmascript/braces.html#ForLoopsMustUseBraces">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#ForLoopsMustUseBraces">
        <description>
 Avoid using 'for' statements without using curly braces.
        </description>

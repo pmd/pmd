@@ -3,8 +3,7 @@
 <ruleset name="Unnecessary"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
 The Unnecessary Ruleset contains a collection of rules for unnecessary code.
   </description>
@@ -14,7 +13,7 @@ The Unnecessary Ruleset contains a collection of rules for unnecessary code.
     		 since="0.1"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
           class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryConversionTemporaryRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UnnecessaryConversionTemporary">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryConversionTemporary">
       <description>
 Avoid the use temporary objects when converting primitives to Strings. Use the static conversion methods
 on the wrapper classes instead.
@@ -37,7 +36,7 @@ public String convert(int x) {
     		 since="1.3"
           message="Avoid unnecessary return statements"
           class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryReturnRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UnnecessaryReturn">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryReturn">
       <description>
 Avoid the use of unnecessary return statements.
       </description>
@@ -60,7 +59,7 @@ public class Foo {
     	  since="3.0"
           message="Unnecessary final modifier in final class"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UnnecessaryFinalModifier">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryFinalModifier">
       <description>
 When a class has the final modifier, all the methods are automatically final and do not need to be
 tagged as such.
@@ -94,7 +93,7 @@ public final class Foo {
     since="3.3"
     message="Overriding method merely calls super"
     class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOverridingMethodRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UselessOverridingMethod">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UselessOverridingMethod">
         <description>
 The overriding method merely calls the same method defined in a superclass.
         </description>
@@ -119,7 +118,7 @@ public Long getId() {
            since="3.5"
            message="An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself"
            class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOperationOnImmutableRule"
-           externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UselessOperationOnImmutable">
+           externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UselessOperationOnImmutable">
       <description>
 An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
 since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
@@ -148,7 +147,7 @@ class Test {
         since="3.5"
         message="Invoke equals() on the object you''ve already ensured is not null"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UnusedNullCheckInEquals">
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnusedNullCheckInEquals">
     <description>
 After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
     </description>
@@ -214,7 +213,7 @@ public class Test {
         since="5.0"
         message="Useless parentheses."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/java/unnecessary.html#UselessParentheses">
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UselessParentheses">
     <description>Useless parentheses should be removed.</description>
     <priority>4</priority>
     <properties>
@@ -238,7 +237,7 @@ public class Test {
     count(./CastExpression)=0 and
     count(./EqualityExpression)=0]
 |
-//Expression/AdditiveExpression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and count(./CastExpression)=0]
+//Expression/AdditiveExpression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and not(./CastExpression) and not(./ConditionalExpression)]
 |
 //Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and

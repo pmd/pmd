@@ -3,8 +3,7 @@
 <ruleset name="JavaBeans"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <description>
 The JavaBeans Ruleset catches instances of bean rules not being followed.
@@ -15,7 +14,7 @@ The JavaBeans Ruleset catches instances of bean rules not being followed.
   		  since="1.1"
         message="Found non-transient, non-static member. Please mark as transient or provide accessors."
         class="net.sourceforge.pmd.lang.java.rule.javabeans.BeanMembersShouldSerializeRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/javabeans.html#BeanMembersShouldSerialize">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/javabeans.html#BeanMembersShouldSerialize">
     <description>
 If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. 
 Member variables need to be marked as transient, static, or have accessor methods in the class. Marking 
@@ -47,7 +46,7 @@ private int getMoreFoo(){
     		 since="3.0"
           message="Classes implementing Serializable should set a serialVersionUID"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/java/javabeans.html#MissingSerialVersionUID">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/javabeans.html#MissingSerialVersionUID">
       <description>
 Serializable classes should provide a serialVersionUID field.
       </description>

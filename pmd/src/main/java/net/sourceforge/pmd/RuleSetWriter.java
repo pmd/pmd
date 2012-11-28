@@ -37,7 +37,9 @@ import org.w3c.dom.Text;
  */
 public class RuleSetWriter {
 	
-    private final OutputStream outputStream;
+    public static final String RULESET_NS_URI = "http://pmd.sourceforge.net/ruleset/2.0.0";
+    
+	private final OutputStream outputStream;
     private Document document;
     private Set<String> ruleSetFileNames;
 
@@ -84,10 +86,9 @@ public class RuleSetWriter {
     }
 
     private Element createRuleSetElement(RuleSet ruleSet) {
-    	Element ruleSetElement = document.createElementNS("http://pmd.sourceforge.net/ruleset/2.0.0", "ruleset");
+    	Element ruleSetElement = document.createElementNS(RULESET_NS_URI, "ruleset");
     	ruleSetElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation", "http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd");
-		ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation",	"http://pmd.sourceforge.net/ruleset_2_0_0.xsd");
+		ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation", RULESET_NS_URI + " http://pmd.sourceforge.net/ruleset_2_0_0.xsd");
 		ruleSetElement.setAttribute("name", ruleSet.getName());
 	
 		Element descriptionElement = createDescriptionElement(ruleSet.getDescription());
@@ -124,7 +125,7 @@ public class RuleSetWriter {
     }
     
     private Element createRuleElement() {
-    	return document.createElement("rule");
+    	return document.createElementNS(RULESET_NS_URI, "rule");
     }
     
     private Element createExcludeElement(String exclude) {
@@ -140,7 +141,7 @@ public class RuleSetWriter {
     }
     
     private Element createPropertiesElement() {
-    	return document.createElement("properties");
+    	return document.createElementNS(RULESET_NS_URI, "properties");
     }
     
     private Element createRuleElement(Rule rule) {
@@ -303,7 +304,7 @@ public class RuleSetWriter {
     }
 
     private Element createPropertyValueElement(PropertyDescriptor propertyDescriptor, Object value) {
-		Element propertyElement = document.createElement("property");
+		Element propertyElement = document.createElementNS(RULESET_NS_URI, "property");
 		propertyElement.setAttribute("name", propertyDescriptor.name());
 		String valueString = propertyDescriptor.asDelimitedString(value);
 		if (XPathRule.XPATH_DESCRIPTOR.equals(propertyDescriptor)) {
@@ -349,14 +350,14 @@ public class RuleSetWriter {
     }
 
     private Element createTextElement(String name, String value) {
-		Element element = document.createElement(name);
+		Element element = document.createElementNS(RULESET_NS_URI, name);
 		Text text = document.createTextNode(value);
 		element.appendChild(text);
 		return element;
     }
 
     private Element createCDATASectionElement(String name, String value) {
-		Element element = document.createElement(name);
+		Element element = document.createElementNS(RULESET_NS_URI, name);
 		CDATASection cdataSection = document.createCDATASection(value);
 		element.appendChild(cdataSection);
 		return element;

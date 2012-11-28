@@ -148,13 +148,12 @@ public class NameOccurrence {
                 return true;
             }
 
-            if (node instanceof ASTStatementExpression || node instanceof ASTExpression) {
-                if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTAssignmentOperator) {
-                    ASTAssignmentOperator op = (ASTAssignmentOperator) node.jjtGetChild(1);
-                    if (op.isCompound()) {
-                        return true;
-                    }
-                }
+            if (hasAssignmentOperator(gp)) {
+                return isCompoundAssignment(gp);
+            }
+
+            if (hasAssignmentOperator(node)) {
+                return isCompoundAssignment(node);
             }
 
             // deal with extra parenthesis: "(i)++"
@@ -169,6 +168,15 @@ public class NameOccurrence {
             // catch this.i++ or ++this.i
             return gp instanceof ASTPreDecrementExpression || gp instanceof ASTPreIncrementExpression || gp instanceof ASTPostfixExpression;
         }
+    }
+
+    private boolean hasAssignmentOperator(Node node) {
+        if (node instanceof ASTStatementExpression || node instanceof ASTExpression) {
+            if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

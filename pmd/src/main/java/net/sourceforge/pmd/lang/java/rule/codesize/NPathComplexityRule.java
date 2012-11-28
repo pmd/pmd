@@ -155,9 +155,12 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
 	    return NumericConstants.ONE;
 	}
 
-	List<ASTConditionalAndExpression> andNodes = expr.findDescendantsOfType(ASTConditionalAndExpression.class);
-	List<ASTConditionalOrExpression> orNodes = expr.findDescendantsOfType(ASTConditionalOrExpression.class);
-	int boolCompReturn = andNodes.size() + orNodes.size();
+	int boolCompReturn = sumExpressionComplexity(expr);
+	int conditionalExpressionComplexity = complexityMultipleOf(expr, 1, data);
+
+	if (conditionalExpressionComplexity > 1) {
+	    boolCompReturn += conditionalExpressionComplexity;
+	}
 
 	if (boolCompReturn > 0) {
 	    return Integer.valueOf(boolCompReturn);

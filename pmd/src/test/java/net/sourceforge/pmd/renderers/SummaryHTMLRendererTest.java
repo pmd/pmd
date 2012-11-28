@@ -1,20 +1,16 @@
 package net.sourceforge.pmd.renderers;
 
-import java.util.Properties;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTst {
 
     @Override
     public Renderer getRenderer() {
-	Properties properties = new Properties();
-	properties.put(SummaryHTMLRenderer.LINK_PREFIX, "link_prefix");
-	properties.put(SummaryHTMLRenderer.LINE_PREFIX, "line_prefix");
-        return new SummaryHTMLRenderer(properties);
+	Renderer result = new SummaryHTMLRenderer();
+	result.setProperty(HTMLRenderer.LINK_PREFIX, "link_prefix");
+	result.setProperty(HTMLRenderer.LINE_PREFIX, "line_prefix");
+	return result;
     }
 
     @Override

@@ -12,14 +12,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
-/*
+/**
  * How this rule works:
  * find additive expressions: +
  * check that the addition is between anything other than two literals
@@ -38,10 +42,14 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         }
 
         int immediateLiterals = 0;
+        int immediateStringLiterals = 0;
         List<ASTLiteral> nodes = node.findDescendantsOfType(ASTLiteral.class);
         for (ASTLiteral literal: nodes) {
             if (literal.getNthParent(3) instanceof ASTAdditiveExpression) {
                 immediateLiterals++;
+                if (literal.isStringLiteral()) {
+                	immediateStringLiterals++;
+                }
             }
             if (literal.isIntLiteral() || literal.isFloatLiteral()) {
         	return data;
@@ -61,6 +69,18 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
                     return data;
                 }
             }
+        }
+        
+        // if literal primitive type and not strings variables, then return
+        boolean stringFound = false;
+        for (ASTName name: nameNodes) {
+        	if (!isPrimitiveType(name) && isStringType(name)) {
+        		stringFound = true;
+        		break;
+        	}
+        }
+        if (!stringFound && immediateStringLiterals == 0) {
+        	return data;
         }
 
         if (bs.isAllocation()) {
@@ -82,7 +102,43 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         return data;
     }
 
-    protected static boolean isInStringBufferOperation(Node node, int length, String methodName) {
+    private boolean isStringType(ASTName name) {
+    	ASTType type = getTypeNode(name);
+    	if (type != null) {
+    		List<ASTClassOrInterfaceType> types = type.findDescendantsOfType(ASTClassOrInterfaceType.class);
+    		if (!types.isEmpty()) {
+    			ASTClassOrInterfaceType typeDeclaration = types.get(0);
+    			if (String.class == typeDeclaration.getType() || "String".equals(typeDeclaration.getImage())) {
+    				return true;
+    			}
+    		}
+    	}
+		return false;
+	}
+
+	private boolean isPrimitiveType(ASTName name) {
+		ASTType type = getTypeNode(name);
+		if (type != null && !type.findChildrenOfType(ASTPrimitiveType.class).isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+	
+	private ASTType getTypeNode(ASTName name) {
+    	if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
+    		VariableNameDeclaration vnd = (VariableNameDeclaration) name.getNameDeclaration();
+    		if (vnd.getAccessNodeParent() instanceof ASTLocalVariableDeclaration) {
+    			ASTLocalVariableDeclaration l = (ASTLocalVariableDeclaration)vnd.getAccessNodeParent();
+    			return l.getTypeNode();
+    		} else if (vnd.getAccessNodeParent() instanceof ASTFormalParameter) {
+    			ASTFormalParameter p = (ASTFormalParameter) vnd.getAccessNodeParent();
+    			return p.getTypeNode();
+    		}
+    	}
+		return null;
+	}
+
+	protected static boolean isInStringBufferOperation(Node node, int length, String methodName) {
         if (!(node.getNthParent(length) instanceof ASTStatementExpression)) {
             return false;
         }

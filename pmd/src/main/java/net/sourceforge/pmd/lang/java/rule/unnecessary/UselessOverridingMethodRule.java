@@ -154,19 +154,20 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        ASTMethodDeclarator methodDeclarator = findFirstDegreeChildrenOfType(node, ASTMethodDeclarator.class).get(0);
-        if (!primaryPrefix.hasImageEqualTo(methodDeclarator.getImage())) {
-            return super.visit(node, data);
-        }
-
         List<ASTPrimarySuffix> primarySuffixList = findFirstDegreeChildrenOfType(primaryExpression,
                 ASTPrimarySuffix.class);
-        if (primarySuffixList.size() != 1) {
+        if (primarySuffixList.size() != 2) {
             // extra method call on result of super method
             return super.visit(node, data);
         }
-        //Process arguments
+
+        ASTMethodDeclarator methodDeclarator = findFirstDegreeChildrenOfType(node, ASTMethodDeclarator.class).get(0);
         ASTPrimarySuffix primarySuffix = primarySuffixList.get(0);
+        if (!primarySuffix.hasImageEqualTo(methodDeclarator.getImage())) {
+        	return super.visit(node, data);
+        }
+        //Process arguments
+        primarySuffix = primarySuffixList.get(1);
         ASTArguments arguments = (ASTArguments) primarySuffix.jjtGetChild(0);
         ASTFormalParameters formalParameters = (ASTFormalParameters) methodDeclarator.jjtGetChild(0);
         if (formalParameters.jjtGetNumChildren() != arguments.jjtGetNumChildren()) {
