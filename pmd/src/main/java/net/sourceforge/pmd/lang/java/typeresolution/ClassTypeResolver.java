@@ -134,7 +134,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	}
 
 	public ClassTypeResolver(ClassLoader classLoader) {
-		pmdClassLoader = new PMDASMClassLoader(classLoader);
+		pmdClassLoader = PMDASMClassLoader.getInstance(classLoader);
 	}
 
 	// FUTURE ASTCompilationUnit should not be a TypeNode.  Clean this up accordingly.
