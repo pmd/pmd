@@ -38,8 +38,8 @@ $ mvn verify post-site    #(order of targets DOES matter)
 <p>Unzip and test manually (just to be on the safe side of the road):</p>
 
 <source>
-./bin/run.sh pmd ~/tmp/Test.java xml java-unusedcode
-./bin/run.sh pmd ~/tmp/Test.java html rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d /tmp/Test -language java -f xml -R rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d /tmp/java -language java -f html -R rulesets/java/unusedcode.xml
 </source>
 
 <p>Check in all (version) changes to branch master:</p>
