@@ -1,4 +1,4 @@
-???? ??, 2012 - 5.0.1:
+November 28, 2012 - 5.0.1:
 
 Fixed bug  820: False+ AvoidReassigningParameters
 Fixed bug 1008: pmd-5.0.0: ImmutableField false positive on self-inc/dec
