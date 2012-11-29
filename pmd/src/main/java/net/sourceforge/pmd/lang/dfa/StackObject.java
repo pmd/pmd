@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.dfa;
 
 public class StackObject {
 
+    //@TODO make NodeType
     private int type;
     private DataFlowNode node;
 
@@ -24,7 +25,7 @@ public class StackObject {
 
     public String toString()
     {
-     return ( "StackObject: type="  + type + ", node=" + node.toString() );
+     return ( "StackObject: type="  + NodeType.stringFromType(type)+ "(" +type + "), node=" + node.toString() );
 
     }
 }

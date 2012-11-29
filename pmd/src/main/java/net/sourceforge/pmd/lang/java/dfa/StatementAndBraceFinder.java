@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.dfa;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.DataFlowHandler;
@@ -63,7 +64,10 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         node.jjtAccept(this, dataFlow);
 
         this.dataFlow.createEndNode(node.getEndLine());
-
+        if (LOGGER.isLoggable(Level.FINE))
+        {
+          LOGGER.fine("DataFlow is " + this.dataFlow.dump() ); // @TODO SRT Remove after development  
+        }
         Linker linker = new Linker(dataFlowHandler, dataFlow.getBraceStack(), dataFlow.getContinueBreakReturnStack());
         try {
             linker.computePaths();

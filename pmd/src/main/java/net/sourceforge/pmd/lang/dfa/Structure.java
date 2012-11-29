@@ -87,10 +87,14 @@ public class Structure {
 	return continueBreakReturnStack;
     }
 
+    /**
+     * 
+     * @return formatted dump of the DFA Structure's  
+     */
     public String dump() {
       StringBuilder stringDump = new StringBuilder() ; 
       stringDump.append ("Data Flow Analysis Structure:\n");
-      stringDump.append ("    Edge Nodes:");
+      stringDump.append ("    Edge Nodes (ContinueBraceReturn) :");
       for (StackObject stackObject  : continueBreakReturnStack )
       {
 	stringDump.append ("\nCBR =>" +  stackObject.toString());
@@ -98,7 +102,7 @@ public class Structure {
       stringDump.append ("\n    Scope Nodes:");
       for (StackObject stackObject  : braceStack )
       {
-	stringDump.append ("\nCBR =>" +  stackObject.toString());
+	stringDump.append ("\nBraces =>" +  stackObject.toString());
       }
       return stringDump.toString();
     }

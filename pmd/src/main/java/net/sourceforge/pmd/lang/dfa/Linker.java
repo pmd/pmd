@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.dfa;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.DataFlowHandler;
@@ -35,15 +36,20 @@ public class Linker {
         LOGGER.fine("SequenceChecking continueBreakReturnStack elements");
 	SequenceChecker sc = new SequenceChecker(braceStack);
 	while (!sc.run()) {
-          LOGGER.fine("Starting Sequence checking loop" );
+          LOGGER.fine("After sc.run - starting Sequence checking loop with firstIndex=" + sc.getFirstIndex() 
+                      + ", lastIndex " + sc.getLastIndex() 
+                      +" with this StackList "+dump("braceStack",braceStack)
+                     );
 	    if (sc.getFirstIndex() < 0 || sc.getLastIndex() < 0) {
-                LOGGER.severe("Sequence Checker problem: getFirstIndex()==" + sc.getFirstIndex() + ", getLastIndex()==" + sc.getLastIndex() );
+                LOGGER.severe("Sequence Checker problem: getFirstIndex()==" 
+                              + sc.getFirstIndex() + ", getLastIndex()==" + sc.getLastIndex() 
+                             );
 		throw new SequenceException("computePaths(): return index <  0");
 	    }
 
 	    StackObject firstStackObject = braceStack.get(sc.getFirstIndex());
 
-            LOGGER.fine("Checking first braceStack element of type=="+firstStackObject.getType() );
+            LOGGER.fine("Checking first braceStack element of type=="+ NodeType.stringFromType(firstStackObject.getType()) );
 	    switch (firstStackObject.getType()) {
 	    case NodeType.IF_EXPR:
                 LOGGER.finest("IF_EXPR");
@@ -88,8 +94,19 @@ public class Linker {
                 LOGGER.finest("Removing brace : " + y );
 		braceStack.remove(y);
               }
-          LOGGER.fine("Completed Sequence checking loop" );
+          LOGGER.fine("Completed Sequence checking loop" + braceStack  );
 	}
+        if (LOGGER.isLoggable(Level.FINER))
+        {
+          StringBuilder stringBuilder = new StringBuilder();
+          for (StackObject stackObject : braceStack)
+          {
+            stringBuilder.append("\n"+stackObject.toString());
+              
+          }
+          LOGGER.log(Level.FINER, "After Sequence checking loop : remaining braces=={0}", stringBuilder.toString());
+        }
+
 
         LOGGER.fine("Processing continueBreakReturnStack elements");
 	while (!continueBreakReturnStack.isEmpty()) {
@@ -342,13 +359,17 @@ public class Linker {
     }
 
     private void computeIf(int first, int second, int last) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"computeIf3");
+        LOGGER.entering(this.getClass().getCanonicalName(),"computeIf(3)",first+","+ second +","+ last);
 	DataFlowNode ifStart = this.braceStack.get(first).getDataFlowNode();
 	DataFlowNode ifEnd = this.braceStack.get(second).getDataFlowNode();
 	DataFlowNode elseEnd = this.braceStack.get(last).getDataFlowNode();
 
 	DataFlowNode elseStart = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
 	DataFlowNode end = elseEnd.getFlow().get(elseEnd.getIndex() + 1);
+
+        LOGGER.log(Level.FINEST, "If ifstart={0}, ifEnd={1}, elseEnd={2}, elseStart={3}, end={4}"
+                   , new Object[]{ifStart, ifEnd, elseEnd, elseStart, end}
+                  );
 
 	// if if-statement and else-statement contains statements or expressions
 	if (ifStart.getIndex() != ifEnd.getIndex() && ifEnd.getIndex() != elseEnd.getIndex()) {
@@ -363,11 +384,11 @@ public class Linker {
 	else if (ifEnd.getIndex() == elseEnd.getIndex() && ifStart.getIndex() != ifEnd.getIndex()) {
 	    ifStart.addPathToChild(end);
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"computeIf3");
+        LOGGER.exiting(this.getClass().getCanonicalName(),"computeIf(3)");
     }
 
     private void computeIf(int first, int last) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"computeIf");
+        LOGGER.entering(this.getClass().getCanonicalName(),"computeIf(2)");
 	DataFlowNode ifStart = this.braceStack.get(first).getDataFlowNode();
 	DataFlowNode ifEnd = this.braceStack.get(last).getDataFlowNode();
 
@@ -376,6 +397,21 @@ public class Linker {
 	    DataFlowNode end = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
 	    ifStart.addPathToChild(end);
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"computeIf");
+        LOGGER.exiting(this.getClass().getCanonicalName(),"computeIf(2)");
     }
+    /**
+     * 
+     * @return formatted dump of the StackList
+     */
+    public static String dump(String description, List<StackObject>  stackList) {
+      StringBuilder stringDump = new StringBuilder() ; 
+      stringDump.append ("Stack List (" + description + ") ListDump:\n");
+      for (StackObject stackObject  : stackList )
+      {
+	stringDump.append ("\n" +  stackObject.toString());
+      }
+      return stringDump.toString();
+    }
+
+
 }
