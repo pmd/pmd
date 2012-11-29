@@ -28,11 +28,6 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
 
     private Map<String, Integer> stats;
     private Map<String, SimpleNode> nodes;
-    private Map<String, ASTPackageSpecification> psNodes;
-    private Map<String, ASTPackageBody> pbNodes;
-    private Map<String, ASTTypeSpecification> tsNodes;
-    private Map<String, ASTTriggerUnit> trNodes;
-    private Map<String, ExecutableCode> exNodes;
 
     private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty(
     		"maxfields", "Max allowable fields",
