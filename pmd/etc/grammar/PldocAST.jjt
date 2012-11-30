@@ -1,22 +1,30 @@
-/* Copyright (C) 2002 Albert Tumanov
+/* Copyright (C) 2002-2012 Albert Tumanov
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+All rights reserved.
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the <organization> nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
 
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// $Header: /cvsroot/pldoc/sources/src/javacc/Parser.jj,v 1.2 2003/10/30 20:59:25 dvoytenko Exp $
 //
 options {
 	DEBUG_PARSER = false ;
@@ -99,6 +107,47 @@ public class PLSQLParser {
 //    System.err.println(s + " -> " + parser.purifyIdentifier(s));
   }
 
+  /**
+   Return canonical version of the Oracle
+  */
+  public static String canonicalName(String name)
+  {
+    StringBuilder s =  null ; 
+
+
+    if (-1 == name.indexOf('"') )
+    {
+      name = name.toUpperCase();
+      s = new StringBuilder(name.trim());
+    }
+    else
+    {
+      StringBuilder oldString = new StringBuilder( name.trim().length());
+      s = new StringBuilder(name.trim());
+      boolean quotedCharacter = false ;
+      for (int i=0; i<oldString.length(); i++) {
+        if (oldString.charAt(i) == '"')
+        {
+
+          oldString.deleteCharAt(i);
+          i--;
+
+          //Toggle whether following characters are quoted or not
+          quotedCharacter = !quotedCharacter ;
+        }
+        else
+        {
+          s.append( quotedCharacter 
+                    ? s.charAt(i) 
+                    : Character.toUpperCase(s.charAt(i)) 
+                  );
+        }
+      }
+    }
+    return s.toString();
+  }
+
+
     /** Act on the Node when opening scope. 
     */
     void jjtreeOpenNodeScope(Node n)
@@ -151,9 +200,13 @@ ASTInput Input() : {}
 	 | LOOKAHEAD(6) Table()  
 	 | LOOKAHEAD(6) View()   
 	 | LOOKAHEAD(6) TriggerUnit()  
-	 | AlterTrigger()  
-	 | Global()  
-	 | SqlPlusCommand() 
+	 | LOOKAHEAD(6) AlterTrigger()  
+	 | LOOKAHEAD(6) Synonym()   
+	 | LOOKAHEAD(6) Directory()   
+	 | LOOKAHEAD(6) DatabaseLink()   
+	 | LOOKAHEAD(6) Global()  
+         | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event 
+	 | LOOKAHEAD(2) SqlPlusCommand() 
 	 |(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
 	 )	
 	 ("/")*
@@ -162,7 +215,22 @@ ASTInput Input() : {}
       { return jjtThis ; }
 }
 
-ASTSqlPlusCommand SqlPlusCommand() : {}
+ASTDDLCommand DDLCommand() : 
+{ 
+ SimpleNode simpleNode = null ;
+}
+{
+  (
+    simpleNode = DDLEvent()
+    SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) 
+  )
+  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
+}
+
+ASTSqlPlusCommand SqlPlusCommand() :
+{ 
+ StringBuilder sb = new StringBuilder() ;
+}
 {
   (
   // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
@@ -197,10 +265,11 @@ ASTSqlPlusCommand SqlPlusCommand() : {}
   // Attach Library 
   | "." <ATTACH>
   )
+  { sb.append(token.image) ; sb.append(" ...") ; }  
   Skip2NextTokenOccurrence(EOL) //Tracker Issue 1433480 skip until next EOL Special Token   
   //[";" | "-"]
-    )
-    { return jjtThis ; }
+  )
+  { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
 }
 
 /*
@@ -527,7 +596,7 @@ ASTMethodDeclarator MethodDeclarator() :
 ASTFormalParameters FormalParameters() :
 {
  SimpleNode simpleNode = null ;
- StringBuffer sb = new StringBuffer();
+ StringBuilder sb = new StringBuilder();
 }
 {
   (
@@ -546,7 +615,7 @@ ASTFormalParameters FormalParameters() :
 ASTVariableOrConstantDeclarator VariableOrConstantDeclarator() :
 {
  SimpleNode simpleNode = null ;
- StringBuffer sb = new StringBuffer();
+ StringBuilder sb = new StringBuilder();
 }
 {
   (
@@ -584,7 +653,7 @@ ASTVariableOrConstantInitializer VariableOrConstantInitializer() :
 ASTDatatype Datatype() :
 { 
  SimpleNode simpleNode = null ;
- StringBuffer sb = new StringBuffer();
+ StringBuilder sb = new StringBuilder();
 }
 {
 	(
@@ -607,7 +676,7 @@ ASTDatatype Datatype() :
 ASTCompilationDataType CompilationDataType() :
 { 
   SimpleNode simpleNode = null; 
-  StringBuffer sb = new StringBuffer() ;
+  StringBuilder sb = new StringBuilder() ;
 }
 {
 	(
@@ -637,7 +706,7 @@ ASTCompilationDataType CompilationDataType() :
 
 ASTCollectionTypeName CollectionTypeName() :
 { SimpleNode size=null, precision=null;
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 }
 {
      (
@@ -661,7 +730,7 @@ ASTCollectionTypeName CollectionTypeName() :
 
 ASTScalarDataTypeName ScalarDataTypeName() :
 { SimpleNode size=null, precision=null ;
-	StringBuffer name = new StringBuffer();
+	StringBuilder name = new StringBuilder();
 	SimpleNode characterSet = null;
 }
 {
@@ -772,7 +841,7 @@ ASTDateTimeLiteral DateTimeLiteral() :
 { 
  Token t = null ; 
  SimpleNode simpleNode = null ;
- StringBuffer sb = new StringBuffer() ; 
+ StringBuilder sb = new StringBuilder() ; 
 }
 {
   /*
@@ -975,7 +1044,7 @@ void SkipPastNextTokenOccurrence(int target) :
 */
 ASTRead2NextOccurrence Read2NextOccurrence(String target) :
 {
-  StringBuffer sb = new StringBuffer();
+  StringBuilder sb = new StringBuilder();
   Token nextToken = getToken(1);
   while (!nextToken.image.equals(target)
 	 && nextToken.kind!=EOF 
@@ -995,7 +1064,7 @@ ASTRead2NextOccurrence Read2NextOccurrence(String target) :
 */
 ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) :
 {
-  StringBuffer sb = new StringBuffer();
+  StringBuilder sb = new StringBuilder();
   Token t = null;
   sb.append(Read2NextOccurrence(target)) ;
   t = getNextToken(); // Chomp this one 
@@ -1324,8 +1393,12 @@ ASTFetchStatement FetchStatement()  :
 ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
-   <EXECUTE> <IMMEDIATE> StringLiteral() /* <STRING_LITERAL> */ 
+   <EXECUTE> <IMMEDIATE> Expression() // StringLiteral() /* <STRING_LITERAL> */ 
 	//SRT 20110429 | <EXECUTE> <IMMEDIATE> StringExpression()  [<USING> Expression() ("," Expression())*] ";"
+	//SRT 20121126 | <EXECUTE> <IMMEDIATE> StringExpression()  
+	[ <INTO> Name() ("," Name())* ] 
+	[ <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())* ] 
+	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
 	// PIPELINED FUNCTION OUTPUT
       { return jjtThis ; }
 }
@@ -1564,7 +1637,7 @@ String expression() :
 ASTExpression Expression() :
 { 
   SimpleNode simpleNode = null; 
-  StringBuffer sb = new StringBuffer() ;
+  StringBuilder sb = new StringBuilder() ;
 }
 {
 	// Need syntactic lookahead to discriminate between Assignment and a procedure call
@@ -1581,7 +1654,7 @@ ASTExpression Expression() :
 ASTCompilationExpression CompilationExpression() :
 { 
   SimpleNode simpleNode = null; 
-  StringBuffer sb = new StringBuffer() ;
+  StringBuilder sb = new StringBuilder() ;
 }
 {
 	(
@@ -1611,7 +1684,7 @@ ASTCompilationExpression CompilationExpression() :
 
 
 ASTAssignment Assignment() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
   (simpleNode = PrimaryExpression() ) {sb.append(simpleNode.getImage());} 
@@ -1624,7 +1697,7 @@ ASTAssignment Assignment() :
 }
 
 ASTCaseExpression CaseExpression() :
-{ Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ Token thisToken;  SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
 	thisToken = <CASE> { sb.append(thisToken.image);} 
@@ -1648,7 +1721,7 @@ ASTCaseExpression CaseExpression() :
 LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
 */
 ASTLikeExpression LikeExpression() :
-{ Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ Token thisToken;  SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
         simpleNode = PrimaryExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
@@ -1670,7 +1743,7 @@ ASTLikeExpression LikeExpression() :
 }
 
 ASTTrimExpression TrimExpression() :
-{ Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ Token thisToken;  SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
 	(thisToken = <TRIM> ) { sb.append(thisToken.image);} 
@@ -1692,7 +1765,7 @@ TREAT ( Expression AS datatype)
 CAST ( Expression AS datatype)
 */
 ASTObjectExpression ObjectExpression() :
-{ Token thisToken;  SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ Token thisToken;  SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
 	(thisToken = <CAST> | thisToken = <TREAT> ) { sb.append(thisToken.image);} 
@@ -1712,7 +1785,7 @@ ASTObjectExpression ObjectExpression() :
 }
 
 ASTConditionalOrExpression ConditionalOrExpression() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
   (simpleNode = ConditionalAndExpression() ) { sb.append(simpleNode.getImage());}
@@ -1726,7 +1799,7 @@ ASTConditionalOrExpression ConditionalOrExpression() :
 }
 
 ASTConditionalAndExpression ConditionalAndExpression() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
    (simpleNode = EqualityExpression() ) { sb.append(simpleNode.getImage());}
@@ -1740,7 +1813,7 @@ ASTConditionalAndExpression ConditionalAndExpression() :
 }
 
 ASTEqualityExpression EqualityExpression() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
@@ -1767,7 +1840,7 @@ ASTEqualityExpression EqualityExpression() :
  * 2006-05-23 - Matthias Hendler - added FROM
  */
 ASTRelationalExpression RelationalExpression() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
   //AdditiveExpression() ( ( "<" | ">" | "<=" | ">=" | [<NOT>] (<IN> | <BETWEEN> | <LIKE> | <FROM>) ) AdditiveExpression() )*
@@ -1826,7 +1899,7 @@ ASTRelationalExpression RelationalExpression() :
 }
 
 ASTAdditiveExpression AdditiveExpression() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
   (simpleNode = MultiplicativeExpression() ) { sb.append(simpleNode.getImage()); }
@@ -1844,7 +1917,7 @@ ASTAdditiveExpression AdditiveExpression() :
 }
 
 ASTStringExpression StringExpression() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
   (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
@@ -1859,7 +1932,7 @@ ASTStringExpression StringExpression() :
 }
 
 ASTMultiplicativeExpression MultiplicativeExpression() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
 
   //UnaryExpression() ( ( "*" | "/" | <MOD> ) UnaryExpression() )*
@@ -1880,7 +1953,7 @@ ASTMultiplicativeExpression MultiplicativeExpression() :
 }
 
 ASTUnaryExpression UnaryExpression(boolean isUnarySign) :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
    ( ("+" ) { sb.append(isUnarySign ? " +" : " + "); }
@@ -1896,7 +1969,7 @@ ASTUnaryExpression UnaryExpression(boolean isUnarySign) :
 }
 
 ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
   (<NOT>) {sb.append(" NOT "); } 
@@ -1915,7 +1988,7 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
  * 2011-04-27 - SRT - Add optional NEW Keyword to cope with Object Type constructors
  */
 ASTPrimaryExpression PrimaryExpression() :
-{ Token thisToken ; SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ;
+{ Token thisToken ; SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ;
 }
 {
   ( 
@@ -1938,7 +2011,7 @@ ASTPrimaryExpression PrimaryExpression() :
 }
 
 ASTPrimaryPrefix PrimaryPrefix() :
-{ SimpleNode simpleNode = null; StringBuffer sb = new StringBuffer() ; 
+{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; 
 
 }
 {
@@ -1970,7 +2043,7 @@ ASTPrimaryPrefix PrimaryPrefix() :
 }
 
 ASTPrimarySuffix PrimarySuffix() :
-{ SimpleNode suffixNode = null ; SimpleNode arguments = null; StringBuffer sb = new StringBuffer() ; }
+{ SimpleNode suffixNode = null ; SimpleNode arguments = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
   (".") {sb.append(".");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.toString()) ; }
@@ -2037,7 +2110,7 @@ ASTLiteral Literal() :
 ASTStringLiteral  StringLiteral() :
 {
 	Token thisToken = null;
-	StringBuffer literal = new StringBuffer() ; 
+	StringBuilder literal = new StringBuilder() ; 
 	char startDelimiter ; 
 	char endDelimiter ; 
 	String terminator = null; 
@@ -2164,7 +2237,7 @@ ASTLabel Label() :
 ASTName Name() :
 {
  SimpleNode simpleNode = null;
- StringBuffer sb = new StringBuffer();
+ StringBuilder sb = new StringBuilder();
 }
 {
   //UnqualifiedID() (LOOKAHEAD(2) ("." | "%") QualifiedID())*
@@ -2183,7 +2256,7 @@ ASTName Name() :
 ASTQualifiedName QualifiedName() :
 {
  SimpleNode simpleNode = null;
- StringBuffer sb = new StringBuffer();
+ StringBuilder sb = new StringBuilder();
 }
 {
   //Essentially unchanged as it previously returned a String 
@@ -2348,11 +2421,12 @@ ASTTableColumn TableColumn()  :
 
 ASTView View()  :
 { 
+ SimpleNode simpleNode = null;
 }
 {
   <CREATE> [<OR> <REPLACE>]
   [[<NO>] <FORCE>]
-  <VIEW> ObjectNameDeclaration()
+  <VIEW> simpleNode = ObjectNameDeclaration()
   ["(" ViewColumn() ("," ViewColumn())* ")"]
   //### OF ... WITH OBJECT IDENTIFIER...
   <AS>
@@ -2360,7 +2434,67 @@ ASTView View()  :
   //### WITH ...
   (";" | "/")
   
-      { return jjtThis ; }
+  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
+}
+
+ASTSynonym Synonym()  :
+{ 
+ SimpleNode simpleNode = null;
+}
+{
+  <CREATE> [<OR> <REPLACE>]
+  [<PUBLIC>] <SYNONYM>
+  simpleNode = ObjectNameDeclaration()
+  <FOR>
+  ObjectNameDeclaration()
+  (";" | "/")
+  
+  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
+}
+
+ASTDirectory Directory()  :
+{ 
+ SimpleNode simpleNode = null;
+}
+{
+  <CREATE> [<OR> <REPLACE>]
+   <DIRECTORY>
+  simpleNode = ObjectNameDeclaration()
+  <AS>
+  StringLiteral()
+  (";" | "/")
+  
+  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
+}
+
+ASTDatabaseLink DatabaseLink()  :
+{ 
+ SimpleNode simpleNode = null;
+}
+{
+  <CREATE> 
+   [ <SHARED> ] [ <PUBLIC> ]
+   <DATABASE> <LINK>
+  simpleNode = ObjectNameDeclaration()
+  (
+   <CONNECT> <TO> 
+    (
+    	(<CURRENT_USER> )
+	|
+	(
+	UnqualifiedID() <IDENTIFIED> <BY> UnqualifiedID()
+	<AUTHENTICATED> <BY> 
+	UnqualifiedID() <IDENTIFIED> <BY> UnqualifiedID()
+	)
+
+    )
+    |
+    UnqualifiedID() <IDENTIFIED> <BY> UnqualifiedID()
+  )
+  [ <USING> StringLiteral() ]
+  (";" | "/")
+  
+  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 ASTViewColumn ViewColumn()  :
@@ -2871,7 +3005,7 @@ ASTTriggerUnit TriggerUnit()  :
 
 ASTTriggerTimingPointSection TriggerTimingPointSection()  :
 {
- StringBuffer sb = new StringBuffer();
+ StringBuilder sb = new StringBuilder();
 }
 {
  (
@@ -3279,6 +3413,7 @@ TOKEN [IGNORE_CASE]:
 <RESULT: "RESULT"> |
 <RESULT_CACHE: "RESULT_CACHE"> |
 <RETURN: "RETURN"> |
+<RETURNING: "RETURNING"> |
 <REVERSE: "REVERSE"> |
 <REVOKE: "REVOKE"> | //SRT 2011-04-17
 <ROLLBACK: "ROLLBACK"> |
@@ -3456,6 +3591,11 @@ TOKEN [IGNORE_CASE]:
 | <CROSSEDITION : "CROSSEDITION">
 | <DBTIMEZONE : "DBTIMEZONE">
 | <SESSIONTIMEZONE : "SESSIONTIMEZONE">
+| <AUTHENTICATED : "AUTHENTICATED">
+| <LINK : "LINK">
+| <SHARED : "SHARED">
+| <DIRECTORY : "DIRECTORY">
+| <USER : "USER">
 }
 
 /**
@@ -3667,7 +3807,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <ATTRIBUTE> //PLDoc Bug 3512149  test_unreserved_keyword.pks
 //| <ATTRIBUTES>
 | <AUDIT>
-//| <AUTHENTICATED>
+| <AUTHENTICATED>
 //| <AUTHENTICATION>
 | <AUTHID>
 //| <AUTHORIZATION>
@@ -3836,7 +3976,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <DETERMINES>
 //| <DICTIONARY>
 //| <DIMENSION>
-//| <DIRECTORY>
+| <DIRECTORY>
 | <DISABLE>
 //| <DISABLE_RPKE>
 | <DISASSOCIATE>
@@ -4055,7 +4195,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <LIKE4>
 //| <LIKEC>
 | <LIMIT>
-//| <LINK>
+| <LINK>
 //| <LIST>
 //| <LOB>
 | <LOCAL>
@@ -4435,7 +4575,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <RESUME>
 //| <RETENTION>
 | <RETURN>
-//| <RETURNING>
+| <RETURNING>
 //| <REUSE>
 | <REVERSE>
 //| <REWRITE>
@@ -4497,7 +4637,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SETS>
 //| <SETTINGS>
 //| <SEVERE>
-//| <SHARED>
+| <SHARED>
 //| <SHARED_POOL>
 //| <SHRINK>
 | <SHUTDOWN>
@@ -4659,7 +4799,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <USE_STORED_OUTLINES>
 //| <USE_TTT_FOR_GSETS>
 //| <USE_WEAK_NAME_RESL>
-//| <USER>
+| <USER>
 //| <USER_DEFINED>
 //| <USER_RECYCLEBIN>
 //| <USERS>
