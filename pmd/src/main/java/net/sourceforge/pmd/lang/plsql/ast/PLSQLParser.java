@@ -9054,7 +9054,7 @@ void attachLibrary() :
         }
 
         //We have found the target as a SpecialToken - break out of normal Token search
-        if (specToken.kind != target)
+        if (null != specToken && specToken.kind == target)
         {
                 break;
         }
