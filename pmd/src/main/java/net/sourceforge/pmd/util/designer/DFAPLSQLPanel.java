@@ -148,10 +148,7 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 		y = computeDrawPos(inode.getIndex());
 
 		g.drawArc(x, y, NODE_DIAMETER, NODE_DIAMETER, 0, 360);
-                System.err.println("SRT-inode index="+i+ ", with line= " + inode.getLine()
-                                    +" --> [" + lines.getLine(inode.getLine()) +"]"
-                                  );
-                // Get the code corresponding to the line numbre (lines is a Zero-based off set so subtract 1) 
+                // Get the code corresponding to the line number (lines is zero-based offset so subtract 1 from the line number) 
 		g.drawString(lines.getLine(inode.getLine() -1), x + 100 + maxAccessLabelWidth, y + 15);
 
 		// draw index number centered inside of node

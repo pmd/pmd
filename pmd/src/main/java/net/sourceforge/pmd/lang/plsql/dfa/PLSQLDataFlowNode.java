@@ -21,11 +21,11 @@ public class PLSQLDataFlowNode extends AbstractDataFlowNode {
     }
 
     public String toString() {
-	String res = "DataFlowNode: line " + this.getLine() + ", ";
+	String res = "PLSQLDataFlowNode: line " + this.getLine() + ", (Type BitField==" + type + ")";
 	if (node instanceof ASTProgramUnit || node instanceof ASTTypeMethod || node instanceof ASTTriggerUnit /* || node instanceof ASTConstructorDeclaration */) {
-	    res += (node instanceof ASTProgramUnit) ? "(method)" : "(trigger)";
+	    res += (node instanceof ASTProgramUnit || node instanceof ASTTypeMethod ) ? "(method)" : "(trigger)";
 	} else {
-	    res = super.toString();
+	    res += super.toString();
 	}
 	return res;
     }
