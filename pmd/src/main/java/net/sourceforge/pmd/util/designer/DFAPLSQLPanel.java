@@ -23,9 +23,6 @@ import javax.swing.event.ListSelectionListener;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
-import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -151,7 +148,11 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 		y = computeDrawPos(inode.getIndex());
 
 		g.drawArc(x, y, NODE_DIAMETER, NODE_DIAMETER, 0, 360);
-		g.drawString(lines.getLine(inode.getLine()), x + 100 + maxAccessLabelWidth, y + 15);
+                System.err.println("SRT-inode index="+i+ ", with line= " + inode.getLine()
+                                    +" --> [" + lines.getLine(inode.getLine()) +"]"
+                                  );
+                // Get the code corresponding to the line numbre (lines is a Zero-based off set so subtract 1) 
+		g.drawString(lines.getLine(inode.getLine() -1), x + 100 + maxAccessLabelWidth, y + 15);
 
 		// draw index number centered inside of node
 		String idx = String.valueOf(inode.getIndex());
@@ -320,19 +321,6 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 	dfaCanvas.setMethod(wrapper.getNode());
 	dfaCanvas.repaint();
     }
-
-    /* SRT 
-    public void resetTo(List<ASTMethodDeclaration> newNodes, LineGetter lines) {
-	dfaCanvas.setCode(lines);
-	nodes.clear();
-	for (ASTMethodDeclaration md : newNodes) {
-	    nodes.addElement(new ElementWrapper(md));
-	}
-	nodeList.setSelectedIndex(0);
-	dfaCanvas.setMethod(newNodes.get(0));
-	repaint();
-    }
-    */
 
     public void resetTo(List<ExecutableCode> newNodes, LineGetter lines) {
 	dfaCanvas.setCode(lines);

@@ -100,7 +100,26 @@ class SimpleNode extends net.sourceforge.pmd.lang.ast.AbstractNode implements No
 
   public String toString() { return PLSQLParserTreeConstants.jjtNodeName[id]; }
   public String toString(String prefix) { return prefix + toString(); }
-
+  
+  /*
+   * Return node image converted to the normal Oracle form.
+   * 
+   * <p>
+   * Normally this is uppercase, unless the names is quoted ("name").  
+   * </p>
+   */
+  public String getCanonicalImage() { return PLSQLParser.canonicalName(this.getImage()); }
+  
+  /** Convert arbitrary String to normal Oracle format, under assumtion that the passed image is an Oracle name.
+   * 
+   * <p>
+   * This a helper method for PLSQL classes dependent on SimpleNode, that would otherwise have to import PLSQParser.
+   * </p>
+   * @param image
+   * @return 
+   */
+  static public String getCanonicalImage(String image) { return PLSQLParser.canonicalName(image); }
+ 
   /* Override this method if you want to customize how the node dumps
      out its children. */
 

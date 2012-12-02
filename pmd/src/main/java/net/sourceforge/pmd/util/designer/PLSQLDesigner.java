@@ -104,9 +104,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.plsql.ast.ParseException;
-//SRT import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
-//SRT import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-//SRT import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 //import net.sourceforge.pmd.lang.plsql.ast.AccessNode;
 import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
@@ -518,7 +515,6 @@ public class PLSQLDesigner implements ClipboardOwner {
 				e.printStackTrace();
 			}
 
-			//List<ASTMethodDeclaration> methods = dfaGraphRule.getMethods();
 			List<ExecutableCode> executables = dfaGraphRule.getExecutables();
 			if (executables != null && !executables.isEmpty()) {
 				dfaPanel.resetTo(executables, codeEditorPane);

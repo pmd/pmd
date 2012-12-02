@@ -217,8 +217,9 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         }
         Structure dataFlow = (Structure) data;
 
+        //The equivalent of an ASTExpression is an Expression whose parent is an UnLabelledStatement
         if (node.jjtGetParent() instanceof ASTUnlabelledStatement) {
-            LOGGER.finest("createNewNode ASTStatementExpression: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            LOGGER.finest("createNewNode ASTSUnlabelledStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             dataFlow.createNewNode(node);
         } else 
         // TODO what about throw stmts?
