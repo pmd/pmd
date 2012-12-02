@@ -319,9 +319,9 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         //process the contents on the WHILE statement 
         super.visit(node, data);
 
-        dataFlow.createNewNode(node);
-        dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
-        LOGGER.finest("pushOnStack (ASTWhileStatement) WHILE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        //dataFlow.createNewNode(node);
+        //dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
+        //LOGGER.finest("pushOnStack (ASTWhileStatement) WHILE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return data;
     } 
 
@@ -427,10 +427,20 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
               dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
               LOGGER.finest("pushOnStack (Else-Belowi If) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             }
-        } /* SRT else if (node.jjtGetParent() instanceof ASTWhileStatement) {
-            dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
-                LOGGER.finest("pushOnStack WHILE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
-        } */ else if (node.jjtGetParent() instanceof ASTForStatement ) {
+        } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
+            ASTWhileStatement statement = (ASTWhileStatement) node.jjtGetParent();
+            List<ASTStatement> children = statement.findChildrenOfType(ASTStatement.class);
+            LOGGER.finest("(LastChildren): size " + children.size() );
+            ASTStatement lastChild = children.get(children.size()-1);
+            //lastChild = children.get(children.lastIndexOf(ASTStatement.class));
+
+            // Push on stack if this Node is the LAST Statement associated with the FOR Statment
+            if ( node.equals(lastChild) )
+            {
+              dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
+              LOGGER.finest("pushOnStack WHILE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            }
+        }  else if (node.jjtGetParent() instanceof ASTForStatement ) {
             ASTForStatement statement = (ASTForStatement) node.jjtGetParent();
             List<ASTStatement> children = statement.findChildrenOfType(ASTStatement.class);
             LOGGER.finest("(LastChildren): size " + children.size() );
