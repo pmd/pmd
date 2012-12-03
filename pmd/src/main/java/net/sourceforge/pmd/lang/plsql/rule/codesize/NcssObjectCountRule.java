@@ -64,10 +64,11 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
         LOGGER.entering(CLASS_PATH,"visit(ASTPackageBody)");
         return countNodeChildren(node, data);
     }
-
-    @Override
+ 
+   @Override
     public Object visit(ASTProgramUnit node, Object data) {
         LOGGER.entering(CLASS_PATH,"visit(ASTProgramUnit)");
+        LOGGER.exiting(CLASS_PATH,"visit(ASTProgramUnit)", countNodeChildren(node, data));
           return countNodeChildren(node, data);
     }
 
