@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 public
-class ASTTriggerUnit extends SimpleNode implements ExecutableCode {
+class ASTTriggerUnit extends SimpleNode implements ExecutableCode , OracleObject {
   public ASTTriggerUnit(int id) {
     super(id);
   }
@@ -25,5 +25,15 @@ class ASTTriggerUnit extends SimpleNode implements ExecutableCode {
   public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
+
+  /**
+   * Gets the name of the Oracle Object.
+   *
+   * @return a String representing the name of the Oracle Object
+   */
+  @Override
+  public String getObjectName() {
+    return this.getImage();
+   }
 }
 /* JavaCC - OriginalChecksum=6c4905d7f90f176f8e263e4d291b45cf (do not edit this line) */

@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 public
-class ASTProgramUnit extends SimpleNode implements ExecutableCode {
+class ASTProgramUnit extends SimpleNode implements ExecutableCode ,OracleObject {
   public ASTProgramUnit(int id) {
     super(id);
   }
@@ -31,6 +31,24 @@ class ASTProgramUnit extends SimpleNode implements ExecutableCode {
     return md.getImage();
 	}
     return null;
+   }
+
+  /**
+   * Gets the name of the Oracle Object.
+   *
+   * @return a String representing the name of the Oracle Object
+   */
+  @Override
+  public String getObjectName() {
+    //This _IS_ a schema-level Program Unit
+    if (null == this.jjtGetParent())
+    {
+      return this.getImage();
+    }
+    else
+    {
+      return this.getImage();
+    }
    }
 }
 /* JavaCC - OriginalChecksum=13a333959a49d61fb9c144e60232a83c (do not edit this line) */

@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 public
-class ASTPackageBody extends SimpleNode {
+class ASTPackageBody extends SimpleNode implements OracleObject {
   public ASTPackageBody(int id) {
     super(id);
   }
@@ -17,5 +17,16 @@ class ASTPackageBody extends SimpleNode {
   public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
+
+
+  /**
+   * Gets the name of the Oracle Object.
+   *
+   * @return a String representing the name of the Oracle Object
+   */
+  @Override
+  public String getObjectName() {
+    return this.getImage();
+   }
 }
 /* JavaCC - OriginalChecksum=01202eb77480ba76e7bde0de5b52e87d (do not edit this line) */
