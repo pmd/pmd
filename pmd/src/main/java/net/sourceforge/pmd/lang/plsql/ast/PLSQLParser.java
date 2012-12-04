@@ -52,7 +52,11 @@ public class PLSQLParser/*@bgen(jjtree)*/implements PLSQLParserTreeConstants, PL
     StringBuilder s =  null ;
 
 
-    if (-1 == name.indexOf('"') )
+    if (null == name )
+    {
+      return name;
+    }
+    else if (-1 == name.indexOf('"') )
     {
       name = name.toUpperCase();
       s = new StringBuilder(name.trim());
