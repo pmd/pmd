@@ -27,17 +27,24 @@ public class PMDCommandLineInterface {
 	public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
 	public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
+	public static final int ERROR_STATUS = 1;
+
 	public static PMDParameters extractParameters(PMDParameters arguments, String[] args, String progName) {
+		jcommander = new JCommander(arguments);
+		jcommander.setProgramName(progName);
+
 		try {
-			jcommander = new JCommander(arguments, args);
-			jcommander.setProgramName(progName);
+			jcommander.parse(args);
 			if (arguments.isHelp()) {
 				jcommander.usage();
-				System.exit(0);
+				System.out.println(buildUsageText());
+				setStatusCodeOrExit(0);
 			}
 		} catch (ParameterException e) {
+			jcommander.usage();
 			System.out.println(buildUsageText());
 			System.out.println(e.getMessage());
+			setStatusCodeOrExit(ERROR_STATUS);
 		}
 		return arguments;
 	}
@@ -61,7 +68,7 @@ public class PMDCommandLineInterface {
 		+ "3) A ruleset filename or a comma-delimited string of ruleset filenames"				+ PMD.EOL
 		+ PMD.EOL
 		+ "For example: "																		+ PMD.EOL
-		+ "c:\\> " + launchCmd + "-d c:\\my\\source\\code -f html -R java-unusedcode"					+ PMD.EOL
+		+ "c:\\> " + launchCmd + " -d c:\\my\\source\\code -f html -R java-unusedcode"			+ PMD.EOL
 		+ PMD.EOL;
 
 		fullText += supportedVersions() + PMD.EOL;
@@ -148,11 +155,15 @@ public class PMDCommandLineInterface {
 	}
 
 	public static void run(String[] args) {
-    	if ( isExitAfterRunSet() )
-    		System.exit(PMD.run(args));
-    	else
-    		setStatusCode(PMD.run(args));
+		setStatusCodeOrExit(PMD.run(args));
     }
+
+	public static void setStatusCodeOrExit(int status) {
+		if ( isExitAfterRunSet() )
+			System.exit(status);
+		else
+			setStatusCode(status);
+	}
 
     private static boolean isExitAfterRunSet() {
     	return (System.getenv(NO_EXIT_AFTER_RUN) == null ? false : true);

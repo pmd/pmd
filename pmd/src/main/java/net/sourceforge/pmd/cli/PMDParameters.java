@@ -28,7 +28,7 @@ public class PMDParameters {
 	@Parameter(names = {"-debug", "-verbose", "-D", "-V"}, description = "Debug mode")
 	private boolean debug = false;
 	
-	@Parameter(names = {"-help","-h","-H"}, description = "Display help on usage")
+	@Parameter(names = {"-help","-h","-H"}, description = "Display help on usage", help = true)
 	private boolean help = false;
 
 	@Parameter(names= {"-encoding", "-e"} , description = "specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)")
@@ -67,7 +67,7 @@ public class PMDParameters {
 	@Parameter(names = {"-language", "-l"}, description = "specify version of a language PMD should use")
 	private String language = Language.getDefaultLanguage().getTerseName();
 
-	@Parameter(names = "-auxclasspath", description = "specifies the classpath for libraries used by the source code (used by type resolution)\n(alternatively, a 'file://' URL to a text file containing path elements on consecutive lines")
+	@Parameter(names = "-auxclasspath", description = "specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
 	private String auxclasspath;	
 	
 	class PropertyConverter implements IStringConverter<Properties> {
