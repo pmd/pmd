@@ -1,5 +1,7 @@
 ???? ??, 2012 - 5.1.0:
 
+Fixed bug 1044: Unknown option: -excludemarker
+
 
 November 28, 2012 - 5.0.1:
 
