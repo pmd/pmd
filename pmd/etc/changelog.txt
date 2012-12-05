@@ -1,3 +1,7 @@
+???? ??, 2012 - 5.0.2:
+
+Fixed bug 1044: Unknown option: -excludemarker
+
 November 28, 2012 - 5.0.1:
 
 Fixed bug  820: False+ AvoidReassigningParameters
