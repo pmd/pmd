@@ -1,7 +1,7 @@
 ???? ??, 2012 - 5.1.0:
 
 Fixed bug 1044: Unknown option: -excludemarker
-
+Fixed bug 1048: CommentContent Rule, String Index out of range Exception
 
 November 28, 2012 - 5.0.1:
 
