@@ -371,9 +371,16 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
          * PLSQL AST now has explicit ELSIF and ELSE clauses
          * These can be used instead of the hasElse() calls 
          */
+        /*SRT
         if (node.jjtGetParent() instanceof ASTIfStatement) {
             ASTIfStatement st = (ASTIfStatement) node.jjtGetParent();
-            if (null == st.getFirstChildOfType(ASTElseClause.class) && null == st.getFirstChildOfType(ASTElsifClause.class)  ) 
+            List<ASTStatement> allStatements = st.findChildrenOfType(ASTStatement.class);
+            if (null == st.getFirstChildOfType(ASTElseClause.class) 
+                && 
+                null == st.getFirstChildOfType(ASTElsifClause.class)  
+                && 
+                node == allStatements.get(allStatements.size()-1) 
+               ) // The IF statements has no ELSE or ELSIF statements and this is the last Statement 
             {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
                 LOGGER.finest("pushOnStack (If) IF_LAST_STATEMENT_WITHOUT_ELSE: line " + node.getBeginLine() +", column " + node.getBeginColumn());
@@ -381,11 +388,16 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
                           || 
                           null != st.getFirstChildOfType(ASTElsifClause.class)  
                         )
-                       && !st.jjtGetChild(1).equals( (Node) node)) 
+                       && !st.jjtGetChild(1).equals( (Node) node)
+                       && 
+                       node == allStatements.get(allStatements.size()-1) 
+                      ) // has one or more ELSE or ELSE statements and it is not the first 
             {
-                dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
-                LOGGER.finest("pushOnStack (If) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
-            } else {
+                //SRT Do nothing because it has already been taken care of by the ELSE CLAUSE dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
+                LOGGER.finest("pushOnStack (If) ELSE_LAST_STATEMENT (skipped): line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            } else if (node == allStatements.get(allStatements.size()-1) ) // It is the last Statement 
+            {
+                
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
                 LOGGER.finest("pushOnStack (If) IF_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             }
@@ -398,6 +410,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             //Otherwise push an IF_LAST_STATEMENT
             List<ASTElsifClause> elsifs = ifst.findChildrenOfType(ASTElsifClause.class);
             ASTElsifClause lastElsif = elsifs.get(elsifs.size()-1);
+            List<ASTStatement> allStatements = thisElsif.findChildrenOfType(ASTStatement.class) ;
             LOGGER.finest("(LastElsif): size " + elsifs.size() );
             if (null == ifst.getFirstChildOfType(ASTElseClause.class) 
                 &&
@@ -405,8 +418,9 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
                ) 
             {
               
-              //Push on to the Stack only for the first Expression in a Statement 
-              if (thisElsif.jjtGetChild(1).equals(node))
+              //Push on to the Stack only for the last Statement in this clause 
+              //Restrict to the last Statement of the Else Clause
+              if (node == allStatements.get(allStatements.size()-1) )
               {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
                 LOGGER.finest("pushOnStack (Last Elsif) IF_LAST_STATEMENT_WITHOUT_ELSE: line " + node.getBeginLine() +", column " + node.getBeginColumn());
@@ -414,19 +428,31 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             }
             else
             {
-              dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
-              LOGGER.finest("pushOnStack (Elsif) IF_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+              //Push on to the Stack only for the last Statement in this clause 
+              //Restrict to the last Statement of the Else Clause
+              if (node == allStatements.get(allStatements.size()-1) )
+              {
+                dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
+                LOGGER.finest("pushOnStack (Elsif) IF_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+              }
             }
             //dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
             //    LOGGER.finest("pushOnStack (Elsif) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
-        } else if (node.jjtGetParent() instanceof ASTElseClause) {
+        } else */ 
+        if (node.jjtGetParent() instanceof ASTElseClause) {
+            List<ASTStatement> allStatements = node.jjtGetParent().findChildrenOfType(ASTStatement.class) ;
+           //Restrict to the last Statement of the Else Clause
+           if (node == allStatements.get(allStatements.size()-1) )
+           {
             if (node.jjtGetParent().jjtGetParent() instanceof ASTCaseStatement) {
                 dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
                 LOGGER.finest("pushOnStack (Else-Below Case) SWITCH_LAST_DEFAULT_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
-            } else {
+            } /*SRT else // if (node == node.jjtGetParent() instanceof ASTElseClause) { 
+            {
               dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
-              LOGGER.finest("pushOnStack (Else-Belowi If) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
-            }
+              LOGGER.finest("pushOnStack (Else-Below If) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            } */
+           }
         } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
             ASTWhileStatement statement = (ASTWhileStatement) node.jjtGetParent();
             List<ASTStatement> children = statement.findChildrenOfType(ASTStatement.class);
@@ -502,12 +528,80 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
      
-      //Could be part of IfStatement or CaseStatement
+      public Object visit(ASTIfStatement node, Object data) {
+        if (!(data instanceof Structure)) {
+            return data;
+        }
+        Structure dataFlow = (Structure) data;
+        LOGGER.finest("ElsifClause) super.visit line" );
+        super.visit(node, data);
+
+
+        /*
+         * PLSQL AST now has explicit ELSIF and ELSE clauses
+         * All of the ELSE_END_STATMENTS in an IF clause
+         * should point to the outer last clause because
+         * we have to convert a single PL/SQL IF/ELSIF/ELSE satement into the equivalent 
+         * set of nested Java if/else {if/else {if/else}} statements 
+         */
+          List<ASTElsifClause> elsifs = node.findChildrenOfType(ASTElsifClause.class);
+          ASTElseClause elseClause = node.getFirstChildOfType(ASTElseClause.class);
+          if (null == elseClause
+              && 
+              elsifs.isEmpty()
+             ) // The IF statements has no ELSE or ELSIF statements and this is the last Statement 
+          {
+              dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
+              LOGGER.finest("pushOnStack (ASTIfClause - no ELSIFs) IF_LAST_STATEMENT_WITHOUT_ELSE: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+          } 
+          else 
+          {
+            if (elsifs.size() > 0 )
+            {
+
+              ASTElsifClause lastElsifClause = elsifs.get(elsifs.size()-1);
+              for (ASTElsifClause elsifClause : elsifs )
+              {
+
+                /* If last ELSIF clause is not followed by a ELSE clause
+                 * then the last ELSIF is equivalent to an if statement without an else
+                 * Otherwise, it is equivalent to an if/else statement 
+                 */
+                if (lastElsifClause == elsifClause && null == elseClause)
+                {
+                  dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
+                  LOGGER.finest("pushOnStack (ASTIfClause - with ELSIFs) IF_LAST_STATEMENT_WITHOUT_ELSE: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+                }
+                //SRT else
+                {
+                  dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
+                  LOGGER.finest("pushOnStack (ASTIfClause - with ELSIFs) ELSE_LAST_STATEMENT : line " + node.getBeginLine() +", column " + node.getBeginColumn());
+                }
+              }
+            }
+
+            if (null != elseClause)
+            {
+              //Output one terminating else
+              dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
+              LOGGER.finest("pushOnStack (ASTIfClause - with ELSE) ELSE_LAST_STATEMENT : line " + node.getBeginLine() +", column " + node.getBeginColumn());
+            }
+        } 
+        return data;
+    }
+
       public Object visit(ASTElseClause node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
         }
         Structure dataFlow = (Structure) data;
+
+        if (node.jjtGetParent() instanceof ASTIfStatement) {
+          dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
+          LOGGER.finest("pushOnStack (Visit ASTElseClause) IF_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+          LOGGER.finest("ElseClause) super.visit line" );
+        }
+
         super.visit(node, data);
         if (node.jjtGetParent() instanceof ASTCaseStatement) {
             //dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
@@ -527,10 +621,12 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             return data;
         }
         Structure dataFlow = (Structure) data;
+        dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack (Visit ASTElsifClause) IF_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         LOGGER.finest("ElsifClause) super.visit line" );
         super.visit(node, data);
-        dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
-        LOGGER.finest("pushOnStack (ElsifClause) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
+        //dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
+        //LOGGER.finest("pushOnStack (ElsifClause) ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return data;
     }
 
