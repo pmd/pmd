@@ -16,6 +16,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public class Linker {
     private final static Logger LOGGER = Logger.getLogger(Linker.class.getPackage().getName()); 
+    private final static String CLASS_NAME = Linker.class.getCanonicalName();
+
     private final DataFlowHandler dataFlowHandler;
     private List<StackObject> braceStack;
     private List<StackObject> continueBreakReturnStack;
@@ -30,7 +32,7 @@ public class Linker {
      * Creates all the links between the data flow nodes.
      */
     public void computePaths() throws LinkerException, SequenceException {
-        LOGGER.entering(this.getClass().getCanonicalName(),"computePaths");
+        LOGGER.entering(CLASS_NAME,"computePaths");
 	// Returns true if there are more sequences, computes the first and
 	// the last index of the sequence.
         LOGGER.fine("SequenceChecking continueBreakReturnStack elements");
@@ -207,11 +209,11 @@ public class Linker {
 	    }
           LOGGER.fine("Completed continueBreakReturnStack processing loop" );
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"computePaths");
+        LOGGER.exiting(CLASS_NAME,"computePaths");
     }
 
     private DataFlowNode getNodeToBreakStatement(DataFlowNode node) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"getNodeToBreakStatement");
+        LOGGER.entering(CLASS_NAME,"getNodeToBreakStatement");
 	// What about breaks to labels above if statements?
 	List<DataFlowNode> bList = node.getFlow();
 	int findEnds = 1; // ignore ends of other for's while's etc.
@@ -249,23 +251,23 @@ public class Linker {
 		}
 	    }
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"getNodeToBreakSttement");
+        LOGGER.exiting(CLASS_NAME,"getNodeToBreakSttement");
 	return node.getFlow().get(index + 1);
     }
 
     private void computeDo(int first, int last) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"computeDo");
+        LOGGER.entering(CLASS_NAME,"computeDo");
 	DataFlowNode doSt = this.braceStack.get(first).getDataFlowNode();
 	DataFlowNode doExpr = this.braceStack.get(last).getDataFlowNode();
 	DataFlowNode doFirst = doSt.getFlow().get(doSt.getIndex() + 1);
 	if (doFirst.getIndex() != doExpr.getIndex()) {
 	    doExpr.addPathToChild(doFirst);
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"computeDo");
+        LOGGER.exiting(CLASS_NAME,"computeDo");
     }
 
     private void computeFor(int firstIndex, int lastIndex) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"computeFor");
+        LOGGER.entering(CLASS_NAME,"computeFor");
 	DataFlowNode fExpr = null;
 	DataFlowNode fUpdate = null;
 	DataFlowNode fSt = null;
@@ -312,11 +314,11 @@ public class Linker {
 		fExpr.addPathToChild(end);
 	    }
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"computeFor");
+        LOGGER.exiting(CLASS_NAME,"computeFor");
     }
 
     private void computeSwitch(int firstIndex, int lastIndex) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"computeSwitch");
+        LOGGER.entering(CLASS_NAME,"computeSwitch" );
 
 	int diff = lastIndex - firstIndex;
 	boolean defaultStatement = false;
@@ -325,10 +327,20 @@ public class Linker {
 	DataFlowNode sEnd = this.braceStack.get(lastIndex).getDataFlowNode();
 	DataFlowNode end = sEnd.getChildren().get(0);
 
+        LOGGER.fine(
+                     "Stack(sStart)=>" + sStart
+                     +",Stack(sEnd)=>" + sEnd
+                     +",end=>" + end
+                   );
+
 	for (int i = 0; i < diff - 2; i++) {
 	    StackObject so = this.braceStack.get(firstIndex + 2 + i);
 	    DataFlowNode node = so.getDataFlowNode();
 
+            LOGGER.fine( "so(" + (firstIndex + 2 + i) + ")=>" + so 
+                         +" has  dfn=>" + node 
+                         +" with first child =>" + node.getChildren().get(0)
+                       );
 	    sStart.addPathToChild(node.getChildren().get(0));
 
 	    if (so.getType() == NodeType.SWITCH_LAST_DEFAULT_STATEMENT) {
@@ -339,11 +351,11 @@ public class Linker {
 	if (!defaultStatement) {
 	    sStart.addPathToChild(end);
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"computeSwitch");
+        LOGGER.exiting(CLASS_NAME,"computeSwitch");
     }
 
     private void computeWhile(int first, int last) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"computeWhile with first and last of" 
+        LOGGER.entering(CLASS_NAME,"computeWhile with first and last of" 
                         + first + "," + last
                         );
 	DataFlowNode wStart = this.braceStack.get(first).getDataFlowNode();
@@ -355,11 +367,11 @@ public class Linker {
 	    end.reverseParentPathsTo(wStart);
 	    wStart.addPathToChild(end);
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"computeWhile");
+        LOGGER.exiting(CLASS_NAME,"computeWhile");
     }
 
     private void computeIf(int first, int second, int last) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"computeIf(3)",first+","+ second +","+ last);
+        LOGGER.entering(CLASS_NAME,"computeIf(3)",first+","+ second +","+ last);
 	DataFlowNode ifStart = this.braceStack.get(first).getDataFlowNode();
 	DataFlowNode ifEnd = this.braceStack.get(second).getDataFlowNode();
 	DataFlowNode elseEnd = this.braceStack.get(last).getDataFlowNode();
@@ -384,11 +396,11 @@ public class Linker {
 	else if (ifEnd.getIndex() == elseEnd.getIndex() && ifStart.getIndex() != ifEnd.getIndex()) {
 	    ifStart.addPathToChild(end);
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"computeIf(3)");
+        LOGGER.exiting(CLASS_NAME,"computeIf(3)");
     }
 
     private void computeIf(int first, int last) {
-        LOGGER.entering(this.getClass().getCanonicalName(),"computeIf(2)");
+        LOGGER.entering(CLASS_NAME,"computeIf(2)");
 	DataFlowNode ifStart = this.braceStack.get(first).getDataFlowNode();
 	DataFlowNode ifEnd = this.braceStack.get(last).getDataFlowNode();
 
@@ -397,7 +409,7 @@ public class Linker {
 	    DataFlowNode end = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
 	    ifStart.addPathToChild(end);
 	}
-        LOGGER.exiting(this.getClass().getCanonicalName(),"computeIf(2)");
+        LOGGER.exiting(CLASS_NAME,"computeIf(2)");
     }
     /**
      * 
