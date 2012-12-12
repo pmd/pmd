@@ -22,7 +22,7 @@
          </ul>
           <p>Each rewrite made it much faster, and now it can process the JDK 1.4 java.* packages in about 4 seconds (on my workstation, at least).</p>
      <p>Here's a <a href="images/screenshot_cpd.png">screenshot</a> of CPD after running on the JDK java.lang package.</p>
-     <p>Note that CPD works with Java, JSP, C, C++, Fortran and PHP code. Your own language is missing ? See how to add it <a href="cpd-parser-howto.html">here</a></p>
+     <p>Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code. Your own language is missing ? See how to add it <a href="cpd-parser-howto.html">here</a></p>
      <p>CPD is included with PMD, which you can download <a href="http://sourceforge.net/projects/pmd/files/pmd/">here</a>.
          Or, if you have <a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>, you can <a href="http://pmd.sourceforge.net/cpd.jnlp">run CPD by clicking here</a>.
      </p>
@@ -75,8 +75,13 @@
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
+    <td valign="top">ignoreAnnotations</td>
+    <td valign="top">Ignore annotations. More and more modern frameworks use annotations on classes and methods, which can be very redundant and trigger CPD matches. With J2EE (CDI, Transaction Handling, etc) and Spring (everything) annotations become very redundant. Often classes or methods have the same 5-6 lines of annotations. This causes false positives.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
     <td valign="top">language</td>
-    <td valign="top">Flag to select the appropriate language (e.g. <code>cpp</code>, <code>cs</code> <code>java</code>, <code>php</code>, <code>ruby</code>, and <code>ecmascript</code>); defaults to <code>java</code>.</td>
+    <td valign="top">Flag to select the appropriate language (e.g. <code>cpp</code>, <code>cs</code>, <code>java</code>, <code>php</code>, <code>ruby</code>, and <code>ecmascript</code>); defaults to <code>java</code>.</td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
@@ -136,10 +141,26 @@ $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/
 $ java -Xmx512m net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java
        </source>
 
-       </subsection>
    <p>Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0). This behavior has been introduced to ease CPD integration into scrips or
        hook, such as SVN hooks.</p>
+       </subsection>
 
+       <subsection name="Suppression">
+       By adding the annotations <strong>@SuppressWarnings("CPD-START")</strong> and <strong>@SuppressWarnings("CPD-END")</strong>
+       all code within will be ignored by CPD - thus you can avoid false positivs.
+       This provides the ability to ignore sections of source code, such as switch/case statements or parameterized factories.
+       <source>
+    //enable suppression
+    @SuppressWarnings("CPD-START")
+    public Object someParameterizedFactoryMethod(int x) throws Exception {
+        // any code here will be ignored for the duplication detection
+    }
+    //disable suppression
+    @SuppressWarnings("CPD-END)
+    public void nextMethod() {
+    }
+       </source>
+       </subsection>
    </section>
   </body>
 </document>

@@ -24,7 +24,7 @@ import java.util.Properties;
  * <project name="CPDProj" default="main" basedir=".">
  * <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  * <target name="main">
- * <cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true" ignoreLiterals="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
+ * <cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true" ignoreLiterals="true" ignoreAnnotations="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
  * <fileset dir="/path/to/my/src">
  * <include name="*.java"/>
  * </fileset>
@@ -45,6 +45,7 @@ public class CPDTask extends Task {
     private int minimumTokenCount;
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
+    private boolean ignoreAnnotations;
     private File outputFile;
     private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<FileSet>();
@@ -85,6 +86,9 @@ public class CPDTask extends Task {
         }
         if (ignoreIdentifiers) {
             p.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
+        }
+        if (ignoreAnnotations) {
+            p.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
         }
         return new LanguageFactory().createLanguage(language, p);
     }
@@ -155,6 +159,10 @@ public class CPDTask extends Task {
 
     public void setIgnoreIdentifiers(boolean value) {
         this.ignoreIdentifiers = value;
+    }
+
+    public void setIgnoreAnnotations(boolean value) {
+        this.ignoreAnnotations = value;
     }
 
     public void setOutputFile(File outputFile) {

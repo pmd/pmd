@@ -82,7 +82,7 @@ public class Foo {
   }
 }
 
-$ ./pmd.sh Foo.java text unusedcode -excludemarker TURN_OFF_WARNINGS
+$ ./run.sh pmd -d Foo.java -f text -R java-unusedcode -suppressmarker TURN_OFF_WARNINGS
 No problems found!
 UnusedLocalVariable rule violation suppressed by //NOPMD in /home/tom/pmd/pmd/bin/Foo.java
 </source>
@@ -99,7 +99,7 @@ public class Foo {
   }
  }
 }
-$ java net.sourceforge.pmd.PMD ~/tmp/Foo.java text basic
+$ java net.sourceforge.pmd.PMD -d ~/tmp/Foo.java -f text -R java-basic
 No problems found!
 $
 </source>

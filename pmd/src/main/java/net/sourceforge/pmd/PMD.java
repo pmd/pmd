@@ -335,8 +335,6 @@ public class PMD {
 		return languages;
 	}
 
-	private static final int ERROR_STATUS = 1;
-
     /**
      * Entry to invoke PMD as command line tool
      *
@@ -367,7 +365,7 @@ public class PMD {
 		} catch (Exception e) {
 			PMDCommandLineInterface.buildUsageText();
 			System.out.println(e.getMessage());
-			status = ERROR_STATUS;
+			status = PMDCommandLineInterface.ERROR_STATUS;
 		} finally {
 		    logHandlerManager.close();
 		    LOG.setLevel(oldLogLevel);
