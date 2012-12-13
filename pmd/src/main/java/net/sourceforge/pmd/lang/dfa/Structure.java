@@ -97,12 +97,12 @@ public class Structure {
       stringDump.append ("    Edge Nodes (ContinueBraceReturn) :");
       for (StackObject stackObject  : continueBreakReturnStack )
       {
-	stringDump.append ("\nCBR =>" +  stackObject.toString());
+	stringDump.append("\nCBR => ").append(stackObject.toString());
       }
       stringDump.append ("\n    Scope Nodes:");
       for (StackObject stackObject  : braceStack )
       {
-	stringDump.append ("\nBraces =>" +  stackObject.toString());
+	stringDump.append("\nBraces => ").append(stackObject.toString());
       }
       return stringDump.toString();
     }
