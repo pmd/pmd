@@ -9,7 +9,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
-import net.sourceforge.pmd.lang.plsql.ParserTst;
+import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
@@ -20,7 +20,7 @@ import org.junit.Test;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 
 
-public class StatementAndBraceFinderTest extends ParserTst {
+public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
     /**Java ASTStetamentExpressionequivalent is inferred as an Expression() which has
      * an UnlabelledStatement as a parent.

@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 
-public abstract class ParserTst {
+public abstract class AbstractPLSQLParserTst {
 
     private class Collector<E> implements InvocationHandler {
         private Class<E> clazz = null;
@@ -108,6 +108,10 @@ public abstract class ParserTst {
     public ASTInput parsePLSQL(LanguageVersion languageVersion, String code) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	return (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
+    }
+    
+    public ASTInput parsePLSQL(String code) {
+    	return parsePLSQL(LanguageVersion.PLSQL, code);
     }
     
     public Node parseLanguage(LanguageVersion languageVersion, String code) {
