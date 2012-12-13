@@ -7,7 +7,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
@@ -22,7 +22,7 @@ public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
 		PLSQLParserVisitor plsqlParserVistor = new PLSQLParserVisitorAdapter() {
 			// Perform a visitation of the AST to index nodes which need
 			// visiting by type
-			public Object visit(SimpleNode node, Object data) {
+			public Object visit(PLSQLNode node, Object data) {
 				indexNode(node);
 				return super.visit(node, data);
 			}
@@ -45,7 +45,7 @@ public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
 		if (rule instanceof XPathRule) {
 			((XPathRule)rule).evaluate(node, ctx);
 		} else {
-			((SimpleNode)node).jjtAccept((PLSQLParserVisitor)rule, ctx);
+			((PLSQLNode)node).jjtAccept((PLSQLParserVisitor)rule, ctx);
 		}
                 LOGGER.exiting(CLASS_PATH,"visit");
 	}

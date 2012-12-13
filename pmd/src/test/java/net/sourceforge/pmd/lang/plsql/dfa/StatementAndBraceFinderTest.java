@@ -1,22 +1,23 @@
 package net.sourceforge.pmd.lang.plsql.dfa;
 
-import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
-import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.plsql.ParserTst;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
-import net.sourceforge.pmd.testframework.plsql.ParserTst;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 import org.junit.Test;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 
 
 public class StatementAndBraceFinderTest extends ParserTst {
@@ -36,7 +37,7 @@ public class StatementAndBraceFinderTest extends ParserTst {
         System.err.println("DataFlowNodes List size="+dfns.size()) ;
         DataFlowNode parentDfn =  dfns.get(0);
         System.err.println("parentDataFlowNode="+parentDfn ) ;
-        SimpleNode simpleNode = (SimpleNode) parentDfn.getNode();
+        PLSQLNode simpleNode = (PLSQLNode) parentDfn.getNode();
         System.err.println("parentDataFlowNode="+parentDfn ) ;
         ASTProgramUnit exParent = (ASTProgramUnit) parentDfn.getNode();
         System.err.println("ASTProgramUnit="+exParent ); 

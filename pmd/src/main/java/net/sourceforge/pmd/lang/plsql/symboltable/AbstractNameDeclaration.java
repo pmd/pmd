@@ -3,17 +3,17 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 public abstract class AbstractNameDeclaration implements NameDeclaration {
 
-    protected SimpleNode node;
+    protected PLSQLNode node;
 
-    public AbstractNameDeclaration(SimpleNode node) {
+    public AbstractNameDeclaration(PLSQLNode node) {
         this.node = node;
     }
 
-    public SimpleNode getNode() {
+    public PLSQLNode getNode() {
         return node;
     }
 

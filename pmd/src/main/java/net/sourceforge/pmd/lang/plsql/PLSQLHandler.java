@@ -12,18 +12,17 @@ import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
-import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-import net.sourceforge.pmd.lang.plsql.ast.DumpFacade;
-import net.sourceforge.pmd.lang.plsql.PLSQLParser;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
-import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
-import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
-import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
-//import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 import net.sourceforge.pmd.lang.java.xpath.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.xpath.JavaFunctions;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
+import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
+import net.sourceforge.pmd.lang.plsql.ast.DumpFacade;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
+import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
+import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
+import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+//import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 
 /**
  * Implementation of LanguageVersionHandler for the PLSQL AST. It uses anonymous classes
@@ -94,7 +93,7 @@ public class PLSQLHandler extends AbstractLanguageVersionHandler {
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
-		new DumpFacade().initializeWith(writer, prefix, recurse, (SimpleNode) rootNode);
+		new DumpFacade().initializeWith(writer, prefix, recurse, (PLSQLNode) rootNode);
 	    }
 	};
     }

@@ -2,30 +2,30 @@ package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTExitStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTExceptionHandler;
-import net.sourceforge.pmd.lang.plsql.ast.ASTContinueStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTElseClause;
-import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
-import net.sourceforge.pmd.lang.plsql.ast.ASTLabelledStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTReturnStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpression;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpressionList;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTContinueStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTElseClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTExceptionHandler;
+import net.sourceforge.pmd.lang.plsql.ast.ASTExitStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
+import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTGotoStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTLabelledStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTRaiseStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractStatisticalPLSQLRule;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTLocalVariableDeclaration;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpression;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpressionList;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchLabel;
 
 /**
  * Abstract superclass for NCSS counting methods. Analogous to and cribbed from {@link net.sourceforge.pmd.lang.java.rule.codesize.AbstractNcssCountRule}.
@@ -45,11 +45,11 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
     }
 
     @Override
-    public Object visit(SimpleNode node, Object data) {
+    public Object visit(PLSQLNode node, Object data) {
 	int numNodes = 0;
 
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-	    SimpleNode n = (SimpleNode) node.jjtGetChild(i);
+		PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
 	    Integer treeSize = (Integer) n.jjtAccept(this, data);
 	    numNodes += treeSize.intValue();
 	}
@@ -81,7 +81,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 	Integer nodeCount = null;
 	int lineCount = 0;
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-	    nodeCount = (Integer) ((SimpleNode) node.jjtGetChild(i)).jjtAccept(this, data);
+	    nodeCount = (Integer) ((PLSQLNode) node.jjtGetChild(i)).jjtAccept(this, data);
 	    lineCount += nodeCount.intValue();
 	}
 	return ++lineCount;

@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.plsql.ast;
  *
  * @author sturton
  */
-public interface OracleObject extends Node {
+public interface OracleObject extends PLSQLNode {
 
   /**
    * Gets the name of the executable: named thus to match {@link net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration}.

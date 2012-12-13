@@ -7,20 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTArguments;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTMemberSelector;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTMemberSelector;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 public class NameFinder {
 
     private List<NameOccurrence> names = new ArrayList<NameOccurrence>();
 
     public NameFinder(ASTPrimaryExpression node) {
-        SimpleNode simpleNode = (SimpleNode) node.jjtGetChild(0);
+    	Node simpleNode = node.jjtGetChild(0);
         if (simpleNode instanceof ASTPrimaryPrefix) 
         {
           ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) simpleNode ;
@@ -32,7 +33,7 @@ public class NameFinder {
           }
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            checkForNameChild((SimpleNode)node.jjtGetChild(i));
+            checkForNameChild(node.jjtGetChild(i));
         }
     }
 
@@ -40,9 +41,9 @@ public class NameFinder {
         return names;
     }
 
-    private void checkForNameChild(SimpleNode node) {
+    private void checkForNameChild(Node node) {
         if (node.getImage() != null) {
-            add(new NameOccurrence(node, node.getImage()));
+            add(new NameOccurrence((PLSQLNode) node, node.getImage()));
         }
         if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTName) {
             ASTName grandchild = (ASTName) node.jjtGetChild(0);

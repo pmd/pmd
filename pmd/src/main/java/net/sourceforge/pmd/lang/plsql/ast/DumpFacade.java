@@ -11,7 +11,7 @@ public class DumpFacade extends PLSQLParserVisitorAdapter {
 	private PrintWriter writer;
 	private boolean recurse;
 
-	public void initializeWith(Writer writer, String prefix, boolean recurse, SimpleNode node) {
+	public void initializeWith(Writer writer, String prefix, boolean recurse, PLSQLNode node) {
 		this.writer = (writer instanceof PrintWriter) ? (PrintWriter) writer : new PrintWriter(writer);
 		this.recurse = recurse;
 		this.visit(node, prefix);
@@ -23,7 +23,7 @@ public class DumpFacade extends PLSQLParserVisitorAdapter {
 	}
 
 	@Override
-	public Object visit(SimpleNode node, Object data) {
+	public Object visit(PLSQLNode node, Object data) {
 		dump(node, (String) data);
 		if (recurse) {
 			return super.visit(node, data + " ");
@@ -32,7 +32,7 @@ public class DumpFacade extends PLSQLParserVisitorAdapter {
 		}
 	}
 
-	private void dump(SimpleNode node, String prefix) {
+	private void dump(PLSQLNode node, String prefix) {
 		//
 		// Dump format is generally composed of the following items...
 		//

@@ -3,10 +3,10 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 public interface NameDeclaration {
-    SimpleNode getNode();
+    PLSQLNode getNode();
 
     String getImage();
 

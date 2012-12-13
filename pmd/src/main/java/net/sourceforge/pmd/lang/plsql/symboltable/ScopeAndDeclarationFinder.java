@@ -3,46 +3,40 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
-import java.util.List;
-import java.util.logging.Logger;
 import java.util.Stack;
+import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.ast.Node;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTBlock;
+import net.sourceforge.pmd.lang.plsql.ast.ASTDeclarativeUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTForAllStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTID;
+import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
+import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.plsql.ast.ASTObjectDeclaration;
+import net.sourceforge.pmd.lang.plsql.ast.ASTObjectNameDeclaration;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
+import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
+import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
+
+//import net.sourceforge.pmd.lang.plsql.ast.ASTAnnotationTypeDeclaration;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTBlockStatement;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTCatchStatement;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTClassOrInterfaceBodyDeclaration;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTDeclarativeUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTID;
-import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTEnumDeclaration;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTFinallyStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTForAllStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTObjectNameDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.plsql.ast.ASTObjectDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTCompoundTriggerBlock;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchStatement;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTTryStatement;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTTypeParameters;
-import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 
 /**
  * Visitor for scope creation.
@@ -74,7 +68,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
      * @param node     the AST node for which the scope is to be set.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void addScope(Scope newScope, SimpleNode node) {
+    private void addScope(Scope newScope, PLSQLNode node) {
 	newScope.setParent(scopes.peek());
 	scopes.push(newScope);
 	node.setScope(newScope);
@@ -88,7 +82,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void createLocalScope(SimpleNode node) {
+    private void createLocalScope(PLSQLNode node) {
 	addScope(new LocalScope(), node);
     }
 
@@ -100,7 +94,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void createMethodScope(SimpleNode node) {
+    private void createMethodScope(PLSQLNode node) {
 	addScope(new MethodScope(node), node);
     }
 
@@ -112,7 +106,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void createClassScope(SimpleNode node) {
+    private void createClassScope(PLSQLNode node) {
 	if (node instanceof ASTDeclarativeUnit) {
 	    addScope(new ClassScope(), node);
 	} else {
@@ -150,7 +144,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     @Override
     public Object visit(ASTPackageSpecification node, Object data) {
 	createClassScope(node);
-	Scope s = ((SimpleNode)node.jjtGetParent()).getScope();
+	Scope s = ((PLSQLNode)node.jjtGetParent()).getScope();
 	s.addDeclaration(new ClassNameDeclaration(node));
 	cont(node);
 	return data;
@@ -159,7 +153,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     @Override
     public Object visit(ASTPackageBody node, Object data) {
 	createClassScope(node);
-	Scope s = ((SimpleNode)node.jjtGetParent()).getScope();
+	Scope s = ((PLSQLNode)node.jjtGetParent()).getScope();
 	s.addDeclaration(new ClassNameDeclaration(node));
 	cont(node);
 	return data;
@@ -169,7 +163,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     @Override
     public Object visit(ASTTypeSpecification node, Object data) {
 	createClassScope(node);
-	Scope s = ((SimpleNode)node.jjtGetParent()).getScope();
+	Scope s = ((PLSQLNode)node.jjtGetParent()).getScope();
 	s.addDeclaration(new ClassNameDeclaration(node));
 	cont(node);
 	return data;
@@ -178,7 +172,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     @Override
     public Object visit(ASTTriggerUnit node, Object data) {
 	createClassScope(node);
-	Scope s = ((SimpleNode)node.jjtGetParent()).getScope();
+	Scope s = ((PLSQLNode)node.jjtGetParent()).getScope();
 	s.addDeclaration(new ClassNameDeclaration(node));
 	cont(node);
 	return data;
@@ -397,7 +391,7 @@ public Object visit(ASTTypeMethod node, Object data) {
 	//return data;
     //}
 
-    private void cont(SimpleNode node) {
+    private void cont(PLSQLNode node) {
 	super.visit(node, null);
 	scopes.pop();
     }

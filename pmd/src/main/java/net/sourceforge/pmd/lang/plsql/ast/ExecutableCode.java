@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 
 /**
  *

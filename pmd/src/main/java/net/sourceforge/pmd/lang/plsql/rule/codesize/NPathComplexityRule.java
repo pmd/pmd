@@ -4,26 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTElseClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
-import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTElseClause;
-import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
-import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractStatisticalPLSQLRule;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
@@ -43,14 +43,14 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	setProperty(MINIMUM_DESCRIPTOR, 200d);
     }
 
-    private int complexityMultipleOf(SimpleNode node, int npathStart, Object data) {
+    private int complexityMultipleOf(PLSQLNode node, int npathStart, Object data) {
         LOGGER.entering(CLASS_PATH,"complexityMultipleOf(SimpleNode)");
 
 	int npath = npathStart;
-	SimpleNode n;
+	PLSQLNode n;
 
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-	    n = (SimpleNode) node.jjtGetChild(i);
+	    n = (PLSQLNode) node.jjtGetChild(i);
 	    npath *= (Integer) n.jjtAccept(this, data);
 	}
 
@@ -58,14 +58,14 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	return npath;
     }
 
-    private int complexitySumOf(SimpleNode node, int npathStart, Object data) {
+    private int complexitySumOf(PLSQLNode node, int npathStart, Object data) {
         LOGGER.entering(CLASS_PATH,"complexitySumOf(SimpleNode)", npathStart );
 
 	int npath = npathStart;
-	SimpleNode n;
+	PLSQLNode n;
 
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-	    n = (SimpleNode) node.jjtGetChild(i);
+	    n = (PLSQLNode) node.jjtGetChild(i);
 	    npath += (Integer) n.jjtAccept(this, data);
 	}
 
@@ -154,7 +154,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
     }
 
     @Override
-    public Object visit(SimpleNode node, Object data) {
+    public Object visit(PLSQLNode node, Object data) {
         LOGGER.entering(CLASS_PATH,"visit(SimpleNode)");
 	int npath = complexityMultipleOf(node, 1, data);
         LOGGER.exiting(CLASS_PATH,"visit(SimpleNode)" ,npath );
@@ -170,14 +170,14 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
 	int complexity = 0;
 
-	List<SimpleNode> statementChildren = new ArrayList<SimpleNode>();
+	List<PLSQLNode> statementChildren = new ArrayList<PLSQLNode>();
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 	    if (
                 node.jjtGetChild(i).getClass() == ASTStatement.class
                 ||node.jjtGetChild(i).getClass() == ASTElsifClause.class
                 ||node.jjtGetChild(i).getClass() == ASTElseClause.class
                ) {
-		statementChildren.add((SimpleNode) node.jjtGetChild(i));
+		statementChildren.add((PLSQLNode) node.jjtGetChild(i));
 	    }
 	}
         LOGGER.finest(statementChildren.size() + " statementChildren found for IF statement " + node.getBeginLine() +", column " + node.getBeginColumn());
@@ -204,7 +204,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	}
         * */
 
-	for (SimpleNode element : statementChildren) {
+	for (PLSQLNode element : statementChildren) {
 	    complexity += (Integer) element.jjtAccept(this, data);
 	}
 
@@ -221,12 +221,12 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
 	int complexity = 0;
 
-	List<SimpleNode> statementChildren = new ArrayList<SimpleNode>();
+	List<PLSQLNode> statementChildren = new ArrayList<PLSQLNode>();
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 	    if (
                 node.jjtGetChild(i).getClass() == ASTStatement.class
                ) {
-		statementChildren.add((SimpleNode) node.jjtGetChild(i));
+		statementChildren.add((PLSQLNode) node.jjtGetChild(i));
 	    }
 	}
         LOGGER.finest(statementChildren.size() + " statementChildren found for ELSIF statement " + node.getBeginLine() +", column " + node.getBeginColumn());
@@ -240,7 +240,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	}
         */
 
-	for (SimpleNode element : statementChildren) {
+	for (PLSQLNode element : statementChildren) {
 	    complexity += (Integer) element.jjtAccept(this, data);
 	}
 
@@ -255,17 +255,17 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
 	int complexity = 0;
 
-	List<SimpleNode> statementChildren = new ArrayList<SimpleNode>();
+	List<PLSQLNode> statementChildren = new ArrayList<PLSQLNode>();
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 	    if (
                 node.jjtGetChild(i).getClass() == ASTStatement.class
                ) {
-		statementChildren.add((SimpleNode) node.jjtGetChild(i));
+		statementChildren.add((PLSQLNode) node.jjtGetChild(i));
 	    }
 	}
         LOGGER.finest(statementChildren.size() + " statementChildren found for ELSE clause statement " + node.getBeginLine() +", column " + node.getBeginColumn());
 
-	for (SimpleNode element : statementChildren) {
+	for (PLSQLNode element : statementChildren) {
 	    complexity += (Integer) element.jjtAccept(this, data);
 	}
 
@@ -280,7 +280,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
 	int boolCompWhile = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
-	Integer nPathWhile = (Integer) ((SimpleNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
+	Integer nPathWhile = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
 
         LOGGER.exiting(CLASS_PATH,"visit(ASTWhileStatement)", (boolCompWhile + nPathWhile + 1));
 	return Integer.valueOf(boolCompWhile + nPathWhile + 1);
@@ -293,7 +293,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
 	int boolCompDo = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
-	Integer nPathDo = (Integer) ((SimpleNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
+	Integer nPathDo = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
 
         LOGGER.exiting(CLASS_PATH,"visit(ASTLoopStatement)" ,(boolCompDo + nPathDo + 1)  );
 	return Integer.valueOf(boolCompDo + nPathDo + 1);
@@ -306,7 +306,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
 	int boolCompFor = sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
 
-	Integer nPathFor = (Integer) ((SimpleNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
+	Integer nPathFor = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
 
         LOGGER.exiting(CLASS_PATH,"visit(ASTForStatement)",(boolCompFor + nPathFor + 1)  );
 	return Integer.valueOf(boolCompFor + nPathFor + 1);
@@ -347,7 +347,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	int npath = 1;
 	int caseRange = 0;
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-	    SimpleNode n = (SimpleNode) node.jjtGetChild(i);
+		PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
 
 	    // Fall-through labels count as 1 for complexity
             Integer complexity = (Integer) n.jjtAccept(this, data);
@@ -369,7 +369,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	int npath = 0;
 	int caseRange = 0;
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-	    SimpleNode n = (SimpleNode) node.jjtGetChild(i);
+		PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
 
 	    // Fall-through labels count as 1 for complexity
             Integer complexity = (Integer) n.jjtAccept(this, data);
