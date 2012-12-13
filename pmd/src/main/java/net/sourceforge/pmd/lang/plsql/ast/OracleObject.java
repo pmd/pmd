@@ -1,12 +1,10 @@
 /**
- *  Methods required to be considered as an executable piece of code.
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.plsql.ast;
 
-
 /**
- *
- * @author sturton
+ *  Methods required to be considered as an executable piece of code.
  */
 public interface OracleObject extends PLSQLNode {
 
@@ -16,5 +14,4 @@ public interface OracleObject extends PLSQLNode {
    * @return a String representing the name of the method
    */
   String getObjectName();
-  
 }
