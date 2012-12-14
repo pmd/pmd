@@ -333,6 +333,7 @@
             <li>Roman - Fixed bug 3546093: Type resolution very slow for big project.</li>
             <li>Florian Bauer - Add C# support for CPD.</li>
             <li>Matthew Short - Support in CPD for IgnoreAnnotations and SuppressWarnings("CPD-START").</li>
+            <li>Simon Gijsen - contributing a PMD logo with a modern look.</li>
         </ul>
         </subsection>
         <subsection name="Organizations">
@@ -371,6 +372,9 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 <a href="http://www.yourkit.com/java/profiler/index.jsp">YourKit Java Profiler</a> and
 <a href="http://www.yourkit.com/.net/profiler/index.jsp">YourKit .NET Profiler</a>.
                     </td></tr>
+            <tr><td><center><img src="images/bb-pmd.png"/></center></td>
+                <td><a href="http://www.bijzonderbezig.nl/">Bijzonder Bezig</a> for giving the PMD logo a modern look.
+                </td></tr>
         </table>
         </subsection>
     </section>
