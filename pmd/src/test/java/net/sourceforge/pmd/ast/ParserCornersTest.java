@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.ast;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -43,6 +46,25 @@ public class ParserCornersTest extends ParserTst {
     	
     	String test17 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases17.java");
     	parseJava17(test17);
+    }
+
+    @Test
+    public void testMultipleExceptionCatching() {
+    	String code = "public class Foo { public void bar() { "
+    			+ "try { System.out.println(); } catch (RuntimeException | IOException e) {} } }";
+    	try {
+    		parseJava15(code);
+    		fail("Expected exception");
+    	} catch (ParseException e) {
+    		assertEquals("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!", e.getMessage());
+    	}
+
+    	try {
+    		parseJava17(code);
+    		// no exception expected
+    	} catch (ParseException e) {
+    		fail();
+    	}
     }
     
     private String readAsString(String resource) {

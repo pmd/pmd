@@ -175,6 +175,12 @@ public class JavaParser {
   	}
   }
 
+  private void checkForBadMultipleExceptionsCatching() {
+  	if (jdkVersion < 7) {
+      throw new ParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!");
+  	}
+  }
+
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
@@ -1368,7 +1374,7 @@ void FormalParameter() :
 }
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" Type())*
+   Type() ("|" {checkForBadMultipleExceptionsCatching();} Type())*
    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }

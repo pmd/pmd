@@ -21,9 +21,6 @@ import org.junit.runner.notification.RunNotifier;
  * Standard methods for (simple) testcases.
  */
 @RunWith(SimpleAggregatorTst.CustomXmlTestClassMethodsRunner.class)
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
 public abstract class SimpleAggregatorTst extends RuleTst {
     /**
      * Run a set of tests defined in an XML test-data file for a rule. The file
