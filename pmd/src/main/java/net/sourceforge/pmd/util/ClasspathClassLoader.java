@@ -13,6 +13,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String.
  * If the String looks like a URL to a file (e.g. starts with <code>file://</code>)
@@ -66,7 +68,7 @@ public class ClasspathClassLoader extends URLClassLoader {
                 }
             }
         } finally {
-        	IOUtil.closeQuietly(in);
+            IOUtils.closeQuietly(in);
         }
     }
 

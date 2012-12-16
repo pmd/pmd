@@ -1,14 +1,18 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.dfa.report;
-
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.util.StringUtil;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * @author raik
@@ -40,7 +44,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
     private void write(String filename, StringBuilder buf) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + FILE_SEPARATOR + filename)));
         bw.write(buf.toString(), 0, buf.length());
-        IOUtil.closeQuietly(bw);
+        IOUtils.closeQuietly(bw);
     }
     
     /**

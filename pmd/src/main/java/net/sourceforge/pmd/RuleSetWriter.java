@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd;
 
 import java.io.OutputStream;
@@ -24,8 +27,8 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
-import net.sourceforge.pmd.util.IOUtil;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -48,7 +51,7 @@ public class RuleSetWriter {
     }
 
     public void close() {
-    	IOUtil.closeQuietly(outputStream);
+    	IOUtils.closeQuietly(outputStream);
     }
 
     public void write(RuleSet ruleSet) {

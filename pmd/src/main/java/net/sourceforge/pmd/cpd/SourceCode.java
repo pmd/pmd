@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.IOUtil;
+
+import org.apache.commons.io.IOUtils;
 
 public class SourceCode {
 
@@ -51,7 +52,7 @@ public class SourceCode {
 		e.printStackTrace();
 		throw new RuntimeException("Problem while reading " + getFileName() + ":" + e.getMessage());
 	    } finally {
-	    	IOUtil.closeQuietly(lnr);
+	    	IOUtils.closeQuietly(lnr);
 	    }
 	}
     }

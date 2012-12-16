@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -30,13 +30,13 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -285,7 +285,7 @@ public class PMDTask extends Task {
 			PrintWriter printWriter = new PrintWriter(strWriter);
 			cause.printStackTrace(printWriter);
 			log(strWriter.toString(), Project.MSG_VERBOSE);
-			IOUtil.closeQuietly(printWriter);
+			IOUtils.closeQuietly(printWriter);
 			
 			if (StringUtil.isNotEmpty(cause.getMessage())) {
 				log(cause.getMessage(), Project.MSG_VERBOSE);
