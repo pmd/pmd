@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class ASTAnnotation extends AbstractJavaNode {
 
@@ -27,20 +28,27 @@ public class ASTAnnotation extends AbstractJavaNode {
 
 	if (jjtGetChild(0) instanceof ASTSingleMemberAnnotation) {
 	    ASTSingleMemberAnnotation n = (ASTSingleMemberAnnotation) jjtGetChild(0);
+	    return checkAnnototation(n, ruleAnno, rule);
+	} else if (jjtGetChild(0) instanceof ASTNormalAnnotation) {
+	    ASTNormalAnnotation n = (ASTNormalAnnotation) jjtGetChild(0);
+	    return checkAnnototation(n, ruleAnno, rule);
+	}
+	return false;
+    }
 
-	    if (n.jjtGetChild(0) instanceof ASTName) {
-		ASTName annName = (ASTName) n.jjtGetChild(0);
+    private boolean checkAnnototation(Node n, String ruleAnno, Rule rule) {
+	if (n.jjtGetChild(0) instanceof ASTName) {
+	    ASTName annName = (ASTName) n.jjtGetChild(0);
 
-		if (annName.getImage().equals("SuppressWarnings")) {
-		    List<ASTLiteral> nodes = n.findDescendantsOfType(ASTLiteral.class);
-		    for (ASTLiteral element : nodes) {
-			if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(ruleAnno)
-				// Check for standard annotations values
-				|| element.hasImageEqualTo("\"all\"")
-				|| element.hasImageEqualTo("\"serial\"") && serialRules.contains(rule.getName())
-				|| element.hasImageEqualTo("\"unused\"") && unusedRules.contains(rule.getName())) {
-			    return true;
-			}
+	    if (annName.getImage().equals("SuppressWarnings")) {
+		List<ASTLiteral> nodes = n.findDescendantsOfType(ASTLiteral.class);
+		for (ASTLiteral element : nodes) {
+		    if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(ruleAnno)
+			    // Check for standard annotations values
+			    || element.hasImageEqualTo("\"all\"")
+			    || element.hasImageEqualTo("\"serial\"") && serialRules.contains(rule.getName())
+			    || element.hasImageEqualTo("\"unused\"") && unusedRules.contains(rule.getName())) {
+			return true;
 		    }
 		}
 	    }
