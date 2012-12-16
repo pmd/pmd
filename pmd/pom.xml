@@ -605,6 +605,11 @@
             <artifactId>javacc</artifactId>
             <version>${javacc.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.2</version>
+        </dependency>
     </dependencies>
 
     <reporting>

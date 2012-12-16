@@ -11,6 +11,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 
+import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
@@ -24,7 +25,7 @@ public class EcmascriptParser {
 	this.parserOptions = parserOptions;
     }
 
-    protected AstRoot parseEcmascript(final Reader reader, final List<ParseProblem> parseProblems) throws ParseException {
+    protected AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems) throws ParseException {
 	final CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
 	compilerEnvirons.setRecordingComments(parserOptions.isRecordingComments());
 	compilerEnvirons.setRecordingLocalJsDocComments(parserOptions.isRecordingLocalJsDocComments());
@@ -35,23 +36,23 @@ public class EcmascriptParser {
 	// TODO We should do something with Rhino errors...
 	final ErrorCollector errorCollector = new ErrorCollector();
 	final Parser parser = new Parser(compilerEnvirons, errorCollector);
-	try {
-	    // TODO Fix hardcode
-	    final String sourceURI = "unknown";
-	    // TODO Fix hardcode
-	    final int lineno = 0;
-	    AstRoot astRoot = parser.parse(reader, sourceURI, lineno);
-	    parseProblems.addAll(errorCollector.getErrors());
-	    return astRoot;
-	} catch (final IOException e) {
-	    throw new ParseException(e);
-	}
+	// TODO Fix hardcode
+	final String sourceURI = "unknown";
+	final int beginLineno = 1;
+	AstRoot astRoot = parser.parse(sourceCode, sourceURI, beginLineno);
+	parseProblems.addAll(errorCollector.getErrors());
+	return astRoot;
     }
 
-    public EcmascriptNode parse(final Reader reader) {
-	final List<ParseProblem> parseProblems = new ArrayList<ParseProblem>();
-	final AstRoot astRoot = parseEcmascript(reader, parseProblems);
-	final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(parseProblems);
-	return treeBuilder.build(astRoot);
+    public EcmascriptNode<AstRoot> parse(final Reader reader) {
+	try {
+	    final List<ParseProblem> parseProblems = new ArrayList<ParseProblem>();
+	    final String sourceCode = IOUtils.toString(reader);
+	    final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
+	    final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
+	    return treeBuilder.build(astRoot);
+	} catch (IOException e) {
+	    throw new ParseException(e);
+	}
     }
 }
