@@ -1,4 +1,8 @@
 /**
+ * Fix wrong consumption of modifiers (e.g. "final") in a for-each loop.
+ *
+ * Andreas Dangel 12/2012
+ * ===================================================================
  * Enhance grammar to use LocalVariableDeclaration in a for-each loop.
  * This enhances the symbol table to recognize variables declared in such
  * a for-each loop.
@@ -1914,9 +1918,9 @@ void ForStatement() :
 {
   "for" "("
 (
-      LOOKAHEAD(Modifiers() Type() <IDENTIFIER> ":")
+      LOOKAHEAD(LocalVariableDeclaration() ":")
       {checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
-      Modifiers() LocalVariableDeclaration() ":" Expression()
+      LocalVariableDeclaration() ":" Expression()
 |
   [ ForInit() ] ";"
   [ Expression() ] ";"
