@@ -1,4 +1,5 @@
 /**
+ * Fix wrong consumption of modifiers (e.g. "final") in a for-each loop.
  * Check for wrong java usage when catching multiple exceptions.
  *
  * Andreas Dangel 12/2012
@@ -1924,9 +1925,9 @@ void ForStatement() :
 {
   "for" "("
 (
-      LOOKAHEAD(Modifiers() Type() <IDENTIFIER> ":")
+      LOOKAHEAD(LocalVariableDeclaration() ":")
       {checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
-      Modifiers() LocalVariableDeclaration() ":" Expression()
+      LocalVariableDeclaration() ":" Expression()
 |
   [ ForInit() ] ";"
   [ Expression() ] ";"
