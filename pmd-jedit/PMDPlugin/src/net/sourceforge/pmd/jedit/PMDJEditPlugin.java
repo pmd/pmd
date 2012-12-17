@@ -40,6 +40,7 @@ import net.sourceforge.pmd.util.designer.Designer;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.EBMessage;
 import org.gjt.sp.jedit.EBPlugin;
+import org.gjt.sp.jedit.GUIUtilities;
 import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.View;
 import org.gjt.sp.jedit.jEdit;
@@ -85,7 +86,7 @@ public class PMDJEditPlugin extends EBPlugin {
     private static PMDJEditPlugin instance;
     private static ProgressBar progressBar;
 
-    private DefaultErrorSource errorSource;
+    private Map<View, DefaultErrorSource> errorSources = new HashMap<View, DefaultErrorSource>();
     public static final String RENDERER = "pmd.renderer";
 
     private static int lastSelectedFilter = 0;
@@ -95,7 +96,6 @@ public class PMDJEditPlugin extends EBPlugin {
     public void start() {
         instance = this;
         // Log.log(Log.DEBUG,this,"Instance created.");
-        errorSource = new DefaultErrorSource(NAME);
         lastSelectedFilter = jEdit.getIntegerProperty(LAST_SELECTED_FILTER, 0);
         lastInclusion = jEdit.getProperty(LAST_INCLUSION_REGEX, "");
         lastExclusion = jEdit.getProperty(LAST_EXCLUSION_REGEX, "");
@@ -103,7 +103,7 @@ public class PMDJEditPlugin extends EBPlugin {
 
     public void stop() {
         instance = null;
-        unRegisterErrorSource();
+        unRegisterErrorSources();
     }
 
     public static void checkDirectory(View view) {
@@ -129,42 +129,25 @@ public class PMDJEditPlugin extends EBPlugin {
         instance.instanceCheckAllOpenBuffers(view);
     }
 
-    public static void clearErrorList() {
-        instance.instanceClearErrorList();
-    }
-
-    public void instanceClearErrorList() {
-        errorSource.clear();
-    }
-
     public void instanceCheckDirectory(View view) {
-        JFileChooser chooser = new JFileChooser(jEdit.getProperty(LAST_DIRECTORY));
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        JPanel pnlAccessory = new JPanel();
-        JCheckBox chkRecursive = new JCheckBox(jEdit.getProperty("net.sf.pmd.Recursive", "Recursive"), jEdit.getBooleanProperty(CHECK_DIR_RECURSIVE));
-        pnlAccessory.add(chkRecursive);
-        chooser.setAccessory(pnlAccessory);
-
-        int returnVal = chooser.showOpenDialog(view);
-
+        String[] paths = GUIUtilities.showVFSFileDialog(view, jEdit.getProperty(LAST_DIRECTORY), VFSBrowser.CHOOSE_DIRECTORY_DIALOG, false);
         try {
             File selectedFile = null;
 
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                selectedFile = chooser.getSelectedFile();
+            if (paths != null && paths.length == 1) {
+                boolean recursive = JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(view, "Recursively check subdirectories?", "Recursive", JOptionPane.YES_NO_OPTION);
+                selectedFile = new File(paths[0]);
+                
 
                 if (! selectedFile.isDirectory()) {
+                    DefaultErrorSource errorSource = getErrorSource(view);
                     errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, selectedFile.getAbsolutePath(), 0, 0, 0, jEdit.getProperty("net.sf.pmd.Selection_not_a_directory.", "Selection not a directory.")));                    // NOPMD
-                    // JOptionPane.showMessageDialog(view,  jEdit.getProperty("net.sf.pmd.Selection_not_a_directory.",  "Selection not a directory."),  NAME,  JOptionPane.ERROR_MESSAGE);
                     return ;
                 }
 
                 jEdit.setProperty(LAST_DIRECTORY, selectedFile.getCanonicalPath());
-                jEdit.setBooleanProperty(CHECK_DIR_RECURSIVE, chkRecursive.isSelected());
-                process(findFiles(selectedFile.getCanonicalPath(), chkRecursive.isSelected()), view);
-            } else {
-                return ;                // In case the user presses cancel or escape.
+                jEdit.setBooleanProperty(CHECK_DIR_RECURSIVE, recursive);
+                process(findFiles(selectedFile.getCanonicalPath(), recursive), view);
             }
         } catch (IOException e) {
             Log.log(Log.DEBUG, this, e);
@@ -200,12 +183,11 @@ public class PMDJEditPlugin extends EBPlugin {
     }
 
     public void instanceCheck(Buffer buffer, View view, boolean clearErrorList) {
+        DefaultErrorSource errorSource = getErrorSource(view);
         try {
-            unRegisterErrorSource();
             if (clearErrorList) {
                 errorSource.clear();
             }
-            registerErrorSource();
 
             String modename = buffer.getMode().getName();
             boolean isJsp = "jsp".equals(modename);
@@ -290,7 +272,7 @@ public class PMDJEditPlugin extends EBPlugin {
     }
 
     void processFiles(List<File> files, View view) {
-        unRegisterErrorSource();
+        DefaultErrorSource errorSource = getErrorSource(view);
         errorSource.clear();
 
         if (jEdit.getBooleanProperty(SHOW_PROGRESS)) {
@@ -366,10 +348,7 @@ public class PMDJEditPlugin extends EBPlugin {
 
         if (! foundProblems) {
             errorSource.clear();
-        } else {
-            registerErrorSource();
-            // exportErrorAsReport(view, reports.toArray(new Report[reports.size()]));
-        }
+        } 
 
         endProgressBarDisplay();
     }
@@ -407,12 +386,20 @@ public class PMDJEditPlugin extends EBPlugin {
         return f.findFilesFrom(dir, new net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter(sfSelector), recurse);
     }
 
-    private void registerErrorSource() {
-        ErrorSource.registerErrorSource(errorSource);
+    private void unRegisterErrorSources() {
+        for (DefaultErrorSource errorSource : errorSources.values()) {
+            ErrorSource.unregisterErrorSource(errorSource);
+        }
     }
-
-    private void unRegisterErrorSource() {
-        ErrorSource.unregisterErrorSource(errorSource);
+    
+    private DefaultErrorSource getErrorSource(View view) {
+        DefaultErrorSource errorSource = errorSources.get(view);
+        if (errorSource == null) {
+            errorSource = new DefaultErrorSource(NAME, view);
+            errorSources.put(view, errorSource);
+            ErrorSource.registerErrorSource(errorSource);
+        }
+        return errorSource;
     }
 
     public static void cpdCurrentFile(View view) throws IOException {
@@ -601,7 +588,8 @@ public class PMDJEditPlugin extends EBPlugin {
                 @Override
                 public CPD doInBackground() {
                     jEdit.setProperty(LAST_DIRECTORY, dir);
-                    instance.errorSource.clear();
+                    DefaultErrorSource errorSource = getErrorSource(view);
+                    errorSource.clear();
                     CPD cpd = getCPD(tileSize, mode);
 
                     try {
