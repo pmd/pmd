@@ -1,6 +1,7 @@
 ???? ??, 2012 - 5.1.0:
 
 Fixed bug 1026: PMD doesn't handle 'value =' in SuppressWarnings annotation
+Fixed bug 1037: Facing a showstopper issue in PMD Report Class (report listeners)
 Fixed bug 1043: node.getEndLine() always returns 0 (ECMAscript)
 Fixed bug 1044: Unknown option: -excludemarker
 Fixed bug 1047: False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1

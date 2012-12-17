@@ -42,10 +42,11 @@ public class RuleContext {
     }
 
     /**
-     * Constructor which shares attributes with the given RuleContext.
+     * Constructor which shares attributes and report listeners with the given RuleContext.
      */
     public RuleContext(RuleContext ruleContext) {
 	this.attributes = ruleContext.attributes;
+	this.report.addSynchronizedListeners(ruleContext.getReport().getSynchronizedListeners());
     }
 
     /**
