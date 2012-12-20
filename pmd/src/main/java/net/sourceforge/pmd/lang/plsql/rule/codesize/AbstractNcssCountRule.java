@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
+import java.util.logging.Logger;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
@@ -25,15 +27,13 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractStatisticalPLSQLRule;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTLocalVariableDeclaration;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpression;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpressionList;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchLabel;
 
 /**
  * Abstract superclass for NCSS counting methods. Analogous to and cribbed from {@link net.sourceforge.pmd.lang.java.rule.codesize.AbstractNcssCountRule}.
  */
 public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule {
+    private final static Logger LOGGER = Logger.getLogger(AbstractNcssCountRule.class.getPackage().getName()); 
+    private final static String CLASS_NAME = AbstractNcssCountRule.class.getName(); 
 
     private Class<?> nodeClass;
 
@@ -45,6 +45,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
      */
     protected AbstractNcssCountRule(Class<?> nodeClass) {
 	this.nodeClass = nodeClass;
+        LOGGER.fine("Counting for " + nodeClass.getCanonicalName());
     }
 
     @Override
@@ -57,7 +58,15 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 	    numNodes += treeSize.intValue();
 	}
 
+        LOGGER.finer("Checking candidate " + node.getClass().getCanonicalName() 
+                    + " against target class " + nodeClass.getCanonicalName() 
+                    + " with " + numNodes + " nodes"
+                   );
+
 	if (this.nodeClass.isInstance(node)) {
+          LOGGER.fine("Matched candidate " + node.getClass().getCanonicalName() 
+                        + " against target class " + nodeClass.getCanonicalName() 
+                       );
 	    // Add 1 to account for base node
 	    numNodes++;
 	    DataPoint point = new DataPoint();
@@ -65,6 +74,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 	    point.setScore(1.0 * numNodes);
 	    point.setMessage(getMessage());
 	    addDataPoint(point);
+            LOGGER.fine("Running score is " +  point.getScore());
 	}
 
 	return Integer.valueOf(numNodes);
@@ -189,6 +199,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
+        LOGGER.fine("Point score is " + point.getScore());
 	return new String[] { String.valueOf((int) point.getScore()) };
     }
 }

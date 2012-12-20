@@ -15,6 +15,16 @@ public class CodesizeRulesTest extends SimpleAggregatorTst {
     @Before
     public void setUp() {
         addRule(RULESET, "NPathComplexity");
+        addRule(RULESET, "ExcessiveTypeLength");
+        addRule(RULESET, "CyclomaticComplexity");
+        addRule(RULESET, "ExcessiveObjectLength");
+        addRule(RULESET, "ExcessivePackageBodyLength");
+        addRule(RULESET, "ExcessivePackageSpecificationLength");
+        addRule(RULESET, "ExcessiveParameterList");
+        addRule(RULESET, "ExcessiveMethodLength");
+        addRule(RULESET, "NcssMethodCount");
+        addRule(RULESET, "NcssObjectCount");
+        addRule(RULESET, "TooManyFields");
     }
 
     public static junit.framework.Test suite() {
