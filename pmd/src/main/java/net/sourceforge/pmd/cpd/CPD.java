@@ -104,14 +104,18 @@ public class CPD {
     }
 
     private static void setSystemProperties(String[] args) {
-        boolean ignoreLiterals = CPDConfiguration.findBooleanSwitch(args, "--ignore-literals"),
-        ignoreIdentifiers = CPDConfiguration.findBooleanSwitch(args, "--ignore-identifiers");
+        boolean ignoreLiterals = CPDConfiguration.findBooleanSwitch(args, "--ignore-literals");
+        boolean ignoreIdentifiers = CPDConfiguration.findBooleanSwitch(args, "--ignore-identifiers");
+        boolean ignoreAnnotations = CPDConfiguration.findBooleanSwitch(args, "--ignore-annotations");
         Properties properties = System.getProperties();
         if (ignoreLiterals) {
             properties.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
         }
         if (ignoreIdentifiers) {
             properties.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
+        }
+        if (ignoreAnnotations) {
+            properties.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
         }
         System.setProperties(properties);
     }

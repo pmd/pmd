@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
 
 public final class PLSQLRuleViolationFactory extends AbstractRuleViolationFactory {
 
@@ -21,7 +20,7 @@ public final class PLSQLRuleViolationFactory extends AbstractRuleViolationFactor
 
     @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-    	return new ParametricRuleViolation<Node>(rule, ruleContext, (Node) node, message);
+    	return new ParametricRuleViolation<Node>(rule, ruleContext, node, message);
     }
     
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {

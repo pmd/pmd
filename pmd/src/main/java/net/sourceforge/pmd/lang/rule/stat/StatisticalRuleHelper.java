@@ -7,7 +7,6 @@ import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIP
 import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.SIGMA_DESCRIPTOR;
 import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCRIPTOR;
 
-import java.util.logging.Logger;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -25,8 +24,6 @@ import net.sourceforge.pmd.stat.Metric;
  *         Aug 8, 2002 StatisticalRule.java
  */
 public class StatisticalRuleHelper {
-    private final static String CLASS_PATH = StatisticalRuleHelper.class.getCanonicalName(); 
-    private final static Logger LOGGER = Logger.getLogger(StatisticalRuleHelper.class.getPackage().getName()); 
 
     public static final double DELTA = 0.000005; // Within this range. . .
     

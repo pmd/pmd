@@ -1,4 +1,3 @@
-
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
@@ -7,8 +6,8 @@ package net.sourceforge.pmd.lang.plsql;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserTokenManager;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleCharStream;
 
 /**
  * PLSQL Token Manager implementation.

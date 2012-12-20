@@ -33,10 +33,14 @@ options {
 	IGNORE_CASE = true;
 	STATIC = false;
 	LOOKAHEAD = 1;
-	CHOICE_AMBIGUITY_CHECK = 3;
+	// set the ambiguity checks to higher values, if you need more extensive checks of the grammar
+	// this however make the parser generation very slow, so should only be done once after
+	// modifying the grammar to make sure there are no grammar errors.
+	// Default value is 2.
+	CHOICE_AMBIGUITY_CHECK = 2;
 	OTHER_AMBIGUITY_CHECK = 1;
 	ERROR_REPORTING = true;
-        JAVA_UNICODE_ESCAPE = false; //true 
+	JAVA_UNICODE_ESCAPE = false; //true
 	UNICODE_INPUT = true;
 	USER_TOKEN_MANAGER = false;
 	USER_CHAR_STREAM = false;
@@ -52,12 +56,7 @@ options {
   VISITOR = true;
   NODE_USES_PARSER = true; 
   NODE_PACKAGE="net.sourceforge.pmd.lang.plsql.ast";
-  NODE_EXTENDS="net.sourceforge.pmd.lang.ast.AbstractNode" ;
-  
-  TRACK_TOKENS = true; // record the first and last token of each SimpleNode  
-  NODE_SCOPE_HOOK = true ; 
-
-
+  NODE_CLASS = "net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode";
 }
 
 PARSER_BEGIN(PLSQLParser)
@@ -83,6 +82,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.io.*;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class PLSQLParser {
 
@@ -94,7 +96,7 @@ public class PLSQLParser {
       throws ParseException {
 
     PLSQLParser parser = new PLSQLParser(System.in);
-    SimpleNode simpleNode = parser.Input();
+    PLSQLNode node = parser.Input();
 
     String s;
     s = "qwerty";
@@ -115,7 +117,10 @@ public class PLSQLParser {
     StringBuilder s =  null ; 
 
 
-    if (-1 == name.indexOf('"') )
+    if (null == name) {
+      return name;
+    }
+    else if (-1 == name.indexOf('"') )
     {
       name = name.toUpperCase();
       s = new StringBuilder(name.trim());
@@ -146,37 +151,6 @@ public class PLSQLParser {
     }
     return s.toString();
   }
-
-
-    /** Act on the Node when opening scope. 
-    */
-    void jjtreeOpenNodeScope(Node n)
-    {
-    }
-
-    /** Act on the Node when closing scope. 
-    */
-    void jjtreeCloseNodeScope(Node n)
-    {
-      //Set the Nodes' beginLine,beginColumn,endLine,endColumn fields from the generic 
-        Token firstToken = ((SimpleNode) n).jjtGetFirstToken();
-       /*
-         The generated code sets the last token after closing the scope, so getLastToken 
-         cannot be used to identify the last Token: use getToken(0) instead. 
-         <code>
-	      jjtreeCloseNodeScope(jjtn000);
-	      jjtn000.jjtSetLastToken(getToken(0));
-         </code>
-        Token lastToken  = ((SimpleNode) n).jjtGetLastToken();
-        */
-        Token lastToken  = getToken(0);
-
-
-        ((SimpleNode) n).testingOnly__setBeginLine(firstToken.beginLine);
-        ((SimpleNode) n).testingOnly__setBeginColumn(firstToken.beginColumn);
-        ((SimpleNode) n).testingOnly__setEndLine((null==lastToken) ? firstToken.endLine : lastToken.endLine);
-        ((SimpleNode) n).testingOnly__setEndColumn((null==lastToken) ? firstToken.endColumn : lastToken.endColumn);
-    }
 }
 
 PARSER_END(PLSQLParser)
@@ -217,7 +191,7 @@ ASTInput Input() : {}
 
 ASTDDLCommand DDLCommand() : 
 { 
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
   (
@@ -337,7 +311,7 @@ ASTBlock Block()  :
 
 ASTPackageSpecification PackageSpecification()  :
 { 
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
       (
@@ -365,7 +339,7 @@ ASTPackageSpecification PackageSpecification()  :
 
 ASTPackageBody PackageBody()  :
 { 
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
     (
@@ -517,7 +491,7 @@ ASTProgramUnit ProgramUnit()  :
 }
 
 ASTObjectNameDeclaration ObjectNameDeclaration() :
-{SimpleNode schemaName = null, objectName = null ; }
+{PLSQLNode schemaName = null, objectName = null ; }
 {
   [ LOOKAHEAD(2) schemaName = ID() "." ] objectName = ID() 
   { jjtThis.setImage(  (null == schemaName) ?  objectName.getImage() : (schemaName.getImage() + "." + objectName.getImage() )  )  ; }
@@ -527,7 +501,7 @@ ASTObjectNameDeclaration ObjectNameDeclaration() :
 
 ASTFormalParameter FormalParameter()  :
 {
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
    (
@@ -556,7 +530,7 @@ ASTMethodDeclaration MethodDeclaration() :
 
 ASTMethodDeclarator MethodDeclarator() :
 {
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
   ( <FUNCTION> 
@@ -595,7 +569,7 @@ ASTMethodDeclarator MethodDeclarator() :
 
 ASTFormalParameters FormalParameters() :
 {
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
  StringBuilder sb = new StringBuilder();
 }
 {
@@ -614,7 +588,7 @@ ASTFormalParameters FormalParameters() :
 
 ASTVariableOrConstantDeclarator VariableOrConstantDeclarator() :
 {
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
  StringBuilder sb = new StringBuilder();
 }
 {
@@ -631,7 +605,7 @@ ASTVariableOrConstantDeclarator VariableOrConstantDeclarator() :
 
 ASTVariableOrConstantDeclaratorId VariableOrConstantDeclaratorId() :
 {
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
   simpleNode = ID()
@@ -640,7 +614,7 @@ ASTVariableOrConstantDeclaratorId VariableOrConstantDeclaratorId() :
 
 ASTVariableOrConstantInitializer VariableOrConstantInitializer() :
 {
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
  simpleNode = Expression()
@@ -652,7 +626,7 @@ ASTVariableOrConstantInitializer VariableOrConstantInitializer() :
 
 ASTDatatype Datatype() :
 { 
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
  StringBuilder sb = new StringBuilder();
 }
 {
@@ -675,7 +649,7 @@ ASTDatatype Datatype() :
 
 ASTCompilationDataType CompilationDataType() :
 { 
-  SimpleNode simpleNode = null; 
+  PLSQLNode simpleNode = null;
   StringBuilder sb = new StringBuilder() ;
 }
 {
@@ -705,7 +679,7 @@ ASTCompilationDataType CompilationDataType() :
 }
 
 ASTCollectionTypeName CollectionTypeName() :
-{ SimpleNode size=null, precision=null;
+{ PLSQLNode size=null, precision=null;
 	StringBuilder sb = new StringBuilder();
 }
 {
@@ -729,9 +703,9 @@ ASTCollectionTypeName CollectionTypeName() :
 }
 
 ASTScalarDataTypeName ScalarDataTypeName() :
-{ SimpleNode size=null, precision=null ;
+{ PLSQLNode size=null, precision=null ;
 	StringBuilder name = new StringBuilder();
-	SimpleNode characterSet = null;
+	PLSQLNode characterSet = null;
 }
 {
 	(
@@ -840,7 +814,7 @@ ASTScalarDataTypeName ScalarDataTypeName() :
 ASTDateTimeLiteral DateTimeLiteral() :
 { 
  Token t = null ; 
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
  StringBuilder sb = new StringBuilder() ; 
 }
 {
@@ -1204,7 +1178,7 @@ N.B. equivalent Java AST* class is ASTLabeledStatement (single "l" rather than d
 */
 ASTLabelledStatement LabelledStatement()  :
 {
-SimpleNode simpleNode = null ; 
+PLSQLNode simpleNode = null;
 }
 {
       (
@@ -1291,7 +1265,7 @@ ForIndex is declared implicitly, unlike most variables or constants.
 */
 ASTForIndex ForIndex()  :
 {
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
  simpleNode = ID() 
@@ -1303,7 +1277,7 @@ ForAllIndex is declared implicitly, unlike most variables or constants.
 */
 ASTForAllIndex ForAllIndex()  :
 {
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
  simpleNode = ID() 
@@ -1324,7 +1298,7 @@ ASTForAllStatement ForAllStatement()  :
 
 ASTGotoStatement GotoStatement()  :
 {
- SimpleNode label = null ;  
+ PLSQLNode label = null;
 }
 {
 	<GOTO> label = QualifiedName() 
@@ -1340,7 +1314,7 @@ ASTReturnStatement ReturnStatement()  :
 
 ASTContinueStatement ContinueStatement()  :
 {
- SimpleNode label = null ;  
+ PLSQLNode label = null;
 }
 {
 	<CONTINUE> [ label = UnqualifiedID() ] [ <WHEN> Expression() ] 
@@ -1349,7 +1323,7 @@ ASTContinueStatement ContinueStatement()  :
 
 ASTExitStatement ExitStatement()  :
 {
- SimpleNode label = null ;  
+ PLSQLNode label = null;
 }
 {
 	<EXIT> [ label = UnqualifiedID() ] [ <WHEN> Expression() ] 
@@ -1357,14 +1331,14 @@ ASTExitStatement ExitStatement()  :
 }
 
 ASTRaiseStatement RaiseStatement()  :
-{SimpleNode exception = null ;  }
+{PLSQLNode exception = null ;  }
 {
        <RAISE> [exception = QualifiedName()] 
       { if (null != exception) { jjtThis.setImage(exception.getImage()) ; }  return jjtThis ; }
 }
 
 ASTCloseStatement CloseStatement()  :
-{SimpleNode cursor = null ;  
+{PLSQLNode cursor = null ;
 }
 {
       <CLOSE> cursor = QualifiedName() 
@@ -1426,9 +1400,9 @@ ASTSubTypeDefinition SubTypeDefinition()  :
 {
 	Token start, subtype_name=null, constraint=null, base_type=null;
 	Token collection = null, collection2 = null;
-	SimpleNode name = null;
-	SimpleNode startElement = null, endElement = null;
-	SimpleNode baseType = null, returnType = null, indexBy = null ;
+	PLSQLNode name = null;
+	PLSQLNode startElement = null, endElement = null;
+	PLSQLNode baseType = null, returnType = null, indexBy = null ;
 	int lastField = 0;
 }
 {
@@ -1484,9 +1458,9 @@ ASTSubTypeDefinition SubTypeDefinition()  :
 
 ASTFieldDeclaration FieldDeclaration()  :
 {
-	SimpleNode name;
-	SimpleNode dataType;
-	SimpleNode defaultValue = null;
+	PLSQLNode name;
+	PLSQLNode dataType;
+	PLSQLNode defaultValue = null;
 }
 {
 	name = ID() Datatype() [[<NOT>] <NULL>] [ (":" "=" | <_DEFAULT>) Expression() ]  
@@ -1590,7 +1564,7 @@ ASTCallSpecTail CallSpecTail() : {
 /** Cursor (common part of specification and body) */
 ASTCursorUnit CursorUnit()  :
 {
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
 	(
@@ -1636,7 +1610,7 @@ String expression() :
 
 ASTExpression Expression() :
 { 
-  SimpleNode simpleNode = null; 
+  PLSQLNode simpleNode = null;
   StringBuilder sb = new StringBuilder() ;
 }
 {
@@ -1653,7 +1627,7 @@ ASTExpression Expression() :
 
 ASTCompilationExpression CompilationExpression() :
 { 
-  SimpleNode simpleNode = null; 
+  PLSQLNode simpleNode = null;
   StringBuilder sb = new StringBuilder() ;
 }
 {
@@ -1684,7 +1658,7 @@ ASTCompilationExpression CompilationExpression() :
 
 
 ASTAssignment Assignment() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
   (simpleNode = PrimaryExpression() ) {sb.append(simpleNode.getImage());} 
@@ -1697,7 +1671,7 @@ ASTAssignment Assignment() :
 }
 
 ASTCaseExpression CaseExpression() :
-{ Token thisToken;  SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
 	thisToken = <CASE> { sb.append(thisToken.image);} 
@@ -1721,7 +1695,7 @@ ASTCaseExpression CaseExpression() :
 LIKE ( Expression ) [ <ESCAPE> <STRINGLITERAL>
 */
 ASTLikeExpression LikeExpression() :
-{ Token thisToken;  SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
         simpleNode = PrimaryExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
@@ -1743,7 +1717,7 @@ ASTLikeExpression LikeExpression() :
 }
 
 ASTTrimExpression TrimExpression() :
-{ Token thisToken;  SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
 	(thisToken = <TRIM> ) { sb.append(thisToken.image);} 
@@ -1765,7 +1739,7 @@ TREAT ( Expression AS datatype)
 CAST ( Expression AS datatype)
 */
 ASTObjectExpression ObjectExpression() :
-{ Token thisToken;  SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
 	(thisToken = <CAST> | thisToken = <TREAT> ) { sb.append(thisToken.image);} 
@@ -1785,7 +1759,7 @@ ASTObjectExpression ObjectExpression() :
 }
 
 ASTConditionalOrExpression ConditionalOrExpression() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
   (simpleNode = ConditionalAndExpression() ) { sb.append(simpleNode.getImage());}
@@ -1799,7 +1773,7 @@ ASTConditionalOrExpression ConditionalOrExpression() :
 }
 
 ASTConditionalAndExpression ConditionalAndExpression() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
    (simpleNode = EqualityExpression() ) { sb.append(simpleNode.getImage());}
@@ -1813,7 +1787,7 @@ ASTConditionalAndExpression ConditionalAndExpression() :
 }
 
 ASTEqualityExpression EqualityExpression() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
@@ -1840,7 +1814,7 @@ ASTEqualityExpression EqualityExpression() :
  * 2006-05-23 - Matthias Hendler - added FROM
  */
 ASTRelationalExpression RelationalExpression() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
   //AdditiveExpression() ( ( "<" | ">" | "<=" | ">=" | [<NOT>] (<IN> | <BETWEEN> | <LIKE> | <FROM>) ) AdditiveExpression() )*
@@ -1899,7 +1873,7 @@ ASTRelationalExpression RelationalExpression() :
 }
 
 ASTAdditiveExpression AdditiveExpression() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
   (simpleNode = MultiplicativeExpression() ) { sb.append(simpleNode.getImage()); }
@@ -1917,7 +1891,7 @@ ASTAdditiveExpression AdditiveExpression() :
 }
 
 ASTStringExpression StringExpression() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
   (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
@@ -1932,7 +1906,7 @@ ASTStringExpression StringExpression() :
 }
 
 ASTMultiplicativeExpression MultiplicativeExpression() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
 
   //UnaryExpression() ( ( "*" | "/" | <MOD> ) UnaryExpression() )*
@@ -1953,7 +1927,7 @@ ASTMultiplicativeExpression MultiplicativeExpression() :
 }
 
 ASTUnaryExpression UnaryExpression(boolean isUnarySign) :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
    ( ("+" ) { sb.append(isUnarySign ? " +" : " + "); }
@@ -1969,7 +1943,7 @@ ASTUnaryExpression UnaryExpression(boolean isUnarySign) :
 }
 
 ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
   (<NOT>) {sb.append(" NOT "); } 
@@ -1988,7 +1962,7 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
  * 2011-04-27 - SRT - Add optional NEW Keyword to cope with Object Type constructors
  */
 ASTPrimaryExpression PrimaryExpression() :
-{ Token thisToken ; SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ;
+{ Token thisToken ; PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ;
 }
 {
   ( 
@@ -2011,7 +1985,7 @@ ASTPrimaryExpression PrimaryExpression() :
 }
 
 ASTPrimaryPrefix PrimaryPrefix() :
-{ SimpleNode simpleNode = null; StringBuilder sb = new StringBuilder() ; 
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ;
 
 }
 {
@@ -2043,7 +2017,7 @@ ASTPrimaryPrefix PrimaryPrefix() :
 }
 
 ASTPrimarySuffix PrimarySuffix() :
-{ SimpleNode suffixNode = null ; SimpleNode arguments = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode suffixNode = null ; PLSQLNode arguments = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
   (".") {sb.append(".");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.toString()) ; }
@@ -2075,7 +2049,7 @@ ASTPrimarySuffix PrimarySuffix() :
 
 ASTLiteral Literal() :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
  Token t = null ;
 }
 {
@@ -2221,7 +2195,7 @@ ASTNumericLiteral NumericLiteral() :
 */
 ASTLabel Label() :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
 	(
@@ -2236,7 +2210,7 @@ ASTLabel Label() :
 
 ASTName Name() :
 {
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
  StringBuilder sb = new StringBuilder();
 }
 {
@@ -2255,7 +2229,7 @@ ASTName Name() :
 
 ASTQualifiedName QualifiedName() :
 {
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
  StringBuilder sb = new StringBuilder();
 }
 {
@@ -2295,7 +2269,7 @@ ASTArgumentList ArgumentList() :
 
 ASTArgument Argument() :
 {
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
 	//[LOOKAHEAD(2) UnqualifiedID() "=>"] Expression()
@@ -2361,7 +2335,7 @@ ASTPragma Pragma() :
 
 ASTExceptionDeclaration ExceptionDeclaration() :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
 	simpleNode = ID() <EXCEPTION> ";"
@@ -2421,7 +2395,7 @@ ASTTableColumn TableColumn()  :
 
 ASTView View()  :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
   <CREATE> [<OR> <REPLACE>]
@@ -2439,7 +2413,7 @@ ASTView View()  :
 
 ASTSynonym Synonym()  :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
   <CREATE> [<OR> <REPLACE>]
@@ -2454,7 +2428,7 @@ ASTSynonym Synonym()  :
 
 ASTDirectory Directory()  :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
   <CREATE> [<OR> <REPLACE>]
@@ -2469,7 +2443,7 @@ ASTDirectory Directory()  :
 
 ASTDatabaseLink DatabaseLink()  :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
   <CREATE> 
@@ -2571,7 +2545,7 @@ ASTTypeMethod TypeMethod()  :
 
 ASTTypeSpecification TypeSpecification()  :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
 	[<CREATE> [<OR> <REPLACE>]]
@@ -2658,7 +2632,7 @@ ASTTypeSpecification TypeSpecification()  :
 
 ASTAlterTypeSpec AlterTypeSpec()  :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
 	<ALTER> 
@@ -2832,7 +2806,7 @@ ASTTypeBody TypeBody()  :
 **/
 ASTAttributeDeclaration AttributeDeclaration() :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
 	simpleNode = ID()  Datatype()
@@ -2843,7 +2817,7 @@ ASTAttributeDeclaration AttributeDeclaration() :
 
 ASTAttribute Attribute() :
 { 
- SimpleNode simpleNode = null;
+ PLSQLNode simpleNode = null;
 }
 {
       simpleNode = ID()  
@@ -2950,7 +2924,7 @@ tps_body:
 */
 ASTTriggerUnit TriggerUnit()  :
 {
- SimpleNode simpleNode = null ;
+ PLSQLNode simpleNode = null ;
 }
 {
 	[<CREATE> [<OR> <REPLACE>]]
@@ -5370,17 +5344,17 @@ ASTJavaInterfaceClass JavaInterfaceClass(): {}
  * 2006-05-18 - Matthias Hendler - added: Just for understanding javacc and not used,
  *                                        cause to many closing ENDs (IDENTIFIER) were mistyped.
  */
-SimpleNode EqualsOldIDNewID(SimpleNode pOldID) :
+PLSQLNode EqualsOldIDNewID(PLSQLNode pOldID) :
 {
-	SimpleNode newID;
+	PLSQLNode newID;
 	Token oldIDToken;
 	Token newIDToken;
 }
 {
 	newID = ID()
 	{
-	        oldIDToken = (Token) pOldID.value ;
-	        newIDToken = (Token) newID.value ;
+	        oldIDToken = (Token) ((AbstractPLSQLNode)pOldID).value ;
+	        newIDToken = (Token) ((AbstractPLSQLNode)newID).value ;
 		if (oldIDToken.image.equals(newIDToken.image)) {
 			return newID;
 		} else {

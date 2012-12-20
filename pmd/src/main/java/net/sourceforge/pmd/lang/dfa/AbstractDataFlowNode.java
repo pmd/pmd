@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 public abstract class AbstractDataFlowNode implements DataFlowNode {
 
     protected Node node;
-    //@TODO protected Map<Integer, String> typeMap = NodeType.getTypeMap();
 
     protected List<DataFlowNode> parents = new ArrayList<DataFlowNode>();
     protected List<DataFlowNode> children = new ArrayList<DataFlowNode>();

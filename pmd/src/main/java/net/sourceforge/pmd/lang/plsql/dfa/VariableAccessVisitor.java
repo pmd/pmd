@@ -1,5 +1,5 @@
-/*
- * Created on 14.07.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.plsql.dfa;
 
@@ -14,19 +14,19 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCompoundTriggerBlock;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantInitializer;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 import net.sourceforge.pmd.lang.plsql.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.plsql.symboltable.VariableNameDeclaration;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 
 /**
  * @author raik, Sven Jacob
@@ -117,7 +117,7 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
 	    if (n instanceof StartOrEndDataFlowNode) {
 		continue;
 	    }
-	    varDecls = ((SimpleNode)n.getNode()).getScope().getVariableDeclarations();
+	    varDecls = ((PLSQLNode)n.getNode()).getScope().getVariableDeclarations();
 	    if (!decls.contains(varDecls)) {
 		decls.add(varDecls);
 	    }

@@ -38,10 +38,12 @@ public class Linker {
         LOGGER.fine("SequenceChecking continueBreakReturnStack elements");
 	SequenceChecker sc = new SequenceChecker(braceStack);
 	while (!sc.run()) {
+		if (LOGGER.isLoggable(Level.FINE)) {
           LOGGER.fine("After sc.run - starting Sequence checking loop with firstIndex=" + sc.getFirstIndex() 
                       + ", lastIndex " + sc.getLastIndex() 
                       +" with this StackList "+dump("braceStack",braceStack)
                      );
+		}
 	    if (sc.getFirstIndex() < 0 || sc.getLastIndex() < 0) {
                 LOGGER.severe("Sequence Checker problem: getFirstIndex()==" 
                               + sc.getFirstIndex() + ", getLastIndex()==" + sc.getLastIndex() 
@@ -100,13 +102,8 @@ public class Linker {
 	}
         if (LOGGER.isLoggable(Level.FINER))
         {
-          StringBuilder stringBuilder = new StringBuilder();
-          for (StackObject stackObject : braceStack)
-          {
-            stringBuilder.append("\n"+stackObject.toString());
-              
-          }
-          LOGGER.log(Level.FINER, "After Sequence checking loop : remaining braces=={0}", stringBuilder.toString());
+          LOGGER.log(Level.FINER, "After Sequence checking loop : remaining braces=={0}",
+              dump("braceStack", braceStack));
         }
 
 
@@ -415,12 +412,12 @@ public class Linker {
      * 
      * @return formatted dump of the StackList
      */
-    public static String dump(String description, List<StackObject>  stackList) {
-      StringBuilder stringDump = new StringBuilder() ; 
-      stringDump.append ("Stack List (" + description + ") ListDump:\n");
+    private static String dump(String description, List<StackObject>  stackList) {
+      StringBuilder stringDump = new StringBuilder("Stack List (");
+      stringDump.append(description).append(") ListDump:\n");
       for (StackObject stackObject  : stackList )
       {
-	stringDump.append ("\n" +  stackObject.toString());
+	stringDump.append ('\n').append(stackObject.toString());
       }
       return stringDump.toString();
     }

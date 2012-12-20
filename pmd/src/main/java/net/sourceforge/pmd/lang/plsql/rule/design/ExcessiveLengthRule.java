@@ -5,7 +5,7 @@ package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractStatisticalPLSQLRule;
 import net.sourceforge.pmd.stat.DataPoint;
 
@@ -29,7 +29,7 @@ public class ExcessiveLengthRule extends AbstractStatisticalPLSQLRule {
     }
 
     @Override
-    public Object visit(SimpleNode node, Object data) {
+    public Object visit(PLSQLNode node, Object data) {
         //LOGGER.entering(CLASS_PATH,"visit(SimpleNode)");
         LOGGER.finest("SimpleNode: line " + node.getBeginLine() +", column " + node.getBeginColumn()
                       + " - is node " + node.getClass().getCanonicalName()

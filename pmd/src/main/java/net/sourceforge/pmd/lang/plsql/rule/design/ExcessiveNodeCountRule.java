@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractStatisticalPLSQLRule;
 import net.sourceforge.pmd.stat.DataPoint;
 
@@ -30,11 +30,11 @@ public class ExcessiveNodeCountRule extends AbstractStatisticalPLSQLRule {
     }
 
     @Override
-    public Object visit(SimpleNode node, Object data) {
+    public Object visit(PLSQLNode node, Object data) {
 	int numNodes = 0;
 
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-	    Integer treeSize = (Integer) ((SimpleNode) node.jjtGetChild(i)).jjtAccept(this, data);
+	    Integer treeSize = (Integer) ((PLSQLNode) node.jjtGetChild(i)).jjtAccept(this, data);
 	    numNodes += treeSize;
 	}
 

@@ -5,18 +5,14 @@ package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.util.NumericConstants;
@@ -27,7 +23,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     private static final int DEFAULT_MAXFIELDS = 15;
 
     private Map<String, Integer> stats;
-    private Map<String, SimpleNode> nodes;
+    private Map<String, PLSQLNode> nodes;
 
     private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty(
     		"maxfields", "Max allowable fields",
@@ -43,7 +39,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
 
 
         stats = new HashMap<String, Integer>(5);
-        nodes = new HashMap<String, SimpleNode>(5);
+        nodes = new HashMap<String, PLSQLNode>(5);
 
         return super.visit(node, data);
     }
@@ -88,7 +84,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
         return data;
     }
 
-    private void bumpCounterFor(SimpleNode clazz) {
+    private void bumpCounterFor(PLSQLNode clazz) {
         String key = clazz.getImage();
         if (!stats.containsKey(key)) {
             stats.put(key, NumericConstants.ZERO);

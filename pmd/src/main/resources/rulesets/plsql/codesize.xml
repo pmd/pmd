@@ -31,29 +31,28 @@ PROCEDURE bar AS BEGIN	-- this is something more complex than it needs to be,
 				while (f < 5 ) LOOP
 					anotherThing;
 					f := f - 27;
-					END LOOP
-				else 
+					END LOOP;
+			else
 					tryThis();
-				END IF;
-			END LOOP
-		END IF;
-		if ( r - n > 45) THEN 
-		   while (doMagic) LOOP
-		      findRabbits;
-		   END LOOP;
-		END IF;
+			END IF;
+		END LOOP;
+	END IF;
+	if ( r - n > 45) THEN
+		while (doMagic) LOOP
+			findRabbits;
+		END LOOP;
+	END IF;
+	BEGIN
+		doSomethingDangerous();
+	EXCEPTION WHEN FooException THEN
+		makeAmends;
 		BEGIN
-			doSomethingDangerous();
-		EXCEPTION WHEN Exception THEN
-			makeAmends;
-			BEGIN
-			  dontDoItAgain;
-			EXCEPTION
-			WHEN OTHERS THEN
-			  log_problem;
-			END;
+			dontDoItAgain;
+		EXCEPTION
+		WHEN OTHERS THEN
+				log_problem;
 		END;
-	}
+	END;
 END;
 
  ]]>

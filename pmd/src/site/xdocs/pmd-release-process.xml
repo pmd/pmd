@@ -24,12 +24,16 @@ $ git pull
 $ git status
 </source>
 
-<p>Ensure all the new rules are listed in a
-src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</p>
+<p><strong>Checklist for release preparation:</strong></p>
 
-<p>Update the "download" and "what's new" link in site.pre.xml.</p>
-
-<p>Update version/release info in etc/changelog.txt.</p>
+<ul>
+  <li>Ensure all the new rules are listed in a the proper file:
+    <source>src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</source>
+  </li>
+  <li>Update the <em>"download"</em> and <em>"what's new"</em> link in <strong>site.pre.xml</strong>.</li>
+  <li>Update version/release info in <strong>etc/changelog.txt</strong>.</li>
+  <li>Update pmd.website.baseurl in <strong>pom.xml</strong></li>
+</ul>
 
 <source>
 $ mvn verify post-site    #(order of targets DOES matter)
@@ -38,8 +42,8 @@ $ mvn verify post-site    #(order of targets DOES matter)
 <p>Unzip and test manually (just to be on the safe side of the road):</p>
 
 <source>
-./bin/run.sh pmd ~/tmp/Test.java xml java-unusedcode
-./bin/run.sh pmd ~/tmp/Test.java html rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d /tmp/Test -language java -f xml -R rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d /tmp/java -language java -f html -R rulesets/java/unusedcode.xml
 </source>
 
 <p>Check in all (version) changes to branch master:</p>
@@ -49,23 +53,23 @@ $ git commit -a -m "pmd: Prepare pmd release &lt;version&gt;"
 </subsection>
 
 <subsection name="Release Branch">
-<p>
-Let maven create a release branch (note - this is of course not needed if you
-are already on a release/maintenance branch). Maven will automatically increase
-the version in branch master. In case you create a alpha/preview release and you
-want to stay with the current version in master, use these
-additional properties:
--DupdateBranchVersions=true -DupdateWorkingCopyVersions=false</p>
+<p>Let's have maven create a release branch for us (<em>note - this is of course not
+needed if you are already on a release/maintenance branch</em>). Maven will automatically
+increase the version in branch master.</p>
 
 <source>
 $ mvn release:branch -DbranchName=pmd/&lt;version&gt;.x
 </source>
 
-<p>
-Note: The property pushChanges is set to false, so that we can manually
+<em>In case you create a alpha/preview release and you want to stay with the current
+version in master, use these additional properties:</em>
+
+<source>$ mvn -DupdateBranchVersions=true -DupdateWorkingCopyVersions=false ...</source>
+
+<p>Note: The property pushChanges is set to false, so that we can manually
 push all changes done during the release at the end, when we are sure,
-that everything is fine.
-</p>
+that everything is fine.</p>
+
 </subsection>
 
 <subsection name="Create a release">

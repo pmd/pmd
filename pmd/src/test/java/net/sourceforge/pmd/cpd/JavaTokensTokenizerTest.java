@@ -5,10 +5,6 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.JavaTokenizer;
-import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.cpd.Tokens;
 
 import org.junit.Test;
 
@@ -22,6 +18,15 @@ public class JavaTokensTokenizerTest {
         tokenizer.tokenize(sourceCode, tokens);
         assertEquals(6, tokens.size());
         assertEquals("public class Foo {}", sourceCode.getSlice(1, 1));
+    }
+
+    @Test
+    public void testCommentsIgnored() throws Throwable {
+        Tokenizer tokenizer = new JavaTokenizer();
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("public class Foo { // class Bar */ \n }"));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(sourceCode, tokens);
+        assertEquals(6, tokens.size());
     }
 
     @Test
@@ -60,6 +65,113 @@ public class JavaTokensTokenizerTest {
         t.tokenize(sourceCode, tokens);
         assertEquals(6, tokens.size());
     }
+
+    @Test
+    public void testDiscardSimpleOneLineAnnotation() throws Throwable {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(true);
+        SourceCode sourceCode = new SourceCode(
+                new SourceCode.StringCodeLoader(
+                    "package foo.bar.baz;" +
+                    PMD.EOL +
+                    "@MyAnnotation" +
+                    PMD.EOL +
+                    "public class Foo {}"
+                ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        assertEquals(6, tokens.size());
+    }
+
+    /**
+     * Comments are discarded already by the Java parser.
+     * It would be nice, however, to use simple comments like
+     * //CPD-START or //CPD-END
+     * to enable discard-mode of CPD
+     */
+    @Test
+    public void testIgnoreComments() {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        SourceCode sourceCode = new SourceCode(
+                new SourceCode.StringCodeLoader(
+                    "package foo.bar.baz;" +
+                    PMD.EOL +
+                    "/*****" +
+                    PMD.EOL +
+                    " * ugh" +
+                    PMD.EOL +
+                    " *****/" +
+                    PMD.EOL +
+                    "public class Foo {}"
+                ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        assertEquals(6, tokens.size());
+    }
+
+    @Test
+    public void testDiscardOneLineAnnotationWithParams() throws Throwable {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(true);
+
+        SourceCode sourceCode = new SourceCode(
+                new SourceCode.StringCodeLoader(
+                    "package foo.bar.baz;" +
+                    PMD.EOL +
+                    "@ MyAnnotation (\"ugh\")" +
+                    PMD.EOL +
+                    "@NamedQueries({" +
+                            PMD.EOL +
+                    "@NamedQuery(" +
+                            PMD.EOL +
+                    ")})" +
+                            PMD.EOL +
+                    "public class Foo {" +
+                            PMD.EOL +
+                            "}"
+                ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        System.out.println(sourceCode.getSlice(0,5));
+
+        assertEquals(6, tokens.size());
+    }
+
+    @Test
+    public void testIgnoreBetweenSpecialAnnotation() throws Throwable {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        SourceCode sourceCode = new SourceCode(
+                new SourceCode.StringCodeLoader(
+                    "package foo.bar.baz;" +
+                    PMD.EOL +
+                    "@SuppressWarnings({\"woof\",\"CPD-START\"})" +
+                    PMD.EOL +
+                    "@SuppressWarnings(\"CPD-START\")" +
+                    PMD.EOL +
+
+                    "@ MyAnnotation (\"ugh\")" +
+                    PMD.EOL +
+                    "@NamedQueries({" +
+                            PMD.EOL +
+                    "@NamedQuery(" +
+                            PMD.EOL +
+                    ")})" +
+                            PMD.EOL +
+                    "public class Foo {}" +
+                    "@SuppressWarnings({\"ugh\",\"CPD-END\"})" +
+                    PMD.EOL
+
+                ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        assertEquals(10, tokens.size());
+
+    }
+
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(JavaTokensTokenizerTest.class);

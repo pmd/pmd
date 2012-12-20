@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.Linker;
@@ -15,43 +14,42 @@ import net.sourceforge.pmd.lang.dfa.LinkerException;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.dfa.SequenceException;
 import net.sourceforge.pmd.lang.dfa.Structure;
-import net.sourceforge.pmd.lang.plsql.ast.ASTExitStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTContinueStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTExitStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTGotoStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTForInit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTForUpdate;
-import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTLabelledStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpression;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCloseStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTElseClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTEmbeddedSqlStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTExitStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFetchStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTGotoStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTLabelledStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTOpenStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPipelineStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTRaiseStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTSqlStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTUnlabelledStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTForInit;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTForUpdate;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpression;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchLabel;
 
 /**
  * @author raik
@@ -70,7 +68,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
 	this.dataFlowHandler = dataFlowHandler;
     }
 
-    public void buildDataFlowFor(SimpleNode node) {
+    public void buildDataFlowFor(PLSQLNode node) {
         LOGGER.entering(this.getClass().getCanonicalName(),"buildDataFlowFor");
         LOGGER.finest("buildDataFlowFor: node class " 
                       + node.getClass().getCanonicalName() + " @ line " 

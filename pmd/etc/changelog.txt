@@ -1,5 +1,10 @@
 ???? ??, 2012 - 5.1.0:
 
+Fixed bug 1044: Unknown option: -excludemarker
+Fixed bug 1048: CommentContent Rule, String Index out of range Exception
+
+November 28, 2012 - 5.0.1:
+
 Fixed bug  820: False+ AvoidReassigningParameters
 Fixed bug 1008: pmd-5.0.0: ImmutableField false positive on self-inc/dec
 Fixed bug 1009: pmd-5.0.0: False + UselessParentheses
@@ -23,9 +28,18 @@ Fixed bug 1006: Problem with implementation of getPackageNameImage method
 Fixed bug 1014: AvoidLiteralsInIfCondition must NOT consider null
 Fixed bug 1013: jnlp link for CPD is wrong
 
-Improved command line interface (CLI) parsing - Note: this breaks compatibility, but should be easy to fix.
+PMD Command Line Changes:
+  Improved command line interface (CLI) parsing using JCommander.
+  Note: this breaks compatibility, but should be easy to fix.
+  With "-d" you specify nowtThe source files / source directory to be scanned.
+  With "-f" you select the report format (like text, html, ...)
+  With "-R" you select the rulesets to be used.
+  Example: pmd -d c:\data\pmd\pmd\test-data\Unused1.java -f xml -R rulesets/java/unusedcode.xml
+
 Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
 Fixed bgastviewer not working. Thanks to Victor Bucutea.
+Improved CPD: Support in CPD for IgnoreAnnotations and SuppressWarnings("CPD-START"). Thanks to Matthew Short.
+Fixed C# support for CPD - thanks to TIOBE Software.
 
 New Ecmascript rules:
 

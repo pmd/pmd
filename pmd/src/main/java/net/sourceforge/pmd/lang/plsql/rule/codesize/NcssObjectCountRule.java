@@ -1,8 +1,12 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.plsql.ast.ASTGlobal;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
@@ -11,6 +15,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.OracleObject;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.codesize.AbstractNcssCountRule;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
@@ -32,56 +37,50 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
 	setProperty(MINIMUM_DESCRIPTOR, 1500d);
     }
 
+
+
     //@Override
     public Object visit(OracleObject node, Object data) {
         LOGGER.entering(CLASS_PATH,"visit(NcssObjectCountRule)");
+        //Treat Schema-level ProgramUnits as Oracle Objects, otherwise as subprograms
+        if (node.jjtGetParent() instanceof  ASTGlobal ) {
+            LOGGER.fine("Schema-level");
+	    return super.visit(node, data);
+	}
 
+        LOGGER.fine("not Schema-level");
 	return countNodeChildren(node, data);
     }
 
-    @Override
-    public Object visit(ASTPackageSpecification node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTPackageSpecification)");
-
-	return countNodeChildren(node, data);
-    }
-
-    @Override
-    public Object visit(ASTTypeSpecification node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTTypeSpecification)");
-
-	return countNodeChildren(node, data);
-    }
-
-    @Override
-    public Object visit(ASTTriggerUnit node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTTriggerUnit)");
-	return countNodeChildren(node, data);
-    }
-
-    @Override
-    public Object visit(ASTPackageBody node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTPackageBody)");
-        return countNodeChildren(node, data);
-    }
- 
-   @Override
+    /** Override super.visit(PLSQLNode, Object) for ASTProgramUnit nodes,
+     *only adding DataPoints for Schema-level Functions and Procedures 
+     */
     public Object visit(ASTProgramUnit node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTProgramUnit)");
-        LOGGER.exiting(CLASS_PATH,"visit(ASTProgramUnit)", countNodeChildren(node, data));
-          return countNodeChildren(node, data);
-    }
+	int numNodes = 0;
 
-    @Override
-    public Object visit(ASTTypeMethod node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTTypeMethod)");
-          return countNodeChildren(node, data);
-    }
+	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+		PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
+	    Integer treeSize = (Integer) n.jjtAccept(this, data);
+	    numNodes += treeSize.intValue();
+	}
 
-    @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTMethodDeclaration)");
-	return countNodeChildren(node, data);
+        //This override is necessary because only Schema-level OracleObject 
+        //instances should result in DataPoints 
+	if (node instanceof OracleObject 
+            && node.jjtGetParent() instanceof ASTGlobal
+           ) {
+          
+	    // Add 1 to account for base node
+	    numNodes++;
+	    DataPoint point = new DataPoint();
+	    point.setNode(node);
+	    point.setScore(1.0 * numNodes);
+	    point.setMessage(getMessage());
+	    addDataPoint(point);
+            LOGGER.fine("Running score is " +  point.getScore());
+	}
+
+	return Integer.valueOf(numNodes);
     }
 
     @Override
@@ -93,7 +92,8 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
     @Override
     public Object[] getViolationParameters(DataPoint point) {
         LOGGER.entering(CLASS_PATH,"visit(getViolationParameters)");
-        LOGGER.warning("Node Count ==" + point.getScore() );
+        LOGGER.fine("Node Count ==" + point.getScore() );
 	return new String[] { String.valueOf((int) point.getScore()) };
     }
+
 }

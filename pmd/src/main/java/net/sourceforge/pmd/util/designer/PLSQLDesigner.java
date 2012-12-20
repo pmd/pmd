@@ -103,18 +103,17 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.plsql.ast.ParseException;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
-//import net.sourceforge.pmd.lang.plsql.ast.AccessNode;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
+import net.sourceforge.pmd.lang.plsql.ast.ParseException;
 import net.sourceforge.pmd.lang.plsql.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.lang.plsql.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.plsql.symboltable.LocalScope;
 import net.sourceforge.pmd.lang.plsql.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.plsql.symboltable.MethodScope;
 import net.sourceforge.pmd.lang.plsql.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.plsql.symboltable.Scope; 
-import net.sourceforge.pmd.lang.plsql.symboltable.SourceFileScope; 
+import net.sourceforge.pmd.lang.plsql.symboltable.Scope;
+import net.sourceforge.pmd.lang.plsql.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.plsql.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.xpath.Initializer;
@@ -124,6 +123,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
+//import net.sourceforge.pmd.lang.plsql.ast.AccessNode;
 
 public class PLSQLDesigner implements ClipboardOwner {
    private final static Logger LOGGER = Logger.getLogger(PLSQLDesigner.class.getName()); 
@@ -301,8 +301,8 @@ public class PLSQLDesigner implements ClipboardOwner {
 		}
 
 		public Scope getScope() {
-			if (node instanceof SimpleNode) {
-				return ((SimpleNode) node).getScope();
+			if (node instanceof PLSQLNode) {
+				return ((PLSQLNode) node).getScope();
 			}
 			return null;
 		}

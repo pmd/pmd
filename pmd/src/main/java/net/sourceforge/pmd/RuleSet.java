@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
@@ -28,6 +30,8 @@ import net.sourceforge.pmd.util.filter.Filters;
  */
 //FUTURE Implement Cloneable and clone()
 public class RuleSet {
+
+    private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
 
 	private List<Rule> rules = new ArrayList<Rule>();
 	private String fileName;
@@ -207,12 +211,18 @@ public class RuleSet {
 	public void apply(List<? extends Node> acuList, RuleContext ctx) {
 		long start = System.nanoTime();
 		for (Rule rule : rules) {
-			if (!rule.usesRuleChain() && applies(rule, ctx.getLanguageVersion())) {
-				rule.apply(acuList, ctx);
-				long end = System.nanoTime();
-				Benchmarker.mark(Benchmark.Rule, rule.getName(), end - start, 1);
-				start = end;
-			}
+            try {
+                if (!rule.usesRuleChain() && applies(rule, ctx.getLanguageVersion())) {
+                    rule.apply(acuList, ctx);
+                    long end = System.nanoTime();
+                    Benchmarker.mark(Benchmark.Rule, rule.getName(), end - start, 1);
+                    start = end;
+                }
+            } catch (ThreadDeath td) {
+                throw td;
+            } catch (Throwable t) {
+                LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + ", continuing with next rule", t);
+            }
 		}
 	}
 
