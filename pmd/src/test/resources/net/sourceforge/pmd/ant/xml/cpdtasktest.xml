@@ -1,0 +1,17 @@
+<project name="pmdtasktest" default="all">
+
+	<property name="pmd.home" value="${user.dir}"/>
+    <property name="src"      value="src/main/java"/>
+
+    <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask"/>
+
+    <target name="all" depends="testBasic"/>
+
+	<target name="testBasic">
+        <cpd minimumTokenCount="20" outputFile="${pmd.home}/target/cpd.ant.tests">
+          <fileset dir="${pmd.home}/src/main/">
+            <include name="**/*.java"/>
+          </fileset>
+        </cpd>
+	</target>
+</project>
