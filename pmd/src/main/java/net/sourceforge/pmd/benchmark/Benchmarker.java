@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.benchmark;
 
 import java.io.IOException;
@@ -10,8 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -25,9 +28,10 @@ import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -169,7 +173,7 @@ public class Benchmarker {
             	reader = new InputStreamReader(dataSource.getInputStream());
             	ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
             	new SourceCodeProcessor(config).processSourceCode(reader, ruleSets, ctx);
-            	IOUtil.closeQuietly(reader);
+            	IOUtils.closeQuietly(reader);
             	}
             long end = System.currentTimeMillis();
             long elapsed = end - start;

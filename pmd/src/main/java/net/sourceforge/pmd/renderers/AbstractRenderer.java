@@ -10,7 +10,8 @@ import java.util.Map;
 
 import net.sourceforge.pmd.AbstractPropertySource;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-import net.sourceforge.pmd.util.IOUtil;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * Abstract base class for {@link Renderer} implementations.
@@ -112,7 +113,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     	} catch (IOException e) {
     		throw new IllegalStateException(e);
     	} finally {
-    		IOUtil.closeQuietly(writer);
+    		IOUtils.closeQuietly(writer);
     	}
     }
 }

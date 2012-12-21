@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import net.sourceforge.pmd.util.IOUtil;
+import org.apache.commons.io.IOUtils;
 
 /**
  * @author Philippe T'Seyen
@@ -46,7 +46,7 @@ public class FileReporter {
                 writer = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
                 writer.write(content);
             } finally {
-                IOUtil.closeQuietly(writer);
+                IOUtils.closeQuietly(writer);
             }
         } catch (IOException ioe) {
             throw new ReportException(ioe);

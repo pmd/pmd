@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.CharArrayReader;
 import java.io.IOException;
 
-import net.sourceforge.pmd.util.IOUtil;
+import org.apache.commons.io.IOUtils;
 
 /**
  * This class does a best-guess try-anything tokenization.
@@ -231,7 +231,7 @@ public class CsTokenizer implements Tokenizer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-		    IOUtil.closeQuietly(reader);
+		    IOUtils.closeQuietly(reader);
 		    tokenEntries.add(TokenEntry.getEOF());
 		}
     }

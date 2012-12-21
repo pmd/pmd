@@ -64,7 +64,8 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.IOUtil;
+
+import org.apache.commons.io.IOUtils;
 
 public class GUI implements CPDListener {
 
@@ -203,7 +204,7 @@ public class GUI implements CPDListener {
                 } catch (IOException e) {
                     error("Couldn't save file" + f.getAbsolutePath(), e);
                 } finally {
-                    IOUtil.closeQuietly(pw);
+                    IOUtils.closeQuietly(pw);
                 }
             } else {
                 error("Could not write to file " + f.getAbsolutePath(), null);

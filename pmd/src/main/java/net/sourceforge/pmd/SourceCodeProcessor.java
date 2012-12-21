@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd;
 
 import java.io.InputStream;
@@ -16,7 +19,8 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
-import net.sourceforge.pmd.util.IOUtil;
+
+import org.apache.commons.io.IOUtils;
 
 public class SourceCodeProcessor {
 
@@ -79,7 +83,7 @@ public class SourceCodeProcessor {
 		} catch (Exception e) {
 		    throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
 		} finally {
-		    IOUtil.closeQuietly(sourceCode);
+		    IOUtils.closeQuietly(sourceCode);
 		}
 		}
     }
