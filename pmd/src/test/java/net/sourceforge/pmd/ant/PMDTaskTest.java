@@ -3,22 +3,13 @@
  */
 package net.sourceforge.pmd.ant;
 
-import org.apache.tools.ant.BuildFileTest;
 import org.junit.Test;
 
-public class PMDTaskTest extends BuildFileTest {
+public class PMDTaskTest extends AbstractAntTestHelper {
 
-    @Override
-    public void setUp() {
-        // initialize Ant    	
-        configureProject("target/test-classes/net/sourceforge/pmd/ant/xml/pmdtasktest.xml");
-        if (!project.getBaseDir().toString().endsWith("pmd/ant/xml")) {
-            // when running from maven, the path needs to be adapted...
-            // FIXME: this is more a workaround than a good solution...
-            project.setBasedir(project.getBaseDir().toString()
-        	    + "/target/test-classes/net/sourceforge/pmd/ant/xml");
-        }
-    }
+	public PMDTaskTest() {
+		super.antTestScriptFilename = "pmdtasktest.xml";
+	}
 
     @Test
     public void testNoFormattersValidation() {
@@ -96,7 +87,7 @@ public class PMDTaskTest extends BuildFileTest {
     public void testInvalidLanguageVersion() {
         expectBuildExceptionContaining("testInvalidLanguageVersion", "Fail requested.", "The <version> element, if used, must be one of 'java 1.3', 'java 1.4', 'java 1.5', 'java 1.6', 'java 1.7'.");
     }
-    
+
     @Test
     public void testExplicitRuleInRuleSet() {
         executeTarget("testExplicitRuleInRuleSet");
