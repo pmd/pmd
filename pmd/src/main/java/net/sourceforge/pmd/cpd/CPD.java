@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -18,12 +17,8 @@ import net.sourceforge.pmd.util.FileFinder;
 
 public class CPD {
 
-    private static final int MISSING_FILES = 1;
-	private static final int MISSING_ARGS = 2;
-	private static final int DUPLICATE_CODE_FOUND = 4;
-
 	private CPDConfiguration configuration;
-	
+
 	private Map<String, SourceCode> source = new TreeMap<String, SourceCode>();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
@@ -39,11 +34,7 @@ public class CPD {
 
     public void go() {
         TokenEntry.clearImages();
-        matchAlgorithm = new MatchAlgorithm(
-        		source, tokens, 
-        		configuration.minimumTileSize(), 
-        		listener
-        		);
+        matchAlgorithm = new MatchAlgorithm(source, tokens,configuration.getMinimumTileSize(),listener);
         matchAlgorithm.findMatches();
     }
 
@@ -82,7 +73,7 @@ public class CPD {
 
     private void add(int fileCount, File file) throws IOException {
 
-        if (configuration.skipDuplicates()) {
+        if (configuration.isSkipDuplicates()) {
             // TODO refactor this thing into a separate class
             String signature = file.getName() + '_' + file.length();
             if (current.contains(signature)) {
@@ -103,74 +94,7 @@ public class CPD {
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
-    private static void setSystemProperties(String[] args) {
-        boolean ignoreLiterals = CPDConfiguration.findBooleanSwitch(args, "--ignore-literals");
-        boolean ignoreIdentifiers = CPDConfiguration.findBooleanSwitch(args, "--ignore-identifiers");
-        boolean ignoreAnnotations = CPDConfiguration.findBooleanSwitch(args, "--ignore-annotations");
-        Properties properties = System.getProperties();
-        if (ignoreLiterals) {
-            properties.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
-        }
-        if (ignoreIdentifiers) {
-            properties.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
-        }
-        if (ignoreAnnotations) {
-            properties.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
-        }
-        System.setProperties(properties);
-    }
-
-    public static void main(String[] args) {
-        if (args.length == 0) {
-        	showUsage();
-            System.exit(MISSING_ARGS);
-        }
-
-        try {
-        	CPDConfiguration config = new CPDConfiguration(args);
-
-            // Pass extra parameters as System properties to allow language
-            // implementation to retrieve their associate values...
-            setSystemProperties(args);
-           
-            CPD cpd = new CPD(config);
-            
-            /* FIXME: Improve this !!!	*/
-            boolean missingFiles = true;
-            for (int position = 0; position < args.length; position++) {
-                if (args[position].equals("--files")) {
-                	cpd.addRecursively(args[position + 1]);
-                	if ( missingFiles ) {
-                        missingFiles = false;
-                    }
-                }
-            }
-
-            if ( missingFiles ) {
-	            System.out.println("No " + "--files" + " value passed in");
-	            showUsage();
-	            System.exit(MISSING_FILES);
-            }
-
-            cpd.go();
-            if (cpd.getMatches().hasNext()) {
-                System.out.println(config.renderer().render(cpd.getMatches()));
-                System.exit(DUPLICATE_CODE_FOUND);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void showUsage() {
-        System.out.println("Usage:");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv|vs)] [--skip-duplicate-files] ");
-        System.out.println("i.e: ");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files c:\\jdk14\\src\\java ");
-        System.out.println("or: ");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/code --language c ");
-        System.out.println("or: ");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --encoding UTF-16LE --files /path/to/java/code --format xml");
-    }
-
+	public static void main(String[] args) {
+		CPDCommandLineInterface.main(args);
+	}
 }
