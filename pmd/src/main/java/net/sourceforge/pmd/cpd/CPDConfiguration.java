@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
@@ -28,11 +31,11 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = "--minimum-tokens", description = "minimum", required = true)
 	private int minimumTileSize;
 
-	@Parameter(names = "--format", description = "report format. Default value is "
-			+ DEFAULT_RENDERER, required = false)
+	@Parameter(names = "--skip-duplicate-files", description = "ToDo", required = false)
 	private boolean skipDuplicates;
 
-	@Parameter(names = "--skip-duplicate-files", description = "ToDo", required = false, converter = RendererConverter.class)
+	@Parameter(names = "--format", description = "report format. Default value is "
+		+ DEFAULT_RENDERER, required = false, converter = RendererConverter.class)
 	private Renderer renderer;
 
 	@Parameter(names = "--encoding", description = "ToDo", required = false, converter = EncodingConverter.class)
@@ -50,10 +53,10 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = "--files", variableArity = true, description = "ToDo", required = true)
 	private List<String> files;
 
-	@Parameter(names = { "--help", "-h" }, description = "Print help text", required = false)
+	@Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
 	private boolean help;
 
-	class LanguageConverter implements IStringConverter<Language> {
+	static class LanguageConverter implements IStringConverter<Language> {
 
 		public Language convert(String languageString) {
 			if (languageString == null || "".equals(languageString)) {
@@ -63,7 +66,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 		}
 	}
 
-	class RendererConverter implements IStringConverter<Renderer> {
+	static class RendererConverter implements IStringConverter<Renderer> {
 
 		public Renderer convert(String formatString) {
 			if (formatString == null || "".equals(formatString)) {
