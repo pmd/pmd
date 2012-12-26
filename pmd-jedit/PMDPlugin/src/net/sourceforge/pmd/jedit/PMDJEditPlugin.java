@@ -70,7 +70,6 @@ public class PMDJEditPlugin extends EBPlugin {
     public static final String DEFAULT_TILE_MINSIZE_PROPERTY = "pmd.cpd.defMinTileSize";
     public static final String EXCLUDE_CUSTOM_RULES_KEY = "pmd.excludeCustomRules";
     public static final String IGNORE_LITERALS = "pmd.ignoreliterals";
-    public static final String JAVA_VERSION_PROPERTY = "pmd.java.version";
     public static final String LAST_DIRECTORY = "pmd.cpd.lastDirectory";
     public static final String LAST_EXCLUSION_REGEX = "pmd.cpd.lastExclusionRegex";
     public static final String LAST_INCLUSION_REGEX = "pmd.cpd.lastInclusionRegex";
@@ -78,6 +77,7 @@ public class PMDJEditPlugin extends EBPlugin {
     public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
     public static final String PRINT_RULE = "pmd.printRule";
     public static final String RUN_PMD_ON_SAVE = "pmd.runPMDOnSave";
+    public static final String CLEAR_ERRORLIST_ON_SAVE = "pmd.clearErrorListOnSave";
     public static final String SHOW_PROGRESS = "pmd.showprogress";
 
     private static PMDJEditPlugin instance;
@@ -267,7 +267,7 @@ public class PMDJEditPlugin extends EBPlugin {
 
     // check current buffer
     public static void check( Buffer buffer, View view ) {
-        instance.instanceCheck( buffer, view, false );
+        instance.instanceCheck( buffer, view, jEdit.getBooleanProperty(CLEAR_ERRORLIST_ON_SAVE, false) );
     }
 
     void processFiles( List<File> files, View view ) {

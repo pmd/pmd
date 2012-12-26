@@ -79,6 +79,7 @@ pmd.progressbar.background=#FFC800
 net.sf.pmd.CPD,_Select_File_Type=CPD, Select File Type
 net.sf.pmd.CPD_does_not_yet_support_this_file_type>_=CPD does not yet support this file type: 
 net.sf.pmd.Cannot_run_CPD_on_Invalid_directory/files.=Cannot run CPD on Invalid directory/files.
+net.sf.pmd.Clear_ErrorList_on_Save=Clear ErrorList on Save
 net.sf.pmd.Copy/Paste_Detector=Copy/Paste Detector
 net.sf.pmd.Copy/Paste_detection_can_not_be_performed_on_this_file\nbecause_the_mode_can_not_be_determined.=Copy/Paste detection can not be performed on this file\nbecause the mode can not be determined.
 net.sf.pmd.Description=Description
