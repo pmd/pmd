@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 
 import ise.java.awt.KappaLayout;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
+
 public class PMDGeneralOptionPane extends AbstractOptionPane implements OptionPane {
 
 
@@ -39,7 +41,8 @@ public class PMDGeneralOptionPane extends AbstractOptionPane implements OptionPa
         
         JLabel title = new JLabel("<html><b>" + jEdit.getProperty("options.pmd.general.label", "PMD Settings"));
 
-        javaVersionBox = new JComboBox( PMDJEditPlugin.sourceTypes );
+        LanguageVersion[] languageVersions = LanguageVersion.values();
+        javaVersionBox = new JComboBox( languageVersions );
         int stidx = jEdit.getIntegerProperty( PMDJEditPlugin.JAVA_VERSION_PROPERTY, 1 );
         javaVersionBox.setSelectedIndex( stidx );
 

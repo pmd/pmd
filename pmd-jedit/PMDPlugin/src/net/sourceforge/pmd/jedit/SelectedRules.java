@@ -5,12 +5,12 @@
 */
 package net.sourceforge.pmd.jedit;
 
+import java.io.File;
 import java.util.*;
 
 import javax.swing.JOptionPane;
 import javax.swing.tree.*;
 
-import net.sourceforge.pmd.Language;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -31,38 +31,27 @@ public class SelectedRules {
 
     // root of tree to show rule sets and rules
     private DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-    private DefaultMutableTreeNode jspRoot = new DefaultMutableTreeNode();
 
     // model for the checkbox tree
     private TreeModel treeModel = null;
-    private TreeModel jspTreeModel = null;
 
     // model of the checkboxes for the tree that shows the rule sets and rules
     private TreeCheckingModel checkingModel = null;
-    private TreeCheckingModel jspCheckingModel = null;
 
     // collection of rulesets built into PMD, this only needs loaded once
     private List<RuleSet> pmdRulesets = null;
-    private List<RuleSet> jspRulesets = null;
 
     // set of java rules selected in the checking tree
     private RuleSets selectedRules = null;
 
-    // set of jsp rules selected in the checking model
-    private RuleSets jspSelectedRules = null;
 
     /**
      * Loads PMD standard rulesets and any user defined custom rulesets, creates
      * a checkbox tree model and root tree node for the rules.
-     *
-     * @exception  RuleSetNotFoundException  Only thrown when loading PMD standard
-     * rulesets.  Any exception found while attempting to load a custom ruleset is
-     * caught and a message is displayed to the user.
      */
-    public SelectedRules() throws RuleSetNotFoundException {
+    public SelectedRules() {
         loadRuleSets();
         loadTree();
-        loadJspTree();
     }
 
     public void loadRuleSets() {
@@ -74,11 +63,6 @@ public class SelectedRules {
         }
         for (RuleSet ruleset : pmdRulesets) {
             rulesets.add(ruleset);
-        }
-
-        // load the jsp rulesets built into PMD
-        if (jspRulesets == null) {
-            jspRulesets = loadJspRuleSets();
         }
 
         // load any custom rulesets
@@ -93,11 +77,6 @@ public class SelectedRules {
             addRuleSet2Rules(rs, root);
         }
 
-        Collections.sort(jspRulesets, rulesetSorter);
-        for (RuleSet rs : jspRulesets) {
-            addRuleSet2Rules(rs, jspRoot);
-        }
-
     }
 
     private List<RuleSet> loadPMDRuleSets() {
@@ -105,55 +84,30 @@ public class SelectedRules {
 
         try {
             RuleSetFactory rsf = new RuleSetFactory();
-            for (Iterator<RuleSet> i = rsf.getRegisteredRuleSets(); i.hasNext();) {
-                RuleSet rs = i.next();
-                // System.out.println("Added RuleSet " + rs.getName() + " description "+ rs.getDescription() +" language "+ rs.getLanguage());
+            Iterator<RuleSet> registered = rsf.getRegisteredRuleSets();
+            while (registered.hasNext()) {
+                RuleSet rs = registered.next();
+                //System.out.println("Added RuleSet " + rs.getName() + " description "+ rs.getDescription());
                 rulesets.add(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            // QUESTION: rethrow?
         }
-        return rulesets;
-    }
-
-    private List<RuleSet> loadJspRuleSets() {
-        List<RuleSet> rulesets = new ArrayList<RuleSet>();
-
-        // PMD 4.2.5 has jsf and jsp rules that are not in the rulesets.properties file.
-        // Instead they are in a separate jsprulesets.properties file which is inside
-        // the pmd-4.2.5.jar file.
-        // DONE: this needs work.  The jsp rules can't just be added to the standard
-        // ruleset because the standard rules work on java files and the jsp rules work
-        // on jsp files.  Need to make two lists of rules and use the appropriate list
-        // based on the buffer mode.
-        try {
-            Properties props = new Properties();
-            props.load(getClass().getClassLoader().getResourceAsStream("rulesets/jsprulesets.properties"));
-            String filename_list = props.getProperty("rulesets.filenames");
-            RuleSetFactory rsf = new RuleSetFactory();
-            if (filename_list != null) {
-                String[] filenames = filename_list.split(",");
-                for (String filename : filenames) {
-                    RuleSet rs = rsf.createRuleSet(getClass().getClassLoader().getResourceAsStream(filename));
-                    if (rs != null) {
-                        rulesets.add(rs);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         return rulesets;
     }
 
     private List<RuleSet> loadCustomRuleSets() {
         List<RuleSet> rulesets = new ArrayList <RuleSet>();
         // Load custom RuleSets if any, but do not die if there is any problem
-        // a custom ruleset.
+        // loading a custom ruleset.
         try {
             String customRuleSetPath = jEdit.getProperty("pmd.customRulesPath");
-            if (! (customRuleSetPath == null)) {
+            if (customRuleSetPath != null) {
+                File path = new File(customRuleSetPath);
+                if (!path.exists()) {
+                    return rulesets;   
+                }
                 RuleSetFactory rsf = new RuleSetFactory();
                 RuleSets ruleSets = rsf.createRuleSets(customRuleSetPath);
                 if (ruleSets.getAllRuleSets() != null) {
@@ -218,7 +172,6 @@ public class SelectedRules {
             DefaultMutableTreeNode ruleSetNode = (DefaultMutableTreeNode) root.getChildAt(i);
             RuleSet ruleset = new RuleSet();
             ruleset.setName("java");
-            ruleset.setLanguage(Language.JAVA);
             boolean hadCheckedRule = false;
             for (int j = 0; j < ruleSetNode.getChildCount(); j++) {
                 DefaultMutableTreeNode ruleNode = (DefaultMutableTreeNode) ruleSetNode.getChildAt(j);
@@ -237,51 +190,12 @@ public class SelectedRules {
         }
     }
 
-    protected void loadJspTree() {
-        jspTreeModel = new DefaultTreeModel(jspRoot);
-        jspCheckingModel = new DefaultTreeCheckingModel(jspTreeModel);
-        jspSelectedRules = new RuleSets();
-
-        // load the previously saved and selected rules from jEdit properties, this
-        // builds the checking model for the tree as well as the RuleSets for the
-        // selected rules to pass to PMD.
-        for (int i = 0; i < jspRoot.getChildCount(); i++) {
-            DefaultMutableTreeNode ruleSetNode = (DefaultMutableTreeNode) jspRoot.getChildAt(i);
-            RuleSet ruleset = new RuleSet();
-            ruleset.setName("jsp");
-            ruleset.setLanguage(Language.JSP);
-            boolean hadCheckedRule = false;
-            for (int j = 0; j < ruleSetNode.getChildCount(); j++) {
-                DefaultMutableTreeNode ruleNode = (DefaultMutableTreeNode) ruleSetNode.getChildAt(j);
-                TreePath path = new TreePath(ruleNode.getPath());
-                RuleNode rn = (RuleNode) ruleNode.getUserObject();
-                boolean checked = jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_RULES_PREFIX + rn.getRule().getName(), false);
-                if (checked) {
-                    jspCheckingModel.addCheckingPath(path);
-                    ruleset.addRule(rn.getRule());
-                    hadCheckedRule = true;
-                }
-            }
-            if (hadCheckedRule) {
-                jspSelectedRules.addRuleSet(ruleset);
-            }
-        }
-    }
-
     public TreeModel getTreeModel() {
         return treeModel;
     }
 
-    public TreeModel getJspTreeModel() {
-        return jspTreeModel;
-    }
-
     public TreeCheckingModel getCheckingModel() {
         return checkingModel;
-    }
-
-    public TreeCheckingModel getJspCheckingModel() {
-        return jspCheckingModel;
     }
 
     // save the rules selected by the user in the options pane.
@@ -301,25 +215,6 @@ public class SelectedRules {
         }
     }
 
-    // save the jsp rules selected by the user in the options pane.
-    public void saveJspRules(TreeCheckingModel tcm) {
-        jspCheckingModel = tcm;
-        jspRoot = (DefaultMutableTreeNode) jspCheckingModel.getTreeModel().getRoot();
-
-        for (int i = 0; i < jspRoot.getChildCount(); i++) {
-            DefaultMutableTreeNode ruleSetNode = (DefaultMutableTreeNode) jspRoot.getChildAt(i);
-            for (int j = 0; j < ruleSetNode.getChildCount(); j++) {
-                DefaultMutableTreeNode ruleNode = (DefaultMutableTreeNode) ruleSetNode.getChildAt(j);
-                TreePath path = new TreePath(ruleNode.getPath());
-                boolean checked = jspCheckingModel.isPathChecked(path);
-                RuleNode rn = (RuleNode) ruleNode.getUserObject();
-                jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_RULES_PREFIX + rn.getRule().getName(), checked);
-            }
-        }
-    }
-
-
-
     /**
      *  Gets the selectedRules attribute of the SelectedRules object
      *
@@ -329,23 +224,8 @@ public class SelectedRules {
         return selectedRules;
     }
 
-    public RuleSets getJspSelectedRules() {
-        return jspSelectedRules;
-    }
-
     public RuleSets getCombinedRules() {
-        RuleSets sets = new RuleSets();
-        if (selectedRules != null) {
-            for (RuleSet rs : selectedRules.getAllRuleSets()) {
-                sets.addRuleSet(rs);
-            }
-        }
-        if (jspSelectedRules != null) {
-            for (RuleSet rs : jspSelectedRules.getAllRuleSets()) {
-                sets.addRuleSet(rs);
-            }
-        }
-        return sets;
+        return selectedRules;
     }
 
     /**
@@ -368,10 +248,6 @@ public class SelectedRules {
 
     public TreeNode getRoot() {
         return root;
-    }
-
-    public TreeNode getJspRoot() {
-        return jspRoot;
     }
 
     private final Comparator<Rule> ruleSorter = new Comparator <Rule>() {
