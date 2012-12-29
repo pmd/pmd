@@ -3,13 +3,11 @@
  */
 package net.sourceforge.pmd.ast;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.testframework.ParserTst;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.testframework.StreamUtil;
 
 import org.junit.Test;
 
@@ -47,18 +45,7 @@ public class ParserCornersTest extends ParserTst {
     
     private String readAsString(String resource) {
     	InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
-    	StringBuilder sb = new StringBuilder();
-    	int c;
-    	try {
-        	while((c = in.read()) != -1) {
-        		sb.append((char)c);
-        	}
-    	} catch (IOException e) {
-    		// ignored
-    	} finally {
-    		IOUtil.closeQuietly(in);
-    	}
-    	return sb.toString();
+    	return StreamUtil.toString(in);
     }
     
     private static final String GENERICS_PROBLEM =

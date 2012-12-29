@@ -3,12 +3,10 @@ package net.sourceforge.pmd.cpd;
 import java.io.StringReader;
 import java.util.Properties;
 
-import net.sourceforge.pmd.lang.plsql.ast.Token;
-import net.sourceforge.pmd.lang.plsql.ast.Node;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleCharStream;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserConstants;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserTokenManager;
+import net.sourceforge.pmd.lang.plsql.ast.Token;
 
 public class PLSQLTokenizer implements Tokenizer{
 

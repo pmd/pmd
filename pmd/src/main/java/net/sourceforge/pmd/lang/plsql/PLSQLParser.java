@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 //import net.sourceforge.pmd.lang.plsql.ast.PLSQLParser;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleCharStream;
 
 /**
  * Adapter for the PLSQLParser.

@@ -315,7 +315,7 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 	} else {
 	    wrapper = (ElementWrapper) nodeList.getSelectedValue();
 	}
-	dfaCanvas.setMethod(wrapper.getNode());
+	dfaCanvas.setMethod((Node) wrapper.getNode());
 	dfaCanvas.repaint();
     }
 
@@ -326,7 +326,7 @@ public class DFAPLSQLPanel extends JComponent implements ListSelectionListener {
 	    nodes.addElement(new ElementWrapper(md));
 	}
 	nodeList.setSelectedIndex(0);
-	dfaCanvas.setMethod(newNodes.get(0));
+	dfaCanvas.setMethod((Node) newNodes.get(0));
 	repaint();
     }
 

@@ -288,16 +288,6 @@ public class DocumentNavigator extends DefaultNavigator {
 	if (isDocument(contextNode)) {
 	    return contextNode;
 	}
-	Object parentNode = getParentNode(contextNode);
-	if  (null == parentNode)
-	{
-          System.err.println("Reached head node: "+contextNode.getClass().getCanonicalName());
-	  if (contextNode instanceof RootNode) 
-	  {
-            System.err.println("Head node is an instanceof RootNode: "+contextNode.getClass().getCanonicalName());
-	  }   
-	  
-	}
-	return (null == parentNode) ? contextNode : getDocumentNode(getParentNode(contextNode));
+	return getDocumentNode(getParentNode(contextNode));
     }
 }

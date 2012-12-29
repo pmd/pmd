@@ -4,20 +4,19 @@
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
+//import net.sourceforge.pmd.lang.plsql.ast.ASTAssignmentOperator;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTPostfixExpression;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTPreDecrementExpression;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTPreIncrementExpression;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryPrefix;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpression;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
 
 public class NameOccurrence {
 
-    private SimpleNode location;
+    private PLSQLNode location;
     private String image;
     private NameOccurrence qualifiedName;
 
@@ -30,15 +29,9 @@ public class NameOccurrence {
     private final static String THIS_DOT = "this.";
     private final static String SUPER_DOT = "super.";
 
-    /**
-     * As PLSQL is not normally case-sensitive, we will store the variable image
-     * in its canonical form. 
-     * @param location
-     * @param image 
-     */
-    public NameOccurrence(SimpleNode location, String image) {
+    public NameOccurrence(PLSQLNode location, String image) {
         this.location = location;
-        this.image = SimpleNode.getCanonicalImage(image);
+        this.image = image;
     }
 
     public void setIsMethodOrConstructorInvocation() {
@@ -69,7 +62,7 @@ public class NameOccurrence {
         return qualifiedName != null;
     }
 
-    public SimpleNode getLocation() {
+    public PLSQLNode getLocation() {
         return location;
     }
 
