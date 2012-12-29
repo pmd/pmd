@@ -30,9 +30,15 @@ public class NameOccurrence {
     private final static String THIS_DOT = "this.";
     private final static String SUPER_DOT = "super.";
 
+    /**
+     * As PLSQL is not normally case-sensitive, we will store the variable image
+     * in its canonical form. 
+     * @param location
+     * @param image 
+     */
     public NameOccurrence(SimpleNode location, String image) {
         this.location = location;
-        this.image = image;
+        this.image = SimpleNode.getCanonicalImage(image);
     }
 
     public void setIsMethodOrConstructorInvocation() {

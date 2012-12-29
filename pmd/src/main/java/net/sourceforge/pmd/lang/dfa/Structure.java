@@ -75,6 +75,10 @@ public class Structure {
                          );
 	} else {
 	    braceStack.push(obj);
+            LOGGER.finest("braceStack: line " + node.getNode().getBeginLine() 
+                          + ", column " + node.getNode().getBeginColumn() 
+                          +" - " + node.toString()
+                         );
 	}
 	node.setType(type);
     }
