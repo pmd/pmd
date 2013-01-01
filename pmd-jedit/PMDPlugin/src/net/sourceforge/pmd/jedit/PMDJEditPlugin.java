@@ -5,7 +5,11 @@
 */
 package net.sourceforge.pmd.jedit;
 
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
@@ -42,6 +46,7 @@ import org.gjt.sp.jedit.EBMessage;
 import org.gjt.sp.jedit.EBPlugin;
 import org.gjt.sp.jedit.GUIUtilities;
 import org.gjt.sp.jedit.Mode;
+import org.gjt.sp.jedit.ServiceManager;
 import org.gjt.sp.jedit.View;
 import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.browser.VFSBrowser;
@@ -81,7 +86,7 @@ public class PMDJEditPlugin extends EBPlugin {
     public static final String SHOW_PROGRESS = "pmd.showprogress";
 
     private static PMDJEditPlugin instance;
-    private static ProgressBar progressBar;
+    private static PMDProgressWidgetFactory.ProgressWidget progressBar;
 
     private Map<View, DefaultErrorSource> errorSources = new HashMap<View, DefaultErrorSource>();
     public static final String RENDERER = "pmd.renderer";
@@ -96,11 +101,15 @@ public class PMDJEditPlugin extends EBPlugin {
         lastSelectedFilter = jEdit.getIntegerProperty( LAST_SELECTED_FILTER, 0 );
         lastInclusion = jEdit.getProperty( LAST_INCLUSION_REGEX, "" );
         lastExclusion = jEdit.getProperty( LAST_EXCLUSION_REGEX, "" );
+        addProgressBar();
     }
 
     public void stop() {
         instance = null;
         unRegisterErrorSources();
+        ServiceManager.unregisterService( "org.gjt.sp.jedit.gui.statusbar.StatusWidgetFactory", "pmd" );
+        ServiceManager.unloadServices( getPluginJAR() );
+        removeProgressBar();
     }
 
     public static void checkDirectory( View view ) {
@@ -126,7 +135,7 @@ public class PMDJEditPlugin extends EBPlugin {
         instance.instanceCheckAllOpenBuffers( view );
     }
 
-    public void instanceCheckDirectory( View view ) {
+    public void instanceCheckDirectory( final View view ) {
         String[] paths = GUIUtilities.showVFSFileDialog( view, jEdit.getProperty( LAST_DIRECTORY ), VFSBrowser.CHOOSE_DIRECTORY_DIALOG, false );
         try {
             File selectedFile = null;
@@ -143,7 +152,8 @@ public class PMDJEditPlugin extends EBPlugin {
 
                 jEdit.setProperty( LAST_DIRECTORY, selectedFile.getCanonicalPath() );
                 jEdit.setBooleanProperty( CHECK_DIR_RECURSIVE, recursive );
-                process( findFiles( selectedFile.getCanonicalPath(), recursive ), view );
+
+                process( selectedFile.getCanonicalPath(), view );
             }
         } catch ( IOException e ) {
             Log.log( Log.DEBUG, this, e );
@@ -157,14 +167,14 @@ public class PMDJEditPlugin extends EBPlugin {
                 if ( buffers != null ) {
                     boolean showProgress = jEdit.getBooleanProperty( SHOW_PROGRESS );
                     if ( showProgress ) {
-                        startProgressBarDisplay( view, 0, buffers.length );
+                        startProgressBarDisplay( view, buffers.length );
                     }
 
                     for ( Buffer buffer : buffers ) {
                         instanceCheck( buffer, view, false );
 
                         if ( showProgress && instance.progressBar != null ) {
-                            instance.progressBar.increment(1 );
+                            instance.progressBar.update();
                         }
                     }
                     if ( showProgress ) {
@@ -255,67 +265,118 @@ public class PMDJEditPlugin extends EBPlugin {
         return null;
     }
 
+    /**
+     * Run PMD on a directory of files. Only files of a type supported by PMD will be
+     * checked.
+     * @param files A list of files to check. It is assumed that these files are of
+     * a type supported by PMD.
+     * @param view The view for the current instance of PMD.
+     */
     public void process( final List<File> files, final View view ) {
-        // TODO: use SwingWorker?
-        new Thread( new Runnable() {
-            public void run() {
-                processFiles( files, view );
+        processFiles( files, view );
+    }
+
+    /**
+     * Run PMD on a directory of files. Only files of a type supported by PMD will be
+     * checked.
+     * @param dirname The directory to search for files. Only supported files will be checked.
+     * @param view The view for the current instance of PMD.
+     */
+    public void process( final String dirname, final View view ) {
+        SwingWorker<List<File>, Object> sw = new SwingWorker<List<File>, Object>() {
+
+            @Override
+            public List<File> doInBackground() {
+                List<File> files = findFiles( dirname, true );
+                return files;
             }
-        }
-        ).start();
+
+            @Override
+            public void done() {
+                try {
+                    List<File> files = get();
+                    processFiles( files, view );
+                } catch ( Exception e ) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        sw.execute();
     }
 
     // check current buffer
     public static void check( Buffer buffer, View view ) {
-        instance.instanceCheck( buffer, view, jEdit.getBooleanProperty(CLEAR_ERRORLIST_ON_SAVE, false) );
+        instance.instanceCheck( buffer, view, jEdit.getBooleanProperty( CLEAR_ERRORLIST_ON_SAVE, false ) );
     }
 
-    void processFiles( List<File> files, View view ) {
-        PMD pmd = new PMD();
-        PMDConfiguration configuration = pmd.getConfiguration();
-        RuleContext ctx = new RuleContext();
+    void processFiles( final List<File> files, final View view ) {
+        SwingWorker sw = new SwingWorker<Object, Object>() {
+            boolean showProgress = jEdit.getBooleanProperty( SHOW_PROGRESS );
 
-        // get the rules to run
-        SelectedRules selectedRuleSets = new SelectedRules();
-        RuleSets toCheck = selectedRuleSets.getSelectedRules();
-        SelectedRulesRuleSetFactory ruleFactory = new SelectedRulesRuleSetFactory( toCheck );
+            @Override
+            public Object doInBackground() {
+                PMD pmd = new PMD();
+                PMDConfiguration configuration = pmd.getConfiguration();
+                configuration.setThreads(0 );
+                RuleContext ctx = new RuleContext();
 
-        // create an ErrorListRenderer that sends errors directly to ErrorList,
-        // doing so allows PMD use multiple threads if needed.
-        DefaultErrorSource errorSource = getErrorSource( view );
-        errorSource.clear();
-        ErrorListRenderer errorListRenderer = new ErrorListRenderer( errorSource );
-        List<Renderer> renderers = new ArrayList<Renderer>();
-        renderers.add( errorListRenderer );
+                // get the rules to run
+                SelectedRules selectedRuleSets = new SelectedRules();
+                RuleSets toCheck = selectedRuleSets.getSelectedRules();
+                SelectedRulesRuleSetFactory ruleFactory = new SelectedRulesRuleSetFactory( toCheck );
 
-        boolean showProgress = jEdit.getBooleanProperty( SHOW_PROGRESS );
-        if ( showProgress ) {
-            startProgressBarDisplay( view, 0, files.size() );
-        }
+                // create an ErrorListRenderer that sends errors directly to ErrorList,
+                // doing so allows PMD use multiple threads if needed.
+                DefaultErrorSource errorSource = getErrorSource( view );
+                errorSource.clear();
+                ErrorListRenderer errorListRenderer = new ErrorListRenderer( errorSource );
+                List<Renderer> renderers = new ArrayList<Renderer>();
+                renderers.add( errorListRenderer );
 
-        // TODO: pmd.processFiles can handle multiple files at once, can I use that here?
-        // -- maybe, once the pmd.processFiles with the progress monitor is complete.
-        for ( File file : files ) {
-            List<DataSource> fileToCheck = new ArrayList<DataSource>();
-            fileToCheck.add( new FileDataSource( file ) );
-            String modename = ModeProvider.instance.getModeForFile( file.getName(), "" ).getName();
-            LanguageVersion languageVersion = getLanguageVersion( modename );
+                if ( showProgress ) {
+                    startProgressBarDisplay( view, files.size() );
+                    addPropertyChangeListener( new PropertyChangeListener() {
+                        public void propertyChange( PropertyChangeEvent evt ) {
+                            if ( "progress".equals( evt.getPropertyName() ) ) {
+                                instance.progressBar.update();
+                            }
+                        }
+                    } );
+                }
 
-            // configure PMD to use the language parser for the buffer mode
-            configuration.setDefaultLanguageVersion( languageVersion );
+                // TODO: pmd.processFiles can handle multiple files at once, can I use that here?
+                // -- maybe, once the pmd.processFiles with the progress monitor is complete.
+                for ( int count = 0; count < files.size(); count++ ) {
+                    File file = files.get( count );
+                    List<DataSource> fileToCheck = new ArrayList<DataSource>();
+                    fileToCheck.add( new FileDataSource( file ) );
+                    String modename = ModeProvider.instance.getModeForFile( file.getName(), "" ).getName();
+                    LanguageVersion languageVersion = getLanguageVersion( modename );
 
-            ctx.setLanguageVersion( languageVersion );
-            ctx.setSourceCodeFile( file );
-            ctx.setReport( new Report() );
+                    // configure PMD to use the language parser for the buffer mode
+                    configuration.setDefaultLanguageVersion( languageVersion );
 
-            pmd.processFiles( configuration, ruleFactory, fileToCheck, ctx, renderers );
-            if ( showProgress && instance.progressBar != null ) {
-                instance.progressBar.increment(1 );
+                    ctx.setLanguageVersion( languageVersion );
+                    ctx.setSourceCodeFile( file );
+                    ctx.setReport( new Report() );
+
+                    pmd.processFiles( configuration, ruleFactory, fileToCheck, ctx, renderers );
+                    if ( showProgress && instance.progressBar != null ) {
+                        setProgress( count );
+                    }
+                }
+                return null;
             }
-        }
-        if ( showProgress ) {
-            endProgressBarDisplay();
-        }
+
+            @Override
+            public void done() {
+                if ( showProgress ) {
+                    endProgressBarDisplay();
+                }
+            }
+        };
+        sw.execute();
+
     }
 
     private List<File> findFiles( String dir, boolean recurse ) {
@@ -326,7 +387,6 @@ public class PMDJEditPlugin extends EBPlugin {
                 if ( file.isDirectory() ) {
                     return true;
                 }
-                System.out.println("+++++ name? " + name);
                 Mode mode = ModeProvider.instance.getModeForFile( name, "" );
                 String modename = mode == null ? "" : mode.getName();
                 return getLanguageVersion( modename ) != null;
@@ -633,21 +693,72 @@ public class PMDJEditPlugin extends EBPlugin {
         instance.process( instance.findFiles( de[0].getPath(), recursive ), view );
     }
 
-    public void startProgressBarDisplay( final View view, final int min, final int max ) {
+    public void startProgressBarDisplay( final View view, final int max ) {
         SwingUtilities.invokeLater( new Runnable() {
             public void run() {
-                instance.progressBar = new ProgressBar( view, min, max );
-                view.getStatus().add( instance.progressBar, BorderLayout.EAST );
-                instance.progressBar.setVisible( true );
+                instance.progressBar = getProgressWidget( view );
+                if ( instance.progressBar != null ) {
+                    instance.progressBar.setMaximum( max );
+                }
             }
         } );
     }
 
     public void endProgressBarDisplay() {
         if ( instance.progressBar != null ) {
-            instance.progressBar.completeBar();
-            instance.progressBar.setVisible( false );
+            int delay = 2000;
+            ActionListener timerTask = new ActionListener() {
+                public void actionPerformed( ActionEvent ae ) {
+                    SwingUtilities.invokeLater( new Runnable() {
+                        public void run() {
+                            instance.progressBar.complete();
+                        }
+                    } );
+                }
+            };
+            javax.swing.Timer timer = new javax.swing.Timer(delay, timerTask);
+            timer.setRepeats(false);
+            timer.start();
         }
+    }
+
+    private PMDProgressWidgetFactory.ProgressWidget getProgressWidget( View view ) {
+        PMDProgressWidgetFactory widgetFactory = ( PMDProgressWidgetFactory ) ServiceManager.getService( "org.gjt.sp.jedit.gui.statusbar.StatusWidgetFactory", "pmd" );
+        if ( widgetFactory == null ) {
+            return null;
+        }
+        return ( PMDProgressWidgetFactory.ProgressWidget ) widgetFactory.getWidget( view );
+    }
+    
+    /**
+     * Removes the PMD progress bar from all Views.    
+     */
+    public static void removeProgressBar() {
+        String statusBar = jEdit.getProperty("view.status");
+        String[] widgets = statusBar.split("[ ]");
+        StringBuilder sb = new StringBuilder();
+        for (String widget : widgets) {
+            if ("pmd".equals(widget)) {
+                continue;   
+            }
+            sb.append(widget).append(' '); 
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        jEdit.setProperty("view.status", sb.toString());
+    }
+    
+    /**
+     * Adds the PMD progress bar to all views depending on the SHOW_PROGRESS property value.    
+     */
+    public static void addProgressBar() {
+        removeProgressBar();
+        StringBuilder statusBar = new StringBuilder(jEdit.getProperty("view.status"));
+        boolean showProgressBar = jEdit.getBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS, false);
+        if (showProgressBar) {
+            statusBar.append(" pmd");
+        }
+        jEdit.setProperty("view.status", statusBar.toString());
+        
     }
 
     public void exportErrorAsReport( final View view, Report reports[] ) {

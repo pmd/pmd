@@ -63,6 +63,10 @@ public class PMDGeneralOptionPane extends AbstractOptionPane implements OptionPa
 
         jEdit.setBooleanProperty( PMDJEditPlugin.CLEAR_ERRORLIST_ON_SAVE, chkClearErrorListOnSave.isSelected() );
         jEdit.setBooleanProperty( PMDJEditPlugin.PRINT_RULE, chkPrintRule.isSelected() );
+        
+        // adjust the status bar to show or hide the pmd progress widget. 'addProgressBar()'
+        // uses the SHOW_PROGRESS to decide if the bar should actually be shown.
         jEdit.setBooleanProperty( PMDJEditPlugin.SHOW_PROGRESS, chkShowProgressBar.isSelected() );
+        PMDJEditPlugin.addProgressBar();
     }
 }
