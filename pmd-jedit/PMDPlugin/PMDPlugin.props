@@ -3,12 +3,13 @@
 #
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.name=PMDPlugin
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.author=Jiger Patel, Tom Copeland, Alan Ezust, Dale Anson
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=3.4
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=5.0.1
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=doc/jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.5
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.03.99.00
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.2=plugin errorlist.ErrorListPlugin 2.0
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.3=plugin CommonControlsPlugin 1.2
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.3=plugin rhino.RhinoPlugin 1.7R4
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.jars=pmd-5.1.0.jar jaxen-1.1.1.jar asm-3.2.jar
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.description=The PMD plugin is a Java source code analysis tool.
 
