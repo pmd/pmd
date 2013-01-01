@@ -18,16 +18,7 @@
          PMD is a Java source code analyzer - it finds unused variables, questionable design decisions, empty catch blocks, and so forth. You can read much more about PMD here - http://pmd.sf.net/. 
       </p>
       <h3>
-         Installation 
-      </h3>
-      Use the plugin manager for easiest installation. To install manually, follow these steps:  
-      <ul>
-         <li>Uninstall any old PMD-JEdit plugins  
-         <li>Unzip the PMD-JEdit.zip file into your JEdit directory; it'll put a couple of jar files into your jars directory.  
-         <li>Restart JEdit and you'll be ready to go.  
-      </ul>
-      <h3>
-         Integration 
+         Actions 
       </h3>
       <p>
          The various actions provided by this plugin are available on the 'PMD' menu item in the Plugins menu. This has several submenu options: 
@@ -128,6 +119,26 @@
       <h2>
          Release Notes &amp; Changelog 
       </h2>
+
+      <h3>
+         5.0.1 (Dale Anson, December 2012) 
+      </h3>
+      <ol>
+         <li>
+            Updated to use the latest code from PMD 5.0.1, which includes rules for checking Java, JSP, JSF, Ecmascript, and XML. 
+         </li>
+         <li>
+            Adjusted options:
+            <ul>
+               <li>Removed language choices since they are no longer used. The plugin will use the language of the buffer being checked.</li>
+               <li>Added option to clear ErrorList on save. This is only useful when checking a single buffer, and is most useful when you've done a check of a directory and are fixing and saving things file by file.</li>
+               <li>Removed CPD settings since they are set in the popup dialog.</li>
+            </ul>
+         </li>
+         <li>
+            Adjusted rules by removing the jsp tab. All rules for all supported languages are in the same rules checkbox tree. 
+         </li>
+      </ol>
 
       <h3>
          3.4 (Dale Anson, June 2011) 

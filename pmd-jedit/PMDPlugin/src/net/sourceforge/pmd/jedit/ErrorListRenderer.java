@@ -19,7 +19,10 @@ public class ErrorListRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "errorlist";
 
     DefaultErrorSource errorSource = null;
-
+    
+    /**
+     * @param errorSource The error source to send errors to.    
+     */
     public ErrorListRenderer( DefaultErrorSource errorSource ) {
         super( NAME, "ErrorList" );
         this.errorSource = errorSource;
@@ -28,19 +31,22 @@ public class ErrorListRenderer extends AbstractIncrementingRenderer {
         setWriter(new NullWriter());  
     }
     
+    /**
+     * @return Always returns an empty string.    
+     */
     public String defaultFileExtension() {
         return "";
     }
 
     /**
-     * {@inheritDoc}
+     * Does nothing.
      */
     @Override
     public void start() throws IOException {
     }
 
     /**
-     * {@inheritDoc}
+     * Sends the rule violations to the ErrorList plugin.
      */
     @Override
     public void renderFileViolations( Iterator<RuleViolation> violations ) throws IOException {
@@ -58,6 +64,9 @@ public class ErrorListRenderer extends AbstractIncrementingRenderer {
                 rulename = violation.getRule().getName() + "->";
             }
 
+            // error list doesn't handle multi-line errors, so in the case of a
+            // multi-line violation, use 0 for the start and end columns. ErrorList
+            // will mark the entire line as an error.
             int startLine = violation.getBeginLine() - 1;
             int startColumn = violation.getBeginLine() == violation.getEndLine() ? violation.getBeginColumn() - 1: 0;
             int endColumn = violation.getBeginLine() == violation.getEndLine() ? violation.getEndColumn() : 0;
