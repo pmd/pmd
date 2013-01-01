@@ -5,7 +5,7 @@
 
 <SERVICES>
     <!-- status bar widget for pmd -->
-	<SERVICE CLASS="net.sourceforge.pmd.jedit.PMDWidgetFactory" NAME="pmd">
-		new net.sourceforge.pmd.jedit.PMDWidgetFactory();
+	<SERVICE CLASS="org.gjt.sp.jedit.gui.statusbar.StatusWidgetFactory" NAME="pmd">
+		new net.sourceforge.pmd.jedit.PMDProgressWidgetFactory();
 	</SERVICE>
 </SERVICES>
