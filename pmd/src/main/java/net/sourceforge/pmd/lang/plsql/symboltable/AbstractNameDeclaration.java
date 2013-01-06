@@ -18,7 +18,7 @@ public abstract class AbstractNameDeclaration implements NameDeclaration {
     }
 
     public String getImage() {
-        return node.getCanonicalImage();
+        return node.getImage(); 
     }
 
     public Scope getScope() {

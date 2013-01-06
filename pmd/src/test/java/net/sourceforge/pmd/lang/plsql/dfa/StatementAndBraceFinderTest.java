@@ -13,13 +13,12 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
-import net.sourceforge.pmd.testframework.plsql.ParserTst;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 import org.junit.Test;
 
 
-public class StatementAndBraceFinderTest extends ParserTst {
+public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
     /**Java ASTStatementExpression equivalent is inferred as an Expression() which has
      * an UnlabelledStatement as a parent.
@@ -36,7 +35,7 @@ public class StatementAndBraceFinderTest extends ParserTst {
         System.err.println("DataFlowNodes List size="+dfns.size()) ;
         DataFlowNode parentDfn =  dfns.get(0);
         System.err.println("parentDataFlowNode="+parentDfn ) ;
-        SimpleNode simpleNode = (SimpleNode) parentDfn.getNode();
+        PLSQLNode PLSQLNode = (PLSQLNode) parentDfn.getNode();
         System.err.println("parentDataFlowNode="+parentDfn ) ;
         ASTProgramUnit exParent = (ASTProgramUnit) parentDfn.getNode();
         System.err.println("ASTProgramUnit="+exParent ); 

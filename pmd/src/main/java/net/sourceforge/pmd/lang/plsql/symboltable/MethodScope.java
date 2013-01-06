@@ -11,7 +11,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 
 public class MethodScope extends AbstractScope {
 
@@ -64,7 +64,7 @@ public class MethodScope extends AbstractScope {
         if (node instanceof ASTConstructorDeclaration) {
             return this.getEnclosingClassScope().getClassName();
         }
-        return ( (SimpleNode) node.jjtGetChild(1) ) .getCanonicalImage();
+        return ( (AbstractPLSQLNode) node.jjtGetChild(1) ) .getCanonicalImage();
     }
 
     public String toString() {

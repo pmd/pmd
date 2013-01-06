@@ -32,7 +32,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	{
 	  LOGGER.finest("This Node does not have an enclosing Class: "
 		              + node.getBeginLine() + "/" + node.getBeginColumn()
-		              + " => " + node.getCanonicalImage()
+		              + " => " + this.getImage()
 		             );
           return null; //@TODO SRT a cop-out 
 	}
@@ -79,15 +79,15 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	VariableNameDeclaration n = (VariableNameDeclaration) o;
 	try
 	{
-	return n.node.getCanonicalImage().equals(node.getCanonicalImage());
+	return n.getImage().equals(this.getImage());
 	}
 	catch (Exception e)
 	{
 		e.printStackTrace(System.err);
 		LOGGER.finest("n.node="+n.node);
-		LOGGER.finest("n.node.getCanonicalImage="+n.node.getCanonicalImage());
+		LOGGER.finest("n.getImage="+n.getImage());
 		LOGGER.finest("node="+node);
-		LOGGER.finest("node.getCanonicalImage="+node.getCanonicalImage());
+		LOGGER.finest("this.getImage="+this.getImage());
 		return false;
 	}
     }
@@ -96,7 +96,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
     public int hashCode() {
 	try
 	{
-	  return node.getCanonicalImage().hashCode();
+	  return this.getImage().hashCode();
 	}
 	catch(Exception e)
 	{
@@ -104,7 +104,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 			           +node
 			);
 		LOGGER.finest("VariableNameDeclaration: node,getImage="
-			           +node.getCanonicalImage()
+			           +this.getImage()
 			);
 		//LOGGER.finest("... "
 		//	           +" from "+node.getBeginLine() +"@"+node.getBeginColumn()
@@ -116,6 +116,6 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 
     @Override
     public String toString() {
-	return "Variable: image = '" + node.getCanonicalImage() + "', line = " + node.getBeginLine();
+	return "Variable: image = '" + node.getImage() + "', line = " + node.getBeginLine();
     }
 }

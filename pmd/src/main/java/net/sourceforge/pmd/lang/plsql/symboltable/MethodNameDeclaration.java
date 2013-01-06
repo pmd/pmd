@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 //import net.sourceforge.pmd.lang.plsql.ast.ASTPrimitiveType;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
@@ -78,7 +78,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         MethodNameDeclaration other = (MethodNameDeclaration) o;
 
         // compare name
-        if (!other.node.getCanonicalImage().equals(node.getCanonicalImage())) {
+        if (!other.node.getImage().equals(node.getImage())) {
             return false;
         }
 
@@ -116,11 +116,11 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             String myTypeImg;
             String otherTypeImg;
             //if (myTypeNode instanceof ASTPrimitiveType) {
-            //    myTypeImg = myTypeNode.getCanonicalImage();
-            //    otherTypeImg = otherTypeNode.getCanonicalImage();
+            //    myTypeImg = myTypeNode.getImage();
+            //    otherTypeImg = otherTypeNode.getImage();
             //} else {
-                myTypeImg = ( (SimpleNode) myTypeNode .jjtGetChild(0) ) .getCanonicalImage();
-                otherTypeImg = ( (SimpleNode) otherTypeNode.jjtGetChild(0) ).getCanonicalImage();
+                myTypeImg = ( (AbstractPLSQLNode) myTypeNode .jjtGetChild(0) ) .getImage();
+                otherTypeImg = ( (AbstractPLSQLNode) otherTypeNode.jjtGetChild(0) ).getImage();
             //}
 
             if (!myTypeImg.equals(otherTypeImg)) {
@@ -136,7 +136,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     public int hashCode() {
 	try 
 	{
-        return node.hashCode(); //SRT node.getCanonicalImage().hashCode() + ((ASTMethodDeclarator) node).getParameterCount();
+        return node.hashCode(); //SRT node.getImage().hashCode() + ((ASTMethodDeclarator) node).getParameterCount();
 	}
 	catch (Exception e)
 	{
@@ -151,7 +151,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     @Override
     public String toString() {
-        //SRT return "Method " + node.getCanonicalImage() + ", line " + node.getBeginLine() + ", params = " + ((ASTMethodDeclarator) node).getParameterCount();
+        //SRT return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " + ((ASTMethodDeclarator) node).getParameterCount();
         return node.toString();
     }
 }

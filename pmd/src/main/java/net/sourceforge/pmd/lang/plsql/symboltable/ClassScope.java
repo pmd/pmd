@@ -11,7 +11,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
-import net.sourceforge.pmd.lang.plsql.ast.SimpleNode;
+import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 
 public class ClassScope extends AbstractScope {
    private final static Logger LOGGER = Logger.getLogger(ClassScope.class.getName()); 
@@ -28,7 +28,7 @@ public class ClassScope extends AbstractScope {
     private String className;
 
     public ClassScope(String className) {
-        this.className = SimpleNode.getCanonicalImage(className);
+        this.className = AbstractPLSQLNode.getCanonicalImage(className);
         anonymousInnerClassCounter.set(Integer.valueOf(1));
     }
 
