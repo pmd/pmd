@@ -3,12 +3,17 @@
  */
 package net.sourceforge.pmd.ast;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
 import java.io.InputStream;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.testframework.ParserTst;
-import net.sourceforge.pmd.testframework.StreamUtil;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 
@@ -42,10 +47,35 @@ public class ParserCornersTest extends ParserTst {
     	String test17 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases17.java");
     	parseJava17(test17);
     }
-    
+
+    @Test
+    public void testMultipleExceptionCatching() {
+    	String code = "public class Foo { public void bar() { "
+    			+ "try { System.out.println(); } catch (RuntimeException | IOException e) {} } }";
+    	try {
+    		parseJava15(code);
+    		fail("Expected exception");
+    	} catch (ParseException e) {
+    		assertEquals("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!", e.getMessage());
+    	}
+
+    	try {
+    		parseJava17(code);
+    		// no exception expected
+    	} catch (ParseException e) {
+    		fail();
+    	}
+    }
+
     private String readAsString(String resource) {
-    	InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
-    	return StreamUtil.toString(in);
+	InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
+	try {
+	    return IOUtils.toString(in);
+	} catch (IOException e) {
+	    throw new RuntimeException(e);
+	} finally {
+	    IOUtils.closeQuietly(in);
+	}
     }
     
     private static final String GENERICS_PROBLEM =

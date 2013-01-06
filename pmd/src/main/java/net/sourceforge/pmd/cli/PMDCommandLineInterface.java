@@ -6,9 +6,8 @@ package net.sourceforge.pmd.cli;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 

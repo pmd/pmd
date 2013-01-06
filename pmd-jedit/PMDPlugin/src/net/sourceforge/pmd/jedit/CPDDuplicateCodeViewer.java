@@ -88,7 +88,7 @@ public class CPDDuplicateCodeViewer extends JPanel {
     }
 
     private String getTreeAsText() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(128);
         sb.append("CPD Results\n");
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeModel.getRoot();
         for (int i = 0; i < root.getChildCount(); i++) {

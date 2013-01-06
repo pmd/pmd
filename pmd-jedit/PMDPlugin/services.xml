@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE SERVICES SYSTEM "services.dtd">
+
+
+<SERVICES>
+    <!-- status bar widget for pmd -->
+	<SERVICE CLASS="org.gjt.sp.jedit.gui.statusbar.StatusWidgetFactory" NAME="pmd">
+		new net.sourceforge.pmd.jedit.PMDProgressWidgetFactory();
+	</SERVICE>
+</SERVICES>

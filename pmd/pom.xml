@@ -299,6 +299,7 @@
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
+                    <debug>true</debug>
                 </configuration>
             </plugin>
 
@@ -619,6 +620,11 @@
             <groupId>net.java.dev.javacc</groupId>
             <artifactId>javacc</artifactId>
             <version>${javacc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.2</version>
         </dependency>
     </dependencies>
 

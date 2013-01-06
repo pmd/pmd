@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -25,8 +26,9 @@ import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
 import net.sourceforge.pmd.lang.rule.properties.FileProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
+
+import org.apache.commons.io.IOUtils;
 
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
@@ -121,7 +123,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             } finally {
-                IOUtil.closeQuietly(reader);
+                IOUtils.closeQuietly(reader);
             }
         }
 

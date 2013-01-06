@@ -5,7 +5,6 @@
 */
 package net.sourceforge.pmd.jedit;
 
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.jedit.checkboxtree.*;
 
 import org.gjt.sp.jedit.AbstractOptionPane;
@@ -54,23 +53,13 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
     JButton exportButton;
     JButton customRulesButton;
     
-    JTextArea jspExampleTextArea = new JTextArea( 12, 60 );
-    JTextField jspTxtCustomRules;
-    CheckboxTree jspTree;
-    JLabel jspExampleLabel;
     
-
     static final String USE_DEFAULT_RULES_KEY = "pmd.use-default-rules";
 
 
     public PMDRulesOptionPane() {
         super( PMDJEditPlugin.NAME );
-        try {
-            rules = new SelectedRules();
-        }
-        catch ( RuleSetNotFoundException rsne ) {
-            rsne.printStackTrace();
-        }
+        rules = new SelectedRules();
     }
 
     public void _init() {
@@ -82,19 +71,13 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
         
         JLabel title = new JLabel("<html><b>" + jEdit.getProperty("options.pmd.rules.label", "PMD Rules"));
         
-        
-        // updated to use tabbed pane, one tab for java rules, a second tab for jsp rules
-        JTabbedPane tabs = new JTabbedPane();
-        tabs.add("Java", getJavaRulesPanel());
-        tabs.add("JSP", getJspRulesPanel());
-        
         panel.add("0, 0, 1, 1, W, w, 3", title);
-        panel.add("0, 1, 1, 1, W, w, 3", tabs);
+        panel.add("0, 1, 1, 1, W, w, 3", getRulesPanel());
         
         add(panel);
     }
     
-    private JPanel getJavaRulesPanel() {
+    private JPanel getRulesPanel() {
         JPanel panel = new JPanel();
         panel.setLayout( new KappaLayout() );
 
@@ -221,54 +204,9 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
         return panel;
     }
     
-    private JPanel getJspRulesPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout( new KappaLayout() );
-
-        JLabel rules_label = new JLabel( jEdit.getProperty( "net.sf.pmd.Rules", "Rules" ) );
-        
-        // use a checkbox tree for displaying the rules.  This lets the rules be
-        // grouped by ruleset, and makes it very easy to select an entire set of
-        // rules with a single click. The tree is only 2 levels
-        // deep, the first level is the ruleset level, the second level contains the
-        // individual rules.  Using the PROPAGATE_PRESERVING_UNCHECK checking mode
-        // means the ruleset will be checked if one or more of the rules it contains
-        // is checked.
-        JScrollPane rules_pane = null;
-        if ( rules == null ) {
-            JOptionPane.showMessageDialog( null,
-                    jEdit.getProperty( "net.sf.pmd.Error_loading_rules._Check_any_custom_rulesets_for_errors.", "Error loading rules. Check any custom rulesets for errors." ),
-                    jEdit.getProperty( "net.sf.pmd.Error_Loading_Rules", "Error Loading Rules" ),
-                    JOptionPane.ERROR_MESSAGE );
-        }
-        else {
-            jspTree = new CheckboxTree( rules.getJspRoot() );
-            jspTree.getCheckingModel().setCheckingMode( TreeCheckingModel.CheckingMode.PROPAGATE_PRESERVING_UNCHECK );
-            jspTree.setCheckingPaths( rules.getJspCheckingModel().getCheckingPaths() );
-            jspTree.setRootVisible( false );
-            jspTree.addMouseMotionListener( new MyJspMouseMotionAdapter() );
-            rules_pane = new JScrollPane( jspTree );
-            rules_pane.setMaximumSize( new Dimension( 500, 200 ) );
-            rules_pane.setPreferredSize( new Dimension( 500, 200 ) );
-        }
-
-        jspExampleLabel = new JLabel( jEdit.getProperty( "net.sf.pmd.Example", "Example" ) );
-        JScrollPane example_pane = new JScrollPane( jspExampleTextArea );
-        example_pane.setMaximumSize( new Dimension( 500, 200 ) );
-        example_pane.setPreferredSize( new Dimension( 500, 200 ) );
-
-        panel.setBorder( BorderFactory.createEmptyBorder( 12, 11, 11, 12 ) );
-        panel.add( "0, 0,  2, 1,  W, w,  3", rules_label );
-        panel.add( "0, 2,  2, 10, 0, w,  3", rules_pane );
-        panel.add( "0, 13, 2, 1,  W, w,  3", jspExampleLabel );
-        panel.add( "0, 14, 2, 6,  0, wh, 3", example_pane );
-        return panel;
-    }
-
     public void _save() {
         if ( rules != null ) {
             rules.save( tree.getCheckingModel() );
-            rules.saveJspRules( jspTree.getCheckingModel());
         }
 
         if ( txtCustomRules != null ) {
@@ -309,61 +247,13 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
         }
     }
 
-    private class MyJspMouseMotionAdapter extends java.awt.event.MouseMotionAdapter {
-        public void mouseMoved( MouseEvent event ) {
-            TreePath path = jspTree.getPathForLocation( event.getX(), event.getY() );
-            if ( path != null ) {
-                DefaultMutableTreeNode node = ( DefaultMutableTreeNode ) path.getLastPathComponent();
-                if ( node != null ) {
-                    Object userObject = node.getUserObject();
-                    if ( userObject instanceof RuleNode ) {
-                        changeJspExampleLabel( jEdit.getProperty( "net.sf.pmd.Example", "Example" ) );
-                        Rule rule = (( RuleNode ) userObject).getRule();
-                        String header = getRuleExampleHeader(rule);
-                        List<String> examples = ( ( RuleNode ) userObject ).getRule().getExamples();
-                        jspExampleTextArea.setLineWrap( true );
-                        jspExampleTextArea.setWrapStyleWord( true );
-                        jspExampleTextArea.setText( header + StringList.join( examples, "\n---------\n" ) );
-                        jspExampleTextArea.setCaretPosition( 0 );
-                    }
-                    else if ( userObject instanceof RuleSetNode ) {
-                        changeJspExampleLabel( jEdit.getProperty( "net.sf.pmd.Description", "Description" ) );
-                        String description = ( ( RuleSetNode ) userObject ).getRuleSet().getDescription();
-                        description = cleanUpDescription( description );
-                        jspExampleTextArea.setLineWrap( true );
-                        jspExampleTextArea.setWrapStyleWord( true );
-                        jspExampleTextArea.setText( description );
-                        jspExampleTextArea.setCaretPosition( 0 );
-                    }
-                }
-            }
-        }
-    }
-
     private String getRuleExampleHeader( Rule rule ) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Name: " ).append(rule.getName()).append('\n');
-        sb.append("Description: ").append(cleanUpDescription(rule.getDescription())).append('\n');
-        sb.append("Error Message: ").append(rule.getMessage()).append('\n');
-        sb.append("Priority: ");
-        switch ( rule.getPriority() ) {
-            case 1:
-                sb.append( "Severe Error" );
-                break;
-            case 2:
-                sb.append( "Error" );
-                break;
-            case 3:
-                sb.append( "Strong Warning" );
-                break;
-            case 4:
-                sb.append( "Warning" );
-                break;
-            default:
-                sb.append( "Informational" );
-                break;
-        }
-        sb.append('\n');
+        StringBuilder sb = new StringBuilder(128);
+        sb.append("Name: " ).append(rule.getName());
+        sb.append("\nLanguage: ").append(rule.getLanguage().getName());
+        sb.append("\nDescription: ").append(cleanUpDescription(rule.getDescription()));
+        sb.append("\nError Message: ").append(rule.getMessage());
+        sb.append("\nPriority: ").append(rule.getPriority().toString()).append('\n');
         return sb.toString();
     }
 
@@ -379,17 +269,6 @@ public class PMDRulesOptionPane extends AbstractOptionPane implements OptionPane
                 public void run() {
                     exampleLabel.setText( text );
                     exampleLabel.repaint();
-                }
-            }
-        );
-    }
-
-    private void changeJspExampleLabel( final String text ) {
-        SwingUtilities.invokeLater(
-            new Runnable() {
-                public void run() {
-                    jspExampleLabel.setText( text );
-                    jspExampleLabel.repaint();
                 }
             }
         );

@@ -16,7 +16,8 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-import net.sourceforge.pmd.util.IOUtil;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * <p>A console renderer with optional color support under *nix systems.</p>
@@ -182,7 +183,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 		} catch (IOException ioErr) {
 		    ioErr.printStackTrace();
 		} finally {
-			IOUtil.closeQuietly(br);
+			IOUtils.closeQuietly(br);
 		}
 		return code;
     }

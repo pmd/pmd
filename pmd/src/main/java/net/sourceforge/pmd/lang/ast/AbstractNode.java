@@ -119,7 +119,7 @@ public abstract class AbstractNode implements Node {
 	    if (children != null && children.length > 0) {
 		return children[0].getBeginColumn();
 	    } else {
-		throw new RuntimeException("Unable to determine begining line of Node.");
+		throw new RuntimeException("Unable to determine beginning line of Node.");
 	    }
 	}
     }

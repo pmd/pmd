@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.util;
 
 import java.util.Iterator;
@@ -9,10 +12,15 @@ import java.util.Iterator;
  *
  * @param <T>
  */
-@SuppressWarnings("rawtypes")
 public class EmptyIterator<T extends Object> implements Iterator<T> {
 
+    	@SuppressWarnings("rawtypes")
 	public static final Iterator instance = new EmptyIterator();
+    	
+    	@SuppressWarnings("unchecked")
+	public static final <T extends Object> Iterator<T> instance() {
+    	    return instance;
+    	}
 	
 	private EmptyIterator() {}
 	
@@ -23,4 +31,4 @@ public class EmptyIterator<T extends Object> implements Iterator<T> {
 	public void remove() {	
 		throw new UnsupportedOperationException();
 	}
-};
+}
