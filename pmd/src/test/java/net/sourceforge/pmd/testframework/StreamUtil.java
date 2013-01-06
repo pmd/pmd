@@ -6,7 +6,8 @@ package net.sourceforge.pmd.testframework;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sourceforge.pmd.util.IOUtil;
+import org.apache.commons.io.IOUtils;
+
 
 public class StreamUtil {
 
@@ -24,7 +25,7 @@ public class StreamUtil {
 		} catch (IOException e) {
 			// ignored
 		} finally {
-			IOUtil.closeQuietly(in);
+			IOUtils.closeQuietly(in);
 		}
 		return sb.toString();
 	}
