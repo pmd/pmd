@@ -2142,7 +2142,10 @@ ASTBooleanLiteral BooleanLiteral() :
 	|
   <FALSE> 
  )
- { return jjtThis; }
+  { 
+   jjtThis.setImage(token.image) ;  
+   return jjtThis; 
+  }
 }
 
 ASTNullLiteral NullLiteral() :
@@ -2153,6 +2156,7 @@ ASTNullLiteral NullLiteral() :
   <NULL> 
   )
  { 
+  jjtThis.setImage(token.image) ;  
   return jjtThis ; 
  }
 }
