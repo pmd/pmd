@@ -2551,6 +2551,10 @@ ASTTypeSpecification TypeSpecification()  :
 	[<CREATE> [<OR> <REPLACE>]]
 	<TYPE> simpleNode = ObjectNameDeclaration()
 
+	[
+		<FORCE> 
+	]
+        
         // incomplete_type_spec (empty) 
         // object_type_spec
         // varray_type_spec
