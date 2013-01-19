@@ -1,5 +1,6 @@
 ???? ??, 2012 - 5.0.2:
 
+Fixed bug 1012: False positive: Useless parentheses.
 Fixed bug 1026: PMD doesn't handle 'value =' in SuppressWarnings annotation
 Fixed bug 1037: Facing a showstopper issue in PMD Report Class (report listeners)
 Fixed bug 1043: node.getEndLine() always returns 0 (ECMAscript)
