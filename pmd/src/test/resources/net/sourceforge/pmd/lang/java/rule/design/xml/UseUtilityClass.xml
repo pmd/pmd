@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-should be singleton since all static, public constructor
+should be utility class since all static, public constructor
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -30,7 +30,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-should be singleton, couple of statics, no constructor
+should be utility class, couple of statics, no constructor
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -53,7 +53,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-classic singleton - ok
+classic utility class - ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -80,7 +80,7 @@ public abstract class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-has no fields, so ok
+has some private and no public static fields, so ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -136,7 +136,7 @@ public class UseSingleton extends Exception {
     </test-code>    
     <test-code>
         <description><![CDATA[
-inner should be singleton since all static, public constructor
+inner should be utility class since all static, public constructor
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-public class UseSingletonRule extends AbstractJavaRule {
+public class UseUtilityClassRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceBody decl, Object data) {
