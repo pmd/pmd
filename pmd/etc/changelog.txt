@@ -7,6 +7,7 @@ Fixed bug 1043: node.getEndLine() always returns 0 (ECMAscript)
 Fixed bug 1044: Unknown option: -excludemarker
 Fixed bug 1047: False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1
 Fixed bug 1048: CommentContent Rule, String Index out of range Exception
+Fixed bug 1055: Please add a colon in the ant output after line,column for Oracle JDeveloper IDE usage
 Fixed bug 1060: GodClassRule >>> wrong method
 
 November 28, 2012 - 5.0.1:

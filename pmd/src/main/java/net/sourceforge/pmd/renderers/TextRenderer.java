@@ -45,7 +45,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
 		    RuleViolation rv = violations.next();
 		    buf.append(rv.getFilename());
 		    buf.append(':').append(Integer.toString(rv.getBeginLine()));
-		    buf.append('\t').append(rv.getDescription()).append(PMD.EOL);
+		    buf.append(":\t").append(rv.getDescription()).append(PMD.EOL);
 		    writer.write(buf.toString());
 		}
     }
