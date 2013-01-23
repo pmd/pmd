@@ -80,4 +80,19 @@ public class FooTest {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#913 SignatureDeclareThrowsException is raised twice</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class BugSignature {
+  public void record() {
+    SwingWorker worker = new SwingWorker() {
+      protected String construct() throws Exception {
+        //
+      }
+    };
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
