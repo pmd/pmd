@@ -136,5 +136,18 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-
+    <test-code>
+        <description>#1028 False-positive: Compare objects with equals for Enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.RoundingMode;
+public class Test {
+    void doEnums() {
+        RoundingMode mode1 = determineFirstMode();
+        RoundingMode mode2 = determineSecondMode();
+        if (mode1 == mode2) {}
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
