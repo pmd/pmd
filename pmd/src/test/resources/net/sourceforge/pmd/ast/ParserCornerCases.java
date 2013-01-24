@@ -96,3 +96,30 @@ class PmdTestChild extends PmdTestParent {
 		});
 	}
 }
+
+/*
+ * Test cases for bug #1020 Parsing Error
+ */
+class SimpleBean {
+    String name;
+}
+
+class SimpleBeanUser {
+    SimpleBeanUser(SimpleBean o) {
+
+    }
+
+    SimpleBeanUser() {
+        this(new SimpleBean() {{
+            name = "test";
+        }});
+    }
+}
+
+class SimpleBeanUser2 extends SimpleBeanUser {
+    SimpleBeanUser2() {
+        super(new SimpleBean(){{
+            name = "test2";
+        }});
+    }
+}
