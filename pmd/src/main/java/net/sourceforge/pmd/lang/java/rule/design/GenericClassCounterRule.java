@@ -73,7 +73,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	private int threshold;
 
 	private static String counterLabel;
-	
+
 	public GenericClassCounterRule() {
 	    definePropertyDescriptor(NAME_MATCH_DESCRIPTOR);
 	    definePropertyDescriptor(OPERAND_DESCRIPTOR);
@@ -178,7 +178,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
         	}
 		// Cleaning the context for the others rules
 		ctx.removeAttribute(counterLabel);
-		super.start(ctx);
+		super.end(ctx);
         }
      }
 }

@@ -317,7 +317,7 @@ public class CountRule extends AbstractJavaRule {
                AtomicLong total = (AtomicLong)ctx.getAttribute(COUNT);
                addViolation(ctx, null, new Object[] { total });
                ctx.removeAttribute(COUNT);
-               super.start(ctx);
+               super.end(ctx);
        }
 }
 			]]>
