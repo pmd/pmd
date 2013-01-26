@@ -56,17 +56,17 @@ to Jaxen overhead for AST navigation.  Make sure your XPath rules using the Rule
 </section>
 <section name="Adding test cases ...">
 	<subsection name="... for a rule I want to submit (in a patch)">
-	<p>In the regress directory, you'll find all the unit tests for PMD. In the
-	proper package (for instance, test.net.sourceforge.pmd.rules.basic, for
+	<p>In the test directory (src/test/java), you'll find all the unit tests for PMD. In the
+	proper package (for instance, net.sourceforge.pmd.lang.java.rule.basic, for
 	rules from the basic rulesets), you'll find a test suite such as this :</p>
 	<source><![CDATA[
 public class BasicRulesTest extends SimpleAggregatorTst {
 	
    @Before
    public void setUp() {
-       addRule("basic", "AvoidDecimalLiteralsInBigDecimalConstructor");
-       addRule("basic", "AvoidMultipleUnaryOperators");
-       addRule("basic", "AvoidThreadGroup");
+       addRule("java-basic", "AvoidDecimalLiteralsInBigDecimalConstructor");
+       addRule("java-basic", "AvoidMultipleUnaryOperators");
+       addRule("java-basic", "AvoidThreadGroup");
 ...
 	]]></source>
 	<p>Suppose you want to add tests for a new rule of yours, called "MyNewRule".
@@ -74,12 +74,12 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 	<source><![CDATA[
    public void setUp() {
    ...
-		addRule("basic", "MyNewRule");
+		addRule("java-basic", "MyNewRule");
    ...
    }
 	]]></source>
-	<p>And add in the appropriate xml subpackage (for instance,
-	test.net.sourceforge.pmd.rules.basic.xml). There you should find a XML file
+	<p>And add in the appropriate xml subpackage in src/test/resources (for instance,
+	net.sourceforge.pmd.lang.java.rule.basic.xml). There you should find a XML file
 	for each rule, the syntax is pretty obvious:</p>
 	<source><![CDATA[
 <test-data>
@@ -109,7 +109,7 @@ package too.specific.to.submit;
 
 import org.junit.Before;
 
-import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class SpecificRulesTest extends SimpleAggregatorTst {
 
@@ -140,8 +140,9 @@ If you want to contribute a java rule to PMD, you should run PMD on it (Using th
 
 <section name="Committing">
 <p>
-Before committing changes, make sure the 'qa' target in the Ant build works.  Drink a beer while you wait for it to finish.
-Then read the output to make sure no fatal errors are present. 
+Before committing changes, make sure the verify phase of a maven build succeeds without test failures.
+Drink a beer while you wait for it to finish.
+Then read the output to make sure no fatal errors are present.
 </p>
 </section>
 
