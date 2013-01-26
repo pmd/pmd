@@ -374,4 +374,16 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code reinitializeRule="true">
+        <description>#1029 No instance level check in the close resource rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    Connection c;
+    public void doIt() {
+        c = pool.getConnection();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
