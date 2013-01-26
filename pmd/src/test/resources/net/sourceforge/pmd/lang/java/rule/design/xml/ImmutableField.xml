@@ -333,4 +333,16 @@ public class pmd_inc {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#946 ImmutableField false +</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyClass {
+    private long counter = 0;
+    public <E> void run(final E entity, final Class<? extends TemplatedClass<E>> m) throws MyException {
+        this.counter += 1;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
