@@ -20,6 +20,10 @@ Fixed bug 1048: CommentContent Rule, String Index out of range Exception
 Fixed bug 1055: Please add a colon in the ant output after line,column for Oracle JDeveloper IDE usage
 Fixed bug 1060: GodClassRule >>> wrong method
 
+????? ??, 2013 - 5.0.2:
+
+Fixed bug 1049: Errors in “How to write a rule”
+
 November 28, 2012 - 5.0.1:
 
 Fixed bug  820: False+ AvoidReassigningParameters
