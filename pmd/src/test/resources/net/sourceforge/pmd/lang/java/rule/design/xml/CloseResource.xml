@@ -386,4 +386,23 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#947 CloseResource rule fails if field is marked with annotation</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class CloseResourceRuleBug {
+  public void foo() {
+    try {
+      Connection c = DriverManager.getConnection("fake");
+      Statement s = c.createStatement();
+      @SuppressWarnings("PMD.CloseResource") ResultSet rs = s.executeQuery("fake");
+      while (rs.next()) {
+      }
+      rs.close();
+    } catch (SQLException e) {
+    }
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
