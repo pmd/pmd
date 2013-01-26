@@ -10,23 +10,24 @@ The Design ruleset contains rules that flag suboptimal code implementations. Alt
 are suggested.
   </description>
 
-  <rule name="UseSingleton"
+  <rule name="UseUtilityClass"
   		  since="0.3"
-        message="All methods are static.  Consider using Singleton instead.  Alternatively, you could add a private constructor or make the class abstract to silence this warning."
-        class="net.sourceforge.pmd.lang.java.rule.design.UseSingletonRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseSingleton">
+        message="All methods are static.  Consider using a utility class instead. Alternatively, you could add a private constructor or make the class abstract to silence this warning."
+        class="net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseUtilityClass">
     <description>
     	<![CDATA[
-For classes that only have static methods, consider making them Singletons.
+For classes that only have static methods, consider making them utility classes.
 Note that this doesn't apply to abstract classes, since their subclasses may
-well include non-static methods.  Also, if you want this class to be a Singleton,
+well include non-static methods.  Also, if you want this class to be a utility class,
 remember to add a private constructor to prevent instantiation.
+(Note, that this use was known before PMD 5.1.0 as UseSingleton).
 		]]>
     </description>
       <priority>3</priority>
     <example>
 <![CDATA[
-public class MaybeASingleton {
+public class MaybeAUtility {
   public static void foo() {}
   public static void bar() {}
 }

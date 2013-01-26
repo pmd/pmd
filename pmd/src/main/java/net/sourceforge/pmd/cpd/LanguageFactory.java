@@ -7,9 +7,16 @@ import java.util.Properties;
 
 public class LanguageFactory {
 
-	// TODO derive and provide this at runtime instead, used by outside IDEs
-   public static String[] supportedLanguages = new String[]{"java", "jsp", "cpp", "c", "php", "ruby","fortran", "ecmascript","cs" };
-   
+    /*
+     * TODO derive and provide this at runtime instead, used by outside IDEs
+     * FIXME Can't we do something cleaner and
+     * more dynamic ? Maybe externalise to a properties files that will
+     * be generated when building pmd ? This will not have to add manually
+     * new language here ?
+    */
+   public static String[] supportedLanguages =
+           new String[]{"java", "jsp", "cpp", "c", "php", "ruby", "fortran", "ecmascript", "cs"};
+
    private static final String SUFFIX = "Language";
    public static final String EXTENSION = "extension";
    public static final String BY_EXTENSION = "by_extension";

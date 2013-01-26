@@ -10,3 +10,8 @@ RewriteRule .* - [E=PMD:pmd-5.0.1]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond /home/project-web/pmd/htdocs/%{ENV:PMD}%{REQUEST_URI} -f
 RewriteRule .* /%{ENV:PMD}%{REQUEST_URI} [L,R]
+
+# rewrite any remaining request to pmd-4.3.0 for backwards compatibility
+# as the old versions link to a non-versioned rule description URLs.
+RewriteCond /home/project-web/pmd/htdocs/pmd-4.3.0%{REQUEST_URI} -f
+RewriteRule .* /pmd-4.3.0%{REQUEST_URI} [L,R]

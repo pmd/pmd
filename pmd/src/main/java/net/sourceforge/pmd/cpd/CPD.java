@@ -26,6 +26,8 @@ public class CPD {
 
     public CPD(CPDConfiguration theConfiguration) {
     	configuration = theConfiguration;
+        // before we start any tokenizing (add(File...)), we need to reset the static TokenEntry status
+        TokenEntry.clearImages();
     }
 
     public void setCpdListener(CPDListener cpdListener) {
@@ -33,7 +35,6 @@ public class CPD {
     }
 
     public void go() {
-        TokenEntry.clearImages();
         matchAlgorithm = new MatchAlgorithm(source, tokens,configuration.getMinimumTileSize(),listener);
         matchAlgorithm.findMatches();
     }

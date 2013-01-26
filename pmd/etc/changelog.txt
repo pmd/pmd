@@ -1,11 +1,25 @@
 ???? ??, 2012 - 5.1.0:
 
+Fixed bug  878: False positive: UnusedFormalParameter for abstract methods
+Fixed bug  913: SignatureDeclareThrowsException is raised twice
+Fixed bug  947: CloseResource rule fails if field is marked with annotation
+Fixed bug 1007: Parse Exception with annotation
+Fixed bug 1011: CloseResource Rule ignores Constructors
+Fixed bug 1012: False positive: Useless parentheses.
+Fixed bug 1020: Parsing Error
 Fixed bug 1026: PMD doesn't handle 'value =' in SuppressWarnings annotation
+Fixed bug 1028: False-positive: Compare objects with equals for Enums
+Fixed bug 1030: CPD Java.lang.IndexOutOfBoundsException: Index:
 Fixed bug 1037: Facing a showstopper issue in PMD Report Class (report listeners)
+Fixed bug 1039: pmd-nicerhtml.xsl is packaged in wrong location
 Fixed bug 1043: node.getEndLine() always returns 0 (ECMAscript)
 Fixed bug 1044: Unknown option: -excludemarker
+Fixed bug 1046: ant task CPDTask doesn't accept ecmascript
 Fixed bug 1047: False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1
 Fixed bug 1048: CommentContent Rule, String Index out of range Exception
+Fixed bug 1055: Please add a colon in the ant output after line,column for Oracle JDeveloper IDE usage
+Fixed bug 1059: Change rule name "Use Singleton" should be "Use Utility class"
+Fixed bug 1060: GodClassRule >>> wrong method
 
 ????? ??, 2013 - 5.0.2:
 

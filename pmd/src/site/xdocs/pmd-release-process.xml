@@ -33,6 +33,7 @@ $ git status
   <li>Update the <em>"download"</em> and <em>"what's new"</em> link in <strong>site.pre.xml</strong>.</li>
   <li>Update version/release info in <strong>etc/changelog.txt</strong>.</li>
   <li>Update pmd.website.baseurl in <strong>pom.xml</strong></li>
+  <li>Update <strong>../website/.htaccess</strong> of our website, to redirect to the new version</li>
 </ul>
 
 <source>
