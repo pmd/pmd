@@ -291,6 +291,7 @@
                 <configuration>
                     <forkMode>once</forkMode>
                     <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+                    <runOrder>alphabetical</runOrder>
                 </configuration>
             </plugin>
             <plugin>
