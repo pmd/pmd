@@ -123,3 +123,19 @@ class SimpleBeanUser2 extends SimpleBeanUser {
         }});
     }
 }
+
+/*
+ * Test case for bug #1007 Parse Exception with annotation
+ */
+class TestParseAnnototation {
+    void parse() {
+        for (@SuppressWarnings("unchecked") int i = 0; i < 10; i++) {
+        }
+        for (@SuppressWarnings("unchecked") Iterator it = Fachabteilung.values().iterator(); it.hasNext();) {
+        }
+        List<String> l = new ArrayList<String>();
+        for (@SuppressWarnings("unchecked") String s : l) {
+        }
+    }
+}
+

@@ -2,6 +2,7 @@
 
 Fixed bug  878: False positive: UnusedFormalParameter for abstract methods
 Fixed bug  913: SignatureDeclareThrowsException is raised twice
+Fixed bug 1007: Parse Exception with annotation
 Fixed bug 1012: False positive: Useless parentheses.
 Fixed bug 1020: Parsing Error
 Fixed bug 1026: PMD doesn't handle 'value =' in SuppressWarnings annotation

@@ -1,4 +1,8 @@
 /**
+ * Fix ForStatement to allow Annotations within the initializer.
+ *
+ * Andreas Dangel 01/2013
+ * ===================================================================
  * Fix wrong consumption of modifiers (e.g. "final") in a for-each loop.
  *
  * Andreas Dangel 12/2012
@@ -1932,7 +1936,7 @@ void ForStatement() :
 void ForInit() :
 {}
 {
-  LOOKAHEAD( [ "final" ] Type() <IDENTIFIER> )
+  LOOKAHEAD( LocalVariableDeclaration() )
   LocalVariableDeclaration()
 |
   StatementExpressionList()
