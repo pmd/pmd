@@ -127,14 +127,16 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             }
         }
 
+        minLength = 2 + getProperty(MINIMUM_LENGTH_DESCRIPTOR);
+        
         super.visit(node, data);
 
         processResults(data);
 
-        minLength = 2 + getProperty(MINIMUM_LENGTH_DESCRIPTOR);
-
         return data;
     }
+       
+
 
 	private void processResults(Object data) {
 
