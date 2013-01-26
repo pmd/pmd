@@ -139,3 +139,21 @@ class TestParseAnnototation {
     }
 }
 
+/*
+ * Test case for bug #956 PMD Parse Exception
+ */
+class FooBlock {}
+class MyFoo {
+    MyFoo(FooBlock b) {
+    }
+}
+class Foo extends MyFoo {
+    public Foo() {
+        super(new FooBlock() {
+            public Object valueOf(Object object) {
+                String fish = "salmon";
+                return fish;
+            }
+        });
+    }
+}
