@@ -42,7 +42,7 @@ public class XSLTRenderer extends XMLRenderer {
     public static final StringProperty XSLT_FILENAME = new StringProperty("xsltFilename", "The XSLT file name.", null, 0);
 
     private Transformer transformer;
-    private String xsltFilename = "/etc/pmd-nicerhtml.xsl";
+    private String xsltFilename = "/pmd-nicerhtml.xsl";
     private Writer outputWriter;
 
     public XSLTRenderer() {
@@ -59,11 +59,11 @@ public class XSLTRenderer extends XMLRenderer {
      */
     @Override
     public void start() throws IOException {
-	String xsltFilename = getProperty(XSLT_FILENAME);
-	if (xsltFilename != null) {
-	    File file = new File(xsltFilename);
+	String xsltFilenameProperty = getProperty(XSLT_FILENAME);
+	if (xsltFilenameProperty != null) {
+	    File file = new File(xsltFilenameProperty);
 	    if (file.exists() && file.canRead()) {
-		this.xsltFilename = xsltFilename;
+		this.xsltFilename = xsltFilenameProperty;
 	    }
 	}
 
@@ -79,10 +79,10 @@ public class XSLTRenderer extends XMLRenderer {
 	if (file.exists() && file.canRead()) {
 	    xslt = new FileInputStream(file);
 	} else {
-	    xslt = this.getClass().getResourceAsStream(xsltFilename);
+	    xslt = this.getClass().getResourceAsStream(this.xsltFilename);
 	}
 	if (xslt == null) {
-	    throw new FileNotFoundException("Can't file XSLT sheet :" + xsltFilename);
+	    throw new FileNotFoundException("Can't file XSLT sheet :" + this.xsltFilename);
 	}
 	this.prepareTransformer(xslt);
 	// Now we build the XML file
