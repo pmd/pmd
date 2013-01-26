@@ -2,6 +2,7 @@
 
 Fixed bug  878: False positive: UnusedFormalParameter for abstract methods
 Fixed bug  913: SignatureDeclareThrowsException is raised twice
+Fixed bug  947: CloseResource rule fails if field is marked with annotation
 Fixed bug 1007: Parse Exception with annotation
 Fixed bug 1011: CloseResource Rule ignores Constructors
 Fixed bug 1012: False positive: Useless parentheses.

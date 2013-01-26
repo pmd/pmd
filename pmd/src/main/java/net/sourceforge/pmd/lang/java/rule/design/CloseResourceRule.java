@@ -97,7 +97,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
                     if (types.contains(clazz.getImage())) {
-                        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.jjtGetChild(1).jjtGetChild(0);
+                        ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
                         ids.add(id);
                     }
                 }
@@ -227,7 +227,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
         // if all is not well, complain
         if (!closed) {
-            ASTType type = (ASTType) var.jjtGetChild(0);
+            ASTType type = var.getFirstChildOfType(ASTType.class);
             ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
             ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
             addViolation(data, id, clazz.getImage());
