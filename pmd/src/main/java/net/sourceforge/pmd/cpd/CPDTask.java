@@ -188,16 +188,9 @@ public class CPDTask extends Task {
         }
     }
 
-    /*
-     * FIXME Can't we do something cleaner and
-     * more dynamic ? Maybe externalise to a properties files that will
-     * be generated when building pmd ? This will not have to add manually
-     * new language here ?
-    */
     public static class LanguageAttribute extends EnumeratedAttribute {
-        private static final String[] LANGUAGES = new String[]{"java","jsp","cpp", "c","php", "ruby", "fortran", "cs"};
         public String[] getValues() {
-            return LANGUAGES;
+            return LanguageFactory.supportedLanguages;
         }
     }
 }

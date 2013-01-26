@@ -106,19 +106,22 @@ public class GUI implements CPDListener {
 		{"Fortran",			new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("fortran"); }
 									public String[] extensions() { return new String[] {".rb" }; }; } },
-		{"by extension...", new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.BY_EXTENSION, p); }
-									public String[] extensions() { return new String[] {"" }; }; } },
-		{"PHP", 			new LanguageConfig() { 
+		{"PHP",				new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("php"); }
 									public String[] extensions() { return new String[] {".php" }; };	} },
-		{"C#", 			    new LanguageConfig() {
+		{"C#",				new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cs"); }
 									public String[] extensions() { return new String[] {".cs" }; };	} },
+		{"Ecmascript",			new LanguageConfig() {
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("js"); }
+									public String[] extensions() { return new String[] {".js" }; }; } },
+		{"by extension...",		new LanguageConfig() {
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.BY_EXTENSION, p); }
+									public String[] extensions() { return new String[] {"" }; }; } },
 		};
 	
 	private static final int		DEFAULT_CPD_MINIMUM_LENGTH = 75;
-	private static final Map		LANGUAGE_CONFIGS_BY_LABEL = new HashMap(LANGUAGE_SETS.length);
+	private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL = new HashMap<String, LanguageConfig>(LANGUAGE_SETS.length);
 	private static final KeyStroke	COPY_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_C,ActionEvent.CTRL_MASK,false);
 	private static final KeyStroke	DELETE_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 	
@@ -148,12 +151,12 @@ public class GUI implements CPDListener {
     
 	static {		
 		for (int i=0; i<LANGUAGE_SETS.length; i++) {
-			LANGUAGE_CONFIGS_BY_LABEL.put(LANGUAGE_SETS[i][0], LANGUAGE_SETS[i][1]);
+			LANGUAGE_CONFIGS_BY_LABEL.put((String)LANGUAGE_SETS[i][0], (LanguageConfig)LANGUAGE_SETS[i][1]);
 		}
 	}
 	
 	private static LanguageConfig languageConfigFor(String label) {
-		return (LanguageConfig)LANGUAGE_CONFIGS_BY_LABEL.get(label);
+		return LANGUAGE_CONFIGS_BY_LABEL.get(label);
 	}
 	
     private static class CancelListener implements ActionListener {
