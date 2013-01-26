@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -72,7 +73,18 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     @Override
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        checkForResources(node, data);
+        return data;
+    }
+
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        checkForResources(node, data);
+        return data;
+    }
+
+    private void checkForResources(Node node, Object data) {
         List<ASTLocalVariableDeclaration> vars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         List<ASTVariableDeclaratorId> ids = new ArrayList<ASTVariableDeclaratorId>();
 
@@ -96,7 +108,6 @@ public class CloseResourceRule extends AbstractJavaRule {
         for (ASTVariableDeclaratorId x : ids) {
             ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent().jjtGetParent(), x, data);
         }
-        return data;
     }
 
     private void ensureClosed(ASTLocalVariableDeclaration var,
@@ -107,11 +118,11 @@ public class CloseResourceRule extends AbstractJavaRule {
         String target = variableToClose + ".close";
         Node n = var;
 
-        while (!(n instanceof ASTBlock)) {
+        while (!(n instanceof ASTBlock) && !(n instanceof ASTConstructorDeclaration)) {
             n = n.jjtGetParent();
         }
 
-        ASTBlock top = (ASTBlock) n;
+        Node top = n;
 
         List<ASTTryStatement> tryblocks = top.findDescendantsOfType(ASTTryStatement.class);
 
@@ -206,7 +217,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             List<ASTReturnStatement> returns = new ArrayList<ASTReturnStatement>();
             top.findDescendantsOfType(ASTReturnStatement.class, returns, true);
             for (ASTReturnStatement returnStatement : returns) {
-                ASTName name = returnStatement.getFirstChildOfType(ASTName.class);
+                ASTName name = returnStatement.getFirstDescendantOfType(ASTName.class);
                 if ((name != null) && name.getImage().equals(variableToClose)) {
                     closed = true;
                     break;

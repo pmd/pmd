@@ -181,7 +181,7 @@ public class Foo {
     </test-code>
 
 
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 [1964798] 3 bugs in CloseResourceRule : Case failing with complete name
      ]]></description>
@@ -247,7 +247,7 @@ public class Foo {
      ]]></code>
     </test-code>        
 
-	<test-code regressionTest="false">
+	<test-code>
         <description><![CDATA[
 [1964798] 3 bugs in CloseResourceRule : If connection is returned, we should not log a violation.
      ]]></description>
@@ -335,5 +335,43 @@ public class StructureFactory {
 }
      ]]></code>
     </test-code>
-    
+    <test-code> reinitializeRule="true"
+        <description>#1011 CloseResource Rule ignores Constructors</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public Test() {
+        Connection c = pool.getConnection();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code reinitializeRule="true">
+        <description>#1011 CloseResource Rule ignores Constructors - closed in finally</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public Test() {
+        Connection c;
+        try {
+            c = pool.getConnection();
+        } finally {
+            c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code reinitializeRule="true">
+        <description>#1011 CloseResource Rule ignores Constructors - not a problem - instance variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    Connection c;
+    public Test() {
+        c = pool.getConnection();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
