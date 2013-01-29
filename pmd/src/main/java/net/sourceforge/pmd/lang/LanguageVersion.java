@@ -201,6 +201,23 @@ public enum LanguageVersion {
     }
 
     /**
+     * A utility method to retrieve the appropriate enum, given the provided parameters
+     *
+     * @param languageTerseName The LanguageVersion terse name.
+     * @param languageVersion The version of the language requested.
+     * @return A list of versions associated with the terse name.
+     */
+    public static LanguageVersion findVersionsForLanguageTerseName(String languageTerseName, String languageVersion) {
+        List<LanguageVersion> versionsAvailable = findVersionsForLanguageTerseName(languageTerseName);
+        for ( LanguageVersion version : versionsAvailable ) {
+        	if ( version.getVersion().equalsIgnoreCase(languageVersion) )
+        		return version;
+        }
+        return null;
+    }
+
+
+    /**
      * Return a comma-separated list of LanguageVersion terse names.
      * @param languageVersions The language versions.
      * @return Comma-separated terse names.
