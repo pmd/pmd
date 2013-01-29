@@ -31,14 +31,14 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     public void testNestedRuleset() {
         executeTarget("testNestedRuleset");
         assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Deeply nested if");
+        assertOutputContaining("Fields should be declared at the");
     }
 
     @Test
     public void testFormatterWithProperties() {
         executeTarget("testFormatterWithProperties");
         assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Deeply nested if");
+        assertOutputContaining("Fields should be declared at the");
         assertOutputContaining("link_prefix");
         assertOutputContaining("line_prefix");
     }
@@ -47,35 +47,35 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     public void testAbstractNames() {
         executeTarget("testAbstractNames");
         assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Deeply nested if");
+        assertOutputContaining("Fields should be declared at the");
     }
 
     @Test
     public void testAbstractNamesInNestedRuleset() {
         executeTarget("testAbstractNamesInNestedRuleset");
         assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Deeply nested if");
+        assertOutputContaining("Fields should be declared at the");
     }
 
     @Test
     public void testCommaInRulesetfiles() {
         executeTarget("testCommaInRulesetfiles");
         assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Deeply nested if");
+        assertOutputContaining("Fields should be declared at the");
     }
 
     @Test
     public void testRelativeRulesets() {
         executeTarget("testRelativeRulesets");
         assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Deeply nested if");
+        assertOutputContaining("Fields should be declared at the");
     }
 
     @Test
     public void testRelativeRulesetsInRulesetfiles() {
         executeTarget("testRelativeRulesetsInRulesetfiles");
         assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Deeply nested if");
+        assertOutputContaining("Fields should be declared at");
     }
 
     @Test
@@ -85,7 +85,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
 
     @Test
     public void testInvalidLanguageVersion() {
-        expectBuildExceptionContaining("testInvalidLanguageVersion", "Fail requested.", "The <version> element, if used, must be one of 'java 1.3', 'java 1.4', 'java 1.5', 'java 1.6', 'java 1.7'.");
+        expectBuildExceptionContaining("testInvalidLanguageVersion", "Fail requested.", "The following language is not supported:<language name=\"java\" version=\"42\" />.");
     }
 
     @Test
@@ -93,7 +93,15 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         executeTarget("testExplicitRuleInRuleSet");
         assertOutputContaining("Avoid really long methods");
     }
-
+    
+    @Test
+    public void testEcmascript() {
+        executeTarget("testEcmascript");
+        assertOutputContaining("A 'return', 'break', 'continue', or 'throw' statement should be the last in a block.");
+        assertOutputContaining("Avoid using global variables");
+        assertOutputContaining("Use ===/!== to compare with true/false or Numbers");
+    }
+    
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(PMDTaskTest.class);
     }

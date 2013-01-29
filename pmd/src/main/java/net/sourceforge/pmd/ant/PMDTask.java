@@ -26,7 +26,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -110,24 +109,10 @@ public class PMDTask extends Task {
 		formatters.add(f);
 	}
 
-	public void addConfiguredVersion(Version version) {
-		LanguageVersion languageVersion = LanguageVersion.findByTerseName(version.getTerseName());
+	public void addConfiguredSourceLanguage(SourceLanguage version) {
+		LanguageVersion languageVersion = LanguageVersion.findVersionsForLanguageTerseName(version.getName(), version.getVersion());
 		if (languageVersion == null) {
-			StringBuilder buf = new StringBuilder("The <version> element, if used, must be one of ");
-			boolean first = true;
-			for (Language language : Language.values()) {
-				if (language.getVersions().size() > 2) {
-					for (LanguageVersion v : language.getVersions()) {
-						if (!first) {
-							buf.append(", ");
-						}
-						buf.append('\'').append(v.getTerseName()).append('\'');
-						first = false;
-					}
-				}
-			}
-			buf.append('.');
-			throw new BuildException(buf.toString());
+			throw new BuildException("The following language is not supported:" + version + ".");
 		}
 		configuration.setDefaultLanguageVersion(languageVersion);
 	}

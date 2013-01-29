@@ -99,7 +99,7 @@
 
      <p><code>auxclasspath</code> nested element - extra classpath used for Type Resolution rules.</p>
 
-     <p><code>version</code> nested element - specify which version of JDK to (1.5, 1.6,...)</p>
+     <p><code>language</code> nested element - specify which language (Java, Ecmascript, XML,...) and the associated version (1.5, 1.6,...)</p>
 
      <p><code>ruleset</code> nested element - another way to specify rulesets.  Here's an example:</p>
           <source>
@@ -107,7 +107,7 @@
 <target name="pmd">
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
  <pmd shortFilenames="true">
-  <version>1.6</version>
+  <language name="java" versio="1.6"/>
   <ruleset>rulesets/java/design.xml</ruleset>
   <ruleset>java-basic</ruleset>
   <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
