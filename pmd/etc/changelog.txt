@@ -1,4 +1,4 @@
-????? ??, 2013 - 5.0.2:
+February 3, 2013 - 5.0.2:
 
 Fixed bug  878: False positive: UnusedFormalParameter for abstract methods
 Fixed bug  913: SignatureDeclareThrowsException is raised twice
