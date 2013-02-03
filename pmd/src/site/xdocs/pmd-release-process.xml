@@ -30,10 +30,12 @@ $ git status
   <li>Ensure all the new rules are listed in a the proper file:
     <source>src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</source>
   </li>
-  <li>Update the <em>"download"</em> and <em>"what's new"</em> link in <strong>site.pre.xml</strong>.</li>
+  <li>Update the <em>"download"</em> and <em>"what's new"</em> link in <strong>src/site/site.pre.xml</strong>.</li>
+  <li>Update <em>"Recent releases"</em> section in <strong>src/site/xdocs/index.xml</strong>.</li>
   <li>Update version/release info in <strong>etc/changelog.txt</strong>.</li>
   <li>Update pmd.website.baseurl in <strong>pom.xml</strong></li>
   <li>Update <strong>../website/.htaccess</strong> of our website, to redirect to the new version</li>
+  <li>Update <strong>../website/index.html</strong> to mention the new release</li>
 </ul>
 
 <source>
@@ -44,6 +46,7 @@ $ mvn verify post-site    #(order of targets DOES matter)
 
 <source>
 ./bin/run.sh pmd -d /tmp/Test -language java -f xml -R rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d /tmp/Test -language java -f xml -R java-unusedcode
 ./bin/run.sh pmd -d /tmp/java -language java -f html -R rulesets/java/unusedcode.xml
 </source>
 
