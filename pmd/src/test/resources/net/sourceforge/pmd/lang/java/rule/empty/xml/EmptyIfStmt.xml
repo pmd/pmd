@@ -42,4 +42,17 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>empty if statement with comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(int x) {
+  if (x == 0) {
+   // empty!
+  }
+ }
+}
+]]></code>
+    </test-code>
 </test-data>
