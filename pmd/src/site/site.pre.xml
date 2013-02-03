@@ -39,8 +39,8 @@
     </breadcrumbs>
 
     <menu name="Overview">
-      <item name="Download PMD 5.0.1" href="http://sourceforge.net/projects/pmd/files/pmd/5.0.1/pmd-bin-5.0.1.zip/download" />
-      <item name="What's new in PMD 5.0.1" href="https://sourceforge.net/projects/pmd/files/pmd/5.0.1/" />
+      <item name="Download PMD 5.0.2" href="http://sourceforge.net/projects/pmd/files/pmd/5.0.2/pmd-bin-5.0.2.zip/download" />
+      <item name="What's new in PMD 5.0.2" href="https://sourceforge.net/projects/pmd/files/pmd/5.0.2/" />
       <item href="/news.html" name="PMD in the news"/>
       <item href="/products.html" name="PMD-related products and books"/>
       <item href="/bestpractices.html" name="Best practices"/>
