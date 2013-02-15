@@ -102,7 +102,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 				continue;
 			}
 
-			if (line.charAt(0) == '*') {
+			if (line.length() > 0 && line.charAt(0) == '*') {
 				filteredLines.add(line.substring(1));
 				continue;
 			}
@@ -130,7 +130,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 				continue;
 			}
 
-			if (line.charAt(0) == '*') {
+			if (line.length() > 0 && line.charAt(0) == '*') {
 				filteredLines.add(line.substring(1));
 				continue;
 			}
