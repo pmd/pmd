@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<ruleset name="Controversial Ecmascript"
+	xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+The Controversial ruleset contains rules that, for whatever reason, are considered controversial.
+They are held here to allow people to include them as they see fit within their custom rulesets.
+  </description>
+
+  <rule name="AvoidWithStatement"
+        message="Avoid using with - it's bad news"
+        language="ecmascript" since="5.0.1"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#AvoidWithStatement">
+    <description>Avoid using with - it's bad news</description>
+    <properties>
+      <property name="xpath">
+      <value><![CDATA[
+//WithStatement
+   ]]></value>
+    </property>
+  </properties>
+  <priority>1</priority>
+  <example><![CDATA[
+with (object) {
+  property = 3; // Might be on object, might be on window: who knows.
+}
+      ]]></example>
+    </rule>
+</ruleset>
