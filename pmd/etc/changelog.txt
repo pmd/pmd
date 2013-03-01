@@ -7,6 +7,12 @@ New EcmaScript rules and ruleset:
 		- AvoidWithStatement
 	UseBaseWithParseInt
 
+????? ??, 2013 - 5.0.3:
+
+Fixed bug 1068: CPD fails on broken symbolic links
+
+
+
 February 3, 2013 - 5.0.2:
 
 Fixed bug  878: False positive: UnusedFormalParameter for abstract methods

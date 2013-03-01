@@ -84,8 +84,13 @@ public class CPD {
             current.add(signature);
         }
 
-        if (!file.getCanonicalPath().equals(new File(file.getAbsolutePath()).getCanonicalPath())) {
+        if (!file.getCanonicalPath().equals(file.getAbsolutePath())) {
             System.err.println("Skipping " + file + " since it appears to be a symlink");
+            return;
+        }
+
+        if (!file.exists()) {
+            System.err.println("Skipping " + file + " since it doesn't exist (broken symlink?)");
             return;
         }
 
