@@ -15,6 +15,7 @@ public class LoggingJavaRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "LoggerIsNotStaticFinal");
         addRule(RULESET, "MoreThanOneLogger");
         addRule(RULESET, "SystemPrintln");
+        addRule(RULESET, "GuardLogStatement");
     }
 
     public static junit.framework.Test suite() {

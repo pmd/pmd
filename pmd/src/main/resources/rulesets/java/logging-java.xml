@@ -63,43 +63,27 @@ public class Foo{
 }
 ]]>
      </example>
-     </rule>
-    
-<!-- This rule will probably be implemented in a java class, since we need to search the logger name 
-first -->
-<!--
-     <rule name="LogBlockWithoutIf"
-         message="There is log block not surrounded by if"
-         class="net.sourceforge.pmd.lang.rule.XPathRule">
-     <description>
-When many log statements are used, it is convenient to surround them with an if statement.
-     </description>
-     <properties>
-         <property name="xpath">
-             <value>
-                 <![CDATA[
-                ]]>
-             </value>
-         </property>
-     </properties>
-        <priority>2</priority>
+   </rule>
 
+   <rule name="GuardLogStatement"
+         language="java"
+         since="5.0"
+         message="There is log block not surrounded by if"
+         class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
+         externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#GuardLogStatement">
+     <description>
+Whenever using a log level, one should check if the loglevel is actually enabled, or
+otherwise skip the associate String creation and manipulation.
+     </description>
+     <priority>2</priority>
      <example>
  <![CDATA[
-
  	// Add this for performance
-	// if (log.isLoggable(Level.FINE)) { ...
- 	log.fine("This happens");
-	log.fine("Value of x:"+x);
-	log.fine("Value of y:"+y);
-	log.fine("Value of z:"+z);
-	log.fine("Value of w:"+w);
- 
+	if (log.isLoggable(Level.FINE)) { ...
+ 	    log.fine("This happens");
 ]]>
      </example>
-     </rule>
-    -->
-
+   </rule>
 
     <rule name="SystemPrintln"
    		language="java"
@@ -175,5 +159,5 @@ class Foo {
 ]]>
            </example>
     </rule>
-    
+
 </ruleset>

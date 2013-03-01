@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+OK, guard is here
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  private static final Logger logger = Logger.getLogger(Foo.class);
+
+  private void foo() {
+    if ( logger.isDebugEnabled() )
+        logger.debug("Debug statement");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+KO, missing guard
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  private static final Logger logger = Logger.getLogger(Foo.class);
+
+  private void foo() {
+        logger.debug("Debug statement");
+  }
+}
+     ]]></code>
+    </test-code>
+</test-data>

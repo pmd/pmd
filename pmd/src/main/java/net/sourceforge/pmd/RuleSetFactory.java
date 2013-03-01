@@ -321,9 +321,9 @@ public class RuleSetFactory {
 		}
 
 		String attribute = ruleElement.getAttribute("class");
-		Class<?> c = classLoader.loadClass(attribute);
-		Rule rule = (Rule) c.newInstance();
-
+		if ( attribute == null || "".equals(attribute))
+			throw new IllegalArgumentException("The 'class' field of rule can't be null, nor empty.");
+		Rule rule = (Rule) classLoader.loadClass(attribute).newInstance();
 		rule.setName(ruleElement.getAttribute("name"));
 
 		if (ruleElement.hasAttribute("language")) {
