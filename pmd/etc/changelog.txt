@@ -1,5 +1,6 @@
 ????? ??, 2013 - 5.0.3:
 
+Fixed bug 1064: Exception running PrematureDeclaration
 Fixed bug 1068: CPD fails on broken symbolic links
 
 
