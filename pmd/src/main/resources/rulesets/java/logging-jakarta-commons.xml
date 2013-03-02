@@ -132,7 +132,7 @@ public class Test {
 
    <rule name="GuardLogStatement"
          language="java"
-         since="5.0"
+         since="5.0.3"
          message="There is log block not surrounded by if"
          class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#GuardLogStatement">
@@ -144,8 +144,8 @@ otherwise skip the associate String creation and manipulation.
      <example>
  <![CDATA[
  	// Add this for performance
-	if (log.isLoggable(Level.FINE)) { ...
- 	    log.fine("This happens");
+	if (log.isDebugEnabled() { ...
+ 	    log.debug("This happens");
 ]]>
      </example>
    </rule>
