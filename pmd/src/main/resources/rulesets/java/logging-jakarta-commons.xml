@@ -54,7 +54,7 @@ public class Main {
           externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#ProperLogger">
              <description>
 A logger should normally be defined private static final and be associated with the correct class.
-Private final Log log; is also allowed for rare cases where loggers need to be passed around, 
+Private final Log log; is also allowed for rare cases where loggers need to be passed around,
 with the restriction that the logger needs to be passed into the constructor.
              </description>
              <priority>3</priority>
@@ -87,7 +87,7 @@ public class Foo {
  ]]>
             </example>
      </rule>
-     
+
     <rule name="GuardDebugLogging"
           language="Java"
           since="4.3"
@@ -115,16 +115,16 @@ public class Test {
     public void test() {
         // okay:
         __log.debug("log something");
-        
+
         // okay:
         __log.debug("log something with exception", e);
-        
+
         // bad:
         __log.debug("log something" + " and " + "concat strings");
-        
+
         // bad:
         __log.debug("log something" + " and " + "concat strings", e);
-        
+
         // good:
         if (__log.isDebugEnabled()) {
         __log.debug("bla" + "",e );
@@ -134,4 +134,25 @@ public class Test {
             ]]>
         </example>
     </rule>
+
+   <rule name="GuardLogStatement"
+         language="java"
+         since="5.0"
+         message="There is log block not surrounded by if"
+         class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
+         externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#GuardLogStatement">
+     <description>
+Whenever using a log level, one should check if the loglevel is actually enabled, or
+otherwise skip the associate String creation and manipulation.
+     </description>
+     <priority>2</priority>
+     <example>
+ <![CDATA[
+ 	// Add this for performance
+	if (log.isLoggable(Level.FINE)) { ...
+ 	    log.fine("This happens");
+]]>
+     </example>
+   </rule>
+
 </ruleset>

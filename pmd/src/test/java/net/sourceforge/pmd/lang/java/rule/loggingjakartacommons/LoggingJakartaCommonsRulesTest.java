@@ -14,6 +14,7 @@ public class LoggingJakartaCommonsRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ProperLogger");
         addRule(RULESET, "UseCorrectExceptionLogging");
         addRule(RULESET, "GuardDebugLogging");
+        addRule(RULESET, "GuardLogStatement");
     }
 
     public static junit.framework.Test suite() {
