@@ -2,10 +2,15 @@
 
 Fixed bug 1059: Change rule name "Use Singleton" should be "Use Utility class"
 
+
 New EcmaScript rules and ruleset:
 	Controversial ruleset, featuring
 		- AvoidWithStatement
 	UseBaseWithParseInt
+
+New Java rule:
+	GuardLogStatement
+		- replace xpath implementation of GuardDebugLogging by GuardLogStatement (better perf)
 
 February 3, 2013 - 5.0.2:
 

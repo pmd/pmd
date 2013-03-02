@@ -92,7 +92,7 @@ public class Foo {
           language="Java"
           since="4.3"
           message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#GuardDebugLogging">
         <description>
             When log messages are composed by concatenating strings, the whole section should be guarded
@@ -100,13 +100,8 @@ public class Foo {
         </description>
         <priority>3</priority>
         <properties>
-            <property name="xpath">
-            <value>
-            <![CDATA[
-                //PrimaryPrefix[ends-with(Name/@Image, '.debug') and count(../descendant::AdditiveExpression) > 0 and count(ancestor::IfStatement/Expression/descendant::PrimaryExpression[ends-with(descendant::PrimaryPrefix/Name/@Image, 'isDebugEnabled')]) = 0]
-            ]]>
-            </value>
-            </property>
+            <property name="logLevels">debug</property>
+            <property name="guardsMethods">isDebugEnabled</property>
         </properties>
         <example>
             <![CDATA[
