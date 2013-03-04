@@ -6,7 +6,7 @@ import org.junit.Before;
 
 
 public class LoggingJavaRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-logging-java";
 
     @Before
@@ -15,7 +15,7 @@ public class LoggingJavaRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "LoggerIsNotStaticFinal");
         addRule(RULESET, "MoreThanOneLogger");
         addRule(RULESET, "SystemPrintln");
-        addRule(RULESET, "GuardLogStatement");
+        addRule(RULESET, "GuardLogStatementJavaUtil");
     }
 
     public static junit.framework.Test suite() {

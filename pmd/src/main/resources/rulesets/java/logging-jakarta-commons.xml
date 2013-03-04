@@ -92,17 +92,13 @@ public class Foo {
           language="Java"
           since="4.3"
           message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
-          class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
+          class="net.sourceforge.pmd.lang.java.rule.logging.GuardDebugLoggingRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#GuardDebugLogging">
         <description>
             When log messages are composed by concatenating strings, the whole section should be guarded
             by a isDebugEnabled() check to avoid performance and memory issues.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="logLevels">debug</property>
-            <property name="guardsMethods">isDebugEnabled</property>
-        </properties>
         <example>
             <![CDATA[
 public class Test {
@@ -135,7 +131,7 @@ public class Test {
          since="5.0.3"
          message="There is log block not surrounded by if"
          class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
-         externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#GuardLogStatement">
+         externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#GuardLogStatement">
      <description>
 Whenever using a log level, one should check if the loglevel is actually enabled, or
 otherwise skip the associate String creation and manipulation.
