@@ -2,6 +2,7 @@
 
 Fixed bug 1064: Exception running PrematureDeclaration
 Fixed bug 1068: CPD fails on broken symbolic links
+Fixed bug 1074: rule priority doesn't work on group definitions
 
 
 
