@@ -280,11 +280,15 @@ public class RuleSetFactory {
 		RuleSetReference ruleSetReference = new RuleSetReference();
 		ruleSetReference.setAllRules(true);
 		ruleSetReference.setRuleSetFileName(ref);
-		NodeList excludeNodes = ruleElement.getChildNodes();
-		for (int i = 0; i < excludeNodes.getLength(); i++) {
-			if (isElementNode(excludeNodes.item(i),"exclude")) {
-				Element excludeElement = (Element) excludeNodes.item(i);
+		String priority = null;
+		NodeList childNodes = ruleElement.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+		    Node child = childNodes.item(i);
+			if (isElementNode(child,"exclude")) {
+				Element excludeElement = (Element) child;
 				ruleSetReference.addExclude(excludeElement.getAttribute("name"));
+			} else if (isElementNode(child, "priority")) {
+			    priority = parseTextNode(child).trim();
 			}
 		}
 
@@ -298,6 +302,11 @@ public class RuleSetFactory {
 				ruleReference.setRuleSetReference(ruleSetReference);
 				ruleReference.setRule(rule);
 				ruleSet.addRule(ruleReference);
+
+				// override the priority
+				if (priority != null) {
+				    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(priority)));
+				}
 			}
 		}
 	}
