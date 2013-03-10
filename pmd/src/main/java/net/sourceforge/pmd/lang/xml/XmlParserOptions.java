@@ -36,7 +36,7 @@ public class XmlParserOptions extends ParserOptions {
     public static final BooleanProperty XINCLUDE_AWARE_DESCRIPTOR = new BooleanProperty("xincludeAware",
 	    "Specifies that the XML parser will process XInclude markup.", Boolean.FALSE, 9.0f);
     public static final BooleanProperty LOOKUP_DESCRIPTOR_DTD = new BooleanProperty("xincludeAware",
-    	    "Specifies whether XML parser will attempt to lookup the DTD.", Boolean.TRUE, 10.0f);
+    	    "Specifies whether XML parser will attempt to lookup the DTD.", Boolean.FALSE, 10.0f);
     
     public static final EntityResolver SILENT_ENTITY_RESOLVER = new EntityResolver() {
 		public InputSource resolveEntity(String publicId, String systemId)

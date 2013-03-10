@@ -123,4 +123,46 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+minimum length property, minimum length reached
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <rule-property name="minimumLength">5</rule-property>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+minimum length property, minimum length not reached
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="minimumLength">5</rule-property>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("foo"); buz("foo"); buz("foo"); buz("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+minimum length property, default value
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("foo"); buz("foo"); buz("foo"); buz("foo");
+    buz("fo"); buz("fo"); buz("fo"); buz("fo");
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

@@ -96,3 +96,64 @@ class PmdTestChild extends PmdTestParent {
 		});
 	}
 }
+
+/*
+ * Test cases for bug #1020 Parsing Error
+ */
+class SimpleBean {
+    String name;
+}
+
+class SimpleBeanUser {
+    SimpleBeanUser(SimpleBean o) {
+
+    }
+
+    SimpleBeanUser() {
+        this(new SimpleBean() {{
+            name = "test";
+        }});
+    }
+}
+
+class SimpleBeanUser2 extends SimpleBeanUser {
+    SimpleBeanUser2() {
+        super(new SimpleBean(){{
+            name = "test2";
+        }});
+    }
+}
+
+/*
+ * Test case for bug #1007 Parse Exception with annotation
+ */
+class TestParseAnnototation {
+    void parse() {
+        for (@SuppressWarnings("unchecked") int i = 0; i < 10; i++) {
+        }
+        for (@SuppressWarnings("unchecked") Iterator it = Fachabteilung.values().iterator(); it.hasNext();) {
+        }
+        List<String> l = new ArrayList<String>();
+        for (@SuppressWarnings("unchecked") String s : l) {
+        }
+    }
+}
+
+/*
+ * Test case for bug #956 PMD Parse Exception
+ */
+class FooBlock {}
+class MyFoo {
+    MyFoo(FooBlock b) {
+    }
+}
+class Foo extends MyFoo {
+    public Foo() {
+        super(new FooBlock() {
+            public Object valueOf(Object object) {
+                String fish = "salmon";
+                return fish;
+            }
+        });
+    }
+}

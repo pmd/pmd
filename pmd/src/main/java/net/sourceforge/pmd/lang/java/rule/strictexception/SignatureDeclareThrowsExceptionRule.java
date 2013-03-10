@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.rule.strictexception;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -8,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -46,7 +48,11 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             return super.visit(methodDeclaration, o);
         }
 
-        List<ASTName> exceptionList = methodDeclaration.findDescendantsOfType(ASTName.class);
+        List<ASTName> exceptionList = Collections.emptyList();
+        ASTNameList nameList = methodDeclaration.getFirstChildOfType(ASTNameList.class);
+        if (nameList != null) {
+            exceptionList = nameList.findDescendantsOfType(ASTName.class);
+        }
         if (!exceptionList.isEmpty()) {
             evaluateExceptions(exceptionList, o);
         }

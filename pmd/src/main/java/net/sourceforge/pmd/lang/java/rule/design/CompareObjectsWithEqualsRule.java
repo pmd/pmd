@@ -5,6 +5,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
@@ -65,6 +66,14 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
             }
 
             if (nd0.isReferenceType() && nd1.isReferenceType()) {
+
+                ASTReferenceType type0 = (ASTReferenceType)((Node) nd0.getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0);
+                ASTReferenceType type1 = (ASTReferenceType)((Node) nd1.getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0);
+                // skip, if it is an enum
+                if (type0.getType() != null && type0.getType().equals(type1.getType()) && type0.getType().isEnum()) {
+                    return data;
+                }
+
                 addViolation(data, node);
             }
         }

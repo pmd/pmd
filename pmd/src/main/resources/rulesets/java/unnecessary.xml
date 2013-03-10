@@ -225,7 +225,8 @@ public class Test {
 //Expression/ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
     count(./CastExpression)=0 and
-    count(./EqualityExpression/MultiplicativeExpression)=0]
+    count(./EqualityExpression/MultiplicativeExpression)=0 and
+    count(./ConditionalOrExpression)=0]
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
@@ -237,7 +238,10 @@ public class Test {
     count(./CastExpression)=0 and
     count(./EqualityExpression)=0]
 |
-//Expression/AdditiveExpression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and not(./CastExpression) and not(./ConditionalExpression)]
+//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral = 'true'])]/PrimaryExpression/PrimaryPrefix/Expression[
+    count(*)=1 and
+    not(./CastExpression) and
+    not(./ConditionalExpression)]
 |
 //Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and

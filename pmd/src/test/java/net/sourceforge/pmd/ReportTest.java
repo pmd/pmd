@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class ReportTest extends RuleTst implements ReportListener {
 
-    private static class FooRule extends AbstractJavaRule {
+    public static class FooRule extends AbstractJavaRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
             if ("Foo".equals(c.getImage())) addViolation(ctx, c);
             return ctx;
@@ -219,7 +219,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertTrue(summary.values().contains(Integer.valueOf(2)));
     }
     
-    private JavaNode getNode(int line, int column, String scopeName){
+    public static JavaNode getNode(int line, int column, String scopeName){
 	DummyJavaNode s = new DummyJavaNode(2);
         DummyJavaNode parent = new DummyJavaNode(1);
         parent.testingOnly__setBeginLine(line);

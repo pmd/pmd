@@ -33,7 +33,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
         if (!node.isPrivate() && !getProperty(CHECKALL_DESCRIPTOR)) {
             return data;
         }
-        if (!node.isNative()) {
+        if (!node.isNative() && !node.isAbstract()) {
             check(node, data);
         }
         return data;

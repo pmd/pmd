@@ -104,6 +104,37 @@ public class SourceCode {
 	}
     }
 
+
+
+    public static class ReaderCodeLoader extends CodeLoader {
+	    public static final String DEFAULT_NAME = "CODE_LOADED_FROM_READER";
+
+	    private Reader code;
+
+	    private String name;
+
+	    public ReaderCodeLoader(Reader code) {
+		this(code, DEFAULT_NAME);
+	    }
+
+	    public ReaderCodeLoader(Reader code, String name) {
+		this.code = code;
+		this.name = name;
+	    }
+
+	    @Override
+	    public Reader getReader() {
+		return code;
+	    }
+
+	    @Override
+	    public String getFileName() {
+		return name;
+	    }
+    }
+
+
+
     private CodeLoader cl;
 
     public SourceCode(CodeLoader cl) {

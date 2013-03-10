@@ -47,11 +47,6 @@
       <td valign="top" align="center">No</td>
     </tr>
     <tr>
-      <td valign="top">targetjdk</td>
-      <td valign="top">Target JDK 1.3, 1.4, 1.5, 1.6, 1.7 or jsp.  "1.5" is the default.</td>
-      <td valign="top" align="center">No</td>
-    </tr>
-    <tr>
       <td valign="top">failuresPropertyName</td>
       <td valign="top">A property name to plug the number of rule violations into when the task finishes</td>
       <td valign="top" align="center">No</td>
@@ -104,12 +99,15 @@
 
      <p><code>auxclasspath</code> nested element - extra classpath used for Type Resolution rules.</p>
 
+     <p><code>language</code> nested element - specify which language (Java, Ecmascript, XML,...) and the associated version (1.5, 1.6,...)</p>
+
      <p><code>ruleset</code> nested element - another way to specify rulesets.  Here's an example:</p>
           <source>
 <![CDATA[
 <target name="pmd">
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
  <pmd shortFilenames="true">
+  <language name="java" versio="1.6"/>
   <ruleset>rulesets/java/design.xml</ruleset>
   <ruleset>java-basic</ruleset>
   <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>

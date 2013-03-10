@@ -1,4 +1,8 @@
 /**
+ * Fix ForStatement to allow Annotations within the initializer.
+ *
+ * Andreas Dangel 01/2013
+ * ===================================================================
  * Fix wrong consumption of modifiers (e.g. "final") in a for-each loop.
  * Check for wrong java usage when catching multiple exceptions.
  *
@@ -1939,7 +1943,7 @@ void ForStatement() :
 void ForInit() :
 {}
 {
-  LOOKAHEAD( [ "final" ] Type() <IDENTIFIER> )
+  LOOKAHEAD( LocalVariableDeclaration() )
   LocalVariableDeclaration()
 |
   StatementExpressionList()

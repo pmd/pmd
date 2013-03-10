@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
@@ -59,7 +62,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseCollectionIsEmpty");
         addRule(RULESET, "UseLocaleWithCaseConversions");
         addRule(RULESET, "UseNotifyAllInsteadOfNotify");
-        addRule(RULESET, "UseSingleton");
+        addRule(RULESET, "UseUtilityClass");
         addRule(RULESET, "UseVarargs");
     }
 

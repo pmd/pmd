@@ -8,8 +8,15 @@ import java.util.List;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.sourceforge.pmd.util.database.DBURI;
 
 public class CPDCommandLineInterface {
+        private final static String CLASS_NAME = CPDCommandLineInterface.class.getCanonicalName();
+
+        private final static Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getPackage().getName()); 
 
 	private static final int DUPLICATE_CODE_FOUND = 4;
 
@@ -56,7 +63,19 @@ public class CPDCommandLineInterface {
 		// implementation to retrieve their associate values...
 		CPDConfiguration.setSystemProperties(arguments);
 		CPD cpd = new CPD(arguments);
-		addSourcesFilesToCPD(arguments.getFiles(),cpd);
+
+                //Add files 
+                if ( null != arguments.getFiles() && ! arguments.getFiles().isEmpty() )
+                {
+                  addSourcesFilesToCPD(arguments.getFiles(),cpd);
+                }
+
+                //Add Database URIS
+                if ( null != arguments.getURI() && ! "".equals(arguments.getURI()) )
+                {
+                  addSourceURIToCPD(arguments.getURI(),cpd);
+                }
+
 		cpd.go();
 		if (cpd.getMatches().hasNext()) {
 			System.out.println(arguments.getRenderer().render(cpd.getMatches()));
@@ -71,6 +90,36 @@ public class CPDCommandLineInterface {
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	private static void addSourceURIToCPD(String uri, CPD cpd) {
+          try {
+                        LOGGER.fine(String.format("Attempting DBURI=%s" , uri));
+                            DBURI dburi = new DBURI(uri);
+                            LOGGER.fine(String.format("Initialised DBURI=%s"
+                                                 , dburi
+                                                 )
+                                      );
+                            LOGGER.fine(String.format("Adding DBURI=%s with DBType=%s"
+                                                 , dburi.toString() 
+                                                 , dburi.getDbType().toString()
+                                                 )
+                                      );
+                            cpd.add(dburi);
+              } catch (IOException e) {
+                      throw new IllegalStateException( "uri="+uri, e);
+              } catch (URISyntaxException ex) {
+                      throw new IllegalStateException( "uri="+uri, ex);
+              } catch (Exception ex) {
+                throw new IllegalStateException( "uri="+uri, ex);
+              }
+	}
+
+	private static void addSourceURIsToCPD(List<String> uris, CPD cpd) {
+            for (String uri : uris)
+            {
+              addSourceURIToCPD(uri, cpd) ;
+            }
 	}
 
 	private static final char EOL = '\n';

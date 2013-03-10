@@ -20,9 +20,16 @@
     
       <h3>Recent releases</h3>
       <p><ul>
+        <li>
+          <p>2013-02-03 PMD 5.0.2: minor version with lots of bug fixes (<a href="https://sourceforge.net/projects/pmd/files/pmd/5.0.2/">Changelog</a>)
+          <ul>
+            <li>Fixed bugs: <a href="https://sourceforge.net/p/pmd/bugs/milestone/PMD-5.0.2/">https://sourceforge.net/p/pmd/bugs/milestone/PMD-5.0.2/</a></li>
+          </ul>
+          </p>
+        </li>
         <li><p>2012-11-28 PMD 5.0.1: minor version with lots of bug fixes (<a href="https://sourceforge.net/projects/pmd/files/pmd/5.0.1/">Changelog</a>)
         <ul>
-           <li>Fixed bugs:  https://sourceforge.net/p/pmd/bugs/milestone/PMD-5.0.1/</li>
+           <li>Fixed bugs: <a href="https://sourceforge.net/p/pmd/bugs/milestone/PMD-5.0.1/">https://sourceforge.net/p/pmd/bugs/milestone/PMD-5.0.1/</a></li>
            <li>New EcmaScript Rule: Basic ruleset: AvoidTrailingComma</li>
            <li>Improved JSP parser to be less strict with not valid XML documents (like HTML)</li>
            <li>Improved CPD: Support in CPD for IgnoreAnnotations and SuppressWarnings("CPD-START")</li>
