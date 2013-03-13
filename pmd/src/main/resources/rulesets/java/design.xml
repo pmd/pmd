@@ -292,7 +292,7 @@ in each object at runtime.
  [@Final='true' and @Static='false']
  [not (../../../../ClassOrInterfaceDeclaration[@Interface='true'])]
    /VariableDeclarator/VariableInitializer/Expression
-    /PrimaryExpression/PrimaryPrefix/Literal
+    /PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix/Literal
                     ]]>
                 </value>
             </property>
