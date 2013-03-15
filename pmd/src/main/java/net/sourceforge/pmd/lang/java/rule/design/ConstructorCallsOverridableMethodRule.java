@@ -941,22 +941,24 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 Node expression = argumentList.jjtGetChild(a);
                 ASTPrimaryPrefix arg = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
                 String type = "<unknown>";
-                if (arg.jjtGetChild(0) instanceof ASTLiteral) {
-                    ASTLiteral lit = (ASTLiteral) arg.jjtGetChild(0);
-                    if (lit.isCharLiteral()) {
-                        type = "char";
-                    } else if (lit.isFloatLiteral()) {
-                        type = "float";
-                    } else if (lit.isIntLiteral()) {
-                        type = "int";
-                    } else if (lit.isStringLiteral()) {
-                        type = "String";
-                    } else if (lit.jjtGetChild(0) instanceof ASTBooleanLiteral) {
-                        type = "boolean";
+                if (arg != null && arg.jjtGetNumChildren() > 0) {
+                    if (arg.jjtGetChild(0) instanceof ASTLiteral) {
+                        ASTLiteral lit = (ASTLiteral) arg.jjtGetChild(0);
+                        if (lit.isCharLiteral()) {
+                            type = "char";
+                        } else if (lit.isFloatLiteral()) {
+                            type = "float";
+                        } else if (lit.isIntLiteral()) {
+                            type = "int";
+                        } else if (lit.isStringLiteral()) {
+                            type = "String";
+                        } else if (lit.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                            type = "boolean";
+                        }
+                    } else if (arg.jjtGetChild(0) instanceof ASTName) {
+                        // ASTName n = (ASTName)arg.jjtGetChild(0);
+                        type = "ref";
                     }
-                } else if (arg.jjtGetChild(0) instanceof ASTName) {
-                    // ASTName n = (ASTName)arg.jjtGetChild(0);
-                    type = "ref";
                 }
                 argumentTypes.add(type);
             }
