@@ -125,6 +125,16 @@ public class AcceptanceTest extends STBBaseTst {
 	assertEquals(9, usages.get(1).getLocation().getBeginLine());
     }
 
+    @Test
+    public void testInnerOuterClass() {
+        parseCode(TEST_INNER_CLASS);
+        ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
+        List<NameOccurrence> usages = vdi.getUsages();
+        assertEquals(2, usages.size());
+        assertEquals(5, usages.get(0).getLocation().getBeginLine());
+        assertEquals(10, usages.get(1).getLocation().getBeginLine());
+    }
+
     private static final String TEST_DEMO =
             "public class Foo  {" + PMD.EOL +
             " void bar(ArrayList buz) { " + PMD.EOL +
@@ -173,6 +183,20 @@ public class AcceptanceTest extends STBBaseTst {
             "  if (bbbbbbbbbb) {" + PMD.EOL +
             "  }" + PMD.EOL +
             " }" + PMD.EOL +
+            "}" + PMD.EOL;
+
+    public static final String TEST_INNER_CLASS =
+            "public class Outer {" + PMD.EOL +
+            "  private static class Inner {" + PMD.EOL +
+            "    private int i;" + PMD.EOL +
+            "    private Inner(int i) {" + PMD.EOL +
+            "      this.i = i;" + PMD.EOL +
+            "    }" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "  public int modify(int i) {" + PMD.EOL +
+            "    Inner in = new Inner(i);" + PMD.EOL +
+            "    return in.i;" + PMD.EOL +
+            "  }" + PMD.EOL +
             "}" + PMD.EOL;
 
     public static junit.framework.Test suite() {

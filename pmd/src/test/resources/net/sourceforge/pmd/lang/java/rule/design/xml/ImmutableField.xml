@@ -333,4 +333,36 @@ public class pmd_inc {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#946 ImmutableField false +</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyClass {
+    private long counter = 0;
+    public <E> void run(final E entity, final Class<? extends TemplatedClass<E>> m) throws MyException {
+        this.counter += 1;
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#1032 ImmutableField Rule: Private field in inner class gives false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static class Bar {
+        private int i;
+        Bar(final int i) {
+            this.i = i;
+        }
+    }
+
+    public int foo() {
+        final Bar b = new Bar(1);
+        b.i=0;
+        return b.i;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
