@@ -1,11 +1,16 @@
 package net.sourceforge.pmd.util.database;
 
+import java.util.logging.Logger;
+
 /**
  * Instantiate the fields required to retrieve {@link SourceCode}.
  *
  * @author sturton
  */
 public class SourceObject {
+
+  private static final String CLASS_NAME = SourceObject.class.getName();
+  private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
   /**
    * Schema
@@ -105,4 +110,29 @@ public class SourceObject {
     this.revision = revision;
   }
 
+  /**
+   * Map the type to a file suffix associated with a {@link Language}
+   * 
+   * @return inferred suffix
+   */
+  public String getSuffixFromType()
+  {
+    LOG.entering(CLASS_NAME, "getSuffixFromType", this);//.entering("type="+type.toUpperCase());
+    if (null == type || type.isEmpty())
+      return "";
+    else if (type.toUpperCase().indexOf("JAVA") >= 0)
+      return ".java";
+    else if (type.toUpperCase().indexOf("TRIGGER") >= 0)
+      return ".trg";
+    else if (type.toUpperCase().indexOf("FUNCTION") >= 0)
+      return ".fnc";
+    else if (type.toUpperCase().indexOf("PROCEDURE") >= 0)
+      return ".prc";
+    else if (type.toUpperCase().indexOf("PACKAGE") >= 0)
+      return ".pck";
+    else if (type.toUpperCase().indexOf("TYPE") >= 0)
+      return ".typ";
+    else 
+      return "";
+  }
 }

@@ -246,4 +246,22 @@ public enum LanguageVersion {
     public static LanguageVersion getDefaultVersion() {
         return LanguageVersion.JAVA_15;
     }
+
+    /**
+     * Return the default LanguageVersion for this Language.
+     *
+     * @return the proper instance of LanguageVersion
+     */
+    public static LanguageVersion getDefaultVersion(Language language) {
+      for (LanguageVersion languageVersion : LanguageVersion.values()) {
+        if (
+                languageVersion.getLanguage().equals(language)
+                && languageVersion.isDefaultVersion()
+           ) 
+        {
+        return languageVersion;
+        }
+      }
+      return null;
+    }
 }

@@ -6,6 +6,10 @@ package net.sourceforge.pmd;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,7 +40,11 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.SystemUtils;
+import net.sourceforge.pmd.util.database.DBMSMetadata;
+import net.sourceforge.pmd.util.database.DBURI;
+import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
@@ -179,7 +187,13 @@ public class PMD {
 
 			RuleContext ctx = new RuleContext();
 
-			processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+                        if (null != configuration.getInputPaths()
+                           || null != configuration.getInputUri()
+                           )
+                        {
+                          processFiles(configuration, ruleSetFactory, files, ctx, renderers);
+                        }
+
 
 			reportStart = System.nanoTime();
 			renderer.end();
@@ -304,8 +318,59 @@ public class PMD {
 			PMDConfiguration configuration, Set<Language> languages) {
 		long startFiles = System.nanoTime();
 		LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
-		List<DataSource> files = FileUtil.collectFiles(
-				configuration.getInputPaths(), fileSelector);
+                List<DataSource> files = null ;
+				
+                if (null != configuration.getInputPaths())
+                {
+                  files = FileUtil.collectFiles(
+                                  configuration.getInputPaths(), fileSelector);
+                }
+				
+                if (null != configuration.getInputUri())
+                {
+                  String uriString = configuration.getInputUri();
+                  try {
+                    List<DataSource> dataSources = new ArrayList<DataSource>();
+                    DBURI dbUri = new DBURI(uriString);
+                    DBMSMetadata dbmsMetadata = new DBMSMetadata(dbUri);
+
+                    List<SourceObject> sourceObjectList = dbmsMetadata.getSourceObjectList ();
+                    LOG.log(Level.FINER, "Located {0} source objects", sourceObjectList.size());
+
+
+                    for (SourceObject sourceObject: sourceObjectList )
+                    {
+
+
+                      /* Add DBURI as a faux-file
+                       * Adding a suffix matching the source object type ensures that the appropriate  
+                       * language parser is used
+                       */
+                      String falseFilePath =  String.format("/Database/%s/%s/%s%s"
+                                                                    ,sourceObject.getSchema() 
+                                                                    ,sourceObject.getType() 
+                                                                    ,sourceObject.getName() 
+                                                                    ,sourceObject.getSuffixFromType()
+                                                                  ) ;
+                      LOG.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
+
+                      try
+                      {
+                        dataSources.add(new ReaderDataSource(dbmsMetadata.getSourceCode(sourceObject) 
+                                                                             ,falseFilePath));
+                      } catch (SQLException ex) {
+                        LOG.log(Level.WARNING, "Cannot get SourceCode for "+falseFilePath 
+                                               + "  - skipping ..."
+                                , ex);
+                      } 
+                    }
+
+                    files = dataSources;
+                  } 
+                  catch (Exception ex) {
+                    throw new RuntimeException( "Problem with DBURI: " + uriString, ex);
+                  }
+                }
 		long endFiles = System.nanoTime();
 		Benchmarker.mark(Benchmark.CollectFiles, endFiles - startFiles, 0);
 		return files;

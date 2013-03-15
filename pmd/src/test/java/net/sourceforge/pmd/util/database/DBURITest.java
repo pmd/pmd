@@ -298,7 +298,7 @@ public class DBURITest extends TestCase {
   public void testGetDriverClass() throws URISyntaxException, Exception {
     System.out.println("getDriverClass");
     DBURI instance = new DBURI(C_ORACLE_OCI_1);
-    String expResult = "oracle.jdbc.driver.OracleDriver";
+    String expResult = "oracle.jdbc.OracleDriver";
     String result = instance.getDriverClass();
     System.out.println("testGetDriverClass: driverClass="+result);
     assertEquals(expResult, result);

@@ -221,7 +221,8 @@ public class RuleSet {
             } catch (ThreadDeath td) {
                 throw td;
             } catch (Throwable t) {
-                LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + ", continuing with next rule", t);
+                LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " to source code " 
+                                       + ctx.getSourceCodeFilename() + ", continuing with next rule", t);
             }
 		}
 	}

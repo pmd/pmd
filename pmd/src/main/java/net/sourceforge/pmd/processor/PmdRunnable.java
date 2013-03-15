@@ -77,10 +77,10 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 			LOG.log(Level.FINE, "Error while processing file: "+fileName, pmde.getCause());
 			addError(report, pmde, fileName);
 		} catch (IOException ioe) {
-			addErrorAndShutdown(report, ioe, "IOException during processing");
+			addErrorAndShutdown(report, ioe, "IOException during processing of "+ fileName );
 
 		} catch (RuntimeException re) {
-			addErrorAndShutdown(report, re,"RuntimeException during processing");
+			addErrorAndShutdown(report, re,"RuntimeException during processing of " + fileName);
 		}
 		return report;
 	}
