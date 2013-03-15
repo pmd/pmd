@@ -68,6 +68,14 @@ public class ClassScope extends AbstractScope {
             List<NameOccurrence> nameOccurrences = variableNames.get(decl);
             if (nameOccurrences == null) {
                 // TODO may be a class name
+
+                // search inner classes
+                for (ClassNameDeclaration innerClass : classNames.keySet()) {
+                    Scope innerClassScope = innerClass.getScope();
+                    if (innerClassScope.contains(occurrence)) {
+                        innerClassScope.addVariableNameOccurrence(occurrence);
+                    }
+                }
             } else {
                 nameOccurrences.add(occurrence);
                 Node n = occurrence.getLocation();
@@ -155,26 +163,38 @@ public class ClassScope extends AbstractScope {
         }
         ImageFinderFunction finder = new ImageFinderFunction(images);
         Applier.apply(finder, variableNames.keySet().iterator());
-        return finder.getDecl();
+        NameDeclaration result = finder.getDecl();
+
+        // search inner classes
+        if (result == null && !classNames.isEmpty()) {
+            for (ClassNameDeclaration innerClass : classNames.keySet()) {
+                Applier.apply(finder, innerClass.getScope().getVariableDeclarations().keySet().iterator());
+                result = finder.getDecl();
+                if (result != null) {
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     public String toString() {
-        String res = "ClassScope (" + className + "): ";
+        StringBuilder res = new StringBuilder("ClassScope (").append(className).append("): ");
         if (!classNames.isEmpty()) {
-            res += "(" + glomNames(classNames.keySet()) + ")";
+            res.append("Inner Classes ").append(glomNames(classNames.keySet())).append("; ");
         }
         if (!methodNames.isEmpty()) {
             for (MethodNameDeclaration mnd: methodNames.keySet()) {
-                res += mnd.toString();
+                res.append(mnd.toString());
                 int usages = methodNames.get(mnd).size();
-                res += "(begins at line " + mnd.getNode().getBeginLine() + ", " + usages + " usages)";
-                res += ",";
+                res.append("(begins at line ").append(mnd.getNode().getBeginLine()).append(", ").append(usages).append(" usages)");
+                res.append(", ");
             }
         }
         if (!variableNames.isEmpty()) {
-            res += "(" + glomNames(variableNames.keySet()) + ")";
+            res.append("Variables ").append(glomNames(variableNames.keySet()));
         }
-        return res;
+        return res.toString();
     }
 
     private String clipClassName(String s) {

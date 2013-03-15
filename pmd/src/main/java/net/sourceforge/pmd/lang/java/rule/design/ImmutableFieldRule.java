@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -113,7 +114,8 @@ public class ImmutableFieldRule extends AbstractJavaRule {
 
     private List<ASTConstructorDeclaration> findAllConstructors(ASTClassOrInterfaceDeclaration node) {
         List<ASTConstructorDeclaration> cons = new ArrayList<ASTConstructorDeclaration>();
-        node.findDescendantsOfType(ASTConstructorDeclaration.class, cons, false);
+        node.getFirstChildOfType(ASTClassOrInterfaceBody.class)
+            .findDescendantsOfType(ASTConstructorDeclaration.class, cons, false);
         return cons;
     }
 }
