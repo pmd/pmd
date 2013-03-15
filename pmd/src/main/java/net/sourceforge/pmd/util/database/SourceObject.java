@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.util.database;
 
 import java.util.logging.Logger;
@@ -13,28 +16,28 @@ public class SourceObject {
   private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
   /**
-   * Schema
+   * Database Schema/Owner - SYS,SYSTEM,SCOTT 
    * 
    */
 
   String schema;
 
   /**
-   * Name
+   * Source Code Name - DBMS_METADATA 
    * 
    */
 
   String name;
 
   /**
-   * Type
+   * Source Code Type - FUNCTION,PROCEDURE,TRIGGER,PACKAGE,PACKAGE_BODY,TYPE,TYPE_BODY,JAVA_SOURCE.
    * 
    */
 
   String type;
 
   /**
-   * Revision
+   * Source Code Revision - Optional revision/version 
    * 
    */
 
