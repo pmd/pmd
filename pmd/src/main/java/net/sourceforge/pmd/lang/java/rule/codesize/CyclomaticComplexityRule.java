@@ -3,11 +3,14 @@
  */
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
+import java.util.List;
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -17,8 +20,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -205,6 +210,7 @@ public Object visit(ASTMethodDeclaration node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
 	    Entry methodEntry = entryStack.pop();
+    if (!isSuppressed(node)) {
 	    int methodDecisionPoints = methodEntry.decisionPoints;
 	    Entry classEntry = entryStack.peek();
 	    classEntry.methodCount++;
@@ -228,6 +234,7 @@ public Object visit(ASTMethodDeclaration node, Object data) {
 	            methodDeclarator == null ? "" : methodDeclarator.getImage(),
 	            String.valueOf( methodEntry.decisionPoints ) } );
 	      }
+    }
     return data;
   }
 
@@ -252,6 +259,7 @@ public Object visit(ASTConstructorDeclaration node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     Entry constructorEntry = entryStack.pop();
+    if (!isSuppressed(node)) {
     int constructorDecisionPointCount = constructorEntry.decisionPoints;
     Entry classEntry = entryStack.peek();
     classEntry.methodCount++;
@@ -264,6 +272,31 @@ public Object visit(ASTConstructorDeclaration node, Object data) {
           classEntry.node.getImage(),
           String.valueOf( constructorDecisionPointCount ) } );
     }
+    }
     return data;
+  }
+
+  private boolean isSuppressed(Node node) {
+      boolean result = false;
+
+      ASTClassOrInterfaceBodyDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+      List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
+      for (ASTAnnotation a : annotations) {
+          ASTName name = a.getFirstDescendantOfType(ASTName.class);
+          if ("SuppressWarnings".equals(name.getImage())) {
+              List<ASTLiteral> literals = a.findDescendantsOfType(ASTLiteral.class);
+              for (ASTLiteral l : literals) {
+                  if (l.isStringLiteral() && "\"PMD.CyclomaticComplexity\"".equals(l.getImage())) {
+                      result = true;
+                      break;
+                  }
+              }
+          }
+          if (result) {
+              break;
+          }
+      }
+
+      return result;
   }
 }
