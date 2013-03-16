@@ -1,5 +1,6 @@
 ????? ??, 2013 - 5.1.0:
 
+Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
 Fixed bug 1059: Change rule name "Use Singleton" should be "Use Utility class"
 
 New EcmaScript rules and ruleset:
