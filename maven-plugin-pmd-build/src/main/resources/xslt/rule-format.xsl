@@ -55,7 +55,7 @@
 							<xsl:with-param name="classname" select="$classname"/>
 						</xsl:call-template>
 					</xsl:variable>
-					<p><xsl:value-of select="$definedByJavaClass"/>:<a><xsl:attribute name="href"><xsl:value-of select="concat(concat('../../xref/',$classfile),'.html')"/></xsl:attribute><xsl:value-of select="@class"/></a>
+					<p><xsl:value-of select="$definedByJavaClass"/>: <a><xsl:attribute name="href"><xsl:value-of select="concat(concat('../../xref/',$classfile),'.html')"/></xsl:attribute><xsl:value-of select="@class"/></a>
 	    		    </p>
 				</xsl:otherwise>
 			</xsl:choose>
