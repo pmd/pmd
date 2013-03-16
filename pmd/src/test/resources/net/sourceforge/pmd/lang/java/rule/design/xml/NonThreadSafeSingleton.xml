@@ -133,4 +133,22 @@ this.bar = FOO;
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#997 Rule NonThreadSafeSingleton gives analysis problem</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class A extends B {
+    static B instance = null;
+    private boolean bar = false;
+
+    static void foo() {
+        if (instance == null ) {
+            instance = new A();
+            ((A)instance).bar=false;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
