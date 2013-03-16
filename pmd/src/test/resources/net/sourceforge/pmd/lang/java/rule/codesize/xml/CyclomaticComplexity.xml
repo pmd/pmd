@@ -112,9 +112,36 @@ Testing new parameter showMethodsMethods
 Testing default value of showClassMethods and showClassesComplexity
      		]]>
      	</description>
-        <rule-property name="showClassesComplexity">""</rule-property>
-        <rule-property name="showMethodsComplexity">""</rule-property>
         <expected-problems>2</expected-problems>
        <code-ref id="basic-violation"/>
+    </test-code>
+    <code-fragment id="constructor-violation"><![CDATA[
+public class Test {
+  public Test() {
+    if (a == 1) {
+      if (b == 2) {
+        System.out.println("b");
+      } else if (b == 1) {
+      }
+    } else {
+    }
+  }
+}
+    ]]></code-fragment>
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods: 1 - showMethodsComplexity=true</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="showMethodsComplexity">true</rule-property>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods: 2 - showMethodsComplexity=false</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="showMethodsComplexity">false</rule-property>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="constructor-violation"/>
     </test-code>
 </test-data>

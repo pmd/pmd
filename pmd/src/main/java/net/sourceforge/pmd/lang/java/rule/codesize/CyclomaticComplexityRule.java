@@ -204,7 +204,6 @@ public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 public Object visit(ASTMethodDeclaration node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
-    if ( showMethodsComplexity ) {
 	    Entry methodEntry = entryStack.pop();
 	    int methodDecisionPoints = methodEntry.decisionPoints;
 	    Entry classEntry = entryStack.peek();
@@ -224,12 +223,11 @@ public Object visit(ASTMethodDeclaration node, Object data) {
 	      }
 	    }
 
-	    if ( methodEntry.decisionPoints >= reportLevel ) {
+	    if ( showMethodsComplexity && methodEntry.decisionPoints >= reportLevel ) {
 	        addViolation( data, node, new String[] { "method",
 	            methodDeclarator == null ? "" : methodDeclarator.getImage(),
 	            String.valueOf( methodEntry.decisionPoints ) } );
 	      }
-    }
     return data;
   }
 
@@ -261,12 +259,11 @@ public Object visit(ASTConstructorDeclaration node, Object data) {
     if ( constructorDecisionPointCount > classEntry.highestDecisionPoints ) {
       classEntry.highestDecisionPoints = constructorDecisionPointCount;
     }
-    if ( constructorEntry.decisionPoints >= reportLevel ) {
+    if ( showMethodsComplexity && constructorEntry.decisionPoints >= reportLevel ) {
       addViolation( data, node, new String[] { "constructor",
           classEntry.node.getImage(),
           String.valueOf( constructorDecisionPointCount ) } );
     }
     return data;
   }
-
 }
