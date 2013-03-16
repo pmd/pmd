@@ -1,6 +1,7 @@
 ????? ??, 2013 - 5.0.3:
 
 Fixed bug  992: Class java.beans.Statement triggered in CloseResource rule
+Fixed bug  997: Rule NonThreadSafeSingleton gives analysis problem
 Fixed bug 1002: False +: FinalFieldCouldBeStatic on inner class
 Fixed bug 1005: False + for ConstructorCallsOverridableMethod - overloaded methods
 Fixed bug 1032: ImmutableField Rule: Private field in inner class gives false positive
