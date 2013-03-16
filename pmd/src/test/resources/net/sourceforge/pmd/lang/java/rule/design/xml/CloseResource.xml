@@ -405,4 +405,24 @@ public class CloseResourceRuleBug {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#992 Class java.beans.Statement triggered in CloseResource rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.beans.Statement;
+
+public class Test {
+    public void foo() {
+        Statement stmt = new Statement(vo, "set" + prop, new Object[] { vector });
+
+        try {
+            stmt.execute();
+        } catch (Exception e) {
+            throw new RuntimeException("Could not set property prop: " + prop + "of type:" + pd.getPropertyType(), e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
