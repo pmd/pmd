@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class RuntimeRulePropertiesAnalyzer {
     private Class<?> propertyDesc;
     private Method nameMethod;
     private Method descMethod;
+    private Method defaultValueMethod;
     private Field propertiesField;
     private Field propertiesValues;
 
@@ -36,6 +38,7 @@ public class RuntimeRulePropertiesAnalyzer {
 	    propertyDesc = cl.loadClass("net.sourceforge.pmd.PropertyDescriptor");
 	    nameMethod = propertyDesc.getDeclaredMethod("name");
 	    descMethod = propertyDesc.getDeclaredMethod("description");
+	    defaultValueMethod = propertyDesc.getDeclaredMethod("defaultValue");
 	    propertiesField = propertySource.getDeclaredField("propertyDescriptors");
 	    propertiesValues = propertySource.getDeclaredField("propertyValuesByDescriptor");
 	    propertiesField.setAccessible(true);
@@ -87,11 +90,19 @@ public class RuntimeRulePropertiesAnalyzer {
 
 	    for (Object o : properties) {
 		Object value = values.get(o);
+		if (value == null) {
+		    value = defaultValueMethod.invoke(o);
+		}
+
 		Element propElem = document.createElement("property");
 		propElem.setAttribute("name", (String)nameMethod.invoke(o));
 		propElem.setAttribute("description", (String)descMethod.invoke(o));
 		if (value != null) {
-		    propElem.setAttribute("value", String.valueOf(value));
+		    String valueString = String.valueOf(value);
+		    if (value.getClass().isArray()) {
+		        valueString = Arrays.toString((Object[])value);
+		    }
+		    propElem.setAttribute("value", valueString);
 		}
 		propsElem.appendChild(propElem);
 	    }
