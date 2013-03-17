@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -123,13 +124,16 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         public static List<MethodCall> createMethodCalls(ASTPrimaryExpression expression) {
             List<MethodCall> result = new ArrayList<MethodCall>();
 
-            if (isNotAConstructorCall(expression) && hasSuffixesWithArguments(expression)) {
+            if (isNotAConstructorCall(expression) && isNotLiteral(expression) && hasSuffixesWithArguments(expression)) {
                 ASTPrimaryPrefix prefixNode = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-                result.add(new MethodCall(expression, prefixNode));
+                MethodCall firstMethodCallInChain = new MethodCall(expression, prefixNode);
+                result.add(firstMethodCallInChain);
                 
-                List<ASTPrimarySuffix> suffixes = findSuffixesWithoutArguments(expression);
-                for (ASTPrimarySuffix suffix : suffixes) {
-                    result.add(new MethodCall(expression, suffix));
+                if (firstMethodCallInChain.isNotBuilder()) {
+                    List<ASTPrimarySuffix> suffixes = findSuffixesWithoutArguments(expression);
+                    for (ASTPrimarySuffix suffix : suffixes) {
+                        result.add(new MethodCall(expression, suffix));
+                    }
                 }
             }
             
@@ -138,6 +142,21 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         
         private static boolean isNotAConstructorCall(ASTPrimaryExpression expression) {
             return !expression.hasDescendantOfType(ASTAllocationExpression.class);
+        }
+
+        private static boolean isNotLiteral(ASTPrimaryExpression expression) {
+            ASTPrimaryPrefix prefix = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+            if (prefix != null) {
+                return !prefix.hasDescendantOfType(ASTLiteral.class);
+            }
+            return true;
+        }
+
+        private boolean isNotBuilder() {
+            return baseType != StringBuffer.class
+                    && baseType != StringBuilder.class
+                    && !"StringBuilder".equals(baseTypeName)
+                    && !"StringBuffer".equals(baseTypeName);
         }
 
         private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(ASTPrimaryExpression expr) {

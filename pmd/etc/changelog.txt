@@ -23,6 +23,7 @@ Fixed bug  984: Cyclomatic complexity should treat constructors like methods
 Fixed bug  985: Suppressed methods shouldn't affect avg CyclomaticComplexity
 Fixed bug  992: Class java.beans.Statement triggered in CloseResource rule
 Fixed bug  997: Rule NonThreadSafeSingleton gives analysis problem
+Fixed bug  999: Law of Demeter: False positives and negatives
 Fixed bug 1002: False +: FinalFieldCouldBeStatic on inner class
 Fixed bug 1005: False + for ConstructorCallsOverridableMethod - overloaded methods
 Fixed bug 1032: ImmutableField Rule: Private field in inner class gives false positive
