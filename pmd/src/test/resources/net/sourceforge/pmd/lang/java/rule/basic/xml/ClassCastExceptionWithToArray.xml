@@ -46,4 +46,22 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#975 false positive in ClassCastExceptionWithToArray</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.dbutils.*;
+import org.apache.commons.dbutils.handlers.*;
+
+public class Test {
+    public void foo() {
+        QueryRunner qr = getQueryRunner();
+        List<?> parms = new java.util.ArrayList();
+        // public <T> T QueryRunner.query(String sql, ResultSetHandler<T> rsh, Object... params)
+        String result = (String) qr.query( sql, new ScalarHandler(), parms.toArray() );
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
