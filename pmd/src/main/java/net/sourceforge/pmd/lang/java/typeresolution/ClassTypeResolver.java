@@ -35,8 +35,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
@@ -49,6 +51,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSingleMemberAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -541,6 +544,27 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		rollupTypeUnary(node);
 		return data;
 	}
+
+    @Override
+    public Object visit(ASTNormalAnnotation node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTMarkerAnnotation node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTSingleMemberAnnotation node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+        return data;
+    }
 
 	// Roll up the type based on type of the first child node.
 	private void rollupTypeUnary(TypeNode typeNode) {
