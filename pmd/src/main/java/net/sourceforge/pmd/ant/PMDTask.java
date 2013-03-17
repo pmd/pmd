@@ -289,7 +289,12 @@ public class PMDTask extends Task {
 			log("Using the normal ClassLoader", Project.MSG_VERBOSE);
 		} else {
 			log("Using the AntClassLoader", Project.MSG_VERBOSE);
-			configuration.setClassLoader(new AntClassLoader(getProject(), classpath));
+			// must be true, otherwise you'll get ClassCastExceptions as classes are loaded twice
+			// and exist in multiple class loaders
+			boolean parentFirst = true;
+			configuration.setClassLoader(
+			        new AntClassLoader(Thread.currentThread().getContextClassLoader(), getProject(),
+			                classpath, parentFirst));
 		}
 		try {
 			/*
