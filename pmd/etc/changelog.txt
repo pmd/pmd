@@ -11,6 +11,7 @@ Fixed bug  997: Rule NonThreadSafeSingleton gives analysis problem
 Fixed bug  999: Law of Demeter: False positives and negatives
 Fixed bug 1002: False +: FinalFieldCouldBeStatic on inner class
 Fixed bug 1005: False + for ConstructorCallsOverridableMethod - overloaded methods
+Fixed bug 1027: PMD Ant: java.lang.ClassCastException
 Fixed bug 1032: ImmutableField Rule: Private field in inner class gives false positive
 Fixed bug 1064: Exception running PrematureDeclaration
 Fixed bug 1068: CPD fails on broken symbolic links

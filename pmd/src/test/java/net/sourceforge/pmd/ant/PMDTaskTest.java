@@ -110,7 +110,12 @@ public class PMDTaskTest extends BuildFileTest {
         assertOutputContaining("Avoid using global variables");
         assertOutputContaining("Use ===/!== to compare with true/false or Numbers");
     }
-    
+
+    @Test
+    public void testClasspath() {
+        executeTarget("testClasspath");
+    }
+
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(PMDTaskTest.class);
     }
