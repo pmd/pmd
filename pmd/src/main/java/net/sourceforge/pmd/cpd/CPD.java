@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -111,7 +112,7 @@ public class CPD {
         DBMSMetadata dbmsmetadata = new DBMSMetadata(dburi) ; 
 
         List<SourceObject> sourceObjectList = dbmsmetadata.getSourceObjectList ();
-        LOGGER.log(Level.FINER, "Located {0} source objects", sourceObjectList.size());
+        LOGGER.log(Level.FINER, "Located {0} database source objects", sourceObjectList.size());
 
         for (SourceObject sourceObject: sourceObjectList )
         {
@@ -135,6 +136,56 @@ public class CPD {
       catch (Exception sqlException)
       {
         throw new RuntimeException("Problem with DBURI: "+dburi , sqlException ) ; 
+      }
+    }
+
+    public void add(SourceCode sourceCode) {
+
+      try 
+      {
+
+          listener.addedFile(1, new File(sourceCode.getFileName()));
+          configuration.tokenizer().tokenize(sourceCode, tokens);
+          source.put(sourceCode.getFileName(), sourceCode);
+      }
+      catch (Exception sqlException)
+      {
+        throw new RuntimeException("Problem with SourceCode: "+sourceCode.getFileName() , sqlException ) ; 
+      }
+    }
+
+    public List<SourceCode> getSourceCodeFor(DBURI dburi) throws IOException {
+
+      List<SourceCode> sourceCodeList = new ArrayList<SourceCode>();
+      try 
+      {
+        DBMSMetadata dbmsmetadata = new DBMSMetadata(dburi) ; 
+
+        List<SourceObject> sourceObjectList = dbmsmetadata.getSourceObjectList ();
+        LOGGER.log(Level.FINER, "Located {0} database source objects", sourceObjectList.size());
+
+        for (SourceObject sourceObject: sourceObjectList )
+        {
+
+          // Add DBURI as a faux-file 
+          String falseFilePath =  String.format("/Database/%s/%s/%s"
+                                                        ,sourceObject.getSchema() 
+                                                        ,sourceObject.getType() 
+                                                        ,sourceObject.getName() 
+                                                      ) ;
+          LOGGER.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
+
+          SourceCode sourceCode = configuration.sourceCodeFor( dbmsmetadata.getSourceCode(sourceObject) 
+                                                               ,falseFilePath
+                                                             );
+          sourceCodeList.add(sourceCode);
+        }
+
+        return sourceCodeList;
+      }
+      catch (Exception sqlException)
+      {
+        throw new RuntimeException("Problem returning SourceCode from DBURI: "+dburi , sqlException ) ; 
       }
     }
 
