@@ -56,7 +56,7 @@ import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
  */
 public class PMD {
 
-	private static final Logger LOG = Logger.getLogger(PMD.class.getName());
+ 	private static final Logger LOG = Logger.getLogger(PMD.class.getName());
 
 	public static final String EOL = System.getProperty("line.separator", "\n");
 	public static final String SUPPRESS_MARKER = "NOPMD";

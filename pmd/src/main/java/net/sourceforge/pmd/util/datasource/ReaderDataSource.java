@@ -55,12 +55,31 @@ public class ReaderDataSource implements DataSource {
      * <p>Both the parameters are ignored
      * </p>
      * 
-     * @param shortNames
-     * @param inputFileName
+     * @param shortNames ignored 
+     * @param inputFileName ignored 
      * @return 
      */
     public String getNiceFileName(boolean shortNames, String inputFileName) {
-        return dataSourceName ;
+        return getDataSourceName() ;
     }
 
+
+    /**
+     * @return the dataSourceName
+     */
+    public String getDataSourceName() {
+        return dataSourceName;
+    }
+
+    /**
+     * @param dataSourceName the dataSourceName to set
+     */
+    public void setDataSourceName(String dataSourceName) {
+        this.dataSourceName = dataSourceName;
+    }
+
+    @Override
+    public String toString() {
+        return dataSourceName;
+    }
 }
