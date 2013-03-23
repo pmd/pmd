@@ -526,7 +526,6 @@ public class Foo extends Bar {
    </example>
 </rule>
 
--->
     <rule
       language="plsql"
         name="TooManyMethods"
@@ -582,5 +581,6 @@ have more fine grained objects.
             </property>
         </properties>
     </rule>
+-->
 
 </ruleset>
