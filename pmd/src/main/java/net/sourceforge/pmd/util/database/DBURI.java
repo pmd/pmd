@@ -15,7 +15,28 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Provide a single parameter to specify database objects to process.
  *
+ * <p>
+ * Wrap JDBC settings for use by PMD: optional parameters specify the source code to
+ * be passed to PMD, or are inherited from the associated {@link DBType}.
+ * </p>
+ *
+ *<p>A DBURI is a <i>faux</i>-URI: it does not have a formal specification and  comprises a JDBC(-ish) URL and an optional query, e.g. <code>jdbc : subprotocol  [ : subname ] : connection details [ query ] </code>.
+ * 
+ * The subprotocol and optional subname parts should be a valid DBType
+ * JDBC(-ish) URL jdbc:oracle:thin:username/password@//192.168.100.21:1521/ORCL
+ * JDBC(-ish) URL jdbc:thin:username/password@//192.168.100.21:1521/ORCL
+ * 
+ * <p>The query  
+ * characterset=utf8
+ * languages=comma-separated list of desired PMD languages
+ * schemas=comma-separated list of database schemas
+ * sourcecodetypes=comma-separated list of database source code types
+ * sourcecodenames=
+ * </p>
+ * 
+ *  @see http://docs.oracle.com/javase/7/docs/api/java/net/URI.html
  * @author sturton
  */
 public class DBURI {
@@ -24,12 +45,6 @@ private final static String CLASS_NAME = DBURI.class.getCanonicalName();
 
 private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().getName()); 
 
-
-  /**
-   * Provide a single parameter to specify database objects to process.
-   * 
-   * @see http://docs.oracle.com/javase/7/docs/api/java/net/URI.html
-   */
 
   /**
    * A JDBC URL with an associated query.

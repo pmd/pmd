@@ -15,18 +15,28 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Wrap JDBC connection for use by PMD: {@link DBURI} parameters specify the source code to
+ * be passed to PMD.
+ * 
+ * @author sturton
+ */
 public class DBMSMetadata
 {
 
   /**
-   * 
+   * Classname utility string for use in logging. 
    */
   private final static String CLASS_NAME = DBMSMetadata.class.getCanonicalName();
 
+  /**
+   * Local logger.
+   */
   private final static Logger LOGGER = Logger.getLogger(DBMSMetadata.class.getPackage().getName()); 
 
   /**
@@ -77,13 +87,34 @@ public class DBMSMetadata
    */
   protected int returnType = java.sql.Types.CLOB ;
 
+  /**
+   * Return JDBC Connection for direct JDBC access to the specified database.
+   * 
+   * @return I=JDBC Connection
+   * @throws SQLException 
+   */
   public Connection getConnection() throws SQLException
   { return connection; }
 
   /* constructors */
+  /**
+   * Minimal constructor 
+   * @param c JDBC Connection 
+   * @throws SQLException 
+   */
   public DBMSMetadata(Connection c) throws SQLException
   { connection = c; }
 
+  /**
+   * Define database connection and source code to retrieve with explicit database username and password.
+   * 
+   * @param user Database username 
+   * @param password Database password 
+   * @param dbURI {@link  DBURI } containing JDBC connection plus parameters to specify source code.
+   * @throws SQLException on failing to create JDBC connection
+   * @throws MalformedURLException on attempting to connect with malformed JDBC URL
+   * @throws ClassNotFoundException on failing to locate the JDBC driver class.
+   */
   public DBMSMetadata(String user, String password, DBURI dbURI) throws SQLException, MalformedURLException, ClassNotFoundException
   { 
     this.dburi = dbURI;
@@ -103,13 +134,25 @@ public class DBMSMetadata
 
     Class.forName(driverClass);
 
-    connection = DriverManager.getConnection(urlString
-                                             ,user
-                                             ,password
-                                            );
+    Properties mergedProperties = dbURI.getDbType().getProperties() ;
+    Map<String,String> dbURIParameters = dbURI.getParameters();
+    mergedProperties.putAll(dbURIParameters) ;
+    mergedProperties.put("user", user) ;
+    mergedProperties.put("password", password) ;
+
+    connection = DriverManager.getConnection(urlString, mergedProperties );
   } 
 
 
+  /**
+   * Define database connection and source code to retrieve with database properties.
+   * 
+   * @param properties database settings such as database username, password 
+   * @param dbURI {@link  DBURI } containing JDBC connection plus parameters to specify source code.
+   * @throws SQLException on failing to create JDBC connection
+   * @throws MalformedURLException on attempting to connect with malformed JDBC URL
+   * @throws ClassNotFoundException on failing to locate the JDBC driver class.
+   */
   public DBMSMetadata(Properties properties, DBURI dbURI) throws SQLException, MalformedURLException, ClassNotFoundException
   { 
     this.dburi = dbURI;
@@ -126,11 +169,27 @@ public class DBMSMetadata
 
     Class.forName(driverClass);
 
-    connection = DriverManager.getConnection(urlString
-                                             ,properties
-                                            );
+    Properties mergedProperties = dbURI.getDbType().getProperties() ;
+    Map<String,String> dbURIParameters = dbURI.getParameters();
+    mergedProperties.putAll(dbURIParameters) ;
+    mergedProperties.putAll(properties) ;
+
+    connection = DriverManager.getConnection(urlString ,mergedProperties);
   } 
 
+  /**
+   * Define database connection and source code to retrieve.
+   * 
+   * <p>This constructor is reliant on database username and password embedded in the JDBC URL 
+   * or defaulted from the {@link DBURI}'s {@link DriverType}.
+   * 
+   * @param user Database username 
+   * @param password Database password 
+   * @param dbURI {@link  DBURI } containing JDBC connection plus parameters to specify source code.
+   * @throws SQLException on failing to create JDBC connection
+   * @throws MalformedURLException on attempting to connect with malformed JDBC URL
+   * @throws ClassNotFoundException on failing to locate the JDBC driver class.
+   */
   public DBMSMetadata(DBURI dbURI) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, MalformedURLException
   { 
 
@@ -151,11 +210,19 @@ public class DBMSMetadata
 
     Class.forName(driverClass);
 
-    connection = DriverManager.getConnection(urlString);
+    Map<String,String> dbURIParameters = dbURI.getParameters();
+
+    /*Overwrite any DBType properties with DBURI parameters
+     * allowing JDBC connection properties to be inherited from DBType
+     * or passed as DBURI parameters 
+     */
+    dbURIProperties.putAll(dbURIParameters) ;
+
+    connection = DriverManager.getConnection(urlString, dbURIProperties);
   } 
 
  /**
-   * return source code text
+   * Return source code text from the database.
    * 
    * @param source object 
    * @return source code
@@ -173,10 +240,10 @@ public class DBMSMetadata
    * return source code text
    * 
    * @param objectType 
-   * @param name Code name 
+   * @param name Source Code name 
    * @param schema Owner of the code 
-   * @return source code
-   * @throws SQLException 
+   * @return Source code text.
+   * @throws SQLException on failing to retrieve the source Code text
    */
   public java.io.Reader getSourceCode (
     String objectType,

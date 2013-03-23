@@ -30,6 +30,8 @@ public class DBMSMetadataTest extends TestCase {
 
   final static String C_ORACLE_THIN_4 = "jdbc:oracle:thin:system/oracle@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25"; 
 
+  final static String C_ORACLE_THIN_5 = "jdbc:oracle:thin:@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25&amp;user=system&amp;password=oracle"; 
+
    /**
    * URI with minimum information, relying on defaults in testdefaults.properties
    */
@@ -38,12 +40,14 @@ public class DBMSMetadataTest extends TestCase {
 
   private DBURI dbURI;
   private DBURI dbURI4;
+  private DBURI dbURI5;
   private DBURI dbURIDefault;
 
   public DBMSMetadataTest(String testName) throws URISyntaxException, Exception {
     super(testName);
     dbURI = new DBURI (C_ORACLE_THIN_3);
     dbURI4 = new DBURI (C_ORACLE_THIN_4);
+    dbURI5 = new DBURI (C_ORACLE_THIN_5);
     dbURIDefault = new DBURI (C_TEST_DEFAULTS);
   }
 
@@ -161,6 +165,27 @@ public class DBMSMetadataTest extends TestCase {
     properties.put("password","oracle");
     Connection expResult = DriverManager.getDriver(dbURI.getURL()).connect(dbURI.getURL(), properties);
     DBMSMetadata instance = new DBMSMetadata(dbURI );
+    Connection result = instance.getConnection();
+    assertNotNull(result);
+    // TODO review the generated test code and remove the default call to fail.
+    //fail("The test case is a prototype.");
+  }
+
+  /**
+   * Verify getConnection method, of class DBMSMetadata.
+   */
+  public void testGetConnectionWithConnectionParameters() throws Exception {
+    System.out.println("getConnection");
+    String driverClass = dbURI5.getDriverClass();
+    System.out.println("driverClass=="+driverClass);
+    System.out.println("URL=="+dbURI5.getURL());
+    Class.forName(driverClass);
+    Object object = DriverManager.getDriver(dbURI5.getURL()) ;
+    //Object object = DriverManager.getDriver(C_ORACLE_OCI_3) ;
+    Properties properties = new Properties();
+    properties.putAll(dbURI5.getParameters());
+    Connection expResult = DriverManager.getDriver(dbURI5.getURL()).connect(dbURI5.getURL(), properties);
+    DBMSMetadata instance = new DBMSMetadata(dbURI5 );
     Connection result = instance.getConnection();
     assertNotNull(result);
     // TODO review the generated test code and remove the default call to fail.
