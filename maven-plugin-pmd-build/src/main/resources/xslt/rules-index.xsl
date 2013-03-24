@@ -29,6 +29,9 @@
               </li>
             </xsl:for-each>
           </ul>
+
+          <xsl:variable name="urlPrefixLength"><xsl:value-of select="string-length('${pmd.website.baseurl}/rules/')"/></xsl:variable>
+
           <xsl:for-each select="language">
             <xsl:variable name="language"><xsl:value-of select="@name"/></xsl:variable>
             <xsl:for-each select="ruleset">
@@ -41,7 +44,11 @@
                 <xsl:attribute name="name"><xsl:value-of select="@name"/> (<xsl:value-of select="$language"/>)</xsl:attribute>
                 <ul>
                   <xsl:for-each select="./rule[@name]">
-                    <li> <xsl:value-of select="@name"/>: <xsl:value-of select="description"/></li>
+                    <li>
+                      <a>
+                        <xsl:attribute name="href"><xsl:value-of select="substring(@externalInfoUrl,$urlPrefixLength + 1)"/></xsl:attribute>
+                        <xsl:value-of select="@name"/>
+                      </a>: <xsl:value-of select="description"/></li>
                   </xsl:for-each>
                 </ul>
               </subsection>

@@ -151,9 +151,8 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
      * @return String
      */
     private static String varNameIn(ASTLocalVariableDeclaration node) {
-    	
-    	ASTVariableDeclarator declarator = (ASTVariableDeclarator)node.jjtGetChild(1);
-    	return ((ASTVariableDeclaratorId) declarator.jjtGetChild(0)).getImage();
+        ASTVariableDeclarator declarator = node.getFirstChildOfType(ASTVariableDeclarator.class);
+        return ((ASTVariableDeclaratorId) declarator.jjtGetChild(0)).getImage();
     } 
     
     /**

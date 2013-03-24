@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Guarded call - OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+ private void foo(Logger logger) { 
+ 	if ( logger.isLoggable(Level.FINE) ) {
+ 		logger.fine("debug message"); 
+ 	} 
+ }  
+}
+     ]]></code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+Unguarded call - KO
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+ private void foo(Logger logger) { 
+ 	logger.fine("debug message"); 
+ }  
+}
+     ]]></code>
+    </test-code>
+</test-data>

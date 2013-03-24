@@ -65,7 +65,7 @@ public class PMDParameters {
 	
 	@Parameter(names = {"-version","-v"}, description = "specify version of a language PMD should use")
 	//private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion();
-	private String version = null ; //version is dependent on language
+	private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion() ; //version is dependent on language
 	
 	@Parameter(names = {"-language", "-l"}, description = "specify a language PMD should use")
 	private String language = Language.getDefaultLanguage().getTerseName();
@@ -129,14 +129,12 @@ public class PMDParameters {
     	configuration.setThreads(params.getThreads()); 
     	for ( LanguageVersion language : LanguageVersion.findVersionsForLanguageTerseName( params.getLanguage() ) ) {
 
-                //Set the language version to the specified version, falling back to the language-specific default version
-                String languageVersion = 
-                  (null == params.getVersion() )  // Version was not specified explicitly 
-                  ? LanguageVersion.getDefaultVersion(language.getLanguage()).getVersion() //default language version 
-                  : params.getVersion() //  Assign explicitly specified version 
-                  ;
+            LanguageVersion languageVersion = language.getLanguage().getVersion(params.getVersion());
+        	if (languageVersion == null) {
+            		languageVersion = language.getLanguage().getDefaultVersion();
+        	}
+        	configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
 
-        	configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(language.getLanguage().getVersion( languageVersion ));    		
     	}
         try {
             configuration.prependClasspath(params.getAuxclasspath());

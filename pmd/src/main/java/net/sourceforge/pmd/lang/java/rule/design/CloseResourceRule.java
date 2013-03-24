@@ -48,13 +48,14 @@ import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 public class CloseResourceRule extends AbstractJavaRule {
 
     private Set<String> types = new HashSet<String>();
+    private Set<String> simpleTypes = new HashSet<String>();
 
     private Set<String> closeTargets = new HashSet<String>();
     private static final StringMultiProperty CLOSE_TARGETS_DESCRIPTOR = new StringMultiProperty("closeTargets",
             "Methods which may close this resource", new String[]{}, 1.0f, ',');
 
     private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types",
-            "Affected types", new String[]{"Connection","Statement","ResultSet"}, 2.0f, ',');
+            "Affected types", new String[]{"java.sql.Connection","java.sql.Statement","java.sql.ResultSet"}, 2.0f, ',');
     
     public CloseResourceRule() {
 	definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
@@ -69,7 +70,21 @@ public class CloseResourceRule extends AbstractJavaRule {
         if (types.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
             types.addAll(Arrays.asList(getProperty(TYPES_DESCRIPTOR)));
         }
+        if (simpleTypes.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
+            for (String type : getProperty(TYPES_DESCRIPTOR)) {
+                simpleTypes.add(toSimpleType(type));
+            }
+        }
         return super.visit(node, data);
+    }
+
+    private static String toSimpleType(String fullyQualifiedClassName) {
+        int lastIndexOf = fullyQualifiedClassName.lastIndexOf('.');
+        if (lastIndexOf > -1) {
+            return fullyQualifiedClassName.substring(lastIndexOf + 1);
+        } else {
+            return fullyQualifiedClassName;
+        }
     }
 
     @Override
@@ -96,7 +111,11 @@ public class CloseResourceRule extends AbstractJavaRule {
                 ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
                 if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
-                    if (types.contains(clazz.getImage())) {
+
+                    if (clazz.getType() != null && types.contains(clazz.getType().getName())
+                        || (clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage())))
+                        || types.contains(clazz.getImage())) {
+
                         ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
                         ids.add(id);
                     }

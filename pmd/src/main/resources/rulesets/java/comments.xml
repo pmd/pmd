@@ -62,7 +62,7 @@ Determines whether the dimensions of non-header comments found are within the sp
 
   <rule name="CommentContent"
     		  since="5.0"
-     message="Invalid words or phrases found."
+     message="Invalid words or phrases found"
      class="net.sourceforge.pmd.lang.java.rule.comments.CommentContentRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/comments.html#CommentContent">
      <description>

@@ -1,6 +1,38 @@
 ????? ??, 2013 - 5.1.0:
 
+Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
 Fixed bug 1059: Change rule name "Use Singleton" should be "Use Utility class"
+
+New EcmaScript rules and ruleset:
+	Controversial ruleset, featuring
+		- AvoidWithStatement
+	UseBaseWithParseInt
+
+New Java rule:
+	GuardLogStatement
+		- replace xpath implementation of GuardDebugLogging by GuardLogStatement (better perf)
+
+
+????? ??, 2013 - 5.0.3:
+
+Fixed bug  968: Issues with JUnit4 @Test annotation with expected exception (Thanks to Yiannis Paschalidis)
+Fixed bug  975: false positive in ClassCastExceptionWithToArray
+Fixed bug  976: UselessStringValueOf wrong when appending character arrays
+Fixed bug  977: MisplacedNullCheck makes false positives
+Fixed bug  984: Cyclomatic complexity should treat constructors like methods
+Fixed bug  985: Suppressed methods shouldn't affect avg CyclomaticComplexity
+Fixed bug  992: Class java.beans.Statement triggered in CloseResource rule
+Fixed bug  997: Rule NonThreadSafeSingleton gives analysis problem
+Fixed bug  999: Law of Demeter: False positives and negatives
+Fixed bug 1002: False +: FinalFieldCouldBeStatic on inner class
+Fixed bug 1005: False + for ConstructorCallsOverridableMethod - overloaded methods
+Fixed bug 1027: PMD Ant: java.lang.ClassCastException
+Fixed bug 1032: ImmutableField Rule: Private field in inner class gives false positive
+Fixed bug 1064: Exception running PrematureDeclaration
+Fixed bug 1068: CPD fails on broken symbolic links
+Fixed bug 1073: Hard coded violation messages CommentSize
+Fixed bug 1074: rule priority doesn't work on group definitions
+
 
 
 February 3, 2013 - 5.0.2:

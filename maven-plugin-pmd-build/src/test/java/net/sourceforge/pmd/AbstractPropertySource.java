@@ -29,6 +29,11 @@ public class AbstractPropertySource {
 	    public String description() {
 		return description;
 	    }
+
+	    @Override
+	    public Object defaultValue() {
+	        return defaultValue;
+	    }
 	};
 	propertyDescriptors.add(descriptor);
 	propertyValuesByDescriptor.put(descriptor, defaultValue);

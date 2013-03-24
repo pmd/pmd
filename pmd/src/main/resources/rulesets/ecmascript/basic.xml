@@ -240,10 +240,10 @@ function bar() {
             <property name="xpath">
                 <value>
  <![CDATA[
-//InfixExpression[(@Image = "==" or @Image = "!=") 
-  and 
- (child::KeywordLiteral[@Image = "true" or @Image = "false"] 
- or 
+//InfixExpression[(@Image = "==" or @Image = "!=")
+  and
+ (child::KeywordLiteral[@Image = "true" or @Image = "false"]
+ or
  child::NumberLiteral)
 ]
 ]]>
@@ -313,7 +313,7 @@ function(arg) {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#AvoidTrailingComma">
     <description>
-This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals. 
+This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
     </description>
   <properties>
     <property name="xpath">
@@ -342,4 +342,26 @@ function(arg) {
         </example>
     </rule>
 
+  <rule name="UseBaseWithParseInt"
+        message="Always provide a base when using parseInt() functions"
+        language="ecmascript" since="5.0.1"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#UseBaseWithParseInt">
+    <description>TODO</description>
+    <properties>
+      <property name="xpath">
+      <value><![CDATA[
+//FunctionCall/Name[
+     @Image = 'parseInt'
+     and
+     count(../*) < 3
+]
+   ]]></value>
+    </property>
+  </properties>
+  <priority>1</priority>
+  <example><![CDATA[
+parseInt("10",base);
+  ]]></example>
+  </rule>
 </ruleset>

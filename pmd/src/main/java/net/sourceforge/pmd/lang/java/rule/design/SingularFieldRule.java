@@ -122,7 +122,10 @@ public class SingularFieldRule extends AbstractJavaRule {
                     if (decl == null) {
                         decl = method;
                         continue;
-                    } else if (decl != method) {
+                    } else if (decl != method
+                            // handle inner classes
+                            && decl.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)
+                                == method.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)) {
                         violation = false;
                         break;			//Optimization
                     }

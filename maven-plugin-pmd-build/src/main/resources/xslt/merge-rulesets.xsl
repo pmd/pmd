@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ -->
 <xsl:stylesheet
     version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+    <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 
     <xsl:template match="root">
 		<xsl:comment>

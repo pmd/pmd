@@ -297,7 +297,7 @@ in a ClassCastException.
     <value>
 <![CDATA[
 //CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image !=
-"Object"]]//PrimaryExpression
+"Object"]]/PrimaryExpression
 [
  PrimaryPrefix/Name[ends-with(@Image, '.toArray')]
  and
@@ -386,13 +386,21 @@ Either the check is useless (the variable will never be "null") or it is incorre
     <![CDATA[
 //Expression
     /*[self::ConditionalOrExpression or self::ConditionalAndExpression]
-     /descendant::PrimaryExpression/PrimaryPrefix
-      /Name[starts-with(@Image,
-      concat(ancestor::PrimaryExpression/following-sibling::EqualityExpression
-       [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-     /PrimaryExpression/PrimaryPrefix
-      /Name[count(../../PrimarySuffix)=0]/@Image,"."))
-    ]
+    /descendant::PrimaryExpression/PrimaryPrefix
+    /Name[starts-with(@Image,
+        concat(ancestor::PrimaryExpression/following-sibling::EqualityExpression
+            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+            /PrimaryExpression/PrimaryPrefix
+            /Name[count(../../PrimarySuffix)=0]/@Image,".")
+        )
+     ]
+     [count(ancestor::ConditionalAndExpression/EqualityExpression
+            [@Image='!=']
+            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+            [starts-with(following-sibling::*/PrimaryExpression/PrimaryPrefix/Name/@Image,
+                concat(./PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
+      ) = 0
+     ]
     ]]>
         </value>
         </property>

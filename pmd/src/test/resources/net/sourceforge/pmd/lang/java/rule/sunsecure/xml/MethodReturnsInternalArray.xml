@@ -138,14 +138,14 @@ public interface Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
-        <description><![CDATA[
-3220206: False positive using a ternary operator
-     ]]></description>
+    <test-code>
+        <description>#962 MethodReturnsInternalArray: False positive using a ternary operator</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public byte[] getContent() {
-  return this.content == null ? null : content.clone();
+public class Test {
+    public byte[] getContent() {
+        return this.content == null ? null : content.clone();
+    }
 }
      ]]></code>
     </test-code>

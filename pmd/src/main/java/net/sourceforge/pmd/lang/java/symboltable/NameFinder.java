@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -71,7 +72,8 @@ public class NameFinder {
     public String toString() {
     	StringBuilder result = new StringBuilder();
         for (NameOccurrence occ: names) {
-            result.append(occ.getImage());
+            result.append(occ);
+            result.append(PMD.EOL);
         }
         return result.toString();
     }

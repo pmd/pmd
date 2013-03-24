@@ -34,11 +34,6 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
     private static final BooleanProperty CHECK_NON_STATIC_FIELDS_DESCRIPTOR = new BooleanProperty(
 	    "checkNonStaticFields", "Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.", false, 2.0f);
 
-    //    public NonThreadSafeSingleton() {
-    //        checkNonStaticMethods = super.getBooleanProperty("checkNonStaticMethods");
-    //        checkNonStaticFields = super.getBooleanProperty("checkNonStaticFields");
-    //    }
-    
     public NonThreadSafeSingletonRule() {
 	definePropertyDescriptor(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
 	definePropertyDescriptor(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
@@ -86,6 +81,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
 		    }
 		    ASTStatementExpression expr = (ASTStatementExpression) oper.jjtGetParent();
 		    if ((expr.jjtGetChild(0) instanceof ASTPrimaryExpression)
+	            && ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetNumChildren() == 1
 			    && (((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
 			ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.jjtGetChild(0))
 				.jjtGetChild(0);
