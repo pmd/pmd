@@ -281,7 +281,7 @@ ASTGlobal Global()  :
 	  Still wrap the trigger in a fake package but make the package name dependent on the actual schema 
 	  defaulting to the globalPackageName if it cannot be found 
 	*/
-	(LOOKAHEAD ( ( Label() )* [<DECLARE> DeclarativeSection()] <BEGIN>) Block() ";" | LOOKAHEAD (4) ProgramUnit() 
+	(LOOKAHEAD ( ( Label() )* [<DECLARE> DeclarativeSection()] <BEGIN>) ( Label() )* Block() ";" | LOOKAHEAD (4) ProgramUnit() 
 	)
 
 
