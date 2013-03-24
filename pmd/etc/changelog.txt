@@ -32,6 +32,7 @@ Fixed bug 1064: Exception running PrematureDeclaration
 Fixed bug 1068: CPD fails on broken symbolic links
 Fixed bug 1073: Hard coded violation messages CommentSize
 Fixed bug 1074: rule priority doesn't work on group definitions
+Fixed bug 1076: Report.treeIterator() does not return all violations
 Merged pull request #14: fix Nullpointer Exception when using -l jsp
 
 
