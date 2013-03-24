@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleViolation;
 
-public class ReportTree {
+public class ReportTree implements Iterable<RuleViolation> {
 
 	private PackageNode rootNode = new PackageNode("");
 	private AbstractReportNode level;

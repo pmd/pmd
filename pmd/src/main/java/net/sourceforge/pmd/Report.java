@@ -137,8 +137,7 @@ public class Report {
     
     public Map<String, Integer> getCountSummary() {
         Map<String, Integer> summary = new HashMap<String, Integer>();
-        for (Iterator<RuleViolation> iter = violationTree.iterator(); iter.hasNext();) {
-            RuleViolation rv = iter.next();
+        for (RuleViolation rv : violationTree) {
             String key = keyFor(rv);
             Integer o = summary.get(key);
             summary.put(key, o==null ? NumericConstants.ONE : o+1);
