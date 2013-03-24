@@ -23,6 +23,9 @@ public class ViolationNode extends AbstractReportNode {
 
         return rv.getFilename().equals(getRuleViolation().getFilename()) &&
         	rv.getBeginLine() == getRuleViolation().getBeginLine() &&
+        	rv.getBeginColumn() == getRuleViolation().getBeginColumn() &&
+        	rv.getEndLine() == getRuleViolation().getEndLine() &&
+        	rv.getEndColumn()== getRuleViolation().getEndColumn() &&
         	rv.getVariableName().equals(getRuleViolation().getVariableName());
     }
 
