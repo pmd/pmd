@@ -180,4 +180,20 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1012 False positive: Useless parentheses.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void testMethod() {
+        if((lookahead.type == Keyword.STRING || lookahead.type == Keyword.NUMBER) && lookahead.type != baseType)
+            throw new IncompatibleAttributeTypeException(attribute);
+        System.out.println( "number " + ( 1 + 2 ) );
+
+        if(lookahead.type != baseType && (lookahead.type == Keyword.STRING || lookahead.type == Keyword.NUMBER))
+            throw new IncompatibleAttributeTypeException(attribute);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

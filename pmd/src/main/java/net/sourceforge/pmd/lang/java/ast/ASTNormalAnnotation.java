@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTNormalAnnotation extends AbstractJavaNode {
+public class ASTNormalAnnotation extends AbstractJavaTypeNode {
     public ASTNormalAnnotation(int id) {
         super(id);
     }

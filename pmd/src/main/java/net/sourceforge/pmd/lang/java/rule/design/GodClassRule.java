@@ -154,18 +154,20 @@ public class GodClassRule extends AbstractJavaRule {
         int pairs = 0;
         
         if (methodCount > 1) {
-            for (int i = 0; i < methodCount - 1; i++) {
-                String firstMethodName = methods.get(i);
-                String secondMethodName = methods.get(i + 1);
-                Set<String> accessesOfFirstMethod = methodAttributeAccess.get(firstMethodName);
-                Set<String> accessesOfSecondMethod = methodAttributeAccess.get(secondMethodName);
-                Set<String> combinedAccesses = new HashSet<String>();
-                
-                combinedAccesses.addAll(accessesOfFirstMethod);
-                combinedAccesses.addAll(accessesOfSecondMethod);
-                
-                if (combinedAccesses.size() < (accessesOfFirstMethod.size() + accessesOfSecondMethod.size())) {
-                    pairs++;
+            for (int i = 0; i < methodCount; i++) {
+                for (int j = i + 1; j < methodCount; j++) {
+                    String firstMethodName = methods.get(i);
+                    String secondMethodName = methods.get(j);
+                    Set<String> accessesOfFirstMethod = methodAttributeAccess.get(firstMethodName);
+                    Set<String> accessesOfSecondMethod = methodAttributeAccess.get(secondMethodName);
+                    Set<String> combinedAccesses = new HashSet<String>();
+
+                    combinedAccesses.addAll(accessesOfFirstMethod);
+                    combinedAccesses.addAll(accessesOfSecondMethod);
+
+                    if (combinedAccesses.size() < (accessesOfFirstMethod.size() + accessesOfSecondMethod.size())) {
+                        pairs++;
+                    }
                 }
             }
         }

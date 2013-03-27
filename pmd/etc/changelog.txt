@@ -1,53 +1,111 @@
-???? ??, 2012 - 5.1.0:
- 
-TODO - Release blockers - Must implement before this release can be finally finished
+????? ??, 2013 - 5.1.0:
 
-   CODE:
-   o PropertyDescriptor final tasks:
-      - Find some way to have them appear in the online documentation for the rules
-        that have them. Ideally we want to ensure we define them in one place only.
-      - Report renderers now inherit from PropertySource so we should migrate the
-        old-style property references to use the new style. Ensure we remain
-        compatible with the online arguments that get passed in.
-   o Need to refactor the test framework to more readily support for multiple
-     Languages (too Java-centric at the moment).  Then, need start adding tests
-     for the new XML language and other new languages.
-   o Need the modify RuleViolation, RuleViolationFactory, and Rule base classes
-     to recognize the difference between violations which require a Node, and
-     those without.  This is to make certain that Rules which require and do not
-     pass, will die with an error because they are buggy and need to be fixed.
+Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
+Fixed bug 1059: Change rule name "Use Singleton" should be "Use Utility class"
 
-   DOCUMENTATION:
-   o Expand documentation examples which demonstrate use of new RuleSetReferenceId
-     capabilities, specifically interal RuleSet reference in a RuleSet XML, and use
-     of a Rule reference in places not previously possible (e.g. CMD and Ant).
-   o Fully document the changed/new command line and Ant configuration options.
-   o Need to enhance documentation to cover Global and Language specific
-     function namespaces required for XPath 2.0 use (e.g. pmd:matches
-     and pmd-java:typeof).
+New EcmaScript rules and ruleset:
+	Controversial ruleset, featuring
+		- AvoidWithStatement
+	UseBaseWithParseInt
 
-Fixed bug 2410201: False+ AvoidReassigningParameters
-Fixed bug 3526212: pmd-5.0.0: ImmutableField false positive on self-inc/dec
-Fixed bug 3526992: pmd-5.0.0: False + UselessParentheses
-Fixed bug 3523614: newline characters stripped from CPD data in PMD 5.0.0
-Fixed bug 3516101: InsufficientStringBufferDeclaration fails to parse hex
-Fixed bug 1503099: InefficientStringBuffering bug false +
-Fixed bug 3109408: String.InefficientStringBuffering false +
-Fixed bug 3424397: Unable to parse
-Fixed bug 3530124: pmd: parsing of generic method call with super fails
-Fixed bug 3496028: pmd-4.2.6: MissingBreakInSwitch fails to report violation
-Fixed bug 3484404: Invalid NPath calculation in return statement. Thanks to Prabhjot Singh for the patch.
-Fixed bug 3560464: c/c++ \ as a continuation character not supported
-Fixed bgastviewer not working. Thanks to Victor Bucutea.
-Fixed bug 3524607: Problem with implementation of getPackageNameImage method
-Fixed bug 3539585: AvoidLiteralsInIfCondition must NOT consider null
-Fixed bug 3539117: jnlp link for CPD is wrong
+New Java rule:
+	GuardLogStatement
+		- replace xpath implementation of GuardDebugLogging by GuardLogStatement (better perf)
+
+
+????? ??, 2013 - 5.0.3:
+
+Fixed bug  968: Issues with JUnit4 @Test annotation with expected exception (Thanks to Yiannis Paschalidis)
+Fixed bug  975: false positive in ClassCastExceptionWithToArray
+Fixed bug  976: UselessStringValueOf wrong when appending character arrays
+Fixed bug  977: MisplacedNullCheck makes false positives
+Fixed bug  984: Cyclomatic complexity should treat constructors like methods
+Fixed bug  985: Suppressed methods shouldn't affect avg CyclomaticComplexity
+Fixed bug  992: Class java.beans.Statement triggered in CloseResource rule
+Fixed bug  997: Rule NonThreadSafeSingleton gives analysis problem
+Fixed bug  999: Law of Demeter: False positives and negatives
+Fixed bug 1002: False +: FinalFieldCouldBeStatic on inner class
+Fixed bug 1005: False + for ConstructorCallsOverridableMethod - overloaded methods
+Fixed bug 1027: PMD Ant: java.lang.ClassCastException
+Fixed bug 1032: ImmutableField Rule: Private field in inner class gives false positive
+Fixed bug 1064: Exception running PrematureDeclaration
+Fixed bug 1068: CPD fails on broken symbolic links
+Fixed bug 1073: Hard coded violation messages CommentSize
+Fixed bug 1074: rule priority doesn't work on group definitions
+Fixed bug 1076: Report.treeIterator() does not return all violations
+Merged pull request #14: fix Nullpointer Exception when using -l jsp
+
+
+
+February 3, 2013 - 5.0.2:
+
+Fixed bug  878: False positive: UnusedFormalParameter for abstract methods
+Fixed bug  913: SignatureDeclareThrowsException is raised twice
+Fixed bug  947: CloseResource rule fails if field is marked with annotation
+Fixed bug 1004: targetjdk isn't attribute of PMD task
+Fixed bug 1007: Parse Exception with annotation
+Fixed bug 1011: CloseResource Rule ignores Constructors
+Fixed bug 1012: False positive: Useless parentheses.
+Fixed bug 1020: Parsing Error
+Fixed bug 1026: PMD doesn't handle 'value =' in SuppressWarnings annotation
+Fixed bug 1028: False-positive: Compare objects with equals for Enums
+Fixed bug 1030: CPD Java.lang.IndexOutOfBoundsException: Index:
+Fixed bug 1037: Facing a showstopper issue in PMD Report Class (report listeners)
+Fixed bug 1039: pmd-nicerhtml.xsl is packaged in wrong location
+Fixed bug 1043: node.getEndLine() always returns 0 (ECMAscript)
+Fixed bug 1044: Unknown option: -excludemarker
+Fixed bug 1046: ant task CPDTask doesn't accept ecmascript
+Fixed bug 1047: False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1
+Fixed bug 1048: CommentContent Rule, String Index out of range Exception
+Fixed bug 1049: Errors in "How to write a rule"
+Fixed bug 1055: Please add a colon in the ant output after line,column for Oracle JDeveloper IDE usage
+Fixed bug 1056: "Error while processing" while running on xml file with DOCTYPE reference
+Fixed bug 1060: GodClassRule >>> wrong method
+
+
+
+November 28, 2012 - 5.0.1:
+
+Fixed bug  820: False+ AvoidReassigningParameters
+Fixed bug 1008: pmd-5.0.0: ImmutableField false positive on self-inc/dec
+Fixed bug 1009: pmd-5.0.0: False + UselessParentheses
+Fixed bug 1003: newline characters stripped from CPD data in PMD 5.0.0
+Fixed bug 1001: InsufficientStringBufferDeclaration fails to parse hex
+Fixed bug  522: InefficientStringBuffering bug false +
+Fixed bug  953: String.InefficientStringBuffering false +
+Fixed bug  981: Unable to parse
+Fixed bug 1010: pmd: parsing of generic method call with super fails
+Fixed bug  996: pmd-4.2.6: MissingBreakInSwitch fails to report violation
+Fixed bug  993: Invalid NPath calculation in return statement. Thanks to Prabhjot Singh for the patch.
+Fixed bug 1023: c/c++ \ as a continuation character not supported
+Fixed bug 1033: False+ : SingularField
+Fixed bug 1025: Regression of Crash in PMDTask due to multithreading (Eclipse and Java 1.5)
+Fixed bug 1017: Type resolution very slow for big project. Thanks to Roman for the patch.
+Fixed bug 1036: Documentation: default threshold values removed from v5.0
+Fixed bug 1035: UseObjectForClearerAPI has misspelled message
+Fixed bug 1031: false DontImportJavaLang
+Fixed bug 1034: UseConcurrentHashMap flags calls to methods that return Map
+Fixed bug 1006: Problem with implementation of getPackageNameImage method
+Fixed bug 1014: AvoidLiteralsInIfCondition must NOT consider null
+Fixed bug 1013: jnlp link for CPD is wrong
+
+PMD Command Line Changes:
+  Improved command line interface (CLI) parsing using JCommander.
+  Note: this breaks compatibility, but should be easy to fix.
+  With "-d" you specify nowtThe source files / source directory to be scanned.
+  With "-f" you select the report format (like text, html, ...)
+  With "-R" you select the rulesets to be used.
+  Example: pmd -d c:\data\pmd\pmd\test-data\Unused1.java -f xml -R rulesets/java/unusedcode.xml
 
 Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
+Fixed bgastviewer not working. Thanks to Victor Bucutea.
+Improved CPD: Support in CPD for IgnoreAnnotations and SuppressWarnings("CPD-START"). Thanks to Matthew Short.
+Fixed C# support for CPD - thanks to TIOBE Software.
 
 New Ecmascript rules:
 
 	Basic ruleset: AvoidTrailingComma
+
 
 May, 1, 2012 - 5.0.0:
 

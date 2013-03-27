@@ -65,9 +65,9 @@ import org.mozilla.javascript.ast.XmlExpression;
 import org.mozilla.javascript.ast.XmlMemberGet;
 import org.mozilla.javascript.ast.XmlString;
 
-public class EcmascriptTreeBuilder implements NodeVisitor {
+public final class EcmascriptTreeBuilder implements NodeVisitor {
 
-    protected static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<Class<? extends AstNode>, Constructor<? extends EcmascriptNode>>();
+    private static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<Class<? extends AstNode>, Constructor<? extends EcmascriptNode<?>>>();
     static {
 	register(ArrayComprehension.class, ASTArrayComprehension.class);
 	register(ArrayComprehensionLoop.class, ASTArrayComprehensionLoop.class);
@@ -120,7 +120,7 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	register(XmlString.class, ASTXmlString.class);
     }
 
-    protected static void register(Class<? extends AstNode> nodeType, Class<? extends EcmascriptNode> nodeAdapterType) {
+    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends EcmascriptNode<T>> nodeAdapterType) {
 	try {
 	    NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
 	} catch (SecurityException e) {
@@ -139,13 +139,18 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
     // The Rhino nodes with children to build.
     protected Stack<AstNode> parents = new Stack<AstNode>();
 
-    public EcmascriptTreeBuilder(List<ParseProblem> parseProblems) {
+    private final SourceCodePositioner sourceCodePositioner;
+
+    public EcmascriptTreeBuilder(String sourceCode, List<ParseProblem> parseProblems) {
+	this.sourceCodePositioner = new SourceCodePositioner(sourceCode);
 	this.parseProblems = parseProblems;
     }
 
-    protected EcmascriptNode createNodeAdapter(AstNode node) {
+    private <T extends AstNode> EcmascriptNode<T> createNodeAdapter(T node) {
 	try {
-	    Constructor<? extends EcmascriptNode> constructor = NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(node.getClass());
+	    @SuppressWarnings("unchecked") // the register function makes sure only EcmascriptNode<T> can be added,
+	    // where T is "T extends AstNode".
+	    Constructor<? extends EcmascriptNode<T>> constructor = (Constructor<? extends EcmascriptNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(node.getClass());
 	    if (constructor == null) {
 		throw new IllegalArgumentException("There is no Node adapter class registered for the Node class: "
 			+ node.getClass());
@@ -160,8 +165,10 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	}
     }
 
-    public EcmascriptNode build(AstNode astNode) {
-	EcmascriptNode node = buildInternal(astNode);
+    public <T extends AstNode> EcmascriptNode<T> build(T astNode) {
+	EcmascriptNode<T> node = buildInternal(astNode);
+
+	calculateLineNumbers(node);
 
 	// Set all the trailing comma nodes
 	for (TrailingCommaNode trailingCommaNode : parseProblemToNode.values()) {
@@ -171,9 +178,9 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	return node;
     }
 
-    protected EcmascriptNode buildInternal(AstNode astNode) {
+    private <T extends AstNode> EcmascriptNode<T> buildInternal(T astNode) {
 	// Create a Node
-	EcmascriptNode node = createNodeAdapter(astNode);
+	EcmascriptNode<T> node = createNodeAdapter(astNode);
 
 	// Append to parent
 	Node parent = nodes.isEmpty() ? null : nodes.peek();
@@ -203,7 +210,7 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 	}
     }
 
-    private void handleParseProblems(EcmascriptNode node) {
+    private void handleParseProblems(EcmascriptNode<? extends AstNode> node) {
 	if (node instanceof TrailingCommaNode) {
 	    TrailingCommaNode trailingCommaNode = (TrailingCommaNode) node;
 	    int nodeStart = node.getNode().getAbsolutePosition();
@@ -216,7 +223,7 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 		    if ("Trailing comma is not legal in an ECMA-262 object initializer".equals(parseProblem.getMessage())) {
 			// Report on the shortest code block containing the
 			// problem (i.e. inner most code in nested structures).
-			EcmascriptNode currentNode = (EcmascriptNode) parseProblemToNode.get(parseProblem);
+			EcmascriptNode<? extends AstNode> currentNode = (EcmascriptNode<? extends AstNode>) parseProblemToNode.get(parseProblem);
 			if (currentNode == null || node.getNode().getLength() < currentNode.getNode().getLength()) {
 			    parseProblemToNode.put(parseProblem, trailingCommaNode);
 			}
@@ -224,5 +231,16 @@ public class EcmascriptTreeBuilder implements NodeVisitor {
 		}
 	    }
 	}
+    }
+
+    private void calculateLineNumbers(EcmascriptNode<?> node) {
+	EcmascriptParserVisitorAdapter visitor = new EcmascriptParserVisitorAdapter() {
+	    @Override
+	    public Object visit(EcmascriptNode node, Object data) {
+	        ((AbstractEcmascriptNode<?>)node).calculateLineNumbers(sourceCodePositioner);
+	        return super.visit(node, data); // also visit the children
+	    }
+	};
+	node.jjtAccept(visitor, null);
     }
 }

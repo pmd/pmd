@@ -6,7 +6,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
@@ -30,8 +29,8 @@ public class TextPadRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "textpad";
 
-    public TextPadRenderer(Properties properties) {
-	super(NAME, "TextPad integration.", properties);
+    public TextPadRenderer() {
+	super(NAME, "TextPad integration.");
     }
 
     public String defaultFileExtension() { return "txt"; }

@@ -24,7 +24,7 @@ import java.util.Properties;
  * <project name="CPDProj" default="main" basedir=".">
  * <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  * <target name="main">
- * <cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true" ignoreLiterals="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
+ * <cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true" ignoreLiterals="true" ignoreAnnotations="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
  * <fileset dir="/path/to/my/src">
  * <include name="*.java"/>
  * </fileset>
@@ -45,6 +45,7 @@ public class CPDTask extends Task {
     private int minimumTokenCount;
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
+    private boolean ignoreAnnotations;
     private File outputFile;
     private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<FileSet>();
@@ -56,9 +57,11 @@ public class CPDTask extends Task {
             log("Starting run, minimumTokenCount is " + minimumTokenCount, Project.MSG_INFO);
 
             log("Tokenizing files", Project.MSG_INFO);
-            CPDConfiguration config = new CPDConfiguration(
-            		minimumTokenCount, createLanguage(), encoding
-            		);
+            CPDConfiguration config = new CPDConfiguration();
+            config.setMinimumTileSize(minimumTokenCount);
+            config.setLanguage(createLanguage());
+            config.setEncoding(encoding);
+
             CPD cpd = new CPD(config);
             tokenizeFiles(cpd);
 
@@ -85,6 +88,9 @@ public class CPDTask extends Task {
         }
         if (ignoreIdentifiers) {
             p.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
+        }
+        if (ignoreAnnotations) {
+            p.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
         }
         return new LanguageFactory().createLanguage(language, p);
     }
@@ -157,6 +163,10 @@ public class CPDTask extends Task {
         this.ignoreIdentifiers = value;
     }
 
+    public void setIgnoreAnnotations(boolean value) {
+        this.ignoreAnnotations = value;
+    }
+
     public void setOutputFile(File outputFile) {
         this.outputFile = outputFile;
     }
@@ -180,16 +190,9 @@ public class CPDTask extends Task {
         }
     }
 
-    /*
-     * FIXME Can't we do something cleaner and
-     * more dynamic ? Maybe externalise to a properties files that will
-     * be generated when building pmd ? This will not have to add manually
-     * new language here ?
-    */
     public static class LanguageAttribute extends EnumeratedAttribute {
-        private static final String[] LANGUAGES = new String[]{"java","jsp","cpp", "c","php", "ruby", "fortran", "cs"};
         public String[] getValues() {
-            return LANGUAGES;
+            return LanguageFactory.supportedLanguages;
         }
     }
 }

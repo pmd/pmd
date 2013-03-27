@@ -11,15 +11,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportListener;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
@@ -38,7 +31,7 @@ import org.junit.Test;
 
 public class ReportTest extends RuleTst implements ReportListener {
 
-    private static class FooRule extends AbstractJavaRule {
+    public static class FooRule extends AbstractJavaRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
             if ("Foo".equals(c.getImage())) addViolation(ctx, c);
             return ctx;
@@ -93,7 +86,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         r.addMetric(new Metric("m1", 0, 0.0, 1.0, 2.0, 3.0, 4.0));
         assertTrue("Expected metrics weren't there", r.hasMetrics());
 
-        Iterator ms = r.metrics();
+        Iterator<Metric> ms = r.metrics();
         assertTrue("Should have some metrics in there now", ms.hasNext());
 
         Object o = ms.next();
@@ -166,7 +159,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         JavaNode s1 = getNode(10, 5, ctx.getSourceCodeFilename());
         Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
         r.addRuleViolation(new JavaRuleViolation(rule2, ctx, s1, rule2.getMessage()));
-        Renderer rend = new XMLRenderer(new Properties());
+        Renderer rend = new XMLRenderer();
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
     }
@@ -183,7 +176,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         JavaNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
         Rule rule2 = new MockRule("rule1", "rule1", "msg", "rulesetname");
         r.addRuleViolation(new JavaRuleViolation(rule2, ctx, s1, rule2.getMessage()));
-        Renderer rend = new XMLRenderer(new Properties());
+        Renderer rend = new XMLRenderer();
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
     }
@@ -220,13 +213,40 @@ public class ReportTest extends RuleTst implements ReportListener {
         JavaNode s2 = getNode(30, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(mr, ctx, s1, mr.getMessage()));
         r.addRuleViolation(new JavaRuleViolation(mr, ctx, s2, mr.getMessage()));
-        Map summary = r.getSummary();
+        Map<String, Integer> summary = r.getSummary();
         assertEquals(summary.keySet().size(), 2);
         assertTrue(summary.values().contains(Integer.valueOf(1)));
         assertTrue(summary.values().contains(Integer.valueOf(2)));
     }
+
+    @Test
+    public void testTreeIterator() {
+        Report r = new Report();
+        RuleContext ctx = new RuleContext();
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        JavaNode node1 = getNode(5, 5, ctx.getSourceCodeFilename(), true);
+        r.addRuleViolation(new JavaRuleViolation(rule, ctx, node1, rule.getMessage()));
+        JavaNode node2 = getNode(5, 6, ctx.getSourceCodeFilename(), true);
+        r.addRuleViolation(new JavaRuleViolation(rule, ctx, node2, rule.getMessage()));
+
+        Iterator<RuleViolation> violations = r.iterator();
+        int violationCount = 0;
+        while (violations.hasNext()) {
+            violations.next();
+            violationCount++;
+        }
+        assertEquals(2, violationCount);
+
+        Iterator<RuleViolation> treeIterator = r.treeIterator();
+        int treeCount = 0;
+        while (treeIterator.hasNext()) {
+            treeIterator.next();
+            treeCount++;
+        }
+        assertEquals(2, treeCount);
+    }
     
-    private JavaNode getNode(int line, int column, String scopeName){
+    public static JavaNode getNode(int line, int column, String scopeName){
 	DummyJavaNode s = new DummyJavaNode(2);
         DummyJavaNode parent = new DummyJavaNode(1);
         parent.testingOnly__setBeginLine(line);
@@ -235,6 +255,15 @@ public class ReportTest extends RuleTst implements ReportListener {
         s.setScope(new SourceFileScope(scopeName));
         s.testingOnly__setBeginLine(10);
         s.testingOnly__setBeginColumn(5);
+        return s;
+    }
+
+    public static JavaNode getNode(int line, int column, String scopeName, boolean nextLine) {
+        DummyJavaNode s = (DummyJavaNode)getNode(line, column, scopeName);
+        if (nextLine) {
+            s.testingOnly__setBeginLine(line + 1);
+            s.testingOnly__setBeginColumn(column + 4);
+        }
         return s;
     }
 

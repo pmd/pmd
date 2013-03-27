@@ -21,9 +21,9 @@
       <subsection name="Commercial products">
           <ul>
               <br/>
-              <li><a href="http://www.vanwardtechnologies.com/products.php">Vanward Technology's Convergence</a> -  a quality management dashboard for the Java platform.  Thanks to Vanward Technologies for their support of PMD by buying copies of <a href="http://pmdapplied.com/">PMD Applied</a>!</li>
+              <li><a href="http://www.vanwardtechnologies.com/products.php">Vanward Technology's Convergence [link broken]</a> -  a quality management dashboard for the Java platform.  Thanks to Vanward Technologies for their support of PMD by buying copies of <a href="http://pmdapplied.com/">PMD Applied</a>!</li>
               <br/>
-              <li><a href="http://javacentral.compuware.com/products/optimaladvisor/">Compuware's OptimalAdvisor</a> -  static code analysis and refactoring tool</li>
+              <li><a href="http://javacentral.compuware.com/products/optimaladvisor/">Compuware's OptimalAdvisor [link broken]</a> <a href="http://www.componentsource.com/beasv/products/compuware-optimaladvisor/index.html">OptimalAdvisor from ComponentSource</a> -  static code analysis and refactoring tool</li>
           </ul>
       </subsection>
       <subsection name="Books that mention PMD">
@@ -31,25 +31,25 @@
               <br/>
           <li><a href="http://pmdapplied.com">PMD Applied</a> - the official manual; get an extra copy for the home!  Or office!  Whatever!</li>
               <br/>
-          <li><a href="http://www.oreilly.com/catalog/9780596510237/">Checking Java Programs</a> - by Ian Darwin; also discusses FindBugs.</li>
+          <li><a href="http://www.oreilly.com/catalog/9780596510237">Checking Java Programs</a> - by Ian Darwin; also discusses FindBugs.</li>
               <br/>
-          <li><a href="http://www.amazon.com/gp/product/0321286081/qid=1145894533/sr=2-1/ref=pd_bbs_b_2_1/002-6820206-1468015?s=books&amp;v=glance&amp;n=283155">Sustainable Software Development: An Agile Perspective</a> - by Kevin Tate, discusses both PMD and CPD</li>
+          <li><a href="http://www.amazon.com/gp/product/0321286081">Sustainable Software Development: An Agile Perspective</a> - by Kevin Tate, discusses both PMD and CPD</li>
               <br/>
-          <li><a href="http://www.amazon.com/gp/product/0321375777/sr=8-1/qid=1145894415/ref=pd_bbs_1/002-6820206-1468015?%5Fencoding=UTF8">High-Assurance Design: Architecting Secure and Reliable Enterprise Applications</a> - by Cliff Berg, mentions PMD in a discussion of static analysis utilities</li>
+          <li><a href="http://www.amazon.com/gp/product/0321375777">High-Assurance Design: Architecting Secure and Reliable Enterprise Applications</a> - by Cliff Berg, mentions PMD in a discussion of static analysis utilities</li>
               <br/>
-          <li><a href="http://www.amazon.com/gp/product/0321288157/002-6820206-1468015?v=glance&amp;n=283155">Eclipse Distilled</a> - by David Carlson, discusses the PMD plugin</li>
+          <li><a href="http://www.amazon.com/gp/product/0321288157">Eclipse Distilled</a> - by David Carlson, discusses the PMD plugin</li>
               <br/>
-          <li><a href="http://www.oreilly.com/catalog/mavenadn/?CMP=EML-9NI711011430">Maven: A Developer's Notebook</a>, co-authored by Vincent Massol, who's done a bunch of work on PMD.  Thanks Vincent!</li>
+          <li><a href="http://www.oreilly.com/catalog/9780596007508">Maven: A Developer's Notebook</a>, co-authored by Vincent Massol, who's done a bunch of work on PMD.  Thanks Vincent!</li>
               <br/>
-          <li><a href="http://www.amazon.com/exec/obidos/tg/detail/-/0596007949/qid=1120242556/sr=8-1/ref=pd_bbs_ur_1/104-1224815-1191932?v=glance&amp;s=books&amp;n=507846">Network Security Tools</a>, chapter 6 discusses using PMD to catch web app security problems.  Thanks to Joseph Hemler for the props!</li>
+          <li><a href="http://www.amazon.com/gp/product/0596007949">Network Security Tools</a>, chapter 6 discusses using PMD to catch web app security problems.  Thanks to Joseph Hemler for the props!</li>
               <br/>
-          <li><a href="http://www.amazon.com/exec/obidos/tg/detail/-/0672325624/ref=ase_interncom-20/103-5706126-6692649?v=glance&amp;s=book">Extreme Programming With Ant</a></li>
+          <li><a href="http://www.amazon.com/gp/product/0672325624">Extreme Programming With Ant</a></li>
           </ul>
       </subsection>
       <subsection name="Articles">
           <ul>
               <br/>
-          <li><a href="http://www.unixgarden.com/index.php/programmation/verifier-votre-code-java-avec-pmd">An introduction to PMD (in French)</a></li>
+          <li><a href="http://www.unixgarden.com/index.php/gnu-linux-magazine/verifier-votre-code-java-avec-pmd">An introduction to PMD (in French)</a></li>
           </ul>
       </subsection>
       </section>

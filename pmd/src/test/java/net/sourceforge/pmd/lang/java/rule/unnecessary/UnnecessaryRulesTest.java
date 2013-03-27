@@ -20,7 +20,7 @@ public class UnnecessaryRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UnusedNullCheckInEquals");
         addRule(RULESET, "UselessOverridingMethod");
         addRule(RULESET, "UselessOperationOnImmutable");
-        addRule(RULESET, "UselessParentheses");	
+        addRule(RULESET, "UselessParentheses");
     }
 
     public static junit.framework.Test suite() {

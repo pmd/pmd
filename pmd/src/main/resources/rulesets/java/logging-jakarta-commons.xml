@@ -54,7 +54,7 @@ public class Main {
           externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#ProperLogger">
              <description>
 A logger should normally be defined private static final and be associated with the correct class.
-Private final Log log; is also allowed for rare cases where loggers need to be passed around, 
+Private final Log log; is also allowed for rare cases where loggers need to be passed around,
 with the restriction that the logger needs to be passed into the constructor.
              </description>
              <priority>3</priority>
@@ -87,27 +87,18 @@ public class Foo {
  ]]>
             </example>
      </rule>
-     
+
     <rule name="GuardDebugLogging"
           language="Java"
           since="4.3"
           message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.logging.GuardDebugLoggingRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#GuardDebugLogging">
         <description>
             When log messages are composed by concatenating strings, the whole section should be guarded
             by a isDebugEnabled() check to avoid performance and memory issues.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-            <value>
-            <![CDATA[
-                //PrimaryPrefix[ends-with(Name/@Image, '.debug') and count(../descendant::AdditiveExpression) > 0 and count(ancestor::IfStatement/Expression/descendant::PrimaryExpression[ends-with(descendant::PrimaryPrefix/Name/@Image, 'isDebugEnabled')]) = 0]
-            ]]>
-            </value>
-            </property>
-        </properties>
         <example>
             <![CDATA[
 public class Test {
@@ -115,16 +106,16 @@ public class Test {
     public void test() {
         // okay:
         __log.debug("log something");
-        
+
         // okay:
         __log.debug("log something with exception", e);
-        
+
         // bad:
         __log.debug("log something" + " and " + "concat strings");
-        
+
         // bad:
         __log.debug("log something" + " and " + "concat strings", e);
-        
+
         // good:
         if (__log.isDebugEnabled()) {
         __log.debug("bla" + "",e );
@@ -134,4 +125,25 @@ public class Test {
             ]]>
         </example>
     </rule>
+
+   <rule name="GuardLogStatement"
+         language="java"
+         since="5.0.3"
+         message="There is log block not surrounded by if"
+         class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
+         externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#GuardLogStatement">
+     <description>
+Whenever using a log level, one should check if the loglevel is actually enabled, or
+otherwise skip the associate String creation and manipulation.
+     </description>
+     <priority>2</priority>
+     <example>
+ <![CDATA[
+ 	// Add this for performance
+	if (log.isDebugEnabled() { ...
+ 	    log.debug("This happens");
+]]>
+     </example>
+   </rule>
+
 </ruleset>

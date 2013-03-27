@@ -6,32 +6,32 @@ package net.sourceforge.pmd.symboltable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.Scope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
-import org.junit.Ignore;
 import org.junit.Test;
 public class AcceptanceTest extends STBBaseTst {
 
-    @Ignore
     @Test
     public void testClashingSymbols() {
         parseCode(TEST1);
     }
 
-    @Ignore
     @Test
     public void testInitializer() {
         parseCode(TEST_INITIALIZERS);
@@ -41,83 +41,104 @@ public class AcceptanceTest extends STBBaseTst {
         assertTrue(a.isStatic());
     }
 
-    @Ignore
     @Test
     public void testCatchBlocks() {
         parseCode(TEST_CATCH_BLOCKS);
         ASTCatchStatement c = acu.findDescendantsOfType(ASTCatchStatement.class).get(0);
         ASTBlock a = c.findDescendantsOfType(ASTBlock.class).get(0);
         Scope s = a.getScope();
-        Map vars = s.getParent().getVariableDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = s.getParent().getVariableDeclarations();
         assertEquals(1, vars.size());
-        VariableNameDeclaration v = (VariableNameDeclaration)vars.keySet().iterator().next();
+        VariableNameDeclaration v = vars.keySet().iterator().next();
         assertEquals("e", v.getImage());
-        assertEquals(1, ((List)vars.get(v)).size());
+        assertEquals(1, (vars.get(v)).size());
     }
 
-    @Ignore
     @Test
     public void testEq() {
         parseCode(TEST_EQ);
         ASTEqualityExpression e = acu.findDescendantsOfType(ASTEqualityExpression.class).get(0);
         ASTMethodDeclaration method = e.getFirstParentOfType(ASTMethodDeclaration.class);
         Scope s = method.getScope();
-        Map m = s.getVariableDeclarations();
-        for (Iterator i = m.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration vnd = (VariableNameDeclaration)i.next();
-            Node node = vnd.getNode();
-            //System.out.println();
+        Map<VariableNameDeclaration, List<NameOccurrence>> m = s.getVariableDeclarations();
+        assertEquals(2, m.size());
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : m.entrySet()) {
+            VariableNameDeclaration vnd = entry.getKey();
+            List<NameOccurrence> usages = entry.getValue();
+
+            if (vnd.getImage().equals("a") || vnd.getImage().equals("b")) {
+                assertEquals(1, usages.size());
+                assertEquals(3, usages.get(0).getLocation().getBeginLine());
+            } else {
+                fail("Unkown variable " + vnd);
+            }
         }
-        //System.out.println(m.size());
     }
 
     @Test
     public void testFieldFinder() {
-        //FIXME - Does this test do anything?
-        //Not really, I think it's just a demo -- Tom
-
-/*
-        System.out.println(TEST_FIELD);
         parseCode(TEST_FIELD);
+//        System.out.println(TEST_FIELD);
 
-        List<ASTVariableDeclaratorId> variableDeclaratorIds = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
-        ASTVariableDeclaratorId declaration = null;
-        for (Iterator iter = variableDeclaratorIds.iterator(); iter.hasNext();) {
-            declaration = (ASTVariableDeclaratorId) iter.next();
-            if ("b".equals(declaration.getImage()))
-                break;
-        }
-        NameOccurrence no = declaration.getUsages().iterator().next();
-        SimpleNode location = no.getLocation();
-        System.out.println("variable " + declaration.getImage() + " is used here: " + location.getImage());
-*/
+        ASTVariableDeclaratorId declaration = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(1);
+        assertEquals(3, declaration.getBeginLine());
+        assertEquals("bbbbbbbbbb", declaration.getImage());
+        assertEquals(1, declaration.getUsages().size());
+        NameOccurrence no = declaration.getUsages().get(0);
+        JavaNode location = no.getLocation();
+        assertEquals(6, location.getBeginLine());
+//        System.out.println("variable " + declaration.getImage() + " is used here: " + location.getImage());
     }
 
-    @Ignore
     @Test
     public void testDemo() {
         parseCode(TEST_DEMO);
-        System.out.println(TEST_DEMO);
+//        System.out.println(TEST_DEMO);
         ASTMethodDeclaration node = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
-        Map m = s.getVariableDeclarations();
-        for (Iterator i = m.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration d = (VariableNameDeclaration) i.next();
-            System.out.println("Variable: " + d.getImage());
-            System.out.println("Type: " + d.getTypeImage());
+        Map<VariableNameDeclaration, List<NameOccurrence>> m = s.getVariableDeclarations();
+        for (Iterator<VariableNameDeclaration> i = m.keySet().iterator(); i.hasNext();) {
+            VariableNameDeclaration d = i.next();
+            assertEquals("buz", d.getImage());
+            assertEquals("ArrayList", d.getTypeImage());
+            List<NameOccurrence> u = m.get(d);
+            assertEquals(1, u.size());
+            NameOccurrence o = u.get(0);
+            int beginLine = o.getLocation().getBeginLine();
+            assertEquals(3, beginLine);
+
+//            System.out.println("Variable: " + d.getImage());
+//            System.out.println("Type: " + d.getTypeImage());
+//            System.out.println("Usages: " + u.size());
+//            System.out.println("Used in line " + beginLine);
         }
     }
-/*
-            List u = (List)m.get(d);
-            System.out.println("Usages: " + u.size());
-            NameOccurrence o = (NameOccurrence)u.get(0);
-            int beginLine = o.getLocation().getBeginLine();
-            System.out.println("Used in line " + beginLine);
-*/
+
+    @Test
+    public void testEnum() {
+	parseCode(NameOccurrencesTest.TEST_ENUM);
+
+	ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
+	List<NameOccurrence> usages = vdi.getUsages();
+	assertEquals(2, usages.size());
+	assertEquals(5, usages.get(0).getLocation().getBeginLine());
+	assertEquals(9, usages.get(1).getLocation().getBeginLine());
+    }
+
+    @Test
+    public void testInnerOuterClass() {
+        parseCode(TEST_INNER_CLASS);
+        ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
+        List<NameOccurrence> usages = vdi.getUsages();
+        assertEquals(2, usages.size());
+        assertEquals(5, usages.get(0).getLocation().getBeginLine());
+        assertEquals(10, usages.get(1).getLocation().getBeginLine());
+    }
 
     private static final String TEST_DEMO =
             "public class Foo  {" + PMD.EOL +
             " void bar(ArrayList buz) { " + PMD.EOL +
+            "  buz.add(\"foo\");" + PMD.EOL +
             " } " + PMD.EOL +
             "}" + PMD.EOL;
 
@@ -154,10 +175,29 @@ public class AcceptanceTest extends STBBaseTst {
             "}" + PMD.EOL;
 
     private static final String TEST_FIELD =
-    "public class MyClass {" + PMD.EOL +
-    " private int a; " + PMD.EOL +
-    " boolean b = MyClass.ASCENDING; " + PMD.EOL +
-    "}" + PMD.EOL;
+            "public class MyClass {" + PMD.EOL +
+            " private int aaaaaaaaaa; " + PMD.EOL +
+            " boolean bbbbbbbbbb = MyClass.ASCENDING; " + PMD.EOL +
+            " private int zzzzzzzzzz;" + PMD.EOL +
+            " private void doIt() {" + PMD.EOL +
+            "  if (bbbbbbbbbb) {" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}" + PMD.EOL;
+
+    public static final String TEST_INNER_CLASS =
+            "public class Outer {" + PMD.EOL +
+            "  private static class Inner {" + PMD.EOL +
+            "    private int i;" + PMD.EOL +
+            "    private Inner(int i) {" + PMD.EOL +
+            "      this.i = i;" + PMD.EOL +
+            "    }" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "  public int modify(int i) {" + PMD.EOL +
+            "    Inner in = new Inner(i);" + PMD.EOL +
+            "    return in.i;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "}" + PMD.EOL;
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(AcceptanceTest.class);

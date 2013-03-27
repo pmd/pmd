@@ -69,4 +69,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#977 MisplacedNullCheck makes false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void method(final String value,final String oldValue) {
+        if ((value != null && !value.equals(oldValue)) || value == null) {
+            // Do something
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -22,15 +22,18 @@ import net.sourceforge.pmd.util.StringUtil;
 
 public class Report {
 
-	public static Report createReport(RuleContext ctx, String fileName) {
-		
-		Report report = new Report();
-		ctx.setReport(report);
-		ctx.setSourceCodeFilename(fileName);
-		ctx.setSourceCodeFile(new File(fileName));
-		return report;
-	}	
-	
+    public static Report createReport(RuleContext ctx, String fileName) {
+	Report report = new Report();
+
+	// overtake the listener
+	report.addSynchronizedListeners(ctx.getReport().getSynchronizedListeners());
+
+	ctx.setReport(report);
+	ctx.setSourceCodeFilename(fileName);
+	ctx.setSourceCodeFile(new File(fileName));
+	return report;
+    }
+
 	public static class ReadableDuration {
         private final long duration;
 
@@ -112,7 +115,7 @@ public class Report {
     // Note that this and the above data structure are both being maintained for a bit
     private final List<RuleViolation> violations = new ArrayList<RuleViolation>();
     private final Set<Metric> metrics = new HashSet<Metric>();
-    private final List<ReportListener> listeners = new ArrayList<ReportListener>();
+    private final List<SynchronizedReportListener> listeners = new ArrayList<SynchronizedReportListener>();
     private List<ProcessingError> errors;
     private List<RuleConfigurationError> configErrors;
     private Map<Integer, String> linesToSuppress = new HashMap<Integer, String>();
@@ -164,7 +167,7 @@ public class Report {
     }
 
     public void addListener(ReportListener listener) {
-        listeners.add(listener);
+        listeners.add(new SynchronizedReportListener(listener));
     }
 
     public List<SuppressedViolation> getSuppressedRuleViolations() {
@@ -266,13 +269,13 @@ public class Report {
     }
 
     public Iterator<ProcessingError> errors() {
-        return errors == null ? EmptyIterator.instance : errors.iterator();
+        return errors == null ? EmptyIterator.<ProcessingError> instance() : errors.iterator();
     }
 
     public Iterator<RuleConfigurationError> configErrors() {
-        return configErrors == null ? EmptyIterator.instance : errors.iterator();
+        return configErrors == null ? EmptyIterator.<RuleConfigurationError> instance() : configErrors.iterator();
     }
-    
+
     public int treeSize() {
         return violationTree.size();
     }
@@ -291,5 +294,13 @@ public class Report {
 
     public long getElapsedTimeInMillis() {
         return end - start;
+    }
+
+    public List<SynchronizedReportListener> getSynchronizedListeners() {
+	return listeners;
+    }
+
+    public void addSynchronizedListeners(List<SynchronizedReportListener> synchronizedListeners) {
+	listeners.addAll(synchronizedListeners);
     }
 }

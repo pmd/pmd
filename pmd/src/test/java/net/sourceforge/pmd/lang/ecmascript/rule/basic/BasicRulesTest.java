@@ -22,6 +22,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 	addRule(RULESET, "UnreachableCode");
 	addRule(RULESET, "EqualComparison");
 	addRule(RULESET, "GlobalVariable");
+   	addRule(RULESET, "UseBaseWithParseInt");
     }
 
     public static junit.framework.Test suite() {

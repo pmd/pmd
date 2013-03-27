@@ -121,7 +121,7 @@ Say you want to pick specific rules from various rule sets and customize them.  
             <subsection name="Send us feedback">
                 <p>If you have suggestions on clarifying this document, please post
     them to
-                    <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a>.  Thanks!
+                    <a href="http://sourceforge.net/p/pmd/discussion/188192">the forum</a>.  Thanks!
                 </p>
                 <p>Finally, for many more details on building custom rulesets, pick up <a href="http://pmdapplied.com/">PMD Applied</a>!</p>
             </subsection>

@@ -300,4 +300,14 @@ public class X {
 }
 	]]></code>
     </test-code>
+    <test-code>
+        <description>#1058 False positive for VariableNamingConventions</description>
+        <expected-problems>0</expected-problems>
+        <source-type>java 1.7</source-type>
+        <code><![CDATA[
+public class Test {
+    private static final RemoteRepository REMOTE = new RemoteRepository<>();
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -181,4 +181,49 @@ public class Foo {
 }
         </code>
     </test-code>
+
+    <test-code>
+        <description>#999 false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    //Thats no Violation in PMD:
+    public boolean compare1(final String aString) {
+        return aString.equals("S");
+    }
+
+    //Thats a Violation in PMD:
+    public boolean compare2(final String aString) {
+        return "A".equals(aString);              // < - - false positive
+    }
+
+    // no violation, because the object is not used
+    public Object create() {
+        Object o = myFactory.create();
+        return o;
+    }
+
+    // no violation, should be an exception, as the builder pattern is used here
+    public void toString() {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("string").append("string").append("string");
+        return buffer.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#999 false negatives</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    // violation, because object is used
+    public Object create2() {
+        Object o = myFactory.create();
+        o.setName("my name");                    // < - - !!!
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

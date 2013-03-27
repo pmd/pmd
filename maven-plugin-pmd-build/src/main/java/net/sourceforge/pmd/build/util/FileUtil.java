@@ -15,8 +15,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.sourceforge.pmd.build.PmdBuildException;
 
@@ -28,20 +30,20 @@ public final class FileUtil {
 
 	public static String pathToParent = "..";
 
-	private FileUtil() {};
+	private FileUtil() {}
 
-	public static Set<File> listFilesFrom(File dir) {
+	public static List<File> listFilesFrom(File dir) {
 		return filterFilesFrom(dir, null);
 	}
 
-	public static Set<File> filterFilesFrom(File dir, FilenameFilter filter) {
-		Set<File> filteredFiles = new HashSet<File>(0);
+	public static List<File> filterFilesFrom(File dir, FilenameFilter filter) {
+		List<File> filteredFiles = new LinkedList<File>();
 		if ( dir != null ) {
 			File[] files = dir.listFiles(filter);
 			if ( files != null && files.length > 0 )
-				for ( int fileIterator = 0 ; fileIterator < files.length ; fileIterator++  )
-					filteredFiles.add(files[fileIterator]);
+			    filteredFiles.addAll(Arrays.asList(files));
 		}
+		Collections.sort(filteredFiles);
 		return filteredFiles;
 	}
 

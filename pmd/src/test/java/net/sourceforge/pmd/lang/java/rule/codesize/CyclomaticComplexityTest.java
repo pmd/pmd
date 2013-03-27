@@ -13,13 +13,18 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule;
 import net.sourceforge.pmd.testframework.RuleTst;
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
+import net.sourceforge.pmd.testframework.SimpleAggregatorTst.CustomXmlTestClassMethodsRunner;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runner.notification.Failure;
 
 
- public class CyclomaticComplexityTest extends RuleTst {
+@RunWith(SimpleAggregatorTst.CustomXmlTestClassMethodsRunner.class)
+public class CyclomaticComplexityTest extends RuleTst {
      private Rule rule;
      private TestDescriptor[] tests;
  
@@ -33,8 +38,8 @@ import org.junit.Test;
          rule.setProperty(CyclomaticComplexityRule.REPORT_LEVEL_DESCRIPTOR, 1);
          Report report = new Report();
          runTestFromString(tests[0].getCode(), rule, report);
-         Iterator i = report.iterator();
-         RuleViolation rv = (RuleViolation) i.next();
+         Iterator<RuleViolation> i = report.iterator();
+         RuleViolation rv = i.next();
          assertNotSame(rv.getDescription().indexOf("Highest = 1"), -1);
      }
  
@@ -43,8 +48,8 @@ import org.junit.Test;
          rule.setProperty(CyclomaticComplexityRule.REPORT_LEVEL_DESCRIPTOR, 10);
          Report report = new Report();
          runTestFromString(tests[1].getCode(), rule, report);
-         Iterator i = report.iterator();
-         RuleViolation rv = (RuleViolation) i.next();
+         Iterator<RuleViolation> i = report.iterator();
+         RuleViolation rv = i.next();
          assertNotSame(rv.getDescription().indexOf("Highest = 11"), -1);
      }
  
@@ -53,8 +58,8 @@ import org.junit.Test;
          rule.setProperty(CyclomaticComplexityRule.REPORT_LEVEL_DESCRIPTOR, 1);
          Report report = new Report();
          runTestFromString(tests[2].getCode(), rule, report);
-         Iterator i = report.iterator();
-         RuleViolation rv = (RuleViolation) i.next();
+         Iterator<RuleViolation> i = report.iterator();
+         RuleViolation rv = i.next();
          assertNotSame(rv.getDescription().indexOf("Highest = 1"), -1);
      }
  
@@ -64,6 +69,22 @@ import org.junit.Test;
          Report report = new Report();
          runTestFromString(tests[0].getCode(), rule, report);
          assertEquals(0, report.size());
+     }
+
+     @Test
+     public void testRemainingTestCases() {
+         for (int i = 0; i < tests.length; i++) {
+             if (i == 0 || i == 1 || i == 2) {
+                 continue; // skip - covered by above test methods
+             }
+
+             try {
+                 runTest(tests[i]);
+             } catch (Throwable t) {
+                 Failure f = CustomXmlTestClassMethodsRunner.createFailure(rule, t);
+                 CustomXmlTestClassMethodsRunner.addFailure(f);
+             }
+         }
      }
 
      public static junit.framework.Test suite() {

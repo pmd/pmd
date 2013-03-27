@@ -29,7 +29,7 @@
   </description>
     <url>http://pmd.sourceforge.net/</url>
     <issueManagement>
-        <url>http://sourceforge.net/tracker/?group_id=56262</url>
+        <url>http://sourceforge.net/p/pmd/bugs/</url>
     </issueManagement>
     <ciManagement>
         <notifiers>
@@ -291,14 +291,15 @@
                 <configuration>
                     <forkMode>once</forkMode>
                     <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+                    <runOrder>alphabetical</runOrder>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
 
@@ -492,7 +493,7 @@
             <plugin>
                 <groupId>net.sourceforge.pmd</groupId>
                 <artifactId>pmd-build</artifactId>
-                <version>0.6</version>
+                <version>0.8-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>pre-site</phase>
@@ -508,6 +509,8 @@
                 <version>2.3.2</version>
                 <configuration>
                     <releaseProfiles>pmd-release</releaseProfiles>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
                 </configuration>
             </plugin>
         </plugins>
@@ -576,6 +579,11 @@
             </exclusions>
         </dependency>
         <dependency>
+          <groupId>com.beust</groupId>
+          <artifactId>jcommander</artifactId>
+          <version>1.27</version>
+        </dependency>
+        <dependency>
             <groupId>asm</groupId>
             <artifactId>asm</artifactId>
             <version>3.2</version>
@@ -612,6 +620,17 @@
             <groupId>net.java.dev.javacc</groupId>
             <artifactId>javacc</artifactId>
             <version>${javacc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -707,6 +726,22 @@
                     <reportDescriptor>etc/default-clover-report.xml</reportDescriptor>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.0</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependency-updates-report</report>
+                            <report>plugin-updates-report</report>
+                            <report>property-updates-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
         </plugins>
     </reporting>
 

@@ -12,6 +12,8 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.PropertyDescriptor;
+
 /**
  * This class handles the creation of Renderers.
  * @see Renderer
@@ -51,9 +53,20 @@ public class RendererFactory {
 	Renderer renderer;
 	try {
 	    if (constructor.getParameterTypes().length > 0) {
+		LOG.warning("The renderer uses a deprecated mechanism to use the properties. Please define the needed properties with this.definePropertyDescriptor(..).");
 		renderer = constructor.newInstance(properties);
 	    } else {
 		renderer = constructor.newInstance();
+
+		for (PropertyDescriptor<?> prop : renderer.getPropertyDescriptors()) {
+		    String value = properties.getProperty(prop.name());
+		    if (value != null) {
+			@SuppressWarnings("unchecked")
+			PropertyDescriptor<Object> prop2 = (PropertyDescriptor<Object>)prop;
+			Object valueFrom = prop2.valueFrom(value);
+			renderer.setProperty(prop2, valueFrom);
+		    }
+		}
 	    }
 	} catch (InstantiationException e) {
 	    throw new IllegalArgumentException("Unable to construct report renderer class: " + e.getLocalizedMessage());
@@ -97,7 +110,7 @@ public class RendererFactory {
     private static Constructor<? extends Renderer> getRendererConstructor(Class<? extends Renderer> rendererClass) {
 	Constructor<? extends Renderer> constructor = null;
 
-	// 1) Properties constructor?
+	// 1) Properties constructor? - deprecated
 	try {
 	    constructor = rendererClass.getConstructor(Properties.class);
 	    if (!Modifier.isPublic(constructor.getModifiers())) {

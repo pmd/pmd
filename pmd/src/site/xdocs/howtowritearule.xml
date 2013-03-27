@@ -113,7 +113,7 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
         <p>
            By the way, all this structural information - i.e., the fact that a Statement may be
             followed a Block - is concisely defined in the
-            <a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd/etc/grammar/Java.jjt?view=markup">EBNF grammar</a>.
+            <a href="https://github.com/pmd/pmd/blob/master/pmd/etc/grammar/Java.jjt">EBNF grammar</a>.
             So, for example, the Statement definition looks like this:
 <source>
 <![CDATA[void Statement() :
@@ -221,7 +221,7 @@ pmd.bat c:\path\to\my\src xml c:\path\to\mycustomrules.xml
         </source>
     <p>This time your "hello world" will show up right after the
     AST gets printed out.  If it doesn't, post a message to
-    <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a> so we can improve this document :-)
+    <a href="http://sourceforge.net/p/pmd/discussion/188192">the forum</a> so we can improve this document :-)
     </p>
     </subsection>
 
@@ -249,7 +249,7 @@ pmd.bat c:\path\to\my\src xml c:\path\to\mycustomrules.xml
     </subsection>
     <p>
     TODO - if you don't understand the code for the rule, post a message
-    to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a> so we can improve this document :-)
+    to <a href="http://sourceforge.net/p/pmd/discussion/188192">the forum</a> so we can improve this document :-)
     </p>
 
     <subsection name="Writing a rule as an XPath expression">
@@ -270,7 +270,7 @@ pmd.bat c:\path\to\my\src xml c:\path\to\mycustomrules.xml
         <p>Note that access modifiers are held as attributes, so, for example,
             <source>//FieldDeclaration[@Private='true']</source>
                 finds all private fields.  You can see the code
-            that determines all the attributes <a href="http://pmd.sourceforge.net/xref/net/sourceforge/pmd/jaxen/AttributeAxisIterator.html">here</a></p>
+            that determines all the attributes <a href="xref/net/sourceforge/pmd/lang/ast/xpath/AttributeAxisIterator.html">here</a></p>
         <p>Thanks to Miguel Griffa for writing a longer  <a href="xpathruletutorial.html">XPath tutorial</a>.</p>
     </subsection>
 
@@ -317,7 +317,7 @@ public class CountRule extends AbstractJavaRule {
                AtomicLong total = (AtomicLong)ctx.getAttribute(COUNT);
                addViolation(ctx, null, new Object[] { total });
                ctx.removeAttribute(COUNT);
-               super.start(ctx);
+               super.end(ctx);
        }
 }
 			]]>
@@ -330,7 +330,7 @@ public class CountRule extends AbstractJavaRule {
 		<p>
 			<i>
 				Note that the example log a violation <strong>without</strong> a proper classname. This is not really a good idea. Indeed, a lot of aggregating
-				tools that PMD (Such as <a href="http://xradar.sourceforge.net">XRadar</a>, or <a href="http://sonar.hortis.ch/">Sonar</a>) probably uses this kind
+				tools that PMD (Such as <a href="http://xradar.sourceforge.net">XRadar</a>, or <a href="http://www.sonarsource.com/">Sonar</a>) probably uses this kind
 				of meta data on their aggregation processes. So, when implements such a rule, always try to find a way to add
 				classname to the violation report.
 			</i>
@@ -409,7 +409,7 @@ public Object visit(ASTClassOrInterfaceType type, Object ruleCtx) {
     </p>
     <p>
     You're rolling now.  If you think a rule would benefit the Java development community as a whole,
-    post a message to <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">the forum</a>
+    post a message to <a href="http://sourceforge.net/p/pmd/discussion/188192">the forum</a>
         so we can get the rule
     moved into one of the core rulesets.</p>
     <p>Or, if you can improve one of the existing rules, that'd be great too!  Thanks!

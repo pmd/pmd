@@ -108,19 +108,19 @@ public class CommentContentRule extends AbstractCommentRule {
 		return foundWords;
 	}
 
-	private static String errorMsgFor(List<String> badWords) {
-
-		if (badWords.size() == 1 ) {
-			return "Invalid term: '" + badWords.get(0) + '\'';
-		}
-
-		StringBuilder sb = new StringBuilder("Invalid terms: '");
-		sb.append(badWords.get(0));
+	private String errorMsgFor(List<String> badWords) {
+	    StringBuilder msg = new StringBuilder(this.getMessage()).append(": ");
+	    if (badWords.size() == 1 ) {
+		msg.append("Invalid term: '").append(badWords.get(0)).append('\'');
+	    } else {
+		msg.append("Invalid terms: '");
+		msg.append(badWords.get(0));
 		for (int i=1; i<badWords.size(); i++) {
-			sb.append("', '").append(badWords.get(i));
+		    msg.append("', '").append(badWords.get(i));
 		}
-		sb.append('\'');
-		return sb.toString();
+		msg.append('\'');
+	    }
+	    return msg.toString();
 	}
 
 	@Override

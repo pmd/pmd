@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+should be utility class since all static, public constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo() { }
+ public static void doSomething() {}
+ public static void main(String args[]) {
+  doSomething();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, uses non-static
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+    public void doSomething() { }
+    public static void main(String args[]) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+should be utility class, couple of statics, no constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void doSomething1() { }
+    public static void doSomething2() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+public constructor, no static - ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+classic utility class - ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Foo() {}
+ public static Foo get() {
+  return null;
+ }     
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+abstract, so ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+    public static void doSomething1() { }
+    public static void doSomething2() { }
+    public static void doSomething3() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+has some private and no public static fields, so ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo() { }
+ private int x;
+ public static void doSomething() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+has public static field, so need to check
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static final int x = 5;
+ public static void doSomething() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+junit 'suite' method is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooTest {
+ public static Test suite() {
+  return new TestSuite();
+ }
+}
+     ]]></code>
+    </test-code>
+    
+    <test-code>
+	    <description><![CDATA[
+Reproducing bug [ 2315599 ] False +: UseSingleton with class containing constructor: Although there is a static method, the class also has a non-private constructor. This is a common design for custom exceptions which contain a private static method to format error message strings.
+]]></description>
+	    <expected-problems>0</expected-problems>
+	    <code><![CDATA[
+public class UseSingleton extends Exception {
+	UseSingleton(final String string) {
+		super(foo(string));
+	}
+	
+	private static String foo(final String string) {
+		return string;
+	}
+}
+			   ]]></code>
+    </test-code>    
+    <test-code>
+        <description><![CDATA[
+inner should be utility class since all static, public constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static class Bar {
+   public Bar() { }
+   public static void doSomething() {}
+ }
+ public void doSomething() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+[ 2404700 ] UseSingleton should not act on enums
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum EnumTest {
+	A, B;
+
+	EnumTest() { }
+
+	public static void main(String[] args) {
+		System.out.println(EnumTest.A);
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+NPE in incorrect implementation...
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+    public void doSomething() { }
+    public static void main(String args[]) { }
+    ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK, method annotations
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+    @Override
+    public void doSomething() { }
+    public static void main(String args[]) { }
+}
+     ]]></code>
+    </test-code>
+</test-data>

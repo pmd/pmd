@@ -117,6 +117,41 @@ import org.junit.Test;
      }
 
      @Test
+     public void testSpecificSuppressionValue1() throws Throwable {
+         Report rpt = new Report();
+         runTestFromString(TEST9_VALUE1, new FooRule(), rpt, LanguageVersion.JAVA_15);
+         assertEquals(1, rpt.size());
+     }
+
+     @Test
+     public void testSpecificSuppressionValue2() throws Throwable {
+         Report rpt = new Report();
+         runTestFromString(TEST9_VALUE2, new FooRule(), rpt, LanguageVersion.JAVA_15);
+         assertEquals(1, rpt.size());
+     }
+
+     @Test
+     public void testSpecificSuppressionValue3() throws Throwable {
+         Report rpt = new Report();
+         runTestFromString(TEST9_VALUE3, new FooRule(), rpt, LanguageVersion.JAVA_15);
+         assertEquals(1, rpt.size());
+     }
+
+     @Test
+     public void testSpecificSuppressionMulitpleValues1() throws Throwable {
+	 Report rpt = new Report();
+	 runTestFromString(TEST9_MULTIPLE_VALUES_1, new FooRule(), rpt, LanguageVersion.JAVA_15);
+	 assertEquals(0, rpt.size());
+     }
+
+     @Test
+     public void testSpecificSuppressionMulitpleValues2() throws Throwable {
+         Report rpt = new Report();
+         runTestFromString(TEST9_MULTIPLE_VALUES_2, new FooRule(), rpt, LanguageVersion.JAVA_15);
+         assertEquals(0, rpt.size());
+     }
+
+     @Test
      public void testNoSuppressionBlank() throws Throwable {
          Report rpt = new Report();
          runTestFromString(TEST10, new FooRule(), rpt, LanguageVersion.JAVA_15);
@@ -210,6 +245,48 @@ import org.junit.Test;
              " int foo;" + PMD.EOL +
              " void bar() {" + PMD.EOL +
              "  @SuppressWarnings(\"PMD.NoFoo\") int foo;" + PMD.EOL +
+             " }" + PMD.EOL +
+             "}";
+
+     private static final String TEST9_VALUE1 =
+             "public class Bar {" + PMD.EOL +
+             " int foo;" + PMD.EOL +
+             " void bar() {" + PMD.EOL +
+             "  @SuppressWarnings(value = \"PMD.NoFoo\") int foo;" + PMD.EOL +
+             " }" + PMD.EOL +
+             "}";
+
+     private static final String TEST9_VALUE2 =
+             "public class Bar {" + PMD.EOL +
+             " int foo;" + PMD.EOL +
+             " void bar() {" + PMD.EOL +
+             "  @SuppressWarnings({\"PMD.NoFoo\"}) int foo;" + PMD.EOL +
+             " }" + PMD.EOL +
+             "}";
+
+     private static final String TEST9_VALUE3 =
+             "public class Bar {" + PMD.EOL +
+             " int foo;" + PMD.EOL +
+             " void bar() {" + PMD.EOL +
+             "  @SuppressWarnings(value = {\"PMD.NoFoo\"}) int foo;" + PMD.EOL +
+             " }" + PMD.EOL +
+             "}";
+
+     private static final String TEST9_MULTIPLE_VALUES_1 =
+             "@SuppressWarnings({\"PMD.NoFoo\", \"PMD.NoBar\"})" + PMD.EOL +
+             "public class Bar {" + PMD.EOL +
+             " int foo;" + PMD.EOL +
+             " void bar() {" + PMD.EOL +
+             "  int foo;" + PMD.EOL +
+             " }" + PMD.EOL +
+             "}";
+
+     private static final String TEST9_MULTIPLE_VALUES_2 =
+             "@SuppressWarnings(value = {\"PMD.NoFoo\", \"PMD.NoBar\"})" + PMD.EOL +
+             "public class Bar {" + PMD.EOL +
+             " int foo;" + PMD.EOL +
+             " void bar() {" + PMD.EOL +
+             "  int foo;" + PMD.EOL +
              " }" + PMD.EOL +
              "}";
 

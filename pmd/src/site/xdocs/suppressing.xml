@@ -82,7 +82,7 @@ public class Foo {
   }
 }
 
-$ ./pmd.sh Foo.java text unusedcode -excludemarker TURN_OFF_WARNINGS
+$ ./run.sh pmd -d Foo.java -f text -R java-unusedcode -suppressmarker TURN_OFF_WARNINGS
 No problems found!
 UnusedLocalVariable rule violation suppressed by //NOPMD in /home/tom/pmd/pmd/bin/Foo.java
 </source>
@@ -99,7 +99,7 @@ public class Foo {
   }
  }
 }
-$ java net.sourceforge.pmd.PMD ~/tmp/Foo.java text basic
+$ java net.sourceforge.pmd.PMD -d ~/tmp/Foo.java -f text -R java-basic
 No problems found!
 $
 </source>
@@ -157,7 +157,7 @@ public class Foo {
 		<a href="xpathruletutorial.html">XPath Rule tutorial</a>.</p>
    </subsection>
 
-     <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
+     <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/p/pmd/discussion/188192">here</a>.  Thanks!</p>
    </section>
   </body>
 </document>

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.dfa.report;
 
 import net.sourceforge.pmd.RuleViolation;
@@ -23,6 +26,9 @@ public class ViolationNode extends AbstractReportNode {
 
         return rv.getFilename().equals(getRuleViolation().getFilename()) &&
         	rv.getBeginLine() == getRuleViolation().getBeginLine() &&
+        	rv.getBeginColumn() == getRuleViolation().getBeginColumn() &&
+        	rv.getEndLine() == getRuleViolation().getEndLine() &&
+        	rv.getEndColumn()== getRuleViolation().getEndColumn() &&
         	rv.getVariableName().equals(getRuleViolation().getVariableName());
     }
 

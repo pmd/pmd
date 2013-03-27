@@ -10,7 +10,8 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.cpp.ast.Token;
-import net.sourceforge.pmd.util.IOUtil;
+
+import org.apache.commons.io.IOUtils;
 
 public class CPPTokenizer implements Tokenizer {
 
@@ -35,7 +36,7 @@ public class CPPTokenizer implements Tokenizer {
 			System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
 			tokenEntries.add(TokenEntry.getEOF());
 		} finally {
-			IOUtil.closeQuietly(reader);
+			IOUtils.closeQuietly(reader);
 		}
 	}
 }

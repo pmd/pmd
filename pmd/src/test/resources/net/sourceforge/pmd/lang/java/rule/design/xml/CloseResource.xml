@@ -181,7 +181,7 @@ public class Foo {
     </test-code>
 
 
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
 [1964798] 3 bugs in CloseResourceRule : Case failing with complete name
      ]]></description>
@@ -247,7 +247,7 @@ public class Foo {
      ]]></code>
     </test-code>        
 
-	<test-code regressionTest="false">
+	<test-code>
         <description><![CDATA[
 [1964798] 3 bugs in CloseResourceRule : If connection is returned, we should not log a violation.
      ]]></description>
@@ -335,5 +335,94 @@ public class StructureFactory {
 }
      ]]></code>
     </test-code>
-    
+    <test-code> reinitializeRule="true"
+        <description>#1011 CloseResource Rule ignores Constructors</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public Test() {
+        Connection c = pool.getConnection();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code reinitializeRule="true">
+        <description>#1011 CloseResource Rule ignores Constructors - closed in finally</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public Test() {
+        Connection c;
+        try {
+            c = pool.getConnection();
+        } finally {
+            c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code reinitializeRule="true">
+        <description>#1011 CloseResource Rule ignores Constructors - not a problem - instance variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    Connection c;
+    public Test() {
+        c = pool.getConnection();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code reinitializeRule="true">
+        <description>#1029 No instance level check in the close resource rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    Connection c;
+    public void doIt() {
+        c = pool.getConnection();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#947 CloseResource rule fails if field is marked with annotation</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class CloseResourceRuleBug {
+  public void foo() {
+    try {
+      Connection c = DriverManager.getConnection("fake");
+      Statement s = c.createStatement();
+      @SuppressWarnings("PMD.CloseResource") ResultSet rs = s.executeQuery("fake");
+      while (rs.next()) {
+      }
+      rs.close();
+    } catch (SQLException e) {
+    }
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#992 Class java.beans.Statement triggered in CloseResource rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.beans.Statement;
+
+public class Test {
+    public void foo() {
+        Statement stmt = new Statement(vo, "set" + prop, new Object[] { vector });
+
+        try {
+            stmt.execute();
+        } catch (Exception e) {
+            throw new RuntimeException("Could not set property prop: " + prop + "of type:" + pd.getPropertyType(), e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

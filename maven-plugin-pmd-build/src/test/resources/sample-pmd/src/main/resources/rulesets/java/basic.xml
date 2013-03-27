@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<ruleset name="Basic"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+The Basic ruleset contains a collection of good practices which should be followed.
+  </description>
+
+	<rule name="JumbledIncrementer"
+    	  language="java"
+    	  since="1.0"
+          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/java/basic.html#JumbledIncrementer">
+     <description>
+Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+     </description>
+     <priority>3</priority>
+     <properties>
+         <property name="xpath">
+             <value>
+ <![CDATA[
+//ForStatement
+ [
+  ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+  =
+  ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+ ]
+ ]]>
+             </value>
+         </property>
+     </properties>
+     <example>
+ <![CDATA[
+public class JumbledIncrementerRule1 {
+	public void foo() {
+		for (int i = 0; i < 10; i++) {			// only references 'i'
+			for (int k = 0; k < 20; i++) {		// references both 'i' and 'k'
+				System.out.println("Hello");
+			}
+		}
+	}
+}
+ ]]>
+     </example>
+     </rule>
+
+     <rule deprecated="true" ref="rulesets/java/codesize.xml/NPathComplexity"/>
+</ruleset>

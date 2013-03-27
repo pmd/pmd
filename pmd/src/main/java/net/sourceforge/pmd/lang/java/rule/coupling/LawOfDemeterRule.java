@@ -13,6 +13,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -122,13 +124,16 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         public static List<MethodCall> createMethodCalls(ASTPrimaryExpression expression) {
             List<MethodCall> result = new ArrayList<MethodCall>();
 
-            if (isNotAConstructorCall(expression) && hasSuffixesWithArguments(expression)) {
+            if (isNotAConstructorCall(expression) && isNotLiteral(expression) && hasSuffixesWithArguments(expression)) {
                 ASTPrimaryPrefix prefixNode = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-                result.add(new MethodCall(expression, prefixNode));
+                MethodCall firstMethodCallInChain = new MethodCall(expression, prefixNode);
+                result.add(firstMethodCallInChain);
                 
-                List<ASTPrimarySuffix> suffixes = findSuffixesWithoutArguments(expression);
-                for (ASTPrimarySuffix suffix : suffixes) {
-                    result.add(new MethodCall(expression, suffix));
+                if (firstMethodCallInChain.isNotBuilder()) {
+                    List<ASTPrimarySuffix> suffixes = findSuffixesWithoutArguments(expression);
+                    for (ASTPrimarySuffix suffix : suffixes) {
+                        result.add(new MethodCall(expression, suffix));
+                    }
                 }
             }
             
@@ -137,6 +142,21 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         
         private static boolean isNotAConstructorCall(ASTPrimaryExpression expression) {
             return !expression.hasDescendantOfType(ASTAllocationExpression.class);
+        }
+
+        private static boolean isNotLiteral(ASTPrimaryExpression expression) {
+            ASTPrimaryPrefix prefix = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+            if (prefix != null) {
+                return !prefix.hasDescendantOfType(ASTLiteral.class);
+            }
+            return true;
+        }
+
+        private boolean isNotBuilder() {
+            return baseType != StringBuffer.class
+                    && baseType != StringBuilder.class
+                    && !"StringBuilder".equals(baseTypeName)
+                    && !"StringBuffer".equals(baseTypeName);
         }
 
         private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(ASTPrimaryExpression expr) {
@@ -209,7 +229,10 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             
             if (SCOPE_LOCAL.equals(baseScope)) {
                 Assignment lastAssignment = determineLastAssignment();
-                if (lastAssignment != null && !lastAssignment.allocation && !lastAssignment.iterator) {
+                if (lastAssignment != null
+                    && !lastAssignment.allocation
+                    && !lastAssignment.iterator
+                    && !lastAssignment.forLoop) {
                     violation = true;
                     violationReason = REASON_OBJECT_NOT_CREATED_LOCALLY;
                 }
@@ -289,7 +312,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 if (variableDeclaratorId.hasImageEqualTo(baseName)) {
                     boolean allocationFound = declarator.getFirstDescendantOfType(ASTAllocationExpression.class) != null;
                     boolean iterator = isIterator();
-                    assignments.add(new Assignment(declarator.getBeginLine(), allocationFound, iterator));
+                    boolean forLoop = isForLoop(declarator);
+                    assignments.add(new Assignment(declarator.getBeginLine(), allocationFound, iterator, forLoop));
                 }
             }
             
@@ -298,7 +322,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 if (stmt.hasImageEqualTo(SIMPLE_ASSIGNMENT_OPERATOR)) {
                     boolean allocationFound = stmt.jjtGetParent().getFirstDescendantOfType(ASTAllocationExpression.class) != null;
                     boolean iterator = isIterator();
-                    assignments.add(new Assignment(stmt.getBeginLine(), allocationFound, iterator));
+                    assignments.add(new Assignment(stmt.getBeginLine(), allocationFound, iterator, false));
                 }
             }
             
@@ -319,6 +343,10 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             return iterator;
         }
         
+        private boolean isForLoop(ASTVariableDeclarator declarator) {
+            return declarator.jjtGetParent().jjtGetParent() instanceof ASTForStatement;
+        }
+
         public ASTPrimaryExpression getExpression() {
             return expression;
         }
@@ -351,17 +379,19 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private int line;
         private boolean allocation;
         private boolean iterator;
+        private boolean forLoop;
         
-        public Assignment(int line, boolean allocation, boolean iterator) {
+        public Assignment(int line, boolean allocation, boolean iterator, boolean forLoop) {
             this.line = line;
             this.allocation = allocation;
             this.iterator = iterator;
+            this.forLoop = forLoop;
         }
         
         @Override
         public String toString() {
             return "assignment: line=" + line + " allocation:" + allocation
-                + " iterator:" + iterator;
+                + " iterator:" + iterator + " forLoop: " + forLoop;
         }
 
         public int compareTo(Assignment o) {

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<ruleset name="Code Size"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+The Code Size ruleset contains rules that find problems related to code size or complexity.
+  </description>
+
+<rule name="NPathComplexity"
+      since="3.9"
+      message="The method {0}() has an NPath complexity of {1}"
+      class="net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule"
+      externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NPathComplexity">
+   <description>
+The NPath complexity of a method is the number of acyclic execution paths through that method.
+A threshold of 200 is generally considered the point where measures should be taken to reduce 
+complexity and increase readability.
+   </description>
+     <priority>3</priority>
+    <example>
+ <![CDATA[
+void bar() {	// this is something more complex than it needs to be,
+	if (y) {	// it should be broken down into smaller methods or functions
+		for (j = 0; j < m; j++) {
+			if (j > r) {
+				doSomething();
+				while (f < 5 ) {
+					anotherThing();
+					f -= 27;
+					}
+				} else {
+					tryThis();
+				}
+			}
+		}
+		if ( r - n > 45) {
+		   while (doMagic()) {
+		      findRabbits();
+		   }
+		}
+		try {
+			doSomethingDangerous();
+		} catch (Exception ex) {
+			makeAmends();
+			} finally {
+				dontDoItAgain();
+				}
+	}
+}
+
+ ]]>
+    </example>
+</rule>
+
+</ruleset>

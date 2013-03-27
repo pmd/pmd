@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.renderers;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,7 +24,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -37,25 +39,17 @@ public class XSLTRenderer extends XMLRenderer {
 
     public static final String NAME = "xslt";
 
-    public static final String XSLT_FILENAME = "xsltFilename";
+    public static final StringProperty XSLT_FILENAME = new StringProperty("xsltFilename", "The XSLT file name.", null, 0);
 
     private Transformer transformer;
-    private String xsltFilename = "/etc/pmd-nicerhtml.xsl";
+    private String xsltFilename = "/pmd-nicerhtml.xsl";
     private Writer outputWriter;
 
-    public XSLTRenderer(Properties properties) {
-	super(properties);
-	super.setName(NAME);
-	super.setDescription("XML with a XSL Transformation applied.");
-	super.defineProperty(XSLT_FILENAME, "The XSLT file name.");
-
-	String xsltFilename = properties.getProperty(XSLT_FILENAME);
-	if (xsltFilename != null) {
-	    File file = new File(xsltFilename);
-	    if (file.exists() && file.canRead()) {
-		this.xsltFilename = xsltFilename;
-	    }
-	}
+    public XSLTRenderer() {
+	super();
+	setName(NAME);
+	setDescription("XML with a XSL Transformation applied.");
+	definePropertyDescriptor(XSLT_FILENAME);
     }
 
     public String defaultFileExtension() { return "xsl"; }
@@ -65,6 +59,14 @@ public class XSLTRenderer extends XMLRenderer {
      */
     @Override
     public void start() throws IOException {
+	String xsltFilenameProperty = getProperty(XSLT_FILENAME);
+	if (xsltFilenameProperty != null) {
+	    File file = new File(xsltFilenameProperty);
+	    if (file.exists() && file.canRead()) {
+		this.xsltFilename = xsltFilenameProperty;
+	    }
+	}
+
 	// We keep the inital writer to put the final html output
 	this.outputWriter = getWriter();
 	// We use a new one to store the XML...
@@ -77,10 +79,10 @@ public class XSLTRenderer extends XMLRenderer {
 	if (file.exists() && file.canRead()) {
 	    xslt = new FileInputStream(file);
 	} else {
-	    xslt = this.getClass().getResourceAsStream(xsltFilename);
+	    xslt = this.getClass().getResourceAsStream(this.xsltFilename);
 	}
 	if (xslt == null) {
-	    throw new FileNotFoundException("Can't file XSLT sheet :" + xsltFilename);
+	    throw new FileNotFoundException("Can't file XSLT sheet :" + this.xsltFilename);
 	}
 	this.prepareTransformer(xslt);
 	// Now we build the XML file
@@ -118,13 +120,11 @@ public class XSLTRenderer extends XMLRenderer {
 	if (writer instanceof StringWriter) {
 	    StringWriter w = (StringWriter) writer;
 	    StringBuffer buffer = w.getBuffer();
-	    // FIXME: If we change the encoding in XMLRenderer, we should change this too !
-	    InputStream xml = new ByteArrayInputStream(buffer.toString().getBytes(this.encoding));
-	    Document doc = this.getDocument(xml);
+	    Document doc = this.getDocument(buffer.toString());
 	    this.transform(doc);
 	} else {
 	    // Should not happen !
-	    new RuntimeException("Wrong writer").printStackTrace();
+	    throw new RuntimeException("Wrong writer");
 	}
 
     }
@@ -140,10 +140,10 @@ public class XSLTRenderer extends XMLRenderer {
 	}
     }
 
-    private Document getDocument(InputStream xml) {
+    private Document getDocument(String xml) {
 	try {
 	    DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-	    return parser.parse(xml);
+	    return parser.parse(new InputSource(new StringReader(xml)));
 	} catch (ParserConfigurationException e) {
 	    e.printStackTrace();
 	} catch (SAXException e) {

@@ -1,5 +1,19 @@
 /**
+ * Fix ForStatement to allow Annotations within the initializer.
  *
+ * Andreas Dangel 01/2013
+ * ===================================================================
+ * Fix wrong consumption of modifiers (e.g. "final") in a for-each loop.
+ * Check for wrong java usage when catching multiple exceptions.
+ *
+ * Andreas Dangel 12/2012
+ * ===================================================================
+ * Enhance grammar to use LocalVariableDeclaration in a for-each loop.
+ * This enhances the symbol table to recognize variables declared in such
+ * a for-each loop.
+ *
+ * Andreas Dangel 10/2012
+ * ===================================================================
  * Fix parser problem #3530124 with generics
  *
  * Modified the grammar, so that the different usages of generics work.
@@ -167,6 +181,12 @@ public class JavaParser {
   private void checkForBadTryWithResourcesUsage() {
   	if (jdkVersion < 7) {
       throw new ParseException("Cannot use the try-with-resources notation when running in JDK inferior to 1.7 mode!");
+  	}
+  }
+
+  private void checkForBadMultipleExceptionsCatching() {
+  	if (jdkVersion < 7) {
+      throw new ParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!");
   	}
   }
 
@@ -1363,7 +1383,7 @@ void FormalParameter() :
 }
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" Type())*
+   Type() ("|" {checkForBadMultipleExceptionsCatching();} Type())*
    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
@@ -1909,9 +1929,9 @@ void ForStatement() :
 {
   "for" "("
 (
-      LOOKAHEAD(Modifiers() Type() <IDENTIFIER> ":")
+      LOOKAHEAD(LocalVariableDeclaration() ":")
       {checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
-      Modifiers() Type() <IDENTIFIER> ":" Expression()
+      LocalVariableDeclaration() ":" Expression()
 |
   [ ForInit() ] ";"
   [ Expression() ] ";"
@@ -1923,7 +1943,7 @@ void ForStatement() :
 void ForInit() :
 {}
 {
-  LOOKAHEAD( [ "final" ] Type() <IDENTIFIER> )
+  LOOKAHEAD( LocalVariableDeclaration() )
   LocalVariableDeclaration()
 |
   StatementExpressionList()

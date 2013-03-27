@@ -28,6 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import junit.framework.Assert;
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -103,6 +104,54 @@ public class RuleSetFactoryTest {
 		RuleSetFactory rsf = new RuleSetFactory();
 		RuleSet rs = rsf.createRuleSet("rulesets/java/migrating_to_15.xml");
 		assertNotNull(rs.getRuleByName("AvoidEnumAsIdentifier"));
+	}
+
+	@Test
+	public void testExtendedReferences() throws Exception {
+	    InputStream in = ResourceLoader.loadResourceAsStream("net/sourceforge/pmd/rulesets/reference-ruleset.xml",
+		    this.getClass().getClassLoader());
+	    Assert.assertNotNull("Test ruleset not found - can't continue with test!", in);
+
+	    RuleSetFactory rsf = new RuleSetFactory();
+	    RuleSet rs = rsf.createRuleSet("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
+	    // added by referencing a complete ruleset (java-basic)
+	    assertNotNull(rs.getRuleByName("JumbledIncrementer"));
+	    assertNotNull(rs.getRuleByName("ForLoopShouldBeWhileLoop"));
+	    assertNotNull(rs.getRuleByName("OverrideBothEqualsAndHashcode"));
+
+	    // added by specific reference
+	    assertNotNull(rs.getRuleByName("UnusedLocalVariable"));
+	    assertNotNull(rs.getRuleByName("DuplicateImports"));
+	    // this is from java-unusedcode, but not referenced
+	    assertNull(rs.getRuleByName("UnusedPrivateField"));
+
+	    Rule emptyCatchBlock = rs.getRuleByName("EmptyCatchBlock");
+	    assertNotNull(emptyCatchBlock);
+	    // default priority in java-empty is 3, but overridden to 2
+	    assertEquals(2, emptyCatchBlock.getPriority().getPriority());
+
+	    Rule cyclomaticComplexity = rs.getRuleByName("CyclomaticComplexity");
+	    assertNotNull(cyclomaticComplexity);
+	    PropertyDescriptor<?> prop = cyclomaticComplexity.getPropertyDescriptor("reportLevel");
+	    Object property = cyclomaticComplexity.getProperty(prop);
+	    assertEquals("5", String.valueOf(property));
+
+	    // included from braces
+	    assertNotNull(rs.getRuleByName("IfStmtsMustUseBraces"));
+	    // excluded from braces
+	    assertNull(rs.getRuleByName("WhileLoopsMustUseBraces"));
+
+	    // overridden to 5
+	    Rule simplifyBooleanExpressions = rs.getRuleByName("SimplifyBooleanExpressions");
+	    assertNotNull(simplifyBooleanExpressions);
+	    assertEquals(5, simplifyBooleanExpressions.getPriority().getPriority());
+	    // priority overridden for whole design group
+	    Rule useUtilityClass = rs.getRuleByName("UseUtilityClass");
+	    assertNotNull(useUtilityClass);
+	    assertEquals(2, useUtilityClass.getPriority().getPriority());
+	    Rule simplifyBooleanReturns = rs.getRuleByName("SimplifyBooleanReturns");
+	    assertNotNull(simplifyBooleanReturns);
+	    assertEquals(2, simplifyBooleanReturns.getPriority().getPriority());
 	}
 
 	@Test(expected = RuleSetNotFoundException.class)
@@ -475,11 +524,11 @@ public class RuleSetFactoryTest {
 							+ " is missing 'externalInfoURL' attribute"
 							+ PMD.EOL;
 				} else {
-					String expectedExternalInfoURL = "http://pmd.sourceforge.net/snapshot/rules/"
+					String expectedExternalInfoURL = "http://pmd.sourceforge.net/.+/rules/"
 							+ fileName.replaceAll("rulesets/", "").replaceAll(
 									".xml", "") + ".html#" + rule.getName();
-					if (!expectedExternalInfoURL.equals(rule
-							.getExternalInfoUrl())) {
+					if (rule.getExternalInfoUrl() == null
+						|| !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
 						invalidExternalInfoURL++;
 						messages += "Rule "
 								+ fileName

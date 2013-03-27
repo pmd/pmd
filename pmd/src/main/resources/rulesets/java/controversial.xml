@@ -762,7 +762,7 @@ public void downCastPrimitiveType() {
 
   <rule  name="UseObjectForClearerAPI"
          language="java" since="4.2.6"
-         message="Rather than using a lot of String arguments, consider using a container objet for those values."
+         message="Rather than using a lot of String arguments, consider using a container object for those values."
          class="net.sourceforge.pmd.lang.rule.XPathRule"
          externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#UseObjectForClearerAPI">
     <description>
@@ -820,7 +820,7 @@ perform efficient map reads without blocking other threads.
       <property name="xpath">
         <value>
 <![CDATA[
-//Type[../VariableDeclarator/VariableInitializer]/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
+//Type[../VariableDeclarator/VariableInitializer//AllocationExpression]/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
 ]]>
         </value>
       </property>
@@ -831,6 +831,9 @@ public class ConcurrentApp {
   public void getMyInstance() {
     Map map1 = new HashMap(); 	// fine for single-threaded access
     Map map2 = new ConcurrentHashMap();  // preferred for use with multiple threads
+
+    // the following case will be ignored by this rule
+    Map map3 = someModule.methodThatReturnMap(); // might be OK, if the returned map is already thread-safe
   }
 }
 ]]>

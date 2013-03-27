@@ -3,20 +3,19 @@ package net.sourceforge.pmd.lang.java.rule.junit;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
-@SuppressWarnings("PMD.AvoidCatchingThrowable")
-// Don't think we can otherwise here...
 public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
     public static final Class<?> JUNIT4_CLASS;
@@ -30,14 +29,14 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 	Class<?> c;
 	try {
 	    c = Class.forName("org.junit.Test");
-	} catch (Throwable t) {
+	} catch (ClassNotFoundException t) {
 	    c = null;
 	}
 	JUNIT4_CLASS = c;
 
 	try {
 	    c = Class.forName("junit.framework.TestCase");
-	} catch (Throwable t) {
+	} catch (ClassNotFoundException t) {
 	    c = null;
 	}
 	JUNIT3_CLASS = c;
@@ -111,18 +110,19 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     }
 
     private boolean doesNodeContainJUnitAnnotation(Node node) {
-	List<ASTMarkerAnnotation> lstAnnotations = node.findDescendantsOfType(ASTMarkerAnnotation.class);
-	for (ASTMarkerAnnotation annotation : lstAnnotations) {
-	    if (annotation.getType() == null) {
-		ASTName name = (ASTName) annotation.jjtGetChild(0);
-		if ("Test".equals(name.getImage())) {
-		    return true;
-		}
-	    } else if (annotation.getType().equals(JUNIT4_CLASS)) {
-		return true;
-	    }
-	}
-	return false;
+        List<ASTAnnotation> annotations = node.findDescendantsOfType(ASTAnnotation.class);
+        for (ASTAnnotation annotation : annotations) {
+            Node annotationTypeNode = annotation.jjtGetChild(0);
+            TypeNode annotationType = (TypeNode) annotationTypeNode;
+            if (annotationType.getType() == null) {
+                ASTName name = annotationTypeNode.getFirstChildOfType(ASTName.class);
+                if (name != null && "Test".equals(name.getImage())) {
+                    return true;
+                }
+            } else if (annotationType.getType().equals(JUNIT4_CLASS)) {
+                return true;
+            }
+        }
+        return false;
     }
-
 }

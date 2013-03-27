@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
@@ -25,11 +28,13 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ClassWithOnlyPrivateConstructorsShouldBeFinal");
         addRule(RULESET, "CloseResource");
         addRule(RULESET, "CompareObjectsWithEquals");
+        addRule(RULESET, "ConfusingTernary");
+        addRule(RULESET, "ConstructorCallsOverridableMethod");
         addRule(RULESET, "DefaultLabelNotLastInSwitchStmt");
         addRule(RULESET, "EmptyMethodInAbstractClassShouldBeAbstract");
         addRule(RULESET, "EqualsNull");
-        addRule(RULESET, "FinalFieldCouldBeStatic");
         addRule(RULESET, "FieldDeclarationsShouldBeAtStartOfClass");
+        addRule(RULESET, "FinalFieldCouldBeStatic");
         addRule(RULESET, "GodClass");
         addRule(RULESET, "IdempotentOperations");
         addRule(RULESET, "ImmutableField");
@@ -41,6 +46,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "NonStaticInitializer");
         addRule(RULESET, "NonThreadSafeSingleton");
         addRule(RULESET, "OptimizableToArrayCall");
+        //addRule(RULESET, "PositionalIteratorRule"); This rule does not yes exist
         addRule(RULESET, "PositionLiteralsFirstInComparisons");
         addRule(RULESET, "PreserveStackTrace");
         addRule(RULESET, "ReturnEmptyArrayRatherThanNull");
@@ -52,14 +58,15 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "SwitchDensity");
         addRule(RULESET, "SwitchStmtsShouldHaveDefault");
         addRule(RULESET, "TooFewBranchesForASwitchStatement");
-//      addRule(RULESET, "TooManyHttpFilter.xml");
+        //addRule(RULESET, "TooManyHttpFilter"); This rule does not yet exist
+        //addRule(RULESET, "UncommentedEmptyConstructor"); See UncommentedEmptyConstructorRuleTest.java
         addRule(RULESET, "UncommentedEmptyMethod");
         addRule(RULESET, "UnnecessaryLocalBeforeReturn");
         addRule(RULESET, "UnsynchronizedStaticDateFormatter");
         addRule(RULESET, "UseCollectionIsEmpty");
         addRule(RULESET, "UseLocaleWithCaseConversions");
         addRule(RULESET, "UseNotifyAllInsteadOfNotify");
-        addRule(RULESET, "UseSingleton");
+        addRule(RULESET, "UseUtilityClass");
         addRule(RULESET, "UseVarargs");
     }
 

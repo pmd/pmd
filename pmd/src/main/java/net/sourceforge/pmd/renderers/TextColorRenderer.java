@@ -11,12 +11,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * <p>A console renderer with optional color support under *nix systems.</p>
@@ -50,9 +51,11 @@ import net.sourceforge.pmd.util.IOUtil;
  */
 public class TextColorRenderer extends AbstractAccumulatingRenderer {
 
+
     public static final String NAME = "textcolor";
 
-    public static final String COLOR = "color";
+    public static final StringProperty COLOR = new StringProperty("color", "Enables colors with anything other than 'false' or '0'.", "yes", 0);
+    private static final String SYSTEM_PROPERTY_PMD_COLOR = "pmd.color";
 
     /**
      * Directory from where java was invoked.
@@ -67,11 +70,10 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 
     private String colorReset = "";
 
-    public TextColorRenderer(Properties properties) {
+    public TextColorRenderer() {
 	// This Renderer was originally submitted by Adrian Papari and was called the "PapariTextRenderer" pre-PMD 5.0.
-	super(NAME, "Text format, with color support (requires ANSI console support, e.g. xterm, rxvt, etc.).",
-		properties);
-	defineProperty(COLOR, "Enables colors with anything other than 'false' or '0'.");
+	super(NAME, "Text format, with color support (requires ANSI console support, e.g. xterm, rxvt, etc.).");
+	definePropertyDescriptor(COLOR);
     }
 
     public String defaultFileExtension() { return "txt"; }
@@ -84,8 +86,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
      * btw, is it possible to do this on windows (ie; console colors)?
      */
     private void initializeColorsIfSupported() {
-	if (System.getProperty("pmd.color") != null
-		&& !(System.getProperty("pmd.color").equals("0") || System.getProperty("pmd.color").equals("false"))) {
+	if (isPropertyEnabled(getProperty(COLOR)) || isPropertyEnabled(System.getProperty(SYSTEM_PROPERTY_PMD_COLOR))) {
 	    this.yellowBold = "\u001B[1;33m";
 	    this.whiteBold = "\u001B[1;37m";
 	    this.redBold = "\u001B[1;31m";
@@ -94,6 +95,10 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 
 	    this.colorReset = "\u001B[0m";
 	}
+    }
+
+    private boolean isPropertyEnabled(String property) {
+	return property != null && !(property.equals("0") || property.equalsIgnoreCase("false"));
     }
 
     /**
@@ -178,7 +183,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 		} catch (IOException ioErr) {
 		    ioErr.printStackTrace();
 		} finally {
-			IOUtil.closeQuietly(br);
+			IOUtils.closeQuietly(br);
 		}
 		return code;
     }
