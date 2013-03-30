@@ -89,6 +89,10 @@
 					public void executeSql(Statement statement, String query) throws SQLException
 				    {
 				        ResultSet rst = stat.executeQuery("SELECT name FROM person");
+        // stupid while loop to have an unrelated while
+        while (_count > 0) {
+            _count--;
+        }
 				        while (rst.next())
 				        {
 				            firsString = rst.getString(1);
@@ -97,5 +101,64 @@
 				}
      		]]>
  		</code>
+    </test-code>
+
+    <test-code>
+        <description>#942 CheckResultSet False Positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public int countReadOnlyForwardOnlyJDBC() throws SQLException, ClassNotFoundException {
+        int _count = 0;
+
+        if (conn == null) {
+            conn = getConnection();
+            if (conn == null) {
+                return null;
+            }
+        }
+
+        if (stmt == null) {
+            stmt = conn.createStatement(
+                ResultSet.TYPE_FORWARD_ONLY, 
+                ResultSet.CONCUR_READ_ONLY);
+        }
+
+        ResultSet _rs = stmt.executeQuery(QueryString);
+
+        while (_rs.next() != false) {
+            _count++;
+        }   
+
+        return _count;
+    }
+    
+
+    public int countReadOnlyForwardOnlyJDBC2() throws SQLException, ClassNotFoundException {
+        int _count = 0;
+
+        if (conn == null) {
+            conn = getConnection();
+            if (conn == null) {
+                return null;
+            }
+        }
+
+        if (stmt == null) {
+            stmt = conn.createStatement(
+                ResultSet.TYPE_FORWARD_ONLY, 
+                ResultSet.CONCUR_READ_ONLY);
+        }
+
+        ResultSet _rs = stmt.executeQuery(QueryString);
+        _rs.next();  // This line should throw a PMD violation.  < - - - violation here
+        while (_rs.next() != false) {
+            _count++;
+        }   
+
+        return _count;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

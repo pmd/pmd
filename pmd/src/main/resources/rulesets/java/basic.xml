@@ -553,7 +553,7 @@ public class Foo {
   <rule name="CheckResultSet"
     	language="java"
         since="4.1"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        class="net.sourceforge.pmd.lang.java.rule.basic.CheckResultSetRule"
         message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."
         externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#CheckResultSet">
         <description>
@@ -563,47 +563,6 @@ If the value return is 'false', it should be handled properly.
             ]]>
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-		        	<![CDATA[
-//Type/ReferenceType/ClassOrInterfaceType[
-        (@Image = 'ResultSet')
-        and
-        (../../../descendant::Name[ends-with(@Image,'executeQuery')])
-        and
-        (
-	(not (contains(
-                        (./ancestor::Block/descendant::WhileStatement/descendant::Name/attribute::Image),
-                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.next')
-		)  ) )
-	and ( not ( contains(
-                        (./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
-                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.next')
-		) ) )
-	and (not (contains(
-                        (./ancestor::Block/descendant::WhileStatement/descendant::Name/attribute::Image),
-                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.previous')
-		)  ) )
-	and ( not ( contains(
-                        (./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
-                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.previous')
-		) ) )
-	and ( not ( contains(
-                        (./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
-                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.last')
-		) ) )
-	and ( not ( contains(
-                        (./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
-                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.first')
-		) ) )
-
-         )
-]
-		        	]]>
-            	</value>
-            </property>
-        </properties>
         <example>
             <![CDATA[
 Statement stat = conn.createStatement();
