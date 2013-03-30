@@ -15,6 +15,7 @@ New Java rule:
 
 ????? ??, 2013 - 5.0.3:
 
+Fixed bug  940: False positive on UnsynchronizedStaticDateFormatter
 Fixed bug  942: CheckResultSet False Positive and Negative
 Fixed bug  943: PreserveStackTrace false positive if a StringBuffer exists
 Fixed bug  945: PMD generates RuleSets it cannot read.
