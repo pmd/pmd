@@ -1,5 +1,6 @@
 ????? ??, 2013 - 5.0.3:
 
+Fixed bug  943: PreserveStackTrace false positive if a StringBuffer exists
 Fixed bug  945: PMD generates RuleSets it cannot read.
 Fixed bug  958: Intermittent NullPointerException while loading XPath node attributes
 Fixed bug  968: Issues with JUnit4 @Test annotation with expected exception (Thanks to Yiannis Paschalidis)
