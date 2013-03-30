@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class Report {
+public class Report implements Iterable<RuleViolation> {
 
     public static Report createReport(RuleContext ctx, String fileName) {
 	Report report = new Report();
@@ -137,8 +137,7 @@ public class Report {
     
     public Map<String, Integer> getCountSummary() {
         Map<String, Integer> summary = new HashMap<String, Integer>();
-        for (Iterator<RuleViolation> iter = violationTree.iterator(); iter.hasNext();) {
-            RuleViolation rv = iter.next();
+        for (RuleViolation rv : violationTree) {
             String key = keyFor(rv);
             Integer o = summary.get(key);
             summary.put(key, o==null ? NumericConstants.ONE : o+1);
@@ -264,6 +263,7 @@ public class Report {
         return violationTree.iterator();
     }
 
+    @Override
     public Iterator<RuleViolation> iterator() {
         return violations.iterator();
     }
