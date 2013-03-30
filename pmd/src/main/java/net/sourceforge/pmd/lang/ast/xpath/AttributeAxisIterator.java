@@ -15,31 +15,32 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class AttributeAxisIterator implements Iterator<Attribute> {
 
     private static class MethodWrapper {
-	public Method method;
-	public String name;
+        public Method method;
+        public String name;
 
-	public MethodWrapper(Method m) {
-	    this.method = m;
-	    this.name = truncateMethodName(m.getName());
-	}
+        public MethodWrapper(Method m) {
+            this.method = m;
+            this.name = truncateMethodName(m.getName());
+        }
 
-	private String truncateMethodName(String n) {
-	    // about 70% of the methods start with 'get', so this case goes first
-	    if (n.startsWith("get")) {
-		return n.substring("get".length());
-	    }
-	    if (n.startsWith("is")) {
-		return n.substring("is".length());
-	    }
-	    if (n.startsWith("has")) {
-		return n.substring("has".length());
-	    }
-	    if (n.startsWith("uses")) {
-		return n.substring("uses".length());
-	    }
+        private String truncateMethodName(String n) {
+            // about 70% of the methods start with 'get', so this case goes
+            // first
+            if (n.startsWith("get")) {
+                return n.substring("get".length());
+            }
+            if (n.startsWith("is")) {
+                return n.substring("is".length());
+            }
+            if (n.startsWith("has")) {
+                return n.substring("has".length());
+            }
+            if (n.startsWith("uses")) {
+                return n.substring("uses".length());
+            }
 
-	    return n;
-	}
+            return n;
+        }
     }
 
     private Attribute currObj;
@@ -50,61 +51,61 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private static Map<Class<?>, MethodWrapper[]> methodCache = new HashMap<Class<?>, MethodWrapper[]>();
 
     public AttributeAxisIterator(Node contextNode) {
-	this.node = contextNode;
-	if (!methodCache.containsKey(contextNode.getClass())) {
-	    Method[] preFilter = contextNode.getClass().getMethods();
-	    List<MethodWrapper> postFilter = new ArrayList<MethodWrapper>();
-	    for (Method element : preFilter) {
-		if (isAttributeAccessor(element)) {
-		    postFilter.add(new MethodWrapper(element));
-		}
-	    }
-	    methodCache.put(contextNode.getClass(), postFilter.toArray(new MethodWrapper[postFilter.size()]));
-	}
-	this.methodWrappers = methodCache.get(contextNode.getClass());
+        this.node = contextNode;
+        if (!methodCache.containsKey(contextNode.getClass())) {
+            Method[] preFilter = contextNode.getClass().getMethods();
+            List<MethodWrapper> postFilter = new ArrayList<MethodWrapper>();
+            for (Method element : preFilter) {
+                if (isAttributeAccessor(element)) {
+                    postFilter.add(new MethodWrapper(element));
+                }
+            }
+            methodCache.put(contextNode.getClass(), postFilter.toArray(new MethodWrapper[postFilter.size()]));
+        }
+        this.methodWrappers = methodCache.get(contextNode.getClass());
 
-	this.position = 0;
-	this.currObj = getNextAttribute();
+        this.position = 0;
+        this.currObj = getNextAttribute();
     }
 
     public Attribute next() {
-	if (currObj == null) {
-	    throw new IndexOutOfBoundsException();
-	}
-	Attribute ret = currObj;
-	currObj = getNextAttribute();
-	return ret;
+        if (currObj == null) {
+            throw new IndexOutOfBoundsException();
+        }
+        Attribute ret = currObj;
+        currObj = getNextAttribute();
+        return ret;
     }
 
     public boolean hasNext() {
-	return currObj != null;
+        return currObj != null;
     }
 
     public void remove() {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     private Attribute getNextAttribute() {
-	if (position == methodWrappers.length) {
-	    return null;
-	}
-	MethodWrapper m = methodWrappers[position++];
-	return new Attribute(node, m.name, m.method);
+        if (position == methodWrappers.length) {
+            return null;
+        }
+        MethodWrapper m = methodWrappers[position++];
+        return new Attribute(node, m.name, m.method);
     }
 
     protected boolean isAttributeAccessor(Method method) {
 
-	String methodName = method.getName();
+        String methodName = method.getName();
 
-	return (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType()
-		|| Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
-		&& method.getParameterTypes().length == 0
-		&& Void.TYPE != method.getReturnType()
-		&& !methodName.startsWith("jjt")
-		&& !methodName.equals("toString")
-		&& !methodName.equals("getScope")
-		&& !methodName.equals("getClass")
-		&& !methodName.equals("getTypeNameNode")
-		&& !methodName.equals("getImportedNameNode") && !methodName.equals("hashCode");
+        return (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType()
+                || Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
+                && method.getParameterTypes().length == 0
+                && Void.TYPE != method.getReturnType()
+                && !methodName.startsWith("jjt")
+                && !methodName.equals("toString")
+                && !methodName.equals("getScope")
+                && !methodName.equals("getClass")
+                && !methodName.equals("getTypeNameNode")
+                && !methodName.equals("getImportedNameNode") && !methodName.equals("hashCode");
     }
 }
