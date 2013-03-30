@@ -650,9 +650,7 @@
                     <reportSet>
                         <reports>
                             <report>javadoc</report>
-                            <!-- FIXME: The following report fails
                             <report>test-javadoc</report>
-                            -->
                         </reports>
                     </reportSet>
                 </reportSets>
