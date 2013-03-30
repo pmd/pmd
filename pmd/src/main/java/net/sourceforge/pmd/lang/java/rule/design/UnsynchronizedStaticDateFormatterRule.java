@@ -48,6 +48,11 @@ public class UnsynchronizedStaticDateFormatterRule extends AbstractJavaRule {
             if (n.getFirstParentOfType(ASTSynchronizedStatement.class) != null) {
                 continue;
             }
+            // ignore usages, that don't call a method.
+            if (!n.getImage().contains(".")) {
+                continue;
+            }
+
             ASTMethodDeclaration method = n.getFirstParentOfType(ASTMethodDeclaration.class);
             if (method != null && !method.isSynchronized()) {
                 addViolation(data, n);
