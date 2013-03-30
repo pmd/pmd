@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +49,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private int position;
     private Node node;
 
-    private static Map<Class<?>, MethodWrapper[]> methodCache = new HashMap<Class<?>, MethodWrapper[]>();
+    private static Map<Class<?>, MethodWrapper[]> methodCache =
+            Collections.synchronizedMap(new HashMap<Class<?>, MethodWrapper[]>());
 
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
@@ -86,7 +88,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     }
 
     private Attribute getNextAttribute() {
-        if (position == methodWrappers.length) {
+        if (methodWrappers == null || position == methodWrappers.length) {
             return null;
         }
         MethodWrapper m = methodWrappers[position++];
