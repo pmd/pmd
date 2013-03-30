@@ -33,4 +33,16 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#937 OptimizableToArrayCall does not catch multilevel method chains</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void foo() {
+        x.y.toArray(new Foo[0]);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
