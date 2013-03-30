@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class Report {
+public class Report implements Iterable<RuleViolation> {
 
     public static Report createReport(RuleContext ctx, String fileName) {
 	Report report = new Report();
@@ -263,6 +263,7 @@ public class Report {
         return violationTree.iterator();
     }
 
+    @Override
     public Iterator<RuleViolation> iterator() {
         return violations.iterator();
     }

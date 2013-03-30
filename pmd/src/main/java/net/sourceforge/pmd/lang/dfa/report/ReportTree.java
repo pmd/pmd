@@ -81,6 +81,7 @@ public class ReportTree implements Iterable<RuleViolation> {
 		}
 	}
 
+	@Override
 	public Iterator<RuleViolation> iterator() {
 		return new TreeIterator();
 	}
