@@ -11,6 +11,8 @@ New EcmaScript rules and ruleset:
 New Java rule:
 	GuardLogStatement
 		- replace xpath implementation of GuardDebugLogging by GuardLogStatement (better perf)
+	CommentRequired
+		- basic rule to check for existence for formal (javadoc) comments.
 
 
 ????? ??, 2013 - 5.0.3:

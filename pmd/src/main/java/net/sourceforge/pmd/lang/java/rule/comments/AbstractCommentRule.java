@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
@@ -146,16 +147,16 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 
 	protected void assignCommentsToDeclarations(ASTCompilationUnit cUnit) {
 		SortedMap<Integer, Object> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
-		Comment lastComment = null;
+		FormalComment lastComment = null;
 
 		for (Entry<Integer, Object> entry : itemsByLineNumber.entrySet()) {
 			Object value = entry.getValue();
 			if (lastComment == null) {
-				if (value instanceof Comment) {
-					lastComment = (Comment) value;
+				if (value instanceof FormalComment) {
+					lastComment = (FormalComment) value;
 				}
 				// else this is declaration without comment
-			} else {
+			} else if (value instanceof AbstractJavaAccessNode) {
 				AbstractJavaAccessNode node = (AbstractJavaAccessNode) value;
 				node.comment(lastComment);
 				lastComment = null;
@@ -194,6 +195,12 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 				.findDescendantsOfType(ASTMethodDeclaration.class);
 		for (ASTMethodDeclaration methodDecl : methods) {
 			itemsByLineNumber.put(methodDecl.getBeginLine(), methodDecl);
+		}
+
+		List<ASTConstructorDeclaration> constructors = cUnit
+		        .findDescendantsOfType(ASTConstructorDeclaration.class);
+		for (ASTConstructorDeclaration constructorDecl : constructors) {
+		    itemsByLineNumber.put(constructorDecl.getBeginLine(), constructorDecl);
 		}
 
 		return itemsByLineNumber;

@@ -1,10 +1,17 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.comments;
+
+import java.util.Arrays;
 
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 
 /**
@@ -32,19 +39,19 @@ public class CommentRequiredRule extends AbstractCommentRule {
 	}
 
 	public static final EnumeratedProperty<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
-			"headerCommentRequirement", "Header comments",
+			"headerCommentRequirement", "Header comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 1.0f);
 
 	public static final EnumeratedProperty<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
-			"fieldCommentRequirement", "Field comments",
+			"fieldCommentRequirement", "Field comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 2.0f);
 
 	public static final EnumeratedProperty<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
-			"publicMethodCommentRequirement", "Public method comments",
+			"publicMethodCommentRequirement", "Public method and constructor comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 3.0f);
 
 	public static final EnumeratedProperty<CommentRequirement> PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
-			"protectedMethodCommentRequirement", "Protected method comments",
+			"protectedMethodCommentRequirement", "Protected method constructor comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 4.0f);
 
 	public CommentRequiredRule() {
@@ -93,7 +100,18 @@ public class CommentRequiredRule extends AbstractCommentRule {
 	}
 
 	@Override
+	public Object visit(ASTConstructorDeclaration decl, Object data) {
+	    checkComment(decl, data);
+	    return super.visit(decl, data);
+	}
+
+	@Override
 	public Object visit(ASTMethodDeclaration decl, Object data) {
+	    checkComment(decl, data);
+	    return super.visit(decl, data);
+	}
+
+	private void checkComment(AbstractJavaAccessNode decl, Object data) {
 		CommentRequirement pubMethodRequirement = getCommentRequirement(getProperty(
 				PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR).toString());
 		CommentRequirement protMethodRequirement = getCommentRequirement(getProperty(
@@ -136,8 +154,6 @@ public class CommentRequiredRule extends AbstractCommentRule {
 				}
 			}
 		}
-
-		return super.visit(decl, data);
 	}
 
 	@Override
