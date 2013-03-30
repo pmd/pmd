@@ -129,7 +129,9 @@ public class RuleSetWriter {
     }
     
     private Element createExcludeElement(String exclude) {
-    	return createTextElement("exclude", exclude);
+        Element element = document.createElementNS(RULESET_NS_URI, "exclude");
+        element.setAttribute("name", exclude);
+        return element;
     }
 
     private Element createExampleElement(String example) {

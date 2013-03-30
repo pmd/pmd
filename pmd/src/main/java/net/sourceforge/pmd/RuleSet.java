@@ -5,7 +5,9 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -162,6 +164,18 @@ public class RuleSet {
 		rules.addAll(rules.size(), ruleSet.getRules());
 	}
 
+   /**
+     * Add all rules by reference from one RuleSet to this RuleSet.  The rules
+     * can be added as individual references, or collectively as an all rule
+     * reference.
+     *
+     * @param ruleSet the RuleSet to add
+     * @param allRules 
+     */
+    public void addRuleSetByReference(RuleSet ruleSet, boolean allRules) {
+        addRuleSetByReference(ruleSet, allRules, (String[])null);
+    }
+
 	/**
 	 * Add all rules by reference from one RuleSet to this RuleSet.  The rules
 	 * can be added as individual references, or collectively as an all rule
@@ -169,13 +183,17 @@ public class RuleSet {
 	 *
 	 * @param ruleSet the RuleSet to add
 	 * @param allRules 
+	 * @param excludes names of the rules that should be excluded.
 	 */
-	public void addRuleSetByReference(RuleSet ruleSet, boolean allRules) {
+	public void addRuleSetByReference(RuleSet ruleSet, boolean allRules, String ... excludes) {
 		if (StringUtil.isEmpty(ruleSet.getFileName())) {
 			throw new RuntimeException("Adding a rule by reference is not allowed with an empty rule set file name.");
 		}
 		RuleSetReference ruleSetReference = new RuleSetReference(ruleSet.getFileName());
 		ruleSetReference.setAllRules(allRules);
+		if (excludes != null) {
+		    ruleSetReference.setExcludes(new HashSet<String>(Arrays.asList(excludes)));
+		}
 		for (Rule rule : ruleSet.getRules()) {
 			RuleReference ruleReference = new RuleReference(rule, ruleSetReference);
 			rules.add(ruleReference);
