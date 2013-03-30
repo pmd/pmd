@@ -145,4 +145,17 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#938 False positive on LooseCoupling for overriding methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.LinkedHashMap;
+
+public class Test {
+    @Override
+    public LinkedHashMap findGetters() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>
