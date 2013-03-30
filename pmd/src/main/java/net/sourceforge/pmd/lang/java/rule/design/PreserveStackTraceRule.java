@@ -74,10 +74,12 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 	                    if ((child instanceof ASTName) && !target.equals(child.getImage()) && !child.hasImageEqualTo(target + FILL_IN_STACKTRACE)) {
 	                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getVariableDeclarations();
 		                    for (VariableNameDeclaration decl: vars.keySet()) {
-		                        args = decl.getNode().jjtGetParent()
-		                                .getFirstDescendantOfType(ASTArgumentList.class);
-		                        if (args != null) {
-		                            ck(data, target, throwStatement, args);
+		                        if (decl.getImage().equals(child.getImage())) {
+    		                        args = decl.getNode().jjtGetParent()
+    		                                .getFirstDescendantOfType(ASTArgumentList.class);
+    		                        if (args != null) {
+    		                            ck(data, target, throwStatement, args);
+    		                        }
 		                        }
 		                    }
 	                    } else if (child instanceof ASTClassOrInterfaceType){

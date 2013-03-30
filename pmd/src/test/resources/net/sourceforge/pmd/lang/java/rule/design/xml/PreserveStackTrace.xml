@@ -427,4 +427,26 @@ class MultiCatch {
         <source-type>java 1.7</source-type>
     </test-code>
 
+    <test-code>
+        <description>#943 PreserveStackTrace false positive if a StringBuffer exists</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Stuff {
+    @SuppressWarnings("unused")
+    public void doStuff() throws SomeException {
+        try {
+            doMoreStuff();
+        } catch (Exception e) {
+            StringBuffer irrelevantSB = new StringBuffer("Irrelevant").append(" string").append(" buffer");
+            SomeException someException = new SomeException(e);
+            throw someException;
+        }
+    }
+
+    private void doMoreStuff() {
+        // Stuff happens
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
