@@ -8,6 +8,8 @@
 This ruleset contains links to rules that are new in PMD v5.1.0
   </description>
 
+    <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardLogStatement"/>
+    <rule ref="rulesets/java/logging-java.xml/GuardLogStatementJavaUtil"/>
     <rule ref="rulesets/java/comments.xml/CommentRequired"/>
 
 </ruleset>
