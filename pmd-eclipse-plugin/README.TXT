@@ -14,8 +14,10 @@ and the pde and launcher versions:
 
 ----- local.properties example -----------------
 eclipse.home=/usr/java/eclipse
-eclipse.pde.version=3.4.0.v20080604
-eclipse.launcher.version=1.0.100.v20080509-1800
+# find $eclipse.home -name "*pde*" -type d
+eclipse.pde.version=3.8.2.v20121114-140810
+# find $eclipse.home -name "*equinox.launcher*" -type f
+eclipse.launcher.version=1.3.0.v20120522-1813
 ------ end -------------------------------------
 
 
