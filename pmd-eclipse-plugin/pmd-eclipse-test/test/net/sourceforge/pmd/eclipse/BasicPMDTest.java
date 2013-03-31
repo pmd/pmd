@@ -1,31 +1,29 @@
 /*
  * Created on 6 f�vr. 2005
- *
- * Copyright (c) 2004, PMD for Eclipse Development Team
- * All rights reserved.
- *
+ * 
+ * Copyright (c) 2004, PMD for Eclipse Development Team All rights reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * The end-user documentation included with the redistribution, if
- *       any, must include the following acknowledgement:
- *       "This product includes software developed in part by support from
- *        the Defense Advanced Research Project Agency (DARPA)"
- *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
- *       contributors may be used to endorse or promote products derived from
- *       this software without specific prior written permission.
- *
+ * 
+ * * Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer. * Redistributions
+ * in binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other
+ * materials provided with the distribution. * The end-user documentation
+ * included with the redistribution, if any, must include the following
+ * acknowledgement: "This product includes software developed in part by
+ * support from the Defense Advanced Research Project Agency (DARPA)" *
+ * Neither the name of "PMD for Eclipse Development Team" nor the names of
+ * its contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
- * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
@@ -35,11 +33,11 @@
  */
 package net.sourceforge.pmd.eclipse;
 
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
 import java.util.Iterator;
 
-import junit.framework.TestCase;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
@@ -49,146 +47,167 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.eclipse.runtime.cmd.PMDEngine;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.datasource.DataSource;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test if PMD can be run correctly
- *
+ * 
  * @author Philippe Herlin
- *
+ * 
  */
-public class BasicPMDTest extends TestCase {
+public class BasicPMDTest {
 
-    /**
-     * Test case constructor
-     *
-     * @param name of the test case
-     */
-    public BasicPMDTest(String name) {
-        super(name);
+  static class StringDataSource implements DataSource {
+    private final StringBufferInputStream is;
+
+    public StringDataSource(final String source) {
+      this.is = new StringBufferInputStream(source);
     }
 
-    /**
-     * One first thing the plugin must be able to do is to run PMD
-     *
-     */
-    public void testRunPmdJdk13() {
-
-        try {
-            PMDEngine pmd = new PMDEngine();
-            pmd.setLanguageVersion(LanguageVersion.JAVA_13);
-
-            String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
-            Reader input = new StringReader(sourceCode);
-
-            RuleContext context = new RuleContext();
-            context.setSourceCodeFilename("foo.java");
-            context.setReport(new Report());
-
-            RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/basic.xml");
-            pmd.processFile(input, basicRuleSet, context);
-
-            Iterator<RuleViolation> iter = context.getReport().iterator();
-            assertTrue("There should be at least one violation", iter.hasNext());
-
-            RuleViolation violation = iter.next();
-            assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
-            assertEquals(3, violation.getBeginLine());
-
-        } catch (RuleSetNotFoundException e) {
-            e.printStackTrace();
-            fail();
-        } catch (PMDException e) {
-            e.printStackTrace();
-            fail();
-        }
+    @Override
+    public InputStream getInputStream() throws IOException {
+      return is;
     }
 
-    /**
-     * Let see with Java 1.4
-     *
-     */
-    public void testRunPmdJdk14() {
-
-        try {
-            PMDEngine pmd = new PMDEngine();
-            pmd.setLanguageVersion(LanguageVersion.JAVA_14);
-
-            String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
-            Reader input = new StringReader(sourceCode);
-
-            RuleContext context = new RuleContext();
-            context.setSourceCodeFilename("foo.java");
-            context.setReport(new Report());
-
-            RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/basic.xml");
-            pmd.processFile(input, basicRuleSet, context);
-
-            Iterator<RuleViolation> iter = context.getReport().iterator();
-            assertTrue("There should be at least one violation", iter.hasNext());
-
-            RuleViolation violation = iter.next();
-            assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
-            assertEquals(3, violation.getBeginLine());
-
-        } catch (RuleSetNotFoundException e) {
-            e.printStackTrace();
-            fail();
-        } catch (PMDException e) {
-            e.printStackTrace();
-            fail();
-        }
+    @Override
+    public String getNiceFileName(final boolean shortNames, final String inputFileName) {
+      return "somefile.txt";
     }
+  }
 
-    /**
-     * Let see with Java 1.5
-     *
-     */
-    public void testRunPmdJdk15() {
-
-        try {
-            PMDEngine pmd = new PMDEngine();
-            pmd.setLanguageVersion(LanguageVersion.JAVA_15);
-
-            String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
-            Reader input = new StringReader(sourceCode);
-
-            RuleContext context = new RuleContext();
-            context.setSourceCodeFilename("foo.java");
-            context.setReport(new Report());
-
-            RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/basic.xml");
-            pmd.processFile(input, basicRuleSet, context);
-
-            Iterator<RuleViolation> iter = context.getReport().iterator();
-            assertTrue("There should be at least one violation", iter.hasNext());
-
-            RuleViolation violation = iter.next();
-            assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
-            assertEquals(3, violation.getBeginLine());
-
-        } catch (RuleSetNotFoundException e) {
-            e.printStackTrace();
-            fail();
-        } catch (PMDException e) {
-            e.printStackTrace();
-            fail();
-        }
+  /**
+   * Try to load all the plugin known rulesets
+   * 
+   */
+  @Test
+  public void testDefaulltRuleSets() {
+    try {
+      final RuleSetFactory factory = new RuleSetFactory();
+      final Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
+      while (iterator.hasNext()) {
+        iterator.next();
+      }
     }
-
-    /**
-     * Try to load all the plugin known rulesets
-     *
-     */
-    public void testDefaulltRuleSets() {
-        try {
-            RuleSetFactory factory = new RuleSetFactory();
-            Iterator<RuleSet> iterator = factory.getRegisteredRuleSets();
-            while (iterator.hasNext()) {
-                iterator.next();
-            }
-        } catch (RuleSetNotFoundException e) {
-            e.printStackTrace();
-            fail("unable to load registered rulesets ");
-        }
+    catch (final RuleSetNotFoundException e) {
+      e.printStackTrace();
+      Assert.fail("unable to load registered rulesets ");
     }
+  }
+
+  /**
+   * One first thing the plugin must be able to do is to run PMD
+   * 
+   */
+  @Test
+  public void testRunPmdJdk13() {
+
+    try {
+      final PMDEngine pmd = new PMDEngine();
+      pmd.setLanguageVersion(LanguageVersion.JAVA_13);
+
+      final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
+
+      final RuleContext context = new RuleContext();
+      context.setSourceCodeFilename("foo.java");
+      context.setReport(new Report());
+
+      final RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/java/basic.xml");
+      pmd.process(new StringDataSource(sourceCode), basicRuleSet, context);
+
+      final Iterator<RuleViolation> iter = context.getReport().iterator();
+      Assert.assertTrue("There should be at least one violation", iter.hasNext());
+
+      final RuleViolation violation = iter.next();
+      Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
+      Assert.assertEquals(3, violation.getBeginLine());
+
+    }
+    catch (final RuleSetNotFoundException e) {
+      e.printStackTrace();
+      Assert.fail();
+    }
+    catch (final PMDException e) {
+      e.printStackTrace();
+      Assert.fail();
+    }
+  }
+
+  /**
+   * Let see with Java 1.4
+   * 
+   */
+  @Test
+  public void testRunPmdJdk14() {
+
+    try {
+      final PMDEngine pmd = new PMDEngine();
+      pmd.setLanguageVersion(LanguageVersion.JAVA_14);
+
+      final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
+
+      final RuleContext context = new RuleContext();
+      context.setSourceCodeFilename("foo.java");
+      context.setReport(new Report());
+
+      final RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/java/basic.xml");
+      pmd.process(new StringDataSource(sourceCode), basicRuleSet, context);
+
+      final Iterator<RuleViolation> iter = context.getReport().iterator();
+      Assert.assertTrue("There should be at least one violation", iter.hasNext());
+
+      final RuleViolation violation = iter.next();
+      Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
+      Assert.assertEquals(3, violation.getBeginLine());
+
+    }
+    catch (final RuleSetNotFoundException e) {
+      e.printStackTrace();
+      Assert.fail();
+    }
+    catch (final PMDException e) {
+      e.printStackTrace();
+      Assert.fail();
+    }
+  }
+
+  /**
+   * Let see with Java 1.5
+   * 
+   */
+  @Test
+  public void testRunPmdJdk15() {
+
+    try {
+      final PMDEngine pmd = new PMDEngine();
+      pmd.setLanguageVersion(LanguageVersion.JAVA_15);
+
+      final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
+
+      final RuleContext context = new RuleContext();
+      context.setSourceCodeFilename("foo.java");
+      context.setReport(new Report());
+
+      final RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/java/basic.xml");
+      pmd.process(new StringDataSource(sourceCode), basicRuleSet, context);
+
+      final Iterator<RuleViolation> iter = context.getReport().iterator();
+      Assert.assertTrue("There should be at least one violation", iter.hasNext());
+
+      final RuleViolation violation = iter.next();
+      Assert.assertEquals(violation.getRule().getName(), "UnnecessaryReturn");
+      Assert.assertEquals(3, violation.getBeginLine());
+
+    }
+    catch (final RuleSetNotFoundException e) {
+      e.printStackTrace();
+      Assert.fail();
+    }
+    catch (final PMDException e) {
+      e.printStackTrace();
+      Assert.fail();
+    }
+  }
 }
