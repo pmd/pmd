@@ -33,19 +33,21 @@
  */
 package net.sourceforge.pmd.eclipse;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringBufferInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.eclipse.runtime.cmd.PMDEngine;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -61,15 +63,19 @@ import org.junit.Test;
 public class BasicPMDTest {
 
   static class StringDataSource implements DataSource {
-    private final StringBufferInputStream is;
+    private final ByteArrayInputStream is;
 
     public StringDataSource(final String source) {
-      this.is = new StringBufferInputStream(source);
+        try {
+            this.is = new ByteArrayInputStream(source.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
-      return is;
+    public InputStream getInputStream() {
+        return is;
     }
 
     @Override
@@ -105,8 +111,8 @@ public class BasicPMDTest {
   public void testRunPmdJdk13() {
 
     try {
-      final PMDEngine pmd = new PMDEngine();
-      pmd.setLanguageVersion(LanguageVersion.JAVA_13);
+      PMDConfiguration configuration = new PMDConfiguration();
+      configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_13);
 
       final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
 
@@ -115,7 +121,9 @@ public class BasicPMDTest {
       context.setReport(new Report());
 
       final RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/java/basic.xml");
-      pmd.process(new StringDataSource(sourceCode), basicRuleSet, context);
+      RuleSets rSets = new RuleSets(basicRuleSet);
+      new SourceCodeProcessor(configuration).processSourceCode(
+              new StringDataSource(sourceCode).getInputStream(), rSets, context);
 
       final Iterator<RuleViolation> iter = context.getReport().iterator();
       Assert.assertTrue("There should be at least one violation", iter.hasNext());
@@ -143,8 +151,8 @@ public class BasicPMDTest {
   public void testRunPmdJdk14() {
 
     try {
-      final PMDEngine pmd = new PMDEngine();
-      pmd.setLanguageVersion(LanguageVersion.JAVA_14);
+      PMDConfiguration configuration = new PMDConfiguration();
+      configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_14);
 
       final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
 
@@ -153,7 +161,9 @@ public class BasicPMDTest {
       context.setReport(new Report());
 
       final RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/java/basic.xml");
-      pmd.process(new StringDataSource(sourceCode), basicRuleSet, context);
+      RuleSets rSets = new RuleSets(basicRuleSet);
+      new SourceCodeProcessor(configuration).processSourceCode(
+              new StringDataSource(sourceCode).getInputStream(), rSets, context);
 
       final Iterator<RuleViolation> iter = context.getReport().iterator();
       Assert.assertTrue("There should be at least one violation", iter.hasNext());
@@ -181,8 +191,8 @@ public class BasicPMDTest {
   public void testRunPmdJdk15() {
 
     try {
-      final PMDEngine pmd = new PMDEngine();
-      pmd.setLanguageVersion(LanguageVersion.JAVA_15);
+      PMDConfiguration configuration = new PMDConfiguration();
+      configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_15);
 
       final String sourceCode = "public class Foo {\n public void foo() {\nreturn;\n}}";
 
@@ -191,7 +201,9 @@ public class BasicPMDTest {
       context.setReport(new Report());
 
       final RuleSet basicRuleSet = new RuleSetFactory().createRuleSet("rulesets/java/basic.xml");
-      pmd.process(new StringDataSource(sourceCode), basicRuleSet, context);
+      RuleSets rSets = new RuleSets(basicRuleSet);
+      new SourceCodeProcessor(configuration).processSourceCode(
+              new StringDataSource(sourceCode).getInputStream(), rSets, context);
 
       final Iterator<RuleViolation> iter = context.getReport().iterator();
       Assert.assertTrue("There should be at least one violation", iter.hasNext());

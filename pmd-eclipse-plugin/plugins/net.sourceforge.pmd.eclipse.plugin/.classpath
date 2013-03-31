@@ -11,7 +11,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/saxon9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/js-cvs-12122009.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pmd-5.0.jar" sourcepath="C:/Users/Thomas/Projects/pmd/pmd/src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="lib/pmd-5.1.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlParserAPIs-2.6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="bin" sourcepath="bin"/>
