@@ -1,6 +1,6 @@
 Change log for the PMD Eclipse plugin
 
-v4.0.0 - xxx 2011?
+v4.0.0 - Nov 2012
 . New integrated AST View and XPath test area 
 . New rule creation wizard
 . New report preferences panel

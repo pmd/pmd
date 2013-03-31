@@ -45,6 +45,7 @@ import java.util.List;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Match;
@@ -245,7 +246,8 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
      */
     private CPD detectCutAndPaste(final List<File> files) {
         log.debug("Searching for project files");
-        final CPD cpd = new CPD(minTileSize, language);
+        
+        final CPD cpd = newCPD();
 
         subTask("Collecting files for CPD");
         final Iterator<File> fileIterator = files.iterator();
@@ -268,6 +270,15 @@ public class DetectCutAndPasteCmd extends AbstractProjectCommand {
 
         return cpd;
     }
+
+	private CPD newCPD() {
+		CPDConfiguration config = new CPDConfiguration(
+				minTileSize, 
+				language, 
+				System.getProperty("file.encoding")
+				);
+        return new CPD(config);
+	}
     
     /**
      * Renders a report using the matches of the CPD. Creates a report folder

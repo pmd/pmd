@@ -49,6 +49,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.MarkerUtil;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
@@ -99,6 +100,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private int 						ruleCount;
     private int 						fileCount;
     private long 						pmdDuration;
+    private boolean						clearExistingMarkersBeforeApplying;
     private String						onErrorIssue = null;
 
     private static final long serialVersionUID = 1L;
@@ -116,6 +118,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         setTerminated(false);
     }
 
+    public void clearExistingMarkersBeforeApplying(boolean flag) {
+    	clearExistingMarkersBeforeApplying = flag;
+    }
+    
     public Set<IFile> markedFiles() {
     	return markersByFile.keySet();
     }
@@ -523,7 +529,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 currentFile = file.getName();
 
                 Set<MarkerInfo2> markerInfoSet = markersByFile.get(file);
-  //              MarkerUtil.deleteAllMarkersIn(file);
+                
+                if (clearExistingMarkersBeforeApplying) {
+                	MarkerUtil.deleteAllMarkersIn(file);
+                }
+                
                 for (MarkerInfo2 markerInfo : markerInfoSet) { 
                 	markerInfo.addAsMarkerTo(file);
                     violationCount++;

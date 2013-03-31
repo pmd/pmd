@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin;singleton:=true
-Bundle-Version: 5.0.0.v20100826
+Bundle-Version: 4.0.0.qualifier
 Bundle-Activator: net.sourceforge.pmd.eclipse.plugin.PMDPlugin
 Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
  org.eclipse.core.resources,
@@ -15,8 +15,7 @@ Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
  org.eclipse.team.core,
  org.eclipse.search,
  org.eclipse.help,
- org.eclipse.help.ui,
- org.eclipse.help.appserver
+ org.eclipse.help.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: %plugin.provider
@@ -27,7 +26,7 @@ Bundle-ClassPath: lib/asm-3.2.jar,
  lib/log4j-1.2.15.jar,
  lib/saxon9.jar,
  lib/js-cvs-12122009.jar,
- lib/pmd-5.0.jar,
+ lib/pmd-5.1.0-SNAPSHOT.jar,
  lib/xercesImpl-2.6.2.jar,
  lib/xmlParserAPIs-2.6.2.jar,
  pmd-plugin.jar,

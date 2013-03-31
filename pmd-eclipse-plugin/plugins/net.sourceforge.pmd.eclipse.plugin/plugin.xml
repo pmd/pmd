@@ -590,7 +590,7 @@
       <decorator
             adaptable="true"
             class="net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator"
-            icon="icons/sample_decorator.gif"
+            icon="icons/warn.gif"
             id="net.sourceforge.pmd.eclipse.plugin.RuleLabelDecorator"
             label="Rule Violation Decorator"
             lightweight="true"
