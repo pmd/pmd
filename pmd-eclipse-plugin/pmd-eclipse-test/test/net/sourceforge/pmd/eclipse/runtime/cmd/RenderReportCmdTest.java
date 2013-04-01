@@ -109,7 +109,7 @@ public class RenderReportCmdTest {
 
     final RenderReportsCmd cmd = new RenderReportsCmd();
     cmd.setProject(this.testProject);
-    cmd.registerRenderer(new HTMLRenderer(new Properties()), PMDRuntimeConstants.HTML_REPORT_NAME);
+    cmd.registerRenderer(new HTMLRenderer(), PMDRuntimeConstants.HTML_REPORT_NAME);
     cmd.performExecute();
     cmd.join();
 
@@ -140,7 +140,7 @@ public class RenderReportCmdTest {
     try {
       final RenderReportsCmd cmd = new RenderReportsCmd();
       cmd.setProject(null);
-      cmd.registerRenderer(new HTMLRenderer(new Properties()), PMDRuntimeConstants.HTML_REPORT_NAME);
+      cmd.registerRenderer(new HTMLRenderer(), PMDRuntimeConstants.HTML_REPORT_NAME);
       cmd.performExecute();
       Assert.fail();
     }
@@ -178,7 +178,7 @@ public class RenderReportCmdTest {
     try {
       final RenderReportsCmd cmd = new RenderReportsCmd();
       cmd.setProject(this.testProject);
-      cmd.registerRenderer(new HTMLRenderer(new Properties()), null);
+      cmd.registerRenderer(new HTMLRenderer(), null);
       cmd.performExecute();
       Assert.fail();
     }
@@ -216,7 +216,7 @@ public class RenderReportCmdTest {
     try {
       final RenderReportsCmd cmd = new RenderReportsCmd();
       cmd.setProject(null);
-      cmd.registerRenderer(new HTMLRenderer(new Properties()), null);
+      cmd.registerRenderer(new HTMLRenderer(), null);
       cmd.performExecute();
       Assert.fail();
     }

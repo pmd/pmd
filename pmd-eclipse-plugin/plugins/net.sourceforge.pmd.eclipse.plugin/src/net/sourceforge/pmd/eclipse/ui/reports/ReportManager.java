@@ -12,7 +12,6 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
-import net.sourceforge.pmd.util.IOUtil;
 
 /**
  *
@@ -124,7 +123,13 @@ public class ReportManager {
 		} catch (Exception e) {
 			return false;
 		} finally{
-			IOUtil.closeQuietly(fis);
+		    try {
+		        if (fis != null) {
+		            fis.close();
+		        }
+		    } catch (Exception e) {
+		        // ignored
+		    }
 		}
 
     	for (Renderer renderer : ReportManager.instance.allRenderers()) {
@@ -171,7 +176,13 @@ public class ReportManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			IOUtil.closeQuietly(fos);
+		    try {
+		        if (fos != null) {
+		            fos.close();
+		        }
+		    } catch (Exception e) {
+		        // ignored;
+		    }
 		}
     }
     
