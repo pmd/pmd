@@ -17,7 +17,7 @@ Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
  org.eclipse.help,
  org.eclipse.help.ui
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %plugin.provider
 Bundle-ClassPath: lib/asm-3.2.jar,
  lib/castor-1.1.2.1-xml.jar,

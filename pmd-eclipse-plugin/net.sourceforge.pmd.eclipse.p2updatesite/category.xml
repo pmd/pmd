@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+    <feature url="features/net.sourceforge.pmd.eclipse_4.0.0.qualifier.jar" id="net.sourceforge.pmd.eclipse" version="4.0.0.qualifier">
+        <category name="pmd"/>
+    </feature>
+
+    <category-def name="pmd" label="PMD"/>
+</site>
