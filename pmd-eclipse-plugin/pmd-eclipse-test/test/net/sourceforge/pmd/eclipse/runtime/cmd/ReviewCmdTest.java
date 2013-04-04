@@ -47,6 +47,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -55,6 +56,7 @@ import org.junit.Test;
  * @author Philippe Herlin
  * 
  */
+@Ignore("doesn't work - workspace is closed")
 public class ReviewCmdTest {
   private IProject testProject;
 

@@ -9,7 +9,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>pmd-eclipse-test-fragment</artifactId>
+  <artifactId>net.sourceforge.pmd.eclipse.test.fragment</artifactId>
   <packaging>eclipse-plugin</packaging>
 
 </project>

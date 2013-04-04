@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PMD eclipse test fragment
+Bundle-SymbolicName: net.sourceforge.pmd.eclipse.test.fragment
+Bundle-Version: 4.0.0.qualifier
+Fragment-Host: net.sourceforge.pmd.eclipse.plugin.test
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
