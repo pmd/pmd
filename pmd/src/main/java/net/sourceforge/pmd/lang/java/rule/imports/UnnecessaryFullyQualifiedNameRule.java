@@ -7,6 +7,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
@@ -42,7 +43,8 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTName node, Object data) {
-	if (!(node.jjtGetParent() instanceof ASTImportDeclaration)) {
+	if (!(node.jjtGetParent() instanceof ASTImportDeclaration)
+	        && !(node.jjtGetParent() instanceof ASTPackageDeclaration)) {
 	    checkImports(node, data, true);
 	}
 	return data;
