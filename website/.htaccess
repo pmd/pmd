@@ -6,7 +6,7 @@ RewriteEngine On
 # rewrite any request to a unknown file to pmd-X.Y.Z
 # (or whatever subfolder the first rule will set to the environment variable PMD)
 # but redirect only if the file exists there
-RewriteRule .* - [E=PMD:pmd-5.0.2]
+RewriteRule .* - [E=PMD:pmd-5.0.3]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond /home/project-web/pmd/htdocs/%{ENV:PMD}%{REQUEST_URI} -f
 RewriteRule .* /%{ENV:PMD}%{REQUEST_URI} [L,R]
