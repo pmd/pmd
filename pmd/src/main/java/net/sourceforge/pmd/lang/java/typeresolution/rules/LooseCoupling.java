@@ -37,11 +37,10 @@ public class LooseCoupling extends AbstractJavaRule {
 
     private boolean methodHasOverride(Node node) {
         ASTClassOrInterfaceBodyDeclaration method = node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        if (method.jjtGetNumChildren() > 0 && method.jjtGetChild(0) instanceof ASTAnnotation) {
+        if (method != null && method.jjtGetNumChildren() > 0 && method.jjtGetChild(0) instanceof ASTAnnotation) {
             ASTMarkerAnnotation marker = method.getFirstDescendantOfType(ASTMarkerAnnotation.class);
             if (marker != null && marker.getFirstChildOfType(ASTName.class) != null) {
                 ASTName name = marker.getFirstChildOfType(ASTName.class);
-                System.out.println(name.getType());
                 if (name.getType() == Override.class) {
                     return true;
                 }
