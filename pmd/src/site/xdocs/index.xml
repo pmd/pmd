@@ -21,6 +21,13 @@
       <h3>Recent releases</h3>
       <p><ul>
         <li>
+          <p>2013-04-05 PMD 5.0.3: minor version with lots of bug fixes (<a href="https://sourceforge.net/projects/pmd/files/pmd/5.0.3/">Changelog</a>)
+          <ul>
+            <li>Fixed bugs: <a href="https://sourceforge.net/p/pmd/bugs/milestone/PMD-5.0.3/">https://sourceforge.net/p/pmd/bugs/milestone/PMD-5.0.3/</a></li>
+          </ul>
+          </p>
+        </li>
+        <li>
           <p>2013-02-03 PMD 5.0.2: minor version with lots of bug fixes (<a href="https://sourceforge.net/projects/pmd/files/pmd/5.0.2/">Changelog</a>)
           <ul>
             <li>Fixed bugs: <a href="https://sourceforge.net/p/pmd/bugs/milestone/PMD-5.0.2/">https://sourceforge.net/p/pmd/bugs/milestone/PMD-5.0.2/</a></li>

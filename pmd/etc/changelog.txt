@@ -1,4 +1,4 @@
-????? ??, 2013 - 5.0.3:
+April 5, 2013 - 5.0.3:
 
 Fixed bug  938: False positive on LooseCoupling for overriding methods
 Fixed bug  940: False positive on UnsynchronizedStaticDateFormatter
