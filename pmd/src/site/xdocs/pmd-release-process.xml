@@ -39,15 +39,16 @@ $ git status
 </ul>
 
 <source>
-$ mvn verify post-site    #(order of targets DOES matter)
+$ mvn clean verify post-site    #(order of targets DOES matter)
 </source>
 
 <p>Unzip and test manually (just to be on the safe side of the road):</p>
 
 <source>
-./bin/run.sh pmd -d /tmp/Test -language java -f xml -R rulesets/java/unusedcode.xml
-./bin/run.sh pmd -d /tmp/Test -language java -f xml -R java-unusedcode
-./bin/run.sh pmd -d /tmp/java -language java -f html -R rulesets/java/unusedcode.xml
+cd target; unzip pmd-bin-&lt;version&gt.zip; cd pmd-bin-&lt;verion&gt;
+./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R java-unusedcode
+./bin/run.sh pmd -d ../../src/main/java -language java -f html -R rulesets/java/unusedcode.xml
 </source>
 
 <p>Check in all (version) changes to branch master:</p>
@@ -136,18 +137,14 @@ you need to release PMD via Sonatype Nexus:</p>
 <li>Once you are sure they are working, click "Release" and the artifacts are
 eventually available through maven central.</li>
 </ul>
+</subsection>
 
-
-<p>Publish the release on sourceforge:</p>
-<ul>
-<li>Go to Files, to folder "pmd", create a new subfolder for the new version</li>
-<li>Add the pmd-&lt;version&gt;-bin.zip file</li>
-<li>Add the pmd-&lt;version&gt;-src.zip file</li>
-<li>Add the file etc/changelog.txt as ReadMe.txt file</li>
-</ul>
-
+<subsection name="Publish the release on sourceforge">
+<p>Build it again - you can reuse the cleanly checked out local repository from maven-release-plugin.</p>
+<p>In order to be able to upload the artifacts and the site to sourceforge,
+you need to have a interactive shell opened before.</p>
 <p>
-Upload command below will create and upload the maven artifacts to sourceforge.
+Upload command below will create and upload the maven artifacts to sourceforge and also the maven site.
 Login info for 'pmd-repo' and 'pmd-site' must be defined in ~/.m2/settings.xml
 (see the file available in
 <a href="https://github.com/pmd/pmd/blob/master/maven-plugin-pmd-build/config/m2.settings.xml">maven-plugin-pmd-build/config/m2.settings.xml</a>):</p>
@@ -155,24 +152,18 @@ Login info for 'pmd-repo' and 'pmd-site' must be defined in ~/.m2/settings.xml
 <source>
 $ ssh your_sf_login,pmd@shell.sourceforge.net create
 ...
-$ mvn deploy -Psf-release
-</source>
-
-<p>(In order to be able to upload the artifacts and the site to sourceforge,
-you need to have a interactive shell opened before)</p>
-</subsection>
-
-<subsection name="Site Upload">
-<p>Upload the site:</p>
-<source>
-$ mvn site-deploy -Psf-release
-</source>
-
-<p>Shutdown the sourceforge shell:</p>
-
-<source>
+$ cd target/checkout/pmd
+$ mvn clean deploy site-deploy -Psf-release
+...
 $ ssh your_sf_login@shell.sourceforge.net "shutdown"
 </source>
+
+<ul>
+<li>Go to <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a>, to folder "pmd", create a new subfolder for the new version</li>
+<li>Add the target/pmd-&lt;version&gt;-bin.zip file</li>
+<li>Add the target/pmd-&lt;version&gt;-src.zip file</li>
+<li>Add the file etc/changelog.txt as ReadMe.txt file</li>
+</ul>
 </subsection>
 
 <subsection name="Social side of release">
