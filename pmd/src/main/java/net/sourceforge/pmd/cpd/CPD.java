@@ -15,6 +15,8 @@ import java.util.TreeMap;
 
 import net.sourceforge.pmd.util.FileFinder;
 
+import org.apache.commons.io.FilenameUtils;
+
 public class CPD {
 
 	private CPDConfiguration configuration;
@@ -84,7 +86,7 @@ public class CPD {
             current.add(signature);
         }
 
-        if (!file.getCanonicalPath().equals(file.getAbsolutePath())) {
+        if (!FilenameUtils.equalsNormalizedOnSystem(file.getAbsoluteFile().getCanonicalPath(), file.getAbsolutePath())) {
             System.err.println("Skipping " + file + " since it appears to be a symlink");
             return;
         }

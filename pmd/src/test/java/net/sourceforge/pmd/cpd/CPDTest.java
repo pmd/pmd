@@ -15,7 +15,6 @@ import org.junit.Test;
 public class CPDTest {
 
     private static final String BASE_TEST_RESOURCE_PATH = "src/test/resources/net/sourceforge/pmd/cpd/files/";
-    
     private CPD cpd;
 
     @Before
@@ -31,9 +30,11 @@ public class CPDTest {
      */
     @Test
     public void testFileSectionWithBrokenSymlinks() throws Exception {
-        cpd.setCpdListener(new NoFileAssertListener(0));
+        NoFileAssertListener listener = new NoFileAssertListener(0);
+        cpd.setCpdListener(listener);
 
         cpd.add(new File(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test"));
+        listener.verify();
     }
 
     /**
@@ -42,30 +43,49 @@ public class CPDTest {
      */
     @Test
     public void testFileAddedAsSymlinkAndReal() throws Exception {
-        cpd.setCpdListener(new NoFileAssertListener(1));
+        NoFileAssertListener listener = new NoFileAssertListener(1);
+        cpd.setCpdListener(listener);
 
         cpd.add(new File(BASE_TEST_RESOURCE_PATH, "real-file.txt"));
         cpd.add(new File(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt"));
+        listener.verify();
+    }
+
+    /**
+     * Add a file with a relative path - should still be added and not be detected as a sym link.
+     * @throws Exception any error
+     */
+    @Test
+    public void testFileAddedWithRelativePath() throws Exception {
+        NoFileAssertListener listener = new NoFileAssertListener(1);
+        cpd.setCpdListener(listener);
+
+        cpd.add(new File("./" + BASE_TEST_RESOURCE_PATH, "real-file.txt"));
+        listener.verify();
     }
 
     /**
      * Simple listener that fails, if to many files were added and not skipped.
      */
     private static class NoFileAssertListener implements CPDListener {
-        private int maximumFilesAllowed;
+        private int expectedFilesCount;
         private int files;
-        public NoFileAssertListener(int maximumFilesAllowed) {
-            this.maximumFilesAllowed = maximumFilesAllowed;
+        public NoFileAssertListener(int expectedFilesCount) {
+            this.expectedFilesCount = expectedFilesCount;
             this.files = 0;
         }
         public void addedFile(int fileCount, File file) {
             files++;
-            if (files > maximumFilesAllowed) {
+            if (files > expectedFilesCount) {
                 Assert.fail("File was added! - " + file);
             }
         }
         public void phaseUpdate(int phase) {
             // not needed for this test
+        }
+        public void verify() {
+            Assert.assertEquals("Expected " + expectedFilesCount + " files, but " + files + " have been added.",
+                    expectedFilesCount, files);
         }
     }
 }
