@@ -1,6 +1,7 @@
 ????? ??, 2013 - 5.0.4:
 
 Fixed bug 1081: Regression: CPD skipping all files when using relative paths
+Fixed bug 1082: CPD performance issue on larger projects
 
 
 April 5, 2013 - 5.0.3:
