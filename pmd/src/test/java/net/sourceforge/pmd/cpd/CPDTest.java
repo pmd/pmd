@@ -5,6 +5,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,14 +15,43 @@ import org.junit.Test;
  */
 public class CPDTest {
 
-    private static final String BASE_TEST_RESOURCE_PATH = "src/test/resources/net/sourceforge/pmd/cpd/files/";
+    private static final String BASE_TEST_RESOURCE_PATH = "target/test-classes/net/sourceforge/pmd/cpd/files/";
     private CPD cpd;
 
+    private boolean canTestSymLinks = false;
+
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         CPDConfiguration theConfiguration = new CPDConfiguration(new String[] {"--language", "java",
                 "--minimum-tokens", "10"});
         cpd = new CPD(theConfiguration);
+
+        // Symlinks are not well supported under Windows - so the tests are simply not executed here.
+        canTestSymLinks = SystemUtils.IS_OS_UNIX;
+        prepareSymLinks();
+
+        if (!canTestSymLinks) {
+            System.err.println("*** Skipping unit tests with symlinks.");
+        }
+    }
+
+    /**
+     * As java doesn't support symlinks in zip files, maven does not, too.
+     * So, we are creating the symlinks manually here before the test.
+     * @throws Exception any error
+     */
+    private void prepareSymLinks() throws Exception {
+        if (canTestSymLinks) {
+            Runtime runtime = Runtime.getRuntime();
+            if (!new File(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt").exists()) {
+                runtime.exec(new String[] {"ln", "-s", "real-file.txt",
+                        BASE_TEST_RESOURCE_PATH + "symlink-for-real-file.txt"}).waitFor();
+            }
+            if (!new File(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test").exists()) {
+                runtime.exec(new String[] {"ln", "-s", "broken-sym-link",
+                        BASE_TEST_RESOURCE_PATH + "this-is-a-broken-sym-link-for-test"}).waitFor();
+            }
+        }
     }
 
     /**
@@ -30,11 +60,13 @@ public class CPDTest {
      */
     @Test
     public void testFileSectionWithBrokenSymlinks() throws Exception {
-        NoFileAssertListener listener = new NoFileAssertListener(0);
-        cpd.setCpdListener(listener);
+        if (canTestSymLinks) {
+            NoFileAssertListener listener = new NoFileAssertListener(0);
+            cpd.setCpdListener(listener);
 
-        cpd.add(new File(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test"));
-        listener.verify();
+            cpd.add(new File(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test"));
+            listener.verify();
+        }
     }
 
     /**
@@ -43,12 +75,14 @@ public class CPDTest {
      */
     @Test
     public void testFileAddedAsSymlinkAndReal() throws Exception {
-        NoFileAssertListener listener = new NoFileAssertListener(1);
-        cpd.setCpdListener(listener);
+        if (canTestSymLinks) {
+            NoFileAssertListener listener = new NoFileAssertListener(1);
+            cpd.setCpdListener(listener);
 
-        cpd.add(new File(BASE_TEST_RESOURCE_PATH, "real-file.txt"));
-        cpd.add(new File(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt"));
-        listener.verify();
+            cpd.add(new File(BASE_TEST_RESOURCE_PATH, "real-file.txt"));
+            cpd.add(new File(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt"));
+            listener.verify();
+        }
     }
 
     /**
