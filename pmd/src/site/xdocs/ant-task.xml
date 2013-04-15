@@ -99,7 +99,7 @@
 
      <p><code>auxclasspath</code> nested element - extra classpath used for Type Resolution rules.</p>
 
-     <p><code>language</code> nested element - specify which language (Java, Ecmascript, XML,...) and the associated version (1.5, 1.6,...)</p>
+     <p><code>sourceLanguage</code> nested element - specify which language (Java, Ecmascript, XML,...) and the associated version (1.5, 1.6,...)</p>
 
      <p><code>ruleset</code> nested element - another way to specify rulesets.  Here's an example:</p>
           <source>
@@ -107,7 +107,7 @@
 <target name="pmd">
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
  <pmd shortFilenames="true">
-  <language name="java" versio="1.6"/>
+  <sourceLanguage name="java" version="1.6"/>
   <ruleset>rulesets/java/design.xml</ruleset>
   <ruleset>java-basic</ruleset>
   <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
@@ -121,6 +121,30 @@
 
 
         </subsection>
+
+    <subsection name="Language selection">
+        <p>The language to be used for parsing is selected via the <code>sourceLanguage</code> nested element.
+        Possible values are:</p>
+
+        <source>
+<![CDATA[
+<sourceLanguage name="cpp" version=""/>
+<sourceLanguage name="fortran" version=""/>
+<sourceLanguage name="ecmascript" version="3"/>
+<sourceLanguage name="java" version="1.3"/>
+<sourceLanguage name="java" version="1.4"/>
+<sourceLanguage name="java" version="1.5"/>
+<sourceLanguage name="java" version="1.6"/>
+<sourceLanguage name="java" version="1.7"/>
+<sourceLanguage name="jsp" version=""/>
+<sourceLanguage name="php" version=""/>
+<sourceLanguage name="ruby" version=""/>
+<sourceLanguage name="xsl" version=""/>
+<sourceLanguage name="xml" version=""/>
+]]>
+        </source>
+
+    </subsection>
 
     <subsection name="Postprocessing the report file with XSLT">
         <p>Several folks (most recently, Wouter Zelle) have written XSLT scripts

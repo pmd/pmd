@@ -112,6 +112,12 @@ public class PMDTaskTest extends BuildFileTest {
     }
 
     @Test
+    public void testXML() {
+        executeTarget("testXML");
+        assertOutputContaining("Potentialy mistyped CDATA section with extra [ at beginning or ] at the end.");
+    }
+
+    @Test
     public void testClasspath() {
         executeTarget("testClasspath");
     }
