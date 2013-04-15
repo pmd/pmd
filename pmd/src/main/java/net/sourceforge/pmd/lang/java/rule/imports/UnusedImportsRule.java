@@ -50,6 +50,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
      * {@linkplain  package.class#member  label}
      * {@link  package.class#member  label}
      * {@value  package.class#field}
+     * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern.compile(
             "@see\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#]");
@@ -60,7 +61,10 @@ public class UnusedImportsRule extends AbstractJavaRule {
     private static final Pattern VALUE_PATTERN = Pattern.compile(
             "\\{@value\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#\\}]");
 
-    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN };
+    private static final Pattern THROWS_PATTERN = Pattern.compile(
+            "@throws\\s+(\\p{Alpha}\\p{Alnum}*)");
+
+    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
 
     private void visitComments(ASTCompilationUnit node) {
         if (imports.isEmpty()) {
