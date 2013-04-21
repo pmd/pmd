@@ -3,5 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: PMD eclipse test fragment
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin.test.fragment
 Bundle-Version: 4.0.0.qualifier
+Bundle-Vendor: PMD Development Team
 Fragment-Host: net.sourceforge.pmd.eclipse.plugin.test
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -12,4 +12,3 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt,
  org.eclipse.jdt.core,
  org.junit
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6

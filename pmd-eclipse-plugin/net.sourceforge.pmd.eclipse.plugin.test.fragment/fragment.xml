@@ -10,7 +10,7 @@
    match="greaterOrEqual">
 
    <runtime>
-      <library name="pmd_eclipse_test_fragment.jar">
+      <library name="target/net.sourceforge.pmd.eclipse.plugin.test.fragment-4.0.0-SNAPSHOT.jar">
          <export name="*"/>
       </library>
    </runtime>
