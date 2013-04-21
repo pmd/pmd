@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-    <feature url="features/net.sourceforge.pmd.eclipse_4.0.0.qualifier.jar" id="net.sourceforge.pmd.eclipse" version="4.0.0.qualifier">
-        <category name="pmd"/>
+   <description url="http://pmd.sourceforge.net/eclipse">
+       PMD for Eclipse Update Site
+   </description>
+
+    <feature url="features/net.sourceforge.pmd.eclipse_4.0.0.qualifier.jar"
+        id="net.sourceforge.pmd.eclipse"
+        version="4.0.0.qualifier">
+        <category name="pmdForEclipse4"/>
     </feature>
 
-    <category-def name="pmd" label="PMD"/>
+    <category-def name="pmdForEclipse4" label="PMD for Eclipse 4"/>
 </site>
