@@ -4,9 +4,9 @@
 
   <parent>
     <groupId>net.sourceforge.pmd</groupId>
-    <artifactId>pmd-eclipse-parent</artifactId>
+    <artifactId>net.sourceforge.pmd.eclipse.parent</artifactId>
     <version>4.0.0-SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>net.sourceforge.pmd.eclipse.plugin</artifactId>

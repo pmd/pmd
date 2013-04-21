@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <fragment
-   id="net.sourceforge.pmd.eclipse.test.fragment"
+   id="net.sourceforge.pmd.eclipse.plugin.test.fragment"
    name="PMD eclipse test fragment"
    version="4.0.0.qualifier"
 

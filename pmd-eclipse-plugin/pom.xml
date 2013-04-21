@@ -2,14 +2,14 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sourceforge.pmd</groupId>
-  <artifactId>pmd-eclipse-parent</artifactId>
+  <artifactId>net.sourceforge.pmd.eclipse.parent</artifactId>
   <version>4.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>features/net.sourceforge.pmd.eclipse</module>
-    <module>plugins/net.sourceforge.pmd.eclipse.plugin</module>
-    <module>pmd-eclipse-test</module>
-    <module>pmd-eclipse-test-fragment</module>
+    <module>net.sourceforge.pmd.eclipse</module>
+    <module>net.sourceforge.pmd.eclipse.plugin</module>
+    <module>net.sourceforge.pmd.eclipse.plugin.test</module>
+    <module>net.sourceforge.pmd.eclipse.plugin.test.fragment</module>
     <module>net.sourceforge.pmd.eclipse.p2updatesite</module>
   </modules>
 
