@@ -71,27 +71,35 @@
           <p><code>formatter</code> nested element - specifies the format of and the files to which the report is written.</p>
    <table>
        <tr><th>Name</th><th>Values</th></tr>
- <tr>
-     <td>format</td>
-     <td>xml,html,text,csv,papari,summaryhtml</td>
- </tr>
+       <tr>
+           <td>type</td>
+           <td>xml,ideaj,textcolor,text,textpad,emacs,csv,html,xslt,yahtml,summaryhtml,vbhtml</td>
+       </tr>
        <tr>
          <td>showSuppressed</td>
          <td>Whether to show suppressed warnings; "false" is the default.</td>
        </tr>
        <tr>
-           <td>filename</td>
+           <td>toFile</td>
            <td>A filename to which to write the report</td>
        </tr>
        <tr>
-           <td>linkPrefix</td>
-           <td>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html">this</a>).  See example below.</td>
+           <td>toConsole</td>
+           <td>Whether to output the report to the console; "false" is the default.</td>
        </tr>
        <tr>
-           <td>linePrefix</td>
-           <td>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html#102">this</a>).  See example below.</td>
+           <td colspan="2">
+               <p>The <code>formatter</code> element can contain nested <code>param</code> elements to configure the formatter in detail, e.g.</p>
+               <dl>
+                   <dt>linkPrefix</dt>
+                   <dd>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html">this</a>).  See example below.</dd>
+                   <dt>linePrefix</dt>
+                   <dd>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html#102">this</a>).  See example below.</dd>
+               </dl>
+           </td>
        </tr>
- </table>
+   </table>
+   
 
      <p><code>classpath</code> nested element - useful for specifying custom rule.  More details on the <code>classpath</code>
      element are in the Ant documentation <a href="http://ant.apache.org/manual/using.html#path">here</a> and there's
@@ -110,7 +118,9 @@
   <sourceLanguage name="java" version="1.6"/>
   <ruleset>rulesets/java/design.xml</ruleset>
   <ruleset>java-basic</ruleset>
-  <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+  <formatter type="html" toFile="pmd_report.html">
+    <param name="linkPrefix" value="http://pmd.sourceforge.net/xref/"/>
+  </formatter>
   <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
    <include name="java/lang/*.java"/>
   </fileset>
@@ -122,9 +132,9 @@
 
         </subsection>
 
-    <subsection name="Language selection">
-        <p>The language to be used for parsing is selected via the <code>sourceLanguage</code> nested element.
-        Possible values are:</p>
+    <subsection name="Language version selection">
+        <p>The specific version of a language to be used for parsing is selected via the <code>sourceLanguage</code>
+        nested element. Possible values are:</p>
 
         <source>
 <![CDATA[
@@ -281,7 +291,9 @@ Total time: 2 seconds
 <target name="pmd">
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
  <pmd rulesetfiles="java-basic" shortFilenames="true">
-  <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+  <formatter type="html" toFile="pmd_report.html">
+    <param name="linkPrefix" value="http://pmd.sourceforge.net/xref/"/>
+  </formatter>
   <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
    <include name="java/lang/*.java"/>
   </fileset>
@@ -296,7 +308,9 @@ Total time: 2 seconds
 <target name="pmd">
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
  <pmd rulesetfiles="java-basic" shortFilenames="true">
-  <formatter type="html" toFile="pmd_report.html" linePrefix=".line"/>
+  <formatter type="html" toFile="pmd_report.html">
+    <param name="linePrefix" value=".line"/>
+  </formatter>
   <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
    <include name="java/lang/*.java"/>
   </fileset>
