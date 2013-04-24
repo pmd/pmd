@@ -246,9 +246,9 @@ public class B {
 
 	<test-code>
         <description><![CDATA[
-15, IllegalStateException does not have any constructor which takes original exception.
+15, IllegalStateException can take a cause exception in the constructor, too.
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -443,6 +443,44 @@ public class Stuff {
 
     private void doMoreStuff() {
         // Stuff happens
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1087 PreserveStackTrace (still) ignores initCause()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void foo() {
+        try {
+            // do something
+        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            NoSuchElementException noSuchElementException = new NoSuchElementException(
+                    "Cannot return next element, because there is none!");
+            noSuchElementException.initCause(arrayIndexOutOfBoundsException);
+            throw noSuchElementException;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1087 PreserveStackTrace (still) ignores initCause() - negative test case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void foo() {
+        try {
+            // do something
+        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            NoSuchElementException noSuchElementException = new NoSuchElementException(
+                    "Cannot return next element, because there is none!");
+            noSuchElementException.initCause(new RuntimeException("some other unrelated exception"));
+            throw noSuchElementException;
+        }
     }
 }
         ]]></code>
