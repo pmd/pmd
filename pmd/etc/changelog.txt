@@ -21,6 +21,7 @@ Fixed bug 1080: net.sourceforge.pmd.cpd.CPDTest test failing
 Fixed bug 1081: Regression: CPD skipping all files when using relative paths
 Fixed bug 1082: CPD performance issue on larger projects
 Fixed bug 1086: Unsupported Element and Attribute in Ant Task Example
+Fixed bug 1087: PreserveStackTrace (still) ignores initCause()
 
 
 April 5, 2013 - 5.0.3:
