@@ -462,6 +462,12 @@ public class Test {
             noSuchElementException.initCause(arrayIndexOutOfBoundsException);
             throw noSuchElementException;
         }
+
+        try {
+            // do something
+        } catch (ArrayOutOfBoundsException e) {
+            throw (IllegalStateException)new IllegalStateException().initCause(e);
+        }
     }
 }
         ]]></code>
