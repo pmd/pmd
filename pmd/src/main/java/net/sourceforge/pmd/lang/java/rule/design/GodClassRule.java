@@ -13,7 +13,7 @@ import java.util.Set;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
@@ -77,12 +77,12 @@ public class GodClassRule extends AbstractJavaRule {
     
     
     /**
-     * Base entry point for the visitor - the class declaration.
+     * Base entry point for the visitor - the compilation unit (everything within one file).
      * The metrics are initialized. Then the other nodes are visited. Afterwards
      * the metrics are evaluated against fixed thresholds.
      */
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTCompilationUnit node, Object data) {
         wmcCounter = 0;
         atfdCounter = 0;
         methodAttributeAccess = new HashMap<String, Set<String>>();

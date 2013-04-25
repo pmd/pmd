@@ -125,4 +125,20 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1085 NullPointerException by at net.sourceforge.pmd.lang.java.rule.design.GodClassRule.visit(GodClassRule.java:313)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum Color {
+  BLUE,
+  RED;
+  
+  public int toHex() {
+    return 0;
+  }
+}
+        ]]>
+        </code>
+    </test-code>
 </test-data>
