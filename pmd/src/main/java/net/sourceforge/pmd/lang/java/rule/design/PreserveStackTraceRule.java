@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -57,9 +58,14 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
             }
             // Retrieve all argument for the throw exception (to see if the original exception is preserved)
             ASTArgumentList args = throwStatement.getFirstDescendantOfType(ASTArgumentList.class);
-
             if (args != null) {
-                ck(data, target, throwStatement, args);
+                Node parent = args.jjtGetParent().jjtGetParent();
+                if (parent instanceof ASTAllocationExpression) {
+                    // maybe it is used inside a anonymous class
+                    ck(data, target, throwStatement, parent);
+                } else {
+                    ck(data, target, throwStatement, args);
+                }
             }
             else {
                 Node child = throwStatement.jjtGetChild(0);
@@ -103,7 +109,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                 ASTPrimaryExpression primaryExpression = occurrence.getLocation().getFirstParentOfType(ASTPrimaryExpression.class);
                 if (primaryExpression != null) {
                     ASTArgumentList args2 = primaryExpression.getFirstDescendantOfType(ASTArgumentList.class);
-                    if (checkArgumentList(target, args2)) {
+                    if (checkForTargetUsage(target, args2)) {
                         initCauseCalled = true;
                         break;
                     }
@@ -155,12 +161,12 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
      * Checks whether the given target is in the argument list.
      * If this is the case, then the target (root exception) is used as the cause.
      * @param target
-     * @param args
+     * @param baseNode
      */
-	private boolean checkArgumentList(String target, ASTArgumentList args) {
+	private boolean checkForTargetUsage(String target, Node baseNode) {
 	    boolean match = false;
-	    if (target != null && args != null) {
-            List<ASTName> nameNodes = args.findDescendantsOfType(ASTName.class);
+	    if (target != null && baseNode != null) {
+            List<ASTName> nameNodes = baseNode.findDescendantsOfType(ASTName.class);
             for (ASTName nameNode : nameNodes) {
                 if (target.equals(nameNode.getImage())) {
                     match = true;
@@ -172,8 +178,8 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 	}
 
 	private void ck(Object data, String target, ASTThrowStatement throwStatement,
-                    ASTArgumentList args) {
-        if (!checkArgumentList(target, args)) {
+                    Node baseNode) {
+        if (!checkForTargetUsage(target, baseNode)) {
             RuleContext ctx = (RuleContext) data;
             addViolation(ctx, throwStatement);
         }

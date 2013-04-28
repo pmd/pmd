@@ -1,6 +1,7 @@
 ????? ??, 2013 - 5.0.4:
 
 Fixed bug  254: False+ : UnusedImport with Javadoc @throws
+Fixed bug  794: False positive on PreserveStackTrace with anonymous inner
 Fixed bug 1063: False+: ArrayIsStoredDirectly
 Fixed bug 1080: net.sourceforge.pmd.cpd.CPDTest test failing
 Fixed bug 1081: Regression: CPD skipping all files when using relative paths
