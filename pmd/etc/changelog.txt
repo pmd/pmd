@@ -14,7 +14,7 @@ New Java rule:
 	CommentRequired
 		- basic rule to check for existence for formal (javadoc) comments.
 
-????? ??, 2013 - 5.0.4:
+May 1, 2013 - 5.0.4:
 
 Fixed bug  254: False+ : UnusedImport with Javadoc @throws
 Fixed bug  794: False positive on PreserveStackTrace with anonymous inner
