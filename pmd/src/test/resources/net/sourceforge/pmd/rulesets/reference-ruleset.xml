@@ -16,11 +16,15 @@
   <rule ref="rulesets/java/imports.xml/DuplicateImports"/>
 
   <!-- We want to customize this rule a bit, change the message and raise the priority  -->
+  <!-- Note: This rule is deprecated in basic.xml and was moved to empty.xml -->
   <rule
    ref="rulesets/java/basic.xml/EmptyCatchBlock"
    message="Must handle exceptions">
     <priority>2</priority>
   </rule>
+
+  <!-- Customize the message for collapsible if statements -->
+  <rule ref="rulesets/java/basic.xml/CollapsibleIfStatements" message="Just combine them!"/>
 
   <!-- Now we'll customize a rule's property value -->
   <rule ref="rulesets/java/codesize.xml/CyclomaticComplexity">

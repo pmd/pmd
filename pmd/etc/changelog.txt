@@ -25,6 +25,7 @@ Fixed bug 1082: CPD performance issue on larger projects
 Fixed bug 1085: NullPointerException by at net.sourceforge.pmd.lang.java.rule.design.GodClassRule.visit(GodClassRule.java:313)
 Fixed bug 1086: Unsupported Element and Attribute in Ant Task Example
 Fixed bug 1087: PreserveStackTrace (still) ignores initCause()
+Fixed bug 1089: When changing priority in a custom ruleset, violations reported twice
 
 
 April 5, 2013 - 5.0.3:

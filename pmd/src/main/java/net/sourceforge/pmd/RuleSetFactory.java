@@ -301,7 +301,7 @@ public class RuleSetFactory {
 				RuleReference ruleReference = new RuleReference();
 				ruleReference.setRuleSetReference(ruleSetReference);
 				ruleReference.setRule(rule);
-				ruleSet.addRule(ruleReference);
+				ruleSet.addRuleIfNotExists(ruleReference);
 
 				// override the priority
 				if (priority != null) {
@@ -517,7 +517,7 @@ public class RuleSetFactory {
 
 		if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
 				|| referencedRule.getPriority().compareTo(minimumPriority) <= 0) {
-			ruleSet.addRule(ruleReference);
+			ruleSet.addRuleReplaceIfExists(ruleReference);
 		}
 	}
 

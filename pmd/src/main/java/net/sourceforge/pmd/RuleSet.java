@@ -73,7 +73,7 @@ public class RuleSet {
 	}
 
 	/**
-	 * Add a new rule to this ruleset
+	 * Add a new rule to this ruleset. Note that this method does not check for duplicates.
 	 *
 	 * @param rule the rule to be added
 	 */
@@ -82,6 +82,53 @@ public class RuleSet {
 			throw new IllegalArgumentException("Missing rule");
 		}
 		rules.add(rule);
+	}
+
+	/**
+	 * Adds a rule. If a rule with the same name and language already existed before in the ruleset,
+	 * then the new rule will replace it. This makes sure that the rule configured is overridden.
+	 * @param rule
+	 * @return <code>true</code> if the new rule replaced an existing one, otherwise <code>false</code>.
+	 */
+	public boolean addRuleReplaceIfExists(Rule rule) {
+        if (rule == null) {
+            throw new IllegalArgumentException("Missing rule");
+        }
+
+        boolean replaced = false;
+        for (Iterator<Rule> it = rules.iterator(); it.hasNext(); ) {
+            Rule r = it.next();
+            if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                it.remove();
+                replaced = true;
+            }
+        }
+        addRule(rule);
+        return replaced;
+	}
+
+	/**
+	 * Only adds a rule to the ruleset if no rule with the same name for the same language was added
+	 * before, so that the existent rule configuration won't be overridden.
+	 * @param rule
+	 * @return <code>true</code> if the rule was added, <code>false</code> otherwise
+	 */
+	public boolean addRuleIfNotExists(Rule rule) {
+        if (rule == null) {
+            throw new IllegalArgumentException("Missing rule");
+        }
+
+        boolean exists = false;
+        for (Rule r : rules) {
+            if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) {
+            addRule(rule);
+        }
+        return !exists;
 	}
 
 	/**
@@ -146,8 +193,7 @@ public class RuleSet {
 	 */
 	public Rule getRuleByName(String ruleName) {
 		
-		for (Iterator<Rule> i = rules.iterator(); i.hasNext();) {
-			Rule r = i.next();
+		for (Rule r : rules) {
 			if (r.getName().equals(ruleName)) {
 				return r;
 			}
