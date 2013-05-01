@@ -834,6 +834,7 @@ ASTDateTimeLiteral DateTimeLiteral() :
 	(
         <INTERVAL> 
 	|<TIMESTAMP> 
+	|<DATE> // ANSI DATE Literal 
         )
         { sb.append(token.image); }
         
@@ -2907,7 +2908,7 @@ ON ( (schema.table | NESTED TABLE nested_table_column OF [schema.]view )
 
 referencing_clause:
 REFERENCING 
-(OLD AS old_alias | NEW AS new_alias | PARENT AS parent_alias )+ 
+(OLD AS old_alias | NEW AS new_alias | PARENT AS parent_alias )*  
 
 
 compound_trigger_block :
@@ -2958,8 +2959,8 @@ ASTTriggerUnit TriggerUnit()  :
 
 	
 	 
-	// referencing_clause 
-	[<REFERENCING> ((<OLD> | <NEW> | <PARENT>) <AS> ID())+]
+	// referencing_clause - there may be ZERO subclauses  
+	[<REFERENCING> ((<OLD> | <NEW> | <PARENT>) <AS> ID())*]
 	
 	[<FOREACHROW>]
 	// end of simple_dml_trigger (incorporating  compound_dml_trigger )
