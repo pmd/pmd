@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<fragment
+   id="net.sourceforge.pmd.eclipse.plugin.test.fragment"
+   name="PMD eclipse test fragment"
+   version="4.0.0.qualifier"
+
+   plugin-id="net.sourceforge.pmd.eclipse.plugin"
+   plugin-version="1.0.0"
+   match="greaterOrEqual">
+
+   <runtime>
+      <library name="target/net.sourceforge.pmd.eclipse.plugin.test.fragment-4.0.0-SNAPSHOT.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <extension
+         id="rulesets"
+         name="rule sets"
+         point="net.sourceforge.pmd.eclipse.plugin.rulesets">
+      <rulesets class="test.RuleSetsExtension"/>
+   </extension>
+
+</fragment>
