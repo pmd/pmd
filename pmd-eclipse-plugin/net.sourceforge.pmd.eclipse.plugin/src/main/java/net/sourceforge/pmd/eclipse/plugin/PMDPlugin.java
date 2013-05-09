@@ -85,6 +85,8 @@ public class PMDPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static PMDPlugin plugin;
 
+	public static String VERSION = "unknown";
+
 	private static final Integer[] priorityValues = new Integer[] {
         Integer.valueOf(1),
         Integer.valueOf(2),
@@ -180,6 +182,8 @@ public class PMDPlugin extends AbstractUIPlugin {
         registerStandardRuleSets();
         registerAdditionalRuleSets();
         fileChangeListenerEnabled(prefs.isCheckAfterSaveEnabled());
+
+        VERSION = context.getBundle().getHeaders().get("Bundle-Version");
 	}
 		
 	public void fileChangeListenerEnabled(boolean flag) {

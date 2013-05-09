@@ -78,6 +78,9 @@ public class StringKeys {
     public static final String PREF_GENERAL_BUTTON_BROWSE = "preference.pmd.button.browse";
     public static final String PREF_GENERAL_DIALOG_BROWSE = "preference.pmd.dialog.browse";
     public static final String PREF_GENERAL_LABEL_LOG_LEVEL = "preference.pmd.label.log_level";
+    public static final String PREF_GENERAL_GROUP_ABOUT = "preference.pmd.group.about";
+    public static final String PREF_GENERAL_LABEL_PMD_ECLIPSE_VERSION = "preference.pmd.label.pmd.eclipse.version";
+    public static final String PREF_GENERAL_LABEL_PMD_VERSION = "preference.pmd.label.pmd.version";
     
     //  TOOLTIP keys are not shown here...just append  ".tooltip" to an existing key to see if you have one :)
     public static final String PREF_RULESET_TITLE = "preference.ruleset.title";

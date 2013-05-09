@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.plugin.UISettings;
@@ -122,11 +123,13 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         Group priorityGroup = buildPriorityGroup(composite);
         Group reviewGroup = buildReviewGroup(composite);
         Group logGroup = buildLoggingGroup(composite);
+        Group aboutGroup = buildAboutGroup(composite);
 
         // Layout children
         generalGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         priorityGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         logGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        aboutGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -484,6 +487,33 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         updateLogLevelValueLabel();
 
         return loggingGroup;
+    }
+
+    /**
+     * Build the about group.
+     */
+    private Group buildAboutGroup(Composite parent) {
+        GridData gridData1 = new GridData();
+        gridData1.grabExcessHorizontalSpace = false;
+
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.numColumns = 2;
+
+        Group aboutGroup = new Group(parent, SWT.NONE);
+        aboutGroup.setText(getMessage(StringKeys.PREF_GENERAL_GROUP_ABOUT));
+        aboutGroup.setLayout(gridLayout);
+
+        StringBuilder aboutText = new StringBuilder();
+        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_ECLIPSE_VERSION))
+            .append(" ").append(PMDPlugin.VERSION).append("\n");
+        aboutText.append(getMessage(StringKeys.PREF_GENERAL_LABEL_PMD_VERSION))
+            .append(" ").append(PMD.VERSION).append("\n");
+
+        Label aboutLabel = new Label(aboutGroup, SWT.NONE);
+        aboutLabel.setText(aboutText.toString());
+        aboutLabel.setLayoutData(gridData1);
+
+        return aboutGroup;
     }
 
     /**
