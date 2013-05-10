@@ -4,9 +4,9 @@
        PMD for Eclipse Update Site
    </description>
 
-    <feature url="features/net.sourceforge.pmd.eclipse_4.0.0.qualifier.jar"
+    <feature url="features/net.sourceforge.pmd.eclipse_4.0.0.v20130510-1000.jar"
         id="net.sourceforge.pmd.eclipse"
-        version="4.0.0.qualifier">
+        version="4.0.0.v20130510-1000">
         <category name="pmdForEclipse4"/>
     </feature>
 
