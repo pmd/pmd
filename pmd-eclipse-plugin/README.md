@@ -12,6 +12,7 @@ Importing the projects in Eclipse
 Make sure you have the Maven Integration (m2e - http://eclipse.org/m2e/) installed. Then you can
 import *Existing Maven Projects*.
 You should see 6 projects:
+
 * net.sourceforge.pmd.eclipse - that's the feature
 * net.sourceforge.pmd.eclipse.p2updatesite - generates the update site
 * net.sourceforge.pmd.eclipse.parent - the parent pom project
