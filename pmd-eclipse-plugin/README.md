@@ -56,7 +56,12 @@ Releasing and updating the official eclipse update site
     rsync -avhP /location/of/local/update-site/ sf-user@web.sourceforge.net:/home/project-web/pmd/htdocs/eclipse/
     rsync -avhP /location/of/local/update-site/ sf-user@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/update-site/
     # Cleanup the release branch which was only needed during the release process
+    git checkout master
     git branch -D pmd-eclipse-plugin-rb-<version>
+
+Finally announce the new plugin version in the new section of SF: http://sourceforge.net/p/pmd/news/
+
+
 
 
 Updating the used PMD version
