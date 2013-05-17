@@ -1769,4 +1769,38 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
         </description>
         <priority>3</priority>
     </rule>
+    
+    <rule name="AvoidProtectedMethodInFinalClassNotExtending"
+   		language="java"
+    			 since="5.0"
+             message="Avoid protected methods in a final class that doesn't extend anything other than Object.  Change to private or package access."
+             class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidProtectedMethodInFinalClassNotExtending">
+         <description>
+Do not use protected methods in most final classes since they cannot be subclassed. This should 
+only be allowed in final classes that extend other classes with protected methods (whose
+visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
+         </description>
+         <priority>3</priority>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+/MethodDeclaration[@Protected='true']
+ ]]>
+                 </value>
+             </property>
+         </properties>
+        <example>
+<![CDATA[
+public final class Foo {
+  private int bar() {}
+  protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible? 
+}
+ ]]>
+         </example>
+       </rule>
+    
 </ruleset>
