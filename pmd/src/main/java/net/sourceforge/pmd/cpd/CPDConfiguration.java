@@ -24,7 +24,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public final static String DEFAULT_RENDERER = "text";
 
-	@Parameter(names = "--language", description = "sources code language. Default value is"
+	@Parameter(names = "--language", description = "sources code language. Default value is "
 			+ DEFAULT_LANGUAGE, required = false, converter = LanguageConverter.class)
 	private Language language;
 
@@ -53,10 +53,13 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = "--files", variableArity = true, description = "ToDo", required = true)
 	private List<String> files;
 
+	@Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
+	private boolean nonRecursive;
+
 	@Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
 	private boolean help;
 
-	static class LanguageConverter implements IStringConverter<Language> {
+	public static class LanguageConverter implements IStringConverter<Language> {
 
 		public Language convert(String languageString) {
 			if (languageString == null || "".equals(languageString)) {
@@ -217,6 +220,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public void setFiles(List<String> files) {
 		this.files = files;
+	}
+
+	public boolean isNonRecursive() {
+		return nonRecursive;
+	}
+
+	public void setNonRecursive(boolean nonRecursive) {
+		this.nonRecursive = nonRecursive;
 	}
 
 	public boolean isHelp() {

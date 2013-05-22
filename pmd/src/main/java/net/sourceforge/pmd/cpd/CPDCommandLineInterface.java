@@ -56,7 +56,7 @@ public class CPDCommandLineInterface {
 		// implementation to retrieve their associate values...
 		CPDConfiguration.setSystemProperties(arguments);
 		CPD cpd = new CPD(arguments);
-		addSourcesFilesToCPD(arguments.getFiles(),cpd);
+		addSourcesFilesToCPD(arguments.getFiles(), cpd, !arguments.isNonRecursive());
 		cpd.go();
 		if (cpd.getMatches().hasNext()) {
 			System.out.println(arguments.getRenderer().render(cpd.getMatches()));
@@ -64,10 +64,13 @@ public class CPDCommandLineInterface {
 		}
 	}
 
-	private static void addSourcesFilesToCPD(List<String> files, CPD cpd) {
+	private static void addSourcesFilesToCPD(List<String> files, CPD cpd, boolean recursive) {
 		try {
 			for (String file : files)
-				cpd.addRecursively(file);
+				if (recursive)
+					cpd.addRecursively(file);
+				else
+					cpd.addAllInDirectory(file);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -77,7 +80,7 @@ public class CPDCommandLineInterface {
 	public static String buildUsageText() {
 		String helpText = "Usage:";
 
-		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv|vs)] [--skip-duplicate-files] " + EOL;
+		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv|vs)] [--skip-duplicate-files] [--non-recursive]" + EOL;
 		helpText += "i.e: " + EOL;
 
 		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files c:\\jdk14\\src\\java " + EOL;
