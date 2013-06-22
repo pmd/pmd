@@ -8,11 +8,13 @@ New EcmaScript rules and ruleset:
 		- AvoidWithStatement
 	UseBaseWithParseInt
 
-New Java rule:
+New Java rules:
 	GuardLogStatement
 		- replace xpath implementation of GuardDebugLogging by GuardLogStatement (better perf)
 	CommentRequired
 		- basic rule to check for existence for formal (javadoc) comments.
+	AvoidProtectedMethodInFinalClassNotExtending
+		- rule to avoid protected methods in final classes that don't extend anything other than Object.
 
 CPD Command Line Changes:
   Added non-recursive option "--non-recursive" to not scan sub-directories

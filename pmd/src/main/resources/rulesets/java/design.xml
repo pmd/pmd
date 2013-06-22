@@ -1772,7 +1772,7 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
     
     <rule name="AvoidProtectedMethodInFinalClassNotExtending"
    		language="java"
-    			 since="5.0"
+             since="5.1"
              message="Avoid protected methods in a final class that doesn't extend anything other than Object.  Change to private or package access."
              class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidProtectedMethodInFinalClassNotExtending">
