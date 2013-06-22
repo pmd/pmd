@@ -14,6 +14,11 @@ New Java rule:
 	CommentRequired
 		- basic rule to check for existence for formal (javadoc) comments.
 
+CPD Command Line Changes:
+  Added non-recursive option "--non-recursive" to not scan sub-directories
+
+
+
 May 1, 2013 - 5.0.4:
 
 Fixed bug  254: False+ : UnusedImport with Javadoc @throws
