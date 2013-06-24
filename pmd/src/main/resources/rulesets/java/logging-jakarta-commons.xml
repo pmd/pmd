@@ -128,7 +128,7 @@ public class Test {
 
    <rule name="GuardLogStatement"
          language="java"
-         since="5.0.3"
+         since="5.1.0"
          message="There is log block not surrounded by if"
          class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#GuardLogStatement">

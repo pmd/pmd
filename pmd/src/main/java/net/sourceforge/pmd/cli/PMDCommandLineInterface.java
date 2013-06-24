@@ -97,16 +97,16 @@ public class PMDCommandLineInterface {
 		+ WINDOWS_PROMPT + launchCmd + " -dir" + WINDOWS_PATH_TO_CODE + "-format text -R java-unusedcode,java-imports -version 1.5 -language java -debug" + PMD.EOL
 		+ WINDOWS_PROMPT + launchCmd + " -dir" + WINDOWS_PATH_TO_CODE + "-f xml -rulesets java-basic,java-design -encoding UTF-8"					+ PMD.EOL
 		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-rulesets java-typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL
-		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-f html -R java-typeresolution -auxclasspath -d file:///C:/my/classpathfile" + PMD.EOL
+		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-f html -R java-typeresolution -auxclasspath file:///C:/my/classpathfile" + PMD.EOL
 		+ PMD.EOL;
 	}
 
 	private static String getUnixExample(String launchCmd) {
 		final String UNIX_PROMPT = "$ ";
 		return "For example on *nix: "				+ PMD.EOL
-		+ UNIX_PROMPT + launchCmd + " -dir /home/workspace/src/main/java/code -f nicehtml -rulesets java-basic,java-design"				+ PMD.EOL
-		+ UNIX_PROMPT + launchCmd + " -d ./src/main/java/code -f nicehtml -r java-basic,java-design -xslt my-own.xsl" + PMD.EOL
-		+ UNIX_PROMPT + launchCmd + " -d ./src/main/java/code -f nicehtml -r java-typeresolution -auxclasspath commons-collections.jar:derby.jar"
+		+ UNIX_PROMPT + launchCmd + " -dir /home/workspace/src/main/java/code -f html -rulesets java-basic,java-design"				+ PMD.EOL
+		+ UNIX_PROMPT + launchCmd + " -d ./src/main/java/code -f xslt -R java-basic,java-design -property xsltFilename=my-own.xsl" + PMD.EOL
+		+ UNIX_PROMPT + launchCmd + " -d ./src/main/java/code -f html -R java-typeresolution -auxclasspath commons-collections.jar:derby.jar"
 		+ PMD.EOL;
 	}
 

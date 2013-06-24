@@ -276,4 +276,16 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1078 Package statement introduces false positive UnnecessaryFullyQualifiedName violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package a.b;
+
+import a.*;
+
+public class Test {}
+        ]]></code>
+    </test-code>
 </test-data>

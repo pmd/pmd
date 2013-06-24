@@ -1,0 +1,5 @@
+10-08-2012:
+  - Fix build: Update MANIFEST.MF Bundle-Version, add js-cvs-12122009.jar, use JDK 1.6 instead of 1.5. Also changed eclipse/plugins/org.eclipse.pde.build_3.8.0.v20110728/scripts/build.xml to set the builderDirectory using pathconvert. This is almost certainly the Wrong Way but has the advantage of working.
+  - Convert all tests from JUnit 3.x to 4.x.
+  - Make some failing tests pass.
+

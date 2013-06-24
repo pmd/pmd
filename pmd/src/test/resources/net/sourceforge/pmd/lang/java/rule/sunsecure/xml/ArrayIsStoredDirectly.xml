@@ -133,4 +133,24 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1063 False+: ArrayIsStoredDirectly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+
+public class TestClass {
+    private final Object[] obj;
+
+    public TestClass(Object[] obj) {
+        if (obj == null) {
+            this.obj = new Object[]{};
+        } else {
+            this.obj = Arrays.copyOf(obj, obj.length);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

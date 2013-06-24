@@ -1,0 +1,486 @@
+Change log for the PMD Eclipse plugin
+
+v4.0.0 - Nov 2012
+. New integrated AST View and XPath test area 
+. New rule creation wizard
+. New report preferences panel
+. New file filter panel for exclusion/inclusion entries
+. New automatic "Check code on file save" function (off by default)
+. User-definable rule violation markers 
+     Highest priority markers also decorate folders & projects (selectable)
+. Colour syntax highlighting in code viewers/editors
+. Expanded rule import dialog to show incoming rules and any duplicates
+. Export rule function now only exports selected rules
+. Overhauled rule preferences screen
+.    allows users to group/edit rules by multiple criteria
+.    new ability to enable/disable rules without removing them from rulesets
+.    larger editors for the various fields
+.	 support for non-Java languages
+.    group editing of rule exclusion filters
+.    highlighting of non-default property values
+.    colour-tagged expressions in shown in rule table
+.    new property editors are fully type-aware
+.	 misconfigured rules are highlighted
+. Huge code cleanup
+. Several usability fixes for the Dataflow view
+. Updated to use latest SWT widgets wherever possible
+. New option to control the launch of a full build per project - Thanks to Joe Freeman
+. Check code from working set selections - Thanks to Dominik
+-------------------------------------
+v3.2.5 - October 13 2008
+
+. PMD updated to v4.2.4
+. plugin reorganization
+. code cleanup
+. all rule examples displayed in Rule Configuration panel
+. Full file path now set on RuleContext.setSouceCodeFile(file) instead of workspace relative path
+
+----------------------------------------------------------------------------------------
+v3.2.4 - April 11 2008
+
+Runtime
+-------
+. Fix 1811828 RuntimeException in RuleSetFactory, default ruleset is used on error
+. Fix 1903578 Handler error in Eclipse log
+. Fix 1909929 clean violation review is not selective enough
+. PMD updated to v4.2.1
+. Use new standard PMD RuleSet serialization mechanism
+. Use new PMD support for RuleReferences in RuleSets, instead of using Rule copies
+. Use Java Project Build Path when invoking PMD to allow Type Resolution to work better
+. Error type PMD Violations now show in Problems View for manual PMD invocations
+. Workspace PMD Preferences allows enabling/disabling use of Java Project Build Path
+. Workspace PMD Preferences removed DFA option, use DataflowAnomalyAnalysis rule instead
+. Workspace Rules Configuration Rule table now shows RuleSet name
+. Workspace Rules Configuration Rule table now shows Since attribute
+. Workspace Rules Configuration now has Add Rule... button, defaulting to adding of an XPath Rule
+. Workspace Rules Configuration Import Rule... dialog nows supports importing Rules by Reference (default) or by Copy
+. Workspace Rules Configuration supports editing/adding of Exclude/Include patterns
+. Workspace Rules Configuration supports launching of the PMD Rule Designer GUI
+. Workspace Rules Configuration Rule editing dialog greatly enhanced to support presentation/editing of nearly all Rule details
+. Workspace Rules Configuration Rule editing dialog shows when a Rule is a RuleReference
+. Workspace Rules Configuration Rule editing dialog allows opening External Info URL in Browser
+. Workspace Rules Configuration Rule editing dialog shows blue background when a Rule detail is overridden (e.g. what exactly have you customized)
+. Project PMD Preference Rule table now sorts just like the Workspace Preferences version
+. Project PMD Preference Rule table now shows RuleSet name
+. Project PMD Preference Rule table now shows Rule Since attribute
+. Project PMD Preference supports specifying arbitrary RuleSet file, default remains .ruleset
+
+----------------------------------------------------------------------------------------
+v3.2.3 - Dec 02 2007
+
+. PMD updated to v4.1
+. dependency jars updated
+. Fix 1661524 Working set functionality doesn't work
+. Fix 1811828 RuntimeException in RuleSetFactory
+. Fix NPE on empty rulesets
+. Fix UI preference refresh bug
+. xml rulesets now use indentation: human readable and easier to modify
+
+
+----------------------------------------------------------------------------------------
+v3.2.2 - 24/06/2007
+
+Runtime
+-------
+. Add PMD v4.0rc1 (java 1.4 retroweaver support)
+. Fix 1671486 Rule set is not serialized/deserialized properly
+. Fix 1703589 ConcurrentModificationException in RuleSet.apply
+. Fix 1710977 Null Pointer Exception on click of Add Rule (remove the button)
+. Fix 1737975 CPD view double-click selection&jump bug
+. Remove the embedded PMD documentation and point to the PMD remote site.
+
+
+----------------------------------------------------------------------------------------
+v3.2.1 - 15/02/2007
+
+Runtime
+-------
+. Fix 1583788 StackOverflowError in rule edit window
+. Fix 1641930 Creation of ruleset.xml file causes error in Eclipse
+. Fix 1645449 Views broken in 3.2.0 with Eclipse 3.2.1 on Solaris
+
+
+----------------------------------------------------------------------------------------
+v3.2.0 - 15/01/2007
+
+Runtime
+-------
+. Upgrade to PMD v3.9
+. Update and improve overview and outline views
+. Refactor CPD views
+. Fix major NullPointer and ClassCastException bugs
+. Add support for JDK 6.0
+
+
+----------------------------------------------------------------------------------------
+v3.1.7 - 05/10/2006
+
+Runtime
+-------
+. Upgrade to PMD v3.8
+. Fix NPE when searching for quickfixes for rules from project rulesets
+. Fix 1541795 (at least it should)
+. Fix 1554639 (thanks to Sven Jacob)
+. Fix the refreshproblem of the dataflowanomalytable and a bug with overloaded methods in the dataflowview (Thanks to Sven Jacob)
+. Fix 1417291 CCE when adding report (eclipse)
+. Fix 1470054 Violation Details dlg has OK button which does nothing
+. Fix 1470080 NPE in PMDRecord.findResource
+. Fix 1481300 plugin throws NPE after move prjs to new workspace
+. Fix 1486390 Exception during execution
+
+
+----------------------------------------------------------------------------------------
+v3.1.6 - 09/06/2006
+
+Runtime
+-------
+. Reconfigure the rebuild command to better handle huge projects
+. Add the include derived files option
+. make CPD "working set aware"
+. remove some dead code
+. limit the number of reported violations per file and per rule (default to 5)
+. Add the possibility to use the PMD violation review style
+. Refactor the plugin architecture to better accept future evolutions
+
+
+----------------------------------------------------------------------------------------
+v3.1.5 - 12/04/2006
+
+Runtime
+-------
+. Update to PMD v3.6
+. Fix the default package issue when generating reports
+. Fix BUG#1467817 Change the label of the rebuild_project question
+
+
+----------------------------------------------------------------------------------------
+v3.1.4 - 06/02/2006
+
+Runtime
+-------
+. Fix BUG#1357798 Source file utf-8 charset problem
+. Fix BUG#1365407 Problems with PMD in Eclipse/Issue 1
+. Update to PMD v3.5
+. Fix NullPointerException on PriorityFilter class
+. Fix NullPointerException and InvocationTargetException on ASTWriterImpl class
+. Fix BUG#1365407 Problems with PMD in Eclipse/Issue 3
+. Upgrade development environment to Eclipse 3.1.2
+. Apply a patch to PMD v3.5
+. Fix documentation about fragment plugin-id
+
+
+----------------------------------------------------------------------------------------
+v3.1.3 - 17/01/2006
+
+Runtime
+-------
+. Update to PMD v3.4 with regexp support
+
+
+----------------------------------------------------------------------------------------
+v3.1.2 - 03/11/2005
+
+Runtime
+-------
+. RFE#1334241-Add an extension point to declare custom rulesets
+. BUG#1212311-Deselecting a rules should now work
+. Fix the missing ShowDataflowView issue
+
+
+----------------------------------------------------------------------------------------
+v3.1.1 - 01/11/2005
+
+Runtime
+-------
+. RFE#1231112-Make the rule table columns sortable in preferences dialog (thanks to Brian R)
+. BUG#1231108-Fix the resizing issue
+. Upgrade to PMD 3.3
+. Add a PMD perspective
+. Add a Violations Overview view
+. Add a Violation Outline view
+. Add a Dataflow view
+. Continue internal code refactoring
+
+
+----------------------------------------------------------------------------------------
+v3.1.0 - 04/07/2005
+
+Runtime
+-------
+. Migrate to PMD v3.2
+. Migrate to Eclipse v3.1
+. Add support for JDK 1.5
+. Create a CPD report instead of displaying a window
+. Fix Bug#1190624 (Completly refactor the CPD feature. see release notes)
+. Fix other non documented bugs
+
+Development
+-----------
+. Continuing the refactoring.
+. Forgive "small" commands.
+. Use Castor to serialize project properties inside the project itself and no more inside
+  the workspace .metadata
+. Small improvements in the Plugin class
+
+
+----------------------------------------------------------------------------------------
+v3.0.1 - 07/05/2005
+
+Runtime
+-------
+. Fix Bug#1144793
+. Fix Bug#1190624 (try)
+. Fix PMD violations
+. Continue refactoring
+
+Development
+-----------
+. Forgive the Xerces plungin and repackage the xercesImpl.jar inside the PMD Core plugin.
+
+
+----------------------------------------------------------------------------------------
+v3.0.0 - 21/04/2005
+
+Runtime
+-------
+. upgrade the core engine to PMD v3.0
+. implement reports generation (RFE#1177802)
+
+
+----------------------------------------------------------------------------------------
+v2.2.1 - 01/02/2005
+
+Runtime
+-------
+. upgrade the core engine to PMD v2.2
+
+
+----------------------------------------------------------------------------------------
+v2.2.0 - 23/01/2005
+
+Runtime
+-------
+. upgrade the core engine to PMD v2.1 (fix 1095049)
+. integrate to rule attributes when exporting rulesets (fix 1090032 & 1087079)
+
+
+----------------------------------------------------------------------------------------
+v2.1.1 - 03/12/2004
+
+Runtime
+-------
+. implements the "NOPMD" feature
+
+Development
+-----------
+. refining the refactoring of the property page
+. implementing a Command framework
+
+----------------------------------------------------------------------------------------
+v2.1.0 - 22/11/2004
+
+Runtime
+-------
+. update to PMD v2.0
+. update the icons (thanks to Ebu)
+. fix error in the fragment how to
+
+Development
+-----------
+. begin the refactoring; apply MVC to GUIs; apply Command and CommandProcessor
+  patterns for PMD and Eclipse resources operations.
+. Before generalizing the refactoring, test on the property page.
+
+
+----------------------------------------------------------------------------------------
+v2.0.6 - xx/07/2004
+
+Runtime
+-------
+. fix DOMSerializer class not found.
+  -> Package Xerces as an Eclipse feature because SUN JDK 1.4 packages an incomplete
+     Xerces implementation
+
+
+----------------------------------------------------------------------------------------
+v2.0.5 - 30/06/2004
+
+Runtime
+-------
+. Upgrading to PMD v1.8
+
+
+
+----------------------------------------------------------------------------------------
+v2.0.4 - 29/04/2004
+
+Runtime
+-------
+. Upgrading to PMD v1.7
+
+
+
+----------------------------------------------------------------------------------------
+v2.0.3 - 20/04/2004
+
+Runtime
+-------
+. Fixing UTF-8 issues in some source files
+. Upgrading to PMD v1.6
+. Upgrading to Eclipse v3M8
+
+
+
+----------------------------------------------------------------------------------------
+v2.0.2 - 19/12/2003
+
+Runtime
+-------
+. Fixing malformed UTF-8 characters in generated xml files
+  (thanks to Jacques Lebourgeois)
+
+
+
+----------------------------------------------------------------------------------------
+v2.0.1 - 09/12/2003
+
+Runtime
+-------
+. Fixing bug #852522 : PreferencesPage doesn't show up
+. Adapting to Eclipse v3M5
+. Fixing Java Model Exception handling
+
+
+----------------------------------------------------------------------------------------
+v2.0.0 - 01/12/2003
+
+Runtime
+-------
+. Fixing bug #819518 : AST writes out method return types incorrectly
+. Fixing bug #820241 : VariableDeclaration doesn't show variable modifiers
+. Fixing bug #850242 : PMD working from time to time
+. Fixing bug #849558 : Cannot use pmd-eclipse plugin with Eclipse 2.1.2
+. Fixing bug #841110 : PMD-eclipse not working after rule import and restart
+. Fixing bug #838054 : PMD cannot run inside Eclipse
+. Fixing bug #832250 : plugin exception in 1.2
+. Adding the lazy check feature : suggest to not rebuild the project when the properties has changed.
+. Adding the working set feature
+. Previewing quickfix feature
+. Refactoring to remove Eclipse internal APIs usage
+. Refactoring to use the Eclipse adaptable framework instead of downcasting (where possible)
+. Refactoring to adapt to Eclipse v3
+
+
+
+----------------------------------------------------------------------------------------
+v1.2.1 - 30/10/2003
+
+Runtime
+-------
+. Fixing JDK 1.3 runtime problem (for WSAD users for example)
+  (thanks to Eduard Naum)
+. Adding "scratchpad" ruleset in the drop down list when importing rulesets
+. Refactoring JDK 1.3 compatibility feature so that it uses the compiler compliance option
+
+
+
+
+----------------------------------------------------------------------------------------
+v1.2.0 - 27/10/2003
+
+Runtime
+-------
+. Refactoring some classes to avoid the warnings about accessing private members from inner types.
+. Adding the review feature (RFE#785023 and RFE#787086)
+. Adding a Java 1.3 compatibility property for projects
+. Upgrading to PMD 1.3.0
+. Fixing encoding in rulesets (bug #810858)
+. Fixing encoding of AST (bug #819520)
+
+Development
+-----------
+. Rebuild the build.xml file according to the "Create Ant Build File" feature
+
+
+
+
+----------------------------------------------------------------------------------------
+v1.1.2 - 11/08/2003
+
+Runtime
+-------
+. Fixing exception in violations view when display violations of a class in the default package
+. Refactoring ruleset preferences. Moving the prefered ruleset from preference store to state location
+
+
+
+
+----------------------------------------------------------------------------------------
+v1.1.1 - 05/08/2003
+
+Runtime
+-------
+. Updating to PMD v1.2.1
+. Fixing CoreException when refreshing violations view with Eclipse v3
+
+
+
+
+----------------------------------------------------------------------------------------
+v1.1.0 - 30/07/2003
+
+Runtime
+-------
+. Writing more docs (using PMD, using CPD, reporting bugs)
+. Redesigning the way to configure the plugin (see doc)
+. Adding a view that show PMD violations
+. Grouping PMD menu items in a submenu to be less intrusive in the views context menu
+. Updating to PMD v1.2
+
+
+
+
+----------------------------------------------------------------------------------------
+v1.0.0 - 19/06/2003
+
+Runtime
+-------
+. Fixing SWTException when PMD is run on a file with syntax error
+  (thanks to Chris Grindstaff)
+. Generalize above fix for all message dialog in the plugin
+. Adding logging facility to help support (using commons-logging and Log4J)
+. Removing error dialog when PMD is executed on a file with syntax error
+  (the PMD exception is logged as a warning)
+. Adding PMD actions on folder and package popup menus
+  (request from Vladimir Bossica)
+. Processing markers changes as batch operations so that performances are improved.
+. Updating PMD engine to v1.1
+. Fixing CPD usage to conform to new engine implementation
+. Improving progress indicators accurracy
+. Adding online help that points to official PMD help and a howto section
+. When generating an AST :
+     . place image information as an attribute instead of the tag body
+     . add other attributes (lines and cols) to all tags even those without children
+
+
+
+
+----------------------------------------------------------------------------------------
+v0.5.0 - 19/03/2003
+
+Runtime
+-------
+. Adding PMD as a project incremental builder.
+. Refactor some entries in the plugin.xml file.
+. Adding a "Delete PMD marker" popup menu on project, java files and task view.
+. Adding a "Generate AST" popup menu on java file.
+. Enabling popups in resource view and package view
+. Externalizing strings and messages.
+. Adding support for i18n : english is the default locale and providing french as the
+  first alternative locale.
+. Using PMD v1.03
+
+Development
+-----------
+. Adding a ant build file
+. Adapting .project to be compatible with both Eclipse 2.02 and WSAD v5.

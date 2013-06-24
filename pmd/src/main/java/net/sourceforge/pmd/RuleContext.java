@@ -33,6 +33,7 @@ public class RuleContext {
     private String sourceCodeFilename;
     private LanguageVersion languageVersion;
     private final Map<String, Object> attributes;
+    private boolean ignoreExceptions = true;
 
     /**
      * Default constructor.
@@ -188,5 +189,29 @@ public class RuleContext {
      */
     public Object removeAttribute(String name) {
 	return this.attributes.remove(name);
+    }
+
+    /**
+     * Configure whether exceptions during applying a rule should be ignored or not.
+     * If set to <code>true</code> then such exceptions are logged as warnings and
+     * the processing is continued with the next rule - the failing rule is simply skipped.
+     * This is the default behavior.
+     * <br>
+     * If set to <code>false</code> then the processing will be aborted with the exception.
+     * This is especially useful during unit tests, in order to not oversee any exceptions.
+     * @param ignoreExceptions if <code>true</code> simply skip failing rules (default).
+     */
+    public void setIgnoreExceptions(boolean ignoreExceptions) {
+        this.ignoreExceptions = ignoreExceptions;
+    }
+
+    /**
+     * Gets the configuration whether to skip failing rules (<code>true</code>)
+     * or whether to throw a a RuntimeException and abort the processing for the first
+     * failing rule.
+     * @return <code>true</code> when failing rules are skipped, <code>false</code> otherwise.
+     */
+    public boolean isIgnoreExceptions() {
+        return ignoreExceptions;
     }
 }

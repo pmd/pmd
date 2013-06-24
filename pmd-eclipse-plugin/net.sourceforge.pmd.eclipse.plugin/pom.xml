@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>net.sourceforge.pmd.eclipse.parent</artifactId>
+    <version>4.0.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>net.sourceforge.pmd.eclipse.plugin</artifactId>
+  <packaging>eclipse-plugin</packaging>
+
+
+  <dependencies>
+    <dependency>
+        <groupId>net.sourceforge.pmd</groupId>
+        <artifactId>pmd</artifactId>
+        <version>${pmd.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.codehaus.castor</groupId>
+        <artifactId>castor</artifactId>
+        <version>1.1.2.1</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.7</version>
+            <configuration>
+                <stripVersion>true</stripVersion>
+                <prependGroupId>false</prependGroupId>
+                <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                <excludeGroupIds>p2.eclipse-plugin</excludeGroupIds>
+                <excludeArtifactIds>net.sourceforge.pmd.eclipse.plugin,net.sourceforge.pmd.eclipse.plugin.source</excludeArtifactIds>
+                <useRepositoryLayout>false</useRepositoryLayout>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>get-dependencies</id>
+                    <phase>process-sources</phase>
+                    <goals><goal>copy-dependencies</goal></goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+  </build>
+
+</project>

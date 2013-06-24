@@ -113,7 +113,7 @@ public class RuleSetFactoryTest {
 	    Assert.assertNotNull("Test ruleset not found - can't continue with test!", in);
 
 	    RuleSetFactory rsf = new RuleSetFactory();
-	    RuleSet rs = rsf.createRuleSet("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
+	    RuleSets rs = rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
 	    // added by referencing a complete ruleset (java-basic)
 	    assertNotNull(rs.getRuleByName("JumbledIncrementer"));
 	    assertNotNull(rs.getRuleByName("ForLoopShouldBeWhileLoop"));
@@ -127,8 +127,12 @@ public class RuleSetFactoryTest {
 
 	    Rule emptyCatchBlock = rs.getRuleByName("EmptyCatchBlock");
 	    assertNotNull(emptyCatchBlock);
-	    // default priority in java-empty is 3, but overridden to 2
-	    assertEquals(2, emptyCatchBlock.getPriority().getPriority());
+
+	    Rule collapsibleIfStatements = rs.getRuleByName("CollapsibleIfStatements");
+	    assertEquals("Just combine them!", collapsibleIfStatements.getMessage());
+	    // assert that CollapsibleIfStatements is only once added to the ruleset, so that it really
+	    // overwrites the configuration inherited from java/basic.xml
+	    assertEquals(1, countRule(rs, "CollapsibleIfStatements"));
 
 	    Rule cyclomaticComplexity = rs.getRuleByName("CyclomaticComplexity");
 	    assertNotNull(cyclomaticComplexity);
@@ -145,6 +149,7 @@ public class RuleSetFactoryTest {
 	    Rule simplifyBooleanExpressions = rs.getRuleByName("SimplifyBooleanExpressions");
 	    assertNotNull(simplifyBooleanExpressions);
 	    assertEquals(5, simplifyBooleanExpressions.getPriority().getPriority());
+	    assertEquals(1, countRule(rs, "SimplifyBooleanExpressions"));
 	    // priority overridden for whole design group
 	    Rule useUtilityClass = rs.getRuleByName("UseUtilityClass");
 	    assertNotNull(useUtilityClass);
@@ -153,6 +158,16 @@ public class RuleSetFactoryTest {
 	    assertNotNull(simplifyBooleanReturns);
 	    assertEquals(2, simplifyBooleanReturns.getPriority().getPriority());
 	}
+
+    private int countRule(RuleSets rs, String ruleName) {
+        int count = 0;
+	    for (Rule r : rs.getAllRules()) {
+	        if (ruleName.equals(r.getName())) {
+	            count++;
+	        }
+	    }
+        return count;
+    }
 
 	@Test(expected = RuleSetNotFoundException.class)
 	public void testRuleSetNotFound() throws RuleSetNotFoundException {

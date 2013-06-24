@@ -85,4 +85,19 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#940 False positive on UnsynchronizedStaticDateFormatter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private static final DateFormat enFormat = new SimpleDateFormat("EEEE MMMM d, yyyy 'at' hh':'mma", Locale.US);
+    private static final DateFormat frFormat = new SimpleDateFormat("EEEE 'le' d MMMM yyyy 'à' HH'h'mm", Locale.CANADA_FRENCH);
+
+    protected DateFormat getDateFormat() {
+        return getLang() == LangEnum.FR ? frFormat : enFormat;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

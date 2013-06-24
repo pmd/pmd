@@ -12,7 +12,6 @@ import net.sourceforge.pmd.AbstractConfiguration;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
-import java.io.Reader;
 
 /**
  *
@@ -25,42 +24,42 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public final static String DEFAULT_RENDERER = "text";
 
-	@Parameter(names = "--language", description = "sources code language. Default value is"
+	@Parameter(names = "--language", description = "sources code language. Default value is "
 			+ DEFAULT_LANGUAGE, required = false, converter = LanguageConverter.class)
 	private Language language;
 
 	@Parameter(names = "--minimum-tokens", description = "minimum", required = true)
 	private int minimumTileSize;
 
-	@Parameter(names = "--skip-duplicate-files", description = "ignore multiple copies of files of the same name and length in comparison", required = false)
+	@Parameter(names = "--skip-duplicate-files", description = "ToDo", required = false)
 	private boolean skipDuplicates;
 
 	@Parameter(names = "--format", description = "report format. Default value is "
 		+ DEFAULT_RENDERER, required = false, converter = RendererConverter.class)
 	private Renderer renderer;
 
-	@Parameter(names = "--encoding", description = "characterset to use when processing files", required = false, converter = EncodingConverter.class)
+	@Parameter(names = "--encoding", description = "ToDo", required = false, converter = EncodingConverter.class)
 	private String encoding;
 
-	@Parameter(names = "--ignore-literals", description = "Ignore number values and string contents when comparing text", required = false)
+	@Parameter(names = "--ignore-literals", description = "ToDo", required = false)
 	private boolean ignoreLiterals;
 
-	@Parameter(names = "--ignore-identifiers", description = "Ignore constant and variable names when comparing text", required = false)
+	@Parameter(names = "--ignore-identifiers", description = "ToDo", required = false)
 	private boolean ignoreIdentifiers;
 
-	@Parameter(names = "--ignore-annotations", description = "Ignore language annotations when comparing text", required = false)
+	@Parameter(names = "--ignore-annotations", description = "ToDo", required = false)
 	private boolean ignoreAnnotations;
 
-	@Parameter(names = "--files", variableArity = true, description = "list of files and directories to process", required = false)
+	@Parameter(names = "--files", variableArity = true, description = "ToDo", required = true)
 	private List<String> files;
 
-	@Parameter(names = "--uri", variableArity = true, description = "URI to process", required = false)
-	private String uri;
+	@Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
+	private boolean nonRecursive;
 
 	@Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
 	private boolean help;
 
-	static public class LanguageConverter implements IStringConverter<Language> {
+	public static class LanguageConverter implements IStringConverter<Language> {
 
 		public Language convert(String languageString) {
 			if (languageString == null || "".equals(languageString)) {
@@ -70,7 +69,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 		}
 	}
 
-	static public class RendererConverter implements IStringConverter<Renderer> {
+	static class RendererConverter implements IStringConverter<Renderer> {
 
 		public Renderer convert(String formatString) {
 			if (formatString == null || "".equals(formatString)) {
@@ -80,7 +79,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 		}
 	}
 
-	public class EncodingConverter implements IStringConverter<String> {
+	class EncodingConverter implements IStringConverter<String> {
 
 		public String convert(String encoding) {
 			if (encoding == null || "".equals(encoding))
@@ -100,10 +99,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 	public SourceCode sourceCodeFor(File file) {
 		return new SourceCode(new SourceCode.FileCodeLoader(file,
 				getSourceEncoding()));
-	}
-
-	public SourceCode sourceCodeFor(Reader reader, String sourceCodeName ) {
-		return new SourceCode(new SourceCode.ReaderCodeLoader(reader, sourceCodeName ));
 	}
 
 	public void postContruct() {
@@ -227,12 +222,12 @@ public class CPDConfiguration extends AbstractConfiguration {
 		this.files = files;
 	}
 
-	public String getURI() {
-		return uri;
+	public boolean isNonRecursive() {
+		return nonRecursive;
 	}
 
-	public void setURI(String uri) {
-		this.uri = uri;
+	public void setNonRecursive(boolean nonRecursive) {
+		this.nonRecursive = nonRecursive;
 	}
 
 	public boolean isHelp() {

@@ -16,7 +16,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "AvoidBranchingStatementAsLastInLoop");
         addRule(RULESET, "AvoidDecimalLiteralsInBigDecimalConstructor");
-    	addRule(RULESET, "AvoidMultipleUnaryOperators");
+        addRule(RULESET, "AvoidMultipleUnaryOperators");
         addRule(RULESET, "AvoidThreadGroup");
         addRule(RULESET, "AvoidUsingHardCodedIP");
 //        addRule(RULESET, "AvoidUsingHardCodedURL");

@@ -156,7 +156,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-imports used in javadoc comment
+imports used in javadoc comment, see also bug #254
         ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -164,12 +164,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.File;
+import java.util.NoSuchElementException;
+
 public class Foo {
     /**
      * {@linkplain  List list}
      * {@link  ArrayList  arraylist}
      * {@value  Calendar#DATE}
      * @see File
+     * @throws NoSuchElementException no such element
      */
      public void test() {}
 }

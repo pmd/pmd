@@ -22,6 +22,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidDeeplyNestedIfStmts");
         addRule(RULESET, "AvoidInstanceofChecksInCatchClause");
         addRule(RULESET, "AvoidProtectedFieldInFinalClass");
+        addRule(RULESET, "AvoidProtectedMethodInFinalClassNotExtending");
         addRule(RULESET, "AvoidReassigningParameters");
         addRule(RULESET, "AvoidSynchronizedAtMethodLevel");
         addRule(RULESET, "BadComparison");

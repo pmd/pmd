@@ -3,16 +3,19 @@
  */
 package net.sourceforge.pmd.lang.java.rule.comments;
 
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.MultiLineComment;
@@ -25,33 +28,33 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  */
 public abstract class AbstractCommentRule extends AbstractJavaRule {
-
- 
+	
 	protected AbstractCommentRule() {
 		
 	}
 
 	protected List<Integer> tagsIndicesIn(String comments) {
-		
+
 		int atPos = comments.indexOf('@');
-		if (atPos < 0) return Collections.EMPTY_LIST;
-		
+		if (atPos < 0)
+			return Collections.EMPTY_LIST;
+
 		List<Integer> ints = new ArrayList<Integer>();
 		ints.add(atPos);
-		
-		atPos = comments.indexOf('@', atPos+1);
+
+		atPos = comments.indexOf('@', atPos + 1);
 		while (atPos >= 0) {
 			ints.add(atPos);
-			atPos = comments.indexOf('@', atPos+1);
+			atPos = comments.indexOf('@', atPos + 1);
 		}
-		
+
 		return ints;
 	}
-	
+
 	protected String filteredCommentIn(Comment comment) {
-		
+
 		String trimmed = comment.getImage().trim();
-		
+
 		if (comment instanceof SingleLineComment) {
 			return singleLineIn(trimmed);
 		}
@@ -61,70 +64,73 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 		if (comment instanceof FormalComment) {
 			return formalLinesIn(trimmed);
 		}
-		
-		return trimmed;	// should never reach here
+
+		return trimmed; // should never reach here
 	}
-	
+
 	private String singleLineIn(String comment) {
-				
-		if (comment.startsWith("//")) return comment.substring(2);
-		
+
+		if (comment.startsWith("//"))
+			return comment.substring(2);
+
 		return comment;
 	}
-	
+
 	private static String asSingleString(List<String> lines) {
-		
+
 		StringBuilder sb = new StringBuilder();
 		for (String line : lines) {
-			if (StringUtil.isEmpty(line)) continue;
+			if (StringUtil.isEmpty(line))
+				continue;
 			sb.append(line).append('\n');
 		}
-		
+
 		return sb.toString().trim();
 	}
-	
+
 	private static String multiLinesIn(String comment) {
-		
+
 		String[] lines = comment.split("\n");
 		List<String> filteredLines = new ArrayList<String>(lines.length);
-		
-		for (String rawLine : lines) {		
+
+		for (String rawLine : lines) {
 			String line = rawLine.trim();
-			
+
 			if (line.endsWith("*/")) {
-				int end = line.length()-2;
+				int end = line.length() - 2;
 				int start = line.startsWith("/*") ? 2 : 0;
 				filteredLines.add(line.substring(start, end));
 				continue;
 			}
-			
+
 			if (line.length() > 0 && line.charAt(0) == '*') {
 				filteredLines.add(line.substring(1));
 				continue;
 			}
-		
+
 			if (line.startsWith("/*")) {
 				filteredLines.add(line.substring(2));
 				continue;
 			}
-			
+
 		}
-		
+
 		return asSingleString(filteredLines);
 	}
-	
+
 	private String formalLinesIn(String comment) {
-		
+
 		String[] lines = comment.split("\n");
 		List<String> filteredLines = new ArrayList<String>(lines.length);
-		
-		for (String line : lines) {		
-			
+
+		for (String line : lines) {
+			line = line.trim();
+
 			if (line.endsWith("*/")) {
-				filteredLines.add(line.substring(0, line.length()-2));
+				filteredLines.add(line.substring(0, line.length() - 2));
 				continue;
 			}
-			
+
 			if (line.length() > 0 && line.charAt(0) == '*') {
 				filteredLines.add(line.substring(1));
 				continue;
@@ -133,37 +139,70 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 				filteredLines.add(line.substring(3));
 				continue;
 			}
-			
+
 		}
-		
+
 		return asSingleString(filteredLines);
 	}
-	
-    protected SortedMap<Integer, Object> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
-  
+
+	protected void assignCommentsToDeclarations(ASTCompilationUnit cUnit) {
+		SortedMap<Integer, Object> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
+		FormalComment lastComment = null;
+
+		for (Entry<Integer, Object> entry : itemsByLineNumber.entrySet()) {
+			Object value = entry.getValue();
+			if (lastComment == null) {
+				if (value instanceof FormalComment) {
+					lastComment = (FormalComment) value;
+				}
+				// else this is declaration without comment
+			} else if (value instanceof AbstractJavaAccessNode) {
+				AbstractJavaAccessNode node = (AbstractJavaAccessNode) value;
+				node.comment(lastComment);
+				lastComment = null;
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @since
+	 * @param cUnit
+	 * @return bla
+	 */
+	protected SortedMap<Integer, Object> orderedCommentsAndDeclarations(
+			ASTCompilationUnit cUnit) {
+
 		SortedMap<Integer, Object> itemsByLineNumber = new TreeMap<Integer, Object>();
-		
-		List<ASTPackageDeclaration> packageDecl = cUnit.findDescendantsOfType(ASTPackageDeclaration.class);
-		for (ASTPackageDeclaration decl : packageDecl) {
+
+		List<ASTClassOrInterfaceDeclaration> packageDecl = cUnit
+				.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
+		for (ASTClassOrInterfaceDeclaration decl : packageDecl) {
 			itemsByLineNumber.put(decl.getBeginLine(), decl);
 		}
-		
+
 		for (Comment comment : cUnit.getComments()) {
 			itemsByLineNumber.put(comment.getBeginLine(), comment);
 		}
 
-		List<ASTFieldDeclaration> fields = cUnit.findDescendantsOfType(ASTFieldDeclaration.class);
+		List<ASTFieldDeclaration> fields = cUnit
+				.findDescendantsOfType(ASTFieldDeclaration.class);
 		for (ASTFieldDeclaration fieldDecl : fields) {
 			itemsByLineNumber.put(fieldDecl.getBeginLine(), fieldDecl);
 		}
-		
-		List<ASTMethodDeclaration> methods = cUnit.findDescendantsOfType(ASTMethodDeclaration.class);
+
+		List<ASTMethodDeclaration> methods = cUnit
+				.findDescendantsOfType(ASTMethodDeclaration.class);
 		for (ASTMethodDeclaration methodDecl : methods) {
 			itemsByLineNumber.put(methodDecl.getBeginLine(), methodDecl);
 		}
-		
-		System.out.println("Items:" + itemsByLineNumber);
 
-        return itemsByLineNumber;
-    }
+		List<ASTConstructorDeclaration> constructors = cUnit
+		        .findDescendantsOfType(ASTConstructorDeclaration.class);
+		for (ASTConstructorDeclaration constructorDecl : constructors) {
+		    itemsByLineNumber.put(constructorDecl.getBeginLine(), constructorDecl);
+		}
+
+		return itemsByLineNumber;
+	}
 }

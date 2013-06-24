@@ -10,7 +10,7 @@ Rules intended to catch errors related to code comments
   </description>
 
    <rule name="CommentRequired"
-    		  since="5.0"
+    		  since="5.1"
         message="Comment is required"
         class="net.sourceforge.pmd.lang.java.rule.comments.CommentRequiredRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/comments.html#CommentRequired">
