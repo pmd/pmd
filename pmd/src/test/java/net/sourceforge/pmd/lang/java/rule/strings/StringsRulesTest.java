@@ -13,6 +13,7 @@ public class StringsRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "AppendCharacterWithChar");
         addRule(RULESET, "AvoidStringBufferField");
+        addRule(RULESET, "ConsecutiveAppendsShouldReuse");
         addRule(RULESET, "ConsecutiveLiteralAppends");
         addRule(RULESET, "InefficientEmptyStringCheck");
         addRule(RULESET, "InefficientStringBuffering");
