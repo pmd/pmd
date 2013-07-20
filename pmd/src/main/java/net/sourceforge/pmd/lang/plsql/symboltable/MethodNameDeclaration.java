@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTPrimitiveType;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
    private final static Logger LOGGER = Logger.getLogger(MethodNameDeclaration.class.getName()); 
@@ -34,6 +33,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return ((ASTMethodDeclarator) node).getParameterCount();
     }
 
+    /**
+     * PL/SQL does not currently allow varargs outside the STANDARD package.
+     * @return false 
+     */
     public boolean isVarargs() {
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {

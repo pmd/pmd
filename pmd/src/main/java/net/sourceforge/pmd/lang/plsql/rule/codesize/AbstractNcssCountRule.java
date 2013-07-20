@@ -32,8 +32,8 @@ import net.sourceforge.pmd.util.NumericConstants;
  * Abstract superclass for NCSS counting methods. Analogous to and cribbed from {@link net.sourceforge.pmd.lang.java.rule.codesize.AbstractNcssCountRule}.
  */
 public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule {
-    private final static Logger LOGGER = Logger.getLogger(AbstractNcssCountRule.class.getPackage().getName()); 
     private final static String CLASS_NAME = AbstractNcssCountRule.class.getName(); 
+    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
 
     private Class<?> nodeClass;
 

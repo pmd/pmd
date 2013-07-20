@@ -7,27 +7,21 @@ import java.util.Stack;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.plsql.ast.ASTBlock;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExceptionHandler;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalOrExpression;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTElseClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
@@ -103,18 +97,6 @@ public Object visit(ASTInput node, Object data) {
     return data;
   }
 
-  /*
-  @Override
-public Object visit(ASTElseClause node, Object data) {
-    int boolCompIf = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
-    // If statement always has a complexity of at least 1
-    boolCompIf++;
-
-    entryStack.peek().bumpDecisionPoints( boolCompIf );
-    super.visit( node, data );
-    return data;
-  }
-  */
 
   @Override
 public Object visit(ASTElsifClause node, Object data) {
@@ -201,10 +183,9 @@ public Object visit(ASTCaseWhenClause node, Object data) {
     return data;
   }
 
-  @Override
+@Override
 public Object visit(ASTWhileStatement node, Object data) {
     LOGGER.entering(CLASS_PATH,"visit(ASTWhileStatement)");
-    Entry entry = entryStack.peek();
     int boolCompWhile = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
     // While statement always has a complexity of at least 1
     boolCompWhile++;

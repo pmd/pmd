@@ -9,14 +9,13 @@ import java.util.List;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sourceforge.pmd.util.database.DBURI;
 
 public class CPDCommandLineInterface {
         private final static String CLASS_NAME = CPDCommandLineInterface.class.getCanonicalName();
 
-        private final static Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getPackage().getName()); 
+        private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
 
 	private static final int DUPLICATE_CODE_FOUND = 4;
 
@@ -49,14 +48,12 @@ public class CPDCommandLineInterface {
 			jcommander.parse(args);
 			if (arguments.isHelp()) {
 				jcommander.usage();
-				// System.out.println(buildUsageText());
 				setStatusCodeOrExit(0);
 			}
 		} catch (ParameterException e) {
 			jcommander.usage();
 			System.out.println(buildUsageText());
 			System.out.println(e.getMessage());
-			// setStatusCodeOrExit(ERROR_STATUS);
 		}
 		arguments.postContruct();
 		// Pass extra parameters as System properties to allow language

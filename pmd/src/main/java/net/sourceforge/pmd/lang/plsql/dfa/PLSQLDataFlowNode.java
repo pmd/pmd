@@ -8,8 +8,6 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.AbstractDataFlowNode;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;

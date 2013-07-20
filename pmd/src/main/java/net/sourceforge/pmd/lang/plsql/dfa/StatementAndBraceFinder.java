@@ -45,11 +45,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTForInit;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTForUpdate;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpression;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchLabel;
 
 /**
  * @author raik
@@ -279,7 +274,6 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             LOGGER.finest("immediate return ASTWhileStatement: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             return data;
         }
-        Structure dataFlow = (Structure) data;
 
         //process the contents on the WHILE statement 
         super.visit(node, data);
@@ -322,6 +316,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
 
         if (node.jjtGetParent() instanceof ASTElseClause) {
             List<ASTStatement> allStatements = node.jjtGetParent().findChildrenOfType(ASTStatement.class) ;
+            LOGGER.finest("ElseClause has " + allStatements.size() + " Statements " );
 
            /*
            //Restrict to the last Statement of the Else Clause
@@ -614,8 +609,6 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
     private void addForExpressionNode(Node node, Structure dataFlow) {
         ASTForStatement parent = (ASTForStatement) node.jjtGetParent();
         boolean hasExpressionChild = false;
-        boolean hasForInitNode = false;
-        boolean hasForUpdateNode = false;
 
         for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
             if (parent.jjtGetChild(i) instanceof ASTExpression) {

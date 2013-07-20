@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-//import net.sourceforge.pmd.lang.plsql.ast.PLSQLParser;
 
 /**
  * Adapter for the PLSQLParser.
@@ -41,10 +40,7 @@ public class PLSQLParser extends AbstractParser {
     protected net.sourceforge.pmd.lang.plsql.ast.PLSQLParser 
 	      createPLSQLParser(Reader source) throws ParseException {
 	parser = new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser(source);
-	String suppressMarker = getParserOptions().getSuppressMarker();
-	//if (suppressMarker != null) {
-	//    parser.setSuppressMarker(suppressMarker);
-	//}
+
 	return parser;
     }
 
@@ -53,8 +49,6 @@ public class PLSQLParser extends AbstractParser {
     }
 
     public Node parse(String fileName, Reader source) throws ParseException {
-	//return new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser(parserOptions).parse(source);
-	//return new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser().parse(source);
 	AbstractTokenManager.setFileName(fileName);
 	return createPLSQLParser(source).Input();
     }

@@ -37,7 +37,7 @@ public class DBMSMetadata
   /**
    * Local logger.
    */
-  private final static Logger LOGGER = Logger.getLogger(DBMSMetadata.class.getPackage().getName()); 
+  private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
 
   /**
    * Optional DBType property specifying a query to fetch the Source Objects from the database.
@@ -343,7 +343,7 @@ public class DBMSMetadata
       }
       else
       {
-        searchLanguages = dbURIList;;
+        searchLanguages = dbURIList;
       }
     }
 
@@ -356,7 +356,7 @@ public class DBMSMetadata
       }
       else
       {
-        searchSchemas = dbURIList;;
+        searchSchemas = dbURIList;
       }
     }
 
@@ -369,7 +369,7 @@ public class DBMSMetadata
       }
       else
       {
-        searchSourceCodeTypes = dbURIList;;
+        searchSourceCodeTypes = dbURIList;
       }
     }
 
@@ -382,7 +382,7 @@ public class DBMSMetadata
       }
       else
       {
-        searchSourceCodeNames = dbURIList;;
+        searchSourceCodeNames = dbURIList;
       }
     }
 

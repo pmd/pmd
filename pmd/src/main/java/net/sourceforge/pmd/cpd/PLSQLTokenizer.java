@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
+import java.util.logging.Logger;
 import java.util.Properties;
 
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
@@ -9,9 +10,10 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserTokenManager;
 import net.sourceforge.pmd.lang.plsql.ast.Token;
 
 public class PLSQLTokenizer implements Tokenizer{
+  private final static String CLASS_NAME = PLSQLTokenizer.class.getCanonicalName();
 
-    /**
-    */
+  private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
+
     public static final String IGNORE_COMMENTS = "ignore_comments";
     public static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
     public static final String IGNORE_LITERALS = "ignore_literals";
@@ -52,7 +54,7 @@ public class PLSQLTokenizer implements Tokenizer{
 	public void tokenize (SourceCode sourceCode, Tokens tokenEntries )
 	{
             long encounteredTokens = 0, addedTokens = 0;
-		//Initialisation has to go here because the System properties are not set up when the Tokenizer is constructed 
+            //Initialisation has to go here because the System properties are not set up when the Tokenizer is constructed 
 	    if (!isInitialised) {
 			setProperties(System.getProperties());
 			isInitialised =  true;
@@ -109,6 +111,10 @@ public class PLSQLTokenizer implements Tokenizer{
 			currentToken = tokenMgr.getNextToken();
 		}
 		tokenEntries.add(TokenEntry.getEOF() );
+            LOGGER.fine(sourceCode.getFileName() 
+                        + ": encountered " + encounteredTokens + " tokens;"
+                        + " added " + addedTokens + " tokens"
+                       );
 	}
 
 

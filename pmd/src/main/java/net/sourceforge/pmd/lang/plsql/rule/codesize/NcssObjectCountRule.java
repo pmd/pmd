@@ -7,16 +7,9 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTGlobal;
-import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.OracleObject;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
-import net.sourceforge.pmd.lang.plsql.rule.codesize.AbstractNcssCountRule;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
 

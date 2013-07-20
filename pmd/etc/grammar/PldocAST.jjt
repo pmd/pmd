@@ -315,10 +315,13 @@ ASTPackageSpecification PackageSpecification()  :
 }
 {
       (
-	[<CREATE> [<OR> <REPLACE>]]
+	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	<PACKAGE> simpleNode = ObjectNameDeclaration()
 
-	(<AUTHID> (<CURRENT_USER> | <DEFINER>))?
+        (
+	  (<AUTHID> (<CURRENT_USER> | <DEFINER>))
+          | AccessibleByClause() 
+        )*
 
         (
 	  (
@@ -343,7 +346,7 @@ ASTPackageBody PackageBody()  :
 }
 {
     (
-	[<CREATE> [<OR> <REPLACE>]]
+	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	( <PACKAGE> | <TYPE> ) <BODY> simpleNode = ObjectNameDeclaration()
 
 	(
@@ -445,7 +448,7 @@ ASTProgramUnit ProgramUnit()  :
 {
 	(
 
-	[<CREATE> [<OR> <REPLACE>]]
+	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 
         MethodDeclarator()
 
@@ -458,7 +461,8 @@ ASTProgramUnit ProgramUnit()  :
 	*/
 
 	( (<AUTHID> ( <CURRENT_USER> | <DEFINER> ) ) | <DETERMINISTIC> 
-	    | <PARALLEL_ENABLE>  [ ParallelClause() ] [ <USING> ID() ["." ID()] ] 
+           | AccessibleByClause() 
+	   | <PARALLEL_ENABLE>  [ ParallelClause() ] [ <USING> ID() ["." ID()] ] 
 	   | <PIPELINED> [ ( <USING> ID() ["." ID()] ) 
 	                   |  //20110531
 			   (( <ORDER> | <CLUSTER> ) [ID()] <BY> "(" ID() ( "," ID() )*  ")" ) 
@@ -2365,6 +2369,19 @@ ASTParallelClause ParallelClause() :
       { return jjtThis ; }
 }
 
+ASTAccessibleByClause AccessibleByClause() :
+{
+}
+{
+    (<ACCESSIBLE> <BY>  
+     "(" 
+       [ <FUNCTION> | <PROCEDURE> | <PACKAGE> | <TRIGGER> | <TYPE> ]
+       QualifiedName()  ("," QualifiedName() )*  
+     ")" 
+    )
+      { return jjtThis ; }
+}
+
 // Copyright (C) 2002 Albert Tumanov
 
 /**
@@ -2553,7 +2570,7 @@ ASTTypeSpecification TypeSpecification()  :
  PLSQLNode simpleNode = null;
 }
 {
-	[<CREATE> [<OR> <REPLACE>]]
+	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	<TYPE> simpleNode = ObjectNameDeclaration()
 
 	[
@@ -2569,9 +2586,13 @@ ASTTypeSpecification TypeSpecification()  :
 		LOOKAHEAD(2) <OID> <STRING_LITERAL> 
 	]
         
-        [
-		LOOKAHEAD(2) <AUTHID> (<CURRENT_USER> | <DEFINER>)
-	]
+        (
+		LOOKAHEAD(2) //<AUTHID> (<CURRENT_USER> | <DEFINER>)
+				(
+				  (<AUTHID> (<CURRENT_USER> | <DEFINER>))
+				  | AccessibleByClause() 
+				)
+	)*
 
 	//(tokenIsAsUnder=<IS> | tokenIsAs=<AS> )
 	//{
@@ -2729,9 +2750,13 @@ ASTAlterTypeSpec AlterTypeSpec()  :
 */
         [
                 <REPLACE>
-                [
-		LOOKAHEAD(2) <AUTHID> (<CURRENT_USER> | <DEFINER>)
-                ]
+                (
+		LOOKAHEAD(2) //<AUTHID> (<CURRENT_USER> | <DEFINER>)
+				(
+				  (<AUTHID> (<CURRENT_USER> | <DEFINER>))
+				  | AccessibleByClause() 
+				)
+                )*
                 
 		( 
 		  (<IS> | <AS> )   <OBJECT>  // OBJECT TYPE
@@ -2936,7 +2961,7 @@ ASTTriggerUnit TriggerUnit()  :
  PLSQLNode simpleNode = null ;
 }
 {
-	[<CREATE> [<OR> <REPLACE>]]
+	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	
 	(<TRIGGER>) simpleNode = ObjectNameDeclaration()
 
@@ -3258,6 +3283,7 @@ TOKEN [IGNORE_CASE]:
 <DISTINCT: "DISTINCT"> |
 <DO: "DO"> |
 <DROP: "DROP"> |
+<EDITIONABLE: "EDITIONABLE"> |
 <ELEMENT: "ELEMENT"> |
 <ELSE: "ELSE"> |
 <ELSIF: "ELSIF"> |
@@ -3340,6 +3366,7 @@ TOKEN [IGNORE_CASE]:
 <NO: "NO"> |
 <NOCOMPRESS: "NOCOMPRESS"> | //SRT 2011-04-17
 <NOCOPY: "NOCOPY"> |
+<NONEDITIONABLE: "NONEDITIONABLE"> |
 <NOT: "NOT"> |
 <NOWAIT: "NOWAIT"> |
 <NULL: "NULL"> |
@@ -3545,6 +3572,7 @@ TOKEN [IGNORE_CASE]:
 | <CHARSETFORM: "CHARSETFORM"> //XE testing non-PLSQL functions 
 //SQLPlus Commands
 | <ACCEPT : "ACCEPT">
+| <ACCESSIBLE : "ACCESSIBLE">
 | <COPY : "COPY">
 | <DEFINE : "DEFINE">
 | <DISCONNECT : "DISCONNECT">
@@ -4831,6 +4859,9 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <SHOW>  // APEX_0400000.WWW_CALCUATOR.SHOW  
 | <WRAPPED>  // APEX_0400000.WWW_CALCUATOR.SHOW  
 | <SYS_REFCURSOR> //Not a keyword - just a type defined in standard 
+| <EDITIONABLE> 
+| <NONEDITIONABLE> 
+| <ACCESSIBLE> 
 )
 
 { jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
@@ -5317,7 +5348,7 @@ ASTTypeKeyword TypeKeyword(): {}
 	<LONG> | <RAW> | <ROWID> | <CHAR> | <CHARACTER> | <MLSLABEL> | <BLOB> | <CLOB> | <BFILE> |
 	<NCHAR> | <NVARCHAR2> | <NCLOB> | <PLS_INTEGER> | <TIME> | <TIMESTAMP> | <UROWID> |
 //
-	<ARRAY> | <AUTHID> |
+	<ARRAY> | <AUTHID> | <ACCESSIBLE> 
 	<CHAR_BASE> |
 	<CURRVAL> |
 	<HOUR> |

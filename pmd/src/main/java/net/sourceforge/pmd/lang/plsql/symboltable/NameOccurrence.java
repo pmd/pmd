@@ -8,11 +8,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTAssignmentOperator;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTPostfixExpression;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTPreDecrementExpression;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTPreIncrementExpression;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTStatementExpression;
 
 public class NameOccurrence {
 
@@ -25,9 +20,6 @@ public class NameOccurrence {
 
     private final static String THIS = "this";
     private final static String SUPER = "super";
-
-    private final static String THIS_DOT = "this.";
-    private final static String SUPER_DOT = "super.";
 
     public NameOccurrence(PLSQLNode location, String image) {
         this.location = location;

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.cpd;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,7 +24,7 @@ import net.sourceforge.pmd.util.database.SourceObject;
 public class CPD {
         private final static String CLASS_NAME = CPD.class.getCanonicalName();
 
-        private final static Logger LOGGER = Logger.getLogger(CPD.class.getPackage().getName()); 
+        private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
 
 	private CPDConfiguration configuration;
 

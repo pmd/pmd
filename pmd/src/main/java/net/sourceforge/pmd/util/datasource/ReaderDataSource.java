@@ -10,7 +10,7 @@ import org.apache.commons.io.input.ReaderInputStream;
 
 
 /**
- * DataSource implementation to read data from a reader.
+ * DataSource implementation to read data from a Reader.
  */
 public class ReaderDataSource implements DataSource {
 	
@@ -29,7 +29,6 @@ public class ReaderDataSource implements DataSource {
      * </p>
      */
     private String dataSourceName;
-    private String encoding;
 
     /**
      * @param Create the DataSource from the Reader.
@@ -45,6 +44,7 @@ public class ReaderDataSource implements DataSource {
      * @return Derived InputStream
      * @throws IOException 
      */
+    @Override
     public InputStream getInputStream() throws IOException {
         return new ReaderInputStream(reader) ;
     }
@@ -59,6 +59,7 @@ public class ReaderDataSource implements DataSource {
      * @param inputFileName ignored 
      * @return 
      */
+    @Override
     public String getNiceFileName(boolean shortNames, String inputFileName) {
         return getDataSourceName() ;
     }

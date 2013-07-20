@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -123,10 +122,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
-//import net.sourceforge.pmd.lang.plsql.ast.AccessNode;
 
 public class PLSQLDesigner implements ClipboardOwner {
-   private final static Logger LOGGER = Logger.getLogger(PLSQLDesigner.class.getName()); 
 
 	private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Arrays.asList(getSupportedLanguageVersions())
 	.indexOf(Language.JAVA.getDefaultVersion());
@@ -134,7 +131,6 @@ public class PLSQLDesigner implements ClipboardOwner {
 	private Node getCompilationUnit() {
 		LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
 		Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
-		//SRT Node node = parser.parse(null, new StringReader(codeEditorPane.getText()));
 		String source = codeEditorPane.getText();
 		Node node = parser.parse(null, new StringReader(source));
 

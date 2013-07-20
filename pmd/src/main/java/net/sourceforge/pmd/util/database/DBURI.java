@@ -28,12 +28,14 @@ import java.util.logging.Logger;
  * JDBC(-ish) URL jdbc:oracle:thin:username/password@//192.168.100.21:1521/ORCL
  * JDBC(-ish) URL jdbc:thin:username/password@//192.168.100.21:1521/ORCL
  * 
- * <p>The query  
- * characterset=utf8
- * languages=comma-separated list of desired PMD languages
- * schemas=comma-separated list of database schemas
- * sourcecodetypes=comma-separated list of database source code types
- * sourcecodenames=
+ * <p>The query includes one or more of these:- 
+ * <dl>
+ * <dt>characterset</dt><dd>utf8</dd>
+ * <dt>languages</dt><dd>comma-separated list of desired PMD languages</dd>
+ * <dt>schemas</dt><dd>comma-separated list of database schemas</dd>
+ * <dt>sourcecodetypes</dt><dd>comma-separated list of database source code types</dd>
+ * <dt>sourcecodenames</dt><dd>comma-separated list of database source code names</dd>
+ * </dl>
  * </p>
  * 
  *  @see http://docs.oracle.com/javase/7/docs/api/java/net/URI.html
@@ -43,7 +45,7 @@ public class DBURI {
 
 private final static String CLASS_NAME = DBURI.class.getCanonicalName();
 
-private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().getName()); 
+private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
 
 
   /**
@@ -110,6 +112,33 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
   private int sourceCodeType; 
   
 
+  /**
+   * Create DBURI from a string, combining a JDBC URL and query parameters.
+   * 
+   *<p> 
+   * From the JDBC URL component, infer:- 
+   * <ul>
+   * <li>JDBC driver class</li>
+   * <li>supported languages</li>
+   * <li>default source code types</li>
+   * <li>default schemas</li>
+   * </ul>
+   *</p> 
+   * 
+   *<p> 
+   * From the query component, define these values, overriding any defaults:- 
+   * <ul>
+   * <li>parsing language</li>
+   * <li>source code types</li>
+   * <li>schemas</li>
+   * <li>source code</li>
+   * </ul>
+   *</p> 
+   * 
+   * @param  string URL string
+   * @throws URISyntaxException
+   * @throws Exception
+   */
   public DBURI(String string) throws URISyntaxException, Exception 
   {
     /*
@@ -124,15 +153,13 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
      *   default source code types
      *   default schemas
      * generate a faux HTTP URI with the query,
-     * extract the 
+     * extract the query parameters 
      */
 
     uri = new URI (string);
 
     try
     {
-      String queryString = null ;
-          
       //Split the string between JDBC URL and the query
       String[] splitURI = string.split("\\?");
 
@@ -145,7 +172,7 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
         url = string;
       }
 
-      LOGGER.fine("Extracted URL="+url);
+      LOGGER.log(Level.FINE, "Extracted URL={0}", url);
 
       //Explode URL into its separate components
       setFields() ;
@@ -155,13 +182,13 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
       {
         //Generate a fake HTTP URI to allow easy extraction of the query parameters 
         String chimeraString = "http://local?" + string.substring(url.length()+1); 
-        LOGGER.finest("chimeraString="+chimeraString);
+        LOGGER.log(Level.FINEST, "chimeraString={0}", chimeraString);
         URI chimeraURI = new URI(chimeraString) ; 
         dump("chimeraURI",chimeraURI);
         
         parameters = getParameterMap(chimeraURI);
 
-        LOGGER.finest("parameterMap=="+parameters);
+        LOGGER.log(Level.FINEST, "parameterMap=={0}", parameters);
 
         characterSet = parameters.get("characterset");
         sourceCodeTypes = parameters.get("sourcecodetypes");
@@ -196,6 +223,38 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
     }
   }
 
+  /**
+   * Create a DBURI from standard individual {@link URI} components.
+   * 
+   *<p> 
+   * From the JDBC URL components, infer:- 
+   * <ul>
+   * <li>JDBC driver class</li>
+   * <li>supported languages</li>
+   * <li>default source code types</li>
+   * <li>default schemas</li>
+   * </ul>
+   *</p> 
+   * 
+   *<p> 
+   * From the query component, define these values, overriding any defaults:- 
+   * <ul>
+   * <li>parsing language</li>
+   * <li>source code types</li>
+   * <li>schemas</li>
+   * <li>source code</li>
+   * </ul>
+   *</p> 
+   * 
+   * @param scheme 
+   * @param userInfo
+   * @param host
+   * @param port
+   * @param path
+   * @param query
+   * @param fragment
+   * @throws URISyntaxException
+   */
   public DBURI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
   throws URISyntaxException
   {
@@ -203,11 +262,18 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
 
   }
 
+  /**
+   * Return extracted parameters from dburi.
+   * 
+   * @param dburi
+   * @return extracted parameters
+   * @throws UnsupportedEncodingException 
+   */
   private Map<String, String> getParameterMap (URI dburi) throws UnsupportedEncodingException {
 
     Map<String, String> map = new HashMap<String, String>();  
     String query = dburi.getRawQuery();
-    LOGGER.finest("dburi,getQuery()="+query);
+    LOGGER.log(Level.FINEST, "dburi,getQuery()={0}", query);
     if (null != query && !query.equals(""))
     {
       String[] params = query.split("&");  
@@ -219,13 +285,19 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
           if (splits.length > 1 ) 
           {
             value = splits[1] ;
-          };  
+          }
           map.put(name, (null==value) ? value:  URLDecoder.decode(value,"UTF-8"));  
       }  
     }
     return map;  
   }
 
+  /**
+   * Dump this URI to the log.
+   * 
+   * @param description
+   * @param dburi 
+   */
   static void dump(String description , URI dburi) {
 
     String dumpString = String.format(
@@ -257,7 +329,7 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
           if (splits.length > 1 ) 
           {
             value = splits[1] ;
-          };  
+          }
           map.put(name, value);  
           LOGGER.fine(String.format("name=%s,value=%s\n",name,value));
       }  
@@ -375,20 +447,26 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
     this.url = jdbcURL;
   }
 
+  /**
+   * Populate the URI and query collections from the original string
+   * 
+   * @throws Exception
+   * @throws URISyntaxException 
+   */
   private void setFields() throws Exception, URISyntaxException {
     if (url.startsWith("jdbc:"))
     {
       //java.net.URI is intended for "normal" URLs
       URI jdbcURI = new URI(getURL().substring(5)) ; 
 
-      LOGGER.fine("setFields - substr(jdbcURL,5):"+getURL().substring(5)) ; 
+      LOGGER.log(Level.FINE, "setFields - substr(jdbcURL,5):{0}", getURL().substring(5)) ; 
       dump("substr(jdbcURL,5)", jdbcURI);
 
       // jdbc:subprotocol:subname
       String[] uriParts = url.split(":"); 
       for ( String part : uriParts)
       {
-        LOGGER.finest("JDBCpart="+part);
+        LOGGER.log(Level.FINEST, "JDBCpart={0}", part);
       }
 
       /* Expect jdbc : subprotocol  [ : subname ] : connection details  
@@ -410,16 +488,14 @@ private final static Logger LOGGER = Logger.getLogger(DBURI.class.getPackage().g
         throw new URISyntaxException(getURL(), "Could not understand JDBC URL",1);
       }
 
-      LOGGER.fine("subprotocol="+subprotocol+"' subnamePrefix="+subnamePrefix);
+      LOGGER.log(Level.FINE, "subprotocol={0}'' subnamePrefix={1}", new Object[]{subprotocol, subnamePrefix});
 
       //Set values from DBType defaults 
       this.dbType = new DBType(subprotocol, subnamePrefix) ;
 
-      LOGGER.finer("DBType properties found at "+dbType.getPropertiesSource() 
-                   + " with " + dbType.getProperties().size() 
-                   + " properties."  );
+      LOGGER.log(Level.FINER, "DBType properties found at {0} with {1} properties.", new Object[]{dbType.getPropertiesSource(), dbType.getProperties().size()});
 
-      LOGGER.finest("DBType properties are:- "+dbType.getProperties() );
+      LOGGER.log(Level.FINEST, "DBType properties are:- {0}", dbType.getProperties());
                    
 
       if (null!= dbType.getDriverClass())
