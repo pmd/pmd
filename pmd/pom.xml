@@ -493,7 +493,7 @@
             <plugin>
                 <groupId>net.sourceforge.pmd</groupId>
                 <artifactId>pmd-build</artifactId>
-                <version>0.8-SNAPSHOT</version>
+                <version>0.8</version>
                 <executions>
                     <execution>
                         <phase>pre-site</phase>
@@ -626,6 +626,18 @@
             <artifactId>commons-io</artifactId>
             <version>2.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <reporting>
@@ -644,9 +656,7 @@
                     <reportSet>
                         <reports>
                             <report>javadoc</report>
-                            <!-- FIXME: The following report fails
                             <report>test-javadoc</report>
-                            -->
                         </reports>
                     </reportSet>
                 </reportSets>

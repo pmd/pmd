@@ -140,6 +140,10 @@ $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/
        <source>
 $ java -Xmx512m net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java
        </source>
+       <p>If you specify a source directory but don't want to scan the sub-directories, you can use the non-recursive option:</p>
+       <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --non-recursive --files /usr/local/java/src/java
+       </source>
 
    <p>Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0). This behavior has been introduced to ease CPD integration into scrips or
        hook, such as SVN hooks.</p>

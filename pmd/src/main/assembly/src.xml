@@ -18,9 +18,13 @@
         <useDefaultExcludes>true</useDefaultExcludes>
         <excludes>
             <exclude>${project.build.directory}/**</exclude>
+            <exclude>bin/**</exclude>
             <exclude>.settings/**</exclude>
             <exclude>.project</exclude>
             <exclude>.classpath</exclude>
+            <exclude>.checkstyle</exclude>
+            <exclude>.pmd</exclude>
+            <exclude>.ruleset</exclude>
         </excludes>
         <directoryMode>0755</directoryMode>
         <fileMode>0644</fileMode>

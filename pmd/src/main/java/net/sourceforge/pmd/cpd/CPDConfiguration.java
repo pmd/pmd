@@ -25,7 +25,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public final static String DEFAULT_RENDERER = "text";
 
-	@Parameter(names = "--language", description = "sources code language. Default value is"
+	@Parameter(names = "--language", description = "sources code language. Default value is "
 			+ DEFAULT_LANGUAGE, required = false, converter = LanguageConverter.class)
 	private Language language;
 
@@ -53,6 +53,9 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	@Parameter(names = "--files", variableArity = true, description = "list of files and directories to process", required = false)
 	private List<String> files;
+
+	@Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
+        private boolean nonRecursive;
 
 	@Parameter(names = "--uri", variableArity = true, description = "URI to process", required = false)
 	private String uri;
@@ -233,6 +236,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public void setURI(String uri) {
 		this.uri = uri;
+	}
+
+	public boolean isNonRecursive() {
+		return nonRecursive;
+	}
+
+	public void setNonRecursive(boolean nonRecursive) {
+		this.nonRecursive = nonRecursive;
 	}
 
 	public boolean isHelp() {

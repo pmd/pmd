@@ -21,6 +21,8 @@ import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.SourceObject;
 
+import org.apache.commons.io.FilenameUtils;
+
 public class CPD {
         private final static String CLASS_NAME = CPD.class.getCanonicalName();
 
@@ -93,7 +95,7 @@ public class CPD {
             current.add(signature);
         }
 
-        if (!file.getCanonicalPath().equals(file.getAbsolutePath())) {
+        if (!FilenameUtils.equalsNormalizedOnSystem(file.getAbsoluteFile().getCanonicalPath(), file.getAbsolutePath())) {
             System.err.println("Skipping " + file + " since it appears to be a symlink");
             return;
         }

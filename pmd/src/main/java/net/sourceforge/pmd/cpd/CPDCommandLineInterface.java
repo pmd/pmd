@@ -64,7 +64,7 @@ public class CPDCommandLineInterface {
                 //Add files 
                 if ( null != arguments.getFiles() && ! arguments.getFiles().isEmpty() )
                 {
-                  addSourcesFilesToCPD(arguments.getFiles(),cpd);
+                  addSourcesFilesToCPD(arguments.getFiles(),cpd, !arguments.isNonRecursive());
                 }
 
                 //Add Database URIS
@@ -80,10 +80,13 @@ public class CPDCommandLineInterface {
 		}
 	}
 
-	private static void addSourcesFilesToCPD(List<String> files, CPD cpd) {
+	private static void addSourcesFilesToCPD(List<String> files, CPD cpd, boolean recursive) {
 		try {
 			for (String file : files)
-				cpd.addRecursively(file);
+				if (recursive)
+					cpd.addRecursively(file);
+				else
+					cpd.addAllInDirectory(file);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

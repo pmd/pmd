@@ -114,4 +114,22 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#959 StringToString False Positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static String toString(MyObject o) {
+        return "MyObject: " + o;
+    }
+
+    public static vod main(String[] args) {
+        //in your code
+        MyObject o = new MyObject(); //MyObject has no relation with String
+        System.out.println(Foo.toString(o)); //PMD violation false positive
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -100,7 +101,6 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 	}
 
 	private void setVariableNameIfExists(Node node) {
-		variableName = "";
 		if (node instanceof ASTFieldDeclaration) {
 			variableName = ((ASTFieldDeclaration) node).getVariableName();
 		} else if (node instanceof ASTLocalVariableDeclaration) {
@@ -110,6 +110,10 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 			variableName = node.jjtGetChild(0).getImage();
 		} else if (node instanceof ASTVariableDeclaratorId) {
 			variableName = node.getImage();
+		} else if (node instanceof ASTFormalParameter) {
+		    setVariableNameIfExists(node.getFirstChildOfType(ASTVariableDeclaratorId.class));
+		} else {
+		    variableName = "";
 		}
 	}
 }

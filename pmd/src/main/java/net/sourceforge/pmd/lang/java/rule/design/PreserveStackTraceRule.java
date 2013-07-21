@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -38,7 +39,6 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 	"./VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression" +
 	"[ClassOrInterfaceType[contains(@Image,'Exception')] and Arguments[count(*)=0]]";
 
-    private static final String ILLEGAL_STATE_EXCEPTION = "IllegalStateException";
     private static final String FILL_IN_STACKTRACE = ".fillInStackTrace";
 
     @Override
@@ -56,39 +56,67 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                 }
                 continue;
             }
-            // If the thrown exception is IllegalStateException, no way to preserve the exception (the constructor has no args)
-            if ( ! isThrownExceptionOfType(throwStatement,ILLEGAL_STATE_EXCEPTION) ) {
-	            // Retrieve all argument for the throw exception (to see if the original exception is preserved)
-	            ASTArgumentList args = throwStatement.getFirstDescendantOfType(ASTArgumentList.class);
-
-	            if (args != null) {
-	                ck(data, target, throwStatement, args);
-	            }
-	            else {
-	        	Node child = throwStatement.jjtGetChild(0);
-	                while (child != null && child.jjtGetNumChildren() > 0
-	                        && !(child instanceof ASTName)) {
-	                    child = child.jjtGetChild(0);
-	                }
-	                if (child != null){
-	                    if ((child instanceof ASTName) && !target.equals(child.getImage()) && !child.hasImageEqualTo(target + FILL_IN_STACKTRACE)) {
-	                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getVariableDeclarations();
-		                    for (VariableNameDeclaration decl: vars.keySet()) {
-		                        args = decl.getNode().jjtGetParent()
-		                                .getFirstDescendantOfType(ASTArgumentList.class);
-		                        if (args != null) {
-		                            ck(data, target, throwStatement, args);
-		                        }
-		                    }
-	                    } else if (child instanceof ASTClassOrInterfaceType){
-	                       addViolation(data, throwStatement);
-	                    }
-	                }
-	            }
+            // Retrieve all argument for the throw exception (to see if the original exception is preserved)
+            ASTArgumentList args = throwStatement.getFirstDescendantOfType(ASTArgumentList.class);
+            if (args != null) {
+                Node parent = args.jjtGetParent().jjtGetParent();
+                if (parent instanceof ASTAllocationExpression) {
+                    // maybe it is used inside a anonymous class
+                    ck(data, target, throwStatement, parent);
+                } else {
+                    ck(data, target, throwStatement, args);
+                }
             }
-
+            else {
+                Node child = throwStatement.jjtGetChild(0);
+                while (child != null && child.jjtGetNumChildren() > 0
+                        && !(child instanceof ASTName)) {
+                    child = child.jjtGetChild(0);
+                }
+                if (child != null){
+                    if ((child instanceof ASTName) && !target.equals(child.getImage()) && !child.hasImageEqualTo(target + FILL_IN_STACKTRACE)) {
+                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getVariableDeclarations();
+                        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
+                            VariableNameDeclaration decl = entry.getKey();
+                            List<NameOccurrence> occurrences = entry.getValue();
+	                        if (decl.getImage().equals(child.getImage())) {
+	                            if (!isInitCauseCalled(target, occurrences)) {
+    		                        args = decl.getNode().jjtGetParent()
+    		                                .getFirstDescendantOfType(ASTArgumentList.class);
+    		                        if (args != null) {
+    		                            ck(data, target, throwStatement, args);
+    		                        }
+	                            }
+	                        }
+	                    }
+                    } else if (child instanceof ASTClassOrInterfaceType){
+                       addViolation(data, throwStatement);
+                    }
+                }
+            }
         }
         return super.visit(catchStmt, data);
+    }
+
+    private boolean isInitCauseCalled(String target, List<NameOccurrence> occurrences) {
+        boolean initCauseCalled = false;
+        for (NameOccurrence occurrence : occurrences) {
+            String image = null;
+            if (occurrence.getLocation() != null) {
+                image = occurrence.getLocation().getImage();
+            }
+            if (image != null && image.endsWith("initCause")) {
+                ASTPrimaryExpression primaryExpression = occurrence.getLocation().getFirstParentOfType(ASTPrimaryExpression.class);
+                if (primaryExpression != null) {
+                    ASTArgumentList args2 = primaryExpression.getFirstDescendantOfType(ASTArgumentList.class);
+                    if (checkForTargetUsage(target, args2)) {
+                        initCauseCalled = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return initCauseCalled;
     }
 
     @Override
@@ -129,21 +157,29 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 		return false;
 	}
 
-    private boolean isThrownExceptionOfType(ASTThrowStatement throwStatement,String type) {
-        return throwStatement.hasDescendantMatchingXPath("Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[@Image = '" + type + "']");
-    }
+    /**
+     * Checks whether the given target is in the argument list.
+     * If this is the case, then the target (root exception) is used as the cause.
+     * @param target
+     * @param baseNode
+     */
+	private boolean checkForTargetUsage(String target, Node baseNode) {
+	    boolean match = false;
+	    if (target != null && baseNode != null) {
+            List<ASTName> nameNodes = baseNode.findDescendantsOfType(ASTName.class);
+            for (ASTName nameNode : nameNodes) {
+                if (target.equals(nameNode.getImage())) {
+                    match = true;
+                    break;
+                }
+            }
+	    }
+        return match;
+	}
 
 	private void ck(Object data, String target, ASTThrowStatement throwStatement,
-                    ASTArgumentList args) {
-        boolean match = false;
-        List<ASTName> nameNodes = args.findDescendantsOfType(ASTName.class);
-        for (ASTName nameNode : nameNodes) {
-            if (target.equals(nameNode.getImage())) {
-                match = true;
-                break;
-            }
-        }
-        if ( ! match) {
+                    Node baseNode) {
+        if (!checkForTargetUsage(target, baseNode)) {
             RuleContext ctx = (RuleContext) data;
             addViolation(ctx, throwStatement);
         }

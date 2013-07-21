@@ -218,6 +218,33 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertTrue(summary.values().contains(Integer.valueOf(1)));
         assertTrue(summary.values().contains(Integer.valueOf(2)));
     }
+
+    @Test
+    public void testTreeIterator() {
+        Report r = new Report();
+        RuleContext ctx = new RuleContext();
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        JavaNode node1 = getNode(5, 5, ctx.getSourceCodeFilename(), true);
+        r.addRuleViolation(new JavaRuleViolation(rule, ctx, node1, rule.getMessage()));
+        JavaNode node2 = getNode(5, 6, ctx.getSourceCodeFilename(), true);
+        r.addRuleViolation(new JavaRuleViolation(rule, ctx, node2, rule.getMessage()));
+
+        Iterator<RuleViolation> violations = r.iterator();
+        int violationCount = 0;
+        while (violations.hasNext()) {
+            violations.next();
+            violationCount++;
+        }
+        assertEquals(2, violationCount);
+
+        Iterator<RuleViolation> treeIterator = r.treeIterator();
+        int treeCount = 0;
+        while (treeIterator.hasNext()) {
+            treeIterator.next();
+            treeCount++;
+        }
+        assertEquals(2, treeCount);
+    }
     
     public static JavaNode getNode(int line, int column, String scopeName){
 	DummyJavaNode s = new DummyJavaNode(2);
@@ -228,6 +255,15 @@ public class ReportTest extends RuleTst implements ReportListener {
         s.setScope(new SourceFileScope(scopeName));
         s.testingOnly__setBeginLine(10);
         s.testingOnly__setBeginColumn(5);
+        return s;
+    }
+
+    public static JavaNode getNode(int line, int column, String scopeName, boolean nextLine) {
+        DummyJavaNode s = (DummyJavaNode)getNode(line, column, scopeName);
+        if (nextLine) {
+            s.testingOnly__setBeginLine(line + 1);
+            s.testingOnly__setBeginColumn(column + 4);
+        }
         return s;
     }
 

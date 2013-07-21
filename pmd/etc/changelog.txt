@@ -8,13 +8,41 @@ New EcmaScript rules and ruleset:
 		- AvoidWithStatement
 	UseBaseWithParseInt
 
-New Java rule:
+New Java rules:
 	GuardLogStatement
 		- replace xpath implementation of GuardDebugLogging by GuardLogStatement (better perf)
+	CommentRequired
+		- basic rule to check for existence for formal (javadoc) comments.
+	AvoidProtectedMethodInFinalClassNotExtending
+		- rule to avoid protected methods in final classes that don't extend anything other than Object.
+
+CPD Command Line Changes:
+  Added non-recursive option "--non-recursive" to not scan sub-directories
 
 
-????? ??, 2013 - 5.0.3:
 
+May 1, 2013 - 5.0.4:
+
+Fixed bug  254: False+ : UnusedImport with Javadoc @throws
+Fixed bug  794: False positive on PreserveStackTrace with anonymous inner
+Fixed bug 1063: False+: ArrayIsStoredDirectly
+Fixed bug 1080: net.sourceforge.pmd.cpd.CPDTest test failing
+Fixed bug 1081: Regression: CPD skipping all files when using relative paths
+Fixed bug 1082: CPD performance issue on larger projects
+Fixed bug 1085: NullPointerException by at net.sourceforge.pmd.lang.java.rule.design.GodClassRule.visit(GodClassRule.java:313)
+Fixed bug 1086: Unsupported Element and Attribute in Ant Task Example
+Fixed bug 1087: PreserveStackTrace (still) ignores initCause()
+Fixed bug 1089: When changing priority in a custom ruleset, violations reported twice
+
+
+April 5, 2013 - 5.0.3:
+
+Fixed bug  938: False positive on LooseCoupling for overriding methods
+Fixed bug  940: False positive on UnsynchronizedStaticDateFormatter
+Fixed bug  942: CheckResultSet False Positive and Negative
+Fixed bug  943: PreserveStackTrace false positive if a StringBuffer exists
+Fixed bug  945: PMD generates RuleSets it cannot read.
+Fixed bug  958: Intermittent NullPointerException while loading XPath node attributes
 Fixed bug  968: Issues with JUnit4 @Test annotation with expected exception (Thanks to Yiannis Paschalidis)
 Fixed bug  975: false positive in ClassCastExceptionWithToArray
 Fixed bug  976: UselessStringValueOf wrong when appending character arrays
@@ -32,6 +60,10 @@ Fixed bug 1064: Exception running PrematureDeclaration
 Fixed bug 1068: CPD fails on broken symbolic links
 Fixed bug 1073: Hard coded violation messages CommentSize
 Fixed bug 1074: rule priority doesn't work on group definitions
+Fixed bug 1076: Report.treeIterator() does not return all violations
+Fixed bug 1077: Missing JavaDocs for Xref-Test Files
+Fixed bug 1078: Package statement introduces false positive UnnecessaryFullyQualifiedName violation
+Merged pull request #14: fix Nullpointer Exception when using -l jsp
 
 
 

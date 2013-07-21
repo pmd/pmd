@@ -335,6 +335,7 @@
             <li>Matthew Short - Support in CPD for IgnoreAnnotations and SuppressWarnings("CPD-START").</li>
             <li>Simon Gijsen - contributing a PMD logo with a modern look.</li>
             <li>Yiannis Paschalidis - Fixed bug #968 Issues with JUnit4 @Test annotation with expected exception</li>
+            <li>Jaroslav Snajberk - Make the comment required rule working.</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

@@ -663,6 +663,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 				}
 			}
 		}
+		if (myType == null && qualifiedName != null && !qualifiedName.contains(".")) {
+		    // try again with java.lang....
+		    try {
+		        myType = pmdClassLoader.loadClass("java.lang." + qualifiedName);
+		    } catch (Exception e) {
+		        // ignored
+		    }
+		}
 		if (myType != null) {
 			node.setType(myType);
 		}

@@ -124,6 +124,7 @@ public abstract class RuleTst {
         ctx.setReport(report);
         ctx.setSourceCodeFilename("n/a");
         ctx.setLanguageVersion(languageVersion);
+        ctx.setIgnoreExceptions(false);
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);

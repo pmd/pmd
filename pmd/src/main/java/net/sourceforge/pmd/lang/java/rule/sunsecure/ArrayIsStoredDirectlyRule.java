@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -63,6 +64,25 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
         }
     }
 
+    private String getExpressionVarName(Node e) {
+        String assignedVar = getFirstNameImage(e);
+        if (assignedVar == null) {
+            ASTPrimarySuffix suffix = e.getFirstDescendantOfType(ASTPrimarySuffix.class);
+            if (suffix != null) {
+                assignedVar = suffix.getImage();
+                ASTPrimaryPrefix prefix = e.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+                if (prefix != null) {
+                    if (prefix.usesThisModifier()) {
+                        assignedVar = "this." + assignedVar;
+                    } else if (prefix.usesSuperModifier()) {
+                        assignedVar = "super." + assignedVar;
+                    }
+                }
+            }
+        }
+        return assignedVar;
+    }
+
     /**
      * Checks if the variable designed in parameter is written to a field (not local variable) in the statements.
      */
@@ -76,13 +96,9 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                     continue;
                 }
                 ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
-                String assignedVar = getFirstNameImage(pe);
+                String assignedVar = getExpressionVarName(pe);
                 if (assignedVar == null) {
-                    ASTPrimarySuffix suffix = se.getFirstDescendantOfType(ASTPrimarySuffix.class);
-                    if (suffix == null) {
-                        continue;
-                    }
-                    assignedVar = suffix.getImage();
+                    continue;
                 }
 
                 Node n = pe.getFirstParentOfType(ASTMethodDeclaration.class);
@@ -103,14 +119,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                     if (e.hasDescendantOfType(ASTEqualityExpression.class)) {
                         continue;
                     }
-                    String val = getFirstNameImage(e);
-                    if (val == null) {
-                        ASTPrimarySuffix foo = se.getFirstDescendantOfType(ASTPrimarySuffix.class);
-                        if (foo == null) {
-                            continue;
-                        }
-                        val = foo.getImage();
-                    }
+                    String val = getExpressionVarName(e);
                     if (val == null) {
                         continue;
                     }

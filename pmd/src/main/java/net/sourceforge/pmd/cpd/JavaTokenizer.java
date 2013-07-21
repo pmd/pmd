@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
-import java.util.*;
+import java.util.Properties;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -23,8 +23,6 @@ public class JavaTokenizer implements Tokenizer {
     private boolean ignoreAnnotations;
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
-    List<Discarder> discarders = new ArrayList<Discarder>();
-
 
     public void setProperties(Properties properties) {
         ignoreAnnotations = Boolean.parseBoolean(properties.getProperty(IGNORE_ANNOTATIONS, "false"));
@@ -42,22 +40,17 @@ public class JavaTokenizer implements Tokenizer {
                 fileName, new StringReader(stringBuilder.toString()));
         Token currentToken = (Token) tokenMgr.getNextToken();
 
-        initDiscarders();
+        TokenDiscarder discarder = new TokenDiscarder(ignoreAnnotations);
 
         while (currentToken.image.length() > 0) {
-            for (Discarder discarder : discarders) {
-                discarder.add(currentToken);
-            }
+            discarder.updateState(currentToken);
 
-            if (inDiscardingState()) {
+            if (discarder.isDiscarding()) {
                 currentToken = (Token) tokenMgr.getNextToken();
                 continue;
             }
 
-            //skip semicolons
-            if (currentToken.kind != JavaParserConstants.SEMICOLON) {
-                processToken(tokenEntries, fileName, currentToken);
-            }
+            processToken(tokenEntries, fileName, currentToken);
             currentToken = (Token) tokenMgr.getNextToken();
         }
         tokenEntries.add(TokenEntry.getEOF());
@@ -68,30 +61,14 @@ public class JavaTokenizer implements Tokenizer {
         if (ignoreLiterals
                 && (currentToken.kind == JavaParserConstants.STRING_LITERAL
                 || currentToken.kind == JavaParserConstants.CHARACTER_LITERAL
-                || currentToken.kind == JavaParserConstants.DECIMAL_LITERAL || currentToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL)) {
+                || currentToken.kind == JavaParserConstants.DECIMAL_LITERAL
+                || currentToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL)) {
             image = String.valueOf(currentToken.kind);
         }
         if (ignoreIdentifiers && currentToken.kind == JavaParserConstants.IDENTIFIER) {
             image = String.valueOf(currentToken.kind);
         }
         tokenEntries.add(new TokenEntry(image, fileName, currentToken.beginLine));
-    }
-
-    private void initDiscarders() {
-        if (ignoreAnnotations)
-            discarders.add(new AnnotationStateDiscarder());
-        discarders.add(new SuppressCPDDiscarder());
-        discarders.add(new KeyWordToSemiColonStateDiscarder(JavaParserConstants.IMPORT));
-        discarders.add(new KeyWordToSemiColonStateDiscarder(JavaParserConstants.PACKAGE));
-    }
-
-    private boolean inDiscardingState() {
-        boolean discarding = false;
-        for (Discarder discarder : discarders) {
-            if (discarder.isDiscarding())
-                discarding = true;
-        }
-        return discarding;
     }
 
     public void setIgnoreLiterals(boolean ignore) {
@@ -106,83 +83,101 @@ public class JavaTokenizer implements Tokenizer {
         this.ignoreAnnotations = ignoreAnnotations;
     }
 
-    static public interface Discarder {
-        public void add(Token token);
+    /**
+     * The {@link TokenDiscarder} consumes token by token and maintains state.
+     * It can detect, whether the current token belongs to an annotation and whether
+     * the current token should be discarded by CPD.
+     * <p>
+     * By default, it discards semicolons, package and import statements, and enables CPD suppression.
+     * Optionally, all annotations can be ignored, too.
+     * </p>
+     */
+    private static class TokenDiscarder {
+        private boolean isAnnotation = false;
+        private boolean nextTokenEndsAnnotation = false;
+        private int annotationStack = 0;
 
-        public boolean isDiscarding();
-    }
+        private boolean discardingSemicolon = false;
+        private boolean discardingKeywords = false;
+        private boolean discardingSuppressing = false;
+        private boolean discardingAnnotations = false;
+        private boolean ignoreAnnotations = false;
 
-    static public class AnnotationStateDiscarder implements Discarder {
+        public TokenDiscarder(boolean ignoreAnnotations) {
+            this.ignoreAnnotations = ignoreAnnotations;
+        }
 
-        Stack<Token> tokenStack = new Stack<Token>();
+        public void updateState(Token currentToken) {
+            detectAnnotations(currentToken);
 
-        public void add(Token token) {
-            if (isDiscarding() && tokenStack.size() == 2 && token.kind != JavaParserConstants.LPAREN) {
-                tokenStack.clear();
+            skipSemicolon(currentToken);
+            skipPackageAndImport(currentToken);
+            skipCPDSuppression(currentToken);
+            if (ignoreAnnotations) {
+                skipAnnotations();
             }
+        }
 
-            if (token.kind == JavaParserConstants.AT && !isDiscarding()) {
-                tokenStack.push(token);
-                return;
-            }
-            if (token.kind == JavaParserConstants.RPAREN && isDiscarding()) {
-                Token popped = null;
-                while ((popped = tokenStack.pop()).kind != JavaParserConstants.LPAREN) ;
-                return;
-
-            } else {
-                if (isDiscarding())
-                    tokenStack.push(token);
+        public void skipPackageAndImport(Token currentToken) {
+            if (currentToken.kind == JavaParserConstants.PACKAGE || currentToken.kind == JavaParserConstants.IMPORT) {
+                discardingKeywords = true;
+            } else if (discardingKeywords && currentToken.kind == JavaParserConstants.SEMICOLON) {
+                discardingKeywords = false;
             }
         }
 
-        public boolean isDiscarding() {
-            return !tokenStack.isEmpty();
+        public void skipSemicolon(Token currentToken) {
+            if (currentToken.kind == JavaParserConstants.SEMICOLON) {
+                discardingSemicolon = true;
+            } else if (discardingSemicolon && currentToken.kind != JavaParserConstants.SEMICOLON) {
+                discardingSemicolon = false;
+            }
         }
 
-    }
-
-    static public class KeyWordToSemiColonStateDiscarder implements Discarder {
-
-        private final int keyword;
-        Stack<Token> tokenStack = new Stack<Token>();
-
-        public KeyWordToSemiColonStateDiscarder(int keyword) {
-            this.keyword = keyword;
-        }
-
-        public void add(Token token) {
-            if (token.kind == keyword)
-                tokenStack.add(token);
-            if (token.kind == JavaParserConstants.SEMICOLON && isDiscarding())
-                tokenStack.clear();
-        }
-
-        public boolean isDiscarding() {
-            return !tokenStack.isEmpty();
-        }
-
-    }
-
-    static public class SuppressCPDDiscarder implements Discarder {
-        AnnotationStateDiscarder asm = new AnnotationStateDiscarder();
-        Boolean discarding = false;
-
-        public void add(Token token) {
-            asm.add(token);
+        public void skipCPDSuppression(Token currentToken) {
             //if processing an annotation, look for a CPD-START or CPD-END
-            if (asm.isDiscarding()) {
-                if (CPD_START.equals(token.image))
-                    discarding = true;
-                if (CPD_END.equals(token.image) && discarding)
-                    discarding = false;
+            if (isAnnotation) {
+                if (!discardingSuppressing && currentToken.kind == JavaParserConstants.STRING_LITERAL && CPD_START.equals(currentToken.image)) {
+                    discardingSuppressing = true;
+                } else if (discardingSuppressing && currentToken.kind == JavaParserConstants.STRING_LITERAL && CPD_END.equals(currentToken.image)) {
+                    discardingSuppressing = false;
+                }
+            }
+        }
+
+        public void skipAnnotations() {
+            if (!discardingAnnotations && isAnnotation) {
+                discardingAnnotations = true;
+            } else if (discardingAnnotations && !isAnnotation) {
+                discardingAnnotations = false;
             }
         }
 
         public boolean isDiscarding() {
-            return discarding;
+            boolean result = discardingSemicolon || discardingKeywords || discardingAnnotations || discardingSuppressing;
+            return result;
         }
 
+        public void detectAnnotations(Token currentToken) {
+            if (isAnnotation && nextTokenEndsAnnotation) {
+                isAnnotation = false;
+                nextTokenEndsAnnotation = false;
+            }
+            if (isAnnotation) {
+                if (currentToken.kind == JavaParserConstants.LPAREN) {
+                    annotationStack++;
+                } else if (currentToken.kind == JavaParserConstants.RPAREN) {
+                    annotationStack--;
+                    if (annotationStack == 0) {
+                        nextTokenEndsAnnotation = true;
+                    }
+                } else if (annotationStack == 0 && currentToken.kind != JavaParserConstants.IDENTIFIER &&  currentToken.kind != JavaParserConstants.LPAREN) {
+                    isAnnotation = false;
+                }
+            }
+            if (currentToken.kind == JavaParserConstants.AT) {
+                isAnnotation = true;
+            }
+        }
     }
-
 }
