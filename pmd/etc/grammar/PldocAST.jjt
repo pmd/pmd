@@ -2375,8 +2375,10 @@ ASTAccessibleByClause AccessibleByClause() :
 {
     (<ACCESSIBLE> <BY>  
      "(" 
-       [ <FUNCTION> | <PROCEDURE> | <PACKAGE> | <TRIGGER> | <TYPE> ]
-       QualifiedName()  ("," QualifiedName() )*  
+        [ <FUNCTION> | <PROCEDURE> | <PACKAGE> | <TRIGGER> | <TYPE> ] QualifiedName()  
+       ("," 
+        [ <FUNCTION> | <PROCEDURE> | <PACKAGE> | <TRIGGER> | <TYPE> ] QualifiedName() 
+       )*  
      ")" 
     )
       { return jjtThis ; }
