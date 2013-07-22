@@ -15,7 +15,7 @@ public class LanguageFactory {
      * new language here ?
     */
    public static String[] supportedLanguages =
-           new String[]{"java", "jsp", "cpp", "c", "php", "ruby", "fortran", "ecmascript", "cs"};
+           new String[]{"java", "jsp", "cpp", "c", "php", "ruby", "fortran", "ecmascript", "cs", "plsql" };
 
    private static final String SUFFIX = "Language";
    public static final String EXTENSION = "extension";

@@ -113,6 +113,17 @@ public class GUI implements CPDListener {
 		{"C#",				new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cs"); }
 									public String[] extensions() { return new String[] {".cs" }; };	} },
+		{"PLSQL", 			 new LanguageConfig() {
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("plsql"); }
+									public String[] extensions() { return new String[] {".sql"
+																,".trg"
+																,".prc",".fnc"
+																,".pld"
+																,".pls",".plh",".plb"
+																,".pck",".pks",".pkh",".pkb"
+																,".typ",".tyb"
+																,".tps",".tpb"
+																}; };	} },
 		{"Ecmascript",			new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("js"); }
 									public String[] extensions() { return new String[] {".js" }; }; } },

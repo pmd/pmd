@@ -44,6 +44,7 @@ public class MainFrame
     private JRadioButtonMenuItem jdk15MenuItem;	//NOPMD
     private JRadioButtonMenuItem jdk16MenuItem;
     private JRadioButtonMenuItem jdk17MenuItem;
+    private JRadioButtonMenuItem plsqlMenuItem; 
 
     /**
      * constructs and shows the frame
@@ -82,7 +83,7 @@ public class MainFrame
         getContentPane().add(btnPane, BorderLayout.SOUTH);
 
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("JDK");
+        JMenu menu = new JMenu("Language");
         ButtonGroup group = new ButtonGroup();
         jdk13MenuItem = new JRadioButtonMenuItem("JDK 1.3");
         jdk13MenuItem.setSelected(false);
@@ -104,6 +105,11 @@ public class MainFrame
         jdk17MenuItem.setSelected(false);
         group.add(jdk17MenuItem);
         menu.add(jdk17MenuItem);
+	//PLSQL
+        plsqlMenuItem = new JRadioButtonMenuItem("PLSQL");
+        plsqlMenuItem.setSelected(false);
+        group.add(plsqlMenuItem);
+        menu.add(plsqlMenuItem);
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
@@ -118,10 +124,14 @@ public class MainFrame
             return LanguageVersion.JAVA_14;
         } else if (jdk13MenuItem.isSelected()) {
             return LanguageVersion.JAVA_13;
+        } else if (jdk15MenuItem.isSelected()) {
+            return LanguageVersion.JAVA_15;
         } else if (jdk16MenuItem.isSelected()) {
             return LanguageVersion.JAVA_16;
         } else if (jdk17MenuItem.isSelected()) {
-            return LanguageVersion.JAVA_16;
+            return LanguageVersion.JAVA_17;
+        } else if (plsqlMenuItem.isSelected()) {
+            return LanguageVersion.PLSQL;
         }
         return LanguageVersion.JAVA_15;
     }
@@ -135,9 +145,12 @@ public class MainFrame
         long t1;
         if (ActionCommands.COMPILE_ACTION.equals(command)) {
             try {
+		LanguageVersion languageVersion = getLanguageVersion() ;
+		System.out.println(languageVersion.getName() );
                 t0 = System.currentTimeMillis();
-                model.commitSource(sourcePanel.getSourceCode(), getLanguageVersion());
+                model.commitSource(sourcePanel.getSourceCode(), languageVersion );
                 t1 = System.currentTimeMillis();
+		System.out.println("compiled" );
                 setStatus(NLS.nls("MAIN.FRAME.COMPILATION.TOOK") + " " + (t1 - t0) + " ms");
             } catch (ParseException exc) {
                 setStatus(NLS.nls("MAIN.FRAME.COMPILATION.PROBLEM") + " " + exc.toString());

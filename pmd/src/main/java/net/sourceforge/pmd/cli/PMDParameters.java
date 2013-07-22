@@ -18,7 +18,10 @@ public class PMDParameters {
 	@Parameter(names = {"-rulesets", "-R"}, description = "comma separated list of rulesets name to use", required = true)
 	private String rulesets;
 	
-	@Parameter(names = {"-dir", "-d"}, description = "root directory for sources", required = true)
+	@Parameter(names = {"-uri", "-u"}, description = "Database URI for sources", required = false)
+	 String uri;
+	
+	@Parameter(names = {"-dir", "-d"}, description = "root directory for sources", required = false)
 	private String sourceDir;
 	
 	@Parameter(names = {"-format", "-f"}, description = "report format type")
@@ -61,14 +64,15 @@ public class PMDParameters {
 	private String reportfile = null;
 	
 	@Parameter(names = {"-version","-v"}, description = "specify version of a language PMD should use")
-	private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion();
+	//private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion();
+	private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion() ; //version is dependent on language
 	
-	@Parameter(names = {"-language", "-l"}, description = "specify version of a language PMD should use")
+	@Parameter(names = {"-language", "-l"}, description = "specify a language PMD should use")
 	private String language = Language.getDefaultLanguage().getTerseName();
 
 	@Parameter(names = "-auxclasspath", description = "specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
 	private String auxclasspath;	
-	
+
 	class PropertyConverter implements IStringConverter<Properties> {
 		
 		private static final char separator = '=';
@@ -101,8 +105,15 @@ public class PMDParameters {
 	}
 
     public static PMDConfiguration transformParametersIntoConfiguration(PMDParameters params) {
+        if ( null ==  params.getSourceDir()
+    	    && null == params.getUri()
+           )
+        {
+          throw new IllegalArgumentException("Please provide either source root directory (-dir or -d) or database URI (-uri or -u) parameter");
+        }
     	PMDConfiguration configuration = new PMDConfiguration();
     	configuration.setInputPaths(params.getSourceDir());
+    	configuration.setInputUri(params.getUri());
     	configuration.setReportFormat(params.getFormat());
     	configuration.setBenchmark(params.isBenchmark());
     	configuration.setDebug(params.isDebug());
@@ -117,11 +128,13 @@ public class PMDParameters {
     	configuration.setSuppressMarker(params.getSuppressmarker());
     	configuration.setThreads(params.getThreads()); 
     	for ( LanguageVersion language : LanguageVersion.findVersionsForLanguageTerseName( params.getLanguage() ) ) {
-        	LanguageVersion languageVersion = language.getLanguage().getVersion(params.getVersion());
+
+            LanguageVersion languageVersion = language.getLanguage().getVersion(params.getVersion());
         	if (languageVersion == null) {
             		languageVersion = language.getLanguage().getDefaultVersion();
         	}
         	configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
+
     	}
         try {
             configuration.prependClasspath(params.getAuxclasspath());
@@ -202,4 +215,20 @@ public class PMDParameters {
 	public String getFormat() {
 		return format;
 	}
+
+
+        /**
+         * @return the uri alternative to source directory. 
+         */
+        public String getUri() {
+          return uri;
+        }
+
+        /**
+         * @param uri the uri specifying the source directory.
+         */
+        public void setUri(String uri) {
+          this.uri = uri;
+        }
+	
 }

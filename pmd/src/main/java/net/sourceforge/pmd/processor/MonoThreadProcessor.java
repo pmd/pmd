@@ -60,7 +60,7 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
 				ctx.setLanguageVersion(null);
 				processor.processSourceCode(stream, rs, ctx);
 			} catch (PMDException pmde) {
-				LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
+				LOG.log(Level.FINE, "Error while processing file: "+niceFileName, pmde.getCause());
 
 				report.addError(new Report.ProcessingError(pmde.getMessage(), niceFileName));
 			} catch (IOException ioe) {

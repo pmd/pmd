@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -18,18 +19,21 @@ import java.util.List;
  *         WHILE_END		2
  *         IF_END			3
  *         <p/>
- *         The first sequence is WHILE_EXPR und WHILE_END. It returns always the
+ *         The first sequence is WHILE_EXPR and WHILE_END. It returns always the
  *         first inner nested scope.
  */
 public class SequenceChecker {
+    private final static Logger LOGGER = Logger.getLogger(SequenceChecker.class.getPackage().getName()); 
 
     /*
      * Element of logical structure of brace nodes.
      * */
     private static class Status {
+
 	public static final int ROOT = -1;
 
 	private List<Status> nextSteps = new ArrayList<Status>();
+        //NodeType
 	private int type;
 	private boolean lastStep;
 
@@ -46,6 +50,11 @@ public class SequenceChecker {
 	    nextSteps.add(type);
 	}
 
+        /**
+         * 
+         * @param type candidate 
+         * @return valid Status or null if NodeType is not a valid transition NodeType 
+         */
 	public Status step(int type) {
 	    for (int i = 0; i < this.nextSteps.size(); i++) {
 		if (type == nextSteps.get(i).type) {
@@ -62,11 +71,18 @@ public class SequenceChecker {
 	public boolean hasMoreSteps() {
 	    return this.nextSteps.size() > 1;
 	}
+
+	public String toString() {
+	 return "NodeType=" + NodeType.stringFromType(type) + "("+ type + "), lastStep=" + lastStep;
+	}
     }
 
     private static Status root;
 
-    static {
+    /**
+     * Create State transition map for the control structures
+     */
+    static { 
 	root = new Status(Status.ROOT);
 	Status ifNode = new Status(NodeType.IF_EXPR);
 	Status ifSt = new Status(NodeType.IF_LAST_STATEMENT);
@@ -151,38 +167,77 @@ public class SequenceChecker {
     }
 
     /**
-     * Finds the first most inner sequence e.g IFStart & IFEnd. If no sequence
-     * is found or the list is empty the method returns false.
+     * Finds the first innermost sequence e.g IFStart & IFEnd. 
+     * If the list has been exhausted (firstIndex==lastIndex) the method returns true.
      */
     public boolean run() {
+        LOGGER.entering(this.getClass().getCanonicalName(),"run");
 	this.aktStatus = root;
 	this.firstIndex = 0;
 	this.lastIndex = 0;
 	boolean lookAhead = false;
 
-	for (int i = 0; i < this.bracesList.size(); i++) {
+        /*Walk through the bracesList attempting to identify the first contiguous graph of Nodes 
+         * from the initial Status to a final Status. 
+         * 
+         *There are 2 loop indexes:-
+         * i which ranges through the bracesList: this may be reset 
+         * l serves as a control to cope with invalid lists of StackObjects,
+         * preventing infinite loops within the SequenceChecker. 
+         */
+        int maximumIterations = this.bracesList.size() * this.bracesList.size() ;
+	for (int i = 0, l = 0; i < this.bracesList.size(); l++, i++) {
 	    StackObject so = bracesList.get(i);
-	    aktStatus = this.aktStatus.step(so.getType());
+            LOGGER.finest("Processing bracesList(l,i)=("+l+","+i+") of Type "
+                          + NodeType.stringFromType(so.getType()) + " with State (aktStatus) = " 
+                          + aktStatus
+                         );
 
-	    if (aktStatus == null) {
+            //LOGGER.finest("StackObject of Type="+so.getType());
+            LOGGER.finest("DataFlowNode @ line "+ so.getDataFlowNode().getLine() + " and index=" 
+                           + so.getDataFlowNode().getIndex()
+                         );
+
+            //Attempt to get to this StackObject's NodeType from the current State
+	    aktStatus = this.aktStatus.step(so.getType());
+            LOGGER.finest("Transition aktStatus="+aktStatus);
+
+	    if (aktStatus == null) { // Not a valid Node from the current State
 		if (lookAhead) {
 		    this.lastIndex = i - 1;
+                    LOGGER.finer("aktStatus is NULL (lookAhead): Invalid transition");
+                    LOGGER.exiting(this.getClass().getCanonicalName(),"run", false);
 		    return false;
 		}
-		this.aktStatus = root;
-		this.firstIndex = i;
-		i--;
-		continue;
-	    } else {
-		if (aktStatus.isLastStep() && !aktStatus.hasMoreSteps()) {
+                //Cope with incorrect bracesList contents
+                else if (l >  maximumIterations )
+                {
+                  LOGGER.severe("aktStatus is NULL: maximum Iterations exceeded, abort "+i);
+                  LOGGER.exiting(this.getClass().getCanonicalName(),"run", false);
+                  return false;
+                }
+                else {
+                  this.aktStatus = root;
+                  this.firstIndex = i;
+                  i--;
+                  LOGGER.finest("aktStatus is NULL: Restarting search continue i==" +i + ", firstIndex=" + this.firstIndex );
+                  continue;
+                }
+	    } else { // This NodeType _is_ a valid transition from the previous State
+		if (aktStatus.isLastStep() && !aktStatus.hasMoreSteps()) { //Terminal State
 		    this.lastIndex = i;
+                    LOGGER.finest("aktStatus is NOT NULL: lastStep reached and no moreSteps - firstIndex=" + firstIndex + ", lastIndex=" + lastIndex);
+                    LOGGER.exiting(this.getClass().getCanonicalName(),"run", false);
 		    return false;
 		} else if (aktStatus.isLastStep() && aktStatus.hasMoreSteps()) {
 		    lookAhead = true;
 		    this.lastIndex = i;
+                    LOGGER.finest("aktStatus is NOT NULL: set lookAhead on");
 		}
 	    }
 	}
+        LOGGER.finer("Completed search: firstIndex=" + firstIndex + ", lastIndex=" + lastIndex);
+        LOGGER.exiting(this.getClass().getCanonicalName(),"run", this.firstIndex == this.lastIndex);
 	return this.firstIndex == this.lastIndex;
     }
 

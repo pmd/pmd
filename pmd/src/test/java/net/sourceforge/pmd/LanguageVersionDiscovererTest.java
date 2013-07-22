@@ -48,6 +48,18 @@ public class LanguageVersionDiscovererTest {
         assertEquals("LanguageVersion must be Java 1.4!", LanguageVersion.JAVA_14, languageVersion);
     }
 
+    /**
+     * Test on PLSQL file with default version
+     */
+    @Test
+    public void testPlsql() {
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
+        File plsqlFile = new File("/path/to/MY_PACKAGE.sql");
+
+        LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(plsqlFile);
+        assertEquals("LanguageVersion must be PLSQL!", LanguageVersion.PLSQL, languageVersion);
+    }
+
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(LanguageVersionDiscovererTest.class);
     }

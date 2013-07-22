@@ -16,6 +16,7 @@ public class LanguageFactoryTest {
         assertTrue(f.createLanguage("c") instanceof CPPLanguage);
         assertTrue(f.createLanguage("php") instanceof PHPLanguage);
         assertTrue(f.createLanguage("ruby") instanceof RubyLanguage);
+        assertTrue(f.createLanguage("plsql") instanceof PLSQLLanguage);
     }
 
     public static junit.framework.Test suite() {

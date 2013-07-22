@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.DataFlowHandler;
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *         and 2 stacks to link the nodes to each other.
  */
 public class Structure {
+    private final static Logger LOGGER = Logger.getLogger(Structure.class.getName()); 
 
     private final DataFlowHandler dataFlowHandler;
     private List<DataFlowNode> dataFlow = new ArrayList<DataFlowNode>();
@@ -67,8 +69,16 @@ public class Structure {
 		|| type == NodeType.CONTINUE_STATEMENT || type == NodeType.THROW_STATEMENT) {
 	    // ugly solution - stores the type information in two ways
 	    continueBreakReturnStack.push(obj);
+            LOGGER.finest("continueBreakReturnStack: line " + node.getNode().getBeginLine() 
+                          + ", column " + node.getNode().getBeginColumn() 
+                          +" - " + node.toString()
+                         );
 	} else {
 	    braceStack.push(obj);
+            LOGGER.finest("braceStack: line " + node.getNode().getBeginLine() 
+                          + ", column " + node.getNode().getBeginColumn() 
+                          +" - " + node.toString()
+                         );
 	}
 	node.setType(type);
     }
@@ -79,6 +89,26 @@ public class Structure {
 
     public List<StackObject> getContinueBreakReturnStack() {
 	return continueBreakReturnStack;
+    }
+
+    /**
+     * 
+     * @return formatted dump of the DFA Structure's  
+     */
+    public String dump() {
+      StringBuilder stringDump = new StringBuilder() ; 
+      stringDump.append ("Data Flow Analysis Structure:\n");
+      stringDump.append ("    Edge Nodes (ContinueBraceReturn) :");
+      for (StackObject stackObject  : continueBreakReturnStack )
+      {
+	stringDump.append("\nCBR => ").append(stackObject.toString());
+      }
+      stringDump.append ("\n    Scope Nodes:");
+      for (StackObject stackObject  : braceStack )
+      {
+	stringDump.append("\nBraces => ").append(stackObject.toString());
+      }
+      return stringDump.toString();
     }
 
 }

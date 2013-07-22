@@ -76,7 +76,19 @@ public abstract class ParserTst {
         sf.initializeWith(cu);
         DataFlowFacade dff = new DataFlowFacade();
         dff.initializeWith(languageVersionHandler.getDataFlowHandler(), cu);
+        System.out.println("OrderedNodes:-"+dumpNodes( (List<E>) coll.getCollection() ) );
+
         return (List<E>) coll.getCollection();
+    }
+    
+    public <E> String dumpNodes(List<E> list ) throws Throwable {
+	    StringBuilder sb = new StringBuilder () ;
+	    int index = 0;
+	    for (E item : list) {
+		    sb.append("\n node[").append(index).append(item.toString());
+		    index ++;
+	  }
+	  return sb.toString();
     }
 
     public ASTCompilationUnit buildDFA(String javaCode) throws Throwable {

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.Java15Handler;
 import net.sourceforge.pmd.lang.java.Java16Handler;
 import net.sourceforge.pmd.lang.java.Java17Handler;
 import net.sourceforge.pmd.lang.jsp.JspHandler;
+import net.sourceforge.pmd.lang.plsql.PLSQLHandler;
 import net.sourceforge.pmd.lang.xml.XmlHandler;
 
 /**
@@ -52,6 +53,7 @@ public enum LanguageVersion {
     JSP(Language.JSP, "", new JspHandler(), true),
     PHP(Language.PHP, "", null, true),
     RUBY(Language.RUBY, "", null, true),
+    PLSQL(Language.PLSQL, "", new PLSQLHandler(), true),
     XSL(Language.XSL, "", new XmlHandler(), true),
     XML(Language.XML, "", new XmlHandler(), true);
 
@@ -243,5 +245,23 @@ public enum LanguageVersion {
      */
     public static LanguageVersion getDefaultVersion() {
         return LanguageVersion.JAVA_15;
+    }
+
+    /**
+     * Return the default LanguageVersion for this Language.
+     *
+     * @return the proper instance of LanguageVersion
+     */
+    public static LanguageVersion getDefaultVersion(Language language) {
+      for (LanguageVersion languageVersion : LanguageVersion.values()) {
+        if (
+                languageVersion.getLanguage().equals(language)
+                && languageVersion.isDefaultVersion()
+           ) 
+        {
+        return languageVersion;
+        }
+      }
+      return null;
     }
 }

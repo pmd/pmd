@@ -90,6 +90,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 	private String ruleSets;
 	private RulePriority minimumPriority = RulePriority.LOW;
 	private String inputPaths;
+	private String inputUri;
 
 	// Reporting options
 	private String reportFormat;
@@ -271,10 +272,27 @@ public class PMDConfiguration extends AbstractConfiguration {
 
 	/**
 	 * Set the comma separated list of input paths to process for source files.
-	 * @param inputPaths The comma separated list.
+	 * @param inputUri Input URI
 	 */
 	public void setInputPaths(String inputPaths) {
 		this.inputPaths = inputPaths;
+	}
+
+
+	/**
+	 * Get the input URI to process for source code objects.
+	 * @return URI
+	 */
+	public String getInputUri() {
+		return inputUri;
+	}
+
+	/**
+	 * Set the input URI to process for source code objects.
+	 * @param inputUri he comma separated list.
+	 */
+	public void setInputUri(String inputUri) {
+		this.inputUri = inputUri;
 	}
 
 	/**

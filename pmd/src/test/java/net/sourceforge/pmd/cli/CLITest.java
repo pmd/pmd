@@ -40,7 +40,21 @@ public class CLITest {
 		//assertTrue("failed to create output directory for test:" + testOuputDir.getAbsolutePath(),);
 	}
 
-	private void createTestOutputFile(String filename) {
+        private String argsToString (String[] args)
+        {
+          StringBuilder sb = new StringBuilder();
+          for (String arg: args)
+          {
+            if (sb.length() > 0)
+            {
+              sb.append(" ");
+            }
+            sb.append("\"").append(arg.replace("\"", "\\")).append("\"") ;
+          }
+          return (sb.toString() );
+        }
+        
+        private void createTestOutputFile(String filename) {
 		try {
 			PrintStream out = new PrintStream(new FileOutputStream(filename));
 			System.setOut(out);
@@ -92,8 +106,9 @@ public class CLITest {
 		try {
 			PMD.main(args);
 		} catch (Exception e) {
-			e.printStackTrace();
-			fail("Exception occurs while running PMD CLI with following args:" + args);
+                        System.err.println("runPMDWith Exception for "+argsToString(args) );
+			e.printStackTrace(System.err);
+			fail("Exception occurs while running PMD CLI with following args:" + argsToString(args) );
 		}
 	}
 
@@ -102,4 +117,6 @@ public class CLITest {
 		if ( statusCode > 0 )
 			fail("PMD failed with status code:" + statusCode);
 	}
+
+
 }

@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.lang.java.dfa;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.Linker;
@@ -40,6 +43,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  *         link the nodes.
  */
 public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
+    private final static Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName()); 
 
     private final DataFlowHandler dataFlowHandler;
     private Structure dataFlow;
@@ -60,7 +64,10 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         node.jjtAccept(this, dataFlow);
 
         this.dataFlow.createEndNode(node.getEndLine());
-
+        if (LOGGER.isLoggable(Level.FINE))
+        {
+          LOGGER.fine("DataFlow is " + this.dataFlow.dump() ); // @TODO SRT Remove after development  
+        }
         Linker linker = new Linker(dataFlowHandler, dataFlow.getBraceStack(), dataFlow.getContinueBreakReturnStack());
         try {
             linker.computePaths();
@@ -76,6 +83,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             return data;
         }
         Structure dataFlow = (Structure) data;
+        LOGGER.finest("createNewNode ASTStatementExpression: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         dataFlow.createNewNode(node);
         return super.visit(node, data);
     }
@@ -85,6 +93,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             return data;
         }
         Structure dataFlow = (Structure) data;
+        LOGGER.finest("createNewNode ASTVariableDeclarator: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         dataFlow.createNewNode(node);
         return super.visit(node, data);
     }
@@ -99,18 +108,23 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         if (node.jjtGetParent() instanceof ASTIfStatement) {
             dataFlow.createNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
+            LOGGER.finest("pushOnStack parent IF_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
             dataFlow.createNewNode(node); // START WHILE
             dataFlow.pushOnStack(NodeType.WHILE_EXPR, dataFlow.getLast());
+            LOGGER.finest("pushOnStack parent WHILE_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTSwitchStatement) {
             dataFlow.createNewNode(node); // START SWITCH
             dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
+            LOGGER.finest("pushOnStack parent SWITCH_START: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTForStatement) {
             dataFlow.createNewNode(node); // FOR EXPR
             dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
+            LOGGER.finest("pushOnStack parent FOR_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTDoStatement) {
             dataFlow.createNewNode(node); // DO EXPR
             dataFlow.pushOnStack(NodeType.DO_EXPR, dataFlow.getLast());
+            LOGGER.finest("pushOnStack parent DO_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         }
 
         return super.visit(node, data);
@@ -123,6 +137,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         super.visit(node, data);
         dataFlow.pushOnStack(NodeType.FOR_INIT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack FOR_INIT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         this.addForExpressionNode(node, dataFlow);
         return data;
     }
@@ -130,6 +145,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTLabeledStatement node, Object data) {
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.LABEL_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack LABEL_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return super.visit(node, data);
     }
 
@@ -141,6 +157,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         this.addForExpressionNode(node, dataFlow);
         super.visit(node, data);
         dataFlow.pushOnStack(NodeType.FOR_UPDATE, dataFlow.getLast());
+        LOGGER.finest("pushOnStack FOR_UPDATE: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return data;
     }
 
@@ -156,9 +173,11 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         if (node.jjtGetParent() instanceof ASTForStatement) {
             this.addForExpressionNode(node, dataFlow);
             dataFlow.pushOnStack(NodeType.FOR_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
+            LOGGER.finest("pushOnStack FOR_BEFORE_FIRST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTDoStatement) {
             dataFlow.pushOnStack(NodeType.DO_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
             dataFlow.createNewNode(node.jjtGetParent());
+            LOGGER.finest("pushOnStack DO_BEFORE_FIRST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         }
 
         super.visit(node, data);
@@ -167,17 +186,23 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             ASTIfStatement st = (ASTIfStatement) node.jjtGetParent();
             if (!st.hasElse()) {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
+                LOGGER.finest("pushOnStack IF_LAST_STATEMENT_WITHOUT_ELSE: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             } else if (st.hasElse() && !st.jjtGetChild(1).equals(node)) {
                 dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
+                LOGGER.finest("pushOnStack ELSE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             } else {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
+                LOGGER.finest("pushOnStack IF_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             }
         } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
             dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
+            LOGGER.finest("pushOnStack WHILE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTForStatement) {
             dataFlow.pushOnStack(NodeType.FOR_END, dataFlow.getLast());
+            LOGGER.finest("pushOnStack FOR_END: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else if (node.jjtGetParent() instanceof ASTLabeledStatement) {
             dataFlow.pushOnStack(NodeType.LABEL_LAST_STATEMENT, dataFlow.getLast());
+            LOGGER.finest("pushOnStack LABEL_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         }
         return data;
     }
@@ -189,6 +214,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         super.visit(node, data);
         dataFlow.pushOnStack(NodeType.SWITCH_END, dataFlow.getLast());
+        LOGGER.finest("pushOnStack SWITCH_END: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return data;
     }
 
@@ -200,8 +226,10 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         //super.visit(node, data);
         if (node.jjtGetNumChildren() == 0) {
             dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
+            LOGGER.finest("pushOnStack SWITCH_LAST_DEFAULT_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         } else {
             dataFlow.pushOnStack(NodeType.CASE_LAST_STATEMENT, dataFlow.getLast());
+            LOGGER.finest("pushOnStack CASE_LAST_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         }
         return data;
     }
@@ -213,6 +241,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack BREAK_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return super.visit(node, data);
     }
 
@@ -224,6 +253,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack CONTINUE_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return super.visit(node, data);
     }
 
@@ -234,6 +264,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack RETURN_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return super.visit(node, data);
     }
 
@@ -244,6 +275,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.THROW_STATEMENT, dataFlow.getLast());
+        LOGGER.finest("pushOnStack THROW_STATEMENT: line " + node.getBeginLine() +", column " + node.getBeginColumn());
         return super.visit(node, data);
     }
 
@@ -270,15 +302,18 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             if (node instanceof ASTForInit) {
                 dataFlow.createNewNode(node);
                 dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
+                LOGGER.finest("pushOnStack FOR_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
             } else if (node instanceof ASTForUpdate) {
                 if (!hasForInitNode) {
                     dataFlow.createNewNode(node);
                     dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
+                    LOGGER.finest("pushOnStack FOR_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
                 }
             } else if (node instanceof ASTStatement) {
                 if (!hasForInitNode && !hasForUpdateNode) {
                     dataFlow.createNewNode(node);
                     dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
+                    LOGGER.finest("pushOnStack FOR_EXPR: line " + node.getBeginLine() +", column " + node.getBeginColumn());
                 }
             }
         }
