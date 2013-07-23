@@ -366,24 +366,31 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final RuleSet ruleSet = rulesetFrom(resource);	//properties.getProjectRuleSet();
             
         //    final PMDEngine pmdEngine = getPmdEngineForProject(project);
-            int targetCount = countResourceElement(resource);
+            int targetCount = 0;
+            if (resource.exists()) {
+                targetCount = countResourceElement(resource);
+            }
             // Could add a property that lets us set the max number to analyze 
-            if (properties.isFullBuildEnabled() || targetCount ==1){
+            if (properties.isFullBuildEnabled() || targetCount == 1){
 	            setStepCount(targetCount);
 	            log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
 	
-	            final ResourceVisitor visitor = new ResourceVisitor();
-	            visitor.setMonitor(getMonitor());
-	            visitor.setRuleSet(ruleSet);
-	     //       visitor.setPmdEngine(pmdEngine);
-	            visitor.setAccumulator(markersByFile);
-	            visitor.setUseTaskMarker(taskMarker);
-	            visitor.setProjectProperties(properties);
-	            resource.accept(visitor);
-	
-	            ruleCount = ruleSet.getRules().size();
-	            fileCount += visitor.getProcessedFilesCount();
-	            pmdDuration += visitor.getActualPmdDuration();
+	            if (resource.exists()) {
+    	            final ResourceVisitor visitor = new ResourceVisitor();
+    	            visitor.setMonitor(getMonitor());
+    	            visitor.setRuleSet(ruleSet);
+    	     //       visitor.setPmdEngine(pmdEngine);
+    	            visitor.setAccumulator(markersByFile);
+    	            visitor.setUseTaskMarker(taskMarker);
+    	            visitor.setProjectProperties(properties);
+    	            resource.accept(visitor);
+
+    	            ruleCount = ruleSet.getRules().size();
+    	            fileCount += visitor.getProcessedFilesCount();
+    	            pmdDuration += visitor.getActualPmdDuration();
+	            } else {
+	                log.debug("Skipping resource " + resource.getName() + " because it doesn't exist.");
+	            }
             } else {
             	log.debug("Skipping resource "+ resource.getName() 
             			+ " because of fullBuildEnabled flag");
