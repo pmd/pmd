@@ -25,7 +25,7 @@ Releasing and updating the official eclipse update site
 -------------------------------------------------------
 
     # First get a copy of the current update site
-    rsync -avhP sf-user@web.sourceforge.net:/home/project-web/pmd/htdocs/eclipse/ /location/of/local/update-site/
+    rsync -avhP sf-user@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/update-site/ /location/of/local/update-site/
     # Create a release branch
     git branch pmd-eclipse-plugin-rb-<version>
     # Update master branch to the next -SNAPSHOT version.
@@ -53,7 +53,6 @@ Releasing and updating the official eclipse update site
     git push origin master
     git push origin tag pmd-eclipse-plugin/<version>.BUILDQUALIFIER
     # upload the official update site
-    rsync -avhP /location/of/local/update-site/ sf-user@web.sourceforge.net:/home/project-web/pmd/htdocs/eclipse/
     rsync -avhP /location/of/local/update-site/ sf-user@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/update-site/
     # Cleanup the release branch which was only needed during the release process
     git checkout master

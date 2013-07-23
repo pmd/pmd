@@ -1,10 +1,11 @@
 PMD For Eclipse - Release Notes
 ===============================
 
-Eclipse Update Site: http://pmd.sourceforge.net/eclipse/
+Eclipse Update Site: http://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/
 
 ????: 4.0.1.v????
 -----------------
+* The official update site is now: http://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/
 * Fixed PMD Eclipse plugin doesn't analyze project if it has non-existing source folders ([bug #1116])
 
 [bug #1116]: http://sourceforge.net/p/pmd/bugs/1116/
