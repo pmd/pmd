@@ -147,6 +147,58 @@ sb.append('a');		// use this instead
     </example>
     </rule>
 
+<rule name="ConsecutiveAppendsShouldReuse"
+        language="java"
+        since="5.1"
+        message="StringBuffer (or StringBuilder).append is called consecutively without reusing the target variable."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/strings.html#ConsecutiveAppendsShouldReuse">
+    <description>
+Consecutively calls to StringBuffer/StringBuilder .append must reuse the target object. This will improve the performance. 
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//BlockStatement[./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
+                                      [substring-before(@Image, '.') =
+                                         ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuffer']]//VariableDeclaratorId/@Image
+                                      ]
+                ]/following-sibling::*[1][./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
+                                         [substring-before(@Image, '.') = 
+                                             ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuffer']]//VariableDeclaratorId/@Image
+                                         ]
+                                      ] 
+|
+//BlockStatement[./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
+                                      [substring-before(@Image, '.') = 
+                                         ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuilder']]//VariableDeclaratorId/@Image
+                                      ]
+                ]/following-sibling::*[1][./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
+                                         [substring-before(@Image, '.') = 
+                                             ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuilder']]//VariableDeclaratorId/@Image
+                                         ]
+                                      ]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
+String foo = " ";
+
+StringBuffer buf = new StringBuffer();
+buf.append("Hello"); // poor
+buf.append(foo);
+buf.append("World");
+
+StringBuffer buf = new StringBuffer();
+buf.append("Hello").append(foo).append("World"); // good
+]]>
+    </example>
+  </rule>
+
         <rule name="ConsecutiveLiteralAppends"
         since="3.5"
         message="StringBuffer (or StringBuilder).append is called {0} consecutive times with literal Strings. Use a single append with a single combined String."
