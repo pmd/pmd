@@ -14,5 +14,6 @@ This ruleset contains links to rules that are new in PMD v5.1.0
 
     <rule ref="rulesets/java/design.xml/AvoidProtectedMethodInFinalClassNotExtending"/>
 
+    <rule ref="rulesets/java/strings.xml/ConsecutiveAppendsShouldReuse"/>
 </ruleset>
 

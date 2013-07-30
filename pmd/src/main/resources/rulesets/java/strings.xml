@@ -154,7 +154,7 @@ sb.append('a');		// use this instead
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/java/strings.html#ConsecutiveAppendsShouldReuse">
     <description>
-Consecutively calls to StringBuffer/StringBuilder .append must reuse the target object. This will improve the performance. 
+Consecutively calls to StringBuffer/StringBuilder .append should reuse the target object. This can improve the performance.
     </description>
     <priority>3</priority>
     <properties>
