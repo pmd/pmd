@@ -2,6 +2,8 @@ package net.sourceforge.pmd.ant;
 
 import static java.io.File.separator;
 
+import java.io.File;
+
 import org.apache.tools.ant.BuildFileTest;
 
 /**
@@ -20,8 +22,11 @@ public abstract class AbstractAntTestHelper extends BuildFileTest {
 
 	public AbstractAntTestHelper() {
 		mvnWorkaround = "pmd/ant/xml";
-		pathToTestScript = "target/test-classes/net/sourceforge/" + mvnWorkaround;
-
+		if (new File("target/clover/test-classes").exists()) {
+		    pathToTestScript = "target/clover/test-classes/net/sourceforge/" + mvnWorkaround;
+		} else {
+            pathToTestScript = "target/test-classes/net/sourceforge/" + mvnWorkaround;
+		}
 	}
 
     @Override

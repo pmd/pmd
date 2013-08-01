@@ -15,7 +15,14 @@ import org.junit.Test;
  */
 public class CPDTest {
 
-    private static final String BASE_TEST_RESOURCE_PATH = "target/test-classes/net/sourceforge/pmd/cpd/files/";
+    private static final String BASE_TEST_RESOURCE_PATH;
+    static {
+        if (new File("target/clover/test-classes").exists()) {
+            BASE_TEST_RESOURCE_PATH = "target/clover/test-classes/net/sourceforge/pmd/cpd/files/";
+        } else {
+            BASE_TEST_RESOURCE_PATH = "target/test-classes/net/sourceforge/pmd/cpd/files/";
+        }
+    }
     private CPD cpd;
 
     private boolean canTestSymLinks = false;
