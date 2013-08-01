@@ -695,6 +695,13 @@
                 <configuration>
                     <configLocation>etc/checkstyle-config.xml</configLocation>
                 </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
 
             <plugin>
