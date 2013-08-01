@@ -145,6 +145,8 @@
                 <pathelement path="${pmd.home}/target/classes"/>
                 <pathelement path="${pmd.home}/target/test-classes"/>
                 <pathelement path="${pmd.home}/target/test-classes/net/sourceforge/pmd/ant"/>
+                <pathelement path="${pmd.home}/target/clover/test-classes"/>
+                <pathelement path="${pmd.home}/target/clover/test-classes/net/sourceforge/pmd/ant"/>
             </classpath>
         </pmd>
     </target>
