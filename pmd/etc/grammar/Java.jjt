@@ -1719,6 +1719,7 @@ void PrimaryPrefix() :
 void PrimarySuffix() :
 {Token t;}
 { LOOKAHEAD(2) "." "this"
+| LOOKAHEAD(2) "." "super"
 | LOOKAHEAD(2) "." AllocationExpression()
 | LOOKAHEAD(3) MemberSelector()
 | "[" Expression() "]" {jjtThis.setIsArrayDereference();}
