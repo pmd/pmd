@@ -19,10 +19,10 @@ public class ASTElementGet extends AbstractEcmascriptNode<ElementGet> {
     }
 
     public EcmascriptNode getTarget() {
-	return (EcmascriptNode) node.getTarget();
+        return EcmascriptTreeBuilder.createNodeAdapter(node.getTarget());
     }
 
     public EcmascriptNode getElement() {
-	return (EcmascriptNode) node.getElement();
+        return EcmascriptTreeBuilder.createNodeAdapter(node.getElement());
     }
 }
