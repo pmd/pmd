@@ -1,3 +1,8 @@
+????? ??, 2013 - 5.0.5:
+
+Fixed bug 1114: CPD - Tokenizer not initialized with requested properties
+
+
 May 1, 2013 - 5.0.4:
 
 Fixed bug  254: False+ : UnusedImport with Javadoc @throws

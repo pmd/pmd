@@ -12,7 +12,11 @@ public class JavaLanguage extends AbstractLanguage {
 
 	public JavaLanguage(Properties properties) {
 		super(new JavaTokenizer(), ".java");
-		JavaTokenizer tokenizer = (JavaTokenizer)getTokenizer();
-		tokenizer.setProperties(properties);
+		setProperties(properties);
+	}
+
+	public final void setProperties(Properties properties) {
+        JavaTokenizer tokenizer = (JavaTokenizer)getTokenizer();
+        tokenizer.setProperties(properties);
 	}
 }

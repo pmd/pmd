@@ -24,6 +24,8 @@ public class CPD {
 	private static final int MISSING_ARGS = 2;
 	private static final int DUPLICATE_CODE_FOUND = 4;
 
+	static boolean dontExitForTests = false;
+
 	private CPDConfiguration configuration;
 	
 	private Map<String, SourceCode> source = new TreeMap<String, SourceCode>();
@@ -111,7 +113,7 @@ public class CPD {
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
-    private static void setSystemProperties(String[] args) {
+    private static void setSystemProperties(String[] args, CPDConfiguration config) {
         boolean ignoreLiterals = CPDConfiguration.findBooleanSwitch(args, "--ignore-literals");
         boolean ignoreIdentifiers = CPDConfiguration.findBooleanSwitch(args, "--ignore-identifiers");
         boolean ignoreAnnotations = CPDConfiguration.findBooleanSwitch(args, "--ignore-annotations");
@@ -126,6 +128,7 @@ public class CPD {
             properties.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
         }
         System.setProperties(properties);
+        config.language().setProperties(properties);
     }
 
     public static void main(String[] args) {
@@ -139,7 +142,7 @@ public class CPD {
 
             // Pass extra parameters as System properties to allow language
             // implementation to retrieve their associate values...
-            setSystemProperties(args);
+            setSystemProperties(args, config);
            
             CPD cpd = new CPD(config);
             
@@ -163,7 +166,9 @@ public class CPD {
             cpd.go();
             if (cpd.getMatches().hasNext()) {
                 System.out.println(config.renderer().render(cpd.getMatches()));
-                System.exit(DUPLICATE_CODE_FOUND);
+                if (!dontExitForTests) {
+                    System.exit(DUPLICATE_CODE_FOUND);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
