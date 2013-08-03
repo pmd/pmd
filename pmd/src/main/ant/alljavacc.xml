@@ -58,8 +58,8 @@
                  token="net.sourceforge.pmd.lang.ast.dummy"
                  value="net.sourceforge.pmd.lang.ast" />
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
-                 token="public class JavaCharStream"
-                 value="public class JavaCharStream implements CharStream" />
+                 token="class JavaCharStream"
+                 value="class JavaCharStream implements CharStream" />
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/JavaCharStream.java" />
@@ -138,23 +138,23 @@
 public class]]></replacevalue>
         </replace>
         <replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
-            <replacetoken><![CDATA[       default : return new Token(ofKind, image);
-     }
+            <replacetoken><![CDATA[      default : return new Token(ofKind, image);
+    }
   }
 ]]></replacetoken>
-            <replacevalue><![CDATA[       case JavaParserConstants.RUNSIGNEDSHIFT :
-       case JavaParserConstants.RSIGNEDSHIFT :
-       case JavaParserConstants.GT:
-         return new GTToken(ofKind, image);
-       default : return new Token(ofKind, image);
-     }
+            <replacevalue><![CDATA[      case JavaParserConstants.RUNSIGNEDSHIFT :
+      case JavaParserConstants.RSIGNEDSHIFT :
+      case JavaParserConstants.GT:
+        return new GTToken(ofKind, image);
+      default : return new Token(ofKind, image);
+    }
   }
 
   public static final class GTToken extends Token {
-     public int realKind = JavaParserConstants.GT;
-     public GTToken(int ofKind, String image) {
-        super(ofKind, image);
-     }
+    public int realKind = JavaParserConstants.GT;
+    public GTToken(int ofKind, String image) {
+       super(ofKind, image);
+    }
   }
 ]]></replacevalue>
         </replace>

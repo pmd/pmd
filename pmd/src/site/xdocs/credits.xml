@@ -336,6 +336,7 @@
             <li>Simon Gijsen - contributing a PMD logo with a modern look.</li>
             <li>Yiannis Paschalidis - Fixed bug #968 Issues with JUnit4 @Test annotation with expected exception</li>
             <li>Jaroslav Snajberk - Make the comment required rule working.</li>
+            <li>Mat Booth - #1109 Patch to build with Javacc 5.0</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

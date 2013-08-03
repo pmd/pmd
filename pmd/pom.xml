@@ -240,7 +240,7 @@
         <url>http://pmd.sourceforge.net/</url>
     </organization>
     <properties>
-        <javacc.version>4.1</javacc.version>
+        <javacc.version>5.0</javacc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- This value actually differs to maven default expectation(src/site/xdoc/)
             as we need to pre process those and we place them instead in target/generated-xdocs/.
