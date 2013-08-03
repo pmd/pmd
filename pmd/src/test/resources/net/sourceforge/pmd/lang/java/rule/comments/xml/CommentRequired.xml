@@ -61,4 +61,30 @@ public class Foo {
         <rule-property name="protectedMethodCommentRequirement">Unwanted</rule-property>
         <code-ref id="with-all-comments"/>
     </test-code>
+    <test-code>
+        <description>#1115 commentRequiredRule in pmd 5.1 is not working properly</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/**
+ * Test class
+ */
+public class Test {
+    public void method1() {
+        /**
+         * comment here
+         */
+    }
+    
+    public void method2() {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1115 commentRequiredRule in pmd 5.1 is not working properly - without new lines</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/** Test class */ public class Test { public void method1() { /** comment here */ } public void method2() { } }
+        ]]></code>
+    </test-code>
 </test-data>

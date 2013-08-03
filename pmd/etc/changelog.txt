@@ -1,6 +1,7 @@
 ????? ??, 2013 - 5.1.0:
 
 Fixed bug 1059: Change rule name "Use Singleton" should be "Use Utility class"
+Fixed bug 1115: commentRequiredRule in pmd 5.1 is not working properly
 
 New EcmaScript rules and ruleset:
 	Controversial ruleset, featuring
