@@ -1,6 +1,7 @@
 ????? ??, 2013 - 5.0.5:
 
 Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
+Fixed bug 1084: NPE at UselessStringValueOfRule.java:36
 Fixed bug 1104: IdempotentOperation false positive
 Fixed bug 1111: False positive: Useless parentheses
 Fixed bug 1114: CPD - Tokenizer not initialized with requested properties

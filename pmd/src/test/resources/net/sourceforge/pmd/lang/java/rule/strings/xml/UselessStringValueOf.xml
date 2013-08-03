@@ -94,4 +94,23 @@ class TestClass {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1084 NPE at UselessStringValueOfRule.java:36</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import android.os.Build;
+
+public class Test {
+
+    public String test() {
+        print(String.valueOf(Build.TIME));
+        print(String.valueOf(Build.VERSION.SDK_INT));
+    }
+
+    private void print(String s) {
+        System.out.println(s);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

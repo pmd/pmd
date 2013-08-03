@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 public class UselessStringValueOfRule extends AbstractJavaRule {
@@ -33,11 +34,14 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
             if (args != null) {
                 ASTName arg = args.getFirstDescendantOfType(ASTName.class);
                 if (arg != null) {
-                    ASTType argType = arg.getNameDeclaration().getNode().jjtGetParent().jjtGetParent().getFirstDescendantOfType(ASTType.class);
-                    if (argType != null
-                            && argType.jjtGetChild(0) instanceof ASTReferenceType
-                            && ((ASTReferenceType)argType.jjtGetChild(0)).isArray()) {
-                        return super.visit(node, data);
+                    NameDeclaration declaration = arg.getNameDeclaration();
+                    if (declaration != null) {
+                        ASTType argType = declaration.getNode().jjtGetParent().jjtGetParent().getFirstDescendantOfType(ASTType.class);
+                        if (argType != null
+                                && argType.jjtGetChild(0) instanceof ASTReferenceType
+                                && ((ASTReferenceType)argType.jjtGetChild(0)).isArray()) {
+                            return super.visit(node, data);
+                        }
                     }
                 }
             }
