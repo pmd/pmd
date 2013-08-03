@@ -193,7 +193,7 @@ an array of objects. It is faster than executing a loop to copy all the elements
        <value>
    <![CDATA[
 //Statement[
-    (ForStatement) and (count(.//IfStatement)=0)
+    (ForStatement) and (ForStatement//VariableInitializer//Literal[@IntLiteral='true' and @Image='0']) and (count(.//IfStatement)=0)
    ]
    //StatementExpression[
     PrimaryExpression/PrimaryPrefix/Name[
