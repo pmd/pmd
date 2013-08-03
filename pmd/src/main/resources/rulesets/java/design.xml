@@ -866,13 +866,23 @@ gets it.
       <example>
 <![CDATA[
 public class Foo {
-  // Try to avoid this
+  // Try to avoid this:
   synchronized void foo() {
   }
   // Prefer this:
   void bar() {
     synchronized(this) {
-   }
+    }
+  }
+
+  // Try to avoid this for static methods:
+  static synchronized void fooStatic() {
+  }
+  
+  // Prefer this:
+  static void barStatic() {
+    synchronized(Foo.class) {
+    }
   }
 }
 ]]>

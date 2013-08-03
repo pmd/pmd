@@ -1,5 +1,6 @@
 ????? ??, 2013 - 5.0.5:
 
+Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
 Fixed bug 1114: CPD - Tokenizer not initialized with requested properties
 
 
