@@ -102,24 +102,26 @@ public class Foo {
     <test-code>
         <description><![CDATA[
 Use of volatile keyword
-see bug 2826119 - False +: DoubleCheckedLocking warning with volatile field
+see #884 False +: DoubleCheckedLocking warning with volatile field
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Volatile {
-      volatile Object baz;
-      Object bar() {
-        if(baz == null) { //baz may be non-null yet not fully created
-          synchronized(this){
-            if(null == baz){
-              baz = new Object();
+public class Foo {
+volatile Object baz;
+
+Object bar() {
+    if (baz == null) { // baz may be non-null yet not fully created
+        synchronized (this) {
+            if (baz == null) {
+                baz = new Object();
             }
-          }
         }
-        return baz;
-      }
+    }
+    return baz;
+}
+
 }
      ]]></code>
-    </test-code>    
+    </test-code>
     
 </test-data>

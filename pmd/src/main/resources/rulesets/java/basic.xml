@@ -130,6 +130,7 @@ An optimizing JRE may assign a reference to the baz variable before it creates t
 reference is intended to point to.
 
 For more details refer to: http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html
+or http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
       </description>
         <priority>1</priority>
       <example>
