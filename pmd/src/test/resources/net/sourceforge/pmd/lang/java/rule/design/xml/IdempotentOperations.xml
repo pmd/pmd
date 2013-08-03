@@ -61,4 +61,16 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1104 IdempotentOperation false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  void bar() {
+    SignDelayer.this.sign = SignDelayer.this.arg.sign();
+    MMultiplexer.this.lastEvent = MMultiplexer.this.firstEvent;
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>
