@@ -2,6 +2,7 @@
 
 Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
 Fixed bug 1114: CPD - Tokenizer not initialized with requested properties
+Fixed bug 1118: ClassCastException in pmd.lang.ecmascript.ast.ASTElementGet
 
 
 May 1, 2013 - 5.0.4:
