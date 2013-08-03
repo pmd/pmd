@@ -160,8 +160,10 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 					lastComment = (FormalComment) value;
 				} else {
 				    // else this is declaration without comment
-				    if (!(value instanceof AbstractJavaAccessTypeNode)) {
-				        lastNode = (AbstractJavaAccessNode) value;
+				    if (value instanceof AbstractJavaAccessNode) {
+				        if (!(value instanceof AbstractJavaAccessTypeNode)) {
+				            lastNode = (AbstractJavaAccessNode) value;
+				        }
 				    }
 				}
 			} else if (value instanceof AbstractJavaAccessNode) {
