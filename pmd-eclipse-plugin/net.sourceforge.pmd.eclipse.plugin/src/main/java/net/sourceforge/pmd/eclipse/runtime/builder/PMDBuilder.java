@@ -90,6 +90,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
                 cmd.setResourceDelta(resourceDelta);
                 cmd.setTaskMarker(false);
                 cmd.setMonitor(monitor);
+                cmd.clearExistingMarkersBeforeApplying(true);
                 cmd.performExecute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
             } else {
                 log.info("No change reported. Performing no build");
@@ -108,6 +109,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         cmd.addResource(project);
         cmd.setTaskMarker(false);
         cmd.setMonitor(monitor);
+        cmd.clearExistingMarkersBeforeApplying(true);
         cmd.performExecute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
     }
 
