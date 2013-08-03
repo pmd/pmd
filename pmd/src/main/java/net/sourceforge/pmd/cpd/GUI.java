@@ -106,7 +106,7 @@ public class GUI implements CPDListener {
 									public String[] extensions() { return new String[] {".rb" }; }; } },
 		{"Fortran",			new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("fortran"); }
-									public String[] extensions() { return new String[] {".rb" }; }; } },
+									public String[] extensions() { return new String[] {".for", ".f", ".f66", ".f77", ".f90" }; }; } },
 		{"PHP",				new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("php"); }
 									public String[] extensions() { return new String[] {".php" }; };	} },

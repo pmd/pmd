@@ -39,7 +39,7 @@ public enum Language {
     //ANY("Any", null, null, null, (String)null),
     //UNKNOWN("Unknown", null, "unknown", null, (String)null),
     CPP("C++", null, "cpp", null, "h", "c", "cpp", "cxx", "cc", "C"),
-    FORTRAN("Fortran", null, "fortran", null, "for"),
+    FORTRAN("Fortran", null, "fortran", null, "for", "f", "f66", "f77", "f90"),
     ECMASCRIPT("Ecmascript", null, "ecmascript", EcmascriptRuleChainVisitor.class, "js"),
     JAVA("Java", null, "java", JavaRuleChainVisitor.class, "java"),
     JSP("Java Server Pages", "JSP", "jsp", JspRuleChainVisitor.class, "jsp"),
