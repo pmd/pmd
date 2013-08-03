@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.FilenameFilter;
+import java.util.Properties;
 
 import net.sourceforge.pmd.util.filter.Filters;
 
@@ -19,5 +20,9 @@ public abstract class AbstractLanguage implements Language {
 
 	public Tokenizer getTokenizer() {
 		return tokenizer;
+	}
+
+	public void setProperties(Properties properties) {
+	    // needs to be implemented by subclasses.
 	}
 }

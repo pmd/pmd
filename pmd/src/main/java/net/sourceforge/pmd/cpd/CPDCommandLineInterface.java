@@ -26,7 +26,11 @@ public class CPDCommandLineInterface {
 	}
 
 	private static boolean isExitAfterRunSet() {
-		return (System.getenv(NO_EXIT_AFTER_RUN) == null ? false : true);
+	    String noExit = System.getenv(NO_EXIT_AFTER_RUN);
+	    if (noExit == null) {
+	        noExit = System.getProperty(NO_EXIT_AFTER_RUN);
+	    }
+		return (noExit == null ? true : false);
 	}
 
 	private static void setStatusCode(int statusCode) {
@@ -42,14 +46,16 @@ public class CPDCommandLineInterface {
 			jcommander.parse(args);
 			if (arguments.isHelp()) {
 				jcommander.usage();
-				// System.out.println(buildUsageText());
-				setStatusCodeOrExit(0);
+				System.out.println(buildUsageText());
+				setStatusCodeOrExit(1);
+				return;
 			}
 		} catch (ParameterException e) {
 			jcommander.usage();
 			System.out.println(buildUsageText());
 			System.out.println(e.getMessage());
-			// setStatusCodeOrExit(ERROR_STATUS);
+			setStatusCodeOrExit(1);
+			return;
 		}
 		arguments.postContruct();
 		// Pass extra parameters as System properties to allow language
@@ -60,7 +66,7 @@ public class CPDCommandLineInterface {
 		cpd.go();
 		if (cpd.getMatches().hasNext()) {
 			System.out.println(arguments.getRenderer().render(cpd.getMatches()));
-			System.exit(DUPLICATE_CODE_FOUND);
+			setStatusCodeOrExit(DUPLICATE_CODE_FOUND);
 		}
 	}
 

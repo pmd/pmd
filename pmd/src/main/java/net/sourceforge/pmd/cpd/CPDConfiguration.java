@@ -144,6 +144,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 			properties.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
 		}
 		System.setProperties(properties);
+		configuration.getLanguage().setProperties(properties);
 	}
 
 	public Language getLanguage() {

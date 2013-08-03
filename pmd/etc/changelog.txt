@@ -22,6 +22,10 @@ CPD Command Line Changes:
   Added non-recursive option "--non-recursive" to not scan sub-directories
 
 
+????? ??, 2013 - 5.0.5:
+
+Fixed bug 1114: CPD - Tokenizer not initialized with requested properties
+
 
 May 1, 2013 - 5.0.4:
 
