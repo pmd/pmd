@@ -29,6 +29,7 @@ Upgrade to javacc 5.0 (see patch #1109 Patch to build with Javacc 5.0)
 Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
 Fixed bug 1084: NPE at UselessStringValueOfRule.java:36
 Fixed bug 1092: Wrong Attribute "excludemarker" in Ant Task Documentation
+Fixed bug 1099: UseArraysAsList false positives
 Fixed bug 1104: IdempotentOperation false positive
 Fixed bug 1107: PMD 5.0.4 couldn't parse call of parent outer java class method from inner class
 Fixed bug 1111: False positive: Useless parentheses
