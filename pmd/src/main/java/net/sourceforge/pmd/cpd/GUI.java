@@ -574,6 +574,7 @@ public class GUI implements CPDListener {
             p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
             LanguageConfig conf = languageConfigFor((String)languageBox.getSelectedItem());
             Language language = conf.languageFor(new LanguageFactory(), p);
+            language.setProperties(p);
             CPDConfiguration config = new CPDConfiguration(
             		Integer.parseInt(minimumLengthField.getText()), 
             		language, encodingField.getText()
@@ -597,21 +598,19 @@ public class GUI implements CPDListener {
             t.stop();
             
         	matches = new ArrayList<Match>();
-        	Match match;
         	for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
-        		match = i.next();
+        		Match match = i.next();
         		setLabelFor(match);
         		matches.add(match);
         	}
 
+            setListDataFrom(cpd.getMatches());
             String report = new SimpleRenderer().render(cpd.getMatches());
             if (report.length() == 0) {
                 JOptionPane.showMessageDialog(frame,
-                        "Done; couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
+                        "Done. Couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
             } else {
                 resultsTextArea.setText(report);
-                setListDataFrom(cpd.getMatches());
-                
             }
         } catch (IOException t) {
             t.printStackTrace();
