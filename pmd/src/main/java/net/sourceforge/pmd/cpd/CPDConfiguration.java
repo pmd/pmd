@@ -136,12 +136,18 @@ public class CPDConfiguration extends AbstractConfiguration {
 		Properties properties = System.getProperties();
 		if (configuration.isIgnoreLiterals()) {
 			properties.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
+		} else {
+		    properties.remove(JavaTokenizer.IGNORE_LITERALS);
 		}
 		if (configuration.isIgnoreIdentifiers()) {
 			properties.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
+        } else {
+            properties.remove(JavaTokenizer.IGNORE_IDENTIFIERS);
 		}
 		if (configuration.isIgnoreAnnotations()) {
 			properties.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
+        } else {
+            properties.remove(JavaTokenizer.IGNORE_ANNOTATIONS);
 		}
 		System.setProperties(properties);
 		configuration.getLanguage().setProperties(properties);
