@@ -5,9 +5,8 @@ package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.util.List;
-
-import net.sourceforge.pmd.RuleSetReferenceId;
 
 import org.junit.Test;
 
@@ -180,6 +179,29 @@ public class RuleSetReferenceIdTest {
 	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("EmptyCatchBlock");
 	assertEquals(1, references.size());
 	assertRuleSetReferenceId(false, null, false, "EmptyCatchBlock", "EmptyCatchBlock", references.get(0));
+    }
+
+    @Test
+    public void testRelativePathRuleSet() {
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse("pmd/pmd-ruleset.xml");
+        assertEquals(1, references.size());
+        assertRuleSetReferenceId(true, "pmd/pmd-ruleset.xml", true, null, "pmd/pmd-ruleset.xml", references.get(0));
+    }
+
+    @Test
+    public void testAbsolutePathRuleSet() {
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse("/home/foo/pmd/pmd-ruleset.xml");
+        assertEquals(1, references.size());
+        assertRuleSetReferenceId(true, "/home/foo/pmd/pmd-ruleset.xml", true, null,
+                "/home/foo/pmd/pmd-ruleset.xml", references.get(0));
+    }
+
+    @Test
+    public void testFooRules() throws Exception {
+        String fooRulesFile = new File("./src/test/resources/net/sourceforge/pmd/rulesets/foo-project/foo-rules").getCanonicalPath();
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse(fooRulesFile);
+        assertEquals(1, references.size());
+        assertRuleSetReferenceId(true, fooRulesFile, true, null, fooRulesFile, references.get(0));
     }
 
     public static junit.framework.Test suite() {
