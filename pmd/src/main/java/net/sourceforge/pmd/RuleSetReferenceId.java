@@ -3,9 +3,12 @@
  */
 package net.sourceforge.pmd;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
@@ -101,88 +104,143 @@ public class RuleSetReferenceId {
      * @throws IllegalArgumentException If the ID is not Rule reference when there is an external RuleSetReferenceId.
      */
     public RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
-	if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
-	    throw new IllegalArgumentException("Cannot pair with non-external <" + externalRuleSetReferenceId + ">.");
-	}
-	if (id != null && id.indexOf(',') >= 0) {
-	    throw new IllegalArgumentException("A single RuleSetReferenceId cannot contain ',' (comma) characters: "
-		    + id);
-	}
+        if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
+            throw new IllegalArgumentException("Cannot pair with non-external <" + externalRuleSetReferenceId + ">.");
+        }
+        if (id != null && id.indexOf(',') >= 0) {
+            throw new IllegalArgumentException("A single RuleSetReferenceId cannot contain ',' (comma) characters: "
+                    + id);
+        }
 
-	// Damn this parsing sucks, but my brain is just not working to let me write a simpler scheme.
-	if (StringUtil.isEmpty(id) || isFullRuleSetName(id)) {
-	    // A full RuleSet name
-	    external = true;
-	    ruleSetFileName = id;
-	    allRules = true;
-	    ruleName = null;
-	} else {
-	    // Find last path separator if it exists...
-	    final int separatorIndex = Math.max(id.lastIndexOf('/'), id.lastIndexOf('\\'));
-	    if (separatorIndex >= 0 && separatorIndex != id.length() - 1) {
-		final String name = id.substring(0, separatorIndex);
-		external = true;
-		if (isFullRuleSetName(name)) {
-		    // A full RuleSet name
-		    ruleSetFileName = name;
-		} else {
-		    // Likely a simple RuleSet name
-		    int index = name.indexOf('-');
-		    if (index >= 0) {
-			// Standard short name
-			ruleSetFileName = "rulesets/" + name.substring(0, index) + "/" + name.substring(index + 1)
-				+ ".xml";
-		    } else {
-			// A release RuleSet?
-			if (name.matches("[0-9]+.*")) {
-			    ruleSetFileName = "rulesets/releases/" + name + ".xml";
-			} else {
-			    // Appears to be a non-standard RuleSet name
-			    ruleSetFileName = name;
-			}
-		    }
-		}
+        // Damn this parsing sucks, but my brain is just not working to let me
+        // write a simpler scheme.
 
-		// Everything left should be a Rule name
-		allRules = false;
-		ruleName = id.substring(separatorIndex + 1);
-	    } else {
-		// Likely a simple RuleSet name
-		int index = id.indexOf('-');
-		if (index >= 0) {
-		    // Standard short name
-		    external = true;
-		    ruleSetFileName = "rulesets/" + id.substring(0, index) + "/" + id.substring(index + 1) + ".xml";
-		    allRules = true;
-		    ruleName = null;
-		} else {
-		    // A release RuleSet?
-		    if (id.matches("[0-9]+.*")) {
-			external = true;
-			ruleSetFileName = "rulesets/releases/" + id + ".xml";
-			allRules = true;
-			ruleName = null;
-		    } else {
-			// Must be a Rule name
-			external = externalRuleSetReferenceId != null ? true : false;
-			ruleSetFileName = externalRuleSetReferenceId != null ? externalRuleSetReferenceId
-				.getRuleSetFileName() : null;
-			allRules = false;
-			ruleName = id;
-		    }
-		}
-	    }
-	}
+        if (isFullRuleSetName(id)) {
+            // A full RuleSet name
+            external = true;
+            ruleSetFileName = id;
+            allRules = true;
+            ruleName = null;
+        } else {
+            String tempRuleName = getRuleName(id);
+            String tempRuleSetFileName = tempRuleName != null && id != null ?
+                    id.substring(0, id.length() - tempRuleName.length() - 1) : id;
 
-	if (this.external && this.ruleName != null && !this.ruleName.equals(id) && externalRuleSetReferenceId != null) {
-	    throw new IllegalArgumentException("Cannot pair external <" + this + "> with external <"
-		    + externalRuleSetReferenceId + ">.");
-	}
-	this.externalRuleSetReferenceId = externalRuleSetReferenceId;
+            if (isFullRuleSetName(tempRuleSetFileName)) {
+                // remaining part is a xml ruleset file, so the tempRuleName is probably a real rule name
+                external = true;
+                ruleSetFileName = tempRuleSetFileName;
+                ruleName = tempRuleName;
+                allRules = tempRuleName == null;
+            } else {
+                // resolve the ruleset name - it's maybe a built in ruleset
+                String builtinRuleSet = resolveBuiltInRuleset(tempRuleSetFileName);
+                if (checkRulesetExists(builtinRuleSet)) {
+                    external = true;
+                    ruleSetFileName = builtinRuleSet;
+                    ruleName = tempRuleName;
+                    allRules = tempRuleName == null;
+                } else {
+                    // well, we didn't find the ruleset, so it's probably not a internal ruleset.
+                    // at this time, we don't know, whether the tempRuleName is a name of the rule
+                    // or the file name of the ruleset file.
+                    // It is assumed, that tempRuleName is actually the filename of the ruleset,
+                    // if there are more separator characters in the remaining ruleset filename (tempRuleSetFileName).
+                    // This means, the only reliable way to specify single rules within a custom rulesest file is
+                    // only possible, if the ruleset file has a .xml file extension.
+                    if (tempRuleSetFileName == null || tempRuleSetFileName.contains(File.separator)) {
+                        external = true;
+                        ruleSetFileName = id;
+                        ruleName = null;
+                        allRules = true;
+                    } else {
+                        external = externalRuleSetReferenceId != null ? externalRuleSetReferenceId.isExternal() : false;
+                        ruleSetFileName = externalRuleSetReferenceId != null ? externalRuleSetReferenceId.getRuleSetFileName() : null;
+                        ruleName = id;
+                        allRules = false;
+                    }
+                }
+            }
+        }
+
+        if (this.external && this.ruleName != null && !this.ruleName.equals(id) && externalRuleSetReferenceId != null) {
+            throw new IllegalArgumentException("Cannot pair external <" + this + "> with external <"
+                    + externalRuleSetReferenceId + ">.");
+        }
+        this.externalRuleSetReferenceId = externalRuleSetReferenceId;
+    }
+
+    /**
+     * Tries to load the given ruleset.
+     * @param name the ruleset name
+     * @return <code>true</code> if the ruleset could be loaded, <code>false</code> otherwise.
+     */
+    private boolean checkRulesetExists(String name) {
+        boolean resourceFound = false;
+        if (name != null) {
+            try {
+                InputStream resource = ResourceLoader.loadResourceAsStream(name, RuleSetReferenceId.class.getClassLoader());
+                if (resource != null) {
+                    resourceFound = true;
+                    IOUtils.closeQuietly(resource);
+                }
+            } catch (RuleSetNotFoundException e) {
+                resourceFound = false;
+            }
+        }
+        return resourceFound;
+    }
+
+    /**
+     * Assumes that the ruleset name given is e.g. "java-basic". Then
+     * it will return the full classpath name for the ruleset, in this example
+     * it would return "rulesets/java/basic.xml".
+     *
+     * @param name the ruleset name
+     * @return the full classpath to the ruleset
+     */
+    private String resolveBuiltInRuleset(final String name) {
+        String result = null;
+        if (name != null) {
+            // Likely a simple RuleSet name
+            int index = name.indexOf('-');
+            if (index >= 0) {
+                // Standard short name
+                result = "rulesets/" + name.substring(0, index) + "/" + name.substring(index + 1)
+                        + ".xml";
+            } else {
+                // A release RuleSet?
+                if (name.matches("[0-9]+.*")) {
+                    result = "rulesets/releases/" + name + ".xml";
+                } else {
+                    // Appears to be a non-standard RuleSet name
+                    result = name;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Extracts the rule name out of a ruleset path. E.g. for "/my/ruleset.xml/MyRule" it
+     * would return "MyRule". If no single rule is specified, <code>null</code> is returned.
+     * @param rulesetName the full rule set path
+     * @return the rule name or <code>null</code>.
+     */
+    private String getRuleName(final String rulesetName) {
+        String result = null;
+        if (rulesetName != null) {
+            // Find last path separator if it exists... this might be a rule name
+            final int separatorIndex = Math.max(rulesetName.lastIndexOf('/'), rulesetName.lastIndexOf('\\'));
+            if (separatorIndex >= 0 && separatorIndex != rulesetName.length() - 1) {
+                result = rulesetName.substring(separatorIndex + 1);
+            }
+        }
+        return result;
     }
 
     private static boolean isFullRuleSetName(String name) {
-	return name.endsWith(".xml");
+        return name != null && name.endsWith(".xml");
     }
 
     /**
@@ -247,20 +305,20 @@ public class RuleSetReferenceId {
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
     public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
-	if (externalRuleSetReferenceId == null) {
-	    InputStream in = StringUtil.isEmpty(ruleSetFileName) ? null : ResourceLoader.loadResourceAsStream(
-		    ruleSetFileName, classLoader);
-	    if (in == null) {
-		throw new RuleSetNotFoundException(
-			"Can't find resource "
-				+ ruleSetFileName
-				+ ".  Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: "
-				+ System.getProperty("java.class.path"));
-	    }
-	    return in;
-	} else {
-	    return externalRuleSetReferenceId.getInputStream(classLoader);
-	}
+        if (externalRuleSetReferenceId == null) {
+            InputStream in = StringUtil.isEmpty(ruleSetFileName) ? null : ResourceLoader.loadResourceAsStream(
+                    ruleSetFileName, classLoader);
+            if (in == null) {
+                throw new RuleSetNotFoundException(
+                        "Can't find resource " + ruleSetFileName
+                                + ".  Make sure the resource is a valid file or URL and is on the CLASSPATH. "
+                                + "Here's the current classpath: "
+                                + System.getProperty("java.class.path"));
+            }
+            return in;
+        } else {
+            return externalRuleSetReferenceId.getInputStream(classLoader);
+        }
     }
 
     /**
