@@ -371,7 +371,7 @@
                     </execution>
                     <execution>
                         <id>move-index-and-delete-generated-xdocs</id>
-                        <phase>site</phase>
+                        <phase>pre-site</phase>
                         <configuration>
                             <target>
                                 <echo>PMD site specific tasks</echo>
