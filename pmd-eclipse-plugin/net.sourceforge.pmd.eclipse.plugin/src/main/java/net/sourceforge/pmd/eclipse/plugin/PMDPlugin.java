@@ -31,8 +31,10 @@ import net.sourceforge.pmd.eclipse.runtime.writer.IAstWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.eclipse.runtime.writer.impl.WriterFactoryImpl;
 import net.sourceforge.pmd.eclipse.ui.RuleLabelDecorator;
+import net.sourceforge.pmd.eclipse.ui.ShapePainter;
 import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.nls.StringTable;
+import net.sourceforge.pmd.eclipse.util.ResourceManager;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -211,6 +213,8 @@ public class PMDPlugin extends AbstractUIPlugin {
 		
 		plugin = null;
 		disposeResources();
+		ShapePainter.disposeAll();
+		ResourceManager.dispose();
 		super.stop(context);
 	}
 
