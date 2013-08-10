@@ -17,17 +17,17 @@
 	follow the following procedure.
 	</P>
 	<P>
-	The PMD Plugin has a logging facility based on Jakarta Log4J. The first thing is
-	to switch the trace level to DEBUG : edit the log4j.xml file in the plugin
-	directory and change the trace level for the logger "net.sourceforge.pmd".
-	Delete also the pmd-eclipse.log file in the Eclipse directory to throw away old
+	The PMD Plugin has a logging facility based on Log4J. The first thing is
+	to switch the trace level to DEBUG : Go to Window -&gt; Preferences -&gt; PMD and
+	configure the "Logging options". Also verify the logfile location. Delete then the
+	logfile first (probably a file called pmd-eclipse.log) to throw away old
 	informations.
 	</P>
 	<P>
 	Restart Eclipse and try to reproduce the problems. Zip the log file and report the
 	bug on <A href="http://sourceforge.net/projects/pmd">sourceforge</A> (you need to
 	be logged in order to submit a bug).
-	Don't forget to select the "pmd-eclipse" category. Attach the
+	Don't forget to select as module "Eclipse". Attach the
 	zipped log file to the request.
 	</P>
 	<P>Thanks for your help !</P>
