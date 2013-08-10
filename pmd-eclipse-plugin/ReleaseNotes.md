@@ -9,6 +9,7 @@ Eclipse Update Site: http://sourceforge.net/projects/pmd/files/pmd-eclipse/updat
 * Fixed right click to add reviewed comment missing ([bug #1052])
 * Fixed PMD Eclipse: How to ... documentation missing ([bug #1061])
 * Fixed Violations are reported multiple times ([bug #1071])
+* Fixed Exclude pattern does not work ([bug #1079])
 * Fixed SWTError: No more handles on Violation Outline View ([bug #1096])
 * Fixed Selecting non-duplicates during import doesn't work. ([bug #1110])
 * Fixed Eclipse log file will not be filled ([bug #1112])
@@ -18,6 +19,7 @@ Eclipse Update Site: http://sourceforge.net/projects/pmd/files/pmd-eclipse/updat
 [bug #1052]: https://sourceforge.net/p/pmd/bugs/1052/
 [bug #1061]: https://sourceforge.net/p/pmd/bugs/1061/
 [bug #1071]: https://sourceforge.net/p/pmd/bugs/1071/
+[bug #1079]: https://sourceforge.net/p/pmd/bugs/1079/
 [bug #1096]: https://sourceforge.net/p/pmd/bugs/1096/
 [bug #1110]: https://sourceforge.net/p/pmd/bugs/1110/
 [bug #1112]: https://sourceforge.net/p/pmd/bugs/1112/
