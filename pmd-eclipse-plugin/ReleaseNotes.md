@@ -10,6 +10,7 @@ Eclipse Update Site: http://sourceforge.net/projects/pmd/files/pmd-eclipse/updat
 * Fixed Violations are reported multiple times ([bug #1071])
 * Fixed SWTError: No more handles on Violation Outline View ([bug #1096])
 * Fixed Selecting non-duplicates during import doesn't work. ([bug #1110])
+* Fixed Eclipse log file will not be filled ([bug #1112])
 * Fixed PMD Eclipse plugin doesn't analyze project if it has non-existing source folders ([bug #1116])
 * Fixed An internal error occurred during: "RenderReport" ([bug #1117])
 
@@ -17,6 +18,7 @@ Eclipse Update Site: http://sourceforge.net/projects/pmd/files/pmd-eclipse/updat
 [bug #1071]: https://sourceforge.net/p/pmd/bugs/1071/
 [bug #1096]: https://sourceforge.net/p/pmd/bugs/1096/
 [bug #1110]: https://sourceforge.net/p/pmd/bugs/1110/
+[bug #1112]: https://sourceforge.net/p/pmd/bugs/1112/
 [bug #1116]: https://sourceforge.net/p/pmd/bugs/1116/
 [bug #1117]: https://sourceforge.net/p/pmd/bugs/1117/
 

@@ -62,7 +62,7 @@ public interface IPreferences {
     String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     boolean REVIEW_PMD_STYLE_ENABLED_DEFAULT = true;
     int MIN_TILE_SIZE_DEFAULT = 25;
-    String LOG_FILENAME_DEFAULT = "pmd-eclipse.log";
+    String LOG_FILENAME_DEFAULT = System.getProperty("user.home") + "/pmd-eclipse.log";
     Level LOG_LEVEL = Level.WARN;
     // default active rules - these are the rules from java-basic,java-imports,java-unusedcode
     String ACTIVE_RULES = "ExtendsObject,AvoidMultipleUnaryOperators,DoubleCheckedLocking,DuplicateImports,ReturnFromFinallyBlock,UnconditionalIfStatement,BooleanInstantiation,UnusedLocalVariable,AvoidThreadGroup,AvoidDecimalLiteralsInBigDecimalConstructor,DontUseFloatTypeForLoopIndices,MisplacedNullCheck,AvoidUsingHardCodedIP,UnnecessaryFullyQualifiedName,UnusedPrivateMethod,CheckResultSet,CollapsibleIfStatements,ForLoopShouldBeWhileLoop,DontImportJavaLang,JumbledIncrementer,OverrideBothEqualsAndHashcode,CheckSkipResult,DontCallThreadRun,TooManyStaticImports,AvoidUsingOctalValues,AvoidBranchingStatementAsLastInLoop,ImportFromSamePackage,ClassCastExceptionWithToArray,BrokenNullCheck,UnusedImports,UnusedModifier,UnusedPrivateField,UnusedFormalParameter,BigIntegerInstantiation";
