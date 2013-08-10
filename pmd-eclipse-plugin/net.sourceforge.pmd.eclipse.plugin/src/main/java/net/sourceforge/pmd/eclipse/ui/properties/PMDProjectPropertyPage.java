@@ -231,7 +231,6 @@ public class PMDProjectPropertyPage extends PropertyPage {
 		            data.verticalAlignment = GridData.FILL;
 		            ruleDescriptionPanel.setLayoutData(data);
 	            
-            refreshRuleSetInProject();
             adjustControls();
         } else {
             setValid(false);
@@ -254,11 +253,9 @@ public class PMDProjectPropertyPage extends PropertyPage {
     	boolean isEnabled = enablePMDButton.getSelection();
     	SWTUtil.setEnabled(activeControls, isEnabled);
     	
-    	showDescriptionField(isEnabled && !ruleSetStoredInProjectButton.getSelection());
-    	
     	if (isEnabled) {
     		deselectWorkingSetButton.setEnabled(selectedWorkingSet != null);
-    		enableExternalRulesetControls(ruleSetStoredInProjectButton.getSelection());
+    		refreshRuleSetInProject();
     	}
     }
     
@@ -335,7 +332,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
 
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-            	refreshRuleSetInProject();
+                adjustControls();
             }
         });
 
@@ -353,7 +350,7 @@ public class PMDProjectPropertyPage extends PropertyPage {
 
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-            	refreshRuleSetInProject();
+                adjustControls();
             }
         });
 
@@ -660,9 +657,11 @@ public class PMDProjectPropertyPage extends PropertyPage {
         Table ruleTable = availableRulesTableViewer.getTable();
         if (ruleSetStoredInProjectButton.getSelection()) {
             ruleTable.setEnabled(false);
+            showDescriptionField(false);
             enableExternalRulesetControls(true);
         } else {
             ruleTable.setEnabled(true);
+            showDescriptionField(true);
             enableExternalRulesetControls(false);
         }
     }
