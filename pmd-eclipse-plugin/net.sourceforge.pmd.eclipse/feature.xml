@@ -4,7 +4,8 @@
       label="%feature.label"
       version="4.0.1.qualifier"
       provider-name="%feature.provider_name"
-      image="pmd_logo_small.jpg">
+      image="pmd_logo_small.jpg"
+      plugin="net.sourceforge.pmd.eclipse.plugin">
 
    <description url="%description.url">
       PMD For Eclipse
