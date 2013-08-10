@@ -35,6 +35,8 @@
  */
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -71,6 +73,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
@@ -456,6 +459,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
          RuleSetUtil.retainOnly(filteredRuleSet, activeRuleNames);
          filteredRuleSet.addExcludePatterns(preferences.activeExclusionPatterns());
          filteredRuleSet.addIncludePatterns(preferences.activeInclusionPatterns());
+         filteredRuleSet.addExcludePatterns(properties.getBuildPathExcludePatterns());
+         filteredRuleSet.addIncludePatterns(properties.getBuildPathIncludePatterns());
          
          taskScope(filteredRuleSet.getRules().size(), ruleSet.getRules().size());
          return filteredRuleSet;

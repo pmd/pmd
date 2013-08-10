@@ -6,6 +6,7 @@ Eclipse Update Site: http://sourceforge.net/projects/pmd/files/pmd-eclipse/updat
 ## ????: 4.0.1.v????
 
 * The official update site is now: http://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/
+* Fixed Build path exclusions not honored ([bug  #988])
 * Fixed right click to add reviewed comment missing ([bug #1052])
 * Fixed PMD Eclipse: How to ... documentation missing ([bug #1061])
 * Fixed Properties page: "Rule-Selection" should be disabled if project-local config is selected ([bug #1070])
@@ -17,6 +18,7 @@ Eclipse Update Site: http://sourceforge.net/projects/pmd/files/pmd-eclipse/updat
 * Fixed PMD Eclipse plugin doesn't analyze project if it has non-existing source folders ([bug #1116])
 * Fixed An internal error occurred during: "RenderReport" ([bug #1117])
 
+[bug  #988]: https://sourceforge.net/p/pmd/bugs/988/
 [bug #1052]: https://sourceforge.net/p/pmd/bugs/1052/
 [bug #1061]: https://sourceforge.net/p/pmd/bugs/1061/
 [bug #1070]: https://sourceforge.net/p/pmd/bugs/1070/

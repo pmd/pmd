@@ -38,6 +38,9 @@ package net.sourceforge.pmd.eclipse.runtime.properties.impl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -54,6 +57,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.ui.IWorkingSet;
 
 /**
@@ -78,6 +83,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     private boolean includeDerivedFiles;
     private boolean violationsAsErrors = true;
     private boolean fullBuildEnabled  = true; // default in case didn't come from properties
+    private Set<String> buildPathExcludePatterns = new HashSet<String>();
+    private Set<String> buildPathIncludePatterns = new HashSet<String>();
     
     /**
      * The default constructor takes a project as an argument
@@ -87,6 +94,43 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         this.project = project;
         this.projectPropertiesManager = projectPropertiesManager;
         this.projectRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
+        determineBuildPathIncludesExcludes();
+    }
+
+    /**
+     * Determines the included and excluded paths configured for the build path of this eclipse project.
+     */
+    private void determineBuildPathIncludesExcludes() {
+        IClasspathEntry source = PMDPlugin.buildSourceClassPathEntryFor(project);
+        if (source != null) {
+            try {
+               String basePath = new File(project.getWorkspace().getRoot().getLocation().toOSString()
+                        + java.io.File.separator + source.getPath().toOSString()).getCanonicalPath();
+               if (!basePath.endsWith(File.separator)) {
+                   basePath += File.separator;
+               }
+               if (source.getExclusionPatterns() != null) {
+                   for (IPath path : source.getExclusionPatterns()) {
+                       String pathString = path.toOSString();
+                       if (!pathString.endsWith(File.separator)) {
+                           pathString += File.separator;
+                       }
+                       buildPathExcludePatterns.add(basePath + pathString + ".*");
+                   }
+               }
+               if (source.getInclusionPatterns() != null) {
+                   for (IPath path : source.getInclusionPatterns()) {
+                       String pathString = path.toOSString();
+                       if (!pathString.endsWith(File.separator)) {
+                           pathString += File.separator;
+                       }
+                       buildPathIncludePatterns.add(basePath + pathString + ".*");
+                   }
+               }
+            } catch (IOException e) {
+               log.error("Couldn't determine build class path", e);
+            }
+        }
     }
 
     /**
@@ -360,4 +404,11 @@ public class ProjectPropertiesImpl implements IProjectProperties {
 		+ " violationsAsErrors: "+violationsAsErrors;
 	}
 
+	public Set<String> getBuildPathExcludePatterns() {
+	    return buildPathExcludePatterns;
+	}
+
+	public Set<String> getBuildPathIncludePatterns() {
+	    return buildPathIncludePatterns;
+	}
 }

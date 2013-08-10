@@ -55,8 +55,10 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -142,10 +144,31 @@ public class PMDPlugin extends AbstractUIPlugin {
 			String compilerCompliance = jProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
 			return Language.JAVA.getVersion(compilerCompliance);
 		}
-
 		return null;
 	}
-	
+
+    public static IClasspathEntry buildSourceClassPathEntryFor(IProject project) {
+        IJavaProject jProject = JavaProjectsByIProject.get(project);
+        if (jProject == null) {
+            jProject = JavaCore.create(project);
+            JavaProjectsByIProject.put(project, jProject);
+        }
+        if (jProject.exists()) {
+            try {
+                if (jProject.getRawClasspath() != null) {
+                    for (IClasspathEntry entry : jProject.getRawClasspath()) {
+                        if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+                            return entry;
+                        }
+                    }
+                }
+            } catch (JavaModelException e) {
+                log.error("Couldn't determine source classpath", e);
+            }
+        }
+        return null;
+    }
+
 	private void disposeResources() {
 		
 		disposeAll(coloursByRGB.values());
