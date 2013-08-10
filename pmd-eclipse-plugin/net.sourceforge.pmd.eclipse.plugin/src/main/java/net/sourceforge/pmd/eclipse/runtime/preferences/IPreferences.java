@@ -64,8 +64,10 @@ public interface IPreferences {
     int MIN_TILE_SIZE_DEFAULT = 25;
     String LOG_FILENAME_DEFAULT = "pmd-eclipse.log";
     Level LOG_LEVEL = Level.WARN;
-    String ACTIVE_RULES = "";
-    String ACTIVE_RENDERERS = "";
+    // default active rules - these are the rules from java-basic,java-imports,java-unusedcode
+    String ACTIVE_RULES = "ExtendsObject,AvoidMultipleUnaryOperators,DoubleCheckedLocking,DuplicateImports,ReturnFromFinallyBlock,UnconditionalIfStatement,BooleanInstantiation,UnusedLocalVariable,AvoidThreadGroup,AvoidDecimalLiteralsInBigDecimalConstructor,DontUseFloatTypeForLoopIndices,MisplacedNullCheck,AvoidUsingHardCodedIP,UnnecessaryFullyQualifiedName,UnusedPrivateMethod,CheckResultSet,CollapsibleIfStatements,ForLoopShouldBeWhileLoop,DontImportJavaLang,JumbledIncrementer,OverrideBothEqualsAndHashcode,CheckSkipResult,DontCallThreadRun,TooManyStaticImports,AvoidUsingOctalValues,AvoidBranchingStatementAsLastInLoop,ImportFromSamePackage,ClassCastExceptionWithToArray,BrokenNullCheck,UnusedImports,UnusedModifier,UnusedPrivateField,UnusedFormalParameter,BigIntegerInstantiation";
+    // default renderer
+    String ACTIVE_RENDERERS = "text";
     String ACTIVE_EXCLUSIONS = "";
     String ACTIVE_INCLUSIONS = "";
   
