@@ -100,7 +100,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private int 						ruleCount;
     private int 						fileCount;
     private long 						pmdDuration;
-    private boolean						clearExistingMarkersBeforeApplying;
     private String						onErrorIssue = null;
 
     private static final long serialVersionUID = 1L;
@@ -118,10 +117,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         setTerminated(false);
     }
 
-    public void clearExistingMarkersBeforeApplying(boolean flag) {
-    	clearExistingMarkersBeforeApplying = flag;
-    }
-    
     public Set<IFile> markedFiles() {
     	return markersByFile.keySet();
     }
@@ -532,17 +527,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         
         try {
             for (IFile file : markersByFile.keySet()) {
-            	if (isCanceled()) break;
+                if (isCanceled()) break;
                 currentFile = file.getName();
-
+                MarkerUtil.deleteAllMarkersIn(file);
                 Set<MarkerInfo2> markerInfoSet = markersByFile.get(file);
-                
-                if (clearExistingMarkersBeforeApplying) {
-                	MarkerUtil.deleteAllMarkersIn(file);
-                }
-                
                 for (MarkerInfo2 markerInfo : markerInfoSet) { 
-                	markerInfo.addAsMarkerTo(file);
+                    markerInfo.addAsMarkerTo(file);
                     violationCount++;
                 }
 
