@@ -12,7 +12,6 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
     @Before
     public void setUp() {
         addRule(RULESET, "AssignmentInOperand");
-        addRule(RULESET, "AvoidFinalLocalVariable");
         addRule(RULESET, "AvoidLiteralsInIfCondition");
         addRule(RULESET, "AvoidPrefixingMethodParameters");
         addRule(RULESET, "AvoidUsingNativeCode");
