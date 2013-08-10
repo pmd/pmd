@@ -51,7 +51,9 @@ import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.eclipse.runtime.properties.PropertiesException;
 import net.sourceforge.pmd.eclipse.util.IOUtil;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -257,15 +259,26 @@ public class BaseVisitor {
     		log.debug("file " + file.getName() + " is derived: " + file.isDerived());
     		log.debug("file checked: " + included);
 
+    		LanguageVersionDiscoverer languageDiscoverer = new LanguageVersionDiscoverer();
+    		LanguageVersion languageVersion = languageDiscoverer.getDefaultLanguageVersionForFile(file.getName());
+    		// in case it is java, select the correct java version
+    		if (languageVersion != null && languageVersion.getLanguage() == Language.JAVA) {
+    		    languageVersion = PMDPlugin.javaVersionFor(file.getProject());
+    		}
+    		if (languageVersion != null) {
+    		    configuration().setDefaultLanguageVersion(languageVersion);
+    		}
+    		log.debug("discovered language: " + languageVersion);
+
     		final File sourceCodeFile = file.getRawLocation().toFile();
-    		if (included && getRuleSet().applies(sourceCodeFile) && isFileInWorkingSet(file)) {
+    		if (included && getRuleSet().applies(sourceCodeFile) && isFileInWorkingSet(file) && languageVersion != null) {
     			subTask("PMD checking: " + file.getName());
 
-    			setLanguageVersion(file);
 
     			Timer timer = new Timer();
 
     			RuleContext context = PMD.newRuleContext(file.getName(), sourceCodeFile);
+    			context.setLanguageVersion(languageVersion);
 
     			input = new InputStreamReader(file.getContents(), file.getCharset());
     			//                    getPmdEngine().processFile(input, getRuleSet(), context);
@@ -298,11 +311,6 @@ public class BaseVisitor {
     	}
 
     }
-
-	private void setLanguageVersion(IFile file) {
-		LanguageVersion version = PMDPlugin.javaVersionFor(file.getProject());
-		if (version != null) configuration().setDefaultLanguageVersion(version);
-	}
 
     /**
      * Test if a file is in the PMD working set
