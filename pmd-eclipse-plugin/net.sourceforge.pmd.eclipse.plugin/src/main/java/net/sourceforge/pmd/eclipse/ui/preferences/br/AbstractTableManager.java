@@ -156,6 +156,10 @@ public abstract class AbstractTableManager<T extends Object> implements SortList
 		addTableSelectionOptions(tableMenu);
 	}
 	
+	public void setTableMenu(Menu tableMenu) {
+	    this.tableMenu = tableMenu;
+	}
+
 	protected void addDeleteListener(Control control) {
 
 		control.addKeyListener(new KeyAdapter() {

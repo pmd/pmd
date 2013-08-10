@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -75,10 +76,10 @@ public class ViolationOutlinePageBR extends Page implements IPage, ISelectionCha
         tableViewer = tableManager.buildTableViewer(parent);
 
         tableManager.setupColumns(AvailableColumns);
+        tableManager.setTableMenu(violationOutline.createContextMenu(tableViewer));
 
         // create the Table
         createActionBars();
-        violationOutline.createContextMenu(tableViewer);
         
         // set the Input
         tableViewer.setContentProvider(new ViolationOutlineContentProvider(this));

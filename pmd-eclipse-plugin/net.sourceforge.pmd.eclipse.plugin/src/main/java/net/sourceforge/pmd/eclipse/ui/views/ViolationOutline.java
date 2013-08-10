@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewSite;
@@ -135,19 +136,18 @@ public class ViolationOutline extends AbstractPMDPagebookView implements ISelect
      * 
      * @param viewer
      */
-    public void createContextMenu(final TableViewer viewer) {
+    public Menu createContextMenu(final TableViewer viewer) {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         // here we add the Context Menus Actions
         manager.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {            	
+            public void menuAboutToShow(IMenuManager manager) {
                 buildMenu(manager, viewer);
             }
         });
 
         Table table = viewer.getTable();
-        table.setMenu(manager.createContextMenu(table));
-        getSite().registerContextMenu(manager, viewer);
+        return manager.createContextMenu(table);
     }
 
 	private void buildMenu(IMenuManager manager, TableViewer viewer) {
