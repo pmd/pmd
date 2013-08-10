@@ -51,4 +51,17 @@ public class A {
 }
 	 ]]></code>
     </test-code>
+    <test-code>
+        <description>#1095 AvoidFinalLocalVariable false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+
+    public void test() {
+        final File[] files = new File(".").listFiles();
+        for (final File f : files) { f.getAbsolutePath(); }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -366,6 +366,7 @@ Avoid using final local variables, turn them into fields.
                   <value><![CDATA[
 //LocalVariableDeclaration[
   @Final = 'true'
+  and not(../../ForStatement)
   and
   (
     (count(VariableDeclarator/VariableInitializer) = 0)
