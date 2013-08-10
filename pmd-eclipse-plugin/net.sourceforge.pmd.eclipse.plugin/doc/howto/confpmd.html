@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META name="GENERATOR" content="IBM WebSphere Studio">
+<META http-equiv="Content-Style-Type" content="text/css">
+<LINK href="css/tigris.css" rel="stylesheet"
+	type="text/css">
+<TITLE>Use the PMD Plugin</TITLE>
+</HEAD>
+<BODY>
+<DIV class="app">
+<DIV class="h3">
+	<H3>How to configure the PMD Plugin</H3>
+	<P>
+	The configuration of the PMD Plugin consists of the selection and configuration
+	of the rules you want to use.
+	</P>
+	<P>
+	The configuration facility lets you select only the rules you want and edit their properties
+	such as the priority or the properties value.
+	You can also modify other rule attributes such as the description, the violation
+	message and a sample code.
+	</P>
+	<P>
+	The configuration system allows to declare new rules, XPath rules for instance, or import rules definition
+	from external rule sets.
+	</P>
+	<P>
+	Finally, there's also a feature to export the configured rules in a external rule set.
+	</P>
+	<P><STRONG>
+	To sum up, the configuration of the plugin is a complete rule set definition workbench.
+	</STRONG></P>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Where to configure the plugin</H4>
+		<P>
+		To configure the plugin, open the preferences dialog (Window-&rarr;Preferences) and select
+		the PMD&rarr;Rules Configuration category.
+		</P>
+		<P>
+		A table containing all the rules currently in use is displayed and show rules name, priority
+		and description. If the description is not entirely visible let the mouse over the cell and a tooltip
+		window will appear with the description text. The bottom table contains the properties of the rule
+		selected in the top table.
+		</P>
+		<P>
+		When the plugin is first installed, the default rules are those from the basic, design, imports and unused rule sets.
+		</P>
+	</DIV>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Changing rules properties</H4>
+		<P>
+		To change the priority, simply direct edit the priority cell and select the desired priority level from
+		the dropdown list. You can select value from "Information" to "Error high" which respectively corresponds to
+		priority from 5 to 1.
+		</P>
+		<P>
+		Rules properties value is edited the same way. When a rule is selected in the top table, its properties are displayed
+		in the bottom table. You can direct edit the property value cell to change the property value.
+		</P>
+		<P>
+		Also, pressing the "Add property..." button on the right of the property table lets you add property to the
+		rule. A dialog window appears to ask the new property name. The new property is added to the table with
+		an empty string as value. Then the property value can be changed by direct editing the value cell.
+		</P>
+		<BR>
+		<DIV class="warningmessage">
+			<P>
+			Currently, the PMD API doesn't allow property deletion. So be careful when adding a property because you will not
+			be able to delete it. The only way is to delete the rule then recreate it, either by declaring it or by importing
+			it from a rule set (see below).
+			</P>
+		</DIV>
+	</DIV>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Changing rules attributes</H4>
+		<P>
+		The rule description, violation message and example can also be modified.
+		</P>
+		<P>
+		Select a rule in the table, then press the "Edit rule..." button.
+		A dialog lets you change these values. The rule name and class although cannot be changed.
+		</P>
+	</DIV>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Create new rules</H4>
+		<P>
+		There are two way to add rules to the list : either by adding new rules or by importing a rule set file
+		description.
+		</P>
+		<P>
+		To add a new rule, simply click the "Add rule..." button.
+		A dialog appears to let you enter a name, a implementation class, a message that will be displayed in
+		case of a violation of that rule, a complete description and finally an example.
+		</P>
+		<P>
+		On validation, the rule priority will be set to 3 (Warning high); then it may be modified by direct editing the
+		priority cell in the rule table.
+		</P>
+		<P>
+		If the new rule is to be a XPath rule, then check the "XPath rule" checkbox. The implementation class field
+		is automatocally filled with the correct class and the "xpath" priority is automatically added to the rule.
+		After creating the rule, fill the xpath property by direct editing the value cell in the property table.
+		</P>
+		<BR>
+		<DIV class="warningmessage">
+			<P>
+			The implementation class <STRONG>must</STRONG> be in the classpath of the plugin. There are only two
+			possibilities : either the class is a standard PMD class or it's a custom class released in a fragment
+			attached to the PMD Plugin. See the how to section dealing with that subject for
+			<A href="fragment.html">more information</A>.
+			</P>
+		</DIV>
+		
+		<BR>
+		<DIV class="warningmessage">
+			<P>
+			If some projects have already been checked by PMD when rules are added, these
+			rules will be activated for these projects. But, because closed projects are not accessible
+			(ie. their properties cannot be changed), these rules will be desactivated for those projects
+			when they will be open again.
+			</P>
+		</DIV>
+	</DIV>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Importing rule definitions</H4>
+		<P>
+		Instead of creating rules, it may be simpler to import already existing definitions.
+		</P>
+		<P>
+		Press the "Import rule set..." button.
+		A dialog appears that let you enter the name of a rule set file.
+		The rule set may be a standard rule set. In that case, select it in the drop down list.
+		</P>
+		<P>
+		The rule set may be an external rule set. Push the "Browse..." button to walkthrough the file system to
+		select the desired rule set.
+		</P>
+		<BR>
+		<DIV class="infomessage">
+			<P>
+			Basically, rule sets are loaded from the plugin classpath. So you must specify a path and name
+			relative to one of the .jar files in the plugin classpath. These jar files can be
+			the PMD jar itself or a custom jar file added by the mean of a plugin
+			<A href="fragment.html">fragment</A>.
+			</P>
+			<P>
+			Also, since PMD v1.05 (PMD plugin v1.0.0), rule sets can be loaded from file system.
+			So you can specify a full absolute path that point to the desired rule set.
+			</P>
+		</DIV>
+		
+		<BR>
+		<DIV class="warningmessage">
+			<P>
+			If some projects have already been checked by PMD when rules are added, these
+			rules will be activated for these projects. But, because closed projects are not accessible
+			(ie. their properties cannot be changed), these rules will be desactivated for those projects
+			when they will be open again.
+			</P>
+		</DIV>
+	</DIV>
+	
+	<BR>
+	<DIV class="h4">
+		<H4>Removing rules</H4>
+		<P>
+		If a rule is no more wanted, then simply select it and press the "Remove rule" button.
+		</P>
+		<P>
+		The table can be entirely cleared by selecting the "Clear all" button. This can be used to
+		build a new rule set for example.
+		</P>
+	</DIV>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Exporting rule definitions</H4>
+		<P>
+		If you're satisfied of your new configuration, share it with your team by exporting the rule set.
+		</P>
+		<P>
+		Press the "Export rule set..." button. A dialog let you spectify the location and file name of the
+		rule set. Normally, the file should have the ".xml" extension.
+		</P>
+		<P>
+		After specifying the file, a input dialog proposes to enter a description. It is the description of the rule
+		set.
+		</P>
+		<P>
+		The name of the generated rule set will be the file name without its extension.
+		</P>
+		<P>
+		As the exported file is a standard PMD rule set, it can be used with other implementation of PMD.
+		</P>
+	</DIV>
+		
+</DIV>
+</DIV>
+</BODY>
+</HTML>

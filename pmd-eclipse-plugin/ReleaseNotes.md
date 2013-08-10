@@ -7,6 +7,7 @@ Eclipse Update Site: http://sourceforge.net/projects/pmd/files/pmd-eclipse/updat
 
 * The official update site is now: http://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/
 * Fixed right click to add reviewed comment missing ([bug #1052])
+* Fixed PMD Eclipse: How to ... documentation missing ([bug #1061])
 * Fixed Violations are reported multiple times ([bug #1071])
 * Fixed SWTError: No more handles on Violation Outline View ([bug #1096])
 * Fixed Selecting non-duplicates during import doesn't work. ([bug #1110])
@@ -15,6 +16,7 @@ Eclipse Update Site: http://sourceforge.net/projects/pmd/files/pmd-eclipse/updat
 * Fixed An internal error occurred during: "RenderReport" ([bug #1117])
 
 [bug #1052]: https://sourceforge.net/p/pmd/bugs/1052/
+[bug #1061]: https://sourceforge.net/p/pmd/bugs/1061/
 [bug #1071]: https://sourceforge.net/p/pmd/bugs/1071/
 [bug #1096]: https://sourceforge.net/p/pmd/bugs/1096/
 [bug #1110]: https://sourceforge.net/p/pmd/bugs/1110/
