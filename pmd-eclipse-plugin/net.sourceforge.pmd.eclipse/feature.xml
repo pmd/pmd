@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update label="%feature.update_site_name" url="http://pmd.sourceforge.net/eclipse"/>
+      <update label="%feature.update_site_name" url="http://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/"/>
    </url>
 
    <requires>
