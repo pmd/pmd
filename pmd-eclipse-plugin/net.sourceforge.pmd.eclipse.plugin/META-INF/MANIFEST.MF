@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: net.sourceforge.pmd.eclipse.plugin;singleton:=true
-Bundle-Version: 4.0.1.qualifier
+Bundle-Version: 4.0.2.qualifier
 Bundle-Activator: net.sourceforge.pmd.eclipse.plugin.PMDPlugin
 Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
  org.eclipse.core.resources,
