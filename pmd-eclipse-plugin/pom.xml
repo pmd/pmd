@@ -17,7 +17,7 @@
     <tycho.version>0.18.1</tycho.version>
     <tycho-extras.version>0.18.1</tycho-extras.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <pmd.version>5.0.4</pmd.version>
+    <pmd.version>5.0.5</pmd.version>
   </properties>
 
   <repositories>
