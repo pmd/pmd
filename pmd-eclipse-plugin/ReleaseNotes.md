@@ -3,7 +3,7 @@
 Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
 
 
-## ????: 4.0.1.v????
+## 11-August-2013: 4.0.1.v20130811-0001
 
 * Updated PMD to 5.0.5
 * Fixed Build path exclusions not honored ([bug  #988])
