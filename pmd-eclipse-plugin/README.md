@@ -58,7 +58,16 @@ Releasing and updating the official eclipse update site
     git checkout master
     git branch -D pmd-eclipse-plugin-rb-<version>
 
-Finally announce the new plugin version in the new section of SF: http://sourceforge.net/p/pmd/news/
+Finally announce the new plugin version in the news section of SF: <https://sourceforge.net/p/pmd/news/>.
+You can use the following template:
+
+    PMD for Eclipse <version> released
+    
+    A new PMD for Eclipse plugin version has been released.
+    It is available via the update site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
+    
+    * Release Notes: <https://github.com/pmd/pmd/blob/pmd-eclipse-plugin/<version>/pmd-eclipse-plugin/ReleaseNotes.md>
+
 
 
 
@@ -73,20 +82,21 @@ All transitive dependencies are copied into the folder `n.s.p.e.plugin/target/li
 
 Useful References
 -----------------
-* http://wiki.eclipse.org/Equinox/p2/Publisher
-* http://wiki.eclipse.org/Equinox_p2_Repository_Mirroring
-* http://wiki.eclipse.org/Category:Tycho
-* http://wiki.eclipse.org/Tycho/Additional_Tools
-* http://codeiseasy.wordpress.com/2012/07/26/managing-a-p2-release-repository-with-tycho/
-* http://wiki.eclipse.org/Tycho/Demo_Projects
-* http://wiki.eclipse.org/Tycho/Reference_Card
-* http://eclipse.org/tycho/sitedocs/index.html
-* https://docs.sonatype.org/display/M2ECLIPSE/Staging+and+releasing+new+M2Eclipse+release
-* http://wiki.eclipse.org/Tycho/Packaging_Types
-* http://wiki.eclipse.org/Tycho/Reproducible_Version_Qualifiers
-* http://www.vogella.com/articles/EclipseTycho/article.html
-* http://git.eclipse.org/c/tycho/org.eclipse.tycho-demo.git/tree/itp01/tycho.demo.itp01.tests/pom.xml
-* http://www.sonatype.com/people/2008/11/building-eclipse-plugins-with-maven-tycho/
-* http://zeroturnaround.com/labs/building-eclipse-plug-ins-with-maven-3-and-tycho/
-* https://github.com/open-archetypes/tycho-eclipse-plugin-archetype
-* http://wiki.eclipse.org/Tycho/How_Tos/Dependency_on_pom-first_artifacts
+
+* <http://wiki.eclipse.org/Equinox/p2/Publisher>
+* <http://wiki.eclipse.org/Equinox_p2_Repository_Mirroring>
+* <http://wiki.eclipse.org/Category:Tycho>
+* <http://wiki.eclipse.org/Tycho/Additional_Tools>
+* <http://codeiseasy.wordpress.com/2012/07/26/managing-a-p2-release-repository-with-tycho/>
+* <http://wiki.eclipse.org/Tycho/Demo_Projects>
+* <http://wiki.eclipse.org/Tycho/Reference_Card>
+* <http://eclipse.org/tycho/sitedocs/index.html>
+* <https://docs.sonatype.org/display/M2ECLIPSE/Staging+and+releasing+new+M2Eclipse+release>
+* <http://wiki.eclipse.org/Tycho/Packaging_Types>
+* <http://wiki.eclipse.org/Tycho/Reproducible_Version_Qualifiers>
+* <http://www.vogella.com/articles/EclipseTycho/article.html>
+* <http://git.eclipse.org/c/tycho/org.eclipse.tycho-demo.git/tree/itp01/tycho.demo.itp01.tests/pom.xml>
+* <http://www.sonatype.com/people/2008/11/building-eclipse-plugins-with-maven-tycho/>
+* <http://zeroturnaround.com/labs/building-eclipse-plug-ins-with-maven-3-and-tycho/>
+* <https://github.com/open-archetypes/tycho-eclipse-plugin-archetype>
+* <http://wiki.eclipse.org/Tycho/How_Tos/Dependency_on_pom-first_artifacts>
