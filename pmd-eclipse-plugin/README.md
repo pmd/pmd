@@ -24,6 +24,10 @@ You should see 6 projects:
 Releasing and updating the official eclipse update site
 -------------------------------------------------------
 
+    # Pick a release BUILDQUALIFIER (e.g. v20130420-0001) and update versions
+    E.g. version is: "4.0.0" and BUILDQUALIFIER is "v20130420-0001".
+    The complete version of the plugin will be "4.0.0.v20130420-0001
+
     # First get a copy of the current update site
     rsync -avhP sf-user@web.sourceforge.net:/home/frs/project/pmd/pmd-eclipse/update-site/ /location/of/local/update-site/
     # Create a release branch
@@ -32,16 +36,20 @@ Releasing and updating the official eclipse update site
     mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=<version+1>-SNAPSHOT
     # Update versions in n.s.p.e.p2updatesite/category.xml
     vim net.sourceforge.pmd.eclipse.p2updatesite/category.xml
+    # Update the ReleaseNotes with the release date and version and a next version
+    vim ReleaseNotes.md
     # Commit and push
     git commit -a -m "Prepare next pmd-eclipse-plugin development version <version+1>-SNAPSHOT"
     git push origin master
     
     # Checkout the release branch
     git checkout pmd-eclipse-plugin-rb-<version>
-    # Pick a release BUILDQUALIFIER (e.g. v20130420-0001) and update versions
+    # update versions with the BUILDQUALIFIER
     mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=<version>.BUILDQUALIFIER
     # Update versions in n.s.p.e.p2updatesite/category.xml
     vim net.sourceforge.pmd.eclipse.p2updatesite/category.xml
+    # Update the ReleaseNotes with the release date and version
+    vim ReleaseNotes.md
     # Commit and tag
     git commit -a -m "Prepare release pmd-eclipse-plugin <version>.BUILDQUALIFIER"
     git tag pmd-eclipse-plugin/<version>.BUILDQUALIFIER
