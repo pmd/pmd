@@ -153,16 +153,25 @@ Login info for 'pmd-site' must be defined in ~/.m2/settings.xml
 $ ssh your_sf_login,pmd@shell.sourceforge.net create
 ...
 $ cd target/checkout/pmd
-$ mvn clean compile site-deploy -Psf-release
+$ mvn clean verify site-deploy -Psf-release   # it's import to execute verify, so that pmd.jar is created and included in the zip packages
 ...
 $ ssh your_sf_login@shell.sourceforge.net "shutdown"
 </source>
 
 <ul>
+<li>Before you upload the zip files, unzip and test once (just to be on the safe side of the road):
+<source>
+cd target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
+./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R java-unusedcode
+./bin/run.sh pmd -d ../../src/main/java -language java -f html -R rulesets/java/unusedcode.xml
+cd ..
+</source>
+</li>
 <li>Upload the files to sourceforge's file section:
 <source>
-$ rsync -avhP target/pmd-*-&lt;version&gt;.zip adangel@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/
-$ rsync -avhP etc/changelog.txt adangel@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.txt
+$ rsync -avhP target/pmd-*-&lt;version&gt;.zip your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/
+$ rsync -avhP etc/changelog.txt your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.txt
 </source>
 </li>
 <li>Verify the MD5 sums on <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a> and locally:
