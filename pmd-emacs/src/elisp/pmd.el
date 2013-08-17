@@ -56,6 +56,9 @@
 
 ;; Change History 
 
+;; 2013-08-16 0.7: Ernst Reissner
+;; - Updated to work with PMD 5.0.2 and 5.0.5
+
 ;; 10/21/2005 0.6: Nascif A. Abousalh-Neto
 ;; - Updated to work with PMD 3.3
 
@@ -89,12 +92,12 @@
 (defgroup pmd nil "PMD"
   :group 'emacs)
 
-(defcustom pmd-java-home "/usr/local/bin/java"
+(defcustom pmd-java-home "/usr/bin/java"
   "Java binary to run PMD with."
   :type 'file
   :group 'pmd )
 
-(defcustom pmd-home "~/pmd"
+(defcustom pmd-home "~/SysAdmin/PMD/latest"
   "Directory where PMD is installed."
   :type 'directory
   :group 'pmd)
@@ -164,6 +167,42 @@
          (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
     (concat "\'" 
             (car (directory-files pmd-lib t ".*pmd-.*\\.jar$"))
+            ":")))
+
+(defun jaxen-jar ()
+  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
+         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
+         (pmd-etc     (concat pmd-home "etc"))
+         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
+    (concat ""
+            (car (directory-files pmd-lib t ".*jaxen-.*\\.jar$"))
+            ":")))
+
+(defun asm-jar ()
+  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
+         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
+         (pmd-etc     (concat pmd-home "etc"))
+         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
+    (concat ""
+            (car (directory-files pmd-lib t ".*asm-.*\\.jar$"))
+            ":")))
+
+(defun jcmd-jar ()
+  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
+         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
+         (pmd-etc     (concat pmd-home "etc"))
+         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
+    (concat ""
+            (car (directory-files pmd-lib t ".*jcommander-.*\\.jar$"))
+            ":")))
+
+(defun commons-io-jar ()
+  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
+         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
+         (pmd-etc     (concat pmd-home "etc"))
+         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
+    (concat ""
+            (car (directory-files pmd-lib t ".*commons-io-.*\\.jar$"))
             "\'")))
 
 ;; (defun pmd-file-or-dir (target)
@@ -193,9 +232,9 @@
   "Run PMD on the given target (file or dir)"
 
   (let ((pmd-command
-         (concat pmd-java-home " -jar " (pmd-jar) " "
-                           target " emacs " (mapconcat (lambda (path) path) pmd-ruleset-list ","))))
-    
+         (concat pmd-java-home " -classpath " (pmd-jar) (jaxen-jar) (asm-jar) (jcmd-jar) (commons-io-jar) " net.sourceforge.pmd.PMD -d "
+                           target " -f emacs -R " (mapconcat (lambda (path) path) pmd-ruleset-list ","))))
+
     ;; Force save-some-buffers to use the minibuffer
     ;; to query user about whether to save modified buffers.
     (if (and (eq system-type 'windows-nt)
