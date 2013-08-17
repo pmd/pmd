@@ -1,27 +1,36 @@
 ;;; Commentary:
 ;; Installation:
-;; 	add this line to your .emacs file:
+;;  1) Install the core PMD application (not part of this download, get it 
+;;     from http://pmd.sourceforge.net/);
+;;  2) Make sure the directory of pmd.el is part of your Emacs load-path;
+;;     E.g., copy file pmd.el to ~/.emacs.d/lisp
+;;     and add this line to you .emacs file:
+;;          (add-to-list 'load-path "~/.emacs.d/lisp")
+;;  3) Add the following lines to your .emacs file:
 ;; 	    (autoload 'pmd-current-buffer "pmd" "PMD Mode" t)
-;; 	once this is done, you can call the pmd-current-buffer function
-;; 	using C-x or bind it to a key sequence.
-
-;;   NOTE: This requies the xml parser in xml.el.  This is distributed
-;; 	with the standard Gnu Emacs 21.x release. 
+;; 	    (autoload 'pmd-current-dir "pmd" "PMD Mode" t)
+;;  4) Load pmd.el:
+;; 	    M-x load-library <RET>
+;; 	    pmd <RET>
+;;  5) Configure the location of the Java executable and the PMD installation 
+;;     directory using the command pmd-customize:
+;; 	    M-x pmd-customize <RET>
+;;
+;; 	Once this is done, you can call the pmd-current-buffer and pmd-current-dir 
+;;  functions using M-x <function name> or by bind them to key sequences.
 
 ;; Configuration:
-;; 	Most user variables can be customized through standard
-;; 	customization buffers.  Type:
+;; 	Besides the variables described above, you can also compile the rulesets used by PMD.
+;;  Type:
 ;; 	    M-x pmd-customize
 ;; 		--or--
 ;; 	    M-x customize-group <RET>
 ;; 	    pmd <RET>
 	
 ;; Description:
-;; 	This mode is similar to the compilation buffer found in the
-;; 	JDE.  When you run pmd-current-buffer on a .java file, it runs
-;; 	the PMD tool (http://pmd.sourceforge.net/) on the file with
-;; 	the rulesets defined in pmd-rulesets.
-	
-;; 	Type ? in the *PMD* buffer for a list of key bindings for
-;; 	pmd-mode and usage help.
-
+;; 	This mode uses a compilation buffer to display the output of PMD
+;; (http://pmd.sourceforge.net/).  
+;; It provides two commands, pmd-current-buffer and pmd-current-dir, which as you
+;; guessed run PMD on the contents of the current buffer (must be a .java file)
+;; or on all .java files in the directory associated with the current buffer. 
+;; You can defining the PMD rulesets by customizing the variable pmd-ruleset-list.

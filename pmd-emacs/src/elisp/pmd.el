@@ -28,12 +28,18 @@
 ;;  1) Install the core PMD application (not part of this download, get it 
 ;;     from http://pmd.sourceforge.net/);
 ;;  2) Make sure the directory of pmd.el is part of your Emacs load-path;
-;; 	3) Add this line to your .emacs file:
+;;     E.g., copy file pmd.el to ~/.emacs.d/lisp
+;;     and add this line to you .emacs file:
+;;          (add-to-list 'load-path "~/.emacs.d/lisp")
+;;  3) Add the following lines to your .emacs file:
 ;; 	    (autoload 'pmd-current-buffer "pmd" "PMD Mode" t)
 ;; 	    (autoload 'pmd-current-dir "pmd" "PMD Mode" t)
-;;  4) Load pmd.el
+;;  4) Load pmd.el:
+;; 	    M-x load-library <RET>
+;; 	    pmd <RET>
 ;;  5) Configure the location of the Java executable and the PMD installation 
-;;     directory using the command pmd-customize.
+;;     directory using the command pmd-customize:
+;; 	    M-x pmd-customize <RET>
 ;;
 ;; 	Once this is done, you can call the pmd-current-buffer and pmd-current-dir 
 ;;  functions using M-x <function name> or by bind them to key sequences.
@@ -97,15 +103,16 @@
   :type 'file
   :group 'pmd )
 
-(defcustom pmd-home "~/SysAdmin/PMD/latest"
+(defcustom pmd-home "~/pmd"
   "Directory where PMD is installed."
   :type 'directory
   :group 'pmd)
 
-(defcustom pmd-ruleset-list (list "basic" "braces" "clone" "codesize" "controversial" "coupling" 
-                                  "design" "finalizers" "imports" "javabeans" "junit" "logging-java" 
-                                  "naming" "optimizations" "strictexception" "strings" "sunsecure" 
-                                  "unusedcode" "logging-jakarta-commons")
+(defcustom pmd-ruleset-list (list "java-basic" "java-braces" "java-clone" "java-codesize" "java-controversial" "java-coupling" 
+                                  "java-design" "java-empty" "java-finalizers" "java-imports" "java-javabeans" "java-junit" 
+                                  "java-logging-jakarta-commons" "java-logging-java" 
+                                  "java-naming" "java-optimizations" "java-strictexception" "java-strings" "java-sunsecure" 
+                                  "java-unnecessary" "java-unusedcode")
 
   "A list of Rulesets to apply. Rulesets are specified in XML files inside the \"rulesets\" subdirectory of the main PMD jar file."
   :type '(repeat (file :tag "Ruleset"))
@@ -147,93 +154,18 @@
   (pmd-file-or-dir (file-name-directory (buffer-file-name))))
 
 (defun pmd-classpath ()
-  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
-         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
-         (pmd-etc     (concat pmd-home "etc"))
-         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
-    (concat "\'" 
-            pmd-etc path-separator
-            (mapconcat
-             (lambda (path)
-               path) 
-             (directory-files pmd-lib t "\\.jar$")
-             path-separator)
-            "\'")))
-
-(defun pmd-jar ()
-  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
-         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
-         (pmd-etc     (concat pmd-home "etc"))
-         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
-    (concat "\'" 
-            (car (directory-files pmd-lib t ".*pmd-.*\\.jar$"))
-            ":")))
-
-(defun jaxen-jar ()
-  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
-         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
-         (pmd-etc     (concat pmd-home "etc"))
-         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
-    (concat ""
-            (car (directory-files pmd-lib t ".*jaxen-.*\\.jar$"))
-            ":")))
-
-(defun asm-jar ()
-  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
-         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
-         (pmd-etc     (concat pmd-home "etc"))
-         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
-    (concat ""
-            (car (directory-files pmd-lib t ".*asm-.*\\.jar$"))
-            ":")))
-
-(defun jcmd-jar ()
-  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
-         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
-         (pmd-etc     (concat pmd-home "etc"))
-         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
-    (concat ""
-            (car (directory-files pmd-lib t ".*jcommander-.*\\.jar$"))
-            ":")))
-
-(defun commons-io-jar ()
-  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
-         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
-         (pmd-etc     (concat pmd-home "etc"))
-         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
-    (concat ""
-            (car (directory-files pmd-lib t ".*commons-io-.*\\.jar$"))
-            "\'")))
-
-;; (defun pmd-file-or-dir (target)
-;;   "Run PMD on the given target (file or dir)"
-;;   (if (eq (count-windows) 1)
-;;       (split-window-vertically))
-;;   (other-window 1)
-;;   (switch-to-buffer (get-buffer-create "*PMD*"))
-;;   (if pmd-append-output
-;;       (goto-char (point-max))
-;;     (erase-buffer))
-;;   (pmd-mode)
-;;   (insert-string (concat " PMD output for " target "\n\n"))
-
-;;   (insert-string (concat pmd-java-home " -cp \"" (pmd-classpath) "\" net.sourceforge.pmd.PMD "
-;;                            target " emacs " (mapconcat (lambda (path) path) pmd-ruleset-list ",")))
-
-;;   (insert-string "\n\n")
-
-;;   (insert (concat (shell-command-to-string 
-;;                    (concat pmd-java-home " -cp \"" (pmd-classpath) "\" net.sourceforge.pmd.PMD "
-;;                            target " emacs " (mapconcat (lambda (path) path) pmd-ruleset-list ","))) "\n"))
-;;   (insert-string "Done.\n")
-;;   (goto-char (point-min)))
+  (let* ((path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
+         (pmd-lib     (concat (expand-file-name pmd-home) path-slash "lib" path-slash)))
+    (concat " -cp \'" pmd-lib "*\'" )))
 
 (defun pmd-file-or-dir (target)
   "Run PMD on the given target (file or dir)"
 
   (let ((pmd-command
-         (concat pmd-java-home " -classpath " (pmd-jar) (jaxen-jar) (asm-jar) (jcmd-jar) (commons-io-jar) " net.sourceforge.pmd.PMD -d "
-                           target " -f emacs -R " (mapconcat (lambda (path) path) pmd-ruleset-list ","))))
+         (concat pmd-java-home (pmd-classpath) " net.sourceforge.pmd.PMD " 
+                           " -d " target 
+                           " -f emacs " 
+                           " -R " (mapconcat (lambda (path) path) pmd-ruleset-list ","))))
 
     ;; Force save-some-buffers to use the minibuffer
     ;; to query user about whether to save modified buffers.
@@ -247,7 +179,7 @@
           (save-some-buffers (not compilation-ask-about-save) nil)
           (setq last-nonmenu-event temp))
       (save-some-buffers (not compilation-ask-about-save) nil))
-    (compile-internal pmd-command "No more errors" "PMD")))
+    (compilation-start pmd-command)))
 
 (provide 'pmd)
 

@@ -1,7 +1,9 @@
 #!/bin/bash
 
-rm -rf pmd-emacs-0.6
-mkdir pmd-emacs-0.6
-cp src/elisp/pmd.el CHANGELOG INSTALL LICENSE.txt pmd-emacs-0.6
-zip -q -r pmd-emacs-0.6.zip pmd-emacs-0.6/
-rm -rf pmd-emacs-0.6
+VERSION=0.7
+
+rm -rf pmd-emacs-$VERSION
+mkdir pmd-emacs-$VERSION
+cp src/elisp/pmd.el CHANGELOG INSTALL LICENSE.txt pmd-emacs-$VERSION
+zip -q -r pmd-emacs-$VERSION.zip pmd-emacs-$VERSION/
+rm -rf pmd-emacs-$VERSION
