@@ -3753,7 +3753,7 @@ ASTKEYWORD_RESERVED KEYWORD_RESERVED (): {}
 | <PRIOR>
 | <PUBLIC>
 | <RAW>
-| <RENAME>
+// | <RENAME> // Although RENAME is an Oracle reserved word, it may be used as a PL/SQL name.
 | <RESOURCE>
 | <REVOKE>
 | <SELECT>
@@ -4864,6 +4864,8 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <EDITIONABLE> 
 | <NONEDITIONABLE> 
 | <ACCESSIBLE> 
+| <NULLIF> 
+| <RENAME> //Although RENAME is an Oracle reserved word, it may be used as a PL/SQL name.
 )
 
 { jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
@@ -4974,7 +4976,7 @@ ASTID ID(): {}
 		| <NOT> //SYNTAX  //RESERVED WORD  
 		| <NOWAIT>  //RESERVED WORD  
 		| <NULL>  //RESERVED WORD  
-		| <NULLIF> 
+		//| <NULLIF> 
 		| <NUMBER>  //RESERVED WORD  
 		| <NUMBER_BASE> 
 		| <OCIROWID> 
@@ -5230,7 +5232,7 @@ ASTQualifiedID QualifiedID(): {}
 		//<NOT>
 		//<NOWAIT>
 		//<NULL>
-		| <NULLIF>
+		//| <NULLIF>
 		| <NUMBER>
 		| <BFILE_BASE> 
 		| <BLOB_BASE> 
