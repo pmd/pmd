@@ -8,6 +8,7 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Match;
 
@@ -47,7 +48,7 @@ public class CpdCommand extends Command {
         try {
             cpdViolationPage.cpdFileToNodeMap.clear();
             // TODO get minimum tokens from prefs panel
-            final CPD cpd = new CPD(100, new LanguageFactory().createLanguage("java"));
+            final CPD cpd = new CPD(new CPDConfiguration(100, new LanguageFactory().createLanguage("java"), null));
 
             // add all files to CPD
             if (context.getElement() instanceof RelativeDirectoryContextFolder) {

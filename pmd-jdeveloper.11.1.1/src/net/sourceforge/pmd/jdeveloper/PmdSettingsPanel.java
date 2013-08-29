@@ -357,7 +357,7 @@ public class PmdSettingsPanel extends DefaultTraversablePanel {
         RuleSetWriter ruleSetWriter = null;
         try {
             outputStream = new FileOutputStream(fileLocation);
-            ruleSetWriter = new RuleSetWriter(outputStream, false);
+            ruleSetWriter = new RuleSetWriter(outputStream);
             ruleSetWriter.write(selectedRules);
             outputStream.flush();
         } catch (IOException e) {
