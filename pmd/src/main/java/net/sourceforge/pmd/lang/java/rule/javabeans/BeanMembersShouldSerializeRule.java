@@ -80,7 +80,8 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 	    boolean hasGetMethod = Arrays.binarySearch(methNameArray, "get" + varName) >= 0
 		    || Arrays.binarySearch(methNameArray, "is" + varName) >= 0;
 	    boolean hasSetMethod = Arrays.binarySearch(methNameArray, "set" + varName) >= 0;
-	    if (!hasGetMethod || !hasSetMethod) {
+	    // Note that a Setter method is not applicable to a final variable...
+	    if (!hasGetMethod || (!decl.getAccessNodeParent().isFinal() && !hasSetMethod)) {
 		addViolation(data, decl.getNode(), decl.getImage());
 	    }
 	}
