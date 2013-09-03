@@ -3,19 +3,6 @@
            esdk-version="1.0">
     <name>PMD JDeveloper Extension</name>
     <owner>Torsten Kleiber</owner>
-    <dependencies>
-        <import>oracle.ide.ceditor</import>
-        <import>oracle.jdeveloper.build</import>
-        <import>oracle.jdeveloper.java.core</import>
-    </dependencies>
-    <required-bundles>
-        <bundle>oracle.icons</bundle>
-        <bundle>oracle.ide</bundle>
-        <bundle>oracle.idert</bundle>
-        <bundle>oracle.javatools</bundle>
-        <bundle>oracle.javatools-nodeps</bundle>
-        <bundle>oracle.javaxide</bundle>
-    </required-bundles>
     <trigger-hooks xmlns="http://xmlns.oracle.com/ide/extension">
         <rules>
             <rule id="context-has-project-element" type="context-has-element">
