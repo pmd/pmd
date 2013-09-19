@@ -230,6 +230,14 @@
             </roles>
             <timezone>+1</timezone>
         </developer>
+        <developer>
+            <id>acanda</id>
+            <name>Philip Graf</name>
+            <email>acanda@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
     </developers>
     <scm>
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
