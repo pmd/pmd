@@ -89,10 +89,11 @@ import java.util.*;
 import org.apache.velocity.exception.VelocityException;
 import net.sourceforge.pmd.lang.vm.util.RuntimeServices;
 import net.sourceforge.pmd.lang.vm.ast.*;
-import net.sourceforge.pmd.lang.vm.util.Directive;
+import net.sourceforge.pmd.lang.vm.directive.Directive;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.parser.VelocityCharStream;
 import org.apache.velocity.runtime.parser.CharStream;
+import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
 
 /**
  * This class is responsible for parsing a Velocity
@@ -126,7 +127,7 @@ public class VmParser
      */
     public boolean strictEscape = false;
 
-    VelocityCharStream velcharstream = null;
+    VelocityCharStream velcharstream = new VelocityCharStream(new ByteArrayInputStream("\u005cn".getBytes()), 1, 1 );
 
     private RuntimeServices rsvc = null;
 
@@ -234,7 +235,7 @@ public class VmParser
      */
     public Directive getDirective(String directive)
     {
-        return (Directive) rsvc.getDirective(directive);
+        return DirectiveMapper.getDirective(directive);
     }
 
     /**
@@ -242,7 +243,7 @@ public class VmParser
      */
     public boolean isDirective(String directive)
     {
-        return rsvc.getDirective(directive) != null;
+        return DirectiveMapper.getDirective(directive) != null;
     }
 
 
@@ -255,7 +256,9 @@ public class VmParser
         int iLast = strImage.lastIndexOf("\\");
 
         String strDirective = strImage.substring(iLast + 1);
-
+        
+        return ( strImage.substring(0,iLast/2) + strDirective);
+/*
         boolean bRecognizedDirective = false;
 
         // we don't have to call substring method all the time in this method
@@ -264,7 +267,7 @@ public class VmParser
         {
             dirTag = dirTag.substring(1, dirTag.length() - 1);
         }
-
+*/
         /*
          *  If this is a predefined derective or if we detect
          *  a macro definition (this is aproximate at best) then
@@ -272,7 +275,7 @@ public class VmParser
          *  mode then we always absord the forward slash regardless
          *  if the derective is defined or not.
          */
-
+/*
         if (strictEscape
              || isDirective(dirTag)
              || macroNames.containsKey(dirTag)
@@ -282,7 +285,6 @@ public class VmParser
         }
         else
         {
-            /* order for speed? */
 
             if ( dirTag.equals("if")
                 || dirTag.equals("end")
@@ -294,16 +296,17 @@ public class VmParser
                 bRecognizedDirective = true;
             }
         }
-
+*/
         /*
          *  if so, make the proper prefix string (let the escapes do their thing..)
          *  otherwise, just return what it is..
          */
-
+/*
         if (bRecognizedDirective)
             return ( strImage.substring(0,iLast/2) + strDirective);
         else
             return ( strImage );
+*/
     }
 
     /**
@@ -1336,7 +1339,7 @@ void Escape() : {}
         if (strictEscape
             || isDirective(nTag)
             || macroNames.containsKey(nTag)
-            || rsvc.isVelocimacro(nTag, currentTemplateName))
+            || true) //rsvc.isVelocimacro(nTag, currentTemplateName)
         {
             control = true;
         }
@@ -1519,7 +1522,7 @@ SimpleNode Directive() :
                 /*
                  *  if null, then not a real directive, but maybe a Velocimacro
                  */
-                isVM = rsvc.isVelocimacro(directiveName, currentTemplateName);
+                isVM = true; //rsvc.isVelocimacro(directiveName, currentTemplateName);
 
                 directiveType = Directive.LINE;
             }

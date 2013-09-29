@@ -1,8 +1,8 @@
 package net.sourceforge.pmd.lang.vm.util;
 
 import net.sourceforge.pmd.lang.vm.ast.SimpleNode;
+import net.sourceforge.pmd.lang.vm.directive.Directive;
 
-import org.apache.velocity.runtime.directive.Directive;
 import org.apache.velocity.util.introspection.Info;
 
 /*

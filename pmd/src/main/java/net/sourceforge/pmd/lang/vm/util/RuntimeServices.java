@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vm.ast.ParseException;
 import net.sourceforge.pmd.lang.vm.ast.SimpleNode;
 import net.sourceforge.pmd.lang.vm.ast.VmParser;
+import net.sourceforge.pmd.lang.vm.directive.Directive;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.velocity.Template;
