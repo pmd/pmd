@@ -20,6 +20,7 @@ New Java rules:
 
 CPD Command Line Changes:
   Added non-recursive option "--non-recursive" to not scan sub-directories
+  Added option "--exclude" to exclude specific files from being scanned (thanks to Delmas for patch #272)
 
 Upgrade to javacc 5.0 (see patch #1109 Patch to build with Javacc 5.0)
 

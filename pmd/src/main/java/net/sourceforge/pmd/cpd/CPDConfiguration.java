@@ -5,10 +5,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.util.FileFinder;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
@@ -52,6 +55,9 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	@Parameter(names = "--files", variableArity = true, description = "ToDo", required = true)
 	private List<String> files;
+
+	@Parameter(names = "--exclude", variableArity = true, description = "Files to be excluded from CPD check", required = false)
+	private List<String> excludes;
 
 	@Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
 	private boolean nonRecursive;
@@ -187,11 +193,40 @@ public class CPDConfiguration extends AbstractConfiguration {
 		return language.getTokenizer();
 	}
 
-	public FilenameFilter filenameFilter() {
-		if ( language == null )
-			throw new IllegalStateException("Language is null.");
-		return language.getFileFilter();
-	}
+    public FilenameFilter filenameFilter() {
+        if (language == null)
+            throw new IllegalStateException("Language is null.");
+
+        final FilenameFilter languageFilter = language.getFileFilter();
+        final Set<String> exclusions = new HashSet<String>();
+
+        if (excludes != null) {
+            FileFinder finder = new FileFinder();
+            for (String excludedFile : excludes) {
+                File exFile = new File(excludedFile);
+                if (exFile.isDirectory()) {
+                    List<File> files = finder.findFilesFrom(excludedFile, languageFilter, true);
+                    for (File f : files) {
+                        exclusions.add(f.getAbsolutePath());
+                    }
+                } else {
+                    exclusions.add(exFile.getAbsolutePath());
+                }
+            }
+        }
+
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                File f = new File(dir, name);
+                if (exclusions.contains(f.getAbsolutePath())) {
+                    System.err.println("Excluding " + f.getAbsolutePath());
+                    return false;
+                }
+                return languageFilter.accept(dir, name);
+            }
+        };
+        return filter;
+    }
 
 	public void setRenderer(Renderer renderer) {
 		this.renderer = renderer;
@@ -227,6 +262,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public void setFiles(List<String> files) {
 		this.files = files;
+	}
+
+	public List<String> getExcludes() {
+	    return excludes;
+	}
+
+	public void setExcludes(List<String> excludes) {
+	    this.excludes = excludes;
 	}
 
 	public boolean isNonRecursive() {

@@ -44,6 +44,21 @@ public class CPDCommandLineInterfaceTest {
         Assert.assertTrue(out.contains("Found a 7 line (34 tokens) duplication"));
     }
 
+    /**
+     * Test excludes option.
+     */
+    @Test
+    public void testExcludes() throws Exception {
+        runCPD("--minimum-tokens", "34", "--language", "java",
+                "--ignore-identifiers",
+                "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/",
+                "--exclude", "src/test/resources/net/sourceforge/pmd/cpd/clitest/File2.java"
+                );
+
+        String out = buffer.toString("UTF-8");
+        Assert.assertFalse(out.contains("Found a 7 line (34 tokens) duplication"));
+    }
+
     private void runCPD(String... args) {
         System.setProperty(CPDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
         CPD.main(args);
