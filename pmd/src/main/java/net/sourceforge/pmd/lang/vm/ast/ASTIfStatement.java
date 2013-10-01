@@ -28,7 +28,6 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @version $Id: ASTIfStatement.java 517553 2007-03-13 06:09:58Z wglass $
  */
 
-import org.apache.velocity.context.InternalContextAdapter;
 
 /**
  *
@@ -58,10 +57,4 @@ public class ASTIfStatement extends SimpleNode {
         return visitor.visit(this, data);
     }
 
-    /**
-     * @param context
-     * @param visitor
-     */
-    public void process(final InternalContextAdapter context, final VmParserVisitor visitor) {
-    }
 }

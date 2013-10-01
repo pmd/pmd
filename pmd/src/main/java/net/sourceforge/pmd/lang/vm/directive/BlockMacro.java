@@ -19,14 +19,6 @@ package net.sourceforge.pmd.lang.vm.directive;
  * under the License.    
  */
 
-import java.io.IOException;
-import java.io.Writer;
-
-import org.apache.velocity.context.InternalContextAdapter;
-import org.apache.velocity.exception.TemplateInitException;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.RuntimeServices;
-import org.apache.velocity.runtime.parser.node.Node;
 
 /**
  * BlockMacro directive is used to invoke Velocity macros with normal parameters and a macro body.
@@ -60,7 +52,6 @@ import org.apache.velocity.runtime.parser.node.Node;
 public class BlockMacro extends Block
 {
     private String name;
-    private RuntimeMacro macro;
 
     public BlockMacro(String name)
     {
@@ -82,43 +73,5 @@ public class BlockMacro extends Block
         return name;
     }
 
-    /**
-     * Initializes the directive.
-     * 
-     * @param rs
-     * @param context
-     * @param node
-     * @throws TemplateInitException
-     */
-    public void init(RuntimeServices rs, InternalContextAdapter context, Node node)
-        throws TemplateInitException
-    {
-        super.init(rs, context, node);
-        
-        // get name of the reference that refers to AST block passed to block macro call
-        key = rsvc.getString(RuntimeConstants.VM_BODY_REFERENCE, "bodyContent");
-
-        // use the macro max depth for bodyContent max depth as well
-        maxDepth = rs.getInt(RuntimeConstants.VM_MAX_DEPTH);
-
-        macro = new RuntimeMacro(name);
-        macro.setLocation(getLine(), getColumn(), getTemplateName());
-        macro.init(rs, context, node);
-    }
-
-    /**
-     * Renders content using the selected macro and the passed AST body.
-     *
-     * @param context
-     * @param writer
-     * @param node
-     * @return True if the directive rendered successfully.
-     * @throws IOException
-     */
-    public boolean render(InternalContextAdapter context, Writer writer, Node node)
-        throws IOException
-    {
-        return macro.render(context, writer, node, new Reference(context, this));
-    }
 
 }

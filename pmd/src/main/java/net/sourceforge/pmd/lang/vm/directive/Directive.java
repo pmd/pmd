@@ -19,21 +19,6 @@ package net.sourceforge.pmd.lang.vm.directive;
  * under the License.    
  */
 
-import java.io.Writer;
-import java.io.IOException;
-
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.RuntimeServices;
-
-import org.apache.velocity.context.InternalContextAdapter;
-import org.apache.velocity.runtime.parser.node.Node;
-
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.exception.TemplateInitException;
-
-
 /**
  * Base class for all directives used in Velocity.
  *
@@ -47,11 +32,6 @@ public abstract class Directive implements DirectiveConstants, Cloneable
     private int column = 0;
     private boolean provideScope = false;
     private String templateName;
-
-    /**
-     *
-     */
-    protected RuntimeServices rsvc = null;
 
     /**
      * Return the name of this directive.
@@ -130,98 +110,6 @@ public abstract class Directive implements DirectiveConstants, Cloneable
     public boolean isScopeProvided()
     {
         return provideScope;
-    }
-
-    /**
-     * How this directive is to be initialized.
-     * @param rs
-     * @param context
-     * @param node
-     * @throws TemplateInitException
-     */
-    public void init( RuntimeServices rs, InternalContextAdapter context,
-                      Node node)
-        throws TemplateInitException
-    {
-        rsvc = rs;
-
-        String property = getScopeName()+'.'+RuntimeConstants.PROVIDE_SCOPE_CONTROL;
-        this.provideScope = rsvc.getBoolean(property, provideScope);
-    }
-
-    /**
-     * How this directive is to be rendered
-     * @param context
-     * @param writer
-     * @param node
-     * @return True if the directive rendered successfully.
-     * @throws IOException
-     * @throws ResourceNotFoundException
-     * @throws ParseErrorException
-     * @throws MethodInvocationException
-     */
-    public abstract boolean render( InternalContextAdapter context,
-                                    Writer writer, Node node )
-           throws IOException, ResourceNotFoundException, ParseErrorException,
-                MethodInvocationException;
-
-
-    /**
-     * This creates and places the scope control for this directive
-     * into the context (if scope provision is turned on).
-     */
-    protected void preRender(InternalContextAdapter context)
-    {
-        if (isScopeProvided())
-        {
-            String name = getScopeName();
-            Object previous = context.get(name);
-            context.put(name, makeScope(previous));
-        }
-    }
-
-    protected Scope makeScope(Object prev)
-    {
-        return new Scope(this, prev);
-    }
-
-    /**
-     * This cleans up any scope control for this directive after rendering,
-     * assuming the scope control was turned on.
-     */
-    protected void postRender(InternalContextAdapter context)
-    {
-        if (isScopeProvided())
-        {
-            String name = getScopeName();
-            Object obj = context.get(name);
-            
-            try
-            {
-                Scope scope = (Scope)obj;
-                if (scope.getParent() != null)
-                {
-                    context.put(name, scope.getParent());
-                }
-                else if (scope.getReplaced() != null)
-                {
-                    context.put(name, scope.getReplaced());
-                }
-                else
-                {
-                    context.remove(name);
-                }
-            }
-            catch (ClassCastException cce)
-            {
-                // the user can override the scope with a #set,
-                // since that means they don't care about a replaced value
-                // and obviously aren't too keen on their scope control,
-                // and especially since #set is meant to be handled globally,
-                // we'll assume they know what they're doing and not worry
-                // about replacing anything superseded by this directive's scope
-            }
-        }
     }
 
 }

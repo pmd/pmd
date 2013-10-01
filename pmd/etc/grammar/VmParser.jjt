@@ -86,11 +86,8 @@ package net.sourceforge.pmd.lang.vm.ast;
 
 import java.io.*;
 import java.util.*;
-import org.apache.velocity.exception.VelocityException;
-import net.sourceforge.pmd.lang.vm.util.RuntimeServices;
 import net.sourceforge.pmd.lang.vm.ast.*;
 import net.sourceforge.pmd.lang.vm.directive.Directive;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.parser.VelocityCharStream;
 import org.apache.velocity.runtime.parser.CharStream;
 import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
@@ -128,40 +125,6 @@ public class VmParser
     public boolean strictEscape = false;
 
     VelocityCharStream velcharstream = new VelocityCharStream(new ByteArrayInputStream("\u005cn".getBytes()), 1, 1 );
-
-    private RuntimeServices rsvc = null;
-
-    /**
-     * This constructor was added to allow the re-use of parsers.
-     * The normal constructor takes a single argument which
-     * an InputStream. This simply creates a re-usable parser
-     * object, we satisfy the requirement of an InputStream
-     * by using a newline character as an input stream.
-     */
-    public VmParser( RuntimeServices rs)
-    {
-        /*
-         * need to call the CTOR first thing.
-         */
-
-        this(   new VelocityCharStream(
-                new ByteArrayInputStream("\n".getBytes()), 1, 1 ));
-
-        /*
-         * now setup a VCS for later use
-         */
-        velcharstream = new VelocityCharStream(
-                new ByteArrayInputStream("\n".getBytes()), 1, 1 );
-
-
-        strictEscape =
-            rs.getBoolean(RuntimeConstants.RUNTIME_REFERENCES_STRICT_ESCAPE, false);
-
-        /*
-         *  and save the RuntimeServices
-         */
-        rsvc = rs;
-    }
 
     /**
      * This was also added to allow parsers to be
@@ -205,12 +168,10 @@ public class VmParser
              *  thrown by the Macro class when something is amiss in the
              *  Macro specification
              */
-            rsvc.getLog().error("Parser Error: " + templateName, mee);
             throw mee;
         }
         catch (ParseException pe)
         {
-            rsvc.getLog().error("Parser Exception: " + templateName, pe);
             throw new TemplateParseException (pe.currentToken,
 				pe.expectedTokenSequences, pe.tokenImage, currentTemplateName);
 		}
@@ -221,8 +182,7 @@ public class VmParser
         catch (Exception e)
         {
             String msg = "Parser Error: " + templateName;
-            rsvc.getLog().error(msg, e);
-            throw new VelocityException(msg, e);
+            throw new ParseException(msg + e.getMessage());
         }
 
         currentTemplateName = "";
@@ -257,8 +217,8 @@ public class VmParser
 
         String strDirective = strImage.substring(iLast + 1);
         
-        return ( strImage.substring(0,iLast/2) + strDirective);
-/*
+//        return ( strImage.substring(0,iLast/2) + strDirective);
+
         boolean bRecognizedDirective = false;
 
         // we don't have to call substring method all the time in this method
@@ -267,7 +227,7 @@ public class VmParser
         {
             dirTag = dirTag.substring(1, dirTag.length() - 1);
         }
-*/
+
         /*
          *  If this is a predefined derective or if we detect
          *  a macro definition (this is aproximate at best) then
@@ -275,11 +235,11 @@ public class VmParser
          *  mode then we always absord the forward slash regardless
          *  if the derective is defined or not.
          */
-/*
+
         if (strictEscape
              || isDirective(dirTag)
              || macroNames.containsKey(dirTag)
-             || rsvc.isVelocimacro(dirTag, currentTemplateName))
+             || !DirectiveMapper.isDirective(dirTag)) //rsvc.isVelocimacro(dirTag, currentTemplateName))
         {
             bRecognizedDirective = true;
         }
@@ -296,17 +256,16 @@ public class VmParser
                 bRecognizedDirective = true;
             }
         }
-*/
+
         /*
          *  if so, make the proper prefix string (let the escapes do their thing..)
          *  otherwise, just return what it is..
          */
-/*
+
         if (bRecognizedDirective)
             return ( strImage.substring(0,iLast/2) + strDirective);
         else
             return ( strImage );
-*/
     }
 
     /**
@@ -593,6 +552,12 @@ TOKEN:
 TOKEN:
 {
   <DOUBLEDOT : ".." >
+}
+
+<DIRECTIVE, REFMOD2>
+TOKEN:
+{
+  <IN : "in" >
 }
 
 <DIRECTIVE, REFMOD2>
@@ -1022,7 +987,7 @@ TOKEN :
 }
 
 
-<DIRECTIVE,REFMOD2>
+<DIRECTIVE>
 TOKEN :
 {
     <MINUS: "-">
@@ -1051,7 +1016,10 @@ TOKEN :
         inDirective = false;
         stateStackPop();
     }
-
+|   <FOREACH_DIRECTIVE: "foreach" | "{foreach}">
+    {
+        SwitchTo(DIRECTIVE);
+    }
 |   <IF_DIRECTIVE: "if" | "{if}">
     {
         SwitchTo(DIRECTIVE);
@@ -1129,21 +1097,14 @@ TOKEN:
 
 }
 
-/**
- *  TODO, the "@" symbol for block macros to be correct really should prefix WORD
- *  and BRACKETED_WORD, e.g., <WORD ["@"] ( <LETTER... etc...
- *  However, having the conditional character at the beginning screws up
- *  Macro parse.  As it is now you can have #@1234 defined as a macro
- *  Which is not correct.
- */
-
 <PRE_DIRECTIVE,DIRECTIVE>
 TOKEN:
 {
     <#LETTER: [ "a"-"z", "A" - "Z" ] >
-|   <#DIRECTIVE_CHAR: [ "a"-"z", "A"-"Z", "0"-"9", "_" ] >
-|   <WORD: ( <LETTER> | ["_"] | ["@"]) (<DIRECTIVE_CHAR>)* >
-|   <BRACKETED_WORD: "{" ( <LETTER> | ["_"] | ["@"]) (<DIRECTIVE_CHAR>)* "}" >
+|   <#DIRECTIVE_CHAR: [ "a"-"z", "A"-"Z", "0"-"9", "_", "@" ] >
+|   <WORD:  ( <LETTER> | ["_"] | ["@"]) (<DIRECTIVE_CHAR>)* >
+|   <BRACKETED_WORD:  "{" ( <LETTER> | ["_"]) (<DIRECTIVE_CHAR>)* "}" >
+
 }
 
 /* -----------------------------------------------------------------------
@@ -1267,6 +1228,7 @@ SimpleNode process() : {}
 void Statement() #void : {}
 {
     IfStatement()
+|   ForeachStatement()
 |   LOOKAHEAD(2) Reference()
 |   Comment()
 |   Textblock()
@@ -1324,6 +1286,7 @@ void Escape() : {}
          * first, check to see if we have a control directive
          */
         switch(t.next.kind ) {
+        	case FOREACH_DIRECTIVE :
             case IF_DIRECTIVE :
             case ELSE_DIRECTIVE :
             case ELSEIF_DIRECTIVE :
@@ -1339,7 +1302,7 @@ void Escape() : {}
         if (strictEscape
             || isDirective(nTag)
             || macroNames.containsKey(nTag)
-            || true) //rsvc.isVelocimacro(nTag, currentTemplateName)
+            || !DirectiveMapper.isDirective(nTag)) //rsvc.isVelocimacro(nTag, currentTemplateName)
         {
             control = true;
         }
@@ -1451,11 +1414,6 @@ int DirectiveArg() #void : {}
     }
 }
 
-void DirectiveAssign() : {}
-{
-    Reference()
-}
-
 
 /**
  *   Supports the Pluggable Directives
@@ -1469,8 +1427,7 @@ SimpleNode Directive() :
     Directive d;
     int directiveType;
     boolean isVM = false;
-    boolean isMacro = false;
-    ArrayList argtypes = new ArrayList(4);
+    boolean doItNow = false;
 }
 {
 
@@ -1500,7 +1457,7 @@ SimpleNode Directive() :
 
         if (directiveName.equals("macro"))
         {
-             isMacro = true;
+             doItNow = true;
         }
 
         /*
@@ -1522,7 +1479,7 @@ SimpleNode Directive() :
                 /*
                  *  if null, then not a real directive, but maybe a Velocimacro
                  */
-                isVM = true; //rsvc.isVelocimacro(directiveName, currentTemplateName);
+                isVM = !DirectiveMapper.isDirective(directiveName); //rsvc.isVelocimacro(directiveName, currentTemplateName);
 
                 directiveType = Directive.LINE;
             }
@@ -1549,59 +1506,74 @@ SimpleNode Directive() :
     /*
      *  if this is indeed a token, match the #foo ( arg ) pattern
      */
-    ([<WHITESPACE>] <LPAREN> ( LOOKAHEAD(2) [<WHITESPACE>] [<COMMA> [<WHITESPACE>]]
-       (
-           [LOOKAHEAD( { isMacro && isAssignment() })
-              DirectiveAssign() [<WHITESPACE>] <EQUALS> [<WHITESPACE>]
-           {
-               argtypes.add(VmParserTreeConstants.JJTDIRECTIVEASSIGN);
-           }
-           ]
+    (([<WHITESPACE>] <LPAREN>) ( LOOKAHEAD(2) [<WHITESPACE>] [<COMMA> [<WHITESPACE>]]
+
             argType = DirectiveArg()
             {
-                argtypes.add(argType);
-                if (d == null && argType == VmParserTreeConstants.JJTWORD)
+                if (argType == VmParserTreeConstants.JJTWORD)
                 {
-                    if (isVM)
+                    if (doItNow && argPos == 0)
                     {
-                        throw new MacroParseException("Invalid argument "
-                        + (argPos+1) + " in macro call " + t.image, currentTemplateName, t);
+                        /* if #macro and it's the 0th arg, ok */
+                    }
+                    else if (isVM)
+                    {
+                        throw new MacroParseException("Invalid arg #"
+                        + argPos + " in VM " + t.image, currentTemplateName, t);
+                    }
+                                          /* if #foreach and it's the 2nd arg, ok */
+                    else if (d != null && (!directiveName.equals("foreach") || argPos != 1))
+                    {
+                        throw new MacroParseException("Invalid arg #"
+                        + argPos + " in directive " + t.image, currentTemplateName, t);
+                    }
+                    else
+                    {
+                        /* either schmoo or a late-defined macro,
+                         * VelocimacroProxy will have to check for latter. */
+                    }
+                }
+                else
+                {
+                    if (doItNow && argPos == 0)
+                    {
+                        /* if a VM and it's the 0th arg, not ok */
+
+                        throw new MacroParseException("Invalid first arg"
+                        + " in #macro() directive - must be a"
+                        + " word token (no \' or \" surrounding)", currentTemplateName, t);
                     }
                 }
 
                 argPos++;
             }
-        |
-        {
-          if (!isMacro)
-          {
-              // We only allow line comments in macro definitions for now
-              throw new MacroParseException("A Line comment is not allowed in " + t.image
-              + " arguments", currentTemplateName, t);
-          }
-        }
 
-         <SINGLE_LINE_COMMENT_START> [<SINGLE_LINE_COMMENT>]
-      )
     )* [<WHITESPACE>] <RPAREN>)
-    |
     {
-        token_source.stateStackPop();
-        token_source.inDirective = false;
-    }
-    )
-    {
-/*        if (d != null)
-        {
-            d.checkArgs(argtypes, t, currentTemplateName);
-        }
-*/
 
         if (directiveType  == Directive.LINE)
         {
             return jjtThis;
         }
     }
+    |
+    {
+	if (doItNow)  // doItNow is true if the directive is "macro"
+	{
+            // VELOCITY-667 We get here if we have a "#macro" construct
+	    // without parenthesis which is a parse error
+            throw new MacroParseException("A macro declaration requires at least a name argument"
+              , currentTemplateName, t);
+	}
+	
+        /**
+         * Not a directive
+         */
+        token_source.stateStackPop();
+        token_source.inDirective = false;
+        return jjtThis;
+    }
+    )
     /*
      *  and the following block if the PD needs it
      */
@@ -1617,7 +1589,7 @@ SimpleNode Directive() :
          *     we don't have to worry about forward references and such...
          */
 
-        if (isMacro)
+        if (doItNow)
         {
             // Add the macro name so that we can peform escape processing
             // on defined macros
@@ -1723,7 +1695,7 @@ void Parameter() #void: {}
  */
 void Method() : {}
 {
-   Identifier() <LPAREN> [ Expression() ( <COMMA> Expression() )* ] <REFMOD2_RPAREN>
+   Identifier() <LPAREN> [ Parameter() ( <COMMA> Parameter() )* ] <REFMOD2_RPAREN>
 }
 
 
@@ -1801,6 +1773,13 @@ void Text() : {}
  *  Defined Directive Syntax
  *
  * ----------------------------------------------------------------------*/
+
+void ForeachStatement() : {}
+{
+    <FOREACH_DIRECTIVE> [<WHITESPACE>] <LPAREN> Reference() [<WHITESPACE>] <IN> PrimaryExpression() <RPAREN>
+    ( Statement() )* #Block
+    <END>
+}
 
 void IfStatement() : {}
 {

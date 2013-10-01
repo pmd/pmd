@@ -19,16 +19,16 @@ import org.junit.Test;
  */
 public class VmParserTest {
 
-//	private static final String VM_SRC = "<HTML><BODY>Hello $customer.Name <table> "
-//			+ "#foreach( $mud in $mudsOnSpecial )"
-//			+ "  #if ( $customer.hasPurchased($mud) )"
-//			+ "     <tr>"
-//			+ "      <td>"
-//			+ "       $flogger.getPromo( $mud )"
-//			+ "    </td>"
-//			+ "  </tr>" + " #end" + "\n #end " + "</table>";
+	private static final String VM_SRC = "<HTML><BODY>Hello $customer.Name <table> "
+			+ "#foreach($mud in $mudsOnSpecial)"
+			+ "  #if ( $customer.hasPurchased($mud) )"
+			+ "     <tr>"
+			+ "      <td>"
+			+ "       $flogger.getPromo( $mud )"
+			+ "    </td>"
+			+ "  </tr>" + " #end" + "\n " + "#end " + "</table>";
 	
-	private static final String VM_SRC = "#if( $mud == 1 ) blah #if ($dirt == 2) stuff #end #end";
+//	private static final String VM_SRC = "#if( $mud == 1 ) blah #if ($dirt == 2) stuff #end #end";
 	
     @Test
     public void testParser() {

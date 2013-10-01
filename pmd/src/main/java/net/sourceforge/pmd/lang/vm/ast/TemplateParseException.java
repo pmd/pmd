@@ -19,8 +19,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  * under the License.    
  */
 
-import org.apache.velocity.exception.ExtendedParseException;
-import org.apache.velocity.runtime.log.Log;
+import net.sourceforge.pmd.lang.vm.util.LogUtil;
 
 /**
  * This is an extension of the ParseException, which also takes a template name.
@@ -31,7 +30,7 @@ import org.apache.velocity.runtime.log.Log;
  * @version $Id: TemplateParseException.java 703544 2008-10-10 18:15:53Z nbubna $
  * @since 1.5
  */
-public class TemplateParseException extends ParseException implements ExtendedParseException {
+public class TemplateParseException extends ParseException {
     private static final long serialVersionUID = -3146323135623083918L;
 
     /**
@@ -205,7 +204,7 @@ public class TemplateParseException extends ParseException implements ExtendedPa
      * @param sb
      */
     protected void appendTemplateInfo(final StringBuffer sb) {
-        sb.append(Log.formatFileString(getTemplateName(), getLineNumber(), getColumnNumber()));
+        sb.append(LogUtil.formatFileString(getTemplateName(), getLineNumber(), getColumnNumber()));
         sb.append(eol);
     }
 }

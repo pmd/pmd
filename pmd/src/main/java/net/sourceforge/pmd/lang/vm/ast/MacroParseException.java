@@ -19,8 +19,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  * under the License.    
  */
 
-import org.apache.velocity.exception.ExtendedParseException;
-import org.apache.velocity.runtime.log.Log;
+import net.sourceforge.pmd.lang.vm.util.LogUtil;
 
 /**
  * Exception to indicate problem happened while constructing #macro()
@@ -31,7 +30,7 @@ import org.apache.velocity.runtime.log.Log;
  * @author <a href="hps@intermeta.de">Henning P. Schmiedehausen</a>
  * @version $Id: MacroParseException.java 735709 2009-01-19 14:30:03Z byron $
  */
-public class MacroParseException extends ParseException implements ExtendedParseException {
+public class MacroParseException extends ParseException {
     private final String templateName;
 
     /**
@@ -118,7 +117,7 @@ public class MacroParseException extends ParseException implements ExtendedParse
      * @since 1.5
      */
     protected void appendTemplateInfo(final StringBuffer sb) {
-        sb.append(Log.formatFileString(getTemplateName(), getLineNumber(), getColumnNumber()));
+        sb.append(LogUtil.formatFileString(getTemplateName(), getLineNumber(), getColumnNumber()));
         sb.append(eol);
     }
 }

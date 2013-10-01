@@ -1,7 +1,9 @@
 package net.sourceforge.pmd.lang.vm.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.vm.directive.Break;
 import net.sourceforge.pmd.lang.vm.directive.Define;
@@ -18,6 +20,8 @@ public class DirectiveMapper {
 
 	private static final Map<String, Directive> DIRECTIVE_MAP = new HashMap<String, Directive>();
 	
+	private static final Set<String> DIRECTIVE_NAMES = new HashSet<String>();
+	
 	static {
 		DIRECTIVE_MAP.put("directive.1", new Foreach());
 		DIRECTIVE_MAP.put("directive.2", new Include());
@@ -28,10 +32,18 @@ public class DirectiveMapper {
 		DIRECTIVE_MAP.put("directive.7", new Break());
 		DIRECTIVE_MAP.put("directive.8", new Define());
 		DIRECTIVE_MAP.put("directive.9", new Stop());
+		
+		for (Directive d : DIRECTIVE_MAP.values()) {
+			DIRECTIVE_NAMES.add(d.getName());
+		}
 	}
 	
 	public static Directive getDirective(String directiveName) {
 		return DIRECTIVE_MAP.get(directiveName);
+	}
+	
+	public static boolean isDirective(String name) {
+		return DIRECTIVE_NAMES.contains(name);
 	}
 	
 }

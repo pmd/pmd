@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.lang.vm.directive;
+package net.sourceforge.pmd.lang.vm.ast;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,33 +20,40 @@ package net.sourceforge.pmd.lang.vm.directive;
  */
 
 /**
- * Foreach directive used for moving through arrays,
- * or objects that provide an Iterator.
+ * Please look at the Parser.jjt file which is
+ * what controls the generation of this class.
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
- * @author Daniel Rall
- * @version $Id: Foreach.java 945927 2010-05-18 22:21:41Z nbubna $
+ * @version $Id: ASTIfStatement.java 517553 2007-03-13 06:09:58Z wglass $
  */
-public class Foreach extends Directive
-{
+
+/**
+ *
+ */
+public class ASTForeachStatement extends SimpleNode {
     /**
-     * Return name of this directive.
-     * @return The name of this directive.
+     * @param id
      */
-    public String getName()
-    {
-        return "foreach";
+    public ASTForeachStatement(final int id) {
+        super(id);
     }
 
     /**
-     * Return type of this directive.
-     * @return The type of this directive.
+     * @param p
+     * @param id
      */
-    public int getType()
-    {
-        return BLOCK;
+    public ASTForeachStatement(final VmParser p, final int id) {
+        super(p, id);
     }
 
+    /**
+     * @see org.apache.velocity.runtime.parser.node.SimpleNode#jjtAccept(org.apache.velocity.runtime.parser.node.VmParserVisitor,
+     *      java.lang.Object)
+     */
+    @Override
+    public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
+        return visitor.visit(this, data);
+    }
 
 }

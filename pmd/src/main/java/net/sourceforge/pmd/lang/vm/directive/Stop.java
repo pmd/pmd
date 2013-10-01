@@ -19,15 +19,6 @@ package net.sourceforge.pmd.lang.vm.directive;
  * under the License.    
  */
 
-import java.io.Writer;
-
-import net.sourceforge.pmd.lang.vm.util.LogUtil;
-
-import org.apache.velocity.context.InternalContextAdapter;
-import org.apache.velocity.exception.VelocityException;
-import org.apache.velocity.runtime.RuntimeServices;
-import org.apache.velocity.runtime.parser.node.Node;
-
 /**
  * This class implements the #stop directive which allows
  * a user to stop the merging and rendering process. The #stop directive
@@ -36,9 +27,6 @@ import org.apache.velocity.runtime.parser.node.Node;
  */
 public class Stop extends Directive
 {  
-    private static final StopCommand STOP_ALL = new StopCommand("StopCommand to exit merging");
-
-    private boolean hasMessage = false;
 
     /**
      * Return name of this directive.
@@ -66,35 +54,5 @@ public class Stop extends Directive
     {
         return false;
     }
-
-    public void init(RuntimeServices rs, InternalContextAdapter context, Node node)
-    {
-        super.init(rs, context, node);
-
-        int kids = node.jjtGetNumChildren();
-        if (kids > 1)
-        {  
-            throw new VelocityException("The #stop directive only accepts a single message parameter at "
-                 + LogUtil.formatFileString(this));
-        }
-        else
-        {
-            hasMessage = (kids == 1);
-        }
-    }
-
-    public boolean render(InternalContextAdapter context, Writer writer, Node node)
-    {
-        if (!hasMessage)
-        {
-            throw STOP_ALL;
-        }
-
-        Object argument = node.jjtGetChild(0).value(context);
-
-        // stop all and use specified message
-        throw new StopCommand(String.valueOf(argument));
-    }
-
 }
 
