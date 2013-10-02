@@ -28,7 +28,7 @@ public class VmParserTest {
 			+ "    </td>"
 			+ "  </tr>" + " #end" + "\n " + "#end " + "</table>";
 	
-	private static final String SRC2 = "#macro( tablerows $color $values ) "
+	private static final String SRC2 = "#macro(tablerows $color $values ) "
 			+ "#foreach( $value in $values ) "
 			+ "<tr><td bgcolor=$color>$value</td></tr> "
 			+ "#end "

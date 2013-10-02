@@ -23,15 +23,15 @@ public class DirectiveMapper {
 	private static final Set<String> DIRECTIVE_NAMES = new HashSet<String>();
 	
 	static {
-		DIRECTIVE_MAP.put("directive.1", new Foreach());
-		DIRECTIVE_MAP.put("directive.2", new Include());
-		DIRECTIVE_MAP.put("directive.3", new Parse());
-		DIRECTIVE_MAP.put("directive.4", new Macro());
-		DIRECTIVE_MAP.put("directive.5", new Literal());
-		DIRECTIVE_MAP.put("directive.6", new Evaluate());
-		DIRECTIVE_MAP.put("directive.7", new Break());
-		DIRECTIVE_MAP.put("directive.8", new Define());
-		DIRECTIVE_MAP.put("directive.9", new Stop());
+		DIRECTIVE_MAP.put("foreach", new Foreach());
+		DIRECTIVE_MAP.put("include", new Include());
+		DIRECTIVE_MAP.put("parse", new Parse());
+		DIRECTIVE_MAP.put("macro", new Macro());
+		DIRECTIVE_MAP.put("literal", new Literal());
+		DIRECTIVE_MAP.put("evaluate", new Evaluate());
+		DIRECTIVE_MAP.put("break", new Break());
+		DIRECTIVE_MAP.put("define", new Define());
+		DIRECTIVE_MAP.put("stop", new Stop());
 		
 		for (Directive d : DIRECTIVE_MAP.values()) {
 			DIRECTIVE_NAMES.add(d.getName());

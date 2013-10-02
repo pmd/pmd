@@ -123,8 +123,6 @@ public class VmParser
      */
     public boolean strictEscape = false;
 
-    VelocityCharStream velcharstream = new VelocityCharStream(new ByteArrayInputStream("\u005cn".getBytes()), 1, 1 );
-
     /**
      * This was also added to allow parsers to be
      * re-usable. Normal JavaCC use entails passing an
@@ -146,15 +144,9 @@ public class VmParser
             token_source.clearStateVars();
 
             /*
-             *  reinitialize the VelocityCharStream
-             *  with the new reader
-             */
-            velcharstream.ReInit( reader, 1, 1 );
-
-            /*
              * now reinit the Parser with this CharStream
              */
-            ReInit( velcharstream  );
+            ReInit( new VelocityCharStream(reader, 1, 1)  );
 
             /*
              *  do that voodoo...
@@ -283,7 +275,7 @@ public class VmParser
                 /**
                  * Read a character
                  */
-                c = velcharstream.readChar();
+                c = token_source.input_stream.readChar();
                 no++;
                 if (c == '(')
                 {
@@ -306,7 +298,7 @@ public class VmParser
             /**
              * Backup the stream to the initial state
              */
-            velcharstream.backup(no);
+            token_source.input_stream.backup(no);
         }
         return false;
     }
@@ -328,7 +320,7 @@ public class VmParser
            // Read through any white space
            while(Character.isWhitespace(c))
            {
-                c = velcharstream.readChar();
+                c = token_source.input_stream.readChar();
                 backup++;
            }
 
@@ -340,7 +332,7 @@ public class VmParser
        }
        finally
        {
-           velcharstream.backup(backup);
+           token_source.input_stream.backup(backup);
        }
 
        return true;
@@ -1775,7 +1767,7 @@ void Text() : {}
 
 void ForeachStatement() : {}
 {
-    <FOREACH_DIRECTIVE> [<WHITESPACE>] <LPAREN> Reference() [<WHITESPACE>] <IN> PrimaryExpression() <RPAREN>
+    <FOREACH_DIRECTIVE> [<WHITESPACE>] <LPAREN> [<WHITESPACE>] Reference() [<WHITESPACE>] <IN> [<WHITESPACE>] PrimaryExpression() [<WHITESPACE>] <RPAREN>
     ( Statement() )* #Block
     <END>
 }
