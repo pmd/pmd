@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.lang.vm.ast;
 
+import org.apache.commons.lang3.text.StrBuilder;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with this
@@ -17,7 +19,6 @@ package net.sourceforge.pmd.lang.vm.ast;
  * the License.
  */
 
-import org.apache.commons.lang.text.StrBuilder;
 
 /**
  * ASTStringLiteral support. Will interpolate!

@@ -86,10 +86,9 @@ package net.sourceforge.pmd.lang.vm.ast;
 
 import java.io.*;
 import java.util.*;
-import net.sourceforge.pmd.lang.vm.ast.*;
 import net.sourceforge.pmd.lang.vm.directive.Directive;
-import org.apache.velocity.runtime.parser.VelocityCharStream;
-import org.apache.velocity.runtime.parser.CharStream;
+import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
+import net.sourceforge.pmd.lang.vm.util.CharStream;
 import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
 
 /**

@@ -3,8 +3,6 @@ package net.sourceforge.pmd.lang.vm.util;
 import net.sourceforge.pmd.lang.vm.ast.SimpleNode;
 import net.sourceforge.pmd.lang.vm.directive.Directive;
 
-import org.apache.velocity.util.introspection.Info;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -48,14 +46,6 @@ public class LogUtil {
      */
     public static final String formatFileString(final SimpleNode node) {
         return formatFileString(node.getTemplateName(), node.getLine(), node.getColumn());
-    }
-
-    /**
-     * Simply creates a string that formats the template filename with line number and column. We use this routine to
-     * provide a cosistent format for displaying file errors.
-     */
-    public static final String formatFileString(final Info info) {
-        return formatFileString(info.getTemplateName(), info.getLine(), info.getColumn());
     }
 
     /**

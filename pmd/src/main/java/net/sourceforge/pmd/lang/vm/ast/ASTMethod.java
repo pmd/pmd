@@ -1,5 +1,8 @@
 package net.sourceforge.pmd.lang.vm.ast;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,8 +22,6 @@ package net.sourceforge.pmd.lang.vm.ast;
  * under the License.    
  */
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * ASTMethod.java

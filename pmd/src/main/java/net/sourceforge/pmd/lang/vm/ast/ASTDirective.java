@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.lang.vm.ast;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,8 +20,6 @@ package net.sourceforge.pmd.lang.vm.ast;
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * This class is responsible for handling the pluggable directives in VTL.

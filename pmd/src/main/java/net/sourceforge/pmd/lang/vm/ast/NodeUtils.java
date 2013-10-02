@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.lang.vm.ast;
 
+import org.apache.commons.lang3.text.StrBuilder;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,7 +21,6 @@ package net.sourceforge.pmd.lang.vm.ast;
  * under the License.    
  */
 
-import org.apache.commons.lang.text.StrBuilder;
 
 /**
  * Utilities for dealing with the AST node structure.

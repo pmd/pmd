@@ -22,8 +22,8 @@ package net.sourceforge.pmd.lang.vm.ast;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.text.StrBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.text.StrBuilder;
 
 /**
  *
