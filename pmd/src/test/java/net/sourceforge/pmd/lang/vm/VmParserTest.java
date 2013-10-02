@@ -28,11 +28,26 @@ public class VmParserTest {
 			+ "    </td>"
 			+ "  </tr>" + " #end" + "\n " + "#end " + "</table>";
 	
+	private static final String SRC2 = "#macro( tablerows $color $values ) "
+			+ "#foreach( $value in $values ) "
+			+ "<tr><td bgcolor=$color>$value</td></tr> "
+			+ "#end "
+			+ "#end "
+			+ "#set( $greatlakes = [\"Superior\",\"Michigan\",\"Huron\",\"Erie\",\"Ontario\"] ) "
+			+ "#set( $color = \"blue\" ) " + "<table> "
+			+ " #tablerows( $color $greatlakes ) " + "</table>";
+	
 //	private static final String VM_SRC = "#if( $mud == 1 ) blah #if ($dirt == 2) stuff #end #end";
 	
     @Test
     public void testParser() {
         Node node = parse(VM_SRC);
+        Assert.assertNotNull(node);
+    }
+    
+    @Test
+    public void testParser2() {
+        Node node = parse(SRC2);
         Assert.assertNotNull(node);
     }
 

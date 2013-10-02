@@ -10,9 +10,8 @@ import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
-import net.sourceforge.pmd.lang.jsp.ast.DumpFacade;
-import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.vm.ast.SimpleNode;
 import net.sourceforge.pmd.lang.vm.rule.VmRuleViolationFactory;
 
 /**
@@ -42,10 +41,9 @@ public class VmHandler extends AbstractLanguageVersionHandler {
 
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-        // FIXME
         return new VisitorStarter() {
             public void start(final Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (JspNode) rootNode);
+            	((SimpleNode) rootNode).dump(prefix, recurse, writer);
             }
         };
     }

@@ -19,6 +19,9 @@ package net.sourceforge.pmd.lang.vm.ast;
  * under the License.    
  */
 
+import java.io.PrintWriter;
+import java.io.Writer;
+
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -149,13 +152,14 @@ public class SimpleNode extends AbstractNode implements Node {
      * 
      * @param prefix
      */
-    public void dump(final String prefix) {
-        System.out.println(toString(prefix));
-        if (children != null) {
+    public void dump(final String prefix, boolean recurse, Writer writer) {
+    	PrintWriter printWriter = (writer instanceof PrintWriter) ? (PrintWriter) writer : new PrintWriter(writer);
+    	printWriter.println(toString(prefix));
+        if (children != null && recurse) {
             for (int i = 0; i < children.length; ++i) {
                 final SimpleNode n = (SimpleNode) children[i];
                 if (n != null) {
-                    n.dump(prefix + " ");
+                    n.dump(prefix + " ", recurse, printWriter);
                 }
             }
         }
