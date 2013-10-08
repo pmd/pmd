@@ -19,5 +19,15 @@
       <priority>3</priority>
     </rule>
   
+    <rule name="CollapsibleIfStatements"
+          since="5.1"
+          message="These nested if statements could be combined"
+          class="net.sourceforge.pmd.lang.vm.rule.basic.CollapsibleIfStatementsRule">
+      <description>
+Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+      </description>
+      <priority>3</priority>
+    </rule>
+  
 </ruleset>
   

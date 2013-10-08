@@ -28,7 +28,6 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @version $Id: ASTIfStatement.java 517553 2007-03-13 06:09:58Z wglass $
  */
 
-
 /**
  *
  */
