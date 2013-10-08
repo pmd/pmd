@@ -77,6 +77,10 @@ public class SimpleNode extends AbstractNode implements Node {
     @Override
     public void jjtOpen() {
         first = parser.getToken(1); // added
+    	if (beginLine == -1 && parser.token.next != null) {
+    	    beginLine = parser.token.next.beginLine;
+    	    beginColumn = parser.token.next.beginColumn;
+    	}
     }
 
     /**
@@ -85,6 +89,14 @@ public class SimpleNode extends AbstractNode implements Node {
     @Override
     public void jjtClose() {
         last = parser.getToken(0); // added
+    	if (beginLine == -1 && (children == null || children.length == 0)) {
+    	    beginColumn = parser.token.beginColumn;
+    	}
+    	if (beginLine == -1) {
+    	    beginLine = parser.token.beginLine;
+    	}
+    	endLine = parser.token.endLine;
+    	endColumn = parser.token.endColumn;
     }
 
     /**

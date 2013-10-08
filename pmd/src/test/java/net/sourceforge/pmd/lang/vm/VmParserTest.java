@@ -26,7 +26,7 @@ public class VmParserTest {
 			+ "      <td>"
 			+ "       $flogger.getPromo( $mud )"
 			+ "    </td>"
-			+ "  </tr>" + " #end" + "\n " + "#end " + "</table>";
+			+ "  </tr>" + " #elseif ($customer.broke) do stuff #end" + "\n " + "#end " + "</table>";
 	
 	private static final String SRC2 = "#macro(tablerows $color $values ) "
 			+ "#foreach( $value in $values ) "

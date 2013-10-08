@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<ruleset name="BasicVelocity"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+	The Basic Velocity ruleset contains basic rules for Apache Velocity pages.
+  </description>
+  
+  <rule name="AvoidDeeplyNestedIfStmts"
+  		  since="5.1"
+        message="Deeply nested if..then statements are hard to read"
+        class="net.sourceforge.pmd.lang.vm.rule.basic.AvoidDeeplyNestedIfStmtsRule">
+    <description>
+	Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
+    </description>
+      <priority>3</priority>
+    </rule>
+  
+</ruleset>
+  
