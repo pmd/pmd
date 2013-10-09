@@ -153,7 +153,7 @@ New use case
      ]]></description>
         <rule-property name="closeTargets">commit,close,close,close</rule-property>
         <rule-property name="types">DAOTransaction,Connection,Statement,ResulSet</rule-property>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
 public class Foo {
@@ -425,4 +425,24 @@ public class Test {
 }
         ]]></code>
     </test-code>
-</test-data>
+    
+    <test-code>
+        <description><![CDATA[Custom close method, should be ok]]></description>
+        <rule-property name="closeTargets">cleanup</rule-property>
+        <rule-property name="types">MyClass</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   void bar() {
+       MyClass myClass = null;
+       try {
+           myClass = new MyClass();
+       } catch (Exception e) {
+       } finally {
+            myClass.cleanup(); // should be ok, it's closed with cleanup
+       }
+    }
+ }
+  ]]></code>
+        </test-code>
+    </test-data>

@@ -160,6 +160,19 @@ public class CloseResourceRule extends AbstractJavaRule {
                         closed = true;
                         break;
                     }
+					if (name.contains(".")) {
+						String[] parts = name.split("\\.");
+						if (parts.length == 2) {
+							String methodName = parts[1];
+							String varName = parts[0];
+							if (varName.equals(variableToClose)
+									&& closeTargets.contains(methodName)) {
+								closed = true;
+								break;
+							}
+
+						}
+					}
                 }
                 if (closed) {
                     break;
