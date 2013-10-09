@@ -29,5 +29,28 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
       <priority>3</priority>
     </rule>
   
+    <rule name="ExcessiveTemplateLengthRule"
+          since="5.1"
+          message="Template is too long"
+          class="net.sourceforge.pmd.lang.vm.rule.basic.ExcessiveTemplateLengthRule">
+      <description>
+The template is too long. It should be broken up into smaller pieces.
+      </description>
+      <priority>3</priority>
+      <properties>
+      	<property name="minimum" value="1000"/>
+      </properties>
+    </rule>
+  
+    <rule name="AvoidReassigningParameters"
+    	  since="5.1"
+        message="Avoid reassigning macro parameters such as ''{0}''"
+        class="net.sourceforge.pmd.lang.vm.rule.basic.AvoidReassigningParametersRule">
+	    <description>
+Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
+	    </description>
+	    <priority>2</priority>
+	</rule>
+	  
 </ruleset>
   

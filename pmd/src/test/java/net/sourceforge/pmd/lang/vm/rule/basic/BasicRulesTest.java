@@ -12,6 +12,8 @@ public class BasicRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "AvoidDeeplyNestedIfStmts");
         addRule(RULESET, "CollapsibleIfStatements");
+        addRule(RULESET, "ExcessiveTemplateLengthRule");
+        addRule(RULESET, "AvoidReassigningParameters");
     }
 
     public static junit.framework.Test suite() {
