@@ -117,5 +117,69 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+empty + non-empty string
+sb.toString().equals("" + "x"), ok (as in: do not use StringBuffer.length())
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar() {
+  StringBuffer sb = new StringBuffer();
+  return sb.toString().equals("" + "x");
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+sb.toString().trim().equals(""), ok (as in: do not use StringBuffer.length())
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar() {
+  StringBuffer sb = new StringBuffer(" ");
+  return sb.toString().trim().equals("");
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+sb.toString().equals(baz("")), ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar() {
+  StringBuffer sb = new StringBuffer();
+  return sb.toString().equals(baz(""));
+ }
+ String baz(String s) {
+  return s + "x";
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+sb.toString().trim().length == 0, ok (as in: do not use StringBuffer.length())
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar() {
+  StringBuffer sb = new StringBuffer();
+  return sb.toString().trim().length == 0;
+ }
+}
+     ]]></code>
+    </test-code>
 
 </test-data>
