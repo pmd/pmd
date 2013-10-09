@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
+import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
@@ -71,6 +72,18 @@ public class ClassTypeResolverTest {
 		acu = parseAndTypeResolveForClass(DefaultJavaLangImport.class);
 		assertEquals(String.class, acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType());
 		assertEquals(Override.class, acu.findDescendantsOfType(ASTName.class).get(1).getType());
+	}
+
+	/**
+	 * See bug #1138 Anonymous inner class in enum causes NPE
+	 */
+	@Test
+	public void testEnumAnonymousInnerClass() {
+	    ASTCompilationUnit acu = parseAndTypeResolveForClass(EnumWithAnonymousInnerClass.class);
+	    Class<?> inner = acu.getFirstDescendantOfType(ASTAllocationExpression.class)
+	            .getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType();
+	    assertEquals("net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass$1",
+	            inner.getName());
 	}
 
 	@Test
