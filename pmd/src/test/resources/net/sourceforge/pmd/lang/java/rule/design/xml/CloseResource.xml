@@ -151,7 +151,7 @@ public class Foo {
         <description><![CDATA[
 New use case
      ]]></description>
-        <rule-property name="closeTargets">commit,close,close,close</rule-property>
+        <rule-property name="closeTargets">commit,close</rule-property>
         <rule-property name="types">DAOTransaction,Connection,Statement,ResulSet</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -159,7 +159,7 @@ import java.sql.*;
 public class Foo {
 	public void bar() throws SQLException
 	{
-		DAOTransaction = null;
+		DAOTransaction trx = null;
 		Connection cnx = null;
 		ResultSet rs = null;
 		Statement stmt = null;
@@ -172,8 +172,8 @@ public class Foo {
 		{
 			rs.close(); // Correct
 			//stmt.close(); // Error !!! you have to close the Statement
-			cnx.commit(); // Error !!! You have to use close() before doing this !
-			DAOTransaction.commit(); // Correct
+			cnx.commit(); // Correct ( cnx.close() would be equivalent)
+			trx.commit(); // Correct
 		}
 	}
 }
