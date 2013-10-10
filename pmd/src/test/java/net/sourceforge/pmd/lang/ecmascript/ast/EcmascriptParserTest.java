@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
@@ -56,6 +57,44 @@ public class EcmascriptParserTest {
         assertEquals("a", arrays.get(0).getElement().getImage());
         assertEquals("c", arrays.get(1).getTarget().getImage());
         assertEquals("1", arrays.get(1).getElement().getImage());
+    }
+
+    /**
+     * Test for bug #1136 ECAMScript: NullPointerException in getLeft() and getRight()
+     */
+    @Test
+    public void testArrayMethod() {
+        EcmascriptNode<AstRoot> rootNode = parse("function test(){\n" + 
+                "  a();      // OK\n" + 
+                "  b.c();    // OK\n" + 
+                "  d[0]();   // OK\n" + 
+                "  e[0].f(); // OK\n" + 
+                "  y.z[0](); // FAIL ==> java.lang.NullPointerException\n" + 
+                "}");
+
+        List<ASTFunctionCall> calls = rootNode.findDescendantsOfType(ASTFunctionCall.class);
+        List<String> results = new ArrayList<String>();
+        for (ASTFunctionCall f : calls) {
+            Node node = f.getTarget();
+            results.add(getName(node));
+        }
+        assertEquals("[a, b.c, d[], e[].f, y.z[]]", results.toString());
+    }
+
+    private String getName(Node node) {
+        if( node instanceof ASTName ){
+            return ((ASTName)node).getIdentifier();
+        }
+        if( node instanceof ASTPropertyGet ){
+            final ASTPropertyGet pgNode = (ASTPropertyGet)node;
+            final String leftName  = getName(pgNode.getLeft());
+            final String rightName = getName(pgNode.getRight());
+            return leftName + "." + rightName;
+        }
+        if( node instanceof ASTElementGet ){
+            return getName(((ASTElementGet)node).getTarget()) + "[]";
+        }
+        return "????";
     }
 
     private static final String SOURCE_CODE =
