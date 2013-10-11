@@ -29,7 +29,7 @@ public class VmParserTest {
             + "#set( $greatlakes = [\"Superior\",\"Michigan\",\"Huron\",\"Erie\",\"Ontario\"] ) "
             + "#set( $color = \"blue\" ) " + "<table> " + " #tablerows( $color $greatlakes ) " + "</table>";
 
-    private static final String SRC3 = "#if ( $c1 ) #if ( $c2) stuff #end #end";
+    private static final String SRC3 = "#if ( $c1 ) #if ( $c2)#end #end";
 
     // private static final String VM_SRC = "#if( $mud == 1 ) blah #if ($dirt == 2) stuff #end #end";
 

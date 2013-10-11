@@ -51,6 +51,16 @@ Reassigning values to incoming parameters is not recommended.  Use temporary loc
 	    </description>
 	    <priority>2</priority>
 	</rule>
+	
+    <rule name="EmptyIfStmt"
+    	  since="5.1"
+        message="Avoid empty if statements"
+        class="net.sourceforge.pmd.lang.vm.rule.basic.EmptyIfStmtRule">
+	    <description>
+Empty if statements should be deleted.
+	    </description>
+	    <priority>2</priority>
+	</rule>
 	  
 </ruleset>
   
