@@ -4,6 +4,7 @@ Fixed bug  881: private final without setter is flagged
 Fixed bug 1059: Change rule name "Use Singleton" should be "Use Utility class"
 Fixed bug 1106: PMD 5.0.4 fails with NPE on parsing java enum with inner class instance creation
 Fixed bug 1115: commentRequiredRule in pmd 5.1 is not working properly
+Fixed bug 1121: NullPointerException when invoking XPathCLI
 Fixed bug 1130: CloseResource doesn't recognize custom close method
 Fixed bug 1134: UseStringBufferLength: false positives
 Fixed bug 1136: ECMAScript: NullPointerException in getLeft() and getRight()

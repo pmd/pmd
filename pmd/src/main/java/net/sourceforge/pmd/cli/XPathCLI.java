@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.cli;
 
 import java.io.File;
@@ -29,20 +32,29 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class XPathCLI {
 
+    private static final Language LANGUAGE = Language.JAVA;
+
     public static void main(String[] args) throws Exception {
+        if (args.length != 4) {
+            System.err.println("Wrong arguments.\n");
+            System.err.println("Example:");
+            System.err.println("java " + XPathCLI.class.getName() + " -xpath \"//FieldDeclaration\" -filename \"/home/user/Test.java\"");
+            System.exit(1);
+        }
 
         String xpath = args[0].equals("-xpath") ? args[1] : args[3];
         String filename = args[0].equals("-file") ? args[1] : args[3];
         
         Rule rule = new XPathRule(xpath);
         rule.setMessage("Got one!");
+        rule.setLanguage(LANGUAGE);
         RuleSet ruleSet = RuleSet.createFor("", rule);
 
         RuleContext ctx = PMD.newRuleContext(filename, new File(filename));
-        ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
+        ctx.setLanguageVersion(LANGUAGE.getDefaultVersion());
 
         PMDConfiguration config = new PMDConfiguration();
-        config.setDefaultLanguageVersion(Language.JAVA.getDefaultVersion());
+        config.setDefaultLanguageVersion(LANGUAGE.getDefaultVersion());
         
         new SourceCodeProcessor(config).processSourceCode(new FileReader(filename), new RuleSets(ruleSet), ctx);
 
