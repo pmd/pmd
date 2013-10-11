@@ -10,10 +10,12 @@ import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
+import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
+import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
@@ -87,5 +89,10 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
 		new DumpFacade().initializeWith(writer, prefix, recurse, (JavaNode) rootNode);
 	    }
 	};
+    }
+
+    @Override
+    public DFAGraphRule getDFAGraphRule() {
+        return new JavaDFAGraphRule();
     }
 }

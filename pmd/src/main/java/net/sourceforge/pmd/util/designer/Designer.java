@@ -102,7 +102,8 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
@@ -486,10 +487,10 @@ public class Designer implements ClipboardOwner {
 	private class DFAListener implements ActionListener {
 		public void actionPerformed(ActionEvent ae) {
 
-			DFAGraphRule dfaGraphRule = new DFAGraphRule();
+		    LanguageVersion languageVersion = getLanguageVersion();
+			DFAGraphRule dfaGraphRule = languageVersion.getLanguageVersionHandler().getDFAGraphRule();
 			RuleSet rs = new RuleSet();
-			LanguageVersion languageVersion = getLanguageVersion();
-			if (languageVersion.getLanguage().equals(Language.JAVA)) {
+			if (dfaGraphRule != null) {
 				rs.addRule(dfaGraphRule);
 			}
 			RuleContext ctx = new RuleContext();
@@ -506,10 +507,12 @@ public class Designer implements ClipboardOwner {
 				e.printStackTrace();
 			}
 
-			List<ASTMethodDeclaration> methods = dfaGraphRule.getMethods();
-			if (methods != null && !methods.isEmpty()) {
-				dfaPanel.resetTo(methods, codeEditorPane);
-				dfaPanel.repaint();
+			if (dfaGraphRule != null) {
+    			List<DFAGraphMethod> methods = dfaGraphRule.getMethods();
+    			if (methods != null && !methods.isEmpty()) {
+    				dfaPanel.resetTo(methods, codeEditorPane);
+    				dfaPanel.repaint();
+    			}
 			}
 		}
 	}
