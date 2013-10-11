@@ -15,6 +15,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ExcessiveTemplateLengthRule");
         addRule(RULESET, "AvoidReassigningParameters");
         addRule(RULESET, "EmptyIfStmt");
+        addRule(RULESET, "EmptyForeachStmtRule");
     }
 
     public static junit.framework.Test suite() {

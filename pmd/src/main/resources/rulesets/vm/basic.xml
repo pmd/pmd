@@ -61,6 +61,16 @@ Empty if statements should be deleted.
 	    </description>
 	    <priority>2</priority>
 	</rule>
+	
+    <rule name="EmptyForeachStmtRule"
+    	  since="5.1"
+        message="Avoid empty foreach loops"
+        class="net.sourceforge.pmd.lang.vm.rule.basic.EmptyForeachStmtRule">
+	    <description>
+Empty foreach statements should be deleted.
+	    </description>
+	    <priority>2</priority>
+	</rule>
 	  
 </ruleset>
   
