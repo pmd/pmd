@@ -12,6 +12,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -27,8 +28,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
+
+import org.jaxen.JaxenException;
 
 /**
  * Makes sure you close your database connections. It does this by
@@ -116,8 +120,12 @@ public class CloseResourceRule extends AbstractJavaRule {
                         || (clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage())))
                         || types.contains(clazz.getImage())) {
 
-                        ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-                        ids.add(id);
+                        // if the variables are initialized with null, then they are ignored.
+                        // At some point later in the code, there is an assignment - however, this is currently ignored
+                        if (!hasNullInitializer(var)) {
+                            ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+                            ids.add(id);
+                        }
                     }
                 }
             }
@@ -127,6 +135,19 @@ public class CloseResourceRule extends AbstractJavaRule {
         for (ASTVariableDeclaratorId x : ids) {
             ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent().jjtGetParent(), x, data);
         }
+    }
+
+    private boolean hasNullInitializer(ASTLocalVariableDeclaration var) {
+        ASTVariableInitializer init = var.getFirstDescendantOfType(ASTVariableInitializer.class);
+        if (init != null) {
+            try {
+                List<?> nulls = init.findChildNodesWithXPath("Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral");
+                return !nulls.isEmpty();
+            } catch (JaxenException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     private void ensureClosed(ASTLocalVariableDeclaration var,
@@ -147,10 +168,36 @@ public class CloseResourceRule extends AbstractJavaRule {
 
         boolean closed = false;
 
+        ASTBlockStatement parentBlock = id.getFirstParentOfType(ASTBlockStatement.class);
+
         // look for try blocks below the line the variable was
         // introduced and make sure there is a .close call in a finally
         // block.
         for (ASTTryStatement t : tryblocks) {
+
+            // verifies that there are no critical statements between the variable declaration and
+            // the beginning of the try block.
+            ASTBlockStatement tryBlock = t.getFirstParentOfType(ASTBlockStatement.class);
+            if (parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
+
+                List<ASTBlockStatement> blocks = parentBlock.jjtGetParent().findChildrenOfType(ASTBlockStatement.class);
+                int parentBlockIndex = blocks.indexOf(parentBlock);
+                int tryBlockIndex = blocks.indexOf(tryBlock);
+                boolean criticalStatements = false;
+
+                for (int i = parentBlockIndex + 1; i < tryBlockIndex; i++) {
+                    // assume variable declarations are not critical
+                    ASTLocalVariableDeclaration varDecl = blocks.get(i).getFirstDescendantOfType(ASTLocalVariableDeclaration.class);
+                    if (varDecl == null) {
+                        criticalStatements = true;
+                        break;
+                    }
+                }
+                if (criticalStatements) {
+                    break;
+                }
+            }
+
             if (t.getBeginLine() > id.getBeginLine() && t.hasFinally()) {
                 ASTBlock f = (ASTBlock) t.getFinally().jjtGetChild(0);
                 List<ASTName> names = f.findDescendantsOfType(ASTName.class);

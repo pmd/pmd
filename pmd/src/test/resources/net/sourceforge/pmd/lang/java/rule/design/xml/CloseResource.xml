@@ -159,8 +159,8 @@ import java.sql.*;
 public class Foo {
 	public void bar() throws SQLException
 	{
-		DAOTransaction trx = null;
-		Connection cnx = null;
+		DAOTransaction trx = trxManager.open();;
+		Connection cnx = pool.newConn();
 		ResultSet rs = null;
 		Statement stmt = null;
 
@@ -224,7 +224,6 @@ public class Foo {
 }
      ]]></code>
     </test-code>  
-    
    <test-code>
         <description><![CDATA[
 [1964798] 3 bugs in CloseResourceRule : null object is passed to close conection method (2)
@@ -236,17 +235,16 @@ public class Foo {
 import java.sql.*;
 public class Foo {
  void bar() {
-  Connection c = null;
+  Connection c = pool.getConnection();
   try {
-    c = pool.getConnection();
+    //...
   } finally {
-     this.closeConnection(c);
+     this.closeConnection(null);
   }
  }
 }
      ]]></code>
     </test-code>        
-
 	<test-code>
         <description><![CDATA[
 [1964798] 3 bugs in CloseResourceRule : If connection is returned, we should not log a violation.
@@ -314,9 +312,9 @@ public class StructureFactory {
 
     public void searchList() {
 
-        Connection _connexion = null;
-        ResultSet _rs = null;
-        PreparedStatement _st = null;
+        Connection _connexion = pool.getConn();
+        ResultSet _rs = createResultSet(_connexion);
+        PreparedStatement _st = createPrepStmt(_connexion);
         Structure _structure = null;
         try
         {
@@ -444,5 +442,75 @@ public class Foo {
     }
  }
   ]]></code>
-        </test-code>
-    </test-data>
+    </test-code>
+    <test-code>
+        <description>bug #1131 CloseResource should complain if code betwen declaration of resource and try: Code betwen declaration and try, should fail</description>
+        <rule-property name="types">Connection</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String test = "";
+        Connection c = pool.getConnection();
+        if (test != null) {
+            throw new RuntimeException("haha"); // <- RuntimeException, Connection  c is not closed
+        }
+        try {
+        } catch (Exception e) {
+        } finally {
+           c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>bug #1131 CloseResource should complain if code betwen declaration of resource and try: Creation inside try, ok</description>
+        <rule-property name="types">Connection</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String test = "";
+  Connection c = null;
+  if (test != null) {
+     throw new RuntimeException("haha");
+  }
+  try {
+      // Creation inside try, ok
+       c = pool.getConnection();
+  } catch (Exception e) {
+  } finally {
+      if (c!= null) {
+        c.close();
+      }
+  }
+ }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>bug #1131 CloseResource should complain if code betwen declaration of resource and try: No sentences between creation and try, ok</description>
+        <rule-property name="types">Connection</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String test = "";
+  if (test != null) {
+     throw new RuntimeException("haha");
+  } 
+  Connection c = pool.getConnection();
+  // No sentences between creation and try, ok
+  try {
+  } catch (Exception e) {
+  } finally {
+      if (c!= null) {
+        c.close();
+      }
+  }
+ }
+}
+        ]]></code>
+    </test-code>
+</test-data>
