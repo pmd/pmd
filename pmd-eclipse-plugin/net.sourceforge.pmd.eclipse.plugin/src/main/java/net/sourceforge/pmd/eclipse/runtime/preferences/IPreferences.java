@@ -64,13 +64,17 @@ public interface IPreferences {
     int MIN_TILE_SIZE_DEFAULT = 25;
     String LOG_FILENAME_DEFAULT = System.getProperty("user.home") + "/pmd-eclipse.log";
     Level LOG_LEVEL = Level.WARN;
-    // default active rules - these are the rules from java-basic,java-imports,java-unusedcode
-    String ACTIVE_RULES = "ExtendsObject,AvoidMultipleUnaryOperators,DoubleCheckedLocking,DuplicateImports,ReturnFromFinallyBlock,UnconditionalIfStatement,BooleanInstantiation,UnusedLocalVariable,AvoidThreadGroup,AvoidDecimalLiteralsInBigDecimalConstructor,DontUseFloatTypeForLoopIndices,MisplacedNullCheck,AvoidUsingHardCodedIP,UnnecessaryFullyQualifiedName,UnusedPrivateMethod,CheckResultSet,CollapsibleIfStatements,ForLoopShouldBeWhileLoop,DontImportJavaLang,JumbledIncrementer,OverrideBothEqualsAndHashcode,CheckSkipResult,DontCallThreadRun,TooManyStaticImports,AvoidUsingOctalValues,AvoidBranchingStatementAsLastInLoop,ImportFromSamePackage,ClassCastExceptionWithToArray,BrokenNullCheck,UnusedImports,UnusedModifier,UnusedPrivateField,UnusedFormalParameter,BigIntegerInstantiation";
+
     // default renderer
     String ACTIVE_RENDERERS = "text";
     String ACTIVE_EXCLUSIONS = "";
     String ACTIVE_INCLUSIONS = "";
-  
+
+    /**
+     * Get a comma-separated list of rules that are active by default.
+     */
+    String getDefaultActiveRules();
+
     boolean boolFor(String prefId);
     
     void boolFor(String prefId, boolean newValue);
@@ -82,6 +86,8 @@ public interface IPreferences {
     boolean isActiveRenderer(String rendererName);
     
     Set<String> getActiveRuleNames();
+
+    Set<String> getInactiveRuleNames();
     
     void setActiveRuleNames(Set<String> ruleNames);
     

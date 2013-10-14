@@ -4,6 +4,10 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.2.v????
 
+* Fixed Plugin does not execute custom xpath rules ([bug #1132])
+
+[bug #1132]: https://sourceforge.net/p/pmd/bugs/1132/
+
 
 ## 11-August-2013: 4.0.1.v20130811-0001
 

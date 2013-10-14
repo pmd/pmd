@@ -47,4 +47,16 @@ public class RuleSetUtil {
 			}
 		}
 	}
+
+    public static void remove(RuleSet ruleSet, Set<String> unwantedRuleNames) {
+        Collection<Rule> rules = ruleSet.getRules();
+        Collection<Rule> ruleCopy = new ArrayList<Rule>(rules.size());
+        ruleCopy.addAll(rules);
+
+        for (Rule rule : ruleCopy) {
+            if (unwantedRuleNames.contains(rule.getName())) {
+                rules.remove(rule);
+            }
+        }
+    }
 }

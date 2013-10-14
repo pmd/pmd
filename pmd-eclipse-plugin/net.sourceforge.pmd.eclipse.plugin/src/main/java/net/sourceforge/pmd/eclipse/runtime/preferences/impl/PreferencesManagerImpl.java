@@ -309,7 +309,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     private void loadActiveRules() {
-        loadPreferencesStore.setDefault(ACTIVE_RULES, IPreferences.ACTIVE_RULES);
+        loadPreferencesStore.setDefault(ACTIVE_RULES, preferences.getDefaultActiveRules());
         preferences.setActiveRuleNames(asStringSet(loadPreferencesStore.getString(ACTIVE_RULES), ","));
     }
 

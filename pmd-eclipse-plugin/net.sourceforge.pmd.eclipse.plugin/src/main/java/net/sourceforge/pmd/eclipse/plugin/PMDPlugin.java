@@ -202,9 +202,12 @@ public class PMDPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		
+		// this needs to be executed before the preferences are loaded, because the standard
+		// rulesets are needed for the default active rules.
+		registerStandardRuleSets();
+
 		IPreferences prefs = loadPreferences();
         configureLogs(prefs);
-        registerStandardRuleSets();
         registerAdditionalRuleSets();
         fileChangeListenerEnabled(prefs.isCheckAfterSaveEnabled());
 

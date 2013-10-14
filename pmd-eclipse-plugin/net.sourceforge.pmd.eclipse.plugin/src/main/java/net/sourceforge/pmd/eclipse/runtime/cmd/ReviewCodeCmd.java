@@ -453,10 +453,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     	 
          final RuleSet ruleSet = properties.getProjectRuleSet();
          IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
-         Set<String> activeRuleNames = preferences.getActiveRuleNames();
+         Set<String> inactiveRuleNames = preferences.getInactiveRuleNames();
          
          RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
-         RuleSetUtil.retainOnly(filteredRuleSet, activeRuleNames);
+         RuleSetUtil.remove(filteredRuleSet, inactiveRuleNames);
          filteredRuleSet.addExcludePatterns(preferences.activeExclusionPatterns());
          filteredRuleSet.addIncludePatterns(preferences.activeInclusionPatterns());
          filteredRuleSet.addExcludePatterns(properties.getBuildPathExcludePatterns());
