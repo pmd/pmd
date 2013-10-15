@@ -5,25 +5,16 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 
 import org.junit.Test;
 import org.mozilla.javascript.ast.AstRoot;
 
-public class EcmascriptParserTest {
-
-    private EcmascriptNode<AstRoot> parse(String code) {
-        EcmascriptParser parser = new EcmascriptParser(new EcmascriptParserOptions());
-        Reader sourceCode = new StringReader(code);
-        return parser.parse(sourceCode);
-    }
+public class EcmascriptParserTest extends EcmascriptParserTestBase {
 
     @Test
     public void testLineNumbers() {

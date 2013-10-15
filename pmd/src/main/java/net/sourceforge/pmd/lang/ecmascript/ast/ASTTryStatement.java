@@ -7,18 +7,18 @@ import org.mozilla.javascript.ast.TryStatement;
 
 public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
     public ASTTryStatement(TryStatement tryStatement) {
-	super(tryStatement);
+        super(tryStatement);
     }
 
     /**
      * Accept the visitor.
      */
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
-	return visitor.visit(this, data);
+        return visitor.visit(this, data);
     }
 
     public EcmascriptNode getTryBlock() {
-	return (EcmascriptNode) jjtGetChild(0);
+        return (EcmascriptNode) jjtGetChild(0);
     }
 
     public boolean isCatch() {
@@ -26,18 +26,24 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
     }
 
     public int getNumCatchClause() {
-	return node.getCatchClauses().size();
+        return node.getCatchClauses().size();
     }
 
     public ASTCatchClause getCatchClause(int index) {
-	return (ASTCatchClause) jjtGetChild(index - 1);
+        if (index >= getNumCatchClause()) {
+            return null;
+        }
+        return (ASTCatchClause) jjtGetChild(index + 1);
     }
 
     public boolean isFinally() {
-	return node.getFinallyBlock() != null;
+        return node.getFinallyBlock() != null;
     }
 
     public EcmascriptNode getFinallyBlock() {
-	return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
+        if (!isFinally()) {
+            return null;
+        }
+        return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
     }
 }
