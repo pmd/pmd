@@ -16,6 +16,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidReassigningParameters");
         addRule(RULESET, "EmptyIfStmt");
         addRule(RULESET, "EmptyForeachStmtRule");
+        addRule(RULESET, "UnusedMacroParameter");
     }
 
     public static junit.framework.Test suite() {

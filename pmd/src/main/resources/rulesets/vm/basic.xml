@@ -72,5 +72,15 @@ Empty foreach statements should be deleted.
 	    <priority>2</priority>
 	</rule>
 	  
+    <rule name="UnusedMacroParameter"
+    	  since="5.1"
+        message="Avoid unused macro parameters such as ''{0}''"
+        class="net.sourceforge.pmd.lang.vm.rule.basic.UnusedMacroParameterRule">
+	    <description>
+Avoid unused macro parameters. They should be deleted.
+	    </description>
+	    <priority>2</priority>
+	</rule>
+	  
 </ruleset>
   

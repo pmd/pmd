@@ -27,7 +27,6 @@ public class AvoidReassigningParametersRule extends AbstractVmRule {
                 }
             }
         }
-        // TODO Auto-generated method stub
         return super.visit(node, data);
     }
 }
