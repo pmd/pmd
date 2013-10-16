@@ -45,8 +45,8 @@ public class CheckResultSetRule extends AbstractJavaRule {
             ASTVariableDeclarator declarator = node.getFirstChildOfType(ASTVariableDeclarator.class);
             if (declarator != null) {
                 ASTName name = declarator.getFirstDescendantOfType(ASTName.class);
-                if (name != null && name.getImage().endsWith("executeQuery")) {
-
+                if (type.getType() != null
+                        || (type.getType() == null && name != null && name.getImage().endsWith("executeQuery"))) {
                     ASTVariableDeclaratorId id = declarator.getFirstChildOfType(ASTVariableDeclaratorId.class);
                     resultSetVariables.put(id.getImage(), node);
                 }
