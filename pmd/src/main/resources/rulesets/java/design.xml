@@ -1176,7 +1176,7 @@ class Foo {
 
 <rule name="PositionLiteralsFirstInCaseInsensitiveComparisons"
         language="java"
-  since="???"
+  since="5.1"
   message="Position literals first in String comparisons for EqualsIgnoreCase"
   class="net.sourceforge.pmd.lang.rule.XPathRule"
   externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#PositionLiteralsFirstInComparisons">
