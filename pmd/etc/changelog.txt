@@ -37,6 +37,7 @@ Upgrade to javacc 5.0 (see patch #1109 Patch to build with Javacc 5.0)
 
 API Change - Deprecated APIs:
     net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode: getBody(int index) deprecated, use getBody() instead
+    net.sourceforge.pmd.lang.ecmascript.ast.ASTTryStatement: isCatch() and isFinally() deprecated, use hasCatch() and hasBody() instead
 
 
 August 11, 2013 - 5.0.5:

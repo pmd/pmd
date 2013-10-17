@@ -166,10 +166,10 @@ public class DumpFacade {
 				extras.add("default");
 			}
 		} else if (node instanceof ASTTryStatement) {
-			if (((ASTTryStatement) node).isCatch()) {
+			if (((ASTTryStatement) node).hasCatch()) {
 				extras.add("catch");
 			}
-			if (((ASTTryStatement) node).isFinally()) {
+			if (((ASTTryStatement) node).hasFinally()) {
 				extras.add("finally");
 			}
 		} else if (node instanceof ASTUnaryExpression) {

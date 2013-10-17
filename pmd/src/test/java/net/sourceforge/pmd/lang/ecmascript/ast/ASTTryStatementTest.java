@@ -28,30 +28,30 @@ public class ASTTryStatementTest extends EcmascriptParserTestBase {
     public void testFinallyBlockOnly() {
         ASTTryStatement tryStmt = getTryStmt("function() { try { } finally { } }");
         Assert.assertNull(tryStmt.getCatchClause(0));
-        Assert.assertFalse(tryStmt.isCatch());
+        Assert.assertFalse(tryStmt.hasCatch());
         Assert.assertEquals(0, tryStmt.getNumCatchClause());
         Assert.assertNotNull(tryStmt.getFinallyBlock());
-        Assert.assertTrue(tryStmt.isFinally());
+        Assert.assertTrue(tryStmt.hasFinally());
     }
 
     @Test
     public void testCatchBlockOnly() {
         ASTTryStatement tryStmt = getTryStmt("function() { try { } catch (error) { } }");
         Assert.assertNotNull(tryStmt.getCatchClause(0));
-        Assert.assertTrue(tryStmt.isCatch());
+        Assert.assertTrue(tryStmt.hasCatch());
         Assert.assertEquals(1, tryStmt.getNumCatchClause());
         Assert.assertNull(tryStmt.getFinallyBlock());
-        Assert.assertFalse(tryStmt.isFinally());
+        Assert.assertFalse(tryStmt.hasFinally());
     }
 
     @Test
     public void testCatchAndFinallyBlock() {
         ASTTryStatement tryStmt = getTryStmt("function() { try { } catch (error) { } finally { } }");
         Assert.assertNotNull(tryStmt.getCatchClause(0));
-        Assert.assertTrue(tryStmt.isCatch());
+        Assert.assertTrue(tryStmt.hasCatch());
         Assert.assertEquals(1, tryStmt.getNumCatchClause());
         Assert.assertNotNull(tryStmt.getFinallyBlock());
-        Assert.assertTrue(tryStmt.isFinally());
+        Assert.assertTrue(tryStmt.hasFinally());
     }
 
     @Test
@@ -63,9 +63,9 @@ public class ASTTryStatementTest extends EcmascriptParserTestBase {
                 + "finally { } }");
         Assert.assertNotNull(tryStmt.getCatchClause(0));
         Assert.assertNotNull(tryStmt.getCatchClause(1));
-        Assert.assertTrue(tryStmt.isCatch());
+        Assert.assertTrue(tryStmt.hasCatch());
         Assert.assertEquals(2, tryStmt.getNumCatchClause());
         Assert.assertNotNull(tryStmt.getFinallyBlock());
-        Assert.assertTrue(tryStmt.isFinally());
+        Assert.assertTrue(tryStmt.hasFinally());
     }
 }
