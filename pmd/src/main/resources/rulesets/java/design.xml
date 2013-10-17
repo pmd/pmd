@@ -1179,7 +1179,7 @@ class Foo {
   since="5.1"
   message="Position literals first in String comparisons for EqualsIgnoreCase"
   class="net.sourceforge.pmd.lang.rule.XPathRule"
-  externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#PositionLiteralsFirstInComparisons">
+  externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#PositionLiteralsFirstInCaseInsensitiveComparisons">
   <description>
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions 
 can be avoided, they will just return false.
