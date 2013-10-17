@@ -49,6 +49,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "OptimizableToArrayCall");
         //addRule(RULESET, "PositionalIteratorRule"); This rule does not yes exist
         addRule(RULESET, "PositionLiteralsFirstInComparisons");
+        addRule(RULESET, "PositionLiteralsFirstInCaseInsensitiveComparisons");
         addRule(RULESET, "PreserveStackTrace");
         addRule(RULESET, "ReturnEmptyArrayRatherThanNull");
         addRule(RULESET, "SimpleDateFormatNeedsLocale");
