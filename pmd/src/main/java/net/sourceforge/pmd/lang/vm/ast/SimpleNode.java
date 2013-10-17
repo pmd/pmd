@@ -25,7 +25,6 @@ import java.io.Writer;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.text.StrBuilder;
 
 /**
@@ -77,10 +76,10 @@ public class SimpleNode extends AbstractNode implements Node {
     @Override
     public void jjtOpen() {
         first = parser.getToken(1); // added
-    	if (beginLine == -1 && parser.token.next != null) {
-    	    beginLine = parser.token.next.beginLine;
-    	    beginColumn = parser.token.next.beginColumn;
-    	}
+        if (beginLine == -1 && parser.token.next != null) {
+            beginLine = parser.token.next.beginLine;
+            beginColumn = parser.token.next.beginColumn;
+        }
     }
 
     /**
@@ -89,14 +88,14 @@ public class SimpleNode extends AbstractNode implements Node {
     @Override
     public void jjtClose() {
         last = parser.getToken(0); // added
-    	if (beginLine == -1 && (children == null || children.length == 0)) {
-    	    beginColumn = parser.token.beginColumn;
-    	}
-    	if (beginLine == -1) {
-    	    beginLine = parser.token.beginLine;
-    	}
-    	endLine = parser.token.endLine;
-    	endColumn = parser.token.endColumn;
+        if (beginLine == -1 && (children == null || children.length == 0)) {
+            beginColumn = parser.token.beginColumn;
+        }
+        if (beginLine == -1) {
+            beginLine = parser.token.beginLine;
+        }
+        endLine = parser.token.endLine;
+        endColumn = parser.token.endColumn;
     }
 
     /**
@@ -164,9 +163,10 @@ public class SimpleNode extends AbstractNode implements Node {
      * 
      * @param prefix
      */
-    public void dump(final String prefix, boolean recurse, Writer writer) {
-    	PrintWriter printWriter = (writer instanceof PrintWriter) ? (PrintWriter) writer : new PrintWriter(writer);
-    	printWriter.println(toString(prefix));
+    public void dump(final String prefix, final boolean recurse, final Writer writer) {
+        final PrintWriter printWriter = (writer instanceof PrintWriter) ? (PrintWriter) writer
+                : new PrintWriter(writer);
+        printWriter.println(toString(prefix));
         if (children != null && recurse) {
             for (int i = 0; i < children.length; ++i) {
                 final SimpleNode n = (SimpleNode) children[i];
@@ -252,24 +252,8 @@ public class SimpleNode extends AbstractNode implements Node {
      */
     @Override
     public String toString() {
-        final StrBuilder tokens = new StrBuilder();
-
-        for (Token t = getFirstToken(); t != null;) {
-            tokens.append("[").append(t.image).append("]");
-            if (t.next != null) {
-                if (t.equals(getLastToken())) {
-                    break;
-                }
-                else {
-                    tokens.append(", ");
-                }
-            }
-            t = t.next;
-        }
-
-        return new ToStringBuilder(this).append("id", getType()).append("info", getInfo())
-                .append("invalid", isInvalid()).append("children", jjtGetNumChildren()).append("tokens", tokens)
-                .toString();
+        // return class name after AST
+        return this.getClass().getSimpleName().substring(3);
     }
 
     public String getTemplateName() {

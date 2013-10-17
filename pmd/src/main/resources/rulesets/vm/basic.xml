@@ -81,6 +81,26 @@ Avoid unused macro parameters. They should be deleted.
 	    </description>
 	    <priority>2</priority>
 	</rule>
+	
+    <rule name="NoInlineJavaScript"
+    	  since="5.1"
+        message="Avoid inline JavaScript"
+        class="net.sourceforge.pmd.lang.vm.rule.basic.NoInlineJavaScriptRule">
+	    <description>
+Avoid inline JavaScript. Import .js files instead.
+	    </description>
+	    <priority>2</priority><!-- 
+		<properties>
+			<property name="xpath">
+				<value>
+					<![CDATA[ 
+	//Text[matches(@literal, "<[Ss][Cc][Rr][Ii][Pp][Tt]\s[^>]*([sS][rR][cC]){0}+")]
+					 ]]>
+				</value>
+			</property>
+		</properties>
+		 -->
+	</rule>
 	  
 </ruleset>
   
