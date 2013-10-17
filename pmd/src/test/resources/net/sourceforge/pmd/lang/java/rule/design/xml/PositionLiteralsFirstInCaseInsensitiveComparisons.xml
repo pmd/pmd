@@ -21,7 +21,7 @@ bad, literal comes last
         <code><![CDATA[
 public class Foo {
  boolean bar(String x) {
-  return equalsIgnoreCase("2");
+  return x.equalsIgnoreCase("2");
  }
 }
      ]]></code>
