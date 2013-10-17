@@ -89,17 +89,26 @@ Avoid unused macro parameters. They should be deleted.
 	    <description>
 Avoid inline JavaScript. Import .js files instead.
 	    </description>
-	    <priority>2</priority><!-- 
+	    <priority>2</priority>
+	</rule>
+	
+    <rule name="NoInlineStyles"
+    	  since="5.1"
+        message="Avoid inline styles" language="vm" 
+        class="net.sourceforge.pmd.lang.rule.XPathRule">
+	    <description>
+Avoid inline styles. Use css classes instead.
+	    </description>
+	    <priority>2</priority>
 		<properties>
 			<property name="xpath">
 				<value>
 					<![CDATA[ 
-	//Text[matches(@literal, "<[Ss][Cc][Rr][Ii][Pp][Tt]\s[^>]*([sS][rR][cC]){0}+")]
+	//Text[matches(@literal, "<[^>]+\s[sS][tT][yY][lL][eE]\s*=")]
 					 ]]>
 				</value>
 			</property>
 		</properties>
-		 -->
 	</rule>
 	  
 </ruleset>

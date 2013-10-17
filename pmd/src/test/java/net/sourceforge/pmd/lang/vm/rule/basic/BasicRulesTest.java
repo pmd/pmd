@@ -18,6 +18,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "EmptyForeachStmtRule");
         addRule(RULESET, "UnusedMacroParameter");
         addRule(RULESET, "NoInlineJavaScript");
+        addRule(RULESET, "NoInlineStyles");
     }
 
     public static junit.framework.Test suite() {
