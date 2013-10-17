@@ -10,6 +10,7 @@ Fixed bug 1131: CloseResource should complain if code betwen declaration of reso
 Fixed bug 1134: UseStringBufferLength: false positives
 Fixed bug 1135: CheckResultSet ignores results set declared outside of try/catch
 Fixed bug 1136: ECMAScript: NullPointerException in getLeft() and getRight()
+Fixed bug 1140: public EcmascriptNode getBody(int index)
 Fixed bug 1141: ECMAScript: getFinallyBlock() is buggy.
 Fixed bug 1142: ECMAScript: getCatchClause() is buggy.
 
@@ -33,6 +34,9 @@ CPD Command Line Changes:
   Added option "--exclude" to exclude specific files from being scanned (thanks to Delmas for patch #272)
 
 Upgrade to javacc 5.0 (see patch #1109 Patch to build with Javacc 5.0)
+
+API Change - Deprecated APIs:
+    net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode: getBody(int index) deprecated, use getBody() instead
 
 
 August 11, 2013 - 5.0.5:
