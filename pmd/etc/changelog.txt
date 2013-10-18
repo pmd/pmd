@@ -28,6 +28,9 @@ New Java rules:
 		- rule to avoid protected methods in final classes that don't extend anything other than Object.
 	ConsecutiveAppendsShouldReuse
 		- rule to encourage to reuse StringBuilder.append returned object for consecutive calls.
+	PositionLiteralsFirstInCaseInsensitiveComparisons
+		- rule similar to PositionLiteralsFirstInComparisons, but for case insensitive comparisons (equalsIgnoreCase).
+		  Thanks to Larry Diamond
 
 CPD Command Line Changes:
   Added non-recursive option "--non-recursive" to not scan sub-directories
