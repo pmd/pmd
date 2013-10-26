@@ -14,6 +14,10 @@ h3 {
     text-align: center;
 }
 
+ul {
+    margin-left: 2em;
+}
+
 #pmd-logo {
     width: 100%;
     max-width: 360px;
@@ -24,12 +28,7 @@ h3 {
     top: -20px;
     right: -20px;
     border: 0;
-}
-#github-logo2 {
-    position: absolute;
-    top: -20px;
-    right: -20px;
-    border: 0;
+    z-index: 1;
 }
 
 .container {
@@ -46,8 +45,6 @@ h3 {
 .description {
     font-family: serif;
     margin: 2em auto;
-    font-size: 140%;
-    line-height: 130%;
 }
 
 a.externalLink {
