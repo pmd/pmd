@@ -11,11 +11,25 @@ h3 {
     border-radius: 5px;
     border: 2px blue solid;
     padding: 3px 5px;
+    text-align: center;
 }
 
 #pmd-logo {
     width: 100%;
     max-width: 360px;
+}
+
+#github-logo {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    border: 0;
+}
+#github-logo2 {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    border: 0;
 }
 
 .container {
@@ -25,49 +39,18 @@ h3 {
     color: black;
 }
 
-.row {
-    width: 100%;
-    clear: both;
-}
-
-.column-1 {
-    width: 100%;
-}
-
-.column-3 {
-    width: 30%;
-    margin-right: 3%;
-    min-width: 300px;
-    float: left;
-}
-
-.column-2-3 {
-    width: 63%;
-    margin-right: 3%;
-    float: left;
-}
-
-.no-margin {
-    margin-right: 0px;
-}
-
-.footer {
-    font-size: 60%;
-    text-align: right;
-}
-
 .center {
     text-align: center;
 }
 
 .description {
     font-family: serif;
-    width: 85%;
-    margin: 3em auto;
+    margin: 2em auto;
     font-size: 140%;
+    line-height: 130%;
 }
 
 a.externalLink {
-    background: url("external.png") no-repeat scroll right center transparent;
+    background: url("../external.png") no-repeat scroll right center transparent;
     padding-right: 18px;
 }

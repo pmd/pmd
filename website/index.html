@@ -1,27 +1,34 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+
 <head>
-    <title>PMD</title>
-    <link href="pmd.css" type="text/css" rel="stylesheet" />
-    <meta http-equiv="content-type" content="text/xhtml;charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
     <meta name="description" content="PMD is a source code analyzer. It finds unused variables, empty catch blocks, unnecessary object creation, and so forth." />
     <meta name="keywords" content="PMD,Java,Code Analyzer,Clean Code,Software Development" />
+    <title>PMD</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/pmd.css" type="text/css">
+    <script src="js/custom.modernizr.js"></script>
 </head>
-<body>
-<div class="container">
 
-    <a href="https://github.com/pmd"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+<body>
+<div class="row container">
+  <div class="large 12 columns">
+    <a href="https://github.com/pmd">
+      <img id="github-logo" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" />
+    </a>
 
     <div class="row">
-        <div class="column-full center">
+        <div class="large-12 columns center">
             <img src="pmd_logo.png" id="pmd-logo" alt="PMD - Don't shoot the messenger"/>
         </div>
     </div>
     
     <div class="row">
-        <div class="column-1 description center">
+        <div class="large-12 columns description center">
             PMD is a source code analyzer. It finds common programming flaws like
             unused variables, empty catch blocks, unnecessary object creation, and so forth.
             It supports Java, JavaScript, XML, XSL.
@@ -32,7 +39,7 @@
     </div>
     
     <div class="row">
-        <div class="column-3">
+        <div class="large-4 columns">
             <h3>Latest version</h3>
             <h4>5.0.5 (11th August 2013)</h4>
             <ul>
@@ -41,7 +48,7 @@
               <li><a href="http://pmd.sourceforge.net/pmd-5.0.5/">Documentation</a></li>
             </ul>
         </div>
-        <div class="column-3">
+        <div class="large-4 columns">
             <h3>Get Involved</h3>
             <ul>
               <li><a href="http://sourceforge.net/projects/pmd/">SourceForge Project Page</a></li>
@@ -54,7 +61,7 @@
               <li>Our license: <a href="http://pmd.sourceforge.net/license.html">BSD-style</a></li>
             </ul>
         </div>
-        <div class="column-3 no-margin">
+        <div class="large-4 columns">
             <h3>Plugins</h3>
             <ul>
               <li><a class="externalLink" href="http://maven.apache.org/plugins/maven-pmd-plugin/">Maven PMD plugin</a></li>
@@ -68,7 +75,7 @@
     </div>
     
     <div class="row">
-        <div class="column-3">
+        <div class="large-4 columns">
             <h3>Recent announcements</h3>
             <ul>
                 <li>
@@ -138,7 +145,7 @@
                 </li>
             </ul>
         </div>
-        <div class="column-3">
+        <div class="large-4 columns">
             <h3>Next development version</h3>
             <h4>5.1.0-SNAPSHOT</h4>
             <ul>
@@ -146,7 +153,7 @@
                 <li><a href="https://jenkins.adangel.org/job/pmd/">CI Server</a></li>
             </ul>
         </div>
-        <div class="column-3 no-margin">
+        <div class="large-4 columns">
             <h3>Previous versions</h3>
             <ul>
                 <li>5.0.4 (2013-05-01) <a href="http://sourceforge.net/projects/pmd/files/pmd/5.0.4/">downloads</a>   <a href="http://pmd.sourceforge.net/pmd-5.0.4/">doc</a></li>
@@ -167,7 +174,56 @@
         <a href="http://sourceforge.net/projects/pmd"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=56262&amp;type=10" width="80" height="15" alt="Get PMD at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a>
         </div>
     </div>
-    
+  </div>
 </div>
+
+  <script>
+  document.write('<script src=' +
+  ('__proto__' in {} ? 'js/vendor/zepto' : 'js/vendor/jquery') +
+  '.js><\/script>')
+  </script>
+  
+  <script src="js/foundation/foundation.js"></script>
+  <!--
+  <script src="js/foundation.min.js"></script>
+  
+  <script src="js/foundation/foundation.js"></script>
+  
+  <script src="js/foundation/foundation.alerts.js"></script>
+  
+  <script src="js/foundation/foundation.clearing.js"></script>
+  
+  <script src="js/foundation/foundation.cookie.js"></script>
+  
+  <script src="js/foundation/foundation.dropdown.js"></script>
+  
+  <script src="js/foundation/foundation.forms.js"></script>
+  
+  <script src="js/foundation/foundation.joyride.js"></script>
+  
+  <script src="js/foundation/foundation.magellan.js"></script>
+  
+  <script src="js/foundation/foundation.orbit.js"></script>
+  
+  <script src="js/foundation/foundation.reveal.js"></script>
+  
+  <script src="js/foundation/foundation.section.js"></script>
+  
+  <script src="js/foundation/foundation.tooltips.js"></script>
+  
+  <script src="js/foundation/foundation.topbar.js"></script>
+  
+  <script src="js/foundation/foundation.interchange.js"></script>
+  
+  <script src="js/foundation/foundation.placeholder.js"></script>
+  
+  <script src="js/foundation/foundation.abide.js"></script>
+  
+  -->
+  
+  <script>
+    $(document).foundation();
+  </script>
+
 </body>
 </html>
