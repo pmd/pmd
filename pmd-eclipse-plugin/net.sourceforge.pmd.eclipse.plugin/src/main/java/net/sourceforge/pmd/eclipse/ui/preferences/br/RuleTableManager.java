@@ -849,6 +849,12 @@ public class RuleTableManager extends AbstractTreeTableManager<Rule> implements 
 	protected void redrawTable(String sortColumnLabel, int sortDir) {
 		groupBy(groupingColumn);
 
+		// In order to be able to use TreeItem.getItems() later, we need to expand all and collapse again.
+		// Use TreeItem.getItems(). Note that sub items are only available if the parent node has been expanded at least once.
+		// from: http://stackoverflow.com/questions/9766476/accessing-subitem-of-a-tree-in-swt-eclipse
+		treeViewer.expandAll();
+		treeViewer.collapseAll();
+
 		super.redrawTable(sortColumnLabel, sortDir);
 	}
 
