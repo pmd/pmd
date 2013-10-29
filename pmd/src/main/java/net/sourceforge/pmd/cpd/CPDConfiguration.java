@@ -38,10 +38,16 @@ public class CPDConfiguration extends AbstractConfiguration {
 	private boolean skipDuplicates;
 
 	@Parameter(names = "--format", description = "report format. Default value is "
-		+ DEFAULT_RENDERER, required = false, converter = RendererConverter.class)
+		+ DEFAULT_RENDERER, required = false)
+	private String rendererName;
+
+	/**
+	 * The actual renderer. constructed by using the {@link #rendererName}.
+	 * This property is only valid after {@link #postContruct()} has been called!
+	 */
 	private Renderer renderer;
 
-	@Parameter(names = "--encoding", description = "ToDo", required = false, converter = EncodingConverter.class)
+	@Parameter(names = "--encoding", description = "ToDo", required = false)
 	private String encoding;
 
 	@Parameter(names = "--ignore-literals", description = "ToDo", required = false)
@@ -65,6 +71,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
 	private boolean help;
 
+	// this has to be a public static class, so that JCommander can use it!
 	public static class LanguageConverter implements IStringConverter<Language> {
 
 		public Language convert(String languageString) {
@@ -75,31 +82,8 @@ public class CPDConfiguration extends AbstractConfiguration {
 		}
 	}
 
-	static class RendererConverter implements IStringConverter<Renderer> {
-
-		public Renderer convert(String formatString) {
-			if (formatString == null || "".equals(formatString)) {
-				formatString = DEFAULT_RENDERER;
-			}
-			return getRendererFromString(formatString);
-		}
-	}
-
-	class EncodingConverter implements IStringConverter<String> {
-
-		public String convert(String encoding) {
-			if (encoding == null || "".equals(encoding))
-				encoding = System.getProperty("file.encoding");
-			return setEncoding(encoding);
-		}
-	}
-
-	public String setEncoding(String theEncoding) {
-		super.setSourceEncoding(theEncoding);
-
-		if (!theEncoding.equals(System.getProperty("file.encoding")))
-			System.setProperty("file.encoding", theEncoding);
-		return theEncoding;
+	public void setEncoding(String encoding) {
+	    this.encoding = encoding;
 	}
 
 	public SourceCode sourceCodeFor(File file) {
@@ -108,11 +92,17 @@ public class CPDConfiguration extends AbstractConfiguration {
 	}
 
 	public void postContruct() {
+        if (getEncoding() != null) {
+            super.setSourceEncoding(getEncoding());
+            if (!getEncoding().equals(System.getProperty("file.encoding")))
+                System.setProperty("file.encoding", getEncoding());
+        }
 		if ( this.getLanguage() == null )
 			this.setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
+		if (this.getRendererName() == null )
+		    this.setRendererName(DEFAULT_RENDERER);
 		if ( this.getRenderer() == null )
-			this.setRenderer(getRendererFromString(DEFAULT_RENDERER));
-
+			this.setRenderer(getRendererFromString(getRendererName()));
 	}
 
 	public static Renderer getRendererFromString(String name /* , String encoding */) {
@@ -181,6 +171,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public void setSkipDuplicates(boolean skipDuplicates) {
 		this.skipDuplicates = skipDuplicates;
+	}
+
+	public String getRendererName() {
+	    return rendererName;
+	}
+
+	public void setRendererName(String rendererName) {
+	    this.rendererName = rendererName;
 	}
 
 	public Renderer getRenderer() {

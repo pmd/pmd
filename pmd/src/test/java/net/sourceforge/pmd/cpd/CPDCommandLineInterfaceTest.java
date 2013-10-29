@@ -59,6 +59,29 @@ public class CPDCommandLineInterfaceTest {
         Assert.assertFalse(out.contains("Found a 7 line (34 tokens) duplication"));
     }
 
+    /**
+     * #1144 CPD encoding argument has no effect
+     */
+    @Test
+    public void testEncodingOption() throws Exception {
+        String origEncoding = System.getProperty("file.encoding");
+
+        // set the default encoding under Windows
+        System.setProperty("file.encoding", "Cp1252");
+
+        runCPD("--minimum-tokens", "34", "--language", "java",
+                "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/",
+                "--ignore-identifiers",
+                "--format", "xml",
+        // request UTF-8 for CPD
+                "--encoding", "UTF-8");
+        // reset default encoding
+        System.setProperty("file.encoding", origEncoding);
+
+        String out = buffer.toString("UTF-8");
+        Assert.assertTrue(out.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+    }
+
     private void runCPD(String... args) {
         System.setProperty(CPDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
         CPD.main(args);
