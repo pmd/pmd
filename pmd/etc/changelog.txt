@@ -45,6 +45,12 @@ API Change - Deprecated APIs:
     net.sourceforge.pmd.lang.ecmascript.ast.ASTTryStatement: isCatch() and isFinally() deprecated, use hasCatch() and hasBody() instead
 
 
+????? - 5.0.6:
+
+Fixed bug 1144: CPD encoding argument has no effect
+
+
+
 August 11, 2013 - 5.0.5:
 
 Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
