@@ -11,6 +11,7 @@ import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -90,7 +91,16 @@ public class SWTUtil {
 	public static void setEnabled(Collection<Control> controls, boolean flag) {
 		for (Control control : controls) setEnabled(control, flag);
 	}
-	
+
+    public static void setEnabledRecursive(Control[] controls, boolean state) {
+        for (Control control : controls) {
+            if (control instanceof Composite) {
+                setEnabledRecursive(((Composite)control).getChildren(), state);
+            }
+            setEnabled(control, state);
+        }
+    }
+
     public static String stringFor(String key) {
         return plugin.getStringTable().getString(key);
     }

@@ -39,6 +39,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Sash;
@@ -373,12 +374,30 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
      * @param parent Composite
      */
     private void layoutControls(Composite parent) {
+        parent.setLayout(new RowLayout(SWT.VERTICAL));
 
-        parent.setLayout(new FormLayout());
+        Composite checkboxPanel = new Composite(parent, 0);
+        checkboxPanel.setLayout(new RowLayout(SWT.VERTICAL));
+        final Button checkButton = new Button(checkboxPanel, SWT.CHECK);
+
+        final Composite contentPanel = new Composite(parent, 0);
+        contentPanel.setLayout(new FormLayout());
+
+        checkButton.setText("Enable / Disable global rule management");
+        checkButton.setSelection(false);
+        checkButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                boolean sel = checkButton.getSelection();
+                SWTUtil.setEnabledRecursive(contentPanel.getChildren(), sel);
+            }
+        });
+
+
         int ruleTableFraction = 55;	//PreferenceUIStore.instance.tableFraction();
 
         // Create the sash first, so the other controls can be attached to it.
-        final Sash sash = new Sash(parent, SWT.HORIZONTAL);
+        final Sash sash = new Sash(contentPanel, SWT.HORIZONTAL);
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);                   // attach to left
         data.right = new FormAttachment(100, 0);                // attach to right
@@ -394,7 +413,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         });
 
         // Create the first text box and attach its bottom edge to the sash
-        Composite ruleSection = createRuleSection(parent);
+        Composite ruleSection = createRuleSection(contentPanel);
         data = new FormData();
         data.top = new FormAttachment(0, 0);
         data.bottom = new FormAttachment(sash, 0);
@@ -403,13 +422,15 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         ruleSection.setLayoutData(data);
 
         // Create the second text box and attach its top edge to the sash
-        TabFolder propertySection = buildTabFolder(parent);
+        TabFolder propertySection = buildTabFolder(contentPanel);
         data = new FormData();
         data.top = new FormAttachment(sash, 0);
         data.bottom = new FormAttachment(100, 0);
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
         propertySection.setLayoutData(data);
+
+        SWTUtil.setEnabledRecursive(contentPanel.getChildren(), checkButton.getSelection());
     }
 
 	/**
