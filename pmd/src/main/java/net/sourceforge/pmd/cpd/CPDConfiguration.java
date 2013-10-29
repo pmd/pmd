@@ -23,14 +23,14 @@ public class CPDConfiguration extends AbstractConfiguration {
     	 String languageString = findOptionalStringValue(args, "--language", "java");
     	 language = new LanguageFactory().createLanguage(languageString);
     	 
-         String formatString = findOptionalStringValue(args, "--format", "text");
-         renderer = getRendererFromString(formatString);
-         
          final String systemDefaultEncoding = System.getProperty("file.encoding");
          setEncoding( findOptionalStringValue(args, "--encoding", systemDefaultEncoding) );
 
+         String formatString = findOptionalStringValue(args, "--format", "text");
+         renderer = getRendererFromString(formatString);
+
          minimumTileSize = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
-         
+
          skipDuplicates = findBooleanSwitch(args, "--skip-duplicate-files");
     }
     
