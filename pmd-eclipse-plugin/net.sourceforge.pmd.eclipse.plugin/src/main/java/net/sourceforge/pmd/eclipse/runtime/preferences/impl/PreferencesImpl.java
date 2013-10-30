@@ -36,7 +36,6 @@
 
 package net.sourceforge.pmd.eclipse.runtime.preferences.impl;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -75,6 +74,7 @@ class PreferencesImpl implements IPreferences {
     private int 				minTileSize;
     private String 				logFileName;
     private Level 				logLevel;
+    private boolean             globalRuleManagement;
     private Set<String> 		activeRuleNames = new HashSet<String>();
     private Set<String>         inactiveRuleNames = new HashSet<String>();
     private Set<String> 		activeRendererNames = new HashSet<String>();
@@ -233,6 +233,14 @@ class PreferencesImpl implements IPreferences {
      */
     public void sync() {
         preferencesManager.storePreferences(this);
+    }
+
+    public boolean getGlobalRuleManagement() {
+        return globalRuleManagement;
+    }
+
+    public void setGlobalRuleManagement(boolean b) {
+        globalRuleManagement = b;
     }
 
 	public boolean isActive(String ruleName) {

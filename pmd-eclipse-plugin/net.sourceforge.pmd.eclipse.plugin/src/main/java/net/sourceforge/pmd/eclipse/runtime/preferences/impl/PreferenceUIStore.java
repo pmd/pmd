@@ -30,6 +30,7 @@ public class PreferenceUIStore {
 	private static final String groupingColumn 		= PMDPlugin.PLUGIN_ID + ".ruletable.groupingColumn";
 	private static final String selectedRuleNames	= PMDPlugin.PLUGIN_ID + ".ruletable.selectedRules";
 	private static final String selectedPropertyTab	= PMDPlugin.PLUGIN_ID + ".ruletable.selectedPropertyTab";
+	private static final String globalRuleManagement = PMDPlugin.PLUGIN_ID + ".globalRuleManagement";
 	
 	private static final int tableFractionDefault = 55;
 	private static final char stringSeparator = ',';
@@ -64,6 +65,7 @@ public class PreferenceUIStore {
 				
 	//	TODO - replace this with the existing ViewMemento 
 		preferenceStore = new PreferenceStore(fileName);
+		preferenceStore.setDefault(globalRuleManagement, false);
 
 	    try {
 			preferenceStore.load();
@@ -80,6 +82,7 @@ public class PreferenceUIStore {
 		 preferenceStore.setValue(groupingColumn, "");
 		 preferenceStore.setValue(selectedRuleNames, "");
 		 preferenceStore.setValue(selectedPropertyTab, 0);
+		 preferenceStore.setValue(globalRuleManagement, false);
 		 
 		 save();
 	}
@@ -119,6 +122,14 @@ public class PreferenceUIStore {
 		preferenceStore.setValue(selectedPropertyTab, anIndex);
 	}
 	
+	public boolean globalRuleManagement() {
+	    return preferenceStore.getBoolean(globalRuleManagement);
+	}
+
+	public void globalRuleManagement(boolean b) {
+	    preferenceStore.setValue(globalRuleManagement, b);
+	}
+
 	public Set<String> selectedRuleNames() {
 		String names = preferenceStore.getString(selectedRuleNames);
 		return SWTUtil.asStringSet(names, stringSeparator);

@@ -56,6 +56,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	private TabFolder 		     	tabFolder;
 	private RulePropertyManager[]   rulePropertyManagers;
 	private RuleTableManager		tableManager;
+	private Button                  globalRuleManagementCheckButton;
     	
 	// columns shown in the rule treetable in the desired order
 	public static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
@@ -379,17 +380,19 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         Composite checkboxPanel = new Composite(parent, 0);
         checkboxPanel.setLayout(new RowLayout(SWT.VERTICAL));
         final Button checkButton = new Button(checkboxPanel, SWT.CHECK);
+        globalRuleManagementCheckButton = checkButton;
 
         final Composite contentPanel = new Composite(parent, 0);
         contentPanel.setLayout(new FormLayout());
 
         checkButton.setText("Enable / Disable global rule management");
-        checkButton.setSelection(false);
+        checkButton.setSelection(preferences.getGlobalRuleManagement());
         checkButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 boolean sel = checkButton.getSelection();
                 SWTUtil.setEnabledRecursive(contentPanel.getChildren(), sel);
+                setModified();
             }
         });
 
@@ -516,6 +519,8 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		tableManager.saveUIState();
 		int i =  tabFolder.getSelectionIndex();
 		PreferenceUIStore.instance.selectedPropertyTab( i );
+		PreferenceUIStore.instance.globalRuleManagement( globalRuleManagementCheckButton.getSelection() );
+		preferences.setGlobalRuleManagement( globalRuleManagementCheckButton.getSelection() );
 		PreferenceUIStore.instance.save();
 	}
 

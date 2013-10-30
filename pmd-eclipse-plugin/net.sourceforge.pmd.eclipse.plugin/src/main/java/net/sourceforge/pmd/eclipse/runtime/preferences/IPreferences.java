@@ -70,6 +70,8 @@ public interface IPreferences {
     String ACTIVE_EXCLUSIONS = "";
     String ACTIVE_INCLUSIONS = "";
 
+    boolean GLOBAL_RULE_MANAGEMENT_DEFAULT = false;
+
     /**
      * Get a comma-separated list of rules that are active by default.
      */
@@ -85,6 +87,10 @@ public interface IPreferences {
     
     boolean isActiveRenderer(String rendererName);
     
+    boolean getGlobalRuleManagement();
+
+    void setGlobalRuleManagement(boolean b);
+
     Set<String> getActiveRuleNames();
 
     Set<String> getInactiveRuleNames();
