@@ -38,10 +38,12 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -385,7 +387,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         final Composite contentPanel = new Composite(parent, 0);
         contentPanel.setLayout(new FormLayout());
 
-        checkButton.setText("Enable / Disable global rule management");
+        checkButton.setText(SWTUtil.stringFor(StringKeys.PREF_RULESET_BUTTON_GLOBALRULEMANAGEMENT));
         checkButton.setSelection(preferences.getGlobalRuleManagement());
         checkButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -396,6 +398,11 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
             }
         });
 
+        Label explanation = new Label(checkboxPanel, SWT.WRAP);
+        RowData rowData = new RowData();
+        rowData.width = 450;
+        explanation.setLayoutData(rowData);
+        explanation.setText(SWTUtil.stringFor(StringKeys.PREF_RULESET_BUTTON_GLOBALRULEMANAGEMENT_EXPL));
 
         int ruleTableFraction = 55;	//PreferenceUIStore.instance.tableFraction();
 
