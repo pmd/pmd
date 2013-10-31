@@ -499,29 +499,6 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		}
 	}
 
-	/**
-	 * If user wants to, rebuild all projects
-	 */
-	private void rebuildProjects() {
-		if (MessageDialog.openQuestion(getShell(), getMessage(StringKeys.QUESTION_TITLE),
-				getMessage(StringKeys.QUESTION_RULES_CHANGED))) {
-			try {
-				ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
-				monitorDialog.run(true, true, new IRunnableWithProgress() {
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						try {
-							ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-						} catch (CoreException e) {
-							plugin.logError("Exception building all projects after a preference change", e);
-						}
-					}
-				});
-			} catch (Exception e) {
-				plugin.logError("Exception building all projects after a preference change", e);
-			}
-		}
-	}
-
 	private void saveUIState() {
 		tableManager.saveUIState();
 		int i =  tabFolder.getSelectionIndex();

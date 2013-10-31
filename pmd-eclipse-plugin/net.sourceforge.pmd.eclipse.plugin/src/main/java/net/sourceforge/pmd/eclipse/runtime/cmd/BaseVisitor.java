@@ -259,6 +259,8 @@ public class BaseVisitor {
     		log.debug("file " + file.getName() + " is derived: " + file.isDerived());
     		log.debug("file checked: " + included);
 
+    		prepareMarkerAccumulator(file);
+
     		LanguageVersionDiscoverer languageDiscoverer = new LanguageVersionDiscoverer();
     		LanguageVersion languageVersion = languageDiscoverer.getDefaultLanguageVersionForFile(file.getName());
     		// in case it is java, select the correct java version
@@ -290,7 +292,7 @@ public class BaseVisitor {
     			timer.stop();
     			pmdDuration += timer.getDuration();
 
-    			updateMarkers(file, context, isUseTaskMarker(), getAccumulator());
+    			updateMarkers(file, context, isUseTaskMarker());
 
     			worked(1);
     			fileCount++;
@@ -363,10 +365,18 @@ public class BaseVisitor {
 	    	default: return PMDRuntimeConstants.PMD_MARKER;
     	}
     }
-    
-    private void updateMarkers(IFile file, RuleContext context, boolean fTask, Map<IFile, Set<MarkerInfo2>> accumulator)
+
+    private void prepareMarkerAccumulator(IFile file) {
+        Map<IFile, Set<MarkerInfo2>> accumulator = getAccumulator();
+        if (accumulator != null) {
+            accumulator.put(file, new HashSet<MarkerInfo2>());
+        }
+    }
+
+    private void updateMarkers(IFile file, RuleContext context, boolean fTask)
             throws CoreException, PropertiesException {
     	
+        Map<IFile, Set<MarkerInfo2>> accumulator = getAccumulator();
         Set<MarkerInfo2> markerSet = new HashSet<MarkerInfo2>();
         List<Review> reviewsList = findReviewedViolations(file);
         Review review = new Review();
