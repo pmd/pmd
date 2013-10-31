@@ -5,7 +5,7 @@ Installation instructions: <http://pmd.sourceforge.net/eclipse/>
 Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
 
 
-## ????: 4.0.2.v????
+## 31-October-2013: 4.0.2.v20131031-1124
 
 * Fixed Plugin does not execute custom xpath rules ([bug #1132])
 * Fixed After changing exclude filters violations are not cleared ([bug #1148])
