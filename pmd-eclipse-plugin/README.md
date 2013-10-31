@@ -81,7 +81,7 @@ Releasing and updating the official eclipse update site
 Finally announce the new plugin version in the news section of SF: <https://sourceforge.net/p/pmd/news/>.
 You can use the following template:
 
-    PMD for Eclipse $VERSION released
+    PMD for Eclipse $VERSION.$BUILDQUALIFIER released
     
     A new PMD for Eclipse plugin version has been released.
     It is available via the update site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/>
