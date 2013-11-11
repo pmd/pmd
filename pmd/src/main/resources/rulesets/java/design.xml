@@ -1327,7 +1327,7 @@ and unintentional empty constructors.
       <example>
   <![CDATA[
 public Foo() {
-  super();
+  // This constructor is intentionally empty. Nothing special is needed here.
 }
  ]]>
       </example>
