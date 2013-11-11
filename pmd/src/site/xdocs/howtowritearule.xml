@@ -233,15 +233,19 @@ pmd.bat c:\path\to\my\src xml c:\path\to\mycustomrules.xml
     and put it in the <code>Report</code>, which is attached to the <code>RuleContext</code>.  Like this:
     </p>
     <source>
-<![CDATA[public class WhileLoopsMustUseBracesRule extends AbstractRule {
+<![CDATA[import net.sourceforge.pmd.lang.ast.*;
+import net.sourceforge.pmd.lang.java.ast.*;
+import net.sourceforge.pmd.lang.java.rule.*;
+
+public class WhileLoopsMustUseBracesRule extends AbstractJavaRule {
     public Object visit(ASTWhileStatement node, Object data) {
-        SimpleNode firstStmt = (SimpleNode)node.jjtGetChild(1);
+        Node firstStmt = node.jjtGetChild(1);
         if (!hasBlockAsFirstChild(firstStmt)) {
             addViolation(data, node);
         }
         return super.visit(node,data);
     }
-    private boolean hasBlockAsFirstChild(SimpleNode node) {
+    private boolean hasBlockAsFirstChild(Node node) {
         return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
     }
 }]]>
