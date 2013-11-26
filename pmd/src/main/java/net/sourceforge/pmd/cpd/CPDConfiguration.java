@@ -33,7 +33,11 @@ public class CPDConfiguration extends AbstractConfiguration {
 
          skipDuplicates = findBooleanSwitch(args, "--skip-duplicate-files");
     }
-    
+
+    public CPDConfiguration()
+    {
+    }
+
 	public CPDConfiguration(int theMinTileSize, Language theLanguage, String theEncoding) {
 		minimumTileSize = theMinTileSize;
 		language = theLanguage;
