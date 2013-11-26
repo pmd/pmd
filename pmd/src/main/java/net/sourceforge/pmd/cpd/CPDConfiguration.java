@@ -82,6 +82,19 @@ public class CPDConfiguration extends AbstractConfiguration {
 		}
 	}
 
+	public CPDConfiguration()
+	{
+	}
+
+	@Deprecated
+	public CPDConfiguration(int minimumTileSize, Language language, String encoding)
+	{
+		setMinimumTileSize(minimumTileSize);
+		setLanguage(language);
+		setEncoding(encoding);
+	}
+
+
 	public void setEncoding(String encoding) {
 	    this.encoding = encoding;
 	}
