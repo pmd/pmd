@@ -56,7 +56,7 @@ public abstract class AbstractPMDProcessor {
 			return factory.createRuleSets(configuration.getRuleSets());
 		} catch (RuleSetNotFoundException rsnfe) {
 			// should not happen: parent already created a ruleset
-			return null;
+			return new RuleSets();
 		}
 	}
 	
