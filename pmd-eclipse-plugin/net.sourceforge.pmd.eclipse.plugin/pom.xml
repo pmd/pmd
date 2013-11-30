@@ -67,7 +67,7 @@
                     <artifactId>
                       maven-dependency-plugin
                     </artifactId>
-                    <versionRange>[2.7,)</versionRange>
+                    <versionRange>[0,)</versionRange>
                     <goals>
                       <goal>copy-dependencies</goal>
                     </goals>
