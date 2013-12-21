@@ -9,14 +9,15 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class AvoidReassigningParametersRule extends AbstractJavaRule {
 
 	@Override
     public Object visit(ASTMethodDeclarator node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> params = node.getScope().getVariableDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> params = node.getScope().getDeclarations(VariableNameDeclaration.class);
         this.lookForViolation(params, data);
         return super.visit(node, data);
     }
@@ -26,10 +27,11 @@ public class AvoidReassigningParametersRule extends AbstractJavaRule {
             VariableNameDeclaration decl = entry.getKey();
             List<NameOccurrence> usages = entry.getValue();
             for (NameOccurrence occ: usages) {
-                if ((occ.isOnLeftHandSide() || occ.isSelfAssignment()) &&
-                    occ.getNameForWhichThisIsAQualifier() == null &&
-                    (! occ.useThisOrSuper()) &&
-                    (!decl.isArray() || occ.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() == 1))
+                JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+                if ((jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) &&
+                        jocc.getNameForWhichThisIsAQualifier() == null &&
+                    (! jocc.useThisOrSuper()) &&
+                    (!decl.isArray() || jocc.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() == 1))
                 {
                     // not an array or no primary suffix to access the array values
                     addViolation(data, decl.getNode(), decl.getImage());
@@ -40,7 +42,7 @@ public class AvoidReassigningParametersRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration node,Object data) {
-    	Map<VariableNameDeclaration,List<NameOccurrence>> params = node.getScope().getVariableDeclarations();
+    	Map<VariableNameDeclaration,List<NameOccurrence>> params = node.getScope().getDeclarations(VariableNameDeclaration.class);
     	this.lookForViolation(params, data);
     	return super.visit(node,data);
     }

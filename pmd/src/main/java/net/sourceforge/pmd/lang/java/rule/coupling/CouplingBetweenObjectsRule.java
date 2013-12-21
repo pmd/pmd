@@ -137,7 +137,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         }
         //if the field is of any type other than the class type
         //increment the count
-        ClassScope clzScope = ((JavaNode)nameNode).getScope().getEnclosingClassScope();
+        ClassScope clzScope = ((JavaNode)nameNode).getScope().getEnclosingScope(ClassScope.class);
         if (!clzScope.getClassName().equals(variableType) && !this.filterTypes(variableType) && !this.typesFoundSoFar.contains(variableType)) {
             couplingCount++;
             typesFoundSoFar.add(variableType);

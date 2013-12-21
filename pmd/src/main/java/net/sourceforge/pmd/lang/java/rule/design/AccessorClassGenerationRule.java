@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 
 /**
  * 1. Note all private constructors.
@@ -45,7 +46,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
 
     public Object visit(ASTCompilationUnit node, Object data) {
         classDataList.clear();
-        packageName = node.getScope().getEnclosingSourceFileScope().getPackageName();
+        packageName = node.getScope().getEnclosingScope(SourceFileScope.class).getPackageName();
         return super.visit(node, data);
     }
 

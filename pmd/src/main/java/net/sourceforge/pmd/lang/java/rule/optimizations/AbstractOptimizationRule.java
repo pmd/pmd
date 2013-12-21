@@ -9,7 +9,8 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * Base class with utility methods for optimization rules
@@ -27,7 +28,8 @@ public class AbstractOptimizationRule extends AbstractJavaRule {
 
     protected boolean assigned(List<NameOccurrence> usages) {
         for (NameOccurrence occ: usages) {
-            if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
+            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+            if (jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) {
                 return true;
             }
         }

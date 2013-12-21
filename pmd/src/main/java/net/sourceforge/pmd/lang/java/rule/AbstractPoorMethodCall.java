@@ -7,7 +7,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * Detects and flags the occurrences of specific method calls against an instance of
@@ -85,8 +86,9 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
         }
 
         for (NameOccurrence occ : node.getUsages()) {
-            if (isNotedMethod(occ.getNameForWhichThisIsAQualifier())) {
-                Node parent = occ.getLocation().jjtGetParent().jjtGetParent();
+            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+            if (isNotedMethod(jocc.getNameForWhichThisIsAQualifier())) {
+                Node parent = jocc.getLocation().jjtGetParent().jjtGetParent();
                 if (parent instanceof ASTPrimaryExpression) {
                     // bail out if it's something like indexOf("a" + "b")
                     if (parent.hasDescendantOfType(ASTAdditiveExpression.class)) {
@@ -96,7 +98,7 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
                     for (int l = 0; l < literals.size(); l++) {
                         ASTLiteral literal = literals.get(l);
                         if (isViolationArgument(literal)) {
-                            addViolation(data, occ.getLocation());
+                            addViolation(data, jocc.getLocation());
                         }
                     }
                 }
