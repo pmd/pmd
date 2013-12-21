@@ -29,6 +29,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+
 
 /**
  * Visitor for scope creation.
@@ -237,7 +239,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTMethodDeclaration node, Object data) {
 	createMethodScope(node);
 	ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
-	node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
+	node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(md));
 	cont(node);
 	return data;
     }

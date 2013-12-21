@@ -3,39 +3,36 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class MethodScope extends AbstractScope {
+/**
+ * A Method Scope can have variable declarations and class declarations within it.
+ */
+public class MethodScope extends AbstractJavaScope {
 
-    protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
     private Node node;
 
     public MethodScope(Node node) {
         this.node = node;
     }
 
-    public MethodScope getEnclosingMethodScope() {
-        return this;
-    }
-
     public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
-        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
-        Applier.apply(f, variableNames.keySet().iterator());
-        return f.getUsed();
+        return getDeclarations(VariableNameDeclaration.class);
     }
 
-    public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
-        NameDeclaration decl = findVariableHere(occurrence);
-        if (decl != null && !occurrence.isThisOrSuper()) {
-            variableNames.get(decl).add(occurrence);
-            Node n = occurrence.getLocation();
+    public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
+        JavaNameOccurrence javaOccurrence = (JavaNameOccurrence)occurrence;
+        NameDeclaration decl = findVariableHere(javaOccurrence);
+        if (decl != null && !javaOccurrence.isThisOrSuper()) {
+            getVariableDeclarations().get(decl).add(javaOccurrence);
+            Node n = javaOccurrence.getLocation();
             if (n instanceof ASTName) {
                 ((ASTName) n).setNameDeclaration(decl);
             } // TODO what to do with PrimarySuffix case?
@@ -43,30 +40,30 @@ public class MethodScope extends AbstractScope {
         return decl;
     }
 
-    public void addDeclaration(VariableNameDeclaration variableDecl) {
-        if (variableNames.containsKey(variableDecl)) {
-            throw new RuntimeException("Variable " + variableDecl + " is already in the symbol table");
+    public void addDeclaration(NameDeclaration variableDecl) {
+        if (!(variableDecl instanceof VariableNameDeclaration || variableDecl instanceof ClassNameDeclaration)) {
+            throw new IllegalArgumentException("A MethodScope can contain only VariableNameDeclarations or ClassNameDeclarations");
         }
-        variableNames.put(variableDecl, new ArrayList<NameOccurrence>());
+        super.addDeclaration(variableDecl);
     }
 
-    public NameDeclaration findVariableHere(NameOccurrence occurrence) {
+    public NameDeclaration findVariableHere(JavaNameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return null;
         }
         ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
-        Applier.apply(finder, variableNames.keySet().iterator());
+        Applier.apply(finder, getVariableDeclarations().keySet().iterator());
         return finder.getDecl();
     }
 
     public String getName() {
         if (node instanceof ASTConstructorDeclaration) {
-            return this.getEnclosingClassScope().getClassName();
+            return this.getEnclosingScope(ClassScope.class).getClassName();
         }
         return node.jjtGetChild(1).getImage();
     }
 
     public String toString() {
-        return "MethodScope:" + glomNames(variableNames.keySet());
+        return "MethodScope:" + glomNames(getVariableDeclarations().keySet());
     }
 }

@@ -20,8 +20,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * @author raik, Sven Jacob
@@ -58,15 +60,15 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     private List<VariableAccess> markUsages(DataFlowNode inode) {
 	// undefinitions was once a field... seems like it works fine as a local
 	List<VariableAccess> undefinitions = new ArrayList<VariableAccess>();
-	Set<Map<VariableNameDeclaration, List<NameOccurrence>>> variableDeclarations = collectDeclarations(inode);
-	for (Map<VariableNameDeclaration, List<NameOccurrence>> declarations : variableDeclarations) {
-	    for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : declarations.entrySet()) {
-		VariableNameDeclaration vnd = entry.getKey();
+	Set<Map<NameDeclaration, List<NameOccurrence>>> variableDeclarations = collectDeclarations(inode);
+	for (Map<NameDeclaration, List<NameOccurrence>> declarations : variableDeclarations) {
+	    for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : declarations.entrySet()) {
+        VariableNameDeclaration vnd = (VariableNameDeclaration)entry.getKey();
 
 		if (vnd.getAccessNodeParent() instanceof ASTFormalParameter) {
 		    // no definition/undefinition/references for parameters
 		    continue;
-		} else if (((Node) vnd.getAccessNodeParent()).getFirstDescendantOfType(ASTVariableInitializer.class) != null) {
+		} else if (vnd.getAccessNodeParent().getFirstDescendantOfType(ASTVariableInitializer.class) != null) {
 		    // add definition for initialized variables
 		    addVariableAccess(vnd.getNode(), new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()),
 			    inode.getFlow());
@@ -74,22 +76,22 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 		undefinitions.add(new VariableAccess(VariableAccess.UNDEFINITION, vnd.getImage()));
 
 		for (NameOccurrence occurrence : entry.getValue()) {
-		    addAccess(occurrence, inode);
+		    addAccess((JavaNameOccurrence)occurrence, inode);
 		}
 	    }
 	}
 	return undefinitions;
     }
 
-    private Set<Map<VariableNameDeclaration, List<NameOccurrence>>> collectDeclarations(DataFlowNode inode) {
-	Set<Map<VariableNameDeclaration, List<NameOccurrence>>> decls = new HashSet<Map<VariableNameDeclaration, List<NameOccurrence>>>();
-	Map<VariableNameDeclaration, List<NameOccurrence>> varDecls;
+    private Set<Map<NameDeclaration, List<NameOccurrence>>> collectDeclarations(DataFlowNode inode) {
+	Set<Map<NameDeclaration, List<NameOccurrence>>> decls = new HashSet<Map<NameDeclaration, List<NameOccurrence>>>();
+	Map<NameDeclaration, List<NameOccurrence>> varDecls;
 	for (int i = 0; i < inode.getFlow().size(); i++) {
 	    DataFlowNode n = inode.getFlow().get(i);
 	    if (n instanceof StartOrEndDataFlowNode) {
 		continue;
 	    }
-	    varDecls = ((JavaNode)n.getNode()).getScope().getVariableDeclarations();
+	    varDecls = ((JavaNode)n.getNode()).getScope().getDeclarations();
 	    if (!decls.contains(varDecls)) {
 		decls.add(varDecls);
 	    }
@@ -97,7 +99,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 	return decls;
     }
 
-    private void addAccess(NameOccurrence occurrence, DataFlowNode inode) {
+    private void addAccess(JavaNameOccurrence occurrence, DataFlowNode inode) {
 	if (occurrence.isOnLeftHandSide()) {
 	    this.addVariableAccess(occurrence.getLocation(), new VariableAccess(VariableAccess.DEFINITION, occurrence
 		    .getImage()), inode.getFlow());

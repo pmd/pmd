@@ -13,16 +13,17 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 import org.junit.Test;
 public class AcceptanceTest extends STBBaseTst {
@@ -47,9 +48,9 @@ public class AcceptanceTest extends STBBaseTst {
         ASTCatchStatement c = acu.findDescendantsOfType(ASTCatchStatement.class).get(0);
         ASTBlock a = c.findDescendantsOfType(ASTBlock.class).get(0);
         Scope s = a.getScope();
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = s.getParent().getVariableDeclarations();
+        Map<NameDeclaration, List<NameOccurrence>> vars = s.getParent().getDeclarations();
         assertEquals(1, vars.size());
-        VariableNameDeclaration v = vars.keySet().iterator().next();
+        NameDeclaration v = vars.keySet().iterator().next();
         assertEquals("e", v.getImage());
         assertEquals(1, (vars.get(v)).size());
     }
@@ -60,10 +61,10 @@ public class AcceptanceTest extends STBBaseTst {
         ASTEqualityExpression e = acu.findDescendantsOfType(ASTEqualityExpression.class).get(0);
         ASTMethodDeclaration method = e.getFirstParentOfType(ASTMethodDeclaration.class);
         Scope s = method.getScope();
-        Map<VariableNameDeclaration, List<NameOccurrence>> m = s.getVariableDeclarations();
+        Map<NameDeclaration, List<NameOccurrence>> m = s.getDeclarations();
         assertEquals(2, m.size());
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : m.entrySet()) {
-            VariableNameDeclaration vnd = entry.getKey();
+        for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : m.entrySet()) {
+            NameDeclaration vnd = entry.getKey();
             List<NameOccurrence> usages = entry.getValue();
 
             if (vnd.getImage().equals("a") || vnd.getImage().equals("b")) {
@@ -85,7 +86,7 @@ public class AcceptanceTest extends STBBaseTst {
         assertEquals("bbbbbbbbbb", declaration.getImage());
         assertEquals(1, declaration.getUsages().size());
         NameOccurrence no = declaration.getUsages().get(0);
-        JavaNode location = no.getLocation();
+        Node location = no.getLocation();
         assertEquals(6, location.getBeginLine());
 //        System.out.println("variable " + declaration.getImage() + " is used here: " + location.getImage());
     }
@@ -96,11 +97,11 @@ public class AcceptanceTest extends STBBaseTst {
 //        System.out.println(TEST_DEMO);
         ASTMethodDeclaration node = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
-        Map<VariableNameDeclaration, List<NameOccurrence>> m = s.getVariableDeclarations();
-        for (Iterator<VariableNameDeclaration> i = m.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration d = i.next();
+        Map<NameDeclaration, List<NameOccurrence>> m = s.getDeclarations();
+        for (Iterator<NameDeclaration> i = m.keySet().iterator(); i.hasNext();) {
+            NameDeclaration d = i.next();
             assertEquals("buz", d.getImage());
-            assertEquals("ArrayList", d.getTypeImage());
+            assertEquals("ArrayList", ((TypedNameDeclaration)d).getTypeImage());
             List<NameOccurrence> u = m.get(d);
             assertEquals(1, u.size());
             NameOccurrence o = u.get(0);

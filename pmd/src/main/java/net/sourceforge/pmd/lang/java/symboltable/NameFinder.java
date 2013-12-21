@@ -15,54 +15,55 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class NameFinder {
 
-    private List<NameOccurrence> names = new ArrayList<NameOccurrence>();
+    private List<JavaNameOccurrence> names = new ArrayList<JavaNameOccurrence>();
 
     public NameFinder(ASTPrimaryExpression node) {
         ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
         if (prefix.usesSuperModifier()) {
-            add(new NameOccurrence(prefix, "super"));
+            add(new JavaNameOccurrence(prefix, "super"));
         } else if (prefix.usesThisModifier()) {
-            add(new NameOccurrence(prefix, "this"));
+            add(new JavaNameOccurrence(prefix, "this"));
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             checkForNameChild((JavaNode)node.jjtGetChild(i));
         }
     }
 
-    public List<NameOccurrence> getNames() {
+    public List<JavaNameOccurrence> getNames() {
         return names;
     }
 
     private void checkForNameChild(JavaNode node) {
         if (node.getImage() != null) {
-            add(new NameOccurrence(node, node.getImage()));
+            add(new JavaNameOccurrence(node, node.getImage()));
         }
         if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTName) {
             ASTName grandchild = (ASTName) node.jjtGetChild(0);
             for (StringTokenizer st = new StringTokenizer(grandchild.getImage(), "."); st.hasMoreTokens();) {
-                add(new NameOccurrence(grandchild, st.nextToken()));
+                add(new JavaNameOccurrence(grandchild, st.nextToken()));
             }
         }
         if (node instanceof ASTPrimarySuffix) {
             ASTPrimarySuffix suffix = (ASTPrimarySuffix) node;
             if (suffix.isArguments()) {
-                NameOccurrence occurrence = names.get(names.size() - 1);
+                JavaNameOccurrence occurrence = names.get(names.size() - 1);
                 occurrence.setIsMethodOrConstructorInvocation();
                 ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
                 occurrence.setArgumentCount(args.getArgumentCount());
             } else if (suffix.jjtGetNumChildren() == 1 && suffix.jjtGetChild(0) instanceof ASTMemberSelector) {
-                add(new NameOccurrence((JavaNode)suffix.jjtGetChild(0), suffix.jjtGetChild(0).getImage()));
+                add(new JavaNameOccurrence((JavaNode)suffix.jjtGetChild(0), suffix.jjtGetChild(0).getImage()));
             }
         }
     }
 
-    private void add(NameOccurrence name) {
+    private void add(JavaNameOccurrence name) {
         names.add(name);
         if (names.size() > 1) {
-            NameOccurrence qualifiedName = names.get(names.size() - 2);
+            JavaNameOccurrence qualifiedName = names.get(names.size() - 2);
             qualifiedName.setNameWhichThisQualifies(name);
         }
     }

@@ -8,8 +8,8 @@ import java.util.Map;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 import org.junit.Test;
 
@@ -18,11 +18,11 @@ public class MethodScopeTest extends STBBaseTst {
     @Test
     public void testMethodParameterOccurrenceRecorded() {
         parseCode(TEST1);
-        Map m = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0).getScope().getVariableDeclarations();
-        VariableNameDeclaration vnd = (VariableNameDeclaration) m.keySet().iterator().next();
+        Map<NameDeclaration, List<NameOccurrence>> m = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0).getScope().getDeclarations();
+        NameDeclaration vnd = m.keySet().iterator().next();
         assertEquals("bar", vnd.getImage());
-        List occs = (List) m.get(vnd);
-        NameOccurrence occ = (NameOccurrence) occs.get(0);
+        List<NameOccurrence> occs = m.get(vnd);
+        NameOccurrence occ = occs.get(0);
         assertEquals(3, occ.getLocation().getBeginLine());
     }
 

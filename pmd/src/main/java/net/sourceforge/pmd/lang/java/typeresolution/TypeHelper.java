@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 
 public class TypeHelper {
 
@@ -17,22 +17,22 @@ public class TypeHelper {
 		return subclasses(n, class1) || subclasses(n, class2);
 	}
 	
-	public static boolean isA(VariableNameDeclaration vnd, Class<?> clazz) {
+	public static boolean isA(TypedNameDeclaration vnd, Class<?> clazz) {
 		Class<?> type = vnd.getType();
 		return type != null && type.equals(clazz) || type == null
 		&& (clazz.getSimpleName().equals(vnd.getTypeImage()) || clazz.getName().equals(vnd.getTypeImage()));
 	}
 
-	public static boolean isEither(VariableNameDeclaration vnd, Class<?> class1, Class<?> class2) {
+	public static boolean isEither(TypedNameDeclaration vnd, Class<?> class1, Class<?> class2) {
 		return isA(vnd, class1) || isA(vnd, class2);
 	}
 	
-	public static boolean isNeither(VariableNameDeclaration vnd, Class<?> class1, Class<?> class2) {
+	public static boolean isNeither(TypedNameDeclaration vnd, Class<?> class1, Class<?> class2) {
 		return !isA(vnd, class1) &&  !isA(vnd, class2);
 	}
 	
 	public static boolean subclasses(TypeNode n, Class<?> clazz) {
-		Class type = n.getType();
+		Class<?> type = n.getType();
 		if (type == null) {
 			return clazz.getSimpleName().equals(((Node) n).getImage()) || clazz.getName().equals(((Node) n).getImage());
 		}
@@ -41,7 +41,7 @@ public class TypeHelper {
 			return true;
 		}
 
-		List<Class> implementors = Arrays.asList(type.getInterfaces());
+		List<Class<?>> implementors = Arrays.asList(type.getInterfaces());
 		if (implementors.contains(clazz)) {
 			return true;
 		}

@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.ScopedNode;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
-public interface JavaNode extends Node {
+public interface JavaNode extends ScopedNode {
 
     /**
      * Accept the visitor. *

@@ -6,14 +6,15 @@ package net.sourceforge.pmd.symboltable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.symboltable.NameFinder;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
-
-import org.junit.Test;
 
 import java.util.List;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.NameFinder;
+
+import org.junit.Test;
 public class NameOccurrencesTest extends STBBaseTst {
 
     @Test
@@ -38,7 +39,7 @@ public class NameOccurrencesTest extends STBBaseTst {
         parseCode(TEST2);
         List<ASTPrimaryExpression> nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
         NameFinder occs = new NameFinder(nodes.get(0));
-        NameOccurrence thisNameOccurrence = occs.getNames().get(0);
+        JavaNameOccurrence thisNameOccurrence = occs.getNames().get(0);
         assertEquals(thisNameOccurrence.getNameForWhichThisIsAQualifier(), occs.getNames().get(1));
     }
 
@@ -81,7 +82,7 @@ public class NameOccurrencesTest extends STBBaseTst {
 	List<ASTPrimaryExpression> nodes = acu.findDescendantsOfType(ASTPrimaryExpression.class);
 
 	NameFinder occs = new NameFinder(nodes.get(4));
-	List<NameOccurrence> names = occs.getNames();
+	List<JavaNameOccurrence> names = occs.getNames();
 	assertEquals(3, names.size());
 	assertEquals("myEnum", names.get(0).getImage());
 	assertFalse(names.get(0).isMethodOrConstructorInvocation());

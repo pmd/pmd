@@ -3,13 +3,17 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+
 public class Search {
     private static final boolean TRACE = false;
 
     private NameOccurrence occ;
     private NameDeclaration decl;
 
-    public Search(NameOccurrence occ) {
+    public Search(JavaNameOccurrence occ) {
         if (TRACE) {
             System.out.println("new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
         }
@@ -48,7 +52,7 @@ public class Search {
             if (TRACE) {
                 System.out.println(" found it!");
             }
-            return scope.addVariableNameOccurrence(nameOccurrence);
+            return scope.addNameOccurrence(nameOccurrence);
         }
         return null;
     }
