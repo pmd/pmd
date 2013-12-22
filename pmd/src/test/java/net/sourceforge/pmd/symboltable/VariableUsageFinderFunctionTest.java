@@ -10,9 +10,11 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.Applier;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableUsageFinderFunction;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 import org.junit.Test;
 public class VariableUsageFinderFunctionTest {
@@ -23,17 +25,17 @@ public class VariableUsageFinderFunctionTest {
         variableDeclarationIdNode.setImage("x");
         VariableNameDeclaration nameDeclaration = new VariableNameDeclaration(variableDeclarationIdNode);
         List<NameOccurrence> nameOccurrences = new ArrayList<NameOccurrence>();
-        nameOccurrences.add(new NameOccurrence(new DummyJavaNode(2), "x"));
+        nameOccurrences.add(new JavaNameOccurrence(new DummyJavaNode(2), "x"));
 
-        Map<VariableNameDeclaration, List<NameOccurrence>> declarations = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
+        Map<NameDeclaration, List<NameOccurrence>> declarations = new HashMap<NameDeclaration, List<NameOccurrence>>();
         declarations.put(nameDeclaration, nameOccurrences);
 
-        List<VariableNameDeclaration> vars = new ArrayList<VariableNameDeclaration>();
+        List<NameDeclaration> vars = new ArrayList<NameDeclaration>();
         vars.add(nameDeclaration);
 
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(declarations);
         Applier.apply(f, vars.iterator());
-        Map<VariableNameDeclaration, List<NameOccurrence>> p = f.getUsed();
+        Map<NameDeclaration, List<NameOccurrence>> p = f.getUsed();
         assertEquals(1, p.size());
     }
 

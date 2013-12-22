@@ -12,9 +12,11 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 
 /**
@@ -23,10 +25,11 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
-            if (!decl.getAccessNodeParent().isStatic() || decl.getAccessNodeParent().isFinal()) {
+            AccessNode accessNodeParent = (AccessNode)decl.getAccessNodeParent();
+            if (!accessNodeParent.isStatic() || accessNodeParent.isFinal()) {
                 continue;
             }
 
@@ -41,7 +44,7 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
         boolean initInConstructor = false;
 
         for (NameOccurrence occ: usages) {
-            if (occ.isOnLeftHandSide()) { // specifically omitting prefix and postfix operators as there are legitimate usages of these with static fields, e.g. typesafe enum pattern.
+            if (((JavaNameOccurrence)occ).isOnLeftHandSide()) { // specifically omitting prefix and postfix operators as there are legitimate usages of these with static fields, e.g. typesafe enum pattern.
         	Node node = occ.getLocation();
         	Node constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {

@@ -9,8 +9,8 @@ import java.util.Set;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 import org.junit.Test;
 
@@ -21,8 +21,8 @@ public class MethodNameDeclarationTest extends STBBaseTst {
     	// Verify proper number of nodes are not equal
         parseCode15(SIMILAR);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map<MethodNameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getMethodDeclarations();
-        Set<MethodNameDeclaration> methodNameDeclarations = m.keySet();
+        Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
+        Set<NameDeclaration> methodNameDeclarations = m.keySet();
         assertEquals("Wrong number of method name declarations", methodNameDeclarations.size(), 3);
     }
 

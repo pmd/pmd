@@ -7,23 +7,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.UnaryFunction;
 
-public class VariableUsageFinderFunction implements UnaryFunction<VariableNameDeclaration> {
+public class VariableUsageFinderFunction implements UnaryFunction<NameDeclaration> {
     
-    private Map<VariableNameDeclaration, List<NameOccurrence>> results = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
+    private Map<NameDeclaration, List<NameOccurrence>> results = new HashMap<NameDeclaration, List<NameOccurrence>>();
 
-    private Map<VariableNameDeclaration, List<NameOccurrence>> decls;
+    private Map<NameDeclaration, List<NameOccurrence>> decls;
 
-    public VariableUsageFinderFunction(Map<VariableNameDeclaration, List<NameOccurrence>> decls) {
+    public VariableUsageFinderFunction(Map<NameDeclaration, List<NameOccurrence>> decls) {
         this.decls = decls;
     }
 
-    public void applyTo(VariableNameDeclaration o) {
+    public void applyTo(NameDeclaration o) {
         results.put(o, decls.get(o));
     }
 
-    public Map<VariableNameDeclaration, List<NameOccurrence>> getUsed() {
+    public Map<NameDeclaration, List<NameOccurrence>> getUsed() {
         return results;
     }
 }

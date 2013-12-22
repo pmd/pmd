@@ -1,9 +1,10 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.List;
+
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-
-import java.util.List;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class OccurrenceFinder extends JavaParserVisitorAdapter {
 
@@ -14,8 +15,8 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
         // is null/not null?
         NameDeclaration decl = null;
 
-        List<NameOccurrence> names = nameFinder.getNames();
-        for (NameOccurrence occ: names) {
+        List<JavaNameOccurrence> names = nameFinder.getNames();
+        for (JavaNameOccurrence occ: names) {
             Search search = new Search(occ);
             if (decl == null) {
                 // doing the first name lookup

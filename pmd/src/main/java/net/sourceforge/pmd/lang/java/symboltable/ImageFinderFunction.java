@@ -3,11 +3,12 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import net.sourceforge.pmd.util.UnaryFunction;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.util.UnaryFunction;
 
 public class ImageFinderFunction implements UnaryFunction<NameDeclaration> {
 

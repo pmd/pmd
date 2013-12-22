@@ -7,7 +7,7 @@ import java.io.Reader;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
  * Common interface for calling tree-building parsers or source files.

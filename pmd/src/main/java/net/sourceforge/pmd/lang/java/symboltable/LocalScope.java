@@ -3,24 +3,30 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class LocalScope extends AbstractScope {
+/**
+ * A LocalScope can have variable declarations and class declarations within it.
+ */
+public class LocalScope extends AbstractJavaScope {
 
-    protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
+    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
+        return getDeclarations(VariableNameDeclaration.class);
+    }
 
-    public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
-        NameDeclaration decl = findVariableHere(occurrence);
-        if (decl != null && !occurrence.isThisOrSuper()) {
-            List<NameOccurrence> nameOccurrences = variableNames.get(decl);
-            nameOccurrences.add(occurrence);
-            Node n = occurrence.getLocation();
+    public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
+        JavaNameOccurrence javaOccurrence = (JavaNameOccurrence)occurrence;
+        NameDeclaration decl = findVariableHere(javaOccurrence);
+        if (decl != null && !javaOccurrence.isThisOrSuper()) {
+            List<NameOccurrence> nameOccurrences = getVariableDeclarations().get(decl);
+            nameOccurrences.add(javaOccurrence);
+            Node n = javaOccurrence.getLocation();
             if (n instanceof ASTName) {
                 ((ASTName) n).setNameDeclaration(decl);
             } // TODO what to do with PrimarySuffix case?
@@ -28,29 +34,24 @@ public class LocalScope extends AbstractScope {
         return decl;
     }
 
-    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
-        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
-        Applier.apply(f, variableNames.keySet().iterator());
-        return f.getUsed();
-    }
-
-    public void addDeclaration(VariableNameDeclaration nameDecl) {
-        if (variableNames.containsKey(nameDecl)) {
-            throw new RuntimeException("Variable " + nameDecl + " is already in the symbol table");
+    public void addDeclaration(NameDeclaration nameDecl) {
+        if (!(nameDecl instanceof VariableNameDeclaration || nameDecl instanceof ClassNameDeclaration)) {
+            throw new IllegalArgumentException("A LocalScope can contain only VariableNameDeclarations or ClassNameDeclarations. "
+                    + "Tried to add " + nameDecl.getClass() + "(" + nameDecl + ")");
         }
-        variableNames.put(nameDecl, new ArrayList<NameOccurrence>());
+        super.addDeclaration(nameDecl);
     }
 
-    public NameDeclaration findVariableHere(NameOccurrence occurrence) {
+    public NameDeclaration findVariableHere(JavaNameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return null;
         }
         ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
-        Applier.apply(finder, variableNames.keySet().iterator());
+        Applier.apply(finder, getVariableDeclarations().keySet().iterator());
         return finder.getDecl();
     }
 
     public String toString() {
-        return "LocalScope:" + glomNames(variableNames.keySet());
+        return "LocalScope:" + glomNames(getVariableDeclarations().keySet());
     }
 }

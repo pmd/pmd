@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -26,7 +26,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
      *            The name occurrence
      * @return true if it's .length, else false
      */
-    public boolean isTargetMethod(NameOccurrence occ) {
+    public boolean isTargetMethod(JavaNameOccurrence occ) {
         if (occ.getNameForWhichThisIsAQualifier() != null) {
             if (occ.getLocation().getImage().endsWith(".size")) {
                 return true;

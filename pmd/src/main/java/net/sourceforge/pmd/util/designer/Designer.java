@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -99,23 +100,17 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ScopedNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
-import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.symboltable.LocalScope;
-import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
-import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -296,8 +291,8 @@ public class Designer implements ClipboardOwner {
 		}
 
 		public Scope getScope() {
-			if (node instanceof JavaNode) {
-				return ((JavaNode) node).getScope();
+			if (node instanceof ScopedNode) {
+				return ((ScopedNode) node).getScope();
 			}
 			return null;
 		}
@@ -352,22 +347,7 @@ public class Designer implements ClipboardOwner {
 
 		public String getToolTipText() {
 			String tooltip = "Line: " + node.getBeginLine() + " Column: " + node.getBeginColumn();
-
-			if (node instanceof AccessNode) {
-				AccessNode accessNode = (AccessNode) node;
-				if (!"".equals(tooltip)) {
-					tooltip += ",";
-				}
-				tooltip += accessNode.isAbstract() ? " Abstract" : "";
-				tooltip += accessNode.isStatic() ? " Static" : "";
-				tooltip += accessNode.isFinal() ? " Final" : "";
-				tooltip += accessNode.isNative() ? " Native" : "";
-				tooltip += accessNode.isPrivate() ? " Private" : "";
-				tooltip += accessNode.isSynchronized() ? " Synchronised" : "";
-				tooltip += accessNode.isTransient() ? " Transient" : "";
-				tooltip += accessNode.isVolatile() ? " Volatile" : "";
-				tooltip += accessNode.isStrictfp() ? " Strictfp" : "";
-			}
+			tooltip += " " + label();
 			return tooltip;
 		}
 
@@ -486,10 +466,10 @@ public class Designer implements ClipboardOwner {
 	private class DFAListener implements ActionListener {
 		public void actionPerformed(ActionEvent ae) {
 
-			DFAGraphRule dfaGraphRule = new DFAGraphRule();
+		    LanguageVersion languageVersion = getLanguageVersion();
+			DFAGraphRule dfaGraphRule = languageVersion.getLanguageVersionHandler().getDFAGraphRule();
 			RuleSet rs = new RuleSet();
-			LanguageVersion languageVersion = getLanguageVersion();
-			if (languageVersion.getLanguage().equals(Language.JAVA)) {
+			if (dfaGraphRule != null) {
 				rs.addRule(dfaGraphRule);
 			}
 			RuleContext ctx = new RuleContext();
@@ -506,10 +486,12 @@ public class Designer implements ClipboardOwner {
 				e.printStackTrace();
 			}
 
-			List<ASTMethodDeclaration> methods = dfaGraphRule.getMethods();
-			if (methods != null && !methods.isEmpty()) {
-				dfaPanel.resetTo(methods, codeEditorPane);
-				dfaPanel.repaint();
+			if (dfaGraphRule != null) {
+    			List<DFAGraphMethod> methods = dfaGraphRule.getMethods();
+    			if (methods != null && !methods.isEmpty()) {
+    				dfaPanel.resetTo(methods, codeEditorPane);
+    				dfaPanel.repaint();
+    			}
 			}
 		}
 	}
@@ -581,53 +563,15 @@ public class Designer implements ClipboardOwner {
 					DefaultMutableTreeNode scopeTreeNode = new DefaultMutableTreeNode("Scope: "
 							+ scope.getClass().getSimpleName());
 					selectedAstTreeNode.add(scopeTreeNode);
-					if (!(scope instanceof MethodScope || scope instanceof LocalScope)) {
-						if (!scope.getClassDeclarations().isEmpty()) {
-							for (ClassNameDeclaration classNameDeclaration : scope.getClassDeclarations().keySet()) {
-								DefaultMutableTreeNode classNameDeclarationTreeNode = new DefaultMutableTreeNode(
-										"Class name declaration: " + classNameDeclaration);
-								scopeTreeNode.add(classNameDeclarationTreeNode);
-								for (NameOccurrence nameOccurrence : scope.getClassDeclarations().get(
-										classNameDeclaration)) {
-									DefaultMutableTreeNode nameOccurenceTreeNode = new DefaultMutableTreeNode(
-											"Name occurrence: " + nameOccurrence);
-									classNameDeclarationTreeNode.add(nameOccurenceTreeNode);
-								}
-							}
-						}
-					}
-					if (scope instanceof ClassScope) {
-						ClassScope classScope = (ClassScope) scope;
-						if (!classScope.getMethodDeclarations().isEmpty()) {
-							for (MethodNameDeclaration methodNameDeclaration : classScope.getMethodDeclarations()
-									.keySet()) {
-								DefaultMutableTreeNode methodNameDeclarationTreeNode = new DefaultMutableTreeNode(
-										"Method name declaration: " + methodNameDeclaration);
-								scopeTreeNode.add(methodNameDeclarationTreeNode);
-								for (NameOccurrence nameOccurrence : classScope.getMethodDeclarations().get(
-										methodNameDeclaration)) {
-									DefaultMutableTreeNode nameOccurenceTreeNode = new DefaultMutableTreeNode(
-											"Name occurrence: " + nameOccurrence);
-									methodNameDeclarationTreeNode.add(nameOccurenceTreeNode);
-								}
-							}
-						}
-					}
-					if (!(scope instanceof SourceFileScope)) {
-						if (!scope.getVariableDeclarations().isEmpty()) {
-							for (VariableNameDeclaration variableNameDeclaration : scope.getVariableDeclarations()
-									.keySet()) {
-								DefaultMutableTreeNode variableNameDeclarationTreeNode = new DefaultMutableTreeNode(
-										"Variable name declaration: " + variableNameDeclaration);
-								scopeTreeNode.add(variableNameDeclarationTreeNode);
-								for (NameOccurrence nameOccurrence : scope.getVariableDeclarations().get(
-										variableNameDeclaration)) {
-									DefaultMutableTreeNode nameOccurenceTreeNode = new DefaultMutableTreeNode(
-											"Name occurrence: " + nameOccurrence);
-									variableNameDeclarationTreeNode.add(nameOccurenceTreeNode);
-								}
-							}
-						}
+					for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : scope.getDeclarations().entrySet()) {
+					    DefaultMutableTreeNode nameDeclarationTreeNode = new DefaultMutableTreeNode(
+					            entry.getKey().getClass().getSimpleName() + ": " + entry.getKey());
+					    scopeTreeNode.add(nameDeclarationTreeNode);
+					    for (NameOccurrence nameOccurrence : entry.getValue()) {
+					        DefaultMutableTreeNode nameOccurranceTreeNode = new DefaultMutableTreeNode(
+					                "Name occurrence: " + nameOccurrence);
+					        nameDeclarationTreeNode.add(nameOccurranceTreeNode);
+					    }
 					}
 				}
 

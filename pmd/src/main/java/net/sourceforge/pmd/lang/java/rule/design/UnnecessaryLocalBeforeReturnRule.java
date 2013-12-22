@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 
@@ -37,7 +37,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
             return data;
         }
 
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = name.getScope().getVariableDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = name.getScope().getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
             VariableNameDeclaration key = entry.getKey();
             List<NameOccurrence> usages = entry.getValue();

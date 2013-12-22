@@ -25,10 +25,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * This rule finds concurrent calls to StringBuffer/Builder.append where String literals
@@ -86,21 +87,21 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 		int concurrentCount = checkConstructor(node, data);
 		Node lastBlock = getFirstParentBlock(node);
 		Node currentBlock = lastBlock;
-		Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope().getVariableDeclarations();
+		Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope().getDeclarations(VariableNameDeclaration.class);
 		Node rootNode = null;
 		// only want the constructor flagged if it's really containing strings
 		if (concurrentCount >= 1) {
 			rootNode = node;
 		}
-		for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
-			List<NameOccurrence> decl = entry.getValue();
+		for (List<NameOccurrence> decl : decls.values()) {
 			for (NameOccurrence no : decl) {
-				Node n = no.getLocation();
+			    JavaNameOccurrence jno = (JavaNameOccurrence)no;
+				Node n = jno.getLocation();
 
 				currentBlock = getFirstParentBlock(n);
 
 				if (!InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
-					if (!no.isPartOfQualifiedName()) {
+					if (!jno.isPartOfQualifiedName()) {
 						checkForViolation(rootNode, data, concurrentCount);
 						concurrentCount = 0;
 					}

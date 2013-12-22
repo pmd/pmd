@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;

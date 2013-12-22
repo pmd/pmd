@@ -9,9 +9,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class StringInstantiationRule extends AbstractJavaRule {
 
@@ -42,12 +42,11 @@ public class StringInstantiationRule extends AbstractJavaRule {
 	}
 
 	NameDeclaration nd = name.getNameDeclaration();
-	if (!(nd instanceof VariableNameDeclaration)) {
+	if (nd == null) {
 	    return data;
 	}
 
-	VariableNameDeclaration vnd = (VariableNameDeclaration) nd;
-	if (TypeHelper.isA(vnd, String.class)) {
+	if (nd instanceof TypedNameDeclaration && TypeHelper.isA((TypedNameDeclaration)nd, String.class)) {
 	    addViolation(data, node);
 	}
 	return data;

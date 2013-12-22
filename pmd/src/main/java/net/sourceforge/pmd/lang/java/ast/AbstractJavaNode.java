@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 

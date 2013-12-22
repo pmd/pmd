@@ -14,8 +14,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class NameOccurrence {
+public class JavaNameOccurrence implements NameOccurrence {
 
     private JavaNode location;
     private String image;
@@ -30,7 +31,7 @@ public class NameOccurrence {
     private final static String THIS_DOT = "this.";
     private final static String SUPER_DOT = "super.";
 
-    public NameOccurrence(JavaNode location, String image) {
+    public JavaNameOccurrence(JavaNode location, String image) {
         this.location = location;
         this.image = image;
     }
@@ -207,8 +208,8 @@ public class NameOccurrence {
 
     @Override
     public boolean equals(Object o) {
-    	if (o instanceof NameOccurrence) {
-    		NameOccurrence n = (NameOccurrence) o;
+    	if (o instanceof JavaNameOccurrence) {
+    		JavaNameOccurrence n = (JavaNameOccurrence) o;
     		return n.getImage().equals(getImage());
     		}
     	return false;

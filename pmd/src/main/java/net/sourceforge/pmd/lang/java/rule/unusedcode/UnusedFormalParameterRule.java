@@ -12,9 +12,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UnusedFormalParameterRule extends AbstractJavaRule {
     
@@ -42,7 +43,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     private void check(Node node, Object data) {
         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
         if (parent instanceof ASTClassOrInterfaceDeclaration && !((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
-            Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((JavaNode)node).getScope().getVariableDeclarations();
+            Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((JavaNode)node).getScope().getDeclarations(VariableNameDeclaration.class);
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
                 VariableNameDeclaration nameDecl = entry.getKey();
                 if (actuallyUsed(nameDecl, entry.getValue())) {
@@ -55,8 +56,9 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
 
     private boolean actuallyUsed(VariableNameDeclaration nameDecl, List<NameOccurrence> usages) {
         for (NameOccurrence occ: usages) {
-            if (occ.isOnLeftHandSide()) {
-                if (nameDecl.isArray() && occ.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
+            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+            if (jocc.isOnLeftHandSide()) {
+                if (nameDecl.isArray() && jocc.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
                     // array element access
                     return true;
                 }
