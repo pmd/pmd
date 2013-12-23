@@ -89,6 +89,7 @@
         <item href="/rule-guidelines.html" name="Rule guidelines"/>
         <item href="/pmd-developer.html" name="PMD developers information"/>
         <item href="/pmd-release-process.html" name="PMD Release Process"/>
+        <item href="/new-language.html" name="New Language"/>
     </menu>
     <menu name="For example">
       <item href="../scoreboard.html" name="Run PMD on a Sourceforge project"/>
