@@ -4,6 +4,7 @@
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -202,6 +203,12 @@ public class RuleSetReferenceIdTest {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse(fooRulesFile);
         assertEquals(1, references.size());
         assertRuleSetReferenceId(true, fooRulesFile, true, null, fooRulesFile, references.get(0));
+    }
+
+    @Test
+    public void testNullRulesetString() throws Exception {
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse(null);
+        assertTrue(references.isEmpty());
     }
 
     public static junit.framework.Test suite() {
