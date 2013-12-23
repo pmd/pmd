@@ -13,7 +13,7 @@
 
   <custom>
     <fluidoSkin>
-      <topBarEnabled>false</topBarEnabled>
+      <topBarEnabled>true</topBarEnabled>
       <sideBarEnabled>true</sideBarEnabled>
     </fluidoSkin>
   </custom>
