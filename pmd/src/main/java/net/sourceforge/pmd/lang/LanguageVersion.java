@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.Java15Handler;
 import net.sourceforge.pmd.lang.java.Java16Handler;
 import net.sourceforge.pmd.lang.java.Java17Handler;
 import net.sourceforge.pmd.lang.jsp.JspHandler;
+import net.sourceforge.pmd.lang.vm.VmHandler;
 import net.sourceforge.pmd.lang.xml.XmlHandler;
 
 /**
@@ -53,7 +54,8 @@ public enum LanguageVersion {
     PHP(Language.PHP, "", null, true),
     RUBY(Language.RUBY, "", null, true),
     XSL(Language.XSL, "", new XmlHandler(), true),
-    XML(Language.XML, "", new XmlHandler(), true);
+    XML(Language.XML, "", new XmlHandler(), true),
+    VM(Language.VM, "", new VmHandler(), true);
 
     private final Language language;
     private final String version;

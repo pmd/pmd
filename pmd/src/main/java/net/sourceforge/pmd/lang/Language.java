@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleChainVisitor;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleChainVisitor;
 import net.sourceforge.pmd.lang.jsp.rule.JspRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
+import net.sourceforge.pmd.lang.vm.rule.VmRuleChainVisitor;
 import net.sourceforge.pmd.lang.xml.rule.XmlRuleChainVisitor;
 
 /**
@@ -46,7 +47,8 @@ public enum Language {
     PHP("PHP: Hypertext Preprocessor", "PHP", "php", null, "php", "class"),
     RUBY("Ruby", null, "ruby", null, "rb", "cgi", "class"),
     XSL("XSL", null, "xsl", XmlRuleChainVisitor.class, "xsl", "xslt"),
-    XML("XML", null, "xml", XmlRuleChainVisitor.class, "xml");
+    XML("XML", null, "xml", XmlRuleChainVisitor.class, "xml"),
+    VM("VM", null, "vm", VmRuleChainVisitor.class, "vm");
 
     private final String name;
     private final String shortName;
