@@ -685,17 +685,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.7.1</version>
+                <version>3.0.1</version>
                 <configuration>
                     <linkXref>true</linkXref>
                     <sourceEncoding>utf-8</sourceEncoding>
                     <minimumTokens>100</minimumTokens>
                     <targetJdk>1.6</targetJdk>
                     <rulesets>
-                        <!-- once the pmd plugin is migrated to pmd-5, we
-                            should be able to use the current dogfood configuration -->
-                        <!-- <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset> -->
-                        <ruleset>https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x/rulesets/internal/dogfood.xml</ruleset>
+                        <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset>
                     </rulesets>
                 </configuration>
             </plugin>
@@ -864,7 +861,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
-                        <version>2.7.1</version>
+                        <version>3.0.1</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
@@ -878,10 +875,7 @@
                             <minimumTokens>100</minimumTokens>
                             <targetJdk>1.6</targetJdk>
                             <rulesets>
-                                <!-- once the pmd plugin is migrated to pmd-5, 
-                                    we should be able to use the current dogfood configuration -->
-                                <!-- <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset> -->
-                                <ruleset>https://pmd.svn.sourceforge.net/svnroot/pmd/branches/pmd/4.3.x/rulesets/internal/dogfood.xml</ruleset>
+                                <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset>
                             </rulesets>
                         </configuration>
                     </plugin>
