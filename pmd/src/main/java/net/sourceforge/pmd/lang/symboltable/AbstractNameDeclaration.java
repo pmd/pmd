@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.symboltable;
 
-import net.sourceforge.pmd.lang.ScopedNode;
 
 /**
  * Base class for all name declarations.

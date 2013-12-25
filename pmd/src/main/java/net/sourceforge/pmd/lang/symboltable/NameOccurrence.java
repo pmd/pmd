@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.symboltable;
 
-import net.sourceforge.pmd.lang.ScopedNode;
 
 /**
  * A {@link NameOccurrence} represents one usage of a name declaration.

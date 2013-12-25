@@ -100,7 +100,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ScopedNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
@@ -111,6 +110,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.util.StringUtil;
 
