@@ -23,9 +23,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.LocalScope;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
+import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
  * This rule can detect possible violations of the Law of Demeter.
@@ -246,18 +250,18 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
         
         private void determineType() {
-            VariableNameDeclaration var = null;
+            NameDeclaration var = null;
             Scope scope = expression.getScope();
             
             baseScope = SCOPE_LOCAL;
-            var = findInLocalScope(baseName, (LocalScope)scope);
+            var = findInLocalScope(baseName, scope);
             if (var == null) {
                 baseScope = SCOPE_METHOD;
-                var = determineTypeOfVariable(baseName, scope.getEnclosingMethodScope().getVariableDeclarations().keySet());
+                var = determineTypeOfVariable(baseName, scope.getEnclosingScope(MethodScope.class).getVariableDeclarations().keySet());
             }
             if (var == null) {
                 baseScope = SCOPE_CLASS;
-                var = determineTypeOfVariable(baseName, scope.getEnclosingClassScope().getVariableDeclarations().keySet());
+                var = determineTypeOfVariable(baseName, scope.getEnclosingScope(ClassScope.class).getVariableDeclarations().keySet());
             }
             if (var == null) {
                 baseScope = SCOPE_METHOD_CHAINING;
@@ -266,9 +270,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 baseScope = SCOPE_CLASS;
             }
             
-            if (var != null) {
-                baseTypeName = var.getTypeImage();
-                baseType = var.getType();
+            if (var != null && var instanceof TypedNameDeclaration) {
+                baseTypeName = ((TypedNameDeclaration)var).getTypeImage();
+                baseType = ((TypedNameDeclaration)var).getType();
             } else if (METHOD_CALL_CHAIN.equals(baseName)) {
                 baseScope = SCOPE_METHOD_CHAINING;
             } else if (baseName.contains(".") && !baseName.startsWith("System.")) {
@@ -279,12 +283,12 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             }
         }
         
-        private VariableNameDeclaration findInLocalScope(String name, LocalScope scope) {
+        private VariableNameDeclaration findInLocalScope(String name, Scope scope) {
             VariableNameDeclaration result = null;
             
-            result = determineTypeOfVariable(name, scope.getVariableDeclarations().keySet());
+            result = determineTypeOfVariable(name, scope.getDeclarations(VariableNameDeclaration.class).keySet());
             if (result == null && scope.getParent() instanceof LocalScope) {
-                result = findInLocalScope(name, (LocalScope)scope.getParent());
+                result = findInLocalScope(name, scope.getParent());
             }
             
             return result;

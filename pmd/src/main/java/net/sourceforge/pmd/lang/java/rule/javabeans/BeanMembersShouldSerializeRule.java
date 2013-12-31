@@ -15,11 +15,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
@@ -55,7 +58,7 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 	    return data;
 	}
 
-	Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingClassScope()
+	Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
 		.getMethodDeclarations();
 	List<ASTMethodDeclarator> getSetMethList = new ArrayList<ASTMethodDeclarator>(methods.size());
 	for (MethodNameDeclaration d : methods.keySet()) {
@@ -69,10 +72,14 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
 	Arrays.sort(methNameArray);
 
-	Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
-	for (VariableNameDeclaration decl : vars.keySet()) {
-	    if (vars.get(decl).isEmpty() || decl.getAccessNodeParent().isTransient()
-		    || decl.getAccessNodeParent().isStatic()) {
+	Map<NameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations();
+	for (NameDeclaration decl : vars.keySet()) {
+	    if (!(decl instanceof VariableNameDeclaration)) {
+	        continue;
+	    }
+	    AccessNode accessNodeParent = ((VariableNameDeclaration)decl).getAccessNodeParent();
+	    if (vars.get(decl).isEmpty() || accessNodeParent.isTransient()
+		    || accessNodeParent.isStatic()) {
 		continue;
 	    }
 	    String varName = trimIfPrefix(decl.getImage());
@@ -81,7 +88,7 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 		    || Arrays.binarySearch(methNameArray, "is" + varName) >= 0;
 	    boolean hasSetMethod = Arrays.binarySearch(methNameArray, "set" + varName) >= 0;
 	    // Note that a Setter method is not applicable to a final variable...
-	    if (!hasGetMethod || (!decl.getAccessNodeParent().isFinal() && !hasSetMethod)) {
+	    if (!hasGetMethod || (!accessNodeParent.isFinal() && !hasSetMethod)) {
 		addViolation(data, decl.getNode(), decl.getImage());
 	    }
 	}

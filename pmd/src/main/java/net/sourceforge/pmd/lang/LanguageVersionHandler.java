@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang;
 
 import java.io.Writer;
 
+import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
@@ -72,4 +73,6 @@ public interface LanguageVersionHandler {
      * @return VisitorStarter 
      */
     VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
+
+    DFAGraphRule getDFAGraphRule();
 }

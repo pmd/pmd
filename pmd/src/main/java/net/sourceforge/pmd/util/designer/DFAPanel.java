@@ -20,9 +20,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class DFAPanel extends JComponent implements ListSelectionListener {
@@ -244,19 +244,19 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
     }
 
     private static class ElementWrapper {
-	private ASTMethodDeclaration node;
+	private DFAGraphMethod node;
 
-	public ElementWrapper(ASTMethodDeclaration node) {
+	public ElementWrapper(DFAGraphMethod node) {
 	    this.node = node;
 	}
 
-	public ASTMethodDeclaration getNode() {
+	public DFAGraphMethod getNode() {
 	    return node;
 	}
 
 	@Override
 	public String toString() {
-	    return node.getMethodName();
+	    return node.getName();
 	}
     }
 
@@ -303,10 +303,10 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 	dfaCanvas.repaint();
     }
 
-    public void resetTo(List<ASTMethodDeclaration> newNodes, LineGetter lines) {
+    public void resetTo(List<DFAGraphMethod> newNodes, LineGetter lines) {
 	dfaCanvas.setCode(lines);
 	nodes.clear();
-	for (ASTMethodDeclaration md : newNodes) {
+	for (DFAGraphMethod md : newNodes) {
 	    nodes.addElement(new ElementWrapper(md));
 	}
 	nodeList.setSelectedIndex(0);

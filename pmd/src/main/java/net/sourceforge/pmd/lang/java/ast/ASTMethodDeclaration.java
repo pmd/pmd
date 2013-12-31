@@ -2,7 +2,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTMethodDeclaration extends AbstractJavaAccessNode {
+import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+
+public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod {
     public ASTMethodDeclaration(int id) {
         super(id);
     }
@@ -30,6 +32,10 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode {
 	    return md.getImage();
 	}
         return null;
+    }
+
+    public String getName() {
+        return getMethodName();
     }
 
     public boolean isSyntacticallyPublic() {

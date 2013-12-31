@@ -20,8 +20,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 import org.junit.Test;
 public class ClassScopeTest extends STBBaseTst {
@@ -47,7 +49,7 @@ public class ClassScopeTest extends STBBaseTst {
         ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
         node.setImage("bar");
         s.addDeclaration(new VariableNameDeclaration(node));
-        assertTrue(s.getVariableDeclarations().keySet().iterator().hasNext());
+        assertTrue(s.getDeclarations().keySet().iterator().hasNext());
     }
 
     @Test
@@ -55,7 +57,7 @@ public class ClassScopeTest extends STBBaseTst {
         ClassScope s = new ClassScope("Foo");
         JavaNode node = new DummyJavaNode(1);
         node.setImage("super.toString");
-        assertFalse(s.contains(new NameOccurrence(node, node.getImage())));
+        assertFalse(s.contains(new JavaNameOccurrence(node, node.getImage())));
     }
 
     @Test
@@ -67,14 +69,14 @@ public class ClassScopeTest extends STBBaseTst {
 
         JavaNode node2 = new DummyJavaNode(2);
         node2.setImage("Foo.X");
-        assertTrue(s.contains(new NameOccurrence(node2, node2.getImage())));
+        assertTrue(s.contains(new JavaNameOccurrence(node2, node2.getImage())));
     }
 
     @Test
     public void testClassName() {
         parseCode(CLASS_NAME);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        assertEquals("Foo", n.getScope().getEnclosingClassScope().getClassName());
+        assertEquals("Foo", n.getScope().getEnclosingScope(ClassScope.class).getClassName());
     }
 
     @Test
@@ -82,7 +84,7 @@ public class ClassScopeTest extends STBBaseTst {
         parseCode(METHOD_DECLARATIONS_RECORDED);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         ClassScope s = (ClassScope) n.getScope();
-        Map m = s.getMethodDeclarations();
+        Map m = s.getDeclarations();
         assertEquals(1, m.size());
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("bar", mnd.getImage());
@@ -95,7 +97,7 @@ public class ClassScopeTest extends STBBaseTst {
         // TODO this won't work with String and java.lang.String
         parseCode(METHODS_WITH_DIFF_ARG);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        Map m = ((ClassScope) n.getScope()).getDeclarations();
         assertEquals(2, m.size());
         Iterator i = m.keySet().iterator();
         MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
@@ -108,7 +110,7 @@ public class ClassScopeTest extends STBBaseTst {
     public final void testOneParam() throws Throwable {
         parseCode(ONE_PARAM);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        Map m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("(String)", mnd.getParameterDisplaySignature());
     }
@@ -117,7 +119,7 @@ public class ClassScopeTest extends STBBaseTst {
     public final void testTwoParams() throws Throwable {
         parseCode(TWO_PARAMS);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        Map m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("(String,int)", mnd.getParameterDisplaySignature());
     }
@@ -126,7 +128,7 @@ public class ClassScopeTest extends STBBaseTst {
     public final void testNoParams() throws Throwable {
         parseCode(NO_PARAMS);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        Map m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("()", mnd.getParameterDisplaySignature());
     }
@@ -135,7 +137,7 @@ public class ClassScopeTest extends STBBaseTst {
     public final void testOneParamVararg() throws Throwable {
     	parseCode15(ONE_PARAM_VARARG);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        Map m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("(String...)", mnd.getParameterDisplaySignature());
     }
@@ -144,7 +146,7 @@ public class ClassScopeTest extends STBBaseTst {
     public final void testTwoParamsVararg() throws Throwable {
     	parseCode15(TWO_PARAMS_VARARG);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        Map m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("(String,String...)", mnd.getParameterDisplaySignature());
     }
@@ -155,7 +157,7 @@ public class ClassScopeTest extends STBBaseTst {
         parseCode(NESTED_CLASS_FOUND);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         ClassScope c = (ClassScope) n.getScope();
-        Map m = c.getClassDeclarations();
+        Map m = c.getDeclarations();
         ClassNameDeclaration cnd = (ClassNameDeclaration) m.keySet().iterator().next();
         assertEquals("Buz", cnd.getImage());
     }
@@ -171,7 +173,7 @@ public class ClassScopeTest extends STBBaseTst {
     public void testMethodUsageSeen() {
         parseCode(METHOD_USAGE_SEEN);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        Map m = ((ClassScope) n.getScope()).getDeclarations();
         Iterator i = m.entrySet().iterator();
         MethodNameDeclaration mnd;
         Map.Entry entry;
@@ -183,14 +185,14 @@ public class ClassScopeTest extends STBBaseTst {
 
         List usages = (List) entry.getValue();
         assertEquals(1, usages.size());
-        assertEquals("bar", ((NameOccurrence) usages.get(0)).getImage());
+        assertEquals("bar", ((JavaNameOccurrence) usages.get(0)).getImage());
     }
 
     @Test
     public void testMethodUsageSeenWithThis() {
         parseCode(METHOD_USAGE_SEEN_WITH_THIS);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        Map m = ((ClassScope) n.getScope()).getDeclarations();
         Iterator i = m.entrySet().iterator();
         MethodNameDeclaration mnd;
         Map.Entry entry;
@@ -202,14 +204,14 @@ public class ClassScopeTest extends STBBaseTst {
 
         List usages = (List) entry.getValue();
         assertEquals(1, usages.size());
-        assertEquals("bar", ((NameOccurrence) usages.get(0)).getImage());
+        assertEquals("bar", ((JavaNameOccurrence) usages.get(0)).getImage());
     }
 
     @Test
     public void testMethodUsageSeen2() {
         parseCode(METHOD_USAGE_SEEN2);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        Map m = ((ClassScope) n.getScope()).getDeclarations();
         Iterator i = m.entrySet().iterator();
         Map.Entry entry = (Map.Entry) i.next();
         MethodNameDeclaration mnd = (MethodNameDeclaration) entry.getKey();
@@ -228,10 +230,10 @@ public class ClassScopeTest extends STBBaseTst {
     public void testNestedClassFieldAndParameter() {
     	parseCode(NESTED_CLASS_FIELD_AND_PARAM);
     	ASTMethodDeclaration node = acu.getFirstDescendantOfType(ASTMethodDeclaration.class);
-    	Map<VariableNameDeclaration, List<NameOccurrence>> vd = node.getScope().getVariableDeclarations();
+    	Map<NameDeclaration, List<NameOccurrence>> vd = node.getScope().getDeclarations();
     	assertEquals(1, vd.size());
     	
-    	for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vd.entrySet()) {
+    	for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : vd.entrySet()) {
     		assertEquals("field", entry.getKey().getImage());
     		
     		List<NameOccurrence> occurrences = entry.getValue();

@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
@@ -50,7 +51,7 @@ public class NullAssignmentRule extends AbstractJavaRule {
         ASTName name = n.getFirstDescendantOfType(ASTName.class);
         return name != null
                 && name.getNameDeclaration() instanceof VariableNameDeclaration
-                && ((VariableNameDeclaration) name.getNameDeclaration()).getAccessNodeParent().isFinal();
+                && ((AccessNode) ((VariableNameDeclaration) name.getNameDeclaration()).getAccessNodeParent()).isFinal();
     }
 
     private boolean isBadTernary(ASTConditionalExpression n) {

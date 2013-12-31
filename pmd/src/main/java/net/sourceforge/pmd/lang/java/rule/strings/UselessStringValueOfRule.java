@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class UselessStringValueOfRule extends AbstractJavaRule {
 
@@ -75,11 +75,9 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                 Node gc = child.jjtGetChild(0);
                 if (gc instanceof ASTName) {
                     ASTName name = (ASTName) gc;
-                    if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
-                        VariableNameDeclaration nd = (VariableNameDeclaration) name.getNameDeclaration();
-                        if (nd.isPrimitiveType()) {
-                            result = true;
-                        }
+                    NameDeclaration nd = name.getNameDeclaration();
+                    if (nd instanceof VariableNameDeclaration && ((VariableNameDeclaration)nd).isPrimitiveType()) {
+                        result = true;
                     }
                 } else if (gc instanceof ASTLiteral) {
                     result = !((ASTLiteral) gc).isStringLiteral();

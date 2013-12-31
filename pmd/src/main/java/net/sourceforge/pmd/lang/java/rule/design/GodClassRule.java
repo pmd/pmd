@@ -30,9 +30,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -191,7 +192,7 @@ public class GodClassRule extends AbstractJavaRule {
             if (currentMethodName != null) {
                 Set<String> methodAccess = methodAttributeAccess.get(currentMethodName);
                 String variableName = getVariableName(node);
-                VariableNameDeclaration variableDeclaration = findVariableDeclaration(variableName, node.getScope().getEnclosingClassScope());
+                VariableNameDeclaration variableDeclaration = findVariableDeclaration(variableName, node.getScope().getEnclosingScope(ClassScope.class));
                 if (variableDeclaration != null) {
                     methodAccess.add(variableName);
                 }
@@ -285,7 +286,7 @@ public class GodClassRule extends AbstractJavaRule {
     private VariableNameDeclaration findVariableDeclaration(String variableName, Scope scope) {
         VariableNameDeclaration result = null;
         
-        for (VariableNameDeclaration declaration : scope.getVariableDeclarations().keySet()) {
+        for (VariableNameDeclaration declaration : scope.getDeclarations(VariableNameDeclaration.class).keySet()) {
             if (declaration.getImage().equals(variableName)) {
                 result = declaration;
                 break;

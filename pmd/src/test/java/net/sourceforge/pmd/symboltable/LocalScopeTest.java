@@ -5,6 +5,10 @@ package net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -13,14 +17,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symboltable.LocalScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
-import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
 public class LocalScopeTest extends STBBaseTst {
 
     @Test
@@ -31,9 +32,9 @@ public class LocalScopeTest extends STBBaseTst {
         ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
         prefix.setUsesThisModifier();
         name.jjtAddChild(prefix, 1);
-        NameOccurrence occ = new NameOccurrence(name, "foo");
-        scope.addVariableNameOccurrence(occ);
-        assertFalse(scope.getVariableDeclarations().keySet().iterator().hasNext());
+        JavaNameOccurrence occ = new JavaNameOccurrence(name, "foo");
+        scope.addNameOccurrence(occ);
+        assertFalse(scope.getDeclarations().keySet().iterator().hasNext());
     }
 
     @Test
@@ -44,9 +45,9 @@ public class LocalScopeTest extends STBBaseTst {
         ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
         prefix.setUsesSuperModifier();
         name.jjtAddChild(prefix, 1);
-        NameOccurrence occ = new NameOccurrence(name, "foo");
-        scope.addVariableNameOccurrence(occ);
-        assertFalse(scope.getVariableDeclarations().keySet().iterator().hasNext());
+        JavaNameOccurrence occ = new JavaNameOccurrence(name, "foo");
+        scope.addNameOccurrence(occ);
+        assertFalse(scope.getDeclarations().keySet().iterator().hasNext());
     }
 
     @Test
@@ -54,7 +55,7 @@ public class LocalScopeTest extends STBBaseTst {
         parseCode(TEST1);
         List nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
         ASTVariableDeclaratorId node = (ASTVariableDeclaratorId) nodes.get(0);
-        Map vars = node.getScope().getVariableDeclarations();
+        Map vars = node.getScope().getDeclarations();
         assertEquals(1, vars.size());
         NameDeclaration decl = (NameDeclaration) vars.keySet().iterator().next();
         assertEquals("b", decl.getImage());
@@ -65,9 +66,9 @@ public class LocalScopeTest extends STBBaseTst {
         parseCode(TEST2);
         List nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
         ASTVariableDeclaratorId node = (ASTVariableDeclaratorId) nodes.get(0);
-        Map vars = node.getScope().getVariableDeclarations();
+        Map vars = node.getScope().getDeclarations();
         NameDeclaration decl = (NameDeclaration) vars.keySet().iterator().next();
-        NameOccurrence occ = (NameOccurrence) ((List) vars.get(decl)).get(0);
+        JavaNameOccurrence occ = (JavaNameOccurrence) ((List) vars.get(decl)).get(0);
         assertEquals("b", occ.getImage());
     }
 
@@ -76,10 +77,10 @@ public class LocalScopeTest extends STBBaseTst {
         parseCode(TEST3);
         List nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
         ASTVariableDeclaratorId node = (ASTVariableDeclaratorId) nodes.get(0);
-        Map vars = node.getScope().getVariableDeclarations();
+        Map vars = node.getScope().getDeclarations();
         NameDeclaration decl = (NameDeclaration) vars.keySet().iterator().next();
         List usages = (List) vars.get(decl);
-        NameOccurrence occ = (NameOccurrence) usages.get(0);
+        JavaNameOccurrence occ = (JavaNameOccurrence) usages.get(0);
         assertEquals(4, occ.getLocation().getBeginLine());
     }
 
@@ -87,7 +88,7 @@ public class LocalScopeTest extends STBBaseTst {
     public void testLocalVariableTypesAreRecorded() {
         parseCode(TEST1);
         List nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
-        Map vars = ((ASTVariableDeclaratorId) nodes.get(0)).getScope().getVariableDeclarations();
+        Map vars = ((ASTVariableDeclaratorId) nodes.get(0)).getScope().getDeclarations();
         VariableNameDeclaration decl = (VariableNameDeclaration) vars.keySet().iterator().next();
         assertEquals("Bar", decl.getTypeImage());
     }
@@ -96,7 +97,7 @@ public class LocalScopeTest extends STBBaseTst {
     public void testMethodArgumentTypesAreRecorded() {
         parseCode(TEST5);
         List nodes = acu.findDescendantsOfType(ASTFormalParameter.class);
-        Map vars = ((ASTFormalParameter) nodes.get(0)).getScope().getVariableDeclarations();
+        Map vars = ((ASTFormalParameter) nodes.get(0)).getScope().getDeclarations();
         VariableNameDeclaration decl = (VariableNameDeclaration) vars.keySet().iterator().next();
         assertEquals("String", decl.getTypeImage());
     }
@@ -106,8 +107,8 @@ public class LocalScopeTest extends STBBaseTst {
         parseCode(TEST4);
         ASTLocalVariableDeclaration node = acu.findDescendantsOfType(ASTLocalVariableDeclaration.class).get(0);
         LocalScope scope = (LocalScope) node.getScope();
-        MethodScope ms = scope.getEnclosingMethodScope();
-        assertEquals(2, ms.getVariableDeclarations().size());
+        MethodScope ms = scope.getEnclosingScope(MethodScope.class);
+        assertEquals(2, ms.getDeclarations().size());
     }
 
 

@@ -4,15 +4,16 @@
 package net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.symboltable.ImageFinderFunction;
-import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.symboltable.ImageFinderFunction;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+
+import org.junit.Test;
 public class ImageFinderFunctionTest {
 
     @Test

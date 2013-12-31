@@ -1,27 +1,37 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.java.symboltable;
+package net.sourceforge.pmd.lang.symboltable;
 
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
+/**
+ * Base class for all name declarations.
+ */
 public abstract class AbstractNameDeclaration implements NameDeclaration {
 
-    protected JavaNode node;
+    protected ScopedNode node;
 
-    public AbstractNameDeclaration(JavaNode node) {
+    public AbstractNameDeclaration(ScopedNode node) {
         this.node = node;
     }
 
-    public JavaNode getNode() {
+    @Override
+    public ScopedNode getNode() {
         return node;
     }
 
+    @Override
     public String getImage() {
         return node.getImage();
     }
 
+    @Override
     public Scope getScope() {
         return node.getScope();
+    }
+
+    @Override
+    public String getName() {
+        return getImage();
     }
 }

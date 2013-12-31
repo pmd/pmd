@@ -21,9 +21,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * @author Olander
@@ -36,11 +38,12 @@ public class ImmutableFieldRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations(VariableNameDeclaration.class);
         List<ASTConstructorDeclaration> constructors = findAllConstructors(node);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
             VariableNameDeclaration field = entry.getKey();
-            if (field.getAccessNodeParent().isStatic() || !field.getAccessNodeParent().isPrivate() || field.getAccessNodeParent().isFinal() || field.getAccessNodeParent().isVolatile()) {
+            AccessNode accessNodeParent = field.getAccessNodeParent();
+            if (accessNodeParent.isStatic() || !accessNodeParent.isPrivate() || accessNodeParent.isFinal() || accessNodeParent.isVolatile()) {
                 continue;
             }
 
@@ -64,8 +67,9 @@ public class ImmutableFieldRule extends AbstractJavaRule {
         int methodInitCount = 0;
         Set<Node> consSet = new HashSet<Node>();
         for (NameOccurrence occ: usages) {
-            if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
-        	Node node = occ.getLocation();
+            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+            if (jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) {
+                Node node = jocc.getLocation();
                 ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
                     if (inLoopOrTry(node)) {

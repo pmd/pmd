@@ -16,9 +16,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
  * This is a Java RuleViolation. It knows how to try to extract the following
@@ -44,7 +46,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
 		if (node != null) {
 			final Scope scope = node.getScope();
-			final SourceFileScope sourceFileScope = scope.getEnclosingSourceFileScope();
+			final SourceFileScope sourceFileScope = scope.getEnclosingScope(SourceFileScope.class);
 
 			// Package name is on SourceFileScope
 			packageName = sourceFileScope.getPackageName() == null ? ""	: sourceFileScope.getPackageName();
@@ -54,7 +56,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 			
 			// Method name comes from 1st enclosing MethodScope
 			if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
-				methodName = scope.getEnclosingMethodScope().getName();
+				methodName = scope.getEnclosingScope(MethodScope.class).getName();
 			}
 			// Variable name node specific
 			setVariableNameIfExists(node);
@@ -83,7 +85,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 		
 		String qualifiedName = null;
 		for (ASTClassOrInterfaceDeclaration parent : node.getParentsOfType(ASTClassOrInterfaceDeclaration.class)) {
-			String clsName = parent.getScope().getEnclosingClassScope().getClassName();
+			String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
 			if (qualifiedName == null) {
 				qualifiedName = clsName;
 			} else {

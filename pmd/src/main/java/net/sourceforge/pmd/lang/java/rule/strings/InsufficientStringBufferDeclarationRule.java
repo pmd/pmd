@@ -27,8 +27,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly
@@ -61,12 +62,12 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         anticipatedLength = getInitialLength(node);
         List<NameOccurrence> usage = node.getUsages();
         Map<Node, Map<Node, Integer>> blocks = new HashMap<Node, Map<Node, Integer>>();
-        for (int ix = 0; ix < usage.size(); ix++) {
-            NameOccurrence no = usage.get(ix);
-            Node n = no.getLocation();
+        for (NameOccurrence no : usage) {
+            JavaNameOccurrence jno = (JavaNameOccurrence)no;
+            Node n = jno.getLocation();
             if (!InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
 
-                if (!no.isOnLeftHandSide() && !InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "setLength")) {
+                if (!jno.isOnLeftHandSide() && !InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "setLength")) {
                     continue;
                 }
                 if (constructorLength != -1 && anticipatedLength > constructorLength) {

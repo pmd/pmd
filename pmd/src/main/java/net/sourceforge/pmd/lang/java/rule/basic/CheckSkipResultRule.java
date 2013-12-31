@@ -2,15 +2,16 @@ package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.io.InputStream;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class CheckSkipResultRule extends AbstractJavaRule {
     
@@ -19,9 +20,10 @@ public class CheckSkipResultRule extends AbstractJavaRule {
             return data;
         }
         for (NameOccurrence occ: node.getUsages()) {
-            NameOccurrence qualifier = occ.getNameForWhichThisIsAQualifier();
+            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+            NameOccurrence qualifier = jocc.getNameForWhichThisIsAQualifier();
             if (qualifier != null && "skip".equals(qualifier.getImage())) {
-                JavaNode loc = occ.getLocation();
+                Node loc = jocc.getLocation();
                 if ( loc != null ) {
                     ASTPrimaryExpression exp = loc.getFirstParentOfType(ASTPrimaryExpression.class);
                     while (exp != null) {

@@ -5,24 +5,27 @@ package net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 import org.junit.Test;
-
-import java.util.List;
 public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testConstructor() {
         parseCode(TEST1);
-        List nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
-        Scope s = ((ASTVariableDeclaratorId) nodes.get(0)).getScope();
-        VariableNameDeclaration decl = s.getVariableDeclarations().keySet().iterator().next();
+        List<ASTVariableDeclaratorId> nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
+        Scope s = nodes.get(0).getScope();
+        NameDeclaration decl = s.getDeclarations().keySet().iterator().next();
         assertEquals("bar", decl.getImage());
         assertEquals(3, decl.getNode().getBeginLine());
     }
@@ -42,43 +45,43 @@ public class VariableNameDeclarationTest extends STBBaseTst {
     @Test
     public void testIsArray() {
         parseCode(TEST3);
-        VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
+        VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getDeclarations(VariableNameDeclaration.class).keySet().iterator().next();
         assertTrue(decl.isArray());
     }
 
     @Test
     public void testPrimitiveType() {
         parseCode(TEST1);
-        VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
+        VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getDeclarations(VariableNameDeclaration.class).keySet().iterator().next();
         assertTrue(decl.isPrimitiveType());
     }
 
     @Test
     public void testArrayIsReferenceType() {
         parseCode(TEST3);
-        VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
+        VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getDeclarations(VariableNameDeclaration.class).keySet().iterator().next();
         assertTrue(decl.isReferenceType());
     }
 
     @Test
     public void testPrimitiveTypeImage() {
         parseCode(TEST3);
-        VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
-        assertEquals("int", decl.getTypeImage());
+        NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getDeclarations().keySet().iterator().next();
+        assertEquals("int", ((TypedNameDeclaration)decl).getTypeImage());
     }
 
     @Test
     public void testRefTypeImage() {
         parseCode(TEST4);
-        VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
-        assertEquals("String", decl.getTypeImage());
+        NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getDeclarations().keySet().iterator().next();
+        assertEquals("String", ((TypedNameDeclaration)decl).getTypeImage());
     }
 
     @Test
     public void testParamTypeImage() {
         parseCode(TEST5);
-        VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
-        assertEquals("String", decl.getTypeImage());
+        NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope().getDeclarations().keySet().iterator().next();
+        assertEquals("String", ((TypedNameDeclaration)decl).getTypeImage());
     }
 
     public static final String TEST1 =

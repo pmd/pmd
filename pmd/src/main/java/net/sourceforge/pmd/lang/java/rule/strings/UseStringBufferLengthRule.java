@@ -10,9 +10,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 
 /**
@@ -44,7 +44,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
     - check each usage
     - flag those that involve variable.toString()
     */
-    private Set<VariableNameDeclaration> alreadySeen = new HashSet<VariableNameDeclaration>();
+    private Set<NameDeclaration> alreadySeen = new HashSet<NameDeclaration>();
 
     @Override
     public Object visit(ASTMethodDeclaration acu, Object data) {
@@ -58,15 +58,14 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
             return data;
         }
         NameDeclaration nd = decl.getNameDeclaration();
-        if (!(nd instanceof VariableNameDeclaration)) {
+        if (nd == null) {
             return data;
         }
-        VariableNameDeclaration vnd = (VariableNameDeclaration) nd;
-        if (alreadySeen.contains(vnd) || 
-        		TypeHelper.isNeither(vnd, StringBuffer.class, StringBuilder.class)) {
+        if (alreadySeen.contains(nd) || 
+                (nd instanceof TypedNameDeclaration && TypeHelper.isNeither((TypedNameDeclaration)nd, StringBuffer.class, StringBuilder.class))) {
             return data;
         }
-        alreadySeen.add(vnd);
+        alreadySeen.add(nd);
 
         if (isViolation(decl)) {
             addViolation(data, decl);

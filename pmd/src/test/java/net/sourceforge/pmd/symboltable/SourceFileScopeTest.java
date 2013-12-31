@@ -2,20 +2,22 @@ package net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
-
-import org.junit.Test;
 
 import java.util.Iterator;
 import java.util.Map;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+
+import org.junit.Test;
 public class SourceFileScopeTest extends STBBaseTst {
 
     @Test
     public void testClassDeclAppears() {
         parseCode(TEST1);
-        Map m = acu.getScope().getClassDeclarations();
+        Map m = acu.getScope().getDeclarations();
         ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) m.keySet().iterator().next();
         assertEquals(classNameDeclaration.getImage(), "Foo");
     }
@@ -24,20 +26,20 @@ public class SourceFileScopeTest extends STBBaseTst {
     public void testPackageIsEmptyString() {
         parseCode(TEST1);
         ASTCompilationUnit decl = acu;
-        assertEquals(decl.getScope().getEnclosingSourceFileScope().getPackageName(), "");
+        assertEquals(decl.getScope().getEnclosingScope(SourceFileScope.class).getPackageName(), "");
     }
 
     @Test
     public void testPackageNameFound() {
         parseCode(TEST2);
         ASTCompilationUnit decl = acu;
-        assertEquals(decl.getScope().getEnclosingSourceFileScope().getPackageName(), "foo.bar");
+        assertEquals(decl.getScope().getEnclosingScope(SourceFileScope.class).getPackageName(), "foo.bar");
     }
 
     @Test
     public void testNestedClasses() {
         parseCode(TEST3);
-        Map m = acu.getScope().getClassDeclarations();
+        Map m = acu.getScope().getDeclarations();
         Iterator iterator = m.keySet().iterator();
         ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) iterator.next();
         assertEquals(classNameDeclaration.getImage(), "Foo");
