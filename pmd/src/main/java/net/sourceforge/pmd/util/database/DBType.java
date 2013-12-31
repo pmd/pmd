@@ -88,15 +88,16 @@ public class DBType
    * Load the most specific dbType for the protocol
    * @param subProtocol 
    * @param subnamePrefix 
+ * @throws IOException 
    */
-  public DBType(String subProtocol, String subnamePrefix) throws Exception  
+  public DBType(String subProtocol, String subnamePrefix) throws IOException
   {
 
      LOGGER.fine("subProtocol="+subProtocol+", subnamePrefix="+subnamePrefix);
      
      if (null == subProtocol &&  null == subnamePrefix)
      {
-       throw new Exception("subProtocol and subnamePrefix cannot both be null");
+       throw new RuntimeException("subProtocol and subnamePrefix cannot both be null");
      }
      else
      {
@@ -116,7 +117,7 @@ public class DBType
        }
        else
        { 
-         throw new Exception(String.format("Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s"
+         throw new RuntimeException(String.format("Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s"
                              ,subProtocol
                              ,subnamePrefix
                              )
@@ -140,7 +141,7 @@ public class DBType
      * @param matchString
      * @return "current" set of properties (from one or more resources/property files)
      */
-    private Properties loadDBProperties(String matchString) throws IOException, Exception {
+    private Properties loadDBProperties(String matchString) throws IOException {
         LOGGER.entering(CLASS_NAME, matchString);
         //Locale locale = Control.g;
         ResourceBundle resourceBundle = null;
@@ -187,7 +188,7 @@ public class DBType
                   } catch (Exception notInJarWithPath) {
                       notInJarWithPath.printStackTrace();
                       notFoundOnFilesystemWithExtensionTackedOn.printStackTrace();
-                      throw new Exception (" Could not locate DBTYpe settings : "+matchString,notInJarWithPath);
+                      throw new RuntimeException (" Could not locate DBTYpe settings : "+matchString,notInJarWithPath);
                   }
                 }
             }

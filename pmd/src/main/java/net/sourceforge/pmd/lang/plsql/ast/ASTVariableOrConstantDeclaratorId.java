@@ -9,8 +9,8 @@ package net.sourceforge.pmd.lang.plsql.ast;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.plsql.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.plsql.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ASTVariableOrConstantDeclaratorId extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode{
   public ASTVariableOrConstantDeclaratorId(int id) {
@@ -28,18 +28,18 @@ public class ASTVariableOrConstantDeclaratorId extends net.sourceforge.pmd.lang.
   }
 
   private int arrayDepth;
-  private VariableNameDeclaration nameDeclaration;
+  private NameDeclaration nameDeclaration;
 
-  public VariableNameDeclaration getNameDeclaration() {
+  public NameDeclaration getNameDeclaration() {
       return nameDeclaration;
   }
 
-  public void setNameDeclaration(VariableNameDeclaration decl) {
+  public void setNameDeclaration(NameDeclaration decl) {
       nameDeclaration = decl;
   }
 
   public List<NameOccurrence> getUsages() {
-      return getScope().getVariableDeclarations().get(nameDeclaration);
+      return getScope().getDeclarations().get(nameDeclaration);
   }
 
   public void bumpArrayDepth() {

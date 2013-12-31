@@ -3,22 +3,23 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
+import net.sourceforge.pmd.lang.symboltable.AbstractScope;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class LocalScope extends AbstractScope {
 
-    protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
-
-    public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
+    @Override
+    public NameDeclaration addNameOccurrence(NameOccurrence occ) {
+        PLSQLNameOccurrence occurrence = (PLSQLNameOccurrence)occ;
         NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null && !occurrence.isThisOrSuper()) {
-            List<NameOccurrence> nameOccurrences = variableNames.get(decl);
+            List<NameOccurrence> nameOccurrences = getVariableDeclarations().get(decl);
             nameOccurrences.add(occurrence);
             Node n = occurrence.getLocation();
             if (n instanceof ASTName) {
@@ -29,28 +30,27 @@ public class LocalScope extends AbstractScope {
     }
 
     public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
-        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
-        Applier.apply(f, variableNames.keySet().iterator());
-        return f.getUsed();
+        return getDeclarations(VariableNameDeclaration.class);
     }
 
-    public void addDeclaration(VariableNameDeclaration nameDecl) {
-        if (variableNames.containsKey(nameDecl)) {
-            throw new RuntimeException("Variable " + nameDecl + " is already in the symbol table");
+    @Override
+    public void addDeclaration(NameDeclaration declaration) {
+        if (declaration instanceof VariableNameDeclaration && getDeclarations().keySet().contains(declaration)) {
+            throw new RuntimeException(declaration + " is already in the symbol table");
         }
-        variableNames.put(nameDecl, new ArrayList<NameOccurrence>());
+        super.addDeclaration(declaration);
     }
 
-    public NameDeclaration findVariableHere(NameOccurrence occurrence) {
+    public NameDeclaration findVariableHere(PLSQLNameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return null;
         }
         ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
-        Applier.apply(finder, variableNames.keySet().iterator());
+        Applier.apply(finder, getVariableDeclarations().keySet().iterator());
         return finder.getDecl();
     }
 
     public String toString() {
-        return "LocalScope:" + glomNames(variableNames.keySet());
+        return "LocalScope:" + getVariableDeclarations().keySet();
     }
 }

@@ -4,14 +4,14 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 /**
- *  Methods required to be considered as an executable piece of code.
+ * All nodes that represent an Oracle object.
  */
 public interface OracleObject extends PLSQLNode {
 
   /**
-   * Gets the name of the executable: named thus to match {@link net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration}.
+   * Gets the name of the Oracle object.
    *
-   * @return a String representing the name of the method
+   * @return a String representing the name of the Oracle object.
    */
   String getObjectName();
 }

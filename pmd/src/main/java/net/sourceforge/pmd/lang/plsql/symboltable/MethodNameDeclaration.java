@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
+import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
    private final static Logger LOGGER = Logger.getLogger(MethodNameDeclaration.class.getName()); 

@@ -272,7 +272,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
 	/**
 	 * Set the comma separated list of input paths to process for source files.
-	 * @param inputUri Input URI
+	 * @param inputPaths The comma separated list.
 	 */
 	public void setInputPaths(String inputPaths) {
 		this.inputPaths = inputPaths;
@@ -289,7 +289,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
 	/**
 	 * Set the input URI to process for source code objects.
-	 * @param inputUri he comma separated list.
+	 * @param inputUri a single URI
 	 */
 	public void setInputUri(String inputUri) {
 		this.inputUri = inputUri;

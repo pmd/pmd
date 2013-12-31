@@ -6,7 +6,7 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=true,VISITOR=true,TRACK_TOKENS=true,NODE_PREFIX=AST,NODE_EXTENDS=net.sourceforge.pmd.lang.ast.AbstractNode,NODE_FACTORY= */
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.lang.plsql.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.AbstractNode implements PLSQLNode {
   protected Object value;

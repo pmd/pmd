@@ -20,7 +20,7 @@ import net.sourceforge.pmd.stat.DataPoint;
  * does the rest for you.
  */
 public class ExcessiveLengthRule extends AbstractStatisticalPLSQLRule {
-    private final static Logger LOGGER = Logger.getLogger(ExcessiveLengthRule.class.getPackage().getName()); 
+    private final static Logger LOGGER = Logger.getLogger(ExcessiveLengthRule.class.getName()); 
     private Class<?> nodeClass;
 
     public ExcessiveLengthRule(Class<?> nodeClass) {

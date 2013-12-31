@@ -1,8 +1,11 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
-import java.util.logging.Logger;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserConstants;
@@ -10,15 +13,12 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserTokenManager;
 import net.sourceforge.pmd.lang.plsql.ast.Token;
 
 public class PLSQLTokenizer implements Tokenizer{
-  private final static String CLASS_NAME = PLSQLTokenizer.class.getCanonicalName();
-
-  private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
+    private final static Logger LOGGER = Logger.getLogger(PLSQLTokenizer.class.getName());
 
     public static final String IGNORE_COMMENTS = "ignore_comments";
     public static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
     public static final String IGNORE_LITERALS = "ignore_literals";
 
-    private boolean isInitialised = false;
     private boolean ignoreComments;
     private boolean ignoreIdentifiers;
     private boolean ignoreLiterals;
@@ -53,16 +53,11 @@ public class PLSQLTokenizer implements Tokenizer{
          */
 	public void tokenize (SourceCode sourceCode, Tokens tokenEntries )
 	{
-            long encounteredTokens = 0, addedTokens = 0;
-            //Initialisation has to go here because the System properties are not set up when the Tokenizer is constructed 
-	    if (!isInitialised) {
-			setProperties(System.getProperties());
-			isInitialised =  true;
+        long encounteredTokens = 0, addedTokens = 0;
 
-			System.err.println("PLSQLTokenizer: ignoreComments=="+ignoreComments);
-			System.err.println("PLSQLTokenizer: ignoreIdentifiers=="+ignoreIdentifiers);
-			System.err.println("PLSQLTokenizer: ignoreLiterals=="+ignoreLiterals);
-		}
+		LOGGER.fine("PLSQLTokenizer: ignoreComments=="+ignoreComments);
+		LOGGER.fine("PLSQLTokenizer: ignoreIdentifiers=="+ignoreIdentifiers);
+		LOGGER.fine("PLSQLTokenizer: ignoreLiterals=="+ignoreLiterals);
 
 		String fileName = sourceCode.getFileName();
 		StringBuilder sb = sourceCode.getCodeBuffer();

@@ -6,7 +6,7 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=true,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY= */
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.lang.plsql.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class ASTName extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode{
   public ASTName(int id) {

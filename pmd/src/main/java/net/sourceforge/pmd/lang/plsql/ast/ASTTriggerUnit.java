@@ -6,8 +6,9 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=true,VISITOR=true,TRACK_TOKENS=true,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY= */
 package net.sourceforge.pmd.lang.plsql.ast;
 
-public class ASTTriggerUnit extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode
-implements ExecutableCode, OracleObject {
+import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+
+public class ASTTriggerUnit extends AbstractPLSQLNode implements ExecutableCode, OracleObject, DFAGraphMethod {
   public ASTTriggerUnit(int id) {
     super(id);
   }
@@ -30,6 +31,11 @@ implements ExecutableCode, OracleObject {
   public String getMethodName() {
      return getImage();
    }
+
+  @Override
+  public String getName() {
+      return getMethodName();
+  }
 
   /**
    * Gets the name of the Oracle Object.

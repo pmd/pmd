@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTQualifiedName;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
+import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class ClassNameDeclaration extends AbstractNameDeclaration {
 

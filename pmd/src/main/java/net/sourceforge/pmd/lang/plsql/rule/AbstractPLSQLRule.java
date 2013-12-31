@@ -15,8 +15,8 @@ import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
 public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor, ImmutableLanguage
 {
-    private final static Logger LOGGER = Logger.getLogger(AbstractPLSQLRule.class.getPackage().getName()); 
-    private final static String CLASS_PATH = AbstractPLSQLRule.class.getName(); 
+    private final static Logger LOGGER = Logger.getLogger(AbstractPLSQLRule.class.getName()); 
+    private final static String CLASS_NAME = AbstractPLSQLRule.class.getName(); 
 
   
     public AbstractPLSQLRule() {
@@ -30,12 +30,12 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     }
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
-        LOGGER.entering(CLASS_PATH,"visitAll");
+        LOGGER.entering(CLASS_NAME,"visitAll");
 	for (Object element : nodes) {
 	    ASTInput node = (ASTInput) element;
 	    visit(node, ctx);
 	}
-        LOGGER.exiting(CLASS_PATH,"visitAll");
+        LOGGER.exiting(CLASS_NAME,"visitAll");
     }
 
     /**
@@ -118,13 +118,13 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
 	@Override
 	public Object visit(ASTPackageSpecification node, Object data) {
-		LOGGER.entering(CLASS_PATH, "visit(ASTPackageSpecification)");
+		LOGGER.entering(CLASS_NAME, "visit(ASTPackageSpecification)");
 		return visit((PLSQLNode) node, data);
 	}
 
 	@Override
 	public Object visit(ASTPackageBody node, Object data) {
-		LOGGER.entering(CLASS_PATH, "visit(ASTPackageBody)");
+		LOGGER.entering(CLASS_NAME, "visit(ASTPackageBody)");
 		return visit((PLSQLNode) node, data);
 	}
 
@@ -145,7 +145,7 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
 	@Override
 	public Object visit(ASTProgramUnit node, Object data) {
-		LOGGER.entering(CLASS_PATH, "visit(ASTProgramUnit)");
+		LOGGER.entering(CLASS_NAME, "visit(ASTProgramUnit)");
 		return visit((PLSQLNode) node, data);
 	}
 
@@ -656,13 +656,13 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
 	@Override
 	public Object visit(ASTTypeMethod node, Object data) {
-		LOGGER.entering(CLASS_PATH, "visit(ASTTypeMethod)");
+		LOGGER.entering(CLASS_NAME, "visit(ASTTypeMethod)");
 		return visit((PLSQLNode) node, data);
 	}
 
 	@Override
 	public Object visit(ASTTypeSpecification node, Object data) {
-		LOGGER.entering(CLASS_PATH, "visit(ASTTypeSpecification)");
+		LOGGER.entering(CLASS_NAME, "visit(ASTTypeSpecification)");
 		return visit((PLSQLNode) node, data);
 	}
 
@@ -688,13 +688,13 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
 	@Override
 	public Object visit(ASTTriggerUnit node, Object data) {
-		LOGGER.entering(CLASS_PATH, "visit(ASTTriggerUnit)");
+		LOGGER.entering(CLASS_NAME, "visit(ASTTriggerUnit)");
 		return visit((PLSQLNode) node, data);
 	}
 
 	@Override
 	public Object visit(ASTTriggerTimingPointSection node, Object data) {
-		LOGGER.entering(CLASS_PATH, "visit(ASTTriggerTimingPointSection)");
+		LOGGER.entering(CLASS_NAME, "visit(ASTTriggerTimingPointSection)");
 		return visit((PLSQLNode) node, data);
 	}
 
@@ -777,7 +777,7 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
    * Treat all Executable Code 
    */
   public Object visit(ExecutableCode node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ExecutableCode)");
+        LOGGER.entering(CLASS_NAME,"visit(ExecutableCode)");
         return visit((PLSQLNode) node, data); 
     }
 }

@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  *         first inner nested scope.
  */
 public class SequenceChecker {
-    private final static Logger LOGGER = Logger.getLogger(SequenceChecker.class.getPackage().getName()); 
+    private final static Logger LOGGER = Logger.getLogger(SequenceChecker.class.getName());
 
     /*
      * Element of logical structure of brace nodes.

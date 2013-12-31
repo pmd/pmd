@@ -3,8 +3,7 @@ package net.sourceforge.pmd.lang.java.ast;
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     public Object visit(JavaNode node, Object data) {
-        node.childrenAccept(this, data);
-        return null;
+        return node.childrenAccept(this, data);
     }
 
     public Object visit(ASTExtendsList node, Object data) {

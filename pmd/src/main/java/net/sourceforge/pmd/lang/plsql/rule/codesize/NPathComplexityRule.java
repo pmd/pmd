@@ -38,8 +38,8 @@ import net.sourceforge.pmd.util.NumericConstants;
  * @author Jason Bennett
  */
 public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
-    private final static String CLASS_PATH =  NPathComplexityRule.class.getCanonicalName() ;
-    private final static Logger LOGGER = Logger.getLogger(NPathComplexityRule.class.getPackage().getName()); 
+    private final static String CLASS_NAME =  NPathComplexityRule.class.getCanonicalName() ;
+    private final static Logger LOGGER = Logger.getLogger(NPathComplexityRule.class.getName()); 
     
     public NPathComplexityRule() {
 	super();
@@ -47,7 +47,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
     }
 
     private int complexityMultipleOf(PLSQLNode node, int npathStart, Object data) {
-        LOGGER.entering(CLASS_PATH,"complexityMultipleOf(SimpleNode)");
+        LOGGER.entering(CLASS_NAME,"complexityMultipleOf(SimpleNode)");
 
 	int npath = npathStart;
 	PLSQLNode n;
@@ -57,12 +57,12 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	    npath *= (Integer) n.jjtAccept(this, data);
 	}
 
-        LOGGER.exiting(CLASS_PATH,"complexityMultipleOf(SimpleNode)", npath);
+        LOGGER.exiting(CLASS_NAME,"complexityMultipleOf(SimpleNode)", npath);
 	return npath;
     }
 
     private int complexitySumOf(PLSQLNode node, int npathStart, Object data) {
-        LOGGER.entering(CLASS_PATH,"complexitySumOf(SimpleNode)", npathStart );
+        LOGGER.entering(CLASS_NAME,"complexitySumOf(SimpleNode)", npathStart );
 
 	int npath = npathStart;
 	PLSQLNode n;
@@ -72,13 +72,13 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	    npath += (Integer) n.jjtAccept(this, data);
 	}
 
-        LOGGER.exiting(CLASS_PATH,"complexitySumOf(SimpleNode)", npath);
+        LOGGER.exiting(CLASS_NAME,"complexitySumOf(SimpleNode)", npath);
 	return npath;
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTMethodDeclaration)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTMethodDeclaration)");
 	int npath = complexityMultipleOf(node, 1, data);
 
 	DataPoint point = new DataPoint();
@@ -88,13 +88,13 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	addDataPoint(point);
 
         LOGGER.finest("NPath complexity:  " + npath + " for line " + node.getBeginLine() +", column " + node.getBeginColumn());
-        LOGGER.exiting(CLASS_PATH,"visit(ASTMethodDeclaration)", npath);
+        LOGGER.exiting(CLASS_NAME,"visit(ASTMethodDeclaration)", npath);
 	return Integer.valueOf(npath);
     }
 
     @Override
     public Object visit(ASTProgramUnit node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTProgramUnit)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTProgramUnit)");
 	int npath = complexityMultipleOf(node, 1, data);
 
 	DataPoint point = new DataPoint();
@@ -104,13 +104,13 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	addDataPoint(point);
 
         LOGGER.finest("NPath complexity:  " + npath + " for line " + node.getBeginLine() +", column " + node.getBeginColumn());
-        LOGGER.exiting(CLASS_PATH,"visit(ASTProgramUnit)", npath);
+        LOGGER.exiting(CLASS_NAME,"visit(ASTProgramUnit)", npath);
 	return Integer.valueOf(npath);
     }
 
     @Override
     public Object visit(ASTTypeMethod node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTTypeMethod)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTTypeMethod)");
 	int npath = complexityMultipleOf(node, 1, data);
 
 	DataPoint point = new DataPoint();
@@ -120,13 +120,13 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	addDataPoint(point);
 
         LOGGER.finest("NPath complexity:  " + npath + " for line " + node.getBeginLine() +", column " + node.getBeginColumn());
-        LOGGER.exiting(CLASS_PATH,"visit(ASTTypeMethod)", npath);
+        LOGGER.exiting(CLASS_NAME,"visit(ASTTypeMethod)", npath);
 	return Integer.valueOf(npath);
     }
 
     @Override
     public Object visit(ASTTriggerUnit node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTTriggerUnit)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTTriggerUnit)");
 	int npath = complexityMultipleOf(node, 1, data);
 
 	DataPoint point = new DataPoint();
@@ -136,13 +136,13 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	addDataPoint(point);
 
         LOGGER.finest("NPath complexity:  " + npath + " for line " + node.getBeginLine() +", column " + node.getBeginColumn());
-        LOGGER.exiting(CLASS_PATH,"visit(ASTTriggerUnit)", npath);
+        LOGGER.exiting(CLASS_NAME,"visit(ASTTriggerUnit)", npath);
 	return Integer.valueOf(npath);
     }
 
     @Override
     public Object visit(ASTTriggerTimingPointSection node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTTriggerTimingPointSection)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTTriggerTimingPointSection)");
 	int npath = complexityMultipleOf(node, 1, data);
 
 	DataPoint point = new DataPoint();
@@ -152,21 +152,21 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	addDataPoint(point);
 
         LOGGER.finest("NPath complexity:  " + npath + " for line " + node.getBeginLine() +", column " + node.getBeginColumn());
-        LOGGER.exiting(CLASS_PATH,"visit(ASTTriggerTimingPointSection)", npath);
+        LOGGER.exiting(CLASS_NAME,"visit(ASTTriggerTimingPointSection)", npath);
 	return Integer.valueOf(npath);
     }
 
     @Override
     public Object visit(PLSQLNode node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(SimpleNode)");
+        LOGGER.entering(CLASS_NAME,"visit(SimpleNode)");
 	int npath = complexityMultipleOf(node, 1, data);
-        LOGGER.exiting(CLASS_PATH,"visit(SimpleNode)" ,npath );
+        LOGGER.exiting(CLASS_NAME,"visit(SimpleNode)" ,npath );
 	return Integer.valueOf(npath);
     }
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTIfStatement)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTIfStatement)");
 	// (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
 	int boolCompIf = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
@@ -211,13 +211,13 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	    complexity += (Integer) element.jjtAccept(this, data);
 	}
 
-        LOGGER.exiting(CLASS_PATH,"visit(ASTIfStatement)", (boolCompIf + complexity));
+        LOGGER.exiting(CLASS_NAME,"visit(ASTIfStatement)", (boolCompIf + complexity));
 	return Integer.valueOf(boolCompIf + complexity);
     }
 
     @Override
     public Object visit(ASTElsifClause node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTElsifClause)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTElsifClause)");
 	// (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
 	int boolCompIf = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
@@ -247,13 +247,13 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	    complexity += (Integer) element.jjtAccept(this, data);
 	}
 
-        LOGGER.exiting(CLASS_PATH,"visit(ASTElsifClause)", (boolCompIf + complexity));
+        LOGGER.exiting(CLASS_NAME,"visit(ASTElsifClause)", (boolCompIf + complexity));
 	return Integer.valueOf(boolCompIf + complexity);
     }
 
     @Override
     public Object visit(ASTElseClause node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTElseClause)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTElseClause)");
 	// (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
 	int complexity = 0;
@@ -272,52 +272,52 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	    complexity += (Integer) element.jjtAccept(this, data);
 	}
 
-        LOGGER.exiting(CLASS_PATH,"visit(ASTElseClause)", complexity);
+        LOGGER.exiting(CLASS_NAME,"visit(ASTElseClause)", complexity);
 	return Integer.valueOf(complexity);
     }
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTWhileStatement)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTWhileStatement)");
 	// (npath of while + bool_comp of while + 1) * npath of next
 
 	int boolCompWhile = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
 	Integer nPathWhile = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
 
-        LOGGER.exiting(CLASS_PATH,"visit(ASTWhileStatement)", (boolCompWhile + nPathWhile + 1));
+        LOGGER.exiting(CLASS_NAME,"visit(ASTWhileStatement)", (boolCompWhile + nPathWhile + 1));
 	return Integer.valueOf(boolCompWhile + nPathWhile + 1);
     }
 
     @Override
     public Object visit(ASTLoopStatement node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTLoopStatement)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTLoopStatement)");
 	// (npath of do + bool_comp of do + 1) * npath of next
 
 	int boolCompDo = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
 	Integer nPathDo = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
 
-        LOGGER.exiting(CLASS_PATH,"visit(ASTLoopStatement)" ,(boolCompDo + nPathDo + 1)  );
+        LOGGER.exiting(CLASS_NAME,"visit(ASTLoopStatement)" ,(boolCompDo + nPathDo + 1)  );
 	return Integer.valueOf(boolCompDo + nPathDo + 1);
     }
 
     @Override
     public Object visit(ASTForStatement node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTForStatement)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTForStatement)");
 	// (npath of for + bool_comp of for + 1) * npath of next
 
 	int boolCompFor = sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
 
 	Integer nPathFor = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
 
-        LOGGER.exiting(CLASS_PATH,"visit(ASTForStatement)",(boolCompFor + nPathFor + 1)  );
+        LOGGER.exiting(CLASS_NAME,"visit(ASTForStatement)",(boolCompFor + nPathFor + 1)  );
 	return Integer.valueOf(boolCompFor + nPathFor + 1);
     }
 
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTReturnStatement)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTReturnStatement)");
 	// return statements are valued at 1, or the value of the boolean expression
 
 	ASTExpression expr = node.getFirstChildOfType(ASTExpression.class);
@@ -336,13 +336,13 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	if (boolCompReturn > 0) {
 	    return Integer.valueOf(boolCompReturn);
 	}
-        LOGGER.entering(CLASS_PATH,"visit(ASTReturnStatement)", NumericConstants.ONE);
+        LOGGER.entering(CLASS_NAME,"visit(ASTReturnStatement)", NumericConstants.ONE);
 	return NumericConstants.ONE;
     }
 
     @Override
     public Object visit(ASTCaseWhenClause node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTCaseWhenClause)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTCaseWhenClause)");
 	// bool_comp of switch + sum(npath(case_range))
 
 	int boolCompSwitch = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
@@ -358,13 +358,13 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	}
 	// add in npath of last label
 	npath += caseRange;
-        LOGGER.exiting(CLASS_PATH,"visit(ASTCaseWhenClause)", (boolCompSwitch + npath) );
+        LOGGER.exiting(CLASS_NAME,"visit(ASTCaseWhenClause)", (boolCompSwitch + npath) );
 	return Integer.valueOf(boolCompSwitch + npath);
     }
 
     @Override
     public Object visit(ASTCaseStatement node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTCaseStatement)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTCaseStatement)");
 	// bool_comp of switch + sum(npath(case_range))
 
 	int boolCompSwitch = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
@@ -380,7 +380,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	}
 	// add in npath of last label
 	npath += caseRange;
-        LOGGER.exiting(CLASS_PATH,"visit(ASTCaseStatement)", (boolCompSwitch + npath));
+        LOGGER.exiting(CLASS_NAME,"visit(ASTCaseStatement)", (boolCompSwitch + npath));
 	return Integer.valueOf(boolCompSwitch + npath);
     }
 
@@ -402,9 +402,9 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
      * @return complexity of the boolean expression
      */
     public static int sumExpressionComplexity(ASTExpression expr) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTExpression)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTExpression)");
 	if (expr == null) {
-          LOGGER.exiting(CLASS_PATH,"visit(ASTExpression)", 0);
+          LOGGER.exiting(CLASS_NAME,"visit(ASTExpression)", 0);
 	    return 0;
 	}
 
@@ -423,7 +423,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 	    children--;
 	}
 
-        LOGGER.exiting(CLASS_PATH,"visit(ASTExpression)", children );
+        LOGGER.exiting(CLASS_NAME,"visit(ASTExpression)", children );
 	return children;
     }
 

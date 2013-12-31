@@ -6,13 +6,16 @@ package net.sourceforge.pmd.lang.plsql.symboltable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+
 public class Search {
     private final static Logger LOGGER = Logger.getLogger(Search.class.getName()); 
 
-    private NameOccurrence occ;
+    private PLSQLNameOccurrence occ;
     private NameDeclaration decl;
 
-    public Search(NameOccurrence occ) {
+    public Search(PLSQLNameOccurrence occ) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
         }
@@ -37,7 +40,7 @@ public class Search {
         return decl;
     }
 
-    private NameDeclaration searchUpward(NameOccurrence nameOccurrence, Scope scope) {
+    private NameDeclaration searchUpward(PLSQLNameOccurrence nameOccurrence, Scope scope) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("checking scope " + scope + " for name occurrence " + nameOccurrence);
         }
@@ -51,7 +54,7 @@ public class Search {
             if (LOGGER.isLoggable(Level.FINEST)) {
         	LOGGER.finest("found it!");
             }
-            return scope.addVariableNameOccurrence(nameOccurrence);
+            return scope.addNameOccurrence(nameOccurrence);
         }
         return null;
     }

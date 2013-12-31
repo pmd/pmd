@@ -6,8 +6,9 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=true,VISITOR=true,TRACK_TOKENS=true,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY= */
 package net.sourceforge.pmd.lang.plsql.ast;
 
-public class ASTTypeMethod extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode
-implements ExecutableCode {
+import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+
+public class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode, DFAGraphMethod {
   public ASTTypeMethod(int id) {
     super(id);
   }
@@ -33,6 +34,11 @@ implements ExecutableCode {
       return md.getImage();
     }
     return null;
+  }
+
+  @Override
+  public String getName() {
+      return getMethodName();
   }
 }
 /* JavaCC - OriginalChecksum=657963d26263c637fa18391bce82f1c1 (do not edit this line) */

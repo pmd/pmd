@@ -19,7 +19,7 @@ public class PMDParameters {
 	private String rulesets;
 	
 	@Parameter(names = {"-uri", "-u"}, description = "Database URI for sources", required = false)
-	 String uri;
+	private String uri;
 	
 	@Parameter(names = {"-dir", "-d"}, description = "root directory for sources", required = false)
 	private String sourceDir;
@@ -64,8 +64,7 @@ public class PMDParameters {
 	private String reportfile = null;
 	
 	@Parameter(names = {"-version","-v"}, description = "specify version of a language PMD should use")
-	//private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion();
-	private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion() ; //version is dependent on language
+	private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion();
 	
 	@Parameter(names = {"-language", "-l"}, description = "specify a language PMD should use")
 	private String language = Language.getDefaultLanguage().getTerseName();

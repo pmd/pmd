@@ -7,8 +7,7 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
 
 	@Override
 	public Object visit(PLSQLNode node, Object data) {
-		node.childrenAccept(this, data);
-		return null;
+		return node.childrenAccept(this, data);
 	}
 
 	@Override

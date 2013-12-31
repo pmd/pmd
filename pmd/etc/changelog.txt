@@ -40,6 +40,8 @@ CPD Command Line Changes:
   Added option "--exclude" to exclude specific files from being scanned (thanks to Delmas for patch #272)
 
 Upgrade to javacc 5.0 (see patch #1109 Patch to build with Javacc 5.0)
+PLSQL support added - thanks to Stuart Turton. See also http://pldoc.sourceforge.net/
+DBURI as DataSource possible - directly scan plsql code stored within the database
 
 API Change - Deprecated APIs:
     net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode: getBody(int index) deprecated, use getBody() instead

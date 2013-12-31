@@ -3,11 +3,13 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
-
-import java.util.logging.Logger;
-import java.util.List;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
     private final static Logger LOGGER = Logger.getLogger(OccurrenceFinder.class.getName()); 
@@ -19,8 +21,8 @@ public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
         // is null/not null?
         NameDeclaration decl = null;
 
-        List<NameOccurrence> names = nameFinder.getNames();
-        for (NameOccurrence occ: names) {
+        List<PLSQLNameOccurrence> names = nameFinder.getNames();
+        for (PLSQLNameOccurrence occ: names) {
             Search search = new Search(occ);
             if (decl == null) {
                 // doing the first name lookup

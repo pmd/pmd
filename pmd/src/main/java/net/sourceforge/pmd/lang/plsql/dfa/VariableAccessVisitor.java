@@ -24,9 +24,9 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantInitializer;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
-import net.sourceforge.pmd.lang.plsql.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.plsql.symboltable.VariableNameDeclaration;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.plsql.symboltable.PLSQLNameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * @author raik, Sven Jacob
@@ -86,10 +86,10 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
     private List<VariableAccess> markUsages(DataFlowNode inode) {
 	// undefinitions was once a field... seems like it works fine as a local
 	List<VariableAccess> undefinitions = new ArrayList<VariableAccess>();
-	Set<Map<VariableNameDeclaration, List<NameOccurrence>>> variableDeclarations = collectDeclarations(inode);
-	for (Map<VariableNameDeclaration, List<NameOccurrence>> declarations : variableDeclarations) {
-	    for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : declarations.entrySet()) {
-		VariableNameDeclaration vnd = entry.getKey();
+	Set<Map<NameDeclaration, List<NameOccurrence>>> variableDeclarations = collectDeclarations(inode);
+	for (Map<NameDeclaration, List<NameOccurrence>> declarations : variableDeclarations) {
+	    for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : declarations.entrySet()) {
+		NameDeclaration vnd = entry.getKey();
 
 		if (vnd.getNode().jjtGetParent() instanceof ASTFormalParameter) {
 		    // no definition/undefinition/references for parameters
@@ -109,15 +109,15 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
 	return undefinitions;
     }
 
-    private Set<Map<VariableNameDeclaration, List<NameOccurrence>>> collectDeclarations(DataFlowNode inode) {
-	Set<Map<VariableNameDeclaration, List<NameOccurrence>>> decls = new HashSet<Map<VariableNameDeclaration, List<NameOccurrence>>>();
-	Map<VariableNameDeclaration, List<NameOccurrence>> varDecls;
+    private Set<Map<NameDeclaration, List<NameOccurrence>>> collectDeclarations(DataFlowNode inode) {
+	Set<Map<NameDeclaration, List<NameOccurrence>>> decls = new HashSet<Map<NameDeclaration, List<NameOccurrence>>>();
+	Map<NameDeclaration, List<NameOccurrence>> varDecls;
 	for (int i = 0; i < inode.getFlow().size(); i++) {
 	    DataFlowNode n = inode.getFlow().get(i);
 	    if (n instanceof StartOrEndDataFlowNode) {
 		continue;
 	    }
-	    varDecls = ((PLSQLNode)n.getNode()).getScope().getVariableDeclarations();
+	    varDecls = ((PLSQLNode)n.getNode()).getScope().getDeclarations();
 	    if (!decls.contains(varDecls)) {
 		decls.add(varDecls);
 	    }
@@ -125,7 +125,8 @@ public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
 	return decls;
     }
 
-    private void addAccess(NameOccurrence occurrence, DataFlowNode inode) {
+    private void addAccess(NameOccurrence occ, DataFlowNode inode) {
+        PLSQLNameOccurrence occurrence = (PLSQLNameOccurrence)occ;
 	if (occurrence.isOnLeftHandSide()) {
 	    this.addVariableAccess(occurrence.getLocation(), new VariableAccess(VariableAccess.DEFINITION, occurrence
 		    .getImage()), inode.getFlow());

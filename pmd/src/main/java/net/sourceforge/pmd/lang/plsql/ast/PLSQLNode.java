@@ -4,9 +4,10 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.plsql.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
-public interface PLSQLNode extends Node {
+public interface PLSQLNode extends Node, ScopedNode {
 
 	/** Accept the visitor. **/
 	public abstract Object jjtAccept(PLSQLParserVisitor visitor, Object data);

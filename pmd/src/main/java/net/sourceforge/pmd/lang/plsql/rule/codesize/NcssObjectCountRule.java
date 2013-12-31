@@ -19,8 +19,8 @@ import net.sourceforge.pmd.util.NumericConstants;
  * @author Stuart Turton
  */
 public class NcssObjectCountRule extends AbstractNcssCountRule {
-    private final static String CLASS_PATH =NcssObjectCountRule.class.getName(); 
-    private final static Logger LOGGER = Logger.getLogger(NcssObjectCountRule.class.getPackage().getName()); 
+    private final static String CLASS_NAME =NcssObjectCountRule.class.getName(); 
+    private final static Logger LOGGER = Logger.getLogger(NcssObjectCountRule.class.getName()); 
 
     /**
      * Count type declarations. This includes Oracle Objects. 
@@ -34,7 +34,7 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
 
     //@Override
     public Object visit(OracleObject node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(NcssObjectCountRule)");
+        LOGGER.entering(CLASS_NAME,"visit(NcssObjectCountRule)");
         //Treat Schema-level ProgramUnits as Oracle Objects, otherwise as subprograms
         if (node.jjtGetParent() instanceof  ASTGlobal ) {
             LOGGER.fine("Schema-level");
@@ -78,13 +78,13 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTFieldDeclaration)");
+        LOGGER.entering(CLASS_NAME,"visit(ASTFieldDeclaration)");
 	return NumericConstants.ONE;
     }
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
-        LOGGER.entering(CLASS_PATH,"visit(getViolationParameters)");
+        LOGGER.entering(CLASS_NAME,"visit(getViolationParameters)");
         LOGGER.fine("Node Count ==" + point.getScore() );
 	return new String[] { String.valueOf((int) point.getScore()) };
     }

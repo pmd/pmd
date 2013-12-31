@@ -250,6 +250,8 @@
     </organization>
     <properties>
         <javacc.version>5.0</javacc.version>
+        <surefire.version>2.16</surefire.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- This value actually differs to maven default expectation(src/site/xdoc/)
             as we need to pre process those and we place them instead in target/generated-xdocs/.
@@ -297,7 +299,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
+                <version>${surefire.version}</version>
                 <configuration>
                     <forkMode>once</forkMode>
                     <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
@@ -311,25 +313,6 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>add-javacc-generated-sources</id>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/javacc</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
@@ -431,6 +414,26 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-javacc-generated-sources</id>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/javacc</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- As Clover can be quite an hassle, know that you can skip 
                 it by using the following option when running mvn: $ mvn clean -Dmaven.clover.skip=true 
                 site -->
@@ -736,7 +739,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.12.4</version>
+                <version>${surefire.version}</version>
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>

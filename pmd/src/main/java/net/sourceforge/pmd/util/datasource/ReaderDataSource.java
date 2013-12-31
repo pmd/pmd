@@ -13,10 +13,6 @@ import org.apache.commons.io.input.ReaderInputStream;
  * DataSource implementation to read data from a Reader.
  */
 public class ReaderDataSource implements DataSource {
-	
-
-  
-  
     /**
      * Reader 
      */
@@ -31,7 +27,7 @@ public class ReaderDataSource implements DataSource {
     private String dataSourceName;
 
     /**
-     * @param Create the DataSource from the Reader.
+     * Create the DataSource from the Reader.
      */
     public ReaderDataSource(Reader reader, String dataSourceName) {
         this.reader = reader;
@@ -40,13 +36,16 @@ public class ReaderDataSource implements DataSource {
 
     /**
      *  Convert the Reader into an InputStream.
+     *  <p>
+     *  <strong>Note:</strong> This uses the default encoding.
+     *  </p>
      * 
      * @return Derived InputStream
      * @throws IOException 
      */
     @Override
     public InputStream getInputStream() throws IOException {
-        return new ReaderInputStream(reader) ;
+        return new ReaderInputStream(reader);
     }
 
     /**

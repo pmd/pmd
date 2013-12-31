@@ -25,18 +25,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
-
-//import net.sourceforge.pmd.lang.plsql.ast.ASTAnnotationTypeDeclaration;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTBlockStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTCatchStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTClassOrInterfaceBodyDeclaration;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTClassOrInterfaceDeclaration;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTEnumDeclaration;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTFinallyStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTSwitchStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTTryStatement;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTTypeParameters;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
  * Visitor for scope creation.
@@ -193,7 +182,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     public Object visit(ASTTriggerTimingPointSection node, Object data) {
 	createMethodScope(node);
 	//Treat a Timing Point Section like a packaged FUNCTION or PROCEDURE
-	node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(node));
+	node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(node));
 	cont(node);
 	return data;
     }
@@ -292,7 +281,7 @@ public Object visit(ASTTypeMethod node, Object data) {
 	// A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level 
 	try
 	{
-	  node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
+	  node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(md));
 	}
 	catch (Exception e)
 	{
@@ -330,7 +319,7 @@ public Object visit(ASTTypeMethod node, Object data) {
 	// A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level 
 	try
 	{
-	  node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
+	  node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(md));
 	}
 	catch (Exception e)
 	{

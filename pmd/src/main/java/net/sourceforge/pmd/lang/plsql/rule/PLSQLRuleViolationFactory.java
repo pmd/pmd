@@ -24,7 +24,9 @@ public final class PLSQLRuleViolationFactory extends AbstractRuleViolationFactor
     }
     
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {
-		return null;	// FIXME
+        ParametricRuleViolation<Node> violation = new ParametricRuleViolation<Node>(rule, ruleContext, node, message);
+        violation.setLines(beginLine, endLine);
+		return violation;
 	}
 }
 

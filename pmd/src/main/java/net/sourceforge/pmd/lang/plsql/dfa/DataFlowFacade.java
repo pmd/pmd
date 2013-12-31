@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCompoundTriggerBlock;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-//import net.sourceforge.pmd.lang.plsql.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
@@ -23,7 +22,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
  */
 public class DataFlowFacade extends PLSQLParserVisitorAdapter {
     private final static String CLASS_PATH= DataFlowFacade.class.getCanonicalName();
-    private final static Logger LOGGER = Logger.getLogger(DataFlowFacade.class.getPackage().getName()); 
+    private final static Logger LOGGER = Logger.getLogger(DataFlowFacade.class.getName()); 
 
     private StatementAndBraceFinder sbf;
     private VariableAccessVisitor vav;

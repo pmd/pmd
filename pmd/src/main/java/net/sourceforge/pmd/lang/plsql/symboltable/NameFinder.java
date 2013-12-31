@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 public class NameFinder {
 
-    private List<NameOccurrence> names = new ArrayList<NameOccurrence>();
+    private List<PLSQLNameOccurrence> names = new ArrayList<PLSQLNameOccurrence>();
 
     public NameFinder(ASTPrimaryExpression node) {
     	Node simpleNode = node.jjtGetChild(0);
@@ -29,7 +29,7 @@ public class NameFinder {
           //    add(new NameOccurrence(prefix, "super"));
           //} else 
           if (prefix.usesSelfModifier()) {
-              add(new NameOccurrence(prefix, "this"));
+              add(new PLSQLNameOccurrence(prefix, "this"));
           }
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
@@ -37,24 +37,24 @@ public class NameFinder {
         }
     }
 
-    public List<NameOccurrence> getNames() {
+    public List<PLSQLNameOccurrence> getNames() {
         return names;
     }
 
     private void checkForNameChild(Node node) {
         if (node.getImage() != null) {
-            add(new NameOccurrence((PLSQLNode) node, node.getImage()));
+            add(new PLSQLNameOccurrence((PLSQLNode) node, node.getImage()));
         }
         if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTName) {
             ASTName grandchild = (ASTName) node.jjtGetChild(0);
             for (StringTokenizer st = new StringTokenizer(grandchild.getImage(), "."); st.hasMoreTokens();) {
-                add(new NameOccurrence(grandchild, st.nextToken()));
+                add(new PLSQLNameOccurrence(grandchild, st.nextToken()));
             }
         }
         if (node instanceof ASTPrimarySuffix) {
             ASTPrimarySuffix suffix = (ASTPrimarySuffix) node;
             if (suffix.isArguments()) {
-                NameOccurrence occurrence = names.get(names.size() - 1);
+                PLSQLNameOccurrence occurrence = names.get(names.size() - 1);
                 occurrence.setIsMethodOrConstructorInvocation();
                 ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
                 occurrence.setArgumentCount(args.getArgumentCount());
@@ -66,10 +66,10 @@ public class NameFinder {
         }
     }
 
-    private void add(NameOccurrence name) {
+    private void add(PLSQLNameOccurrence name) {
         names.add(name);
         if (names.size() > 1) {
-            NameOccurrence qualifiedName = names.get(names.size() - 2);
+            PLSQLNameOccurrence qualifiedName = names.get(names.size() - 2);
             qualifiedName.setNameWhichThisQualifies(name);
         }
     }
@@ -78,7 +78,7 @@ public class NameFinder {
     @Override
     public String toString() {
     	StringBuilder result = new StringBuilder();
-        for (NameOccurrence occ: names) {
+        for (PLSQLNameOccurrence occ: names) {
             result.append(occ.getImage());
         }
         return result.toString();

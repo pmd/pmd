@@ -145,12 +145,9 @@ public class MainFrame
         long t1;
         if (ActionCommands.COMPILE_ACTION.equals(command)) {
             try {
-		LanguageVersion languageVersion = getLanguageVersion() ;
-		System.out.println(languageVersion.getName() );
                 t0 = System.currentTimeMillis();
-                model.commitSource(sourcePanel.getSourceCode(), languageVersion );
+                model.commitSource(sourcePanel.getSourceCode(), getLanguageVersion() );
                 t1 = System.currentTimeMillis();
-		System.out.println("compiled" );
                 setStatus(NLS.nls("MAIN.FRAME.COMPILATION.TOOK") + " " + (t1 - t0) + " ms");
             } catch (ParseException exc) {
                 setStatus(NLS.nls("MAIN.FRAME.COMPILATION.PROBLEM") + " " + exc.toString());

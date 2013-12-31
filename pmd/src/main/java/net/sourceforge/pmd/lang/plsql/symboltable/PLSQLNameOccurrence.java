@@ -8,12 +8,13 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class NameOccurrence {
+public class PLSQLNameOccurrence implements NameOccurrence {
 
     private PLSQLNode location;
     private String image;
-    private NameOccurrence qualifiedName;
+    private PLSQLNameOccurrence qualifiedName;
 
     private boolean isMethodOrConstructorInvocation;
     private int argumentCount;
@@ -21,7 +22,7 @@ public class NameOccurrence {
     private final static String THIS = "this";
     private final static String SUPER = "super";
 
-    public NameOccurrence(PLSQLNode location, String image) {
+    public PLSQLNameOccurrence(PLSQLNode location, String image) {
         this.location = location;
         this.image = image;
     }
@@ -42,11 +43,11 @@ public class NameOccurrence {
         return isMethodOrConstructorInvocation;
     }
 
-    public void setNameWhichThisQualifies(NameOccurrence qualifiedName) {
+    public void setNameWhichThisQualifies(PLSQLNameOccurrence qualifiedName) {
         this.qualifiedName = qualifiedName;
     }
 
-    public NameOccurrence getNameForWhichThisIsAQualifier() {
+    public PLSQLNameOccurrence getNameForWhichThisIsAQualifier() {
         return qualifiedName;
     }
 
@@ -217,8 +218,8 @@ public class NameOccurrence {
 
     @Override
     public boolean equals(Object o) {
-    	if (o instanceof NameOccurrence) {
-    		NameOccurrence n = (NameOccurrence) o;
+    	if (o instanceof PLSQLNameOccurrence) {
+    		PLSQLNameOccurrence n = (PLSQLNameOccurrence) o;
     		return n.getImage().equals(getImage());
     		}
     	return false;

@@ -6,8 +6,9 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=true,VISITOR=true,TRACK_TOKENS=true,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY= */
 package net.sourceforge.pmd.lang.plsql.ast;
 
-public class ASTTriggerTimingPointSection extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode
-implements ExecutableCode {
+import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+
+public class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements ExecutableCode, DFAGraphMethod {
   public ASTTriggerTimingPointSection(int id) {
     super(id);
   }
@@ -28,6 +29,11 @@ implements ExecutableCode {
    */
   public String getMethodName() {
       return getImage() ;
+  }
+
+  @Override
+  public String getName() {
+      return getMethodName();
   }
 }
 /* JavaCC - OriginalChecksum=ee9e04c0fd739f2d5d61c4eef34c70f6 (do not edit this line) */

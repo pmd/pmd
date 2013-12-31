@@ -28,17 +28,17 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public final static String DEFAULT_RENDERER = "text";
 
-	@Parameter(names = "--language", description = "sources code language. Default value is "
+	@Parameter(names = "--language", description = "Sources code language. Default value is "
 			+ DEFAULT_LANGUAGE, required = false, converter = LanguageConverter.class)
 	private Language language;
 
-	@Parameter(names = "--minimum-tokens", description = "minimum", required = true)
+	@Parameter(names = "--minimum-tokens", description = "The minimum token length which should be reported as a duplicate.", required = true)
 	private int minimumTileSize;
 
-	@Parameter(names = "--skip-duplicate-files", description = "ignore multiple copies of files of the same name and length in comparison", required = false)
+	@Parameter(names = "--skip-duplicate-files", description = "Ignore multiple copies of files of the same name and length in comparison", required = false)
 	private boolean skipDuplicates;
 
-	@Parameter(names = "--format", description = "report format. Default value is "
+	@Parameter(names = "--format", description = "Report format. Default value is "
 		+ DEFAULT_RENDERER, required = false)
 	private String rendererName;
 
@@ -48,7 +48,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 	 */
 	private Renderer renderer;
 
-	@Parameter(names = "--encoding", description = "characterset to use when processing files", required = false)
+	@Parameter(names = "--encoding", description = "Characterset to use when processing files", required = false)
 	private String encoding;
 
 	@Parameter(names = "--ignore-literals", description = "Ignore number values and string contents when comparing text", required = false)
@@ -60,7 +60,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = "--ignore-annotations", description = "Ignore language annotations when comparing text", required = false)
 	private boolean ignoreAnnotations;
 
-	@Parameter(names = "--files", variableArity = true, description = "list of files and directories to process", required = false)
+	@Parameter(names = "--files", variableArity = true, description = "List of files and directories to process", required = false)
 	private List<String> files;
 
 	@Parameter(names = "--exclude", variableArity = true, description = "Files to be excluded from CPD check", required = false)
@@ -69,7 +69,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
         private boolean nonRecursive;
 
-	@Parameter(names = "--uri", variableArity = true, description = "URI to process", required = false)
+	@Parameter(names = "--uri", description = "URI to process", required = false)
 	private String uri;
 
 	@Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)

@@ -4,14 +4,14 @@
 package net.sourceforge.pmd.util.database;
 
 import java.net.MalformedURLException;
-import java.sql.SQLException;
-import java.sql.Connection;
 import java.sql.CallableStatement;
 import java.sql.Clob;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -187,10 +187,9 @@ public class DBMSMetadata
    * @param password Database password 
    * @param dbURI {@link  DBURI } containing JDBC connection plus parameters to specify source code.
    * @throws SQLException on failing to create JDBC connection
-   * @throws MalformedURLException on attempting to connect with malformed JDBC URL
    * @throws ClassNotFoundException on failing to locate the JDBC driver class.
    */
-  public DBMSMetadata(DBURI dbURI) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, MalformedURLException
+  public DBMSMetadata(DBURI dbURI) throws SQLException, ClassNotFoundException
   { 
 
     this.dburi = dbURI;
@@ -275,7 +274,6 @@ public class DBMSMetadata
 
     return (java.sql.Types.CLOB == returnType) 
 	    ? ((Clob) result).getCharacterStream()
-	    //: new java.io.StringReader((String) result)
 	    : new java.io.StringReader( result.toString() )
 	    ;
   }

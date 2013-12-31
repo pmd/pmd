@@ -5,9 +5,9 @@ package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration {
    private final static Logger LOGGER = Logger.getLogger(VariableNameDeclaration.class.getName()); 
@@ -19,7 +19,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
     @Override
     public Scope getScope() {
 	try {
-	  return node.getScope().getEnclosingClassScope();
+	  return node.getScope().getEnclosingScope(ClassScope.class);
 	}
 	catch (Exception e)
 	{
@@ -29,19 +29,6 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 		             );
           return null; //@TODO SRT a cop-out 
 	}
-    }
-
-
-    public AccessNode getAccessNodeParent() {
-	if (node.jjtGetParent() instanceof ASTFormalParameter) {
-	    return (AccessNode) node.jjtGetParent();
-	}
-	  LOGGER.severe("getAccessNodeParent: "
-		              + node.getClass().getCanonicalName() + " -> "
-		              + node.jjtGetParent().getClass().getCanonicalName() + " -> "
-		              + node.jjtGetParent().jjtGetParent().getClass().getCanonicalName()
-		             );
-	return (AccessNode) node.jjtGetParent().jjtGetParent();
     }
 
     public ASTVariableOrConstantDeclaratorId getDeclaratorId() {

@@ -1,9 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- * @author Stuart Turton sturton@users.sourceforge.net
  */
 package net.sourceforge.pmd.cpd;
 
+import java.util.Properties;
+
+/**
+ * 
+ * @author Stuart Turton sturton@users.sourceforge.net
+ */
 public class PLSQLLanguage extends AbstractLanguage {
 	public PLSQLLanguage() {
 		super(new PLSQLTokenizer()
@@ -16,5 +21,10 @@ public class PLSQLLanguage extends AbstractLanguage {
 		      ,".typ" ,".tyb" // Object Types
 		      ,".tps" ,".tpb" // Object Types
 		     );
+	}
+
+	@Override
+	public final void setProperties(Properties properties) {
+	    ((PLSQLTokenizer)getTokenizer()).setProperties(properties);
 	}
 }

@@ -4,21 +4,19 @@
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
+import net.sourceforge.pmd.lang.symboltable.AbstractScope;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ClassScope extends AbstractScope {
    private final static Logger LOGGER = Logger.getLogger(ClassScope.class.getName()); 
-
-    protected Map<ClassNameDeclaration, List<NameOccurrence>> classNames = new HashMap<ClassNameDeclaration, List<NameOccurrence>>();
-    protected Map<MethodNameDeclaration, List<NameOccurrence>> methodNames = new HashMap<MethodNameDeclaration, List<NameOccurrence>>();
-    protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
 
     // FIXME - this breaks given sufficiently nested code
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
@@ -46,15 +44,19 @@ public class ClassScope extends AbstractScope {
         anonymousInnerClassCounter.set(v + 1);
     }
 
-    public void addDeclaration(VariableNameDeclaration variableDecl) {
-        if (variableNames.containsKey(variableDecl)) {
-            throw new RuntimeException(variableDecl + " is already in the symbol table");
+    @Override
+    public void addDeclaration(NameDeclaration declaration) {
+        if (declaration instanceof VariableNameDeclaration && getDeclarations().keySet().contains(declaration)) {
+            throw new RuntimeException(declaration + " is already in the symbol table");
         }
-        variableNames.put(variableDecl, new ArrayList<NameOccurrence>());
+        super.addDeclaration(declaration);
     }
 
-    public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
+    @Override
+    public NameDeclaration addNameOccurrence(NameOccurrence occ) {
+        PLSQLNameOccurrence occurrence = (PLSQLNameOccurrence)occ;
         NameDeclaration decl = findVariableHere(occurrence);
+        Map<MethodNameDeclaration, List<NameOccurrence>> methodNames = getMethodDeclarations();
         if (decl != null && occurrence.isMethodOrConstructorInvocation()) {
             List<NameOccurrence> nameOccurrences = methodNames.get(decl);
             if (nameOccurrences == null) {
@@ -68,6 +70,7 @@ public class ClassScope extends AbstractScope {
             }
 
         } else if (decl != null && !occurrence.isThisOrSuper()) {
+            Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = getVariableDeclarations();
             List<NameOccurrence> nameOccurrences = variableNames.get(decl);
             if (nameOccurrences == null) {
                 // TODO may be a class name
@@ -83,17 +86,15 @@ public class ClassScope extends AbstractScope {
     }
 
     public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
-        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
-        Applier.apply(f, variableNames.keySet().iterator());
-        return f.getUsed();
+        return getDeclarations(VariableNameDeclaration.class);
     }
 
     public Map<MethodNameDeclaration, List<NameOccurrence>> getMethodDeclarations() {
-        return methodNames;
+        return getDeclarations(MethodNameDeclaration.class);
     }
 
     public Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations() {
-        return classNames;
+        return getDeclarations(ClassNameDeclaration.class);
     }
 
     public ClassScope getEnclosingClassScope() {
@@ -104,17 +105,11 @@ public class ClassScope extends AbstractScope {
         return this.className;
     }
 
-    public void addDeclaration(MethodNameDeclaration decl) {
-        methodNames.put(decl, new ArrayList<NameOccurrence>());
-    }
-
-    public void addDeclaration(ClassNameDeclaration decl) {
-        classNames.put(decl, new ArrayList<NameOccurrence>());
-    }
-
-    protected NameDeclaration findVariableHere(NameOccurrence occurrence) {
+    protected NameDeclaration findVariableHere(PLSQLNameOccurrence occurrence) {
+        Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
+        Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
-            if (variableNames.isEmpty() && methodNames.isEmpty()) {
+            if (variableDeclarations.isEmpty() && methodDeclarations.isEmpty()) {
                 // this could happen if you do this:
                 // public class Foo {
                 //  private String x = super.toString();
@@ -129,14 +124,14 @@ public class ClassScope extends AbstractScope {
             // }
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
-            if (!variableNames.isEmpty()) {
-                return variableNames.keySet().iterator().next();
+            if (!variableDeclarations.isEmpty()) {
+                return variableDeclarations.keySet().iterator().next();
             }
-            return methodNames.keySet().iterator().next();
+            return methodDeclarations.keySet().iterator().next();
         }
 
         if (occurrence.isMethodOrConstructorInvocation()) {
-            for (MethodNameDeclaration mnd: methodNames.keySet()) {
+            for (MethodNameDeclaration mnd: methodDeclarations.keySet()) {
                 if (mnd.getImage().equals(occurrence.getImage())) {
                     int args = occurrence.getArgumentCount();
                     if (args == mnd.getParameterCount() || (mnd.isVarargs() && args >= mnd.getParameterCount() - 1)) {
@@ -166,14 +161,17 @@ public class ClassScope extends AbstractScope {
             images.add(clipClassName(occurrence.getImage()));
         }
         ImageFinderFunction finder = new ImageFinderFunction(images);
-        Applier.apply(finder, variableNames.keySet().iterator());
+        Applier.apply(finder, getVariableDeclarations().keySet().iterator());
         return finder.getDecl();
     }
 
     public String toString() {
         String res = "ClassScope (" + className + "): ";
+        Map<ClassNameDeclaration, List<NameOccurrence>> classNames = getClassDeclarations();
+        Map<MethodNameDeclaration, List<NameOccurrence>> methodNames = getMethodDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = getVariableDeclarations();
         if (!classNames.isEmpty()) {
-            res += "(" + glomNames(classNames.keySet()) + ")";
+            res += "(" + classNames.keySet() + ")";
         }
         if (!methodNames.isEmpty()) {
             for (MethodNameDeclaration mnd: methodNames.keySet()) {
@@ -184,7 +182,7 @@ public class ClassScope extends AbstractScope {
             }
         }
         if (!variableNames.isEmpty()) {
-            res += "(" + glomNames(variableNames.keySet()) + ")";
+            res += "(" + variableNames.keySet() + ")";
         }
         return res;
     }

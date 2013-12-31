@@ -1,14 +1,21 @@
 <?xml version="1.0"?>
-<ruleset name="My custom rules"
+<ruleset name="Tom Kyte's Despair"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+<description>
+    Rules based on Thomas Kyte's recommendations on http://asktom.oracle.com/ and http://tkyte.blogspot.com/.
+</description>
+
 <rule  language="plsql" name="TomKytesDespair"
+  since="5.1"
   message="WHEN OTHERS THEN NULL - when you do this, Tom Kyte cries"
-  class="net.sourceforge.pmd.lang.rule.XPathRule">
+  class="net.sourceforge.pmd.lang.rule.XPathRule"
+  externalInfoUrl="${pmd.website.baseurl}/rules/plsql/TomKytesDespair.html#TomKytesDespair">
   <description>
   "WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR 
   </description>
+  <priority>3</priority>
   <properties>
     <property name="xpath">
     <value>
@@ -19,7 +26,6 @@
     </value>
     </property>
   </properties>
-  <priority>3</priority>
   <example>
 <![CDATA[
 CREATE OR REPLACE PACKAGE BODY update_planned_hrs

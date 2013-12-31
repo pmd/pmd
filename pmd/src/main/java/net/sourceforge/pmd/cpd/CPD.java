@@ -6,7 +6,6 @@ package net.sourceforge.pmd.cpd;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -15,18 +14,16 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.sourceforge.pmd.util.database.DBURI;
 
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
+import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 
 import org.apache.commons.io.FilenameUtils;
 
 public class CPD {
-        private final static String CLASS_NAME = CPD.class.getCanonicalName();
-
-        private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
+    private final static Logger LOGGER = Logger.getLogger(CPD.class.getName()); 
 
 	private CPDConfiguration configuration;
 
@@ -54,10 +51,6 @@ public class CPD {
         return matchAlgorithm.matches();
     }
 
-    public void add(File file) throws IOException {
-        add(1, file);
-    }
-
     public void addAllInDirectory(String dir) throws IOException {
         addDirectory(dir, false);
     }
@@ -68,7 +61,7 @@ public class CPD {
 
     public void add(List<File> files) throws IOException {
         for (File f: files) {
-            add(files.size(), f);
+            add(f);
         }
     }
 
@@ -83,7 +76,7 @@ public class CPD {
 
     private Set<String> current = new HashSet<String>();
 
-    private void add(int fileCount, File file) throws IOException {
+    public void add(File file) throws IOException {
 
         if (configuration.isSkipDuplicates()) {
             // TODO refactor this thing into a separate class
@@ -105,10 +98,8 @@ public class CPD {
             return;
         }
 
-        listener.addedFile(fileCount, file);
         SourceCode sourceCode = configuration.sourceCodeFor(file);
-        configuration.tokenizer().tokenize(sourceCode, tokens);
-        source.put(sourceCode.getFileName(), sourceCode);
+        add(sourceCode);
     }
 
     public void add(DBURI dburi) throws IOException {
@@ -122,21 +113,14 @@ public class CPD {
 
         for (SourceObject sourceObject: sourceObjectList )
         {
-
           // Add DBURI as a faux-file 
-          String falseFilePath =  String.format("/Database/%s/%s/%s"
-                                                        ,sourceObject.getSchema() 
-                                                        ,sourceObject.getType() 
-                                                        ,sourceObject.getName() 
-                                                      ) ;
+          String falseFilePath =  sourceObject.getPseudoFileName();
           LOGGER.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
 
-          listener.addedFile(1, new File(falseFilePath));
           SourceCode sourceCode = configuration.sourceCodeFor( dbmsmetadata.getSourceCode(sourceObject) 
                                                                ,falseFilePath
                                                              );
-          configuration.tokenizer().tokenize(sourceCode, tokens);
-          source.put(sourceCode.getFileName(), sourceCode);
+          add(sourceCode);
         }
       }
       catch (Exception sqlException)
@@ -145,56 +129,12 @@ public class CPD {
       }
     }
 
-    public void add(SourceCode sourceCode) {
-
-      try 
-      {
-
-          listener.addedFile(1, new File(sourceCode.getFileName()));
-          configuration.tokenizer().tokenize(sourceCode, tokens);
-          source.put(sourceCode.getFileName(), sourceCode);
-      }
-      catch (Exception sqlException)
-      {
-        throw new RuntimeException("Problem with SourceCode: "+sourceCode.getFileName() , sqlException ) ; 
-      }
+    private void add(SourceCode sourceCode) throws IOException {
+        listener.addedFile(1,  new File(sourceCode.getFileName()));
+        configuration.tokenizer().tokenize(sourceCode, tokens);
+        source.put(sourceCode.getFileName(), sourceCode);
     }
-
-    public List<SourceCode> getSourceCodeFor(DBURI dburi) throws IOException {
-
-      List<SourceCode> sourceCodeList = new ArrayList<SourceCode>();
-      try 
-      {
-        DBMSMetadata dbmsmetadata = new DBMSMetadata(dburi) ; 
-
-        List<SourceObject> sourceObjectList = dbmsmetadata.getSourceObjectList ();
-        LOGGER.log(Level.FINER, "Located {0} database source objects", sourceObjectList.size());
-
-        for (SourceObject sourceObject: sourceObjectList )
-        {
-
-          // Add DBURI as a faux-file 
-          String falseFilePath =  String.format("/Database/%s/%s/%s"
-                                                        ,sourceObject.getSchema() 
-                                                        ,sourceObject.getType() 
-                                                        ,sourceObject.getName() 
-                                                      ) ;
-          LOGGER.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
-
-          SourceCode sourceCode = configuration.sourceCodeFor( dbmsmetadata.getSourceCode(sourceObject) 
-                                                               ,falseFilePath
-                                                             );
-          sourceCodeList.add(sourceCode);
-        }
-
-        return sourceCodeList;
-      }
-      catch (Exception sqlException)
-      {
-        throw new RuntimeException("Problem returning SourceCode from DBURI: "+dburi , sqlException ) ; 
-      }
-    }
-
+    
 	public static void main(String[] args) {
 		CPDCommandLineInterface.main(args);
 	}

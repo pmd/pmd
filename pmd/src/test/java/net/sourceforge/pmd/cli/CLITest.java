@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.FileUtil;
@@ -36,24 +37,11 @@ public class CLITest {
 	public static void setUp() throws Exception {
 		System.setProperty(PMDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
 		File testOuputDir = new File(TEST_OUPUT_DIRECTORY);
-		testOuputDir.mkdirs();
-		//assertTrue("failed to create output directory for test:" + testOuputDir.getAbsolutePath(),);
+		if (!testOuputDir.exists()) {
+		    assertTrue("failed to create output directory for test:" + testOuputDir.getAbsolutePath(), testOuputDir.mkdirs());
+		}
 	}
 
-        private String argsToString (String[] args)
-        {
-          StringBuilder sb = new StringBuilder();
-          for (String arg: args)
-          {
-            if (sb.length() > 0)
-            {
-              sb.append(" ");
-            }
-            sb.append("\"").append(arg.replace("\"", "\\")).append("\"") ;
-          }
-          return (sb.toString() );
-        }
-        
         private void createTestOutputFile(String filename) {
 		try {
 			PrintStream out = new PrintStream(new FileOutputStream(filename));
@@ -103,13 +91,7 @@ public class CLITest {
 	}
 
 	private void runPMDWith(String[] args) {
-		try {
-			PMD.main(args);
-		} catch (Exception e) {
-                        System.err.println("runPMDWith Exception for "+argsToString(args) );
-			e.printStackTrace(System.err);
-			fail("Exception occurs while running PMD CLI with following args:" + argsToString(args) );
-		}
+		PMD.main(args);
 	}
 
 	private void checkStatusCode() {

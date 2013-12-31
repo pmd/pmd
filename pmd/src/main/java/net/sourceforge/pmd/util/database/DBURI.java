@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.util.database;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -139,7 +140,7 @@ private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
    * @throws URISyntaxException
    * @throws Exception
    */
-  public DBURI(String string) throws URISyntaxException, Exception 
+  public DBURI(String string) throws URISyntaxException
   {
     /*
      * A JDBC URL is an opaque URL and does not have a query.
@@ -219,7 +220,11 @@ private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
       }
 
     } catch (URISyntaxException ex) {
-      throw new Exception ( String.format("Problem generating DBURI from \"%s\"", string), ex);
+      URISyntaxException uriException = new URISyntaxException(string, "Problem generating DBURI.");
+      uriException.initCause(ex);
+      throw uriException;
+    } catch (IOException e) {
+        throw new RuntimeException(e);
     }
   }
 
@@ -450,10 +455,10 @@ private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
   /**
    * Populate the URI and query collections from the original string
    * 
-   * @throws Exception
    * @throws URISyntaxException 
+   * @throws IOException 
    */
-  private void setFields() throws Exception, URISyntaxException {
+  private void setFields() throws URISyntaxException, IOException {
     if (url.startsWith("jdbc:"))
     {
       //java.net.URI is intended for "normal" URLs

@@ -13,7 +13,7 @@ The Code Size ruleset contains rules that find problems related to code size or 
       since="5.1"
       message="The method {0}() has an NPath complexity of {1}"
       class="net.sourceforge.pmd.lang.plsql.rule.codesize.NPathComplexityRule"
-      externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#NPathComplexity">
+      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#NPathComplexity">
    <description>
 The NPath complexity of a method is the number of acyclic execution paths through that method.
 A threshold of 200 is generally considered the point where measures should be taken to reduce 
@@ -64,7 +64,7 @@ END;
  		 since="5.1"
 		 message="Avoid really long methods ({0} lines found)."
        class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveMethodLengthRule"
-       externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#ExcessiveMethodLength">
+       externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessiveMethodLength">
    <description>
 When methods are excessively long this usually indicates that the method is doing more than its
 name/signature might suggest. They also become challenging for others to digest since excessive 
@@ -92,7 +92,7 @@ END;
  		 since="5.1"
        message="Avoid long parameter lists."
        class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveParameterListRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#ExcessiveParameterList">
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessiveParameterList">
    <description>
 Methods with numerous parameters are a challenge to maintain, especially if most of them share the
 same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
@@ -123,7 +123,7 @@ END;
  		 since="5.1"
        message="Avoid really long Oracle object specifications and bodies ({0} lines found)."
        class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveObjectLengthRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#ExcessiveObjectLength">
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessiveObjectLength">
    <description>
 Excessive object line lengths are usually indications that the object may be burdened with excessive 
 responsibilities that could be provided by other objects. In breaking these methods
@@ -159,7 +159,7 @@ END;
  		 since="5.1"
        message="Avoid really long Object Type specifications ({0} lines found)."
        class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveTypeLengthRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#ExcessiveTypeLength">
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessiveTypeLength">
    <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive 
 responsibilities that could be provided by external classes or functions. In breaking these methods
@@ -194,7 +194,7 @@ END;
  		 since="5.1"
        message="Avoid really long Object Type and Package bodies ({0} lines found)."
        class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageBodyLengthRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#ExcessivePackageBodyLength">
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessivePackageBodyLength">
    <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive 
 responsibilities that could be provided by external classes or functions. In breaking these methods
@@ -230,7 +230,7 @@ END;
  		 since="5.1"
 		 message="Avoid really long Package Specifications ({0} lines found)."
        class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageSpecificationLengthRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#ExcessivePackageSpecificationLength">
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessivePackageSpecificationLength">
    <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive 
 responsibilities that could be provided by external classes or functions. In breaking these methods
@@ -253,14 +253,12 @@ END;
    </example>
  </rule>
 
--->
-
     <rule 	name="CyclomaticComplexity"
       language="plsql"
     			since="5.1"
       		message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
 	      	class="net.sourceforge.pmd.lang.plsql.rule.codesize.CyclomaticComplexityRule"
-	      	externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#CyclomaticComplexity">
+	      	externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#CyclomaticComplexity">
    <description>
    		<![CDATA[
 Complexity directly affects maintenance costs is determined by the number of decision points in a method 
@@ -397,7 +395,7 @@ END;
     since="5.1"
     message="This class has a bunch of public methods and attributes"
     class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePublicCountRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#ExcessivePublicCount">
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessivePublicCount">
     <description>
 Classes with large numbers of public methods and attributes require disproportionate testing efforts
 since combinational side effects grow rapidly and increase risk. Refactoring these classes into
@@ -428,7 +426,7 @@ public class Foo {
     		 since="5.1"
 		 message="Too many fields"
           class="net.sourceforge.pmd.lang.plsql.rule.codesize.TooManyFieldsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#TooManyFields">
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#TooManyFields">
       <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
 possibly through grouping related fields in new objects.  For example, a class with individual 
@@ -453,7 +451,7 @@ END pkg_too_many_fields;
       language="plsql"
    since="5.1"
    class="net.sourceforge.pmd.lang.plsql.rule.codesize.NcssMethodCountRule"
-   externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#NcssMethodCount">
+   externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#NcssMethodCount">
     <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
@@ -476,7 +474,7 @@ END;
       language="plsql"
    since="5.1"
    class="net.sourceforge.pmd.lang.plsql.rule.codesize.NcssObjectCountRule"
-   externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#NcssObjectCount">
+   externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#NcssObjectCount">
     <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given Oracle object. NCSS ignores comments, and counts actual statements. Using this algorithm,
@@ -501,7 +499,7 @@ CREATE OR REPLACE PACKAGE pkg_
       language="plsql"
    since="5.1"
    class="net.sourceforge.pmd.lang.plsql.rule.codesize.NcssConstructorCountRule"
-   externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#NcssConstructorCount">
+   externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#NcssConstructorCount">
     <description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
@@ -532,7 +530,7 @@ public class Foo extends Bar {
         since="5.1"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="This object has too many methods, consider refactoring it."
-        externalInfoUrl="http://pmd.sourceforge.net/snapshot/rules/plsql/codesize.html#TooManyMethods">
+        externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#TooManyMethods">
         <description>
             <![CDATA[
 A package or type with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to

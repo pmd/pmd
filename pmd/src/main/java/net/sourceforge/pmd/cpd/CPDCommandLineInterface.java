@@ -13,9 +13,7 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.util.database.DBURI;
 
 public class CPDCommandLineInterface {
-        private final static String CLASS_NAME = CPDCommandLineInterface.class.getCanonicalName();
-
-        private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
+    private final static Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
 
 	private static final int DUPLICATE_CODE_FOUND = 4;
 
@@ -123,18 +121,11 @@ public class CPDCommandLineInterface {
               }
 	}
 
-	private static void addSourceURIsToCPD(List<String> uris, CPD cpd) {
-            for (String uri : uris)
-            {
-              addSourceURIToCPD(uri, cpd) ;
-            }
-	}
-
 	private static final char EOL = '\n';
 	public static String buildUsageText() {
 		String helpText = "Usage:";
 
-		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv|vs)] [--skip-duplicate-files] " + EOL;
+		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv|vs)] [--skip-duplicate-files] [--non-recursive]" + EOL;
 		helpText += "i.e: " + EOL;
 
 		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files c:\\jdk14\\src\\java " + EOL;
