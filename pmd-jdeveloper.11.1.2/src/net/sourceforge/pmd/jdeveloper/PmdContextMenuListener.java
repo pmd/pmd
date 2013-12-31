@@ -1,13 +1,3 @@
-/* $Header: jdev/src/esdk-samples/sample/FirstSample/src/oracle/ide/extsamples/firstsample/SimpleContextMenuListener.java /main/5 2010/09/19 17:14:42 alfarouk Exp $ */
-
-/* Copyright (c) 2007, 2010, Oracle and/or its affiliates. 
-All rights reserved. */
-
-/*
-   MODIFIED    (MM/DD/YY)
-    bduff       08/16/07 - Reformat to JCS.
-    bduff       02/27/07 - Added copyright banner
- */
 package net.sourceforge.pmd.jdeveloper;
 
 import oracle.ide.Context;

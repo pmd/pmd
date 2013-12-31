@@ -36,8 +36,13 @@ public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
 	return (EcmascriptNode) jjtGetChild(index);
     }
 
+    public EcmascriptNode getBody() {
+        return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
+    }
+
+    @Deprecated // use getBody() instead
     public EcmascriptNode getBody(int index) {
-	return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
+	return getBody();
     }
 
     public boolean isClosure() {

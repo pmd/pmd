@@ -19,6 +19,30 @@ import org.junit.Test;
 
 public class ParserCornersTest extends ParserTst {
 
+    /**
+     * #1107 PMD 5.0.4 couldn't parse call of parent outer java class method from inner class
+     * @throws Exception any error
+     */
+    @Test
+    public void testInnerOuterClass() throws Exception {
+        parseJava17("/**\n" +
+        " * @author azagorulko\n" +
+        " *\n" +
+        " */\n" +
+        "public class TestInnerClassCallsOuterParent {\n" +
+        "\n" +
+        "    public void test() {\n" +
+        "        new Runnable() {\n" +
+        "            @Override\n" +
+        "            public void run() {\n" +
+        "                TestInnerClassCallsOuterParent.super.toString();\n" +
+        "            }\n" +
+        "        };\n" +
+        "    }\n" +
+        "}\n"
+        );
+    }
+
     @Test
     public final void testGetFirstASTNameImageNull() throws Throwable {
         parseJava14(ABSTRACT_METHOD_LEVEL_CLASS_DECL);

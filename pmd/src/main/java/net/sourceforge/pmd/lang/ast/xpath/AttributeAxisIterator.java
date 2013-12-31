@@ -98,8 +98,10 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     protected boolean isAttributeAccessor(Method method) {
 
         String methodName = method.getName();
+        boolean deprecated = method.getAnnotation(Deprecated.class) != null;
 
-        return (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType()
+        return !deprecated
+                && (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType()
                 || Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
                 && method.getParameterTypes().length == 0
                 && Void.TYPE != method.getReturnType()

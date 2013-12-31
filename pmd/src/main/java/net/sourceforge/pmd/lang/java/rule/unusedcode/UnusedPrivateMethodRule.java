@@ -18,7 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UnusedPrivateMethodRule extends AbstractJavaRule {
 
@@ -28,7 +29,7 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
             return data;
         }
 
-        Map<MethodNameDeclaration, List<NameOccurrence>> methods = ((ClassScope) node.getScope()).getMethodDeclarations();
+        Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class).getMethodDeclarations();
         for (MethodNameDeclaration mnd: findUnique(methods)) {
             List<NameOccurrence> occs = methods.get(mnd);
             if (!privateAndNotExcluded(mnd)) {
@@ -62,7 +63,7 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
         return unique;
     }
 
-    private boolean calledFromOutsideItself(List<NameOccurrence> occs, MethodNameDeclaration mnd) {
+    private boolean calledFromOutsideItself(List<NameOccurrence> occs, NameDeclaration mnd) {
         int callsFromOutsideMethod = 0;
         for (NameOccurrence occ: occs) {
             Node occNode = occ.getLocation();
@@ -85,7 +86,7 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
         return callsFromOutsideMethod == 0;
     }
 
-    private boolean privateAndNotExcluded(MethodNameDeclaration mnd) {
+    private boolean privateAndNotExcluded(NameDeclaration mnd) {
         ASTMethodDeclarator node = (ASTMethodDeclarator) mnd.getNode();
         return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.hasImageEqualTo("readObject") && !node.hasImageEqualTo("writeObject") && !node.hasImageEqualTo("readResolve") && !node.hasImageEqualTo("writeReplace");
     }

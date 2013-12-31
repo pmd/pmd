@@ -196,4 +196,24 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1111 False positive: Useless parentheses</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test { public String check() {
+return (absolute ? amount.abs() : amount).toString();
+} }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1102 False positive: shift operator parenthesis</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void foo() {
+        xCoord = e.getX() - (MainFrame.TILESIZE >> 1);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

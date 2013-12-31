@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META name="GENERATOR" content="IBM WebSphere Studio">
+<META http-equiv="Content-Style-Type" content="text/css">
+<LINK href="css/tigris.css" rel="stylesheet"
+	type="text/css">
+<TITLE>Use the PMD Plugin</TITLE>
+</HEAD>
+<BODY>
+<DIV class="app">
+<DIV class="h3">
+	<H3>How to use the PMD Plugin</H3>
+	<P>
+	There are two ways to use the PMD plugin :
+	</P>
+	<UL>
+		<LI>
+		<B>As an incremental builder</B> : PMD is activated for each project that as to be
+		checked. Then, each time a file is modified or added, PMD is executed against this
+		file.
+		</LI>
+		<LI>
+		<B>Manual execution</B> : PMD is executed on user's request against selected files, folders
+		or projects.
+		</LI>
+	</UL>
+	<P>
+	PMD violations are reported as markers. To show them, look in the "Tasks" view.
+	They appear as traditional problem markers at the rule corresponding level.
+	PMD rules have 5 levels and Eclipse markers have 3 levels. There is the correspondance :
+	</P>
+	<OL>
+		<LI>maps to Error level with high priority</LI>
+		<LI>maps to Error level
+		<LI>maps to Warning level with high priority</LI>
+		<LI>maps to Warning level</LI>
+		<LI>maps to Information level</LI>
+	</OL>
+	<P>
+	Finally, rules can be selected on a per project basis. The <A href="confpmd.html">PMD preferences</A> enable
+	a full configuration of rules to be used. Then only a subset of these rules can be
+	selected on each project.
+	</P>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Using PMD as an incremental builder</H4>
+		<P>
+		This is the simplest way to use PMD. On a project properties dialog, switch to the PMD
+		page. Click on the "Enable PMD" check box to activate PMD for this project.
+		</P>
+		<P>
+		When the dialog is closed, PMD is executed against all the files in the project.
+		Then, when a file is modified or added, PMD will be executed only on this file.
+		</P>
+		<BR>
+		<DIV class="infomessage">
+			<P>
+			This method works properly for moment because PMD doesn't check rules that involves a
+			set of files. This has possibly to be reworked if PMD evolves in this direction.
+			</P>
+		</DIV>
+	</DIV>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Using PMD manually</H4>
+		<P>
+		If you choose not to use PMD as an incremental builder, you can execute PMD once when you want
+		against a project, a folder or a file.
+		</P>
+		<P>
+		First, select projects, folders or files, then choose "Check Code With PMD" on the context menu.
+		A progress indicator informs about the execution of PMD.
+		</P>
+		<BR>
+		<DIV class="infomessage">
+			<P>
+			PMD markers created with this method are also "task markers". That is, a check box
+			is available to let you indicate which rules violations have been corrected. Then, you can use the
+			"Delete completed tasks" on the tasks view to delete them.
+			</P>
+		</DIV>
+		<BR>
+		<DIV class="infomessage">
+			<P>
+			You can also delete all the PMD markers from the tasks view by selecting
+			"Clear All PMD Violations" from the context menu of the tasks view.
+			This menu is also accessible from the context menu of a project, a folder or a file
+			to delete the corresponding violation markers.
+			</P>
+		</DIV>
+	</DIV>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Selecting rules</H4>
+		<P>
+		To select only a subset of the configured rules, just open the project properties.
+		Select the PMD category. A table shows all configured rules, with their priority
+		and description. Simply check or uncheck the check box at the left of each rule to
+		select or unselect it.
+		</P>
+		<P>
+		This feature is available what ever the utilization of PMD, either as an incremental
+		builder or manually.
+		</P>
+	</DIV>
+
+	<BR>
+	<DIV class="h4">
+		<H4>Viewing violations</H4>
+		<P>
+		Basically, violations are reported as "problem markers" so that they can be viewed in the task view
+		and in the impacted source file. This is the natural way in Eclipse to report problems, errors
+		or warning. If violations are not wanted in the task view, the plugin comes with a specific view that
+		shows only PMD violations. To open that view, select "PMD violations" in the "PMD" category when selecting
+		Window-&gt;Show view-&gt;Other...
+		</P>
+		<P>
+		To hide PMD violations in the task view, open its filter dialog and
+		deselect the "PMD Marker" and "PMD Task Marker".
+		</P>
+		<P>
+		The PMD violation view works like the tasks view. It shows all violations whith their main data :
+		</P>
+		<UL>
+			<LI>Priority - 1, 2, 3, 4 or 5</LI>
+			<LI>Description  - the message of the violation</LI>
+			<LI>Rule - the name of the rule that produced the violation</LI>
+			<LI>Class - the name of class which causes the violation</LI>
+			<LI>Package - the package of the class</LI>
+			<LI>Project - the project to which belong the class</LI>
+			<LI>Line - the location in the class source file of the violation</LI>
+		</UL>
+		<P>
+		By default, violations are ordered by their priority (1, 2...).
+		To change the ordering, click on the desired column. The ordering columns are Priority, Rule, Class,
+		Package and Project.
+		</P>
+		<P>
+		It is possible to filter violations, either by their prority level or by the resource type. To filter
+		violations by their prority level, use the 
+		<IMG border="0" src="images/pmd/prio_1.gif" width="16" height="16">, 
+		<IMG border="0" src="images/pmd/prio_2.gif" width="16" height="16">, 
+		<IMG border="0" src="images/pmd/prio_3.gif" width="16" height="16">, 
+		<IMG border="0" src="images/pmd/prio_4.gif" width="16" height="16"> and
+		<IMG border="0" src="images/pmd/prio_5.gif" width="16" height="16">
+		buttons to select the corresponding priority level. If the button is pressed, the corresponding violations are shown ;
+		if the button is released, the corresponding violations are hidden. The same effect is achieved by selecting
+		the desired filters in the view context menu "Filter by priority".
+		</P>
+		<P>
+		The violations can also be filtered by resource type. If the 
+		<IMG border="0" src="images/pmd/prj.gif" width="16" height="16">
+		button is selected, then only the violations for the current project are shown. If the
+		<IMG border="0" src="images/pmd/file.gif" width="16" height="16">
+		button is pressed, then only the violations for the selected file are shown. The same effect is achieved by selecting
+		the desired filter in the context menu "Filter by resource". The "Project" and "File" filters are mutually
+		exclusive.
+		</P>
+		<P>
+		For any violations, it is possible to delete them. Simply select the desired violations, then either press
+		the "Del" key, or select the "Remove violation" from the context menu or press the
+		<IMG border="0" src="images/pmd/remvio.gif" width="16" height="16">, 
+		in the view task bar.
+		</P>
+		<P>
+		Finally, it's possible to review the rule description and sample. Select a violation and choose "View rule"
+		in the context menu. Also, by double-clicking a violation, an editor on the targeted source file is open with
+		the cursor placed on the line pointed by the violation.
+		</P>
+	</DIV>
+</DIV>
+</DIV>
+</BODY>
+</HTML>

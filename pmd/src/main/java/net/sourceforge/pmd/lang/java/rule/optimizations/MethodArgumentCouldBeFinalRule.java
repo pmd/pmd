@@ -11,9 +11,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class MethodArgumentCouldBeFinalRule extends AbstractOptimizationRule {
 
@@ -27,10 +27,10 @@ public class MethodArgumentCouldBeFinalRule extends AbstractOptimizationRule {
     }
 
 	private void lookForViolation(Scope scope, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> decls = scope.getVariableDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> decls = scope.getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: decls.entrySet()) {
             VariableNameDeclaration var = entry.getKey();
-            AccessNode node = var.getAccessNodeParent();
+            AccessNode node = (AccessNode)var.getAccessNodeParent();
             if (!node.isFinal() && (node instanceof ASTFormalParameter) && !assigned(entry.getValue())) {
                 addViolation(data, (Node)node, var.getImage());
             }

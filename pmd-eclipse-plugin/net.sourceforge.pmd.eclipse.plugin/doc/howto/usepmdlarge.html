@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META http-equiv="Content-Style-Type" content="text/css">
+<LINK href="css/tigris.css" rel="stylesheet"
+	type="text/css">
+<TITLE>Use the PMD Plugin with large projects</TITLE>
+</HEAD>
+<BODY>
+<DIV class="app">
+<DIV class="h3">
+	<H3>How to use the PMD Plugin with large projects</H3>
+	<P>
+	When PMD is used with large projects, ie. project that holds a lot of source files,
+	performance issues can occur. The plugin brings two features that helps in such situations.
+	</P>
+	
+	<P>
+	The first feature is tight with the autobuild option : when PMD is set enabled for a project,
+	a dialog asks if the project should be rebuilt or not. If the project is a large project, then
+	it is probably best to answer no to this question. In that case, files will be checked
+	only when they will be updated or when new files will be added. Otherwise, the entire project
+	will be recompiled and PMD will run on each file : this could spend a long time.
+	</P>
+	
+	<P>
+	The second feature is the use of a working set. Working set is a feature brought by Eclipse.
+	A working set is a kind of filter specification. When you define a working set, you
+	select projects, source files or packages you want to include. Working sets are normally used
+	for resources views filtering. The PMD plugin uses also working set to determine if a file
+	should be checked or not.
+	</P>
+	
+	<P>
+	To enable working set filtering, open the project properties dialog and go to the PMD page.
+	Below the enabling checkbox, a text say if a working set is active for this project or not.
+	There are also two push buttons that let you define a working set for this project. The
+	"Deselect working set" button is used to delete the working set specification. The "Select
+	working set" button displays the standard dialog that let you choose and define a working set.
+	Only one working set can be selected.
+	</P>
+	
+	<P>
+	This feature is enabled even if PMD is disabled for this project. That means that when a
+	manual checking is requested (by selecting "Check code with PMD" in the context menu),
+	the working set filtering is still active.
+	</P>
+
+</DIV>
+</DIV>
+</BODY>
+</HTML>

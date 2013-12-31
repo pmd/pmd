@@ -62,13 +62,21 @@ public interface IPreferences {
     String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     boolean REVIEW_PMD_STYLE_ENABLED_DEFAULT = true;
     int MIN_TILE_SIZE_DEFAULT = 25;
-    String LOG_FILENAME_DEFAULT = "pmd-eclipse.log";
+    String LOG_FILENAME_DEFAULT = System.getProperty("user.home") + "/pmd-eclipse.log";
     Level LOG_LEVEL = Level.WARN;
-    String ACTIVE_RULES = "";
-    String ACTIVE_RENDERERS = "";
+
+    // default renderer
+    String ACTIVE_RENDERERS = "text";
     String ACTIVE_EXCLUSIONS = "";
     String ACTIVE_INCLUSIONS = "";
-  
+
+    boolean GLOBAL_RULE_MANAGEMENT_DEFAULT = false;
+
+    /**
+     * Get a comma-separated list of rules that are active by default.
+     */
+    String getDefaultActiveRules();
+
     boolean boolFor(String prefId);
     
     void boolFor(String prefId, boolean newValue);
@@ -79,7 +87,13 @@ public interface IPreferences {
     
     boolean isActiveRenderer(String rendererName);
     
+    boolean getGlobalRuleManagement();
+
+    void setGlobalRuleManagement(boolean b);
+
     Set<String> getActiveRuleNames();
+
+    Set<String> getInactiveRuleNames();
     
     void setActiveRuleNames(Set<String> ruleNames);
     

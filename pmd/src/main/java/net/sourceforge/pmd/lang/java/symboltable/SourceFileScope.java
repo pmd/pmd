@@ -1,72 +1,63 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.symboltable;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
 
-public class SourceFileScope extends AbstractScope {
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-    protected Map<ClassNameDeclaration, List<NameOccurrence>> classNames = new HashMap<ClassNameDeclaration, List<NameOccurrence>>();
+/**
+ * This scope is the outer most scope of a Java file.
+ * A Source File can contain one ore more classes.
+ */
+public class SourceFileScope extends AbstractJavaScope {
+
     private String packageImage;
 
     public SourceFileScope() {
         this("");
     }
 
-    public SourceFileScope(String image) {
-        this.packageImage = image;
-    }
-
-    public ClassScope getEnclosingClassScope() {
-        throw new RuntimeException("getEnclosingClassScope() called on SourceFileScope");
-    }
-
-    public MethodScope getEnclosingMethodScope() {
-        throw new RuntimeException("getEnclosingMethodScope() called on SourceFileScope");
+    public SourceFileScope(String packageImage) {
+        this.packageImage = packageImage;
     }
 
     public String getPackageName() {
         return packageImage;
     }
 
-    public SourceFileScope getEnclosingSourceFileScope() {
-        return this;
+    /**
+     * {@inheritDoc}
+     * @throws IllegalArgumentException if declaration is not a {@link ClassNameDeclaration}
+     */
+    @Override
+    public void addDeclaration(NameDeclaration declaration) {
+        if (!(declaration instanceof ClassNameDeclaration)) {
+            throw new IllegalArgumentException("A SourceFileScope can only contain classes.");
+        }
+        super.addDeclaration(declaration);
     }
 
-    public void addDeclaration(ClassNameDeclaration classDecl) {
-        classNames.put(classDecl, new ArrayList<NameOccurrence>());
-    }
-
-    public void addDeclaration(MethodNameDeclaration decl) {
-        throw new RuntimeException("SourceFileScope.addDeclaration(MethodNameDeclaration decl) called");
-    }
-
-    public void addDeclaration(VariableNameDeclaration decl) {
-        throw new RuntimeException("SourceFileScope.addDeclaration(VariableNameDeclaration decl) called");
-    }
-
+    /**
+     * Convenience method that casts the declarations to {@link ClassNameDeclaration}s.
+     * @see #getDeclarations()
+     * @return all class name declarations
+     */
     public Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations() {
-        return classNames;
-    }
-
-    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
-        throw new RuntimeException("PackageScope.getVariableDeclarations() called");
-    }
-
-    public NameDeclaration addVariableNameOccurrence(NameOccurrence occ) {
-        return null;
+        return getDeclarations(ClassNameDeclaration.class);
     }
 
     public String toString() {
-        return "SourceFileScope: " + glomNames(classNames.keySet());
+        return "SourceFileScope: " + glomNames(getClassDeclarations().keySet());
     }
 
-    protected NameDeclaration findVariableHere(NameOccurrence occ) {
+    protected NameDeclaration findVariableHere(JavaNameOccurrence occ) {
         ImageFinderFunction finder = new ImageFinderFunction(occ.getImage());
-        Applier.apply(finder, classNames.keySet().iterator());
+        Applier.apply(finder, getDeclarations().keySet().iterator());
         return finder.getDecl();
     }
-
 }

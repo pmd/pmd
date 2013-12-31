@@ -49,6 +49,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "OptimizableToArrayCall");
         //addRule(RULESET, "PositionalIteratorRule"); This rule does not yes exist
         addRule(RULESET, "PositionLiteralsFirstInComparisons");
+        addRule(RULESET, "PositionLiteralsFirstInCaseInsensitiveComparisons");
         addRule(RULESET, "PreserveStackTrace");
         addRule(RULESET, "ReturnEmptyArrayRatherThanNull");
         addRule(RULESET, "SimpleDateFormatNeedsLocale");
@@ -60,7 +61,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "SwitchStmtsShouldHaveDefault");
         addRule(RULESET, "TooFewBranchesForASwitchStatement");
         //addRule(RULESET, "TooManyHttpFilter"); This rule does not yet exist
-        //addRule(RULESET, "UncommentedEmptyConstructor"); See UncommentedEmptyConstructorRuleTest.java
+        addRule(RULESET, "UncommentedEmptyConstructor");
         addRule(RULESET, "UncommentedEmptyMethod");
         addRule(RULESET, "UnnecessaryLocalBeforeReturn");
         addRule(RULESET, "UnsynchronizedStaticDateFormatter");

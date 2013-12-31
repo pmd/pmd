@@ -8,10 +8,8 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
-//import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-//import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;

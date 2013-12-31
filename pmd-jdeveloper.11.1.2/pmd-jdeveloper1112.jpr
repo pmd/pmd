@@ -335,7 +335,7 @@
             <value n="javaOptions" v=""/>
             <value n="name" v="Default"/>
             <value n="programArguments" v="-clean"/>
-            <url n="targetURL" protocol="file" path="/C:/Oracle/11gJD11120/jdeveloper/jdev/bin/jdev.conf"/>
+            <value n="targetURL"/>
          </hash>
          <hash n="Verbose">
             <value n="custom" v="false"/>
@@ -352,7 +352,11 @@
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
       <list n="exportedReferences">
          <hash>
-            <value n="id" v="Pmd-4.3.jar"/>
+            <value n="id" v="Pmd-5.0.5.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <url n="id" path="../../../../Users/Torsten/AppData/Roaming/JDeveloper/system11.1.2.2.39.61.83.1/o.jdeveloper/PMD 5.0.5 Doku + Sourcen.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
@@ -360,18 +364,22 @@
          <list n="libraryDefinitions">
             <hash>
                <list n="classPath">
-                  <url path="lib/pmd-4.3.jar" jar-entry=""/>
+                  <url path="lib/pmd-5.0.5.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Pmd-4.3.jar"/>
-               <value n="id" v="Pmd-4.3.jar"/>
+               <value n="description" v="Pmd-5.0.5.jar"/>
+               <value n="id" v="Pmd-5.0.5.jar"/>
                <value n="locked" v="true"/>
             </hash>
          </list>
       </hash>
       <list n="libraryReferences">
          <hash>
-            <value n="id" v="Pmd-4.3.jar"/>
+            <value n="id" v="Pmd-5.0.5.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <url n="id" path="../../../../Users/Torsten/AppData/Roaming/JDeveloper/system11.1.2.2.39.61.83.1/o.jdeveloper/PMD 5.0.5 Doku + Sourcen.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>

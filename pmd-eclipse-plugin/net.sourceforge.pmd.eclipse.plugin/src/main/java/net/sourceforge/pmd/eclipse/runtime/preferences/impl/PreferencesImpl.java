@@ -41,7 +41,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.eclipse.core.IRuleSetManager;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferencesManager;
 import net.sourceforge.pmd.eclipse.ui.priority.PriorityDescriptor;
@@ -70,7 +74,9 @@ class PreferencesImpl implements IPreferences {
     private int 				minTileSize;
     private String 				logFileName;
     private Level 				logLevel;
+    private boolean             globalRuleManagement;
     private Set<String> 		activeRuleNames = new HashSet<String>();
+    private Set<String>         inactiveRuleNames = new HashSet<String>();
     private Set<String> 		activeRendererNames = new HashSet<String>();
     private Set<String> 		activeExclusionPatterns = new HashSet<String>();
     private Set<String> 		activeInclusionPatterns = new HashSet<String>();
@@ -229,6 +235,14 @@ class PreferencesImpl implements IPreferences {
         preferencesManager.storePreferences(this);
     }
 
+    public boolean getGlobalRuleManagement() {
+        return globalRuleManagement;
+    }
+
+    public void setGlobalRuleManagement(boolean b) {
+        globalRuleManagement = b;
+    }
+
 	public boolean isActive(String ruleName) {
 		return activeRuleNames.contains(ruleName);
 	}
@@ -237,17 +251,41 @@ class PreferencesImpl implements IPreferences {
 		return activeRendererNames.contains(rendererName);
 	}
 	
-	public void isActive(String ruleName, boolean flag) {
-		if (flag) {
+	public void isActive(String ruleName, boolean isActive) {
+		if (isActive) {
 			activeRuleNames.add(ruleName);
+			inactiveRuleNames.remove(ruleName);
 		} else {
 			activeRuleNames.remove(ruleName);
+			inactiveRuleNames.add(ruleName);
 		}
 	}
 
 	public Set<String> getActiveRuleNames() {
 		return activeRuleNames;
 	}
+
+    public Set<String> getInactiveRuleNames() {
+        return inactiveRuleNames;
+    }
+
+    /**
+     * Returns a comma-separated list of rules that are active by default.
+     * This contains all default rules of PMD.
+     */
+    public String getDefaultActiveRules() {
+        StringBuilder rules = new StringBuilder();
+        IRuleSetManager ruleSetManager = PMDPlugin.getDefault().getRuleSetManager();
+        for (RuleSet ruleSet: ruleSetManager.getDefaultRuleSets()) {
+            for (Rule rule : ruleSet.getRules()) {
+                if (rules.length() > 0) {
+                    rules.append(',');
+                }
+                rules.append(rule.getName());
+            }
+        }
+        return rules.toString();
+    }
 
 	public void setActiveRuleNames(Set<String> ruleNames) {
 		activeRuleNames = ruleNames;

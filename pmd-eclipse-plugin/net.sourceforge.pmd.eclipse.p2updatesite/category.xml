@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description url="http://pmd.sourceforge.net/eclipse">
+   <description url="https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/">
        PMD for Eclipse Update Site
    </description>
 
-    <feature url="features/net.sourceforge.pmd.eclipse_4.0.1.qualifier.jar"
+    <feature url="features/net.sourceforge.pmd.eclipse_4.0.3.qualifier.jar"
         id="net.sourceforge.pmd.eclipse"
-        version="4.0.1.qualifier">
+        version="4.0.3.qualifier">
         <category name="pmdForEclipse4"/>
     </feature>
 

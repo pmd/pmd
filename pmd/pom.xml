@@ -11,6 +11,7 @@
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
         <version>7</version>
+        <relativePath/>
     </parent>
 
     <description>
@@ -199,6 +200,7 @@
         <developer>
             <id>tkleiber</id>
             <name>Torsten Kleiber</name>
+            <url>http://develishdevelopment.wordpress.com</url>
             <email>tkleiber@users.sourceforge.net</email>
             <roles>
                 <role>Developer</role>
@@ -228,6 +230,14 @@
             </roles>
             <timezone>+1</timezone>
         </developer>
+        <developer>
+            <id>acanda</id>
+            <name>Philip Graf</name>
+            <email>acanda@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
     </developers>
     <scm>
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
@@ -239,7 +249,7 @@
         <url>http://pmd.sourceforge.net/</url>
     </organization>
     <properties>
-        <javacc.version>4.1</javacc.version>
+        <javacc.version>5.0</javacc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- This value actually differs to maven default expectation(src/site/xdoc/)
             as we need to pre process those and we place them instead in target/generated-xdocs/.
@@ -370,7 +380,7 @@
                     </execution>
                     <execution>
                         <id>move-index-and-delete-generated-xdocs</id>
-                        <phase>site</phase>
+                        <phase>pre-site</phase>
                         <configuration>
                             <target>
                                 <echo>PMD site specific tasks</echo>
@@ -694,6 +704,13 @@
                 <configuration>
                     <configLocation>etc/checkstyle-config.xml</configLocation>
                 </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
 
             <plugin>

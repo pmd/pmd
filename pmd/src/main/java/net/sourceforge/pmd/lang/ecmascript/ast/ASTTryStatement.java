@@ -7,37 +7,53 @@ import org.mozilla.javascript.ast.TryStatement;
 
 public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
     public ASTTryStatement(TryStatement tryStatement) {
-	super(tryStatement);
+        super(tryStatement);
     }
 
     /**
      * Accept the visitor.
      */
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
-	return visitor.visit(this, data);
+        return visitor.visit(this, data);
     }
 
     public EcmascriptNode getTryBlock() {
-	return (EcmascriptNode) jjtGetChild(0);
+        return (EcmascriptNode) jjtGetChild(0);
     }
 
+    @Deprecated // use hasCatch() instead
     public boolean isCatch() {
+        return hasCatch();
+    }
+
+    public boolean hasCatch() {
 	return getNumCatchClause() != 0;
     }
 
     public int getNumCatchClause() {
-	return node.getCatchClauses().size();
+        return node.getCatchClauses().size();
     }
 
     public ASTCatchClause getCatchClause(int index) {
-	return (ASTCatchClause) jjtGetChild(index - 1);
+        if (index >= getNumCatchClause()) {
+            return null;
+        }
+        return (ASTCatchClause) jjtGetChild(index + 1);
     }
 
+    @Deprecated // use hasFinally() instead
     public boolean isFinally() {
-	return node.getFinallyBlock() != null;
+        return hasFinally();
+    }
+
+    public boolean hasFinally() {
+        return node.getFinallyBlock() != null;
     }
 
     public EcmascriptNode getFinallyBlock() {
-	return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
+        if (!hasFinally()) {
+            return null;
+        }
+        return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
     }
 }

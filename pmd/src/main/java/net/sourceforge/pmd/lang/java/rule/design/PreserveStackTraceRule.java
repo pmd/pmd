@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 import org.jaxen.JaxenException;
 
@@ -75,7 +75,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                 }
                 if (child != null){
                     if ((child instanceof ASTName) && !target.equals(child.getImage()) && !child.hasImageEqualTo(target + FILL_IN_STACKTRACE)) {
-                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getVariableDeclarations();
+                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getDeclarations(VariableNameDeclaration.class);
                         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
                             VariableNameDeclaration decl = entry.getKey();
                             List<NameOccurrence> occurrences = entry.getValue();

@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.jdeveloper;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -13,11 +11,14 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.SourceCodeProcessor;
 
 import oracle.ide.Context;
 import oracle.ide.Ide;
@@ -27,9 +28,12 @@ import oracle.ide.extension.RegisteredByExtension;
 import oracle.ide.log.LogManager;
 import oracle.ide.log.LogPage;
 import oracle.ide.log.LogWindow;
+import oracle.ide.model.DataContainer;
+import oracle.ide.model.Element;
 import oracle.ide.model.Node;
 import oracle.ide.model.Project;
 import oracle.ide.model.RelativeDirectoryContextFolder;
+import oracle.ide.model.Workspace;
 
 import oracle.jdeveloper.compiler.IdeLog;
 import oracle.jdeveloper.compiler.IdeStorage;
@@ -49,7 +53,7 @@ public class PmdCommand extends Command {
     @Override
     public int doit() {
         if (!PmdAddin.added) {
-             addLogPage();
+            addLogPage();
         }
         runPmd(context);
         return OK;
@@ -59,21 +63,27 @@ public class PmdCommand extends Command {
         try {
             pmdFileToNodeMap.clear();
             final PMD pmd = new PMD();
-            Version.setJavaVersion(context, pmd);
+            // TODO ? Version.setJavaVersion(context, pmd);
 
             final PmdSelectedRules rules = new PmdSelectedRules(PmdSettingsPanel.createSettingsStorage());
             final RuleContext ctx = new RuleContext();
             ctx.setReport(new Report());
+            // Util.logMessage(context.getElement().getLongLabel());
             if (context.getElement() instanceof RelativeDirectoryContextFolder) {
                 final RelativeDirectoryContextFolder folder = (RelativeDirectoryContextFolder)context.getElement();
                 checkTree(folder.getChildren(), pmd, rules, ctx);
+                render(ctx);
+            } else if (context.getElement() instanceof Workspace) {
+                final Workspace workspace = (Workspace)context.getElement();
+                checkTree(workspace.getChildren(), pmd, rules, ctx);
+                render(ctx);
             } else if (context.getElement() instanceof Project) {
                 final Project project = (Project)context.getElement();
                 checkTree(project.getChildren(), pmd, rules, ctx);
+                render(ctx);
             } else if (context.getElement() instanceof JavaSourceNode || context.getView() instanceof CodeEditor) {
-                pmdFileToNodeMap.put(context.getNode().getLongLabel(), context.getNode());
-                ctx.setSourceCodeFilename(context.getNode().getLongLabel());
-                pmd.processFile(context.getNode().getInputStream(), rules.getSelectedRules(), ctx);
+                final Node candidate = context.getNode();
+                processFile(rules, ctx, candidate);
                 render(ctx);
             }
         } catch (IOException e) {
@@ -88,6 +98,16 @@ public class PmdCommand extends Command {
         }
     }
 
+    private void processFile(final PmdSelectedRules rules, final RuleContext ctx,
+                             final Node candidate) throws net.sourceforge.pmd.PMDException, java.io.IOException {
+        pmdFileToNodeMap.put(candidate.getLongLabel(), candidate);
+        ctx.setSourceCodeFilename(candidate.getLongLabel());
+        SourceCodeProcessor scp = new SourceCodeProcessor(new PMDConfiguration());
+        RuleSets rss = new RuleSets();
+        rss.addRuleSet(rules.getSelectedRules());
+        scp.processSourceCode(candidate.getInputStream(), rss, ctx);
+    }
+
     private void addLogPage() {
         LogManager.getLogManager().addPage(PmdAddin.pmdViolationPage);
         LogManager.getLogManager().showLog();
@@ -98,19 +118,24 @@ public class PmdCommand extends Command {
                            final RuleContext ctx) throws IOException, PMDException {
         while (iter.hasNext()) {
             final Object obj = iter.next();
-            if (!(obj instanceof JavaSourceNode)) {
-                continue;
-            }
-            final JavaSourceNode candidate = (JavaSourceNode)obj;
-            if (candidate.getLongLabel().endsWith(".java") && new File(candidate.getLongLabel()).exists()) {
-                pmdFileToNodeMap.put(candidate.getLongLabel(), candidate);
-                ctx.setSourceCodeFilename(candidate.getLongLabel());
-                final FileInputStream fis = new FileInputStream(new File(candidate.getLongLabel()));
-                pmd.processFile(fis, rules.getSelectedRules(), ctx);
-                fis.close();
+            final Element el = (Element)obj;
+            DataContainer dataContainer;
+            // Util.logMessage(el.getLongLabel() + ":: " + obj.getClass().getName());
+            try {
+                dataContainer = ((DataContainer)obj);
+                Iterator children = dataContainer.getChildren();
+                if (!children.equals(null)) {
+                     checkTree(children, pmd, rules, ctx);
+                } 
+            } catch (ClassCastException e) {
+                if ((obj instanceof JavaSourceNode)) {
+                   final JavaSourceNode candidate = (JavaSourceNode)obj;
+                   processFile(rules, ctx, candidate);
+                } else {
+                    continue;
+                }
             }
         }
-        render(ctx);
     }
 
     private void render(final RuleContext ctx) {

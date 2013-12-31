@@ -4,18 +4,20 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
-public class ClassScope extends AbstractScope {
-
-    protected Map<ClassNameDeclaration, List<NameOccurrence>> classNames = new HashMap<ClassNameDeclaration, List<NameOccurrence>>();
-    protected Map<MethodNameDeclaration, List<NameOccurrence>> methodNames = new HashMap<MethodNameDeclaration, List<NameOccurrence>>();
-    protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
+/**
+ * This scope represents one Java class.
+ * It can have variable declarations, method declarations and inner class declarations.
+ */
+public class ClassScope extends AbstractJavaScope {
 
     // FIXME - this breaks given sufficiently nested code
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
@@ -43,42 +45,48 @@ public class ClassScope extends AbstractScope {
         anonymousInnerClassCounter.set(v + 1);
     }
 
-    public void addDeclaration(VariableNameDeclaration variableDecl) {
-        if (variableNames.containsKey(variableDecl)) {
-            throw new RuntimeException(variableDecl + " is already in the symbol table");
-        }
-        variableNames.put(variableDecl, new ArrayList<NameOccurrence>());
+    public Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations() {
+        return getDeclarations(ClassNameDeclaration.class);
     }
 
-    public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
-        NameDeclaration decl = findVariableHere(occurrence);
-        if (decl != null && occurrence.isMethodOrConstructorInvocation()) {
-            List<NameOccurrence> nameOccurrences = methodNames.get(decl);
+    public Map<MethodNameDeclaration, List<NameOccurrence>> getMethodDeclarations() {
+        return getDeclarations(MethodNameDeclaration.class);
+    }
+
+    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
+        return getDeclarations(VariableNameDeclaration.class);
+    }
+
+    public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
+        JavaNameOccurrence javaOccurrence = (JavaNameOccurrence)occurrence;
+        NameDeclaration decl = findVariableHere(javaOccurrence);
+        if (decl != null && javaOccurrence.isMethodOrConstructorInvocation()) {
+            List<NameOccurrence> nameOccurrences = getMethodDeclarations().get(decl);
             if (nameOccurrences == null) {
                 // TODO may be a class name: Foo.this.super();
             } else {
-                nameOccurrences.add(occurrence);
-                Node n = occurrence.getLocation();
+                nameOccurrences.add(javaOccurrence);
+                Node n = javaOccurrence.getLocation();
                 if (n instanceof ASTName) {
                     ((ASTName) n).setNameDeclaration(decl);
                 } // TODO what to do with PrimarySuffix case?
             }
 
-        } else if (decl != null && !occurrence.isThisOrSuper()) {
-            List<NameOccurrence> nameOccurrences = variableNames.get(decl);
+        } else if (decl != null && !javaOccurrence.isThisOrSuper()) {
+            List<NameOccurrence> nameOccurrences = getVariableDeclarations().get(decl);
             if (nameOccurrences == null) {
                 // TODO may be a class name
 
                 // search inner classes
-                for (ClassNameDeclaration innerClass : classNames.keySet()) {
+                for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
                     Scope innerClassScope = innerClass.getScope();
-                    if (innerClassScope.contains(occurrence)) {
-                        innerClassScope.addVariableNameOccurrence(occurrence);
+                    if (innerClassScope.contains(javaOccurrence)) {
+                        innerClassScope.addNameOccurrence(javaOccurrence);
                     }
                 }
             } else {
-                nameOccurrences.add(occurrence);
-                Node n = occurrence.getLocation();
+                nameOccurrences.add(javaOccurrence);
+                Node n = javaOccurrence.getLocation();
                 if (n instanceof ASTName) {
                     ((ASTName) n).setNameDeclaration(decl);
                 } // TODO what to do with PrimarySuffix case?
@@ -87,39 +95,15 @@ public class ClassScope extends AbstractScope {
         return decl;
     }
 
-    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
-        VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
-        Applier.apply(f, variableNames.keySet().iterator());
-        return f.getUsed();
-    }
-
-    public Map<MethodNameDeclaration, List<NameOccurrence>> getMethodDeclarations() {
-        return methodNames;
-    }
-
-    public Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations() {
-        return classNames;
-    }
-
-    public ClassScope getEnclosingClassScope() {
-        return this;
-    }
-
     public String getClassName() {
         return this.className;
     }
 
-    public void addDeclaration(MethodNameDeclaration decl) {
-        methodNames.put(decl, new ArrayList<NameOccurrence>());
-    }
-
-    public void addDeclaration(ClassNameDeclaration decl) {
-        classNames.put(decl, new ArrayList<NameOccurrence>());
-    }
-
-    protected NameDeclaration findVariableHere(NameOccurrence occurrence) {
+    protected NameDeclaration findVariableHere(JavaNameOccurrence occurrence) {
+        Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
-            if (variableNames.isEmpty() && methodNames.isEmpty()) {
+            if (variableDeclarations.isEmpty() && methodDeclarations.isEmpty()) {
                 // this could happen if you do this:
                 // public class Foo {
                 //  private String x = super.toString();
@@ -134,14 +118,14 @@ public class ClassScope extends AbstractScope {
             // }
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
-            if (!variableNames.isEmpty()) {
-                return variableNames.keySet().iterator().next();
+            if (!variableDeclarations.isEmpty()) {
+                return variableDeclarations.keySet().iterator().next();
             }
-            return methodNames.keySet().iterator().next();
+            return methodDeclarations.keySet().iterator().next();
         }
 
         if (occurrence.isMethodOrConstructorInvocation()) {
-            for (MethodNameDeclaration mnd: methodNames.keySet()) {
+            for (MethodNameDeclaration mnd: methodDeclarations.keySet()) {
                 if (mnd.getImage().equals(occurrence.getImage())) {
                     int args = occurrence.getArgumentCount();
                     if (args == mnd.getParameterCount() || (mnd.isVarargs() && args >= mnd.getParameterCount() - 1)) {
@@ -162,13 +146,14 @@ public class ClassScope extends AbstractScope {
             images.add(clipClassName(occurrence.getImage()));
         }
         ImageFinderFunction finder = new ImageFinderFunction(images);
-        Applier.apply(finder, variableNames.keySet().iterator());
+        Applier.apply(finder, variableDeclarations.keySet().iterator());
         NameDeclaration result = finder.getDecl();
 
         // search inner classes
-        if (result == null && !classNames.isEmpty()) {
-            for (ClassNameDeclaration innerClass : classNames.keySet()) {
-                Applier.apply(finder, innerClass.getScope().getVariableDeclarations().keySet().iterator());
+        Map<ClassNameDeclaration, List<NameOccurrence>> classDeclarations = getClassDeclarations();
+        if (result == null && !classDeclarations.isEmpty()) {
+            for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
+                Applier.apply(finder, innerClass.getScope().getDeclarations().keySet().iterator());
                 result = finder.getDecl();
                 if (result != null) {
                     break;
@@ -180,19 +165,22 @@ public class ClassScope extends AbstractScope {
 
     public String toString() {
         StringBuilder res = new StringBuilder("ClassScope (").append(className).append("): ");
-        if (!classNames.isEmpty()) {
-            res.append("Inner Classes ").append(glomNames(classNames.keySet())).append("; ");
+        Map<ClassNameDeclaration, List<NameOccurrence>> classDeclarations = getClassDeclarations();
+        if (classDeclarations.isEmpty()) {
+            res.append("Inner Classes ").append(glomNames(classDeclarations.keySet())).append("; ");
         }
-        if (!methodNames.isEmpty()) {
-            for (MethodNameDeclaration mnd: methodNames.keySet()) {
+        Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
+        if (!methodDeclarations.isEmpty()) {
+            for (MethodNameDeclaration mnd: methodDeclarations.keySet()) {
                 res.append(mnd.toString());
-                int usages = methodNames.get(mnd).size();
+                int usages = methodDeclarations.get(mnd).size();
                 res.append("(begins at line ").append(mnd.getNode().getBeginLine()).append(", ").append(usages).append(" usages)");
                 res.append(", ");
             }
         }
-        if (!variableNames.isEmpty()) {
-            res.append("Variables ").append(glomNames(variableNames.keySet()));
+        Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
+        if (!variableDeclarations.isEmpty()) {
+            res.append("Variables ").append(glomNames(variableDeclarations.keySet()));
         }
         return res.toString();
     }

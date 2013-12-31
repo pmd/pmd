@@ -8,7 +8,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * This is an abstract rule for patterns which compare a method invocation to 0.
@@ -21,7 +22,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
 
     public abstract boolean appliesToClassName(String name);
 
-    public abstract boolean isTargetMethod(NameOccurrence occ);
+    public abstract boolean isTargetMethod(JavaNameOccurrence occ);
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
 	Node nameNode = node.getTypeNameNode();
@@ -34,14 +35,15 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
 
         List<NameOccurrence> declars = node.getUsages();
         for (NameOccurrence occ: declars) {
-            if (!isTargetMethod(occ)) {
+            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+            if (!isTargetMethod(jocc)) {
                 continue;
             }
-            Node expr = occ.getLocation().jjtGetParent().jjtGetParent().jjtGetParent();
+            Node expr = jocc.getLocation().jjtGetParent().jjtGetParent().jjtGetParent();
             if ((expr instanceof ASTEqualityExpression ||
                     (expr instanceof ASTRelationalExpression && ">".equals(expr.getImage())))
                 && isCompareZero(expr)) {
-                addViolation(data, occ.getLocation());
+                addViolation(data, jocc.getLocation());
             }
         }
         return data;

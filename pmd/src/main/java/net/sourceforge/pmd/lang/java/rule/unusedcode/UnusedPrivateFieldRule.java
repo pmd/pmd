@@ -12,18 +12,22 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UnusedPrivateFieldRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
-            if (!decl.getAccessNodeParent().isPrivate() || isOK(decl.getImage())) {
+            AccessNode accessNodeParent = decl.getAccessNodeParent();
+            if (!accessNodeParent .isPrivate() || isOK(decl.getImage())) {
                 continue;
             }
             if (!actuallyUsed(entry.getValue())) {
@@ -39,7 +43,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
      * Find out whether the variable is used in an outer class
      */
 	private boolean usedInOuterClass(ASTClassOrInterfaceDeclaration node,
-			VariableNameDeclaration decl) {
+			NameDeclaration decl) {
 		List<ASTClassOrInterfaceDeclaration> outerClasses = node.getParentsOfType(ASTClassOrInterfaceDeclaration.class);
 		for (ASTClassOrInterfaceDeclaration outerClass : outerClasses) {
 			ASTClassOrInterfaceBody classOrInterfaceBody = outerClass.getFirstChildOfType(ASTClassOrInterfaceBody.class);
@@ -77,7 +81,8 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
 
     private boolean actuallyUsed(List<NameOccurrence> usages) {
         for (NameOccurrence nameOccurrence: usages) {
-            if (!nameOccurrence.isOnLeftHandSide()) {
+            JavaNameOccurrence jNameOccurrence = (JavaNameOccurrence)nameOccurrence;
+            if (!jNameOccurrence.isOnLeftHandSide()) {
                 return true;
             }
         }

@@ -3,16 +3,14 @@
   <property name="config" value="config/"/>
   <property name="src" value="src/"/>
   <property name="etc" value="etc/"/>
-  <property name="pmdjar" value="pmd-4.3.jar"/>
-  <property name="jaxenjar" value="jaxen-1.1.1.jar"/>
-  <property name="asmjar" value="asm-3.2.jar"/>
+  <property name="pmdjar" value="pmd-5.0.5.jar"/>
   <!-- first to third number for jdeveloper family -->
   <!-- fourth number concat of pmd version (e.g. 4.2.6) and build number (e.g. 0): 4260-->
   <!-- fifth number minor version number for the JDeveloper Plugin -->
-  <property name="pluginversion" value="11.1.1.4300"/>
+  <property name="pluginversion" value="11.1.1.5050"/>
   <property name="mainclass" value="net.sourceforge.pmd.jdeveloper"/>
   <!-- TODO Set oracle.commons dynamic -->
-  <property name="oracle.commons" value="C:\Oracle\11gJD11116\oracle_common\"/>
+  <property name="oracle.commons" value="C:\Oracle\JDev111170\oracle_common\"/>
   <property name="jdeveloper.dir" value="${oracle.home}"/>
   <property name="jdeveloper.ext.subdir" value="jdev/extensions"/>
   <property name="releases.dir" value="../releases"/>
@@ -82,18 +80,18 @@
   <target name="deploy" depends="delete,deletedeployed,jar">
     <mkdir dir="${jdeveloper.install.dir}"/>
     <copy file="lib/${release.jarname}" todir="${jdeveloper.install.dir}"/>
-    <copy file="lib/${pmdjar}" todir="${deploy.dirname.lib}"/>
-    <copy file="lib/${jaxenjar}" todir="${deploy.dirname.lib}"/>
-    <copy file="lib/${asmjar}" todir="${deploy.dirname.lib}"/>
+    <copy todir="${deploy.dirname.lib}">
+      <fileset dir="lib" includes="*.jar"/>
+    </copy>
     <copy file="conf/pmd.plugin.properties" todir="${deploy.dirname.conf}"/>
     <copy file="conf/pmd.rule.properties" todir="${deploy.dirname.conf}"/>
   </target>
   <target name="release" depends="clean,jar">
     <mkdir dir="${release.dirname.lib}"/>
     <copy file="lib/${release.jarname}" todir="${release.dirname}/"/>
-    <copy file="lib/${pmdjar}" todir="${release.dirname.lib}"/>
-    <copy file="lib/${jaxenjar}" todir="${release.dirname.lib}"/>
-    <copy file="lib/${asmjar}" todir="${release.dirname.lib}"/>
+    <copy todir="${release.dirname.lib}">
+      <fileset dir="lib" includes="*.jar"/>
+    </copy>
     <copy file="conf/pmd.plugin.properties" todir="${release.dirname.conf}"/>
     <copy file="conf/pmd.rule.properties" todir="${release.dirname.conf}"/>
     <zip destfile="${release.zipname}" basedir="${release.dirname}/"/>
@@ -117,9 +115,9 @@
     <copy file="etc/bundle.xml" todir="${bundle.dirname}/META-INF/"/>
     <copy file="etc/center.xml" todir="${bundle.dirname}/"/>
     <copy file="lib/${release.jarname}" todir="${bundle.dirname}/"/>
-    <copy file="lib/${pmdjar}" todir="${bundle.dirname.lib}/"/>
-    <copy file="lib/${jaxenjar}" todir="${bundle.dirname.lib}/"/>
-    <copy file="lib/${asmjar}" todir="${bundle.dirname.lib}/"/>
+    <copy todir="${bundle.dirname.lib}">
+      <fileset dir="lib" includes="*.jar"/>
+    </copy>
     <copy file="conf/pmd.plugin.properties" todir="${bundle.dirname.conf}"/>
     <copy file="conf/pmd.rule.properties" todir="${bundle.dirname.conf}"/>
     <zip destfile="${releases.dir}/${bundle.filename}" basedir="${bundle.dirname}">

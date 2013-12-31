@@ -5,6 +5,8 @@ package net.sourceforge.pmd.lang;
 
 import java.io.Writer;
 
+import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+
 /**
  * This is a generic implementation of the LanguageVersionHandler interface.
  * 
@@ -38,5 +40,9 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
 
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
 	return VisitorStarter.DUMMY;
+    }
+
+    public DFAGraphRule getDFAGraphRule() {
+        return null;
     }
 }

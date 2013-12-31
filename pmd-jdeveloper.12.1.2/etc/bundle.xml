@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<update-bundle version="1.0" xmlns="http://xmlns.oracle.com/jdeveloper/updatebundle">
+  <update id="net.sourceforge.pmd.jdeveloper" xmlns="http://xmlns.oracle.com/jdeveloper/update">
+    <name>PMD JDeveloper Extension</name>
+    <version>12.1.2.5050</version>
+    <author>Torsten Kleiber</author>
+    <author-url>http://pmd.sourceforge.net/</author-url>
+    <description>Provides integrated support for PMD 5.0.5 in JDeveloper 12c.</description>
+    <requirements>
+      <requires-extension id="oracle.jdeveloper" minVersion="12.1.2.0.40.66.68"
+                            maxVersion="12.1.2.99"/>
+    </requirements>
+  </update>
+</update-bundle>

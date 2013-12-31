@@ -2,7 +2,7 @@ package net.sourceforge.pmd.lang.java.rule.strings;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 
 /**
  * This rule finds code which inefficiently determines empty strings. This code
@@ -30,7 +30,7 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
      *            The name occurrence
      * @return true if it's String.length, else false
      */
-    public boolean isTargetMethod(NameOccurrence occ) {
+    public boolean isTargetMethod(JavaNameOccurrence occ) {
         if (occ.getNameForWhichThisIsAQualifier() != null
                 && occ.getNameForWhichThisIsAQualifier().getImage().indexOf("trim") != -1) {
             Node pExpression = occ.getLocation().jjtGetParent().jjtGetParent();

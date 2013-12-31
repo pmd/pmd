@@ -45,7 +45,7 @@ $ mvn clean verify post-site    #(order of targets DOES matter)
 <p>Unzip and test manually (just to be on the safe side of the road):</p>
 
 <source>
-cd target; unzip pmd-bin-&lt;version&gt.zip; cd pmd-bin-&lt;verion&gt;
+cd target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
 ./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
 ./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R java-unusedcode
 ./bin/run.sh pmd -d ../../src/main/java -language java -f html -R rulesets/java/unusedcode.xml
@@ -135,17 +135,17 @@ you need to release PMD via Sonatype Nexus:</p>
 <li>Click the close button</li>
 <li>Now you can download the artifacts again and verify they are working.</li>
 <li>Once you are sure they are working, click "Release" and the artifacts are
-eventually available through maven central.</li>
+eventually available through <a href="http://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/">maven central</a>.</li>
 </ul>
 </subsection>
 
-<subsection name="Publish the release on sourceforge">
+<subsection name="Publish the release site on sourceforge">
 <p>Build it again - you can reuse the cleanly checked out local repository from maven-release-plugin.</p>
-<p>In order to be able to upload the artifacts and the site to sourceforge,
+<p>In order to be able to upload the site to sourceforge,
 you need to have a interactive shell opened before.</p>
 <p>
-Upload command below will create and upload the maven artifacts to sourceforge and also the maven site.
-Login info for 'pmd-repo' and 'pmd-site' must be defined in ~/.m2/settings.xml
+Upload command below will create and upload maven site.
+Login info for 'pmd-site' must be defined in ~/.m2/settings.xml
 (see the file available in
 <a href="https://github.com/pmd/pmd/blob/master/maven-plugin-pmd-build/config/m2.settings.xml">maven-plugin-pmd-build/config/m2.settings.xml</a>):</p>
 
@@ -153,22 +153,50 @@ Login info for 'pmd-repo' and 'pmd-site' must be defined in ~/.m2/settings.xml
 $ ssh your_sf_login,pmd@shell.sourceforge.net create
 ...
 $ cd target/checkout/pmd
-$ mvn clean deploy site-deploy -Psf-release
+$ mvn clean verify site-deploy -Psf-release   # it's import to execute verify, so that pmd.jar is created and included in the zip packages
 ...
 $ ssh your_sf_login@shell.sourceforge.net "shutdown"
 </source>
 
 <ul>
-<li>Go to <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a>, to folder "pmd", create a new subfolder for the new version</li>
-<li>Add the target/pmd-&lt;version&gt;-bin.zip file</li>
-<li>Add the target/pmd-&lt;version&gt;-src.zip file</li>
-<li>Add the file etc/changelog.txt as ReadMe.txt file</li>
+<li>Before you upload the zip files, unzip and test once (just to be on the safe side of the road):
+<source>
+cd target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
+./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R java-unusedcode
+./bin/run.sh pmd -d ../../src/main/java -language java -f html -R rulesets/java/unusedcode.xml
+cd ..
+</source>
+</li>
+<li>Upload the files to sourceforge's file section:
+<source>
+$ rsync -avhP target/pmd-*-&lt;version&gt;.zip your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/
+$ rsync -avhP etc/changelog.txt your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.txt
+</source>
+</li>
+<li>Verify the MD5 sums on <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a> and locally:
+<source>
+$ md5sum target/pmd-*-&lt;version&gt;.zip
+</source>
+</li>
+<li>Go to <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a>, to folder "pmd/&lt;version&gt;",
+and make the new binary pmd zip file the default download for all platforms.</li>
 </ul>
 </subsection>
 
 <subsection name="Social side of release">
 <ol>
-<li>Submit news to SF on the <a href="http://sourceforge.net/p/pmd/news/">PMD Project News</a> page.</li>
+<li>Submit news to SF on the <a href="https://sourceforge.net/p/pmd/news/">PMD Project News</a> page. You can use
+the following template:
+<source>
+PMD &lt;version&gt; released
+
+* minor version with lots of bug fixes
+* ChangeLog: https://sourceforge.net/projects/pmd/files/pmd/&lt;version&gt;/
+* Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-&lt;version&gt;/
+* Documentation: http://pmd.sourceforge.net/pmd-&lt;version&gt;/
+</source>
+</li>
 <li>Go to <a href="http://freecode.com/projects/pmd">freecode</a> (former freshmeat.net)</li>
 <li>Facebook, Google+, Twitter, LinkedIn and Xing (add whatever you feel is missing here...)</li>
 </ol>

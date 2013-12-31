@@ -1,7 +1,21 @@
 ????? ??, 2013 - 5.1.0:
 
-Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
+Fixed bug  881: private final without setter is flagged
 Fixed bug 1059: Change rule name "Use Singleton" should be "Use Utility class"
+Fixed bug 1106: PMD 5.0.4 fails with NPE on parsing java enum with inner class instance creation
+Fixed bug 1115: commentRequiredRule in pmd 5.1 is not working properly
+Fixed bug 1121: NullPointerException when invoking XPathCLI
+Fixed bug 1123: failure in help examples
+Fixed bug 1130: CloseResource doesn't recognize custom close method
+Fixed bug 1131: CloseResource should complain if code betwen declaration of resource and try
+Fixed bug 1134: UseStringBufferLength: false positives
+Fixed bug 1135: CheckResultSet ignores results set declared outside of try/catch
+Fixed bug 1136: ECMAScript: NullPointerException in getLeft() and getRight()
+Fixed bug 1140: public EcmascriptNode getBody(int index)
+Fixed bug 1141: ECMAScript: getFinallyBlock() is buggy.
+Fixed bug 1142: ECMAScript: getCatchClause() is buggy.
+Fixed bug 1144: CPD encoding argument has no effect
+Fixed bug 1155: maven pmd plugin does not like empty rule sets
 
 New EcmaScript rules and ruleset:
 	Controversial ruleset, featuring
@@ -15,10 +29,48 @@ New Java rules:
 		- basic rule to check for existence for formal (javadoc) comments.
 	AvoidProtectedMethodInFinalClassNotExtending
 		- rule to avoid protected methods in final classes that don't extend anything other than Object.
+	ConsecutiveAppendsShouldReuse
+		- rule to encourage to reuse StringBuilder.append returned object for consecutive calls.
+	PositionLiteralsFirstInCaseInsensitiveComparisons
+		- rule similar to PositionLiteralsFirstInComparisons, but for case insensitive comparisons (equalsIgnoreCase).
+		  Thanks to Larry Diamond
 
 CPD Command Line Changes:
   Added non-recursive option "--non-recursive" to not scan sub-directories
+  Added option "--exclude" to exclude specific files from being scanned (thanks to Delmas for patch #272)
 
+Upgrade to javacc 5.0 (see patch #1109 Patch to build with Javacc 5.0)
+
+API Change - Deprecated APIs:
+    net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode: getBody(int index) deprecated, use getBody() instead
+    net.sourceforge.pmd.lang.ecmascript.ast.ASTTryStatement: isCatch() and isFinally() deprecated, use hasCatch() and hasBody() instead
+
+API Change - Generalize Symbol Table treatement
+    Added net.sourceforge.pmd.lang.symboltable.ScopedNode
+    Added net.sourceforge.pmd.lang.symboltable.Scope
+    Added net.sourceforge.pmd.lang.symboltable.NameDeclaration
+    Added net.sourceforge.pmd.lang.symboltable.NameOccurrence
+    Added net.sourceforge.pmd.lang.symboltable.AbstractScope
+    Added net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration
+
+
+
+
+August 11, 2013 - 5.0.5:
+
+Fixed bug  991: AvoidSynchronizedAtMethodLevel for static methods
+Fixed bug 1084: NPE at UselessStringValueOfRule.java:36
+Fixed bug 1091: file extension for fortran seems to be wrong in cpdgui tools
+Fixed bug 1092: Wrong Attribute "excludemarker" in Ant Task Documentation
+Fixed bug 1095: AvoidFinalLocalVariable false positive
+Fixed bug 1099: UseArraysAsList false positives
+Fixed bug 1102: False positive: shift operator parenthesis
+Fixed bug 1104: IdempotentOperation false positive
+Fixed bug 1107: PMD 5.0.4 couldn't parse call of parent outer java class method from inner class
+Fixed bug 1069: Eclipse plugin does not accept project-local config
+Fixed bug 1111: False positive: Useless parentheses
+Fixed bug 1114: CPD - Tokenizer not initialized with requested properties
+Fixed bug 1118: ClassCastException in pmd.lang.ecmascript.ast.ASTElementGet
 
 
 May 1, 2013 - 5.0.4:

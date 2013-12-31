@@ -1,0 +1,9 @@
+/* $Id: print.css,v 1.2 2003/04/10 22:58:32 tfahrner Exp $ */
+
+#banner, #footer, #leftcol, #breadcrumbs, .docs #toc, .docs .courtesylinks	{
+	display: none;
+	}
+body.docs div.docs	{
+	margin: 0 !important;
+	border: none !important
+	}

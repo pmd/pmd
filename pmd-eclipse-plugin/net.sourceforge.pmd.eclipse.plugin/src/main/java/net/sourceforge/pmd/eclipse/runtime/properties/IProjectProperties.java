@@ -36,6 +36,7 @@
 package net.sourceforge.pmd.eclipse.runtime.properties;
 
 import java.io.File;
+import java.util.Set;
 
 import net.sourceforge.pmd.RuleSet;
 
@@ -169,5 +170,18 @@ public interface IProjectProperties {
      *
      */
     void sync() throws PropertiesException;
-    
+
+    /**
+     * The exclude patterns determined from the project's build path.
+     * Note: not persisted.
+     * @return exclude patterns
+     */
+    Set<String> getBuildPathExcludePatterns();
+
+    /**
+     * The include patterns determined from the project's build path.
+     * Note: not persisted.
+     * @return include patterns
+     */
+    Set<String> getBuildPathIncludePatterns();
 }

@@ -35,6 +35,8 @@
  */
 package net.sourceforge.pmd.eclipse.runtime.cmd;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -71,6 +73,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
@@ -100,7 +103,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private int 						ruleCount;
     private int 						fileCount;
     private long 						pmdDuration;
-    private boolean						clearExistingMarkersBeforeApplying;
     private String						onErrorIssue = null;
 
     private static final long serialVersionUID = 1L;
@@ -118,10 +120,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         setTerminated(false);
     }
 
-    public void clearExistingMarkersBeforeApplying(boolean flag) {
-    	clearExistingMarkersBeforeApplying = flag;
-    }
-    
     public Set<IFile> markedFiles() {
     	return markersByFile.keySet();
     }
@@ -366,24 +364,31 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final RuleSet ruleSet = rulesetFrom(resource);	//properties.getProjectRuleSet();
             
         //    final PMDEngine pmdEngine = getPmdEngineForProject(project);
-            int targetCount = countResourceElement(resource);
+            int targetCount = 0;
+            if (resource.exists()) {
+                targetCount = countResourceElement(resource);
+            }
             // Could add a property that lets us set the max number to analyze 
-            if (properties.isFullBuildEnabled() || targetCount ==1){
+            if (properties.isFullBuildEnabled() || targetCount == 1){
 	            setStepCount(targetCount);
 	            log.debug("Visiting resource " + resource.getName() + " : " + getStepCount());
 	
-	            final ResourceVisitor visitor = new ResourceVisitor();
-	            visitor.setMonitor(getMonitor());
-	            visitor.setRuleSet(ruleSet);
-	     //       visitor.setPmdEngine(pmdEngine);
-	            visitor.setAccumulator(markersByFile);
-	            visitor.setUseTaskMarker(taskMarker);
-	            visitor.setProjectProperties(properties);
-	            resource.accept(visitor);
-	
-	            ruleCount = ruleSet.getRules().size();
-	            fileCount += visitor.getProcessedFilesCount();
-	            pmdDuration += visitor.getActualPmdDuration();
+	            if (resource.exists()) {
+    	            final ResourceVisitor visitor = new ResourceVisitor();
+    	            visitor.setMonitor(getMonitor());
+    	            visitor.setRuleSet(ruleSet);
+    	     //       visitor.setPmdEngine(pmdEngine);
+    	            visitor.setAccumulator(markersByFile);
+    	            visitor.setUseTaskMarker(taskMarker);
+    	            visitor.setProjectProperties(properties);
+    	            resource.accept(visitor);
+
+    	            ruleCount = ruleSet.getRules().size();
+    	            fileCount += visitor.getProcessedFilesCount();
+    	            pmdDuration += visitor.getActualPmdDuration();
+	            } else {
+	                log.debug("Skipping resource " + resource.getName() + " because it doesn't exist.");
+	            }
             } else {
             	log.debug("Skipping resource "+ resource.getName() 
             			+ " because of fullBuildEnabled flag");
@@ -448,13 +453,17 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     	 
          final RuleSet ruleSet = properties.getProjectRuleSet();
          IPreferences preferences = PMDPlugin.getDefault().getPreferencesManager().loadPreferences();
-         Set<String> activeRuleNames = preferences.getActiveRuleNames();
-         
+         Set<String> inactiveRuleNames = preferences.getInactiveRuleNames();
+
          RuleSet filteredRuleSet = RuleSetUtil.newCopyOf(ruleSet);
-         RuleSetUtil.retainOnly(filteredRuleSet, activeRuleNames);
-         filteredRuleSet.setExcludePatterns(preferences.activeExclusionPatterns());
-         filteredRuleSet.setIncludePatterns(preferences.activeInclusionPatterns());
-         
+         if (preferences.getGlobalRuleManagement()) {
+             RuleSetUtil.remove(filteredRuleSet, inactiveRuleNames);
+         }
+         filteredRuleSet.addExcludePatterns(preferences.activeExclusionPatterns());
+         filteredRuleSet.addIncludePatterns(preferences.activeInclusionPatterns());
+         filteredRuleSet.addExcludePatterns(properties.getBuildPathExcludePatterns());
+         filteredRuleSet.addIncludePatterns(properties.getBuildPathIncludePatterns());
+
          taskScope(filteredRuleSet.getRules().size(), ruleSet.getRules().size());
          return filteredRuleSet;
     }
@@ -525,17 +534,12 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         
         try {
             for (IFile file : markersByFile.keySet()) {
-            	if (isCanceled()) break;
+                if (isCanceled()) break;
                 currentFile = file.getName();
-
+                MarkerUtil.deleteAllMarkersIn(file);
                 Set<MarkerInfo2> markerInfoSet = markersByFile.get(file);
-                
-                if (clearExistingMarkersBeforeApplying) {
-                	MarkerUtil.deleteAllMarkersIn(file);
-                }
-                
                 for (MarkerInfo2 markerInfo : markerInfoSet) { 
-                	markerInfo.addAsMarkerTo(file);
+                    markerInfo.addAsMarkerTo(file);
                     violationCount++;
                 }
 

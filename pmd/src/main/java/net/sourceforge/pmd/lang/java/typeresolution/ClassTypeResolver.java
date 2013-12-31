@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -188,7 +189,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		String typeName = node.getImage();
 		if (node.jjtGetParent().hasDescendantOfType(ASTClassOrInterfaceBody.class)) {
 			anonymousClassCounter++;
-		    typeName = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getImage() + "$" + anonymousClassCounter;
+		    AbstractNode parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+		    if (parent == null) {
+		        parent = node.getFirstParentOfType(ASTEnumDeclaration.class);
+		    }
+            typeName = parent.getImage() + "$" + anonymousClassCounter;
 		}
 		populateType(node, typeName);
 		return data;

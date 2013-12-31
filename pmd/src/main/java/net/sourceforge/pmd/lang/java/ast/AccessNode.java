@@ -1,10 +1,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 // FUTURE Remove non JavaBean setters
 /**
  * This interface captures Java access modifiers.
  */
-public interface AccessNode {
+public interface AccessNode extends Node {
 
 	int PUBLIC = 0x0001;
 	int PROTECTED = 0x0002;

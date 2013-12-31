@@ -52,17 +52,7 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 class FakeRuleViolation extends ParametricRuleViolation<Node> {
 
-    private String filename = "";
-    private int beginLine;
-    private int beginColumn;
-    private int endLine;
-    private int endColumn;
-    private Rule rule;
     private String description = "";
-    private String packageName = "";
-    private String methodName = "";
-    private String className = "";
-    private String variableName = "";
     
 	private static final RuleContext DummyContext = new RuleContext();
 	
@@ -76,87 +66,10 @@ class FakeRuleViolation extends ParametricRuleViolation<Node> {
     }
 
     /**
-     * @see net.sourceforge.pmd.IRuleViolation#getFilename()
-     */
-    public String getFilename() {
-        return filename;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getBeginLine()
-     */
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getBeginColumn()
-     */
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getEndLine()
-     */
-    public int getEndLine() {
-        return endLine;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getEndColumn()
-     */
-    public int getEndColumn() {
-        return endColumn;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getRule()
-     */
-    public Rule getRule() {
-        return rule;
-    }
-
-    /**
      * @see net.sourceforge.pmd.IRuleViolation#getDescription()
      */
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getPackageName()
-     */
-    public String getPackageName() {
-        return packageName;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getMethodName()
-     */
-    public String getMethodName() {
-        return methodName;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getClassName()
-     */
-    public String getClassName() {
-        return className;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#isSuppressed()
-     */
-    public boolean isSuppressed() {
-        return false;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.IRuleViolation#getVariableName()
-     */
-    public String getVariableName() {
-        return variableName;
     }
 
     /**

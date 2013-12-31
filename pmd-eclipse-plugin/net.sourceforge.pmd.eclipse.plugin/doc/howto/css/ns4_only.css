@@ -1,0 +1,254 @@
+/* $Id: ns4_only.css,v 1.4 2003/04/10 22:58:32 tfahrner Exp $
+
+simple rules suitable for Netscape 4.x only; richer rules are in tigris.css. see <http://style.tigris.org/> */
+
+/* colors, backgrounds, borders, link indication */ 
+
+body {
+ background: #fff;
+ color: #000;
+ }
+#leftcol a:link, #leftcol a:visited {
+ color: blue;
+ }
+a:active, a:hover, #leftcol a:active, #leftcol a:hover {
+ color: #f30;
+ }
+#login a:link, #login a:visited {
+ color: white; 
+ text-decoration: underline;
+ }
+#banner a:active, #banner a:hover {
+ color: #f90;
+ }
+#leftcol a, #breadcrumbs a  {
+ text-decoration: none;
+ }
+#apphead h2 em {
+ color: #777
+ } 
+.a td { 
+ background: #ddd;
+ }
+.b td { 
+ background: #efefef;
+ }
+.tabs th {
+ background-color: #ddd;
+ color: #fff;
+ }
+.tabs td {
+ background-color: #666;
+ }
+.tabs th, .tabs th a:link, .tabs th a:visited {
+ color: #333;
+ }
+.tabs td, .tabs td a:link, .tabs td a:visited  { 
+ color: #fff;
+ }
+.app th {
+ background-color: #bbb;
+ }
+.app .axial th {
+ background-color: #ddd;
+ color: black
+ }
+.alert { 
+ color: #c00;
+ }
+.confirm {
+ color: green;
+ }
+.info {
+ color: blue;
+ }
+.selection {
+ background: #ffc;
+ }
+#login {
+ color: #fff;
+ }
+#banner, #banner td { 
+ background: #036;
+ color: #fff;
+ }
+body #banner #login a { 
+ color: white;
+ }
+.cvsdiff, .cvsblame {
+ background-color: #ccc;
+ }
+.cvsdiffadd {
+ background-color: #afa;
+ }
+.cvsdiffremove {
+ background-color: #faa;
+ }
+.cvsdiffchanges1 {
+ background-color: #ff7;
+ }
+.cvsdiffchanges2 {
+ background-color: #ff7;
+ }
+.band1 {
+	color: #fff;
+	background-color: #663;
+}
+
+.band2 {
+	color: #fff;
+	background-color: #66C;
+}
+
+.band3 {
+	background-color: #C99;
+}
+
+.band4 {
+	background-color: #CFF;
+}
+
+.band5 {
+	color: #fff;
+	background-color: #336;
+}
+
+.band6 {
+	color: #fff;
+	background-color: #966;
+}
+
+.band7 {
+	background-color: #9CC;
+}
+
+.band8 {
+	background-color: #FFC;
+}
+
+.band9 {
+	color: #fff;
+	background-color: #633;
+}
+
+.band10 {
+	color: #fff;
+	background-color: #699;
+}
+
+.band11 {
+	background-color: #CC9;
+}
+
+.band12 {
+	background-color: #CCF;
+}
+
+.band13 {
+	color: #fff;
+	background-color: #366;
+}
+
+.band14 {
+	color: #fff;
+	background-color: #996;
+}
+
+.band15 {
+	background-color: #99C;
+}
+
+.band16 {
+	background-color: #FCC;
+}
+
+
+
+/* font and text properties, exclusive of link indication, alignment, text-indent */
+
+body, div, p, th, td, li, dl, dd {
+ font-family: Lucida, Arial, Helvetica, sans-serif;
+ }
+code, pre {
+ font-family: 'Andale Mono', Courier, monospace;
+ }
+h2, h3, h4 {
+ font-family: Tahoma, Verdana, Helvetica, Arial, sans-serif;
+ }
+.selection {
+ font-weight: bold
+ }
+#login .username {
+ font-weight: bold;
+ }
+#apphead h2 em {
+	font-style: normal;
+ } 
+.tabs th {
+ font-weight: bold
+ } 
+ 
+/* box properties (exclusive of borders), positioning, alignments, list types, text-indent */
+
+th, td {
+ text-align: left;
+ vertical-align: top 
+ }
+.right {
+ text-align: right;
+ }
+.center {
+ text-align: center;
+ }
+body .app .axial th {
+ text-align: right;
+ }
+.app .axial td th {
+ text-align: left;
+ }
+body td .stb {
+ margin-top: 1em;
+ text-indent: 0;
+ }
+body td .mtb {
+ margin-top: 2em;
+ text-indent: 0;
+ }
+dd {
+ margin-bottom: .67em;
+ }
+#footer, #breadcrumbs {
+ margin: 4px
+ }
+.courtesylinks {
+ margin-top: 1em;
+ padding-top: 1em
+ }
+#navcolumn .toolgroup {
+ margin-bottom: 1em;
+ margin-left: 4px;
+ }
+#navcolumn .body div {
+ margin-top: .3em;
+ padding-left: 1em;
+ }
+#banner, #banner td { 
+ vertical-align: middle;
+ }
+body.docs, body.nonav {
+ margin: 1em
+ }
+.tier1 { margin-left: 0 }
+.tier2 { margin-left: 1.5em }
+.tier3 { margin-left: 3em }
+.tier4 { margin-left: 4.5em }
+.tier5 { margin-left: 6em }
+.tier6 { margin-left: 7.5em }
+.tier7 { margin-left: 9em }
+.tier8 { margin-left: 10.5em }
+.tier9 { margin-left: 12em }
+.tier10 { margin-left: 13.5em }
+
+.messagechild {
+        padding-left: 34px;
+}

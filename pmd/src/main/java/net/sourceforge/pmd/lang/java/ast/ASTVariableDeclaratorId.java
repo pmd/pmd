@@ -5,8 +5,9 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 
@@ -38,7 +39,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
     }
 
     public List<NameOccurrence> getUsages() {
-        return getScope().getVariableDeclarations().get(nameDeclaration);
+        return getScope().getDeclarations().get(nameDeclaration);
     }
 
     public void bumpArrayDepth() {

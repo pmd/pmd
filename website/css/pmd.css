@@ -1,0 +1,53 @@
+body {
+    margin: 10px 10px;
+    background: lightgray;
+    color: black;
+    font-family: sans-serif;
+}
+
+h3 {
+    background: lightblue;
+    color: black;
+    border-radius: 5px;
+    border: 2px blue solid;
+    padding: 3px 5px;
+    text-align: center;
+}
+
+ul {
+    margin-left: 2em;
+}
+
+#pmd-logo {
+    width: 100%;
+    max-width: 360px;
+}
+
+#github-logo {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    border: 0;
+    z-index: 1;
+}
+
+.container {
+    border-radius: 15px;
+    padding: 20px;
+    background: white;
+    color: black;
+}
+
+.center {
+    text-align: center;
+}
+
+.description {
+    font-family: serif;
+    margin: 2em auto;
+}
+
+a.externalLink {
+    background: url("../external.png") no-repeat scroll right center transparent;
+    padding-right: 18px;
+}

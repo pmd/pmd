@@ -220,7 +220,7 @@ public class Test {
        <property name="xpath">
           <value>
           <![CDATA[
-//Expression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and count(./CastExpression)=0]
+//Expression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and count(./CastExpression)=0 and count(./ConditionalExpression[@Ternary='true'])=0]
 |
 //Expression/ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
@@ -241,7 +241,8 @@ public class Test {
 //Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral = 'true'])]/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
-    not(./ConditionalExpression)]
+    not(./ConditionalExpression) and
+    not(./ShiftExpression)]
 |
 //Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and

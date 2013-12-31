@@ -161,4 +161,71 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1135 CheckResultSet ignores results set declared outside of try/catch (good case)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void bar() {
+    try {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ps = getCurrentSession().connection().prepareStatement(query);
+        ps.setInt(1, fiscalYear);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            result = rs.getInt("value");
+        }
+    } catch (SQLException se) {
+        throw new DataAccessException(se);
+    }
+    return result;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1135 CheckResultSet ignores results set declared outside of try/catch</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.sql.ResultSet;
+
+public class Foo {
+  public void bar() {
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+        ps = getCurrentSession().connection().prepareStatement(query);
+        ps.setInt(1, fiscalYear);
+        rs = ps.executeQuery();
+        rs.next(); //this should be a PMD warning, but it is not
+        result = rs.getInt("value");
+    } catch (SQLException se) {
+        throw new DataAccessException(se);
+    } finally {
+        //call method to close the ResultSet and PreparedStatment
+    }
+    return result;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1135 CheckResultSet ignores results set declared outside of try/catch - prevent false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.special.ResultSet;
+
+public class Foo {
+  public void bar() {
+    ResultSet rs = doExecuteQuery();
+    rs.next(); // no warning here because it's not a java.sql.ResultSet
+    result = rs.getInt("baz");
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>

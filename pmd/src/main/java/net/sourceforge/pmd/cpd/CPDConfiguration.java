@@ -5,10 +5,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.util.FileFinder;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
@@ -36,10 +39,16 @@ public class CPDConfiguration extends AbstractConfiguration {
 	private boolean skipDuplicates;
 
 	@Parameter(names = "--format", description = "report format. Default value is "
-		+ DEFAULT_RENDERER, required = false, converter = RendererConverter.class)
+		+ DEFAULT_RENDERER, required = false)
+	private String rendererName;
+
+	/**
+	 * The actual renderer. constructed by using the {@link #rendererName}.
+	 * This property is only valid after {@link #postContruct()} has been called!
+	 */
 	private Renderer renderer;
 
-	@Parameter(names = "--encoding", description = "characterset to use when processing files", required = false, converter = EncodingConverter.class)
+	@Parameter(names = "--encoding", description = "characterset to use when processing files", required = false)
 	private String encoding;
 
 	@Parameter(names = "--ignore-literals", description = "Ignore number values and string contents when comparing text", required = false)
@@ -54,6 +63,9 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = "--files", variableArity = true, description = "list of files and directories to process", required = false)
 	private List<String> files;
 
+	@Parameter(names = "--exclude", variableArity = true, description = "Files to be excluded from CPD check", required = false)
+	private List<String> excludes;
+
 	@Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
         private boolean nonRecursive;
 
@@ -63,7 +75,9 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
 	private boolean help;
 
-	static public class LanguageConverter implements IStringConverter<Language> {
+	// this has to be a public static class, so that JCommander can use it!
+	public static class LanguageConverter implements IStringConverter<Language> {
+
 
 		public Language convert(String languageString) {
 			if (languageString == null || "".equals(languageString)) {
@@ -73,31 +87,21 @@ public class CPDConfiguration extends AbstractConfiguration {
 		}
 	}
 
-	static public class RendererConverter implements IStringConverter<Renderer> {
-
-		public Renderer convert(String formatString) {
-			if (formatString == null || "".equals(formatString)) {
-				formatString = DEFAULT_RENDERER;
-			}
-			return getRendererFromString(formatString);
-		}
+	public CPDConfiguration()
+	{
 	}
 
-	public class EncodingConverter implements IStringConverter<String> {
-
-		public String convert(String encoding) {
-			if (encoding == null || "".equals(encoding))
-				encoding = System.getProperty("file.encoding");
-			return setEncoding(encoding);
-		}
+	@Deprecated
+	public CPDConfiguration(int minimumTileSize, Language language, String encoding)
+	{
+		setMinimumTileSize(minimumTileSize);
+		setLanguage(language);
+		setEncoding(encoding);
 	}
 
-	public String setEncoding(String theEncoding) {
-		super.setSourceEncoding(theEncoding);
 
-		if (!theEncoding.equals(System.getProperty("file.encoding")))
-			System.setProperty("file.encoding", theEncoding);
-		return theEncoding;
+	public void setEncoding(String encoding) {
+	    this.encoding = encoding;
 	}
 
 	public SourceCode sourceCodeFor(File file) {
@@ -110,11 +114,17 @@ public class CPDConfiguration extends AbstractConfiguration {
 	}
 
 	public void postContruct() {
+        if (getEncoding() != null) {
+            super.setSourceEncoding(getEncoding());
+            if (!getEncoding().equals(System.getProperty("file.encoding")))
+                System.setProperty("file.encoding", getEncoding());
+        }
 		if ( this.getLanguage() == null )
 			this.setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
+		if (this.getRendererName() == null )
+		    this.setRendererName(DEFAULT_RENDERER);
 		if ( this.getRenderer() == null )
-			this.setRenderer(getRendererFromString(DEFAULT_RENDERER));
-
+			this.setRenderer(getRendererFromString(getRendererName()));
 	}
 
 	public static Renderer getRendererFromString(String name /* , String encoding */) {
@@ -144,14 +154,21 @@ public class CPDConfiguration extends AbstractConfiguration {
 		Properties properties = System.getProperties();
 		if (configuration.isIgnoreLiterals()) {
 			properties.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
+		} else {
+		    properties.remove(JavaTokenizer.IGNORE_LITERALS);
 		}
 		if (configuration.isIgnoreIdentifiers()) {
 			properties.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
+        } else {
+            properties.remove(JavaTokenizer.IGNORE_IDENTIFIERS);
 		}
 		if (configuration.isIgnoreAnnotations()) {
 			properties.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
+        } else {
+            properties.remove(JavaTokenizer.IGNORE_ANNOTATIONS);
 		}
 		System.setProperties(properties);
+		configuration.getLanguage().setProperties(properties);
 	}
 
 	public Language getLanguage() {
@@ -178,6 +195,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 		this.skipDuplicates = skipDuplicates;
 	}
 
+	public String getRendererName() {
+	    return rendererName;
+	}
+
+	public void setRendererName(String rendererName) {
+	    this.rendererName = rendererName;
+	}
+
 	public Renderer getRenderer() {
 		return renderer;
 	}
@@ -188,11 +213,40 @@ public class CPDConfiguration extends AbstractConfiguration {
 		return language.getTokenizer();
 	}
 
-	public FilenameFilter filenameFilter() {
-		if ( language == null )
-			throw new IllegalStateException("Language is null.");
-		return language.getFileFilter();
-	}
+    public FilenameFilter filenameFilter() {
+        if (language == null)
+            throw new IllegalStateException("Language is null.");
+
+        final FilenameFilter languageFilter = language.getFileFilter();
+        final Set<String> exclusions = new HashSet<String>();
+
+        if (excludes != null) {
+            FileFinder finder = new FileFinder();
+            for (String excludedFile : excludes) {
+                File exFile = new File(excludedFile);
+                if (exFile.isDirectory()) {
+                    List<File> files = finder.findFilesFrom(excludedFile, languageFilter, true);
+                    for (File f : files) {
+                        exclusions.add(f.getAbsolutePath());
+                    }
+                } else {
+                    exclusions.add(exFile.getAbsolutePath());
+                }
+            }
+        }
+
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                File f = new File(dir, name);
+                if (exclusions.contains(f.getAbsolutePath())) {
+                    System.err.println("Excluding " + f.getAbsolutePath());
+                    return false;
+                }
+                return languageFilter.accept(dir, name);
+            }
+        };
+        return filter;
+    }
 
 	public void setRenderer(Renderer renderer) {
 		this.renderer = renderer;
@@ -236,6 +290,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public void setURI(String uri) {
 		this.uri = uri;
+	}
+
+	public List<String> getExcludes() {
+	    return excludes;
+	}
+
+	public void setExcludes(List<String> excludes) {
+	    this.excludes = excludes;
 	}
 
 	public boolean isNonRecursive() {

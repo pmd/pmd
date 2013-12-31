@@ -24,7 +24,7 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
         if (name.getImage() == null ||  !name.getImage().endsWith("finalize")) {
             return ctx;
         }
-        MethodScope meth = name.getScope().getEnclosingMethodScope();
+        MethodScope meth = name.getScope().getEnclosingScope(MethodScope.class);
         if (meth.getName().equals("finalize")) {
             return ctx;
         }
@@ -45,7 +45,7 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
         if (firstSuffix == null || firstSuffix.getImage() == null || !firstSuffix.getImage().endsWith("finalize")) {
             return super.visit(pp, ctx);
         }
-        MethodScope meth = pp.getScope().getEnclosingMethodScope();
+        MethodScope meth = pp.getScope().getEnclosingScope(MethodScope.class);
         if (meth.getName().equals("finalize")) {
             return super.visit(pp, ctx);
         }

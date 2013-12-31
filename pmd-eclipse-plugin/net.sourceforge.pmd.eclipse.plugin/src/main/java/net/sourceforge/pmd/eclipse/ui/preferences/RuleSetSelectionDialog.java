@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
 /**
  * Implements a dialog for the user to select a rule set to import
@@ -224,16 +225,13 @@ public class RuleSetSelectionDialog extends Dialog {
     
 	private void checkNonDupes() {
 
-		RuleSet rs = selectedRuleset();
-		if (rs == null) {
-			ruleTable.setCheckedElements(new Object[0]);
-			return;
-		}
-		
 		List<Rule> nonDupes = new ArrayList<Rule>();
 
-		for (Rule rule : rs.getRules()) {
-			if (dupeChecker.isDuplicate(rule)) continue;
+		for (TableItem item : ruleTable.getTable().getItems()) {
+			Rule rule = (Rule) item.getData();
+			if (dupeChecker.isDuplicate(rule)) {
+				continue;
+			}
 			nonDupes.add(rule);
 		}
 

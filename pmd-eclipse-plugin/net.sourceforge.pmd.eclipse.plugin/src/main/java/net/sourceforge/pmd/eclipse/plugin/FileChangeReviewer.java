@@ -81,7 +81,6 @@ public class FileChangeReviewer implements IResourceChangeListener {
 		if (itemsChanged.isEmpty()) return;
 		
 		ReviewCodeCmd cmd = new ReviewCodeCmd();	// separate one for each thread
-		cmd.clearExistingMarkersBeforeApplying(true);
 		cmd.reset();
 		
 		for (ResourceChange chg : itemsChanged) cmd.addResource(chg.file);

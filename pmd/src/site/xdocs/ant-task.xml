@@ -57,7 +57,7 @@
       <td valign="top" align="center">No</td>
     </tr>
     <tr>
-      <td valign="top">excludemarker</td>
+      <td valign="top">suppressMarker</td>
       <td valign="top">The series of characters to use to tell PMD to skip lines - the default is NOPMD.</td>
       <td valign="top" align="center">No</td>
     </tr>

@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class UselessStringValueOfRule extends AbstractJavaRule {
 
@@ -33,11 +34,14 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
             if (args != null) {
                 ASTName arg = args.getFirstDescendantOfType(ASTName.class);
                 if (arg != null) {
-                    ASTType argType = arg.getNameDeclaration().getNode().jjtGetParent().jjtGetParent().getFirstDescendantOfType(ASTType.class);
-                    if (argType != null
-                            && argType.jjtGetChild(0) instanceof ASTReferenceType
-                            && ((ASTReferenceType)argType.jjtGetChild(0)).isArray()) {
-                        return super.visit(node, data);
+                    NameDeclaration declaration = arg.getNameDeclaration();
+                    if (declaration != null) {
+                        ASTType argType = declaration.getNode().jjtGetParent().jjtGetParent().getFirstDescendantOfType(ASTType.class);
+                        if (argType != null
+                                && argType.jjtGetChild(0) instanceof ASTReferenceType
+                                && ((ASTReferenceType)argType.jjtGetChild(0)).isArray()) {
+                            return super.visit(node, data);
+                        }
                     }
                 }
             }
@@ -71,11 +75,9 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                 Node gc = child.jjtGetChild(0);
                 if (gc instanceof ASTName) {
                     ASTName name = (ASTName) gc;
-                    if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
-                        VariableNameDeclaration nd = (VariableNameDeclaration) name.getNameDeclaration();
-                        if (nd.isPrimitiveType()) {
-                            result = true;
-                        }
+                    NameDeclaration nd = name.getNameDeclaration();
+                    if (nd instanceof VariableNameDeclaration && ((VariableNameDeclaration)nd).isPrimitiveType()) {
+                        result = true;
                     }
                 } else if (gc instanceof ASTLiteral) {
                     result = !((ASTLiteral) gc).isStringLiteral();

@@ -19,7 +19,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
@@ -63,9 +65,10 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         // if literal + public static final, return
         List<ASTName> nameNodes = node.findDescendantsOfType(ASTName.class);
         for (ASTName name: nameNodes) {
-            if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
+            if (name.getNameDeclaration() != null && name.getNameDeclaration() instanceof VariableNameDeclaration) {
                 VariableNameDeclaration vnd = (VariableNameDeclaration)name.getNameDeclaration();
-                if (vnd.getAccessNodeParent().isFinal() && vnd.getAccessNodeParent().isStatic()) {
+                AccessNode accessNodeParent = vnd.getAccessNodeParent();
+                if (accessNodeParent.isFinal() && accessNodeParent.isStatic()) {
                     return data;
                 }
             }
@@ -126,7 +129,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
 	
 	private ASTType getTypeNode(ASTName name) {
     	if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
-    		VariableNameDeclaration vnd = (VariableNameDeclaration) name.getNameDeclaration();
+    	    VariableNameDeclaration vnd = (VariableNameDeclaration) name.getNameDeclaration();
     		if (vnd.getAccessNodeParent() instanceof ASTLocalVariableDeclaration) {
     			ASTLocalVariableDeclaration l = (ASTLocalVariableDeclaration)vnd.getAccessNodeParent();
     			return l.getTypeNode();
@@ -147,7 +150,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
             return false;
         }
         ASTName n = s.getFirstDescendantOfType(ASTName.class);
-        if (n == null || n.getImage().indexOf(methodName) == -1 || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
+        if (n == null || n.getImage().indexOf(methodName) == -1 || !(n.getNameDeclaration() instanceof TypedNameDeclaration)) {
             return false;
         }
 
@@ -159,7 +162,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         if (argList == null || argList.jjtGetNumChildren() > 1) {
             return false;
         }
-        return TypeHelper.isEither((VariableNameDeclaration)n.getNameDeclaration(), StringBuffer.class, StringBuilder.class);
+        return TypeHelper.isEither((TypedNameDeclaration)n.getNameDeclaration(), StringBuffer.class, StringBuilder.class);
     }
 
     private boolean isAllocatedStringBuffer(ASTAdditiveExpression node) {

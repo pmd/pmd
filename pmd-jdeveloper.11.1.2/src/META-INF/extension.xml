@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<extension xmlns="http://jcp.org/jsr/198/extension-manifest" id="net.sourceforge.pmd.jdeveloper" version="11.1.2.4300"
+<extension xmlns="http://jcp.org/jsr/198/extension-manifest" id="net.sourceforge.pmd.jdeveloper" version="11.1.2.5050"
            esdk-version="1.0">
     <name>PMD JDeveloper Extension</name>
     <owner>Torsten Kleiber</owner>
@@ -33,6 +33,11 @@
                     <param name="element-class" value="oracle.jdeveloper.model.JavaSourceNode"/>
                 </parameters>
             </rule>
+            <rule id="context-has-jsp-element" type="context-has-element">
+                <parameters>
+                    <param name="element-class" value="oracle.jdeveloper.model.JspSourceNode"/>
+                </parameters>
+            </rule>
             <rule id="context-has-codeeditor-view" type="context-has-view">
                 <parameters>
                     <param name="view-class" value="oracle.ide.ceditor.CodeEditor"/>
@@ -40,9 +45,11 @@
             </rule>
             <composite-rule id="context-has-pmd-element">
                 <or>
+                    <rule-reference id="context-has-workspace-element"/>
                     <rule-reference id="context-has-project-element"/>
                     <rule-reference id="context-has-package-element"/>
                     <rule-reference id="context-has-java-element"/>
+                    <rule-reference id="context-has-jsp-element"/>
                     <and>
                         <rule-reference id="context-has-java-source-node"/>
                         <rule-reference id="context-has-codeeditor-view"/>
@@ -137,7 +144,7 @@
     </trigger-hooks>
     <hooks>
         <feature-hook>
-            <description>Provides integrated support for PMD 4.3 in JDeveloper 11g.</description>
+            <description>Provides integrated support for PMD 5.0.5 in JDeveloper 11g.</description>
             <optional>true</optional>
         </feature-hook>
         <jdeveloper-hook xmlns="http://xmlns.oracle.com/jdeveloper/1013/extension">

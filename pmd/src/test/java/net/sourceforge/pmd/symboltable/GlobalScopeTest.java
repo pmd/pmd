@@ -1,14 +1,15 @@
 package net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.Map;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 import org.junit.Test;
-
-import java.util.Map;
 
 public class GlobalScopeTest extends STBBaseTst {
 
@@ -17,7 +18,7 @@ public class GlobalScopeTest extends STBBaseTst {
         parseCode(TEST1);
         ASTCompilationUnit decl = acu;
         Scope scope = decl.getScope();
-        Map m = scope.getClassDeclarations();
+        Map m = scope.getDeclarations();
         ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) m.keySet().iterator().next();
         assertEquals(classNameDeclaration.getImage(), "Foo");
     }

@@ -60,8 +60,8 @@
     </tr>
 
     <tr><td><a href="#jdeveloper">JDeveloper</a></td>
-        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-jdeveloper/">pmd-jdeveloper</a></td>
-        <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
+        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-jdeveloper.12.1.2/">pmd-jdeveloper</a></td>
+        <td><a href="http://develishdevelopment.wordpress.com/">Torsten Kleiber</a></td>
     </tr>
 
     <tr><td><a href="#jedit">JEdit</a></td>
@@ -285,25 +285,32 @@ violation message within this view, you will be taken to the line in the source 
 
 
         <a name="jdeveloper"/><subsection name="JDeveloper">
-  <p>To install the extension for JDeveloper 10.1.2, download the binary release and unzip it
-      into your jdev/lib/ext directory.  Then restart JDeveloper.  To use it, open the
-Tools-&amp;Preferences menu, click on the PMD option, and select
-a couple of rules to try.  To run it, right click on either
-a Java source file or a .jpr file (i.e., a project file) and
-select PMD.  Any rule violations should show up in a
-LogWindow at the bottom of the screen.
-  </p>
-           <p>To install the extension for JDeveloper 10.1.3, use JDeveloper's built in "update center"
-               functionality. Fire up JDeveloper, click "Help", click "Check for Updates",
- then click "Add" to add a new update center and enter:
-<ul>
-<li>Name: PMD Update Center</li>
-<li>Location: <a href="http://pmd.sourceforge.net/center.xml">http://pmd.sourceforge.net/center.xml</a></li>
-</ul>
-</p>
-            <p>Click your way through the ensuing dialogs and you'll install the plugin.  Note
-            that I've set up the plugin for the latest JDeveloper 10.1.3 EA, so if you're using an earlier
-            preview release of 10.1.3 it might not work.</p>
+  <p>To install the PMD plugin for JDeveloper:</p>
+      <ul>
+          <li>JDeveloper 10.1.2: Download the binary release and unzip it into your jdev/lib/ext directory</li>
+          <li>JDeveloper 10.1.3 upwards: Click "Help", click "Check for Updates"</li>
+          <ul>
+              <li>JDeveloper 10.1.3:</li> 
+              <ul>
+                  <li>Press "Add" to add a new update center</li>
+                  <li>Name: PMD Update Center</li>
+                  <li>Location: <a href="http://pmd.sourceforge.net/center.xml">http://pmd.sourceforge.net/center.xml</a></li>
+                  <li>Select Update Center: PMD Update Center</li>
+              </ul>
+              <li>JDeveloper 11 upwards: Select Update Center: Open Source and Partner Extensions</li>
+              <li>Press Next and select the actual PMD Plugin and install it</li>
+          </ul>
+          <li>Restart JDeveloper</li>
+      </ul>
+  <p>To run the PMD plugin for JDeveloper:</p>
+      <ul>
+          <li>Open the Tools-&amp;Preferences menu</li>
+          <li>Click on the PMD option</li>
+          <li>Select a couple of rules to try</li>
+          <li>To run PMD, right click on either a file, folder, package, project or workspace and select PMD via 
+Toolbar Icon, Context Menu or File Menu</li>
+          <li>Any rule violations should show up in a LogWindow tab at the bottom of the screen</li>
+      </ul>
         </subsection>
 
 

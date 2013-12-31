@@ -49,8 +49,6 @@ public class PMDCommandLineInterface {
 	}
 
 	public static String buildUsageText() {
-		final String launchCmd = "java -jar " + jarName();
-
 		StringBuilder usage = new StringBuilder();
 
 		String allCommandsDescription = null;
@@ -67,7 +65,7 @@ public class PMDCommandLineInterface {
 		+ "3) A ruleset filename or a comma-delimited string of ruleset filenames"				+ PMD.EOL
 		+ PMD.EOL
 		+ "For example: "																		+ PMD.EOL
-		+ "c:\\> " + launchCmd + " -d c:\\my\\source\\code -f html -R java-unusedcode"			+ PMD.EOL
+		+ getWindowsLaunchCmd() + " -d c:\\my\\source\\code -f html -R java-unusedcode"			+ PMD.EOL
 		+ PMD.EOL;
 
 		fullText += supportedVersions() + PMD.EOL;
@@ -79,30 +77,36 @@ public class PMDCommandLineInterface {
 
 		fullText += "Available report formats and their configuration properties are:"					+ PMD.EOL
 		+ getReports()																			+ PMD.EOL
-		+ getExamples(launchCmd) + PMD.EOL
+		+ getExamples() + PMD.EOL
 		+ PMD.EOL + PMD.EOL;
 
 		return fullText += usage.toString();
 	}
 
-	private static String getExamples(String launchCmd) {
-		return getWindowsExample(launchCmd) + getUnixExample(launchCmd);
+	private static String getExamples() {
+		return getWindowsExample() + getUnixExample();
 	}
 
-	private static String getWindowsExample(String launchCmd) {
-		final String WINDOWS_PROMPT = "c:\\> ";
-		final String WINDOWS_PATH_TO_CODE = "c:\\my\\source\\code";
+	private static String getWindowsLaunchCmd() {
+	    final String WINDOWS_PROMPT = "C:\\>";
+	    final String launchCmd = "pmd-bin-" + PMD.VERSION + "\\bin\\pmd.bat";
+	    return WINDOWS_PROMPT + launchCmd;
+	}
+	private static String getWindowsExample() {
+	    final String launchCmd = getWindowsLaunchCmd();
+		final String WINDOWS_PATH_TO_CODE = "c:\\my\\source\\code ";
 
 		return "For example on windows: "															+ PMD.EOL
-		+ WINDOWS_PROMPT + launchCmd + " -dir" + WINDOWS_PATH_TO_CODE + "-format text -R java-unusedcode,java-imports -version 1.5 -language java -debug" + PMD.EOL
-		+ WINDOWS_PROMPT + launchCmd + " -dir" + WINDOWS_PATH_TO_CODE + "-f xml -rulesets java-basic,java-design -encoding UTF-8"					+ PMD.EOL
-		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-rulesets java-typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL
-		+ WINDOWS_PROMPT + launchCmd + " -d" + WINDOWS_PATH_TO_CODE + "-f html -R java-typeresolution -auxclasspath file:///C:/my/classpathfile" + PMD.EOL
+		+ launchCmd + " -dir " + WINDOWS_PATH_TO_CODE + "-format text -R java-unusedcode,java-imports -version 1.5 -language java -debug" + PMD.EOL
+		+ launchCmd + " -dir " + WINDOWS_PATH_TO_CODE + "-f xml -rulesets java-basic,java-design -encoding UTF-8"					+ PMD.EOL
+		+ launchCmd + " -d " + WINDOWS_PATH_TO_CODE + "-rulesets java-typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL
+		+ launchCmd + " -d " + WINDOWS_PATH_TO_CODE + "-f html -R java-typeresolution -auxclasspath file:///C:/my/classpathfile" + PMD.EOL
 		+ PMD.EOL;
 	}
 
-	private static String getUnixExample(String launchCmd) {
+	private static String getUnixExample() {
 		final String UNIX_PROMPT = "$ ";
+		final String launchCmd = "pmd-bin-" + PMD.VERSION + "/bin/run.sh pmd";
 		return "For example on *nix: "				+ PMD.EOL
 		+ UNIX_PROMPT + launchCmd + " -dir /home/workspace/src/main/java/code -f html -rulesets java-basic,java-design"				+ PMD.EOL
 		+ UNIX_PROMPT + launchCmd + " -d ./src/main/java/code -f xslt -R java-basic,java-design -property xsltFilename=my-own.xsl" + PMD.EOL

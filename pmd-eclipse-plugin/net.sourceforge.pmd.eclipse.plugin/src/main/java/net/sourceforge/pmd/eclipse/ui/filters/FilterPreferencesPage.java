@@ -577,7 +577,11 @@ public class FilterPreferencesPage extends AbstractPMDPreferencePage implements 
 		preferences.activeInclusionPatterns( patternsIn(filters, true) );
 		
 		preferences.sync();
-	
+
+		if (isModified()) {
+		    rebuildProjects();
+		}
+
 		return super.performOk();
 	}
 

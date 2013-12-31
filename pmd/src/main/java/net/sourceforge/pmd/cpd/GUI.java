@@ -106,7 +106,7 @@ public class GUI implements CPDListener {
 									public String[] extensions() { return new String[] {".rb" }; }; } },
 		{"Fortran",			new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("fortran"); }
-									public String[] extensions() { return new String[] {".rb" }; }; } },
+									public String[] extensions() { return new String[] {".for", ".f", ".f66", ".f77", ".f90" }; }; } },
 		{"PHP",				new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("php"); }
 									public String[] extensions() { return new String[] {".php" }; };	} },
@@ -586,12 +586,13 @@ public class GUI implements CPDListener {
             config.setIgnoreIdentifiers(ignoreIdentifiersCheckbox.isSelected());
             config.setIgnoreLiterals(ignoreLiteralsCheckbox.isSelected());
             config.setIgnoreAnnotations(ignoreAnnotationsCheckbox.isSelected());
-            CPDConfiguration.setSystemProperties(config);
             p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
 
             LanguageConfig conf = languageConfigFor((String)languageBox.getSelectedItem());
             Language language = conf.languageFor(new LanguageFactory(), p);
             config.setLanguage(language);
+
+            CPDConfiguration.setSystemProperties(config);
 
             CPD cpd = new CPD(config);
             cpd.setCpdListener(this);
@@ -612,21 +613,19 @@ public class GUI implements CPDListener {
             t.stop();
 
         	matches = new ArrayList<Match>();
-        	Match match;
         	for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
-        		match = i.next();
+        		Match match = i.next();
         		setLabelFor(match);
         		matches.add(match);
         	}
 
+            setListDataFrom(cpd.getMatches());
             String report = new SimpleRenderer().render(cpd.getMatches());
             if (report.length() == 0) {
                 JOptionPane.showMessageDialog(frame,
-                        "Done; couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
+                        "Done. Couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
             } else {
                 resultsTextArea.setText(report);
-                setListDataFrom(cpd.getMatches());
-
             }
         } catch (IOException t) {
             t.printStackTrace();

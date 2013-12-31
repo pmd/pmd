@@ -19,10 +19,16 @@ public class ASTElementGet extends AbstractEcmascriptNode<ElementGet> {
     }
 
     public EcmascriptNode getTarget() {
-	return (EcmascriptNode) node.getTarget();
+        if (jjtGetNumChildren() > 0) {
+            return (EcmascriptNode)jjtGetChild(0);
+        }
+        return null;
     }
 
     public EcmascriptNode getElement() {
-	return (EcmascriptNode) node.getElement();
+        if (jjtGetNumChildren() > 1) {
+            return (EcmascriptNode)jjtGetChild(1);
+        }
+        return null;
     }
 }

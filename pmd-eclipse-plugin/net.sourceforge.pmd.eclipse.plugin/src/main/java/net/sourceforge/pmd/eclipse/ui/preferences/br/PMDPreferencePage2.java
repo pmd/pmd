@@ -38,9 +38,12 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -55,6 +58,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 	private TabFolder 		     	tabFolder;
 	private RulePropertyManager[]   rulePropertyManagers;
 	private RuleTableManager		tableManager;
+	private Button                  globalRuleManagementCheckButton;
     	
 	// columns shown in the rule treetable in the desired order
 	public static final RuleColumnDescriptor[] availableColumns = new RuleColumnDescriptor[] {
@@ -373,12 +377,37 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
      * @param parent Composite
      */
     private void layoutControls(Composite parent) {
+        parent.setLayout(new RowLayout(SWT.VERTICAL));
 
-        parent.setLayout(new FormLayout());
+        Composite checkboxPanel = new Composite(parent, 0);
+        checkboxPanel.setLayout(new RowLayout(SWT.VERTICAL));
+        final Button checkButton = new Button(checkboxPanel, SWT.CHECK);
+        globalRuleManagementCheckButton = checkButton;
+
+        final Composite contentPanel = new Composite(parent, 0);
+        contentPanel.setLayout(new FormLayout());
+
+        checkButton.setText(SWTUtil.stringFor(StringKeys.PREF_RULESET_BUTTON_GLOBALRULEMANAGEMENT));
+        checkButton.setSelection(preferences.getGlobalRuleManagement());
+        checkButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                boolean sel = checkButton.getSelection();
+                SWTUtil.setEnabledRecursive(contentPanel.getChildren(), sel);
+                setModified();
+            }
+        });
+
+        Label explanation = new Label(checkboxPanel, SWT.WRAP);
+        RowData rowData = new RowData();
+        rowData.width = 450;
+        explanation.setLayoutData(rowData);
+        explanation.setText(SWTUtil.stringFor(StringKeys.PREF_RULESET_BUTTON_GLOBALRULEMANAGEMENT_EXPL));
+
         int ruleTableFraction = 55;	//PreferenceUIStore.instance.tableFraction();
 
         // Create the sash first, so the other controls can be attached to it.
-        final Sash sash = new Sash(parent, SWT.HORIZONTAL);
+        final Sash sash = new Sash(contentPanel, SWT.HORIZONTAL);
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);                   // attach to left
         data.right = new FormAttachment(100, 0);                // attach to right
@@ -394,7 +423,7 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         });
 
         // Create the first text box and attach its bottom edge to the sash
-        Composite ruleSection = createRuleSection(parent);
+        Composite ruleSection = createRuleSection(contentPanel);
         data = new FormData();
         data.top = new FormAttachment(0, 0);
         data.bottom = new FormAttachment(sash, 0);
@@ -403,13 +432,15 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
         ruleSection.setLayoutData(data);
 
         // Create the second text box and attach its top edge to the sash
-        TabFolder propertySection = buildTabFolder(parent);
+        TabFolder propertySection = buildTabFolder(contentPanel);
         data = new FormData();
         data.top = new FormAttachment(sash, 0);
         data.bottom = new FormAttachment(100, 0);
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
         propertySection.setLayoutData(data);
+
+        SWTUtil.setEnabledRecursive(contentPanel.getChildren(), checkButton.getSelection());
     }
 
 	/**
@@ -468,33 +499,12 @@ public class PMDPreferencePage2 extends AbstractPMDPreferencePage implements Rul
 		}
 	}
 
-	/**
-	 * If user wants to, rebuild all projects
-	 */
-	private void rebuildProjects() {
-		if (MessageDialog.openQuestion(getShell(), getMessage(StringKeys.QUESTION_TITLE),
-				getMessage(StringKeys.QUESTION_RULES_CHANGED))) {
-			try {
-				ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
-				monitorDialog.run(true, true, new IRunnableWithProgress() {
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						try {
-							ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-						} catch (CoreException e) {
-							plugin.logError("Exception building all projects after a preference change", e);
-						}
-					}
-				});
-			} catch (Exception e) {
-				plugin.logError("Exception building all projects after a preference change", e);
-			}
-		}
-	}
-
 	private void saveUIState() {
 		tableManager.saveUIState();
 		int i =  tabFolder.getSelectionIndex();
 		PreferenceUIStore.instance.selectedPropertyTab( i );
+		PreferenceUIStore.instance.globalRuleManagement( globalRuleManagementCheckButton.getSelection() );
+		preferences.setGlobalRuleManagement( globalRuleManagementCheckButton.getSelection() );
 		PreferenceUIStore.instance.save();
 	}
 

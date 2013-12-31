@@ -3,19 +3,21 @@
  */
 package net.sourceforge.pmd.lang.java.rule.comments;
 
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessTypeNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.MultiLineComment;
@@ -37,7 +39,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 
 		int atPos = comments.indexOf('@');
 		if (atPos < 0)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 
 		List<Integer> ints = new ArrayList<Integer>();
 		ints.add(atPos);
@@ -146,63 +148,91 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 	}
 
 	protected void assignCommentsToDeclarations(ASTCompilationUnit cUnit) {
-		SortedMap<Integer, Object> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
+		SortedMap<Integer, Node> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
 		FormalComment lastComment = null;
+		AbstractJavaAccessNode lastNode = null;
 
-		for (Entry<Integer, Object> entry : itemsByLineNumber.entrySet()) {
-			Object value = entry.getValue();
+		for (Entry<Integer, Node> entry : itemsByLineNumber.entrySet()) {
+			Node value = entry.getValue();
+
 			if (lastComment == null) {
 				if (value instanceof FormalComment) {
 					lastComment = (FormalComment) value;
+				} else {
+				    // else this is declaration without comment
+				    if (value instanceof AbstractJavaAccessNode) {
+				        if (!(value instanceof AbstractJavaAccessTypeNode)) {
+				            lastNode = (AbstractJavaAccessNode) value;
+				        }
+				    }
 				}
-				// else this is declaration without comment
 			} else if (value instanceof AbstractJavaAccessNode) {
 				AbstractJavaAccessNode node = (AbstractJavaAccessNode) value;
-				node.comment(lastComment);
-				lastComment = null;
+
+				// maybe the last comment is within the last node
+				if (isCommentNotWithin(lastComment, lastNode) && isCommentBefore(lastComment, node)) {
+				    node.comment(lastComment);
+				    lastComment = null;
+				}
+				if (!(node instanceof AbstractJavaAccessTypeNode)) {
+				    lastNode = node;
+				}
 			}
 		}
 	}
 
-	/**
-	 * 
-	 * @since
-	 * @param cUnit
-	 * @return bla
-	 */
-	protected SortedMap<Integer, Object> orderedCommentsAndDeclarations(
-			ASTCompilationUnit cUnit) {
+    private boolean isCommentNotWithin(FormalComment n1, Node n2) {
+        if (n1 == null || n2 == null) {
+            return true;
+        }
+        if ((n1.getEndLine() < n2.getEndLine())
+                || (n1.getEndLine() == n2.getEndLine() && n1.getEndColumn() < n2.getEndColumn())) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
-		SortedMap<Integer, Object> itemsByLineNumber = new TreeMap<Integer, Object>();
-
-		List<ASTClassOrInterfaceDeclaration> packageDecl = cUnit
-				.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
-		for (ASTClassOrInterfaceDeclaration decl : packageDecl) {
-			itemsByLineNumber.put(decl.getBeginLine(), decl);
-		}
-
-		for (Comment comment : cUnit.getComments()) {
-			itemsByLineNumber.put(comment.getBeginLine(), comment);
-		}
-
-		List<ASTFieldDeclaration> fields = cUnit
-				.findDescendantsOfType(ASTFieldDeclaration.class);
-		for (ASTFieldDeclaration fieldDecl : fields) {
-			itemsByLineNumber.put(fieldDecl.getBeginLine(), fieldDecl);
-		}
-
-		List<ASTMethodDeclaration> methods = cUnit
-				.findDescendantsOfType(ASTMethodDeclaration.class);
-		for (ASTMethodDeclaration methodDecl : methods) {
-			itemsByLineNumber.put(methodDecl.getBeginLine(), methodDecl);
-		}
-
-		List<ASTConstructorDeclaration> constructors = cUnit
-		        .findDescendantsOfType(ASTConstructorDeclaration.class);
-		for (ASTConstructorDeclaration constructorDecl : constructors) {
-		    itemsByLineNumber.put(constructorDecl.getBeginLine(), constructorDecl);
-		}
-
-		return itemsByLineNumber;
+    private boolean isCommentBefore(FormalComment n1, Node n2) {
+        if ((n1.getEndLine() < n2.getBeginLine())
+                || (n1.getEndLine() == n2.getBeginLine() && n1.getEndColumn() < n2.getBeginColumn())) {
+            return true;
+        } else {
+            return false;
+        }
 	}
+
+    /**
+     * 
+     * @since
+     * @param cUnit
+     * @return bla
+     */
+    protected SortedMap<Integer, Node> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
+
+        SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<Integer, Node>();
+
+        List<ASTClassOrInterfaceDeclaration> packageDecl = cUnit
+                .findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
+        addDeclarations(itemsByLineNumber, packageDecl);
+
+        addDeclarations(itemsByLineNumber, cUnit.getComments());
+
+        List<ASTFieldDeclaration> fields = cUnit.findDescendantsOfType(ASTFieldDeclaration.class);
+        addDeclarations(itemsByLineNumber, fields);
+
+        List<ASTMethodDeclaration> methods = cUnit.findDescendantsOfType(ASTMethodDeclaration.class);
+        addDeclarations(itemsByLineNumber, methods);
+
+        List<ASTConstructorDeclaration> constructors = cUnit.findDescendantsOfType(ASTConstructorDeclaration.class);
+        addDeclarations(itemsByLineNumber, constructors);
+
+        return itemsByLineNumber;
+    }
+
+    private void addDeclarations(SortedMap<Integer, Node> map, List<? extends Node> nodes) {
+        for (Node node : nodes) {
+            map.put((node.getBeginLine() << 16) + node.getBeginColumn(), node);
+        }
+    }
 }

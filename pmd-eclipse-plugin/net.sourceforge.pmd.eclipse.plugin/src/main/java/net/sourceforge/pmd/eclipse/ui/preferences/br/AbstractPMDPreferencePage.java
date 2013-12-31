@@ -1,9 +1,19 @@
 package net.sourceforge.pmd.eclipse.ui.preferences.br;
 
+import java.lang.reflect.InvocationTargetException;
+
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.eclipse.runtime.preferences.IPreferences;
+import net.sourceforge.pmd.eclipse.ui.nls.StringKeys;
 import net.sourceforge.pmd.eclipse.ui.preferences.editors.SWTUtil;
 
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -67,6 +77,29 @@ public abstract class AbstractPMDPreferencePage extends PreferencePage implement
      */
     protected String getMessage(String key) {
         return PMDPlugin.getDefault().getStringTable().getString(key);
+    }
+
+    /**
+     * If user wants to, rebuild all projects
+     */
+    protected void rebuildProjects() {
+        if (MessageDialog.openQuestion(getShell(), getMessage(StringKeys.QUESTION_TITLE),
+                getMessage(StringKeys.QUESTION_RULES_CHANGED))) {
+            try {
+                ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getShell());
+                monitorDialog.run(true, true, new IRunnableWithProgress() {
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                        try {
+                            ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+                        } catch (CoreException e) {
+                            plugin.logError("Exception building all projects after a preference change", e);
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                plugin.logError("Exception building all projects after a preference change", e);
+            }
+        }
     }
 
 }

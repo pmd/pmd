@@ -146,7 +146,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 	this.parseProblems = parseProblems;
     }
 
-    private <T extends AstNode> EcmascriptNode<T> createNodeAdapter(T node) {
+    static <T extends AstNode> EcmascriptNode<T> createNodeAdapter(T node) {
 	try {
 	    @SuppressWarnings("unchecked") // the register function makes sure only EcmascriptNode<T> can be added,
 	    // where T is "T extends AstNode".

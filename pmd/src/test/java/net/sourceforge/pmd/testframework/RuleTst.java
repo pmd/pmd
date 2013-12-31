@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Map;
 import java.util.Properties;
 
@@ -29,6 +30,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.renderers.TextRenderer;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -75,6 +77,7 @@ public abstract class RuleTst {
         Map<PropertyDescriptor<?>, Object> oldProperties = rule.getPropertiesByPropertyDescriptor();
         try {
             int res;
+            Report report;
             try {
         	// Set test specific properties onto the Rule
                 if (test.getProperties() != null) {
@@ -90,11 +93,13 @@ public abstract class RuleTst {
                     }
                 }
 
-                res = processUsingStringReader(test.getCode(), rule, test.getLanguageVersion()).size();
+                report = processUsingStringReader(test.getCode(), rule, test.getLanguageVersion());
+                res = report.size();
             } catch (Throwable t) {
                 t.printStackTrace();
                 throw new RuntimeException('"' + test.getDescription() + "\" failed", t);
             }
+            printReport(test, report);
             assertEquals('"' + test.getDescription() + "\" resulted in wrong number of failures,",
                     test.getNumberOfProblemsExpected(), res);
         } finally {
@@ -104,6 +109,27 @@ public abstract class RuleTst {
             for (Map.Entry entry: oldProperties.entrySet()) {
         	rule.setProperty((PropertyDescriptor)entry.getKey(), entry.getValue());
             }
+        }
+    }
+
+    private void printReport(TestDescriptor test, Report report) {
+        if (test.getNumberOfProblemsExpected() != report.size()) {
+            System.out.println("--------------------------------------------------------------");
+            System.out.println("Test Failure: " + test.getDescription());
+            System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), but "
+                    + report.size() + " problem(s) found.");
+            System.out.println();
+            TextRenderer renderer = new TextRenderer();
+            renderer.setWriter(new StringWriter());
+            try {
+                renderer.start();
+                renderer.renderFileReport(report);
+                renderer.end();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(renderer.getWriter().toString());
+            System.out.println("--------------------------------------------------------------");
         }
     }
 

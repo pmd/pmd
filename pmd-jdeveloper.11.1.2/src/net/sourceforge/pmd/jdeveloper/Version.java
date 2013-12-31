@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.jdeveloper;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.SourceType;
+// TODO ? import net.sourceforge.pmd.SourceType;
 
 import oracle.ide.Context;
 import oracle.ide.Ide;
@@ -13,6 +13,7 @@ final class Version {
     private Version() {
     }
 
+/*  TODO?
     public static void setJavaVersion(final Context context, final PMD pmd) {
         final BuildSystemConfiguration config =
             BuildSystemConfiguration.getInstance(context.getProject());
@@ -27,9 +28,9 @@ final class Version {
             pmd.setJavaVersion(SourceType.JAVA_13);
         }
     }
-
+*/
     public static String version() {
-        return "11.1.2.4300"; // NOPMD
+        return "11.1.2.5050"; // NOPMD
     }
 
     public static String getJdevHome() {

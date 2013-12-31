@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import java.util.List;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -57,6 +59,21 @@ public class IdempotentOperationsRule extends AbstractJavaRule {
 
         if (lhs.findDescendantsOfType(ASTPrimarySuffix.class).size() != rhs.findDescendantsOfType(ASTPrimarySuffix.class).size()) {
             return super.visit(node, data);
+        }
+
+        List<ASTPrimarySuffix> lhsSuffixes = lhs.jjtGetParent().jjtGetParent().findDescendantsOfType(ASTPrimarySuffix.class);
+        List<ASTPrimarySuffix> rhsSuffixes = rhs.jjtGetParent().jjtGetParent().findDescendantsOfType(ASTPrimarySuffix.class);
+        if (lhsSuffixes.size() != rhsSuffixes.size()) {
+            return super.visit(node, data);
+        }
+
+        for (int i = 0; i < lhsSuffixes.size(); i++) {
+            ASTPrimarySuffix l = lhsSuffixes.get(i);
+            ASTPrimarySuffix r = rhsSuffixes.get(i);
+
+            if (!l.hasImageEqualTo(r.getImage())) {
+                return super.visit(node, data);
+            }
         }
 
         addViolation(data, node);
