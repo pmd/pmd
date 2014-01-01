@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd;
 
 import java.util.List;
@@ -84,7 +87,7 @@ public interface PropertySource {
      * Return the properties that are effectively ignored due to the configuration
      * of the rule and values held by other properties. This can be used to disable
      * corresponding widgets in a UI.
-     *
+     * @return the properties that are ignored
      */
     Set<PropertyDescriptor<?>> ignoredProperties();
     

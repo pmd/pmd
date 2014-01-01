@@ -3,13 +3,13 @@
  */
 package net.sourceforge.pmd.util;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.lang.java.symboltable.Applier;
-import net.sourceforge.pmd.util.UnaryFunction;
-
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sourceforge.pmd.lang.java.symboltable.Applier;
+
+import org.junit.Test;
 
 public class ApplierTest {
 

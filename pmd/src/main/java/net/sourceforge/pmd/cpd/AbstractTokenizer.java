@@ -1,12 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- * @author Zev Blut zb@ubit.com
- * @author Romain PELISSE belaran@gmail.com
  */
 package net.sourceforge.pmd.cpd;
 
 import java.util.List;
 
+/**
+ *
+ * @author Zev Blut zb@ubit.com
+ * @author Romain PELISSE belaran@gmail.com
+ */
 public abstract class AbstractTokenizer implements Tokenizer {
 
 	//FIXME depending on subclasses to assign local vars is rather fragile - better to make private and setup via explicit hook methods

@@ -1,6 +1,10 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd;
 
 /**
+ * Base configuration class for both PMD and CPD.
  * @author Brian Remedios
  */
 public abstract class AbstractConfiguration {
@@ -8,6 +12,9 @@ public abstract class AbstractConfiguration {
 	private String sourceEncoding = System.getProperty("file.encoding");
 	private boolean debug;
 
+	/**
+	 * Create a new abstract configuration.
+	 */
 	protected AbstractConfiguration() {
 		super();
 	}

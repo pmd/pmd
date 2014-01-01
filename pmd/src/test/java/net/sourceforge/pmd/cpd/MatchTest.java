@@ -6,12 +6,10 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
-
-import org.junit.Test;
 
 import java.util.Iterator;
+
+import org.junit.Test;
 
 public class MatchTest {
 

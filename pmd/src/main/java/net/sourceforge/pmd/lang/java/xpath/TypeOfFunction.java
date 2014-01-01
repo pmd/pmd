@@ -32,7 +32,7 @@ public class TypeOfFunction implements Function {
 		for (int i = 0; i < args.size(); i++) {
 		    if (args.get(i) instanceof List) {
 			if (attr == null) {
-			    attr = (Attribute) ((List) args.get(i)).get(0);
+			    attr = ((List<Attribute>) args.get(i)).get(0);
 			    nodeTypeName = attr.getStringValue();
 			} else {
 			    throw new IllegalArgumentException(
@@ -59,7 +59,7 @@ public class TypeOfFunction implements Function {
     // TEST //ClassOrInterfaceType[typeof(@Image, 'java.lang.String')]
     public static boolean typeof(Node n, String nodeTypeName, String fullTypeName, String shortTypeName) {
 	if (n instanceof TypeNode) {
-	    Class type = ((TypeNode) n).getType();
+	    Class<?> type = ((TypeNode) n).getType();
 	    if (type == null) {
 		return nodeTypeName != null
 			&& (nodeTypeName.equals(fullTypeName) || nodeTypeName.equals(shortTypeName));
@@ -67,7 +67,7 @@ public class TypeOfFunction implements Function {
 	    if (type.getName().equals(fullTypeName)) {
 		return true;
 	    }
-	    List<Class> implementors = Arrays.asList(type.getInterfaces());
+	    List<Class<?>> implementors = Arrays.asList(type.getInterfaces());
 	    if (implementors.contains(type)) {
 		return true;
 	    }

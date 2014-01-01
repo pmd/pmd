@@ -100,8 +100,9 @@ options {
 
 PARSER_BEGIN(JavaParser)
 package net.sourceforge.pmd.lang.java.ast;
-import java.util.*;
-import net.sourceforge.pmd.PMD;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 public class JavaParser {

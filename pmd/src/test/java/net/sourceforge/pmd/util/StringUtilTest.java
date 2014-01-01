@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.util;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.util.StringUtil;
 
 import org.junit.Test;
 public class StringUtilTest {

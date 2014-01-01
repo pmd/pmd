@@ -44,6 +44,7 @@ public class RuleContext {
 
     /**
      * Constructor which shares attributes and report listeners with the given RuleContext.
+     * @param ruleContext the context from which the values are shared
      */
     public RuleContext(RuleContext ruleContext) {
 	this.attributes = ruleContext.attributes;

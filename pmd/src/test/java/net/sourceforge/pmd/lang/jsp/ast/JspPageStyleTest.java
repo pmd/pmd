@@ -1,22 +1,16 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.jsp.ast;
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.lang.jsp.ast.ASTElExpression;
-import net.sourceforge.pmd.lang.jsp.ast.ASTJspComment;
-import net.sourceforge.pmd.lang.jsp.ast.ASTJspDeclaration;
-import net.sourceforge.pmd.lang.jsp.ast.ASTJspDirective;
-import net.sourceforge.pmd.lang.jsp.ast.ASTJspDirectiveAttribute;
-import net.sourceforge.pmd.lang.jsp.ast.ASTJspExpression;
-import net.sourceforge.pmd.lang.jsp.ast.ASTJspExpressionInAttribute;
-import net.sourceforge.pmd.lang.jsp.ast.ASTJspScriptlet;
-import net.sourceforge.pmd.lang.jsp.ast.ASTValueBinding;
-
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.Test;
 public class JspPageStyleTest extends AbstractJspNodesTst {
 
     /**

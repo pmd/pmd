@@ -6,11 +6,10 @@ package net.sourceforge.pmd.renderers;
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 import org.junit.Test;

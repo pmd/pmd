@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
@@ -49,9 +52,11 @@ public abstract class AbstractNode implements Node {
     }
     
     public void jjtOpen() {
+	// to be overridden by subclasses
     }
 
     public void jjtClose() {
+	// to be overridden by subclasses
     }
 
     public void jjtSetParent(Node parent) {

@@ -3,14 +3,20 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+/**
+ * Unit test for {@link SourceCodePositioner}.
+ */
 public class SourceCodePositionerTest {
 
     private final String SOURCE_CODE = "abcd\ndefghi\n\njklmn\nopq";
 
+    /**
+     * Tests whether the lines and columns are calculated correctly.
+     */
     @Test
     public void testLineNumberFromOffset() {
 	SourceCodePositioner positioner = new SourceCodePositioner(SOURCE_CODE);

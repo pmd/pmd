@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.typeresolution;
 
 import static org.junit.Assert.assertEquals;
@@ -61,7 +64,7 @@ public class ClassTypeResolverTest {
 		assertEquals(ArrayListFound.class, acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
 		ASTImportDeclaration id = acu.getFirstDescendantOfType(ASTImportDeclaration.class);
 		assertEquals("java.util", id.getPackage().getName());
-		assertEquals(java.util.ArrayList.class, id.getType());
+		assertEquals(ArrayList.class, id.getType());
 		assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType());
 		assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTReferenceType.class).getType());
 		assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTType.class).getType());

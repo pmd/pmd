@@ -4,12 +4,14 @@
 // stolen from XPath Explorer (http://www.xpathexplorer.com)
 package net.sourceforge.pmd.cpd;
 
-import javax.swing.*;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 public class GridBagHelper {
 

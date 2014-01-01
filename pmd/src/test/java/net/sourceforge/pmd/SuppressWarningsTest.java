@@ -1,10 +1,10 @@
-
- package net.sourceforge.pmd;
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -15,7 +15,7 @@ import net.sourceforge.pmd.testframework.RuleTst;
 import org.junit.Test;
 
 
- public class SuppressWarningsTest extends RuleTst {
+public class SuppressWarningsTest extends RuleTst {
 
      private static class FooRule extends AbstractJavaRule {
         @Override

@@ -1,10 +1,10 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
 
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
 public class EcmascriptTokenizer extends AbstractTokenizer {
     public EcmascriptTokenizer() {
         // setting markers for "string" in javascript

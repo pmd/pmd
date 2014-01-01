@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.util;
 
 import static org.junit.Assert.assertEquals;
@@ -8,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import net.sourceforge.pmd.util.CompoundIterator;
 
 import org.junit.Before;
 import org.junit.Test;

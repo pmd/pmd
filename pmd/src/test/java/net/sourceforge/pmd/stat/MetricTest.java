@@ -24,11 +24,9 @@ package net.sourceforge.pmd.stat;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
-import net.sourceforge.pmd.stat.Metric;
-
 import java.util.Random;
+
+import org.junit.Test;
 /**
  * @author David Dixon-Peugh
  */

@@ -12,14 +12,24 @@ public final class SynchronizedReportListener implements ReportListener {
 
     private final ReportListener wrapped;
     
+    /**
+     * Creates a new {@link SynchronizedReportListener} by wrapping the given report listener.
+     * @param listener the listener to be synchronized
+     */
     public SynchronizedReportListener(ReportListener listener) {
 	this.wrapped = listener;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public synchronized void ruleViolationAdded(RuleViolation ruleViolation) {
 	wrapped.ruleViolationAdded(ruleViolation);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public synchronized void metricAdded(Metric metric) {
 	wrapped.metricAdded(metric);
     }

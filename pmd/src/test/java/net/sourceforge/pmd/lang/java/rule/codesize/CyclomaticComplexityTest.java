@@ -11,7 +11,6 @@ import java.util.Iterator;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule;
 import net.sourceforge.pmd.testframework.RuleTst;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;

@@ -41,7 +41,7 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
 		} else if (type.getType().equals(Cloneable.class)) {
 		    return data;
 		} else {
-		    List implementors = Arrays.asList(type.getType().getInterfaces());
+		    List<Class<?>> implementors = Arrays.asList(type.getType().getInterfaces());
 		    if (implementors.contains(Cloneable.class)) {
 			return data;
 		    }
@@ -50,7 +50,7 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
 	}
 	if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0) instanceof ASTExtendsList) {
 	    ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
-	    Class clazz = type.getType();
+	    Class<?> clazz = type.getType();
 	    if (clazz != null && clazz.equals(Cloneable.class)) {
 		return data;
 	    }

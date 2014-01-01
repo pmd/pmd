@@ -5,12 +5,11 @@ package net.sourceforge.pmd.ant;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.ant.Formatter;
+
+import java.io.File;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import java.io.File;
 
 public class FormatterTest {
 

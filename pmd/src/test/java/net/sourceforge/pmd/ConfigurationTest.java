@@ -11,9 +11,6 @@ import java.net.URL;
 import java.util.Properties;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;

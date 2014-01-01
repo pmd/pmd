@@ -5,15 +5,13 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.cpd.FileReporter;
-import net.sourceforge.pmd.cpd.ReportException;
-
-import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
+import org.junit.Test;
 
 /**
  * @author Philippe T'Seyen

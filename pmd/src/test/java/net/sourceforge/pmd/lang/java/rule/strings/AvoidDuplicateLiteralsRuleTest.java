@@ -5,14 +5,13 @@ package net.sourceforge.pmd.lang.java.rule.strings;
  
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
+
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.java.rule.strings.AvoidDuplicateLiteralsRule;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 import org.junit.Test;
-
-
-import java.util.Set;
  
  public class AvoidDuplicateLiteralsRuleTest extends SimpleAggregatorTst {
      

@@ -22,8 +22,6 @@
 
         <!-- JDocHeader -->
         <module name="JavadocType">
-            <property name="versionFormat"      value="\S"/>
-            <property name="authorFormat"       value="\S"/>
             <property name="severity"           value="error"/>
         </module>
 
@@ -31,6 +29,8 @@
         <module name="JavadocMethod">
             <property name="severity"   value="error"/>
             <property name="scope"      value="package"/>
+            <property name="allowUndeclaredRTE" value="true"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
         </module>
 
         <!-- JDocMethod-1 -->

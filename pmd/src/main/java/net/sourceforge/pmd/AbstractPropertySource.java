@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd;
 
 import java.util.ArrayList;
@@ -11,24 +14,39 @@ import java.util.Set;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * 
+ * Base class for objects which can be configured through properties.
+ * Rules and Reports are such objects.
+ *
  * @author Brian Remedios
  */
 public abstract class AbstractPropertySource implements PropertySource {
 
+	/** The list of known properties that can be configured. */
 	protected List<PropertyDescriptor<?>> propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
+	/** The values for each property. */
 	protected Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<PropertyDescriptor<?>, Object>();
 
+	/**
+	 * Creates a new empty property source.
+	 */
 	public AbstractPropertySource() {
 		super();
 	}
 
+	/**
+	 * Creates a copied list of the property descriptors and returns it.
+	 * @return a copy of the property descriptors.
+	 */
 	protected List<PropertyDescriptor<?>> copyPropertyDescriptors() {
 		List<PropertyDescriptor<?>> copy = new ArrayList<PropertyDescriptor<?>>(propertyDescriptors.size());
 		copy.addAll(propertyDescriptors);
 		return copy;
 	}
 
+	/**
+	 * Creates a copied map of the values of the properties and returns it.
+	 * @return a copy of the values
+	 */
 	protected Map<PropertyDescriptor<?>, Object> copyPropertyValues() {
 		Map<PropertyDescriptor<?>, Object> copy = new HashMap<PropertyDescriptor<?>, Object>(propertyValuesByDescriptor.size());
 		copy.putAll(propertyValuesByDescriptor);
@@ -36,14 +54,14 @@ public abstract class AbstractPropertySource implements PropertySource {
 	}
 
 	/**
-	  * @see Rule#ignoredProperties()
+	 *  {@inheritDoc}
 	  */
 	public Set<PropertyDescriptor<?>> ignoredProperties() {
 		 return Collections.emptySet();
 	 }
 
 	/**
-	  * @see Rule#definePropertyDescriptor(PropertyDescriptor)
+	  * {@inheritDoc}
 	  */
 	public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
 		 // Check to ensure the property does not already exist.

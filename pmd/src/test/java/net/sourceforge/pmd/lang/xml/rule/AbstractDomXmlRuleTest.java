@@ -1,9 +1,10 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.xml.rule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -17,9 +18,7 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
-import net.sourceforge.pmd.lang.xml.rule.AbstractDomXmlRule;
 
-import org.jaxen.JaxenException;
 import org.junit.Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CharacterData;

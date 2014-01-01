@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 
 import net.sourceforge.pmd.ReadableDurationTest;
-import net.sourceforge.pmd.util.DateTimeUtil;
 
 import org.junit.Test;
 

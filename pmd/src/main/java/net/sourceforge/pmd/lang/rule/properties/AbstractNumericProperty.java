@@ -1,10 +1,15 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
+
+import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
+import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
 
 import java.util.Map;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
-import static net.sourceforge.pmd.PropertyDescriptorFields.*;
 
 /**
  * Maintains a pair of boundary limit values between which all values managed

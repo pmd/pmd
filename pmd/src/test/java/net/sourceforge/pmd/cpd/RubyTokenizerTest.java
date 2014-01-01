@@ -1,10 +1,11 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.RubyTokenizer;
-import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 import org.junit.Before;

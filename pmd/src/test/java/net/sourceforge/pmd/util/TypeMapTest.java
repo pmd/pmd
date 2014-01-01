@@ -21,7 +21,7 @@ public class TypeMapTest {
 	public void testAddClassOfQ() {
 		
 		TypeMap map = new TypeMap(2);
-		map.add(java.util.List.class);
+		map.add(List.class);
 		
 		try {
 			 map.add(java.awt.List.class);

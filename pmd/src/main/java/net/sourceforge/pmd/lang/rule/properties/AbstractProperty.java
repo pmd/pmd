@@ -3,13 +3,16 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
+import static net.sourceforge.pmd.PropertyDescriptorFields.DESCRIPTION;
+import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.StringUtil;
-import static net.sourceforge.pmd.PropertyDescriptorFields.*;
 /**
  *
  * @author Brian Remedios

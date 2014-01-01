@@ -1,15 +1,26 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties.factories;
+
+import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
+import static net.sourceforge.pmd.PropertyDescriptorFields.DELIMITER;
+import static net.sourceforge.pmd.PropertyDescriptorFields.DESC;
+import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
+import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
+import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
+import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
-import static net.sourceforge.pmd.PropertyDescriptorFields.*;
 
 /**
  * 

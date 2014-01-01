@@ -76,7 +76,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
      * @param classesStr String
      * @return Class[]
      */
-    public static Class[] typesFrom(String classesStr) {
+    public static Class<?>[] typesFrom(String classesStr) {
         String[] values = StringUtil.substringsOf(classesStr, DELIMITER);
 
         Class<?>[] classes = new Class<?>[values.length];

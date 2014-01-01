@@ -1,11 +1,15 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
+
+import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
-import static net.sourceforge.pmd.PropertyDescriptorFields.*;
 
 /**
  * Concrete subclasses manage items that reside within namespaces per the design of the Java language.

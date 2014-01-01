@@ -5,9 +5,6 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.JavaTokenizer;
-import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.cpd.Tokens;
 
 import org.junit.Test;
 

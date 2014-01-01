@@ -13,8 +13,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
 
 import org.junit.Test;
 

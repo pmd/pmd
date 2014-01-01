@@ -218,7 +218,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 	    for (ParseProblem parseProblem : parseProblems) {
 		// The node overlaps the comma (i.e. end of the problem)?
 		int problemStart = parseProblem.getFileOffset();
-		int commaPosition = parseProblem.getFileOffset() + parseProblem.getLength() - 1;
+		int commaPosition = problemStart + parseProblem.getLength() - 1;
 		if (nodeStart <= commaPosition && commaPosition <= nodeEnd) {
 		    if ("Trailing comma is not legal in an ECMA-262 object initializer".equals(parseProblem.getMessage())) {
 			// Report on the shortest code block containing the
