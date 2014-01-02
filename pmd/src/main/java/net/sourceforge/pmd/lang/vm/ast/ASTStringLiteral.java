@@ -27,7 +27,7 @@ import org.apache.commons.lang3.text.StrBuilder;
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @version $Id: ASTStringLiteral.java 705297 2008-10-16 17:59:24Z nbubna $
  */
-public class ASTStringLiteral extends SimpleNode {
+public class ASTStringLiteral extends AbstractVmNode {
     /* cache the value of the interpolation switch */
     private final boolean interpolate = true;
 
@@ -52,7 +52,7 @@ public class ASTStringLiteral extends SimpleNode {
      * the line and column position reported reflects the error position within the template and not just relative to
      * the error position within the string literal.
      */
-    public void adjTokenLineNums(final SimpleNode node) {
+    public void adjTokenLineNums(final AbstractVmNode node) {
         Token tok = node.getFirstToken();
         // Test against null is probably not neccessary, but just being safe
         while (tok != null && tok != node.getLastToken()) {

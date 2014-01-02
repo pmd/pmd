@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.lang.vm.util;
 
-import net.sourceforge.pmd.lang.vm.ast.SimpleNode;
+import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
 import net.sourceforge.pmd.lang.vm.directive.Directive;
 
 /*
@@ -44,7 +44,7 @@ public class LogUtil {
      * Creates a string that formats the template filename with line number and column of the given Node. We use this
      * routine to provide a cosistent format for displaying file errors.
      */
-    public static final String formatFileString(final SimpleNode node) {
+    public static final String formatFileString(final AbstractVmNode node) {
         return formatFileString(node.getTemplateName(), node.getLine(), node.getColumn());
     }
 

@@ -30,7 +30,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author <a href="mailto:kjohnson@transparent.com>Kent Johnson</a>
  * @version $Id: ASTReference.java 806597 2009-08-21 15:21:44Z nbubna $
  */
-public class ASTReference extends SimpleNode {
+public class ASTReference extends AbstractVmNode {
     private String rootString;
 
     private String literal = null;

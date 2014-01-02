@@ -2,7 +2,7 @@
 
 1.  Implement an AST parser for your language
     - ideally an AST parser should be implemented as a JJT file (see VmParser.jjt or Java.jjt for example)
-    - there is nothing prevening any other parser implementation, as long as you have some way to convert an input stream into an AST tree. Doing it as a JJT simplifies maintenance down the road.
+    - there is nothing preventing any other parser implementation, as long as you have some way to convert an input stream into an AST tree. Doing it as a JJT simplifies maintenance down the road.
     - See this link for reference: https://javacc.java.net/doc/JJTree.html
 2. Create AST node classes
     - for each AST node that your parser can generate, there should be a class
@@ -10,6 +10,7 @@
     -- for example, if JJT contains a node called "IfStatement", there should be a class called "ASTIfStatement"
     - each AST class should have two constructors: one that takes an int id; and one that takes an instance of the parser, and an int id
     - it's a good idea to create a parent AST class for all AST classes of the language. This simplies rule creation later. See SimpleNode for Velocity and AbstractJavaNode for Java for example.
+    - Note: These AST node classes are generated usually once by javacc/jjtree and can then be modified as needed.
 3. Compile your parser (if using JJT)
     - an ant script is being used to compile jjt files into classes. This is in alljavacc.xml file.
     - in the file, create a new target for your language. Use vmjjtree or javajjtree as an example.

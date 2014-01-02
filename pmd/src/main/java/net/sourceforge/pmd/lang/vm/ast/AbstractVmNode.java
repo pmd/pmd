@@ -23,14 +23,13 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
 
 import org.apache.commons.lang3.text.StrBuilder;
 
 /**
  *
  */
-public class SimpleNode extends AbstractNode implements Node {
+public class AbstractVmNode extends AbstractNode implements VmNode {
 
     /** */
     // TODO - It seems that this field is only valid when parsing, and should not be kept around.
@@ -56,7 +55,7 @@ public class SimpleNode extends AbstractNode implements Node {
     /**
      * @param i
      */
-    public SimpleNode(final int i) {
+    public AbstractVmNode(final int i) {
         super(i);
     }
 
@@ -64,7 +63,7 @@ public class SimpleNode extends AbstractNode implements Node {
      * @param p
      * @param i
      */
-    public SimpleNode(final VmParser p, final int i) {
+    public AbstractVmNode(final VmParser p, final int i) {
         this(i);
         parser = p;
         templateName = parser.currentTemplateName;
@@ -134,7 +133,7 @@ public class SimpleNode extends AbstractNode implements Node {
     public Object childrenAccept(final VmParserVisitor visitor, final Object data) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
-                ((SimpleNode) children[i]).jjtAccept(visitor, data);
+                ((VmNode) children[i]).jjtAccept(visitor, data);
             }
         }
         return data;
@@ -146,10 +145,9 @@ public class SimpleNode extends AbstractNode implements Node {
      * toString() is probably all you need to do.
      */
 
-    // public String toString()
-    // {
-    // return ParserTreeConstants.jjtNodeName[id];
-    // }
+     public String toString() {
+         return VmParserTreeConstants.jjtNodeName[id];
+     }
     /**
      * @param prefix
      * @return String representation of this node.
@@ -169,7 +167,7 @@ public class SimpleNode extends AbstractNode implements Node {
         printWriter.println(toString(prefix));
         if (children != null && recurse) {
             for (int i = 0; i < children.length; ++i) {
-                final SimpleNode n = (SimpleNode) children[i];
+                final AbstractVmNode n = (AbstractVmNode) children[i];
                 if (n != null) {
                     n.dump(prefix + " ", recurse, printWriter);
                 }
@@ -247,22 +245,7 @@ public class SimpleNode extends AbstractNode implements Node {
         return first.beginColumn;
     }
 
-    /**
-     * @since 1.5
-     */
-    @Override
-    public String toString() {
-        // return class name after AST
-        return this.getClass().getSimpleName().substring(3);
-    }
-
     public String getTemplateName() {
         return templateName;
     }
-
-    @Override
-    public SimpleNode jjtGetChild(final int index) {
-        return (SimpleNode) children[index];
-    }
-
 }

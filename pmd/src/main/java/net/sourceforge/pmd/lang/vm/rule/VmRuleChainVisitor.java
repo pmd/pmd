@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.vm.rule;
 
 import java.util.List;
@@ -8,7 +11,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.vm.ast.ASTprocess;
-import net.sourceforge.pmd.lang.vm.ast.SimpleNode;
+import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
+import net.sourceforge.pmd.lang.vm.ast.VmNode;
 import net.sourceforge.pmd.lang.vm.ast.VmParserVisitor;
 import net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter;
 
@@ -20,7 +24,7 @@ public class VmRuleChainVisitor extends AbstractRuleChainVisitor {
             // Perform a visitation of the AST to index nodes which need
             // visiting by type
             @Override
-            public Object visit(final SimpleNode node, final Object data) {
+            public Object visit(final VmNode node, final Object data) {
                 indexNode(node);
                 return super.visit(node, data);
             }
@@ -35,7 +39,7 @@ public class VmRuleChainVisitor extends AbstractRuleChainVisitor {
     protected void visit(final Rule rule, final Node node, final RuleContext ctx) {
         // Rule better either be a VmParserVisitor, or a XPathRule
         if (rule instanceof VmParserVisitor) {
-            ((SimpleNode) node).jjtAccept((VmParserVisitor) rule, ctx);
+            ((AbstractVmNode) node).jjtAccept((VmParserVisitor) rule, ctx);
         }
         else {
             ((XPathRule) rule).evaluate(node, ctx);

@@ -38,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTMethod.java 720228 2008-11-24 16:58:33Z nbubna $
  */
-public class ASTMethod extends SimpleNode {
+public class ASTMethod extends AbstractVmNode {
     private final String methodName = "";
 
     /**

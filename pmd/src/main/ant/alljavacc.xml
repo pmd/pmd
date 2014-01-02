@@ -299,21 +299,19 @@ public class]]></replacevalue>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/SimpleNode.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/CharStream.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/TokenMgrError.java" />
-    	<!--
+
         <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/VmParserTokenManager.java"
                  token="class VmParserTokenManager"
                  value="class VmParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
-                 -->
-        <replace file="${target}/net/sourceforge/pmd/lang/Vm/ast/VmParser.java"
+        <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/VmParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />
         <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/ParseException.java"
                  token="extends Exception"
                  value="extends net.sourceforge.pmd.lang.ast.ParseException" />
-<!--
     	<replace file="${target}/net/sourceforge/pmd/lang/vm/ast/VmParserVisitor.java"
                  token="SimpleNode"
-                 value="VmNode" />-->
+                 value="VmNode" />
         <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/JJTVmParserState.java">
             <replacetoken>public class</replacetoken>
             <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;
@@ -321,10 +319,15 @@ public class]]></replacevalue>
 public class]]></replacevalue>
         </replace>
 
-        <delete>
-            <fileset dir="${target}/net/sourceforge/pmd/lang/vm/ast">
-                <include name="AST*.java" />
-            </fileset>
-        </delete>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTAddNode.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTDirective.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTDivNode.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTEscape.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTMethod.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTModNode.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTMulNode.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTReference.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTStringLiteral.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTSubtractNode.java"/>
     </target>
 </project>

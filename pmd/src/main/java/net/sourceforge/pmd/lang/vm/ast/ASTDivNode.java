@@ -47,4 +47,8 @@ public class ASTDivNode extends ASTMathNode {
         super(p, id);
     }
 
+    /** Accept the visitor. **/
+    public Object jjtAccept(VmParserVisitor visitor, Object data) {
+      return visitor.visit(this, data);
+    }
 }

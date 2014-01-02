@@ -26,6 +26,8 @@ options
     /** The default package for this parser kit 
     NODE_PACKAGE="org.apache.velocity.runtime.parser";
     */
+  NODE_PACKAGE="net.sourceforge.pmd.lang.vm.ast";
+  NODE_CLASS = "net.sourceforge.pmd.lang.vm.ast.AbstractVmNode";
 
     /** A source file will  be generated for each non-terminal */
     MULTI=true;
@@ -84,11 +86,16 @@ options
 PARSER_BEGIN(VmParser)
 package net.sourceforge.pmd.lang.vm.ast;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.vm.directive.Directive;
 import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
-import net.sourceforge.pmd.lang.vm.util.CharStream;
 import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
 
 /**
@@ -122,64 +129,6 @@ public class VmParser
      * RuntimeConstants.RUNTIME_REFERENCES_STRICT_ESCAPE is set to true
      */
     public boolean strictEscape = false;
-
-    /**
-     * This was also added to allow parsers to be
-     * re-usable. Normal JavaCC use entails passing an
-     * input stream to the constructor and the parsing
-     * process is carried out once. We want to be able
-     * to re-use parsers: we do this by adding this
-     * method and re-initializing the lexer with
-     * the new stream that we want parsed.
-     */
-    public SimpleNode parse( Reader reader, String templateName )
-        throws ParseException
-    {
-        SimpleNode sn = null;
-
-        currentTemplateName = templateName;
-
-        try
-        {
-            token_source.clearStateVars();
-
-            /*
-             * now reinit the Parser with this CharStream
-             */
-            ReInit( new VelocityCharStream(reader, 1, 1)  );
-
-            /*
-             *  do that voodoo...
-             */
-            sn = process();
-        }
-        catch (MacroParseException mee)
-        {
-            /*
-             *  thrown by the Macro class when something is amiss in the
-             *  Macro specification
-             */
-            throw mee;
-        }
-        catch (ParseException pe)
-        {
-            throw new TemplateParseException (pe.currentToken,
-				pe.expectedTokenSequences, pe.tokenImage, currentTemplateName);
-		}
-        catch (TokenMgrError tme)
-        {
-            throw new ParseException("Lexical error: " + tme.toString());
-        }
-        catch (Exception e)
-        {
-            String msg = "Parser Error: " + templateName;
-            throw new ParseException(msg + e.getMessage());
-        }
-
-        currentTemplateName = "";
-
-        return sn;
-    }
 
     /**
      *  This method gets a Directive from the directives Hashtable
@@ -1206,7 +1155,7 @@ SPECIAL_TOKEN :
  * which implements the ParserVisitor interface
  * which is generated automatically by JavaCC
  */
-SimpleNode process() : {}
+ASTprocess process() : {}
 {
    ( Statement() )* <EOF>
    { return jjtThis; }
@@ -1410,7 +1359,7 @@ int DirectiveArg() #void : {}
  *   Supports the Pluggable Directives
  *     #foo( arg+ )
  */
-SimpleNode Directive() :
+VmNode Directive() :
 {
     Token t = null;
     int argType;
@@ -1584,7 +1533,7 @@ SimpleNode Directive() :
         {
             // Add the macro name so that we can peform escape processing
             // on defined macros
-            String macroName = jjtThis.jjtGetChild(0).getFirstToken().image;
+            String macroName = ((AbstractVmNode)jjtThis.jjtGetChild(0)).getFirstToken().image;
             macroNames.put(macroName, macroName);
         }
 /*

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.vm;
 
 import java.io.Writer;
@@ -11,7 +14,7 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.lang.vm.ast.SimpleNode;
+import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
 import net.sourceforge.pmd.lang.vm.rule.VmRuleViolationFactory;
 
 /**
@@ -43,7 +46,7 @@ public class VmHandler extends AbstractLanguageVersionHandler {
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
             public void start(final Node rootNode) {
-            	((SimpleNode) rootNode).dump(prefix, recurse, writer);
+            	((AbstractVmNode) rootNode).dump(prefix, recurse, writer);
             }
         };
     }

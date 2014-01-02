@@ -27,7 +27,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTEscape.java 517553 2007-03-13 06:09:58Z wglass $
  */
-public class ASTEscape extends SimpleNode {
+public class ASTEscape extends AbstractVmNode {
     /** Used by the parser */
     public String val;
 

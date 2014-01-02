@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<ruleset name="BasicVelocity"
+<ruleset name="Basic Velocity"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
@@ -12,7 +12,8 @@
   <rule name="AvoidDeeplyNestedIfStmts"
   		  since="5.1"
         message="Deeply nested if..then statements are hard to read"
-        class="net.sourceforge.pmd.lang.vm.rule.basic.AvoidDeeplyNestedIfStmtsRule">
+        class="net.sourceforge.pmd.lang.vm.rule.basic.AvoidDeeplyNestedIfStmtsRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#AvoidDeeplyNestedIfStmts">
     <description>
 	Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
     </description>
@@ -22,7 +23,8 @@
     <rule name="CollapsibleIfStatements"
           since="5.1"
           message="These nested if statements could be combined"
-          class="net.sourceforge.pmd.lang.vm.rule.basic.CollapsibleIfStatementsRule">
+          class="net.sourceforge.pmd.lang.vm.rule.basic.CollapsibleIfStatementsRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#CollapsibleIfStatements">
       <description>
 Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
       </description>
@@ -32,7 +34,8 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
     <rule name="ExcessiveTemplateLengthRule"
           since="5.1"
           message="Template is too long"
-          class="net.sourceforge.pmd.lang.vm.rule.basic.ExcessiveTemplateLengthRule">
+          class="net.sourceforge.pmd.lang.vm.rule.basic.ExcessiveTemplateLengthRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#ExcessiveTemplateLengthRule">
       <description>
 The template is too long. It should be broken up into smaller pieces.
       </description>
@@ -45,7 +48,8 @@ The template is too long. It should be broken up into smaller pieces.
     <rule name="AvoidReassigningParameters"
     	  since="5.1"
         message="Avoid reassigning macro parameters such as ''{0}''"
-        class="net.sourceforge.pmd.lang.vm.rule.basic.AvoidReassigningParametersRule">
+        class="net.sourceforge.pmd.lang.vm.rule.basic.AvoidReassigningParametersRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#AvoidReassigningParameters">
 	    <description>
 Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
 	    </description>
@@ -55,7 +59,8 @@ Reassigning values to incoming parameters is not recommended.  Use temporary loc
     <rule name="EmptyIfStmt"
     	  since="5.1"
         message="Avoid empty if statements"
-        class="net.sourceforge.pmd.lang.vm.rule.basic.EmptyIfStmtRule">
+        class="net.sourceforge.pmd.lang.vm.rule.basic.EmptyIfStmtRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#EmptyIfStmt">
 	    <description>
 Empty if statements should be deleted.
 	    </description>
@@ -65,7 +70,8 @@ Empty if statements should be deleted.
     <rule name="EmptyForeachStmtRule"
     	  since="5.1"
         message="Avoid empty foreach loops"
-        class="net.sourceforge.pmd.lang.vm.rule.basic.EmptyForeachStmtRule">
+        class="net.sourceforge.pmd.lang.vm.rule.basic.EmptyForeachStmtRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#EmptyForeachStmtRule">
 	    <description>
 Empty foreach statements should be deleted.
 	    </description>
@@ -75,7 +81,8 @@ Empty foreach statements should be deleted.
     <rule name="UnusedMacroParameter"
     	  since="5.1"
         message="Avoid unused macro parameters such as ''{0}''"
-        class="net.sourceforge.pmd.lang.vm.rule.basic.UnusedMacroParameterRule">
+        class="net.sourceforge.pmd.lang.vm.rule.basic.UnusedMacroParameterRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#UnusedMacroParameter">
 	    <description>
 Avoid unused macro parameters. They should be deleted.
 	    </description>
@@ -85,7 +92,8 @@ Avoid unused macro parameters. They should be deleted.
     <rule name="NoInlineJavaScript"
     	  since="5.1"
         message="Avoid inline JavaScript"
-        class="net.sourceforge.pmd.lang.vm.rule.basic.NoInlineJavaScriptRule">
+        class="net.sourceforge.pmd.lang.vm.rule.basic.NoInlineJavaScriptRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#NoInlineJavaScript">
 	    <description>
 Avoid inline JavaScript. Import .js files instead.
 	    </description>
@@ -95,7 +103,8 @@ Avoid inline JavaScript. Import .js files instead.
     <rule name="NoInlineStyles"
     	  since="5.1"
         message="Avoid inline styles" language="vm" 
-        class="net.sourceforge.pmd.lang.rule.XPathRule">
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#NoInlineStyles">
 	    <description>
 Avoid inline styles. Use css classes instead.
 	    </description>

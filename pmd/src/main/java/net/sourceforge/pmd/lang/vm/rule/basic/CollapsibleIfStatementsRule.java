@@ -1,14 +1,18 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.vm.rule.basic;
 
-import org.apache.commons.lang3.StringUtils;
-
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vm.ast.ASTBlock;
 import net.sourceforge.pmd.lang.vm.ast.ASTElseIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTElseStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTText;
-import net.sourceforge.pmd.lang.vm.ast.SimpleNode;
+import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
 import net.sourceforge.pmd.lang.vm.rule.AbstractVmRule;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class CollapsibleIfStatementsRule extends AbstractVmRule {
 
@@ -27,14 +31,14 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
         return super.visit(node, data);
     }
 
-    private void handleIfElseIf(final SimpleNode node, final Object data) {
+    private void handleIfElseIf(final AbstractVmNode node, final Object data) {
         if (node.getFirstChildOfType(ASTElseStatement.class) == null
                 && node.getFirstChildOfType(ASTElseIfStatement.class) == null) {
             final ASTBlock ifBlock = node.getFirstChildOfType(ASTBlock.class);
             boolean violationFound = false;
             int ifCounter = 0;
             for (int i = 0; i < ifBlock.jjtGetNumChildren(); i++) {
-                final SimpleNode blockChild = ifBlock.jjtGetChild(i);
+                final Node blockChild = ifBlock.jjtGetChild(i);
                 if (blockChild instanceof ASTText) {
                     if (StringUtils.isNotBlank(((ASTText) blockChild).getFirstToken().toString())) {
                         violationFound = false;
@@ -69,7 +73,7 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
         }
     }
 
-    private boolean hasElseOrElseIf(final SimpleNode parentIfNode) {
+    private boolean hasElseOrElseIf(final Node parentIfNode) {
         return parentIfNode.getFirstChildOfType(ASTElseStatement.class) != null
                 || parentIfNode.getFirstChildOfType(ASTElseIfStatement.class) != null;
     }

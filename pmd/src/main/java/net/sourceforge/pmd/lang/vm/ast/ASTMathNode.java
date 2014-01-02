@@ -32,7 +32,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author Nathan Bubna
  * @version $Id: ASTMathNode.java 517553 2007-03-13 06:09:58Z wglass $
  */
-public abstract class ASTMathNode extends SimpleNode {
+public abstract class ASTMathNode extends AbstractVmNode {
     protected boolean strictMode = false;
 
     public ASTMathNode(final int id) {

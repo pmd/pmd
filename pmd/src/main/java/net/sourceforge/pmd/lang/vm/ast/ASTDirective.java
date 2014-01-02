@@ -33,7 +33,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @author <a href="mailto:kav@kav.dk">Kasper Nielsen</a>
  * @version $Id: ASTDirective.java 724825 2008-12-09 18:56:06Z nbubna $
  */
-public class ASTDirective extends SimpleNode {
+public class ASTDirective extends AbstractVmNode {
     private String directiveName = "";
 
     /**

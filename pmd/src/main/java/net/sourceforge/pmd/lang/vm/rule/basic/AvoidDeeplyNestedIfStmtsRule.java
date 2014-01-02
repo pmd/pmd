@@ -1,10 +1,13 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.vm.rule.basic;
 
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.vm.ast.ASTElseIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTprocess;
-import net.sourceforge.pmd.lang.vm.ast.SimpleNode;
+import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
 import net.sourceforge.pmd.lang.vm.rule.AbstractVmRule;
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractVmRule {
@@ -39,7 +42,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractVmRule {
     }
 
 
-	private Object handleIf(SimpleNode node, Object data) {
+	private Object handleIf(AbstractVmNode node, Object data) {
 		depth++;
         super.visit(node, data);
         if (depth == depthLimit) {

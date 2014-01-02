@@ -1,26 +1,6 @@
-<?xml version="1.0"?>
+PMD's BSD-style license:
 
-<document>
-  <properties>
-    <author>Tom Copeland</author>
-    <title>License</title>
-  </properties>
-
-  <body>
-
-  <section name="License">
-      <p>
-        This product is licensed under a "BSD-style" license; see below for the full text.
-      </p>
-      <p>
-        Part of this product (mostly the package net.sourceforge.pmd.lang.vm)
-        is licensed under the Apache License, Version 2.0;
-        see below for the full text.
-      </p>
-
-      <subsection name="BSD-style license">
-        <pre>
-Copyright (c) 2002-2009, InfoEther, Inc
+Copyright (c) 2003-2009, InfoEther, LLC
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -51,11 +31,9 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-            </pre>
-          </subsection>
 
-          <subsection name="Apache License, Version 2.0">
-            <pre>
+---------------------------------------------------------------------
+
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -257,9 +235,3 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-            </pre>
-          </subsection>
-  </section>
-
-</body>
-</document>
