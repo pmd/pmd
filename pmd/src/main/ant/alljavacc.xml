@@ -4,7 +4,7 @@
 
     <target name="alljavacc"
             description="Generates all JavaCC aspects within PMD"
-            depends="checkUpToDate,init,dummyjjtree,javajjtree,jspjjtree,cppjavacc,plsqljjtree,cleanup" />
+            depends="checkUpToDate,init,dummyjjtree,javajjtree,jspjjtree,cppjavacc,plsqljjtree,vmjjtree,cleanup" />
 
     <target name="checkUpToDate">
         <uptodate property="javaccBuildNotRequired" targetfile="${target}/last-generated-timestamp">
@@ -279,5 +279,52 @@ public class]]></replacevalue>
         <delete file="${target}/net/sourceforge/pmd/lang/cpp/ast/CharStream.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/cpp/ast/ParseException.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/cpp/ast/TokenMgrError.java" />
+    </target>
+	
+    <target name="vmjjtree" description="Generates the VM parser and AST source files" unless="javaccBuildNotRequired">
+        <delete dir="${target}/net/sourceforge/pmd/lang/vm/ast/" />
+        <mkdir dir="${target}/net/sourceforge/pmd/lang/vm/ast/" />
+        <jjtree target="etc/grammar/VmParser.jjt"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/vm/ast/"
+                javacchome="${javacc-home.path}" />
+        <!-- Ensure generated using CharStream interface -->
+        <javacc static="false"
+                usercharstream="true"
+                unicodeinput="true"
+                javaunicodeescape="false"
+                target="${target}/net/sourceforge/pmd/lang/vm/ast/VmParser.jj"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/vm/ast"
+                javacchome="${javacc-home.path}" />
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/Node.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/SimpleNode.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/CharStream.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/TokenMgrError.java" />
+    	<!--
+        <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/VmParserTokenManager.java"
+                 token="class VmParserTokenManager"
+                 value="class VmParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 -->
+        <replace file="${target}/net/sourceforge/pmd/lang/Vm/ast/VmParser.java"
+                 token="throw new Error"
+                 value="throw new RuntimeException" />
+        <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/ParseException.java"
+                 token="extends Exception"
+                 value="extends net.sourceforge.pmd.lang.ast.ParseException" />
+<!--
+    	<replace file="${target}/net/sourceforge/pmd/lang/vm/ast/VmParserVisitor.java"
+                 token="SimpleNode"
+                 value="VmNode" />-->
+        <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/JJTVmParserState.java">
+            <replacetoken>public class</replacetoken>
+            <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;
+
+public class]]></replacevalue>
+        </replace>
+
+        <delete>
+            <fileset dir="${target}/net/sourceforge/pmd/lang/vm/ast">
+                <include name="AST*.java" />
+            </fileset>
+        </delete>
     </target>
 </project>
