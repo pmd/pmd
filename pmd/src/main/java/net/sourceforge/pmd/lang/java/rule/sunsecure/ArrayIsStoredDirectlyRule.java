@@ -1,7 +1,5 @@
-/*
- * Created on Jan 17, 2005
- *
- * $Id$
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.java.rule.sunsecure;
 
@@ -25,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 /**
+ * @since Created on Jan 17, 2005
  * @author mgriffa
  */
 public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {

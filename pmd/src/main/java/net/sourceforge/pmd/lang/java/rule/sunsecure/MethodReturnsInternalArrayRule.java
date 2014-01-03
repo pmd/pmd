@@ -1,7 +1,5 @@
-/*
- * Created on Jan 17, 2005
- *
- * $Id$
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.java.rule.sunsecure;
 
@@ -18,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 /**
  * Implementation note: this rule currently ignores return types of y.x.z,
  * currently it handles only local type fields.
+ * Created on Jan 17, 2005
  *
  * @author mgriffa
  */

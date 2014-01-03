@@ -1,7 +1,5 @@
-/*
- * Created on Jan 17, 2005
- *
- * $Id$
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.java.rule.sunsecure;
 
@@ -20,6 +18,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 /**
  * Utility methods for the package
  *
+ * Created on Jan 17, 2005
  * @author mgriffa
  */
 public abstract class AbstractSunSecureRule extends AbstractJavaRule {

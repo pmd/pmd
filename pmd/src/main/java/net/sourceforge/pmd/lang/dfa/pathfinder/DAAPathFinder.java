@@ -1,5 +1,5 @@
-/*
- * Created on 09.08.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.dfa.pathfinder;
 
@@ -9,10 +9,10 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 
 /**
- * @author raik
- *         <p/>
  *         Finds all paths of a data flow. Each loop will be 0 or 2 times traversed ->
  *         2 paths. This is special to the data flow anomaly analysis.
+ * @since Created on 09.08.2004
+ * @author raik
  */
 public class DAAPathFinder {
     private static final int MAX_PATHS = 5000;
