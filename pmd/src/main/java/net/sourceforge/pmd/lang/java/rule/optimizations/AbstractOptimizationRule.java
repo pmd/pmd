@@ -1,7 +1,5 @@
-/*
- * Created on Jan 11, 2005 
- *
- * $Id$
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
@@ -16,6 +14,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * Base class with utility methods for optimization rules
  *
  * @author mgriffa
+ * @since Created on Jan 11, 2005 
  */
 public class AbstractOptimizationRule extends AbstractJavaRule {
 

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -23,61 +26,61 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
      * annotations.
      */
     public NcssTypeCountRule() {
-	super(ASTTypeDeclaration.class);
-	setProperty(MINIMUM_DESCRIPTOR, 1500d);
+        super(ASTTypeDeclaration.class);
+        setProperty(MINIMUM_DESCRIPTOR, 1500d);
     }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
-	if (!node.isNested()) {
-	    return super.visit(node, data);
-	}
+        if (!node.isNested()) {
+            return super.visit(node, data);
+        }
 
-	return countNodeChildren(node, data);
+        return countNodeChildren(node, data);
     }
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-	return countNodeChildren(node, data);
+        return countNodeChildren(node, data);
     }
 
     @Override
     public Object visit(ASTExplicitConstructorInvocation node, Object data) {
-	return NumericConstants.ONE;
+        return NumericConstants.ONE;
     }
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
-	/*
-	 * If the enum is a type in and of itself, don't count its declaration
-	 * twice.
-	 */
-	if (node.jjtGetParent() instanceof ASTTypeDeclaration) {
-	    Integer nodeCount = countNodeChildren(node, data);
-	    int count = nodeCount.intValue() - 1;
-	    return Integer.valueOf(count);
-	}
-	return countNodeChildren(node, data);
+        /*
+         * If the enum is a type in and of itself, don't count its declaration
+         * twice.
+         */
+        if (node.jjtGetParent() instanceof ASTTypeDeclaration) {
+            Integer nodeCount = countNodeChildren(node, data);
+            int count = nodeCount.intValue() - 1;
+            return Integer.valueOf(count);
+        }
+        return countNodeChildren(node, data);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-	return countNodeChildren(node, data);
+        return countNodeChildren(node, data);
     }
 
     @Override
     public Object visit(ASTInitializer node, Object data) {
-	return countNodeChildren(node, data);
+        return countNodeChildren(node, data);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-	return NumericConstants.ONE;
+        return NumericConstants.ONE;
     }
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
-	return new String[] { String.valueOf((int) point.getScore()) };
+        return new String[] { String.valueOf((int) point.getScore()) };
     }
 }

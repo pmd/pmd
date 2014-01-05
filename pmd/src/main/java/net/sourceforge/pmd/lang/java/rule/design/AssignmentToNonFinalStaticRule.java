@@ -1,9 +1,6 @@
-/*
- * AssignmentToNonFinalStaticRule.java
- *
- * Created on October 24, 2004, 8:56 AM
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.List;
@@ -21,6 +18,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * @author Eric Olander
+ * @since Created on October 24, 2004, 8:56 AM
  */
 public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
 

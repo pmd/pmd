@@ -1,7 +1,5 @@
-/*
- * SingularField.java
- *
- * Created on April 17, 2005, 9:49 PM
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.java.rule.design;
 
@@ -28,6 +26,7 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 /**
  * @author Eric Olander
  * @author Wouter Zelle
+ * @since Created on April 17, 2005, 9:49 PM
  */
 public class SingularFieldRule extends AbstractJavaRule {
 

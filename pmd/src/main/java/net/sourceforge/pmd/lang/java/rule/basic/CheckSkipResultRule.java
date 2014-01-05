@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.io.InputStream;
@@ -14,17 +17,18 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class CheckSkipResultRule extends AbstractJavaRule {
-    
+
+    @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node.getTypeNode(), InputStream.class)) {
             return data;
         }
-        for (NameOccurrence occ: node.getUsages()) {
-            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+        for (NameOccurrence occ : node.getUsages()) {
+            JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             NameOccurrence qualifier = jocc.getNameForWhichThisIsAQualifier();
             if (qualifier != null && "skip".equals(qualifier.getImage())) {
                 Node loc = jocc.getLocation();
-                if ( loc != null ) {
+                if (loc != null) {
                     ASTPrimaryExpression exp = loc.getFirstParentOfType(ASTPrimaryExpression.class);
                     while (exp != null) {
                         if (exp.jjtGetParent() instanceof ASTStatementExpression) {
@@ -32,8 +36,8 @@ public class CheckSkipResultRule extends AbstractJavaRule {
                             // the returned value is not used
                             addViolation(data, occ.getLocation());
                             break;
-                        } else if (exp.jjtGetParent() instanceof ASTExpression &&
-                                   exp.jjtGetParent().jjtGetParent() instanceof ASTPrimaryPrefix) {
+                        } else if (exp.jjtGetParent() instanceof ASTExpression
+                                && exp.jjtGetParent().jjtGetParent() instanceof ASTPrimaryPrefix) {
                             // if exp is enclosed in a pair of parenthesis
                             // let's have a look at the enclosing expression
                             // we'll see if it's in a bare statement
@@ -51,5 +55,4 @@ public class CheckSkipResultRule extends AbstractJavaRule {
         }
         return data;
     }
-    
 }

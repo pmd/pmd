@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.strictexception;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -6,10 +9,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
- * Finds <code>catch</code> statements
- * containing <code>throwable</code> as the type definition.
+ * Finds <code>catch</code> statements containing <code>throwable</code> as the
+ * type definition.
  * <p/>
- *
+ * 
  * @author <a mailto:trondandersen@c2i.net>Trond Andersen</a>
  */
 public class AvoidCatchingThrowableRule extends AbstractJavaRule {

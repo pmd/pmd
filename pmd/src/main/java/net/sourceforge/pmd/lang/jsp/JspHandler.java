@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.jsp;
 
 import java.io.Writer;
@@ -17,36 +20,36 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * Implementation of LanguageVersionHandler for the JSP parser.
- *
+ * 
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class JspHandler extends AbstractLanguageVersionHandler {
 
     @Override
     public XPathHandler getXPathHandler() {
-	return new AbstractASTXPathHandler() {
-	    public void initialize() {
-	    }
+        return new AbstractASTXPathHandler() {
+            public void initialize() {
+            }
 
-	    public void initialize(IndependentContext context) {
-	    }
-	};
+            public void initialize(IndependentContext context) {
+            }
+        };
     }
 
     public RuleViolationFactory getRuleViolationFactory() {
-	return JspRuleViolationFactory.INSTANCE;
+        return JspRuleViolationFactory.INSTANCE;
     }
 
     public Parser getParser(ParserOptions parserOptions) {
-	return new JspParser(parserOptions);
+        return new JspParser(parserOptions);
     }
 
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-	return new VisitorStarter() {
-	    public void start(Node rootNode) {
-		new DumpFacade().initializeWith(writer, prefix, recurse, (JspNode) rootNode);
-	    }
-	};
+        return new VisitorStarter() {
+            public void start(Node rootNode) {
+                new DumpFacade().initializeWith(writer, prefix, recurse, (JspNode) rootNode);
+            }
+        };
     }
 }

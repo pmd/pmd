@@ -63,6 +63,13 @@ public class PMD {
     /** The default suppress marker string. */
     public static final String SUPPRESS_MARKER = "NOPMD";
 
+    /**
+     * Parses the given string as a database uri and returns a list of datasources.
+     * @param uriString the URI to parse
+     * @return list of data sources
+     * @throws PMDException if the URI couldn't be parsed
+     * @see DBURI
+     */
     public static List<DataSource> getURIDataSources(String uriString) throws PMDException {
         List<DataSource> dataSources = new ArrayList<DataSource>();
 
@@ -93,10 +100,18 @@ public class PMD {
         return dataSources;
     }
 
+    /** Contains the configuration with which this PMD instance has been created. */
     protected final PMDConfiguration configuration;
 
     private final SourceCodeProcessor rulesetsFileProcessor;
 
+    /**
+     * Helper method to get a configured parser for the requested language. The parser is
+     * configured based on the given {@link PMDConfiguration}.
+     * @param languageVersion the requested language
+     * @param configuration the given configuration
+     * @return the pre-configured parser
+     */
     public static Parser parserFor(LanguageVersion languageVersion, PMDConfiguration configuration) {
 
         // TODO Handle Rules having different parser options.
@@ -111,10 +126,10 @@ public class PMD {
      * Create a report, filter out any defective rules, and keep a record of
      * them.
      * 
-     * @param rs
-     * @param ctx
-     * @param fileName
-     * @return Report
+     * @param rs the rules
+     * @param ctx the rule context
+     * @param fileName the filename of the source file, which should appear in the report
+     * @return the Report
      */
     public static Report setupReport(RuleSets rs, RuleContext ctx, String fileName) {
 
@@ -180,7 +195,7 @@ public class PMD {
     }
 
     /**
-     * 
+     * Gets the source code processor.
      * @return SourceCodeProcessor
      */
     public SourceCodeProcessor getSourceCodeProcessor() {
@@ -190,7 +205,7 @@ public class PMD {
     /**
      * This method is the main entry point for command line usage.
      * 
-     * @param configuration
+     * @param configuration the configure to use
      */
     public static void doPMD(PMDConfiguration configuration) {
 
@@ -238,6 +253,13 @@ public class PMD {
         }
     }
 
+    /**
+     * Creates a new rule context, initialized with a new, empty report.
+     *
+     * @param sourceCodeFilename the source code filename
+     * @param sourceCodeFile the source code file
+     * @return the rule context
+     */
     public static RuleContext newRuleContext(String sourceCodeFilename, File sourceCodeFile) {
 
         RuleContext context = new RuleContext();
@@ -258,9 +280,10 @@ public class PMD {
          * A status update reporting on current progress. Implementers will
          * return true if it is to continue, false otherwise.
          * 
-         * @param total
-         * @param totalDone
-         * @return
+         * @param total total number of files to be analyzed
+         * @param totalDone number of files, that have been done analyzing.
+         * @return <code>true</code> if the execution of PMD should continue, <code>false</code> if the execution
+         * should be cancelled/terminated.
          */
         boolean status(int total, int totalDone);
     }
@@ -269,11 +292,12 @@ public class PMD {
      * An entry point that would typically be used by IDEs intent on providing
      * ongoing feedback and the ability to terminate it at will.
      * 
-     * @param configuration
-     * @param ruleSetFactory
-     * @param files
-     * @param ctx
-     * @param monitor
+     * @param configuration the PMD configuration to use
+     * @param ruleSetFactory ruleset factory
+     * @param files the files to analyze
+     * @param ctx the rule context to use for the execution
+     * @param monitor PMD informs about the progress through this progress monitor. It provides also
+     * the ability to terminate/cancel the execution.
      */
     public static void processFiles(PMDConfiguration configuration, RuleSetFactory ruleSetFactory,
             Collection<File> files, RuleContext ctx, ProgressMonitor monitor) {
@@ -315,13 +339,6 @@ public class PMD {
         }
     }
 
-    /**
-     * 
-     * @param configuration
-     *            Configuration
-     * @param files
-     *            List<DataSource>
-     */
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
         if (configuration.isStressTest()) {
             // randomize processing order
@@ -340,12 +357,10 @@ public class PMD {
     }
 
     /**
-     * 
-     * @param configuration
-     *            Configuration
-     * @param languages
-     *            Set<Language>
-     * @return List<DataSource>
+     * Determines all the files, that should be analyzed by PMD.
+     * @param configuration contains either the file path or the DB URI, from where to load the files
+     * @param languages used to filter by file extension
+     * @return List<DataSource> of files
      */
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
         long startFiles = System.nanoTime();
@@ -371,14 +386,6 @@ public class PMD {
         return files;
     }
 
-    /**
-     * 
-     * @param configuration
-     *            Configuration
-     * @param ruleSets
-     *            RuleSets
-     * @return Set<Language>
-     */
     private static Set<Language> getApplicableLanguages(PMDConfiguration configuration, RuleSets ruleSets) {
         Set<Language> languages = new HashSet<Language>();
         LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
@@ -406,7 +413,7 @@ public class PMD {
     }
 
     /**
-     * 
+     * Parses the command line arguments and executes PMD.
      * @param args command line arguments
      * @return the exit code, where <code>0</code> means successful execution.
      */

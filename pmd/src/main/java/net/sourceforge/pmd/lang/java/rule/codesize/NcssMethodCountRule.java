@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -14,18 +17,18 @@ public class NcssMethodCountRule extends AbstractNcssCountRule {
      * Count the size of all non-constructor methods.
      */
     public NcssMethodCountRule() {
-	super(ASTMethodDeclaration.class);
-	setProperty(MINIMUM_DESCRIPTOR, 100d);
+        super(ASTMethodDeclaration.class);
+        setProperty(MINIMUM_DESCRIPTOR, 100d);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-	return super.visit(node, data);
+        return super.visit(node, data);
     }
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
-	return new String[] { ((ASTMethodDeclaration) point.getNode()).getMethodName(),
-		String.valueOf((int) point.getScore()) };
+        return new String[] { ((ASTMethodDeclaration) point.getNode()).getMethodName(),
+                String.valueOf((int) point.getScore()) };
     }
 }

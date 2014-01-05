@@ -1,5 +1,5 @@
-/*
- * Created on 14.07.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.java.dfa;
 
@@ -26,10 +26,10 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- * @author raik, Sven Jacob
- *         <p/>
  *         Searches for special nodes and computes based on the sequence, the type of
  *         access of a variable.
+ * @since Created on 14.07.2004
+ * @author raik, Sven Jacob
  */
 public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 

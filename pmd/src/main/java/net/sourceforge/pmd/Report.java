@@ -23,18 +23,18 @@ import net.sourceforge.pmd.util.StringUtil;
 public class Report implements Iterable<RuleViolation> {
 
     public static Report createReport(RuleContext ctx, String fileName) {
-	Report report = new Report();
+        Report report = new Report();
 
-	// overtake the listener
-	report.addSynchronizedListeners(ctx.getReport().getSynchronizedListeners());
+        // overtake the listener
+        report.addSynchronizedListeners(ctx.getReport().getSynchronizedListeners());
 
-	ctx.setReport(report);
-	ctx.setSourceCodeFilename(fileName);
-	ctx.setSourceCodeFile(new File(fileName));
-	return report;
+        ctx.setReport(report);
+        ctx.setSourceCodeFilename(fileName);
+        ctx.setSourceCodeFile(new File(fileName));
+        return report;
     }
 
-	public static class ReadableDuration {
+    public static class ReadableDuration {
         private final long duration;
 
         public ReadableDuration(long duration) {
@@ -45,7 +45,7 @@ public class Report implements Iterable<RuleViolation> {
             return DateTimeUtil.asHoursMinutesSeconds(duration);
         }
     }
-    
+
     public static class RuleConfigurationError {
         private final Rule rule;
         private final String issue;
@@ -55,10 +55,15 @@ public class Report implements Iterable<RuleViolation> {
             issue = theIssue;
         }
 
-        public Rule rule() { return rule;  }
-        public String issue() { return issue; }
+        public Rule rule() {
+            return rule;
+        }
+
+        public String issue() {
+            return issue;
+        }
     }
-    
+
     public static class ProcessingError {
         private final String msg;
         private final String file;
@@ -112,7 +117,8 @@ public class Report implements Iterable<RuleViolation> {
      */
     private final ReportTree violationTree = new ReportTree();
 
-    // Note that this and the above data structure are both being maintained for a bit
+    // Note that this and the above data structure are both being maintained for
+    // a bit
     private final List<RuleViolation> violations = new ArrayList<RuleViolation>();
     private final Set<Metric> metrics = new HashSet<Metric>();
     private final List<SynchronizedReportListener> listeners = new ArrayList<SynchronizedReportListener>();
@@ -129,18 +135,16 @@ public class Report implements Iterable<RuleViolation> {
     }
 
     private static String keyFor(RuleViolation rv) {
-    	
-    	return StringUtil.isNotEmpty(rv.getPackageName()) ?
-            rv.getPackageName() + '.' + rv.getClassName() :
-        	"";
+
+        return StringUtil.isNotEmpty(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
     }
-    
+
     public Map<String, Integer> getCountSummary() {
         Map<String, Integer> summary = new HashMap<String, Integer>();
         for (RuleViolation rv : violationTree) {
             String key = keyFor(rv);
             Integer o = summary.get(key);
-            summary.put(key, o==null ? NumericConstants.ONE : o+1);
+            summary.put(key, o == null ? NumericConstants.ONE : o + 1);
         }
         return summary;
     }
@@ -150,11 +154,12 @@ public class Report implements Iterable<RuleViolation> {
     }
 
     /**
-     * @return a Map summarizing the Report: String (rule name) ->Integer (count of violations)
+     * @return a Map summarizing the Report: String (rule name) ->Integer (count
+     *         of violations)
      */
     public Map<String, Integer> getSummary() {
         Map<String, Integer> summary = new HashMap<String, Integer>();
-        for (RuleViolation rv: violations) {
+        for (RuleViolation rv : violations) {
             String name = rv.getRule().getName();
             if (!summary.containsKey(name)) {
                 summary.put(name, NumericConstants.ZERO);
@@ -187,32 +192,33 @@ public class Report implements Iterable<RuleViolation> {
             return;
         }
 
-
         int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
         violations.add(index < 0 ? -index - 1 : index, violation);
         violationTree.addRuleViolation(violation);
-        for (ReportListener listener: listeners) {
+        for (ReportListener listener : listeners) {
             listener.ruleViolationAdded(violation);
         }
     }
 
     public void addMetric(Metric metric) {
         metrics.add(metric);
-        for (ReportListener listener: listeners) {
+        for (ReportListener listener : listeners) {
             listener.metricAdded(metric);
         }
     }
 
     public void addConfigError(RuleConfigurationError error) {
-    	if (configErrors == null) configErrors = new ArrayList<RuleConfigurationError>();
-    	configErrors.add(error);
+        if (configErrors == null)
+            configErrors = new ArrayList<RuleConfigurationError>();
+        configErrors.add(error);
     }
-    
+
     public void addError(ProcessingError error) {
-    	if (errors == null) errors = new ArrayList<ProcessingError>();
+        if (errors == null)
+            errors = new ArrayList<ProcessingError>();
         errors.add(error);
     }
-    
+
     public void merge(Report r) {
         Iterator<ProcessingError> i = r.errors();
         while (i.hasNext()) {
@@ -248,13 +254,13 @@ public class Report implements Iterable<RuleViolation> {
     }
 
     public boolean hasErrors() {
-    	return errors != null;
+        return errors != null;
     }
-    
+
     public boolean hasConfigErrors() {
-    	return configErrors != null;
+        return configErrors != null;
     }
-    
+
     public boolean treeIsEmpty() {
         return !violationTree.iterator().hasNext();
     }
@@ -297,10 +303,10 @@ public class Report implements Iterable<RuleViolation> {
     }
 
     public List<SynchronizedReportListener> getSynchronizedListeners() {
-	return listeners;
+        return listeners;
     }
 
     public void addSynchronizedListeners(List<SynchronizedReportListener> synchronizedListeners) {
-	listeners.addAll(synchronizedListeners);
+        listeners.addAll(synchronizedListeners);
     }
 }
