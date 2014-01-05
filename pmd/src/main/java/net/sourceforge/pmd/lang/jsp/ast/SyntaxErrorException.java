@@ -1,11 +1,13 @@
-/*
- * Created on 11-jan-2006
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.jsp.ast;
 
 /**
+ * Exception indicating that a syntactic error has been found.
+ * 
  * @author Pieter_Van_Raemdonck
- *         Exception indicating that a syntactic error has been found.
+ * @since Created on 11-jan-2006
  */
 public abstract class SyntaxErrorException extends ParseException {
     private int line;

@@ -1,16 +1,11 @@
-/*
- * Created on 11-jan-2006
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.lang.jsp.ast;
 
 /**
  * @author Pieter_Van_Raemdonck
- *         <p/>
- *         TODO To change the template for this generated type comment go to
- *         Window - Preferences - Java - Code Style - Code Templates
+ * @since Created on 11-jan-2006
  */
 public class StartAndEndTagMismatchException extends SyntaxErrorException {
 
