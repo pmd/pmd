@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -133,6 +134,15 @@ public class CPD {
         listener.addedFile(1,  new File(sourceCode.getFileName()));
         configuration.tokenizer().tokenize(sourceCode, tokens);
         source.put(sourceCode.getFileName(), sourceCode);
+    }
+    
+    /**
+     * List names/paths of each source to be processed.
+     * 
+     * @return names of sources to be processed 
+     */
+    public List<String> getSources() {
+        return new ArrayList<String>(source.keySet());  
     }
     
 	public static void main(String[] args) {
