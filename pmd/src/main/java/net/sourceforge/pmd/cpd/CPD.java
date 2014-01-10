@@ -141,7 +141,7 @@ public class CPD {
      * 
      * @return names of sources to be processed 
      */
-    public List<String> getSources() {
+    public List<String> getSourcePaths() {
         return new ArrayList<String>(source.keySet());  
     }
     
