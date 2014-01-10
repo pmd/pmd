@@ -144,6 +144,16 @@ public class CPD {
     public List<String> getSourcePaths() {
         return new ArrayList<String>(source.keySet());  
     }
+
+    /**
+     * Get each Source to be processed.
+     * 
+     * @return all Sources to be processed 
+     */
+    public List<SourceCode> getSources() {
+        return new ArrayList<SourceCode>(source.values());  
+    }
+    
     
 	public static void main(String[] args) {
 		CPDCommandLineInterface.main(args);
