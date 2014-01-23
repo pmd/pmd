@@ -9,9 +9,10 @@ import java.util.List;
 
 import net.sourceforge.pmd.dcd.ClassLoaderUtil;
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.signature.SignatureVisitor;
 
-public class TypeSignatureVisitor extends PrintVisitor implements SignatureVisitor {
+public class TypeSignatureVisitor extends SignatureVisitor {
 
     private static final boolean TRACE = false;
 
@@ -41,12 +42,23 @@ public class TypeSignatureVisitor extends PrintVisitor implements SignatureVisit
     // Completed Parameter Types are stored here
     private List<Class<?>> parameterTypes = new ArrayList<Class<?>>(0);
 
+    private final PrintVisitor p;
+    protected void println(String s) {
+        p.println(s);
+    }
+    protected void printlnIndent(String s) {
+        p.printlnIndent(s);
+    }
+
     public TypeSignatureVisitor() {
+        super(Opcodes.ASM4);
+        p = new PrintVisitor();
 	init();
     }
 
     public TypeSignatureVisitor(PrintVisitor parent) {
-	super(parent);
+	super(Opcodes.ASM4);
+	p = new PrintVisitor(parent);
 	init();
     }
 

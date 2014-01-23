@@ -20,6 +20,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.signature.SignatureReader;
 
 /**
@@ -69,8 +70,21 @@ public class UsageGraphBuilder {
 	}
 
 	// ASM visitor to on Class files to build a UsageGraph
-	class MyClassVisitor extends PrintVisitor implements ClassVisitor {
-		private String className;
+	class MyClassVisitor extends ClassVisitor {
+	    private final PrintVisitor p;
+	    protected void println(String s) {
+	        p.println(s);
+	    }
+	    protected void printlnIndent(String s) {
+	        p.printlnIndent(s);
+	    }
+	    
+	    public MyClassVisitor() {
+	        super(Opcodes.ASM4);
+	        p = new PrintVisitor();
+	    }
+
+	    private String className;
 
 		public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 			if (TRACE) {
@@ -118,7 +132,7 @@ public class UsageGraphBuilder {
 			}
 			if (INDEX) {
 				SignatureReader signatureReader = new SignatureReader(desc);
-				TypeSignatureVisitor visitor = new TypeSignatureVisitor(this);
+				TypeSignatureVisitor visitor = new TypeSignatureVisitor(p);
 				signatureReader.acceptType(visitor);
 				if (TRACE) {
 					printlnIndent("fieldType: " + visitor.getFieldType());
@@ -153,7 +167,7 @@ public class UsageGraphBuilder {
 			if (INDEX) {
 				memberNode = usageGraph.defineMethod(className, name, desc);
 			}
-			return getNewMethodVisitor(this, memberNode);
+			return getNewMethodVisitor(p, memberNode);
 		}
 
 		public void visitOuterClass(String owner, String name, String desc) {
@@ -178,12 +192,20 @@ public class UsageGraphBuilder {
 		return new MyMethodVisitor(parent, usingMemberNode);
 	}
 
-	protected class MyMethodVisitor extends PrintVisitor implements MethodVisitor {
-
+	protected class MyMethodVisitor extends MethodVisitor {
+        private final PrintVisitor p;
+        protected void println(String s) {
+            p.println(s);
+        }
+        protected void printlnIndent(String s) {
+            p.printlnIndent(s);
+        }
+        
 		private final MemberNode usingMemberNode;
 
 		public MyMethodVisitor(PrintVisitor parent, MemberNode usingMemberNode) {
-			super(parent);
+            super(Opcodes.ASM4);
+            p = parent;
 			this.usingMemberNode = usingMemberNode;
 		}
 

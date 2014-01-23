@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +15,7 @@ import java.util.Map;
 public abstract class AbstractScope implements Scope {
 
     private Scope parent;
-    private Map<NameDeclaration, List<NameOccurrence>> nameDeclarations = new HashMap<NameDeclaration, List<NameOccurrence>>();
+    private Map<NameDeclaration, List<NameOccurrence>> nameDeclarations = new LinkedHashMap<NameDeclaration, List<NameOccurrence>>();
 
     @Override
     public Scope getParent() {
@@ -34,7 +34,7 @@ public abstract class AbstractScope implements Scope {
 
     @Override
     public <T extends NameDeclaration> Map<T, List<NameOccurrence>> getDeclarations(Class<T> clazz) {
-        Map<T, List<NameOccurrence>> result = new HashMap<T, List<NameOccurrence>>();
+        Map<T, List<NameOccurrence>> result = new LinkedHashMap<T, List<NameOccurrence>>();
         for (Map.Entry<NameDeclaration, List<NameOccurrence>> e : nameDeclarations.entrySet()) {
             if (clazz.isAssignableFrom(e.getKey().getClass())) {
                 @SuppressWarnings("unchecked") // it's assignable from, so should be ok

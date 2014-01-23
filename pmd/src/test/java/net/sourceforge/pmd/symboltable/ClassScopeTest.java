@@ -211,15 +211,15 @@ public class ClassScopeTest extends STBBaseTst {
     public void testMethodUsageSeen2() {
         parseCode(METHOD_USAGE_SEEN2);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope) n.getScope()).getDeclarations();
-        Iterator i = m.entrySet().iterator();
-        Map.Entry entry = (Map.Entry) i.next();
+        Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
+        Iterator<Map.Entry<NameDeclaration, List<NameOccurrence>>> i = m.entrySet().iterator();
+        Map.Entry<NameDeclaration, List<NameOccurrence>> entry = i.next();
         MethodNameDeclaration mnd = (MethodNameDeclaration) entry.getKey();
         if (mnd.getNode().getBeginLine() == 2) {
-            List usages = (List) entry.getValue();
+            List<NameOccurrence> usages = entry.getValue();
             System.out.println(usages.size());
             System.out.println(mnd);
-            mnd = (MethodNameDeclaration) i.next();
+            mnd = (MethodNameDeclaration) i.next().getKey();
         }
     }
 

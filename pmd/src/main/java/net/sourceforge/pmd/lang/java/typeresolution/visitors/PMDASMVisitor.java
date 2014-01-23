@@ -9,6 +9,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
@@ -18,9 +19,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PMDASMVisitor implements ClassVisitor {
+public class PMDASMVisitor extends ClassVisitor {
 
-	private Map<String, String> packages = new HashMap<String, String>();
+    public PMDASMVisitor() {
+        super(Opcodes.ASM4);
+    }
+
+    private Map<String, String> packages = new HashMap<String, String>();
 
 	private AnnotationVisitor annotationVisitor = new PMDAnnotationVisitor(this);
 
@@ -164,11 +169,12 @@ public class PMDASMVisitor implements ClassVisitor {
 	 * Start visitors
 	 */
 
-	private static class PMDFieldVisitor implements FieldVisitor {
+	private static class PMDFieldVisitor extends FieldVisitor {
 
 		private PMDASMVisitor parent;
 
 		public PMDFieldVisitor(PMDASMVisitor visitor) {
+		    super(Opcodes.ASM4);
 			parent = visitor;
 		}
 
@@ -184,10 +190,11 @@ public class PMDASMVisitor implements ClassVisitor {
 		}
 	}
 
-	private static class PMDAnnotationVisitor implements AnnotationVisitor {
+	private static class PMDAnnotationVisitor extends AnnotationVisitor {
 		private PMDASMVisitor parent;
 
 		public PMDAnnotationVisitor(PMDASMVisitor visitor) {
+            super(Opcodes.ASM4);
 			parent = visitor;
 		}
 
@@ -214,10 +221,11 @@ public class PMDASMVisitor implements ClassVisitor {
 		}
 	}
 
-	private static class PMDSignatureVisitor implements SignatureVisitor {
+	private static class PMDSignatureVisitor extends SignatureVisitor {
 		private PMDASMVisitor parent;
 
 		public PMDSignatureVisitor(PMDASMVisitor visitor) {
+            super(Opcodes.ASM4);
 			this.parent = visitor;
 		}
 
@@ -281,10 +289,11 @@ public class PMDASMVisitor implements ClassVisitor {
 		}
 	}
 
-	private static class PMDMethodVisitor implements MethodVisitor {
+	private static class PMDMethodVisitor extends MethodVisitor {
 		private PMDASMVisitor parent;
 
 		public PMDMethodVisitor(PMDASMVisitor visitor) {
+            super(Opcodes.ASM4);
 			parent = visitor;
 		}
 

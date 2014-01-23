@@ -21,11 +21,11 @@ public class PrintVisitor {
 		this.level = level;
 	}
 
-	protected void println(String s) {
+	public void println(String s) {
 		println(this.level, s);
 	}
 
-	protected void printlnIndent(String s) {
+	public void printlnIndent(String s) {
 		println(this.level + 1, s);
 	}
 
