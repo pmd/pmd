@@ -239,6 +239,9 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 			if (accessNode.isTransient()) {
 				extras.add("transient");
 			}
+			if (accessNode.isDefault()) {
+			    extras.add("default");
+			}
 		}
 	}
 }

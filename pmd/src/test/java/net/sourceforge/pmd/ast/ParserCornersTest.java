@@ -70,6 +70,9 @@ public class ParserCornersTest extends ParserTst {
     	
     	String test17 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases17.java");
     	parseJava17(test17);
+    	
+    	String test18 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases18.java");
+    	parseJava17(test18);
     }
 
     @Test

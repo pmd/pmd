@@ -1,4 +1,8 @@
 /**
+ * Added support for Java 8 language constructs.
+ *
+ * Andreas Dangel 01/2014
+ * ===================================================================
  * Fix ForStatement to allow Annotations within the initializer.
  *
  * Andreas Dangel 01/2013
@@ -189,6 +193,13 @@ public class JavaParser {
   	if (jdkVersion < 7) {
       throw new ParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!");
   	}
+  }
+
+  private void checkForBadLambdaUsage() {
+  }
+  private void checkForBadMethodReferenceUsage() {
+  }
+  private void checkForBadDefaultImplementationUsage() {
   }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
@@ -1178,6 +1189,7 @@ int Modifiers() #void:
   | "transient" { modifiers |= AccessNode.TRANSIENT; }
   | "volatile" { modifiers |= AccessNode.VOLATILE; }
   | "strictfp" { modifiers |= AccessNode.STRICTFP; }
+  | "default" { modifiers |= AccessNode.DEFAULT; checkForBadDefaultImplementationUsage(); }
   | Annotation()
   )
  )*
@@ -1710,6 +1722,13 @@ Token t;
 }
 {
   "." TypeArguments() t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+| MethodReference()
+}
+
+void MethodReference() :
+{Token t; checkForBadMethodReferenceUsage();}
+{
+  "::" ("new" {jjtThis.setImage("new");} | t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
 }
 
 void PrimaryPrefix() :
@@ -1718,10 +1737,20 @@ void PrimaryPrefix() :
   Literal()
 | "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
-| "(" Expression() ")"
+| LOOKAHEAD(4) LambdaExpression()
+| LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
+| LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference()
 | Name()
+}
+
+void LambdaExpression() :
+{ checkForBadLambdaUsage(); }
+{
+  LOOKAHEAD(4) FormalParameters() "->" ( Expression() | Block() )
+| LOOKAHEAD(4) VariableDeclaratorId() "->" ( Expression() | Block() )
+| LOOKAHEAD(4) "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ( Expression() | Block() )
 }
 
 void PrimarySuffix() :

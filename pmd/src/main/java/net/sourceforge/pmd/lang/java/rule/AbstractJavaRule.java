@@ -514,4 +514,11 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
          return visit((JavaNode)node, data);
     }
 
+    public Object visit(ASTLambdaExpression node, Object data) {
+        return visit((JavaNode)node, data);
+    }
+
+    public Object visit(ASTMethodReference node, Object data) {
+        return visit((JavaNode)node, data);
+    }
 }

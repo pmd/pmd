@@ -450,4 +450,12 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTCatchStatement node, Object data) {
         return visit((JavaNode) node, data);
     }
+
+    public Object visit(ASTLambdaExpression node, Object data) {
+        return visit((JavaNode)node, data);
+    }
+
+    public Object visit(ASTMethodReference node, Object data) {
+        return visit((JavaNode)node, data);
+    }
 }

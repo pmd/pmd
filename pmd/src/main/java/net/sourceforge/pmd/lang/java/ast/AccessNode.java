@@ -22,6 +22,7 @@ public interface AccessNode extends Node {
 	int TRANSIENT = 0x0100;
 	int VOLATILE = 0x0200;
 	int STRICTFP = 0x1000;
+	int DEFAULT = 0x2000;
 
 	int getModifiers();
 
@@ -72,4 +73,8 @@ public interface AccessNode extends Node {
 	void setStrictfp(boolean isStrictfp);
 
 	boolean isPackagePrivate();
+
+	void setDefault(boolean isDefault);
+
+	boolean isDefault();
 }
