@@ -46,6 +46,9 @@ public class ParserCornerCases18 {
 
         Button button = new Button();
         button.addActionListener(e -> System.out.println(e.getModifiers()));
+
+        // grammar/parser: don't get confused with this...
+        int initialSizeGlobal = (int) (profilingContext.m_profileItems.size() * (150.0 * 0.30));
     }
     Runnable r1 = () -> { System.out.println(this); };
     

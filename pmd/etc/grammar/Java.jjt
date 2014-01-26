@@ -1758,7 +1758,7 @@ void PrimaryPrefix() :
   Literal()
 | "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
-| LOOKAHEAD(5) LambdaExpression()
+| LOOKAHEAD( LambdaExpression() ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"

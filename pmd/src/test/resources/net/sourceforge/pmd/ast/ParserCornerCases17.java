@@ -171,5 +171,10 @@ public class ParserCornerCases17 {
 		    throw ex;
 		}
 	}
-	
+
+	// With java 8 lambda grammar enhancement, this caused a problem, to not be identified as lambda...
+	public void expressionInCastExpression() {
+        // grammar/parser: don't get confused with this...
+        int initialSizeGlobal = (int) (profilingContext.m_profileItems.size() * (150.0 * 0.30));
+	}
 }
