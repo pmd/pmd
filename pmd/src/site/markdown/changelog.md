@@ -2,10 +2,11 @@
 
 ## ????? ??, 2013 - 5.1.0:
 
-**New Languages:**
+**New Languages and Updates:**
 
 - PLSQL support added; thanks to Stuart Turton. See also http://pldoc.sourceforge.net/
 - Apache Velocity support added; thanks to Andrey Utis
+- Java 1.8 support added.
 
 **New Rulesets and Rules:**
 
