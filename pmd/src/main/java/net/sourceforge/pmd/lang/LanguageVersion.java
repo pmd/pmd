@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.Java14Handler;
 import net.sourceforge.pmd.lang.java.Java15Handler;
 import net.sourceforge.pmd.lang.java.Java16Handler;
 import net.sourceforge.pmd.lang.java.Java17Handler;
+import net.sourceforge.pmd.lang.java.Java18Handler;
 import net.sourceforge.pmd.lang.jsp.JspHandler;
 import net.sourceforge.pmd.lang.plsql.PLSQLHandler;
 import net.sourceforge.pmd.lang.vm.VmHandler;
@@ -51,6 +52,7 @@ public enum LanguageVersion {
     JAVA_15(Language.JAVA, "1.5", new Java15Handler(), false),
     JAVA_16(Language.JAVA, "1.6", new Java16Handler(), false),
     JAVA_17(Language.JAVA, "1.7", new Java17Handler(), true),
+    JAVA_18(Language.JAVA, "1.8", new Java18Handler(), false),
     JSP(Language.JSP, "", new JspHandler(), true),
     PHP(Language.PHP, "", null, true),
     RUBY(Language.RUBY, "", null, true),

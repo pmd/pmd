@@ -196,10 +196,19 @@ public class JavaParser {
   }
 
   private void checkForBadLambdaUsage() {
+    if (jdkVersion < 8) {
+      throw new ParseException("Cannot use lambda expressions when running in JDK inferior to 1.8 mode!");
+    }
   }
   private void checkForBadMethodReferenceUsage() {
+    if (jdkVersion < 8) {
+      throw new ParseException("Cannot use method references when running in JDK inferior to 1.8 mode!");
+    }
   }
   private void checkForBadDefaultImplementationUsage() {
+    if (jdkVersion < 8) {
+      throw new ParseException("Cannot use default implementations in interfaces when running in JDK inferior to 1.8 mode!");
+    }
   }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
