@@ -265,10 +265,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 			return super.visit(node, data);
 		}
 		String name = node.getNameDeclaration().getTypeImage();
-		if (name.indexOf('.') != -1) {
-			name = name.substring(0, name.indexOf('.'));
+		if (name != null) {
+    		if (name.indexOf('.') != -1) {
+    			name = name.substring(0, name.indexOf('.'));
+    		}
+    		populateType(node, name);
 		}
-		populateType(node, name);
 		return super.visit(node, data);
 	}
 

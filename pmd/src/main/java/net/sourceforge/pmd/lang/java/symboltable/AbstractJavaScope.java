@@ -18,10 +18,14 @@ public abstract class AbstractJavaScope extends AbstractScope {
 
     @Override
     public void addDeclaration(NameDeclaration declaration) {
+        checkForDuplicatedNameDeclaration(declaration);
+        super.addDeclaration(declaration);
+    }
+
+    protected void checkForDuplicatedNameDeclaration(NameDeclaration declaration) {
         if (declaration instanceof VariableNameDeclaration && getDeclarations().keySet().contains(declaration)) {
             throw new RuntimeException(declaration + " is already in the symbol table");
         }
-        super.addDeclaration(declaration);
     }
 
     @Override

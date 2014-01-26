@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public
-class ASTLambdaExpression extends AbstractJavaNode {
+class ASTLambdaExpression extends AbstractJavaAccessNode {
   public ASTLambdaExpression(int id) {
     super(id);
   }

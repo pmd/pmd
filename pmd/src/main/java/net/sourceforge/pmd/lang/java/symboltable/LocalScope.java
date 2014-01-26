@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -39,7 +40,14 @@ public class LocalScope extends AbstractJavaScope {
             throw new IllegalArgumentException("A LocalScope can contain only VariableNameDeclarations or ClassNameDeclarations. "
                     + "Tried to add " + nameDecl.getClass() + "(" + nameDecl + ")");
         }
-        super.addDeclaration(nameDecl);
+        if (nameDecl.getNode().jjtGetParent() instanceof ASTLambdaExpression
+            || nameDecl.getNode().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTLambdaExpression) {
+            // don't add the variable declaration, but verify, that there is no other local variable declaration
+            // with the same name - this would be a compiler error
+            checkForDuplicatedNameDeclaration(nameDecl);
+        } else {
+            super.addDeclaration(nameDecl);
+        }
     }
 
     public NameDeclaration findVariableHere(JavaNameOccurrence occurrence) {
