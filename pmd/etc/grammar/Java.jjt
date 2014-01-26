@@ -1108,6 +1108,8 @@ TOKEN :
 | < RSIGNEDSHIFTASSIGN: ">>=" >
 | < RUNSIGNEDSHIFTASSIGN: ">>>=" >
 | < ELLIPSIS: "..." >
+| < LAMBDA: "->" >
+| < METHOD_REF: "::" >
 }
 
 /* >'s need special attention due to generics syntax. */
@@ -1737,7 +1739,7 @@ void PrimaryPrefix() :
   Literal()
 | "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
-| LOOKAHEAD(4) LambdaExpression()
+| LOOKAHEAD(5) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
@@ -1748,9 +1750,9 @@ void PrimaryPrefix() :
 void LambdaExpression() :
 { checkForBadLambdaUsage(); }
 {
-  LOOKAHEAD(4) FormalParameters() "->" ( Expression() | Block() )
-| LOOKAHEAD(4) VariableDeclaratorId() "->" ( Expression() | Block() )
-| LOOKAHEAD(4) "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ( Expression() | Block() )
+  VariableDeclaratorId() "->" ( Expression() | Block() )
+| LOOKAHEAD(3) FormalParameters() "->" ( Expression() | Block() )
+| LOOKAHEAD(3) "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ( Expression() | Block() )
 }
 
 void PrimarySuffix() :
