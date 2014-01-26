@@ -117,97 +117,107 @@ public class JavaParser {
    this.jdkVersion = jdkVersion;
   }
 
+  private void throwParseException(String message) {
+    int line = -1;
+    int col = -1;
+    if (jj_lastpos != null) {
+      line = jj_lastpos.beginLine;
+      col = jj_lastpos.beginColumn;
+    }
+    throw new ParseException("Line " + line + ", Column " + col + ": " + message);
+  }
+
   private void checkForBadAssertUsage(String in, String usage) {
     if (jdkVersion > 3 && in.equals("assert")) {
-      throw new ParseException("Can't use 'assert' as " + usage + " when running in JDK 1.4 mode!");
+      throwParseException("Can't use 'assert' as " + usage + " when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadStaticImportUsage() {
     if (jdkVersion < 5) {
-      throw new ParseException("Can't use static imports when running in JDK 1.4 mode!");
+      throwParseException("Can't use static imports when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadAnnotationUsage() {
     if (jdkVersion < 5) {
-      throw new ParseException("Can't use annotations when running in JDK 1.4 mode!");
+      throwParseException("Can't use annotations when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadGenericsUsage() {
     if (jdkVersion < 5) {
-      throw new ParseException("Can't use generics unless running in JDK 1.5 mode!");
+      throwParseException("Can't use generics unless running in JDK 1.5 mode!");
     }
   }
 
   private void checkForBadVariableArgumentsUsage() {
     if (jdkVersion < 5) {
-      throw new ParseException("Can't use variable arguments (varargs) when running in JDK 1.4 mode!");
+      throwParseException("Can't use variable arguments (varargs) when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadJDK15ForLoopSyntaxArgumentsUsage() {
     if (jdkVersion < 5) {
-      throw new ParseException("Can't use JDK 1.5 for loop syntax when running in JDK 1.4 mode!");
+      throwParseException("Can't use JDK 1.5 for loop syntax when running in JDK 1.4 mode!");
     }
   }
 
   private void checkForBadEnumUsage(String in, String usage) {
     if (jdkVersion >= 5 && in.equals("enum")) {
-      throw new ParseException("Can't use 'enum' as " + usage + " when running in JDK 1.5 mode!");
+      throwParseException("Can't use 'enum' as " + usage + " when running in JDK 1.5 mode!");
     }
   }
 
   private void checkForBadHexFloatingPointLiteral() {
     if (jdkVersion < 5) {
-      throw new ParseException("Can't use hexadecimal floating point literals in pre-JDK 1.5 target");
+      throwParseException("Can't use hexadecimal floating point literals in pre-JDK 1.5 target");
     }
   }
   
   private void checkForBadNumericalLiteralslUsage(Token token) {
     if (jdkVersion < 7) {
       if (token.image.contains("_")) {
-        throw new ParseException("Can't use underscores in numerical literals when running in JDK inferior to 1.7 mode!");
+        throwParseException("Can't use underscores in numerical literals when running in JDK inferior to 1.7 mode!");
       }
       	
       if (token.image.startsWith("0b") || token.image.startsWith("0B")) {
-        throw new ParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");	
+        throwParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");	
       }
     }
   }
   
   private void checkForBadDiamondUsage() {
   	if (jdkVersion < 7) {
-      throw new ParseException("Cannot use the diamond generic notation when running in JDK inferior to 1.7 mode!");
+      throwParseException("Cannot use the diamond generic notation when running in JDK inferior to 1.7 mode!");
   	}
   }
   
   private void checkForBadTryWithResourcesUsage() {
   	if (jdkVersion < 7) {
-      throw new ParseException("Cannot use the try-with-resources notation when running in JDK inferior to 1.7 mode!");
+      throwParseException("Cannot use the try-with-resources notation when running in JDK inferior to 1.7 mode!");
   	}
   }
 
   private void checkForBadMultipleExceptionsCatching() {
   	if (jdkVersion < 7) {
-      throw new ParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!");
+      throwParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!");
   	}
   }
 
   private void checkForBadLambdaUsage() {
     if (jdkVersion < 8) {
-      throw new ParseException("Cannot use lambda expressions when running in JDK inferior to 1.8 mode!");
+      throwParseException("Cannot use lambda expressions when running in JDK inferior to 1.8 mode!");
     }
   }
   private void checkForBadMethodReferenceUsage() {
     if (jdkVersion < 8) {
-      throw new ParseException("Cannot use method references when running in JDK inferior to 1.8 mode!");
+      throwParseException("Cannot use method references when running in JDK inferior to 1.8 mode!");
     }
   }
   private void checkForBadDefaultImplementationUsage() {
     if (jdkVersion < 8) {
-      throw new ParseException("Cannot use default implementations in interfaces when running in JDK inferior to 1.8 mode!");
+      throwParseException("Cannot use default implementations in interfaces when running in JDK inferior to 1.8 mode!");
     }
   }
 
