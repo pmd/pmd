@@ -14,39 +14,63 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 /**
  * if (x != y) { diff(); } else { same(); } and<br>
  * (!x ? diff() : same());.
  * <p/>
- * XPath can handle the easy cases, e.g.:<pre>
+ * XPath can handle the easy cases, e.g.:
+ * 
+ * <pre>
  *    //IfStatement[
  *      Statement[2]
  *      and Expression[
  *        EqualityExpression[@Image="!="] or
  *        UnaryExpressionNotPlusMinus[@Image="!"]]]
  * </pre>
- * but "&amp;&amp;" and "||" are difficult, since we need a match
- * for <i>all</i> children instead of just one.  This can be done by
- * using a double-negative, e.g.:<pre>
+ * 
+ * but "&amp;&amp;" and "||" are difficult, since we need a match for <i>all</i>
+ * children instead of just one. This can be done by using a double-negative,
+ * e.g.:
+ * 
+ * <pre>
  *    not(*[not(<i>matchme</i>)])
  * </pre>
- * Still, XPath is unable to handle arbitrarily nested cases, since it
- * lacks recursion, e.g.:<pre>
- *   if (((x != !y)) || !(x)) { diff(); } else { same(); }
+ * 
+ * Still, XPath is unable to handle arbitrarily nested cases, since it lacks
+ * recursion, e.g.:
+ * 
+ * <pre>
+ * if (((x != !y)) || !(x)) {
+ *     diff();
+ * } else {
+ *     same();
+ * }
  * </pre>
  */
 public class ConfusingTernaryRule extends AbstractJavaRule {
+    private static BooleanProperty ignoreElseIfProperty = new BooleanProperty("ignoreElseIf",
+            "Ignore conditions with an else-if case",
+            Boolean.FALSE, 0);
+
+    public ConfusingTernaryRule() {
+        super();
+        definePropertyDescriptor(ignoreElseIfProperty);
+    }
 
     public Object visit(ASTIfStatement node, Object data) {
         // look for "if (match) ..; else .."
         if (node.jjtGetNumChildren() == 3) {
             Node inode = node.jjtGetChild(0);
-            if (inode instanceof ASTExpression &&
-                    inode.jjtGetNumChildren() == 1) {
-        	Node jnode = inode.jjtGetChild(0);
+            if (inode instanceof ASTExpression && inode.jjtGetNumChildren() == 1) {
+                Node jnode = inode.jjtGetChild(0);
                 if (isMatch(jnode)) {
-                    addViolation(data, node);
+
+                    if (!getProperty(ignoreElseIfProperty)
+                            || !(node.jjtGetChild(2).jjtGetChild(0) instanceof ASTIfStatement)) {
+                        addViolation(data, node);
+                    }
                 }
             }
         }

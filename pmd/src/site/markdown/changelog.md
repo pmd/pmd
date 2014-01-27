@@ -2,13 +2,13 @@
 
 ## ????? ??, 2013 - 5.1.0:
 
-**New Languages and Updates:**
+**New/Updated Languages:**
 
+- Java 1.8 support added.
 - PLSQL support added; thanks to Stuart Turton. See also http://pldoc.sourceforge.net/
 - Apache Velocity support added; thanks to Andrey Utis
-- Java 1.8 support added.
 
-**New Rulesets and Rules:**
+**New/Updated Rulesets and Rules:**
 
 - EcmaScript
     - Controversial ruleset, featuring AvoidWithStatement
@@ -25,10 +25,17 @@
     - PositionLiteralsFirstInCaseInsensitiveComparisons
         - rule similar to PositionLiteralsFirstInComparisons, but for case insensitive comparisons (equalsIgnoreCase).
           Thanks to Larry Diamond
+    - ConfusingTernary
+        - new property "ignoreElseIf" to suppress this rule in case of if-else-if-else usage.
+          See [feature 1161]: Confusing Ternary should skip else if statements (or have a property to do so)
+
+[feature 1161]: http://sourceforge.net/p/pmd/bugs/1161/
+
 
 **Bugfixes:**
 
-* http://sourceforge.net/p/pmd/bugs/milestone/PMD-5.1.0/
+<http://sourceforge.net/p/pmd/bugs/milestone/PMD-5.1.0/>
+
 * Fixed [bug  881]: private final without setter is flagged
 * Fixed [bug 1059]: Change rule name "Use Singleton" should be "Use Utility class"
 * Fixed [bug 1106]: PMD 5.0.4 fails with NPE on parsing java enum with inner class instance creation

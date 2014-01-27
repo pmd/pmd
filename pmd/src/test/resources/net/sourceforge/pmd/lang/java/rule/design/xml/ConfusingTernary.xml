@@ -125,4 +125,28 @@ public class BadTernaries {
 }
         ]]></code>
     </test-code>
+    <code-fragment id="1161-confusing-ternary-ignore-else-if"><![CDATA[
+public class Test {
+  public void foo() {
+    if (!condition) {
+    }
+    else if (otherCondition) {
+    }
+    else {
+    }
+  }
+}
+        ]]></code-fragment>
+    <test-code>
+        <description>#1161 Confusing Ternary should skip else if statements (or have a property to do so) (ignoreElseIf=false)</description>
+        <expected-problems>1</expected-problems>
+        <rule-property name="ignoreElseIf">false</rule-property>
+        <code-ref id="1161-confusing-ternary-ignore-else-if"/>
+    </test-code>
+    <test-code>
+        <description>#1161 Confusing Ternary should skip else if statements (or have a property to do so) (ignoreElseIf=true)</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="ignoreElseIf">true</rule-property>
+        <code-ref id="1161-confusing-ternary-ignore-else-if"/>
+    </test-code>
 </test-data>
