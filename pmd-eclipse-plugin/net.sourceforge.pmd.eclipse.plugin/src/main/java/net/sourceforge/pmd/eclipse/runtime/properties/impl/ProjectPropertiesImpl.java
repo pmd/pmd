@@ -56,8 +56,10 @@ import net.sourceforge.pmd.util.StringUtil;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.ui.IWorkingSet;
 
@@ -264,20 +266,37 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.eclipse.runtime.properties.IProjectProperties#getResolvedRuleSetFile()
      */
     public File getResolvedRuleSetFile() {
-    	// Check as project file, otherwise as standard file
+        // Check as project-relative path
         IFile file = project.getFile(getRuleSetFile());
-        boolean exists = file.exists() && file.isAccessible();
-        File f;
-        if (exists) {
-        	f =  new File(file.getLocation().toOSString());
-        	// For some reason IFile says exists when it doesn't!  So double check.
-        	if (!f.exists()) {
-            	f = new File(getRuleSetFile());
-        	}
-        } else {
-        	f = new File(getRuleSetFile());
+        File f = getExistingFileOrNull(file);
+        if (f == null) {
+            // Check as workspace-relative path
+            IWorkspaceRoot workspaceRoot = project.getWorkspace().getRoot();
+            try {
+                IFile workspaceFile = workspaceRoot.getFile(new Path(getRuleSetFile()));
+                f = getExistingFileOrNull(workspaceFile);
+            } catch (IllegalArgumentException e) {
+                // Fall back to below
+            }
+            if (f == null) {
+                // Fall back to file system path
+                f = new File(getRuleSetFile());
+            }
         }
         return f;
+    }
+
+    private File getExistingFileOrNull(IFile file) {
+        boolean exists = file.exists() && file.isAccessible();
+        File result = null;
+        if (exists) {
+            File f = new File(file.getLocation().toOSString());
+            // For some reason IFile says exists when it doesn't!  So double check.
+            if (f.exists()) {
+                result = f;
+            }
+        }
+        return result;
     }
 
     /**
