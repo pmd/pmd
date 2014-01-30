@@ -59,7 +59,7 @@ public class ConfigurationTest {
     public void testLanguageVersionDiscoverer() {
 	PMDConfiguration configuration = new PMDConfiguration();
 	LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
-	assertEquals("Default Java version", LanguageVersion.JAVA_17, languageVersionDiscoverer
+	assertEquals("Default Java version", LanguageVersion.JAVA_18, languageVersionDiscoverer
 		.getDefaultLanguageVersion(Language.JAVA));
 	configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_15);
 	assertEquals("Modified Java version", LanguageVersion.JAVA_15, languageVersionDiscoverer

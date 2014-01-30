@@ -32,14 +32,14 @@ public class LanguageVersionDiscovererTest {
         File javaFile = new File("/path/to/MyClass.java");
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(javaFile);
-        assertEquals("LanguageVersion must be Java 1.7 !", LanguageVersion.JAVA_17, languageVersion);
+        assertEquals("LanguageVersion must be Java 1.8 !", LanguageVersion.JAVA_18, languageVersion);
     }
 
     /**
      * Test on Java file with Java version set to 1.4.
      */
     @Test
-    public void testJavaFileUsing15() {
+    public void testJavaFileUsing14() {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
         discoverer.setDefaultLanguageVersion(LanguageVersion.JAVA_14);
         File javaFile = new File("/path/to/MyClass.java");

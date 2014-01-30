@@ -40,6 +40,7 @@ public class LanguageVersionTest {
                 { "java", "1.5", LanguageVersion.JAVA_15 },
                 { "java", "1.6", LanguageVersion.JAVA_16 },
                 { "java", "1.7", LanguageVersion.JAVA_17 },
+                { "java", "1.8", LanguageVersion.JAVA_18 },
                 { "jsp", "", LanguageVersion.JSP },
                 { "xml", "", LanguageVersion.XML },
                 { "xsl", "", LanguageVersion.XSL },
@@ -48,6 +49,7 @@ public class LanguageVersionTest {
                 { "fortran", "", LanguageVersion.FORTRAN },
                 { "php", "", LanguageVersion.PHP },
                 { "ruby", "", LanguageVersion.RUBY },
+                { "vm", "", LanguageVersion.VM },
 
                 // this one won't be found: case sensitive!
                 { "JAVA", "1.7", null },
