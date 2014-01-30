@@ -1576,7 +1576,7 @@ void Expression() :
 {
   ConditionalExpression()
   [
-    AssignmentOperator() Expression()
+    LOOKAHEAD(2) AssignmentOperator() Expression()
   ]
 }
 
@@ -1600,56 +1600,56 @@ void AssignmentOperator() :
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
-  ConditionalOrExpression() [ "?" {jjtThis.setTernary();} Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() [ LOOKAHEAD(2) "?" {jjtThis.setTernary();} Expression() ":" ConditionalExpression() ]
 }
 
 void ConditionalOrExpression() #ConditionalOrExpression(>1):
 {}
 {
-  ConditionalAndExpression() ( "||" ConditionalAndExpression() )*
+  ConditionalAndExpression() ( LOOKAHEAD(2) "||" ConditionalAndExpression() )*
 }
 
 void ConditionalAndExpression() #ConditionalAndExpression(>1):
 {}
 {
-  InclusiveOrExpression() ( "&&" InclusiveOrExpression() )*
+  InclusiveOrExpression() ( LOOKAHEAD(2) "&&" InclusiveOrExpression() )*
 }
 
 void InclusiveOrExpression() #InclusiveOrExpression(>1) :
 {}
 {
-  ExclusiveOrExpression() ( "|" ExclusiveOrExpression() )*
+  ExclusiveOrExpression() ( LOOKAHEAD(2) "|" ExclusiveOrExpression() )*
 }
 
 void ExclusiveOrExpression() #ExclusiveOrExpression(>1) :
 {}
 {
-  AndExpression()  ( "^" AndExpression() )*
+  AndExpression()  ( LOOKAHEAD(2) "^" AndExpression() )*
 }
 
 void AndExpression() #AndExpression(>1):
 {}
 {
-  EqualityExpression() ( "&" EqualityExpression() )*
+  EqualityExpression() ( LOOKAHEAD(2) "&" EqualityExpression() )*
 }
 
 void EqualityExpression() #EqualityExpression(>1):
 {}
 {
-  InstanceOfExpression()  ( ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
+  InstanceOfExpression()  ( LOOKAHEAD(2) ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
 }
 
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() [ "instanceof" Type() ]
+  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() ]
 }
 
 void RelationalExpression() #RelationalExpression(>1):
 {}
 {
   ShiftExpression()
-   (
+   ( LOOKAHEAD(2)
     ( "<" {jjtThis.setImage("<");}
      | ">" {jjtThis.setImage(">");}
      | "<=" {jjtThis.setImage("<=");}
@@ -1661,7 +1661,7 @@ void ShiftExpression() #ShiftExpression(>1):
 {}
 {
   AdditiveExpression() 
-   (
+   ( LOOKAHEAD(2)
     ( "<<" { jjtThis.setImage("<<");}
      | RSIGNEDSHIFT()
      | RUNSIGNEDSHIFT()
@@ -1671,13 +1671,13 @@ void ShiftExpression() #ShiftExpression(>1):
 void AdditiveExpression() #AdditiveExpression(>1):
 {}
 {
-  MultiplicativeExpression() ( ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");} ) MultiplicativeExpression() )*
+  MultiplicativeExpression() ( LOOKAHEAD(2) ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");} ) MultiplicativeExpression() )*
 }
 
 void MultiplicativeExpression() #MultiplicativeExpression(>1):
 {}
 {
-  UnaryExpression() ( ( "*" {jjtThis.setImage("*");} | "/" {jjtThis.setImage("/");} | "%" {jjtThis.setImage("%");}) UnaryExpression() )*
+  UnaryExpression() ( LOOKAHEAD(2) ( "*" {jjtThis.setImage("*");} | "/" {jjtThis.setImage("/");} | "%" {jjtThis.setImage("%");}) UnaryExpression() )*
 }
 
 void UnaryExpression() #UnaryExpression((jjtn000.getImage() != null)):
@@ -1705,18 +1705,8 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 {}
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
-| LOOKAHEAD( CastLookahead() ) CastExpression()
+| LOOKAHEAD( CastExpression() ) CastExpression()
 | PostfixExpression()
-}
-
-// This production is to determine lookahead only.  The LOOKAHEAD specifications
-// below are not used, but they are there just to indicate that we know about
-// this.
-void CastLookahead() #void :
-{}
-{ LOOKAHEAD(3) "(" PrimitiveType() ")"
-| LOOKAHEAD("(" Type() "[")  "(" Type() "[" "]"
-| "(" Type() ")" ( "~" | "!" | "(" | <IDENTIFIER> | "this" | "super" | "new" | Literal() )
 }
 
 void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
@@ -1727,7 +1717,8 @@ void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
 
 void CastExpression() #CastExpression(>1):
 {}
-{ LOOKAHEAD("(" PrimitiveType()) "(" Type() ")" UnaryExpression()
+{ LOOKAHEAD("(" Type() ")") "(" Type() ")" UnaryExpression()
+| LOOKAHEAD("(" Type() "&") "(" Type() ( "&" ReferenceType() )+ ")" UnaryExpressionNotPlusMinus()
 | "(" Type() ")" UnaryExpressionNotPlusMinus()
 }
 
@@ -1759,6 +1750,7 @@ void PrimaryPrefix() :
 | "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
 | LOOKAHEAD( LambdaExpression() ) LambdaExpression()
+| LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"

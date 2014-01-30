@@ -68,6 +68,12 @@ public class ParserCornerCases extends Superclass {
 	Class getByteArrayClass() {
 		return (byte[].class);
 	}
+
+    public void bitwiseOperator() {
+        if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0 ) {
+            buf.append("shift ");
+        }
+    }
 }
 
 /**

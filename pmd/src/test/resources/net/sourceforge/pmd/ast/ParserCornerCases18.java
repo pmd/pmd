@@ -18,11 +18,14 @@ import java.util.function.Supplier;
  * @see <a href="http://download.java.net/jdk8/docs/api/java/util/function/package-summary.html">java.util.function</a>
  */
 public class ParserCornerCases18 {
-    
+
     public void lambdas() {
         FileFilter java = (File f) -> f.getName().endsWith(".java");
         FileFilter java2 = f -> f.getName().endsWith(".java");
         FileFilter java3 = (f) -> f.getName().endsWith(".java");
+        FileFilter java4 = (f -> f.getName().endsWith(".java"));
+        IntStream.range(0, array.length).parallel().forEach(i -> { array[i] = generator.apply(i); });
+
 
         FileFilter[] filters = new FileFilter[] { 
                 f -> f.exists(), f -> f.canRead(), f -> f.getName().startsWith("q") 
@@ -64,7 +67,13 @@ public class ParserCornerCases18 {
     
     private void filterFiles(FileFilter[] filters) {
     }
-    
+
+    /* Example from java.util.Comparator. */
+    public static <K extends Comparable<? super K>, V> Comparator<Map.Entry<K,V>> comparingByKey() {
+        return (Comparator<Map.Entry<K, V>> & Serializable)
+            (c1, c2) -> c1.getKey().compareTo(c2.getKey());
+    }
+
     public void methodReferences() {
         Runnable r = new ParserCornerCases18()::toDoLater;
         Runnable r1 = this::toDoLater;
