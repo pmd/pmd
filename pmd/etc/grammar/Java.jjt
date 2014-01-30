@@ -220,6 +220,16 @@ public class JavaParser {
       throwParseException("Cannot use default implementations in interfaces when running in JDK inferior to 1.8 mode!");
     }
   }
+  private void checkForBadIntersectionTypesInCasts() {
+    if (jdkVersion < 8) {
+      throwParseException("Cannot use intersection types in casts when running in JDK inferior to 1.8 mode!");
+    }
+  }
+  private void checkForBadTypeAnnotations() {
+    if (jdkVersion < 8) {
+      throwParseException("Cannot use type annotations when running in JDK inferior to 1.8 mode!");
+    }
+  }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -1259,15 +1269,15 @@ void ExtendsList():
    boolean extendsMoreThanOne = false;
 }
 {
-   "extends" ClassOrInterfaceType()
-   ( "," ClassOrInterfaceType() { extendsMoreThanOne = true; } )*
+   "extends" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType()
+   ( "," (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() { extendsMoreThanOne = true; } )*
 }
 
 void ImplementsList():
 {}
 {
-   "implements" ClassOrInterfaceType()
-   ( "," ClassOrInterfaceType() )*
+   "implements" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType()
+   ( "," (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() )*
 }
 
 void EnumDeclaration(int modifiers):
@@ -1316,6 +1326,7 @@ void TypeParameters():
 void TypeParameter():
 {Token t;}
 {
+   (Annotation() {checkForBadTypeAnnotations();})*
    t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ TypeBound() ]
 }
 
@@ -1494,7 +1505,7 @@ void TypeArguments():
 void TypeArgument():
 {}
 {
-   ReferenceType()
+   (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
  |
    "?" [ WildcardBounds() ]
 }
@@ -1502,9 +1513,9 @@ void TypeArgument():
 void WildcardBounds():
 {}
 {
-   "extends" ReferenceType()
+   "extends" (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
  |
-   "super" ReferenceType()
+   "super" (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
 }
 
 void PrimitiveType() :
@@ -1552,8 +1563,8 @@ void Name() :
 void NameList() :
 {}
 {
-  Name()
-  ( "," Name()
+  (Annotation() {checkForBadTypeAnnotations();})* Name()
+  ( "," (Annotation() {checkForBadTypeAnnotations();})* Name()
   )*
 }
 
@@ -1717,9 +1728,9 @@ void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
 
 void CastExpression() #CastExpression(>1):
 {}
-{ LOOKAHEAD("(" Type() ")") "(" Type() ")" UnaryExpression()
-| LOOKAHEAD("(" Type() "&") "(" Type() ( "&" ReferenceType() )+ ")" UnaryExpressionNotPlusMinus()
-| "(" Type() ")" UnaryExpressionNotPlusMinus()
+{ LOOKAHEAD("(" (Annotation())* Type() ")") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpression()
+| LOOKAHEAD("(" (Annotation())* Type() "&") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ( "&" {checkForBadIntersectionTypesInCasts();} ReferenceType() )+ ")" UnaryExpressionNotPlusMinus()
+| "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpressionNotPlusMinus()
 }
 
 void PrimaryExpression() :
@@ -1815,15 +1826,17 @@ void ArgumentList() :
 void AllocationExpression():
 {}
 {
-  LOOKAHEAD(2)
-  "new" PrimitiveType() ArrayDimsAndInits()
-|
-  "new" ClassOrInterfaceType() [ TypeArguments() ]
-    (
+  "new" (Annotation() {checkForBadTypeAnnotations();})*
+  (LOOKAHEAD(2)
+    PrimitiveType() ArrayDimsAndInits()
+  |
+    ClassOrInterfaceType() [ TypeArguments() ]
+     (
       ArrayDimsAndInits()
-    |
+     |
       Arguments() [ ClassOrInterfaceBody() ]
-    )
+     )
+  )
 }
 
 /*

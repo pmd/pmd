@@ -70,6 +70,7 @@ public class ParserCornerCases18 {
 
     /* Example from java.util.Comparator. */
     public static <K extends Comparable<? super K>, V> Comparator<Map.Entry<K,V>> comparingByKey() {
+        // intersection types in cast
         return (Comparator<Map.Entry<K, V>> & Serializable)
             (c1, c2) -> c1.getKey().compareTo(c2.getKey());
     }
@@ -88,8 +89,13 @@ public class ParserCornerCases18 {
     public static Runnable staticMethod() {
         return () -> System.out.println("run");
     }
-    
-    
+
+    public void typeAnnotations() {
+        String myString = (@NonNull String) str;
+        Object o = new @Interned MyObject();
+    }
+    class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
+    void monitorTemperature() throws @Critical TemperatureException {}
 }
 
 interface DefaultIterator<E> {
@@ -99,5 +105,9 @@ interface DefaultIterator<E> {
 
     default void skip(int i) {
         for (; i > 0 && hasNext(); i--) next();
+    }
+
+    static void staticInterfaceMethods() {
+        System.out.println("");
     }
 }
