@@ -64,22 +64,32 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
     public Node getTypeNameNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             return findTypeNameNode(jjtGetParent());
+        } else if (jjtGetParent() instanceof ASTLambdaExpression) {
+            // lambda expression with lax types. The type is inferred...
+            return null;
         } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
             return findTypeNameNode(jjtGetParent().jjtGetParent());
         }
-        throw new RuntimeException("Don't know how to get the type for anything other than ASTLocalVariableDeclaration/ASTFormalParameter/ASTFieldDeclaration");
+        return null;
     }
 
+    /**
+     * Determines the type node of this variable id.
+     * @return the type node or <code>null</code> if there is no explicit type.
+     */
     public ASTType getTypeNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
+        } else if (jjtGetParent() instanceof ASTLambdaExpression) {
+            // lambda expression with lax types. The type is inferred...
+            return null;
         } else {
             Node n = jjtGetParent().jjtGetParent();
             if (n instanceof ASTLocalVariableDeclaration || n instanceof ASTFieldDeclaration) {
                 return n.getFirstChildOfType(ASTType.class);
             }
         }
-        throw new RuntimeException("Don't know how to get the type for anything other than ASTLocalVariableDeclaration/ASTFormalParameter/ASTFieldDeclaration");
+        return null;
     }
 
     private Node findTypeNameNode(Node node) {

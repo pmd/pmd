@@ -373,7 +373,7 @@ BigDecimal bd = new BigDecimal(12);     	// preferred approach, ok for integer v
     <rule  name="MisplacedNullCheck"
     	   language="java"
            since="3.5"
-           message="The null check here is misplaced; if the variable is null there'll be a NullPointerException"
+           message="The null check here is misplaced; if the variable is null there will be a NullPointerException"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
            externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#MisplacedNullCheck">
       <description>

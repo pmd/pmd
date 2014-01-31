@@ -28,11 +28,10 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
     public abstract boolean isTargetMethod(JavaNameOccurrence occ);
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-	Node nameNode = node.getTypeNameNode();
-        if (nameNode instanceof ASTPrimitiveType) {
-            return data;
-        }
-        if (!appliesToClassName(node.getNameDeclaration().getTypeImage())) {
+        Node nameNode = node.getTypeNameNode();
+        if (nameNode == null
+            || nameNode instanceof ASTPrimitiveType
+            || !appliesToClassName(node.getNameDeclaration().getTypeImage())) {
             return data;
         }
 
