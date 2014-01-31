@@ -6,6 +6,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTCastExpression extends AbstractJavaTypeNode {
+    private boolean intersectionTypes = false;
+
     public ASTCastExpression(int id) {
         super(id);
     }
@@ -14,6 +16,12 @@ public class ASTCastExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+    public void setIntersectionTypes(boolean intersectionTypes) {
+        this.intersectionTypes = intersectionTypes;
+    }
+    public boolean hasIntersectionTypes() {
+        return intersectionTypes;
+    }
 
     /**
      * Accept the visitor. *

@@ -1728,8 +1728,9 @@ void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
 
 void CastExpression() #CastExpression(>1):
 {}
-{ LOOKAHEAD("(" (Annotation())* Type() ")") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpression()
-| LOOKAHEAD("(" (Annotation())* Type() "&") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ( "&" {checkForBadIntersectionTypesInCasts();} ReferenceType() )+ ")" UnaryExpressionNotPlusMinus()
+{
+  LOOKAHEAD("(" (Annotation())* Type() ")") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpression()
+| LOOKAHEAD("(" (Annotation())* Type() "&") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )+ ")" UnaryExpressionNotPlusMinus()
 | "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpressionNotPlusMinus()
 }
 
