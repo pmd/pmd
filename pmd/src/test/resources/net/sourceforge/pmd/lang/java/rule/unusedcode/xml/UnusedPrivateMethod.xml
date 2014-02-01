@@ -364,5 +364,19 @@ public class PMDFalsePositiveTest {
 
      ]]></code>
     </test-code>
-    
+    <test-code>
+        <description>verify #1156 False failure with "Avoid unused private methods"</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void endTest(final SourceLocation sourceLocation, final String message, final Object... params) {
+    }
+    public static void main(String[] args) {
+        Foo f = new Foo();
+        f.endTest(sourceLocation, "", (Object[]) null);
+        f.endTest(sourceLocation, format, params);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
