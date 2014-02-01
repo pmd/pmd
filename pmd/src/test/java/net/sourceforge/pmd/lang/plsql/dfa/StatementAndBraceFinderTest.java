@@ -1,19 +1,20 @@
 package net.sourceforge.pmd.lang.plsql.dfa;
 
-import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
+import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 import org.junit.Test;
 
@@ -28,51 +29,48 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     @Test
     public void testExpressionParentChildLinks() throws Throwable {
         ASTExpression ex = getOrderedNodes(ASTExpression.class, TEST1).get(0);
-        System.err.println("ASTExpression="+ex );
-        DataFlowNode dfn = (DataFlowNode) ex.getDataFlowNode();
-        System.err.println("DataFlowNode="+dfn ) ;
+        DataFlowNode dfn = ex.getDataFlowNode();
+        assertEquals(3, dfn.getLine());
+        assertTrue(dfn.getNode() instanceof ASTExpression);
         List<DataFlowNode> dfns = dfn.getParents();
-        System.err.println("DataFlowNodes List size="+dfns.size()) ;
+        assertEquals(1, dfns.size());
         DataFlowNode parentDfn =  dfns.get(0);
-        System.err.println("parentDataFlowNode="+parentDfn ) ;
-        PLSQLNode PLSQLNode = (PLSQLNode) parentDfn.getNode();
-        System.err.println("parentDataFlowNode="+parentDfn ) ;
+        assertEquals(2, parentDfn.getLine());
+        assertTrue(parentDfn.getNode() instanceof ASTProgramUnit);
         ASTProgramUnit exParent = (ASTProgramUnit) parentDfn.getNode();
-        System.err.println("ASTProgramUnit="+exParent ); 
        //Validate the two-way link betwen Program Unit and Statement 
-        assertEquals(ex, ((DataFlowNode) exParent.getDataFlowNode().getChildren().get(0)).getNode());
-        assertEquals(exParent, ((DataFlowNode) ex.getDataFlowNode().getParents().get(0)).getNode());
+        assertEquals(ex, exParent.getDataFlowNode().getChildren().get(0).getNode());
+        assertEquals(exParent, ex.getDataFlowNode().getParents().get(0).getNode());
     }
 
     @Test
     public void testVariableOrConstantDeclaratorParentChildLinks() throws Throwable {
         ASTVariableOrConstantDeclarator vd = getOrderedNodes(ASTVariableOrConstantDeclarator.class, TEST2).get(0);
         //ASTMethodDeclaration vdParent = (ASTMethodDeclaration) ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getNode();
-        ASTProgramUnit vdParent = (ASTProgramUnit) ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getNode();
+        ASTProgramUnit vdParent = (ASTProgramUnit) vd.getDataFlowNode().getParents().get(0).getNode();
         //Validate the two-way link betwen Program Unit and Variable 
-        assertEquals(vd, ((DataFlowNode) vdParent.getDataFlowNode().getChildren().get(0)).getNode());
-        assertEquals(vdParent, ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getNode());
+        assertEquals(vd, vdParent.getDataFlowNode().getChildren().get(0).getNode());
+        assertEquals(vdParent, vd.getDataFlowNode().getParents().get(0).getNode());
     }
 
     @Test
     public void testIfStmtHasCorrectTypes() throws Throwable {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST3).get(0);
+        assertEquals(5, exp.getDataFlowNode().getFlow().size());
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
-        System.err.println("testIfStmtHasCorrectTypes-dfn(2)="+dfn);
         assertTrue(dfn.isType(NodeType.IF_EXPR));
+        assertEquals(3, dfn.getLine());
         dfn = exp.getDataFlowNode().getFlow().get(3);
-        System.err.println("testIfStmtHasCorrectTypes-dfn(3)="+dfn);
         assertTrue(dfn.isType(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE));
+        assertEquals(3, dfn.getLine());
     }
 
     @Test
     public void testWhileStmtHasCorrectTypes() throws Throwable {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST4).get(0);
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
-        System.err.println("testWhileStmtHasCorrectTypes-dfn(2)="+dfn);
         assertTrue(dfn.isType(NodeType.WHILE_EXPR));
         dfn = exp.getDataFlowNode().getFlow().get(3);
-        System.err.println("testWhileStmtHasCorrectTypes-dfn(3)="+dfn);
         assertTrue(dfn.isType(NodeType.WHILE_LAST_STATEMENT));
     }
 
@@ -81,15 +79,16 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST5).get(0);
         DataFlowNode dfn = null;
         dfn = exp.getDataFlowNode().getFlow().get(0);
-        System.err.println("testForStmtHasCorrectTypes-dfn(0)="+dfn);
+        assertTrue(dfn instanceof StartOrEndDataFlowNode);
         dfn = exp.getDataFlowNode().getFlow().get(1);
-        System.err.println("testForStmtHasCorrectTypes-dfn(1)="+dfn);
+        assertTrue(dfn.getNode() instanceof ASTProgramUnit);
+        assertEquals(2, dfn.getLine());
         dfn = exp.getDataFlowNode().getFlow().get(2);
-        System.err.println("testForStmtHasCorrectTypes-dfn(2)="+dfn);
+        assertEquals(3, dfn.getLine());
         assertTrue(dfn.isType(NodeType.FOR_EXPR));
         assertTrue(dfn.isType(NodeType.FOR_BEFORE_FIRST_STATEMENT));
         dfn = exp.getDataFlowNode().getFlow().get(3);
-        System.err.println("testForStmtHasCorrectTypes-dfn(3)="+dfn);
+        assertEquals(3, dfn.getLine());
         assertTrue(dfn.isType(NodeType.FOR_END));
     }
 
@@ -98,23 +97,24 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST6).get(0);
         DataFlowNode dfn = null;
         dfn = exp.getDataFlowNode().getFlow().get(0);
-        System.err.println("testSimpleCaseStmtHasCorrectTypes-dfn(0)="+dfn);
+        assertTrue(dfn instanceof StartOrEndDataFlowNode);
         dfn = exp.getDataFlowNode().getFlow().get(1);
-        System.err.println("testSimpleCaseStmtHasCorrectTypes-dfn(1)="+dfn);
+        assertEquals(2, dfn.getLine());
+        assertTrue(dfn.getNode() instanceof ASTProgramUnit);
         dfn = exp.getDataFlowNode().getFlow().get(2);
-        System.err.println("testSimpleCaseStmtHasCorrectTypes-dfn(2)="+dfn);
+        assertEquals(4, dfn.getLine());
         assertTrue(dfn.isType(NodeType.SWITCH_START));
-        dfn = exp.getDataFlowNode().getFlow().get(3);
-        System.err.println("testSimpleCaseStmtHasCorrectTypes-dfn(3)="+dfn);
         assertTrue(dfn.isType(NodeType.CASE_LAST_STATEMENT));
+        dfn = exp.getDataFlowNode().getFlow().get(3);
+        assertEquals(5, dfn.getLine());
+        assertTrue(dfn.isType(NodeType.CASE_LAST_STATEMENT));
+        assertTrue(dfn.isType(NodeType.BREAK_STATEMENT));
         dfn = exp.getDataFlowNode().getFlow().get(4);
-        //System.err.println("testSimpleCaseStmtHasCorrectTypes-dfn(5)="+dfn);
-        //assertTrue(dfn.isType(NodeType.CASE_LAST_STATEMENT));
-        //dfn = exp.getDataFlowNode().getFlow().get(5);
-        System.err.println("testSimpleCaseStmtHasCorrectTypes-dfn(4)="+dfn);
+        assertEquals(6, dfn.getLine());
         assertTrue(dfn.isType(NodeType.SWITCH_LAST_DEFAULT_STATEMENT));
+        assertTrue(dfn.isType(NodeType.BREAK_STATEMENT));
         dfn = exp.getDataFlowNode().getFlow().get(5);
-        System.err.println("testSimpleCaseStmtHasCorrectTypes-dfn(5)="+dfn);
+        assertEquals(7, dfn.getLine());
         assertTrue(dfn.isType(NodeType.SWITCH_END));
     }
 
@@ -179,7 +179,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     public void testLabelledStmtHasCorrectTypes() throws Throwable {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST8).get(0);
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
-        System.err.println("testLabelledStmtHasCorrectTypes-dfn(2)="+dfn);
+        assertEquals(3, dfn.getLine());
         assertTrue(dfn.isType(NodeType.LABEL_STATEMENT));
     }
 

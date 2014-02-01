@@ -1,4 +1,9 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.dfa;
+
+import static org.junit.Assert.assertEquals;
 
 import java.util.Iterator;
 import java.util.List;
@@ -20,16 +25,23 @@ public class GeneralFiddlingTest extends ParserTst {
         ASTCompilationUnit acu = buildDFA(TEST1);
         ASTMethodDeclarator meth = acu.findDescendantsOfType(ASTMethodDeclarator.class).get(0);
         DataFlowNode n = meth.getDataFlowNode();
-        List f = n.getFlow();
-        for (Iterator i = f.iterator(); i.hasNext();) {
-            DataFlowNode dfan = (DataFlowNode) i.next();
-            System.out.println(dfan);
-            List va = dfan.getVariableAccess();
-            for (Iterator j = va.iterator(); j.hasNext();) {
-                VariableAccess o = (VariableAccess) j.next();
-                System.out.println(o);
-            }
-        }
+        List<DataFlowNode> f = n.getFlow();
+
+        assertEquals(6, f.size());
+        assertEquals("Undefinition(x)", String.valueOf(f.get(0).getVariableAccess().get(0)));
+        assertEquals(0, f.get(1).getVariableAccess().size());
+        assertEquals("Definition(x)", String.valueOf(f.get(2).getVariableAccess().get(0)));
+        assertEquals("Reference(x)", String.valueOf(f.get(3).getVariableAccess().get(0)));
+        assertEquals("Definition(x)", String.valueOf(f.get(4).getVariableAccess().get(0)));
+        assertEquals("Undefinition(x)", String.valueOf(f.get(5).getVariableAccess().get(0)));
+
+//        for (DataFlowNode dfan : f) {
+//            System.out.println("Flow starting on line " + dfan.getLine());
+//            List<VariableAccess> va = dfan.getVariableAccess();
+//            for (VariableAccess o : va) {
+//                System.out.println("  variable: " + o);
+//            }
+//        }
     }
 
     private static final String TEST1 =
@@ -40,8 +52,4 @@ public class GeneralFiddlingTest extends ParserTst {
             "  x = 3;" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(GeneralFiddlingTest.class);
-    }
 }

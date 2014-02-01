@@ -5,35 +5,37 @@ package net.sourceforge.pmd.ant;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 
-import org.junit.Ignore;
+import net.sourceforge.pmd.renderers.CSVRenderer;
+import net.sourceforge.pmd.renderers.HTMLRenderer;
+import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
+
 import org.junit.Test;
 
 public class FormatterTest {
 
-    @Ignore
     @Test
     public void testType() {
-/*
         Formatter f = new Formatter();
         f.setType("xml");
-        assertTrue(f.getRenderer() instanceof XMLRenderer);
+        assertTrue(f.createRenderer() instanceof XMLRenderer);
         f.setType("text");
-        assertTrue(f.getRenderer() instanceof TextRenderer);
+        assertTrue(f.createRenderer() instanceof TextRenderer);
         f.setType("csv");
-        assertTrue(f.getRenderer() instanceof CSVRenderer);
+        assertTrue(f.createRenderer() instanceof CSVRenderer);
         f.setType("html");
-        assertTrue(f.getRenderer() instanceof HTMLRenderer);
+        assertTrue(f.createRenderer() instanceof HTMLRenderer);
         try {
             f.setType("FAIL");
-            f.getRenderer();
-            throw new RuntimeException("Should have failed!");
-        } catch (BuildException be) {
-            // cool
+            f.createRenderer();
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException be) {
+            assertTrue(be.getMessage().startsWith("Can't find the custom format FAIL"));
         }
-*/
     }
 
     @Test
@@ -42,9 +44,5 @@ public class FormatterTest {
         assertTrue("Formatter toFile should start off null!", f.isNoOutputSupplied());
         f.setToFile(new File("foo"));
         assertFalse("Formatter toFile should not be null!", f.isNoOutputSupplied());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(FormatterTest.class);
     }
 }

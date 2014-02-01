@@ -1,5 +1,5 @@
-/*
- * Created on 18.08.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.dfa;
 
@@ -14,6 +14,9 @@ import net.sourceforge.pmd.testframework.ParserTst;
 
 import org.junit.Test;
 
+/*
+ * Created on 18.08.2004
+ */
 public class AcceptanceTest extends ParserTst {
 
     @Test

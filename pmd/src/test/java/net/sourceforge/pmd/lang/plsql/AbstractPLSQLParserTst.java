@@ -73,15 +73,13 @@ public abstract class AbstractPLSQLParserTst {
     public <E> List<E> getOrderedNodes(Class<E> clazz, String plsqlCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz, new ArrayList<E>());
         LanguageVersionHandler languageVersionHandler = Language.PLSQL.getDefaultVersion().getLanguageVersionHandler();
-	ASTInput cu = (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(plsqlCode));
+        ASTInput cu = (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(plsqlCode));
         PLSQLParserVisitor jpv = (PLSQLParserVisitor) Proxy.newProxyInstance(PLSQLParserVisitor.class.getClassLoader(), new Class[]{PLSQLParserVisitor.class}, coll);
         jpv.visit(cu, null);
         SymbolFacade sf = new SymbolFacade();
         sf.initializeWith(cu);
         DataFlowFacade dff = new DataFlowFacade();
         dff.initializeWith(languageVersionHandler.getDataFlowHandler(), cu);
-	System.err.println("OrderedNodes:-"+dumpNodes( (List<E>) coll.getCollection() ) );
-	
         return (List<E>) coll.getCollection();
     }
 

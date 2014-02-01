@@ -101,7 +101,7 @@ public class RendererFactory {
 		}
 	    } catch (ClassNotFoundException e) {
 		throw new IllegalArgumentException("Can't find the custom format " + reportFormat + ": "
-			+ e.getClass().getName());
+			+ e);
 	    }
 	}
 	return rendererClass;

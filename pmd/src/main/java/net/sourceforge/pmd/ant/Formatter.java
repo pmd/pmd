@@ -114,7 +114,7 @@ public class Formatter {
     }
 
     // FIXME - hm, what about this consoleRenderer thing... need a test for this
-    private Renderer createRenderer() {
+    Renderer createRenderer() {
         if (StringUtil.isEmpty(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
         }

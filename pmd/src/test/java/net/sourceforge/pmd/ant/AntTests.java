@@ -14,7 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author Boris Gruschko ( boris at gruschko.org )
  */
 @RunWith(Suite.class)
-@SuiteClasses({FormatterTest.class, PMDTaskTest.class})
+@SuiteClasses({FormatterTest.class, PMDTaskTest.class, CPDTaskTest.class})
 public class AntTests {
 }
 

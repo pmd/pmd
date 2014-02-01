@@ -69,14 +69,13 @@ public abstract class ParserTst {
     public <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz, new ArrayList<E>());
         LanguageVersionHandler languageVersionHandler = Language.JAVA.getDefaultVersion().getLanguageVersionHandler();
-	ASTCompilationUnit cu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
+        ASTCompilationUnit cu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
         SymbolFacade sf = new SymbolFacade();
         sf.initializeWith(cu);
         DataFlowFacade dff = new DataFlowFacade();
         dff.initializeWith(languageVersionHandler.getDataFlowHandler(), cu);
-        System.out.println("OrderedNodes:-"+dumpNodes( (List<E>) coll.getCollection() ) );
 
         return (List<E>) coll.getCollection();
     }

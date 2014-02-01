@@ -6,6 +6,7 @@ package net.sourceforge.pmd.symboltable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 import java.util.List;
@@ -211,15 +212,24 @@ public class ClassScopeTest extends STBBaseTst {
     public void testMethodUsageSeen2() {
         parseCode(METHOD_USAGE_SEEN2);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
-        Iterator<Map.Entry<NameDeclaration, List<NameOccurrence>>> i = m.entrySet().iterator();
-        Map.Entry<NameDeclaration, List<NameOccurrence>> entry = i.next();
-        MethodNameDeclaration mnd = (MethodNameDeclaration) entry.getKey();
-        if (mnd.getNode().getBeginLine() == 2) {
-            List<NameOccurrence> usages = entry.getValue();
-            System.out.println(usages.size());
-            System.out.println(mnd);
-            mnd = (MethodNameDeclaration) i.next().getKey();
+
+        assertEquals(2, m.size());
+
+        for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : m.entrySet()) {
+            assertEquals("baz", entry.getKey().getImage());
+            if (entry.getKey().getNode().getBeginLine() == 2) {
+                // this is the public method declaration - it is not used anywhere
+                assertEquals(0, entry.getValue().size());
+            } else if (entry.getKey().getNode().getBeginLine() == 5) {
+                // this is the private (overloaded) method 
+                assertEquals(1, entry.getValue().size());
+                // it's used once in line 3
+                assertEquals(3, entry.getValue().get(0).getLocation().getBeginLine());
+            } else {
+                fail("unexpected name declaration");
+            }
         }
     }
 
