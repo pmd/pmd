@@ -102,20 +102,14 @@ public class DocumentNavigator extends DefaultNavigator {
 
     @Override
     public Object getParentNode(Object arg0) {
-      try {
-	if (arg0 instanceof Node) {
-	    return ((Node) arg0).jjtGetParent();
-	}
-	if (arg0 instanceof Attribute) {
-	    return ((Attribute) arg0).getParent();
-	}
-	return ((Attribute) arg0).getParent();
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace(System.err);
+        if (arg0 instanceof Node) {
+            return ((Node) arg0).jjtGetParent();
+        }
+        if (arg0 instanceof Attribute) {
+            return ((Attribute) arg0).getParent();
+        }
+        // can't navigate to parent node...
         return null;
-      }
     }
 
     @Override
@@ -295,12 +289,12 @@ public class DocumentNavigator extends DefaultNavigator {
 
     @Override
     public Object getDocumentNode(Object contextNode) {
-	if (null == contextNode) {
-          throw new RuntimeException ("contextNode may not be null" );
+        if (isDocument(contextNode)) {
+            return contextNode;
         }
-	if (isDocument(contextNode)) {
-	    return contextNode;
-	}
-	return getDocumentNode(getParentNode(contextNode));
+        if (null == contextNode) {
+            throw new RuntimeException("contextNode may not be null");
+        }
+        return getDocumentNode(getParentNode(contextNode));
     }
 }

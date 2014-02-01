@@ -3,12 +3,18 @@
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+The Dates ruleset deals with PLSQL DATETIME usages.
+  </description>
+
 <rule  language="plsql" name="TO_DATEWithoutDateFormat"
   message="TO_DATE without date format"
   class="net.sourceforge.pmd.lang.rule.XPathRule">
   <description>
   TO_DATE without date format- use TO_DATE(expression, date-format)
   </description>
+  <priority>3</priority>
   <properties>
     <property name="xpath">
     <value>
@@ -18,7 +24,6 @@
     </value>
     </property>
   </properties>
-  <priority>3</priority>
   <example>
 <![CDATA[
 CREATE OR REPLACE PACKAGE BODY date_utilities
@@ -56,6 +61,7 @@ END date_utilities ;
   <description>
   TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)
   </description>
+  <priority>3</priority>
   <properties>
     <property name="xpath">
     <value>
@@ -70,7 +76,6 @@ END date_utilities ;
     </value>
     </property>
   </properties>
-  <priority>3</priority>
   <example>
 <![CDATA[
 CREATE OR REPLACE PACKAGE BODY date_utilities
@@ -95,6 +100,7 @@ END date_utilities ;
   <description>
   TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
   </description>
+  <priority>3</priority>
   <properties>
     <property name="xpath">
     <value>
@@ -104,7 +110,6 @@ END date_utilities ;
     </value>
     </property>
   </properties>
-  <priority>3</priority>
   <example>
 <![CDATA[
 CREATE OR REPLACE PACKAGE BODY date_utilities
