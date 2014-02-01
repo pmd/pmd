@@ -72,10 +72,12 @@
 
 
 
-**CPD Command Line Changes:**
-
-- Added non-recursive option "--non-recursive" to not scan sub-directories
-- Added option "--exclude" to exclude specific files from being scanned (thanks to Delmas for patch #272)
+**CPD Changes:**
+- Command Line
+    - Added non-recursive option "--non-recursive" to not scan sub-directories
+    - Added option "--exclude" to exclude specific files from being scanned (thanks to Delmas for patch #272)
+- CPD is now thread-safe, so that multiple instances of CPD can run concurrently without stepping
+    on each other (eg: multi-module Maven projects.). Thanks to David Golpira.
 
 **Miscellaneous:**
 
