@@ -5,6 +5,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TokenEntry implements Comparable<TokenEntry> {
 
@@ -16,8 +17,18 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private int identifier;
     private int hashCode;
 
-    private final static Map<String, Integer> TOKENS = new HashMap<String, Integer>();
-    private static int tokenCount = 0;
+    private static ThreadLocal<Map<String, Integer>> TOKENS = new ThreadLocal<Map<String, Integer>>(){
+        @Override
+        protected Map<String, Integer> initialValue() {
+            return new HashMap<String, Integer>();
+        }
+    };
+    private static ThreadLocal<AtomicInteger> tokenCount = new ThreadLocal<AtomicInteger>(){
+        @Override
+        protected AtomicInteger initialValue() {
+            return new AtomicInteger(0);
+        }
+    };
 
     private TokenEntry() {
         this.identifier = 0;
@@ -25,25 +36,26 @@ public class TokenEntry implements Comparable<TokenEntry> {
     }
 
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
-        Integer i = TOKENS.get(image);
+        Integer i = TOKENS.get().get(image);
         if (i == null) {
-            i = TOKENS.size() + 1;
-            TOKENS.put(image, i);
+            i = TOKENS.get().size() + 1;
+            TOKENS.get().put(image, i);
         }
         this.identifier = i.intValue();
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
-        this.index = tokenCount++;
+        this.index = tokenCount.get().getAndIncrement();
     }
 
     public static TokenEntry getEOF() {
-        tokenCount++;
+        tokenCount.get().getAndIncrement();
         return EOF;
     }
 
     public static void clearImages() {
-        TOKENS.clear();
-        tokenCount = 0;
+        TOKENS.get().clear();
+        TOKENS.remove();
+        tokenCount.remove();
     }
 
     public String getTokenSrcID() {
