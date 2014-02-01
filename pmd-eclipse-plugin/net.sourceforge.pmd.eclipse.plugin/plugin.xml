@@ -164,7 +164,13 @@
             id="org.eclipse.jdt.core.javanature">
       </requires-nature>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.keywords">
+      <keyword
+            id="net.sourceforge.pmd.eclipse.ui.keywords.pmd"
+            label="%keywords.pmd">
+      </keyword>
+   </extension>
    <extension
          id="pmdPreferencePages"
          name="PMDPreferencePages"
@@ -173,12 +179,18 @@
             name="%preferences.pmd"
             class="net.sourceforge.pmd.eclipse.ui.preferences.GeneralPreferencesPage"
             id="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage">
+         <keywordReference
+               id="net.sourceforge.pmd.eclipse.ui.keywords.pmd">
+         </keywordReference>
       </page>
       <page
             name="%preferences.rulesets"
             category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
             class="net.sourceforge.pmd.eclipse.ui.preferences.br.PMDPreferencePage2"
             id="net.sourceforge.pmd.eclipse.ui.preferences.pmdPreferencePage">
+         <keywordReference
+               id="net.sourceforge.pmd.eclipse.ui.keywords.pmd">
+         </keywordReference>
       </page>
 <!--
       <page name="PMD - Original" category="net.sourceforge.pmd.ui.preferences.generalPreferencesPage" class="net.sourceforge.pmd.eclipse.ui.preferences.PMDPreferencePage" id="net.sourceforge.pmd.ui.preferences.pmdPreferencePage">
@@ -189,6 +201,9 @@
             category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
             class="net.sourceforge.pmd.eclipse.ui.preferences.CPDPreferencePage"
             id="net.sourceforge.pmd.eclipse.ui.preferences.cpdPreferencePage">
+         <keywordReference
+               id="net.sourceforge.pmd.eclipse.ui.keywords.pmd">
+         </keywordReference>
       </page>
       
       <page
@@ -196,6 +211,9 @@
             category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
             class="net.sourceforge.pmd.eclipse.ui.reports.ReportPreferencesPage"
             id="net.sourceforge.pmd.eclipse.ui.preferences.reportsPreferencePage">
+         <keywordReference
+               id="net.sourceforge.pmd.eclipse.ui.keywords.pmd">
+         </keywordReference>
       </page>
       
       <page
@@ -203,6 +221,9 @@
             category="net.sourceforge.pmd.eclipse.ui.preferences.generalPreferencesPage"
             class="net.sourceforge.pmd.eclipse.ui.filters.FilterPreferencesPage"
             id="net.sourceforge.pmd.eclipse.ui.preferences.filterPreferencePage">
+         <keywordReference
+               id="net.sourceforge.pmd.eclipse.ui.keywords.pmd">
+         </keywordReference>
       </page>
       
    </extension>
