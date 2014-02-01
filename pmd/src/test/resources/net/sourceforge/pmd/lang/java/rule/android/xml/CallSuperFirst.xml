@@ -54,4 +54,16 @@ public class MyActivity extends Activity {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description>#1154 Call super onPause when there is no super</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class NotAnActivity {
+    Activity a = myActivity;
+    protected void onResume() {
+        doSomething();
+    }
+}
+    ]]></code>
+  </test-code>
 </test-data>
