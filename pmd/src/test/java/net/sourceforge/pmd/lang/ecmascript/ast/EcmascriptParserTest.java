@@ -8,16 +8,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 
 import org.junit.Test;
 import org.mozilla.javascript.ast.AstRoot;
 
 public class EcmascriptParserTest extends EcmascriptParserTestBase {
 
+    /**
+     * https://sourceforge.net/p/pmd/bugs/1043/
+     */
     @Test
     public void testLineNumbers() {
         String SOURCE_CODE =
@@ -41,6 +47,36 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         assertEquals(3, child.getBeginColumn());
         assertEquals(2, child.getEndLine());
         assertEquals(16, child.getEndColumn());
+    }
+
+    /**
+     * https://sourceforge.net/p/pmd/bugs/1149/
+     */
+    @Test
+    public void testLineNumbersWithinEcmascriptRules() {
+        String source =
+                "function f(x){\n" + 
+                "   if (x) {\n" + 
+                "       return 1;\n" + 
+                "   } else {\n" + 
+                "       return 0;\n" + 
+                "   }\n" + 
+                "}";
+        final List<String> output = new ArrayList<String>();
+
+        class MyEcmascriptRule extends AbstractEcmascriptRule {
+            public Object visit(ASTScope node, Object data) {
+                output.add("Scope from " + node.getBeginLine() + " to " + node.getEndLine());
+                return super.visit(node, data);
+            }
+        }
+
+        MyEcmascriptRule rule = new MyEcmascriptRule();
+        RuleContext ctx = new RuleContext();
+        rule.apply(Arrays.asList(parse(source)), ctx);
+
+        assertEquals("Scope from 2 to 4", output.get(0));
+        assertEquals("Scope from 4 to 6", output.get(1));
     }
 
     /**
