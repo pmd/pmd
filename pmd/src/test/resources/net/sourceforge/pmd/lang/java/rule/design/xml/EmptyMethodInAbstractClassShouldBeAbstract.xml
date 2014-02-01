@@ -119,15 +119,10 @@ public abstract class ShouldBeAbstract
         <description><![CDATA[
 Bug 1888967 : Detection of dummy method
      ]]></description>
-        <expected-problems>3</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
 {
-	public boolean couldBeAbstract()
-    {
-    	return true;
-    }
-
    	public int couldBeAbstract()
     {
     	return 0;
@@ -199,5 +194,27 @@ public abstract class Foo
 
 }
     	]]></code>
+    </test-code>
+    <test-code>
+        <description>#1147 EmptyMethodInAbstractClassShouldBeAbstract false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+    public boolean isVisible() {
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Detect empty statements</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+    public void isVisible() {
+        ;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>
