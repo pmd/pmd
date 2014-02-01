@@ -32,6 +32,7 @@ public class EcmascriptParser {
 	compilerEnvirons.setLanguageVersion(parserOptions.getRhinoLanguageVersion().getVersion());
 	compilerEnvirons.setIdeMode(true); // Scope's don't appear to get set right without this
 	compilerEnvirons.setWarnTrailingComma(true);
+        compilerEnvirons.setReservedKeywordAsIdentifier(true); // see bug #1150 "EmptyExpression" for valid statements!
 
 	// TODO We should do something with Rhino errors...
 	final ErrorCollector errorCollector = new ErrorCollector();

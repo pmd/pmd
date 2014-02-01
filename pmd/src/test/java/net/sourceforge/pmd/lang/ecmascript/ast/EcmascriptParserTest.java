@@ -4,6 +4,8 @@
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,23 +20,27 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
 
     @Test
     public void testLineNumbers() {
-    EcmascriptNode<AstRoot> node = parse(SOURCE_CODE);
-	assertEquals(1, node.getBeginLine());
-	assertEquals(1, node.getBeginColumn());
-	assertEquals(3, node.getEndLine());
-	assertEquals(1, node.getEndColumn());
+        String SOURCE_CODE =
+                "function a() {" + PMD.EOL
+              + "  alert('hello');" + PMD.EOL
+              + "}" + PMD.EOL;
+        EcmascriptNode<AstRoot> node = parse(SOURCE_CODE);
+        assertEquals(1, node.getBeginLine());
+        assertEquals(1, node.getBeginColumn());
+        assertEquals(3, node.getEndLine());
+        assertEquals(1, node.getEndColumn());
 
-	Node child = node.getFirstChildOfType(ASTFunctionNode.class);
-	assertEquals(1, child.getBeginLine());
-	assertEquals(1, child.getBeginColumn());
-	assertEquals(3, child.getEndLine());
-	assertEquals(1, child.getEndColumn());
+        Node child = node.getFirstChildOfType(ASTFunctionNode.class);
+        assertEquals(1, child.getBeginLine());
+        assertEquals(1, child.getBeginColumn());
+        assertEquals(3, child.getEndLine());
+        assertEquals(1, child.getEndColumn());
 
-	child = node.getFirstDescendantOfType(ASTFunctionCall.class);
-	assertEquals(2, child.getBeginLine());
-	assertEquals(3, child.getBeginColumn());
-	assertEquals(2, child.getEndLine());
-	assertEquals(16, child.getEndColumn());
+        child = node.getFirstDescendantOfType(ASTFunctionCall.class);
+        assertEquals(2, child.getBeginLine());
+        assertEquals(3, child.getBeginColumn());
+        assertEquals(2, child.getEndLine());
+        assertEquals(16, child.getEndColumn());
     }
 
     /**
@@ -88,8 +94,19 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         return "????";
     }
 
-    private static final String SOURCE_CODE =
-	    "function a() {" + PMD.EOL
-	  + "  alert('hello');" + PMD.EOL
-	  + "}" + PMD.EOL;
+    /**
+     * https://sourceforge.net/p/pmd/bugs/1150/
+     * #1150 "EmptyExpression" for valid statements!
+     */
+    @Test
+    public void testCaseAsIdentifier() {
+        ASTAstRoot rootNode = parse("function f(a){\n" + 
+                "    a.case.flag = 1;\n" + 
+                "    return;\n" + 
+                "}");
+        ASTBlock block = rootNode.getFirstDescendantOfType(ASTBlock.class);
+        assertFalse(block.jjtGetChild(0) instanceof ASTEmptyExpression);
+        assertTrue(block.jjtGetChild(0) instanceof ASTExpressionStatement);
+        assertTrue(block.jjtGetChild(0).jjtGetChild(0) instanceof ASTAssignment);
+    }
 }
