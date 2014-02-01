@@ -75,6 +75,17 @@ public class ParserCornerCases18 {
             (c1, c2) -> c1.getKey().compareTo(c2.getKey());
     }
 
+    /* TODO: This construct can't be parsed. Either the cast expression is not detected, or the following Lambda Expression.
+    /* Example from java.time.chrono.AbstractChronology */
+//    static final Comparator<ChronoLocalDateTime<? extends ChronoLocalDate>> DATE_TIME_ORDER =
+//            (Comparator<ChronoLocalDateTime<? extends ChronoLocalDate>> & Serializable) (dateTime1, dateTime2) -> {
+//                int cmp = Long.compare(dateTime1.toLocalDate().toEpochDay(), dateTime2.toLocalDate().toEpochDay());
+//                if (cmp == 0) {
+//                    cmp = Long.compare(dateTime1.toLocalTime().toNanoOfDay(), dateTime2.toLocalTime().toNanoOfDay());
+//                }
+//                return cmp;
+//            };
+
     public void methodReferences() {
         Runnable r = new ParserCornerCases18()::toDoLater;
         Runnable r1 = this::toDoLater;
