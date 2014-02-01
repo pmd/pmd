@@ -244,4 +244,40 @@ abstract class Foo {
 }
 		]]></code>
 	</test-code>
+    <test-code>
+        <description>#1159 false positive UnusedFormalParameter readObject(ObjectInputStream) if not used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException{
+       throw new InvalidObjectException("Proxy required");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1159 correct UnusedFormalParameter for readObject(foo) if not used</description>
+        <rule-property name="checkAll">true</rule-property>
+        <expected-problems>5</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    // throws declaration is missing - so not the serialization readObject method
+    private void readObject(ObjectInputStream stream) {
+       throw new InvalidObjectException("Proxy required");
+    }
+    // argument is not a ObjectInputStream
+    private void readObject(Foo a) throws InvalidObjectException {
+       throw new InvalidObjectException("Proxy required");
+    }
+    // two arguments - two violations
+    private void readObject(ObjectInputStream stream, Object o) throws InvalidObjectException{
+       throw new InvalidObjectException("Proxy required");
+    }
+    // it's public
+    public void readObject(ObjectInputStream stream) throws InvalidObjectException{
+       throw new InvalidObjectException("Proxy required");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

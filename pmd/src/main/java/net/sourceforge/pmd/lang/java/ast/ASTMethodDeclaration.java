@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
 public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod {
@@ -79,13 +80,29 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
     }
 
     public ASTBlock getBlock() {
-        // FIXME doesn't work for all methods that use generics and declare exceptions
-        if (this.jjtGetChild(2) instanceof ASTBlock) {
-            return (ASTBlock) this.jjtGetChild(2);
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
+            Node n = jjtGetChild(i);
+            if (n instanceof ASTBlock) {
+                return (ASTBlock)n;
+            }
         }
-        if (jjtGetNumChildren() > 3) {
-            if (this.jjtGetChild(3) instanceof ASTBlock) {
-                return (ASTBlock) this.jjtGetChild(3);
+        return null;
+    }
+
+    public ASTNameList getThrows() {
+        int declaratorIndex = -1;
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
+            Node child = jjtGetChild(i);
+            if (child instanceof ASTMethodDeclarator) {
+                declaratorIndex = i;
+                break;
+            }
+        }
+        // the throws declaration is immediately followed by the MethodDeclarator
+        if (jjtGetNumChildren() > declaratorIndex + 1) {
+            Node n = jjtGetChild(declaratorIndex + 1);
+            if (n instanceof ASTNameList) {
+                return (ASTNameList)n;
             }
         }
         return null;

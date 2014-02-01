@@ -52,6 +52,7 @@
 * Fixed [bug 1142]: ECMAScript: getCatchClause() is buggy.
 * Fixed [bug 1144]: CPD encoding argument has no effect
 * Fixed [bug 1155]: maven pmd plugin does not like empty rule sets
+* Fixed [bug 1159]: false positive UnusedFormalParameter readObject(ObjectInputStream) if not used
 
 [bug  881]: https://sourceforge.net/p/pmd/bugs/881
 [bug 1059]: https://sourceforge.net/p/pmd/bugs/1059
@@ -69,6 +70,7 @@
 [bug 1142]: https://sourceforge.net/p/pmd/bugs/1142
 [bug 1144]: https://sourceforge.net/p/pmd/bugs/1144
 [bug 1155]: https://sourceforge.net/p/pmd/bugs/1155
+[bug 1159]: https://sourceforge.net/p/pmd/bugs/1159
 
 
 
