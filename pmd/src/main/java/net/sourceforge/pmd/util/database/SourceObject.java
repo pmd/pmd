@@ -131,10 +131,14 @@ public class SourceObject {
       return ".fnc";
     else if (type.toUpperCase().indexOf("PROCEDURE") >= 0)
       return ".prc";
+    else if (type.toUpperCase().indexOf("PACKAGE_BODY") >= 0)
+      return ".pkb";
     else if (type.toUpperCase().indexOf("PACKAGE") >= 0)
-      return ".pck";
+      return ".pks";
+    else if (type.toUpperCase().indexOf("TYPE_BODY") >= 0)
+      return ".tpb";
     else if (type.toUpperCase().indexOf("TYPE") >= 0)
-      return ".typ";
+      return ".tps";
     else 
       return "";
   }
