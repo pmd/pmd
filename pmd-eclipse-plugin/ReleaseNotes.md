@@ -6,6 +6,10 @@ Eclipse Update Site: <https://sourceforge.net/projects/pmd/files/pmd-eclipse/upd
 
 ## ????: 4.0.3.v????
 
+* Support workspace-relative path in ruleSetFile property ([pull request #36], [feature request #1133])
+
+[pull request #36]: https://github.com/pmd/pmd/pull/36
+[feature request #1133]: http://sourceforge.net/p/pmd/bugs/1133/
 
 ## 31-October-2013: 4.0.2.v20131031-1124
 
