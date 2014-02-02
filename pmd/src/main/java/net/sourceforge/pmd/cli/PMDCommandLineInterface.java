@@ -20,7 +20,6 @@ import com.beust.jcommander.ParameterException;
  */
 public class PMDCommandLineInterface {
 
-	private static JCommander jcommander = null;
 	public static final String PROG_NAME = "pmd";
 
 	public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
@@ -29,19 +28,19 @@ public class PMDCommandLineInterface {
 	public static final int ERROR_STATUS = 1;
 
 	public static PMDParameters extractParameters(PMDParameters arguments, String[] args, String progName) {
-		jcommander = new JCommander(arguments);
+	    JCommander jcommander = new JCommander(arguments);
 		jcommander.setProgramName(progName);
 
 		try {
 			jcommander.parse(args);
 			if (arguments.isHelp()) {
 				jcommander.usage();
-				System.out.println(buildUsageText());
+				System.out.println(buildUsageText(jcommander));
 				setStatusCodeOrExit(0);
 			}
 		} catch (ParameterException e) {
 			jcommander.usage();
-			System.out.println(buildUsageText());
+			System.out.println(buildUsageText(jcommander));
 			System.out.println(e.getMessage());
 			setStatusCodeOrExit(ERROR_STATUS);
 		}
@@ -49,6 +48,10 @@ public class PMDCommandLineInterface {
 	}
 
 	public static String buildUsageText() {
+	    return buildUsageText(null);
+	}
+
+	public static String buildUsageText(JCommander jcommander) {
 		StringBuilder usage = new StringBuilder();
 
 		String allCommandsDescription = null;
