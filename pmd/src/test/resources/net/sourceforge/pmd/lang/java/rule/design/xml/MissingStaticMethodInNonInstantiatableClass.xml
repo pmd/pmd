@@ -154,4 +154,30 @@ public class Suit {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1125 Missing Static Method In Non Instantiatable Class / Factory</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AccountSelectionSubForm extends Form implements WidgetEventListener
+{
+    public static class Factory
+    {
+        public Factory()
+        {
+            // do
+        }
+        // factory method which creates the outer class
+        public AccountSelectionSubForm create( Form parent, boolean supportAllAccountsSelection )
+        {
+            return new AccountSelectionSubForm();
+        }
+    }
+
+    private AccountSelectionSubForm()
+    {
+        super( parent, null );
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

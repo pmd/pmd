@@ -815,13 +815,29 @@ A class that has private constructors and does not have any static methods or fi
           <property name="xpath">
               <value>
     <![CDATA[
-//ClassOrInterfaceDeclaration[@Nested='false'][
-( count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)>0
-  and count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true']) )
-and
-count(.//MethodDeclaration[@Static='true'])=0
-and
-count(.//FieldDeclaration[@Private='false'][@Static='true'])=0
+//ClassOrInterfaceDeclaration[@Nested='false']
+[
+  (
+    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)>0
+    and
+    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true'])
+  )
+  and
+  count(.//MethodDeclaration[@Static='true'])=0
+  and
+  count(.//FieldDeclaration[@Private='false'][@Static='true'])=0
+  and
+  count(.//ClassOrInterfaceDeclaration[@Nested='true']
+           [@Public='true']
+           [@Static='true']
+           [count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public='true']) > 0]
+           [count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
+                    [@Public='true']
+                    [./ResultType/Type/ReferenceType/ClassOrInterfaceType
+                        [@Image = //ClassOrInterfaceDeclaration[@Nested='false']/@Image]
+                    ]
+            ) > 0]
+        ) = 0
 ]
     ]]>
               </value>
