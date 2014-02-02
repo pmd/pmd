@@ -129,6 +129,14 @@ public class ReportTest extends RuleTst implements ReportListener {
     }
 
     @Test
+    public void testExclusionsInReportWithAnnotationsFullName() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString(TEST2_FULL, new FooRule(), rpt, LanguageVersion.JAVA_15);
+        assertTrue(rpt.isEmpty());
+        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+    }
+
+    @Test
     public void testExclusionsInReportWithNOPMD() throws Throwable {
         Report rpt = new Report();
         runTestFromString(TEST3, new FooRule(), rpt);
@@ -141,6 +149,9 @@ public class ReportTest extends RuleTst implements ReportListener {
 
     private static final String TEST2 =
             "@SuppressWarnings(\"PMD\")" + PMD.EOL +
+            "public class Foo {}";
+    private static final String TEST2_FULL =
+            "@java.lang.SuppressWarnings(\"PMD\")" + PMD.EOL +
             "public class Foo {}";
 
     private static final String TEST3 =

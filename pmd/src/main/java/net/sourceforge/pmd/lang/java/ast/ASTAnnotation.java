@@ -43,7 +43,8 @@ public class ASTAnnotation extends AbstractJavaNode {
 	if (n.jjtGetChild(0) instanceof ASTName) {
 	    ASTName annName = (ASTName) n.jjtGetChild(0);
 
-	    if (annName.getImage().equals("SuppressWarnings")) {
+	    if ("SuppressWarnings".equals(annName.getImage())
+	            || "java.lang.SuppressWarnings".equals(annName.getImage())) {
 		List<ASTLiteral> nodes = n.findDescendantsOfType(ASTLiteral.class);
 		for (ASTLiteral element : nodes) {
 		    if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(ruleAnno)
