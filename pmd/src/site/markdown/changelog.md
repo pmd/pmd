@@ -28,6 +28,9 @@
     - ConfusingTernary
         - new property "ignoreElseIf" to suppress this rule in case of if-else-if-else usage.
           See [feature 1161]: Confusing Ternary should skip else if statements (or have a property to do so)
+    - FieldDeclarationsShouldBeAtStartOfClass
+        - new property "ignoreEnumDeclarations" which is enabled by default. This relaxes the rule, so
+          that enums can be declared before fields and the rule is not triggered.
 
 [feature 1161]: http://sourceforge.net/p/pmd/bugs/1161/
 
