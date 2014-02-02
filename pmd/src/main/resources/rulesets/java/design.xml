@@ -533,14 +533,18 @@ Tests for null should not use the equals() method. The '==' operator should be u
                 <value>
     <![CDATA[
 //PrimaryExpression
- [
-PrimaryPrefix/Name[ends-with(@Image, 'equals')]
-or
-PrimarySuffix[ends-with(@Image, 'equals')]
-]
-[PrimarySuffix/Arguments/ArgumentList[count(Expression)=1]
-  /Expression/PrimaryExpression/PrimaryPrefix
-   /Literal/NullLiteral]
+  [
+    PrimaryPrefix[Name[ends-with(@Image, 'equals')]]
+      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
+          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+
+    or
+
+    PrimarySuffix[ends-with(@Image, 'equals')]
+      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
+          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+
+  ]
     ]]>
                 </value>
             </property>

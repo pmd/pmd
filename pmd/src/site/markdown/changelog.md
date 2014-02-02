@@ -40,6 +40,7 @@
 * Fixed [bug 1059]: Change rule name "Use Singleton" should be "Use Utility class"
 * Fixed [bug 1106]: PMD 5.0.4 fails with NPE on parsing java enum with inner class instance creation
 * Fixed [bug 1115]: commentRequiredRule in pmd 5.1 is not working properly
+* Fixed [bug 1120]: equalsnull false positive
 * Fixed [bug 1121]: NullPointerException when invoking XPathCLI
 * Fixed [bug 1123]: failure in help examples
 * Fixed [bug 1125]: Missing Static Method In Non Instantiatable Class
@@ -64,6 +65,7 @@
 [bug 1059]: https://sourceforge.net/p/pmd/bugs/1059
 [bug 1106]: https://sourceforge.net/p/pmd/bugs/1106
 [bug 1115]: https://sourceforge.net/p/pmd/bugs/1115
+[bug 1120]: https://sourceforge.net/p/pmd/bugs/1120
 [bug 1121]: https://sourceforge.net/p/pmd/bugs/1121
 [bug 1123]: https://sourceforge.net/p/pmd/bugs/1123
 [bug 1125]: https://sourceforge.net/p/pmd/bugs/1125
