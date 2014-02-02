@@ -50,4 +50,28 @@ public class Bar {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1146 real problem</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+public class Foo {
+  public void bar() {
+    Vector v = new Vector();
+  }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1146 UseArrayListInsteadOfVector false positive when using own Vector class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.mycompany.myproject.Vector;
+public class Foo {
+  public void bar() {
+    Vector v = new Vector();
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>

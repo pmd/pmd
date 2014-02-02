@@ -53,6 +53,7 @@
 * Fixed [bug 1141]: ECMAScript: getFinallyBlock() is buggy.
 * Fixed [bug 1142]: ECMAScript: getCatchClause() is buggy.
 * Fixed [bug 1144]: CPD encoding argument has no effect
+* Fixed [bug 1146]: UseArrayListInsteadOfVector false positive when using own Vector class
 * Fixed [bug 1147]: EmptyMethodInAbstractClassShouldBeAbstract false positives
 * Fixed [bug 1150]: "EmptyExpression" for valid statements!
 * Fixed [bug 1154]: Call super onPause when there is no super
@@ -76,6 +77,7 @@
 [bug 1141]: https://sourceforge.net/p/pmd/bugs/1141
 [bug 1142]: https://sourceforge.net/p/pmd/bugs/1142
 [bug 1144]: https://sourceforge.net/p/pmd/bugs/1144
+[bug 1146]: https://sourceforge.net/p/pmd/bugs/1146
 [bug 1147]: https://sourceforge.net/p/pmd/bugs/1147
 [bug 1150]: https://sourceforge.net/p/pmd/bugs/1150
 [bug 1154]: https://sourceforge.net/p/pmd/bugs/1154
