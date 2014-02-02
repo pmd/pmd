@@ -7,6 +7,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ecmascript.Ecmascript3Parser;
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 
 import org.junit.Test;
@@ -144,5 +148,31 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         assertFalse(block.jjtGetChild(0) instanceof ASTEmptyExpression);
         assertTrue(block.jjtGetChild(0) instanceof ASTExpressionStatement);
         assertTrue(block.jjtGetChild(0).jjtGetChild(0) instanceof ASTAssignment);
+    }
+
+    /**
+     * https://sourceforge.net/p/pmd/bugs/1045/
+     * #1045 //NOPMD not working (or not implemented) with ECMAscript 
+     */
+    @Test
+    public void testSuppresionComment() {
+        Ecmascript3Parser parser = new Ecmascript3Parser(new EcmascriptParserOptions());
+        Reader sourceCode = new StringReader("function(x) {\n"
+                + "x = x; //NOPMD I know what I'm doing\n"
+                + "}\n");
+        parser.parse("foo", sourceCode);
+        assertEquals(" I know what I'm doing", parser.getSuppressMap().get(2));
+        assertEquals(1, parser.getSuppressMap().size());
+
+        EcmascriptParserOptions parserOptions = new EcmascriptParserOptions();
+        parserOptions.setSuppressMarker("FOOOO");
+        parser = new Ecmascript3Parser(parserOptions);
+        sourceCode = new StringReader("function(x) {\n"
+                + "y = y; //NOPMD xyz\n"
+                + "x = x; //FOOOO I know what I'm doing\n"
+                + "}\n");
+        parser.parse("foo", sourceCode);
+        assertEquals(" I know what I'm doing", parser.getSuppressMap().get(3));
+        assertEquals(1, parser.getSuppressMap().size());
     }
 }

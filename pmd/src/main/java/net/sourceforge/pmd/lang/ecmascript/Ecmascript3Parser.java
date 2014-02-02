@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.lang.ecmascript;
 
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
@@ -17,9 +16,11 @@ import net.sourceforge.pmd.lang.ast.ParseException;
  * Adapter for the EcmascriptParser.
  */
 public class Ecmascript3Parser extends AbstractParser {
+    private net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser ecmascriptParser;
 
     public Ecmascript3Parser(ParserOptions parserOptions) {
 	super(parserOptions);
+	ecmascriptParser = new net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser((EcmascriptParserOptions)parserOptions);
     }
 
     @Override
@@ -32,10 +33,10 @@ public class Ecmascript3Parser extends AbstractParser {
     }
 
     public Node parse(String fileName, Reader source) throws ParseException {
-	return new net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser((EcmascriptParserOptions)parserOptions).parse(source);
+    return ecmascriptParser.parse(source);
     }
 
     public Map<Integer, String> getSuppressMap() {
-	return new HashMap<Integer, String>(); // FIXME
+        return ecmascriptParser.getSuppressMap();
     }
 }

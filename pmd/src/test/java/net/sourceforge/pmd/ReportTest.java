@@ -13,7 +13,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
+import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
+import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -140,6 +144,23 @@ public class ReportTest extends RuleTst implements ReportListener {
     public void testExclusionsInReportWithNOPMD() throws Throwable {
         Report rpt = new Report();
         runTestFromString(TEST3, new FooRule(), rpt);
+        assertTrue(rpt.isEmpty());
+        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+    }
+
+    @Test
+    public void testExclusionsInReportWithNOPMDEcmascript() throws Exception {
+        Report rpt = new Report();
+        Rule rule = new AbstractEcmascriptRule() {
+            @Override
+            public Object visit(ASTFunctionNode node, Object data) {
+                EcmascriptRuleViolationFactory.INSTANCE.addViolation((RuleContext)data, this, node, "Test", null);
+                return super.visit(node, data);
+            }
+        };
+        String code = "function(x) // NOPMD test suppress\n"
+                + "{ x = 1; }";
+        runTestFromString(code, rule, rpt, Language.ECMASCRIPT.getDefaultVersion());
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }
