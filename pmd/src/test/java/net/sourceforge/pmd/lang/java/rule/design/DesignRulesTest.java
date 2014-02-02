@@ -47,7 +47,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "NonStaticInitializer");
         addRule(RULESET, "NonThreadSafeSingleton");
         addRule(RULESET, "OptimizableToArrayCall");
-        //addRule(RULESET, "PositionalIteratorRule"); This rule does not yes exist
+        //addRule(RULESET, "PositionalIteratorRule"); This rule does not yet exist
         addRule(RULESET, "PositionLiteralsFirstInComparisons");
         addRule(RULESET, "PositionLiteralsFirstInCaseInsensitiveComparisons");
         addRule(RULESET, "PreserveStackTrace");

@@ -42,6 +42,7 @@
 * Fixed [bug 1115]: commentRequiredRule in pmd 5.1 is not working properly
 * Fixed [bug 1121]: NullPointerException when invoking XPathCLI
 * Fixed [bug 1123]: failure in help examples
+* Fixed [bug 1126]: False positive with FieldDeclarationsShouldBeAtStartOfClass for static enums
 * Fixed [bug 1130]: CloseResource doesn't recognize custom close method
 * Fixed [bug 1131]: CloseResource should complain if code betwen declaration of resource and try
 * Fixed [bug 1134]: UseStringBufferLength: false positives
@@ -63,6 +64,7 @@
 [bug 1115]: https://sourceforge.net/p/pmd/bugs/1115
 [bug 1121]: https://sourceforge.net/p/pmd/bugs/1121
 [bug 1123]: https://sourceforge.net/p/pmd/bugs/1123
+[bug 1126]: https://sourceforge.net/p/pmd/bugs/1126
 [bug 1130]: https://sourceforge.net/p/pmd/bugs/1130
 [bug 1131]: https://sourceforge.net/p/pmd/bugs/1131
 [bug 1134]: https://sourceforge.net/p/pmd/bugs/1134

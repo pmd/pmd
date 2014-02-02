@@ -74,4 +74,43 @@ protected String _second;
       ]]>
     </code>
   </test-code>
+  <test-code>
+    <description>#1126 False positive with FieldDeclarationsShouldBeAtStartOfClass for static enums</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Foo {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+    public static enum MyType {
+        ABC, DEF, GHI, JHK
+    };
+
+    private int id;
+    private MyType myType;
+    private String name;
+
+    // OK, now constructors, getters, setters, etc.
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description>#1126 Do not ignore enums</description>
+    <expected-problems>3</expected-problems>
+    <rule-property name="ignoreEnumDeclarations">false</rule-property>
+    <code><![CDATA[
+public class Foo {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+    public static enum MyType {
+        ABC, DEF, GHI, JHK
+    };
+
+    private int id;
+    private MyType myType;
+    private String name;
+
+    // OK, now constructors, getters, setters, etc.
+}
+    ]]></code>
+  </test-code>
 </test-data>
