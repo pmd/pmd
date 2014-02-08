@@ -42,6 +42,8 @@
 * Fixed [bug  881]: private final without setter is flagged
 * Fixed [bug 1059]: Change rule name "Use Singleton" should be "Use Utility class"
 * Fixed [bug 1106]: PMD 5.0.4 fails with NPE on parsing java enum with inner class instance creation
+* Fixed [bug 1045]: //NOPMD not working (or not implemented) with ECMAscript
+* Fixed [bug 1054]: XML Rules ever report a line -1 and not the line/column where the error occurs
 * Fixed [bug 1115]: commentRequiredRule in pmd 5.1 is not working properly
 * Fixed [bug 1120]: equalsnull false positive
 * Fixed [bug 1121]: NullPointerException when invoking XPathCLI
@@ -58,7 +60,6 @@
 * Fixed [bug 1141]: ECMAScript: getFinallyBlock() is buggy.
 * Fixed [bug 1142]: ECMAScript: getCatchClause() is buggy.
 * Fixed [bug 1144]: CPD encoding argument has no effect
-* Fixed [bug 1045]: //NOPMD not working (or not implemented) with ECMAscript
 * Fixed [bug 1146]: UseArrayListInsteadOfVector false positive when using own Vector class
 * Fixed [bug 1147]: EmptyMethodInAbstractClassShouldBeAbstract false positives
 * Fixed [bug 1150]: "EmptyExpression" for valid statements!
@@ -69,6 +70,8 @@
 
 [bug  881]: https://sourceforge.net/p/pmd/bugs/881
 [bug 1059]: https://sourceforge.net/p/pmd/bugs/1059
+[bug 1045]: https://sourceforge.net/p/pmd/bugs/1045
+[bug 1054]: https://sourceforge.net/p/pmd/bugs/1054
 [bug 1106]: https://sourceforge.net/p/pmd/bugs/1106
 [bug 1115]: https://sourceforge.net/p/pmd/bugs/1115
 [bug 1120]: https://sourceforge.net/p/pmd/bugs/1120
@@ -86,7 +89,6 @@
 [bug 1141]: https://sourceforge.net/p/pmd/bugs/1141
 [bug 1142]: https://sourceforge.net/p/pmd/bugs/1142
 [bug 1144]: https://sourceforge.net/p/pmd/bugs/1144
-[bug 1045]: https://sourceforge.net/p/pmd/bugs/1045
 [bug 1146]: https://sourceforge.net/p/pmd/bugs/1146
 [bug 1147]: https://sourceforge.net/p/pmd/bugs/1147
 [bug 1150]: https://sourceforge.net/p/pmd/bugs/1150
