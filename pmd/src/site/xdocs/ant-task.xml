@@ -146,11 +146,14 @@
 <sourceLanguage name="java" version="1.5"/>
 <sourceLanguage name="java" version="1.6"/>
 <sourceLanguage name="java" version="1.7"/>
+<sourceLanguage name="java" version="1.8"/>
 <sourceLanguage name="jsp" version=""/>
 <sourceLanguage name="php" version=""/>
 <sourceLanguage name="ruby" version=""/>
+<sourceLanguage name="plsql" version=""/>
 <sourceLanguage name="xsl" version=""/>
 <sourceLanguage name="xml" version=""/>
+<sourceLanguage name="vm" version=""/>
 ]]>
         </source>
 
