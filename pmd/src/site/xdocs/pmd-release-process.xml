@@ -31,7 +31,7 @@ $ git status
     <source>src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</source>
   </li>
   <li>Update version/release info in <strong>src/site/markdown/changelog.md</strong>.</li>
-  <li>Update pmd.website.baseurl in <strong>pom.xml</strong></li>
+  <li>Update pmd.website.baseurl in <strong>pom.xml</strong> (to <code>http://pmd.sourceforge.net/pmd-${project.version}</code>)</li>
   <li>Update <strong>../website/.htaccess</strong> of our website, to redirect to the new version</li>
   <li>Update <strong>../website/index.html</strong> to mention the new release</li>
 </ul>
@@ -190,7 +190,8 @@ the following template:
 PMD &lt;version&gt; released
 
 * minor version with lots of bug fixes
-* ChangeLog: https://sourceforge.net/projects/pmd/files/pmd/&lt;version&gt;/
+* Changelog: http://pmd.sourceforge.net/pmd-&lt;version&gt;/changelog.html
+* Download: https://sourceforge.net/projects/pmd/files/pmd/&lt;version&gt;/
 * Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-&lt;version&gt;/
 * Documentation: http://pmd.sourceforge.net/pmd-&lt;version&gt;/
 </source>

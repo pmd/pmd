@@ -26,6 +26,9 @@ This ruleset contains links to rules that are new in PMD v5.1.0
     <rule ref="rulesets/plsql/codesize.xml/TooManyFields"/>
     <rule ref="rulesets/plsql/codesize.xml/NcssMethodCount"/>
     <rule ref="rulesets/plsql/codesize.xml/NcssObjectCount"/>
+    <rule ref="rulesets/plsql/dates.xml/TO_DATEWithoutDateFormat"/>
+    <rule ref="rulesets/plsql/dates.xml/TO_DATE_TO_CHAR"/>
+    <rule ref="rulesets/plsql/dates.xml/TO_TIMESTAMPWithoutDateFormat"/>
     <rule ref="rulesets/plsql/TomKytesDespair.xml/TomKytesDespair"/>
 
     <rule ref="rulestes/vm/basic.xml/AvoidDeeplyNestedIfStmts"/>
