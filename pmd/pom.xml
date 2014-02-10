@@ -258,7 +258,7 @@
             If the xdocs files stay in src/site/xdoc/, mvn tries to copy over the generated
             one, and complains... -->
         <src.xdocs.dir>src/site/xdocs</src.xdocs.dir>
-        <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}</pmd.website.baseurl>
+        <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot</pmd.website.baseurl>
     </properties>
 
     <build>
