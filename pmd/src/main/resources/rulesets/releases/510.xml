@@ -30,10 +30,10 @@ This ruleset contains links to rules that are new in PMD v5.1.0
 
     <rule ref="rulestes/vm/basic.xml/AvoidDeeplyNestedIfStmts"/>
     <rule ref="rulestes/vm/basic.xml/CollapsibleIfStatements"/>
-    <rule ref="rulestes/vm/basic.xml/ExcessiveTemplateLengthRule"/>
+    <rule ref="rulestes/vm/basic.xml/ExcessiveTemplateLength"/>
     <rule ref="rulestes/vm/basic.xml/AvoidReassigningParameters"/>
     <rule ref="rulestes/vm/basic.xml/EmptyIfStmt"/>
-    <rule ref="rulestes/vm/basic.xml/EmptyForeachStmtRule"/>
+    <rule ref="rulestes/vm/basic.xml/EmptyForeachStmt"/>
     <rule ref="rulestes/vm/basic.xml/UnusedMacroParameter"/>
     <rule ref="rulestes/vm/basic.xml/NoInlineJavaScript"/>
     <rule ref="rulestes/vm/basic.xml/NoInlineStyles"/>

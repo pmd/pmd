@@ -8,9 +8,12 @@
 The Dates ruleset deals with PLSQL DATETIME usages.
   </description>
 
-<rule  language="plsql" name="TO_DATEWithoutDateFormat"
-  message="TO_DATE without date format"
-  class="net.sourceforge.pmd.lang.rule.XPathRule">
+<rule name="TO_DATEWithoutDateFormat"
+      language="plsql"
+      since="5.1"
+      message="TO_DATE without date format"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/dates.html#TO_DATEWithoutDateFormat">
   <description>
   TO_DATE without date format- use TO_DATE(expression, date-format)
   </description>
@@ -55,9 +58,13 @@ END date_utilities ;
 ]]>
   </example>
 </rule>
-<rule  language="plsql" name="TO_DATE_TO_CHAR"
-  message="TO_DATE(TO_CHAR(variable)) instead of TRUNC(variable)"
-  class="net.sourceforge.pmd.lang.rule.XPathRule">
+
+<rule name="TO_DATE_TO_CHAR"
+      language="plsql"
+      since="5.1"
+      message="TO_DATE(TO_CHAR(variable)) instead of TRUNC(variable)"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/dates.html#TO_DATE_TO_CHAR">
   <description>
   TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)
   </description>
@@ -94,9 +101,13 @@ END date_utilities ;
 ]]>
   </example>
 </rule>
-<rule  language="plsql" name="TO_TIMESTAMPWithoutDateFormat"
-  message="TO_TIMESTAMP without date format"
-  class="net.sourceforge.pmd.lang.rule.XPathRule">
+
+<rule name="TO_TIMESTAMPWithoutDateFormat"
+      language="plsql"
+      message="TO_TIMESTAMP without date format"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      since="5.1"
+      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/dates.html#TO_TIMESTAMPWithoutDateFormat">
   <description>
   TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
   </description>

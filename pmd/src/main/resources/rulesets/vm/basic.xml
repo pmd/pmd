@@ -31,11 +31,11 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
       <priority>3</priority>
     </rule>
   
-    <rule name="ExcessiveTemplateLengthRule"
+    <rule name="ExcessiveTemplateLength"
           since="5.1"
           message="Template is too long"
           class="net.sourceforge.pmd.lang.vm.rule.basic.ExcessiveTemplateLengthRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#ExcessiveTemplateLengthRule">
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#ExcessiveTemplateLength">
       <description>
 The template is too long. It should be broken up into smaller pieces.
       </description>
@@ -67,11 +67,11 @@ Empty if statements should be deleted.
 	    <priority>2</priority>
 	</rule>
 	
-    <rule name="EmptyForeachStmtRule"
+    <rule name="EmptyForeachStmt"
     	  since="5.1"
         message="Avoid empty foreach loops"
         class="net.sourceforge.pmd.lang.vm.rule.basic.EmptyForeachStmtRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#EmptyForeachStmtRule">
+        externalInfoUrl="${pmd.website.baseurl}/rules/vm/basic.html#EmptyForeachStmt">
 	    <description>
 Empty foreach statements should be deleted.
 	    </description>

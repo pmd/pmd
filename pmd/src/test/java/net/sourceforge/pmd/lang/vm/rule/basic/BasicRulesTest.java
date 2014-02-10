@@ -15,10 +15,10 @@ public class BasicRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "AvoidDeeplyNestedIfStmts");
         addRule(RULESET, "CollapsibleIfStatements");
-        addRule(RULESET, "ExcessiveTemplateLengthRule");
+        addRule(RULESET, "ExcessiveTemplateLength");
         addRule(RULESET, "AvoidReassigningParameters");
         addRule(RULESET, "EmptyIfStmt");
-        addRule(RULESET, "EmptyForeachStmtRule");
+        addRule(RULESET, "EmptyForeachStmt");
         addRule(RULESET, "UnusedMacroParameter");
         addRule(RULESET, "NoInlineJavaScript");
         addRule(RULESET, "NoInlineStyles");

@@ -12,7 +12,7 @@
       since="5.0"
       message="Avoid assignments in operands"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/controversial.html#AssignmentInOperand">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#AssignmentInOperand">
 <description>
 Avoid assignments in operands; this can make code more complicated and harder to read.  This is sometime
 indicative of the bug where the assignment operator '=' was used instead of the equality operator '=='.
@@ -174,7 +174,7 @@ function bar() {
           since="5.0"
           message="The for-in loop variable ''{0}'' should be explicitly scoped with 'var' to avoid pollution."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#UnreachableCode">
+          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#ScopeForInVariable">
       <description>
 A for-in loop in which the variable name is not explicitly scoped to the enclosing scope with the 'var' keyword can
 refer to a variable in an enclosing scope outside the nearest enclosing scope.  This will overwrite the
@@ -283,6 +283,7 @@ if (someVar != 3) {
 This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
 Global variables can lead to side-effects that are hard to debug.
     </description>
+  <priority>1</priority>
   <properties>
     <property name="xpath">
     <value>
@@ -292,7 +293,6 @@ Global variables can lead to side-effects that are hard to debug.
     </value>
     </property>
   </properties>
-  <priority>1</priority>
   <example>
 <![CDATA[
 function(arg) {
@@ -315,6 +315,7 @@ function(arg) {
     <description>
 This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
     </description>
+  <priority>1</priority>
   <properties>
     <property name="xpath">
     <value>
@@ -328,7 +329,6 @@ This rule helps improve code portability due to differences in browser treatment
     <property name="allowObjectLiteral" type="Boolean" value="false" description="Allow a trailing comma within an object literal" />
     <property name="allowArrayLiteral" type="Boolean" value="false" description="Allow a trailing comma within an array literal" />
     </properties>
-  <priority>1</priority>
   <example>
 <![CDATA[
 function(arg) {
@@ -348,6 +348,7 @@ function(arg) {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/basic.html#UseBaseWithParseInt">
     <description>TODO</description>
+  <priority>1</priority>
     <properties>
       <property name="xpath">
       <value><![CDATA[
@@ -359,7 +360,6 @@ function(arg) {
    ]]></value>
     </property>
   </properties>
-  <priority>1</priority>
   <example><![CDATA[
 parseInt("10",base);
   ]]></example>

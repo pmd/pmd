@@ -506,7 +506,6 @@ public class RuleSetFactoryTest {
 		int invalidRegexSuppress = 0;
 		int invalidXPathSuppress = 0;
 		String messages = "";
-		// TODO Need to handle each Language
 		List<String> ruleSetFileNames = getRuleSetFileNames();
 		for (String fileName : ruleSetFileNames) {
 			RuleSet ruleSet = loadRuleSetByFileName(fileName);
@@ -517,7 +516,7 @@ public class RuleSetFactoryTest {
 					continue;
 				}
 
-				Language language = Language.JAVA;
+				Language language = rule.getLanguage();
 				String group = fileName
 						.substring(fileName.lastIndexOf('/') + 1);
 				group = group.substring(0, group.indexOf(".xml"));
@@ -892,19 +891,33 @@ public class RuleSetFactoryTest {
 	}
 
 	// Gets all test PMD Ruleset XML files
-	private List<String> getRuleSetFileNames() throws IOException,
-			RuleSetNotFoundException {
-		Properties properties = new Properties();
-		properties.load(ResourceLoader
-				.loadResourceAsStream("rulesets/java/rulesets.properties"));
-		String fileNames = properties.getProperty("rulesets.filenames");
-		StringTokenizer st = new StringTokenizer(fileNames, ",");
-		List<String> ruleSetFileNames = new ArrayList<String>();
-		while (st.hasMoreTokens()) {
-			ruleSetFileNames.add(st.nextToken());
-		}
-		return ruleSetFileNames;
-	}
+    private List<String> getRuleSetFileNames() throws IOException,
+    RuleSetNotFoundException {
+        List<String> result = new ArrayList<String>();
+
+        for (Language language : Language.values()) {
+            result.addAll(getRuleSetFileNames(language.getTerseName()));
+        }
+
+        return result;
+    }
+
+    private List<String> getRuleSetFileNames(String language) throws IOException, RuleSetNotFoundException {
+        List<String> ruleSetFileNames = new ArrayList<String>();
+        try {
+            Properties properties = new Properties();
+            properties.load(ResourceLoader.loadResourceAsStream("rulesets/" + language + "/rulesets.properties"));
+            String fileNames = properties.getProperty("rulesets.filenames");
+            StringTokenizer st = new StringTokenizer(fileNames, ",");
+            while (st.hasMoreTokens()) {
+                ruleSetFileNames.add(st.nextToken());
+            }
+        } catch (RuleSetNotFoundException e) {
+            // this might happen if a language is only support by CPD, but not by PMD
+            System.err.println("No ruleset found for language " + language);
+        }
+        return ruleSetFileNames;
+    }
 
 	private static class ValidateDefaultHandler extends DefaultHandler {
 		private final String validateDocument;

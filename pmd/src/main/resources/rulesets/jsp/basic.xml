@@ -10,7 +10,7 @@
 	<rule name="NoLongScripts" language="jsp" since="3.6"
 		message="Avoid having long scripts (e.g. Javascript) inside a JSP file."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#NoLongScripts">
+		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoLongScripts">
 		<description>
 Scripts should be part of Tag Libraries, rather than part of JSP pages.
 		</description>
@@ -54,7 +54,7 @@ onload=calcDays;
 	<rule name="NoScriptlets" language="jsp" since="3.6"
 		message="Avoid having scriptlets inside a JSP file."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#NoScriptlets">
+		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoScriptlets">
 		<description>
 Scriptlets should be factored into Tag Libraries or JSP	declarations, rather than being part of JSP pages.
 		</description>
@@ -89,7 +89,7 @@ response.setHeader("Pragma", "No-cache");
 	<rule name="NoInlineStyleInformation" since="3.6"
 		message="Avoid having style information in JSP files."
 		class="net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#NoInlineStyleInformation">
+		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoInlineStyleInformation">
 		<description><![CDATA[ 
 Style information should be put in CSS files, not in JSPs. Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'". ]]>
 		</description>
@@ -105,7 +105,7 @@ Style information should be put in CSS files, not in JSPs. Therefore, don't use 
 	<rule name="NoClassAttribute" language="jsp" since="3.6"
 		message="Do not use an attribute called 'class'."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#NoClassAttribute">
+		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoClassAttribute">
 		<description>
 Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 		</description>
@@ -129,7 +129,7 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 	<rule name="NoJspForward" language="jsp" since="3.6"
 		message="Do not do a forward from within a JSP file."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#NoJspForward">
+		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoJspForward">
 		<description>
 Do not do a forward from within a JSP file.
 		</description>
@@ -151,7 +151,7 @@ Do not do a forward from within a JSP file.
 	<rule name="IframeMissingSrcAttribute" language="jsp" since="3.6"
 		message="IFrames must have a src attribute."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#IframeMissingSrcAttribute">
+		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#IframeMissingSrcAttribute">
 		<description>
 IFrames which are missing a src element can cause security information popups in IE if you are accessing the page
 through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
@@ -182,7 +182,7 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 	<rule name="NoHtmlComments" language="jsp" since="3.6"
 		message="Use JSP comments instead of HTML comments"
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#NoHtmlComments">
+		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoHtmlComments">
 		<description>
 			In a production system, HTML comments increase the payload
 			between the application server to the client, and serve
@@ -214,7 +214,7 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 	<rule name="DuplicateJspImports" since="3.7"
 		message="Avoid duplicate imports such as ''{0}''"
 		class="net.sourceforge.pmd.lang.jsp.rule.basic.DuplicateJspImportsRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#DuplicateJspImports">
+		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#DuplicateJspImports">
 		<description><![CDATA[Avoid duplicate import statements inside JSP's. ]]>
 		</description>
 		<priority>3</priority>
@@ -225,10 +225,10 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 		</example>
 	</rule>
 
-	<rule name="JspEncoding" language="jsp"
+	<rule name="JspEncoding" language="jsp" since="4.0"
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		message="JSP file should use UTF-8 encoding"
-		externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#JspEncoding">
+		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#JspEncoding">
 		<description>
 			<![CDATA[
 A missing 'meta' tag or page directive will trigger this rule, as well as a non-UTF-8 charset.
@@ -262,10 +262,10 @@ and
 	</rule>
 
     <rule
-        name="NoInlineScript" language="jsp"
+        name="NoInlineScript" language="jsp" since="4.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Avoiding inlining HTML script content"
-        externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsp.html#NoInlineScript">
+        externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoInlineScript">
         <description>
             <![CDATA[
 Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the <script> element.

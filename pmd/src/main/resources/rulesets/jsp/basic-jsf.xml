@@ -13,7 +13,7 @@ Rules concerning basic JSF guidelines.
        since="3.6"
        message="Do not nest JSF component custom actions inside a custom action that iterates over its body."
        class="net.sourceforge.pmd.lang.rule.XPathRule"
-       externalInfoUrl="${pmd.website.baseurl}/rules/basic-jsf.html#DontNestJsfInJstlIteration">
+       externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic-jsf.html#DontNestJsfInJstlIteration">
      <description>
 Do not nest JSF component custom actions inside a custom action that iterates over its body.
      </description>

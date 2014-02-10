@@ -39,7 +39,7 @@ var z = ((1 + 1)); // Bad
         since="5.0"
         message="Unnecessary block."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/unnecessary.html#UnnecessaryParentheses">
+        externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/unnecessary.html#UnnecessaryBlock">
     <description>An unnecessary Block is present.  Such Blocks are often used in other languages to
     introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
     be misleading.  Considering removing this unnecessary Block.</description>
