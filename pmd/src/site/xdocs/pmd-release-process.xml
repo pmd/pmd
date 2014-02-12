@@ -31,7 +31,6 @@ $ git status
     <source>src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</source>
   </li>
   <li>Update version/release info in <strong>src/site/markdown/changelog.md</strong>.</li>
-  <li>Update pmd.website.baseurl in <strong>pom.xml</strong> (to <code>http://pmd.sourceforge.net/pmd-${project.version}</code>)</li>
   <li>Update <strong>../website/.htaccess</strong> of our website, to redirect to the new version</li>
   <li>Update <strong>../website/index.html</strong> to mention the new release</li>
 </ul>
@@ -47,6 +46,7 @@ cd target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
 ./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
 ./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R java-unusedcode
 ./bin/run.sh pmd -d ../../src/main/java -language java -f html -R rulesets/java/unusedcode.xml
+cd ..; cd ..
 </source>
 
 <p>Check in all (version) changes to branch master:</p>
@@ -163,13 +163,13 @@ cd target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
 ./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
 ./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R java-unusedcode
 ./bin/run.sh pmd -d ../../src/main/java -language java -f html -R rulesets/java/unusedcode.xml
-cd ..
+cd ..; cd ..
 </source>
 </li>
 <li>Upload the files to sourceforge's file section:
 <source>
 $ rsync -avhP target/pmd-*-&lt;version&gt;.zip your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/
-$ rsync -avhP etc/changelog.txt your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.txt
+$ rsync -avhP src/site/markdown/changelog.md your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.txt
 </source>
 </li>
 <li>Verify the MD5 sums on <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a> and locally:
