@@ -168,8 +168,8 @@ ASTInput Input() : {}
 {
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
-	 (LOOKAHEAD(6) PackageSpecification()  
-	 | LOOKAHEAD(6) PackageBody()  
+	 (LOOKAHEAD(7) PackageSpecification()  
+	 | LOOKAHEAD(7) PackageBody()  
 	 | LOOKAHEAD(6) TypeSpecification()  
 	 | LOOKAHEAD(6) Table()  
 	 | LOOKAHEAD(6) View()   
@@ -1158,6 +1158,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| EmbeddedSqlStatement()  ";"
 	| PipelineStatement()  ";"
 	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules 
+        | <PRAGMA> Expression() ";"
         | Expression() ";"
       )
       { return jjtThis ; }
