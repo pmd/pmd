@@ -494,37 +494,6 @@ CREATE OR REPLACE PACKAGE pkg_
 ]]>
    </example></rule>
 
-<!-- 
-<rule name="NcssConstructorCount" message="The constructor with {0} parameters has an NCSS line count of {1}"
-      language="plsql"
-   since="5.1"
-   class="net.sourceforge.pmd.lang.plsql.rule.codesize.NcssConstructorCountRule"
-   externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#NcssConstructorCount">
-    <description>
-This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
-lines of code that are split are counted as one.
-    </description>
-    <priority>3</priority>
-   <example>
-<![CDATA[
-public class Foo extends Bar {
- public Foo() {
-     super();
-
-
-
-
-
- //this constructor only has 1 NCSS lines
-      super.foo();
- }
-}
-]]>
-   </example>
-</rule>
--->
-
     <rule
       language="plsql"
         name="TooManyMethods"
