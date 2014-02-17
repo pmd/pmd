@@ -4,13 +4,16 @@
 package net.sourceforge.pmd.lang.plsql;
 
 import java.io.Writer;
+import net.sf.saxon.sxpath.IndependentContext;
 
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
+import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.DumpFacade;
@@ -20,6 +23,7 @@ import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import org.jaxen.Navigator;
 
 /**
  * Implementation of LanguageVersionHandler for the PLSQL AST. It uses anonymous classes
@@ -27,7 +31,7 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  *
  * @author sturton - PLDoc - pldoc.sourceforge.net
  */
-public class PLSQLHandler extends AbstractLanguageVersionHandler {
+        public class PLSQLHandler extends AbstractLanguageVersionHandler {
 
 	
     public Parser getParser(ParserOptions parserOptions) {
@@ -71,6 +75,25 @@ public class PLSQLHandler extends AbstractLanguageVersionHandler {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
 		new DumpFacade().initializeWith(writer, prefix, recurse, (PLSQLNode) rootNode);
+	    }
+	};
+    }
+    
+    
+    @Override
+    /**
+     * Return minimal XPathHandler to cope with Jaxen XPath Rules.
+     */
+    public XPathHandler getXPathHandler() {
+	return new XPathHandler() {
+	    public void initialize() {
+	    }
+
+	    public void initialize(IndependentContext context) {
+	    }
+
+	    public Navigator getNavigator() {
+		return new DocumentNavigator();
 	    }
 	};
     }
