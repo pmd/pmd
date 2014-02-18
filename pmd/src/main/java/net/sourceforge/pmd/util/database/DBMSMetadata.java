@@ -141,6 +141,7 @@ public class DBMSMetadata
     mergedProperties.put("password", password) ;
 
     connection = DriverManager.getConnection(urlString, mergedProperties );
+    LOGGER.fine("we have a connection="+connection);
   } 
 
 
@@ -169,12 +170,16 @@ public class DBMSMetadata
 
     Class.forName(driverClass);
 
+    LOGGER.fine("Located class for driverClass="+driverClass);
+
     Properties mergedProperties = dbURI.getDbType().getProperties() ;
     Map<String,String> dbURIParameters = dbURI.getParameters();
     mergedProperties.putAll(dbURIParameters) ;
     mergedProperties.putAll(properties) ;
 
+    LOGGER.fine("Retrieving connection for urlString"+urlString);
     connection = DriverManager.getConnection(urlString ,mergedProperties);
+    LOGGER.fine("Secured Connection for DBURI"+dbURI);
   } 
 
   /**

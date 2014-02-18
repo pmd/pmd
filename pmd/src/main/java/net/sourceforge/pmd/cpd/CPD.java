@@ -127,6 +127,7 @@ public class CPD {
       }
       catch (Exception sqlException)
       {
+        LOGGER.log(Level.SEVERE, "Problem with Input URI", sqlException);
         throw new RuntimeException("Problem with DBURI: "+dburi , sqlException ) ; 
       }
     }

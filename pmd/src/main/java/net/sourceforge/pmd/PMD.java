@@ -76,8 +76,9 @@ public class PMD {
         try {
             DBURI dbUri = new DBURI(uriString);
             DBMSMetadata dbmsMetadata = new DBMSMetadata(dbUri);
+            LOG.log(Level.FINE, "DBMSMetadata retrieved");
             List<SourceObject> sourceObjectList = dbmsMetadata.getSourceObjectList();
-            LOG.log(Level.FINER, "Located {0} database source objects", sourceObjectList.size());
+            LOG.log(Level.FINE, "Located {0} database source objects", sourceObjectList.size());
             for (SourceObject sourceObject : sourceObjectList) {
                 String falseFilePath = sourceObject.getPseudoFileName();
                 LOG.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
@@ -95,6 +96,9 @@ public class PMD {
                     + "\"", e);
         } catch (ClassNotFoundException e) {
             throw new PMDException("Cannot get DataSources from DBURI, probably missing database jdbc driver - \""
+                    + uriString + "\"", e);
+        } catch (Exception e) {
+            throw new PMDException("Encountered unexpected problem with URI \""
                     + uriString + "\"", e);
         }
         return dataSources;
@@ -378,6 +382,7 @@ public class PMD {
 
                 files.addAll(dataSources);
             } catch (PMDException ex) {
+                LOG.log(Level.SEVERE, "Problem with Input URI", ex);
                 throw new RuntimeException("Problem with DBURI: " + uriString, ex);
             }
         }
