@@ -1158,7 +1158,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| EmbeddedSqlStatement()  ";"
 	| PipelineStatement()  ";"
 	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules 
-        | <PRAGMA> Expression() ";"
+        | InlinePragma() ";"
         | Expression() ";"
       )
       { return jjtThis ; }
@@ -2343,6 +2343,15 @@ ASTPragma Pragma() :
       { return jjtThis ; }
 }
 
+ASTInlinePragma InlinePragma() :
+{ 
+}
+{
+	<PRAGMA> <INLINE> "(" QualifiedName() "," StringLiteral() ")"
+		
+      { return jjtThis ; }
+}
+
 ASTExceptionDeclaration ExceptionDeclaration() :
 { 
  PLSQLNode simpleNode = null;
@@ -3218,6 +3227,7 @@ TOKEN [IGNORE_CASE]:
 <EXCEPTION_INIT: "EXCEPTION_INIT"> |
 <AUTONOMOUS_TRANSACTION: "AUTONOMOUS_TRANSACTION"> |
 <LANGUAGE: "LANGUAGE">
+| <INLINE: "INLINE"> // PRAGMA INLINE  
 }
 
 /* PL/SQL RESERVED WORDS */
@@ -4868,6 +4878,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <NULLIF> 
 | <RENAME> //Although RENAME is an Oracle reserved word, it may be used as a PL/SQL name.
 | <RELEASE> //Although RELEASE is an Oracle reserved word, it may be used as a PL/SQL name. 
+| <INLINE> // PRAGMA INLINE is not a PLSQL reserved word
 )
 
 { jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }

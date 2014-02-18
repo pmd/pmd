@@ -687,6 +687,11 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 	}
 
 	@Override
+	public Object visit(ASTInlinePragma node, Object data) {
+		return visit((PLSQLNode) node, data);
+	}
+
+	@Override
 	public Object visit(ASTTriggerUnit node, Object data) {
 		LOGGER.entering(CLASS_NAME, "visit(ASTTriggerUnit)");
 		return visit((PLSQLNode) node, data);

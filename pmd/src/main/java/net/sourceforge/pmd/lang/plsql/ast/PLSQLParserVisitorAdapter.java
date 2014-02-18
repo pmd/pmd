@@ -521,6 +521,11 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
 	}
 
 	@Override
+	public Object visit(ASTInlinePragma node, Object data) {
+		return visit((PLSQLNode) node, data);
+	}
+
+	@Override
 	public Object visit(ASTExceptionDeclaration node, Object data) {
 		return visit((PLSQLNode) node, data);
 	}
