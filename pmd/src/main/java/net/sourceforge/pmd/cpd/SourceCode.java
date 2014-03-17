@@ -5,6 +5,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
@@ -12,10 +13,13 @@ import java.io.StringReader;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PMD;
 
 import org.apache.commons.io.IOUtils;
+import org.mozilla.universalchardet.UniversalDetector;
 
 public class SourceCode {
 
@@ -63,7 +67,34 @@ public class SourceCode {
 
 	public FileCodeLoader(File file, String encoding) {
 	    this.file = file;
-	    this.encoding = encoding;
+	    if ("AUTO".equalsIgnoreCase(encoding)) {
+                try {
+                    FileInputStream input;
+                    input = new FileInputStream(file);
+
+                    UniversalDetector detector = new UniversalDetector(null);
+                    byte[] buf = new byte[4096];
+                    
+                    int nread;
+                    while ((nread = input.read(buf)) > 0 && !detector.isDone()) {
+                        detector.handleData(buf, 0, nread);
+                    }
+                    detector.dataEnd();
+                    this.encoding = detector.getDetectedCharset();
+                    if (this.encoding == null) {
+                        if (!"AUTO".equalsIgnoreCase(System.getProperty("file.encoding"))) {
+                            this.encoding = System.getProperty("file.encoding");
+                        } else {
+                            this.encoding = "UTF-8";
+                        }                        
+                    }
+                    detector.reset();
+                } catch (IOException ex) {
+                    Logger.getLogger(SourceCode.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                this.encoding = encoding;
+            }
 	}
 
 	@Override
