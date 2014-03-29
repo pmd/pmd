@@ -75,17 +75,17 @@ public class PMDParameters {
     @Parameter(names = "-auxclasspath", description = "specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
     private String auxclasspath;
 
-    class PropertyConverter implements IStringConverter<Properties> {
+    // this has to be a public static class, so that JCommander can use it!
+    public static class PropertyConverter implements IStringConverter<Properties> {
 
         private static final char separator = '=';
 
         public Properties convert(String value) {
+            Properties properties = new Properties();
             int indexOfSeparator = value.indexOf(separator);
             if (indexOfSeparator < 0)
                 throw new ParameterException(
                         "Property name must be separated with an = sign from it value: name=value.");
-            if (properties == null)
-                properties = new Properties();
             String propertyName = value.substring(0, indexOfSeparator);
             String propertyValue = value.substring(indexOfSeparator);
             properties.put(propertyName, propertyValue);
@@ -93,7 +93,8 @@ public class PMDParameters {
         }
     }
 
-    class RulePriorityConverter implements IStringConverter<RulePriority> {
+    // this has to be a public static class, so that JCommander can use it!
+    public static class RulePriorityConverter implements IStringConverter<RulePriority> {
 
         public int validate(String value) throws ParameterException {
             int minPriorityValue = Integer.parseInt(value);

@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.FileUtil;
@@ -57,6 +56,12 @@ public class CLITest {
     public void minimalArgs() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-basic,java-design" };
         runTest(args, "minimalArgs");
+    }
+
+    @Test
+    public void minimumPriority() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-basic,java-design", "-min", "1"};
+        runTest(args,"minimumPriority");
     }
 
     @Test
