@@ -8,6 +8,7 @@ import java.io.FileFilter;
 import java.security.PrivilegedAction;
 import java.util.Comparator;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
@@ -97,6 +98,18 @@ public class ParserCornerCases18 {
         IntFunction<int[]> arrayMaker = int[]::new;
         int[] array = arrayMaker.apply(10);  // creates an int[10]
     }
+
+    // https://sourceforge.net/p/pmd/bugs/1173/
+    public static class PmdMethodReferenceTest {
+        Function<Integer, Integer> theFunction;
+        public PmdTest() {
+            theFunction = this::foo;
+        }
+        private int foo(int i) {
+            return i;
+        }
+    }
+
     public static Runnable staticMethod() {
         return () -> System.out.println("run");
     }
