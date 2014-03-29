@@ -192,4 +192,27 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code-ref id="violations"/>
     </test-code>
+
+    <test-code>
+        <description>#1170 false positive with switch in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public void bar() {
+    for (int i=0; i<str.length(); i++)
+        switch(str.charAt(i)) {
+            case 'a':
+                do_a();
+                break;
+            case 'b':
+                do_b();
+                break;
+            case 'c':
+                do_c();
+                break;
+        }
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>

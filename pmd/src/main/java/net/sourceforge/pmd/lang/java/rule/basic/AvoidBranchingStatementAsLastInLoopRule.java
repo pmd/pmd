@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
@@ -46,6 +47,10 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTBreakStatement node, Object data) {
+        // skip breaks, that are within a switch statement
+        if (node.getNthParent(3) instanceof ASTSwitchStatement) {
+            return data;
+        }
 	return check(CHECK_BREAK_LOOP_TYPES, node, data);
     }
 
