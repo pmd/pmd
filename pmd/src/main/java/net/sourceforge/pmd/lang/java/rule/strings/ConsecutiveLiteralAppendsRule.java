@@ -173,6 +173,19 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 		if (additive == null || additive.getType() != null && !TypeHelper.isA(additive, String.class)) {
 			return 0;
 		}
+		// check for at least one string literal
+		List<ASTLiteral> literals = additive.findDescendantsOfType(ASTLiteral.class);
+		boolean stringLiteralFound = false;
+		for (ASTLiteral l : literals) {
+		    if (l.isCharLiteral() || l.isStringLiteral()) {
+		        stringLiteralFound = true;
+		        break;
+		    }
+		}
+		if (!stringLiteralFound) {
+		    return 0;
+		}
+
 		int count = concurrentCount;
 		boolean found = false;
 		for (int ix = 0; ix < additive.jjtGetNumChildren(); ix++) {

@@ -1218,4 +1218,23 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1175 false positive for StringBuilder.append called 2 consecutive times</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Escape {
+    public static String escape(final String value)
+    {
+        StringBuilder s = new StringBuilder(value.length() + 2);
+        s.append('"');
+        for (int i = 0; i < value.length(); i++) {
+            s.append(value.charAt(i));
+        }
+        s.append('"');
+        return s.toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
