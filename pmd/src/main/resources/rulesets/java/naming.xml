@@ -25,6 +25,7 @@ Fields, local variables, or parameter names that are very short are not helpful 
                   <![CDATA[
 //VariableDeclaratorId[string-length(@Image) < 3]
  [not(ancestor::ForInit)]
+ [not(../../VariableDeclarator and ../../../LocalVariableDeclaration and ../../../../ForStatement)]
  [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
                   ]]>
               </value>
@@ -33,13 +34,16 @@ Fields, local variables, or parameter names that are very short are not helpful 
     <example>
 <![CDATA[
 public class Something {
-	private int q = 15; 						// field - too short
-	public static void main( String as[] ) {  	// formal arg - too short
-		int r = 20 + q; 						// local var - too short
-		for (int i = 0; i < 10; i++) { 			// not a violation (inside 'for' loop)
-			r += q;
-		}
-	}
+    private int q = 15;                         // field - too short
+    public static void main( String as[] ) {    // formal arg - too short
+        int r = 20 + q;                         // local var - too short
+        for (int i = 0; i < 10; i++) {          // not a violation (inside 'for' loop)
+            r += q;
+        }
+        for (Integer i : numbers) {             // not a violation (inside 'for-each' loop)
+            r += q;
+        }
+    }
 }
 ]]>
     </example>

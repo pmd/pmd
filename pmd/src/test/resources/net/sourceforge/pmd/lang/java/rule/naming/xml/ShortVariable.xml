@@ -77,4 +77,30 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>ShortVariable false positive with for-each loops</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i : ints) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>ShortVariable within for-each loops</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i : ints) {
+            String s = "a";
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
