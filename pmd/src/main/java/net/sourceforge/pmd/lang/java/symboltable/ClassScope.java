@@ -102,7 +102,8 @@ public class ClassScope extends AbstractJavaScope {
     protected NameDeclaration findVariableHere(JavaNameOccurrence occurrence) {
         Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
-        if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
+        if (occurrence.isThisOrSuper() ||
+                (occurrence.getImage() != null && occurrence.getImage().equals(className))) {
             if (variableDeclarations.isEmpty() && methodDeclarations.isEmpty()) {
                 // this could happen if you do this:
                 // public class Foo {
@@ -141,9 +142,11 @@ public class ClassScope extends AbstractJavaScope {
         }
 
         List<String> images = new ArrayList<String>();
-        images.add(occurrence.getImage());
-        if (occurrence.getImage().startsWith(className)) {
-            images.add(clipClassName(occurrence.getImage()));
+        if (occurrence.getImage() != null) {
+            images.add(occurrence.getImage());
+            if (occurrence.getImage().startsWith(className)) {
+                images.add(clipClassName(occurrence.getImage()));
+            }
         }
         ImageFinderFunction finder = new ImageFinderFunction(images);
         Applier.apply(finder, variableDeclarations.keySet().iterator());
