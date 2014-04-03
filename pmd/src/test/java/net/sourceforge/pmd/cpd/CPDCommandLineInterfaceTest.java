@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import junit.framework.Assert;
@@ -17,20 +18,23 @@ import org.junit.Test;
  *
  */
 public class CPDCommandLineInterfaceTest {
-    private ByteArrayOutputStream buffer;
+    private ByteArrayOutputStream bufferStdout;
     private PrintStream originalStdout;
-    
-    
+    private PrintStream originalStderr;
+
     @Before
     public void setup() {
         originalStdout = System.out;
-        buffer = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buffer));
+        originalStderr = System.err;
+        bufferStdout = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(bufferStdout));
+        System.setErr(System.out);
     }
 
     @After
     public void teardown() {
         System.setOut(originalStdout);
+        System.setErr(originalStderr);
     }
     
     /**
@@ -40,7 +44,7 @@ public class CPDCommandLineInterfaceTest {
     public void testIgnoreIdentifiers() throws Exception {
         runCPD("--minimum-tokens", "34", "--language", "java", "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers");
 
-        String out = buffer.toString("UTF-8");
+        String out = bufferStdout.toString("UTF-8");
         Assert.assertTrue(out.contains("Found a 7 line (34 tokens) duplication"));
     }
 
@@ -55,7 +59,7 @@ public class CPDCommandLineInterfaceTest {
                 "--exclude", "src/test/resources/net/sourceforge/pmd/cpd/clitest/File2.java"
                 );
 
-        String out = buffer.toString("UTF-8");
+        String out = bufferStdout.toString("UTF-8");
         Assert.assertFalse(out.contains("Found a 7 line (34 tokens) duplication"));
     }
 
@@ -78,8 +82,24 @@ public class CPDCommandLineInterfaceTest {
         // reset default encoding
         System.setProperty("file.encoding", origEncoding);
 
-        String out = buffer.toString("UTF-8");
+        String out = bufferStdout.toString("UTF-8");
         Assert.assertTrue(out.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+    }
+
+    /**
+     * See: https://sourceforge.net/p/pmd/bugs/1178/
+     * @throws IOException any error
+     */
+    @Test
+    public void testBrokenAndValidFile() throws IOException {
+        runCPD("--minimum-tokens", "10",
+               "--language", "java",
+               "--files", "src/test/resources/net/sourceforge/pmd/cpd/badandgood/",
+               "--format", "text",
+               "--skip-lexical-errors");
+        String out = bufferStdout.toString("UTF-8");
+        Assert.assertTrue(out.contains("Skipping Lexical error in file"));
+        Assert.assertTrue(out.contains("Found a 5 line (13 tokens) duplication"));
     }
 
     private void runCPD(String... args) {

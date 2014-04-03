@@ -3,7 +3,9 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -56,6 +58,26 @@ public class TokenEntry implements Comparable<TokenEntry> {
         TOKENS.get().clear();
         TOKENS.remove();
         tokenCount.remove();
+    }
+    /**
+     * Helper class to preserve and restore the current state
+     * of the token entries.
+     */
+    public static class State {
+        private int tokenCount;
+        private Map<String, Integer> tokens;
+        private List<TokenEntry> entries;
+        public State(List<TokenEntry> entries) {
+            this.tokenCount = TokenEntry.tokenCount.get().intValue();
+            this.tokens = new HashMap<String, Integer>(TokenEntry.TOKENS.get());
+            this.entries = new ArrayList<TokenEntry>(entries);
+        }
+        public List<TokenEntry> restore() {
+            TokenEntry.tokenCount.get().set(tokenCount);
+            TOKENS.get().clear();
+            TOKENS.get().putAll(tokens);
+            return entries;
+        }
     }
 
     public String getTokenSrcID() {

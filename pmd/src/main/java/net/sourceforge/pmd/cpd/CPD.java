@@ -16,6 +16,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
@@ -131,11 +132,30 @@ public class CPD {
     }
 
     private void add(SourceCode sourceCode) throws IOException {
-        listener.addedFile(1,  new File(sourceCode.getFileName()));
+        if (configuration.isSkipLexicalErrors()) {
+            addAndSkipLexicalErrors(sourceCode);
+        } else {
+            addAndThrowLexicalError(sourceCode);
+        }
+    }
+
+    private void addAndThrowLexicalError(SourceCode sourceCode) throws IOException {
         configuration.tokenizer().tokenize(sourceCode, tokens);
+        listener.addedFile(1,  new File(sourceCode.getFileName()));
         source.put(sourceCode.getFileName(), sourceCode);
     }
-    
+
+    private void addAndSkipLexicalErrors(SourceCode sourceCode) throws IOException {
+        TokenEntry.State savedTokenEntry = new TokenEntry.State(tokens.getTokens());
+        try {
+            addAndThrowLexicalError(sourceCode);
+        } catch (TokenMgrError e) {
+            System.err.println("Skipping " + e.getMessage());
+            tokens.getTokens().clear();
+            tokens.getTokens().addAll(savedTokenEntry.restore());
+        }
+    }
+
     /**
      * List names/paths of each source to be processed.
      * 

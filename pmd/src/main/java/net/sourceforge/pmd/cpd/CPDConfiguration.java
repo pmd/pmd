@@ -60,6 +60,9 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = "--ignore-annotations", description = "Ignore language annotations when comparing text", required = false)
 	private boolean ignoreAnnotations;
 
+	@Parameter(names = "--skip-lexical-errors", description = "Skip files which can't be tokenized due to invalid characters", required = false)
+	private boolean skipLexicalErrors = false;
+
 	@Parameter(names = "--files", variableArity = true, description = "List of files and directories to process", required = false)
 	private List<String> files;
 
@@ -274,6 +277,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
 	public void setIgnoreAnnotations(boolean ignoreAnnotations) {
 		this.ignoreAnnotations = ignoreAnnotations;
+	}
+
+	public boolean isSkipLexicalErrors() {
+	    return skipLexicalErrors;
+	}
+
+	public void setSkipLexicalErrors(boolean skipLexicalErrors) {
+	    this.skipLexicalErrors = skipLexicalErrors;
 	}
 
 	public List<String> getFiles() {
