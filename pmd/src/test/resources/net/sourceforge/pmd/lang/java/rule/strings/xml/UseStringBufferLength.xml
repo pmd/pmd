@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
- 
     <test-code>
         <description><![CDATA[
 Using length properly
@@ -182,4 +181,27 @@ public class Foo {
      ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#1177 Incorrect StringBuffer warning when that class is not used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Ineffecient
+{
+    public static String getValue(int in)
+    {
+        Integer i = new Integer(in);
+        if (i.toString().length() == 1)
+        {
+            return "length 1";
+        }
+        return "";
+    }
+
+    public String toString()
+    {
+        return "Ineffecient";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

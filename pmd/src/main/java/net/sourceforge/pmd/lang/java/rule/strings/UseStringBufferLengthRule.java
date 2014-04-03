@@ -65,6 +65,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
             return data;
         }
         if (alreadySeen.contains(nd) || 
+                !(nd instanceof TypedNameDeclaration) ||
                 (nd instanceof TypedNameDeclaration && TypeHelper.isNeither((TypedNameDeclaration)nd, StringBuffer.class, StringBuilder.class))) {
             return data;
         }
