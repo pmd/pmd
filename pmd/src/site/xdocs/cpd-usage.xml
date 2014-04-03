@@ -80,6 +80,16 @@
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
+    <td valign="top">skipDuplicateFiles</td>
+    <td valign="top">Ignore multiple copies of files of the same name and length in comparison; defaults to <code>false</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">skipLexicalErrors</td>
+    <td valign="top">Skip files which can't be tokenized due to invalid characters instead of aborting CPD; defaults to <code>false</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
     <td valign="top">language</td>
     <td valign="top">
         Flag to select the appropriate language (e.g. <code>c</code>, <code>cpp</code>, <code>cs</code>,

@@ -21,6 +21,12 @@
 **CPD Changes:**
 - Command Line
     - Added option "--skip-lexical-errors" to skip files, which can't be tokenized
-      due to invalid characters. See also [bug 1178].
+      due to invalid characters instead of aborting CPD. See also [bug 1178].
+- Ant
+    - New optional parameter "skipDuplicateFiles": Ignore multiple copies of files of the same name and length in
+      comparison; defaults to "false".
+      This was already a command line option, but now also available in in CPD's ant task.
+    - New optional parameter "skipLexicalErros": Skip files which can't be tokenized due to invalid characters
+      instead of aborting CPD; defaults to "false".
 
 [bug 1178]: https://sourceforge.net/p/pmd/bugs/1178/

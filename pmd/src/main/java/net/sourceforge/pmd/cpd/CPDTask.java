@@ -46,6 +46,8 @@ public class CPDTask extends Task {
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
     private boolean ignoreAnnotations;
+    private boolean skipLexicalErrors;
+    private boolean skipDuplicateFiles;
     private File outputFile;
     private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<FileSet>();
@@ -61,6 +63,8 @@ public class CPDTask extends Task {
             config.setMinimumTileSize(minimumTokenCount);
             config.setLanguage(createLanguage());
             config.setEncoding(encoding);
+            config.setSkipDuplicates(skipDuplicateFiles);
+            config.setSkipLexicalErrors(skipLexicalErrors);
 
             CPD cpd = new CPD(config);
             tokenizeFiles(cpd);
@@ -165,6 +169,14 @@ public class CPDTask extends Task {
 
     public void setIgnoreAnnotations(boolean value) {
         this.ignoreAnnotations = value;
+    }
+
+    public void setSkipLexicalErrors(boolean skipLexicalErrors) {
+        this.skipLexicalErrors = skipLexicalErrors;
+    }
+
+    public void setSkipDuplicateFiles(boolean skipDuplicateFiles) {
+        this.skipDuplicateFiles = skipDuplicateFiles;
     }
 
     public void setOutputFile(File outputFile) {
