@@ -4,6 +4,7 @@
 
 **Bugfixes:**
 
+* Fixed [bug 1168]: Designer errors when trying to copy xml to clipboard
 * Fixed [bug 1170]: false positive with switch in loop
 * Fixed [bug 1171]: Specifying minimum priority from command line gives NPE
 * Fixed [bug 1173]: Java 8 support: method references
@@ -13,6 +14,7 @@
 * Fixed [bug 1178]: LexicalError while parsing Java code aborts CPD run
 * Fixed [bug 1180]: False Positive for ConsecutiveAppendsShouldReuse on different variable names
 
+[bug 1168]: https://sourceforge.net/p/pmd/bugs/1168/
 [bug 1170]: https://sourceforge.net/p/pmd/bugs/1170/
 [bug 1171]: https://sourceforge.net/p/pmd/bugs/1171/
 [bug 1173]: https://sourceforge.net/p/pmd/bugs/1173/
