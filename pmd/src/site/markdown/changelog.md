@@ -11,6 +11,7 @@
 * Fixed [bug 1176]: ShortVariable false positive with for-each loops
 * Fixed [bug 1177]: Incorrect StringBuffer warning when that class is not used
 * Fixed [bug 1178]: LexicalError while parsing Java code aborts CPD run
+* Fixed [bug 1180]: False Positive for ConsecutiveAppendsShouldReuse on different variable names
 
 [bug 1170]: https://sourceforge.net/p/pmd/bugs/1170/
 [bug 1171]: https://sourceforge.net/p/pmd/bugs/1171/
@@ -19,6 +20,7 @@
 [bug 1176]: https://sourceforge.net/p/pmd/bugs/1176/
 [bug 1177]: https://sourceforge.net/p/pmd/bugs/1177/
 [bug 1178]: https://sourceforge.net/p/pmd/bugs/1178/
+[bug 1180]: https://sourceforge.net/p/pmd/bugs/1180/
 
 **CPD Changes:**
 - Command Line

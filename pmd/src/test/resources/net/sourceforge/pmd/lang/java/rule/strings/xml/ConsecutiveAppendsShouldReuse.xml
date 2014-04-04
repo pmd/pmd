@@ -184,4 +184,27 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1180 False Positive for ConsecutiveAppendsShouldReuse on different variable names</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder columns = new StringBuilder();
+        StringBuilder values = new StringBuilder();
+
+        columns.append(',');
+        values.append(',');
+    }
+    public void bar2() {
+        StringBuffer columns = new StringBuffer();
+        StringBuffer values = new StringBuffer();
+
+        columns.append(',');
+        values.append(',');
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

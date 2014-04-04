@@ -151,39 +151,12 @@ sb.append('a');		// use this instead
         language="java"
         since="5.1"
         message="StringBuffer (or StringBuilder).append is called consecutively without reusing the target variable."
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        class="net.sourceforge.pmd.lang.java.rule.strings.ConsecutiveAppendsShouldReuseRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/java/strings.html#ConsecutiveAppendsShouldReuse">
     <description>
 Consecutively calls to StringBuffer/StringBuilder .append should reuse the target object. This can improve the performance.
     </description>
     <priority>3</priority>
-    <properties>
-        <property name="xpath">
-            <value>
-<![CDATA[
-//BlockStatement[./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
-                                      [substring-before(@Image, '.') =
-                                         ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuffer']]//VariableDeclaratorId/@Image
-                                      ]
-                ]/following-sibling::*[1][./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
-                                         [substring-before(@Image, '.') = 
-                                             ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuffer']]//VariableDeclaratorId/@Image
-                                         ]
-                                      ] 
-|
-//BlockStatement[./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
-                                      [substring-before(@Image, '.') = 
-                                         ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuilder']]//VariableDeclaratorId/@Image
-                                      ]
-                ]/following-sibling::*[1][./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
-                                         [substring-before(@Image, '.') = 
-                                             ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuilder']]//VariableDeclaratorId/@Image
-                                         ]
-                                      ]
-]]>
-            </value>
-        </property>
-    </properties>
     <example>
 <![CDATA[
 String foo = " ";
