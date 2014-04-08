@@ -19,10 +19,8 @@ public class DesignerTest {
      */
     @Test
     public void testCopyXmlToClipboard() {
-        Designer designer = new Designer();
-        designer.setCodeEditPaneText("public class Foo {}");
-        Node compilationUnit = designer.getCompilationUnit(LanguageVersion.JAVA_18.getLanguageVersionHandler());
-        String xml = designer.getXmlTreeCode(compilationUnit);
+        Node compilationUnit = Designer.getCompilationUnit(LanguageVersion.JAVA_18.getLanguageVersionHandler(), "public class Foo {}");
+        String xml = Designer.getXmlTreeCode(compilationUnit);
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
                 "<CompilationUnit BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"19\" EndLine=\"1\" FindBoundary=\"false\"\n" + 
                 "                 Image=\"\"\n" + 

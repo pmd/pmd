@@ -128,13 +128,16 @@ public class Designer implements ClipboardOwner {
         LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
         return getCompilationUnit(languageVersionHandler);
     }
-	Node getCompilationUnit(LanguageVersionHandler languageVersionHandler) {
-		Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
-		Node node = parser.parse(null, new StringReader(codeEditorPane.getText()));
-		languageVersionHandler.getSymbolFacade().start(node);
-		languageVersionHandler.getTypeResolutionFacade(Designer.class.getClassLoader()).start(node);
-		return node;
-	}
+    static Node getCompilationUnit(LanguageVersionHandler languageVersionHandler, String code) {
+        Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
+        Node node = parser.parse(null, new StringReader(code));
+        languageVersionHandler.getSymbolFacade().start(node);
+        languageVersionHandler.getTypeResolutionFacade(Designer.class.getClassLoader()).start(node);
+        return node;
+    }
+    private Node getCompilationUnit(LanguageVersionHandler languageVersionHandler) {
+        return getCompilationUnit(languageVersionHandler, codeEditorPane.getText());
+    }
 
 	private static LanguageVersion[] getSupportedLanguageVersions() {
 		List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
@@ -658,13 +661,6 @@ public class Designer implements ClipboardOwner {
 	private final DFAPanel dfaPanel = new DFAPanel();
 	private final JRadioButtonMenuItem[] languageVersionMenuItems = new JRadioButtonMenuItem[getSupportedLanguageVersions().length];
 
-	/**
-	 * Only use this constructor for unit tests!!
-	 */
-	Designer() {
-	    // nothing needed
-	}
-
 	public Designer(String[] args) {
 		if (args.length > 0) {
 			exitOnClose = !args[0].equals("-noexitonclose");
@@ -910,7 +906,7 @@ public class Designer implements ClipboardOwner {
         }
         return null;
     }
-    final String getXmlTreeCode(Node cu) {
+    static final String getXmlTreeCode(Node cu) {
         String xml = null;
         if (cu != null) {
             try {
@@ -935,7 +931,7 @@ public class Designer implements ClipboardOwner {
 	 *
 	 * @throws TransformerException if the XML cannot be converted to a string
 	 */
-	private String getXmlString(Node node) throws TransformerException {
+	private static String getXmlString(Node node) throws TransformerException {
 		StringWriter writer = new StringWriter();
 
 		Source source = new DOMSource(node.getAsDocument());
