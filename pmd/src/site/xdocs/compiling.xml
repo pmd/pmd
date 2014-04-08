@@ -10,8 +10,8 @@
   <body>
 <section name="Requirements">
   <ul>
-    <li>JDK 1.5 or higher</li>
-    <li><a href="http://maven.apache.org">Apache Maven</a> 2 or later.</li>
+    <li>JDK 1.6 or higher</li>
+    <li><a href="http://maven.apache.org">Apache Maven</a> 3 or later.</li>
   </ul>
 </section>
 <section name="Compiling PMD">

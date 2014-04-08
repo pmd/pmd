@@ -14,7 +14,7 @@
           <p>
           Requirements:
               <ul>
-                  <li>Java JRE 1.5 or higher (see section below for Java JRE 1.4 support)</li>
+                  <li>Java JRE 1.6 or higher</li>
                   <li><a href="http://winzip.com">Winzip</a> or the free <a href="http://www.7-zip.org/">7-zip</a></li>
               </ul>
           </p>
@@ -27,7 +27,7 @@
           <p>
           Requirements:
               <ul>
-                  <li>Java JRE 1.5 or higher (see section below for Java JRE 1.4 support)</li>
+                  <li>Java JRE 1.6 or higher</li>
                   <li>The Unix "zip" utility <a href="http://www.info-zip.org/pub/infozip/">InfoZip</a></li>
               </ul>
           </p>
