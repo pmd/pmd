@@ -523,6 +523,7 @@ public class Foo extends Bar {
 ]]>
    </example>
 </rule>
+-->
 
     <rule
       language="plsql"
@@ -579,6 +580,5 @@ have more fine grained objects.
             </property>
         </properties>
     </rule>
--->
 
 </ruleset>
