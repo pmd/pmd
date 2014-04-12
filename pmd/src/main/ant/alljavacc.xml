@@ -188,6 +188,7 @@ public class]]></replacevalue>
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTDatatype.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTFormalParameter.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTIfStatement.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTInput.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTMethodDeclaration.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTMethodDeclarator.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTName.java" />

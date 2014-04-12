@@ -49,7 +49,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
         XPathRule rule = createRule("1.0");
 
         rule.apply(Arrays.asList(node), ctx);
-        Assert.assertEquals(1, ctx.getReport().treeSize());
+        Assert.assertEquals(2, ctx.getReport().treeSize());
     }
 
     /**
