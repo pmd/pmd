@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
@@ -148,6 +149,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 	}
 
 	protected void assignCommentsToDeclarations(ASTCompilationUnit cUnit) {
+				
 		SortedMap<Integer, Node> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
 		FormalComment lastComment = null;
 		AbstractJavaAccessNode lastNode = null;
@@ -155,30 +157,22 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 		for (Entry<Integer, Node> entry : itemsByLineNumber.entrySet()) {
 			Node value = entry.getValue();
 
-			if (lastComment == null) {
-				if (value instanceof FormalComment) {
-					lastComment = (FormalComment) value;
-				} else {
-				    // else this is declaration without comment
-				    if (value instanceof AbstractJavaAccessNode) {
-				        if (!(value instanceof AbstractJavaAccessTypeNode)) {
-				            lastNode = (AbstractJavaAccessNode) value;
-				        }
-				    }
-				}
-			} else if (value instanceof AbstractJavaAccessNode) {
+			if (value instanceof AbstractJavaAccessNode) {
 				AbstractJavaAccessNode node = (AbstractJavaAccessNode) value;
 
 				// maybe the last comment is within the last node
-				if (isCommentNotWithin(lastComment, lastNode) && isCommentBefore(lastComment, node)) {
+				if (lastComment != null && isCommentNotWithin(lastComment, lastNode) && isCommentBefore(lastComment, node)) {
 				    node.comment(lastComment);
 				    lastComment = null;
 				}
 				if (!(node instanceof AbstractJavaAccessTypeNode)) {
 				    lastNode = node;
 				}
-			}
-		}
+			} else
+			if (value instanceof FormalComment) {
+				lastComment = (FormalComment) value;
+			}				
+		}	
 	}
 
     private boolean isCommentNotWithin(FormalComment n1, Node n2) {
@@ -202,12 +196,6 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
         }
 	}
 
-    /**
-     * 
-     * @since
-     * @param cUnit
-     * @return bla
-     */
     protected SortedMap<Integer, Node> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
 
         SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<Integer, Node>();
@@ -226,6 +214,9 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 
         List<ASTConstructorDeclaration> constructors = cUnit.findDescendantsOfType(ASTConstructorDeclaration.class);
         addDeclarations(itemsByLineNumber, constructors);
+        
+        List<ASTEnumDeclaration> enumDecl = cUnit.findDescendantsOfType(ASTEnumDeclaration.class);
+        addDeclarations(itemsByLineNumber, enumDecl);
 
         return itemsByLineNumber;
     }
