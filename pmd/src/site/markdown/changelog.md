@@ -15,6 +15,7 @@
 * Fixed [bug 1178]: LexicalError while parsing Java code aborts CPD run
 * Fixed [bug 1180]: False Positive for ConsecutiveAppendsShouldReuse on different variable names
 * Document that PMD requires Java 1.6, see [discussion].
+* [Pull request 38]: Some fixes for AbstractCommentRule
 
 [bug 1166]: https://sourceforge.net/p/pmd/bugs/1166/
 [bug 1168]: https://sourceforge.net/p/pmd/bugs/1168/
@@ -27,7 +28,7 @@
 [bug 1178]: https://sourceforge.net/p/pmd/bugs/1178/
 [bug 1180]: https://sourceforge.net/p/pmd/bugs/1180/
 [discussion]: https://sourceforge.net/p/pmd/discussion/188192/thread/6e86840c/
-
+[Pull request 38]: https://github.com/pmd/pmd/pull/38
 
 **CPD Changes:**
 - Command Line
