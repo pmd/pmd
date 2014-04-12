@@ -1,6 +1,0 @@
-Change version in build.xml to 0.5
-cvs tag r0_5 pmd-gel
-ant release
-upload zip file to sourceforge
-use readme.txt as release notes
-Post note to Gel email list

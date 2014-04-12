@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
-<settings version="1.0">
-    <module name="pmd" spec="1.8.1"/>
-    <instanceof class="org.openide.windows.TopComponent"/>
-    <instanceof class="pmd.OutputWindow"/>
-    <instance class="pmd.OutputWindow" method="getDefault"/>
-</settings>
