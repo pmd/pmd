@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.Map.Entry;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -98,8 +98,12 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 
     @SuppressWarnings("unchecked")
     private void initializeXPathExpression(Navigator navigator) throws JaxenException {
-	if (initializationStatus == InitializationStatus.FULL
-		|| (initializationStatus == InitializationStatus.PARTIAL && navigator == null)) {
+	if (initializationStatus == InitializationStatus.FULL) {
+	    return;
+	} else if (initializationStatus == InitializationStatus.PARTIAL && navigator == null) {
+	    LOG.severe("XPathRule is not initialized because no navigator was provided. "
+	            + "Please make sure to implement getXPathHandler in the handler of the language. "
+	            + "See also AbstractLanguageVersionHandler.");
 	    return;
 	}
 
