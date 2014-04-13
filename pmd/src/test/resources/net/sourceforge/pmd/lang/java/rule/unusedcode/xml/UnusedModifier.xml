@@ -252,4 +252,37 @@ interface Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative: #1185 UnusedModifier throws NPE when parsing enum with a nested static interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum Testing {
+    Test;
+
+    public void test(ITesting tester) {
+        tester.test();
+    }
+    public static interface ITesting {
+        void test();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>False negative: static class nested in enum</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum Testing {
+    Test;
+
+    public void test(ITesting tester) {
+        tester.test();
+    }
+    public static class ITesting {
+        public void test() {};
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

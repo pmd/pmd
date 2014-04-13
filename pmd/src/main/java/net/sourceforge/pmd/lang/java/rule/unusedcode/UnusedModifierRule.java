@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java.rule.unusedcode;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -13,13 +14,19 @@ public class UnusedModifierRule extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (!node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
-            ASTClassOrInterfaceDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            if (parent != null && parent.isInterface()) {
+            ASTClassOrInterfaceDeclaration parentClassInterface = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+            ASTEnumDeclaration parentEnum = node.getFirstParentOfType(ASTEnumDeclaration.class);
+            if (parentClassInterface != null && parentClassInterface.isInterface()
+                    ||
+                    parentEnum != null) {
                 addViolation(data, node, getMessage());
             }
         } else if (node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
-            ASTClassOrInterfaceDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            if (parent.isInterface() || (!parent.isInterface() && node.isStatic())) {
+            ASTClassOrInterfaceDeclaration parentClassInterface = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+            ASTEnumDeclaration parentEnum = node.getFirstParentOfType(ASTEnumDeclaration.class);
+            if (parentClassInterface != null && (parentClassInterface.isInterface() || (!parentClassInterface.isInterface() && node.isStatic()))
+                    ||
+                    parentEnum != null) {
                 addViolation(data, node, getMessage());
             }
         }
@@ -48,5 +55,4 @@ public class UnusedModifierRule extends AbstractJavaRule {
             addViolation(data, fieldOrMethod);
         }
     }
-
 }
