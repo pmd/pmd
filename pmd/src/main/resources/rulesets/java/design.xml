@@ -1100,7 +1100,10 @@ No need to check for null before an instanceof; the instanceof keyword returns f
   UnaryExpressionNotPlusMinus
    [@Image='!']//InstanceOfExpression[PrimaryExpression
      //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
-      /PrimaryExpression/PrimaryPrefix/Name/@Image]]
+      /PrimaryExpression/PrimaryPrefix/Name/@Image]
+  and
+  (count(UnaryExpressionNotPlusMinus) + 1 = count(*))
+ ]
 or
 ConditionalAndExpression
  [EqualityExpression[@Image='!=']//NullLiteral
@@ -1108,7 +1111,11 @@ ConditionalAndExpression
 InstanceOfExpression
  [PrimaryExpression[count(PrimarySuffix[@ArrayDereference='true'])=0]
   //Name[not(contains(@Image,'.'))]/@Image = ancestor::ConditionalAndExpression
-   /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name/@Image]]]
+   /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name/@Image]
+ and
+(count(InstanceOfExpression) + 1 = count(*))
+ ]
+]
  ]]>
                   </value>
               </property>
