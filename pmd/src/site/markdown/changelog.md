@@ -6,6 +6,7 @@
 
 * Fixed [bug 1165]: SimplifyConditional false positive
 * Fixed [bug 1166]: PLSQL XPath Rules Fail for XPath 1.0
+* Fixed [bug 1167]: Error while processing PLSQL file with BOM
 * Fixed [bug 1168]: Designer errors when trying to copy xml to clipboard
 * Fixed [bug 1170]: false positive with switch in loop
 * Fixed [bug 1171]: Specifying minimum priority from command line gives NPE
@@ -21,6 +22,7 @@
 
 [bug 1165]: https://sourceforge.net/p/pmd/bugs/1165/
 [bug 1166]: https://sourceforge.net/p/pmd/bugs/1166/
+[bug 1167]: https://sourceforge.net/p/pmd/bugs/1167/
 [bug 1168]: https://sourceforge.net/p/pmd/bugs/1168/
 [bug 1170]: https://sourceforge.net/p/pmd/bugs/1170/
 [bug 1171]: https://sourceforge.net/p/pmd/bugs/1171/

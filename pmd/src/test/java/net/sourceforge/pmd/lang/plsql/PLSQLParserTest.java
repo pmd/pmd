@@ -20,4 +20,20 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
 		  + "        doSomethingElse;"
 		  + "END;");
 	}
+
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1167/
+     */
+    @Test
+    public void testBOM() {
+        parsePLSQL("\ufeff" +
+            "CREATE OR REPLACE PROCEDURE bar IS BEGIN"
+          + "    doSomething;"
+          + "    EXCEPTION"
+          + "    WHEN FooException THEN"
+          + "        doSomethingElse;"
+          + "    WHEN OTHERS THEN"
+          + "        doSomethingElse;"
+          + "END;");
+    }
 }
