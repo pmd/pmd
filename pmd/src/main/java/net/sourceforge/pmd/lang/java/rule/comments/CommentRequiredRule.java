@@ -9,6 +9,7 @@ import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
@@ -54,11 +55,16 @@ public class CommentRequiredRule extends AbstractCommentRule {
 			"protectedMethodCommentRequirement", "Protected method constructor comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 4.0f);
 
+	public static final EnumeratedProperty<CommentRequirement> ENUM_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
+			"enumCommentRequirement", "Enum comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
+			CommentRequirement.labels(), CommentRequirement.values(), 0, 5.0f);
+
 	public CommentRequiredRule() {
 		definePropertyDescriptor(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
 		definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
 		definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
 		definePropertyDescriptor(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
+		definePropertyDescriptor(ENUM_CMT_REQUIREMENT_DESCRIPTOR);
 	}
 
 	private CommentRequirement getCommentRequirement(String label) {
@@ -140,14 +146,14 @@ public class CommentRequiredRule extends AbstractCommentRule {
 				if (protMethodRequirement == CommentRequirement.Required) {
 					if (decl.comment() == null) {
 						addViolationWithMessage(data, decl,
-								PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR.name()
+								PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR.name()
 										+ " " + CommentRequirement.Required,
 								decl.getBeginLine(), decl.getEndLine());
 					}
 				} else {
 					if (decl.comment() != null) {
 						addViolationWithMessage(data, decl,
-								PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR.name()
+								PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR.name()
 										+ " " + CommentRequirement.Unwanted,
 								decl.getBeginLine(), decl.getEndLine());
 					}
@@ -173,6 +179,33 @@ public class CommentRequiredRule extends AbstractCommentRule {
 				if (decl.comment() != null) {
 					addViolationWithMessage(data, decl,
 							FIELD_CMT_REQUIREMENT_DESCRIPTOR.name() + " "
+									+ CommentRequirement.Unwanted,
+							decl.getBeginLine(), decl.getEndLine());
+				}
+			}
+		}
+
+		return super.visit(decl, data);
+	}
+
+	@Override
+	public Object visit(ASTEnumDeclaration decl, Object data) {
+		
+		CommentRequirement enumRequirement = getCommentRequirement(getProperty(
+				ENUM_CMT_REQUIREMENT_DESCRIPTOR).toString());
+
+		if (enumRequirement != CommentRequirement.Ignored) {
+			if (enumRequirement == CommentRequirement.Required) {
+				if (decl.comment() == null) {
+					addViolationWithMessage(data, decl,
+							ENUM_CMT_REQUIREMENT_DESCRIPTOR.name() + " "
+									+ CommentRequirement.Required,
+							decl.getBeginLine(), decl.getEndLine());
+				}
+			} else {
+				if (decl.comment() != null) {
+					addViolationWithMessage(data, decl,
+							ENUM_CMT_REQUIREMENT_DESCRIPTOR.name() + " "
 									+ CommentRequirement.Unwanted,
 							decl.getBeginLine(), decl.getEndLine());
 				}

@@ -7,6 +7,8 @@
 public class Foo {
   /** the bar counter. */
   public int bar;
+  /** the test enum. */
+  public enum Enum {}
   /**
    * This is the comment for the constructor
    */
@@ -24,6 +26,7 @@ public class Foo {
     <code-fragment id="without-any-comments"><![CDATA[
 public class Foo {
   public int bar;
+  public enum Enum {}
   public Foo() {}
   public void doNothing() {}
   public void doSomething() {}
@@ -32,7 +35,7 @@ public class Foo {
 
     <test-code>
         <description>Missing comments - all required (default).</description>
-        <expected-problems>5</expected-problems>
+        <expected-problems>6</expected-problems>
         <code-ref id="without-any-comments"/>
     </test-code>
 
@@ -49,18 +52,21 @@ public class Foo {
         <rule-property name="fieldCommentRequirement">Ignored</rule-property>
         <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
         <rule-property name="protectedMethodCommentRequirement">Ignored</rule-property>
+        <rule-property name="enumCommentRequirement">Ignored</rule-property>
         <code-ref id="without-any-comments"/>
     </test-code>
 
     <test-code>
         <description>Too many comments - all comments are unwanted.</description>
-        <expected-problems>5</expected-problems>
+        <expected-problems>6</expected-problems>
         <rule-property name="headerCommentRequirement">Unwanted</rule-property>
         <rule-property name="fieldCommentRequirement">Unwanted</rule-property>
         <rule-property name="publicMethodCommentRequirement">Unwanted</rule-property>
         <rule-property name="protectedMethodCommentRequirement">Unwanted</rule-property>
+        <rule-property name="enumCommentRequirement">Unwanted</rule-property>
         <code-ref id="with-all-comments"/>
     </test-code>
+
     <test-code>
         <description>#1115 commentRequiredRule in pmd 5.1 is not working properly</description>
         <expected-problems>2</expected-problems>
@@ -80,6 +86,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1115 commentRequiredRule in pmd 5.1 is not working properly - without new lines</description>
         <expected-problems>2</expected-problems>
@@ -87,4 +94,5 @@ public class Test {
 /** Test class */ public class Test { public void method1() { /** comment here */ } public void method2() { } }
         ]]></code>
     </test-code>
+ 
 </test-data>
