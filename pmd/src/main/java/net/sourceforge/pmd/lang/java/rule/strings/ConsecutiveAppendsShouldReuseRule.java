@@ -86,11 +86,13 @@ public class ConsecutiveAppendsShouldReuseRule  extends AbstractJavaRule {
                 ASTPrimaryPrefix primaryPrefix = stmtExp.getFirstDescendantOfType(ASTPrimaryPrefix.class);
                 if (primaryPrefix != null) {
                     ASTName name = primaryPrefix.getFirstChildOfType(ASTName.class);
-                    String image = name.getImage();
-                    if (image.endsWith(".append")) {
-                        String variable = image.substring(0, image.indexOf('.'));
-                        if (isAStringBuilderBuffer(primaryPrefix, variable)) {
-                            return variable;
+                    if (name != null) {
+                        String image = name.getImage();
+                        if (image.endsWith(".append")) {
+                            String variable = image.substring(0, image.indexOf('.'));
+                            if (isAStringBuilderBuffer(primaryPrefix, variable)) {
+                                return variable;
+                            }
                         }
                     }
                 }
