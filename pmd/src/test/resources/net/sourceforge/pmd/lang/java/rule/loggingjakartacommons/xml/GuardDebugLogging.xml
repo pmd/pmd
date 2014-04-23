@@ -60,4 +60,45 @@ public class Test {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>ok #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void test() {
+        final Marker m = MarkerManager.getMarker(mymarker);
+        if (logger.isDebugEnabled(m)) {
+          logger.debug(m, message);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>violation - wrong guard #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void test() {
+        final Marker m = MarkerManager.getMarker(mymarker);
+        if (logger.isTraceEnabled(m)) {
+          logger.debug(m, message);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>violation - no if #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void test() {
+        final Marker m = MarkerManager.getMarker(mymarker);
+        logger.isDebugEnabled(m); // must be within an if
+        logger.debug(m, message);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
