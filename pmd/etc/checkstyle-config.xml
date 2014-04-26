@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
 
@@ -56,6 +56,13 @@
         <property
             name="header"
             value="^\/\*\*[ ]*$\n^[ ]+\*[ ]+BSD-style license; for more info see http:\/\/pmd.sourceforge.net/license.html[ ]*\n[ ]+\*\/[ ]*$"/>
+        <property name="fileExtensions" value="java"/>
+    </module>
+    <module name="RegexpHeader">
+        <property
+            name="header"
+            value="^#$\n^# BSD-style license; for more info see http:\/\/pmd.sourceforge.net/license.html$\n^#$"/>
+        <property name="fileExtensions" value="properties"/>
     </module>
 
 </module>

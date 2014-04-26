@@ -251,6 +251,7 @@
     <properties>
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.16</surefire.version>
+        <checkstyle.version>2.12.1</checkstyle.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- This value actually differs to maven default expectation(src/site/xdoc/)
@@ -691,9 +692,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>${checkstyle.version}</version>
                 <configuration>
                     <configLocation>etc/checkstyle-config.xml</configLocation>
+                    <suppressionsFile>etc/checkstyle-suppressions.xml</suppressionsFile>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -866,7 +868,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.9.1</version>
+                        <version>${checkstyle.version}</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
@@ -877,6 +879,7 @@
                         </executions>
                         <configuration>
                             <configLocation>etc/checkstyle-config.xml</configLocation>
+                            <suppressionsFile>etc/checkstyle-suppressions.xml</suppressionsFile>
                         </configuration>
                     </plugin>
                 </plugins>

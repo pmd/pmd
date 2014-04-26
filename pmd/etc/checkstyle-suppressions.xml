@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC
+     "-//Puppy Crawl//DTD Suppressions 1.0//EN"
+     "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
+<suppressions>
+    <!-- The velocity language is under the Apache License. -->
+    <suppress checks="RegexpHeaderCheck" files="net/sourceforge/pmd/lang/vm/.*"/>
+
+    <suppress checks="AvoidStarImportCheck" files="(net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.java)|(net/sourceforge/pmd/lang/plsql/rule/AbstractPLSQLRule.java)"/>
+</suppressions>

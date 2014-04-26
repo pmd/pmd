@@ -3,8 +3,7 @@
  */
 package net.sourceforge.pmd.util.database;
 
-import java.io.*;
-import java.net.URL.*;
+import java.io.InputStream;
 
 /**
  * Helper class for retrieving resources relative to the installation.
