@@ -3,13 +3,18 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.UnaryExpression;
 
 public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
     public ASTUnaryExpression(UnaryExpression unaryExpression) {
 	super(unaryExpression);
-	super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
+	if (unaryExpression.getOperator() == Token.VOID) {
+	    super.setImage("void");
+	} else {
+	    super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
+	}
     }
 
     /**

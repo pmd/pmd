@@ -18,6 +18,7 @@
 * Fixed [bug 1180]: False Positive for ConsecutiveAppendsShouldReuse on different variable names
 * Fixed [bug 1185]: UnusedModifier throws NPE when parsing enum with a nested static interface
 * Fixed [bug 1188]: False positive in UnusedPrivateField
+* Fixed [bug 1191]: Ecmascript fails to parse "void(0)"
 * Document that PMD requires Java 1.6, see [discussion].
 * [Pull request 38]: Some fixes for AbstractCommentRule
 * [Pull request 39]: Fixed NPE in ConsecutiveAppendsShouldReuseRule.getVariableAppended()
@@ -37,6 +38,7 @@
 [bug 1180]: https://sourceforge.net/p/pmd/bugs/1180/
 [bug 1185]: https://sourceforge.net/p/pmd/bugs/1185/
 [bug 1188]: https://sourceforge.net/p/pmd/bugs/1188/
+[bug 1191]: https://sourceforge.net/p/pmd/bugs/1191/
 [discussion]: https://sourceforge.net/p/pmd/discussion/188192/thread/6e86840c/
 [Pull request 38]: https://github.com/pmd/pmd/pull/38
 [Pull request 39]: https://github.com/pmd/pmd/pull/39

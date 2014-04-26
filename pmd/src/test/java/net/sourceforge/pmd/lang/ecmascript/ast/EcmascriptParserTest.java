@@ -175,4 +175,16 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         assertEquals(" I know what I'm doing", parser.getSuppressMap().get(3));
         assertEquals(1, parser.getSuppressMap().size());
     }
+
+    /**
+     * #1191 Ecmascript fails to parse "void(0)"
+     */
+    @Test
+    public void testVoidKeyword() {
+        ASTAstRoot rootNode = parse("function f(matchFn, fieldval, n){\n" +
+                "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n" +
+                "}\n");
+        ASTUnaryExpression unary = rootNode.getFirstDescendantOfType(ASTUnaryExpression.class);
+        assertEquals("void", unary.getImage());
+    }
 }
