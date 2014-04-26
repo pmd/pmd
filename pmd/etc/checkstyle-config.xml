@@ -43,6 +43,13 @@
         <module name="AvoidStarImport">
             <property name="severity"   value="error"/>
         </module>
+
+        <module name="TodoComment">
+            <property name="format" value="TODO"/>
+        </module>
+        <module name="TodoComment">
+            <property name="format" value="FUTURE"/>
+        </module>
     </module>
     
     <!-- RegexpHeader -->
@@ -64,5 +71,4 @@
             value="^#$\n^# BSD-style license; for more info see http:\/\/pmd.sourceforge.net/license.html$\n^#$"/>
         <property name="fileExtensions" value="properties"/>
     </module>
-
 </module>
