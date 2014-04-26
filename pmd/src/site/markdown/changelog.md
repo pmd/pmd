@@ -43,6 +43,7 @@
 [Pull request 40]: https://github.com/pmd/pmd/pull/40
 
 **CPD Changes:**
+
 - Command Line
     - Added option "--skip-lexical-errors" to skip files, which can't be tokenized
       due to invalid characters instead of aborting CPD. See also [bug 1178].
