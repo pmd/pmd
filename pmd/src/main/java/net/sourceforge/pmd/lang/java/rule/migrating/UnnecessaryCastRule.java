@@ -17,7 +17,20 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-//FUTURE This is not referenced by any RuleSet?
+/**
+ * This is a rule, that detects unnecessary casts when using Java 1.5 generics and
+ * collections.
+ *
+ * <p>Example:
+ * <pre>
+ * List<Double> list = new ArrayList<Double>();
+ * ...
+ * Double d = (Double) list.get(0); //The cast is unnecessary on this typed array.
+ * </pre>
+ *
+ * @see <a href="http://sourceforge.net/p/pmd/discussion/188192/thread/276fd6f0">Java 5 rules: Unnecessary casts/Iterators</a>
+ */
+//TODO This is not referenced by any RuleSet?
 public class UnnecessaryCastRule extends AbstractJavaRule {
 
     private static Set<String> implClassNames = new HashSet<String>();

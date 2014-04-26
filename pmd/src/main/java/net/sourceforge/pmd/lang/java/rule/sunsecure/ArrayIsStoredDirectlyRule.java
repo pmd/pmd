@@ -23,6 +23,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 /**
+ * If a method or constructor receives an array as an argument, the array should
+ * be cloned instead of directly stored. This prevents future changes from the user
+ * from affecting the original array.
+ *
  * @since Created on Jan 17, 2005
  * @author mgriffa
  */
