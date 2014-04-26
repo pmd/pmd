@@ -20,6 +20,8 @@
 * Fixed [bug 1188]: False positive in UnusedPrivateField
 * Document that PMD requires Java 1.6, see [discussion].
 * [Pull request 38]: Some fixes for AbstractCommentRule
+* [Pull request 39]: Fixed NPE in ConsecutiveAppendsShouldReuseRule.getVariableAppended()
+* [Pull request 40]: Added support for enums in CommentRequiredRule
 
 [bug 1165]: https://sourceforge.net/p/pmd/bugs/1165/
 [bug 1166]: https://sourceforge.net/p/pmd/bugs/1166/
@@ -37,6 +39,8 @@
 [bug 1188]: https://sourceforge.net/p/pmd/bugs/1188/
 [discussion]: https://sourceforge.net/p/pmd/discussion/188192/thread/6e86840c/
 [Pull request 38]: https://github.com/pmd/pmd/pull/38
+[Pull request 39]: https://github.com/pmd/pmd/pull/39
+[Pull request 40]: https://github.com/pmd/pmd/pull/40
 
 **CPD Changes:**
 - Command Line
