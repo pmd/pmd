@@ -31,8 +31,8 @@ $ git status
     <source>src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</source>
   </li>
   <li>Update version/release info in <strong>src/site/markdown/changelog.md</strong>.</li>
-  <li>Update <strong>../website/.htaccess</strong> of our website, to redirect to the new version</li>
-  <li>Update <strong>../website/index.html</strong> to mention the new release</li>
+  <li>Update <strong>../pmd.sourceforge.net/.htaccess</strong> of our website, to redirect to the new version</li>
+  <li>Update <strong>../pmd.sourceforge.net/index.html</strong> to mention the new release</li>
 </ul>
 
 <source>
