@@ -4,7 +4,7 @@
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
     <name>PMD</name>
-    <version>5.2.0-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -242,8 +242,8 @@
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
         <url>https://github.com/pmd/pmd</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <organization>
         <name>InfoEther</name>
         <url>http://pmd.sourceforge.net/</url>
