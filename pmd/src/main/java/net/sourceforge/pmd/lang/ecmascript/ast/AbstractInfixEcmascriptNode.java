@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.InfixExpression;
 
@@ -15,7 +16,11 @@ public class AbstractInfixEcmascriptNode<T extends InfixExpression> extends Abst
     public AbstractInfixEcmascriptNode(T infixExpression, boolean setImage) {
 	super(infixExpression);
 	if (setImage) {
-	    super.setImage(AstRoot.operatorToString(infixExpression.getOperator()));
+	    if (infixExpression.getOperator() == Token.ASSIGN_BITXOR) {
+	        super.setImage("^=");
+	    } else {
+	        super.setImage(AstRoot.operatorToString(infixExpression.getOperator()));
+	    }
 	}
     }
 

@@ -187,4 +187,16 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         ASTUnaryExpression unary = rootNode.getFirstDescendantOfType(ASTUnaryExpression.class);
         assertEquals("void", unary.getImage());
     }
+
+    /**
+     * #1192 Ecmascript fails to parse this operator " ^= "
+     */
+    @Test
+    public void testXorAssignment() {
+        ASTAstRoot rootNode = parse("function f() { var x = 2; x ^= 2; x &= 2; x |= 2; "
+                + "x &&= true; x ||= false; x *= 2; x /= 2; x %= 2; x += 2; x -= 2; "
+                + "x <<= 2; x >>= 2; x >>>= 2; }");
+        ASTAssignment infix = rootNode.getFirstDescendantOfType(ASTAssignment.class);
+        assertEquals("^=", infix.getImage());
+    }
 }
