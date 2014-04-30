@@ -46,17 +46,17 @@ public class UnusedImportsRule extends AbstractJavaRule {
     /*
      * Patterns to match the following constructs:
      *
-     * @see  package.class#member  label
-     * {@linkplain  package.class#member  label}
-     * {@link  package.class#member  label}
+     * @see  package.class#member(param, param)  label
+     * {@linkplain  package.class#member(param, param)  label}
+     * {@link  package.class#member(param, param)  label}
      * {@value  package.class#field}
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern.compile(
-            "@see\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#]");
+            "@see\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*\\(([\\w\\s,]*)\\))?");
 
     private static final Pattern LINK_PATTERNS = Pattern.compile(
-            "\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#\\}]");
+            "\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*\\(([\\w\\s,]*)\\))?[\\s\\}]");
 
     private static final Pattern VALUE_PATTERN = Pattern.compile(
             "\\{@value\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#\\}]");
@@ -78,13 +78,20 @@ public class UnusedImportsRule extends AbstractJavaRule {
                 Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
                     String s = m.group(1);
-                    ImportWrapper candidate = new ImportWrapper(s, s, new DummyJavaNode(-1));
+                    imports.remove(new ImportWrapper(s, s, new DummyJavaNode(-1)));
 
-                    if (imports.contains(candidate)) {
-                        imports.remove(candidate);
-                        if (imports.isEmpty()) {
-                            return;
+                    if (m.groupCount() > 1) {
+                        s = m.group(2);
+                        if (s != null) {
+                            String[] params = s.split("\\s*,\\s*");
+                            for (String param : params) {
+                                imports.remove(new ImportWrapper(param, param, new DummyJavaNode(-1)));
+                            }
                         }
+                    }
+
+                    if (imports.isEmpty()) {
+                        return;
                     }
                 }
             }

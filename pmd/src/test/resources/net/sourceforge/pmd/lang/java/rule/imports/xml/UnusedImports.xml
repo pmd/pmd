@@ -237,4 +237,23 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1181 unused import false positive if used as parameter in javadoc only.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Vector;
+
+public class Foo {
+    /**
+     * See here: {@link Collections#reverse(List, Collection)}
+     * @see Collections#reverse(ArrayList, Vector)
+     */
+    public Object bar() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>
