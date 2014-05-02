@@ -592,7 +592,7 @@
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>5.0_BETA</version>
+            <version>5.0.2</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>
