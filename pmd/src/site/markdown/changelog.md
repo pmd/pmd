@@ -9,3 +9,8 @@
 
 [bug #1181]: https://sourceforge.net/p/pmd/bugs/1181/
 [bug #1192]: https://sourceforge.net/p/pmd/bugs/1192/
+
+**Pull requests:**
+
+* [#41](https://github.com/pmd/pmd/pull/41): Update to use asm 5.0.2
+
