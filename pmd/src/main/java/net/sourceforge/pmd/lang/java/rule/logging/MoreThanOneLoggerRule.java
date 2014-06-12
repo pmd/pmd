@@ -22,6 +22,8 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
     private static final Class<?> LOG4J_LOGGER;
 
     private static final Class<?> JAVA_LOGGER;
+    
+    private static final Class<?> SLF4J_LOGGER;
 
     static {
 	Class<?> c;
@@ -37,6 +39,12 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
 	    c = null;
 	}
 	JAVA_LOGGER = c;
+	try {
+	    c = Class.forName("org.slf4j.Logger");
+	} catch (Throwable t) {
+	    c = null;
+	}
+	SLF4J_LOGGER = c;
     }
 
     private Stack<Integer> stack = new Stack<Integer>();
@@ -84,7 +92,9 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
 		Node classOrIntType = reftypeNode.jjtGetChild(0);
 		if (classOrIntType instanceof ASTClassOrInterfaceType) {
 		    Class<?> clazzType = ((ASTClassOrInterfaceType) classOrIntType).getType();
-		    if (clazzType != null && (clazzType.equals(LOG4J_LOGGER) || clazzType.equals(JAVA_LOGGER))
+		    if (clazzType != null && (clazzType.equals(LOG4J_LOGGER) 
+		                           || clazzType.equals(JAVA_LOGGER) 
+		                           || clazzType.equals(SLF4J_LOGGER))
 			    || clazzType == null && "Logger".equals(classOrIntType.getImage())) {
 			++count;
 		    }
