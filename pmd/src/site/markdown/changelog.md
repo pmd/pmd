@@ -13,4 +13,5 @@
 **Pull requests:**
 
 * [#41](https://github.com/pmd/pmd/pull/41): Update to use asm 5.0.2
+* [#42](https://github.com/pmd/pmd/pull/42): Add SLF4j Logger type to MoreThanOneLogger rule
 
