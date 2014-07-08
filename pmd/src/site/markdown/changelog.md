@@ -6,9 +6,11 @@
 
 * Fixed [bug #1181]: unused import false positive if used as parameter in javadoc only.
 * Fixed [bug #1192]: Ecmascript fails to parse this operator " ^= "
+* Fixed [bug #1206]: SummaryHTMLRenderer always shows suppressed warnings/violations
 
 [bug #1181]: https://sourceforge.net/p/pmd/bugs/1181/
 [bug #1192]: https://sourceforge.net/p/pmd/bugs/1192/
+[bug #1206]: https://sourceforge.net/p/pmd/bugs/1206/
 
 **Pull requests:**
 
