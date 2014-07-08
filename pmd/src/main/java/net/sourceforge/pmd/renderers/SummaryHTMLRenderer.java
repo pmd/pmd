@@ -33,7 +33,7 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
     public void end() throws IOException {
 	writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
 	renderSummary();
-	writer.write("<h2><center>Detail</h2></center>");
+	writer.write("<center><h2>Detail</h2></center>");
 	writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL);
 
 	HTMLRenderer htmlRenderer = new HTMLRenderer();
@@ -42,7 +42,7 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
 	htmlRenderer.setShowSuppressedViolations(showSuppressedViolations);
 	htmlRenderer.renderBody(writer, report);
 
-	writer.write("</table></body></html>" + PMD.EOL);
+	writer.write("</tr></table></body></html>" + PMD.EOL);
     }
 
     /**
@@ -52,10 +52,10 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
      */
     public void renderSummary() throws IOException {
     	StringBuilder buf = new StringBuilder(500);
-		buf.append("<h2><center>Summary</h2></center>");
-		buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">");
+		buf.append("<center><h2>Summary</h2></center>");
+		buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>");
 		buf.append("<th>Rule name</th>");
-		buf.append("<th>Number of violations</th>");
+		buf.append("<th>Number of violations</th></tr>");
 		writer.write(buf.toString());
 		Map<String, Integer> summary = report.getSummary();
 		for (Map.Entry<String, Integer> entry : summary.entrySet()) {

@@ -1,7 +1,23 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.renderers;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
+
+import org.junit.Test;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTst {
 
@@ -16,7 +32,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
     @Override
     public String getExpected() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL +
-                "<h2><center>Summary</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><th>Rule name</th><th>Number of violations</th><tr><td>Foo</td><td align=center>1</td></tr></table><h2><center>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
+                "<center><h2>Summary</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr><th>Rule name</th><th>Number of violations</th></tr><tr><td>Foo</td><td align=center>1</td></tr></table><center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
                 "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
                 "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL +
                 "<tr bgcolor=\"lightgrey\"> " + PMD.EOL +
@@ -25,23 +41,23 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
                 "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
                 "<td width=\"*\">msg</td>" + PMD.EOL +
                 "</tr>" + PMD.EOL +
-                "</table></table></body></html>" + PMD.EOL;
+                "</table></tr></table></body></html>" + PMD.EOL;
 
     }
 
     @Override
     public String getExpectedEmpty() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL +
-        "<h2><center>Summary</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><th>Rule name</th><th>Number of violations</th></table><h2><center>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
+        "<center><h2>Summary</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr><th>Rule name</th><th>Number of violations</th></tr></table><center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
         "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
         "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL +
-        "</table></table></body></html>" + PMD.EOL;
+        "</table></tr></table></body></html>" + PMD.EOL;
     }
 
     @Override
     public String getExpectedMultiple() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL +
-        "<h2><center>Summary</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><th>Rule name</th><th>Number of violations</th><tr><td>Foo</td><td align=center>2</td></tr></table><h2><center>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
+        "<center><h2>Summary</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr><th>Rule name</th><th>Number of violations</th></tr><tr><td>Foo</td><td align=center>2</td></tr></table><center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
         "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
         "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL +
         "<tr bgcolor=\"lightgrey\"> " + PMD.EOL +
@@ -56,13 +72,13 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
         "<td width=\"*\">msg</td>" + PMD.EOL +
         "</tr>" + PMD.EOL +
-        "</table></table></body></html>" + PMD.EOL;
+        "</table></tr></table></body></html>" + PMD.EOL;
     }
 
     @Override
     public String getExpectedError(ProcessingError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL +
-        "<h2><center>Summary</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><th>Rule name</th><th>Number of violations</th></table><h2><center>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
+        "<center><h2>Summary</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr><th>Rule name</th><th>Number of violations</th></tr></table><center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
         "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
         "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL +
         "</table><hr/><center><h3>Processing errors</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
@@ -71,13 +87,54 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
         "<td>file</td>" + PMD.EOL +
         "<td>Error</td>" + PMD.EOL +
         "</tr>" + PMD.EOL +
-        "</table></table></body></html>" + PMD.EOL;
+        "</table></tr></table></body></html>" + PMD.EOL;
+    }
+
+    @Test
+    public void testShowSuppressions() throws Exception {
+        Report rep = createEmptyReportWithSuppression();
+        Renderer renderer = getRenderer();
+        renderer.setShowSuppressedViolations(true);
+        String actual = ReportTest.render(renderer, rep);
+        assertEquals("<html><head><title>PMD</title></head><body>" + PMD.EOL +
+                "<center><h2>Summary</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr><th>Rule name</th><th>Number of violations</th></tr></table><center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
+                "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
+                "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL +
+                "</table><hr/><center><h3>Suppressed warnings</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL +
+                "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>" + PMD.EOL +
+                "<tr bgcolor=\"lightgrey\"> " + PMD.EOL +
+                "<td align=\"left\"></td>" + PMD.EOL +
+                "<td align=\"center\">1</td>" + PMD.EOL +
+                "<td align=\"center\">net.sourceforge.pmd.renderers.SummaryHTMLRendererTest$1</td>" + PMD.EOL +
+                "<td align=\"center\">NOPMD</td>" + PMD.EOL +
+                "<td align=\"center\">test</td>" + PMD.EOL +
+                "</tr>" + PMD.EOL +
+                "</table></tr></table></body></html>" + PMD.EOL
+            , actual);
+    }
+
+    @Test
+    public void testHideSuppressions() throws Exception {
+        Report rep = createEmptyReportWithSuppression();
+        Renderer renderer = getRenderer();
+        renderer.setShowSuppressedViolations(false);
+        String actual = ReportTest.render(renderer, rep);
+        assertEquals(getExpectedEmpty(), actual);
+    }
+
+    private Report createEmptyReportWithSuppression() {
+        Report rep = new Report();
+        Map<Integer, String> suppressions = new HashMap<Integer, String>();
+        suppressions.put(1, "test");
+        rep.suppress(suppressions);
+        RuleContext ctx = new RuleContext();
+        RuleViolation violation = new JavaRuleViolation(new AbstractJavaRule() {}, ctx, null, "suppress test", 1, 1);
+        rep.addRuleViolation(violation);
+        return rep;
     }
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(SummaryHTMLRendererTest.class);
     }
 }
-
-
 
