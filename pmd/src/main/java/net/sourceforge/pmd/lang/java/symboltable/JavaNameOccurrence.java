@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
@@ -50,6 +51,9 @@ public class JavaNameOccurrence implements NameOccurrence {
 
     public boolean isMethodOrConstructorInvocation() {
         return isMethodOrConstructorInvocation;
+    }
+    public boolean isMethodReference() {
+        return location instanceof ASTMethodReference;
     }
 
     public void setNameWhichThisQualifies(NameOccurrence qualifiedName) {

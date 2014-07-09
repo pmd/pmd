@@ -60,7 +60,7 @@ public class ClassScope extends AbstractJavaScope {
     public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
         JavaNameOccurrence javaOccurrence = (JavaNameOccurrence)occurrence;
         NameDeclaration decl = findVariableHere(javaOccurrence);
-        if (decl != null && javaOccurrence.isMethodOrConstructorInvocation()) {
+        if (decl != null && (javaOccurrence.isMethodOrConstructorInvocation() || javaOccurrence.isMethodReference())) {
             List<NameOccurrence> nameOccurrences = getMethodDeclarations().get(decl);
             if (nameOccurrences == null) {
                 // TODO may be a class name: Foo.this.super();
@@ -136,6 +136,14 @@ public class ClassScope extends AbstractJavaScope {
                         // or, failing that, mark this as a usage of all those methods
                         return mnd;
                     }
+                }
+            }
+            return null;
+        }
+        if (occurrence.isMethodReference()) {
+            for (MethodNameDeclaration mnd: methodDeclarations.keySet()) {
+                if (mnd.getImage().equals(occurrence.getImage())) {
+                    return mnd;
                 }
             }
             return null;
