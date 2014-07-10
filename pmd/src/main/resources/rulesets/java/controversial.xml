@@ -656,17 +656,26 @@ can lead to quite messy code. This rule looks for several declarations on the sa
             <property name="xpath">
                 <value>
                     <![CDATA[
-//LocalVariableDeclaration[count(VariableDeclarator) > 1]
+//LocalVariableDeclaration
+   [count(VariableDeclarator) > 1]
+   [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
                     ]]>
                 </value>
             </property>
+            <property name="version" value="2.0"/>
+            <property name="strictMode" type="Boolean" value="false"
+                      description="If true, mark combined declaration even if the declarations are on separate lines."/>
         </properties>
         <example>
           <![CDATA[
-String name; 			// separate declarations
+String name;            // separate declarations
 String lastname;
 
-String name, lastname;	// combined declaration, a violation
+String name, lastname;  // combined declaration, a violation
+
+String name,
+       lastname;        // combined declaration on multiple lines, no violation by default.
+                        // Set property strictMode to true to mark this as violation.
           ]]>
         </example>
   </rule>
