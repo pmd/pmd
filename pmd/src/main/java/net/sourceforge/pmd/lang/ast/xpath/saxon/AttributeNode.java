@@ -8,6 +8,7 @@ import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.type.Type;
 import net.sf.saxon.value.BooleanValue;
+import net.sf.saxon.value.EmptySequence;
 import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.Value;
@@ -53,7 +54,7 @@ public class AttributeNode extends AbstractNodeInfo {
 	    } else if (v instanceof Integer) {
 		value = Int64Value.makeIntegerValue((Integer) v);
 	    } else if (v == null) {
-		// Ok
+		value = EmptySequence.getInstance();
 	    } else {
 		throw new RuntimeException("Unable to create ValueRepresentaton for attribute value: " + v
 			+ " of type " + v.getClass());
