@@ -37,4 +37,11 @@
 
 * [#41](https://github.com/pmd/pmd/pull/41): Update to use asm 5.0.2
 * [#42](https://github.com/pmd/pmd/pull/42): Add SLF4j Logger type to MoreThanOneLogger rule
+* [#43](https://github.com/pmd/pmd/pull/43): Standard and modified cyclomatic complexity
 
+**New Rules:**
+
+* Java - codesize ruleset:
+    * StdCyclomaticComplexity: Like CyclomaticComplexityRule, but not including boolean operators
+    * ModifiedCyclomaticComplexity: Like StdCyclomaticComplexity, but switch statement plus all cases count as 1
+    * Thanks to Alan Hohn

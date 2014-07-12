@@ -61,25 +61,35 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 			// Variable name node specific
 			setVariableNameIfExists(node);
 
-			// Check for suppression on this node, on parents, and on contained
-			// types for ASTCompilationUnit
 			if (!suppressed) {
-				suppressed = suppresses(node);
-			}
-			if (!suppressed && node instanceof ASTCompilationUnit) {
-				for (int i = 0; !suppressed && i < node.jjtGetNumChildren(); i++) {
-					suppressed = suppresses(node.jjtGetChild(i));
-				}
-			}
-			if (!suppressed) {
-				Node parent = node.jjtGetParent();
-				while (!suppressed && parent != null) {
-					suppressed = suppresses(parent);
-					parent = parent.jjtGetParent();
-				}
+			    suppressed = isSupressed(node, getRule());
 			}
 		}
 	}
+
+    /**
+     * Check for suppression on this node, on parents, and on contained types
+     * for ASTCompilationUnit
+     * 
+     * @param node
+     */
+    public static boolean isSupressed(Node node, Rule rule) {
+        boolean result = suppresses(node, rule);
+
+        if (!result && node instanceof ASTCompilationUnit) {
+            for (int i = 0; !result && i < node.jjtGetNumChildren(); i++) {
+                result = suppresses(node.jjtGetChild(i), rule);
+            }
+        }
+        if (!result) {
+            Node parent = node.jjtGetParent();
+            while (!result && parent != null) {
+                result = suppresses(parent, rule);
+                parent = parent.jjtGetParent();
+            }
+        }
+        return result;
+    }
 
 	private void setClassNameFrom(JavaNode node) {
 		
@@ -97,9 +107,9 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 		}
 	}
 
-	private boolean suppresses(final Node node) {
+	private static boolean suppresses(final Node node, Rule rule) {
 		return node instanceof CanSuppressWarnings
-				&& ((CanSuppressWarnings) node).hasSuppressWarningsAnnotationFor(getRule());
+				&& ((CanSuppressWarnings) node).hasSuppressWarningsAnnotationFor(rule);
 	}
 
 	private void setVariableNameIfExists(Node node) {
