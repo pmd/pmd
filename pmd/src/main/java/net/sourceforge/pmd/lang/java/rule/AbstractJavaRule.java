@@ -60,6 +60,10 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 	return false;
     }
 
+    protected boolean isSuppressed(Node node) {
+        return JavaRuleViolation.isSupressed(node, this);
+    }
+
     //
     // The following APIs are identical to those in JavaParserVisitorAdapter.
     // Due to Java single inheritance, it preferred to extend from the more

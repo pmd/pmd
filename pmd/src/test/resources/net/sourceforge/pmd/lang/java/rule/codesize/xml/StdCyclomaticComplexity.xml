@@ -150,7 +150,7 @@ public class Test {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
-  @SuppressWarnings("PMD.CyclomaticComplexity")
+  @SuppressWarnings("PMD.StdCyclomaticComplexity")
   public Test() {
     if (a == 1) {
       if (b == 2) {
