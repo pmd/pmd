@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -28,6 +31,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.TextRenderer;
@@ -102,6 +106,7 @@ public abstract class RuleTst {
             printReport(test, report);
             assertEquals('"' + test.getDescription() + "\" resulted in wrong number of failures,",
                     test.getNumberOfProblemsExpected(), res);
+            assertMessages(report, test);
         } finally {
             //Restore old properties
             // TODO Tried to use generics here, but there's a compiler bug doing so in a finally block.
@@ -109,6 +114,29 @@ public abstract class RuleTst {
             for (Map.Entry entry: oldProperties.entrySet()) {
         	rule.setProperty((PropertyDescriptor)entry.getKey(), entry.getValue());
             }
+        }
+    }
+
+    private void assertMessages(Report report, TestDescriptor test) {
+        if (report == null || test.getExpectedMessages().isEmpty()) {
+            return;
+        }
+
+        List<String> expectedMessages = test.getExpectedMessages();
+        if (report.getViolationTree().size() != expectedMessages.size()) {
+            throw new RuntimeException("Test setup error: number of expected messages doesn't match "
+                    + "number of violations for test case '" + test.getDescription() + "'");
+        }
+
+        Iterator<RuleViolation> it = report.getViolationTree().iterator();
+        int index = 0;
+        while (it.hasNext()) {
+            RuleViolation violation = it.next();
+            String actual = violation.getDescription();
+            assertEquals(
+                    '"' + test.getDescription() + "\" produced wrong message on violation number " + (index + 1) + ".",
+                    expectedMessages.get(index), actual);
+            index++;
         }
     }
 
@@ -253,6 +281,17 @@ public abstract class RuleTst {
                 properties.setProperty(propertyName, parseTextNode(ruleProperty));
             }
             int expectedProblems = Integer.parseInt(getNodeValue(testCode, "expected-problems", true));
+
+            NodeList expectedMessagesNodes = testCode.getElementsByTagName("expected-messages");
+            List<String> messages = new ArrayList<String>();
+            if (expectedMessagesNodes != null && expectedMessagesNodes.getLength() > 0) {
+                Element item = (Element)expectedMessagesNodes.item(0);
+                NodeList messagesNodes = item.getElementsByTagName("message");
+                for (int j = 0; j < messagesNodes.getLength(); j++) {
+                    messages.add(parseTextNode(messagesNodes.item(j)));
+                }
+            }
+
             String description = getNodeValue(testCode, "description", true);
             String code = getNodeValue(testCode, "code", false);
             if (code == null) {
@@ -289,6 +328,7 @@ public abstract class RuleTst {
             }
             tests[i].setReinitializeRule(reinitializeRule);
             tests[i].setRegressionTest(isRegressionTest);
+            tests[i].setExpectedMessages(messages);
             tests[i].setProperties(properties);
         }
         return tests;

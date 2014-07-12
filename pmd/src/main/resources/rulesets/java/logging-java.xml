@@ -68,7 +68,7 @@ public class Foo{
     <rule name="SystemPrintln"
    		language="java"
     		since="2.1"
-         message="System.out.print is used"
+         message="{0} is used"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#SystemPrintln">
      <description>

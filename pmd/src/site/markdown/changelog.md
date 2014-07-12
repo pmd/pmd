@@ -20,6 +20,13 @@
 [bug #1221]: https://sourceforge.net/p/pmd/bugs/1221/
 [bug #1223]: https://sourceforge.net/p/pmd/bugs/1223/
 
+**Feature Requests and Improvements:**
+
+* [#1217]: SystemPrintln always says "System.out.print is used"
+
+[#1217]: https://sourceforge.net/p/pmd/bugs/1217/
+
+
 **Pull requests:**
 
 * [#41](https://github.com/pmd/pmd/pull/41): Update to use asm 5.0.2

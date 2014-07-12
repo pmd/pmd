@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.testframework;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import net.sourceforge.pmd.Rule;
@@ -19,6 +21,7 @@ public class TestDescriptor {
     private Properties properties;
     private String description;
     private int numberOfProblemsExpected;
+    private List<String> expectedMessages = new ArrayList<String>();
     private String code;
     private LanguageVersion languageVersion;
     private boolean reinitializeRule = true;   //default, avoids unintentional mixing of state between test cases
@@ -39,6 +42,15 @@ public class TestDescriptor {
         this.description = description;
         this.numberOfProblemsExpected = numberOfProblemsExpected;
         this.languageVersion = languageVersion;
+    }
+
+    public void setExpectedMessages(List<String> messages) {
+        expectedMessages.clear();
+        expectedMessages.addAll(messages);
+    }
+
+    public List<String> getExpectedMessages() {
+        return expectedMessages;
     }
 
     public void setProperties(Properties properties) {
