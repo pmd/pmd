@@ -102,4 +102,15 @@ public static class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>Don't skip classes with non-static methods; #1216 AtLeastOneConstructor ignores classes with *any* methods</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestAtLeastOneConstructor {
+    public void NotStatic() {
+        System.out.println("This class should have a constructor");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

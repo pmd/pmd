@@ -134,7 +134,7 @@ Each class should declare at least one constructor.
   and
   (@Static = 'false')
   and
-  (count(./descendant::MethodDeclaration[@Static]) < 1)
+  (count(./descendant::MethodDeclaration[@Static = 'true']) < 1)
 ]
   [@Interface='false']
 ]]>
