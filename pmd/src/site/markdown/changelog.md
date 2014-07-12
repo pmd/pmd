@@ -7,6 +7,7 @@
 * Fixed [bug #1181]: unused import false positive if used as parameter in javadoc only.
 * Fixed [bug #1192]: Ecmascript fails to parse this operator " ^= "
 * Fixed [bug #1206]: SummaryHTMLRenderer always shows suppressed warnings/violations
+* Fixed [bug #1214]: UseCollectionIsEmpty misses some usage
 * Fixed [bug #1215]: AvoidInstantiatingObjectsInLoops matches the right side of a list iteration loop
 * Fixed [bug #1216]: AtLeastOneConstructor ignores classes with *any* methods
 * Fixed [bug #1218]: TooFewBranchesForASwitchStatement misprioritized
@@ -16,6 +17,7 @@
 [bug #1181]: https://sourceforge.net/p/pmd/bugs/1181/
 [bug #1192]: https://sourceforge.net/p/pmd/bugs/1192/
 [bug #1206]: https://sourceforge.net/p/pmd/bugs/1206/
+[bug #1214]: https://sourceforge.net/p/pmd/bugs/1214/
 [bug #1215]: https://sourceforge.net/p/pmd/bugs/1215/
 [bug #1216]: https://sourceforge.net/p/pmd/bugs/1216/
 [bug #1218]: https://sourceforge.net/p/pmd/bugs/1218/

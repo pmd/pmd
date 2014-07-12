@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.rule;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -27,6 +28,10 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
 
     public abstract boolean isTargetMethod(JavaNameOccurrence occ);
 
+    public List<String> getComparisonTargets() {
+        return Arrays.asList("0");
+    }
+
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         Node nameNode = node.getTypeNameNode();
         if (nameNode == null
@@ -42,22 +47,36 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
                 continue;
             }
             Node expr = jocc.getLocation().jjtGetParent().jjtGetParent().jjtGetParent();
-            if ((expr instanceof ASTEqualityExpression ||
-                    (expr instanceof ASTRelationalExpression && ">".equals(expr.getImage())))
-                && isCompareZero(expr)) {
-                addViolation(data, jocc.getLocation());
-            }
+            checkNodeAndReport(data, jocc.getLocation(), expr);
         }
         return data;
     }
 
     /**
-     * We only need to report if this is comparing against 0
+     * Checks whether the given expression is a equality/relation expression that
+     * compares with a size() call.
+     * 
+     * @param data the rule context
+     * @param location the node location to report
+     * @param expr the ==, <, > expression
+     */
+    protected void checkNodeAndReport(Object data, Node location, Node expr) {
+        if ((expr instanceof ASTEqualityExpression
+            || (expr instanceof ASTRelationalExpression
+                    && (">".equals(expr.getImage()) || "<".equals(expr.getImage()))))
+            && isCompare(expr)) {
+            addViolation(data, location);
+        }
+    }
+
+    /**
+     * We only need to report if this is comparing against one of the comparison targets
      * 
      * @param equality
-     * @return true if this is comparing to 0 else false
+     * @return true if this is comparing to one of the comparison targets else false
+     * @see #getComparisonTargets()
      */
-    private boolean isCompareZero(Node equality) {
+    private boolean isCompare(Node equality) {
         return checkComparison(equality, 0) || checkComparison(equality, 1);
 
     }
@@ -69,7 +88,8 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @param equality
      * @param i
      *            The ordinal in the equality expression to check
-     * @return true if the value in position i is 0, else false
+     * @return true if the value in position i is one of the comparison targets, else false
+     * @see #getComparisonTargets()
      */
     private boolean checkComparison(Node equality, int i) {
 	Node target = equality.jjtGetChild(i).jjtGetChild(0);
@@ -77,7 +97,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
             return false;
         }
         target = target.jjtGetChild(0);
-        return target instanceof ASTLiteral && "0".equals(target.getImage());
+        return target instanceof ASTLiteral && getComparisonTargets().indexOf(target.getImage()) > -1;
     }
 
 }

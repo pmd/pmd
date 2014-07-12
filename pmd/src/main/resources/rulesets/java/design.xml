@@ -1462,7 +1462,7 @@ public class Foo {
 
     <rule name="UseCollectionIsEmpty"
          since="3.9"
-         message="Substitute calls to size() == 0 (or size() != 0) with calls to isEmpty()"
+         message="Substitute calls to size() == 0 (or size() != 0, size() &gt; 0, size() &lt; 1) with calls to isEmpty()"
          class="net.sourceforge.pmd.lang.java.rule.design.UseCollectionIsEmptyRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseCollectionIsEmpty">
          <description>
