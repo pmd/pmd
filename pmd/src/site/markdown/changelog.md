@@ -9,7 +9,6 @@
 * Fixed [bug #1206]: SummaryHTMLRenderer always shows suppressed warnings/violations
 * Fixed [bug #1218]: TooFewBranchesForASwitchStatement misprioritized
 * Fixed [bug #1219]: PrimarySuffix/@Image does not work in some cases in xpath 2.0
-* Fixed [bug #1221]: OneDeclarationPerLine really checks for one declaration each statement
 * Fixed [bug #1223]: UnusedPrivateMethod: Java 8 method reference causing false positives
 
 [bug #1181]: https://sourceforge.net/p/pmd/bugs/1181/
@@ -17,14 +16,15 @@
 [bug #1206]: https://sourceforge.net/p/pmd/bugs/1206/
 [bug #1218]: https://sourceforge.net/p/pmd/bugs/1218/
 [bug #1219]: https://sourceforge.net/p/pmd/bugs/1219/
-[bug #1221]: https://sourceforge.net/p/pmd/bugs/1221/
 [bug #1223]: https://sourceforge.net/p/pmd/bugs/1223/
 
 **Feature Requests and Improvements:**
 
 * [#1217]: SystemPrintln always says "System.out.print is used"
+* [#1221]: OneDeclarationPerLine really checks for one declaration each statement
 
 [#1217]: https://sourceforge.net/p/pmd/bugs/1217/
+[#1221]: https://sourceforge.net/p/pmd/bugs/1221/
 
 
 **Pull requests:**
