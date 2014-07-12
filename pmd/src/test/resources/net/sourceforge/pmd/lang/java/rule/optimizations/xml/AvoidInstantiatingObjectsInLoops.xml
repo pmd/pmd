@@ -93,9 +93,7 @@ public class Foo {
     </test-code>
     <!-- FIXME -->
     <!--test-code>
-        <description><![CDATA[
-BUG [ 1114051 ] Semi-false positive for instantiating new object in loop
-     ]]></description>
+        <description>#278 Semi-false positive for instantiating new object in loop</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -111,4 +109,23 @@ public class Foo {
 }
      ]]></code>
     </test-code-->
+    <test-code>
+        <description>#1215 AvoidInstantiatingObjectsInLoops matches the right side of a list iteration loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.io.File;
+
+public class TestInstantiationInLoop {
+    public static void main(String args[]) {
+        for (String test : new ArrayList<String>()) { // facetious but simple example
+            System.out.println(test);
+        }
+        for (String filename : new File("subdirectory").list()) { // complex but realistically conceivable (albeit exagerrated/oversimplified/rarely advisable) example
+            System.out.println(filename);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
