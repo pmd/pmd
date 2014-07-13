@@ -152,4 +152,19 @@ public class FooTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1211 PMD is failing with NPE for rule UseIndexOfChar while analyzing Jdk 8 Lambda expression</description>
+        <expected-problems>0</expected-problems>
+        <source-type>java 1.8</source-type>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        Optional<Service> optionalResult = null;
+        services.stream()
+            .filter(s -> s.getLastSeen() > 0)
+            .findFirst();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
