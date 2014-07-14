@@ -37,4 +37,29 @@ public class MyClass {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description>#1213 AvoidLiteralsInIfCondition -- switch for integer comparison with 0</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Foo {
+    public void bar() {
+        if( ( flags & Flag.IMPORTANT ) != 0 ) {}
+        if (aString.indexOf('.') != -1) {}     // magic number -1, by default ignored
+    }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description>#1213 AvoidLiteralsInIfCondition -- switch for integer comparison with 0.0</description>
+    <expected-problems>0</expected-problems>
+    <rule-property name="ignoreMagicNumbers">-1,0,0.0</rule-property>
+    <code><![CDATA[
+public class Foo {
+    public void bar() {
+        if (aDouble > 0.0) {}                  // magic number 0.0
+        if (aDouble >= Double.MIN_VALUE) {}    // preferred approach
+    }
+}
+    ]]></code>
+  </test-code>
 </test-data>

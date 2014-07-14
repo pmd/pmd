@@ -740,31 +740,44 @@ public class Foo {
       externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#AvoidLiteralsInIfCondition">
     <description>
 Avoid using hard-coded literals in conditional statements. By declaring them as static variables
-or private members with descriptive names maintainability is enhanced.
+or private members with descriptive names maintainability is enhanced. By default, the literals "-1" and "0" are ignored.
+More exceptions can be defined with the property "ignoreMagicNumbers".
     </description>
     <priority>3</priority>
     <properties>
+      <property name="ignoreMagicNumbers" description="Comma-separated list of magic numbers, that should be ignored"
+        type="String" value="-1,0"/>
       <property name="xpath">
         <value>
 <![CDATA[
-//IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal[not(NullLiteral)]
+//IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal[
+not(NullLiteral)
+and empty(index-of(tokenize($ignoreMagicNumbers, ','), @Image))
+]
 ]]>
         </value>
       </property>
+      <property name="version" value="2.0"/>
     </properties>
     <example>
 <![CDATA[
-private static final int TEN = 10;
+private static final int MAX_NUMBER_OF_REQUESTS = 10;
 
-public void downCastPrimitiveType() {
+public void checkRequests() {
 
-    if (i == 10) {		// magic number, buried in a method
+    if (i == 10) {                        // magic number, buried in a method
       doSomething();
     }
 
-    if (i == TEN) {		// preferred approach
+    if (i == MAX_NUMBER_OF_REQUESTS) {    // preferred approach
       doSomething();
     }
+
+    if (aString.indexOf('.') != -1) {}     // magic number -1, by default ignored
+    if (aString.indexOf('.') >= 0) { }     // alternative approach
+
+    if (aDouble > 0.0) {}                  // magic number 0.0
+    if (aDouble >= Double.MIN_VALUE) {}    // preferred approach
 }
 ]]>
     </example>

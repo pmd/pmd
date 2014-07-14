@@ -28,9 +28,11 @@
 
 **Feature Requests and Improvements:**
 
+* [#1213]: AvoidLiteralsInIfCondition -- switch for integer comparison with 0
 * [#1217]: SystemPrintln always says "System.out.print is used"
 * [#1221]: OneDeclarationPerLine really checks for one declaration each statement
 
+[#1213]: https://sourceforge.net/p/pmd/bugs/1213/
 [#1217]: https://sourceforge.net/p/pmd/bugs/1217/
 [#1221]: https://sourceforge.net/p/pmd/bugs/1221/
 
