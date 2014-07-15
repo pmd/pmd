@@ -14,6 +14,7 @@
 * Fixed [bug #1218]: TooFewBranchesForASwitchStatement misprioritized
 * Fixed [bug #1219]: PrimarySuffix/@Image does not work in some cases in xpath 2.0
 * Fixed [bug #1223]: UnusedPrivateMethod: Java 8 method reference causing false positives
+* Fixed [bug #1224]: GuardDebugLogging broken in 5.1.1 - missing additive statement check in log statement
 
 [bug #1181]: https://sourceforge.net/p/pmd/bugs/1181/
 [bug #1192]: https://sourceforge.net/p/pmd/bugs/1192/
@@ -25,6 +26,7 @@
 [bug #1218]: https://sourceforge.net/p/pmd/bugs/1218/
 [bug #1219]: https://sourceforge.net/p/pmd/bugs/1219/
 [bug #1223]: https://sourceforge.net/p/pmd/bugs/1223/
+[bug #1224]: https://sourceforge.net/p/pmd/bugs/1224/
 
 **Feature Requests and Improvements:**
 

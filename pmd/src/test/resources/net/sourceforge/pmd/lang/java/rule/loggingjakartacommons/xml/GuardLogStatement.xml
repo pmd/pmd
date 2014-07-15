@@ -18,7 +18,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-KO, missing guard
+KO, missing guard 1
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -26,14 +26,14 @@ public class Foo {
   private static final Logger logger = Logger.getLogger(Foo.class);
 
   private void foo() {
-        logger.debug("Debug statement");
+        logger.debug("Debug statement" + "");
   }
 }
      ]]></code>
     </test-code>
     <test-code>
         <description><![CDATA[
-KO, missing guard
+KO, missing guard 2
         ]]></description>
         <rule-property name="logLevels">debug,trace</rule-property>
         <rule-property name="guardsMethods">isDebugEnabled,isTraceEnabled</rule-property>
@@ -43,11 +43,11 @@ public class Foo {
   private static final Logger logger = Logger.getLogger(Foo.class);
 
   private void foo() {
-        logger.debug("Debug statement");
+        logger.debug("Debug statement" + "");
   }
 
   private void bar() {
-        logger.info("No guard, but'is OK with properties configuration");
+        logger.info("No guard, but'is OK with properties configuration" + "");
   }
 
 }
@@ -61,10 +61,10 @@ public class Test {
     public void test() {
         final Marker m = MarkerManager.getMarker(mymarker);
         if (logger.isDebugEnabled(m)) {
-          logger.debug(m, message);
+          logger.debug(m, message + "");
         }
         if (logger.isTraceEnabled(m)) {
-          logger.trace(m, message);
+          logger.trace(m, message + "");
         }
     }
 }
@@ -78,10 +78,10 @@ public class Test {
     public void test() {
         final Marker m = MarkerManager.getMarker(mymarker);
         if (logger.isTraceEnabled(m)) { // should have been isDebugEnabled
-          logger.debug(m, message);
+          logger.debug(m, message + "");
         }
         if (logger.isDebugEnabled(m)) { // should have been isTraceEnabled
-          logger.trace(m, message);
+          logger.trace(m, message + "");
         }
     }
 }

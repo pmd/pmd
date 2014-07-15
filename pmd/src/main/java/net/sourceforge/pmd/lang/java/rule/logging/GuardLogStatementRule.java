@@ -41,10 +41,10 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements
 	protected Map<String, String> guardStmtByLogLevel = new HashMap<String, String>(
 			5);
 
-	private static final String xpathExpression = "//PrimaryPrefix[ends-with(Name/@Image, 'KEY') and "
-			+ "count("
-			+ "ancestor::IfStatement/Expression/descendant::PrimaryExpression["
-			+ "ends-with(descendant::PrimaryPrefix/Name/@Image,'VALUE')]) = 0]";
+    private static final String xpathExpression = "//PrimaryPrefix[ends-with(Name/@Image, 'KEY')]"
+            + "[count(../descendant::AdditiveExpression) > 0]"
+            + "[count(ancestor::IfStatement/Expression/descendant::PrimaryExpression["
+                + "ends-with(descendant::PrimaryPrefix/Name/@Image,'VALUE')]) = 0]";
 
 	public GuardLogStatementRule() {
 		definePropertyDescriptor(LOG_LEVELS);

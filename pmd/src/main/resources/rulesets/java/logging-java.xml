@@ -155,7 +155,7 @@ otherwise skip the associate String creation and manipulation.
  <![CDATA[
  	// Add this for performance
 	if (log.isLoggable(Level.FINE)) { ...
- 	    log.fine("This happens");
+ 	    log.fine("log something" + " and " + "concat strings");
 ]]>
      </example>
    </rule>

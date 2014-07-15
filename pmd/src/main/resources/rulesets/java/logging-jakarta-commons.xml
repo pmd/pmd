@@ -139,9 +139,9 @@ otherwise skip the associate String creation and manipulation.
      <priority>2</priority>
      <example>
  <![CDATA[
- 	// Add this for performance
-	if (log.isDebugEnabled() { ...
- 	    log.debug("This happens");
+    // Add this for performance
+    if (log.isDebugEnabled() { ...
+        log.debug("log something" + " and " + "concat strings");
 ]]>
      </example>
    </rule>

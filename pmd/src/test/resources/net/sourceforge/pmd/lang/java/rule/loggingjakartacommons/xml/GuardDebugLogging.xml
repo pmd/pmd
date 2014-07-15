@@ -68,7 +68,7 @@ public class Test {
     public void test() {
         final Marker m = MarkerManager.getMarker(mymarker);
         if (logger.isDebugEnabled(m)) {
-          logger.debug(m, message);
+          logger.debug(m, message + "");
         }
     }
 }
@@ -82,7 +82,7 @@ public class Test {
     public void test() {
         final Marker m = MarkerManager.getMarker(mymarker);
         if (logger.isTraceEnabled(m)) {
-          logger.debug(m, message);
+          logger.debug(m, message + "");
         }
     }
 }
@@ -96,7 +96,28 @@ public class Test {
     public void test() {
         final Marker m = MarkerManager.getMarker(mymarker);
         logger.isDebugEnabled(m); // must be within an if
-        logger.debug(m, message);
+        logger.debug(m, message + "");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1224 GuardDebugLogging broken in 5.1.1 - missing additive statement check in log statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+        // okay:
+        __log.debug("log something");
+
+        // okay:
+        __log.debug("log something with exception", e);
+
+        // good:
+        if (__log.isDebugEnabled()) {
+        __log.debug("bla" + "",e );
+        }
     }
 }
         ]]></code>
