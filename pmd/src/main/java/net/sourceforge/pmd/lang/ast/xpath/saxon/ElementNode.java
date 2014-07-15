@@ -125,7 +125,7 @@ public class ElementNode extends AbstractNodeInfo {
 	    if (parent == null || siblingPosition == parent.children.length - 1) {
 		return EmptyIterator.getInstance();
 	    } else {
-		return new NodeArrayIterator(parent.children, siblingPosition, parent.children.length);
+		return new NodeArrayIterator(parent.children, siblingPosition + 1, parent.children.length);
 	    }
 	case Axis.NAMESPACE:
 	    return super.iterateAxis(axisNumber);
