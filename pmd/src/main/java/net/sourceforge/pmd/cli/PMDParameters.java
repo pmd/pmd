@@ -87,7 +87,7 @@ public class PMDParameters {
                 throw new ParameterException(
                         "Property name must be separated with an = sign from it value: name=value.");
             String propertyName = value.substring(0, indexOfSeparator);
-            String propertyValue = value.substring(indexOfSeparator);
+            String propertyValue = value.substring(indexOfSeparator + 1);
             properties.put(propertyName, propertyValue);
             return properties;
         }
