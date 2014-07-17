@@ -6,6 +6,7 @@
 
 * Fixed [bug #1181]: unused import false positive if used as parameter in javadoc only.
 * Fixed [bug #1192]: Ecmascript fails to parse this operator " ^= "
+* Fixed [bug #1205]: Parse error on lambda with if
 * Fixed [bug #1206]: SummaryHTMLRenderer always shows suppressed warnings/violations
 * Fixed [bug #1208]: yahtml's outputDir property does not work
 * Fixed [bug #1209]: XPath 2.0 following-sibling incorrectly includes context node
@@ -20,6 +21,7 @@
 
 [bug #1181]: https://sourceforge.net/p/pmd/bugs/1181/
 [bug #1192]: https://sourceforge.net/p/pmd/bugs/1192/
+[bug #1205]: https://sourceforge.net/p/pmd/bugs/1205/
 [bug #1206]: https://sourceforge.net/p/pmd/bugs/1206/
 [bug #1208]: https://sourceforge.net/p/pmd/bugs/1208/
 [bug #1209]: https://sourceforge.net/p/pmd/bugs/1209/

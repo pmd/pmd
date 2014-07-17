@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Java 8 language syntax
@@ -120,6 +121,20 @@ public class ParserCornerCases18 {
     }
     class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
     void monitorTemperature() throws @Critical TemperatureException {}
+
+    // https://sourceforge.net/p/pmd/bugs/1205/
+    public static class X {
+        public void lambaWithIf() {
+            Stream.of(1, 2, 3)
+            .sorted((a, b) -> {
+                int x = a.hashCode() - b.hashCode();
+                if(a.equals(new X()))
+                    x = 1;
+                return x;
+            })
+            .count();
+        }
+    }
 }
 
 interface DefaultIterator<E> {

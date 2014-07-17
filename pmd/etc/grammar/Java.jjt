@@ -1,4 +1,8 @@
 /**
+ * Fix for Lambda expressions with two or three variables.
+ *
+ * Andreas Dangel 07/2014
+ *====================================================================
  * Added support for Java 8 language constructs.
  *
  * Andreas Dangel 01/2014
@@ -1761,6 +1765,7 @@ void PrimaryPrefix() :
   Literal()
 | "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
+| LOOKAHEAD( "(" VariableDeclaratorId() "," VariableDeclaratorId() ["," VariableDeclaratorId()] ")" "->" ) LambdaExpression()
 | LOOKAHEAD( LambdaExpression() ) LambdaExpression()
 | LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
