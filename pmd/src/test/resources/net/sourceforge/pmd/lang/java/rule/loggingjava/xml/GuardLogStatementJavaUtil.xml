@@ -30,4 +30,22 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1203 GuardLogStatementJavaUtil issues warning for severe level not being specified as property</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="logLevels">finest,finer,fine,info</rule-property>
+        <rule-property name="guardsMethods">isLoggable</rule-property>
+        <code><![CDATA[
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+public class Foo {
+    Logger LOGGER;
+
+    public void foo() {
+        LOGGER.severe("This is a severe message" + " and concat");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
