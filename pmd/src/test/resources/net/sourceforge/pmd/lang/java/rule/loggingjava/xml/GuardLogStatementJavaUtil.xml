@@ -48,4 +48,23 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1227 GuardLogStatementJavaUtil doesn't catch log(Level.FINE, "msg" + " msg") calls</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+public class Foo {
+    Logger LOGGER;
+
+    public void foo() {
+        LOGGER.log(Level.FINE, "This is a severe message" + " and concat"); // violation
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "This is a severe message" + " and concat"); // no violation
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

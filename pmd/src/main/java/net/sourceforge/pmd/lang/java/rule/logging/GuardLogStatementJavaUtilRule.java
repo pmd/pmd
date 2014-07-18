@@ -10,6 +10,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
 
 	private static final String GUARD_METHOD_NAME = "isLoggable";
+
+	private static String extendedXPath = "//PrimaryPrefix[ends-with(Name/@Image, '.log')]\n" + 
+	        "[following-sibling::PrimarySuffix\n" + 
+	        "    [ends-with(.//PrimaryPrefix/Name/@Image, 'LOG_LEVEL_UPPERCASE')]\n" + 
+	        "    [count(../descendant::AdditiveExpression) > 0]\n" + 
+	        "]\n" + 
+	        "[count(ancestor::IfStatement/Expression/descendant::PrimaryExpression\n" + 
+	        "    [ends-with(descendant::PrimaryPrefix[1]/Name/@Image,'GUARD')]) = 0\n" + 
+	        "or\n" + 
+	        "count(ancestor::IfStatement/Expression/descendant::PrimaryExpression\n" + 
+	        "    [ends-with(descendant::PrimaryPrefix[2]/Name/@Image,'LOG_LEVEL_UPPERCASE')]) = 0]";
 	
 	@Override
 	public Object visit(ASTCompilationUnit unit, Object data) {
@@ -22,6 +33,7 @@ public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
             configureDefaultGuards();
         }
 
+        findViolationForEachLogStatement(unit, data, extendedXPath);
 		return super.visit(unit,data);
 	}
 

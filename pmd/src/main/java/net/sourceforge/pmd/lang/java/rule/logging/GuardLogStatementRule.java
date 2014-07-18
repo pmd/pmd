@@ -41,10 +41,10 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements
 	protected Map<String, String> guardStmtByLogLevel = new HashMap<String, String>(
 			5);
 
-    private static final String xpathExpression = "//PrimaryPrefix[ends-with(Name/@Image, 'KEY')]"
+    private static final String xpathExpression = "//PrimaryPrefix[ends-with(Name/@Image, 'LOG_LEVEL')]"
             + "[count(../descendant::AdditiveExpression) > 0]"
             + "[count(ancestor::IfStatement/Expression/descendant::PrimaryExpression["
-                + "ends-with(descendant::PrimaryPrefix/Name/@Image,'VALUE')]) = 0]";
+                + "ends-with(descendant::PrimaryPrefix/Name/@Image,'GUARD')]) = 0]";
 
 	public GuardLogStatementRule() {
 		definePropertyDescriptor(LOG_LEVELS);
@@ -54,14 +54,14 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements
 	@Override
 	public Object visit(ASTCompilationUnit unit, Object data) {
 		extractProperties();
-		findViolationForEachLogStatement(unit, data);
+		findViolationForEachLogStatement(unit, data, xpathExpression);
 		return super.visit(unit, data);
 	}
 
-	private void findViolationForEachLogStatement(ASTCompilationUnit unit, Object data) {
+	protected void findViolationForEachLogStatement(ASTCompilationUnit unit, Object data, String xpathExpression) {
 		for (Entry<String, String> entry : guardStmtByLogLevel.entrySet()) {
 			List<Node> nodes = findViolations(unit, entry.getKey(),
-					entry.getValue());
+					entry.getValue(), xpathExpression);
 			for (Node node : nodes) {
 				super.addViolation(data, node);
 			}
@@ -69,11 +69,13 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<Node> findViolations(ASTCompilationUnit unit, String key,
-			String value) {
+	private List<Node> findViolations(ASTCompilationUnit unit, String logLevel,
+			String guard, String xpathExpression) {
 		try {
-			return unit.findChildNodesWithXPath(xpathExpression.replaceFirst(
-					"KEY", key).replaceFirst("VALUE", value));
+			return unit.findChildNodesWithXPath(xpathExpression
+			        .replaceAll("LOG_LEVEL_UPPERCASE", logLevel.toUpperCase())
+			        .replaceAll("LOG_LEVEL", logLevel)
+			        .replaceAll("GUARD", guard));
 		} catch (JaxenException e) {
 			e.printStackTrace();
 		}
