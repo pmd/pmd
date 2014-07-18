@@ -134,6 +134,16 @@ public class ParserCornerCases18 {
             })
             .count();
         }
+        public void lambaWithIf2() {
+            Stream.of(1, 2, 3)
+            .sorted((Integer a, Integer b) -> {
+                int x = a.hashCode() - b.hashCode();
+                if(a.equals(new X()))
+                    x = 1;
+                return x;
+            })
+            .count();
+        }
     }
 }
 

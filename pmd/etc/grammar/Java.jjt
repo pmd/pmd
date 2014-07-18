@@ -1765,9 +1765,10 @@ void PrimaryPrefix() :
   Literal()
 | "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
-| LOOKAHEAD( "(" VariableDeclaratorId() "," VariableDeclaratorId() ["," VariableDeclaratorId()] ")" "->" ) LambdaExpression()
-| LOOKAHEAD( LambdaExpression() ) LambdaExpression()
 | LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
+| LOOKAHEAD( "(" VariableDeclaratorId() "," VariableDeclaratorId() ["," VariableDeclaratorId()] ")" "->" ) LambdaExpression()
+| LOOKAHEAD( "(" FormalParameter() "," FormalParameter() ["," FormalParameter() ] ")" "->" ) LambdaExpression()
+| LOOKAHEAD( LambdaExpression() ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
