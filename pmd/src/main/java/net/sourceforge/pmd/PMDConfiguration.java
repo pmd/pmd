@@ -250,7 +250,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * Get the comma separated list of RuleSets URIs.
+     * Get the comma separated list of RuleSet URIs.
      * 
      * @return The RuleSet URIs.
      */
@@ -259,7 +259,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * Set the command separated list of RuleSet URIs.
+     * Set the comma separated list of RuleSet URIs.
      * 
      * @param ruleSets the rulesets to set
      */
