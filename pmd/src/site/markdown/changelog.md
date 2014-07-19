@@ -6,6 +6,7 @@
 
 * Fixed [bug #1181]: unused import false positive if used as parameter in javadoc only.
 * Fixed [bug #1192]: Ecmascript fails to parse this operator " ^= "
+* Fixed [bug #1198]: ConfusingTernary does not ignore else if blocks even when property is set
 * Fixed [bug #1200]: setRuleSets method javadoc mistype commands instead commas
 * Fixed [bug #1201]: Error "Can't find resource null" when ruleset contains spaces after comma
 * Fixed [bug #1202]: StackOverflowError in RuleSetReferenceId
@@ -25,6 +26,7 @@
 
 [bug #1181]: https://sourceforge.net/p/pmd/bugs/1181/
 [bug #1192]: https://sourceforge.net/p/pmd/bugs/1192/
+[bug #1198]: https://sourceforge.net/p/pmd/bugs/1198/
 [bug #1200]: https://sourceforge.net/p/pmd/bugs/1200/
 [bug #1201]: https://sourceforge.net/p/pmd/bugs/1201/
 [bug #1202]: https://sourceforge.net/p/pmd/bugs/1202/

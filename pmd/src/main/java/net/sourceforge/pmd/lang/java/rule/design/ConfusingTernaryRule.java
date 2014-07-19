@@ -68,7 +68,12 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
                 if (isMatch(jnode)) {
 
                     if (!getProperty(ignoreElseIfProperty)
-                            || !(node.jjtGetChild(2).jjtGetChild(0) instanceof ASTIfStatement)) {
+                            || (
+                                !(node.jjtGetChild(2).jjtGetChild(0) instanceof ASTIfStatement)
+                                &&
+                                !(node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement)
+                               )
+                        ) {
                         addViolation(data, node);
                     }
                 }
