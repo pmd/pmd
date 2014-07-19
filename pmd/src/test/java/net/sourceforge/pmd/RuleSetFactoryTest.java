@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -495,6 +496,37 @@ public class RuleSetFactoryTest {
 		assertEquals("Exclude pattern #3", "exclude3", ruleSet
 				.getExcludePatterns().get(2));
 	}
+
+    /**
+     * Rule reference can't be resolved - ref is used instead of class and the class is old (pmd 4.3 and not pmd 5).
+     * @throws Exception any error
+     */
+    @Test(expected = RuntimeException.class)
+    public void testBug1202() throws Exception {
+        RuleSetReferenceId ref = new RuleSetReferenceId(null) {
+            @Override
+            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+                try {
+                    return new ByteArrayInputStream(
+                            ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                            "<ruleset>\n" +
+                            "  <rule ref=\"net.sourceforge.pmd.rules.XPathRule\">\n" + 
+                            "    <priority>1</priority>\n" + 
+                            "    <properties>\n" + 
+                            "      <property name=\"xpath\" value=\"//TypeDeclaration\" />\n" + 
+                            "      <property name=\"message\" value=\"Foo\" />\n" + 
+                            "    </properties>\n" + 
+                            "  </rule>\n" + 
+                            "</ruleset>\n" + 
+                            "").getBytes("UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    return null;
+                }
+            }
+        };
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.createRuleSet(ref);
+    }
 
 	@Test
 	public void testAllPMDBuiltInRulesMeetConventions() throws IOException,

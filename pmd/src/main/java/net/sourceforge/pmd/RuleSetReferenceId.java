@@ -312,7 +312,7 @@ public class RuleSetReferenceId {
                     ruleSetFileName, classLoader);
             if (in == null) {
                 throw new RuleSetNotFoundException(
-                        "Can't find resource " + ruleSetFileName
+                        "Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName + "'"
                                 + ".  Make sure the resource is a valid file or URL and is on the CLASSPATH. "
                                 + "Here's the current classpath: "
                                 + System.getProperty("java.class.path"));

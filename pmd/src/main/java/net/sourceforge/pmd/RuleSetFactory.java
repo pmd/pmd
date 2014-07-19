@@ -451,7 +451,7 @@ public class RuleSetFactory {
 		ruleSetFactory.setClassLoader(classLoader);
 
 		RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
-		if (!otherRuleSetReferenceId.isExternal()) {
+	    if (!otherRuleSetReferenceId.isExternal() && containsRule(ruleSetReferenceId, otherRuleSetReferenceId.getRuleName())) {
 			otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);
 		}
 		Rule referencedRule = ruleSetFactory.createRule(otherRuleSetReferenceId);
@@ -521,7 +521,37 @@ public class RuleSetFactory {
 		}
 	}
 
-	private static boolean isElementNode(Node node, String name) {
+    /**
+     * Check whether the given ruleName is contained in the given ruleset.
+     * @param ruleSetReferenceId the ruleset to check
+     * @param ruleName the rule name to search for
+     * @return <code>true</code> if the ruleName exists
+     */
+    private boolean containsRule(RuleSetReferenceId ruleSetReferenceId, String ruleName) {
+        boolean found = false;
+        try {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = builder.parse(ruleSetReferenceId.getInputStream(classLoader));
+            Element ruleSetElement = document.getDocumentElement();
+
+            NodeList rules = ruleSetElement.getElementsByTagName("rule");
+            for (int i = 0; i < rules.getLength(); i++) {
+                Element rule = (Element)rules.item(i);
+                if (rule.hasAttribute("name")) {
+                    if (rule.getAttribute("name").equals(ruleName)) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return found;
+    }
+
+    private static boolean isElementNode(Node node, String name) {
 		return node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(name);
 	}
 	/**
