@@ -256,7 +256,7 @@ public class RuleSetReferenceId {
 		references.add(new RuleSetReferenceId(referenceString));
 	    } else {
 		for (String name : referenceString.split(",")) {
-		    references.add(new RuleSetReferenceId(name));
+		    references.add(new RuleSetReferenceId(name.trim()));
 		}
 	    }
 	}

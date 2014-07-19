@@ -89,6 +89,18 @@ public class RuleSetReferenceIdTest {
 		.get(1));
     }
 
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1201/
+     */
+    @Test
+    public void testMultipleRulesWithSpaces() {
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse("ecmascript-basic, ecmascript-braces, ecmascript-unnecessary");
+        assertEquals(3, references.size());
+        assertRuleSetReferenceId(true, "rulesets/ecmascript/basic.xml", true, null, "rulesets/ecmascript/basic.xml", references.get(0));
+        assertRuleSetReferenceId(true, "rulesets/ecmascript/braces.xml", true, null, "rulesets/ecmascript/braces.xml", references.get(1));
+        assertRuleSetReferenceId(true, "rulesets/ecmascript/unnecessary.xml", true, null, "rulesets/ecmascript/unnecessary.xml", references.get(2));
+    }
+
     @Test
     public void testOneReleaseRuleSet() {
 	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("50");
