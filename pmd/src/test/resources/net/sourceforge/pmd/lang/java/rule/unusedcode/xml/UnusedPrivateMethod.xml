@@ -179,6 +179,7 @@ private method with same name but diff arg count than public method
         <code><![CDATA[
 public class Foo {
  public void baz() {
+  int x, y;
   baz(x, y);
  }
  private void baz(int x, int y) {}
@@ -402,6 +403,34 @@ public class Foo {
     public void doNow() {
         Runnable r3 = this::doLater2;
         r3.run();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1226 False Positive: UnusedPrivateMethod overloading with varargs</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private String s;
+
+    public Foo() {
+        s = "Foobar";
+    }
+
+    //This method isn't flagged
+    private void bar(int... n)
+    {
+    }
+
+    //This method is flagged
+    private void bar(String s)
+    {
+    }
+
+    public void dummyMethod() {
+        bar(s);
     }
 }
         ]]></code>

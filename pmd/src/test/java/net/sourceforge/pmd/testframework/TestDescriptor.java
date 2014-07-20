@@ -22,6 +22,7 @@ public class TestDescriptor {
     private String description;
     private int numberOfProblemsExpected;
     private List<String> expectedMessages = new ArrayList<String>();
+    private List<Integer> expectedLineNumbers = new ArrayList<Integer>();
     private String code;
     private LanguageVersion languageVersion;
     private boolean reinitializeRule = true;   //default, avoids unintentional mixing of state between test cases
@@ -51,6 +52,15 @@ public class TestDescriptor {
 
     public List<String> getExpectedMessages() {
         return expectedMessages;
+    }
+
+    public void setExpectedLineNumbers(List<Integer> expectedLineNumbers) {
+        this.expectedLineNumbers.clear();
+        this.expectedLineNumbers.addAll(expectedLineNumbers);
+    }
+
+    public List<Integer> getExpectedLineNumbers() {
+        return expectedLineNumbers;
     }
 
     public void setProperties(Properties properties) {

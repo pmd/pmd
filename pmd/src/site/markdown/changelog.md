@@ -22,6 +22,7 @@
 * Fixed [bug #1219]: PrimarySuffix/@Image does not work in some cases in xpath 2.0
 * Fixed [bug #1223]: UnusedPrivateMethod: Java 8 method reference causing false positives
 * Fixed [bug #1224]: GuardDebugLogging broken in 5.1.1 - missing additive statement check in log statement
+* Fixed [bug #1226]: False Positive: UnusedPrivateMethod overloading with varargs
 * Fixed [bug #1227]: GuardLogStatementJavaUtil doesn't catch log(Level.FINE, "msg" + " msg") calls
 
 [bug #1181]: https://sourceforge.net/p/pmd/bugs/1181/
@@ -42,6 +43,7 @@
 [bug #1219]: https://sourceforge.net/p/pmd/bugs/1219/
 [bug #1223]: https://sourceforge.net/p/pmd/bugs/1223/
 [bug #1224]: https://sourceforge.net/p/pmd/bugs/1224/
+[bug #1226]: https://sourceforge.net/p/pmd/bugs/1226/
 [bug #1227]: https://sourceforge.net/p/pmd/bugs/1227/
 
 **Feature Requests and Improvements:**

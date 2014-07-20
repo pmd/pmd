@@ -103,10 +103,13 @@ public abstract class RuleTst {
                 t.printStackTrace();
                 throw new RuntimeException('"' + test.getDescription() + "\" failed", t);
             }
-            printReport(test, report);
+            if (test.getNumberOfProblemsExpected() != res) {
+                printReport(test, report);
+            }
             assertEquals('"' + test.getDescription() + "\" resulted in wrong number of failures,",
                     test.getNumberOfProblemsExpected(), res);
             assertMessages(report, test);
+            assertLineNumbers(report, test);
         } finally {
             //Restore old properties
             // TODO Tried to use generics here, but there's a compiler bug doing so in a finally block.
@@ -133,6 +136,9 @@ public abstract class RuleTst {
         while (it.hasNext()) {
             RuleViolation violation = it.next();
             String actual = violation.getDescription();
+            if (!expectedMessages.get(index).equals(actual)) {
+                printReport(test, report);
+            }
             assertEquals(
                     '"' + test.getDescription() + "\" produced wrong message on violation number " + (index + 1) + ".",
                     expectedMessages.get(index), actual);
@@ -140,25 +146,51 @@ public abstract class RuleTst {
         }
     }
 
-    private void printReport(TestDescriptor test, Report report) {
-        if (test.getNumberOfProblemsExpected() != report.size()) {
-            System.out.println("--------------------------------------------------------------");
-            System.out.println("Test Failure: " + test.getDescription());
-            System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), but "
-                    + report.size() + " problem(s) found.");
-            System.out.println();
-            TextRenderer renderer = new TextRenderer();
-            renderer.setWriter(new StringWriter());
-            try {
-                renderer.start();
-                renderer.renderFileReport(report);
-                renderer.end();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(renderer.getWriter().toString());
-            System.out.println("--------------------------------------------------------------");
+    private void assertLineNumbers(Report report, TestDescriptor test) {
+        if (report == null || test.getExpectedLineNumbers().isEmpty()) {
+            return;
         }
+
+        List<Integer> expected = test.getExpectedLineNumbers();
+        if (report.getViolationTree().size() != expected.size()) {
+            throw new RuntimeException("Test setup error: number of execpted line numbers doesn't match "
+                    + "number of violations for test case '" + test.getDescription() + "'");
+        }
+
+        Iterator<RuleViolation> it = report.getViolationTree().iterator();
+        int index = 0;
+        while (it.hasNext()) {
+            RuleViolation violation = it.next();
+            Integer actual = violation.getBeginLine();
+            if (expected.get(index) != actual.intValue()) {
+                printReport(test, report);
+            }
+            assertEquals(
+                    '"' + test.getDescription() + "\" violation on wrong line number: violation number " + (index + 1) + ".",
+                    expected.get(index), actual);
+            index++;
+        }
+    }
+
+    private void printReport(TestDescriptor test, Report report) {
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("Test Failure: " + test.getDescription());
+        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), "
+                + report.size() + " problem(s) found.");
+        System.out.println(" -> Expected messages: " + test.getExpectedMessages());
+        System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
+        System.out.println();
+        TextRenderer renderer = new TextRenderer();
+        renderer.setWriter(new StringWriter());
+        try {
+            renderer.start();
+            renderer.renderFileReport(report);
+            renderer.end();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(renderer.getWriter().toString());
+        System.out.println("--------------------------------------------------------------");
     }
 
     private Report processUsingStringReader(String code, Rule rule,
@@ -292,6 +324,16 @@ public abstract class RuleTst {
                 }
             }
 
+            NodeList expectedLineNumbersNodes = testCode.getElementsByTagName("expected-linenumbers");
+            List<Integer> expectedLineNumbers = new ArrayList<Integer>();
+            if (expectedLineNumbersNodes != null && expectedLineNumbersNodes.getLength() > 0) {
+                Element item = (Element)expectedLineNumbersNodes.item(0);
+                String numbers = item.getTextContent();
+                for (String n : numbers.split(" *, *")) {
+                    expectedLineNumbers.add(Integer.valueOf(n));
+                }
+            }
+
             String description = getNodeValue(testCode, "description", true);
             String code = getNodeValue(testCode, "code", false);
             if (code == null) {
@@ -329,6 +371,7 @@ public abstract class RuleTst {
             tests[i].setReinitializeRule(reinitializeRule);
             tests[i].setRegressionTest(isRegressionTest);
             tests[i].setExpectedMessages(messages);
+            tests[i].setExpectedLineNumbers(expectedLineNumbers);
             tests[i].setProperties(properties);
         }
         return tests;
