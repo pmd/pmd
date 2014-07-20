@@ -528,6 +528,38 @@ public class RuleSetFactoryTest {
         ruleSetFactory.createRuleSet(ref);
     }
 
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1225/
+     * @throws Exception any error
+     */
+    @Test
+    public void testEmptyRuleSetFile() throws Exception {
+        RuleSetReferenceId ref = new RuleSetReferenceId(null) {
+            @Override
+            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+                try {
+                    return new ByteArrayInputStream(
+                            ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                                    "\n" + 
+                                    "<ruleset name=\"Custom ruleset\" xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" + 
+                                    "    xmlns:xsi=\"http:www.w3.org/2001/XMLSchema-instance\"\n" + 
+                                    "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
+                                    "    <description>PMD Ruleset.</description>\n" + 
+                                    "\n" + 
+                                    "    <exclude-pattern>.*Test.*</exclude-pattern>\n" + 
+                                    "\n" + 
+                                    "</ruleset>\n" + 
+                                    "").getBytes("UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    return null;
+                }
+            }
+        };
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
+        assertEquals(0, ruleset.getRules().size());
+    }
+
 	@Test
 	public void testAllPMDBuiltInRulesMeetConventions() throws IOException,
 			RuleSetNotFoundException, ParserConfigurationException,
