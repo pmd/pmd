@@ -127,8 +127,10 @@ public class Foo {
        Rule by adding the 'violationSuppressRegex' property.  For example, to
        suppress reporting specifically named parameters which are unused:</p>
 <source><![CDATA[
-<rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
-  <property name="violationSuppressRegex" value=".*'mySpecialParameterName'.*"/>
+<rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
+  <properties>
+    <property name="violationSuppressRegex" value=".*'mySpecialParameterName'.*"/>
+  </properties>
 </rule>
 ]]></source>
 		<p>Note for message based suppression to work, you must know who to write
@@ -147,8 +149,10 @@ public class Foo {
        Rule by adding the 'violationSuppressXPath' property.  For example, to
        suppress reporting specifically typed parameters which are unused:</p>
 <source><![CDATA[
-<rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
-  <property name="violationSuppressXPath" value=".[typeof('java.lang.String')]"/>
+<rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
+  <properties>
+    <property name="violationSuppressXPath" value=".[typeof('java.lang.String')]"/>
+  </properties>
 </rule>
 ]]></source>
 		<p>Note for XPath based suppression to work, you must know how to write
