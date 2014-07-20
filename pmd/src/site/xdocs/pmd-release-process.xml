@@ -122,6 +122,13 @@ $ git tag -d pmd_releases/&lt;version&gt;
 </source>
 </subsection>
 
+<subsection name="Create new milestone">
+<p>
+Under <a href="https://sourceforge.net/p/pmd/bugs/">https://sourceforge.net/p/pmd/bugs/</a> rename
+the bug milestone "PMD-next" to "PMD-&lt;version&gt;" and create a new "PMD-next" milestone.
+</p>
+</subsection>
+
 <subsection name="Publish artifacts">
 <p>
 Finally, in order to publish the release to Maven central,
@@ -180,6 +187,20 @@ $ md5sum target/pmd-*-&lt;version&gt;.zip
 <li>Go to <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a>, to folder "pmd/&lt;version&gt;",
 and make the new binary pmd zip file the default download for all platforms.</li>
 </ul>
+
+<p><strong>Upload changes to pmd.sourceforge.net</strong></p>
+<source>
+cd ../pmd.sourceforge.net
+rsync -avhpz \
+  --exclude=bin/ \
+  --exclude=src/ \
+  --exclude=.classpath \
+  --exclude=.project \
+  --exclude=.git \
+  \
+  ./ your_sf_login@web.sourceforge.net:/home/project-web/pmd/htdocs/
+</source>
+
 </subsection>
 
 <subsection name="Social side of release">
@@ -196,7 +217,6 @@ PMD &lt;version&gt; released
 * Documentation: http://pmd.sourceforge.net/pmd-&lt;version&gt;/
 </source>
 </li>
-<li>Go to <a href="http://freecode.com/projects/pmd">freecode</a> (former freshmeat.net)</li>
 <li>Facebook, Google+, Twitter, LinkedIn and Xing (add whatever you feel is missing here...)</li>
 </ol>
 </subsection>
