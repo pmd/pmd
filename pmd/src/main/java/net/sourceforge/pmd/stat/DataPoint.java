@@ -6,10 +6,13 @@ package net.sourceforge.pmd.stat;
 import java.util.Random;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.rule.codesize.AbstractNcssCountRule;
 
 /**
+ * Datapoint used for rules that deal with metrics.
  * @author David Dixon-Peugh
- *         Aug 8, 2002 DataPoint.java
+ * @since Aug 8, 2002
+ * @see AbstractNcssCountRule
  */
 public class DataPoint implements Comparable<DataPoint> {
 
@@ -29,11 +32,15 @@ public class DataPoint implements Comparable<DataPoint> {
         random = rand.nextInt(11061973);
     }
 
+    /**
+     * Compares this data point with the given datapoint.
+     * @param rhs the other data point
+     * @return 0 if equal; a value less than 0 if this point's score is smaller than the other data point;
+     * a value greater than 0 if this point's score is greater than the other data point.
+     */
     public int compareTo(DataPoint rhs) {
-        Double lhsScore = Double.valueOf(score);
-        Double rhsScore = Double.valueOf(rhs.getScore());
-        if (lhsScore.doubleValue() != rhsScore.doubleValue()) {
-            return lhsScore.compareTo(rhsScore);
+        if (score != rhs.getScore()) {
+            return Double.compare(score, rhs.getScore());
         }
         return random - rhs.random;
     }

@@ -848,6 +848,9 @@
 
         <profile>
             <id>reports</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
