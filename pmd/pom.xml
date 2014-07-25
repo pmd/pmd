@@ -252,6 +252,7 @@
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.16</surefire.version>
         <checkstyle.version>2.12.1</checkstyle.version>
+        <pmd.plugin.version>3.1</pmd.plugin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- This value actually differs to maven default expectation(src/site/xdoc/)
@@ -676,10 +677,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>${pmd.plugin.version}</version>
                 <configuration>
                     <linkXref>true</linkXref>
-                    <sourceEncoding>utf-8</sourceEncoding>
                     <minimumTokens>100</minimumTokens>
                     <targetJdk>1.6</targetJdk>
                     <rulesets>
@@ -856,7 +856,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>${pmd.plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
@@ -866,7 +866,6 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <sourceEncoding>utf-8</sourceEncoding>
                             <minimumTokens>100</minimumTokens>
                             <targetJdk>1.6</targetJdk>
                             <rulesets>
