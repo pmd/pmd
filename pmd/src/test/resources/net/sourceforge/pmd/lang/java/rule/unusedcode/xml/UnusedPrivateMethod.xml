@@ -435,4 +435,66 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1228 UnusedPrivateMethod returns false positives (1)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public ModelAndView viewEntry(Model model, HttpServletRequest request) {
+        //call private method.  Flagged Method
+        return view(model, VIEW);
+    }
+
+    /** THIS IS FLAGGED AS UNUSED **/
+    private ModelAndView view(Model model, String view) {
+        //add values to the model
+
+        //return the correct view
+        return new ModelAndView(view, MVC_CONSTANTS.MODEL_KEY, model.asMap());
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1228 UnusedPrivateMethod returns false positives (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public ModelAndView showLineGraph(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        //call private method  USAGE #1.  Method not flagged
+        MyObject filter = getGraphInnateFilter(request);
+
+        //LINE GRAPHIC LOGIC
+
+        //write output to response stream and return
+    }
+
+    public ModelAndView showPieChart(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        //call private method  USAGE #2.  Method not flagg
+        MyObject filter = getGraphInnateFilter(request);
+
+        //PIE CHART LOGIC
+
+        //write output to response stream and return
+    }
+
+    /** This method is NOT flagged as unused **/
+    private MyObject getGraphInnateFilter(HttpServletRequest request) {
+        MyObject filter = new MyObject();
+
+        //call private method.  Flagged method
+        setInnateFilterFields(filter, request);
+        //perfrom logic
+
+        //return
+        return filter;
+    }
+
+    /** THIS IS FLAGGED AS UNUSED **/
+    private void setInnateFilterFields(MyObject filter, HttpServletRequest request) {
+        //add values to filter object
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
