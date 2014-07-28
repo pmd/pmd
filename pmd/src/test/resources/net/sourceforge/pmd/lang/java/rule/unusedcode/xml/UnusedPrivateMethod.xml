@@ -297,10 +297,8 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <!--test-code>
-        <description><![CDATA[
-631681, call to instance of self, received from another class
-     ]]></description>
+    <test-code regressionTest="false">
+        <description>#46 False +: Unused private field: call to instance of self, received from another class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo { 
@@ -313,7 +311,7 @@ public class Foo {
  private void buz() {} 
 }
      ]]></code>
-    </test-code-->
+    </test-code>
     <test-code>
         <description><![CDATA[
 Calling one arg varargs method
@@ -493,6 +491,28 @@ public class Foo {
     /** THIS IS FLAGGED AS UNUSED **/
     private void setInnateFilterFields(MyObject filter, HttpServletRequest request) {
         //add values to filter object
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1228 UnusedPrivateMethod returns false positives (3)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String VIEW = "foo";
+
+    @RequestMapping(method = RequestMethod.GET, value = URL_MAPPINGS.BULK_ACTION_URL)
+    public ModelAndView viewEntry(Model model, HttpServletRequest request, @RequestParam(value = "fiscalYear", required = true) int fy) {
+        return view(model, VIEW, fy);
+    }
+
+    private ModelAndView view(Model model, String view, int fy) {
+        //add values to the model
+        model.addAttribute(FIELDS.FISCAL_YEAR, fy);
+
+        //return the correct view
+        return new ModelAndView(view, MVC_CONSTANTS.MODEL_KEY, model.asMap());
     }
 }
         ]]></code>

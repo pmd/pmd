@@ -21,9 +21,18 @@ import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
+/**
+ * This rule detects private methods, that are not used and can therefore be deleted.
+ */
 public class UnusedPrivateMethodRule extends AbstractJavaRule {
 
 
+    /**
+     * Visit each method declaration.
+     * @param node the method declaration
+     * @param data data - rule context
+     * @return data
+     */
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;
