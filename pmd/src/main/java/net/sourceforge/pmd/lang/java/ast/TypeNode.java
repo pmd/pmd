@@ -3,10 +3,12 @@
  */
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 /**
  * This interface allows a Java Class to be associated with a node.
  */
-public interface TypeNode {
+public interface TypeNode extends Node {
 
     /**
      * Get the Java Class associated with this node.

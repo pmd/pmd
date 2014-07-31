@@ -131,8 +131,8 @@ public class ClassScope extends AbstractJavaScope {
         if (occurrence.isMethodOrConstructorInvocation()) {
             for (MethodNameDeclaration mnd: methodDeclarations.keySet()) {
                 if (mnd.getImage().equals(occurrence.getImage())) {
-                    List<String> parameterTypes = determineParameterTypes(mnd);
-                    List<String> argumentTypes = determineArgumentTypes(occurrence, parameterTypes);
+                    List<TypedNameDeclaration> parameterTypes = determineParameterTypes(mnd);
+                    List<TypedNameDeclaration> argumentTypes = determineArgumentTypes(occurrence, parameterTypes);
 
                     if (!mnd.isVarargs()
                             && occurrence.getArgumentCount() == mnd.getParameterCount()
@@ -140,7 +140,7 @@ public class ClassScope extends AbstractJavaScope {
                         return mnd;
                     } else if (mnd.isVarargs()) {
                         int varArgIndex = parameterTypes.size() - 1;
-                        String varArgType = parameterTypes.get(varArgIndex);
+                        TypedNameDeclaration varArgType = parameterTypes.get(varArgIndex);
                         if (parameterTypes.subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex))) {
                             boolean sameType = true;
                             for (int i = varArgIndex; i < argumentTypes.size(); i++) {
@@ -198,11 +198,12 @@ public class ClassScope extends AbstractJavaScope {
      * @param mnd the method declaration.
      * @return List of types
      */
-    private List<String> determineParameterTypes(MethodNameDeclaration mnd) {
-        List<String> parameterTypes = new ArrayList<String>();
+    private List<TypedNameDeclaration> determineParameterTypes(MethodNameDeclaration mnd) {
+        List<TypedNameDeclaration> parameterTypes = new ArrayList<TypedNameDeclaration>();
         List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode().findDescendantsOfType(ASTFormalParameter.class);
         for (ASTFormalParameter p : parameters) {
-            parameterTypes.add(p.getTypeNode().getTypeImage());
+            Class<?> resolvedType = this.getEnclosingScope(SourceFileScope.class).resolveType(p.getTypeNode().getTypeImage());
+            parameterTypes.add(new SimpleTypedNameDeclaration(p.getTypeNode().getTypeImage(), resolvedType));
         }
         return parameterTypes;
     }
@@ -216,14 +217,13 @@ public class ClassScope extends AbstractJavaScope {
      * @param parameterTypes the parameter types of the called method
      * @return the list of argument types
      */
-    private List<String> determineArgumentTypes(JavaNameOccurrence occurrence, List<String> parameterTypes) {
-        final String unknown_type = "unknown";
-        List<String> argumentTypes = new ArrayList<String>();
+    private List<TypedNameDeclaration> determineArgumentTypes(JavaNameOccurrence occurrence, List<TypedNameDeclaration> parameterTypes) {
+        List<TypedNameDeclaration> argumentTypes = new ArrayList<TypedNameDeclaration>();
         ASTArgumentList arguments = occurrence.getLocation().jjtGetParent().jjtGetParent().getFirstDescendantOfType(ASTArgumentList.class);
         if (arguments != null) {
             for (int i = 0; i < arguments.jjtGetNumChildren(); i++) {
                 ASTName name = arguments.jjtGetChild(i).getFirstDescendantOfType(ASTName.class);
-                String typeImage = unknown_type;
+                TypedNameDeclaration type = null;
                 if (name != null) {
                     Scope s = name.getScope();
                     while (s != null) {
@@ -236,7 +236,8 @@ public class ClassScope extends AbstractJavaScope {
                         Map<VariableNameDeclaration, List<NameOccurrence>> vars = s.getDeclarations(VariableNameDeclaration.class);
                         for (VariableNameDeclaration d : vars.keySet()) {
                             if (d.getImage().equals(name.getImage())) {
-                                typeImage = d.getTypeImage();
+                                type = new SimpleTypedNameDeclaration(d.getTypeImage(),
+                                        this.getEnclosingScope(SourceFileScope.class).resolveType(d.getTypeImage()));
                                 break;
                             }
                         }
@@ -245,26 +246,24 @@ public class ClassScope extends AbstractJavaScope {
                     ASTLiteral literal = arguments.jjtGetChild(i).getFirstDescendantOfType(ASTLiteral.class);
                     if (literal != null) {
                         if (literal.isCharLiteral()) {
-                            typeImage = "char";
+                            type = new SimpleTypedNameDeclaration("char", literal.getType());
                         } else if (literal.isStringLiteral()) {
-                            typeImage = "String";
+                            type = new SimpleTypedNameDeclaration("String", literal.getType());
                         } else if (literal.isFloatLiteral()) {
-                            typeImage = "float";
+                            type = new SimpleTypedNameDeclaration("float", literal.getType());
                         } else if (literal.isIntLiteral()) {
-                            typeImage = "int";
+                            type = new SimpleTypedNameDeclaration("int", literal.getType());
                         }
                     }
                 }
-                argumentTypes.add(typeImage);
-            }
-        }
-        // replace the unknown type with the correct parameter type of the method.
-        // in case the argument is itself a method call, we can't determine the result type of the called
-        // method. Therefore the parameter type is used.
-        // This might cause confusion, if method overloading is used.
-        for (int i = 0; i < argumentTypes.size() && i < parameterTypes.size(); i++) {
-            if (unknown_type.equals(argumentTypes.get(i))) {
-                argumentTypes.set(i, parameterTypes.get(i));
+                if (type == null && parameterTypes.size() > i) {
+                    // replace the unknown type with the correct parameter type of the method.
+                    // in case the argument is itself a method call, we can't determine the result type of the called
+                    // method. Therefore the parameter type is used.
+                    // This might cause confusion, if method overloading is used.
+                    type = parameterTypes.get(i);
+                }
+                argumentTypes.add(type);
             }
         }
         return argumentTypes;

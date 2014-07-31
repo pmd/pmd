@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
@@ -114,16 +115,18 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      */
     private void createSourceFileScope(ASTCompilationUnit node) {
-	// When we do full symbol resolution, we'll need to add a truly top-level GlobalScope.
-	Scope scope;
-	ASTPackageDeclaration n = node.getPackageDeclaration();
-	if (n != null) {
-	    scope = new SourceFileScope(n.jjtGetChild(0).getImage());
-	} else {
-	    scope = new SourceFileScope();
-	}
-	scopes.push(scope);
-	node.setScope(scope);
+        // When we do full symbol resolution, we'll need to add a truly
+        // top-level GlobalScope.
+        SourceFileScope scope;
+        ASTPackageDeclaration n = node.getPackageDeclaration();
+        if (n != null) {
+            scope = new SourceFileScope(n.jjtGetChild(0).getImage());
+        } else {
+            scope = new SourceFileScope();
+        }
+        scope.configureImports(node.findChildrenOfType(ASTImportDeclaration.class));
+        scopes.push(scope);
+        node.setScope(scope);
     }
 
     @Override

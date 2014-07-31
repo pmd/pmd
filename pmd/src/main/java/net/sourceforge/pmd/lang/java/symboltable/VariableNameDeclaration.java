@@ -49,12 +49,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public String getTypeImage() {
-        if (isPrimitiveType()) {
-            return getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).getImage();
-        }
-        if (!isLambdaTypelessParameter()) {
-            return getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0).getImage();
-        }
+        TypeNode typeNode = getTypeNode();
+        if (typeNode != null)
+            return typeNode.getImage();
         return null;
     }
 
@@ -77,8 +74,21 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 	return (ASTVariableDeclaratorId) node;
     }
 
+    private TypeNode getTypeNode() {
+        if (isPrimitiveType()) {
+            return (TypeNode)getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
+        }
+        if (!isLambdaTypelessParameter()) {
+            return (TypeNode)getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
+        }
+        return null;
+    }
+
     public Class<?> getType() {
-	return ((TypeNode) node).getType();
+        TypeNode typeNode = getTypeNode();
+        if (typeNode != null)
+            return typeNode.getType();
+        return null;
     }
 
     @Override
