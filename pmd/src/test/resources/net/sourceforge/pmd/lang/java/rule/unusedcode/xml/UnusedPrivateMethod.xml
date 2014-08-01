@@ -555,4 +555,44 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1228 UnusedPrivateMethod returns false positives (5a)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends MultiActionController {
+
+    private static final Logger logger = Logger.getLogger(Foo.class);
+
+    public DashboardGraphInnateFilter_o getGraphInnateFilter(HttpServletRequest request) {
+        setInnateFilterFields();
+        return null;
+    }
+
+    private void setInnateFilterFields() { //Not flagged
+        logger.info("here");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1228 UnusedPrivateMethod returns false positives (5b)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.unusedcode.unusedprivatemethod.*;
+
+public class Foo extends MultiActionController {
+    private static final Logger logger = Logger.getLogger(Foo.class);
+
+    public DashboardGraphInnateFilter_o getGraphInnateFilter(HttpServletRequest request) {
+        DashboardGraphInnateFilter_o filter = new DashboardGraphInnateFilter_o();
+        setInnateFilterFields(filter, request);
+        return filter;
+    }
+
+    private void setInnateFilterFields(DashboardInnateFilter_o filter, HttpServletRequest request) { //incorrectly flagged
+        logger.info("here");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

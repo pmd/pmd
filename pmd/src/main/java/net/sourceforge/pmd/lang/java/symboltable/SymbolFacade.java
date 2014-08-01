@@ -7,7 +7,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 
 public class SymbolFacade {
     public void initializeWith(ASTCompilationUnit node) {
-        ScopeAndDeclarationFinder sc = new ScopeAndDeclarationFinder();
+        initializeWith(SymbolFacade.class.getClassLoader(), node);
+    }
+    public void initializeWith(ClassLoader classLoader, ASTCompilationUnit node) {
+        ScopeAndDeclarationFinder sc = new ScopeAndDeclarationFinder(classLoader);
         node.jjtAccept(sc, null);
         OccurrenceFinder of = new OccurrenceFinder();
         node.jjtAccept(of, null);

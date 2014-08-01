@@ -47,6 +47,23 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  */
 public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
+    private ClassLoader classLoader;
+
+    /**
+     * Creates a new {@link ScopeAndDeclarationFinder} using the current class loader.
+     */
+    public ScopeAndDeclarationFinder() {
+        this(ScopeAndDeclarationFinder.class.getClassLoader());
+    }
+
+    /**
+     * Creates a new {@link ScopeAndDeclarationFinder}.
+     * @param classLoader the class loader to use to resolve types, see {@link SourceFileScope} and {@link TypeSet}
+     */
+    public ScopeAndDeclarationFinder(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
     /**
      * A stack of scopes reflecting the scope hierarchy when a node is visited.
      * This is used to set the parents of the created scopes correctly.
@@ -124,7 +141,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         } else {
             scope = new SourceFileScope();
         }
-        scope.configureImports(node.findChildrenOfType(ASTImportDeclaration.class));
+        scope.configureImports(classLoader, node.findChildrenOfType(ASTImportDeclaration.class));
         scopes.push(scope);
         node.setScope(scope);
     }

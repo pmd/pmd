@@ -26,11 +26,16 @@ public class SourceFileScope extends AbstractJavaScope {
 
     public SourceFileScope(String packageImage) {
         this.packageImage = packageImage;
-        this.types = new TypeSet();
-        types.setASTCompilationUnitPackage(packageImage);
     }
 
-    public void configureImports(List<ASTImportDeclaration> imports) {
+    /**
+     * Configures the type resolution for the symbol table.
+     * @param classLoader the class loader to use to find additional classes
+     * @param imports the import declarations
+     */
+    public void configureImports(ClassLoader classLoader, List<ASTImportDeclaration> imports) {
+        this.types = new TypeSet(classLoader);
+        types.setASTCompilationUnitPackage(packageImage);
         for (ASTImportDeclaration i : imports) {
             if (i.isImportOnDemand()) {
                 types.addImport(i.getImportedName() + ".*");
@@ -40,6 +45,11 @@ public class SourceFileScope extends AbstractJavaScope {
         }
     }
 
+    /**
+     * Tries to resolve a class by name.
+     * @param name the name of the class
+     * @return the class or <code>null</code> if no class could be found
+     */
     public Class<?> resolveType(String name) {
         try {
             return types.findClass(name);

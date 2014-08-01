@@ -59,6 +59,13 @@ public interface LanguageVersionHandler {
     VisitorStarter getSymbolFacade();
 
     /**
+     * Get the SymbolFacade.
+     * @param classLoader A ClassLoader to use for resolving Types.
+     * @return VisitorStarter
+     */
+    VisitorStarter getSymbolFacade(ClassLoader classLoader);
+
+    /**
      * Get the TypeResolutionFacade.
      *
      * @param classLoader A ClassLoader to use for resolving Types.

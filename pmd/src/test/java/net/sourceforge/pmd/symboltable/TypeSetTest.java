@@ -6,6 +6,7 @@ package net.sourceforge.pmd.symboltable;
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.symboltable.TypeSet;
+import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 import org.junit.Test;
 
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TypeSetTest {
+    private PMDASMClassLoader pmdClassLoader = PMDASMClassLoader.getInstance(TypeSetTest.class.getClassLoader());
 
     @Test
     public void testASTCompilationUnitPackage() {
@@ -98,25 +100,25 @@ public class TypeSetTest {
     public void testExplicitImportResolver() throws Throwable {
         Set<String> imports = new HashSet<String>();
         imports.add("java.io.File");
-        TypeSet.Resolver r = new TypeSet.ExplicitImportResolver(imports);
+        TypeSet.Resolver r = new TypeSet.ExplicitImportResolver(pmdClassLoader, imports);
         assertEquals(File.class, r.resolve("File"));
     }
 
     @Test
     public void testImplicitImportResolverPass() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver(pmdClassLoader);
         assertEquals(String.class, r.resolve("String"));
     }
 
     @Test(expected=ClassNotFoundException.class)
     public void testImplicitImportResolverPassFail() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver(pmdClassLoader);
         r.resolve("PMD");
     }
 
     @Test
     public void testCurrentPackageResolverPass() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.CurrentPackageResolver("net.sourceforge.pmd.");
+        TypeSet.Resolver r = new TypeSet.CurrentPackageResolver(pmdClassLoader, "net.sourceforge.pmd.");
         assertEquals(PMD.class, r.resolve("PMD"));
     }
 
@@ -143,7 +145,7 @@ public class TypeSetTest {
         Set<String> imports = new HashSet<String>();
         imports.add("java.io.*");
         imports.add("java.util.*");
-        TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(imports);
+        TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(pmdClassLoader, imports);
         return r;
     }
 

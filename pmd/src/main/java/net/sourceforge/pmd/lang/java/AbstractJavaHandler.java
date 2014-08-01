@@ -71,9 +71,18 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     public VisitorStarter getSymbolFacade() {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
-		new SymbolFacade().initializeWith((ASTCompilationUnit) rootNode);
+		new SymbolFacade().initializeWith(null, (ASTCompilationUnit) rootNode);
 	    }
 	};
+    }
+
+    @Override
+    public VisitorStarter getSymbolFacade(final ClassLoader classLoader) {
+        return new VisitorStarter() {
+            public void start(Node rootNode) {
+                new SymbolFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
+            }
+        };
     }
 
     @Override
