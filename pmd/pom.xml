@@ -252,7 +252,7 @@
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.16</surefire.version>
         <checkstyle.version>2.12.1</checkstyle.version>
-        <pmd.plugin.version>3.1</pmd.plugin.version>
+        <pmd.plugin.version>3.2</pmd.plugin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- This value actually differs to maven default expectation(src/site/xdoc/)
