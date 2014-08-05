@@ -4,7 +4,8 @@
 
 **Bugfixes:**
 
-* [#1228](http://sourceforge.net/p/pmd/bugs/1228/): UnusedPrivateMethod returns false positives
+* [#1228](https://sourceforge.net/p/pmd/bugs/1228/): UnusedPrivateMethod returns false positives
+* [#1233](https://sourceforge.net/p/pmd/bugs/1233/): UnusedPrivateMethod: False positive : method called on returned object. 
 
 **Feature Requests and Improvements:**
 

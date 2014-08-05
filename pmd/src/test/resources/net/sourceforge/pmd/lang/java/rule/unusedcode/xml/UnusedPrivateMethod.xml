@@ -340,7 +340,6 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    
         <test-code>
         <description><![CDATA[
 Reproducing bug #1955852: false positives for UnusedPrivateMethod & UnusedLocalField
@@ -591,6 +590,35 @@ public class Foo extends MultiActionController {
 
     private void setInnateFilterFields(DashboardInnateFilter_o filter, HttpServletRequest request) { //incorrectly flagged
         logger.info("here");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1233 UnusedPrivateMethod: False positive : method called on returned object.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Locale;
+
+public class Test {
+
+    public static void main(String args[]) {
+        Test t = new Test();
+        t.baz();
+    }
+
+    // Here we call both foo() and bar()
+    public void baz() {
+        foo().toLowerCase(Locale.US);
+        bar().toLowerCase();
+    }
+
+    private String foo() {
+        return "Hello World";
+    }
+
+    private String bar() {
+        return "Hello World";
     }
 }
         ]]></code>

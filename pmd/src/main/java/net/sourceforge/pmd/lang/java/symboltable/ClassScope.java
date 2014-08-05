@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -219,7 +220,12 @@ public class ClassScope extends AbstractJavaScope {
      */
     private List<TypedNameDeclaration> determineArgumentTypes(JavaNameOccurrence occurrence, List<TypedNameDeclaration> parameterTypes) {
         List<TypedNameDeclaration> argumentTypes = new ArrayList<TypedNameDeclaration>();
-        ASTArgumentList arguments = occurrence.getLocation().jjtGetParent().jjtGetParent().getFirstDescendantOfType(ASTArgumentList.class);
+        ASTArgumentList arguments = null;
+        Node nextSibling = getNextSibling(occurrence.getLocation().jjtGetParent());
+        if (nextSibling != null) {
+            arguments = nextSibling.getFirstDescendantOfType(ASTArgumentList.class);
+        }
+
         if (arguments != null) {
             for (int i = 0; i < arguments.jjtGetNumChildren(); i++) {
                 ASTName name = arguments.jjtGetChild(i).getFirstDescendantOfType(ASTName.class);
@@ -267,6 +273,17 @@ public class ClassScope extends AbstractJavaScope {
             }
         }
         return argumentTypes;
+    }
+
+    private Node getNextSibling(Node current) {
+        Node nextSibling = null;
+        for (int i = 0; i < current.jjtGetParent().jjtGetNumChildren() - 1; i++) {
+            if (current.jjtGetParent().jjtGetChild(i) == current) {
+                nextSibling = current.jjtGetParent().jjtGetChild(i + 1);
+                break;
+            }
+        }
+        return nextSibling;
     }
 
     public String toString() {
