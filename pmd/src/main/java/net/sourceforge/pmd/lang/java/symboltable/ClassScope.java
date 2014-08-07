@@ -257,8 +257,12 @@ public class ClassScope extends AbstractJavaScope {
                             type = new SimpleTypedNameDeclaration("String", literal.getType());
                         } else if (literal.isFloatLiteral()) {
                             type = new SimpleTypedNameDeclaration("float", literal.getType());
+                        } else if (literal.isDoubleLiteral()) {
+                            type = new SimpleTypedNameDeclaration("double", literal.getType());
                         } else if (literal.isIntLiteral()) {
                             type = new SimpleTypedNameDeclaration("int", literal.getType());
+                        } else if (literal.isLongLiteral()) {
+                            type = new SimpleTypedNameDeclaration("long", literal.getType());
                         }
                     }
                 }

@@ -623,4 +623,49 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1228 UnusedPrivateMethod returns false positives (6)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar(Double d) {}
+    private void bar1(Double d) {}
+    private void baz(double d) {}
+    private void baz2(double d) {}
+
+    private void foo(float f) {}
+    private void foo2(Float f) {}
+    private void foo3(int i) {}
+    private void foo4(Integer i) {}
+    private void foo5(byte i) {}
+    private void foo6(Byte i) {}
+    private void foo7(short s) {}
+    private void foo8(Short s) {}
+
+    public static void main(String[] args) {
+        bar(2.0);
+        baz(2.0);
+
+        Double a = 2.0;
+        bar1(a);
+
+        double b = 2.0;
+        baz2(b);
+
+        Float c = 2.0f;
+        foo(c);
+        foo2(2.0f);
+        Integer i = 1;
+        foo3(i);
+        foo4(1);
+        Byte b2 = 1;
+        foo5(b2);
+        foo6(1);
+        Short s = 1;
+        foo7(s);
+        foo8(1);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

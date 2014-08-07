@@ -479,31 +479,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 			rollupTypeUnary(node);
 		} else {
 			if (node.isIntLiteral()) {
-				String image = node.getImage();
-				if (image.endsWith("l") || image.endsWith("L")) {
-					populateType(node, "long");
-				} else {
-					try {
-						Integer.decode(image);
-						populateType(node, "int");
-					} catch (NumberFormatException e) {
-						// Bad literal, 'long' requires use of 'l' or 'L' suffix.
-					}
-				}
+			    populateType(node, "int");
+			} else if (node.isLongLiteral()) {
+				populateType(node, "long");
 			} else if (node.isFloatLiteral()) {
-				String image = node.getImage();
-				if (image.endsWith("f") || image.endsWith("F")) {
-					populateType(node, "float");
-				} else if (image.endsWith("d") || image.endsWith("D")) {
-					populateType(node, "double");
-				} else {
-					try {
-						Double.parseDouble(image);
-						populateType(node, "double");
-					} catch (NumberFormatException e) {
-						// Bad literal, 'float' requires use of 'f' or 'F' suffix.
-					}
-				}
+			    populateType(node, "float");
+			} else if (node.isDoubleLiteral()) {
+			    populateType(node, "double");
 			} else if (node.isCharLiteral()) {
 				populateType(node, "char");
 			} else if (node.isStringLiteral()) {

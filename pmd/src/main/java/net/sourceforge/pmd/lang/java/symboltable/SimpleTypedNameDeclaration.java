@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Just stores a type image and a actual type.
  * And makes it easy to compare these.
@@ -76,8 +79,47 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
         if (typeImage == null) {
             if (other.typeImage != null)
                 return false;
-        } else if (!typeImage.equals(other.typeImage))
+        } else if (!typeImage.equals(other.typeImage)) {
+            // consider auto-boxing
+            if (other.typeImage != null) {
+                String lcType = typeImage.toLowerCase();
+                String otherLcType = other.typeImage.toLowerCase();
+                if (primitiveTypes.contains(lcType) && primitiveTypes.contains(otherLcType)) {
+                    if (lcType.equals(otherLcType)) {
+                        return true;
+                    } else if ((lcType.equals("char") || lcType.equals("character"))
+                            && (otherLcType.equals("char") || otherLcType.equals("character"))) {
+                        return true;
+                    } else if ((lcType.equals("int") || lcType.equals("integer"))
+                            && (otherLcType.equals("int") || otherLcType.equals("integer"))) {
+                        return true;
+                    } else if ((lcType.equals("int") || lcType.equals("integer")) && otherLcType.equals("byte")) {
+                        return true;
+                    } else if ((otherLcType.equals("int") || otherLcType.equals("integer")) && lcType.equals("byte")) {
+                        return true;
+                    } else if ((lcType.equals("int") || lcType.equals("integer")) && otherLcType.equals("short")) {
+                        return true;
+                    } else if ((otherLcType.equals("int") || otherLcType.equals("integer")) && lcType.equals("short")) {
+                        return true;
+                    }
+                }
+            }
             return false;
+        }
         return true;
+    }
+
+    private static Set<String> primitiveTypes = new HashSet<String>();
+    static {
+        primitiveTypes.add("float");
+        primitiveTypes.add("double");
+        primitiveTypes.add("int");
+        primitiveTypes.add("integer");
+        primitiveTypes.add("long");
+        primitiveTypes.add("byte");
+        primitiveTypes.add("short");
+        primitiveTypes.add("boolean");
+        primitiveTypes.add("char");
+        primitiveTypes.add("character");
     }
 }

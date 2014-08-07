@@ -34,7 +34,7 @@ public class ASTLiteralTest extends ParserTst {
     @Test
     public void testIsIntLongLiteral() throws Throwable {
         Set literals = getNodes(ASTLiteral.class, TEST4);
-        assertTrue(((ASTLiteral)(literals.iterator().next())).isIntLiteral());
+        assertTrue(((ASTLiteral)(literals.iterator().next())).isLongLiteral());
     }
 
     @Test
@@ -46,7 +46,7 @@ public class ASTLiteralTest extends ParserTst {
     @Test
     public void testIsFloatDoubleLiteral() throws Throwable {
         Set literals = getNodes(ASTLiteral.class, TEST6);
-        assertTrue(((ASTLiteral)(literals.iterator().next())).isFloatLiteral());
+        assertTrue(((ASTLiteral)(literals.iterator().next())).isDoubleLiteral());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class ASTLiteralTest extends ParserTst {
 
     private static final String TEST4 =
     "public class Foo {" + PMD.EOL +
-    "  int x = 42L;" + PMD.EOL +
+    "  long x = 42L;" + PMD.EOL +
     "}";
 
     private static final String TEST5 =
@@ -82,7 +82,7 @@ public class ASTLiteralTest extends ParserTst {
 
     private static final String TEST6 =
     "public class Foo {" + PMD.EOL +
-    "  float x = 3.14159;" + PMD.EOL +
+    "  double x = 3.14159;" + PMD.EOL +
     "}";
 
     private static final String TEST7 =

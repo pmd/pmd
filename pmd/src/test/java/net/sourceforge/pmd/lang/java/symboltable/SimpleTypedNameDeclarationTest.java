@@ -33,6 +33,10 @@ public class SimpleTypedNameDeclarationTest {
         Assert.assertFalse(byClass(Map.class).equals(byClass(List.class)));
         Assert.assertFalse(byName("A").equals(byName("B")));
         Assert.assertFalse(byClass(String.class).equals(byName("A")));
+
+        Assert.assertEquals(by(Double.TYPE, "double"), by(null, "double"));
+        Assert.assertEquals(by(Double.class, "Double"), by(null, "double"));
+        Assert.assertEquals(by(Character.class, "Character"), by(null, "char"));
     }
 
     private static SimpleTypedNameDeclaration byClass(Class<?> c) {
@@ -40,5 +44,8 @@ public class SimpleTypedNameDeclarationTest {
     }
     private static SimpleTypedNameDeclaration byName(String n) {
         return new SimpleTypedNameDeclaration(n, null);
+    }
+    private static SimpleTypedNameDeclaration by(Class<?> c, String n) {
+        return new SimpleTypedNameDeclaration(n, c);
     }
 }
