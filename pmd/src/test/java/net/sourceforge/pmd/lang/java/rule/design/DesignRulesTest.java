@@ -3,16 +3,20 @@
  */
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import net.sourceforge.pmd.testframework.PMDTestRunner;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
+import org.junit.runner.RunWith;
 
-
+/**
+ * Tests all the rules, that are in the design ruleset.
+ */
+@RunWith(PMDTestRunner.class)
 public class DesignRulesTest extends SimpleAggregatorTst {
     
     private static final String RULESET = "java-design";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "AbstractClassWithoutAbstractMethod");
         addRule(RULESET, "AbstractClassWithoutAnyMethod");
@@ -70,9 +74,5 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseNotifyAllInsteadOfNotify");
         addRule(RULESET, "UseUtilityClass");
         addRule(RULESET, "UseVarargs");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(DesignRulesTest.class);
     }
 }

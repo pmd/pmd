@@ -10,18 +10,28 @@ import java.util.List;
 import net.sourceforge.pmd.Rule;
 
 import org.junit.Test;
-import org.junit.internal.runners.InitializationError;
-import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;
 
 /**
  * Standard methods for (simple) testcases.
  */
 @RunWith(SimpleAggregatorTst.CustomXmlTestClassMethodsRunner.class)
 public abstract class SimpleAggregatorTst extends RuleTst {
+
+    /**
+     * Configure the rule tests to be executed.
+     * Implement this method in subclasses by calling adRule.
+     * @see #addRule(String, String)
+     */
+    protected void setUp() {
+        // empty, to be overridden
+    }
+
     /**
      * Run a set of tests defined in an XML test-data file for a rule. The file
      * should be ./xml/RuleName.xml relative to the test-class. The format is
@@ -60,6 +70,14 @@ public abstract class SimpleAggregatorTst extends RuleTst {
     }
 
     /**
+     * Gets all configured rules.
+     * @return all configured rules.
+     */
+    protected List<Rule> getRules() {
+        return rules;
+    }
+
+    /**
      * Run a set of tests for all rules added in the setup method.
      */
     @Test
@@ -93,7 +111,7 @@ public abstract class SimpleAggregatorTst extends RuleTst {
         }
     }
 
-    public static class CustomXmlTestClassMethodsRunner extends JUnit4ClassRunner {
+    public static class CustomXmlTestClassMethodsRunner extends BlockJUnit4ClassRunner {
         public CustomXmlTestClassMethodsRunner(Class<?> klass) throws InitializationError {
             super(klass);
         }

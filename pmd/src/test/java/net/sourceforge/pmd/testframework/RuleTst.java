@@ -373,6 +373,7 @@ public abstract class RuleTst {
             tests[i].setExpectedMessages(messages);
             tests[i].setExpectedLineNumbers(expectedLineNumbers);
             tests[i].setProperties(properties);
+            tests[i].setNumberInDocument(i);
         }
         return tests;
     }
