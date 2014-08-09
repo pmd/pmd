@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +51,15 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
     }
 
     @Override
-    public List<String> getComparisonTargets() {
-        return Arrays.asList("0", "1");
+    public Map<String, List<String>> getComparisonTargets() {
+        Map<String, List<String>> rules = new HashMap<String, List<String>>();
+        rules.put("<", Arrays.asList("0", "1"));
+        rules.put(">", Arrays.asList("0"));
+        rules.put("==", Arrays.asList("0"));
+        rules.put("!=", Arrays.asList("0"));
+        rules.put(">=", Arrays.asList("0", "1"));
+        rules.put("<=", Arrays.asList("0", "1"));
+        return rules;
     }
 
     @Override

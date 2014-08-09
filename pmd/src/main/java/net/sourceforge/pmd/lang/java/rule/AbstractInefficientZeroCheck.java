@@ -4,7 +4,9 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
@@ -28,8 +30,27 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
 
     public abstract boolean isTargetMethod(JavaNameOccurrence occ);
 
-    public List<String> getComparisonTargets() {
-        return Arrays.asList("0");
+    /**
+     * For each relation/equality operator, comparison targets need to define.
+     * @return map
+     */
+    public Map<String, List<String>> getComparisonTargets() {
+        Map<String, List<String>> rules = new HashMap<String, List<String>>();
+        rules.put("==", Arrays.asList("0"));
+        rules.put("!=", Arrays.asList("0"));
+        rules.put(">", Arrays.asList("0"));
+        rules.put("<", Arrays.asList("0"));
+        return rules;
+    }
+
+    private static Map<String, String> inverse = new HashMap<String, String>();
+    static {
+        inverse.put("<", ">");
+        inverse.put(">", "<");
+        inverse.put("<=", ">=");
+        inverse.put(">=", "<=");
+        inverse.put("==", "==");
+        inverse.put("!=", "!=");
     }
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -63,7 +84,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
     protected void checkNodeAndReport(Object data, Node location, Node expr) {
         if ((expr instanceof ASTEqualityExpression
             || (expr instanceof ASTRelationalExpression
-                    && (">".equals(expr.getImage()) || "<".equals(expr.getImage()))))
+                    && (getComparisonTargets().containsKey(expr.getImage()))))
             && isCompare(expr)) {
             addViolation(data, location);
         }
@@ -77,8 +98,16 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @see #getComparisonTargets()
      */
     private boolean isCompare(Node equality) {
-        return checkComparison(equality, 0) || checkComparison(equality, 1);
+        if (isLiteralLeftHand(equality)) {
+            return checkComparison(inverse.get(equality.getImage()), equality, 0);
+        } else {
+            return checkComparison(equality.getImage(), equality, 1);
+        }
+    }
 
+    private boolean isLiteralLeftHand(Node equality) {
+        return equality.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0
+                && equality.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral;
     }
 
     /**
@@ -91,13 +120,9 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @return true if the value in position i is one of the comparison targets, else false
      * @see #getComparisonTargets()
      */
-    private boolean checkComparison(Node equality, int i) {
-	Node target = equality.jjtGetChild(i).jjtGetChild(0);
-        if (target.jjtGetNumChildren() == 0) {
-            return false;
-        }
-        target = target.jjtGetChild(0);
-        return target instanceof ASTLiteral && getComparisonTargets().indexOf(target.getImage()) > -1;
+    private boolean checkComparison(String operator, Node equality, int i) {
+        Node target = equality.jjtGetChild(i).jjtGetChild(0).jjtGetChild(0);
+        return target instanceof ASTLiteral && getComparisonTargets().get(operator).contains(target.getImage());
     }
 
 }
