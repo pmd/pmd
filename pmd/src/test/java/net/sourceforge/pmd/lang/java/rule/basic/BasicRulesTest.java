@@ -3,16 +3,20 @@
  */
 package net.sourceforge.pmd.lang.java.rule.basic;
 
+import net.sourceforge.pmd.testframework.PMDTestRunner;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
+import org.junit.runner.RunWith;
 
-
+/**
+ * Rule tests for the basic ruleset
+ */
+@RunWith(PMDTestRunner.class)
 public class BasicRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "java-basic";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "AvoidBranchingStatementAsLastInLoop");
         addRule(RULESET, "AvoidDecimalLiteralsInBigDecimalConstructor");
@@ -37,9 +41,5 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ReturnFromFinallyBlock");
         addRule(RULESET, "DontCallThreadRun");
         addRule(RULESET, "DontUseFloatTypeForLoopIndices");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(BasicRulesTest.class);
     }
 }
