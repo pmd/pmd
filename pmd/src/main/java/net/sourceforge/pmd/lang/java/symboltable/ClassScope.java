@@ -223,7 +223,12 @@ public class ClassScope extends AbstractJavaScope {
     private List<TypedNameDeclaration> determineArgumentTypes(JavaNameOccurrence occurrence, List<TypedNameDeclaration> parameterTypes) {
         List<TypedNameDeclaration> argumentTypes = new ArrayList<TypedNameDeclaration>();
         ASTArgumentList arguments = null;
-        Node nextSibling = getNextSibling(occurrence.getLocation().jjtGetParent());
+        Node nextSibling = null;
+        if (occurrence.getLocation() instanceof ASTPrimarySuffix) {
+            nextSibling = getNextSibling(occurrence.getLocation());
+        } else {
+            nextSibling = getNextSibling(occurrence.getLocation().jjtGetParent());
+        }
         if (nextSibling != null) {
             arguments = nextSibling.getFirstDescendantOfType(ASTArgumentList.class);
         }
@@ -231,7 +236,11 @@ public class ClassScope extends AbstractJavaScope {
         if (arguments != null) {
             for (int i = 0; i < arguments.jjtGetNumChildren(); i++) {
                 Node argument = arguments.jjtGetChild(i);
-                Node child = argument.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+                Node child = null;
+                if (argument.jjtGetNumChildren() > 0 && argument.jjtGetChild(0).jjtGetNumChildren() > 0
+                        && argument.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0) {
+                    child = argument.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+                }
                 TypedNameDeclaration type = null;
                 if (child instanceof ASTName) {
                     ASTName name = (ASTName)child;
