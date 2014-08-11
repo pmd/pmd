@@ -1,15 +1,19 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.naming;
 
+import net.sourceforge.pmd.testframework.PMDTestRunner;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
+import org.junit.runner.RunWith;
 
-
+@RunWith(PMDTestRunner.class)
 public class NamingRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-naming";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "AbstractNaming");
         addRule(RULESET, "AvoidDollarSigns");
@@ -30,10 +34,6 @@ public class NamingRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "SuspiciousEqualsMethodName");
         addRule(RULESET, "SuspiciousHashcodeMethodName");
         addRule(RULESET, "VariableNamingConventions");
-	addRule(RULESET, "GenericsNaming");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(NamingRulesTest.class);
+        addRule(RULESET, "GenericsNaming");
     }
 }

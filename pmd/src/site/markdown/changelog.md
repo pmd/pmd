@@ -11,5 +11,7 @@
 
 **Feature Requests and Improvements:**
 
+* [#1232](https://sourceforge.net/p/pmd/bugs/1232/): Make ShortClassName configurable
+
 **Pull requests:**
 
