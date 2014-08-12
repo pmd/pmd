@@ -29,8 +29,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.Assert;
-import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule;
@@ -38,6 +36,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.ResourceLoader;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -503,27 +502,16 @@ public class RuleSetFactoryTest {
      */
     @Test(expected = RuntimeException.class)
     public void testBug1202() throws Exception {
-        RuleSetReferenceId ref = new RuleSetReferenceId(null) {
-            @Override
-            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
-                try {
-                    return new ByteArrayInputStream(
-                            ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
-                            "<ruleset>\n" +
-                            "  <rule ref=\"net.sourceforge.pmd.rules.XPathRule\">\n" + 
-                            "    <priority>1</priority>\n" + 
-                            "    <properties>\n" + 
-                            "      <property name=\"xpath\" value=\"//TypeDeclaration\" />\n" + 
-                            "      <property name=\"message\" value=\"Foo\" />\n" + 
-                            "    </properties>\n" + 
-                            "  </rule>\n" + 
-                            "</ruleset>\n" + 
-                            "").getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    return null;
-                }
-            }
-        };
+        RuleSetReferenceId ref = createRuleSetReferenceId("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<ruleset>\n" +
+                "  <rule ref=\"net.sourceforge.pmd.rules.XPathRule\">\n" + 
+                "    <priority>1</priority>\n" + 
+                "    <properties>\n" + 
+                "      <property name=\"xpath\" value=\"//TypeDeclaration\" />\n" + 
+                "      <property name=\"message\" value=\"Foo\" />\n" + 
+                "    </properties>\n" + 
+                "  </rule>\n" + 
+                "</ruleset>\n");
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         ruleSetFactory.createRuleSet(ref);
     }
@@ -534,30 +522,57 @@ public class RuleSetFactoryTest {
      */
     @Test
     public void testEmptyRuleSetFile() throws Exception {
-        RuleSetReferenceId ref = new RuleSetReferenceId(null) {
-            @Override
-            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
-                try {
-                    return new ByteArrayInputStream(
-                            ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
-                                    "\n" + 
-                                    "<ruleset name=\"Custom ruleset\" xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" + 
-                                    "    xmlns:xsi=\"http:www.w3.org/2001/XMLSchema-instance\"\n" + 
-                                    "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
-                                    "    <description>PMD Ruleset.</description>\n" + 
-                                    "\n" + 
-                                    "    <exclude-pattern>.*Test.*</exclude-pattern>\n" + 
-                                    "\n" + 
-                                    "</ruleset>\n" + 
-                                    "").getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    return null;
-                }
-            }
-        };
+        RuleSetReferenceId ref = createRuleSetReferenceId("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "\n" + 
+                "<ruleset name=\"Custom ruleset\" xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" + 
+                "    xmlns:xsi=\"http:www.w3.org/2001/XMLSchema-instance\"\n" + 
+                "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
+                "    <description>PMD Ruleset.</description>\n" + 
+                "\n" + 
+                "    <exclude-pattern>.*Test.*</exclude-pattern>\n" + 
+                "\n" + 
+                "</ruleset>\n");
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
         assertEquals(0, ruleset.getRules().size());
+    }
+
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1231/
+     * @throws Exception any error
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testWrongRuleNameReferenced() throws Exception {
+        RuleSetReferenceId ref = createRuleSetReferenceId("<?xml version=\"1.0\"?>\n" + 
+                "<ruleset name=\"Custom ruleset for tests\"\n" + 
+                "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" + 
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
+                "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
+                "  <description>Custom ruleset for tests</description>\n" + 
+                "  <rule ref=\"rulesets/java/basic.xml/ThisRuleDoesNotExist\"/>\n" + 
+                "</ruleset>\n");
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.createRuleSet(ref);
+    }
+
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1231/
+     * @throws Exception any error
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testWrongRuleNameExcluded() throws Exception {
+        RuleSetReferenceId ref = createRuleSetReferenceId("<?xml version=\"1.0\"?>\n" + 
+                "<ruleset name=\"Custom ruleset for tests\"\n" + 
+                "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" + 
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
+                "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
+                "  <description>Custom ruleset for tests</description>\n" + 
+                "  <rule ref=\"rulesets/java/basic.xml\">\n" + 
+                "    <exclude name=\"ThisRuleDoesNotExist\"/>\n" + 
+                "  </rule>\n" + 
+                "</ruleset>\n");
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.createRuleSet(ref);
     }
 
 	@Test
@@ -714,7 +729,7 @@ public class RuleSetFactoryTest {
 		}
 	}
 
-	public void testRuleSet(String fileName) throws IOException,
+	private void testRuleSet(String fileName) throws IOException,
 			RuleSetNotFoundException, ParserConfigurationException,
 			SAXException {
 
@@ -1482,19 +1497,16 @@ public class RuleSetFactoryTest {
 		return rsf.createRuleSet(createRuleSetReferenceId(ruleSetXml));
 	}
 
-	private static RuleSetReferenceId createRuleSetReferenceId(
-			final String ruleSetXml) {
-		return new RuleSetReferenceId(null) {
-			@Override
-			public InputStream getInputStream(ClassLoader classLoader)
-					throws RuleSetNotFoundException {
-				return new ByteArrayInputStream(ruleSetXml.getBytes());
-			}
-		};
-	}
-
-	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(RuleSetFactoryTest.class);
-	}
-
+    private static RuleSetReferenceId createRuleSetReferenceId(final String ruleSetXml) {
+        return new RuleSetReferenceId(null) {
+            @Override
+            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+                try {
+                    return new ByteArrayInputStream(ruleSetXml.getBytes("UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    return null;
+                }
+            }
+        };
+    }
 }

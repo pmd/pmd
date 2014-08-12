@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -282,11 +284,14 @@ public class RuleSetFactory {
 		ruleSetReference.setRuleSetFileName(ref);
 		String priority = null;
 		NodeList childNodes = ruleElement.getChildNodes();
+		Set<String> excludedRulesCheck = new HashSet<String>();
 		for (int i = 0; i < childNodes.getLength(); i++) {
 		    Node child = childNodes.item(i);
 			if (isElementNode(child,"exclude")) {
 				Element excludeElement = (Element) child;
-				ruleSetReference.addExclude(excludeElement.getAttribute("name"));
+				String excludedRuleName = excludeElement.getAttribute("name");
+                ruleSetReference.addExclude(excludedRuleName);
+                excludedRulesCheck.add(excludedRuleName);
 			} else if (isElementNode(child, "priority")) {
 			    priority = parseTextNode(child).trim();
 			}
@@ -296,6 +301,7 @@ public class RuleSetFactory {
 		ruleSetFactory.setClassLoader(classLoader);
 		RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
 		for (Rule rule : otherRuleSet.getRules()) {
+		    excludedRulesCheck.remove(rule.getName());
 			if (!ruleSetReference.getExcludes().contains(rule.getName())
 					&& rule.getPriority().compareTo(minimumPriority) <= 0 && !rule.isDeprecated()) {
 				RuleReference ruleReference = new RuleReference();
@@ -309,6 +315,10 @@ public class RuleSetFactory {
 				}
 			}
 		}
+        if (!excludedRulesCheck.isEmpty()) {
+            throw new IllegalArgumentException("Unable to exclude rules "
+                    + excludedRulesCheck + "; perhaps the rule name is mispelled?");
+        }
 	}
 
 	/**
