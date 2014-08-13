@@ -214,11 +214,8 @@ public class PMD {
     public static void doPMD(PMDConfiguration configuration) {
 
         // Load the RuleSets
-        long startLoadRules = System.nanoTime();
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration);
-
-        RuleSets ruleSets = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), ruleSetFactory,
-                startLoadRules);
+        RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null)
             return;
 
@@ -437,7 +434,8 @@ public class PMD {
         try {
             PMD.doPMD(configuration);
         } catch (Exception e) {
-            PMDCommandLineInterface.buildUsageText();
+            System.out.println(PMDCommandLineInterface.buildUsageText());
+            System.out.println();
             System.out.println(e.getMessage());
             status = PMDCommandLineInterface.ERROR_STATUS;
         } finally {

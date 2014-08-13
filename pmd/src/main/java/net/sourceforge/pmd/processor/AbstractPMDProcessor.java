@@ -9,8 +9,8 @@ import java.util.List;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -51,13 +51,7 @@ public abstract class AbstractPMDProcessor {
 	}
 
 	protected RuleSets createRuleSets(RuleSetFactory factory) {
-		
-		try {
-			return factory.createRuleSets(configuration.getRuleSets());
-		} catch (RuleSetNotFoundException rsnfe) {
-			// should not happen: parent already created a ruleset
-			return new RuleSets();
-		}
+		return RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
 	}
 	
 }
