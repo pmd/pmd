@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+	<test-code>
+		<description><![CDATA[
+An EL outside taglib #1
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+${shouldBeDetectedAsXSSSecurityBreach}
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+An EL outside taglib #2
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<html>
+<input type="text" value="${shouldBeDetectedAsXSSSecurityBreach}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+An EL outside taglib #3
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<html>
+<input
+	type="text"
+	value="${shouldBeDetectedAsXSSSecurityBreach}"
+	name="toto"
+/>
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+Multiple EL outside taglib
+     ]]></description>
+		<expected-problems>3</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %>
+${shouldBeDetectedAsXSSSecurityBreach} 
+<html>
+${shouldBeDetectedAsXSSSecurityBreach}
+<input
+	type="text"
+	value="${shouldBeDetectedAsXSSSecurityBreach}"
+	name="toto"
+/>
+<c:out value="${expression}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<html>
+<c:out value="${expression}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+</test-data>

@@ -292,5 +292,23 @@ Externalized script could be reused between pages.  Browsers can also cache the 
             ]]>
         </example>
     </rule>
+    
+    <rule
+        name="NoUnsanitizedJSPExpression" since="4.0"
+        class="net.sourceforge.pmd.lang.jsp.rule.basic.NoUnsanitizedJSPExpressionRule"
+        message="Using unsanitized JSP expression can lead to Cross Site Scripting (XSS) attacks"
+        externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoUnsanitizedJSPExpression">
+        <description>
+            <![CDATA[
 
+            ]]>
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+
+            ]]>
+        </example>
+    </rule>
+    
 </ruleset>

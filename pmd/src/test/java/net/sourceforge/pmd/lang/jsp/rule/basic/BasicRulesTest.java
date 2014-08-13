@@ -24,6 +24,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 	addRule(RULESET, "NoJspForward");
 	addRule(RULESET, "NoLongScripts");
 	addRule(RULESET, "NoScriptlets");
+	addRule(RULESET, "NoUnsanitizedJSPExpression");
     }
 
     public static junit.framework.Test suite() {
