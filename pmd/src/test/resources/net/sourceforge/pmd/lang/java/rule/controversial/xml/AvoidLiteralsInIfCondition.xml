@@ -62,4 +62,16 @@ public class Foo {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description>XPath error: An empty sequence is not allowed as the second argument of index-of()</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Foo {
+    public void bar() {
+        if (true && aDouble > 0.0) {
+        }
+    }
+}
+      ]]></code>
+  </test-code>
 </test-data>

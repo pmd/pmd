@@ -750,10 +750,10 @@ More exceptions can be defined with the property "ignoreMagicNumbers".
       <property name="xpath">
         <value>
 <![CDATA[
-//IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal[
-not(NullLiteral)
-and empty(index-of(tokenize($ignoreMagicNumbers, ','), @Image))
-]
+//IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
+[not(NullLiteral)]
+[not(BooleanLiteral)]
+[empty(index-of(tokenize($ignoreMagicNumbers, ','), @Image))]
 ]]>
         </value>
       </property>

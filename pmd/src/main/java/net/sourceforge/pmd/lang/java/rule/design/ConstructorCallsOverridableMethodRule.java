@@ -952,7 +952,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             type = "int";
                         } else if (lit.isStringLiteral()) {
                             type = "String";
-                        } else if (lit.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                        } else if (lit.jjtGetNumChildren() > 0 && lit.jjtGetChild(0) instanceof ASTBooleanLiteral) {
                             type = "boolean";
                         } else if (lit.isDoubleLiteral()) {
                             type = "double";
