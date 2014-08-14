@@ -115,4 +115,17 @@ public class TokenEntry implements Comparable<TokenEntry> {
     public int compareTo(TokenEntry other) {
         return getIndex() - other.getIndex();
     }
+
+    @Override
+    public String toString() {
+        if (this == EOF) {
+            return "EOF";
+        }
+        for (Map.Entry<String, Integer> e : TOKENS.get().entrySet()) {
+            if (e.getValue().intValue() == identifier) {
+                return e.getKey();
+            }
+        }
+        return "--unkown--";
+    }
 }
