@@ -4,6 +4,7 @@
 
 **Bugfixes:**
 
+* [#1156](https://sourceforge.net/p/pmd/bugs/1156/): False failure with "Avoid unused private methods"
 * [#1187](https://sourceforge.net/p/pmd/bugs/1187/): double variable with AvoidDecimalLiteralsInBigDecimalConstructor
 * [#1228](https://sourceforge.net/p/pmd/bugs/1228/): UnusedPrivateMethod returns false positives
 * [#1230](https://sourceforge.net/p/pmd/bugs/1230/): UseCollectionIsEmpty gets false positives

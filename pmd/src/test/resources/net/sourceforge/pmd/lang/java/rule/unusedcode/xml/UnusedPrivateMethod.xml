@@ -970,4 +970,19 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1156 False failure with "Avoid unused private methods" (part 2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int i = 1;
+        String s = getBoolString(i > 0);
+    }
+    private String getBoolString(boolean b) {
+        return b ? "TRUE" : "FALSE";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
