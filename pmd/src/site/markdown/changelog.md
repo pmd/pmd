@@ -11,6 +11,7 @@
 * [#1231](https://sourceforge.net/p/pmd/bugs/1231/): No Error Message on Missing Rule
 * [#1233](https://sourceforge.net/p/pmd/bugs/1233/): UnusedPrivateMethod: False positive : method called on returned object. 
 * [#1234](https://sourceforge.net/p/pmd/bugs/1234/): Unused private methods still giving false positives in 5.1.3 snapshot
+* [#1235](https://sourceforge.net/p/pmd/bugs/1235/): scope dependencies in POM file
 
 **Feature Requests and Improvements:**
 

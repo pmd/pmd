@@ -646,11 +646,13 @@
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.8.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant-testutil</artifactId>
             <version>1.7.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>jaxen</groupId>
@@ -691,6 +693,7 @@
             <artifactId>saxon</artifactId>
             <version>9.1.0.8</version>
             <classifier>dom</classifier>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.mozilla</groupId>
@@ -701,6 +704,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>
