@@ -17,6 +17,7 @@
 **Feature Requests and Improvements:**
 
 * [#1232](https://sourceforge.net/p/pmd/bugs/1232/): Make ShortClassName configurable
+* [#1244](https://sourceforge.net/p/pmd/bugs/1244/): FieldDeclarationsShouldBeAtStartOfClass and anonymous classes
 
 **Pull requests:**
 
