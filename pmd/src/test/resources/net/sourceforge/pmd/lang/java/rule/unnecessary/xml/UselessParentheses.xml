@@ -216,4 +216,15 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1243 Useless Parentheses False Positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static int thisShouldBreak(final int x, final int y, final int z) {
+        return x - (y + z);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
