@@ -1,15 +1,15 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.junit;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
-
-
 public class JunitRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-junit";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "JUnitAssertionsShouldIncludeMessage");
         addRule(RULESET, "JUnitSpelling");
@@ -23,9 +23,5 @@ public class JunitRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseAssertNullInsteadOfAssertTrue");
         addRule(RULESET, "UseAssertSameInsteadOfAssertTrue");
         addRule(RULESET, "UseAssertTrueInsteadOfAssertEquals");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(JunitRulesTest.class);
     }
 }

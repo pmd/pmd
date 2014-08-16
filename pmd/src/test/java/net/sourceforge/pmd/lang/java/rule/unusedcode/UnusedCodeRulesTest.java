@@ -3,15 +3,11 @@
  */
 package net.sourceforge.pmd.lang.java.rule.unusedcode;
 
-import net.sourceforge.pmd.testframework.PMDTestRunner;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-
-import org.junit.runner.RunWith;
 
 /**
  * Rule tests for the unused code ruleset.
  */
-@RunWith(PMDTestRunner.class)
 public class UnusedCodeRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "java-unusedcode";

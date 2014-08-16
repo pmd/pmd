@@ -4,12 +4,10 @@
 package net.sourceforge.pmd.testframework;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 
-import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
@@ -20,12 +18,13 @@ import org.junit.runners.model.InitializationError;
 /**
  * Standard methods for (simple) testcases.
  */
-@RunWith(SimpleAggregatorTst.CustomXmlTestClassMethodsRunner.class)
+@RunWith(PMDTestRunner.class)
 public abstract class SimpleAggregatorTst extends RuleTst {
 
     /**
-     * Configure the rule tests to be executed.
-     * Implement this method in subclasses by calling adRule.
+     * Configure the rule tests to be executed. Implement this method in
+     * subclasses by calling adRule.
+     * 
      * @see #addRule(String, String)
      */
     protected void setUp() {
@@ -71,77 +70,44 @@ public abstract class SimpleAggregatorTst extends RuleTst {
 
     /**
      * Gets all configured rules.
+     * 
      * @return all configured rules.
      */
     protected List<Rule> getRules() {
         return rules;
     }
 
-    /**
-     * Run a set of tests for all rules added in the setup method.
-     */
-    @Test
-    public void testAll() {
-        boolean regressionTestMode = TestDescriptor.inRegressionTestMode();
-        ArrayList<Failure> l = new ArrayList<Failure>();
-        List<Description> ignored = new LinkedList<Description>();
-        for (Rule r : rules) {
-            TestDescriptor[] tests = extractTestsFromXml(r);
-            for (TestDescriptor test: tests) {
-		if (!regressionTestMode || test.isRegressionTest()) {
-		    try {
-			runTest(test);
-		    } catch (Throwable t) {
-			Failure f = CustomXmlTestClassMethodsRunner.createFailure(r, t);
-			l.add(f);
-		    }
-		} else {
-		    // the test is ignored
-		    Description description = CustomXmlTestClassMethodsRunner.createDescription(r,
-			    test.getDescription());
-		    ignored.add(description);
-		}
-            }
-        }
-        for(Failure f: l) {
-            CustomXmlTestClassMethodsRunner.addFailure(f);
-        }
-        for (Description d: ignored) {
-            CustomXmlTestClassMethodsRunner.addIgnore(d);
-        }
-    }
-
+    @Deprecated
+    // Use PMDTestRunner instead
     public static class CustomXmlTestClassMethodsRunner extends BlockJUnit4ClassRunner {
         public CustomXmlTestClassMethodsRunner(Class<?> klass) throws InitializationError {
             super(klass);
         }
 
         public static Failure createFailure(Rule rule, Throwable targetException) {
-            return new Failure(createDescription(rule, null),
-                    targetException);
+            return new Failure(createDescription(rule, null), targetException);
         }
-        
+
         public static Description createDescription(Rule rule, String testName) {
-            return Description.createTestDescription(
-                    SimpleAggregatorTst.class, "xml." + rule.getRuleSetName() + '.' + rule.getName()
-                    + (testName != null ? ":" + testName : ""));
+            return Description.createTestDescription(SimpleAggregatorTst.class, "xml." + rule.getRuleSetName() + '.'
+                    + rule.getName() + (testName != null ? ":" + testName : ""));
         }
 
         public static void addFailure(Failure failure) {
-            synchronized(CustomXmlTestClassMethodsRunner.class) {
+            synchronized (CustomXmlTestClassMethodsRunner.class) {
                 NOTIFIER.fireTestFailure(failure);
             }
         }
-        
+
         public static void addIgnore(Description description) {
             synchronized (CustomXmlTestClassMethodsRunner.class) {
-		NOTIFIER.fireTestIgnored(description);
-	    }
+                NOTIFIER.fireTestIgnored(description);
+            }
         }
 
         @Override
         public void run(RunNotifier n) {
-            synchronized(CustomXmlTestClassMethodsRunner.class) {
+            synchronized (CustomXmlTestClassMethodsRunner.class) {
                 // synchronized so that access to NOTIFIER is safe: only
                 // one runner at a time is active
                 NOTIFIER = n;

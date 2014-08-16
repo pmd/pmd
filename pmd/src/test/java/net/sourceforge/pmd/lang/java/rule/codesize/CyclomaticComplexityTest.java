@@ -27,7 +27,8 @@ public class CyclomaticComplexityTest extends RuleTst {
      private Rule rule;
      private TestDescriptor[] tests;
  
-     @Before public void setUp() {
+     @Before
+     public void setUp() {
          rule = findRule("java-codesize", "CyclomaticComplexity");
          tests = extractTestsFromXml(rule);
      }

@@ -87,7 +87,7 @@ ok, implements interface which extends Cloneable
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class FooX extends net.sourceforge.pmd.java.lang.rule.typeresolution.xml.MyInterface {
+public class FooX extends net.sourceforge.pmd.lang.java.rule.typeresolution.xml.MyInterface {
  void clone() {}
 }
      ]]></code>

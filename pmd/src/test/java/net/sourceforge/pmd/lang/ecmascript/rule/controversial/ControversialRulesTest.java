@@ -5,19 +5,12 @@ package net.sourceforge.pmd.lang.ecmascript.rule.controversial;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
-
-
 public class ControversialRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "ecmascript-controversial";
 
-    @Before
+    @Override
     public void setUp() {
-	    addRule(RULESET, "AvoidWithStatement");
-    }
-
-    public static junit.framework.Test suite() {
-	    return new junit.framework.JUnit4TestAdapter(ControversialRulesTest.class);
+        addRule(RULESET, "AvoidWithStatement");
     }
 }

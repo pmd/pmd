@@ -3,17 +3,13 @@
  */
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.testframework.PMDTestRunner;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-
-import org.junit.runner.RunWith;
 
 /**
  * Tests all the rules, that are in the design ruleset.
  */
-@RunWith(PMDTestRunner.class)
 public class DesignRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-design";
 
     @Override
@@ -51,7 +47,8 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "NonStaticInitializer");
         addRule(RULESET, "NonThreadSafeSingleton");
         addRule(RULESET, "OptimizableToArrayCall");
-        //addRule(RULESET, "PositionalIteratorRule"); This rule does not yet exist
+        // addRule(RULESET, "PositionalIteratorRule"); This rule does not yet
+        // exist
         addRule(RULESET, "PositionLiteralsFirstInComparisons");
         addRule(RULESET, "PositionLiteralsFirstInCaseInsensitiveComparisons");
         addRule(RULESET, "PreserveStackTrace");
@@ -64,7 +61,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "SwitchDensity");
         addRule(RULESET, "SwitchStmtsShouldHaveDefault");
         addRule(RULESET, "TooFewBranchesForASwitchStatement");
-        //addRule(RULESET, "TooManyHttpFilter"); This rule does not yet exist
+        // addRule(RULESET, "TooManyHttpFilter"); This rule does not yet exist
         addRule(RULESET, "UncommentedEmptyConstructor");
         addRule(RULESET, "UncommentedEmptyMethod");
         addRule(RULESET, "UnnecessaryLocalBeforeReturn");

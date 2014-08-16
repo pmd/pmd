@@ -3,12 +3,8 @@
  */
 package net.sourceforge.pmd.lang.java.rule.naming;
 
-import net.sourceforge.pmd.testframework.PMDTestRunner;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.runner.RunWith;
-
-@RunWith(PMDTestRunner.class)
 public class NamingRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "java-naming";

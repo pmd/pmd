@@ -3,15 +3,11 @@
  */
 package net.sourceforge.pmd.lang.java.rule.basic;
 
-import net.sourceforge.pmd.testframework.PMDTestRunner;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-
-import org.junit.runner.RunWith;
 
 /**
  * Rule tests for the basic ruleset
  */
-@RunWith(PMDTestRunner.class)
 public class BasicRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "java-basic";

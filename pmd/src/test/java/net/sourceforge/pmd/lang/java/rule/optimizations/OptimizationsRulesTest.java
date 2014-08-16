@@ -1,15 +1,15 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
-
-
 public class OptimizationsRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-optimizations";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "AddEmptyString");
         addRule(RULESET, "AvoidArrayLoops");
@@ -23,9 +23,5 @@ public class OptimizationsRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseArraysAsList");
         addRule(RULESET, "UseStringBufferForStringAppends");
         addRule(RULESET, "PrematureDeclaration");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(OptimizationsRulesTest.class);
     }
 }

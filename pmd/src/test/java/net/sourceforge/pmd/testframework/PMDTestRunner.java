@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.testframework;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +11,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 
+import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.manipulation.Filter;
@@ -21,6 +21,7 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.TestClass;
 
 /**
  * A test runner for rule tests. Unlike {@link SimpleAggregatorTst.CustomXmlTestClassMethodsRunner}
@@ -58,7 +59,6 @@ public class PMDTestRunner extends Runner implements Filterable {
 
     private void configureRuleTests() throws InitializationError {
         Description root = Description.createSuiteDescription("Rule Tests");
-        desc.addChild(root);
         try {
             SimpleAggregatorTst test = createTestClass();
             test.setUp();
@@ -82,6 +82,9 @@ public class PMDTestRunner extends Runner implements Filterable {
                     allTests.add(t);
                 }
             }
+            if (!root.getChildren().isEmpty()) {
+                desc.addChild(root);
+            }
         } catch (Exception e) {
             throw new InitializationError(e);
         }
@@ -96,37 +99,14 @@ public class PMDTestRunner extends Runner implements Filterable {
     }
 
     private void configureUnitTests() throws InitializationError {
-        chainedRunner = new BlockJUnit4ClassRunner(klass);
-        try {
-            chainedRunner.filter(new Filter() {
-                @Override
-                public boolean shouldRun(Description description) {
-                    String methodName = "testAll";
-                    if (methodName.equals(description.getMethodName())) {
-                        try {
-                            Method m = klass.getMethod(methodName);
-                            if (m.getDeclaringClass() == SimpleAggregatorTst.class) {
-                                return false;
-                            }
-                        } catch (NoSuchMethodException e) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                
-                @Override
-                public String describe() {
-                    return "Skip method SimpleAggregatorTst.testAll";
-                }
-            });
+        TestClass tclass = new TestClass(klass);
+        if (!tclass.getAnnotatedMethods(Test.class).isEmpty()) {
             Description unitTests = Description.createSuiteDescription("Unit tests");
+            chainedRunner = new BlockJUnit4ClassRunner(klass);
             for (Description d : chainedRunner.getDescription().getChildren()) {
                 unitTests.addChild(d);
             }
             desc.addChild(unitTests);
-        } catch (NoTestsRemainException e) {
-            // no additional unit tests
         }
     }
 
@@ -155,7 +135,9 @@ public class PMDTestRunner extends Runner implements Filterable {
                 notifier.fireTestFinished(d);
             }
         }
-        chainedRunner.run(notifier);
+        if (chainedRunner != null) {
+            chainedRunner.run(notifier);
+        }
     }
 
     private Description createTestDescription(TestDescriptor t) {
@@ -182,7 +164,11 @@ public class PMDTestRunner extends Runner implements Filterable {
 
         boolean chainIsEmpty = false;
         try {
-            chainedRunner.filter(filter);
+            if (chainedRunner != null) {
+                chainedRunner.filter(filter);
+            } else {
+                chainIsEmpty = true;
+            }
         } catch (NoTestsRemainException e) {
             chainIsEmpty = true;
         }

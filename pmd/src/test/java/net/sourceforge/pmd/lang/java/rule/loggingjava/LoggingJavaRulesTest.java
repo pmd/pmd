@@ -1,24 +1,20 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.loggingjava;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-
-import org.junit.Before;
-
 
 public class LoggingJavaRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "java-logging-java";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "AvoidPrintStackTrace");
         addRule(RULESET, "LoggerIsNotStaticFinal");
         addRule(RULESET, "MoreThanOneLogger");
         addRule(RULESET, "SystemPrintln");
         addRule(RULESET, "GuardLogStatementJavaUtil");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(LoggingJavaRulesTest.class);
     }
 }

@@ -1,15 +1,15 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.finalizers;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
-
-
 public class FinalizersRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-finalizers";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "AvoidCallingFinalize");
         addRule(RULESET, "EmptyFinalizer");
@@ -17,9 +17,5 @@ public class FinalizersRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "FinalizeOnlyCallsSuperFinalize");
         addRule(RULESET, "FinalizeOverloaded");
         addRule(RULESET, "FinalizeShouldBeProtected");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(FinalizersRulesTest.class);
     }
 }
