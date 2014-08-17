@@ -8,12 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.junit.runner.notification.Failure;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
 
 /**
  * Standard methods for (simple) testcases.
@@ -76,46 +71,4 @@ public abstract class SimpleAggregatorTst extends RuleTst {
     protected List<Rule> getRules() {
         return rules;
     }
-
-    @Deprecated
-    // Use PMDTestRunner instead
-    public static class CustomXmlTestClassMethodsRunner extends BlockJUnit4ClassRunner {
-        public CustomXmlTestClassMethodsRunner(Class<?> klass) throws InitializationError {
-            super(klass);
-        }
-
-        public static Failure createFailure(Rule rule, Throwable targetException) {
-            return new Failure(createDescription(rule, null), targetException);
-        }
-
-        public static Description createDescription(Rule rule, String testName) {
-            return Description.createTestDescription(SimpleAggregatorTst.class, "xml." + rule.getRuleSetName() + '.'
-                    + rule.getName() + (testName != null ? ":" + testName : ""));
-        }
-
-        public static void addFailure(Failure failure) {
-            synchronized (CustomXmlTestClassMethodsRunner.class) {
-                NOTIFIER.fireTestFailure(failure);
-            }
-        }
-
-        public static void addIgnore(Description description) {
-            synchronized (CustomXmlTestClassMethodsRunner.class) {
-                NOTIFIER.fireTestIgnored(description);
-            }
-        }
-
-        @Override
-        public void run(RunNotifier n) {
-            synchronized (CustomXmlTestClassMethodsRunner.class) {
-                // synchronized so that access to NOTIFIER is safe: only
-                // one runner at a time is active
-                NOTIFIER = n;
-                super.run(n);
-            }
-        }
-
-        private static RunNotifier NOTIFIER;
-    }
-
 }

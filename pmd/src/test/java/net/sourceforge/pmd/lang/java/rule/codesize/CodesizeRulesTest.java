@@ -11,14 +11,17 @@ public class CodesizeRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
+        addRule(RULESET, "CyclomaticComplexity");
         addRule(RULESET, "ExcessivePublicCount");
         addRule(RULESET, "ExcessiveClassLength");
         addRule(RULESET, "ExcessiveParameterList");
         addRule(RULESET, "ExcessiveMethodLength");
+        addRule(RULESET, "ModifiedCyclomaticComplexity");
         addRule(RULESET, "NcssConstructorCount");
         addRule(RULESET, "NcssMethodCount");
         addRule(RULESET, "NcssTypeCount");
         addRule(RULESET, "NPathComplexity");
+        addRule(RULESET, "StdCyclomaticComplexity");
         addRule(RULESET, "TooManyFields");
         addRule(RULESET, "TooManyMethods");
     }
