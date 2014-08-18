@@ -126,12 +126,12 @@ public abstract class RuleTst {
         }
 
         List<String> expectedMessages = test.getExpectedMessages();
-        if (report.getViolationTree().size() != expectedMessages.size()) {
+        if (report.size() != expectedMessages.size()) {
             throw new RuntimeException("Test setup error: number of expected messages doesn't match "
                     + "number of violations for test case '" + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.getViolationTree().iterator();
+        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
         while (it.hasNext()) {
             RuleViolation violation = it.next();

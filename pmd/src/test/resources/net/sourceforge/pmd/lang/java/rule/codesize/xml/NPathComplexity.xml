@@ -87,8 +87,8 @@ class Bar
         <rule-property name="minimum">25.0</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>The method y() has an NPath complexity of 25</message>
             <message>The method x() has an NPath complexity of 25</message>
+            <message>The method y() has an NPath complexity of 25</message>
         </expected-messages>
         <code-ref id="bug3484404"/>
     </test-code>
