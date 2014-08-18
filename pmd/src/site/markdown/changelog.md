@@ -23,3 +23,11 @@
 
 **Pull requests:**
 
+**New/Modified Rules:**
+
+* FieldDeclarationsShouldBeAtStartOfClass (ruleset java-design) has a new property called `ignoreAnonymousClassDeclarations`:
+  Ignore Field Declarations, that are initialized with anonymous class declarations. This property is enabled by default.
+  See [feature #1244](https://sourceforge.net/p/pmd/bugs/1244/).
+* ShortClassName (ruleset java-naming) has a new property called `minimum`: Number of characters that are required
+  as a minimum for a class name. By default, 5 characters are required - if the class name is shorter, a violation
+  will be reported. See [feature #1232](https://sourceforge.net/p/pmd/bugs/1232/).
