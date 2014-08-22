@@ -219,9 +219,22 @@ public class Test {
 public class Test {
     // violation, because object is used
     public Object create2() {
-        Object o = myFactory.create();
+        Object o = myObjectCreator.create();
         o.setName("my name");                    // < - - !!!
         return o;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1245 False Positive for Law of Demeter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void bar() {
+        // Create a Connection
+        final Connection connection = connectionFactory.createConnection();
+        connection.start();
     }
 }
         ]]></code>

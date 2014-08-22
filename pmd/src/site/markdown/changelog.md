@@ -15,6 +15,7 @@
 * [#1239](https://sourceforge.net/p/pmd/bugs/1239/): StackOverflowError in AbstractTokenizer.parseString running CPD on >1MB JS file
 * [#1241](https://sourceforge.net/p/pmd/bugs/1241/): False+ AvoidProtectedMethodInFinalClassNotExtending
 * [#1243](https://sourceforge.net/p/pmd/bugs/1243/): Useless Parentheses False Positive
+* [#1245](https://sourceforge.net/p/pmd/bugs/1245/): False Positive for Law of Demeter
 
 **Feature Requests and Improvements:**
 

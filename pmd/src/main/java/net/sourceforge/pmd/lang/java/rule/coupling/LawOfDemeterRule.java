@@ -315,7 +315,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 ASTVariableDeclaratorId variableDeclaratorId = declarator.getFirstChildOfType(ASTVariableDeclaratorId.class);
                 if (variableDeclaratorId.hasImageEqualTo(baseName)) {
                     boolean allocationFound = declarator.getFirstDescendantOfType(ASTAllocationExpression.class) != null;
-                    boolean iterator = isIterator();
+                    boolean iterator = isIterator() || isFactory(declarator);
                     boolean forLoop = isForLoop(declarator);
                     assignments.add(new Assignment(declarator.getBeginLine(), allocationFound, iterator, forLoop));
                 }
@@ -346,7 +346,17 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             }
             return iterator;
         }
-        
+        private boolean isFactory(ASTVariableDeclarator declarator) {
+            boolean factory = false;
+            List<ASTName> names = declarator.findDescendantsOfType(ASTName.class);
+            for (ASTName name : names) {
+                if (name.getImage().toLowerCase().contains("factory")) {
+                    factory = true;
+                    break;
+                }
+            }
+            return factory;
+        }
         private boolean isForLoop(ASTVariableDeclarator declarator) {
             return declarator.jjtGetParent().jjtGetParent() instanceof ASTForStatement;
         }
