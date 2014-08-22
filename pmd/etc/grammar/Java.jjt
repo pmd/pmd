@@ -1772,6 +1772,7 @@ void PrimaryPrefix() :
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
+| LOOKAHEAD( Name() "::" ) Name()
 | LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference()
 | Name()
 }
