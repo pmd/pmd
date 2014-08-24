@@ -16,6 +16,7 @@
 * [#1241](https://sourceforge.net/p/pmd/bugs/1241/): False+ AvoidProtectedMethodInFinalClassNotExtending
 * [#1243](https://sourceforge.net/p/pmd/bugs/1243/): Useless Parentheses False Positive
 * [#1245](https://sourceforge.net/p/pmd/bugs/1245/): False Positive for Law of Demeter
+* [#1246](https://sourceforge.net/p/pmd/bugs/1246/): False positive from MissingBreakInSwitch
 * [#1247](https://sourceforge.net/p/pmd/bugs/1247/): Not able to recognize JDK 8 Static Method References
 
 **Feature Requests and Improvements:**
