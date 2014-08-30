@@ -111,7 +111,6 @@ public class Foo {
   try {
     bar();
   } catch (FileNotFoundException e) {} // NOPMD - this surely will never happen
-  }
  }
 }
 </source>
