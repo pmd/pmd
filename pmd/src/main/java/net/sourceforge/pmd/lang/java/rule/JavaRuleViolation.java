@@ -55,7 +55,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 			setClassNameFrom(node);
 			
 			// Method name comes from 1st enclosing MethodScope
-			if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
+			if (scope.getEnclosingScope(MethodScope.class) != null) {
 				methodName = scope.getEnclosingScope(MethodScope.class).getName();
 			}
 			// Variable name node specific
