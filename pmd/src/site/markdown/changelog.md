@@ -18,6 +18,7 @@
 * [#1245](https://sourceforge.net/p/pmd/bugs/1245/): False Positive for Law of Demeter
 * [#1246](https://sourceforge.net/p/pmd/bugs/1246/): False positive from MissingBreakInSwitch
 * [#1247](https://sourceforge.net/p/pmd/bugs/1247/): Not able to recognize JDK 8 Static Method References
+* [#1251](https://sourceforge.net/p/pmd/bugs/1251/): UnusedPrivateMethod false positives for boxing & unboxing arguments
 
 **Feature Requests and Improvements:**
 
