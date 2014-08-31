@@ -1,6 +1,6 @@
 # Changelog
 
-## ????, 2014 - 5.1.3:
+## August 31, 2014 - 5.1.3:
 
 **Bugfixes:**
 
@@ -26,8 +26,6 @@
 
 * [#1232](https://sourceforge.net/p/pmd/bugs/1232/): Make ShortClassName configurable
 * [#1244](https://sourceforge.net/p/pmd/bugs/1244/): FieldDeclarationsShouldBeAtStartOfClass and anonymous classes
-
-**Pull requests:**
 
 **New/Modified Rules:**
 
