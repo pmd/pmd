@@ -29,7 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule;
@@ -596,7 +596,7 @@ public class RuleSetFactoryTest {
 					continue;
 				}
 
-				LanguageModule language = rule.getLanguage();
+				Language language = rule.getLanguage();
 				String group = fileName
 						.substring(fileName.lastIndexOf('/') + 1);
 				group = group.substring(0, group.indexOf(".xml"));
@@ -975,7 +975,7 @@ public class RuleSetFactoryTest {
     RuleSetNotFoundException {
         List<String> result = new ArrayList<String>();
 
-        for (LanguageModule language : LanguageRegistry.getLanguages()) {
+        for (Language language : LanguageRegistry.getLanguages()) {
             result.addAll(getRuleSetFileNames(language.getTerseName()));
         }
 

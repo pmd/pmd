@@ -10,8 +10,8 @@ import net.sourceforge.pmd.AbstractPropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.lang.LanguageModule;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -24,9 +24,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 // FUTURE Implement Cloneable and clone()?
 public abstract class AbstractRule extends AbstractPropertySource implements Rule {
 
-	private LanguageModule language;
-	private LanguageVersionModule minimumLanguageVersion;
-	private LanguageVersionModule maximumLanguageVersion;
+	private Language language;
+	private LanguageVersion minimumLanguageVersion;
+	private LanguageVersion maximumLanguageVersion;
 	private boolean deprecated;
 	private String name = getClass().getName();
 	private String since;
@@ -82,14 +82,14 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	/**
 	 * @see Rule#getLanguage()
 	 */
-	 public LanguageModule getLanguage() {
+	 public Language getLanguage() {
 		return language;
 	}
 
 	/**
-	 * @see Rule#setLanguage(LanguageModule)
+	 * @see Rule#setLanguage(net.sourceforge.pmd.lang.Language)
 	 */
-	 public void setLanguage(LanguageModule language) {
+	 public void setLanguage(Language language) {
 		 if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
 			 throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
 					 + " is immutable and cannot be changed.");
@@ -100,28 +100,28 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	 /**
 	  * @see Rule#getMinimumLanguageVersion()
 	  */
-	 public LanguageVersionModule getMinimumLanguageVersion() {
+	 public LanguageVersion getMinimumLanguageVersion() {
 		 return minimumLanguageVersion;
 	 }
 
 	 /**
-	  * @see Rule#setMinimumLanguageVersion(LanguageVersionModule)
+	  * @see Rule#setMinimumLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
 	  */
-	 public void setMinimumLanguageVersion(LanguageVersionModule minimumLanguageVersion) {
+	 public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
 		 this.minimumLanguageVersion = minimumLanguageVersion;
 	 }
 
 	 /**
 	  * @see Rule#getMaximumLanguageVersion()
 	  */
-	 public LanguageVersionModule getMaximumLanguageVersion() {
+	 public LanguageVersion getMaximumLanguageVersion() {
 		 return maximumLanguageVersion;
 	 }
 
 	 /**
-	  * @see Rule#setMaximumLanguageVersion(LanguageVersionModule)
+	  * @see Rule#setMaximumLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
 	  */
-	 public void setMaximumLanguageVersion(LanguageVersionModule maximumLanguageVersion) {
+	 public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
 		 this.maximumLanguageVersion = maximumLanguageVersion;
 	 }
 

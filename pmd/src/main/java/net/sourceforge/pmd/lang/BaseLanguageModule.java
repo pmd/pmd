@@ -5,15 +5,15 @@ import java.util.*;
 /**
  * Created by christoferdutz on 21.09.14.
  */
-public abstract class BaseLanguageModule implements LanguageModule {
+public abstract class BaseLanguageModule implements Language {
 
     protected String name;
     protected String shortName;
     protected String terseName;
     protected Class<?> ruleChainVisitorClass;
     protected List<String> extensions;
-    protected Map<String, LanguageVersionModule> versions;
-    protected LanguageVersionModule defaultVersion;
+    protected Map<String, LanguageVersion> versions;
+    protected LanguageVersion defaultVersion;
 
     public BaseLanguageModule(String name, String shortName, String terseName, Class<?> ruleChainVisitorClass, String... extensions) {
         this.name = name;
@@ -25,9 +25,9 @@ public abstract class BaseLanguageModule implements LanguageModule {
 
     protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault) {
         if(versions == null) {
-            versions = new HashMap<String, LanguageVersionModule>();
+            versions = new HashMap<String, LanguageVersion>();
         }
-        LanguageVersionModule languageVersion = new LanguageVersionModule(this, version, languageVersionHandler);
+        LanguageVersion languageVersion = new LanguageVersion(this, version, languageVersionHandler);
         versions.put(version, languageVersion);
         if(isDefault) {
             defaultVersion = languageVersion;
@@ -65,8 +65,8 @@ public abstract class BaseLanguageModule implements LanguageModule {
     }
 
     @Override
-    public List<LanguageVersionModule> getVersions() {
-        return new ArrayList<LanguageVersionModule>(versions.values());
+    public List<LanguageVersion> getVersions() {
+        return new ArrayList<LanguageVersion>(versions.values());
     }
 
     @Override
@@ -74,7 +74,7 @@ public abstract class BaseLanguageModule implements LanguageModule {
         return versions != null && versions.containsKey(version);
     }
 
-    public LanguageVersionModule getVersion(String versionName) {
+    public LanguageVersion getVersion(String versionName) {
         if(versions != null) {
             return versions.get(versionName);
         }
@@ -82,7 +82,7 @@ public abstract class BaseLanguageModule implements LanguageModule {
     }
 
     @Override
-    public LanguageVersionModule getDefaultVersion() {
+    public LanguageVersion getDefaultVersion() {
         return defaultVersion;
     }
 

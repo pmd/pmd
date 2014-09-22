@@ -8,10 +8,9 @@ import java.util.Collection;
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.ant.SourceLanguage;
 
-import net.sourceforge.pmd.cpd.JavaLanguage;
-import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.fortran.FortranLanguageModule;
@@ -33,9 +32,9 @@ public class LanguageVersionTest {
     private String language;
     private String version;
     private String terseName;
-    private LanguageVersionModule expected;
+    private LanguageVersion expected;
 
-    public LanguageVersionTest(String language, String version, LanguageVersionModule expected) {
+    public LanguageVersionTest(String language, String version, LanguageVersion expected) {
         this.language = language;
         this.version = version;
         this.terseName = language;
@@ -81,8 +80,8 @@ public class LanguageVersionTest {
         sourceLanguage.setName(language);
         sourceLanguage.setVersion(version);
 
-        LanguageModule language = LanguageRegistry.getLanguage(sourceLanguage.getName());
-        LanguageVersionModule languageVersion = null;
+        Language language = LanguageRegistry.getLanguage(sourceLanguage.getName());
+        LanguageVersion languageVersion = null;
         if(language != null) {
             languageVersion = language.getVersion(sourceLanguage.getVersion());
         }

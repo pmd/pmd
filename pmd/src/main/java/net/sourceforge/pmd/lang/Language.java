@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public interface LanguageModule {
+public interface Language {
 
     static final String LANGUAGE_MODULES_CLASS_NAMES_PROPERTY = "languageModulesClassNames";
 
@@ -15,9 +15,9 @@ public interface LanguageModule {
     List<String> getExtensions();
     boolean hasExtension(String extension);
     Class<?> getRuleChainVisitorClass();
-    List<LanguageVersionModule> getVersions();
+    List<LanguageVersion> getVersions();
     boolean hasVersion(String version);
-    LanguageVersionModule getVersion(String version);
-    LanguageVersionModule getDefaultVersion();
+    LanguageVersion getVersion(String version);
+    LanguageVersion getDefaultVersion();
 
 }

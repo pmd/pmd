@@ -14,13 +14,12 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.ast.Node;
 // Root Production comprising PLSQL definitions, and SQL*PLus, DDL, GRANTS etc.
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 //Covers all executbale code units, such as package and object type bodies, standalone procedures and functions, and triggers 
-import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
@@ -61,7 +60,7 @@ public abstract class AbstractPLSQLParserTst {
         return getNodes(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion(), clazz, plsqlCode);
     }
 
-    public <E> Set<E> getNodes(LanguageVersionModule languageVersion, Class<E> clazz, String plsqlCode) throws Throwable {
+    public <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String plsqlCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz);
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	ASTInput cu = (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(plsqlCode));
@@ -103,7 +102,7 @@ public abstract class AbstractPLSQLParserTst {
         return cu;
     }
     
-    public ASTInput parsePLSQL(LanguageVersionModule languageVersion, String code) {
+    public ASTInput parsePLSQL(LanguageVersion languageVersion, String code) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	return (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
     }
@@ -112,7 +111,7 @@ public abstract class AbstractPLSQLParserTst {
     	return parsePLSQL(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion(), code);
     }
     
-    public Node parseLanguage(LanguageVersionModule languageVersion, String code) {
+    public Node parseLanguage(LanguageVersion languageVersion, String code) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	return (Node)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
     }

@@ -20,8 +20,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import net.sourceforge.pmd.lang.LanguageModule;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -162,9 +162,9 @@ public class RuleSetWriter {
 			    return null;
 			}
 		    } else {
-			LanguageModule language = ruleReference.getOverriddenLanguage();
-			LanguageVersionModule minimumLanguageVersion = ruleReference.getOverriddenMinimumLanguageVersion();
-			LanguageVersionModule maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
+			Language language = ruleReference.getOverriddenLanguage();
+			LanguageVersion minimumLanguageVersion = ruleReference.getOverriddenMinimumLanguageVersion();
+			LanguageVersion maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
 			Boolean deprecated = ruleReference.isOverriddenDeprecated();
 			String name = ruleReference.getOverriddenName();
 			String ref = ruleReference.getRuleSetReference().getRuleSetFileName() + "/" + ruleReference.getName();
@@ -196,8 +196,8 @@ public class RuleSetWriter {
     	}
     }
     
-    private Element createSingleRuleElement(LanguageModule language, LanguageVersionModule minimumLanguageVersion,
-	    LanguageVersionModule maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
+    private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
+	    LanguageVersion maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
 	    String message, String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution,
 	    String description, RulePriority priority, List<PropertyDescriptor<?>> propertyDescriptors,
 	    Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor, List<String> examples) {

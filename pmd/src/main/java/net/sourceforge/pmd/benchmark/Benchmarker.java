@@ -77,8 +77,8 @@ public class Benchmarker {
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
 
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
-        LanguageModule language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME);
-        LanguageVersionModule languageVersion = language.getVersion(targetjdk);
+        Language language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME);
+        LanguageVersion languageVersion = language.getVersion(targetjdk);
         if (languageVersion == null) {
         	languageVersion = language.getDefaultVersion();
         }
@@ -150,7 +150,7 @@ public class Benchmarker {
      * @throws PMDException
      * @throws IOException
      */
-    private static void stress(LanguageVersionModule languageVersion, RuleSet ruleSet, List<DataSource> dataSources, Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
+    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources, Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
 
         for (Rule rule: ruleSet.getRules()) {
             if (debug) {

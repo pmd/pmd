@@ -14,15 +14,15 @@ import java.util.Map;
  * here.
  */
 public class LanguageVersionDiscoverer {
-    private Map<LanguageModule, LanguageVersionModule> languageToLanguageVersion = new HashMap<LanguageModule, LanguageVersionModule>();
+    private Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<Language, LanguageVersion>();
 
     /**
      * Set the given LanguageVersion as the current default for it's Language.
      * @param languageVersion The new default for the Language.
      * @return The previous default version for the language.
      */
-    public LanguageVersionModule setDefaultLanguageVersion(LanguageVersionModule languageVersion) {
-	LanguageVersionModule currentLanguageVersion = languageToLanguageVersion.put(languageVersion.getLanguage(),
+    public LanguageVersion setDefaultLanguageVersion(LanguageVersion languageVersion) {
+	LanguageVersion currentLanguageVersion = languageToLanguageVersion.put(languageVersion.getLanguage(),
 		languageVersion);
 	if (currentLanguageVersion == null) {
 	    currentLanguageVersion = languageVersion.getLanguage().getDefaultVersion();
@@ -35,8 +35,8 @@ public class LanguageVersionDiscoverer {
      * @param language The Language.
      * @return The current default version for the language.
      */
-    public LanguageVersionModule getDefaultLanguageVersion(LanguageModule language) {
-	LanguageVersionModule languageVersion = languageToLanguageVersion.get(language);
+    public LanguageVersion getDefaultLanguageVersion(Language language) {
+	LanguageVersion languageVersion = languageToLanguageVersion.get(language);
 	if (languageVersion == null) {
 	    languageVersion = language.getDefaultVersion();
 	}
@@ -50,7 +50,7 @@ public class LanguageVersionDiscoverer {
      * @return The currently configured LanguageVersion for the source file,
      * or <code>null</code> if there are no supported Languages for the file.
      */
-    public LanguageVersionModule getDefaultLanguageVersionForFile(File sourceFile) {
+    public LanguageVersion getDefaultLanguageVersionForFile(File sourceFile) {
 	return getDefaultLanguageVersionForFile(sourceFile.getName());
     }
 
@@ -62,9 +62,9 @@ public class LanguageVersionDiscoverer {
      * @return The currently configured LanguageVersion for the source file
      * or <code>null</code> if there are no supported Languages for the file.
      */
-    public LanguageVersionModule getDefaultLanguageVersionForFile(String fileName) {
-	List<LanguageModule> languages = getLanguagesForFile(fileName);
-	LanguageVersionModule languageVersion = null;
+    public LanguageVersion getDefaultLanguageVersionForFile(String fileName) {
+	List<Language> languages = getLanguagesForFile(fileName);
+	LanguageVersion languageVersion = null;
 	if (!languages.isEmpty()) {
 	    languageVersion = getDefaultLanguageVersion(languages.get(0));
 	}
@@ -77,7 +77,7 @@ public class LanguageVersionDiscoverer {
      * @param sourceFile The file.
      * @return The Languages for the source file, may be empty.
      */
-    public List<LanguageModule> getLanguagesForFile(File sourceFile) {
+    public List<Language> getLanguagesForFile(File sourceFile) {
 	return getLanguagesForFile(sourceFile.getName());
     }
 
@@ -87,7 +87,7 @@ public class LanguageVersionDiscoverer {
      * @param fileName The file name.
      * @return The Languages for the source file, may be empty.
      */
-    public List<LanguageModule> getLanguagesForFile(String fileName) {
+    public List<Language> getLanguagesForFile(String fileName) {
 	String extension = getExtension(fileName);
 	return LanguageRegistry.findByExtension(extension);
     }

@@ -13,10 +13,10 @@ public class LanguageRegistry {
 
     private static LanguageRegistry instance;
 
-    private Map<String, LanguageModule> languages;
+    private Map<String, Language> languages;
 
     private LanguageRegistry() {
-        languages = new HashMap<String, LanguageModule>();
+        languages = new HashMap<String, Language>();
 
         try {
             Enumeration<URL> languageModulesProperties = LanguageRegistry.class.getClassLoader().getResources("META-INF/pmd-language.properties");
@@ -24,12 +24,12 @@ public class LanguageRegistry {
                 URL curLanguageModulePropertiesUrl = languageModulesProperties.nextElement();
                 Properties curLanguageModuleProperties = new Properties();
                 curLanguageModuleProperties.load(curLanguageModulePropertiesUrl.openStream());
-                String languageModulesImplClassNames = curLanguageModuleProperties.getProperty(LanguageModule.LANGUAGE_MODULES_CLASS_NAMES_PROPERTY);
+                String languageModulesImplClassNames = curLanguageModuleProperties.getProperty(Language.LANGUAGE_MODULES_CLASS_NAMES_PROPERTY);
                 if(languageModulesImplClassNames != null) {
                     String[] languageModuleImplClassNames = languageModulesImplClassNames.split(";");
                     for(String languageModuleImplClassName : languageModuleImplClassNames) {
                         Class<?> languageModuleImplClass = LanguageRegistry.class.getClassLoader().loadClass(languageModuleImplClassName);
-                        LanguageModule languageModule = (LanguageModule) languageModuleImplClass.newInstance();
+                        Language languageModule = (Language) languageModuleImplClass.newInstance();
                         languages.put(languageModule.getName(), languageModule);
                     }
                 }
@@ -52,20 +52,20 @@ public class LanguageRegistry {
         return instance;
     }
 
-    public static Collection<LanguageModule> getLanguages() {
+    public static Collection<Language> getLanguages() {
         return getInstance().languages.values();
     }
 
-    public static LanguageModule getLanguage(String languageName) {
+    public static Language getLanguage(String languageName) {
         return getInstance().languages.get(languageName);
     }
 
-    public static LanguageModule getDefaultLanguage() {
+    public static Language getDefaultLanguage() {
         return getLanguage(JavaLanguageModule.NAME);
     }
 
-    public static LanguageModule findLanguageByTerseName(String terseName) {
-        for (LanguageModule language : getInstance().languages.values()) {
+    public static Language findLanguageByTerseName(String terseName) {
+        for (Language language : getInstance().languages.values()) {
             if (language.getTerseName().equals(terseName)) {
                 return language;
             }
@@ -73,13 +73,13 @@ public class LanguageRegistry {
         return null;
     }
 
-    public static LanguageVersionModule findLanguageVersionByTerseName(String terseName) {
+    public static LanguageVersion findLanguageVersionByTerseName(String terseName) {
         String version = null;
         if(terseName.contains(" ")) {
             version = terseName.substring(terseName.lastIndexOf(" ") + 1);
             terseName = terseName.substring(0, terseName.lastIndexOf(" "));
         }
-        LanguageModule language = findLanguageByTerseName(terseName);
+        Language language = findLanguageByTerseName(terseName);
         if(language != null) {
             if(version == null) {
                 return language.getDefaultVersion();
@@ -90,9 +90,9 @@ public class LanguageRegistry {
         return null;
     }
 
-    public static List<LanguageModule> findByExtension(String extension) {
-        List<LanguageModule> languages = new ArrayList<LanguageModule>();
-        for (LanguageModule language : getInstance().languages.values()) {
+    public static List<Language> findByExtension(String extension) {
+        List<Language> languages = new ArrayList<Language>();
+        for (Language language : getInstance().languages.values()) {
             if (language.hasExtension(extension)) {
                 languages.add(language);
             }
@@ -100,10 +100,10 @@ public class LanguageRegistry {
         return languages;
     }
 
-    public static List<LanguageVersionModule> findAllVersions() {
-        List<LanguageVersionModule> versions = new ArrayList<LanguageVersionModule>();
-        for(LanguageModule language : getLanguages()) {
-            for(LanguageVersionModule languageVersion : language.getVersions()) {
+    public static List<LanguageVersion> findAllVersions() {
+        List<LanguageVersion> versions = new ArrayList<LanguageVersion>();
+        for(Language language : getLanguages()) {
+            for(LanguageVersion languageVersion : language.getVersions()) {
                 versions.add(languageVersion);
             }
         }
@@ -114,9 +114,9 @@ public class LanguageRegistry {
      * A utility method to find the Languages which have Rule support.
      * @return A List of Languages with Rule support.
      */
-    public static List<LanguageModule> findWithRuleSupport() {
-        List<LanguageModule> languages = new ArrayList<LanguageModule>();
-        for (LanguageModule language : getInstance().languages.values()) {
+    public static List<Language> findWithRuleSupport() {
+        List<Language> languages = new ArrayList<Language>();
+        for (Language language : getInstance().languages.values()) {
             if (language.getRuleChainVisitorClass() != null) {
                 languages.add(language);
             }
@@ -124,9 +124,9 @@ public class LanguageRegistry {
         return languages;
     }
 
-    public static String commaSeparatedTerseNamesForLanguage(List<LanguageModule> languages) {
+    public static String commaSeparatedTerseNamesForLanguage(List<Language> languages) {
         StringBuilder builder = new StringBuilder();
-        for (LanguageModule language : languages) {
+        for (Language language : languages) {
             if (builder.length() > 0) {
                 builder.append(", ");
             }
@@ -135,7 +135,7 @@ public class LanguageRegistry {
         return builder.toString();
     }
 
-    public static String commaSeparatedTerseNamesForLanguageVersion(List<LanguageVersionModule> languageVersions) {
+    public static String commaSeparatedTerseNamesForLanguageVersion(List<LanguageVersion> languageVersions) {
         if (languageVersions == null || languageVersions.isEmpty()) {
             return "";
         }

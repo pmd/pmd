@@ -14,7 +14,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.validators.PositiveInteger;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 public class PMDParameters {
 
@@ -131,7 +131,7 @@ public class PMDParameters {
         configuration.setSuppressMarker(params.getSuppressmarker());
         configuration.setThreads(params.getThreads());
 
-        LanguageVersionModule languageVersion = LanguageRegistry.findLanguageVersionByTerseName(params.getLanguage() + " " + params.getVersion());
+        LanguageVersion languageVersion = LanguageRegistry.findLanguageVersionByTerseName(params.getLanguage() + " " + params.getVersion());
         if(languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }

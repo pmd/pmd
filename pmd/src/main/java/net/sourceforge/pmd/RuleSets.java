@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -118,7 +118,7 @@ public class RuleSets {
      * @param ctx      the RuleContext
      * @param language the Language of the source
      */
-    public void apply(List<Node> acuList, RuleContext ctx, LanguageModule language) {
+    public void apply(List<Node> acuList, RuleContext ctx, Language language) {
 		ruleChain.apply(acuList, ctx, language);
 		for (RuleSet ruleSet : ruleSets) {
 		    if (ruleSet.applies(ctx.getSourceCodeFile())) {
@@ -143,7 +143,7 @@ public class RuleSets {
      * @param language the language of a source
      * @return true if any rule in the RuleSet needs the DFA layer
      */
-    public boolean usesDFA(LanguageModule language) {
+    public boolean usesDFA(Language language) {
 		for (RuleSet ruleSet : ruleSets) {
 		    if (ruleSet.usesDFA(language)) {
 			return true;
@@ -183,7 +183,7 @@ public class RuleSets {
         return count;
     }
 
-    public boolean usesTypeResolution(LanguageModule language) {
+    public boolean usesTypeResolution(Language language) {
 		for (RuleSet ruleSet : ruleSets) {
 		    if (ruleSet.usesTypeResolution(language)) {
 			return true;

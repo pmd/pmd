@@ -19,9 +19,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
@@ -85,7 +85,7 @@ public class RuleSetFactory {
 		String rulesetsProperties = null;
 		try {
 			List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<RuleSetReferenceId>();
-			for (LanguageModule language : LanguageRegistry.findWithRuleSupport()) {
+			for (Language language : LanguageRegistry.findWithRuleSupport()) {
 				Properties props = new Properties();
 				rulesetsProperties = "rulesets/" + language.getTerseName() + "/rulesets.properties";
 				props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
@@ -348,7 +348,7 @@ public class RuleSetFactory {
 
 		if (ruleElement.hasAttribute("language")) {
 			String languageName = ruleElement.getAttribute("language");
-			LanguageModule language = LanguageRegistry.findLanguageByTerseName(languageName);
+			Language language = LanguageRegistry.findLanguageByTerseName(languageName);
 			if (language == null) {
 				throw new IllegalArgumentException("Unknown Language '" + languageName + "' for Rule " + rule.getName()
 						+ ", supported Languages are "
@@ -357,7 +357,7 @@ public class RuleSetFactory {
 			rule.setLanguage(language);
 		}
 
-		LanguageModule language = rule.getLanguage();
+		Language language = rule.getLanguage();
 		if (language == null) {
 			throw new IllegalArgumentException("Rule " + rule.getName()
 					+ " does not have a Language; missing 'language' attribute?");
@@ -365,7 +365,7 @@ public class RuleSetFactory {
 
 		if (ruleElement.hasAttribute("minimumLanguageVersion")) {
 			String minimumLanguageVersionName = ruleElement.getAttribute("minimumLanguageVersion");
-			LanguageVersionModule minimumLanguageVersion = language.getVersion(minimumLanguageVersionName);
+			LanguageVersion minimumLanguageVersion = language.getVersion(minimumLanguageVersionName);
 			if (minimumLanguageVersion == null) {
 				throw new IllegalArgumentException("Unknown minimum Language Version '" + minimumLanguageVersionName
 						+ "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()
@@ -377,7 +377,7 @@ public class RuleSetFactory {
 
 		if (ruleElement.hasAttribute("maximumLanguageVersion")) {
 			String maximumLanguageVersionName = ruleElement.getAttribute("maximumLanguageVersion");
-			LanguageVersionModule maximumLanguageVersion = language.getVersion(maximumLanguageVersionName);
+			LanguageVersion maximumLanguageVersion = language.getVersion(maximumLanguageVersionName);
 			if (maximumLanguageVersion == null) {
 				throw new IllegalArgumentException("Unknown maximum Language Version '" + maximumLanguageVersionName
 						+ "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()

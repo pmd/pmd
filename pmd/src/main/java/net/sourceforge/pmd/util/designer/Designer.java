@@ -137,9 +137,9 @@ public class Designer implements ClipboardOwner {
         return getCompilationUnit(languageVersionHandler, codeEditorPane.getText());
     }
 
-	private static LanguageVersionModule[] getSupportedLanguageVersions() {
-		List<LanguageVersionModule> languageVersions = new ArrayList<LanguageVersionModule>();
-		for (LanguageVersionModule languageVersion : LanguageRegistry.findAllVersions()) {
+	private static LanguageVersion[] getSupportedLanguageVersions() {
+		List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
+		for (LanguageVersion languageVersion : LanguageRegistry.findAllVersions()) {
 			LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 			if (languageVersionHandler != null) {
 				Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
@@ -148,18 +148,18 @@ public class Designer implements ClipboardOwner {
 				}
 			}
 		}
-		return languageVersions.toArray(new LanguageVersionModule[languageVersions.size()]);
+		return languageVersions.toArray(new LanguageVersion[languageVersions.size()]);
 	}
 
-	private LanguageVersionModule getLanguageVersion() {
+	private LanguageVersion getLanguageVersion() {
 		return getSupportedLanguageVersions()[selectedLanguageVersionIndex()];
 	}
 
-	private void setLanguageVersion(LanguageVersionModule languageVersion) {
+	private void setLanguageVersion(LanguageVersion languageVersion) {
 		if (languageVersion != null) {
-			LanguageVersionModule[] versions = getSupportedLanguageVersions();
+			LanguageVersion[] versions = getSupportedLanguageVersions();
 			for (int i = 0; i < versions.length; i++) {
-				LanguageVersionModule version = versions[i];
+				LanguageVersion version = versions[i];
 				if (languageVersion.equals(version)) {
 					languageVersionMenuItems[i].setSelected(true);
 					break;
@@ -178,7 +178,7 @@ public class Designer implements ClipboardOwner {
 	}
 
 	private LanguageVersionHandler getLanguageVersionHandler() {
-		LanguageVersionModule languageVersion = getLanguageVersion();
+		LanguageVersion languageVersion = getLanguageVersion();
 		return languageVersion.getLanguageVersionHandler();
 	}
 
@@ -470,7 +470,7 @@ public class Designer implements ClipboardOwner {
 	private class DFAListener implements ActionListener {
 		public void actionPerformed(ActionEvent ae) {
 
-		    LanguageVersionModule languageVersion = getLanguageVersion();
+		    LanguageVersion languageVersion = getLanguageVersion();
 			DFAGraphRule dfaGraphRule = languageVersion.getLanguageVersionHandler().getDFAGraphRule();
 			RuleSet rs = new RuleSet();
 			if (dfaGraphRule != null) {
@@ -712,9 +712,9 @@ public class Designer implements ClipboardOwner {
 		JMenu menu = new JMenu("Language");
 		ButtonGroup group = new ButtonGroup();
 
-		LanguageVersionModule[] languageVersions = getSupportedLanguageVersions();
+		LanguageVersion[] languageVersions = getSupportedLanguageVersions();
 		for (int i = 0; i < languageVersions.length; i++) {
-			LanguageVersionModule languageVersion = languageVersions[i];
+			LanguageVersion languageVersion = languageVersions[i];
 			JRadioButtonMenuItem button = new JRadioButtonMenuItem(languageVersion.getShortName());
 			languageVersionMenuItems[i] = button;
 			group.add(button);

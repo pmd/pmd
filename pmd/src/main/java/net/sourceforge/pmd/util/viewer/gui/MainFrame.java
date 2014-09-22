@@ -21,7 +21,7 @@ import javax.swing.SwingConstants;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
@@ -125,7 +125,7 @@ public class MainFrame
         setVisible(true);
     }
 
-    private LanguageVersionModule getLanguageVersion() {
+    private LanguageVersion getLanguageVersion() {
         if (jdk14MenuItem.isSelected()) {
             return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4");
         } else if (jdk13MenuItem.isSelected()) {

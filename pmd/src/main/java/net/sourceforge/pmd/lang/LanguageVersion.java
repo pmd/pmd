@@ -3,19 +3,19 @@ package net.sourceforge.pmd.lang;
 /**
  * Created by christoferdutz on 21.09.14.
  */
-public class LanguageVersionModule implements Comparable<LanguageVersionModule> {
+public class LanguageVersion implements Comparable<LanguageVersion> {
 
-    private final LanguageModule language;
+    private final Language language;
     private final String version;
     private final LanguageVersionHandler languageVersionHandler;
 
-    public LanguageVersionModule(LanguageModule language, String version, LanguageVersionHandler languageVersionHandler) {
+    public LanguageVersion(Language language, String version, LanguageVersionHandler languageVersionHandler) {
         this.language = language;
         this.version = version;
         this.languageVersionHandler = languageVersionHandler;
     }
 
-    public LanguageModule getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
@@ -55,7 +55,7 @@ public class LanguageVersionModule implements Comparable<LanguageVersionModule> 
     }
 
     @Override
-    public int compareTo(LanguageVersionModule o) {
+    public int compareTo(LanguageVersion o) {
         if(o == null) {
             return 1;
         }

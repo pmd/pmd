@@ -18,13 +18,13 @@ import java.util.Set;
  */
 public class LanguageFilenameFilter implements FilenameFilter {
 
-	private final Set<LanguageModule> languages;
+	private final Set<Language> languages;
 
 	/**
 	 * Create a LanguageFilenameFilter for a single Language.
 	 * @param language The Language.
 	 */
-	public LanguageFilenameFilter(LanguageModule language) {
+	public LanguageFilenameFilter(Language language) {
 		this(Collections.singleton(language));
 	}
 
@@ -32,7 +32,7 @@ public class LanguageFilenameFilter implements FilenameFilter {
 	 * Create a LanguageFilenameFilter for a List of Languages.
 	 * @param languages The List of Languages.
 	 */
-	public LanguageFilenameFilter(Set<LanguageModule> languages) {
+	public LanguageFilenameFilter(Set<Language> languages) {
 		this.languages = languages;
 	}
 
@@ -48,7 +48,7 @@ public class LanguageFilenameFilter implements FilenameFilter {
 		}
 
 		String extension = name.substring(1 + lastDotIndex).toUpperCase();
-		for (LanguageModule language : languages) {
+		for (Language language : languages) {
 			for (String ext : language.getExtensions()) {
 				if (extension.equalsIgnoreCase(ext)) {
 					return true;
@@ -60,7 +60,7 @@ public class LanguageFilenameFilter implements FilenameFilter {
 
 	public String toString() {
 		StringBuilder buffer = new StringBuilder("(Extension is one of: ");
-		for (LanguageModule language : languages) {
+		for (Language language : languages) {
 			List<String> extensions = language.getExtensions();
 			for (int i = 0; i < extensions.size(); i++) {
 				if (i > 0) {

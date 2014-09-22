@@ -17,7 +17,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -95,7 +95,7 @@ import org.junit.Test;
                  "        new File(\"subdirectory\").list();\n" + 
                  "    }\n" + 
                  "}";
-         LanguageVersionModule language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
+         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
          ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();
          Parser parser = language.getLanguageVersionHandler().getParser(parserOptions);
          ASTCompilationUnit cu = (ASTCompilationUnit)parser.parse("test", new StringReader(SUFFIX));
@@ -142,7 +142,7 @@ import org.junit.Test;
                  "    return test;\n" +
                  "  }\n" +
                  "}";
-         LanguageVersionModule language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
+         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
          ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();
          Parser parser = language.getLanguageVersionHandler().getParser(parserOptions);
          ASTCompilationUnit cu = (ASTCompilationUnit)parser.parse("test", new StringReader(SOURCE));

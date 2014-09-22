@@ -5,8 +5,8 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.LanguageModule;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
@@ -36,14 +36,14 @@ public interface Rule extends PropertySource {
      * 
      * @return the language
      */
-    LanguageModule getLanguage();
+    Language getLanguage();
 
     /**
      * Set the Language of this Rule.
      * 
      * @param language the language
      */
-    void setLanguage(LanguageModule language);
+    void setLanguage(Language language);
 
     /**
      * Get the minimum LanguageVersion to which this Rule applies. If this value
@@ -51,14 +51,14 @@ public interface Rule extends PropertySource {
      * 
      * @return the minimum language version
      */
-    LanguageVersionModule getMinimumLanguageVersion();
+    LanguageVersion getMinimumLanguageVersion();
 
     /**
      * Set the minimum LanguageVersion to which this Rule applies.
      * 
      * @param minimumLanguageVersion the minimum language version
      */
-    void setMinimumLanguageVersion(LanguageVersionModule minimumLanguageVersion);
+    void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion);
 
     /**
      * Get the maximum LanguageVersion to which this Rule applies. If this value
@@ -66,14 +66,14 @@ public interface Rule extends PropertySource {
      * 
      * @return the maximum language version
      */
-    LanguageVersionModule getMaximumLanguageVersion();
+    LanguageVersion getMaximumLanguageVersion();
 
     /**
      * Set the maximum LanguageVersion to which this Rule applies.
      * 
      * @param maximumLanguageVersion the maximum language version
      */
-    void setMaximumLanguageVersion(LanguageVersionModule maximumLanguageVersion);
+    void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion);
 
     /**
      * Gets whether this Rule is deprecated. A deprecated Rule is one which:

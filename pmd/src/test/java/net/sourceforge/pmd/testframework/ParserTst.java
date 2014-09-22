@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
@@ -58,7 +58,7 @@ public abstract class ParserTst {
         return getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion(), clazz, javaCode);
     }
 
-    public <E> Set<E> getNodes(LanguageVersionModule languageVersion, Class<E> clazz, String javaCode) throws Throwable {
+    public <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String javaCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz);
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	ASTCompilationUnit cu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
@@ -116,7 +116,7 @@ public abstract class ParserTst {
     public ASTCompilationUnit parseJava18(String code) {
         return parseJava(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8"), code);
     }
-    public ASTCompilationUnit parseJava(LanguageVersionModule languageVersion, String code) {
+    public ASTCompilationUnit parseJava(LanguageVersion languageVersion, String code) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
         ASTCompilationUnit rootNode = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
         languageVersionHandler.getSymbolFacade().start(rootNode);
