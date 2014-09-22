@@ -7,8 +7,9 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 /**
  * This is a Rule implementation which can be used in scenarios where an actual
@@ -20,7 +21,7 @@ public class MockRule extends AbstractRule {
 
     public MockRule() {
 	super();
-	setLanguage(Language.JAVA);
+	setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
     }
 
     public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
@@ -30,7 +31,7 @@ public class MockRule extends AbstractRule {
 
     public MockRule(String name, String description, String message, String ruleSetName) {
 	super();
-	setLanguage(Language.JAVA);
+	setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
 	setName(name);
 	setDescription(description);
 	setMessage(message);

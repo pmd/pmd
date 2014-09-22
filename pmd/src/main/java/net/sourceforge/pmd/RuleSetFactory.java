@@ -19,8 +19,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
@@ -84,7 +85,7 @@ public class RuleSetFactory {
 		String rulesetsProperties = null;
 		try {
 			List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<RuleSetReferenceId>();
-			for (Language language : Language.findWithRuleSupport()) {
+			for (LanguageModule language : LanguageRegistry.findWithRuleSupport()) {
 				Properties props = new Properties();
 				rulesetsProperties = "rulesets/" + language.getTerseName() + "/rulesets.properties";
 				props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
@@ -347,16 +348,16 @@ public class RuleSetFactory {
 
 		if (ruleElement.hasAttribute("language")) {
 			String languageName = ruleElement.getAttribute("language");
-			Language language = Language.findByTerseName(languageName);
+			LanguageModule language = LanguageRegistry.findLanguageByTerseName(languageName);
 			if (language == null) {
 				throw new IllegalArgumentException("Unknown Language '" + languageName + "' for Rule " + rule.getName()
 						+ ", supported Languages are "
-						+ Language.commaSeparatedTerseNames(Language.findWithRuleSupport()));
+						+ LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport()));
 			}
 			rule.setLanguage(language);
 		}
 
-		Language language = rule.getLanguage();
+		LanguageModule language = rule.getLanguage();
 		if (language == null) {
 			throw new IllegalArgumentException("Rule " + rule.getName()
 					+ " does not have a Language; missing 'language' attribute?");
@@ -364,24 +365,24 @@ public class RuleSetFactory {
 
 		if (ruleElement.hasAttribute("minimumLanguageVersion")) {
 			String minimumLanguageVersionName = ruleElement.getAttribute("minimumLanguageVersion");
-			LanguageVersion minimumLanguageVersion = language.getVersion(minimumLanguageVersionName);
+			LanguageVersionModule minimumLanguageVersion = language.getVersion(minimumLanguageVersionName);
 			if (minimumLanguageVersion == null) {
 				throw new IllegalArgumentException("Unknown minimum Language Version '" + minimumLanguageVersionName
 						+ "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()
 						+ "; supported Language Versions are: "
-						+ LanguageVersion.commaSeparatedTerseNames(language.getVersions()));
+						+ LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
 			}
 			rule.setMinimumLanguageVersion(minimumLanguageVersion);
 		}
 
 		if (ruleElement.hasAttribute("maximumLanguageVersion")) {
 			String maximumLanguageVersionName = ruleElement.getAttribute("maximumLanguageVersion");
-			LanguageVersion maximumLanguageVersion = language.getVersion(maximumLanguageVersionName);
+			LanguageVersionModule maximumLanguageVersion = language.getVersion(maximumLanguageVersionName);
 			if (maximumLanguageVersion == null) {
 				throw new IllegalArgumentException("Unknown maximum Language Version '" + maximumLanguageVersionName
 						+ "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()
 						+ "; supported Language Versions are: "
-						+ LanguageVersion.commaSeparatedTerseNames(language.getVersions()));
+						+ LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
 			}
 			rule.setMaximumLanguageVersion(maximumLanguageVersion);
 		}
@@ -596,7 +597,7 @@ public class RuleSetFactory {
 	 * Parse a property node.
 	 *
 	 * @param rule The Rule to which the property should be added. 
-	 * @param propertyNode Must be a property element node.
+	 * //@param propertyNode Must be a property element node.
 	 */
 	@SuppressWarnings("unchecked")
 //	private static void parsePropertyNode(Rule rule, Node propertyNode) {

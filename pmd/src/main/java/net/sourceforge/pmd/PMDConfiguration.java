@@ -8,9 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
@@ -208,7 +209,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param languageVersion
      *            the LanguageVersion
      */
-    public void setDefaultLanguageVersion(LanguageVersion languageVersion) {
+    public void setDefaultLanguageVersion(LanguageVersionModule languageVersion) {
         setDefaultLanguageVersions(Arrays.asList(languageVersion));
     }
 
@@ -219,8 +220,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param languageVersions
      *            The LanguageVersions.
      */
-    public void setDefaultLanguageVersions(List<LanguageVersion> languageVersions) {
-        for (LanguageVersion languageVersion : languageVersions) {
+    public void setDefaultLanguageVersions(List<LanguageVersionModule> languageVersions) {
+        for (LanguageVersionModule languageVersion : languageVersions) {
             languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
         }
     }
@@ -239,12 +240,12 @@ public class PMDConfiguration extends AbstractConfiguration {
     // FUTURE Delete this? I can't think of a good reason to keep it around.
     // Failure to determine the LanguageVersion for a file should be a hard
     // error, or simply cause the file to be skipped?
-    public LanguageVersion getLanguageVersionOfFile(String fileName) {
-        LanguageVersion languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
+    public LanguageVersionModule getLanguageVersionOfFile(String fileName) {
+        LanguageVersionModule languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
         if (languageVersion == null) {
             // For compatibility with older code that does not always pass in
             // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(Language.JAVA);
+            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         }
         return languageVersion;
     }

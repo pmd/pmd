@@ -11,8 +11,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
@@ -30,7 +30,7 @@ public class XPathJspRuleTest extends RuleTst {
     public void testExpressionMatching() throws Throwable {
         Rule rule = new XPathRule(XPATH_EXPRESSION);
         rule.setMessage("Test");
-        rule.setLanguage(Language.JSP);
+        rule.setLanguage(LanguageRegistry.getLanguage(JspLanguageModule.NAME));
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
 
@@ -38,7 +38,7 @@ public class XPathJspRuleTest extends RuleTst {
         Report report = new Report();
         ctx.setReport(report);
         ctx.setSourceCodeFilename("n/a");
-        ctx.setLanguageVersion(LanguageVersion.JSP);
+        ctx.setLanguageVersion(LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion());
 
         PMD p = new PMD();
 

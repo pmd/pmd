@@ -20,8 +20,11 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
@@ -122,21 +125,21 @@ public class MainFrame
         setVisible(true);
     }
 
-    private LanguageVersion getLanguageVersion() {
+    private LanguageVersionModule getLanguageVersion() {
         if (jdk14MenuItem.isSelected()) {
-            return LanguageVersion.JAVA_14;
+            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4");
         } else if (jdk13MenuItem.isSelected()) {
-            return LanguageVersion.JAVA_13;
+            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3");
         } else if (jdk15MenuItem.isSelected()) {
-            return LanguageVersion.JAVA_15;
+            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
         } else if (jdk16MenuItem.isSelected()) {
-            return LanguageVersion.JAVA_16;
+            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.6");
         } else if (jdk17MenuItem.isSelected()) {
-            return LanguageVersion.JAVA_17;
+            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7");
         } else if (plsqlMenuItem.isSelected()) {
-            return LanguageVersion.PLSQL;
+            return LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion();
         }
-        return LanguageVersion.JAVA_15;
+        return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
     }
 
     /**

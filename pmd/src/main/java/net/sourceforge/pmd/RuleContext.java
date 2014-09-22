@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 
 /**
  * The RuleContext provides access to Rule processing state.  This information
@@ -31,7 +31,7 @@ public class RuleContext {
     private Report report = new Report();
     private File sourceCodeFile;
     private String sourceCodeFilename;
-    private LanguageVersion languageVersion;
+    private LanguageVersionModule languageVersion;
     private final Map<String, Object> attributes;
     private boolean ignoreExceptions = true;
 
@@ -105,7 +105,7 @@ public class RuleContext {
      * Get the LanguageVersion associated with the current source file.
      * @return The LanguageVersion, <code>null</code> if unknown.
      */
-    public LanguageVersion getLanguageVersion() {
+    public LanguageVersionModule getLanguageVersion() {
 	return this.languageVersion;
     }
 
@@ -116,7 +116,7 @@ public class RuleContext {
      *
      * @param languageVersion The LanguageVersion.
      */
-    public void setLanguageVersion(LanguageVersion languageVersion) {
+    public void setLanguageVersion(LanguageVersionModule languageVersion) {
 	this.languageVersion = languageVersion;
     }
 

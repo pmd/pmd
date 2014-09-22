@@ -4,9 +4,11 @@
 package net.sourceforge.pmd.util.designer;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.lang.LanguageVersion;
+
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import org.junit.Test;
 
 /**
@@ -19,7 +21,7 @@ public class DesignerTest {
      */
     @Test
     public void testCopyXmlToClipboard() {
-        Node compilationUnit = Designer.getCompilationUnit(LanguageVersion.JAVA_18.getLanguageVersionHandler(), "public class Foo {}");
+        Node compilationUnit = Designer.getCompilationUnit(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8").getLanguageVersionHandler(), "public class Foo {}");
         String xml = Designer.getXmlTreeCode(compilationUnit);
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
                 "<CompilationUnit BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"19\" EndLine=\"1\" FindBoundary=\"false\"\n" + 

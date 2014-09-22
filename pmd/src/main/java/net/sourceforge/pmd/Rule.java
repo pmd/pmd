@@ -5,8 +5,8 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
@@ -36,14 +36,14 @@ public interface Rule extends PropertySource {
      * 
      * @return the language
      */
-    Language getLanguage();
+    LanguageModule getLanguage();
 
     /**
      * Set the Language of this Rule.
      * 
      * @param language the language
      */
-    void setLanguage(Language language);
+    void setLanguage(LanguageModule language);
 
     /**
      * Get the minimum LanguageVersion to which this Rule applies. If this value
@@ -51,14 +51,14 @@ public interface Rule extends PropertySource {
      * 
      * @return the minimum language version
      */
-    LanguageVersion getMinimumLanguageVersion();
+    LanguageVersionModule getMinimumLanguageVersion();
 
     /**
      * Set the minimum LanguageVersion to which this Rule applies.
      * 
      * @param minimumLanguageVersion the minimum language version
      */
-    void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion);
+    void setMinimumLanguageVersion(LanguageVersionModule minimumLanguageVersion);
 
     /**
      * Get the maximum LanguageVersion to which this Rule applies. If this value
@@ -66,14 +66,14 @@ public interface Rule extends PropertySource {
      * 
      * @return the maximum language version
      */
-    LanguageVersion getMaximumLanguageVersion();
+    LanguageVersionModule getMaximumLanguageVersion();
 
     /**
      * Set the maximum LanguageVersion to which this Rule applies.
      * 
      * @param maximumLanguageVersion the maximum language version
      */
-    void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion);
+    void setMaximumLanguageVersion(LanguageVersionModule maximumLanguageVersion);
 
     /**
      * Gets whether this Rule is deprecated. A deprecated Rule is one which:
@@ -227,7 +227,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the parser options for this Rule. Parser options are used to
-     * configure the {@link Parser} to create an AST in the form the Rule is
+     * configure the {@link net.sourceforge.pmd.lang.Parser} to create an AST in the form the Rule is
      * expecting. Because ParserOptions are mutable, a Rule should return a new
      * instance on each call.
      * 

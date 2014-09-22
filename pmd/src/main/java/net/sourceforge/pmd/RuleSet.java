@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -180,7 +180,7 @@ public class RuleSet {
      * @return <code>true</code> if a Rule for the Language uses the DFA layer,
      *         <code>false</code> otherwise.
      */
-    public boolean usesDFA(Language language) {
+    public boolean usesDFA(LanguageModule language) {
         for (Rule r : rules) {
             if (r.getLanguage().equals(language)) {
                 if (r.usesDFA()) {
@@ -334,9 +334,9 @@ public class RuleSet {
      * @return <code>true</code> if the given rule matches the given language,
      *         which means, that the rule would be executed.
      */
-    public static boolean applies(Rule rule, LanguageVersion languageVersion) {
-        final LanguageVersion min = rule.getMinimumLanguageVersion();
-        final LanguageVersion max = rule.getMinimumLanguageVersion();
+    public static boolean applies(Rule rule, LanguageVersionModule languageVersion) {
+        final LanguageVersionModule min = rule.getMinimumLanguageVersion();
+        final LanguageVersionModule max = rule.getMinimumLanguageVersion();
         return rule.getLanguage().equals(languageVersion.getLanguage())
                 && (min == null || min.compareTo(languageVersion) <= 0)
                 && (max == null || max.compareTo(languageVersion) >= 0);
@@ -504,7 +504,7 @@ public class RuleSet {
      * @return <code>true</code> if a Rule for the Language uses Type
      *         Resolution, <code>false</code> otherwise.
      */
-    public boolean usesTypeResolution(Language language) {
+    public boolean usesTypeResolution(LanguageModule language) {
         for (Rule r : rules) {
             if (r.getLanguage().equals(language)) {
                 if (r.usesTypeResolution()) {

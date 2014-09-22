@@ -12,11 +12,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.VisitorStarter;
+import net.sourceforge.pmd.lang.*;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
@@ -58,7 +54,7 @@ public class SourceCodeProcessor {
      * different Languages, will need to be sure to either properly set the
      * Language on the RuleContext, or set it to <code>null</code> first.
      *
-     * @see RuleContext#setLanguageVersion(LanguageVersion)
+     * @see RuleContext#setLanguageVersion(LanguageVersionModule)
      * @see PMDConfiguration#getLanguageVersionOfFile(String)
      *
      * @param sourceCode The Reader to analyze.
@@ -113,7 +109,7 @@ public class SourceCodeProcessor {
 //		return parserOptions;
 //    }
 
-    private void usesDFA(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets, Language language ) {
+    private void usesDFA(LanguageVersionModule languageVersion, Node rootNode, RuleSets ruleSets, LanguageModule language ) {
 
 		if (ruleSets.usesDFA(language)) {
 		    long start = System.nanoTime();
@@ -124,7 +120,7 @@ public class SourceCodeProcessor {
 		}
     }
 
-    private void usesTypeResolution(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets, Language language) {
+    private void usesTypeResolution(LanguageVersionModule languageVersion, Node rootNode, RuleSets ruleSets, LanguageModule language) {
 	
 		if (ruleSets.usesTypeResolution(language)) {
 		    long start = System.nanoTime();
@@ -135,13 +131,13 @@ public class SourceCodeProcessor {
     }
     
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
-		LanguageVersion languageVersion = ctx.getLanguageVersion();
+		LanguageVersionModule languageVersion = ctx.getLanguageVersion();
 		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();		
 		Parser parser = PMD.parserFor(languageVersion, configuration);
 		
 		Node rootNode = parse(ctx, sourceCode, parser);
 		symbolFacade(rootNode, languageVersionHandler);
-		Language language = languageVersion.getLanguage();
+		LanguageModule language = languageVersion.getLanguage();
 		usesDFA(languageVersion, rootNode, ruleSets, language);
 		usesTypeResolution(languageVersion, rootNode, ruleSets,language);
 		
@@ -155,7 +151,7 @@ public class SourceCodeProcessor {
 	private void determineLanguage(RuleContext ctx) {
 		// If LanguageVersion of the source file is not known, make a determination
 		if (ctx.getLanguageVersion() == null) {
-		    LanguageVersion languageVersion = configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());
+		    LanguageVersionModule languageVersion = configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());
 		    ctx.setLanguageVersion(languageVersion);
 		}
     }

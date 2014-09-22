@@ -13,11 +13,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleViolationFactory;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -127,7 +128,7 @@ public class ReportTest extends RuleTst implements ReportListener {
     @Test
     public void testExclusionsInReportWithAnnotations() throws Throwable {
         Report rpt = new Report();
-        runTestFromString(TEST2, new FooRule(), rpt, LanguageVersion.JAVA_15);
+        runTestFromString(TEST2, new FooRule(), rpt, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }
@@ -135,7 +136,7 @@ public class ReportTest extends RuleTst implements ReportListener {
     @Test
     public void testExclusionsInReportWithAnnotationsFullName() throws Throwable {
         Report rpt = new Report();
-        runTestFromString(TEST2_FULL, new FooRule(), rpt, LanguageVersion.JAVA_15);
+        runTestFromString(TEST2_FULL, new FooRule(), rpt, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }
@@ -160,7 +161,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         };
         String code = "function(x) // NOPMD test suppress\n"
                 + "{ x = 1; }";
-        runTestFromString(code, rule, rpt, Language.ECMASCRIPT.getDefaultVersion());
+        runTestFromString(code, rule, rpt, LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion());
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }

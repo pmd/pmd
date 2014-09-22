@@ -96,16 +96,14 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.*;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -122,7 +120,7 @@ import org.xml.sax.SAXException;
 public class Designer implements ClipboardOwner {
 
 	private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Arrays.asList(getSupportedLanguageVersions())
-	.indexOf(Language.JAVA.getDefaultVersion());
+	.indexOf(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
 
     private Node getCompilationUnit() {
         LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
@@ -139,9 +137,9 @@ public class Designer implements ClipboardOwner {
         return getCompilationUnit(languageVersionHandler, codeEditorPane.getText());
     }
 
-	private static LanguageVersion[] getSupportedLanguageVersions() {
-		List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
-		for (LanguageVersion languageVersion : LanguageVersion.values()) {
+	private static LanguageVersionModule[] getSupportedLanguageVersions() {
+		List<LanguageVersionModule> languageVersions = new ArrayList<LanguageVersionModule>();
+		for (LanguageVersionModule languageVersion : LanguageRegistry.findAllVersions()) {
 			LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 			if (languageVersionHandler != null) {
 				Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
@@ -150,18 +148,18 @@ public class Designer implements ClipboardOwner {
 				}
 			}
 		}
-		return languageVersions.toArray(new LanguageVersion[languageVersions.size()]);
+		return languageVersions.toArray(new LanguageVersionModule[languageVersions.size()]);
 	}
 
-	private LanguageVersion getLanguageVersion() {
+	private LanguageVersionModule getLanguageVersion() {
 		return getSupportedLanguageVersions()[selectedLanguageVersionIndex()];
 	}
 
-	private void setLanguageVersion(LanguageVersion languageVersion) {
+	private void setLanguageVersion(LanguageVersionModule languageVersion) {
 		if (languageVersion != null) {
-			LanguageVersion[] versions = getSupportedLanguageVersions();
+			LanguageVersionModule[] versions = getSupportedLanguageVersions();
 			for (int i = 0; i < versions.length; i++) {
-				LanguageVersion version = versions[i];
+				LanguageVersionModule version = versions[i];
 				if (languageVersion.equals(version)) {
 					languageVersionMenuItems[i].setSelected(true);
 					break;
@@ -180,7 +178,7 @@ public class Designer implements ClipboardOwner {
 	}
 
 	private LanguageVersionHandler getLanguageVersionHandler() {
-		LanguageVersion languageVersion = getLanguageVersion();
+		LanguageVersionModule languageVersion = getLanguageVersion();
 		return languageVersion.getLanguageVersionHandler();
 	}
 
@@ -472,7 +470,7 @@ public class Designer implements ClipboardOwner {
 	private class DFAListener implements ActionListener {
 		public void actionPerformed(ActionEvent ae) {
 
-		    LanguageVersion languageVersion = getLanguageVersion();
+		    LanguageVersionModule languageVersion = getLanguageVersion();
 			DFAGraphRule dfaGraphRule = languageVersion.getLanguageVersionHandler().getDFAGraphRule();
 			RuleSet rs = new RuleSet();
 			if (dfaGraphRule != null) {
@@ -714,9 +712,9 @@ public class Designer implements ClipboardOwner {
 		JMenu menu = new JMenu("Language");
 		ButtonGroup group = new ButtonGroup();
 
-		LanguageVersion[] languageVersions = getSupportedLanguageVersions();
+		LanguageVersionModule[] languageVersions = getSupportedLanguageVersions();
 		for (int i = 0; i < languageVersions.length; i++) {
-			LanguageVersion languageVersion = languageVersions[i];
+			LanguageVersionModule languageVersion = languageVersions[i];
 			JRadioButtonMenuItem button = new JRadioButtonMenuItem(languageVersion.getShortName());
 			languageVersionMenuItems[i] = button;
 			group.add(button);
@@ -966,7 +964,8 @@ public class Designer implements ClipboardOwner {
 				String xpathVersion = xpathElement.getAttribute("version");
 
 				codeEditorPane.setText(code);
-				setLanguageVersion(LanguageVersion.findByTerseName(languageVersion));
+// TODO: Fix this.
+//				setLanguageVersion(LanguageRegistry.findByTerseName(languageVersion));
 				xpathQueryArea.setText(xpath);
 				for (Enumeration<AbstractButton> e = xpathVersionButtonGroup.getElements(); e.hasMoreElements();) {
 					AbstractButton button = e.nextElement();

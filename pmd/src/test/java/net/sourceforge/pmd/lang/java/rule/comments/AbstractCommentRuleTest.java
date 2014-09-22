@@ -9,9 +9,10 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
@@ -44,7 +45,7 @@ public class AbstractCommentRuleTest {
 
     @Test
     public void testCommentAssignments() {
-        LanguageVersionHandler handler = LanguageVersion.JAVA_18.getLanguageVersionHandler();
+        LanguageVersionHandler handler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8").getLanguageVersionHandler();
         Reader source = new StringReader("public class Foo {"
                 + "     /** Comment 1 */\n" + 
                 "        public void method1() {}\n" + 

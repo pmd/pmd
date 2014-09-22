@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Properties;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 
 import org.junit.Ignore;
 
@@ -24,7 +24,7 @@ public class TestDescriptor {
     private List<String> expectedMessages = new ArrayList<String>();
     private List<Integer> expectedLineNumbers = new ArrayList<Integer>();
     private String code;
-    private LanguageVersion languageVersion;
+    private LanguageVersionModule languageVersion;
     private boolean reinitializeRule = true;   //default, avoids unintentional mixing of state between test cases
     private boolean isRegressionTest = true;
     private int numberInDocument = -1;
@@ -38,7 +38,7 @@ public class TestDescriptor {
         this(code, description, numberOfProblemsExpected, rule, RuleTst.DEFAULT_LANGUAGE_VERSION);
     }
     
-    public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule, LanguageVersion languageVersion) {
+    public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule, LanguageVersionModule languageVersion) {
         this.rule = rule;
         this.code = code;
         this.description = description;
@@ -84,7 +84,7 @@ public class TestDescriptor {
         return code;
     }
 
-    public LanguageVersion getLanguageVersion() {
+    public LanguageVersionModule getLanguageVersion() {
         return languageVersion;
     }
 

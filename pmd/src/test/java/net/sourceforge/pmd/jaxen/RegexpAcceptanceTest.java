@@ -4,7 +4,8 @@
 package net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
@@ -18,7 +19,7 @@ public class RegexpAcceptanceTest extends SimpleAggregatorTst {
     @Test
     public void testSimple() throws Throwable {
         Rule r = new XPathRule(xPath);
-        r.setLanguage(Language.JAVA);
+        r.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         r.setMessage("");
         TestDescriptor[] testDescriptors = extractTestsFromXml(r, "RegexpAcceptance");
         for (TestDescriptor testDescriptor : testDescriptors) {

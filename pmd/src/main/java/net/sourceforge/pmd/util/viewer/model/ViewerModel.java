@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
@@ -37,7 +37,7 @@ public class ViewerModel {
      * commits source code to the model.
      * all existing source will be replaced
      */
-    public void commitSource(String source, LanguageVersion languageVersion) {
+    public void commitSource(String source, LanguageVersionModule languageVersion) {
 	LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	Node node =  languageVersionHandler
 		.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(source));

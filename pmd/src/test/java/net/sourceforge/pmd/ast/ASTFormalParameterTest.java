@@ -8,7 +8,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.testframework.ParserTst;
@@ -23,7 +24,7 @@ public class ASTFormalParameterTest extends ParserTst {
         int nrOfVarArgs   = 0;
         int nrOfNoVarArgs = 0;
         
-        Set<ASTFormalParameter> ops = getNodes(LanguageVersion.JAVA_15, ASTFormalParameter.class, TEST1);
+        Set<ASTFormalParameter> ops = getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"), ASTFormalParameter.class, TEST1);
         for (Iterator<ASTFormalParameter> iter = ops.iterator(); iter.hasNext();) {
             ASTFormalParameter b = iter.next();
             ASTVariableDeclaratorId variableDeclId = b.getFirstDescendantOfType(ASTVariableDeclaratorId.class);

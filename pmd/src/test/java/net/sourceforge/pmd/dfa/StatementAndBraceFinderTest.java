@@ -6,9 +6,10 @@ package net.sourceforge.pmd.dfa;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -70,7 +71,7 @@ public class StatementAndBraceFinderTest extends ParserTst {
 
     @Test(expected = RuntimeException.class)
     public void testOnlyWorksForMethodsAndConstructors() {
-        StatementAndBraceFinder sbf = new StatementAndBraceFinder(Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
+        StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
         sbf.buildDataFlowFor(new ASTMethodDeclaration(1));
         sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
         sbf.buildDataFlowFor(new ASTCompilationUnit(1));

@@ -13,9 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
@@ -39,7 +41,7 @@ public class AbstractDomXmlRuleTest {
 		String source = "<?xml version=\"1.0\"?><?mypi?><!DOCTYPE testDoc [<!ENTITY entity \"e\">]><!--Comment--><foo abc=\"abc\"><bar>TEXT</bar><![CDATA[cdata!]]>&gt;&entity;&lt;</foo>";
 		XmlParserOptions parserOptions = new XmlParserOptions();
 		parserOptions.setExpandEntityReferences(false);
-		Parser parser = Language.XML.getDefaultVersion()
+		Parser parser = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion()
 				.getLanguageVersionHandler().getParser(parserOptions);
 		XmlNode xmlNode = (XmlNode) parser
 				.parse(null, new StringReader(source));
@@ -104,7 +106,7 @@ public class AbstractDomXmlRuleTest {
 				+ "<struts-config/>";
 		XmlParserOptions parserOptions = new XmlParserOptions();
 		parserOptions.setLookupDescriptorDoc(false);
-		Parser parser = Language.XML.getDefaultVersion()
+		Parser parser = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion()
 				.getLanguageVersionHandler().getParser(parserOptions);
 		XmlNode xmlNode = (XmlNode) parser
 				.parse(null, new StringReader(source));
@@ -128,7 +130,7 @@ public class AbstractDomXmlRuleTest {
 				+ "xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.inexisting.com/xml/ns/javaee/web-app_2_5.xsd\" "
 				+ "version=\"2.5\">" + "</web-app>";
 		XmlParserOptions parserOptions = new XmlParserOptions();
-		Parser parser = Language.XML.getDefaultVersion()
+		Parser parser = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion()
 				.getLanguageVersionHandler().getParser(parserOptions);
 		XmlNode xmlNode = (XmlNode) parser
 				.parse(null, new StringReader(source));

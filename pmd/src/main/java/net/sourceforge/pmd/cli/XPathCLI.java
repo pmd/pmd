@@ -15,7 +15,9 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -32,7 +34,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class XPathCLI {
 
-    private static final Language LANGUAGE = Language.JAVA;
+    private static final LanguageModule LANGUAGE = LanguageRegistry.getLanguage(JavaLanguageModule.NAME);
 
     public static void main(String[] args) throws Exception {
         if (args.length != 4) {

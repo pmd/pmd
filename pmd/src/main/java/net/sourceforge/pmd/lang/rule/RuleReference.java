@@ -14,8 +14,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -27,9 +27,9 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class RuleReference extends AbstractDelegateRule {
 
-	private Language language;
-	private LanguageVersion minimumLanguageVersion;
-	private LanguageVersion maximumLanguageVersion;
+	private LanguageModule language;
+	private LanguageVersionModule minimumLanguageVersion;
+	private LanguageVersionModule maximumLanguageVersion;
 	private Boolean deprecated;
 	private String name;
 	private List<PropertyDescriptor<?>> propertyDescriptors;
@@ -43,7 +43,7 @@ public class RuleReference extends AbstractDelegateRule {
 
 	private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = new ArrayList<PropertyDescriptor<?>>(0);
 
-	public Language getOverriddenLanguage() {
+	public LanguageModule getOverriddenLanguage() {
 		return language;
 	}
 
@@ -56,7 +56,7 @@ public class RuleReference extends AbstractDelegateRule {
 	}
 
 	@Override
-	public void setLanguage(Language language) {
+	public void setLanguage(LanguageModule language) {
 		// Only override if different than current value, or if already overridden.
 		if (!isSame(language, super.getLanguage()) || this.language != null) {
 			this.language = language;
@@ -64,12 +64,12 @@ public class RuleReference extends AbstractDelegateRule {
 		}
 	}
 
-	public LanguageVersion getOverriddenMinimumLanguageVersion() {
+	public LanguageVersionModule getOverriddenMinimumLanguageVersion() {
 		return minimumLanguageVersion;
 	}
 
 	@Override
-	public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
+	public void setMinimumLanguageVersion(LanguageVersionModule minimumLanguageVersion) {
 		// Only override if different than current value, or if already overridden.
 		if (!isSame(minimumLanguageVersion, super.getMinimumLanguageVersion()) || this.minimumLanguageVersion != null) {
 			this.minimumLanguageVersion = minimumLanguageVersion;
@@ -77,12 +77,12 @@ public class RuleReference extends AbstractDelegateRule {
 		}
 	}
 
-	public LanguageVersion getOverriddenMaximumLanguageVersion() {
+	public LanguageVersionModule getOverriddenMaximumLanguageVersion() {
 		return maximumLanguageVersion;
 	}
 
 	@Override
-	public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
+	public void setMaximumLanguageVersion(LanguageVersionModule maximumLanguageVersion) {
 		// Only override if different than current value, or if already overridden.
 		if (!isSame(maximumLanguageVersion, super.getMaximumLanguageVersion()) || this.maximumLanguageVersion != null) {
 			this.maximumLanguageVersion = maximumLanguageVersion;

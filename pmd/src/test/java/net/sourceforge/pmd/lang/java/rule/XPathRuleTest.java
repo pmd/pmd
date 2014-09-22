@@ -16,11 +16,12 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
@@ -42,7 +43,7 @@ import org.junit.Test;
      @Before
      public void setUp() {
          rule = new XPathRule();
-         rule.setLanguage(Language.JAVA);
+         rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
          rule.setMessage("XPath Rule Failed");
      }
  
@@ -94,7 +95,7 @@ import org.junit.Test;
                  "        new File(\"subdirectory\").list();\n" + 
                  "    }\n" + 
                  "}";
-         LanguageVersion language = Language.JAVA.getDefaultVersion();
+         LanguageVersionModule language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
          ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();
          Parser parser = language.getLanguageVersionHandler().getParser(parserOptions);
          ASTCompilationUnit cu = (ASTCompilationUnit)parser.parse("test", new StringReader(SUFFIX));
@@ -141,7 +142,7 @@ import org.junit.Test;
                  "    return test;\n" +
                  "  }\n" +
                  "}";
-         LanguageVersion language = Language.JAVA.getDefaultVersion();
+         LanguageVersionModule language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
          ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();
          Parser parser = language.getLanguageVersionHandler().getParser(parserOptions);
          ASTCompilationUnit cu = (ASTCompilationUnit)parser.parse("test", new StringReader(SOURCE));

@@ -12,8 +12,8 @@ import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -32,27 +32,27 @@ public abstract class AbstractDelegateRule implements Rule {
 		return rule;
 	}
 
-	public Language getLanguage() {
+	public LanguageModule getLanguage() {
 		return rule.getLanguage();
 	}
 
-	public void setLanguage(Language language) {
+	public void setLanguage(LanguageModule language) {
 		rule.setLanguage(language);
 	}
 
-	public LanguageVersion getMinimumLanguageVersion() {
+	public LanguageVersionModule getMinimumLanguageVersion() {
 		return rule.getMinimumLanguageVersion();
 	}
 
-	public void setMinimumLanguageVersion(LanguageVersion minimumlanguageVersion) {
+	public void setMinimumLanguageVersion(LanguageVersionModule minimumlanguageVersion) {
 		rule.setMinimumLanguageVersion(minimumlanguageVersion);
 	}
 
-	public void setMaximumLanguageVersion(LanguageVersion maximumlanguageVersion) {
+	public void setMaximumLanguageVersion(LanguageVersionModule maximumlanguageVersion) {
 		rule.setMaximumLanguageVersion(maximumlanguageVersion);
 	}
 
-	public LanguageVersion getMaximumLanguageVersion() {
+	public LanguageVersionModule getMaximumLanguageVersion() {
 		return rule.getMaximumLanguageVersion();
 	}
 

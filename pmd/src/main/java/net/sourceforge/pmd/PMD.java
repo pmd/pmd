@@ -26,13 +26,7 @@ import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.benchmark.TextReport;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageFilenameFilter;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.*;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -116,7 +110,7 @@ public class PMD {
      * @param configuration the given configuration
      * @return the pre-configured parser
      */
-    public static Parser parserFor(LanguageVersion languageVersion, PMDConfiguration configuration) {
+    public static Parser parserFor(LanguageVersionModule languageVersion, PMDConfiguration configuration) {
 
         // TODO Handle Rules having different parser options.
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
@@ -219,7 +213,7 @@ public class PMD {
         if (ruleSets == null)
             return;
 
-        Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
+        Set<LanguageModule> languages = getApplicableLanguages(configuration, ruleSets);
         List<DataSource> files = getApplicableFiles(configuration, languages);
 
         long reportStart = System.nanoTime();
@@ -363,7 +357,7 @@ public class PMD {
      * @param languages used to filter by file extension
      * @return List<DataSource> of files
      */
-    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
+    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<LanguageModule> languages) {
         long startFiles = System.nanoTime();
         LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
         List<DataSource> files = new ArrayList<DataSource>();
@@ -388,15 +382,15 @@ public class PMD {
         return files;
     }
 
-    private static Set<Language> getApplicableLanguages(PMDConfiguration configuration, RuleSets ruleSets) {
-        Set<Language> languages = new HashSet<Language>();
+    private static Set<LanguageModule> getApplicableLanguages(PMDConfiguration configuration, RuleSets ruleSets) {
+        Set<LanguageModule> languages = new HashSet<LanguageModule>();
         LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 
         for (Rule rule : ruleSets.getAllRules()) {
-            Language language = rule.getLanguage();
+            LanguageModule language = rule.getLanguage();
             if (languages.contains(language))
                 continue;
-            LanguageVersion version = discoverer.getDefaultLanguageVersion(language);
+            LanguageVersionModule version = discoverer.getDefaultLanguageVersion(language);
             if (RuleSet.applies(rule, version)) {
                 languages.add(language);
                 LOG.fine("Using " + language.getShortName() + " version: " + version.getShortName());

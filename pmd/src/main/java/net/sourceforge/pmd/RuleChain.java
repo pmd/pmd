@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageModule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
  */
 public class RuleChain {
     // Mapping from Language to RuleChainVisitor
-    private final Map<Language, RuleChainVisitor> languageToRuleChainVisitor = new HashMap<Language, RuleChainVisitor>();
+    private final Map<LanguageModule, RuleChainVisitor> languageToRuleChainVisitor = new HashMap<LanguageModule, RuleChainVisitor>();
 
     /**
      * Add all Rules from the given RuleSet which want to participate in the
@@ -60,7 +60,7 @@ public class RuleChain {
      * @param language
      *            The Language.
      */
-    public void apply(List<Node> nodes, RuleContext ctx, Language language) {
+    public void apply(List<Node> nodes, RuleContext ctx, LanguageModule language) {
 	RuleChainVisitor visitor = getRuleChainVisitor(language);
 	if (visitor != null) {
 	    visitor.visitAll(nodes, ctx);
@@ -68,7 +68,7 @@ public class RuleChain {
     }
 
     // Get the RuleChainVisitor for the appropriate Language.
-    private RuleChainVisitor getRuleChainVisitor(Language language) {
+    private RuleChainVisitor getRuleChainVisitor(LanguageModule language) {
 	RuleChainVisitor visitor = languageToRuleChainVisitor.get(language);
 	if (visitor == null) {
 	    if (language.getRuleChainVisitorClass() != null) {

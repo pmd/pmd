@@ -8,9 +8,10 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringReader;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -35,7 +36,7 @@ public class JavaRuleViolationTest {
     }
 
     private ASTCompilationUnit parse(final String code) {
-        final LanguageVersionHandler languageVersionHandler = Language.JAVA.getDefaultVersion().getLanguageVersionHandler();
+        final LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         final ParserOptions options = languageVersionHandler.getDefaultParserOptions();
         final ASTCompilationUnit ast = (ASTCompilationUnit) languageVersionHandler.getParser(options).parse(null, new StringReader(code));
         // set scope of AST nodes

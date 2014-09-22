@@ -4,9 +4,10 @@
 package net.sourceforge.pmd.lang.xpath;
 
 import net.sf.saxon.sxpath.IndependentContext;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.java.xpath.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 
@@ -30,8 +31,8 @@ public class Initializer {
      */
     public static void initialize(IndependentContext context) {
 		context.declareNamespace("pmd", "java:" + PMDFunctions.class.getName());
-		for (Language language : Language.values()) {
-		    for (LanguageVersion languageVersion : language.getVersions()) {
+		for (LanguageModule language : LanguageRegistry.getLanguages()) {
+		    for (LanguageVersionModule languageVersion : language.getVersions()) {
 			LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 			if (languageVersionHandler != null) {
 			    languageVersionHandler.getXPathHandler().initialize(context);
@@ -52,8 +53,8 @@ public class Initializer {
     }
 
     private static void initializeLanguages() {
-		for (Language language : Language.values()) {
-		    for (LanguageVersion languageVersion : language.getVersions()) {
+		for (LanguageModule language : LanguageRegistry.getLanguages()) {
+		    for (LanguageVersionModule languageVersion : language.getVersions()) {
 			LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 			if (languageVersionHandler != null) {
 			    languageVersionHandler.getXPathHandler().initialize();

@@ -5,11 +5,12 @@ package net.sourceforge.pmd.lang.jsp;
 
 import java.io.StringReader;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class JspParserTest {
     }
 
     private Node parse(String code) {
-        LanguageVersionHandler jspLang = LanguageVersion.JSP.getLanguageVersionHandler();
+        LanguageVersionHandler jspLang = LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         Parser parser = jspLang.getParser(jspLang.getDefaultParserOptions());
         Node node = parser.parse(null, new StringReader(code));
         return node;

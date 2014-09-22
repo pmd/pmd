@@ -13,9 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.ast.Node;
 // Root Production comprising PLSQL definitions, and SQL*PLus, DDL, GRANTS etc.
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
@@ -58,10 +58,10 @@ public abstract class AbstractPLSQLParserTst {
     }
 
     public <E> Set<E> getNodes(Class<E> clazz, String plsqlCode) throws Throwable {
-        return getNodes(Language.PLSQL.getDefaultVersion(), clazz, plsqlCode);
+        return getNodes(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion(), clazz, plsqlCode);
     }
 
-    public <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String plsqlCode) throws Throwable {
+    public <E> Set<E> getNodes(LanguageVersionModule languageVersion, Class<E> clazz, String plsqlCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz);
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	ASTInput cu = (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(plsqlCode));
@@ -72,7 +72,7 @@ public abstract class AbstractPLSQLParserTst {
 
     public <E> List<E> getOrderedNodes(Class<E> clazz, String plsqlCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz, new ArrayList<E>());
-        LanguageVersionHandler languageVersionHandler = Language.PLSQL.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         ASTInput cu = (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(plsqlCode));
         PLSQLParserVisitor jpv = (PLSQLParserVisitor) Proxy.newProxyInstance(PLSQLParserVisitor.class.getClassLoader(), new Class[]{PLSQLParserVisitor.class}, coll);
         jpv.visit(cu, null);
@@ -94,7 +94,7 @@ public abstract class AbstractPLSQLParserTst {
     }
        
     public ASTInput buildDFA(String plsqlCode) throws Throwable {
-        LanguageVersionHandler languageVersionHandler = Language.PLSQL.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
 	ASTInput cu = (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(plsqlCode));
         PLSQLParserVisitor jpv = (PLSQLParserVisitor) Proxy.newProxyInstance(PLSQLParserVisitor.class.getClassLoader(), new Class[]{PLSQLParserVisitor.class}, new Collector<ASTInput>(ASTInput.class));
         jpv.visit(cu, null);
@@ -103,16 +103,16 @@ public abstract class AbstractPLSQLParserTst {
         return cu;
     }
     
-    public ASTInput parsePLSQL(LanguageVersion languageVersion, String code) {
+    public ASTInput parsePLSQL(LanguageVersionModule languageVersion, String code) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	return (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
     }
     
     public ASTInput parsePLSQL(String code) {
-    	return parsePLSQL(LanguageVersion.PLSQL, code);
+    	return parsePLSQL(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion(), code);
     }
     
-    public Node parseLanguage(LanguageVersion languageVersion, String code) {
+    public Node parseLanguage(LanguageVersionModule languageVersion, String code) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	return (Node)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
     }

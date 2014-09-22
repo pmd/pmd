@@ -6,9 +6,10 @@ package net.sourceforge.pmd.cpd;
 import java.io.StringReader;
 import java.util.Properties;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.JavaParserConstants;
 import net.sourceforge.pmd.lang.java.ast.Token;
 
@@ -34,7 +35,7 @@ public class JavaTokenizer implements Tokenizer {
         StringBuilder stringBuilder = sourceCode.getCodeBuffer();
 
         // Note that Java version is irrelevant for tokenizing
-        LanguageVersionHandler languageVersionHandler = LanguageVersion.JAVA_14.getLanguageVersionHandler();
+        LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4").getLanguageVersionHandler();
         String fileName = sourceCode.getFileName();
         TokenManager tokenMgr = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).getTokenManager(
                 fileName, new StringReader(stringBuilder.toString()));

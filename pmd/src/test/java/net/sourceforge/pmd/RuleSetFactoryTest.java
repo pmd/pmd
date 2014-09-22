@@ -29,8 +29,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -395,7 +396,7 @@ public class RuleSetFactoryTest {
 	@Test
 	public void testLanguage() throws RuleSetNotFoundException {
 		Rule r = loadFirstRule(LANGUAGE);
-		assertEquals(Language.JAVA, r.getLanguage());
+		assertEquals(LanguageRegistry.getLanguage(JavaLanguageModule.NAME), r.getLanguage());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -406,7 +407,7 @@ public class RuleSetFactoryTest {
 	@Test
 	public void testMinimumLanugageVersion() throws RuleSetNotFoundException {
 		Rule r = loadFirstRule(MINIMUM_LANGUAGE_VERSION);
-		assertEquals(LanguageVersion.JAVA_14, r.getMinimumLanguageVersion());
+		assertEquals(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"), r.getMinimumLanguageVersion());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -418,7 +419,7 @@ public class RuleSetFactoryTest {
 	@Test
 	public void testMaximumLanugageVersion() throws RuleSetNotFoundException {
 		Rule r = loadFirstRule(MAXIMUM_LANGUAGE_VERSION);
-		assertEquals(LanguageVersion.JAVA_17, r.getMaximumLanguageVersion());
+		assertEquals(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7"), r.getMaximumLanguageVersion());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -595,7 +596,7 @@ public class RuleSetFactoryTest {
 					continue;
 				}
 
-				Language language = rule.getLanguage();
+				LanguageModule language = rule.getLanguage();
 				String group = fileName
 						.substring(fileName.lastIndexOf('/') + 1);
 				group = group.substring(0, group.indexOf(".xml"));
@@ -974,7 +975,7 @@ public class RuleSetFactoryTest {
     RuleSetNotFoundException {
         List<String> result = new ArrayList<String>();
 
-        for (Language language : Language.values()) {
+        for (LanguageModule language : LanguageRegistry.getLanguages()) {
             result.addAll(getRuleSetFileNames(language.getTerseName()));
         }
 

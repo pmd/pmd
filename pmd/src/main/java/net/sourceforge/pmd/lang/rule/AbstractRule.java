@@ -10,8 +10,8 @@ import net.sourceforge.pmd.AbstractPropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageVersionModule;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -24,9 +24,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 // FUTURE Implement Cloneable and clone()?
 public abstract class AbstractRule extends AbstractPropertySource implements Rule {
 
-	private Language language;
-	private LanguageVersion minimumLanguageVersion;
-	private LanguageVersion maximumLanguageVersion;
+	private LanguageModule language;
+	private LanguageVersionModule minimumLanguageVersion;
+	private LanguageVersionModule maximumLanguageVersion;
 	private boolean deprecated;
 	private String name = getClass().getName();
 	private String since;
@@ -82,14 +82,14 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	/**
 	 * @see Rule#getLanguage()
 	 */
-	 public Language getLanguage() {
+	 public LanguageModule getLanguage() {
 		return language;
 	}
 
 	/**
-	 * @see Rule#setLanguage(Language)
+	 * @see Rule#setLanguage(LanguageModule)
 	 */
-	 public void setLanguage(Language language) {
+	 public void setLanguage(LanguageModule language) {
 		 if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
 			 throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
 					 + " is immutable and cannot be changed.");
@@ -100,28 +100,28 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	 /**
 	  * @see Rule#getMinimumLanguageVersion()
 	  */
-	 public LanguageVersion getMinimumLanguageVersion() {
+	 public LanguageVersionModule getMinimumLanguageVersion() {
 		 return minimumLanguageVersion;
 	 }
 
 	 /**
-	  * @see Rule#setMinimumLanguageVersion(LanguageVersion)
+	  * @see Rule#setMinimumLanguageVersion(LanguageVersionModule)
 	  */
-	 public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
+	 public void setMinimumLanguageVersion(LanguageVersionModule minimumLanguageVersion) {
 		 this.minimumLanguageVersion = minimumLanguageVersion;
 	 }
 
 	 /**
 	  * @see Rule#getMaximumLanguageVersion()
 	  */
-	 public LanguageVersion getMaximumLanguageVersion() {
+	 public LanguageVersionModule getMaximumLanguageVersion() {
 		 return maximumLanguageVersion;
 	 }
 
 	 /**
-	  * @see Rule#setMaximumLanguageVersion(LanguageVersion)
+	  * @see Rule#setMaximumLanguageVersion(LanguageVersionModule)
 	  */
-	 public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
+	 public void setMaximumLanguageVersion(LanguageVersionModule maximumLanguageVersion) {
 		 this.maximumLanguageVersion = maximumLanguageVersion;
 	 }
 

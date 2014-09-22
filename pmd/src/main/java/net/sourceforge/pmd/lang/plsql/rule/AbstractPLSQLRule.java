@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 import net.sourceforge.pmd.lang.plsql.ast.*;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
@@ -20,7 +21,7 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
   
     public AbstractPLSQLRule() {
-	super.setLanguage(Language.PLSQL);
+	super.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
 	// Enable Type Resolution on PLSQL Rules by default
 	super.setUsesTypeResolution();
     }

@@ -7,7 +7,8 @@ import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 
@@ -119,7 +120,7 @@ public class PMDCommandLineInterface {
 
 	private static String supportedVersions() {
 		return "Languages and version suported:" + PMD.EOL +
-				Language.commaSeparatedTerseNames(Language.findWithRuleSupport()) + PMD.EOL +
+				LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport()) + PMD.EOL +
 				"Note that some language are not supported by PMD - only by CPD" + PMD.EOL;
 	}
 
