@@ -238,7 +238,7 @@ public class Test {
     count(./CastExpression)=0 and
     count(./EqualityExpression)=0]
 |
-//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral = 'true'])]/PrimaryExpression/PrimaryPrefix/Expression[
+//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral = 'true'])]/PrimaryExpression[1]/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
     not(./ConditionalExpression) and

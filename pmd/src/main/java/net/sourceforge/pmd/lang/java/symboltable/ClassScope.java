@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -221,16 +223,27 @@ public class ClassScope extends AbstractJavaScope {
     private List<TypedNameDeclaration> determineArgumentTypes(JavaNameOccurrence occurrence, List<TypedNameDeclaration> parameterTypes) {
         List<TypedNameDeclaration> argumentTypes = new ArrayList<TypedNameDeclaration>();
         ASTArgumentList arguments = null;
-        Node nextSibling = getNextSibling(occurrence.getLocation().jjtGetParent());
+        Node nextSibling = null;
+        if (occurrence.getLocation() instanceof ASTPrimarySuffix) {
+            nextSibling = getNextSibling(occurrence.getLocation());
+        } else {
+            nextSibling = getNextSibling(occurrence.getLocation().jjtGetParent());
+        }
         if (nextSibling != null) {
             arguments = nextSibling.getFirstDescendantOfType(ASTArgumentList.class);
         }
 
         if (arguments != null) {
             for (int i = 0; i < arguments.jjtGetNumChildren(); i++) {
-                ASTName name = arguments.jjtGetChild(i).getFirstDescendantOfType(ASTName.class);
+                Node argument = arguments.jjtGetChild(i);
+                Node child = null;
+                if (argument.jjtGetNumChildren() > 0 && argument.jjtGetChild(0).jjtGetNumChildren() > 0
+                        && argument.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0) {
+                    child = argument.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+                }
                 TypedNameDeclaration type = null;
-                if (name != null) {
+                if (child instanceof ASTName) {
+                    ASTName name = (ASTName)child;
                     Scope s = name.getScope();
                     while (s != null) {
                         if (s.contains(new JavaNameOccurrence(name, name.getImage()))) {
@@ -248,19 +261,26 @@ public class ClassScope extends AbstractJavaScope {
                             }
                         }
                     }
-                } else {
-                    ASTLiteral literal = arguments.jjtGetChild(i).getFirstDescendantOfType(ASTLiteral.class);
-                    if (literal != null) {
-                        if (literal.isCharLiteral()) {
-                            type = new SimpleTypedNameDeclaration("char", literal.getType());
-                        } else if (literal.isStringLiteral()) {
-                            type = new SimpleTypedNameDeclaration("String", literal.getType());
-                        } else if (literal.isFloatLiteral()) {
-                            type = new SimpleTypedNameDeclaration("float", literal.getType());
-                        } else if (literal.isIntLiteral()) {
-                            type = new SimpleTypedNameDeclaration("int", literal.getType());
-                        }
+                } else if (child instanceof ASTLiteral) {
+                    ASTLiteral literal = (ASTLiteral)child;
+                    if (literal.isCharLiteral()) {
+                        type = new SimpleTypedNameDeclaration("char", literal.getType());
+                    } else if (literal.isStringLiteral()) {
+                        type = new SimpleTypedNameDeclaration("String", literal.getType());
+                    } else if (literal.isFloatLiteral()) {
+                        type = new SimpleTypedNameDeclaration("float", literal.getType());
+                    } else if (literal.isDoubleLiteral()) {
+                        type = new SimpleTypedNameDeclaration("double", literal.getType());
+                    } else if (literal.isIntLiteral()) {
+                        type = new SimpleTypedNameDeclaration("int", literal.getType());
+                    } else if (literal.isLongLiteral()) {
+                        type = new SimpleTypedNameDeclaration("long", literal.getType());
                     }
+                } else if (child instanceof ASTAllocationExpression && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
+                    ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType)child.jjtGetChild(0);
+                    String typeImage = classInterface.getImage();
+                    type = new SimpleTypedNameDeclaration(typeImage,
+                            this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage));
                 }
                 if (type == null && parameterTypes.size() > i) {
                     // replace the unknown type with the correct parameter type of the method.

@@ -171,6 +171,18 @@ public class RuleSets {
 		return rule;
     }
 
+    /**
+     * Determines the total count of rules that are used in all rule sets.
+     * @return the count
+     */
+    public int ruleCount() {
+        int count = 0;
+        for (RuleSet r : ruleSets) {
+            count += r.getRules().size();
+        }
+        return count;
+    }
+
     public boolean usesTypeResolution(Language language) {
 		for (RuleSet ruleSet : ruleSets) {
 		    if (ruleSet.usesTypeResolution(language)) {

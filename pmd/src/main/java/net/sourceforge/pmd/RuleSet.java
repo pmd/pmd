@@ -313,7 +313,8 @@ public class RuleSet {
                 throw td;
             } catch (Throwable t) {
                 if (ctx.isIgnoreExceptions()) {
-                    LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + ", continuing with next rule",
+                    LOG.log(Level.WARNING, "Exception applying rule " + rule.getName()
+                            + " on file " + ctx.getSourceCodeFilename() + ", continuing with next rule",
                             t);
                 } else {
                     throw new RuntimeException(t);

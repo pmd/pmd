@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
-    <test-code>
-        <description><![CDATA[
-Simple method
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void foo() {}
-}
-     ]]></code>
-    </test-code>
     <code-fragment id="basic-violation">
     <![CDATA[
 public class Foo {
@@ -69,17 +58,47 @@ public class Foo {
      ]]>
     </code-fragment>
     <test-code>
-        <description><![CDATA[
-Complicated method
-     ]]></description>
+        <description>Simple method</description>
+        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a Modified Cyclomatic Complexity of 2 (Highest = 1).</message>
+            <message>The method 'foo' has a Modified Cyclomatic Complexity of 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>testLessComplicatedThanReportLevel</description>
+        <rule-property name="reportLevel">10</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Complicated method</description>
+        <rule-property name="reportLevel">8</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a Modified Cyclomatic Complexity of 10 (Highest = 9).</message>
+            <message>The method 'example' has a Modified Cyclomatic Complexity of 9.</message>
+        </expected-messages>
         <code-ref id="basic-violation"/>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Constructor
-     ]]></description>
-        <expected-problems>0</expected-problems>
+        <description>Constructor</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a Modified Cyclomatic Complexity of 2 (Highest = 1).</message>
+            <message>The constructor 'Foo' has a Modified Cyclomatic Complexity of 1.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
  public Foo() {}

@@ -101,7 +101,7 @@ public class SourceCodeProcessor {
 
     private void symbolFacade(Node rootNode, LanguageVersionHandler languageVersionHandler) {
     	long start = System.nanoTime();
-		languageVersionHandler.getSymbolFacade().start(rootNode);
+		languageVersionHandler.getSymbolFacade(configuration.getClassLoader()).start(rootNode);
 		long end = System.nanoTime();
 		Benchmarker.mark(Benchmark.SymbolTable, end - start, 0);
     }

@@ -27,6 +27,7 @@ public class TestDescriptor {
     private LanguageVersion languageVersion;
     private boolean reinitializeRule = true;   //default, avoids unintentional mixing of state between test cases
     private boolean isRegressionTest = true;
+    private int numberInDocument = -1;
 
     // Empty descriptor added to please mvn surefire plugin
     public TestDescriptor() {
@@ -43,6 +44,14 @@ public class TestDescriptor {
         this.description = description;
         this.numberOfProblemsExpected = numberOfProblemsExpected;
         this.languageVersion = languageVersion;
+    }
+
+    public int getNumberInDocument() {
+        return numberInDocument;
+    }
+
+    public void setNumberInDocument(int numberInDocument) {
+        this.numberInDocument = numberInDocument;
     }
 
     public void setExpectedMessages(List<String> messages) {

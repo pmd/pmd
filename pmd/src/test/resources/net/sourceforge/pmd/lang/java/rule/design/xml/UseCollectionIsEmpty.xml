@@ -220,4 +220,62 @@ public class TestIsEmpty {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1230 UseCollectionIsEmpty gets false positives</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>8,11,16,19,24,27</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+
+public class IsEmptyTest {
+    public static void main(String args[]) {
+        ArrayList<String> testObject = new ArrayList<String>();
+
+        // these should be flagged (as they are equivalent to == 0) and are
+        if (testObject.size() < 1) { // line 8
+            System.out.println("List is empty");
+        }
+        if (1 > testObject.size()) { // line 11
+            System.out.println("List is empty");
+        }
+
+        // these should not be flagged, and are not
+        if (testObject.size() <= 1) { // line 16
+            System.out.println("List may or may not be empty");
+        }
+        if (1 >= testObject.size()) { // line 19
+            System.out.println("List may or may not be empty");
+        }
+
+        // these should be flagged (as they are equivalent to != 0) and are not
+        if (testObject.size() >= 1) { // line 24
+            System.out.println("List is not empty");
+        }
+        if (1 <= testObject.size()) { // line 27
+            System.out.println("List is not empty");
+        }
+
+        // these should not be flagged, yet are
+        if (testObject.size() > 1) { // line 32
+            System.out.println("List is not empty, but not all non-empty lists will trigger this");
+        }
+        if (1 < testObject.size()) { // line 35
+            System.out.println("List is not empty, but not all non-empty lists will trigger this");
+        }
+        if (testObject.size() != 1) { // line 38
+            System.out.println("List may or may not be empty");
+        }
+        if (1 != testObject.size()) { // line 41
+            System.out.println("List may or may not be empty");
+        }
+        if (testObject.size() == 1) { // line 44
+            System.out.println("List is not empty, but not all non-empty lists will trigger this");
+        }
+        if (1 == testObject.size()) { // line 47
+            System.out.println("List is not empty, but not all non-empty lists will trigger this");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

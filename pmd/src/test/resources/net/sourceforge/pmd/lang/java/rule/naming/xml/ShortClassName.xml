@@ -54,4 +54,34 @@ public class Timer {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1232 Make ShortClassName configurable (default = 5)</description>
+        <expected-problems>1</expected-problems>
+        <expected-lines>2</expected-lines>
+        <expected-messages>
+            <message>Avoid short class names like Bar</message>
+        </expected-messages>
+        <code><![CDATA[
+public class ThisIsALongName { }
+class Bar { }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1232 Make ShortClassName configurable (minimum length = 2)</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="minimum">2</rule-property>
+        <code><![CDATA[
+public class ThisIsALongName { }
+class Bar { }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1232 Make ShortClassName configurable (minimum length = 4)</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="minimum">4</rule-property>
+        <code><![CDATA[
+public class Isbn { }
+class Card { }
+        ]]></code>
+    </test-code>
 </test-data>

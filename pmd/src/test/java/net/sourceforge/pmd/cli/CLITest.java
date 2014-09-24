@@ -10,10 +10,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.FileUtil;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -29,6 +34,9 @@ public class CLITest {
     // and slowing down tests
     private static final String SOURCE_FOLDER = "src/main/resources";
 
+    private PrintStream originalOut;
+    private PrintStream originalErr;
+
     /**
      * @throws java.lang.Exception
      */
@@ -40,6 +48,18 @@ public class CLITest {
             assertTrue("failed to create output directory for test:" + testOuputDir.getAbsolutePath(),
                     testOuputDir.mkdirs());
         }
+    }
+
+    @Before
+    public void setup() {
+        originalOut = System.out;
+        originalErr = System.err;
+    }
+
+    @After
+    public void tearDown() {
+        System.setOut(originalOut);
+        System.setErr(originalErr);
     }
 
     private void createTestOutputFile(String filename) {
@@ -88,6 +108,48 @@ public class CLITest {
                 FileUtil.findPatternInFile(new File(resultFilename), "Using Ecmascript version: Ecmascript 3"));
     }
 
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1231/
+     */
+    @Test
+    public void testWrongRuleset() throws Exception {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-designn" };
+        String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
+        createTestOutputFile(filename);
+        runPMDWith(args);
+        Assert.assertEquals(1, getStatusCode());
+        assertTrue(FileUtil.findPatternInFile(new File(filename), "Can't find resource 'null' for rule 'java-designn'."
+                + "  Make sure the resource is a valid file"));
+    }
+
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1231/
+     */
+    @Test
+    public void testWrongRulesetWithRulename() throws Exception {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-designn/UseCollectionIsEmpty" };
+        String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
+        createTestOutputFile(filename);
+        runPMDWith(args);
+        Assert.assertEquals(1, getStatusCode());
+        assertTrue(FileUtil.findPatternInFile(new File(filename), "Can't find resource 'null' for rule "
+                + "'java-designn/UseCollectionIsEmpty'."));
+    }
+
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1231/
+     */
+    @Test
+    public void testWrongRulename() throws Exception {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design/ThisRuleDoesNotExist" };
+        String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
+        createTestOutputFile(filename);
+        runPMDWith(args);
+        Assert.assertEquals(1, getStatusCode());
+        assertTrue(FileUtil.findPatternInFile(new File(filename), Pattern.quote("No rules found. Maybe you mispelled a rule name?"
+                + " (java-design/ThisRuleDoesNotExist)")));
+    }
+
     private String runTest(String[] args, String testname) {
         String filename = TEST_OUPUT_DIRECTORY + testname + ".txt";
         long start = System.currentTimeMillis();
@@ -104,9 +166,13 @@ public class CLITest {
     }
 
     private void checkStatusCode() {
-        int statusCode = Integer.valueOf(System.getProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY));
+        int statusCode = getStatusCode();
         if (statusCode > 0)
             fail("PMD failed with status code:" + statusCode);
+    }
+
+    private int getStatusCode() {
+        return Integer.parseInt(System.getProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY));
     }
 
 }

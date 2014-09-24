@@ -233,8 +233,8 @@ public class Designer implements ClipboardOwner {
 			return item.toString();
 		}
 
-		public Enumeration<ExceptionNode> children() {
-			Enumeration<ExceptionNode> e = new Enumeration<ExceptionNode>() {
+		public Enumeration<TreeNode> children() {
+			Enumeration<TreeNode> e = new Enumeration<TreeNode>() {
 				int i = 0;
 
 				public boolean hasMoreElements() {
@@ -303,13 +303,13 @@ public class Designer implements ClipboardOwner {
 			return null;
 		}
 
-		public Enumeration<ASTTreeNode> children() {
+		public Enumeration<TreeNode> children() {
 
 			if (getChildCount() > 0) {
 				getChildAt(0); // force it to build kids
 			}
 
-			Enumeration<ASTTreeNode> e = new Enumeration<ASTTreeNode>() {
+			Enumeration<TreeNode> e = new Enumeration<TreeNode>() {
 				int i = 0;
 
 				public boolean hasMoreElements() {

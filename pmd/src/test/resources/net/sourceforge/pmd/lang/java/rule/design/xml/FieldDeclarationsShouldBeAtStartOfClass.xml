@@ -113,4 +113,47 @@ public class Foo {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description>#1244 FieldDeclarationsShouldBeAtStartOfClass and anonymous classes, ok</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MyClass {
+  private final String name;
+  public MyClass() {
+      this.name = "whatever";
+  }
+  public void onCreate() {
+     someView.setListener(onSomeViewClick);
+  }
+  private final OnClickListener onSomeViewClick = new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          // something
+      }
+  };
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description>#1244 FieldDeclarationsShouldBeAtStartOfClass and anonymous classes, fail</description>
+    <expected-problems>1</expected-problems>
+    <rule-property name="ignoreAnonymousClassDeclarations">false</rule-property>
+    <code><![CDATA[
+public class MyClass {
+  private final String name;
+  public MyClass() {
+      this.name = "whatever";
+  }
+  public void onCreate() {
+     someView.setListener(onSomeViewClick);
+  }
+  private final OnClickListener onSomeViewClick = new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          // something
+      }
+  };
+}
+    ]]></code>
+  </test-code>
 </test-data>

@@ -1,15 +1,15 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.migrating;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
-
-
 public class MigratingRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-migrating";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "AvoidAssertAsIdentifier");
         addRule(RULESET, "AvoidEnumAsIdentifier");
@@ -25,9 +25,5 @@ public class MigratingRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ReplaceHashtableWithMap");
         addRule(RULESET, "ReplaceVectorWithList");
         addRule(RULESET, "ShortInstantiation");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MigratingRulesTest.class);
     }
 }

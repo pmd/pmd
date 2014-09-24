@@ -5,14 +5,14 @@ package net.sourceforge.pmd.lang.java.rule.unnecessary;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
-
-
+/**
+ * Rule tests for the runnecessary ruleset
+ */
 public class UnnecessaryRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-unnecessary";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "UnnecessaryConversionTemporary");
         addRule(RULESET, "UnnecessaryReturn");
@@ -21,9 +21,5 @@ public class UnnecessaryRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UselessOverridingMethod");
         addRule(RULESET, "UselessOperationOnImmutable");
         addRule(RULESET, "UselessParentheses");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(UnnecessaryRulesTest.class);
     }
 }

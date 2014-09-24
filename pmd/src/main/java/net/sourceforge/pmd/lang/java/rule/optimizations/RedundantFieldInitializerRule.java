@@ -76,12 +76,18 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
 				// Note: Not catching NumberFormatException, as it shouldn't be happening on valid source code.
 				double value = -1;
 				if (literal.isIntLiteral()) {
+				    value = Integer.decode(literal.getImage()).doubleValue();
+				} else if (literal.isLongLiteral()) {
 				    String s = literal.getImage();
-				    if (s.endsWith("l") || s.endsWith("L")) {
+				    // remove the ending "l" or "L" for long values
 					s = s.substring(0, s.length() - 1);
-				    }
 				    value = Long.decode(s).doubleValue();
 				} else if (literal.isFloatLiteral()) {
+                    String s = literal.getImage();
+                    // remove the ending "f" or "F" for float values
+                    s = s.substring(0, s.length() - 1);
+				    value = Float.parseFloat(literal.getImage());
+				} else if (literal.isDoubleLiteral()) {
 				    value = Double.parseDouble(literal.getImage());
 				} else if (literal.isCharLiteral()) {
 				    value = literal.getImage().charAt(1);

@@ -41,7 +41,7 @@ public class TypeSetTest {
     @Test
     public void testFindClassSamePackage() throws Throwable {
         TypeSet t = new TypeSet();
-        t.setASTCompilationUnitPackage("net.sourceforge.pmd.");
+        t.setASTCompilationUnitPackage("net.sourceforge.pmd");
         Class clazz = t.findClass("PMD");
         assertEquals(PMD.class, clazz);
     }
@@ -118,7 +118,7 @@ public class TypeSetTest {
 
     @Test
     public void testCurrentPackageResolverPass() throws Throwable {
-        TypeSet.Resolver r = new TypeSet.CurrentPackageResolver(pmdClassLoader, "net.sourceforge.pmd.");
+        TypeSet.Resolver r = new TypeSet.CurrentPackageResolver(pmdClassLoader, "net.sourceforge.pmd");
         assertEquals(PMD.class, r.resolve("PMD"));
     }
 

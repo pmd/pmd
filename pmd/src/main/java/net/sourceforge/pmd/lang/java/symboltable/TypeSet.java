@@ -113,7 +113,7 @@ public class TypeSet {
         }
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
-            return pmdClassLoader.loadClass(pkg + name);
+            return pmdClassLoader.loadClass(pkg + '.' + name);
         }
     }
 

@@ -53,7 +53,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
                 	immediateStringLiterals++;
                 }
             }
-            if (literal.isIntLiteral() || literal.isFloatLiteral()) {
+            if (literal.isIntLiteral() || literal.isFloatLiteral() || literal.isDoubleLiteral() || literal.isLongLiteral()) {
         	return data;
             }
         }

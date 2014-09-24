@@ -4,6 +4,10 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.List;
+
 import net.sourceforge.pmd.PMD;
 
 import org.junit.Test;
@@ -26,6 +30,25 @@ public class EcmascriptTokenizerTest {
         Tokens tokens = new Tokens();
         t.tokenize( sourceCode, tokens );
         assertEquals( 22, tokens.size() );
+    }
+
+    /**
+     * See: https://sourceforge.net/p/pmd/bugs/1239/
+     * @throws IOException IO Exception
+     */
+    @Test
+    public void parseStringNotAsMultiline() throws IOException {
+        Tokenizer t = new EcmascriptTokenizer();
+        SourceCode sourceCode = new SourceCode( new SourceCode.StringCodeLoader(
+                  "var s = \"a string\\\n"
+                + "continues\";\n"
+                + "var s = \"a string\\\n"
+                + "continues2\";\n") );
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        assertEquals(13, tokens.size());
+        List<TokenEntry> list = tokens.getTokens();
+        assertEquals("\"a string", list.get(3).getIdentifier(), list.get(9).getIdentifier());
     }
 
     // no semi-colons
@@ -52,9 +75,5 @@ public class EcmascriptTokenizerTest {
         sb.append( "   real.focus();" ).append(PMD.EOL);
         sb.append( "}" ).append(PMD.EOL);
         return sb.toString();
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter( EcmascriptTokenizerTest.class );
     }
 }

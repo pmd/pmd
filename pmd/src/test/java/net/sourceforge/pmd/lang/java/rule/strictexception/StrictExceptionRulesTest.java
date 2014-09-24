@@ -1,15 +1,15 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.strictexception;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
-
-
 public class StrictExceptionRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-strictexception";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "AvoidCatchingGenericException");
         addRule(RULESET, "AvoidCatchingNPE");
@@ -23,9 +23,5 @@ public class StrictExceptionRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ExceptionAsFlowControl");
         addRule(RULESET, "SignatureDeclareThrowsException");
         addRule(RULESET, "DoNotThrowExceptionInFinally");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(StrictExceptionRulesTest.class);
     }
 }

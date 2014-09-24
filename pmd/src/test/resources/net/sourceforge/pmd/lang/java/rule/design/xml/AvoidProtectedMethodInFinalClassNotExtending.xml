@@ -88,4 +88,15 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1241 False+ AvoidProtectedMethodInFinalClassNotExtending</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private final class Dummy {
+    @Override
+    protected void finalize() {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

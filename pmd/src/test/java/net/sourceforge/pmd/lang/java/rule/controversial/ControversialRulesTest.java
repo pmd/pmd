@@ -1,15 +1,15 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.controversial;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import org.junit.Before;
-
-
 public class ControversialRulesTest extends SimpleAggregatorTst {
-    
+
     private static final String RULESET = "java-controversial";
 
-    @Before
+    @Override
     public void setUp() {
         addRule(RULESET, "AssignmentInOperand");
         addRule(RULESET, "AvoidLiteralsInIfCondition");
@@ -33,9 +33,5 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UnnecessaryParentheses");
         addRule(RULESET, "UseConcurrentHashMap");
         addRule(RULESET, "UseObjectForClearerAPI");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ControversialRulesTest.class);
     }
 }

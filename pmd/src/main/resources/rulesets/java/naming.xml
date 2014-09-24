@@ -514,23 +514,24 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
      ]]></example>
     </rule>
 
-    <rule 	name="ShortClassName"
-   		language="java"
+    <rule   name="ShortClassName"
+            language="java"
             since="5.0"
-            message="A Classname should have a minimum of five characters"
+            message="Avoid short class names like {0}"
             class="net.sourceforge.pmd.lang.rule.XPathRule"
-          	externalInfoUrl="${pmd.website.baseurl}/rules/java/naming.html#ShortClassName">
+            externalInfoUrl="${pmd.website.baseurl}/rules/java/naming.html#ShortClassName">
         <description>
-        	<![CDATA[
-Classnames with fewer than five characters are not recommended.
-			]]>
+            <![CDATA[
+Short Classnames with fewer than e.g. five characters are not recommended.
+            ]]>
         </description>
         <priority>4</priority>
           <properties>
+              <property name="minimum" type="Integer" value="5" min="1" max="100" description="Number of characters that are required as a minimum for a class name."/>
               <property name="xpath">
                   <value>
                       <![CDATA[
-//ClassOrInterfaceDeclaration[string-length(@Image) < 5]
+//ClassOrInterfaceDeclaration[string-length(@Image) < $minimum]
                       ]]>
                   </value>
               </property>

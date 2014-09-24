@@ -157,17 +157,24 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 		} else if (node instanceof ASTInitializer) {
 			extras.add(((ASTInitializer) node).isStatic() ? "static" : "nonstatic");
 		} else if (node instanceof ASTLiteral) {
-			if (((ASTLiteral) node).isCharLiteral()) {
+		    ASTLiteral literal = (ASTLiteral)node;
+			if (literal.isCharLiteral()) {
 				extras.add("char style");
 			}
-			if (((ASTLiteral) node).isIntLiteral()) {
+			if (literal.isIntLiteral()) {
 				extras.add("int style");
 			}
-			if (((ASTLiteral) node).isFloatLiteral()) {
+			if (literal.isFloatLiteral()) {
 				extras.add("float style");
 			}
-			if (((ASTLiteral) node).isStringLiteral()) {
+			if (literal.isStringLiteral()) {
 				extras.add("String style");
+			}
+			if (literal.isDoubleLiteral()) {
+			    extras.add("double style");
+			}
+			if (literal.isLongLiteral()) {
+			    extras.add("long style");
 			}
 		} else if (node instanceof ASTResultType) {
 			if (((ASTResultType) node).isVoid()) {

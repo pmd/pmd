@@ -18,5 +18,9 @@ public class EcmascriptTokenizer extends AbstractTokenizer {
 
         // setting markers for 'ignorable string' in javascript
         this.ignorableStmt = new ArrayList<String>();
+
+        // strings do not span multiple lines in javascript - the lines would need to end with backslashes
+        // - which is not supported by this tokenizer
+        this.spanMultipleLinesString = false;
     }
 }

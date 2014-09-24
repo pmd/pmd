@@ -329,5 +329,20 @@ public class PMDFalsePositiveTest {
 
      ]]></code>
     </test-code>
-    
+    <test-code>
+        <description>#1247 Not able to recognize JDK 8 Static Method References</description>
+        <expected-problems>0</expected-problems>
+        <source-type>java 1.8</source-type>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        KeyMap keymap = maps.getKeyMap();
+        if (obj.getParamTypes().stream().allMatch(keymap::booleanFunc))
+        {
+            // do something
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

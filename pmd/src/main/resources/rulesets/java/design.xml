@@ -929,8 +929,9 @@ may indicate problematic behaviour. Empty cases are ignored as these indicate an
 [(count(.//BreakStatement)
  + count(BlockStatement/Statement/ReturnStatement)
  + count(BlockStatement/Statement/ThrowStatement)
+ + count(BlockStatement/Statement/IfStatement[@Else='true' and Statement[2][ReturnStatement|ThrowStatement]]/Statement[1][ReturnStatement|ThrowStatement])
  + count(SwitchLabel[name(following-sibling::node()) = 'SwitchLabel'])
- + count(SwitchLabel[count(following-sibling::node()) = 0 or count(child::node()) = 0])
+ + count(SwitchLabel[count(following-sibling::node()) = 0])
   < count (SwitchLabel))]
     ]]>
               </value>
@@ -1798,6 +1799,7 @@ Fields should be declared at the top of the class, before any method declaration
         <value>
           <![CDATA[
 //ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+ [not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
  [count(../preceding-sibling::ClassOrInterfaceBodyDeclaration/child::*[1]
    [name() != 'FieldDeclaration' and name() != 'Annotation' and
        (name() != 'EnumDeclaration' or $ignoreEnumDeclarations = 'false')]) > 0]
@@ -1805,6 +1807,7 @@ Fields should be declared at the top of the class, before any method declaration
         </value>
       </property>
       <property name="ignoreEnumDeclarations" description="Ignore Enum Declarations that precede fields." type="Boolean" value="true"/>
+      <property name="ignoreAnonymousClassDeclarations" description="Ignore Field Declarations, that are initialized with anonymous class declarations" type="Boolean" value="true"/>
     </properties>
     <example>
       <![CDATA[
@@ -1860,7 +1863,7 @@ visibility cannot be reduced). Clarify your intent by using private or package a
 <![CDATA[
 //ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected='true']
+/MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
  ]]>
                  </value>
              </property>

@@ -348,12 +348,25 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
     <property name="xpath">
     <value>
 <![CDATA[
-//AllocationExpression[ClassOrInterfaceType[@Image="BigDecimal"]
-and
-./Arguments/ArgumentList
-/Expression/PrimaryExpression/PrimaryPrefix/Literal[(not
-(ends-with
-(@Image,'"'))) and contains(@Image,".")]]
+//AllocationExpression
+[ClassOrInterfaceType[@Image="BigDecimal"]]
+[Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
+    [
+        Literal[(not(ends-with(@Image,'"'))) and contains(@Image,".")]
+        or
+        Name[ancestor::Block/BlockStatement/LocalVariableDeclaration
+                [Type[PrimitiveType[@Image='double' or @Image='float']
+                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
+                /VariableDeclarator/VariableDeclaratorId/@Image = @Image
+            ]
+        or
+        Name[ancestor::MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter
+                [Type[PrimitiveType[@Image='double' or @Image='float']
+                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
+                /VariableDeclaratorId/@Image = @Image
+            ]
+    ]
+]
  ]]>
     </value>
     </property>

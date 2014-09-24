@@ -35,7 +35,27 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     public boolean isIntLiteral() {
-        return isInt;
+        String image = getImage();
+        if (isInt && image != null && image.length() > 0) {
+            if (!image.endsWith("l") && !image.endsWith("L")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether this literal is a long integer.
+     * @return <code>true</code> if this literal is a long
+     */
+    public boolean isLongLiteral() {
+        String image = getImage();
+        if (isInt && image != null && image.length() > 0) {
+            if (image.endsWith("l") || image.endsWith("L")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setFloatLiteral() {
@@ -43,7 +63,29 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     public boolean isFloatLiteral() {
-        return isFloat;
+        String image = getImage();
+        if (isFloat && image != null && image.length() > 0) {
+            char lastChar = image.charAt(image.length() - 1);
+            if (lastChar == 'f' || lastChar == 'F') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether this literal describes a double.
+     * @return <code>true</code> if this literal is a double.
+     */
+    public boolean isDoubleLiteral() {
+        String image = getImage();
+        if (isFloat && image != null && image.length() > 0) {
+            char lastChar = image.charAt(image.length() - 1);
+            if (lastChar == 'd' || lastChar == 'D' || Character.isDigit(lastChar) || lastChar == '.') {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setCharLiteral() {
