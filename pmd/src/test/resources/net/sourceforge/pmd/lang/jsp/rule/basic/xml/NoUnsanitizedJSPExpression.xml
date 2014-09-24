@@ -81,7 +81,8 @@ ${shouldBeDetectedAsXSSSecurityBreach}
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-<%@ page contentType="text/html; charset=UTF-8" %> 
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 ${fn:escapeXml(expression)}
      ]]></code>
 		<source-type>jsp</source-type>
@@ -92,7 +93,8 @@ ${fn:escapeXml(expression)}
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-<%@ page contentType="text/html; charset=UTF-8" %> 
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <html>
 <input type="text" value="${fn:escapeXml(expression)}" />
 </html>
@@ -105,7 +107,8 @@ ${fn:escapeXml(expression)}
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-<%@ page contentType="text/html; charset=UTF-8" %> 
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <html>
 <input
 	type="text"
@@ -123,6 +126,7 @@ ${fn:escapeXml(expression)}
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 ${fn:escapeXml( expression )} 
 <html>
 ${fn:escapeXml(expression)}
