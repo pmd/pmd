@@ -13,36 +13,24 @@ import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
  * @author maxime_robert
  */
 public class NoUnsanitizedJSPExpressionRule extends AbstractJspRule {
-	/**
-	 * Reference to the parent node (unavailable in the AST?).
-	 * TODO: find a way to access parent node from the AST and then remove this attribute
-	 */
-	private ASTElement lastNode;
+    @Override
+    public Object visit(ASTElExpression node, Object data) {
+        if (elOutsideTaglib(node)) {
+            addViolation(data, node);
+        }
 
-	/**
-	 * TODO: remove this method if the parent node is available from the AST
-	 */
-	@Override
-	public Object visit(ASTElement node, Object data) {
-		lastNode = node;
-		return super.visit(node, data);
-	}
+        return super.visit(node, data);
+    }
 
-	@Override
-	public Object visit(ASTElExpression node, Object data) {
-		if (elOutsideTaglib(node)) {
-			addViolation(data, node);
-		}
+    private boolean elOutsideTaglib(ASTElExpression node) {
+        ASTElement parentASTElement = (ASTElement) node.getFirstParentOfType(ASTElement.class);
 
-		return super.visit(node, data);
-	}
+        boolean elInTaglib = parentASTElement != null && parentASTElement.getName() != null
+                && parentASTElement.getName().contains(":");
 
-	private boolean elOutsideTaglib(ASTElExpression node) {
-		// TODO: add the case of "${fn:escapeXml()} (in which a taglib isn't required)
-		boolean elInTaglib = lastNode != null && lastNode.getName() != null && lastNode.getName().contains(":");
+        boolean elWithFnEscapeXml = node.getImage() != null && node.getImage().matches("^fn:escapeXml\\(.+\\)$");
 
-		// Node parentTagNode = node.getFirstParentOfType(ASTElement.class);
-		return !elInTaglib;
-	}
+        return !elInTaglib && !elWithFnEscapeXml;
+    }
 
 }

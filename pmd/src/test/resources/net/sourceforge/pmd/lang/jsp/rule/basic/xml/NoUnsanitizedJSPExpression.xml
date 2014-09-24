@@ -74,4 +74,66 @@ ${shouldBeDetectedAsXSSSecurityBreach}
      ]]></code>
 		<source-type>jsp</source-type>
 	</test-code>
+	
+	<test-code>
+		<description><![CDATA[
+
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+${fn:escapeXml(expression)}
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<html>
+<input type="text" value="${fn:escapeXml(expression)}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %> 
+<html>
+<input
+	type="text"
+	value="${fn:escapeXml(expression)}"
+	name="toto"
+/>
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %>
+${fn:escapeXml( expression )} 
+<html>
+${fn:escapeXml(expression)}
+<input
+	type="text"
+	value="${fn:escapeXml(expression)}"
+	name="toto"
+/>
+<c:out value="${fn:escapeXml(expression)}" />
+</html>
+     ]]></code>
+		<source-type>jsp</source-type>
+	</test-code>
 </test-data>
