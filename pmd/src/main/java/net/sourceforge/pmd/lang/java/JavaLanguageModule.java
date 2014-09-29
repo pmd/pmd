@@ -9,9 +9,10 @@ import net.sourceforge.pmd.lang.java.rule.JavaRuleChainVisitor;
 public class JavaLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Java";
+    public static final String TERSE_NAME = "java";
 
     public JavaLanguageModule() {
-        super(NAME, null, "java", JavaRuleChainVisitor.class, "java");
+        super(NAME, null, TERSE_NAME, JavaRuleChainVisitor.class, "java");
         addVersion("1.3", new Java13Handler(), false);
         addVersion("1.4", new Java14Handler(), false);
         addVersion("1.5", new Java15Handler(), false);

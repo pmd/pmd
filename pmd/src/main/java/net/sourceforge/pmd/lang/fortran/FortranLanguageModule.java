@@ -9,9 +9,10 @@ import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleChainVisitor;
 public class FortranLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Fortran";
+    public static final String TERSE_NAME = "fortran";
 
     public FortranLanguageModule() {
-        super(NAME, null, "fortran", EcmascriptRuleChainVisitor.class, "for", "f", "f66", "f77", "f90");
+        super(NAME, null, TERSE_NAME, EcmascriptRuleChainVisitor.class, "for", "f", "f66", "f77", "f90");
         addVersion("", null, true);
     }
 

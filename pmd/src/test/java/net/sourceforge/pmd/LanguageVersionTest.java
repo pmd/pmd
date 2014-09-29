@@ -29,15 +29,15 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class LanguageVersionTest {
 
-    private String language;
+    private String name;
     private String version;
     private String terseName;
     private LanguageVersion expected;
 
-    public LanguageVersionTest(String language, String version, LanguageVersion expected) {
-        this.language = language;
+    public LanguageVersionTest(String name, String terseName, String version, LanguageVersion expected) {
+        this.name = name;
         this.version = version;
-        this.terseName = language;
+        this.terseName = terseName;
         if (version != null && !version.isEmpty()) {
             this.terseName += " " + version;
         }
@@ -47,37 +47,36 @@ public class LanguageVersionTest {
     @Parameters
     public static Collection data() {
         return Arrays.asList(new Object[][] {
-                { JavaLanguageModule.NAME, "1.3", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3") },
-                { JavaLanguageModule.NAME, "1.4", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4") },
-                { JavaLanguageModule.NAME, "1.5", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5") },
-                { JavaLanguageModule.NAME, "1.6", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.6") },
-                { JavaLanguageModule.NAME, "1.7", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7") },
-                { JavaLanguageModule.NAME, "1.8", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8") },
-                { JspLanguageModule.NAME, "", LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion() },
-                { XmlLanguageModule.NAME, "", LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion() },
-                { XslLanguageModule.NAME, "", LanguageRegistry.getLanguage(XslLanguageModule.NAME).getDefaultVersion() },
-                { EcmascriptLanguageModule.NAME, "3", LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion() },
-                { CppLanguageModule.NAME, "", LanguageRegistry.getLanguage(CppLanguageModule.NAME).getDefaultVersion() },
-                { FortranLanguageModule.NAME, "", LanguageRegistry.getLanguage(FortranLanguageModule.NAME).getDefaultVersion() },
-                { PhpLanguageModule.NAME, "", LanguageRegistry.getLanguage(PhpLanguageModule.NAME).getDefaultVersion() },
-                { RubyLanguageModule.NAME, "", LanguageRegistry.getLanguage(RubyLanguageModule.NAME).getDefaultVersion() },
-                { VmLanguageModule.NAME, "", LanguageRegistry.getLanguage(VmLanguageModule.NAME).getDefaultVersion() },
+                { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "1.3", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3") },
+                { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "1.4", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4") },
+                { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "1.5", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5") },
+                { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "1.6", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.6") },
+                { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "1.7", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7") },
+                { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "1.8", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8") },
+                { JspLanguageModule.NAME, JspLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion() },
+                { XmlLanguageModule.NAME, XmlLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion() },
+                { XslLanguageModule.NAME, XslLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(XslLanguageModule.NAME).getDefaultVersion() },
+                { EcmascriptLanguageModule.NAME, EcmascriptLanguageModule.TERSE_NAME, "3", LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion() },
+                { CppLanguageModule.NAME, CppLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(CppLanguageModule.NAME).getDefaultVersion() },
+                { FortranLanguageModule.NAME, FortranLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(FortranLanguageModule.NAME).getDefaultVersion() },
+                { PhpLanguageModule.NAME, PhpLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(PhpLanguageModule.NAME).getDefaultVersion() },
+                { RubyLanguageModule.NAME, RubyLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(RubyLanguageModule.NAME).getDefaultVersion() },
+                { VmLanguageModule.NAME, VmLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(VmLanguageModule.NAME).getDefaultVersion() },
 
                 // this one won't be found: case sensitive!
-                { "JAVA", "1.7", null },
+                { "JAVA", "JAVA", "1.7", null },
             });
     }
 
     @Test
     public void testGetLanguageVersionForTerseName() {
-//        throw new RuntimeException("Finish this.");
-//        assertEquals(expected, LanguageRegistry.findVersionByTerseName(terseName));
+        assertEquals(expected, LanguageRegistry.findLanguageVersionByTerseName(terseName));
     }
 
     @Test
-    public void testFindVersionsForLanguageTerseName() {
+    public void testFindVersionsForLanguageNameAndVersion() {
         SourceLanguage sourceLanguage = new SourceLanguage();
-        sourceLanguage.setName(language);
+        sourceLanguage.setName(name);
         sourceLanguage.setVersion(version);
 
         Language language = LanguageRegistry.getLanguage(sourceLanguage.getName());

@@ -8,9 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 public class CppLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "C++";
+    public static final String TERSE_NAME = "cpp";
 
     public CppLanguageModule() {
-        super(NAME, null, "cpp", null, "h", "c", "cpp", "cxx", "cc", "C");
+        super(NAME, null, TERSE_NAME, null, "h", "c", "cpp", "cxx", "cc", "C");
         addVersion("", new CppHandler(), true);
     }
 

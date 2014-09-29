@@ -9,9 +9,10 @@ import net.sourceforge.pmd.lang.vm.rule.VmRuleChainVisitor;
 public class VmLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "VM";
+    public static final String TERSE_NAME = "vm";
 
     public VmLanguageModule() {
-        super(NAME, null, "vm", VmRuleChainVisitor.class, "vm");
+        super(NAME, null, TERSE_NAME, VmRuleChainVisitor.class, "vm");
         addVersion("", new VmHandler(), true);
     }
 

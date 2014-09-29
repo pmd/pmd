@@ -9,9 +9,10 @@ import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleChainVisitor;
 public class EcmascriptLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Ecmascript";
+    public static final String TERSE_NAME = "ecmascript";
 
     public EcmascriptLanguageModule() {
-        super(NAME, null, "ecmascript", EcmascriptRuleChainVisitor.class, "js");
+        super(NAME, null, TERSE_NAME, EcmascriptRuleChainVisitor.class, "js");
         addVersion("3", new Ecmascript3Handler(), true);
     }
 

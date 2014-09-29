@@ -9,9 +9,10 @@ import net.sourceforge.pmd.lang.xml.rule.XmlRuleChainVisitor;
 public class XmlLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "XML";
+    public static final String TERSE_NAME = "xml";
 
     public XmlLanguageModule() {
-        super(NAME, null, "xml", XmlRuleChainVisitor.class, "xml");
+        super(NAME, null, TERSE_NAME, XmlRuleChainVisitor.class, "xml");
         addVersion("", new XmlHandler(), true);
     }
 

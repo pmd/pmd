@@ -8,9 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 public class PhpLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "PHP: Hypertext Preprocessor";
+    public static final String TERSE_NAME = "php";
 
     public PhpLanguageModule() {
-        super(NAME, "PHP", "php", null, "php", "class");
+        super(NAME, "PHP", TERSE_NAME, null, "php", "class");
         addVersion("", null, true);
     }
 

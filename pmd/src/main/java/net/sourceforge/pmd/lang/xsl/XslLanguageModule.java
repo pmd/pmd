@@ -10,9 +10,10 @@ import net.sourceforge.pmd.lang.xml.rule.XmlRuleChainVisitor;
 public class XslLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "XSL";
+    public static final String TERSE_NAME = "xsl";
 
     public XslLanguageModule() {
-        super(NAME, null, "xsl", XmlRuleChainVisitor.class, "xsl", "xslt");
+        super(NAME, null, TERSE_NAME, XmlRuleChainVisitor.class, "xsl", "xslt");
         addVersion("", new XmlHandler(), true);
     }
 
