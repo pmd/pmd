@@ -5,8 +5,6 @@ package net.sourceforge.pmd.lang;
 
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -20,31 +18,9 @@ public class LanguageRegistry {
 
     private LanguageRegistry() {
         languages = new HashMap<String, Language>();
-
-        try {
-            Enumeration<URL> languageModulesProperties = LanguageRegistry.class.getClassLoader().getResources("META-INF/pmd-language.properties");
-            while (languageModulesProperties.hasMoreElements()) {
-                URL curLanguageModulePropertiesUrl = languageModulesProperties.nextElement();
-                Properties curLanguageModuleProperties = new Properties();
-                curLanguageModuleProperties.load(curLanguageModulePropertiesUrl.openStream());
-                String languageModulesImplClassNames = curLanguageModuleProperties.getProperty(Language.LANGUAGE_MODULES_CLASS_NAMES_PROPERTY);
-                if(languageModulesImplClassNames != null) {
-                    String[] languageModuleImplClassNames = languageModulesImplClassNames.split(";");
-                    for(String languageModuleImplClassName : languageModuleImplClassNames) {
-                        Class<?> languageModuleImplClass = LanguageRegistry.class.getClassLoader().loadClass(languageModuleImplClassName);
-                        Language languageModule = (Language) languageModuleImplClass.newInstance();
-                        languages.put(languageModule.getName(), languageModule);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
+        for (Language language : languageLoader) {
+            languages.put(language.getName(), language);
         }
     }
 
