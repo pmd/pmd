@@ -292,5 +292,26 @@ Externalized script could be reused between pages.  Browsers can also cache the 
             ]]>
         </example>
     </rule>
-
+    
+    <rule
+        name="NoUnsanitizedJSPExpression" since="5.1.4"
+        class="net.sourceforge.pmd.lang.jsp.rule.basic.NoUnsanitizedJSPExpressionRule"
+        message="Using unsanitized JSP expression can lead to Cross Site Scripting (XSS) attacks"
+        externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoUnsanitizedJSPExpression">
+        <description>
+Avoid using expressions without escaping / sanitizing. This could lead to cross site scripting - as the expression
+would be interpreted by the browser directly (e.g. "&lt;script&gt;alert('hello');&lt;/script&gt;").
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+${expression}                    <!-- don't use this -->
+${fn:escapeXml(expression)}      <!-- instead, escape it -->
+<c:out value="${expression}" />  <!-- or use c:out -->
+            ]]>
+        </example>
+    </rule>
+    
 </ruleset>
