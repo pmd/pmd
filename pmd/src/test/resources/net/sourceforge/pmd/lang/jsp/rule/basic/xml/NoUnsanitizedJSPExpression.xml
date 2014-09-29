@@ -62,9 +62,7 @@ ${shouldBeDetectedAsXSSSecurityBreach}
 		<source-type>jsp</source-type>
 	</test-code>
 	<test-code>
-		<description><![CDATA[
-
-     ]]></description>
+		<description>c:out fixes it</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <%@ page contentType="text/html; charset=UTF-8" %> 
@@ -74,11 +72,9 @@ ${shouldBeDetectedAsXSSSecurityBreach}
      ]]></code>
 		<source-type>jsp</source-type>
 	</test-code>
-	
-	<test-code>
-		<description><![CDATA[
 
-     ]]></description>
+	<test-code>
+		<description>fn:escape fixes it</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <%@ page contentType="text/html; charset=UTF-8" %>
@@ -88,9 +84,7 @@ ${fn:escapeXml(expression)}
 		<source-type>jsp</source-type>
 	</test-code>
 	<test-code>
-		<description><![CDATA[
-
-     ]]></description>
+		<description>fn:escape as attribute value</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <%@ page contentType="text/html; charset=UTF-8" %>
@@ -102,9 +96,7 @@ ${fn:escapeXml(expression)}
 		<source-type>jsp</source-type>
 	</test-code>
 	<test-code>
-		<description><![CDATA[
-
-     ]]></description>
+		<description>fn:escape as attribute value, multiline</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <%@ page contentType="text/html; charset=UTF-8" %>
@@ -120,9 +112,7 @@ ${fn:escapeXml(expression)}
 		<source-type>jsp</source-type>
 	</test-code>
 	<test-code>
-		<description><![CDATA[
-
-     ]]></description>
+		<description>fn:escape and c:out mix</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <%@ page contentType="text/html; charset=UTF-8" %>
