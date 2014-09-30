@@ -10,9 +10,9 @@ import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.rule.ImportWrapper;
 import net.sourceforge.pmd.lang.jsp.ast.ASTJspDirectiveAttribute;
 import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
+import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class DuplicateJspImportsRule extends AbstractJspRule {
 

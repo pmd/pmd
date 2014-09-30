@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.rule.ImportWrapper;
+import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class UnusedImportsRule extends AbstractJavaRule {
 
