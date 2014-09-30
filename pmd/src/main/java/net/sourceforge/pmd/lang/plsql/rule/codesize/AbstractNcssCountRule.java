@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.plsql.rule.codesize;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTContinueStatement;
@@ -22,6 +21,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTLabelledStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTRaiseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractStatisticalPLSQLRule;

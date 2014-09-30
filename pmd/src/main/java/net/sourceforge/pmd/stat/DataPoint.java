@@ -6,13 +6,11 @@ package net.sourceforge.pmd.stat;
 import java.util.Random;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.rule.codesize.AbstractNcssCountRule;
 
 /**
  * Datapoint used for rules that deal with metrics.
  * @author David Dixon-Peugh
  * @since Aug 8, 2002
- * @see AbstractNcssCountRule
  */
 public class DataPoint implements Comparable<DataPoint> {
 
