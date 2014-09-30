@@ -1,0 +1,91 @@
+<project name="pmd" default="alljavacc" basedir="../../">
+
+    <property name="javacc-home.path" value="target/lib" />
+
+    <target name="alljavacc"
+            description="Generates all JavaCC aspects within PMD"
+            depends="checkUpToDate,init,javajjtree,cleanup" />
+
+    <target name="checkUpToDate">
+        <uptodate property="javaccBuildNotRequired" targetfile="${target}/last-generated-timestamp">
+            <srcfiles dir="etc/grammar" includes="*.jj*"/>
+        </uptodate>
+        <echo message="up to date check: javaccBuildNotRequired=${javaccBuildNotRequired}"/>
+    </target>
+
+    <target name="init" unless="javaccBuildNotRequired">
+        <mkdir dir="${javacc-home.path}" />
+        <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar" />
+
+        <mkdir dir="${target}"/>
+        <touch file="${target}/last-generated-timestamp"/>
+    </target>
+
+    <target name="cleanup">
+        <delete dir="${javacc-home.path}" />
+    </target>
+
+    <target name="javajjtree" description="Generates the Java parser and AST source files" unless="javaccBuildNotRequired">
+        <delete dir="${target}/net/sourceforge/pmd/lang/java/ast" />
+        <mkdir dir="${target}/net/sourceforge/pmd/lang/java/ast" />
+        <jjtree target="etc/grammar/Java.jjt"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/java/ast"
+                javacchome="${javacc-home.path}" />
+        <!-- Ensure generated using CharStream interface -->
+        <javacc static="false"
+                usercharstream="true"
+                target="${target}/net/sourceforge/pmd/lang/java/ast/Java.jj"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/java/ast"
+                javacchome="${javacc-home.path}" />
+        <delete file="${target}/net/sourceforge/pmd/lang/java/ast/Node.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/java/ast/SimpleNode.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/java/ast/CharStream.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/java/ast/TokenMgrError.java" />
+
+        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/JavaParserTokenManager.java"
+                 token="class JavaParserTokenManager"
+                 value="class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/JavaParser.java"
+                 token="throw new Error"
+                 value="throw new RuntimeException" />
+        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/ParseException.java"
+                 token="extends Exception"
+                 value="extends net.sourceforge.pmd.lang.ast.ParseException" />
+        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/JavaParserVisitor.java"
+                 token="SimpleNode"
+                 value="JavaNode" />
+        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/JJTJavaParserState.java">
+            <replacetoken>public class</replacetoken>
+            <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;
+
+public class]]></replacevalue>
+        </replace>
+        <replace file="${target}/net/sourceforge/pmd/lang/java/ast/Token.java">
+            <replacetoken><![CDATA[      default : return new Token(ofKind, image);
+    }
+  }
+]]></replacetoken>
+            <replacevalue><![CDATA[      case JavaParserConstants.RUNSIGNEDSHIFT :
+      case JavaParserConstants.RSIGNEDSHIFT :
+      case JavaParserConstants.GT:
+        return new GTToken(ofKind, image);
+      default : return new Token(ofKind, image);
+    }
+  }
+
+  public static final class GTToken extends Token {
+    public int realKind = JavaParserConstants.GT;
+    public GTToken(int ofKind, String image) {
+       super(ofKind, image);
+    }
+  }
+]]></replacevalue>
+        </replace>
+
+        <delete>
+            <fileset dir="${target}/net/sourceforge/pmd/lang/java/ast">
+                <include name="AST*.java" />
+            </fileset>
+        </delete>
+    </target>
+</project>

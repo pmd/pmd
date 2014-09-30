@@ -14,5 +14,6 @@
 
     <modules>
         <module>pmd</module>
+        <module>pmd-java</module>
     </modules>
 </project>
