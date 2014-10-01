@@ -580,45 +580,6 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <archiverConfig>
-                        <defaultDirectoryMode>493</defaultDirectoryMode> <!-- 0755 -->
-                    </archiverConfig>
-                </configuration>
-                <executions>
-                    <!-- needs to run after the site, as the site documentation 
-                        will be included in the zip files -->
-                    <execution>
-                        <id>build-bin-dist</id>
-                        <phase>post-site</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>${project.artifactId}-bin-${project.version}</finalName>
-                            <descriptors>
-                                <descriptor>src/main/assembly/bin.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>build-src-dist</id>
-                        <phase>post-site</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>${project.artifactId}-src-${project.version}</finalName>
-                            <descriptors>
-                                <descriptor>src/main/assembly/src.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>net.sourceforge.pmd</groupId>
                 <artifactId>pmd-build</artifactId>
                 <executions>
