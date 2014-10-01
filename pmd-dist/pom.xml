@@ -23,7 +23,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <appendAssemblyId>true</appendAssemblyId>
+                    <appendAssemblyId>false</appendAssemblyId>
                     <attach>false</attach>
                     <archiverConfig>
                         <defaultDirectoryMode>493</defaultDirectoryMode> <!-- 0755 -->
