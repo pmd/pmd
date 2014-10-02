@@ -4,13 +4,606 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd-aggregate</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-
+    <version>5.1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>PMD</name>
 
-    <name>PMD Aggregate Project</name>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+        <relativePath />
+    </parent>
+
+    <description>
+    <![CDATA[
+<p>PMD scans Java source code and looks for potential problems like:</p>
+<ul>
+  <li>Possible bugs - empty try/catch/finally/switch statements</li>
+  <li>Dead code - unused local variables, parameters and private methods</li>
+  <li>Suboptimal code - wasteful String/StringBuffer usage</li>
+  <li>Overcomplicated expressions - unnecessary if statements, for loops that could be while loops</li>
+  <li>Duplicate code - copied/pasted code means copied/pasted bugs</li>
+</ul>
+<p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
+<p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
+    ]]>
+  </description>
 
     <url>http://pmd.sourceforge.net/</url>
+    <issueManagement>
+        <url>http://sourceforge.net/p/pmd/bugs/</url>
+    </issueManagement>
+    <ciManagement>
+        <notifiers>
+            <notifier>
+                <configuration>
+                    <address>tom@infoether.com</address>
+                </configuration>
+            </notifier>
+        </notifiers>
+    </ciManagement>
+    <inceptionYear>2002</inceptionYear>
+    <licenses>
+        <license>
+            <name>BSD-style</name>
+            <url>http://pmd.sourceforge.net/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <mailingLists>
+        <mailingList>
+            <name>PMD development</name>
+            <subscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
+            <unsubscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
+            <archive>http://sourceforge.net/mailarchive/forum.php?forum=pmd-devel</archive>
+        </mailingList>
+    </mailingLists>
+    <developers>
+        <developer>
+            <id>tomcopeland</id>
+            <name>Tom Copeland</name>
+            <email>tom@infoether.com</email>
+            <organization>InfoEther</organization>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>dpeugh</id>
+            <name>David Dixon-Peugh</name>
+            <email>ddp@apache.org</email>
+            <organization>Lockheed Martin Corporation</organization>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>olemartin</id>
+            <name>Ole-Martin Mork</name>
+            <email>olemartin@users.sourceforge.net</email>
+            <organization>Bekk Consulting</organization>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>mikkey</id>
+            <name>Miguel Griffa</name>
+            <email>mikkey@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>phherlin</id>
+            <name>Philippe Herlin</name>
+            <email>phherlin@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>jigerjava</id>
+            <name>Jiger Patel</name>
+            <email>jigerjava@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>kubacki</id>
+            <name>Radim Kubacki</name>
+            <email>kubacki@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>tomslot</id>
+            <name>Tomasz Slota</name>
+            <email>tomslot@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>ezust</id>
+            <name>Alan Ezust</name>
+            <email>ezust@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>nascif</id>
+            <name>Nascif Abousalh Neto</name>
+            <email>nascif@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>allancaplan</id>
+            <name>Allan Caplan</name>
+            <email>allancaplan@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>holobender</id>
+            <name>Sven Jacob</name>
+            <email>holobender@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>wfzelle</id>
+            <name>Wouter Zelle</name>
+            <email>wfzelle@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>hooperbloob</id>
+            <name>Brian Remedios</name>
+            <email>hooperbloob@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>xlv</id>
+            <name>Xavier Le Vourch</name>
+            <email>xlv@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>rgustav</id>
+            <name>Ryan Gustafson</name>
+            <email>rgustav@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>bluejohn</id>
+            <name>Johan Nagels</name>
+            <email>bluejohn@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>tkleiber</id>
+            <name>Torsten Kleiber</name>
+            <url>http://develishdevelopment.wordpress.com</url>
+            <email>tkleiber@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>rpelisse</id>
+            <name>Romain Pelisse</name>
+            <email>rpelisse@users.sourceforge.net</email>
+            <url>http://belaran.eu/</url>
+            <organization>Atos Origin</organization>
+            <organizationUrl>https://osc-service.si.fr.atosorigin.com/</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+            <properties>
+                <picUrl>http://belaran.eu/wordpress/wp-content/uploads/2008/05/RomainPELISSE.jpg</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>adangel</id>
+            <name>Andreas Dangel</name>
+            <email>adangel@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>acanda</id>
+            <name>Philip Graf</name>
+            <email>acanda@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git://github.com/pmd/pmd.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
+        <url>https://github.com/pmd/pmd</url>
+        <tag>HEAD</tag>
+    </scm>
+    <organization>
+        <name>InfoEther</name>
+        <url>http://pmd.sourceforge.net/</url>
+    </organization>
+
+    <properties>
+        <javacc.version>5.0</javacc.version>
+        <surefire.version>2.17</surefire.version>
+        <checkstyle.version>2.12.1</checkstyle.version>
+        <pmd.plugin.version>3.2</pmd.plugin.version>
+        <java.version>1.6</java.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- This value actually differs to maven default expectation(src/site/xdoc/)
+            as we need to pre process those and we place them instead in target/generated-xdocs/.
+            If the xdocs files stay in src/site/xdoc/, mvn tries to copy over the generated
+            one, and complains... -->
+        <src.xdocs.dir>src/site/xdocs</src.xdocs.dir>
+        <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot</pmd.website.baseurl>
+    </properties>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.6</version>
+            </extension>
+        </extensions>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.7</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.3.2</version>
+                    <configuration>
+                        <releaseProfiles>pmd-release</releaseProfiles>
+                        <pushChanges>false</pushChanges>
+                        <localCheckout>true</localCheckout>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.5.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.4</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-module-markdown</artifactId>
+                            <version>1.6</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire.version}</version>
+                    <configuration>
+                        <forkMode>once</forkMode>
+                        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+                        <runOrder>alphabetical</runOrder>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>1.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.atlassian.maven.plugins</groupId>
+                    <artifactId>maven-clover2-plugin</artifactId>
+                    <version>2.5.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>net.sourceforge.pmd</groupId>
+                    <artifactId>pmd-build</artifactId>
+                    <version>0.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${checkstyle.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>${pmd.plugin.version}</version>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse 
+                    m2e settings only. It has no influence on the Maven build itself. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-antrun-plugin</artifactId>
+                                        <versionRange>[1.7,)</versionRange>
+                                        <goals>
+                                            <goal>run</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute>
+                                            <runOnIncremental>false</runOnIncremental>
+                                            <runOnConfiguration>true</runOnConfiguration>
+                                        </execute>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.8.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-testutil</artifactId>
+                <version>1.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>jaxen</groupId>
+                <artifactId>jaxen</artifactId>
+                <version>1.1.1</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>xercesImpl</artifactId>
+                        <groupId>xerces</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>xalan</artifactId>
+                        <groupId>xalan</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>icu4j</artifactId>
+                        <groupId>com.ibm.icu</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+              <groupId>com.beust</groupId>
+              <artifactId>jcommander</artifactId>
+              <version>1.27</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>5.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.saxon</groupId>
+                <artifactId>saxon</artifactId>
+                <version>9.1.0.8</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.saxon</groupId>
+                <artifactId>saxon</artifactId>
+                <version>9.1.0.8</version>
+                <classifier>dom</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.mozilla</groupId>
+                <artifactId>rhino</artifactId>
+                <version>1.7R3</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+            </dependency>
+            <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>2.9.1</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.javacc</groupId>
+                <artifactId>javacc</artifactId>
+                <version>${javacc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.9.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.7</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>pmd-release</id>
+            <properties>
+                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}</pmd.website.baseurl>
+            </properties>
+        </profile>
+        <profile>
+            <id>sf-release</id>
+            <distributionManagement>
+                <repository>
+                    <id>pmd-repo</id>
+                    <name>Default Repository</name>
+                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/maven2</url>
+                </repository>
+                <site>
+                    <id>pmd-site</id>
+                    <name>Default Site</name>
+                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/pmd-${project.version}</url>
+                </site>
+            </distributionManagement>
+            <properties>
+                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}</pmd.website.baseurl>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <inherited>true</inherited>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <inherited>true</inherited>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <inherited>true</inherited>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <updateReleaseInfo>true</updateReleaseInfo>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>sf-snapshot</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>pmd-snapshot-repo</id>
+                    <name>Snapshot Repository</name>
+                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/snapshot/maven2</url>
+                    <uniqueVersion>true</uniqueVersion>
+                </snapshotRepository>
+                <site>
+                    <id>pmd-snapshot-site</id>
+                    <name>Default Site</name>
+                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/snapshot</url>
+                </site>
+            </distributionManagement>
+        </profile>
+    </profiles>
 
     <modules>
         <module>pmd</module>

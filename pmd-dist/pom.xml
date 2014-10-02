@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd-dist</artifactId>
-    <name>PMD Packages</name>
-    <version>5.1.4-SNAPSHOT</version>
+    <name>PMD Distribution Packages</name>
     <packaging>pom</packaging>
 
     <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-        <relativePath />
+        <groupId>net.sourceforge.pmd</groupId>
+        <artifactId>pmd-aggregate</artifactId>
+        <version>5.1.4-SNAPSHOT</version>
     </parent>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <build>
         <plugins>
