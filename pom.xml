@@ -247,6 +247,12 @@
         <url>https://github.com/pmd/pmd</url>
         <tag>HEAD</tag>
     </scm>
+    <distributionManagement>
+        <site>
+            <id>local</id>
+            <url>file:///tmp/pmd-site</url>
+        </site>
+    </distributionManagement>
     <organization>
         <name>InfoEther</name>
         <url>http://pmd.sourceforge.net/</url>
@@ -425,6 +431,20 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-site-descriptor</id>
+                        <goals>
+                            <goal>attach-descriptor</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencyManagement>

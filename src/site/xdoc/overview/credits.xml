@@ -344,22 +344,22 @@
         </subsection>
         <subsection name="Organizations">
         <table>
-            <tr><td><center><img src="images/ae-logo.gif"/></center></td>
+            <tr><td><center><img src="images/credits/ae-logo.gif"/></center></td>
                 <td><a href="http://www.ae.be/">AE</a> for the JSP integration
             and especially for writing the JSP grammar.</td></tr>
-          <tr><td><center><img src="images/darpa.jpg"/></center></td>
+          <tr><td><center><img src="images/credits/darpa.jpg"/></center></td>
               <td><a href="http://www.darpa.mil/">DARPA</a> for funding
                   the Ultra*Log and <a href="http://cougaar.org/">Cougaar</a>
                 effort which spawned PMD.</td></tr>
           <tr><td><center><img src="http://sourceforge.net/sflogo.php?group_id=56262"/></center></td>
               <td><a href="http://sourceforge.net/">SourceForge</a> for
                   providing hosting services for PMD.</td></tr>
-          <tr><td><center><img src="images/refactorit_logo.gif"/></center></td>
+          <tr><td><center><img src="images/credits/refactorit_logo.gif"/></center></td>
               <td><a href="http://www.refactorit.com/">RefactorIT</a> for letting
                   their software be used free-of-charge on PMD code
                   (<a href="http://www.refactorit.com/index.html?id=649">OpenSource
                   Community License</a>)</td></tr>
-            <tr><td><center><img src="images/qasystems_logo.jpg"/></center></td>
+            <tr><td><center><img src="images/credits/qasystems_logo.jpg"/></center></td>
                 <td><a href="http://www.qa-systems.com/products/qstudioforjava/">QA-Systems</a> for sending in some
                     handy utilities for PMD and shipping PMD inside their QStudio product
                     </td></tr>
@@ -367,18 +367,18 @@
                 <td><a href="http://www.vanwardtechnologies.com/products.php">Vanward Technologies</a> for
                 using PMD inside their Convergence product
                     </td></tr>
-            <tr><td><center><img src="images/atlassian-cenqua-logo.png"/></center></td>
+            <tr><td><center><img src="images/credits/atlassian-cenqua-logo.png"/></center></td>
                 <td><a href="http://www.cenqua.com/">Cenqua</a> for
                 giving us a free Clover license and doing a nice <a href="http://fisheye3.atlassian.com/browse/pmd">FishEye</a> run.
                     </td></tr>
-            <tr><td><center><img src="images/yjp.gif"/></center></td>
+            <tr><td><center><img src="images/credits/yjp.gif"/></center></td>
                 <td>YourKit is kindly supporting open source projects with its full-featured Java Profiler.
 YourKit, LLC is creator of innovative and intelligent tools for profiling
 Java and .NET applications. Take a look at YourKit's leading software products:
 <a href="http://www.yourkit.com/java/profiler/index.jsp">YourKit Java Profiler</a> and
 <a href="http://www.yourkit.com/.net/profiler/index.jsp">YourKit .NET Profiler</a>.
                     </td></tr>
-            <tr><td><center><img src="images/bb-pmd.png"/></center></td>
+            <tr><td><center><img src="images/credits/bb-pmd.png"/></center></td>
                 <td><a href="http://www.bijzonderbezig.nl/">Bijzonder Bezig</a> for giving the PMD logo a modern look.
                 </td></tr>
         </table>

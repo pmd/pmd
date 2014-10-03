@@ -60,51 +60,6 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>generate-ruleset-as-xdocs</id>
-                        <phase>pre-site</phase>
-                        <configuration>
-                            <target>
-                                <echo>PMD specific tasks: generating xdocs from rulesets</echo>
-                                <mkdir dir="${project.build.directory}/generated-xdocs/" />
-                                <copy toDir="${project.build.directory}/generated-xdocs/" overwrite="true" verbose="true">
-                                    <fileset dir="${src.xdocs.dir}" />
-                                    <filterset>
-                                        <filter token="VERSION" value="${project.version}" />
-                                    </filterset>
-                                </copy>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>move-index-and-delete-generated-xdocs</id>
-                        <phase>pre-site</phase>
-                        <configuration>
-                            <target>
-                                <echo>PMD site specific tasks</echo>
-                                <echo>1. Copying missing images to site directory.</echo>
-                                <copy todir="${project.build.directory}/site/images/">
-                                    <fileset dir="${src.xdocs.dir}/images/" includes="**/*.*" />
-                                </copy>
-                                <echo>2. Adding missing text files to site.</echo>
-                                <copy todir="${project.build.directory}/site/">
-                                    <fileset dir="${src.xdocs.dir}/" includes="**/*.txt" />
-                                </copy>
-                                <echo>3. Deleting useless generated files.</echo>
-                                <delete quiet="true">
-                                    <fileset dir="${src.xdocs.dir}/rules" includes="**/*.xml" />
-                                    <fileset dir="${src.xdocs.dir}/" includes="mergedruleset.xml" />
-                                    <fileset dir="${project.build.directory}" includes="site/mergedruleset.html" />
-                                </delete>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>pmd-clean</id>
                         <phase>clean</phase>
                         <configuration>
@@ -160,13 +115,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <xdocDirectory>${project.build.directory}/generated-xdocs</xdocDirectory>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>net.sourceforge.pmd</groupId>
@@ -175,6 +123,7 @@
                     <rulesetsDirectory>${basedir}/src/main/resources/rulesets</rulesetsDirectory>
                     <siteXml>${basedir}/src/site/site.pre.xml</siteXml>
                     <siteXmlTarget>${basedir}/src/site/site.xml</siteXmlTarget>
+                    <target>${basedir}/src/site/xdoc/rules</target>
                 </configuration>
                 <executions>
                     <execution>

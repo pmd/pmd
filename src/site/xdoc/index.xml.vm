@@ -16,12 +16,12 @@
       </ul>
 
       <h3>Download</h3>
-      <p>You can <b><a href="https://sourceforge.net/projects/pmd/files/@VERSION@/">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
+      <p>You can <b><a href="https://sourceforge.net/projects/pmd/files/${project.version}/">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
       <p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
 
       <h3>Changelog</h3>
       <ul>
-        <li>See <a href="changelog.html">What's new in PMD @VERSION@</a></li>
+        <li>See <a href="changelog.html">What's new in PMD ${project.version}</a></li>
         <li>Older versions: <a href="changelog-old.html">Old Changelogs</a></li>
       </ul>
 

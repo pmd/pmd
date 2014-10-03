@@ -21,28 +21,28 @@ You'll need to either check out the source code or download the latest source re
     <source>
 [tom@hal building]$ ls -l
 total 5716
--rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-@VERSION@.zip
-[tom@hal building]$ unzip -q pmd-src-@VERSION@.zip
+-rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-${project.version}.zip
+[tom@hal building]$ unzip -q pmd-src-${project.version}.zip
 [tom@hal building]$
     </source>
 </p>
 <p>
     Now cd down into the <code>pmd</code> directory:
     <source>
-[tom@hal building]$ cd pmd-src-@VERSION@
-[tom@hal pmd-src-@VERSION@]$ ls -l | grep pom.xml
+[tom@hal building]$ cd pmd-src-${project.version}
+[tom@hal pmd-src-${project.version}]$ ls -l | grep pom.xml
 -rw-rw-r--    1 tom      tom          29357 Jan 31 20:00 pom.xml
-[tom@hal pmd-src-@VERSION@]$
+[tom@hal pmd-src-${project.version}]$
     </source>
 </p>
 <p>
     That's the project configuration for maven... let's compile!
     <source>
-[tom@hal pmd-src-@VERSION@]$ mvn clean package
+[tom@hal pmd-src-${project.version}]$ mvn clean package
 [INFO] Scanning for projects...
 [INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
-[INFO] Building PMD @VERSION@
+[INFO] Building PMD ${project.version}
 [INFO] ------------------------------------------------------------------------
 [INFO] 
 ...
@@ -52,7 +52,7 @@ Tests run: 829, Failures: 0, Errors: 0, Skipped: 9
 
 [INFO] 
 [INFO] --- maven-jar-plugin:2.3.1:jar (default-jar) @ pmd ---
-[INFO] Building jar: target/pmd-@VERSION@.jar
+[INFO] Building jar: target/pmd-${project.version}.jar
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
@@ -60,7 +60,7 @@ Tests run: 829, Failures: 0, Errors: 0, Skipped: 9
 [INFO] Finished at: Mon Apr 30 09:36:12 CEST 2012
 [INFO] Final Memory: 13M/187M
 [INFO] ------------------------------------------------------------------------
-[tom@hal pmd-src-@VERSION@]$
+[tom@hal pmd-src-${project.version}]$
     </source>
 </p>
 <p>
