@@ -7,8 +7,6 @@ import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.java.xpath.GetCommentOnFunction;
-import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 
 /**
  * This class serves as the means to perform XPath related static initialization.
@@ -46,9 +44,7 @@ public class Initializer {
     }
 
     private static void initializeGlobal() {
-    	GetCommentOnFunction.registerSelfInSimpleContext();
     	MatchesFunction.registerSelfInSimpleContext();
-    	TypeOfFunction.registerSelfInSimpleContext();
     }
 
     private static void initializeLanguages() {
