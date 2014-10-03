@@ -1,0 +1,12 @@
+target/
+bin/
+.project
+.classpath
+.checkstyle
+.pmd
+.ruleset
+.settings/
+*.patch
+pmd/src/site/site.xml
+pmd/src/site/xdoc/rules
+pmd/src/site/xdoc/mergedruleset.xml
