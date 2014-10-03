@@ -32,6 +32,7 @@ import javax.xml.parsers.SAXParserFactory;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule;
+import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -469,8 +470,8 @@ public class RuleSetFactoryTest {
 	public void testExternalReferences() throws RuleSetNotFoundException {
 		RuleSet rs = loadRuleSet(EXTERNAL_REFERENCE_RULE_SET);
 		assertEquals(1, rs.size());
-		assertEquals(UnusedLocalVariableRule.class.getName(), rs.getRuleByName(
-				"UnusedLocalVariable").getRuleClass());
+		assertEquals(MockRule.class.getName(), rs.getRuleByName(
+				"MockRule").getRuleClass());
 	}
 
 	@Test
@@ -1476,7 +1477,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "<description>testdesc</description>"
 			+ PMD.EOL
-			+ "<rule ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\"/>"
+			+ "<rule ref=\"net/sourceforge/pmd/external-reference-ruleset.xml/MockRule\"/>"
 			+ PMD.EOL + "</ruleset>";
 
 	private Rule loadFirstRule(String ruleSetXml)

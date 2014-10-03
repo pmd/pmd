@@ -1,13 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.testframework.ParserTst;
 
 import org.junit.Test;

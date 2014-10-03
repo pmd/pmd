@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
-import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
-import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 import org.junit.Test;
 
@@ -72,13 +72,12 @@ public class RuleViolationComparatorTest {
 	    int beginColumn, int endLine, int endColumn) {
 	RuleContext ruleContext = new RuleContext();
 	ruleContext.setSourceCodeFilename(fileName);
-	DummyJavaNode simpleNode = new DummyJavaNode(1);
-	simpleNode.setScope(new SourceFileScope(fileName));
+	DummyNode simpleNode = new DummyNode(1);
 	simpleNode.testingOnly__setBeginLine(beginLine);
 	simpleNode.testingOnly__setBeginColumn(beginColumn);
 	simpleNode.testingOnly__setEndLine(endLine);
 	simpleNode.testingOnly__setEndColumn(endColumn);
-	RuleViolation ruleViolation = new JavaRuleViolation(rule, ruleContext, simpleNode, description);
+	RuleViolation ruleViolation = new ParametricRuleViolation<Node>(rule, ruleContext, simpleNode, description);
 	return ruleViolation;
     }
 

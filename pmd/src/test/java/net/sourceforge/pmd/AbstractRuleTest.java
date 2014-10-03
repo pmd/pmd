@@ -8,23 +8,28 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 import org.junit.Test;
-public class AbstractRuleTest {
-	
-    private static class MyRule extends AbstractJavaRule {
-    	private static final StringProperty pd = new StringProperty("foo", "foo property", "x", 1.0f);
 
-    	private static final StringProperty xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
+public class AbstractRuleTest {
+
+    private static class MyRule extends AbstractRule {
+        private static final StringProperty pd = new StringProperty("foo", "foo property", "x", 1.0f);
+
+        private static final StringProperty xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
 
         public MyRule() {
             definePropertyDescriptor(pd);
@@ -34,17 +39,25 @@ public class AbstractRuleTest {
             setPriority(RulePriority.MEDIUM);
             setProperty(pd, "value");
         }
+
+        @Override
+        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        }
     }
 
-    private static class MyOtherRule extends AbstractJavaRule {
-    	private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
+    private static class MyOtherRule extends AbstractRule {
+        private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
 
-		public MyOtherRule() {
-	            definePropertyDescriptor(pd);
+        public MyOtherRule() {
+            definePropertyDescriptor(pd);
             setName("MyOtherRule");
             setMessage("my other rule");
             setPriority(RulePriority.MEDIUM);
             setProperty(pd, "value");
+        }
+
+        @Override
+        public void apply(List<? extends Node> nodes, RuleContext ctx) {
         }
     }
 
@@ -54,11 +67,10 @@ public class AbstractRuleTest {
         r.setRuleSetName("foo");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        DummyJavaNode s = new DummyJavaNode(1);
+        DummyNode s = new DummyNode(1);
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
-        s.setScope(new SourceFileScope("foo"));
-        RuleViolation rv = new JavaRuleViolation(r, ctx, s, r.getMessage());
+        RuleViolation rv = new ParametricRuleViolation(r, ctx, s, r.getMessage());
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -71,11 +83,10 @@ public class AbstractRuleTest {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        DummyJavaNode s = new DummyJavaNode(1);
+        DummyNode s = new DummyNode(1);
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
-        s.setScope(new SourceFileScope("foo"));
-        RuleViolation rv = new JavaRuleViolation(r, ctx, s, "specificdescription");
+        RuleViolation rv = new ParametricRuleViolation(r, ctx, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -94,8 +105,8 @@ public class AbstractRuleTest {
         DummyJavaNode s = new DummyJavaNode(1);
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
-        s.setImage("TestImage");
         s.setScope(new SourceFileScope("foo"));
+        s.setImage("TestImage");
         r.addViolation(ctx, s);
         RuleViolation rv = ctx.getReport().getViolationTree().iterator().next();
         assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
@@ -110,11 +121,10 @@ public class AbstractRuleTest {
         ctx.setReport(new Report());
         ctx.getReport().suppress(m);
         ctx.setSourceCodeFilename("filename");
-        DummyJavaNode n = new DummyJavaNode(1);
+        DummyNode n = new DummyNode(1);
         n.testingOnly__setBeginColumn(5);
         n.testingOnly__setBeginLine(5);
-        n.setScope(new SourceFileScope("foo"));
-        RuleViolation rv = new JavaRuleViolation(r, ctx, n, "specificdescription");
+        RuleViolation rv = new ParametricRuleViolation(r, ctx, n, "specificdescription");
         ctx.getReport().addRuleViolation(rv);
         assertTrue(ctx.getReport().isEmpty());
     }
@@ -193,7 +203,6 @@ public class AbstractRuleTest {
         assertEquals("Rules with different messages are still equal", r1, r2);
         assertEquals("Rules that are equal must have the an equal hashcode", r1.hashCode(), r2.hashCode());
     }
-
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(AbstractRuleTest.class);
