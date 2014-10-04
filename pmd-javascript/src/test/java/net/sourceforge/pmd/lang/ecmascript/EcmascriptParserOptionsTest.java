@@ -11,7 +11,6 @@ import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
-import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 
 import org.junit.Test;
 
@@ -55,28 +54,14 @@ public class EcmascriptParserOptionsTest {
 
     @Test
     public void testSetters() {
-	XmlParserOptions options = new XmlParserOptions();
+        EcmascriptParserOptions options = new EcmascriptParserOptions();
 
 	options.setSuppressMarker("foo");
 	assertEquals("foo", options.getSuppressMarker());
 	options.setSuppressMarker(null);
 	assertNull(options.getSuppressMarker());
-
-	options.setCoalescing(true);
-	assertTrue(options.isCoalescing());
-	options.setCoalescing(false);
-	assertFalse(options.isCoalescing());
-
-	options.setExpandEntityReferences(true);
-	assertTrue(options.isExpandEntityReferences());
-	options.setExpandEntityReferences(false);
-	assertFalse(options.isExpandEntityReferences());
-
-	options.setIgnoringComments(true);
-	assertTrue(options.isIgnoringComments());
-	options.setIgnoringComments(false);
-	assertFalse(options.isIgnoringComments());
     }
+
     @Test
     public void testEqualsHashcode() throws Exception {
 	BooleanProperty[] properties = new BooleanProperty[] { EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,

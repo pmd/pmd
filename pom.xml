@@ -633,6 +633,7 @@
         <module>pmd-vm</module>
         <module>pmd-plsql</module>
         <module>pmd-cpp</module>
+        <module>pmd-xml</module>
         <module>pmd-dist</module>
     </modules>
 </project>

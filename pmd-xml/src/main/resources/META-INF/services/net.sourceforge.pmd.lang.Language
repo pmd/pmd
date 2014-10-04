@@ -1,0 +1,2 @@
+net.sourceforge.pmd.lang.xml.XmlLanguageModule
+net.sourceforge.pmd.lang.xsl.XslLanguageModule

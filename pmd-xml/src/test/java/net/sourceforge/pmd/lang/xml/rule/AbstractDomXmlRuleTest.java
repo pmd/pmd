@@ -16,7 +16,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;

@@ -1,5 +1,3 @@
 net.sourceforge.pmd.lang.fortran.FortranLanguageModule
 net.sourceforge.pmd.lang.php.PhpLanguageModule
 net.sourceforge.pmd.lang.ruby.RubyLanguageModule
-net.sourceforge.pmd.lang.xml.XmlLanguageModule
-net.sourceforge.pmd.lang.xsl.XslLanguageModule
