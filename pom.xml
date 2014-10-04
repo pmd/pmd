@@ -634,6 +634,7 @@
         <module>pmd-plsql</module>
         <module>pmd-cpp</module>
         <module>pmd-xml</module>
+        <module>pmd-php</module>
         <module>pmd-dist</module>
     </modules>
 </project>
