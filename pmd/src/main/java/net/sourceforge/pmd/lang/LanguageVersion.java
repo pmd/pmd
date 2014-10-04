@@ -79,4 +79,8 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
         }
     }
 
+    @Override
+    public String toString() {
+        return language.toString() + "+version:" + version;
+    }
 }

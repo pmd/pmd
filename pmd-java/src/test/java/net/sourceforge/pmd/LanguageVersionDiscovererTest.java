@@ -23,7 +23,8 @@ public class LanguageVersionDiscovererTest {
         File javaFile = new File("/path/to/MyClass.java");
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(javaFile);
-        assertEquals("LanguageVersion must be Java 1.8 !", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8"), languageVersion);
+        assertEquals("LanguageVersion must be Java 1.8 !", LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
+                .getVersion("1.8"), languageVersion);
     }
 
     /**
@@ -36,7 +37,22 @@ public class LanguageVersionDiscovererTest {
         File javaFile = new File("/path/to/MyClass.java");
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(javaFile);
-        assertEquals("LanguageVersion must be Java 1.4!", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"), languageVersion);
+        assertEquals("LanguageVersion must be Java 1.4!", LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
+                .getVersion("1.4"), languageVersion);
+    }
+
+    @Test
+    public void testLanguageVersionDiscoverer() {
+        PMDConfiguration configuration = new PMDConfiguration();
+        LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
+        assertEquals("Default Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8"),
+                languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry
+                        .getLanguage(JavaLanguageModule.NAME)));
+        configuration
+                .setDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+        assertEquals("Modified Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"),
+                languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry
+                        .getLanguage(JavaLanguageModule.NAME)));
     }
 
     public static junit.framework.Test suite() {

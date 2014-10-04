@@ -29,10 +29,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -397,7 +396,7 @@ public class RuleSetFactoryTest {
 	@Test
 	public void testLanguage() throws RuleSetNotFoundException {
 		Rule r = loadFirstRule(LANGUAGE);
-		assertEquals(LanguageRegistry.getLanguage(JavaLanguageModule.NAME), r.getLanguage());
+		assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME), r.getLanguage());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -408,7 +407,7 @@ public class RuleSetFactoryTest {
 	@Test
 	public void testMinimumLanugageVersion() throws RuleSetNotFoundException {
 		Rule r = loadFirstRule(MINIMUM_LANGUAGE_VERSION);
-		assertEquals(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"), r.getMinimumLanguageVersion());
+		assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.4"), r.getMinimumLanguageVersion());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -420,7 +419,7 @@ public class RuleSetFactoryTest {
 	@Test
 	public void testMaximumLanugageVersion() throws RuleSetNotFoundException {
 		Rule r = loadFirstRule(MAXIMUM_LANGUAGE_VERSION);
-		assertEquals(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7"), r.getMaximumLanguageVersion());
+		assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"), r.getMaximumLanguageVersion());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -1284,7 +1283,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "message=\"avoid the mock rule\" "
 			+ PMD.EOL
-			+ "class=\"net.sourceforge.pmd.lang.rule.MockRule\" language=\"java\">"
+			+ "class=\"net.sourceforge.pmd.lang.rule.MockRule\" language=\"dummy\">"
 			+ PMD.EOL + "</rule></ruleset>";
 
 	private static final String INCORRECT_LANGUAGE = "<?xml version=\"1.0\"?>"
@@ -1309,7 +1308,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "class=\"net.sourceforge.pmd.lang.rule.MockRule\""
 			+ PMD.EOL
-			+ " language=\"java\""
+			+ " language=\"dummy\""
 			+ PMD.EOL
 			+ " minimumLanguageVersion=\"1.4\">"
 			+ PMD.EOL
@@ -1329,7 +1328,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "class=\"net.sourceforge.pmd.lang.rule.MockRule\""
 			+ PMD.EOL
-			+ " language=\"java\""
+			+ " language=\"dummy\""
 			+ PMD.EOL
 			+ " minimumLanguageVersion=\"bogus\">"
 			+ PMD.EOL
@@ -1349,7 +1348,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "class=\"net.sourceforge.pmd.lang.rule.MockRule\""
 			+ PMD.EOL
-			+ " language=\"java\""
+			+ " language=\"dummy\""
 			+ PMD.EOL
 			+ " maximumLanguageVersion=\"1.7\">"
 			+ PMD.EOL
@@ -1369,7 +1368,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "class=\"net.sourceforge.pmd.lang.rule.MockRule\""
 			+ PMD.EOL
-			+ " language=\"java\""
+			+ " language=\"dummy\""
 			+ PMD.EOL
 			+ " maximumLanguageVersion=\"bogus\">"
 			+ PMD.EOL
@@ -1389,7 +1388,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "class=\"net.sourceforge.pmd.lang.rule.MockRule\" "
 			+ PMD.EOL
-			+ "language=\"java\""
+			+ "language=\"dummy\""
 			+ PMD.EOL
 			+ " minimumLanguageVersion=\"1.7\""
 			+ PMD.EOL
