@@ -4,17 +4,18 @@
 package net.sourceforge.pmd.jaxen;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-
-import org.junit.Test;
 
 import java.lang.reflect.Method;
+
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+
+import org.junit.Test;
 public class AttributeTest{
 
     @Test
     public void testConstructor() {
-        ASTPrimaryPrefix p = new ASTPrimaryPrefix(1);
+        DummyNode p = new DummyNode(1);
         p.testingOnly__setBeginLine(5);
         Method[] methods = p.getClass().getMethods();
         Method m = null;

@@ -10,7 +10,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.ReportException;
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.NumericConstants;
 
@@ -21,7 +20,7 @@ import org.junit.Test;
 /**
  * @author Brian Remedios
  */
-public class PropertyAccessorTest extends SimpleAggregatorTst {
+public class PropertyAccessorTest {
 
     private Rule rule;
 

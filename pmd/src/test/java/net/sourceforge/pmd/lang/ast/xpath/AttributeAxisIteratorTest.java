@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ast.xpath;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.ast.DummyNode;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class AttributeAxisIteratorTest {
      */
     @Test
     public void testAttributeAxisIterator() {
-        DummyJavaNode dummyNode = new DummyJavaNode(1);
+        DummyNode dummyNode = new DummyNode(1);
         dummyNode.testingOnly__setBeginLine(1);
         dummyNode.testingOnly__setBeginColumn(1);
 
