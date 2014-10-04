@@ -630,6 +630,7 @@
         <module>pmd-test</module>
         <module>pmd-java</module>
         <module>pmd-javascript</module>
+        <module>pmd-vm</module>
         <module>pmd-dist</module>
     </modules>
 </project>

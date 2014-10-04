@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import org.junit.Assert;
 import org.junit.Test;
 
