@@ -29,7 +29,7 @@ public class PapariTextRendererTest extends AbstractRendererTst {
     }
 
     public String getExpected() {
-        return "* file: n/a" + PMD.EOL + "    src:  " + naString + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL + "    msg:  msg" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL + PMD.EOL + " : 1" + PMD.EOL + "* warnings: 1" + PMD.EOL;
+        return "* file: n/a" + PMD.EOL + "    src:  " + naString + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL + "    msg:  blah" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL + PMD.EOL + " : 1" + PMD.EOL + "* warnings: 1" + PMD.EOL;
     }
     
     public String getExpectedEmpty() {
@@ -37,7 +37,7 @@ public class PapariTextRendererTest extends AbstractRendererTst {
     }
     
     public String getExpectedMultiple() {
-        return "* file: n/a" + PMD.EOL + "    src:  " + naString + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL + "    msg:  msg" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + "    src:  " + naString + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL + "    msg:  msg" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL + PMD.EOL + " : 2" + PMD.EOL + "* warnings: 2" + PMD.EOL;
+        return "* file: n/a" + PMD.EOL + "    src:  " + naString + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL + "    msg:  blah" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + "    src:  " + naString + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL + "    msg:  blah" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL + PMD.EOL + " : 2" + PMD.EOL + "* warnings: 2" + PMD.EOL;
     }
     
     public String getExpectedError(ProcessingError error) {

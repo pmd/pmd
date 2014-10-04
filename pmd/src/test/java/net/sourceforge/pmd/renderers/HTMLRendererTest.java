@@ -17,7 +17,7 @@ public class HTMLRendererTest extends AbstractRendererTst {
         "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL +
         "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"center\">1</td>" + PMD.EOL + "<td width=\"*%\">n/a</td>" + PMD.EOL +
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
-        "<td width=\"*\">msg</td>" + PMD.EOL +
+        "<td width=\"*\">blah</td>" + PMD.EOL +
         "</tr>" + PMD.EOL +
         "</table></body></html>" + PMD.EOL;
     }
@@ -37,11 +37,11 @@ public class HTMLRendererTest extends AbstractRendererTst {
         "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL +
         "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"center\">1</td>" + PMD.EOL + "<td width=\"*%\">n/a</td>" + PMD.EOL +
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
-        "<td width=\"*\">msg</td>" + PMD.EOL +
+        "<td width=\"*\">blah</td>" + PMD.EOL +
         "</tr>" + PMD.EOL +
         "<tr> " + PMD.EOL + "<td align=\"center\">2</td>" + PMD.EOL + "<td width=\"*%\">n/a</td>" + PMD.EOL +
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
-        "<td width=\"*\">msg</td>" + PMD.EOL +
+        "<td width=\"*\">blah</td>" + PMD.EOL +
         "</tr>" + PMD.EOL +
         "</table></body></html>" + PMD.EOL;
     }

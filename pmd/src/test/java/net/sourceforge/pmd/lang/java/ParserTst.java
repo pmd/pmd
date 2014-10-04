@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.testframework;
+package net.sourceforge.pmd.lang.java;
 
 import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;

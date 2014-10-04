@@ -4,12 +4,13 @@
 package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 import org.junit.Test;
@@ -17,25 +18,16 @@ import org.junit.Test;
 
 public abstract class AbstractRendererTst extends RuleTst {
 
-    private static class FooRule extends AbstractJavaRule {
-        public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
-            if (c.getImage().equals("Foo"))
-                addViolation(ctx, c);
-            return ctx;
-        }
-        public String getMessage() { return "msg";  }
-        public String getName() { return "Foo"; }
-        public String getRuleSetName() { return "RuleSet"; }
-        public String getDescription() { return "desc"; }
-    }
-
     private static class FooRule2 extends FooRule {
-        public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
-            if (c.getImage().equals("Foo")) {
-                addViolation(ctx, c);
-                addViolation(ctx, c.jjtGetChild(0));
+        @Override
+        protected void apply(Node node, RuleContext ctx) {
+            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+                apply(node.jjtGetChild(i), ctx);
             }
-            return ctx;
+            if ("Foo".equals(node.getImage())) {
+                addViolation(ctx, node);
+                addViolation(ctx, node.jjtGetChild(0));
+            }
         }
     }
 

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.testframework.ParserTst;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;

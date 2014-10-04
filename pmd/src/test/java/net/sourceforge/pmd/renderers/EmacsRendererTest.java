@@ -11,7 +11,7 @@ public class EmacsRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "n/a:1: msg" + PMD.EOL;
+        return "n/a:1: blah" + PMD.EOL;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class EmacsRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return "n/a:1: msg" + PMD.EOL + "n/a:1: msg" + PMD.EOL;
+        return "n/a:1: blah" + PMD.EOL + "n/a:1: blah" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {

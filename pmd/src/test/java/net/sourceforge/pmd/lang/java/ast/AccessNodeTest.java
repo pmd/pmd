@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.testframework.ParserTst;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.junit.Test;
 

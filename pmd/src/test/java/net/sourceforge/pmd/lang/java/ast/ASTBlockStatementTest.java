@@ -2,7 +2,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.testframework.ParserTst;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.junit.Test;
 

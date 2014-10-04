@@ -8,14 +8,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
                 "<td align=\"center\">1</td>" + PMD.EOL +
                 "<td width=\"*%\"><a href=\"link_prefixn/a.html#line_prefix1\">n/a</a></td>" + PMD.EOL +
                 "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
-                "<td width=\"*\">msg</td>" + PMD.EOL +
+                "<td width=\"*\">blah</td>" + PMD.EOL +
                 "</tr>" + PMD.EOL +
                 "</table></tr></table></body></html>" + PMD.EOL;
 
@@ -64,13 +64,13 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
         "<td align=\"center\">1</td>" + PMD.EOL +
         "<td width=\"*%\"><a href=\"link_prefixn/a.html#line_prefix1\">n/a</a></td>" + PMD.EOL +
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
-        "<td width=\"*\">msg</td>" + PMD.EOL +
+        "<td width=\"*\">blah</td>" + PMD.EOL +
         "</tr>" + PMD.EOL +
         "<tr> " + PMD.EOL +
         "<td align=\"center\">2</td>" + PMD.EOL +
         "<td width=\"*%\"><a href=\"link_prefixn/a.html#line_prefix1\">n/a</a></td>" + PMD.EOL +
         "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +
-        "<td width=\"*\">msg</td>" + PMD.EOL +
+        "<td width=\"*\">blah</td>" + PMD.EOL +
         "</tr>" + PMD.EOL +
         "</table></tr></table></body></html>" + PMD.EOL;
     }
@@ -105,7 +105,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
                 "<tr bgcolor=\"lightgrey\"> " + PMD.EOL +
                 "<td align=\"left\"></td>" + PMD.EOL +
                 "<td align=\"center\">1</td>" + PMD.EOL +
-                "<td align=\"center\">net.sourceforge.pmd.renderers.SummaryHTMLRendererTest$1</td>" + PMD.EOL +
+                "<td align=\"center\">Foo</td>" + PMD.EOL +
                 "<td align=\"center\">NOPMD</td>" + PMD.EOL +
                 "<td align=\"center\">test</td>" + PMD.EOL +
                 "</tr>" + PMD.EOL +
@@ -128,7 +128,9 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
         suppressions.put(1, "test");
         rep.suppress(suppressions);
         RuleContext ctx = new RuleContext();
-        RuleViolation violation = new JavaRuleViolation(new AbstractJavaRule() {}, ctx, null, "suppress test", 1, 1);
+        ParametricRuleViolation<Node> violation = new ParametricRuleViolation<Node>(new FooRule(),
+                ctx, null, "suppress test");
+        violation.setLines(1, 1);
         rep.addRuleViolation(violation);
         return rep;
     }

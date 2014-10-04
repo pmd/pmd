@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.testframework.ParserTst;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.junit.Test;
 

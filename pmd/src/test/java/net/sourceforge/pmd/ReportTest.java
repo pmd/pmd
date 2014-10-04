@@ -10,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
@@ -21,7 +20,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleViolationFactory;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -33,43 +31,6 @@ import org.junit.Test;
 
 
 public class ReportTest extends RuleTst implements ReportListener {
-
-    public static class FooRule extends AbstractRule {
-        public FooRule() {
-            setLanguage(DEFAULT_LANGUAGE);
-        }
-        public String getMessage() {
-            return "blah";
-        }
-
-        public String getName() {
-            return "Foo";
-        }
-
-        public String getRuleSetName() {
-            return "RuleSet";
-        }
-
-        public String getDescription() {
-            return "desc";
-        }
-
-        @Override
-        public void apply(List<? extends Node> nodes, RuleContext ctx) {
-            for (Node node : nodes) {
-                apply(node, ctx);
-            }
-        }
-
-        private void apply(Node node, RuleContext ctx) {
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                apply(node.jjtGetChild(i), ctx);
-            }
-            if ("Foo".equals(node.getImage())) {
-                addViolation(ctx, node);
-            }
-        }
-    }
 
     private boolean violationSemaphore;
     private boolean metricSemaphore;

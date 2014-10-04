@@ -13,7 +13,7 @@ public class IDEAJRendererTest extends AbstractRendererTst {
     }
 
     public String getExpected() {
-        return "msg" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL;
+        return "blah" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL;
     }
     
     public String getExpectedEmpty() {
@@ -21,7 +21,7 @@ public class IDEAJRendererTest extends AbstractRendererTst {
     }
     
     public String getExpectedMultiple() {
-        return "msg" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL + "msg" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL;
+        return "blah" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL + "blah" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {

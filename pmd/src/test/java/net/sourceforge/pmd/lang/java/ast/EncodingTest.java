@@ -5,7 +5,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.testframework.ParserTst;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.junit.Test;
 

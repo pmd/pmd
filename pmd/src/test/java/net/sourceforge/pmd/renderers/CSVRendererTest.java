@@ -14,7 +14,7 @@ public class CSVRendererTest extends AbstractRendererTst {
 
     public String getExpected() {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL
-                + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"msg\",\"RuleSet\",\"Foo\"" + PMD.EOL;
+                + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
     public String getExpectedEmpty() {
@@ -23,8 +23,8 @@ public class CSVRendererTest extends AbstractRendererTst {
 
     public String getExpectedMultiple() {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL
-        + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"msg\",\"RuleSet\",\"Foo\"" + PMD.EOL 
-        + "\"2\",\"\",\"n/a\",\"5\",\"1\",\"msg\",\"RuleSet\",\"Foo\"" + PMD.EOL;
+        + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL 
+        + "\"2\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
     public String getExpectedError(ProcessingError error) {

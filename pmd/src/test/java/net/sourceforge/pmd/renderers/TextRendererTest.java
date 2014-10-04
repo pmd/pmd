@@ -12,7 +12,7 @@ public class TextRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "n/a:1:\tmsg" + PMD.EOL;
+        return "n/a:1:\tblah" + PMD.EOL;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class TextRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return "n/a:1:\tmsg" + PMD.EOL + "n/a:1:\tmsg" + PMD.EOL;
+        return "n/a:1:\tblah" + PMD.EOL + "n/a:1:\tblah" + PMD.EOL;
     }
 
     @Override

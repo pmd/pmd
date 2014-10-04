@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
@@ -19,7 +20,7 @@ public class XSLTRendererTest {
     public void testDefaultStylesheet() throws Exception {
         XSLTRenderer renderer = new XSLTRenderer();
         Report report = new Report();
-        RuleViolation rv = new ParametricRuleViolation<Node>(new ReportTest.FooRule(), new RuleContext(),
+        RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), new RuleContext(),
                 ReportTest.getNode(1, 1, "some scope"),
                 "violation message");
         report.addRuleViolation(rv);

@@ -12,6 +12,7 @@ import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
@@ -19,8 +20,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 import org.junit.Test;
@@ -30,30 +29,6 @@ import org.xml.sax.SAXException;
 
 
 public class XMLRendererTest extends RuleTst {
-
-    private static class FooRule extends AbstractJavaRule {
-        public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
-            if (c.getImage().equals("Foo")) addViolation(ctx, c);
-            return ctx;
-        }
-
-        public String getMessage() {
-            return "blah";
-        }
-
-        public String getName() {
-            return "Foo";
-        }
-
-        public String getRuleSetName() {
-            return "RuleSet";
-        }
-
-        public String getDescription() {
-            return "desc";
-        }
-    }
-
     @Test
     public void testEmptyReport() throws Throwable {
         Element root = parseRootElement(new Report());

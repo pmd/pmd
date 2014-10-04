@@ -1,8 +1,11 @@
 package net.sourceforge.pmd.properties;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.CharacterMultiProperty;
@@ -35,7 +38,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  * 
  * @author Brian Remedios
  */
-public class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
+public class NonRuleWithAllPropertyTypes extends AbstractRule {
 
     private static final Method stringLength = ClassUtil.methodFor(String.class, "length", ClassUtil.EMPTY_CLASS_ARRAY);
     private static final Method stringToLowerCase = ClassUtil.methodFor(String.class, "toLowerCase", ClassUtil.EMPTY_CLASS_ARRAY);
@@ -90,4 +93,9 @@ public class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
         definePropertyDescriptor(multiMethod);
 		definePropertyDescriptor(multiEnumType);
 	}
+
+
+    @Override
+    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+    }
 }
