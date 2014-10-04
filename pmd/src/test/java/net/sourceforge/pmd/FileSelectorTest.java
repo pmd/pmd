@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import org.junit.Test;
 
 /**
@@ -21,7 +23,7 @@ public class FileSelectorTest {
      */
     @Test
     public void testWantedFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(Language.JAVA);
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
 
         File javaFile = new File("/path/to/myFile.java");
 
@@ -35,7 +37,7 @@ public class FileSelectorTest {
      */
     @Test
     public void testUnwantedFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(Language.JAVA);
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
 
         File javaFile = new File("/path/to/myFile.txt");
 
@@ -48,7 +50,7 @@ public class FileSelectorTest {
      */
     @Test
     public void testUnwantedJavaFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(Language.XML);
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
 
         File javaFile = new File("/path/to/MyClass.java");
 

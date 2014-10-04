@@ -6,11 +6,7 @@ package net.sourceforge.pmd.lang.java;
 import java.io.Writer;
 
 import net.sf.saxon.sxpath.IndependentContext;
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
-import net.sourceforge.pmd.lang.DataFlowHandler;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathHandler;
+import net.sourceforge.pmd.lang.*;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
@@ -49,7 +45,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
 	    }
 
 	    public void initialize(IndependentContext context) {
-		super.initialize(context, Language.JAVA, JavaFunctions.class);
+		super.initialize(context, LanguageRegistry.getLanguage(JavaLanguageModule.NAME), JavaFunctions.class);
 	    }
 	};
     }

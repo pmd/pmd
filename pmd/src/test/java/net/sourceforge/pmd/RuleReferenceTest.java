@@ -8,12 +8,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
+import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import org.junit.Test;
 
 public class RuleReferenceTest {
@@ -31,7 +32,7 @@ public class RuleReferenceTest {
 	    StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
 		MockRule rule = new MockRule();
 		rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
-		rule.setLanguage(Language.XML);
+		rule.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
 		rule.setName("name1");
 		rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
 		rule.setMessage("message1");
@@ -44,9 +45,9 @@ public class RuleReferenceTest {
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRule(rule);
 		ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
-		ruleReference.setLanguage(Language.JAVA);
-		ruleReference.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
-		ruleReference.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
+		ruleReference.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
+		ruleReference.setMinimumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3"));
+		ruleReference.setMaximumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7"));
 		ruleReference.setDeprecated(true);
 		ruleReference.setName("name2");
 		ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
@@ -57,14 +58,14 @@ public class RuleReferenceTest {
 		ruleReference.setExternalInfoUrl("externalInfoUrl2");
 		ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
 
-		assertEquals("Override failed", Language.JAVA, ruleReference.getLanguage());
-		assertEquals("Override failed", Language.JAVA, ruleReference.getOverriddenLanguage());
+		assertEquals("Override failed", LanguageRegistry.getLanguage(JavaLanguageModule.NAME), ruleReference.getLanguage());
+		assertEquals("Override failed", LanguageRegistry.getLanguage(JavaLanguageModule.NAME), ruleReference.getOverriddenLanguage());
 
-		assertEquals("Override failed", LanguageVersion.JAVA_13, ruleReference.getMinimumLanguageVersion());
-		assertEquals("Override failed", LanguageVersion.JAVA_13, ruleReference.getOverriddenMinimumLanguageVersion());
+		assertEquals("Override failed", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3"), ruleReference.getMinimumLanguageVersion());
+		assertEquals("Override failed", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3"), ruleReference.getOverriddenMinimumLanguageVersion());
 
-		assertEquals("Override failed", LanguageVersion.JAVA_17, ruleReference.getMaximumLanguageVersion());
-		assertEquals("Override failed", LanguageVersion.JAVA_17, ruleReference.getOverriddenMaximumLanguageVersion());
+		assertEquals("Override failed", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7"), ruleReference.getMaximumLanguageVersion());
+		assertEquals("Override failed", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7"), ruleReference.getOverriddenMaximumLanguageVersion());
 
 		assertEquals("Override failed", false, ruleReference.getRule().isDeprecated());
 		assertEquals("Override failed", true, ruleReference.isDeprecated());
@@ -107,9 +108,9 @@ public class RuleReferenceTest {
 	    StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
 		MockRule rule = new MockRule();
 		rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
-		rule.setLanguage(Language.JAVA);
-		rule.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
-		rule.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
+		rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
+		rule.setMinimumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3"));
+		rule.setMaximumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7"));
 		rule.setName("name1");
 		rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
 		rule.setMessage("message1");
@@ -120,9 +121,9 @@ public class RuleReferenceTest {
 
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRule(rule);
-		ruleReference.setLanguage(Language.JAVA);
-		ruleReference.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
-		ruleReference.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
+		ruleReference.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
+		ruleReference.setMinimumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3"));
+		ruleReference.setMaximumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7"));
 		ruleReference.setDeprecated(false);
 		ruleReference.setName("name1");
 		ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value1");
@@ -132,13 +133,13 @@ public class RuleReferenceTest {
 		ruleReference.setExternalInfoUrl("externalInfoUrl1");
 		ruleReference.setPriority(RulePriority.HIGH);
 
-		assertEquals("Override failed", Language.JAVA, ruleReference.getLanguage());
+		assertEquals("Override failed", LanguageRegistry.getLanguage(JavaLanguageModule.NAME), ruleReference.getLanguage());
 		assertNull("Override failed", ruleReference.getOverriddenLanguage());
 
-		assertEquals("Override failed", LanguageVersion.JAVA_13, ruleReference.getMinimumLanguageVersion());
+		assertEquals("Override failed", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3"), ruleReference.getMinimumLanguageVersion());
 		assertNull("Override failed", ruleReference.getOverriddenMinimumLanguageVersion());
 
-		assertEquals("Override failed", LanguageVersion.JAVA_17, ruleReference.getMaximumLanguageVersion());
+		assertEquals("Override failed", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7"), ruleReference.getMaximumLanguageVersion());
 		assertNull("Override failed", ruleReference.getOverriddenMaximumLanguageVersion());
 
 		assertEquals("Override failed", false, ruleReference.isDeprecated());

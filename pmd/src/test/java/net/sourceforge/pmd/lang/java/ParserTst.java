@@ -13,9 +13,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
@@ -54,7 +55,7 @@ public abstract class ParserTst {
     }
 
     public <E> Set<E> getNodes(Class<E> clazz, String javaCode) throws Throwable {
-        return getNodes(Language.JAVA.getDefaultVersion(), clazz, javaCode);
+        return getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion(), clazz, javaCode);
     }
 
     public <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String javaCode) throws Throwable {
@@ -68,7 +69,7 @@ public abstract class ParserTst {
 
     public <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz, new ArrayList<E>());
-        LanguageVersionHandler languageVersionHandler = Language.JAVA.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         ASTCompilationUnit cu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
@@ -91,7 +92,7 @@ public abstract class ParserTst {
     }
 
     public ASTCompilationUnit buildDFA(String javaCode) throws Throwable {
-        LanguageVersionHandler languageVersionHandler = Language.JAVA.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
 	ASTCompilationUnit cu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, new Collector<ASTCompilationUnit>(ASTCompilationUnit.class));
         jpv.visit(cu, null);
@@ -101,19 +102,19 @@ public abstract class ParserTst {
     }
     
     public ASTCompilationUnit parseJava13(String code) {
-        return parseJava(LanguageVersion.JAVA_13, code);
+        return parseJava(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3"), code);
     }
     public ASTCompilationUnit parseJava14(String code) {
-        return parseJava(LanguageVersion.JAVA_14, code);
+        return parseJava(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"), code);
     }
     public ASTCompilationUnit parseJava15(String code) {
-        return parseJava(LanguageVersion.JAVA_15, code);
+        return parseJava(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"), code);
     }
     public ASTCompilationUnit parseJava17(String code) {
-        return parseJava(LanguageVersion.JAVA_17, code);
+        return parseJava(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7"), code);
     }
     public ASTCompilationUnit parseJava18(String code) {
-        return parseJava(LanguageVersion.JAVA_18, code);
+        return parseJava(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8"), code);
     }
     public ASTCompilationUnit parseJava(LanguageVersion languageVersion, String code) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();

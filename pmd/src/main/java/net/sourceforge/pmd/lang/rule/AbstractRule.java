@@ -87,7 +87,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	}
 
 	/**
-	 * @see Rule#setLanguage(Language)
+	 * @see Rule#setLanguage(net.sourceforge.pmd.lang.Language)
 	 */
 	 public void setLanguage(Language language) {
 		 if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
@@ -105,7 +105,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	 }
 
 	 /**
-	  * @see Rule#setMinimumLanguageVersion(LanguageVersion)
+	  * @see Rule#setMinimumLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
 	  */
 	 public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
 		 this.minimumLanguageVersion = minimumLanguageVersion;
@@ -119,7 +119,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	 }
 
 	 /**
-	  * @see Rule#setMaximumLanguageVersion(LanguageVersion)
+	  * @see Rule#setMaximumLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
 	  */
 	 public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
 		 this.maximumLanguageVersion = maximumLanguageVersion;

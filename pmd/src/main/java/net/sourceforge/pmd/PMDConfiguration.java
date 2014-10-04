@@ -8,9 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
@@ -244,7 +245,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         if (languageVersion == null) {
             // For compatibility with older code that does not always pass in
             // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(Language.JAVA);
+            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         }
         return languageVersion;
     }

@@ -19,7 +19,8 @@ import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
 import org.junit.Test;
@@ -80,7 +81,7 @@ public class XMLRendererTest extends RuleTst {
         FooRule rule = new FooRule();
         runTestFromString(TEST2, rule, report);
         PMD p = new PMD();
-        p.getConfiguration().setDefaultLanguageVersion(LanguageVersion.JAVA_14);
+        p.getConfiguration().setDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"));
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         ctx.setSourceCodeFilename("bar");

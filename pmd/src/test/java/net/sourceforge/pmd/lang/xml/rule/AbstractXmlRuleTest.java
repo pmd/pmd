@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
@@ -24,7 +25,7 @@ public class AbstractXmlRuleTest {
     public void testVisit() throws Exception {
 	String source = "<?xml version=\"1.0\"?><foo abc=\"abc\"><bar/></foo>";
 	XmlParserOptions parserOptions = new XmlParserOptions();
-	Parser parser = Language.XML.getDefaultVersion().getLanguageVersionHandler().getParser(parserOptions);
+	Parser parser = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler().getParser(parserOptions);
 	XmlNode xmlNode = (XmlNode) parser.parse(null, new StringReader(source));
 	List<XmlNode> nodes = new ArrayList<XmlNode>();
 	nodes.add(xmlNode);

@@ -6,12 +6,13 @@ package net.sourceforge.pmd.lang.xml.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
@@ -31,7 +32,7 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
     public static final BooleanProperty XINCLUDE_AWARE_DESCRIPTOR = XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR;
 
     public AbstractXmlRule() {
-	super.setLanguage(Language.XML);
+	super.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
 	definePropertyDescriptor(COALESCING_DESCRIPTOR);
 	definePropertyDescriptor(EXPAND_ENTITY_REFERENCES_DESCRIPTOR);
 	definePropertyDescriptor(IGNORING_COMMENTS_DESCRIPTOR);

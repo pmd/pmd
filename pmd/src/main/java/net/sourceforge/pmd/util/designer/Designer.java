@@ -96,16 +96,14 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.*;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -122,7 +120,7 @@ import org.xml.sax.SAXException;
 public class Designer implements ClipboardOwner {
 
 	private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Arrays.asList(getSupportedLanguageVersions())
-	.indexOf(Language.JAVA.getDefaultVersion());
+	.indexOf(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
 
     private Node getCompilationUnit() {
         LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
@@ -141,7 +139,7 @@ public class Designer implements ClipboardOwner {
 
 	private static LanguageVersion[] getSupportedLanguageVersions() {
 		List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
-		for (LanguageVersion languageVersion : LanguageVersion.values()) {
+		for (LanguageVersion languageVersion : LanguageRegistry.findAllVersions()) {
 			LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 			if (languageVersionHandler != null) {
 				Parser parser = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions());
@@ -966,7 +964,8 @@ public class Designer implements ClipboardOwner {
 				String xpathVersion = xpathElement.getAttribute("version");
 
 				codeEditorPane.setText(code);
-				setLanguageVersion(LanguageVersion.findByTerseName(languageVersion));
+// TODO: Fix this.
+//				setLanguageVersion(LanguageRegistry.findByTerseName(languageVersion));
 				xpathQueryArea.setText(xpath);
 				for (Enumeration<AbstractButton> e = xpathVersionButtonGroup.getElements(); e.hasMoreElements();) {
 					AbstractButton button = e.nextElement();

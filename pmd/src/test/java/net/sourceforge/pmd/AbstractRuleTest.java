@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -99,7 +99,7 @@ public class AbstractRuleTest {
         r.definePropertyDescriptor(new IntegerProperty("testInt", "description", 0, 100, 10, 0));
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
         RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
+        ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
         ctx.setReport(new Report());
         ctx.setSourceCodeFilename("filename");
         DummyJavaNode s = new DummyJavaNode(1);

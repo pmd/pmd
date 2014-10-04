@@ -227,7 +227,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the parser options for this Rule. Parser options are used to
-     * configure the {@link Parser} to create an AST in the form the Rule is
+     * configure the {@link net.sourceforge.pmd.lang.Parser} to create an AST in the form the Rule is
      * expecting. Because ParserOptions are mutable, a Rule should return a new
      * instance on each call.
      * 

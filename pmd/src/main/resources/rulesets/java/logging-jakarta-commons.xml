@@ -89,7 +89,7 @@ public class Foo {
      </rule>
 
     <rule name="GuardDebugLogging"
-          language="Java"
+          language="java"
           since="4.3"
           message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
           class="net.sourceforge.pmd.lang.java.rule.logging.GuardDebugLoggingRule"

@@ -6,9 +6,10 @@ package net.sourceforge.pmd.lang.ecmascript.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayComprehension;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayComprehensionLoop;
@@ -73,7 +74,7 @@ public abstract class AbstractEcmascriptRule extends AbstractRule implements Ecm
     private static final EnumeratedProperty<EcmascriptParserOptions.Version> RHINO_LANGUAGE_VERSION = EcmascriptParserOptions.RHINO_LANGUAGE_VERSION;
 
     public AbstractEcmascriptRule() {
-	super.setLanguage(Language.ECMASCRIPT);
+	super.setLanguage(LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME));
 	definePropertyDescriptor(RECORDING_COMMENTS_DESCRIPTOR);
 	definePropertyDescriptor(RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR);
 	definePropertyDescriptor(RHINO_LANGUAGE_VERSION);

@@ -4,9 +4,11 @@
 package net.sourceforge.pmd.lang.java.dfa;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.lang.Language;
+
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.Structure;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
 import org.junit.Test;
@@ -15,7 +17,7 @@ public class StructureTest {
 
     @Test
     public void testAddResultsinDFANodeContainingAddedNode() {
-        Structure s = new Structure(Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
+        Structure s = new Structure(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
         Node n = new ASTMethodDeclaration(1);
         assertEquals(n, s.createNewNode(n).getNode());
     }

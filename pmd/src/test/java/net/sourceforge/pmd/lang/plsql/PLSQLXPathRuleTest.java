@@ -6,8 +6,7 @@ package net.sourceforge.pmd.lang.plsql;
 import java.util.Arrays;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -38,7 +37,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
 
     @Before
     public void setup() {
-        ctx.setLanguageVersion(LanguageVersion.PLSQL);
+        ctx.setLanguageVersion(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion());
     }
 
     /**
@@ -76,7 +75,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
 
     private XPathRule createRule(String version) {
         XPathRule rule = new XPathRule("//PrimaryExpression");
-        rule.setLanguage(Language.PLSQL);
+        rule.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
         rule.setVersion(version);
         rule.setMessage("Test Violation");
         return rule;

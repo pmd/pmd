@@ -12,11 +12,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.VisitorStarter;
+import net.sourceforge.pmd.lang.*;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
@@ -58,7 +54,7 @@ public class SourceCodeProcessor {
      * different Languages, will need to be sure to either properly set the
      * Language on the RuleContext, or set it to <code>null</code> first.
      *
-     * @see RuleContext#setLanguageVersion(LanguageVersion)
+     * @see RuleContext#setLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
      * @see PMDConfiguration#getLanguageVersionOfFile(String)
      *
      * @param sourceCode The Reader to analyze.

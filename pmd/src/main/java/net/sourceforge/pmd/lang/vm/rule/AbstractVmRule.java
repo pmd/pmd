@@ -6,10 +6,11 @@ package net.sourceforge.pmd.lang.vm.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
+import net.sourceforge.pmd.lang.vm.VmLanguageModule;
 import net.sourceforge.pmd.lang.vm.ast.ASTAddNode;
 import net.sourceforge.pmd.lang.vm.ast.ASTAndNode;
 import net.sourceforge.pmd.lang.vm.ast.ASTAssignment;
@@ -58,7 +59,7 @@ import net.sourceforge.pmd.lang.vm.ast.VmParserVisitor;
 public abstract class AbstractVmRule extends AbstractRule implements VmParserVisitor, ImmutableLanguage {
 
     public AbstractVmRule() {
-        super.setLanguage(Language.VM);
+        super.setLanguage(LanguageRegistry.getLanguage(VmLanguageModule.NAME));
     }
 
     @Override

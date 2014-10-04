@@ -5,16 +5,17 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
 
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 import net.sourceforge.pmd.lang.jsp.ast.Token;
 
 public class JSPTokenizer implements Tokenizer {
 
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
 	StringBuilder buffer = sourceCode.getCodeBuffer();
-	LanguageVersionHandler languageVersionHandler = Language.JSP.getDefaultVersion().getLanguageVersionHandler();
+	LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
 	TokenManager tokenMgr = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
 		.getTokenManager(sourceCode.getFileName(), new StringReader(buffer.toString()));
 	Token currentToken = (Token) tokenMgr.getNextToken();

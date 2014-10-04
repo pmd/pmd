@@ -11,9 +11,9 @@ import java.net.URL;
 import java.util.Properties;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
@@ -59,11 +59,11 @@ public class ConfigurationTest {
     public void testLanguageVersionDiscoverer() {
 	PMDConfiguration configuration = new PMDConfiguration();
 	LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
-	assertEquals("Default Java version", LanguageVersion.JAVA_18, languageVersionDiscoverer
-		.getDefaultLanguageVersion(Language.JAVA));
-	configuration.setDefaultLanguageVersion(LanguageVersion.JAVA_15);
-	assertEquals("Modified Java version", LanguageVersion.JAVA_15, languageVersionDiscoverer
-		.getDefaultLanguageVersion(Language.JAVA));
+	assertEquals("Default Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8"), languageVersionDiscoverer
+		.getDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
+	configuration.setDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+	assertEquals("Modified Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"), languageVersionDiscoverer
+		.getDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
     }
 
     @Test

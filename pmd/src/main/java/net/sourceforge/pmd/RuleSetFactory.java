@@ -20,6 +20,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -84,7 +85,7 @@ public class RuleSetFactory {
 		String rulesetsProperties = null;
 		try {
 			List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<RuleSetReferenceId>();
-			for (Language language : Language.findWithRuleSupport()) {
+			for (Language language : LanguageRegistry.findWithRuleSupport()) {
 				Properties props = new Properties();
 				rulesetsProperties = "rulesets/" + language.getTerseName() + "/rulesets.properties";
 				props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
@@ -347,11 +348,11 @@ public class RuleSetFactory {
 
 		if (ruleElement.hasAttribute("language")) {
 			String languageName = ruleElement.getAttribute("language");
-			Language language = Language.findByTerseName(languageName);
+			Language language = LanguageRegistry.findLanguageByTerseName(languageName);
 			if (language == null) {
 				throw new IllegalArgumentException("Unknown Language '" + languageName + "' for Rule " + rule.getName()
 						+ ", supported Languages are "
-						+ Language.commaSeparatedTerseNames(Language.findWithRuleSupport()));
+						+ LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport()));
 			}
 			rule.setLanguage(language);
 		}
@@ -369,7 +370,7 @@ public class RuleSetFactory {
 				throw new IllegalArgumentException("Unknown minimum Language Version '" + minimumLanguageVersionName
 						+ "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()
 						+ "; supported Language Versions are: "
-						+ LanguageVersion.commaSeparatedTerseNames(language.getVersions()));
+						+ LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
 			}
 			rule.setMinimumLanguageVersion(minimumLanguageVersion);
 		}
@@ -381,7 +382,7 @@ public class RuleSetFactory {
 				throw new IllegalArgumentException("Unknown maximum Language Version '" + maximumLanguageVersionName
 						+ "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()
 						+ "; supported Language Versions are: "
-						+ LanguageVersion.commaSeparatedTerseNames(language.getVersions()));
+						+ LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
 			}
 			rule.setMaximumLanguageVersion(maximumLanguageVersion);
 		}
@@ -596,7 +597,7 @@ public class RuleSetFactory {
 	 * Parse a property node.
 	 *
 	 * @param rule The Rule to which the property should be added. 
-	 * @param propertyNode Must be a property element node.
+	 * //@param propertyNode Must be a property element node.
 	 */
 	@SuppressWarnings("unchecked")
 //	private static void parsePropertyNode(Rule rule, Node propertyNode) {

@@ -6,8 +6,9 @@ package net.sourceforge.pmd.lang.java.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.*;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
@@ -15,7 +16,7 @@ import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor, ImmutableLanguage {
 
     public AbstractJavaRule() {
-	super.setLanguage(Language.JAVA);
+	super.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
 	// Enable Type Resolution on Java Rules by default
 	super.setUsesTypeResolution();
     }

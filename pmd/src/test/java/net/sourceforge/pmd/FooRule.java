@@ -5,8 +5,9 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 /**
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
  */
 public class FooRule extends AbstractRule {
     public FooRule() {
-        setLanguage(Language.JAVA);
+        setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
     }
 
     public String getMessage() {

@@ -8,13 +8,13 @@ import java.util.Properties;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.validators.PositiveInteger;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 public class PMDParameters {
 
@@ -67,10 +67,10 @@ public class PMDParameters {
     private String reportfile = null;
 
     @Parameter(names = { "-version", "-v" }, description = "specify version of a language PMD should use")
-    private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion();
+    private String version = LanguageRegistry.getDefaultLanguage().getDefaultVersion().getVersion();
 
     @Parameter(names = { "-language", "-l" }, description = "specify a language PMD should use")
-    private String language = Language.getDefaultLanguage().getTerseName();
+    private String language = LanguageRegistry.getDefaultLanguage().getTerseName();
 
     @Parameter(names = "-auxclasspath", description = "specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
     private String auxclasspath;
@@ -130,14 +130,10 @@ public class PMDParameters {
         configuration.setStressTest(params.isStress());
         configuration.setSuppressMarker(params.getSuppressmarker());
         configuration.setThreads(params.getThreads());
-        for (LanguageVersion language : LanguageVersion.findVersionsForLanguageTerseName(params.getLanguage())) {
 
-            LanguageVersion languageVersion = language.getLanguage().getVersion(params.getVersion());
-            if (languageVersion == null) {
-                languageVersion = language.getLanguage().getDefaultVersion();
-            }
+        LanguageVersion languageVersion = LanguageRegistry.findLanguageVersionByTerseName(params.getLanguage() + " " + params.getVersion());
+        if(languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
-
         }
         try {
             configuration.prependClasspath(params.getAuxclasspath());

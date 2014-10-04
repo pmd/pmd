@@ -5,11 +5,12 @@ package net.sourceforge.pmd.lang.vm;
 
 import java.io.StringReader;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -52,7 +53,7 @@ public class VmParserTest {
     }
 
     private Node parse(final String code) {
-        final LanguageVersionHandler vmLang = LanguageVersion.VM.getLanguageVersionHandler();
+        final LanguageVersionHandler vmLang = LanguageRegistry.getLanguage(VmLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         final Parser parser = vmLang.getParser(vmLang.getDefaultParserOptions());
         final Node node = parser.parse(null, new StringReader(code));
         return node;

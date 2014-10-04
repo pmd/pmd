@@ -6,11 +6,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
@@ -185,7 +186,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
     @Test(expected = RuntimeException.class)
     public void testOnlyWorksForMethodsAndConstructors() {
-        StatementAndBraceFinder sbf = new StatementAndBraceFinder(Language.PLSQL.getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
+        StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
         sbf.buildDataFlowFor(new ASTMethodDeclaration(1));
         //sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
         sbf.buildDataFlowFor(new ASTProgramUnit(1));

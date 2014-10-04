@@ -5,10 +5,11 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 import net.sourceforge.pmd.lang.cpp.ast.Token;
 
 import org.apache.commons.io.IOUtils;
@@ -19,7 +20,7 @@ public class CPPTokenizer implements Tokenizer {
 		StringBuilder buffer = sourceCode.getCodeBuffer();
 		StringReader reader = null;
 		try {
-			LanguageVersionHandler languageVersionHandler = LanguageVersion.CPP.getLanguageVersionHandler();
+			LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(CppLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
 			reader = new StringReader(buffer.toString());
 			TokenManager tokenManager = languageVersionHandler.getParser(
 					languageVersionHandler.getDefaultParserOptions())

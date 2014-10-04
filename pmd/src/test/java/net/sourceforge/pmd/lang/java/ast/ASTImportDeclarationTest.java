@@ -9,7 +9,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class ASTImportDeclarationTest extends ParserTst {
 
     @Test(expected = ParseException.class)
     public void testStaticImportFailsWithJDK14() throws Throwable {
-        getNodes(LanguageVersion.JAVA_14, ASTImportDeclaration.class, TEST3);
+        getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"), ASTImportDeclaration.class, TEST3);
     }
 
     private static final String TEST1 =

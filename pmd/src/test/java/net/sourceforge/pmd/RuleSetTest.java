@@ -18,9 +18,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -38,7 +39,7 @@ public class RuleSetTest extends RuleTst {
 	RuleSet rs = new RuleSet();
 	MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
 	rs.addRule(mock);
-	assertFalse(rs.usesDFA(Language.JAVA));
+	assertFalse(rs.usesDFA(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
     }
 
     @Test
@@ -47,7 +48,7 @@ public class RuleSetTest extends RuleTst {
 	MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
 	mock.setUsesDFA();
 	rs.addRule(mock);
-	assertTrue(rs.usesDFA(Language.JAVA));
+	assertTrue(rs.usesDFA(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
     }
 
     @Test
@@ -220,19 +221,19 @@ public class RuleSetTest extends RuleTst {
 
 	Rule rule = new MockRule();
 
-	rule.setLanguage(Language.ECMASCRIPT);
-	assertFalse("Different languages should not apply", RuleSet.applies(rule, LanguageVersion.JAVA_15));
+	rule.setLanguage(LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME));
+	assertFalse("Different languages should not apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")));
 
-	rule.setLanguage(Language.JAVA);
-	assertTrue("Same language with no min/max should apply", RuleSet.applies(rule, LanguageVersion.JAVA_15));
+	rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
+	assertTrue("Same language with no min/max should apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")));
 
-	rule.setMinimumLanguageVersion(LanguageVersion.JAVA_15);
-	assertTrue("Same language with valid min only should apply", RuleSet.applies(rule, LanguageVersion.JAVA_15));
+	rule.setMinimumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
+	assertTrue("Same language with valid min only should apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")));
 
-	rule.setMaximumLanguageVersion(LanguageVersion.JAVA_16);
-	assertTrue("Same language with valid min and max should apply", RuleSet.applies(rule, LanguageVersion.JAVA_15));
-	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageVersion.JAVA_14));
-	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageVersion.JAVA_17));
+	rule.setMaximumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.6"));
+	assertTrue("Same language with valid min and max should apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")));
+	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4")));
+	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7")));
     }
 
     @Test
@@ -421,7 +422,7 @@ public class RuleSetTest extends RuleTst {
 
     protected List<ASTCompilationUnit> makeCompilationUnits() throws Throwable {
 	List<ASTCompilationUnit> RC = new ArrayList<ASTCompilationUnit>();
-	LanguageVersionHandler languageVersionHandler = Language.JAVA.getDefaultVersion().getLanguageVersionHandler();
+	LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
 	ASTCompilationUnit cu = (ASTCompilationUnit) languageVersionHandler.getParser(
 		languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
 	RC.add(cu);

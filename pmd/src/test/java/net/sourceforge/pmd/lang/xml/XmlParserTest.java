@@ -9,7 +9,7 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -77,7 +77,7 @@ public class XmlParserTest {
      */
     @Test
     public void testLineNumbers() throws Exception {
-        LanguageVersionHandler xmlVersionHandler = Language.XML.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         Parser parser = xmlVersionHandler.getParser(xmlVersionHandler.getDefaultParserOptions());
         Node document = parser.parse(null, new StringReader(XML_TEST));
 
@@ -120,7 +120,7 @@ public class XmlParserTest {
      */
     @Test
     public void testDefaultParsing() {
-        LanguageVersionHandler xmlVersionHandler = Language.XML.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         Parser parser = xmlVersionHandler.getParser(xmlVersionHandler.getDefaultParserOptions());
         Node document = parser.parse(null, new StringReader(XML_TEST));
 
@@ -149,7 +149,7 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingCoalescingEnabled() {
-        LanguageVersionHandler xmlVersionHandler = Language.XML.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setCoalescing(true);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -178,7 +178,7 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingDoNotExpandEntities() {
-        LanguageVersionHandler xmlVersionHandler = Language.XML.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setExpandEntityReferences(false);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -212,7 +212,7 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingIgnoreComments() {
-        LanguageVersionHandler xmlVersionHandler = Language.XML.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setIgnoringComments(true);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -241,7 +241,7 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingIgnoreElementContentWhitespace() {
-        LanguageVersionHandler xmlVersionHandler = Language.XML.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setIgnoringElementContentWhitespace(true);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -268,7 +268,7 @@ public class XmlParserTest {
      */
     @Test
     public void testDefaultParsingNamespaces() {
-        LanguageVersionHandler xmlVersionHandler = Language.XML.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         Parser parser = xmlVersionHandler.getParser(xmlVersionHandler.getDefaultParserOptions());
         Node document = parser.parse(null, new StringReader(XML_NAMESPACE_TEST));
 
@@ -299,7 +299,7 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingNotNamespaceAware() {
-        LanguageVersionHandler xmlVersionHandler = Language.XML.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setNamespaceAware(false);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -333,7 +333,7 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingWithValidation() throws UnsupportedEncodingException {
-        LanguageVersionHandler xmlVersionHandler = Language.XML.getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setValidating(true);
         Parser parser = xmlVersionHandler.getParser(parserOptions);

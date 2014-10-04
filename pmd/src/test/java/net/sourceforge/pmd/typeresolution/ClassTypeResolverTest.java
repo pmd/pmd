@@ -11,8 +11,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -509,7 +510,7 @@ public class ClassTypeResolverTest {
 		if (is == null) {
 			throw new IllegalArgumentException("Unable to find source file " + sourceFile + " for " + clazz);
 		}
-		LanguageVersionHandler languageVersionHandler = LanguageVersion.JAVA_15.getLanguageVersionHandler();
+		LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5").getLanguageVersionHandler();
 		ASTCompilationUnit acu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new InputStreamReader(is));
 		languageVersionHandler.getSymbolFacade().start(acu);
 		languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);

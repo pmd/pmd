@@ -89,7 +89,7 @@ public class LanguageVersionDiscoverer {
      */
     public List<Language> getLanguagesForFile(String fileName) {
 	String extension = getExtension(fileName);
-	return Language.findByExtension(extension);
+	return LanguageRegistry.findByExtension(extension);
     }
 
     // Get the extensions from a file

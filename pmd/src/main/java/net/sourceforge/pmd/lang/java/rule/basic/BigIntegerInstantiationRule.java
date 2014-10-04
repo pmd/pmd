@@ -7,8 +7,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
@@ -31,7 +32,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        boolean jdk15 = ((RuleContext) data).getLanguageVersion().compareTo(LanguageVersion.JAVA_15) >= 0;
+        boolean jdk15 = ((RuleContext) data).getLanguageVersion().compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
         if ((TypeHelper.isA((ASTClassOrInterfaceType) type, BigInteger.class) || jdk15 && TypeHelper.isA((ASTClassOrInterfaceType) type, BigDecimal.class)) &&
                 !node.hasDescendantOfType(ASTArrayDimsAndInits.class)
         ) {
