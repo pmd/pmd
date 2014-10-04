@@ -627,6 +627,7 @@
 
     <modules>
         <module>pmd</module>
+        <module>pmd-test</module>
         <module>pmd-java</module>
         <module>pmd-dist</module>
     </modules>
