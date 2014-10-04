@@ -23,7 +23,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
@@ -138,7 +137,7 @@ public class MainFrame
         } else if (jdk17MenuItem.isSelected()) {
             return LanguageRegistry.getLanguage(javaName).getVersion("1.7");
         } else if (plsqlMenuItem.isSelected()) {
-            return LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion();
+            return LanguageRegistry.getLanguage("PLSQL").getDefaultVersion();
         }
         return LanguageRegistry.getLanguage(javaName).getVersion("1.5");
     }

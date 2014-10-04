@@ -2,7 +2,6 @@ net.sourceforge.pmd.lang.cpp.CppLanguageModule
 net.sourceforge.pmd.lang.fortran.FortranLanguageModule
 net.sourceforge.pmd.lang.jsp.JspLanguageModule
 net.sourceforge.pmd.lang.php.PhpLanguageModule
-net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule
 net.sourceforge.pmd.lang.ruby.RubyLanguageModule
 net.sourceforge.pmd.lang.xml.XmlLanguageModule
 net.sourceforge.pmd.lang.xsl.XslLanguageModule
