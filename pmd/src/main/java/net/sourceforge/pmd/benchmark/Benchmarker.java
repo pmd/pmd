@@ -23,8 +23,11 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.lang.*;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageFilenameFilter;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -77,7 +80,7 @@ public class Benchmarker {
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
 
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
-        Language language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME);
+        Language language = LanguageRegistry.getLanguage("Java");
         LanguageVersion languageVersion = language.getVersion(targetjdk);
         if (languageVersion == null) {
         	languageVersion = language.getDefaultVersion();

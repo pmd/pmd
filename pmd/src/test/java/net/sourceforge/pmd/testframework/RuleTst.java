@@ -35,7 +35,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.renderers.TextRenderer;
 
 import org.w3c.dom.Document;
@@ -47,7 +46,7 @@ import org.xml.sax.SAXException;
  * Advanced methods for test cases
  */
 public abstract class RuleTst {
-    public static final LanguageVersion DEFAULT_LANGUAGE_VERSION = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
+    public static final LanguageVersion DEFAULT_LANGUAGE_VERSION = LanguageRegistry.getLanguage("Java").getVersion("1.5");
     public static final Language DEFAULT_LANGUAGE = DEFAULT_LANGUAGE_VERSION.getLanguage();
 
     /**

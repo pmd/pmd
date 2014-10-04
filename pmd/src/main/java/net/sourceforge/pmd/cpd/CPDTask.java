@@ -3,18 +3,18 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.types.FileSet;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * CPDTask
@@ -88,13 +88,13 @@ public class CPDTask extends Task {
     private Language createLanguage() {
         Properties p = new Properties();
         if (ignoreLiterals) {
-            p.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
+            p.setProperty(Tokenizer.IGNORE_LITERALS, "true");
         }
         if (ignoreIdentifiers) {
-            p.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
+            p.setProperty(Tokenizer.IGNORE_IDENTIFIERS, "true");
         }
         if (ignoreAnnotations) {
-            p.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
+            p.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
         }
         return new LanguageFactory().createLanguage(language, p);
     }

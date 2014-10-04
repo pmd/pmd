@@ -15,9 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.Token;
 
 public class JavaTokenizer implements Tokenizer {
 
-    public static final String IGNORE_LITERALS = "ignore_literals";
-    public static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
-    public static final String IGNORE_ANNOTATIONS = "ignore_annotations";
     public static final String CPD_START = "\"CPD-START\"";
     public static final String CPD_END = "\"CPD-END\"";
 

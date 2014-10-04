@@ -5,6 +5,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.Reader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -15,7 +16,6 @@ import net.sourceforge.pmd.util.FileFinder;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
-import java.io.Reader;
 
 /**
  *
@@ -156,19 +156,19 @@ public class CPDConfiguration extends AbstractConfiguration {
 	public static void setSystemProperties(CPDConfiguration configuration) {
 		Properties properties = System.getProperties();
 		if (configuration.isIgnoreLiterals()) {
-			properties.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
+			properties.setProperty(Tokenizer.IGNORE_LITERALS, "true");
 		} else {
-		    properties.remove(JavaTokenizer.IGNORE_LITERALS);
+		    properties.remove(Tokenizer.IGNORE_LITERALS);
 		}
 		if (configuration.isIgnoreIdentifiers()) {
-			properties.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
+			properties.setProperty(Tokenizer.IGNORE_IDENTIFIERS, "true");
         } else {
-            properties.remove(JavaTokenizer.IGNORE_IDENTIFIERS);
+            properties.remove(Tokenizer.IGNORE_IDENTIFIERS);
 		}
 		if (configuration.isIgnoreAnnotations()) {
-			properties.setProperty(JavaTokenizer.IGNORE_ANNOTATIONS, "true");
+			properties.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
         } else {
-            properties.remove(JavaTokenizer.IGNORE_ANNOTATIONS);
+            properties.remove(Tokenizer.IGNORE_ANNOTATIONS);
 		}
 		System.setProperties(properties);
 		configuration.getLanguage().setProperties(properties);

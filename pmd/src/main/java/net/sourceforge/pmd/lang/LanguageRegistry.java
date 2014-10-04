@@ -3,9 +3,12 @@
  */
 package net.sourceforge.pmd.lang;
 
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -40,7 +43,7 @@ public class LanguageRegistry {
     }
 
     public static Language getDefaultLanguage() {
-        return getLanguage(JavaLanguageModule.NAME);
+        return getLanguage("Java");
     }
 
     public static Language findLanguageByTerseName(String terseName) {

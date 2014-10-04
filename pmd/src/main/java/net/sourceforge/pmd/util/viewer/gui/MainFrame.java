@@ -23,7 +23,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
@@ -126,20 +125,22 @@ public class MainFrame
     }
 
     private LanguageVersion getLanguageVersion() {
+        String javaName = "Java";
+
         if (jdk14MenuItem.isSelected()) {
-            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4");
+            return LanguageRegistry.getLanguage(javaName).getVersion("1.4");
         } else if (jdk13MenuItem.isSelected()) {
-            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3");
+            return LanguageRegistry.getLanguage(javaName).getVersion("1.3");
         } else if (jdk15MenuItem.isSelected()) {
-            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
+            return LanguageRegistry.getLanguage(javaName).getVersion("1.5");
         } else if (jdk16MenuItem.isSelected()) {
-            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.6");
+            return LanguageRegistry.getLanguage(javaName).getVersion("1.6");
         } else if (jdk17MenuItem.isSelected()) {
-            return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7");
+            return LanguageRegistry.getLanguage(javaName).getVersion("1.7");
         } else if (plsqlMenuItem.isSelected()) {
             return LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion();
         }
-        return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
+        return LanguageRegistry.getLanguage(javaName).getVersion("1.5");
     }
 
     /**
