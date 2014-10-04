@@ -32,7 +32,6 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.TextRenderer;
@@ -46,9 +45,6 @@ import org.xml.sax.SAXException;
  * Advanced methods for test cases
  */
 public abstract class RuleTst {
-    public static final LanguageVersion DEFAULT_LANGUAGE_VERSION = LanguageRegistry.getLanguage("Java").getVersion("1.5");
-    public static final Language DEFAULT_LANGUAGE = DEFAULT_LANGUAGE_VERSION.getLanguage();
-
     /**
      * Find a rule in a certain ruleset by name
      */
@@ -402,13 +398,5 @@ public abstract class RuleTst {
             }
         }
         return buffer.toString().trim();
-    }
-
-    /**
-     * Run the test using the DEFAULT_LANGUAGE_VERSION and put the violations in the report.
-     * Convenience method.
-     */
-    public void runTestFromString(String code, Rule rule, Report report) throws PMDException {
-        runTestFromString(code, rule, report, DEFAULT_LANGUAGE_VERSION);
     }
 }

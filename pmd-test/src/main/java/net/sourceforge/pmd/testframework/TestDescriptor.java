@@ -35,7 +35,7 @@ public class TestDescriptor {
     }
     
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule) {
-        this(code, description, numberOfProblemsExpected, rule, RuleTst.DEFAULT_LANGUAGE_VERSION);
+        this(code, description, numberOfProblemsExpected, rule, rule.getLanguage().getDefaultVersion());
     }
     
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule, LanguageVersion languageVersion) {
