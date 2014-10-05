@@ -3,14 +3,19 @@
  */
 package net.sourceforge.pmd.lang;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -63,7 +68,28 @@ public class DummyLanguageModule extends BaseLanguageModule {
         
         @Override
         public Parser getParser(ParserOptions parserOptions) {
-            return null;
+            return new AbstractParser(parserOptions) {
+                @Override
+                public Node parse(String fileName, Reader source) throws ParseException {
+                    DummyNode node = new DummyNode(1);
+                    node.testingOnly__setBeginLine(1);
+                    node.testingOnly__setBeginColumn(1);
+                    node.setImage("Foo");
+                    return node;
+                }
+                @Override
+                public Map<Integer, String> getSuppressMap() {
+                    return Collections.emptyMap();
+                }
+                @Override
+                public boolean canParse() {
+                    return true;
+                }
+                @Override
+                protected TokenManager createTokenManager(Reader source) {
+                    return null;
+                }
+            };
         }
     }
 

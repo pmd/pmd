@@ -10,6 +10,6 @@ public class DummyNode extends AbstractNode {
 
     @Override
     public String toString() {
-        return "dummy node";
+        return "dummyNode";
     }
 }

@@ -121,8 +121,10 @@ import org.xml.sax.SAXException;
 
 public class Designer implements ClipboardOwner {
 
-	private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Arrays.asList(getSupportedLanguageVersions())
-	.indexOf(LanguageRegistry.getLanguage("Java").getDefaultVersion());
+    private int getDefaultLanguageVersionSelectionIndex() {
+        return Arrays.asList(getSupportedLanguageVersions())
+                .indexOf(LanguageRegistry.getLanguage("Java").getDefaultVersion());
+    }
 
     private Node getCompilationUnit() {
         LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
@@ -722,7 +724,7 @@ public class Designer implements ClipboardOwner {
 			group.add(button);
 			menu.add(button);
 		}
-		languageVersionMenuItems[DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX].setSelected(true);
+		languageVersionMenuItems[getDefaultLanguageVersionSelectionIndex()].setSelected(true);
 		menuBar.add(menu);
 
 		JMenu actionsMenu = new JMenu("Actions");

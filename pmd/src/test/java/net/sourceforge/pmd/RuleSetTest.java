@@ -361,7 +361,7 @@ public class RuleSetTest {
 	Rule rule = new FooRule();
 	rule.setName("FooRule1");
 	rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-	rule.addRuleChainVisit("dummy node");
+	rule.addRuleChainVisit("dummyNode");
 	assertTrue("RuleChain rule", rule.usesRuleChain());
 	ruleSet1.addRule(rule);
 
