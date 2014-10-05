@@ -10,7 +10,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,19 +17,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.Dummy2LanguageModule;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.testframework.RuleTst;
 
 import org.junit.Test;
 
 
-public class RuleSetTest extends RuleTst {
+public class RuleSetTest {
 
     private String javaCode = "public class Test { }";
 
@@ -38,17 +36,19 @@ public class RuleSetTest extends RuleTst {
     public void testNoDFA() {
 	RuleSet rs = new RuleSet();
 	MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
+    mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
 	rs.addRule(mock);
-	assertFalse(rs.usesDFA(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
+	assertFalse(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
     }
 
     @Test
     public void testIncludesRuleWithDFA() {
 	RuleSet rs = new RuleSet();
 	MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
+	mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
 	mock.setUsesDFA();
 	rs.addRule(mock);
-	assertTrue(rs.usesDFA(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
+	assertTrue(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
     }
 
     @Test
@@ -221,19 +221,19 @@ public class RuleSetTest extends RuleTst {
 
 	Rule rule = new MockRule();
 
-	rule.setLanguage(LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME));
-	assertFalse("Different languages should not apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")));
+	rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+	assertFalse("Different languages should not apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getDefaultVersion()));
 
-	rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
-	assertTrue("Same language with no min/max should apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")));
+	rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+	assertTrue("Same language with no min/max should apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
 
-	rule.setMinimumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-	assertTrue("Same language with valid min only should apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")));
+	rule.setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5"));
+	assertTrue("Same language with valid min only should apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
 
-	rule.setMaximumLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.6"));
-	assertTrue("Same language with valid min and max should apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")));
-	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4")));
-	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.7")));
+	rule.setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.6"));
+	assertTrue("Same language with valid min and max should apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
+	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.4")));
+	assertFalse("Same language with outside range of min/max should not apply", RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7")));
     }
 
     @Test
@@ -358,7 +358,10 @@ public class RuleSetTest extends RuleTst {
 
 	RuleSet ruleSet1 = new RuleSet();
 	ruleSet1.setName("RuleSet1");
-	Rule rule = findRule("java-empty", "EmptyIfStmt");
+	Rule rule = new FooRule();
+	rule.setName("FooRule1");
+	rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+	rule.addRuleChainVisit("dummy node");
 	assertTrue("RuleChain rule", rule.usesRuleChain());
 	ruleSet1.addRule(rule);
 
@@ -377,7 +380,8 @@ public class RuleSetTest extends RuleTst {
         ctx.setReport(r);
         ctx.setSourceCodeFilename(file.getName());
         ctx.setSourceCodeFile(file);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST1), ruleSets, ctx);
+        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         assertEquals("Violations", 2, r.size());
 
         // One violation
@@ -392,11 +396,11 @@ public class RuleSetTest extends RuleTst {
 
         r = new Report();
         ctx.setReport(r);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST1), ruleSets, ctx);
+        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         assertEquals("Violations", 1, r.size());
     }
 
-    protected void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {
+    private void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {
 
 	RuleContext context = new RuleContext();
 	Set<RuleViolation> reportedValues = new HashSet<RuleViolation>();
@@ -420,22 +424,13 @@ public class RuleSetTest extends RuleTst {
 	}
     }
 
-    protected List<ASTCompilationUnit> makeCompilationUnits() throws Throwable {
-	List<ASTCompilationUnit> RC = new ArrayList<ASTCompilationUnit>();
-	LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
-	ASTCompilationUnit cu = (ASTCompilationUnit) languageVersionHandler.getParser(
-		languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
-	RC.add(cu);
-	return RC;
-    }
-
-    private static final String TEST1 = "public class Foo {" + PMD.EOL +
-    	"   public void foo() {" + PMD.EOL +
-    	"      if (true) { }" + PMD.EOL +
-    	"   }" + PMD.EOL +
-	"}" + PMD.EOL;
-
-    public static junit.framework.Test suite() {
-	return new junit.framework.JUnit4TestAdapter(RuleSetTest.class);
+    private List<Node> makeCompilationUnits() {
+        List<Node> RC = new ArrayList<Node>();
+        DummyNode node = new DummyNode(1);
+        node.testingOnly__setBeginLine(1);
+        node.testingOnly__setBeginColumn(1);
+        node.setImage("Foo");
+        RC.add(node);
+        return RC;
     }
 }

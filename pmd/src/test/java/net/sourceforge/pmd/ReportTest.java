@@ -12,26 +12,18 @@ import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 
-import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
-import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
-import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
-import net.sourceforge.pmd.lang.ecmascript.rule.EcmascriptRuleViolationFactory;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.testframework.RuleTst;
 
 import org.junit.Test;
 
 
-public class ReportTest extends RuleTst implements ReportListener {
+public class ReportTest implements ReportListener {
 
     private boolean violationSemaphore;
     private boolean metricSemaphore;
@@ -42,13 +34,6 @@ public class ReportTest extends RuleTst implements ReportListener {
 
     public void metricAdded(Metric metric) {
         metricSemaphore = true;
-    }
-
-    @Test
-    public void testBasic() throws Throwable {
-        Report r = new Report();
-        runTestFromString(TEST1, new FooRule(), r);
-        assertFalse(r.isEmpty());
     }
 
     @Test
@@ -79,91 +64,17 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertEquals("wrong std dev value", 4.0, m.getStandardDeviation(), 0.05);
     }
 
-    @Test
-    public void testExclusionsInReportWithRuleViolationSuppressRegex() throws Throwable {
-        Report rpt = new Report();
-        Rule rule =  new FooRule();
-        rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, ".*blah.*");
-        runTestFromString(TEST1, rule, rpt);
-        assertTrue(rpt.isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
-    }
-
-    @Test
-    public void testExclusionsInReportWithRuleViolationSuppressXPath() throws Throwable {
-        Report rpt = new Report();
-        Rule rule =  new FooRule();
-        rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, ".[@Image = 'Foo']");
-        runTestFromString(TEST1, rule, rpt);
-        assertTrue(rpt.isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
-    }
-
-    @Test
-    public void testExclusionsInReportWithAnnotations() throws Throwable {
-        Report rpt = new Report();
-        runTestFromString(TEST2, new FooRule(), rpt, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertTrue(rpt.isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
-    }
-
-    @Test
-    public void testExclusionsInReportWithAnnotationsFullName() throws Throwable {
-        Report rpt = new Report();
-        runTestFromString(TEST2_FULL, new FooRule(), rpt, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertTrue(rpt.isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
-    }
-
-    @Test
-    public void testExclusionsInReportWithNOPMD() throws Throwable {
-        Report rpt = new Report();
-        runTestFromString(TEST3, new FooRule(), rpt);
-        assertTrue(rpt.isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
-    }
-
-    @Test
-    public void testExclusionsInReportWithNOPMDEcmascript() throws Exception {
-        Report rpt = new Report();
-        Rule rule = new AbstractEcmascriptRule() {
-            @Override
-            public Object visit(ASTFunctionNode node, Object data) {
-                EcmascriptRuleViolationFactory.INSTANCE.addViolation((RuleContext)data, this, node, "Test", null);
-                return super.visit(node, data);
-            }
-        };
-        String code = "function(x) // NOPMD test suppress\n"
-                + "{ x = 1; }";
-        runTestFromString(code, rule, rpt, LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion());
-        assertTrue(rpt.isEmpty());
-        assertEquals(1, rpt.getSuppressedRuleViolations().size());
-    }
-
-    private static final String TEST1 =
-            "public class Foo {}" + PMD.EOL;
-
-    private static final String TEST2 =
-            "@SuppressWarnings(\"PMD\")" + PMD.EOL +
-            "public class Foo {}";
-    private static final String TEST2_FULL =
-            "@java.lang.SuppressWarnings(\"PMD\")" + PMD.EOL +
-            "public class Foo {}";
-
-    private static final String TEST3 =
-            "public class Foo {} // NOPMD";
-
     // Files are grouped together now.
     @Test
     public void testSortedReport_File() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
-        Node s = getNode(10, 5, ctx.getSourceCodeFilename());
+        Node s = getNode(10, 5);
         Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<Node>(rule1, ctx, s, rule1.getMessage()));
         ctx.setSourceCodeFilename("bar");
-        Node s1 = getNode(10, 5, ctx.getSourceCodeFilename());
+        Node s1 = getNode(10, 5);
         Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<Node>(rule2, ctx, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
@@ -176,11 +87,11 @@ public class ReportTest extends RuleTst implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
-        Node s = getNode(10, 5, ctx.getSourceCodeFilename());
+        Node s = getNode(10, 5);
         Rule rule1 = new MockRule("rule2", "rule2", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<Node>(rule1, ctx, s, rule1.getMessage()));
         ctx.setSourceCodeFilename("foo2");
-        Node s1 = getNode(20, 5, ctx.getSourceCodeFilename());
+        Node s1 = getNode(20, 5);
         Rule rule2 = new MockRule("rule1", "rule1", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<Node>(rule2, ctx, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
@@ -195,7 +106,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         violationSemaphore = false;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("file");
-        Node s = getNode(5, 5, ctx.getSourceCodeFilename());
+        Node s = getNode(5, 5);
         Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
         rpt.addRuleViolation(new ParametricRuleViolation<Node>(rule1, ctx, s, rule1.getMessage()));
         assertTrue(violationSemaphore);
@@ -211,13 +122,13 @@ public class ReportTest extends RuleTst implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
-        Node s = getNode(5, 5, ctx.getSourceCodeFilename());
+        Node s = getNode(5, 5);
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<Node>(rule, ctx, s, rule.getMessage()));
         ctx.setSourceCodeFilename("foo2");
         Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
-        Node s1 = getNode(20, 5, ctx.getSourceCodeFilename());
-        Node s2 = getNode(30, 5, ctx.getSourceCodeFilename());
+        Node s1 = getNode(20, 5);
+        Node s2 = getNode(30, 5);
         r.addRuleViolation(new ParametricRuleViolation<Node>(mr, ctx, s1, mr.getMessage()));
         r.addRuleViolation(new ParametricRuleViolation<Node>(mr, ctx, s2, mr.getMessage()));
         Map<String, Integer> summary = r.getSummary();
@@ -231,9 +142,9 @@ public class ReportTest extends RuleTst implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        Node node1 = getNode(5, 5, ctx.getSourceCodeFilename(), true);
+        Node node1 = getNode(5, 5, true);
         r.addRuleViolation(new ParametricRuleViolation<Node>(rule, ctx, node1, rule.getMessage()));
-        Node node2 = getNode(5, 6, ctx.getSourceCodeFilename(), true);
+        Node node2 = getNode(5, 6, true);
         r.addRuleViolation(new ParametricRuleViolation<Node>(rule, ctx, node2, rule.getMessage()));
 
         Iterator<RuleViolation> violations = r.iterator();
@@ -253,7 +164,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertEquals(2, treeCount);
     }
     
-    public static Node getNode(int line, int column, String scopeName){
+    private static Node getNode(int line, int column){
         DummyNode s = new DummyNode(2);
         DummyNode parent = new DummyNode(1);
         parent.testingOnly__setBeginLine(line);
@@ -264,8 +175,8 @@ public class ReportTest extends RuleTst implements ReportListener {
         return s;
     }
 
-    public static Node getNode(int line, int column, String scopeName, boolean nextLine) {
-        DummyNode s = (DummyNode)getNode(line, column, scopeName);
+    private static Node getNode(int line, int column, boolean nextLine) {
+        DummyNode s = (DummyNode)getNode(line, column);
         if (nextLine) {
             s.testingOnly__setBeginLine(line + 1);
             s.testingOnly__setBeginColumn(column + 4);
@@ -273,7 +184,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         return s;
     }
 
-    public static String render(Renderer renderer, Report report) throws IOException {
+    private static String render(Renderer renderer, Report report) throws IOException {
         StringWriter writer = new StringWriter();
         renderer.setWriter(writer);
         renderer.start();
@@ -281,9 +192,4 @@ public class ReportTest extends RuleTst implements ReportListener {
         renderer.end();
         return writer.toString();
     }
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(ReportTest.class);
-    }
-
 }

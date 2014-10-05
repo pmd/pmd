@@ -9,6 +9,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.StringReader;
 
 import junit.framework.JUnit4TestAdapter;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.testframework.RuleTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -38,7 +40,7 @@ import org.junit.Test;
          Report r = new Report();
          ctx.setReport(r);
          ctx.setSourceCodeFilename("n/a");
-         ctx.setLanguageVersion(DEFAULT_LANGUAGE_VERSION);
+         ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
          RuleSet rules = new RuleSet();
          rules.addRule(rule);
          p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);

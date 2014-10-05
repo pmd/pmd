@@ -3,10 +3,15 @@
  */
 package net.sourceforge.pmd.lang;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
@@ -20,7 +25,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "dummy";
 
     public DummyLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "dummy");
+        super(NAME, null, TERSE_NAME, DummyRuleChainVisitor.class, "dummy");
         addVersion("1.0", new Handler(), true);
         addVersion("1.1", new Handler(), false);
         addVersion("1.2", new Handler(), false);
@@ -32,6 +37,24 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.8", new Handler(), false);
     }
 
+    public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
+        @Override
+        protected void visit(Rule rule, Node node, RuleContext ctx) {
+            rule.apply(Arrays.asList(node), ctx);
+        }
+        @Override
+        protected void indexNodes(List<Node> nodes, RuleContext ctx) {
+            for (Node n : nodes) {
+                indexNode(n);
+                List<Node> childs = new ArrayList<Node>();
+                for (int i = 0; i < n.jjtGetNumChildren(); i++) {
+                    childs.add(n.jjtGetChild(i));
+                }
+                indexNodes(childs, ctx);
+            }
+        }
+    }
+    
     public static class Handler extends AbstractLanguageVersionHandler {
         @Override
         public RuleViolationFactory getRuleViolationFactory() {

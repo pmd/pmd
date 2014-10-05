@@ -5,12 +5,12 @@ package net.sourceforge.pmd.lang.java;
 
 import static org.junit.Assert.assertEquals;
 import junit.framework.JUnit4TestAdapter;
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
@@ -18,29 +18,6 @@ import org.junit.Test;
 
 
 public class SuppressWarningsTest extends RuleTst {
-
-     private static class FooRule extends AbstractJavaRule {
-        @Override
-        public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
-            if (c.getImage().equalsIgnoreCase("Foo")) {
-                addViolation(ctx, c);
-            }
-            return super.visit(c, ctx);
-        }
-
-        @Override
-        public Object visit(ASTVariableDeclaratorId c, Object ctx) {
-            if (c.getImage().equalsIgnoreCase("Foo")) {
-                addViolation(ctx, c);
-            }
-            return super.visit(c, ctx);
-        }
-
-        @Override
-        public String getName() {
-            return "NoFoo";
-        }
-     }
 
      private static class BarRule extends AbstractJavaRule {
         @Override
