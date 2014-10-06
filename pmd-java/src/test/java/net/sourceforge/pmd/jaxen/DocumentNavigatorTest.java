@@ -13,8 +13,10 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -76,7 +78,8 @@ public class DocumentNavigatorTest extends RuleTst {
     public void setUp() throws Exception {
         try {
             rule = new TestRule();
-            runTestFromString(TEST, rule, new Report());
+            runTestFromString(TEST, rule, new Report(),
+                    LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
         } catch (Throwable xx) {
             xx.printStackTrace();
             fail();

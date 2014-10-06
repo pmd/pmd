@@ -11,15 +11,7 @@ public class LanguageFactoryTest {
     @Test
     public void testSimple() {
         LanguageFactory f = new LanguageFactory();
-        assertTrue(f.createLanguage("java") instanceof JavaLanguage);
-        assertTrue(f.createLanguage("cpp") instanceof CPPLanguage);
-        assertTrue(f.createLanguage("c") instanceof CPPLanguage);
-        assertTrue(f.createLanguage("php") instanceof PHPLanguage);
-        assertTrue(f.createLanguage("ruby") instanceof RubyLanguage);
-        assertTrue(f.createLanguage("plsql") instanceof PLSQLLanguage);
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(LanguageFactoryTest.class);
+        assertTrue(f.createLanguage("Cpddummy") instanceof CpddummyLanguage);
+        assertTrue(f.createLanguage("not_existing_language") instanceof AnyLanguage);
     }
 }

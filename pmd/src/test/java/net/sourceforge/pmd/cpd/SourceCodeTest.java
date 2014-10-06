@@ -7,11 +7,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
-import net.sourceforge.pmd.PMD;
-
 import org.junit.Test;
 
 public class SourceCodeTest {
+
+    private static final String SAMPLE_CODE =
+            "Line 1\n" +
+            "Line 2\n" +
+            "Line 3\n" +
+            "Line 4\n";
 
     @Test
     public void testSimple() throws Throwable {
@@ -22,16 +26,12 @@ public class SourceCodeTest {
                 this.ignorableStmt = new ArrayList<String>();
             }
         };
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(MatchAlgorithmTest.getSampleCode(), "Foo.java"));
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(SAMPLE_CODE, "Foo.java"));
         assertEquals("Foo.java", sourceCode.getFileName());
         tokenizer.tokenize(sourceCode, new Tokens());
 
-        assertEquals(MatchAlgorithmTest.LINE_1, sourceCode.getSlice(1, 1));
-        assertEquals(MatchAlgorithmTest.LINE_2, sourceCode.getSlice(2, 2));
-        assertEquals(MatchAlgorithmTest.LINE_1 + PMD.EOL + MatchAlgorithmTest.LINE_2, sourceCode.getSlice(1, 2));
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(SourceCodeTest.class);
+        assertEquals("Line 1", sourceCode.getSlice(1, 1));
+        assertEquals("Line 2", sourceCode.getSlice(2, 2));
+        assertEquals("Line 1\nLine 2", sourceCode.getSlice(1, 2));
     }
 }

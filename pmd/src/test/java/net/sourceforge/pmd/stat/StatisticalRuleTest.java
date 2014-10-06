@@ -38,10 +38,10 @@ import junit.framework.AssertionFailedError;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
-import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 
 import org.junit.Before;
@@ -112,8 +112,7 @@ public class StatisticalRuleTest  {
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                DummyJavaNode s = new DummyJavaNode(1);
-                s.setScope(new SourceFileScope("foo"));
+                DummyNode s = new DummyNode(1);
                 s.testingOnly__setBeginLine(i);
                 s.testingOnly__setBeginColumn(1);
                 points[i].setNode(s);
@@ -125,8 +124,7 @@ public class StatisticalRuleTest  {
             for (int i = POINTS - 1; i >= 0; i--) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                DummyJavaNode s = new DummyJavaNode(1);
-                s.setScope(new SourceFileScope("foo"));
+                DummyNode s = new DummyNode(1);
                 s.testingOnly__setBeginLine(i);
                 s.testingOnly__setBeginColumn(1);
                 points[i].setNode(s);
@@ -139,8 +137,7 @@ public class StatisticalRuleTest  {
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                DummyJavaNode s = new DummyJavaNode(1);
-                s.setScope(new SourceFileScope("foo"));
+                DummyNode s = new DummyNode(1);
                 s.testingOnly__setBeginLine(i);
                 s.testingOnly__setBeginColumn(1);
                 s.testingOnly__setBeginColumn(1);
@@ -165,13 +162,10 @@ public class StatisticalRuleTest  {
     @Test
     public void testMetrics() throws Throwable {
         Report report = makeReport(IUT);
-        Iterator metrics = report.metrics();
+        Iterator<Metric> metrics = report.metrics();
 
         assertTrue(metrics.hasNext());
-        Object o = metrics.next();
-
-        assertTrue(o instanceof Metric);
-        Metric m = (Metric) o;
+        Metric m = metrics.next();
 
         assertEquals("net.sourceforge.pmd.stat.MockStatisticalRule", m.getMetricName());
 
@@ -282,8 +276,7 @@ public class StatisticalRuleTest  {
 
         DataPoint point = new DataPoint();
         point.setScore(POINTS + 1.0);
-        DummyJavaNode s = new DummyJavaNode(1);
-        s.setScope(new SourceFileScope("foo"));
+        DummyNode s = new DummyNode(1);
         s.testingOnly__setBeginLine(POINTS + 1);
         s.testingOnly__setBeginColumn(1);
         point.setNode(s);
@@ -856,13 +849,13 @@ public class StatisticalRuleTest  {
     }
 
     public Report makeReport(Rule IUT) {
-        List list = new ArrayList();
+        List<Node> list = new ArrayList<Node>();
         Report report = new Report();
 
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         ctx.setSourceCodeFilename(testName);
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
+        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
 
         IUT.apply(list, ctx);
 

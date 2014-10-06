@@ -22,7 +22,40 @@
  */
 package net.sourceforge.pmd.stat;
 
-import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
+import java.util.List;
 
-public class MockStatisticalRule extends AbstractStatisticalJavaRule {
+import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
+import net.sourceforge.pmd.lang.rule.stat.StatisticalRuleHelper;
+
+public class MockStatisticalRule extends FooRule implements StatisticalRule {
+
+    private StatisticalRuleHelper helper;
+    
+    public MockStatisticalRule() {
+        helper = new StatisticalRuleHelper(this);
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        super.apply(nodes, ctx);
+        helper.apply(ctx);
+    }
+
+    @Override
+    public void addDataPoint(DataPoint point) {
+        helper.addDataPoint(point);
+    }
+
+    @Override
+    public Object[] getViolationParameters(DataPoint point) {
+        return null;
+    }
 }

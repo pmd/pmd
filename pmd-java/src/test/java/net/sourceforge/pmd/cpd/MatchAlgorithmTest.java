@@ -17,16 +17,16 @@ import org.junit.Test;
 
 public class MatchAlgorithmTest {
 
-    public static final String LINE_1 = "public class Foo { ";
-    public static final String LINE_2 = " public void bar() {";
-    public static final String LINE_3 = "  System.out.println(\"hello\");";
-    public static final String LINE_4 = "  System.out.println(\"hello\");";
-    public static final String LINE_5 = "  int i = 5";
-    public static final String LINE_6 = "  System.out.print(\"hello\");";
-    public static final String LINE_7 = " }";
-    public static final String LINE_8 = "}";
+    private static final String LINE_1 = "public class Foo { ";
+    private static final String LINE_2 = " public void bar() {";
+    private static final String LINE_3 = "  System.out.println(\"hello\");";
+    private static final String LINE_4 = "  System.out.println(\"hello\");";
+    private static final String LINE_5 = "  int i = 5";
+    private static final String LINE_6 = "  System.out.print(\"hello\");";
+    private static final String LINE_7 = " }";
+    private static final String LINE_8 = "}";
 
-    public static String getSampleCode() {
+    private static String getSampleCode() {
         return
                 LINE_1 + PMD.EOL +
                 LINE_2 + PMD.EOL +
@@ -51,13 +51,13 @@ public class MatchAlgorithmTest {
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
         matchAlgorithm.findMatches();
-        Iterator matches = matchAlgorithm.matches();
-        Match match = (Match) matches.next();
+        Iterator<Match> matches = matchAlgorithm.matches();
+        Match match = matches.next();
         assertFalse(matches.hasNext());
 
-        Iterator marks = match.iterator();
-        TokenEntry mark1 = (TokenEntry) marks.next();
-        TokenEntry mark2 = (TokenEntry) marks.next();
+        Iterator<TokenEntry> marks = match.iterator();
+        TokenEntry mark1 = marks.next();
+        TokenEntry mark2 = marks.next();
         assertFalse(marks.hasNext());
 
         assertEquals(3, mark1.getBeginLine());
@@ -80,18 +80,14 @@ public class MatchAlgorithmTest {
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
         matchAlgorithm.findMatches();
-        Iterator matches = matchAlgorithm.matches();
-        Match match = (Match) matches.next();
+        Iterator<Match> matches = matchAlgorithm.matches();
+        Match match = matches.next();
         assertFalse(matches.hasNext());
 
-        Iterator marks = match.iterator();
+        Iterator<TokenEntry> marks = match.iterator();
         marks.next();
         marks.next();
         marks.next();
         assertFalse(marks.hasNext());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MatchAlgorithmTest.class);
     }
 }
