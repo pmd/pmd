@@ -81,9 +81,9 @@ public class RuleSetFactoryTest {
 		assertNull("RuleSet file name not expected", rs.getFileName());
 
 		RuleSetFactory rsf = new RuleSetFactory();
-		rs = rsf.createRuleSet("rulesets/java/basic.xml");
+		rs = rsf.createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
 		assertEquals("wrong RuleSet file name", rs.getFileName(),
-				"rulesets/java/basic.xml");
+				"net/sourceforge/pmd/TestRuleset1.xml");
 	}
 
 	@Test
@@ -94,17 +94,9 @@ public class RuleSetFactoryTest {
 
 	@Test
 	public void testRefs() throws Throwable {
-		InputStream in = ResourceLoader.loadResourceAsStream(
-				"rulesets/java/migrating_to_15.xml", this.getClass()
-						.getClassLoader());
-		if (in == null) {
-			throw new RuleSetNotFoundException(
-					"Can't find resource   Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: "
-							+ System.getProperty("java.class.path"));
-		}
 		RuleSetFactory rsf = new RuleSetFactory();
-		RuleSet rs = rsf.createRuleSet("rulesets/java/migrating_to_15.xml");
-		assertNotNull(rs.getRuleByName("AvoidEnumAsIdentifier"));
+		RuleSet rs = rsf.createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
+		assertNotNull(rs.getRuleByName("TestRuleRef"));
 	}
 
 	@Test
@@ -550,7 +542,7 @@ public class RuleSetFactoryTest {
                 "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
                 "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
                 "  <description>Custom ruleset for tests</description>\n" + 
-                "  <rule ref=\"rulesets/java/basic.xml/ThisRuleDoesNotExist\"/>\n" + 
+                "  <rule ref=\"net/sourceforge/pmd/TestRuleset1.xml/ThisRuleDoesNotExist\"/>\n" + 
                 "</ruleset>\n");
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         ruleSetFactory.createRuleSet(ref);
@@ -568,7 +560,7 @@ public class RuleSetFactoryTest {
                 "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
                 "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
                 "  <description>Custom ruleset for tests</description>\n" + 
-                "  <rule ref=\"rulesets/java/basic.xml\">\n" + 
+                "  <rule ref=\"net/sourceforge/pmd/TestRuleset1.xml\">\n" + 
                 "    <exclude name=\"ThisRuleDoesNotExist\"/>\n" + 
                 "  </rule>\n" + 
                 "</ruleset>\n");
@@ -1078,7 +1070,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ " <rule "
 			+ PMD.EOL
-			+ "  ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\" message=\"TestMessageOverride\"> "
+			+ "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"> "
 			+ PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
 
 	private static final String REF_MISPELLED_XREF = "<?xml version=\"1.0\"?>"
@@ -1190,7 +1182,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "name=\"ExternalRefRuleName\" "
 			+ PMD.EOL
-			+ "ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\"/>"
+			+ "ref=\"net/sourceforge/pmd/TestRuleset2.xml/TestRule\"/>"
 			+ PMD.EOL
 			+ " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"><priority>2</priority></rule> "
 			+ PMD.EOL
@@ -1413,11 +1405,11 @@ public class RuleSetFactoryTest {
 
 	// Note: Update this RuleSet name to a different RuleSet with deprecated
 	// Rules when the Rules are finally removed.
-	private static final String DEPRECATED_RULE_RULESET_NAME = "rulesets/java/basic.xml";
+	private static final String DEPRECATED_RULE_RULESET_NAME = "net/sourceforge/pmd/TestRuleset1.xml";
 
 	// Note: Update this Rule name to a different deprecated Rule when the one
 	// listed here is finally removed.
-	private static final String DEPRECATED_RULE_NAME = "EmptyCatchBlock";
+	private static final String DEPRECATED_RULE_NAME = "MockRule3";
 
 	private static final String REFERENCE_TO_DEPRECATED_RULE = "<?xml version=\"1.0\"?>"
 			+ PMD.EOL

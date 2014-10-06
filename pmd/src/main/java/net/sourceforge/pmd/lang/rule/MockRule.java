@@ -20,7 +20,7 @@ public class MockRule extends AbstractRule {
 
     public MockRule() {
 	super();
-	setLanguage(LanguageRegistry.getLanguage("Java"));
+	setLanguage(LanguageRegistry.getLanguage("Dummy"));
     }
 
     public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
@@ -29,8 +29,7 @@ public class MockRule extends AbstractRule {
     }
 
     public MockRule(String name, String description, String message, String ruleSetName) {
-	super();
-	setLanguage(LanguageRegistry.getLanguage("Java"));
+	this();
 	setName(name);
 	setDescription(description);
 	setMessage(message);

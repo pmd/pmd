@@ -27,8 +27,8 @@ public class RuleSetWriterTest {
             writer = new RuleSetWriter(out);
 
             RuleSet ruleSet = new RuleSet();
-            RuleSet braces = new RuleSetFactory().createRuleSet("java-braces");
-            ruleSet.addRuleSetByReference(braces, true, "WhileLoopsMustUseBraces");
+            RuleSet braces = new RuleSetFactory().createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
+            ruleSet.addRuleSetByReference(braces, true, "MockRule2");
 
             writer.write(ruleSet);
         } finally {
@@ -38,6 +38,6 @@ public class RuleSetWriterTest {
         }
 
         String written = out.toString("UTF-8");
-        Assert.assertTrue(written.contains("<exclude name=\"WhileLoopsMustUseBraces\""));
+        Assert.assertTrue(written.contains("<exclude name=\"MockRule2\""));
     }
 }
