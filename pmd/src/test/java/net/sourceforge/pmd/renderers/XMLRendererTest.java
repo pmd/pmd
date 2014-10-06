@@ -3,102 +3,62 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.io.IOException;
-import java.io.StringReader;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.testframework.RuleTst;
+import net.sourceforge.pmd.Report.ProcessingError;
 
-import org.junit.Test;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+public class XMLRendererTest extends AbstractRendererTst {
 
-
-public class XMLRendererTest extends RuleTst {
-    @Test
-    public void testEmptyReport() throws Throwable {
-        Element root = parseRootElement(new Report());
-        assertEquals("pmd", root.getNodeName());
-        assertNull(root.getFirstChild().getNextSibling()); // only one child, it's whitespace
+    @Override
+    public Renderer getRenderer() {
+        return new XMLRenderer();
     }
 
-    @Test
-    public void testErrorReport() throws Throwable {
-        Report report = new Report();
-        report.addError(new Report.ProcessingError("test_msg", "test_filename"));
-        Element root = parseRootElement(report);
-        assertEquals("test_msg", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("msg").getNodeValue());
+    @Override
+    public String getExpected() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<pmd version=\"" + PMD.VERSION + "\" timestamp=\"2014-10-06T19:30:51.262\">\n" + 
+                "<file name=\"n/a\">\n" + 
+                "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">\n" + 
+                "blah\n" + 
+                "</violation>\n" + 
+                "</file>\n" + 
+                "</pmd>\n";
     }
 
-    @Test
-    public void testSingleReport() throws Throwable {
-        Report report = new Report();
-        runTestFromString(TEST1, new FooRule(), report);
-        Element root = parseRootElement(report);
-        assertEquals("n/a", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("Foo", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
-        assertEquals("RuleSet", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("ruleset").getNodeValue());
-        assertEquals("1", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("beginline").getNodeValue());
+    @Override
+    public String getExpectedEmpty() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<pmd version=\"" + PMD.VERSION + "\" timestamp=\"2014-10-06T19:30:51.262\">\n" + 
+                "</pmd>\n";
     }
 
-    private static final String TEST1 =
-            "public class Foo {}" + PMD.EOL;
-
-    private static final String TEST2 =
-            "public class Foo {" + PMD.EOL +
-            " public class Foo {}" + PMD.EOL +
-            "}" + PMD.EOL;
-
-
-    @Test
-    public void testDoubleReport() throws Throwable {
-        Report report = new Report();
-        runTestFromString(TEST2, new FooRule(), report);
-        runTestFromString(TEST2, new FooRule(), report);
-        Element root = parseRootElement(report);
-        assertEquals("Foo", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
-        assertEquals("Foo", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
+    @Override
+    public String getExpectedMultiple() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<pmd version=\"" + PMD.VERSION + "\" timestamp=\"2014-10-06T19:30:51.239\">\n" + 
+                "<file name=\"n/a\">\n" + 
+                "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">\n" + 
+                "blah\n" + 
+                "</violation>\n" + 
+                "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">\n" + 
+                "blah\n" + 
+                "</violation>\n" + 
+                "</file>\n" + 
+                "</pmd>\n";
     }
 
-    @Test
-    public void testTwoFiles() throws Throwable {
-        Report report = new Report();
-        FooRule rule = new FooRule();
-        runTestFromString(TEST2, rule, report);
-        PMD p = new PMD();
-        p.getConfiguration().setDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"));
-        RuleContext ctx = new RuleContext();
-        ctx.setReport(report);
-        ctx.setSourceCodeFilename("bar");
-        RuleSet rules = new RuleSet();
-        rules.addRule(rule);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST2), new RuleSets(rules), ctx);
-        Element root = parseRootElement(report);
-        assertEquals("bar", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("n/a", root.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
+    @Override
+    public String getExpectedError(ProcessingError error) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<pmd version=\"" + PMD.VERSION + "\" timestamp=\"2014-10-06T19:30:51.222\">\n" + 
+                "<error filename=\"file\" msg=\"Error\"/>\n" + 
+                "</pmd>\n";
     }
 
-    private Element parseRootElement(Report rpt) throws SAXException, IOException, ParserConfigurationException {
-	String result = ReportTest.render(new XMLRenderer(), rpt);
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(result))).getDocumentElement();
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(XMLRendererTest.class);
+    @Override
+    public String filter(String expected) {
+        String result = expected.replaceAll(" timestamp=\"[^\"]+\">", " timestamp=\"\">");
+        result = result.replaceAll("\r", "\n");
+        return result;
     }
 }

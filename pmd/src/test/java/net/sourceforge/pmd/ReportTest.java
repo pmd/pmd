@@ -184,7 +184,7 @@ public class ReportTest implements ReportListener {
         return s;
     }
 
-    private static String render(Renderer renderer, Report report) throws IOException {
+    public static String render(Renderer renderer, Report report) throws IOException {
         StringWriter writer = new StringWriter();
         renderer.setWriter(writer);
         renderer.start();

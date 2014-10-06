@@ -5,31 +5,19 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.testframework.RuleTst;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 import org.junit.Test;
 
 
-public abstract class AbstractRendererTst extends RuleTst {
-
-    private static class FooRule2 extends FooRule {
-        @Override
-        protected void apply(Node node, RuleContext ctx) {
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                apply(node.jjtGetChild(i), ctx);
-            }
-            if ("Foo".equals(node.getImage())) {
-                addViolation(ctx, node);
-                addViolation(ctx, node.jjtGetChild(0));
-            }
-        }
-    }
+public abstract class AbstractRendererTst {
 
     public abstract Renderer getRenderer();
 
@@ -43,32 +31,58 @@ public abstract class AbstractRendererTst extends RuleTst {
         return "";
     }
 
+    public String filter(String expected) {
+        return expected;
+    }
+
     @Test(expected = NullPointerException.class)
     public void testNullPassedIn() throws Throwable {
-	ReportTest.render(getRenderer(), null);
+        getRenderer().renderFileReport(null);
+    }
+
+    private static Report reportOneViolation() {
+        Report report = new Report();
+        report.addRuleViolation(newRuleViolation(1));
+        return report;
+    }
+
+    private static Report reportTwoViolations() {
+        Report report = new Report();
+        report.addRuleViolation(newRuleViolation(1));
+        report.addRuleViolation(newRuleViolation(2));
+        return report;
+    }
+
+    private static RuleViolation newRuleViolation(int endColumn) {
+        DummyNode node = new DummyNode(1);
+        node.testingOnly__setBeginLine(1);
+        node.testingOnly__setBeginColumn(1);
+        node.testingOnly__setEndLine(1);
+        node.testingOnly__setEndColumn(endColumn);
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFilename("n/a");
+        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
     }
 
     @Test
     public void testRenderer() throws Throwable {
-        Report rep = new Report();
-        runTestFromString(TEST1, new FooRule(), rep);
+        Report rep = reportOneViolation();
         String actual = ReportTest.render(getRenderer(), rep);
-        assertEquals(getExpected(), actual);
+        assertEquals(filter(getExpected()), filter(actual));
     }
 
     @Test
     public void testRendererEmpty() throws Throwable {
         Report rep = new Report();
         String actual = ReportTest.render(getRenderer(), rep);
-        assertEquals(getExpectedEmpty(), actual);
+        assertEquals(filter(getExpectedEmpty()), filter(actual));
     }
 
     @Test
     public void testRendererMultiple() throws Throwable {
-        Report rep = new Report();
-        runTestFromString(TEST1, new FooRule2(), rep);
+        Report rep = reportTwoViolations();
         String actual = ReportTest.render(getRenderer(), rep);
-        assertEquals(getExpectedMultiple(), actual);
+        assertEquals(filter(getExpectedMultiple()), filter(actual));
     }
 
     @Test
@@ -77,8 +91,6 @@ public abstract class AbstractRendererTst extends RuleTst {
         Report.ProcessingError err = new Report.ProcessingError("Error", "file");
         rep.addError(err);
         String actual = ReportTest.render(getRenderer(), rep);
-        assertEquals(getExpectedError(err), actual);
+        assertEquals(filter(getExpectedError(err)), filter(actual));
     }
-
-    private static final String TEST1 = "public class Foo {}" + PMD.EOL;
 }
