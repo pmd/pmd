@@ -8,13 +8,13 @@ import java.util.Properties;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.validators.PositiveInteger;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 
 public class PMDParameters {
 
@@ -67,10 +67,10 @@ public class PMDParameters {
     private String reportfile = null;
 
     @Parameter(names = { "-version", "-v" }, description = "specify version of a language PMD should use")
-    private String version = LanguageRegistry.getDefaultLanguage().getDefaultVersion().getVersion();
+    private String version = null;
 
     @Parameter(names = { "-language", "-l" }, description = "specify a language PMD should use")
-    private String language = LanguageRegistry.getDefaultLanguage().getTerseName();
+    private String language = null;
 
     @Parameter(names = "-auxclasspath", description = "specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
     private String auxclasspath;
@@ -192,11 +192,11 @@ public class PMDParameters {
     }
 
     public String getVersion() {
-        return version;
+        return version != null ? version : LanguageRegistry.getDefaultLanguage().getDefaultVersion().getVersion();
     }
 
     public String getLanguage() {
-        return language;
+        return language != null ? language : LanguageRegistry.getDefaultLanguage().getTerseName();
     }
 
     public String getAuxclasspath() {
