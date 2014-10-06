@@ -1,0 +1,110 @@
+<project name="pmdtasktest" default="all">
+
+	<property name="pmd.home" value="${user.dir}"/>
+
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+
+	<target name="testNestedRuleset">
+		<pmd>
+			<ruleset>${pmd.home}/src/main/resources/rulesets/java/codesize.xml</ruleset>
+			<ruleset>${pmd.home}/src/main/resources/rulesets/java/design.xml</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testFormatterWithProperties">
+		<pmd>
+			<ruleset>${pmd.home}/src/main/resources/rulesets/java/codesize.xml</ruleset>
+			<ruleset>${pmd.home}/src/main/resources/rulesets/java/design.xml</ruleset>
+			<formatter type="summaryhtml" toConsole="true">
+				<param name="linkPrefix" value="link_prefix"/>
+				<param name="linePrefix" value="line_prefix"/>
+			</formatter>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testAbstractNames">
+		<pmd rulesetfiles="java-codesize,java-design">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testAbstractNamesInNestedRuleset">
+		<pmd>
+			<ruleset>java-codesize</ruleset>
+			<ruleset>java-design</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testCommaInRulesetfiles">
+		<pmd rulesetfiles="${pmd.home}/src/main/resources/rulesets/java/codesize.xml,${pmd.home}/src/main/resources/rulesets/java/design.xml">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testRelativeRulesets">
+		<pmd>
+			<ruleset>custom_ruleset.xml</ruleset>
+			<ruleset>rulesets/java/design.xml</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testRelativeRulesetsInRulesetfiles">
+		<pmd rulesetfiles="custom_ruleset.xml,src/main/resources/rulesets/java/design.xml">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testNoFormattersValidation">
+		<pmd rulesetfiles="${pmd.home}/src/main/resources/rulesets/java/design.xml">
+            <fileset dir="${pmd.home}/src/test/resources/ant/java">
+                <include name="*.java"/>
+            </fileset>
+		</pmd>
+	</target>
+
+	<target name="testExplicitRuleInRuleSet">
+		<pmd rulesetfiles="src/main/resources/rulesets/java/codesize.xml/ExcessiveMethodLength">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+    <target name="testClasspath">
+        <pmd>
+            <ruleset>classpathtest/ruleset.xml</ruleset>
+            <classpath>
+                <pathelement path="${pmd.home}/target/classes"/>
+                <pathelement path="${pmd.home}/target/test-classes"/>
+                <pathelement path="${pmd.home}/target/test-classes/net/sourceforge/pmd/ant"/>
+                <pathelement path="${pmd.home}/target/clover/test-classes"/>
+                <pathelement path="${pmd.home}/target/clover/test-classes/net/sourceforge/pmd/ant"/>
+            </classpath>
+        </pmd>
+    </target>
+</project>

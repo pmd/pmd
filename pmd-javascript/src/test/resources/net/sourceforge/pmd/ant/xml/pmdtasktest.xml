@@ -1,0 +1,19 @@
+<project name="pmdtasktest" default="all">
+
+    <property name="pmd.home" value="${user.dir}" />
+    <property name="src" value="src/main/java" />
+
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
+
+    <target name="testEcmascript">
+        <pmd rulesetfiles="${pmd.home}/src/main/resources/rulesets/ecmascript/basic.xml">
+            <sourceLanguage name="ecmascript" version="3" />
+            <formatter type="text" toConsole="true" />
+            <fileset dir="${pmd.home}/src/test/resources/ant/ecmascript/">
+                <include name="*.js" />
+            </fileset>
+        </pmd>
+    </target>
+
+
+</project>

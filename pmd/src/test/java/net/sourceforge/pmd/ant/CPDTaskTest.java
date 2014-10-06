@@ -5,6 +5,7 @@ package net.sourceforge.pmd.ant;
 
 import java.io.File;
 
+import org.apache.tools.ant.BuildFileTest;
 import org.junit.Test;
 
 /**
@@ -12,18 +13,20 @@ import org.junit.Test;
  * @author Romain Pelisse <belaran@gmail.com>
  *
  */
-public class CPDTaskTest extends AbstractAntTestHelper {
+public class CPDTaskTest extends BuildFileTest {
 
-	public CPDTaskTest() {
-		super.antTestScriptFilename = "cpdtasktest.xml";
-	}
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        configureProject("src/test/resources/net/sourceforge/pmd/ant/xml/cpdtasktest.xml");
+    }
 
     @Test
     public void testBasic() {
         executeTarget("testBasic");
-        // FIXME: This clearly needs to be improved - but I don't like to write test,
-        //        so feel free to contribute :)
+        // FIXME: This clearly needs to be improved - but I don't like to write
+        // test,
+        // so feel free to contribute :)
         assertTrue(new File("target/cpd.ant.tests").exists());
     }
-
 }
