@@ -107,49 +107,47 @@ public class RuleSetFactoryTest {
 
 	    RuleSetFactory rsf = new RuleSetFactory();
 	    RuleSets rs = rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
-	    // added by referencing a complete ruleset (java-basic)
-	    assertNotNull(rs.getRuleByName("JumbledIncrementer"));
-	    assertNotNull(rs.getRuleByName("ForLoopShouldBeWhileLoop"));
-	    assertNotNull(rs.getRuleByName("OverrideBothEqualsAndHashcode"));
+	    // added by referencing a complete ruleset (TestRuleset1.xml)
+	    assertNotNull(rs.getRuleByName("MockRule1"));
+	    assertNotNull(rs.getRuleByName("MockRule2"));
+	    assertNotNull(rs.getRuleByName("MockRule3"));
+        assertNotNull(rs.getRuleByName("TestRuleRef"));
 
 	    // added by specific reference
-	    assertNotNull(rs.getRuleByName("UnusedLocalVariable"));
-	    assertNotNull(rs.getRuleByName("DuplicateImports"));
-	    // this is from java-unusedcode, but not referenced
-	    assertNull(rs.getRuleByName("UnusedPrivateField"));
+	    assertNotNull(rs.getRuleByName("TestRule"));
+	    // this is from TestRuleset2.xml, but not referenced
+	    assertNull(rs.getRuleByName("TestRule2Ruleset2"));
 
-	    Rule emptyCatchBlock = rs.getRuleByName("EmptyCatchBlock");
-	    assertNotNull(emptyCatchBlock);
+	    Rule mockRule3 = rs.getRuleByName("MockRule3");
+	    assertEquals("Overridden message", mockRule3.getMessage());
+	    assertEquals(2, mockRule3.getPriority().getPriority());
 
-	    Rule collapsibleIfStatements = rs.getRuleByName("CollapsibleIfStatements");
-	    assertEquals("Just combine them!", collapsibleIfStatements.getMessage());
-	    // assert that CollapsibleIfStatements is only once added to the ruleset, so that it really
-	    // overwrites the configuration inherited from java/basic.xml
-	    assertEquals(1, countRule(rs, "CollapsibleIfStatements"));
+	    Rule mockRule2 = rs.getRuleByName("MockRule2");
+	    assertEquals("Just combine them!", mockRule2.getMessage());
+	    // assert that MockRule2 is only once added to the ruleset, so that it really
+	    // overwrites the configuration inherited from TestRuleset1.xml
+	    assertEquals(1, countRule(rs, "MockRule2"));
 
-	    Rule cyclomaticComplexity = rs.getRuleByName("CyclomaticComplexity");
-	    assertNotNull(cyclomaticComplexity);
-	    PropertyDescriptor<?> prop = cyclomaticComplexity.getPropertyDescriptor("reportLevel");
-	    Object property = cyclomaticComplexity.getProperty(prop);
+	    Rule mockRule1 = rs.getRuleByName("MockRule1");
+	    assertNotNull(mockRule1);
+	    PropertyDescriptor<?> prop = mockRule1.getPropertyDescriptor("testIntProperty");
+	    Object property = mockRule1.getProperty(prop);
 	    assertEquals("5", String.valueOf(property));
 
-	    // included from braces
-	    assertNotNull(rs.getRuleByName("IfStmtsMustUseBraces"));
-	    // excluded from braces
-	    assertNull(rs.getRuleByName("WhileLoopsMustUseBraces"));
+	    // included from TestRuleset3.xml
+	    assertNotNull(rs.getRuleByName("Ruleset3Rule2"));
+	    // excluded from TestRuleset3.xml
+	    assertNull(rs.getRuleByName("Ruleset3Rule1"));
 
 	    // overridden to 5
-	    Rule simplifyBooleanExpressions = rs.getRuleByName("SimplifyBooleanExpressions");
-	    assertNotNull(simplifyBooleanExpressions);
-	    assertEquals(5, simplifyBooleanExpressions.getPriority().getPriority());
-	    assertEquals(1, countRule(rs, "SimplifyBooleanExpressions"));
-	    // priority overridden for whole design group
-	    Rule useUtilityClass = rs.getRuleByName("UseUtilityClass");
-	    assertNotNull(useUtilityClass);
-	    assertEquals(2, useUtilityClass.getPriority().getPriority());
-	    Rule simplifyBooleanReturns = rs.getRuleByName("SimplifyBooleanReturns");
-	    assertNotNull(simplifyBooleanReturns);
-	    assertEquals(2, simplifyBooleanReturns.getPriority().getPriority());
+	    Rule ruleset4Rule1 = rs.getRuleByName("Ruleset4Rule1");
+	    assertNotNull(ruleset4Rule1);
+	    assertEquals(5, ruleset4Rule1.getPriority().getPriority());
+	    assertEquals(1, countRule(rs, "Ruleset4Rule1"));
+	    // priority overridden for whole TestRuleset4 group
+	    Rule ruleset4Rule2 = rs.getRuleByName("Ruleset4Rule2");
+	    assertNotNull(ruleset4Rule2);
+	    assertEquals(2, ruleset4Rule2.getPriority().getPriority());
 	}
 
     private int countRule(RuleSets rs, String ruleName) {
@@ -1077,7 +1075,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ " <description>testdesc</description>" + PMD.EOL + " <rule "
 			+ PMD.EOL
-			+ "  ref=\"rulesets/java/unusedcode.xml/FooUnusedLocalVariable\"> "
+			+ "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/FooMockRule1\"> "
 			+ PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
 
 	private static final String REF_OVERRIDE_ORIGINAL_NAME_ONE_ELEM = "<?xml version=\"1.0\"?>"
@@ -1086,7 +1084,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ " <description>testdesc</description>"
 			+ PMD.EOL
-			+ " <rule ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\" message=\"TestMessageOverride\"/> "
+			+ " <rule ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"/> "
 			+ PMD.EOL + "</ruleset>";
 
 	private static final String REF_OVERRIDE = "<?xml version=\"1.0\"?>"
@@ -1097,7 +1095,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ " <rule "
 			+ PMD.EOL
-			+ "  ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\" "
+			+ "  ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\" "
 			+ PMD.EOL
 			+ "  name=\"TestNameOverride\" "
 			+ PMD.EOL
@@ -1167,7 +1165,7 @@ public class RuleSetFactoryTest {
 			+ PMD.EOL
 			+ "name=\"ExternalRefRuleName\" "
 			+ PMD.EOL
-			+ "ref=\"rulesets/java/unusedcode.xml/UnusedLocalVariable\"/>"
+			+ "ref=\"net/sourceforge/pmd/TestRuleset1.xml/MockRule1\"/>"
 			+ PMD.EOL
 			+ " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"/> "
 			+ PMD.EOL + "</ruleset>";

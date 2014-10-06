@@ -73,19 +73,19 @@ public class RuleSetReferenceIdTest {
 
     @Test
     public void testOneSimpleRuleSet() {
-	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("java-basic");
+	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("dummy-basic");
 	assertEquals(1, references.size());
-	assertRuleSetReferenceId(true, "rulesets/java/basic.xml", true, null, "rulesets/java/basic.xml", references
+	assertRuleSetReferenceId(true, "rulesets/dummy/basic.xml", true, null, "rulesets/dummy/basic.xml", references
 		.get(0));
     }
 
     @Test
     public void testMultipleSimpleRuleSet() {
-	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("java-unusedcode,java-basic");
+	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("dummy-unusedcode,dummy-basic");
 	assertEquals(2, references.size());
-	assertRuleSetReferenceId(true, "rulesets/java/unusedcode.xml", true, null, "rulesets/java/unusedcode.xml",
+	assertRuleSetReferenceId(true, "rulesets/dummy/unusedcode.xml", true, null, "rulesets/dummy/unusedcode.xml",
 		references.get(0));
-	assertRuleSetReferenceId(true, "rulesets/java/basic.xml", true, null, "rulesets/java/basic.xml", references
+	assertRuleSetReferenceId(true, "rulesets/dummy/basic.xml", true, null, "rulesets/dummy/basic.xml", references
 		.get(1));
     }
 
@@ -94,11 +94,11 @@ public class RuleSetReferenceIdTest {
      */
     @Test
     public void testMultipleRulesWithSpaces() {
-        List<RuleSetReferenceId> references = RuleSetReferenceId.parse("ecmascript-basic, ecmascript-braces, ecmascript-unnecessary");
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse("dummy-basic, dummy-unusedcode, dummy2-basic");
         assertEquals(3, references.size());
-        assertRuleSetReferenceId(true, "rulesets/ecmascript/basic.xml", true, null, "rulesets/ecmascript/basic.xml", references.get(0));
-        assertRuleSetReferenceId(true, "rulesets/ecmascript/braces.xml", true, null, "rulesets/ecmascript/braces.xml", references.get(1));
-        assertRuleSetReferenceId(true, "rulesets/ecmascript/unnecessary.xml", true, null, "rulesets/ecmascript/unnecessary.xml", references.get(2));
+        assertRuleSetReferenceId(true, "rulesets/dummy/basic.xml", true, null, "rulesets/dummy/basic.xml", references.get(0));
+        assertRuleSetReferenceId(true, "rulesets/dummy/unusedcode.xml", true, null, "rulesets/dummy/unusedcode.xml", references.get(1));
+        assertRuleSetReferenceId(true, "rulesets/dummy2/basic.xml", true, null, "rulesets/dummy2/basic.xml", references.get(2));
     }
 
     @Test
@@ -138,11 +138,11 @@ public class RuleSetReferenceIdTest {
 
     @Test
     public void testMixRuleSet() {
-	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("rulesets/java/unusedcode.xml,xml-basic");
+	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("rulesets/dummy/unusedcode.xml,dummy2-basic");
 	assertEquals(2, references.size());
-	assertRuleSetReferenceId(true, "rulesets/java/unusedcode.xml", true, null, "rulesets/java/unusedcode.xml",
+	assertRuleSetReferenceId(true, "rulesets/dummy/unusedcode.xml", true, null, "rulesets/dummy/unusedcode.xml",
 		references.get(0));
-	assertRuleSetReferenceId(true, "rulesets/xml/basic.xml", true, null, "rulesets/xml/basic.xml", references
+	assertRuleSetReferenceId(true, "rulesets/dummy2/basic.xml", true, null, "rulesets/dummy2/basic.xml", references
 		.get(1));
     }
 
@@ -155,19 +155,19 @@ public class RuleSetReferenceIdTest {
 
     @Test
     public void testUnknownAndSimpleRuleSet() {
-	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("jsp-basic,nonexistant.xml");
+	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("dummy-basic,nonexistant.xml");
 	assertEquals(2, references.size());
-	assertRuleSetReferenceId(true, "rulesets/jsp/basic.xml", true, null, "rulesets/jsp/basic.xml", references
+	assertRuleSetReferenceId(true, "rulesets/dummy/basic.xml", true, null, "rulesets/dummy/basic.xml", references
 		.get(0));
 	assertRuleSetReferenceId(true, "nonexistant.xml", true, null, "nonexistant.xml", references.get(1));
     }
 
     @Test
     public void testSimpleRuleSetAndRule() {
-	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("java-basic/EmptyCatchBlock");
+	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("dummy-basic/DummyBasicMockRule");
 	assertEquals(1, references.size());
-	assertRuleSetReferenceId(true, "rulesets/java/basic.xml", false, "EmptyCatchBlock",
-		"rulesets/java/basic.xml/EmptyCatchBlock", references.get(0));
+	assertRuleSetReferenceId(true, "rulesets/dummy/basic.xml", false, "DummyBasicMockRule",
+		"rulesets/dummy/basic.xml/DummyBasicMockRule", references.get(0));
     }
 
     @Test

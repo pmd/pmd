@@ -3,11 +3,11 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
     <description>
-  Ruleset used by test net.sourceforge.pmd.RuleSetFactoryTest
+  Ruleset used by test RuleSetReferenceIdTest
   </description>
 
-    <rule name="MockRule" language="dummy" since="1.0" message="Test Rule" class="net.sourceforge.pmd.lang.rule.MockRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/test/external-reference-ruleset.html#MockRule">
+    <rule name="DummyUnusedcodeMockRule" language="dummy" since="1.0" message="Test Rule 1" class="net.sourceforge.pmd.lang.rule.MockRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#DummyUnusedcodeMockRule">
         <description>
 Just for test
      </description>
@@ -17,5 +17,4 @@ Just for test
  ]]>
      </example>
     </rule>
-
 </ruleset>
