@@ -82,6 +82,24 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-build</artifactId>
+                <configuration>
+                    <rulesetsDirectory>${basedir}/src/main/resources/rulesets</rulesetsDirectory>
+                    <siteXml>${basedir}/src/site/site.pre.xml</siteXml>
+                    <siteXmlTarget>${basedir}/src/site/site.xml</siteXmlTarget>
+                    <target>${basedir}/src/site/xdoc/rules</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>pmd-pre-site</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>

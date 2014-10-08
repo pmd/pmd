@@ -54,15 +54,6 @@
 
     <menu ref="parent"/>
 
-    <!-- The rulesets part of navigation will be added during pre-site and the
-         list is build dynamically based on rulesets folder directory layout -->
-
-
-    <menu name="Rule Sets"/>
-
-
-    <!-- *********** -->
-
     <menu ref="reports"/>
 
   </body>

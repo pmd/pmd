@@ -100,11 +100,22 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-build</artifactId>
                 <configuration>
-                    <xdocDirectory>${project.build.directory}/generated-xdocs</xdocDirectory>
+                    <rulesetsDirectory>${basedir}/src/main/resources/rulesets</rulesetsDirectory>
+                    <siteXml>${basedir}/src/site/site.pre.xml</siteXml>
+                    <siteXmlTarget>${basedir}/src/site/site.xml</siteXmlTarget>
+                    <target>${basedir}/src/site/xdoc/rules</target>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>pmd-pre-site</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

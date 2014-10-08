@@ -7,6 +7,11 @@ bin/
 .ruleset
 .settings/
 *.patch
-pmd/src/site/site.xml
-pmd/src/site/xdoc/rules
-pmd/src/site/xdoc/mergedruleset.xml
+pmd-java/src/site/site.xml
+pmd-javascript/src/site/site.xml
+pmd-jsp/src/site/site.xml
+pmd-plsql/src/site/site.xml
+pmd-vm/src/site/site.xml
+pmd-xml/src/site/site.xml
+*/src/site/xdoc/rules
+*/src/site/xdoc/mergedruleset.xml
