@@ -627,16 +627,17 @@
 
     <modules>
         <module>pmd</module>
-        <module>pmd-test</module>
+        <module>pmd-cpp</module>
+        <module>pmd-dist</module>
+        <module>pmd-fortran</module>
         <module>pmd-java</module>
         <module>pmd-javascript</module>
-        <module>pmd-vm</module>
-        <module>pmd-plsql</module>
-        <module>pmd-cpp</module>
-        <module>pmd-xml</module>
+        <module>pmd-jsp</module>
         <module>pmd-php</module>
-        <module>pmd-fortran</module>
+        <module>pmd-plsql</module>
         <module>pmd-ruby</module>
-        <module>pmd-dist</module>
+        <module>pmd-test</module>
+        <module>pmd-vm</module>
+        <module>pmd-xml</module>
     </modules>
 </project>
