@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
-    <artifactId>pmd-aggregate</artifactId>
+    <artifactId>pmd</artifactId>
     <version>5.1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
@@ -835,7 +835,7 @@
     </profiles>
 
     <modules>
-        <module>pmd</module>
+        <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-dist</module>
         <module>pmd-fortran</module>

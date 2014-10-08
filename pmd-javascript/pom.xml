@@ -6,12 +6,12 @@
 
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
-        <artifactId>pmd-aggregate</artifactId>
+        <artifactId>pmd</artifactId>
         <version>5.1.4-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <config.basedir>${basedir}/../pmd</config.basedir>
+        <config.basedir>${basedir}/../pmd-core</config.basedir>
     </properties>
 
     <build>
@@ -55,7 +55,7 @@
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd</artifactId>
+            <artifactId>pmd-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
