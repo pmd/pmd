@@ -10,35 +10,12 @@
         <version>5.1.4-SNAPSHOT</version>
     </parent>
 
-    <build>
-        <testResources>
-            <testResource>
-                <directory>${basedir}/src/test/resources</directory>
-            </testResource>
-            <testResource>
-                <directory>${basedir}/src/test/java</directory>
-                <includes>
-                    <include>**/testdata/*.java</include>
-                </includes>
-            </testResource>
-        </testResources>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                    <delimiters>
-                        <delimiter>${*}</delimiter>
-                    </delimiters>
-                </configuration>
-            </plugin>
+    <properties>
+        <config.basedir>${basedir}</config.basedir>
+    </properties>
 
+    <build>
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -53,22 +30,6 @@
                                     <property name="target" value="${project.build.directory}/generated-sources/javacc" />
                                     <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
                                 </ant>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>pmd-clean</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <target>
-                                <echo>PMD specific tasks: cleaning generated xdocs</echo>
-                                <delete quiet="true">
-                                    <fileset dir="${src.xdocs.dir}/rules" includes="**/*.xml" />
-                                    <fileset dir="${src.xdocs.dir}/" includes="mergedruleset.xml" />
-                                </delete>
                             </target>
                         </configuration>
                         <goals>
@@ -92,26 +53,6 @@
                                 <source>${project.build.directory}/generated-sources/javacc</source>
                             </sources>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- As Clover can be quite an hassle, know that you can skip 
-                it by using the following option when running mvn: $ mvn clean -Dmaven.clover.skip=true 
-                site -->
-            <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-clover2-plugin</artifactId>
-                <configuration>
-                    <jdk>${java.version}</jdk>
-                    <licenseLocation>licences/clover2.license</licenseLocation>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>instrument</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -202,52 +143,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>reports</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>pmd</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <minimumTokens>100</minimumTokens>
-                            <targetJdk>${java.version}</targetJdk>
-                            <rulesets>
-                                <ruleset>src/main/resources/rulesets/internal/dogfood.xml</ruleset>
-                            </rulesets>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>checkstyle</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <configLocation>etc/checkstyle-config.xml</configLocation>
-                            <suppressionsFile>etc/checkstyle-suppressions.xml</suppressionsFile>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
