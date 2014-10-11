@@ -7,6 +7,7 @@ import java.io.FilenameFilter;
 import java.util.Properties;
 
 public interface Language {
+    String getName();
 
     Tokenizer getTokenizer();
 

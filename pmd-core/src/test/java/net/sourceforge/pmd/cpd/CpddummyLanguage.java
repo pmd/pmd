@@ -7,9 +7,9 @@ package net.sourceforge.pmd.cpd;
  * Sample language for testing LanguageFactory.
  *
  */
-public class CpddummyLanguage extends AnyLanguage {
+public class CpddummyLanguage extends AbstractLanguage {
 
     public CpddummyLanguage() {
-        super("dummy");
+        super("Cpddummy", new AnyTokenizer(), "dummy");
     }
 }

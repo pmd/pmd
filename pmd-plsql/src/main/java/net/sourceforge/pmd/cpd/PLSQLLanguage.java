@@ -11,7 +11,7 @@ import java.util.Properties;
  */
 public class PLSQLLanguage extends AbstractLanguage {
 	public PLSQLLanguage() {
-		super(new PLSQLTokenizer()
+		super("plsql", new PLSQLTokenizer()
 		      ,".sql"
 		      ,".trg" //Triggers
 		      ,".prc",".fnc" // Standalone Procedures and Functions 

@@ -10,8 +10,7 @@ public class LanguageFactoryTest {
 
     @Test
     public void testSimple() {
-        LanguageFactory f = new LanguageFactory();
-        assertTrue(f.createLanguage("Cpddummy") instanceof CpddummyLanguage);
-        assertTrue(f.createLanguage("not_existing_language") instanceof AnyLanguage);
+        assertTrue(LanguageFactory.createLanguage("Cpddummy") instanceof CpddummyLanguage);
+        assertTrue(LanguageFactory.createLanguage("not_existing_language") instanceof AnyLanguage);
     }
 }

@@ -86,7 +86,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 			if (languageString == null || "".equals(languageString)) {
 				languageString = DEFAULT_LANGUAGE;
 			}
-			return new LanguageFactory().createLanguage(languageString);
+			return LanguageFactory.createLanguage(languageString);
 		}
 	}
 
@@ -150,7 +150,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 	}
 
 	public static Language getLanguageFromString(String languageString) {
-		return new LanguageFactory().createLanguage(languageString);
+		return LanguageFactory.createLanguage(languageString);
 	}
 
 	public static void setSystemProperties(CPDConfiguration configuration) {

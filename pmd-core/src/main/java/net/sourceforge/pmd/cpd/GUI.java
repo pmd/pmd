@@ -81,7 +81,7 @@ public class GUI implements CPDListener {
 		};
 
 	private static abstract class LanguageConfig {
-		public abstract Language languageFor(LanguageFactory lf, Properties p);
+		public abstract Language languageFor(Properties p);
 		public boolean canIgnoreIdentifiers() { return false; }
 		public boolean canIgnoreLiterals() { return false; }
 		public boolean canIgnoreAnnotations() { return false; }
@@ -90,31 +90,31 @@ public class GUI implements CPDListener {
 
 	private static final Object[][] LANGUAGE_SETS = new Object[][] {
 		{"Java", 			new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("java"); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("java", p); }
 									public boolean canIgnoreIdentifiers() { return true; }
 									public boolean canIgnoreLiterals() { return true; }
 									public boolean canIgnoreAnnotations() { return true; }
 									public String[] extensions() { return new String[] {".java", ".class" }; }; } },
 		{"JSP", 			new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("jsp"); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("jsp", p); }
 									public String[] extensions() { return new String[] {".jsp" }; }; } },
 		{"C++", 			new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cpp"); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("cpp", p); }
 									public String[] extensions() { return new String[] {".cpp", ".c" }; }; } },
 		{"Ruby",			new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("ruby"); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("ruby", p); }
 									public String[] extensions() { return new String[] {".rb" }; }; } },
 		{"Fortran",			new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("fortran"); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("fortran", p); }
 									public String[] extensions() { return new String[] {".for", ".f", ".f66", ".f77", ".f90" }; }; } },
 		{"PHP",				new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("php"); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("php", p); }
 									public String[] extensions() { return new String[] {".php" }; };	} },
 		{"C#",				new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cs"); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("cs", p); }
 									public String[] extensions() { return new String[] {".cs" }; };	} },
 		{"PLSQL", 			 new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("plsql"); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("plsql", p); }
 									public String[] extensions() { return new String[] {".sql"
 																,".trg"
 																,".prc",".fnc"
@@ -125,10 +125,10 @@ public class GUI implements CPDListener {
 																,".tps",".tpb"
 																}; };	} },
 		{"Ecmascript",			new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("js"); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("js", p); }
 									public String[] extensions() { return new String[] {".js" }; }; } },
 		{"by extension...",		new LanguageConfig() {
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.BY_EXTENSION, p); }
+									public Language languageFor(Properties p) { return LanguageFactory.createLanguage(LanguageFactory.BY_EXTENSION, p); }
 									public String[] extensions() { return new String[] {"" }; }; } },
 		};
 
@@ -589,7 +589,7 @@ public class GUI implements CPDListener {
             p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
 
             LanguageConfig conf = languageConfigFor((String)languageBox.getSelectedItem());
-            Language language = conf.languageFor(new LanguageFactory(), p);
+            Language language = conf.languageFor(p);
             config.setLanguage(language);
 
             CPDConfiguration.setSystemProperties(config);

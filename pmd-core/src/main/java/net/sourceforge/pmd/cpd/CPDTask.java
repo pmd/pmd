@@ -96,7 +96,7 @@ public class CPDTask extends Task {
         if (ignoreAnnotations) {
             p.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
         }
-        return new LanguageFactory().createLanguage(language, p);
+        return LanguageFactory.createLanguage(language, p);
     }
 
     private void report(CPD cpd) throws ReportException {
