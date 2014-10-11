@@ -837,6 +837,7 @@
     <modules>
         <module>pmd-core</module>
         <module>pmd-cpp</module>
+        <module>pmd-cs</module>
         <module>pmd-dist</module>
         <module>pmd-fortran</module>
         <module>pmd-java</module>
