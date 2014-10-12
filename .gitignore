@@ -6,6 +6,8 @@ bin/
 .pmd
 .ruleset
 .settings/
+*.iml
+.idea
 *.patch
 pmd-java/src/site/site.xml
 pmd-javascript/src/site/site.xml
