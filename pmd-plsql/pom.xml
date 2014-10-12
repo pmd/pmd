@@ -52,6 +52,23 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>pmd-clean</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <target>
+                                <echo>PMD specific tasks: cleaning generated xdocs</echo>
+                                <delete quiet="true">
+                                    <fileset dir="${basedir}/src/site/xdoc/rules/" includes="**/*.xml" />
+                                    <fileset dir="${basedir}/src/site/xdoc/" includes="mergedruleset.xml" />
+                                    <fileset dir="${basedir}/src/site/" includes="site.xml" />
+                                </delete>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
 
