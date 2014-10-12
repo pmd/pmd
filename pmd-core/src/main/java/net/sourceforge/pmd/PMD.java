@@ -457,7 +457,7 @@ public class PMD {
      */
     static {
         String pmdVersion = null;
-        InputStream stream = PMD.class.getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd/pom.properties");
+        InputStream stream = PMD.class.getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd-core/pom.properties");
         if (stream != null) {
             try {
                 Properties properties = new Properties();

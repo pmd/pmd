@@ -968,8 +968,7 @@ public class Designer implements ClipboardOwner {
 				String xpathVersion = xpathElement.getAttribute("version");
 
 				codeEditorPane.setText(code);
-// TODO: Fix this.
-//				setLanguageVersion(LanguageRegistry.findByTerseName(languageVersion));
+				setLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName(languageVersion));
 				xpathQueryArea.setText(xpath);
 				for (Enumeration<AbstractButton> e = xpathVersionButtonGroup.getElements(); e.hasMoreElements();) {
 					AbstractButton button = e.nextElement();

@@ -4,13 +4,15 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
+
+import net.sourceforge.pmd.util.database.DBURI;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import java.net.URISyntaxException;
-import java.util.logging.Logger;
-import net.sourceforge.pmd.util.database.DBURI;
 
 public class CPDCommandLineInterface {
     private final static Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
@@ -135,6 +137,9 @@ public class CPDCommandLineInterface {
 		helpText += "or: " + EOL;
 
 		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --encoding UTF-16LE --files /path/to/java/code --format xml" + EOL;
+		helpText += EOL;
+
+		helpText += EOL + " Supported languages: " + Arrays.toString(LanguageFactory.supportedLanguages) + EOL;
 		return helpText;
 	}
 

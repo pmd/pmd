@@ -11,7 +11,7 @@ public class JavaLanguage extends AbstractLanguage {
 	}
 
 	public JavaLanguage(Properties properties) {
-		super("java", new JavaTokenizer(), ".java");
+		super("Java", "java", new JavaTokenizer(), ".java");
 		setProperties(properties);
 	}
 

@@ -9,6 +9,6 @@ package net.sourceforge.pmd.cpd;
  */
 public class FortranLanguage extends AbstractLanguage {
 	public FortranLanguage() {
-		super("fortran", new FortranTokenizer(), ".for", ".f", ".f66", ".f77", ".f90");
+		super("Fortran", "fortran", new FortranTokenizer(), ".for", ".f", ".f66", ".f77", ".f90");
 	}
 }

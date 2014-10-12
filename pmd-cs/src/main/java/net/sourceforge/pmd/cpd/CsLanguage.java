@@ -5,6 +5,6 @@ package net.sourceforge.pmd.cpd;
 
 public class CsLanguage extends AbstractLanguage {
 	public CsLanguage() {
-		super("cs", new CsTokenizer(), ".cs");
+		super("C#", "cs", new CsTokenizer(), ".cs");
 	}
 }

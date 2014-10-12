@@ -5,6 +5,6 @@ package net.sourceforge.pmd.cpd;
 
 public class PHPLanguage extends AbstractLanguage {
 	public PHPLanguage() {
-		super("php", new PHPTokenizer(), ".php", ".class");
+		super("PHP", "php", new PHPTokenizer(), ".php", ".class");
 	}
 }

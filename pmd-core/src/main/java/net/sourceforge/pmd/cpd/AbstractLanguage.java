@@ -4,19 +4,25 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.FilenameFilter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import net.sourceforge.pmd.util.filter.Filters;
 
 public abstract class AbstractLanguage implements Language {
     private final String name;
+    private final String terseName;
 	private final Tokenizer tokenizer;
 	private final FilenameFilter fileFilter;
+	private final List<String> extensions;
 
-	public AbstractLanguage(String name, Tokenizer tokenizer, String... extensions) {
+	public AbstractLanguage(String name, String terseName, Tokenizer tokenizer, String... extensions) {
 	    this.name = name;
+	    this.terseName = terseName;
 		this.tokenizer = tokenizer;
 		fileFilter = Filters.toFilenameFilter(Filters.getFileExtensionOrDirectoryFilter(extensions));
+		this.extensions = Arrays.asList(extensions);
 	}
 
 	public FilenameFilter getFileFilter() {
@@ -33,5 +39,13 @@ public abstract class AbstractLanguage implements Language {
 
 	public String getName() {
 	    return name;
+	}
+
+	public String getTerseName() {
+	    return terseName;
+	}
+
+	public List<String> getExtensions() {
+	    return extensions;
 	}
 }

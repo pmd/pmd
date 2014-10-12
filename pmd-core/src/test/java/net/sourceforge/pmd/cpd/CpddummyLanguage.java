@@ -10,6 +10,6 @@ package net.sourceforge.pmd.cpd;
 public class CpddummyLanguage extends AbstractLanguage {
 
     public CpddummyLanguage() {
-        super("Cpddummy", new AnyTokenizer(), "dummy");
+        super("CPD Dummy Language used in tests", "Cpddummy", new AnyTokenizer(), "dummy");
     }
 }

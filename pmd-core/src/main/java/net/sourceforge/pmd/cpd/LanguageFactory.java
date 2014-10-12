@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -26,7 +25,7 @@ public class LanguageFactory {
    private LanguageFactory() {
        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
        for (Language language : languageLoader) {
-           languages.put(language.getName().toLowerCase(), language);
+           languages.put(language.getTerseName().toLowerCase(), language);
        }
    }
    
@@ -62,11 +61,9 @@ public class LanguageFactory {
      
      private Language getLanguageByExtension(String extension) {
          Language result = null;
-         File dir = new File(".");
-         String filename = "file." + extension;
 
          for (Language language : languages.values()) {
-             if (language.getFileFilter().accept(dir, filename)) {
+             if (language.getExtensions().contains(extension)) {
                  result = language;
                  break;
              }

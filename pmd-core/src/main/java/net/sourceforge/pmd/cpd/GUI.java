@@ -86,51 +86,55 @@ public class GUI implements CPDListener {
 		public boolean canIgnoreLiterals() { return false; }
 		public boolean canIgnoreAnnotations() { return false; }
 		public abstract String[] extensions();
-	};
+	}
 
-	private static final Object[][] LANGUAGE_SETS = new Object[][] {
-		{"Java", 			new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("java", p); }
-									public boolean canIgnoreIdentifiers() { return true; }
-									public boolean canIgnoreLiterals() { return true; }
-									public boolean canIgnoreAnnotations() { return true; }
-									public String[] extensions() { return new String[] {".java", ".class" }; }; } },
-		{"JSP", 			new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("jsp", p); }
-									public String[] extensions() { return new String[] {".jsp" }; }; } },
-		{"C++", 			new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("cpp", p); }
-									public String[] extensions() { return new String[] {".cpp", ".c" }; }; } },
-		{"Ruby",			new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("ruby", p); }
-									public String[] extensions() { return new String[] {".rb" }; }; } },
-		{"Fortran",			new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("fortran", p); }
-									public String[] extensions() { return new String[] {".for", ".f", ".f66", ".f77", ".f90" }; }; } },
-		{"PHP",				new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("php", p); }
-									public String[] extensions() { return new String[] {".php" }; };	} },
-		{"C#",				new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("cs", p); }
-									public String[] extensions() { return new String[] {".cs" }; };	} },
-		{"PLSQL", 			 new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("plsql", p); }
-									public String[] extensions() { return new String[] {".sql"
-																,".trg"
-																,".prc",".fnc"
-																,".pld"
-																,".pls",".plh",".plb"
-																,".pck",".pks",".pkh",".pkb"
-																,".typ",".tyb"
-																,".tps",".tpb"
-																}; };	} },
-		{"Ecmascript",			new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage("js", p); }
-									public String[] extensions() { return new String[] {".js" }; }; } },
-		{"by extension...",		new LanguageConfig() {
-									public Language languageFor(Properties p) { return LanguageFactory.createLanguage(LanguageFactory.BY_EXTENSION, p); }
-									public String[] extensions() { return new String[] {"" }; }; } },
-		};
+    private static final Object[][] LANGUAGE_SETS;
+
+    static {
+        LANGUAGE_SETS = new Object[LanguageFactory.supportedLanguages.length + 1][2];
+
+        int index;
+        for (index = 0; index < LanguageFactory.supportedLanguages.length; index++) {
+            final String terseName = LanguageFactory.supportedLanguages[index];
+            final Language lang = LanguageFactory.createLanguage(terseName);
+            LANGUAGE_SETS[index][0] = lang.getName();
+            LANGUAGE_SETS[index][1] = new LanguageConfig() {
+                @Override
+                public Language languageFor(Properties p) {
+                    lang.setProperties(p);
+                    return lang;
+                }
+                @Override
+                public String[] extensions() {
+                    List<String> exts = lang.getExtensions();
+                    return exts.toArray(new String[exts.size()]);
+                }
+                @Override
+                public boolean canIgnoreAnnotations() {
+                    return "java".equals(terseName);
+                }
+                @Override
+                public boolean canIgnoreIdentifiers() {
+                    return "java".equals(terseName);
+                }
+                @Override
+                public boolean canIgnoreLiterals() {
+                    return "java".equals(terseName);
+                }
+            };
+        }
+        LANGUAGE_SETS[index][0] = "by extension...";
+        LANGUAGE_SETS[index][1] = new LanguageConfig() {
+            @Override
+            public Language languageFor(Properties p) {
+                return LanguageFactory.createLanguage(LanguageFactory.BY_EXTENSION, p);
+            }
+            @Override
+            public String[] extensions() {
+                return new String[] {"" };
+            }
+        };
+    }
 
 	private static final int		DEFAULT_CPD_MINIMUM_LENGTH = 75;
 	private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL = new HashMap<String, LanguageConfig>(LANGUAGE_SETS.length);
