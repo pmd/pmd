@@ -10,6 +10,6 @@ package net.sourceforge.pmd.cpd;
  */
 public class GoLanguage extends AbstractLanguage {
     public GoLanguage() {
-        super(new GoTokenizer(), ".go");
+        super("Go", "go", new GoTokenizer(), ".go");
     }
 }

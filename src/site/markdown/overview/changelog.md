@@ -24,6 +24,10 @@ the following two dependencies:
 
 The binary package still contains all languages and can be used as usual.
 
+**New Languages**
+
+* CPD supports now [Go](https://golang.org/).
+
 **Bugfixes:**
 
 **Feature Requests and Improvements:**
@@ -31,6 +35,7 @@ The binary package still contains all languages and can be used as usual.
 **Pull requests:**
 
 * [#9](https://github.com/adangel/pmd/pull/9/): New rule: NoUnsanitizedJSPExpressionRule
+* [#44](https://github.com/pmd/pmd/pull/44/): Add GoLang support to CPD
 
 **New/Modified Rules:**
 
