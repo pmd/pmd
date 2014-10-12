@@ -720,7 +720,7 @@
         <profile>
             <id>pmd-release</id>
             <properties>
-                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}</pmd.website.baseurl>
+                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
             </properties>
         </profile>
         <profile>

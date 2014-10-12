@@ -28,7 +28,7 @@ $ git status
 
 <ul>
   <li>Ensure all the new rules are listed in a the proper file:
-    <source>src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</source>
+    <source>pmd-core/src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</source>
   </li>
   <li>Update version/release info in <strong>src/site/markdown/changelog.md</strong>.</li>
   <li>Update <strong>../pmd.sourceforge.net/.htaccess</strong> of our website, to redirect to the new version</li>
@@ -36,17 +36,17 @@ $ git status
 </ul>
 
 <source>
-$ mvn clean verify post-site    #(order of targets DOES matter)
+$ mvn clean install
 </source>
 
 <p>Unzip and test manually (just to be on the safe side of the road):</p>
 
 <source>
-cd target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
-./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
-./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R java-unusedcode
-./bin/run.sh pmd -d ../../src/main/java -language java -f html -R rulesets/java/unusedcode.xml
-cd ..; cd ..
+cd pmd-dist/target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
+./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R java-unusedcode
+./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f html -R rulesets/java/unusedcode.xml
+cd ..; cd ../..
 </source>
 
 <p>Check in all (version) changes to branch master:</p>
@@ -157,8 +157,8 @@ Login info for 'pmd-site' must be defined in ~/.m2/settings.xml
 <source>
 $ ssh your_sf_login,pmd@shell.sourceforge.net create
 ...
-$ cd target/checkout/pmd
-$ mvn clean verify site-deploy -Psf-release   # it's import to execute verify, so that pmd.jar is created and included in the zip packages
+$ cd target/checkout/
+$ mvn clean install site-deploy site:stage -Psf-release   # it's import to execute install, so that all pmd-*.jars are created and included in the zip packages
 ...
 $ ssh your_sf_login@shell.sourceforge.net "shutdown"
 </source>
@@ -166,22 +166,30 @@ $ ssh your_sf_login@shell.sourceforge.net "shutdown"
 <ul>
 <li>Before you upload the zip files, unzip and test once (just to be on the safe side of the road):
 <source>
-cd target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
-./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
-./bin/run.sh pmd -d ../../src/main/java -language java -f xml -R java-unusedcode
-./bin/run.sh pmd -d ../../src/main/java -language java -f html -R rulesets/java/unusedcode.xml
-cd ..; cd ..
+$ cd pmd-dist/target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
+$ ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
+$ ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R java-unusedcode
+$ ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f html -R rulesets/java/unusedcode.xml
+$ cd ..; cd ../..
+</source>
+</li>
+<li>While the site has been deployed to sourceforge, it's still usefull, to have it downloadable at once:
+<source>
+$ cd target
+$ mv staging pmd-doc-&lt;version&gt;
+$ zip -r pmd-doc-&lt;version&gt;.zip pmd-doc-&lt;version&gt;/
+$ cd ..
 </source>
 </li>
 <li>Upload the files to sourceforge's file section:
 <source>
-$ rsync -avhP target/pmd-*-&lt;version&gt;.zip your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/
+$ rsync -avhP pmd-dist/target/pmd-*-&lt;version&gt;.zip target/pmd-doc-&lt;version&gt;.zip your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/
 $ rsync -avhP src/site/markdown/changelog.md your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.txt
 </source>
 </li>
 <li>Verify the MD5 sums on <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a> and locally:
 <source>
-$ md5sum target/pmd-*-&lt;version&gt;.zip
+$ md5sum pmd-dist/target/pmd-*-&lt;version&gt;.zip target/pmd-doc-&lt;version&gt;.zip
 </source>
 </li>
 <li>Go to <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a>, to folder "pmd/&lt;version&gt;",
