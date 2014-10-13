@@ -21,8 +21,8 @@
 
       <h3>Changelog</h3>
       <ul>
-        <li>See <a href="changelog.html">What's new in PMD ${project.version}</a></li>
-        <li>Older versions: <a href="changelog-old.html">Old Changelogs</a></li>
+        <li>See <a href="overview/changelog.html">What's new in PMD ${project.version}</a></li>
+        <li>Older versions: <a href="overview/changelog-old.html">Old Changelogs</a></li>
       </ul>
 
       <h3>Future releases</h3>
