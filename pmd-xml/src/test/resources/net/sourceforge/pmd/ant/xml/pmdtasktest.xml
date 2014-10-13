@@ -1,0 +1,17 @@
+<project name="pmdtasktest" default="all">
+
+    <property name="pmd.home" value="${user.dir}" />
+    <property name="src" value="src/main/java" />
+
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
+
+    <target name="testXML">
+        <pmd rulesetfiles="${pmd.home}/src/main/resources/rulesets/xml/basic.xml">
+            <sourceLanguage name="xml" version="" />
+            <formatter type="text" toConsole="true" />
+            <fileset dir="${pmd.home}/src/test/resources/ant/xml/">
+                <include name="*.xml" />
+            </fileset>
+        </pmd>
+    </target>
+</project>

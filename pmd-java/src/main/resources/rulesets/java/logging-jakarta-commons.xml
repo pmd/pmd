@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+
+<ruleset name="Jakarta Commons Logging"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+The Jakarta Commons Logging ruleset contains a collection of rules that find questionable usages of that framework.
+  </description>
+
+	<rule name="UseCorrectExceptionLogging"
+   		language="java"
+		  since="3.2"
+        message="Use the correct logging statement for logging exceptions"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#UseCorrectExceptionLogging">
+		<description>
+To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
+        </description>
+        <priority>3</priority>
+	   	<properties>
+			<property name="xpath">
+				<value><![CDATA[
+//CatchStatement/Block/BlockStatement/Statement/StatementExpression
+/PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
+concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+[Type//ClassOrInterfaceType[@Image='Log']]
+/VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
+[PrimarySuffix/Arguments[@ArgumentCount='1']]
+[PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
+         ]]></value>
+			</property>
+		</properties>
+		<example><![CDATA[
+public class Main {
+   private static final Log _LOG = LogFactory.getLog( Main.class );
+   void bar() {
+     try {
+     } catch( Exception e ) {
+      _LOG.error( e ); //Wrong!
+     } catch( OtherException oe ) {
+      _LOG.error( oe.getMessage(), oe ); //Correct
+     }
+   }
+}
+]]></example>
+	</rule>
+
+    <rule name="ProperLogger"
+   		language="java"
+         since="3.3"
+         message="Logger should be defined private static final and have the correct class"
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#ProperLogger">
+             <description>
+A logger should normally be defined private static final and be associated with the correct class.
+Private final Log log; is also allowed for rare cases where loggers need to be passed around,
+with the restriction that the logger needs to be passed into the constructor.
+             </description>
+             <priority>3</priority>
+             <properties>
+             <property name="xpath">
+                     <value>
+     <![CDATA[
+//ClassOrInterfaceBodyDeclaration[FieldDeclaration//ClassOrInterfaceType[@Image='Log']
+ and
+ not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][.//VariableDeclaratorId[@Image=$staticLoggerName]]
+ //ArgumentList//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration/@Image)
+ and
+ not(FieldDeclaration[@Final='true'][@Private='true'][.//VariableDeclaratorId[@Image='log']]
+ [count(.//VariableInitializer)=0]
+ [ancestor::ClassOrInterfaceBody//StatementExpression[.//PrimaryExpression/descendant::*[@Image='log']][count(.//AllocationExpression)=0]]
+ )]
+     ]]>
+                     </value>
+             </property>
+                 <property name="staticLoggerName" type="String" description="Name of the static Logger variable" value="LOG"/>
+             </properties>
+             <example>
+ <![CDATA[
+public class Foo {
+
+   private static final Log LOG = LogFactory.getLog(Foo.class);	   // proper way
+
+   protected Log LOG = LogFactory.getLog(Testclass.class);			// wrong approach
+}
+ ]]>
+            </example>
+     </rule>
+
+    <rule name="GuardDebugLogging"
+          language="java"
+          since="4.3"
+          message="debug logging that involves string concatenation should be guarded with isDebugEnabled() checks"
+          class="net.sourceforge.pmd.lang.java.rule.logging.GuardDebugLoggingRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#GuardDebugLogging">
+        <description>
+            When log messages are composed by concatenating strings, the whole section should be guarded
+            by a isDebugEnabled() check to avoid performance and memory issues.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+        // okay:
+        __log.debug("log something");
+
+        // okay:
+        __log.debug("log something with exception", e);
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings");
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings", e);
+
+        // good:
+        if (__log.isDebugEnabled()) {
+        __log.debug("bla" + "",e );
+        }
+    }
+}
+            ]]>
+        </example>
+    </rule>
+
+   <rule name="GuardLogStatement"
+         language="java"
+         since="5.1.0"
+         message="There is log block not surrounded by if"
+         class="net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule"
+         externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-jakarta-commons.html#GuardLogStatement">
+     <description>
+Whenever using a log level, one should check if the loglevel is actually enabled, or
+otherwise skip the associate String creation and manipulation.
+     </description>
+     <priority>2</priority>
+     <example>
+ <![CDATA[
+    // Add this for performance
+    if (log.isDebugEnabled() { ...
+        log.debug("log something" + " and " + "concat strings");
+]]>
+     </example>
+   </rule>
+
+</ruleset>

@@ -1,0 +1,45 @@
+<project name="pmd" default="alljavacc" basedir="../../">
+
+    <property name="javacc-home.path" value="target/lib" />
+
+    <target name="alljavacc"
+            description="Generates all JavaCC aspects within PMD"
+            depends="checkUpToDate,init,cppjavacc,cleanup" />
+
+    <target name="checkUpToDate">
+        <uptodate property="javaccBuildNotRequired" targetfile="${target}/last-generated-timestamp">
+            <srcfiles dir="etc/grammar" includes="*.jj*"/>
+        </uptodate>
+        <echo message="up to date check: javaccBuildNotRequired=${javaccBuildNotRequired}"/>
+    </target>
+
+    <target name="init" unless="javaccBuildNotRequired">
+        <mkdir dir="${javacc-home.path}" />
+        <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar" />
+
+        <mkdir dir="${target}"/>
+        <touch file="${target}/last-generated-timestamp"/>
+    </target>
+
+    <target name="cleanup">
+        <delete dir="${javacc-home.path}" />
+    </target>
+
+    <target name="cppjavacc" description="Generates the C++ grammar" unless="javaccBuildNotRequired">
+        <delete dir="${target}/net/sourceforge/pmd/lang/cpp/ast" />
+        <mkdir dir="${target}/net/sourceforge/pmd/lang/cpp/ast" />
+        <!-- Ensure generated using CharStream interface -->
+        <javacc static="false"
+                usercharstream="true"
+                target="etc/grammar/cpp.jj"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/cpp/ast"
+                javacchome="${javacc-home.path}" />
+        <replace file="${target}/net/sourceforge/pmd/lang/cpp/ast/CppParserTokenManager.java"
+                 token="class CppParserTokenManager"
+                 value="class CppParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+        <delete file="${target}/net/sourceforge/pmd/lang/cpp/ast/CharStream.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/cpp/ast/ParseException.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/cpp/ast/TokenMgrError.java" />
+    </target>
+	
+</project>

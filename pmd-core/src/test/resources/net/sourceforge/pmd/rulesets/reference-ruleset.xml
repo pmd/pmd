@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ruleset name="Custom ruleset"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+  This ruleset checks my code for bad stuff
+  </description>
+
+  <!-- We'll use the entire 'TestRuleset1' ruleset -->
+  <rule ref="net/sourceforge/pmd/TestRuleset1.xml"/>
+
+  <!-- Here's some rules we'll specify one at a time -->
+  <rule ref="net/sourceforge/pmd/TestRuleset2.xml/TestRule"/>
+
+  <!-- We want to customize this rule a bit, change the message and raise the priority  -->
+  <!-- Note: This rule is deprecated -->
+  <rule
+   ref="net/sourceforge/pmd/TestRuleset1.xml/MockRule3"
+   message="Overridden message">
+    <priority>2</priority>
+  </rule>
+
+  <!-- Customize just the message for MockRule2 -->
+  <rule ref="net/sourceforge/pmd/TestRuleset1.xml/MockRule2" message="Just combine them!"/>
+
+  <!-- Now we'll customize a rule's property value -->
+  <rule ref="net/sourceforge/pmd/TestRuleset1.xml/MockRule1">
+    <properties>
+        <property name="testIntProperty" value="5"/>
+    </properties>
+  </rule>
+
+  <!-- We want everything from TestRuleset3.xml except Ruleset3Rule1 -->
+  <rule ref="net/sourceforge/pmd/TestRuleset3.xml">
+    <exclude name="Ruleset3Rule1"/>
+  </rule>
+
+  <!-- override the priority before the group priority - this should be used -->
+  <rule ref="net/sourceforge/pmd/TestRuleset4.xml/Ruleset4Rule1">
+    <priority>5</priority>
+  </rule>
+
+  <!-- we want to override the priority for all (remaining) rules in TestRuleset4.xml -->
+  <rule ref="net/sourceforge/pmd/TestRuleset4.xml">
+    <priority>2</priority>
+  </rule>
+</ruleset>

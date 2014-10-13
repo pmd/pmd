@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/DECORATION/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
+  name="PMD Java">
+
+  <body>
+    <menu ref="parent"/>
+
+    <!-- The rulesets part of navigation will be added during pre-site and the
+         list is build dynamically based on rulesets folder directory layout -->
+
+
+    <menu name="Rule Sets"/>
+
+
+    <!-- *********** -->
+
+    <menu ref="reports"/>
+
+  </body>
+</project>

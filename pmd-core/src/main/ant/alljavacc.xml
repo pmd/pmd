@@ -1,0 +1,105 @@
+<project name="pmd" default="alljavacc" basedir="../../">
+
+    <property name="javacc-home.path" value="target/lib" />
+
+    <target name="alljavacc"
+            description="Generates all JavaCC aspects within PMD"
+            depends="checkUpToDate,init,dummyjjtree,cleanup" />
+
+    <target name="checkUpToDate">
+        <uptodate property="javaccBuildNotRequired" targetfile="${target}/last-generated-timestamp">
+            <srcfiles dir="etc/grammar" includes="*.jj*"/>
+        </uptodate>
+        <echo message="up to date check: javaccBuildNotRequired=${javaccBuildNotRequired}"/>
+    </target>
+
+    <target name="init" unless="javaccBuildNotRequired">
+        <mkdir dir="${javacc-home.path}" />
+        <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar" />
+
+        <mkdir dir="${target}"/>
+        <touch file="${target}/last-generated-timestamp"/>
+    </target>
+
+    <target name="cleanup">
+        <delete dir="${javacc-home.path}" />
+    </target>
+
+    <target name="dummyjjtree" description="Generates the reusable JavaCC aspects" unless="javaccBuildNotRequired">
+
+        <delete dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
+        <mkdir dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
+        <echo>Using JavaCC home: ${javacc-home.path}</echo>
+        <jjtree target="etc/grammar/dummy.jjt"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
+                javacchome="${javacc-home.path}" />
+
+        <!-- Generate CharStream interface -->
+        <javacc usercharstream="true"
+                target="${target}/net/sourceforge/pmd/lang/ast/dummy/dummy.jj"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
+                javacchome="${javacc-home.path}" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
+                 token="net.sourceforge.pmd.lang.ast.dummy"
+                 value="net.sourceforge.pmd.lang.ast" />
+        <move overwrite="true"
+              file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
+              tofile="${target}/net/sourceforge/pmd/lang/ast/CharStream.java" />
+
+        <!-- Generate ASCII w/ Unicode Escapes CharStream implementation -->
+        <javacc usercharstream="false"
+                unicodeinput="false"
+                javaunicodeescape="true"
+                static="false"
+                target="${target}/net/sourceforge/pmd/lang/ast/dummy/dummy.jj"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
+                javacchome="${javacc-home.path}" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+                 token="net.sourceforge.pmd.lang.ast.dummy"
+                 value="net.sourceforge.pmd.lang.ast" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+                 token="class JavaCharStream"
+                 value="class JavaCharStream implements CharStream" />
+        <move overwrite="true"
+              file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+              tofile="${target}/net/sourceforge/pmd/lang/ast/JavaCharStream.java" />
+
+        <!-- Generate ASCII w/o Unicode Escapes CharStream implementation -->
+        <javacc usercharstream="false"
+                unicodeinput="false"
+                javaunicodeescape="false"
+                static="false"
+                target="${target}/net/sourceforge/pmd/lang/ast/dummy/dummy.jj"
+                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
+                javacchome="${javacc-home.path}" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
+                 token="net.sourceforge.pmd.lang.ast.dummy"
+                 value="net.sourceforge.pmd.lang.ast" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
+                 token="public class SimpleCharStream"
+                 value="public class SimpleCharStream implements CharStream" />
+        <move overwrite="true"
+              file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
+              tofile="${target}/net/sourceforge/pmd/lang/ast/SimpleCharStream.java" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+                 token="net.sourceforge.pmd.lang.ast.dummy"
+                 value="net.sourceforge.pmd.lang.ast" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+                 token="extends Error"
+                 value="extends RuntimeException" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+                 token="static final int"
+                 value="public static final int" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java">
+            <replacetoken><![CDATA["Lexical error at line "]]></replacetoken>
+            <replacevalue><![CDATA["Lexical error in file " + AbstractTokenManager.getFileName() + " at line "]]></replacevalue>
+        </replace>
+        <move overwrite="true"
+              file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+              tofile="${target}/net/sourceforge/pmd/lang/ast/TokenMgrError.java" />
+
+        <delete dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
+
+    </target>
+
+</project>

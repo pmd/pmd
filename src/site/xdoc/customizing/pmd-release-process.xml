@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+<document
+  xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+    <properties>
+        <title>PMD Release Process</title>
+        <author email="rpelisse@users.sourceforge.net">Romain Pelisse</author>
+        <author email="adangel@users.sourceforge.net">Andreas Dangel</author>
+    </properties>
+
+<body>
+<section name="PMD Release Process Walkthrough">
+<p>This page describes the current status of the release process.</p>
+
+<subsection name="Preparations">
+<p>
+Make sure code is up to date and everything is committed and pushed with git:
+</p>
+
+<source>
+$ mvn clean
+$ git pull
+$ git status
+</source>
+
+<p><strong>Checklist for release preparation:</strong></p>
+
+<ul>
+  <li>Ensure all the new rules are listed in a the proper file:
+    <source>pmd-core/src/main/resources/rulesets/releases/&lt;version&gt;.xml file.</source>
+  </li>
+  <li>Update version/release info in <strong>src/site/markdown/changelog.md</strong>.</li>
+  <li>Update <strong>../pmd.sourceforge.net/.htaccess</strong> of our website, to redirect to the new version</li>
+  <li>Update <strong>../pmd.sourceforge.net/index.html</strong> to mention the new release</li>
+</ul>
+
+<source>
+$ mvn clean install
+</source>
+
+<p>Unzip and test manually (just to be on the safe side of the road):</p>
+
+<source>
+cd pmd-dist/target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
+./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
+./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R java-unusedcode
+./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f html -R rulesets/java/unusedcode.xml
+cd ..; cd ../..
+</source>
+
+<p>Check in all (version) changes to branch master:</p>
+<source>
+$ git commit -a -m "pmd: Prepare pmd release &lt;version&gt;"
+</source>
+</subsection>
+
+<subsection name="Release Branch">
+<p>Let's have maven create a release branch for us (<em>note - this is of course not
+needed if you are already on a release/maintenance branch</em>). Maven will automatically
+increase the version in branch master.</p>
+
+<source>
+$ mvn release:branch -DbranchName=pmd/&lt;version&gt;.x
+</source>
+
+<em>In case you create a alpha/preview release and you want to stay with the current
+version in master, use these additional properties:</em>
+
+<source>$ mvn -DupdateBranchVersions=true -DupdateWorkingCopyVersions=false ...</source>
+
+<p>Note: The property pushChanges is set to false, so that we can manually
+push all changes done during the release at the end, when we are sure,
+that everything is fine.</p>
+
+</subsection>
+
+<subsection name="Create a release">
+<p>Now checkout the created branch.</p>
+
+<source>
+$ git checkout pmd/&lt;version&gt;.x
+</source>
+
+<p>Now let maven create a release tag.</p>
+
+<source>
+$ mvn release:clean
+$ mvn release:prepare
+</source>
+
+<p>Note: For the tag/label name we currently use this naming pattern:
+pmd_releases/&lt;major-version&gt;.&lt;minor-version&gt;.&lt;micro-version&gt;</p>
+
+<p>The next command will checkout PMD from the tag just created and will build
+and deploy it to sonatype OSS repositories:
+</p>
+
+<source>
+$ mvn release:perform
+</source>
+
+<h4>Push your local changes</h4>
+<p>If everything is fine, you can push your local changes.</p>
+<source>
+$ git push origin master
+$ git push origin pmd/&lt;version&gt;.x
+$ git push origin tag pmd_releases/&lt;version&gt;
+</source>
+
+<h4>Rollback</h4>
+<p>Note:</p>
+<p>If you see a bug and fix it, you can rollback the release
+(see http://maven.apache.org/plugins/maven-release-plugin/examples/rollback-release.html):</p>
+<source>
+$ mvn release:rollback
+</source>
+<p>You probably need to delete the release tag manually using the following command (and then
+start again with release:clean release:prepare):</p>
+<source>
+$ git tag -d pmd_releases/&lt;version&gt;
+</source>
+</subsection>
+
+<subsection name="Create new milestone">
+<p>
+Under <a href="https://sourceforge.net/p/pmd/bugs/">https://sourceforge.net/p/pmd/bugs/</a> rename
+the bug milestone "PMD-next" to "PMD-&lt;version&gt;" and create a new "PMD-next" milestone.
+</p>
+</subsection>
+
+<subsection name="Publish artifacts">
+<p>
+Finally, in order to publish the release to Maven central,
+you need to release PMD via Sonatype Nexus:</p>
+<ul>
+<li>Login to <a href="https://oss.sonatype.org/">https://oss.sonatype.org/</a></li>
+<li>Go to Staging Repositories page</li>
+<li>Select a staging repository</li>
+<li>Click the close button</li>
+<li>Now you can download the artifacts again and verify they are working.</li>
+<li>Once you are sure they are working, click "Release" and the artifacts are
+eventually available through <a href="http://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/">maven central</a>.</li>
+</ul>
+</subsection>
+
+<subsection name="Publish the release site on sourceforge">
+<p>Build it again - you can reuse the cleanly checked out local repository from maven-release-plugin.</p>
+<p>In order to be able to upload the site to sourceforge,
+you need to have a interactive shell opened before.</p>
+<p>
+Upload command below will create and upload maven site.
+Login info for 'pmd-site' must be defined in ~/.m2/settings.xml
+(see the file available in
+<a href="https://github.com/pmd/pmd/blob/master/maven-plugin-pmd-build/config/m2.settings.xml">maven-plugin-pmd-build/config/m2.settings.xml</a>):</p>
+
+<source>
+$ ssh your_sf_login,pmd@shell.sourceforge.net create
+...
+$ cd target/checkout/
+$ mvn clean install site-deploy site:stage -Psf-release   # it's import to execute install, so that all pmd-*.jars are created and included in the zip packages
+...
+$ ssh your_sf_login@shell.sourceforge.net "shutdown"
+</source>
+
+<ul>
+<li>Before you upload the zip files, unzip and test once (just to be on the safe side of the road):
+<source>
+$ cd pmd-dist/target; unzip pmd-bin-&lt;version&gt;.zip; cd pmd-bin-&lt;version&gt;
+$ ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
+$ ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R java-unusedcode
+$ ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f html -R rulesets/java/unusedcode.xml
+$ cd ..; cd ../..
+</source>
+</li>
+<li>While the site has been deployed to sourceforge, it's still usefull, to have it downloadable at once:
+<source>
+$ cd target
+$ mv staging pmd-doc-&lt;version&gt;
+$ zip -r pmd-doc-&lt;version&gt;.zip pmd-doc-&lt;version&gt;/
+$ cd ..
+</source>
+</li>
+<li>Upload the files to sourceforge's file section:
+<source>
+$ rsync -avhP pmd-dist/target/pmd-*-&lt;version&gt;.zip target/pmd-doc-&lt;version&gt;.zip your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/
+$ rsync -avhP src/site/markdown/changelog.md your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.txt
+</source>
+</li>
+<li>Verify the MD5 sums on <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a> and locally:
+<source>
+$ md5sum pmd-dist/target/pmd-*-&lt;version&gt;.zip target/pmd-doc-&lt;version&gt;.zip
+</source>
+</li>
+<li>Go to <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a>, to folder "pmd/&lt;version&gt;",
+and make the new binary pmd zip file the default download for all platforms.</li>
+</ul>
+
+<p><strong>Upload changes to pmd.sourceforge.net</strong></p>
+<source>
+cd ../pmd.sourceforge.net
+rsync -avhpz \
+  --exclude=bin/ \
+  --exclude=src/ \
+  --exclude=.classpath \
+  --exclude=.project \
+  --exclude=.git \
+  \
+  ./ your_sf_login@web.sourceforge.net:/home/project-web/pmd/htdocs/
+</source>
+
+</subsection>
+
+<subsection name="Social side of release">
+<ol>
+<li>Submit news to SF on the <a href="https://sourceforge.net/p/pmd/news/">PMD Project News</a> page. You can use
+the following template:
+<source>
+PMD &lt;version&gt; released
+
+* minor version with lots of bug fixes
+* Changelog: http://pmd.sourceforge.net/pmd-&lt;version&gt;/changelog.html
+* Download: https://sourceforge.net/projects/pmd/files/pmd/&lt;version&gt;/
+* Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-&lt;version&gt;/
+* Documentation: http://pmd.sourceforge.net/pmd-&lt;version&gt;/
+</source>
+</li>
+<li>Facebook, Google+, Twitter, LinkedIn and Xing (add whatever you feel is missing here...)</li>
+</ol>
+</subsection>
+</section>
+</body>
+</document>

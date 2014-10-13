@@ -1,0 +1,27 @@
+<project name="pmdtasktest" default="all">
+
+    <property name="pmd.home" value="${user.dir}" />
+    <property name="src" value="src/main/java" />
+
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
+
+    <target name="testBasic">
+        <pmd rulesetfiles="${pmd.home}/src/test/resources/rulesets/dummy/basic.xml" />
+    </target>
+
+    <target name="testInvalidLanguageVersion">
+        <pmd rulesetfiles="${pmd.home}/src/test/resources/rulesets/dummy/basic.xml">
+            <sourceLanguage name="java" version="42" />
+        </pmd>
+    </target>
+
+    <target name="testFormatterWithNoToFileAttribute">
+        <pmd rulesetfiles="${pmd.home}/src/test/resources/rulesets/dummy/basic.xml">
+            <formatter />
+        </pmd>
+    </target>
+
+    <target name="testNoRuleSets">
+        <pmd />
+    </target>
+</project>

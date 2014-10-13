@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>pmd-test</artifactId>
+    <name>PMD Test Framework</name>
+
+    <parent>
+        <groupId>net.sourceforge.pmd</groupId>
+        <artifactId>pmd</artifactId>
+        <version>5.2.0-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <config.basedir>${basedir}/../pmd-core</config.basedir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-testutil</artifactId>
+        </dependency>
+    </dependencies>
+</project>

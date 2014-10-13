@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author>Tom Copeland</author>
+    <author email="xlv@users.sourceforge.net">Xavier Le Vourch</author>
+    <title>Compiling PMD</title>
+  </properties>
+
+  <body>
+<section name="Requirements">
+  <ul>
+    <li>JDK 1.6 or higher</li>
+    <li><a href="http://maven.apache.org">Apache Maven</a> 3 or later.</li>
+  </ul>
+</section>
+<section name="Compiling PMD">
+<p>
+You'll need to either check out the source code or download the latest source release.
+    Assuming you've got the latest source release, unzip it to a directory:
+    <source>
+[tom@hal building]$ ls -l
+total 5716
+-rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-${project.version}.zip
+[tom@hal building]$ unzip -q pmd-src-${project.version}.zip
+[tom@hal building]$
+    </source>
+</p>
+<p>
+    Now cd down into the <code>pmd</code> directory:
+    <source>
+[tom@hal building]$ cd pmd-src-${project.version}
+[tom@hal pmd-src-${project.version}]$ ls -l | grep pom.xml
+-rw-rw-r--    1 tom      tom          29357 Jan 31 20:00 pom.xml
+[tom@hal pmd-src-${project.version}]$
+    </source>
+</p>
+<p>
+    That's the project configuration for maven... let's compile!
+    <source>
+[tom@hal pmd-src-${project.version}]$ mvn clean package
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building PMD ${project.version}
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+...
+Results :
+
+Tests run: 829, Failures: 0, Errors: 0, Skipped: 9
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.3.1:jar (default-jar) @ pmd ---
+[INFO] Building jar: target/pmd-${project.version}.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1:41.062s
+[INFO] Finished at: Mon Apr 30 09:36:12 CEST 2012
+[INFO] Final Memory: 13M/187M
+[INFO] ------------------------------------------------------------------------
+[tom@hal pmd-src-${project.version}]$
+    </source>
+</p>
+<p>
+    Notes:
+    <ul>
+        <li>The rules that have already been written are specified in the src/main/resources/rulesets/ directory in the
+            source distribution.  They're also in the jar file that's included with both the
+            source and binary distributions.</li>
+    </ul>
+</p>
+
+<p>A paucity of detail, I'm sure you'd agree.  If you think this document can be
+improved, please post <a href="http://sourceforge.net/p/pmd/discussion/188192">here</a> and let me know how.  Thanks!
+</p>
+
+</section>
+</body>
+</document>
