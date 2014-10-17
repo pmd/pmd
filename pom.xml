@@ -308,6 +308,7 @@
                         <releaseProfiles>pmd-release</releaseProfiles>
                         <pushChanges>false</pushChanges>
                         <localCheckout>true</localCheckout>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
                     </configuration>
                 </plugin>
                 <plugin>
