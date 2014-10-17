@@ -184,7 +184,7 @@ $ cd ..
 <li>Upload the files to sourceforge's file section:
 <source>
 $ rsync -avhP pmd-dist/target/pmd-*-&lt;version&gt;.zip target/pmd-doc-&lt;version&gt;.zip your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/
-$ rsync -avhP src/site/markdown/changelog.md your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.txt
+$ rsync -avhP src/site/markdown/overview/changelog.md your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.md
 </source>
 </li>
 <li>Verify the MD5 sums on <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a> and locally:
@@ -219,7 +219,7 @@ the following template:
 PMD &lt;version&gt; released
 
 * minor version with lots of bug fixes
-* Changelog: http://pmd.sourceforge.net/pmd-&lt;version&gt;/changelog.html
+* Changelog: http://pmd.sourceforge.net/pmd-&lt;version&gt;/overview/changelog.html
 * Download: https://sourceforge.net/projects/pmd/files/pmd/&lt;version&gt;/
 * Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-&lt;version&gt;/
 * Documentation: http://pmd.sourceforge.net/pmd-&lt;version&gt;/
