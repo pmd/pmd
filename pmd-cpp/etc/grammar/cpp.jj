@@ -133,6 +133,8 @@ PARSER_END(CppParser)
 
 SKIP :
 {
+  "\ufeff" // UTF Byte Order Mark
+|
   " "
 |
   "\f"

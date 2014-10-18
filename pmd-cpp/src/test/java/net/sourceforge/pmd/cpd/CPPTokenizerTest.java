@@ -4,11 +4,19 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 
 import org.junit.Test;
 
 public class CPPTokenizerTest {
+
+    @Test
+    public void testUTFwithBOM() {
+        Tokens tokens = parse("\ufeffint start()\n{ int ret = 1;\nreturn ret;\n}\n");
+        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertEquals(15, tokens.size());
+    }
 
     @Test
     public void testMultiLineMacros() throws Throwable {
