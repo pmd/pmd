@@ -151,4 +151,24 @@ public class Foo {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description>#550 False +: MissingBreakInSwitch</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Foo {
+    public String bar() {
+        switch (sign) {
+        case  1:
+            return "+";
+        case  0:
+            return "0";
+        case -1:
+            return "-";
+        default:
+            throw new IllegalArgumentException();
+        }
+    }
+}
+    ]]></code>
+  </test-code>
 </test-data>
