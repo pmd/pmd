@@ -287,4 +287,25 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1263 PMD reports CheckResultSet violation in completely unrelated source files.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.ResultSet;
+
+public class Foo {
+    public void firstMethod() {
+        ResultSet results = stmt.executeQuery();
+        if (results.next()) {
+            // do something
+        }
+    }
+
+    public void secondMethod() {
+        MyIterator results = getMyResultsIterator();
+        results.next();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

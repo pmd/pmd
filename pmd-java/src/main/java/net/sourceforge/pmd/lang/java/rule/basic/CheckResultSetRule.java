@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -35,7 +36,13 @@ public class CheckResultSetRule extends AbstractJavaRule {
         methods.add(".last");
         methods.add(".first");
     }
-    
+
+    @Override
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        resultSetVariables.clear();
+        return super.visit(node, data);
+    }
+
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         ASTClassOrInterfaceType type = node.getFirstChildOfType(ASTType.class).getFirstDescendantOfType(ASTClassOrInterfaceType.class);
