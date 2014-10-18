@@ -68,8 +68,13 @@ public class ASTFormalParameter extends AbstractJavaAccessNode implements Dimens
         return getTypeNode().getArrayDepth();
     }
 
-    private ASTVariableDeclaratorId getDecl() {
-        return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren()-1);
+    protected ASTVariableDeclaratorId getDecl() {
+        try {
+            return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren()-1);
+        } catch (ClassCastException c) {
+            System.out.println("CLASS CAST: " + this.getBeginLine() + ":" + this.getBeginColumn() + " " + this.toString());
+            return null;
+        }
     }
 
     private int checkDecl() {
