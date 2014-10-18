@@ -13,11 +13,13 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  */
 public class CppHandler extends AbstractLanguageVersionHandler {
 
+    @Override
     public RuleViolationFactory getRuleViolationFactory() {
-	throw new UnsupportedOperationException("getRuleViolationFactory() is not supported for C++");
+        throw new UnsupportedOperationException("getRuleViolationFactory() is not supported for C++");
     }
 
+    @Override
     public Parser getParser(ParserOptions parserOptions) {
-	return new CppParser(parserOptions);
+        return new CppParser(parserOptions);
     }
 }

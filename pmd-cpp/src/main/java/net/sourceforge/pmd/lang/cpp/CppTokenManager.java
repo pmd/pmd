@@ -15,15 +15,20 @@ import net.sourceforge.pmd.lang.cpp.ast.CppParserTokenManager;
 public class CppTokenManager implements TokenManager {
     private final CppParserTokenManager tokenManager;
 
+    /**
+     * Creates a new C++ Token Manager from the given source code.
+     * @param source the source code
+     */
     public CppTokenManager(Reader source) {
-	tokenManager = new CppParserTokenManager(new SimpleCharStream(new ContinuationReader(source)));
+        tokenManager = new CppParserTokenManager(new SimpleCharStream(new ContinuationReader(source)));
     }
 
     public Object getNextToken() {
-	return tokenManager.getNextToken();
+        return tokenManager.getNextToken();
     }
 
+    @Override
     public void setFileName(String fileName) {
-	tokenManager.setFileName(fileName);
+        CppParserTokenManager.setFileName(fileName);
     }
 }

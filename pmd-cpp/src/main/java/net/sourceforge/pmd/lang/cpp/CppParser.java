@@ -18,25 +18,32 @@ import net.sourceforge.pmd.lang.ast.ParseException;
  */
 public class CppParser extends AbstractParser {
 
+    /**
+     * Creates a new C++ Parser.
+     * @param parserOptions the options
+     */
     public CppParser(ParserOptions parserOptions) {
-	super(parserOptions);
+        super(parserOptions);
     }
 
     @Override
     public TokenManager createTokenManager(Reader source) {
-	return new CppTokenManager(source);
+        return new CppTokenManager(source);
     }
 
+    @Override
     public boolean canParse() {
-	return false;
+        return false;
     }
 
+    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
-	AbstractTokenManager.setFileName(fileName);
-	throw new UnsupportedOperationException("parse(Reader) is not supported for C++");
+        AbstractTokenManager.setFileName(fileName);
+        throw new UnsupportedOperationException("parse(Reader) is not supported for C++");
     }
 
+    @Override
     public Map<Integer, String> getSuppressMap() {
-	throw new UnsupportedOperationException("getSuppressMap() is not supported for C++");
+        throw new UnsupportedOperationException("getSuppressMap() is not supported for C++");
     }
 }

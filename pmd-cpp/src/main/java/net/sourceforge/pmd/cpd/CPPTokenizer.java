@@ -14,30 +14,34 @@ import net.sourceforge.pmd.lang.cpp.ast.Token;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * The C++ tokenizer.
+ */
 public class CPPTokenizer implements Tokenizer {
 
-	public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-		StringBuilder buffer = sourceCode.getCodeBuffer();
-		StringReader reader = null;
-		try {
-			LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(CppLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
-			reader = new StringReader(buffer.toString());
-			TokenManager tokenManager = languageVersionHandler.getParser(
-					languageVersionHandler.getDefaultParserOptions())
-					.getTokenManager(sourceCode.getFileName(), reader);
-			Token currentToken = (Token) tokenManager.getNextToken();
-			while (currentToken.image.length() > 0) {
-				tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));
-				currentToken = (Token) tokenManager.getNextToken();
-			}
-			tokenEntries.add(TokenEntry.getEOF());
-			System.err.println("Added " + sourceCode.getFileName());
-		} catch (TokenMgrError err) {
-			err.printStackTrace();
-			System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
-			tokenEntries.add(TokenEntry.getEOF());
-		} finally {
-			IOUtils.closeQuietly(reader);
-		}
-	}
+    @Override
+    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
+        StringBuilder buffer = sourceCode.getCodeBuffer();
+        StringReader reader = null;
+        try {
+            LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(CppLanguageModule.NAME)
+                    .getDefaultVersion().getLanguageVersionHandler();
+            reader = new StringReader(buffer.toString());
+            TokenManager tokenManager = languageVersionHandler.getParser(
+                    languageVersionHandler.getDefaultParserOptions()).getTokenManager(sourceCode.getFileName(), reader);
+            Token currentToken = (Token) tokenManager.getNextToken();
+            while (currentToken.image.length() > 0) {
+                tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));
+                currentToken = (Token) tokenManager.getNextToken();
+            }
+            tokenEntries.add(TokenEntry.getEOF());
+            System.err.println("Added " + sourceCode.getFileName());
+        } catch (TokenMgrError err) {
+            err.printStackTrace();
+            System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
+            tokenEntries.add(TokenEntry.getEOF());
+        } finally {
+            IOUtils.closeQuietly(reader);
+        }
+    }
 }

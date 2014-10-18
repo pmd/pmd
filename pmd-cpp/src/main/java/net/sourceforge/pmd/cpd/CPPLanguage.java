@@ -3,8 +3,15 @@
  */
 package net.sourceforge.pmd.cpd;
 
+/**
+ * Defines the Language module for C/C++
+ */
 public class CPPLanguage extends AbstractLanguage {
-	public CPPLanguage() {
-		super("C++", "cpp", new CPPTokenizer(), ".h", ".hpp", ".hxx",".c", ".cpp", ".cxx", ".cc", ".C");
-	}
+
+    /**
+     * Creates a new instance of {@link CPPLanguage} with the default extensions for c/c++ files.
+     */
+    public CPPLanguage() {
+        super("C++", "cpp", new CPPTokenizer(), ".h", ".hpp", ".hxx", ".c", ".cpp", ".cxx", ".cc", ".C");
+    }
 }
