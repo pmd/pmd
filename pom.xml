@@ -264,6 +264,7 @@
         <clover.version>2.5.1</clover.version>
         <pmd.plugin.version>3.2</pmd.plugin.version>
         <java.version>1.6</java.version>
+        <ant.version>1.9.4</ant.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot/${project.artifactId}</pmd.website.baseurl>
@@ -605,17 +606,17 @@
             <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
-                <version>1.8.1</version>
+                <version>${ant.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant-testutil</artifactId>
-                <version>1.7.1</version>
+                <version>${ant.version}</version>
             </dependency>
             <dependency>
                 <groupId>jaxen</groupId>
                 <artifactId>jaxen</artifactId>
-                <version>1.1.1</version>
+                <version>1.1.4</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>xercesImpl</artifactId>
@@ -634,12 +635,12 @@
             <dependency>
               <groupId>com.beust</groupId>
               <artifactId>jcommander</artifactId>
-              <version>1.27</version>
+              <version>1.35</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>5.0.2</version>
+                <version>5.0.3</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
@@ -675,7 +676,7 @@
             <dependency>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
-                <version>2.9.1</version>
+                <version>2.11.0</version>
                 <type>jar</type>
             </dependency>
             <dependency>
@@ -686,17 +687,17 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.2</version>
+                <version>2.4</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
-                <version>1.9.5</version>
+                <version>1.10.8</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.1</version>
+                <version>3.3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
