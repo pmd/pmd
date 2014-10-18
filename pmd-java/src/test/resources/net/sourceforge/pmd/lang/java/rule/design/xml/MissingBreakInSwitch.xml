@@ -171,4 +171,27 @@ public class Foo {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description>#1262 False positive for MissingBreakInSwitch</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Foo {
+    private boolean isAorB(MyEnum value)
+    {
+      switch (value)
+      {
+        case A:
+        case B:
+        {
+          return true;
+        }
+        default:
+        {
+          return false;
+        }
+      }
+    }
+}
+    ]]></code>
+  </test-code>
 </test-data>
