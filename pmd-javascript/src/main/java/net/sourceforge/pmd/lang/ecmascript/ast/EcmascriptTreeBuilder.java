@@ -27,6 +27,7 @@ import org.mozilla.javascript.ast.ContinueStatement;
 import org.mozilla.javascript.ast.DoLoop;
 import org.mozilla.javascript.ast.ElementGet;
 import org.mozilla.javascript.ast.EmptyExpression;
+import org.mozilla.javascript.ast.EmptyStatement;
 import org.mozilla.javascript.ast.ExpressionStatement;
 import org.mozilla.javascript.ast.ForInLoop;
 import org.mozilla.javascript.ast.ForLoop;
@@ -83,6 +84,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 	register(DoLoop.class, ASTDoLoop.class);
 	register(ElementGet.class, ASTElementGet.class);
 	register(EmptyExpression.class, ASTEmptyExpression.class);
+	register(EmptyStatement.class, ASTEmptyStatement.class);
 	register(ExpressionStatement.class, ASTExpressionStatement.class);
 	register(ForInLoop.class, ASTForInLoop.class);
 	register(ForLoop.class, ASTForLoop.class);

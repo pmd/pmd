@@ -23,6 +23,7 @@ public class ASTFunctionNodeTest extends EcmascriptParserTestBase {
         ASTFunctionNode fn = node.getFirstDescendantOfType(ASTFunctionNode.class);
         Assert.assertTrue(fn.isClosure());
         EcmascriptNode<?> body = fn.getBody();
-        Assert.assertTrue(body instanceof ASTReturnStatement);
+        Assert.assertTrue(body instanceof ASTBlock);
+        Assert.assertTrue(body.jjtGetChild(0) instanceof ASTReturnStatement);
     }
 }
