@@ -97,5 +97,6 @@
     <menu name="Misc.">
       <item href="http://webhostinggeeks.com/science/xpath-sourceforge-ka" name="XPath tutorial (Gregorian)"/>
     </menu>
+    <menu ref="reports"/>
   </body>
 </project>
