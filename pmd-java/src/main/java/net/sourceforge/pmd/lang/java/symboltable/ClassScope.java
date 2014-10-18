@@ -144,7 +144,11 @@ public class ClassScope extends AbstractJavaScope {
                     } else if (mnd.isVarargs()) {
                         int varArgIndex = parameterTypes.size() - 1;
                         TypedNameDeclaration varArgType = parameterTypes.get(varArgIndex);
-                        if (parameterTypes.subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex))) {
+
+                        // first parameter is varArg, calling method might have 0 or more arguments
+                        // or the calling method has enough arguments to fill in the parameters before the vararg
+                        if ((varArgIndex == 0 || argumentTypes.size() >= varArgIndex)
+                            && parameterTypes.subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex))) {
                             boolean sameType = true;
                             for (int i = varArgIndex; i < argumentTypes.size(); i++) {
                                 if (!varArgType.equals(argumentTypes.get(i))) {

@@ -34,6 +34,19 @@ public class ClassScopeTest extends STBBaseTst {
         parseCode15(ENUM_SCOPE);
     }
 
+    @Test
+    public void testVarArgsEmpty() {
+        parseCode15(
+                "public class Foo {\n" +
+                "  public void bar1(String s, Integer... i) {}\n" +
+                "  public void bar1() {}\n" +
+                "  public void c() {\n" +
+                "    bar1();\n" +
+                "  }\n" +
+                "}\n"
+        );
+    }
+
     // FIXME - these will break when this goes from Anonymous$1 to Foo$1
     @Test
     public void testAnonymousInnerClassName() {
