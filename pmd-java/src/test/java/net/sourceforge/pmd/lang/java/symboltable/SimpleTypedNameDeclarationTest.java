@@ -58,6 +58,9 @@ public class SimpleTypedNameDeclarationTest {
         Assert.assertEquals(by(Long.TYPE, "long"), by(null, "char"));
         Assert.assertEquals(by(Long.TYPE, "long"), by(Character.TYPE, "char"));
         Assert.assertEquals(by(Long.TYPE, "long"), by(Character.class, "Character"));
+
+        // should always equal to Object
+        Assert.assertEquals(by(Object.class, "Object"), by(null, "Something"));
     }
 
     private static SimpleTypedNameDeclaration byClass(Class<?> c) {

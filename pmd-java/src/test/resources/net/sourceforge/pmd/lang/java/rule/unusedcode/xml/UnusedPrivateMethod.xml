@@ -1174,4 +1174,50 @@ public class TestLinkUriResolver {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1261 False positive "Avoid unused private methods" with Generics</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TestPrivate<T> {
+    protected Object getProtected(final T bean) {
+        return getPrivate(bean);
+    }
+    private Object getPrivate(final Object bean) {
+        return bean;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1261 False positive "Avoid unused private methods" with Generics 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+public class TestPrivate<T extends List> {
+    protected Object getProtected(final T bean) {
+        return getPrivate(bean);
+    }
+    private Object getPrivate(final List bean) {
+        return bean;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1261 False positive "Avoid unused private methods" with Generics 3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+public class TestPrivate {
+    protected <T extends List> Object getProtected(final T bean) {
+        return getPrivate(bean);
+    }
+    private Object getPrivate(final List bean) {
+        return bean;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

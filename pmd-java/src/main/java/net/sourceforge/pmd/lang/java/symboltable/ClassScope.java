@@ -10,11 +10,15 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -293,10 +297,55 @@ public class ClassScope extends AbstractJavaScope {
                     // This might cause confusion, if method overloading is used.
                     type = parameterTypes.get(i);
                 }
+                if (type != null && type.getType() == null) {
+                    Class<?> typeBound = resolveGenericType(argument, type.getTypeImage());
+                    if (typeBound != null) {
+                        type = new SimpleTypedNameDeclaration(type.getTypeImage(), typeBound);
+                    }
+                }
                 argumentTypes.add(type);
             }
         }
         return argumentTypes;
+    }
+
+    /**
+     * Tries to resolve a given typeImage as a generic Type. If the Generic Type is found,
+     * any defined ClassOrInterfaceType below this type declaration is used (this is typically
+     * a type bound, e.g. {@code <T extends List>}.
+     *
+     * @param argument the node, from where to start searching.
+     * @param typeImage the type as string
+     * @return the resolved class or <code>null</code> if nothing was found.
+     */
+    private Class<?> resolveGenericType(Node argument, String typeImage) {
+        List<ASTTypeParameter> types = new ArrayList<ASTTypeParameter>();
+        // first search only within the same method
+        types.addAll(argument.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class)
+                .findDescendantsOfType(ASTTypeParameter.class));
+
+        // then search class level types
+        ASTTypeParameters classLevelTypeParameters = argument.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)
+                .getFirstChildOfType(ASTTypeParameters.class);
+        if (classLevelTypeParameters != null) {
+            types.addAll(classLevelTypeParameters.findDescendantsOfType(ASTTypeParameter.class));
+        }
+        return resolveGenericType(typeImage, types);
+    }
+
+    private Class<?> resolveGenericType(String typeImage, List<ASTTypeParameter> types) {
+        for (ASTTypeParameter type : types) {
+            if (typeImage.equals(type.getImage())) {
+                ASTClassOrInterfaceType bound = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+                if (bound != null && bound.getType() != null) {
+                    return bound.getType();
+                }
+                if (bound != null) {
+                    return this.getEnclosingScope(SourceFileScope.class).resolveType(bound.getImage());
+                }
+            }
+        }
+        return null;
     }
 
     private Node getNextSibling(Node current) {

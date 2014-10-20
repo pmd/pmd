@@ -66,10 +66,12 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
             return false;
         SimpleTypedNameDeclaration other = (SimpleTypedNameDeclaration) obj;
         if (type == null) {
+            if (other.type == Object.class)
+                return true;
             if (other.type != null)
                 return false;
         }
-        if (type != null && type.equals(other.type))
+        if (type != null && (type.equals(other.type) || type == Object.class))
             return true;
 
         // if the type is given, only compare the type and don't care about the type image
