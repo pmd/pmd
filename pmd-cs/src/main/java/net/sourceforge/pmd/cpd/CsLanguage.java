@@ -3,8 +3,15 @@
  */
 package net.sourceforge.pmd.cpd;
 
+/**
+ * Language implementation for C#
+ */
 public class CsLanguage extends AbstractLanguage {
-	public CsLanguage() {
-		super("C#", "cs", new CsTokenizer(), ".cs");
-	}
+
+    /**
+     * Creates a new C# Language instance.
+     */
+    public CsLanguage() {
+        super("C#", "cs", new CsTokenizer(), ".cs");
+    }
 }

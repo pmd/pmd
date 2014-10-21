@@ -5,11 +5,19 @@ package net.sourceforge.pmd.lang.cs;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 
+/**
+ * Language Module for C#
+ */
 public class CsLanguageModule extends BaseLanguageModule {
 
+    /** The name. */
     public static final String NAME = "C#";
+    /** The terse name. */
     public static final String TERSE_NAME = "cs";
 
+    /**
+     * Create a new instance of C# Language Module.
+     */
     public CsLanguageModule() {
         super(NAME, null, TERSE_NAME, null, "cs");
         addVersion("", null, true);

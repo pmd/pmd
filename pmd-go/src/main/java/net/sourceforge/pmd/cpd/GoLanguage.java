@@ -4,11 +4,15 @@
 package net.sourceforge.pmd.cpd;
 
 /**
- * GoLang
+ * Implements the Go Language
  *
  * @author oinume@gmail.com
  */
 public class GoLanguage extends AbstractLanguage {
+
+    /**
+     * Creates a new instance of {@link GoLanguage}
+     */
     public GoLanguage() {
         super("Go", "go", new GoTokenizer(), ".go");
     }

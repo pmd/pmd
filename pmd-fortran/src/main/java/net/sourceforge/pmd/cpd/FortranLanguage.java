@@ -4,11 +4,14 @@
 package net.sourceforge.pmd.cpd;
 
 /**
- * 
+ * Language implementation for Fortran
  * @author Romain PELISSE belaran@gmail.com
  */
 public class FortranLanguage extends AbstractLanguage {
-	public FortranLanguage() {
-		super("Fortran", "fortran", new FortranTokenizer(), ".for", ".f", ".f66", ".f77", ".f90");
-	}
+    /**
+     * Create a Fotran Language instance.
+     */
+    public FortranLanguage() {
+        super("Fortran", "fortran", new FortranTokenizer(), ".for", ".f", ".f66", ".f77", ".f90");
+    }
 }

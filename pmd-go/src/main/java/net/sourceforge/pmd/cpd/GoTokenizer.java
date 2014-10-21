@@ -6,11 +6,15 @@ package net.sourceforge.pmd.cpd;
 import java.util.ArrayList;
 
 /**
- * GoLang
+ * Implements a tokenizer for the Go Language.
  *
  * @author oinume@gmail.com
  */
 public class GoTokenizer extends AbstractTokenizer {
+
+    /**
+     * Creates a new {@link GoTokenizer}
+     */
     public GoTokenizer() {
         // setting markers for "string" in Go
         this.stringToken = new ArrayList<String>();

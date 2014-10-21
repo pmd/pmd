@@ -25,14 +25,6 @@
                     </delimiters>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <xdocDirectory>${project.build.directory}/generated-xdocs</xdocDirectory>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -41,11 +33,6 @@
             <artifactId>pmd-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
