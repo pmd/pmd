@@ -17,3 +17,4 @@
 * [#1263](https://sourceforge.net/p/pmd/bugs/1263/): PMD reports CheckResultSet violation in completely unrelated source files.
 * [#1272](https://sourceforge.net/p/pmd/bugs/1272/): varargs in methods are causing IndexOutOfBoundException when trying to process files
 * [#1273](https://sourceforge.net/p/pmd/bugs/1273/): CheckResultSet false positive in try-with-resources nested in if
+* [#1274](https://sourceforge.net/p/pmd/bugs/1274/): ant integration broken with pmd-5.2.0

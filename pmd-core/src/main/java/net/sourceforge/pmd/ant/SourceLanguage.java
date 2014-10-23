@@ -28,6 +28,6 @@ public class SourceLanguage {
 	}
 
 	public String toString() {
-		return "<language name=\"" + this.name + "\" version=\"" + this.version + "\" />";
+		return "<sourceLanguage name=\"" + this.name + "\" version=\"" + this.version + "\" />";
 	}
 }

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -53,6 +54,9 @@ public class CPDTask extends Task {
     private List<FileSet> filesets = new ArrayList<FileSet>();
 
     public void execute() throws BuildException {
+        ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(CPDTask.class.getClassLoader());
+
         try {
             validateFields();
 
@@ -82,6 +86,8 @@ public class CPDTask extends Task {
             re.printStackTrace();
             log(re.toString(), Project.MSG_ERR);
             throw new BuildException("ReportException during task execution", re);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldClassloader);
         }
     }
 
@@ -146,8 +152,15 @@ public class CPDTask extends Task {
     private void validateFields() throws BuildException {
         if (minimumTokenCount == 0) {
             throw new BuildException("minimumTokenCount is required and must be greater than zero");
-        } else if (filesets.isEmpty()) {
+        }
+
+        if (filesets.isEmpty()) {
             throw new BuildException("Must include at least one FileSet");
+        }
+
+        if (!Arrays.asList(LanguageFactory.supportedLanguages).contains(language)) {
+            throw new BuildException("Language " + language + " is not supported. Available languages: "
+                    + Arrays.toString(LanguageFactory.supportedLanguages));
         }
     }
 
@@ -184,27 +197,21 @@ public class CPDTask extends Task {
     }
 
     public void setFormat(FormatAttribute formatAttribute) {
-        format = formatAttribute.getValue();
+        this.format = formatAttribute.getValue();
     }
 
-    public void setLanguage(LanguageAttribute languageAttribute) {
-        language = languageAttribute.getValue();
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
-    public void setEncoding(String encodingValue) {
-        encoding = encodingValue;
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     public static class FormatAttribute extends EnumeratedAttribute {
         private static final String[] FORMATS = new String[]{XML_FORMAT, TEXT_FORMAT, CSV_FORMAT};
         public String[] getValues() {
             return FORMATS;
-        }
-    }
-
-    public static class LanguageAttribute extends EnumeratedAttribute {
-        public String[] getValues() {
-            return LanguageFactory.supportedLanguages;
         }
     }
 }

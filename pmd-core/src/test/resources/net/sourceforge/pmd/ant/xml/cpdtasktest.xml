@@ -8,7 +8,7 @@
     <target name="all" depends="testBasic"/>
 
 	<target name="testBasic">
-        <cpd minimumTokenCount="20" outputFile="${pmd.home}/target/cpd.ant.tests">
+        <cpd minimumTokenCount="20" outputFile="${pmd.home}/target/cpd.ant.tests" language="cpddummy">
           <fileset dir="${pmd.home}/src/main/">
             <include name="**/*.java"/>
           </fileset>

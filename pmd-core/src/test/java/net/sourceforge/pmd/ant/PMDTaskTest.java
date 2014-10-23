@@ -31,6 +31,6 @@ public class PMDTaskTest extends BuildFileTest {
 
     @Test
     public void testInvalidLanguageVersion() {
-        expectBuildExceptionContaining("testInvalidLanguageVersion", "Fail requested.", "The following language is not supported:<language name=\"java\" version=\"42\" />.");
+        expectBuildExceptionContaining("testInvalidLanguageVersion", "Fail requested.", "The following language is not supported:<sourceLanguage name=\"java\" version=\"42\" />.");
     }
 }

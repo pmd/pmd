@@ -10,9 +10,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
 
 /**
  * AntLogHandler sends log messages to an Ant Task, so the regular Ant logging
@@ -21,12 +19,12 @@ import org.apache.tools.ant.Task;
  * @author Wouter Zelle
  */
 public class AntLogHandler extends Handler {
-    private Task antTask;
+    private Project project;
 
     private static final Formatter FORMATTER = new PmdLogFormatter();
 
-    public AntLogHandler(Task antTask) {
-        this.antTask = antTask;
+    public AntLogHandler(Project project) {
+        this.project = project;
     }
 
     public void publish(LogRecord logRecord) {
@@ -47,12 +45,12 @@ public class AntLogHandler extends Handler {
             throw new IllegalStateException("Unknown logging level");   //shouldn't get ALL or NONE
         }
         
-        antTask.log(FORMATTER.format(logRecord), antLevel);
+        project.log(FORMATTER.format(logRecord), antLevel);
         if (logRecord.getThrown() != null) {
             StringWriter stringWriter = new StringWriter();
             PrintWriter printWriter = new PrintWriter(stringWriter, true);
             logRecord.getThrown().printStackTrace(printWriter);
-            antTask.log(stringWriter.toString(), antLevel);
+            project.log(stringWriter.toString(), antLevel);
         }
     }
 
