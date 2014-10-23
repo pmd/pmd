@@ -18,3 +18,4 @@
 * [#1272](https://sourceforge.net/p/pmd/bugs/1272/): varargs in methods are causing IndexOutOfBoundException when trying to process files
 * [#1273](https://sourceforge.net/p/pmd/bugs/1273/): CheckResultSet false positive in try-with-resources nested in if
 * [#1274](https://sourceforge.net/p/pmd/bugs/1274/): ant integration broken with pmd-5.2.0
+* [#1275](https://sourceforge.net/p/pmd/bugs/1275/): False positive: UnusedModifier rule for static inner class in enum

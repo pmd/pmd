@@ -270,18 +270,17 @@ public enum Testing {
         ]]></code>
     </test-code>
     <test-code>
-        <description>False negative: static class nested in enum</description>
-        <expected-problems>1</expected-problems>
+        <description>#1275 False positive: UnusedModifier rule for static inner class in enum</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
-public enum Testing {
-    Test;
+public enum MyEnum
+{
+  VALUE_1,
+  VALUE_2;
 
-    public void test(ITesting tester) {
-        tester.test();
-    }
-    public static class ITesting {
-        public void test() {};
-    }
+  private static class MyInnerClass // violation detected by PMD
+  {
+  }
 }
         ]]></code>
     </test-code>
