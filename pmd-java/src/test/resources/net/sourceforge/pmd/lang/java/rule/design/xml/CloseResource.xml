@@ -513,4 +513,24 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1259 CloseResource rule ignores conditionnals within finally blocks</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+    public void foo() {
+        Connection c = pool.getConnection();
+        try {
+            // do stuff
+        } catch (SQLException ex) {
+            // handle exception
+        } finally {
+            if(false) {
+                c.close();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

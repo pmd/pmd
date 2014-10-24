@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -203,7 +204,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 List<ASTName> names = f.findDescendantsOfType(ASTName.class);
                 for (ASTName oName : names) {
                     String name = oName.getImage();
-                    if (name.equals(target)) {
+                    if (name.equals(target) && nullCheckIfCondition(f, oName, variableToClose)) {
                         closed = true;
                         break;
                     }
@@ -213,7 +214,8 @@ public class CloseResourceRule extends AbstractJavaRule {
 							String methodName = parts[1];
 							String varName = parts[0];
 							if (varName.equals(variableToClose)
-									&& closeTargets.contains(methodName)) {
+									&& closeTargets.contains(methodName)
+									&& nullCheckIfCondition(f, oName, varName)) {
 								closed = true;
 								break;
 							}
@@ -325,5 +327,40 @@ public class CloseResourceRule extends AbstractJavaRule {
             }
         }
         return false;
+    }
+
+    private ASTIfStatement findIfStatement(ASTBlock enclosingBlock, Node node) {
+        ASTIfStatement ifStatement = node.getFirstParentOfType(ASTIfStatement.class);
+        List<ASTIfStatement> allIfStatements = enclosingBlock.findDescendantsOfType(ASTIfStatement.class);
+        if (ifStatement != null && allIfStatements.contains(ifStatement)) {
+            return ifStatement;
+        }
+        return null;
+    }
+
+    /**
+     * Checks, whether the given node is inside a if condition, and if so, whether this
+     * is a null check for the given varName.
+     *
+     * @param enclosingBlock where to search for if statements
+     * @param node the node, where the call for the close is done
+     * @param varName the variable, that is maybe null-checked
+     * @return <code>true</code> if no if condition is involved or if the if condition is a null-check.
+     */
+    private boolean nullCheckIfCondition(ASTBlock enclosingBlock, Node node, String varName) {
+        ASTIfStatement ifStatement = findIfStatement(enclosingBlock, node);
+        if (ifStatement != null) {
+            try {
+                // find expressions like: varName != null or null != varName
+                List<?> nodes = ifStatement.findChildNodesWithXPath(
+                        "Expression/EqualityExpression[@Image='!=']" +
+                        "  [PrimaryExpression/PrimaryPrefix/Name[@Image='" + varName + "']]" +
+                        "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
+                return !nodes.isEmpty();
+            } catch (JaxenException e) {
+                // no boolean literals or other condition
+            }
+        }
+        return true;
     }
 }
