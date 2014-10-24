@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -214,6 +215,9 @@ public class ClassScope extends AbstractJavaScope {
         List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode().findDescendantsOfType(ASTFormalParameter.class);
         for (ASTFormalParameter p : parameters) {
             Class<?> resolvedType = this.getEnclosingScope(SourceFileScope.class).resolveType(p.getTypeNode().getTypeImage());
+            if (resolvedType == null) {
+                resolvedType = resolveGenericType(p, p.getTypeNode().getTypeImage());
+            }
             parameterTypes.add(new SimpleTypedNameDeclaration(p.getTypeNode().getTypeImage(), resolvedType));
         }
         return parameterTypes;
@@ -325,8 +329,14 @@ public class ClassScope extends AbstractJavaScope {
                 .findDescendantsOfType(ASTTypeParameter.class));
 
         // then search class level types
-        ASTTypeParameters classLevelTypeParameters = argument.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)
-                .getFirstChildOfType(ASTTypeParameters.class);
+        ASTClassOrInterfaceDeclaration enclosingClassOrEnum = argument.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        if (enclosingClassOrEnum == null) {
+            argument.getFirstParentOfType(ASTEnumDeclaration.class);
+        }
+        ASTTypeParameters classLevelTypeParameters = null;
+        if (enclosingClassOrEnum != null) {
+            classLevelTypeParameters = enclosingClassOrEnum.getFirstChildOfType(ASTTypeParameters.class);
+        }
         if (classLevelTypeParameters != null) {
             types.addAll(classLevelTypeParameters.findDescendantsOfType(ASTTypeParameter.class));
         }

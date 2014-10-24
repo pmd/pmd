@@ -1220,4 +1220,29 @@ public class TestPrivate {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1261 False positive "Avoid unused private methods" with Generics 4</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Map;
+
+public class TestPrivate {
+    public <T extends Map<?,?>, X extends Map<?,?>>  void createLedgerAndChangeHistory(T oldObject, X updatedObject, boolean isChildLedgerEntry) throws ServiceException {
+        Map.Entry entry = new Map.Entry();
+
+        try {
+            if (oldObject instanceof BudgetPackage || oldObject instanceof SpiEntity) {
+                setTotals(oldObject);
+            }
+        // do other stuff
+        } catch (ServiceException e) {
+        }
+    }
+
+    private <X extends Map> void setTotals(X ledgerable) throws ServiceException {
+        // do stuff
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
