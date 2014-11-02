@@ -15,6 +15,7 @@
 * [#1253](https://sourceforge.net/p/pmd/bugs/1253/): Document default behaviour when CPD command line arguments "encoding" and "ignoreAnnotations" are not specified
 * [#1255](https://sourceforge.net/p/pmd/bugs/1255/): UseUtilityClass false positive with Exceptions
 * [#1256](https://sourceforge.net/p/pmd/bugs/1256/): PositionLiteralsFirstInComparisons false positive with Characters
+* [#1258](https://sourceforge.net/p/pmd/bugs/1258/): Java 8 Lambda parse error on direct field access
 * [#1259](https://sourceforge.net/p/pmd/bugs/1259/): CloseResource rule ignores conditionnals within finally blocks
 * [#1261](https://sourceforge.net/p/pmd/bugs/1261/): False positive "Avoid unused private methods" with Generics
 * [#1262](https://sourceforge.net/p/pmd/bugs/1262/): False positive for MissingBreakInSwitch

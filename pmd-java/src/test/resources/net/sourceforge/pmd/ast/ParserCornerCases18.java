@@ -144,6 +144,14 @@ public class ParserCornerCases18 {
             })
             .count();
         }
+        // https://sourceforge.net/p/pmd/bugs/1258/
+        public void lambdaWithPropertyAssignment() {
+            object.event = () -> {
+                Request request = new Request();
+                request.id = 42;
+//                request.setId(42);
+            };
+        }
     }
 }
 

@@ -1,4 +1,8 @@
 /**
+ * Fix for Lambda expressions without variables.
+ *
+ * Andreas Dangel 11/2014
+ *====================================================================
  * Fix for Lambda expressions with two or three variables.
  *
  * Andreas Dangel 07/2014
@@ -1765,6 +1769,7 @@ void PrimaryPrefix() :
   Literal()
 | "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
+| LOOKAHEAD( "(" ")" "->" ) LambdaExpression()
 | LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
 | LOOKAHEAD( "(" VariableDeclaratorId() "," VariableDeclaratorId() ["," VariableDeclaratorId()] ")" "->" ) LambdaExpression()
 | LOOKAHEAD( "(" FormalParameter() "," FormalParameter() ["," FormalParameter() ] ")" "->" ) LambdaExpression()
