@@ -194,4 +194,22 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1255 UseUtilityClass false positive with Exceptions</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyException extends RuntimeException {
+
+    private static final long serialVersionUID = 2854498759784815062L;
+
+    public MyException() {
+        super(foo());
+    }
+
+    protected static String foo() {
+        return "foo";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
