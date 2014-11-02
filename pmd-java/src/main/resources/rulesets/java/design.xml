@@ -1177,7 +1177,7 @@ can be avoided, they will just return false.
                 ]
         ]
         [
-                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal)
+                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])
 	and
 	( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
         ]

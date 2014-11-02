@@ -12,6 +12,7 @@
 
 * [#550](https://sourceforge.net/p/pmd/bugs/550/): False +: MissingBreakInSwitch
 * [#1252](https://sourceforge.net/p/pmd/bugs/1252/): net.sourceforge.pmd.lang.ast.TokenMgrError: Lexical error in file xxx.cpp
+* [#1256](https://sourceforge.net/p/pmd/bugs/1256/): PositionLiteralsFirstInComparisons false positive with Characters
 * [#1259](https://sourceforge.net/p/pmd/bugs/1259/): CloseResource rule ignores conditionnals within finally blocks
 * [#1261](https://sourceforge.net/p/pmd/bugs/1261/): False positive "Avoid unused private methods" with Generics
 * [#1262](https://sourceforge.net/p/pmd/bugs/1262/): False positive for MissingBreakInSwitch
