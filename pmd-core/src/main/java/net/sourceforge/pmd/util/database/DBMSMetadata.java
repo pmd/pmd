@@ -117,22 +117,7 @@ public class DBMSMetadata
    */
   public DBMSMetadata(String user, String password, DBURI dbURI) throws SQLException, MalformedURLException, ClassNotFoundException
   { 
-    this.dburi = dbURI;
-
-    this.returnSourceCodeObjectsStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_OBJECTS_STATEMENT) ; 
-
-    this.returnSourceCodeStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_CODE_STATEMENT) ; 
-
-    this.returnType =  dbURI.getSourceCodeType();
-
-    LOGGER.fine("returnSourceCodeStatement="+returnSourceCodeStatement +", returnType="+returnType);
-    
-    String driverClass = dbURI.getDriverClass();
-    String urlString = dbURI.getURL().toString();
-    
-    LOGGER.fine("driverClass="+driverClass+", urlString="+urlString);
-
-    Class.forName(driverClass);
+    String urlString = init(dbURI);
 
     Properties mergedProperties = dbURI.getDbType().getProperties() ;
     Map<String,String> dbURIParameters = dbURI.getParameters();
@@ -156,23 +141,9 @@ public class DBMSMetadata
    */
   public DBMSMetadata(Properties properties, DBURI dbURI) throws SQLException, MalformedURLException, ClassNotFoundException
   { 
-    this.dburi = dbURI;
-    this.returnSourceCodeObjectsStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_OBJECTS_STATEMENT) ; 
-    this.returnSourceCodeStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_CODE_STATEMENT) ; 
-    this.returnType =  dbURI.getSourceCodeType();
-    LOGGER.fine("returnSourceCodeStatement="+returnSourceCodeStatement +", returnType="+returnType);
+    String urlString = init(dbURI);
 
-    
-    String driverClass = dbURI.getDriverClass();
-    String urlString = dbURI.getURL().toString();
-    
-    LOGGER.fine("driverClass="+driverClass+", urlString="+urlString);
-
-    Class.forName(driverClass);
-
-    LOGGER.fine("Located class for driverClass="+driverClass);
-
-    Properties mergedProperties = dbURI.getDbType().getProperties() ;
+    Properties mergedProperties = dbURI.getDbType().getProperties();
     Map<String,String> dbURIParameters = dbURI.getParameters();
     mergedProperties.putAll(dbURIParameters) ;
     mergedProperties.putAll(properties) ;
@@ -196,24 +167,9 @@ public class DBMSMetadata
    */
   public DBMSMetadata(DBURI dbURI) throws SQLException, ClassNotFoundException
   { 
+    String urlString = init(dbURI);
 
-    this.dburi = dbURI;
-    this.returnType =  dbURI.getSourceCodeType();
-
-    DBType dbType = dbURI.getDbType();
-    LOGGER.fine("dbType="+dbType );
-    Properties dbURIProperties = dbType.getProperties() ;
-    this.returnSourceCodeObjectsStatement = dbURIProperties.getProperty(GET_SOURCE_OBJECTS_STATEMENT) ; 
-    this.returnSourceCodeStatement = dbURIProperties.getProperty(GET_SOURCE_CODE_STATEMENT) ; 
-    LOGGER.fine("returnSourceCodeStatement="+returnSourceCodeStatement +", returnType="+returnType);
-
-    String driverClass = dbURI.getDriverClass();
-    String urlString = dbURI.getURL().toString();
-    
-    LOGGER.fine("driverClass="+driverClass+", urlString="+urlString);
-
-    Class.forName(driverClass);
-
+    Properties dbURIProperties = dbURI.getDbType().getProperties();
     Map<String,String> dbURIParameters = dbURI.getParameters();
 
     /*Overwrite any DBType properties with DBURI parameters
@@ -223,7 +179,22 @@ public class DBMSMetadata
     dbURIProperties.putAll(dbURIParameters) ;
 
     connection = DriverManager.getConnection(urlString, dbURIProperties);
-  } 
+  }
+
+  private String init(DBURI dbURI) throws ClassNotFoundException {
+      this.dburi = dbURI;
+      this.returnSourceCodeObjectsStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_OBJECTS_STATEMENT);
+      this.returnSourceCodeStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_CODE_STATEMENT);
+      this.returnType =  dbURI.getSourceCodeType();
+      LOGGER.fine("returnSourceCodeStatement="+returnSourceCodeStatement +", returnType="+returnType);
+
+      String driverClass = dbURI.getDriverClass();
+      String urlString = dbURI.getURL().toString();
+      LOGGER.fine("driverClass="+driverClass+", urlString="+urlString);
+      Class.forName(driverClass);
+      LOGGER.fine("Located class for driverClass="+driverClass);
+      return urlString;
+  }
 
  /**
    * Return source code text from the database.
