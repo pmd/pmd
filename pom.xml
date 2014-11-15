@@ -270,7 +270,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot/${project.artifactId}</pmd.website.baseurl>
 
-        <config.basedir>${basedir}/pmd</config.basedir>
+        <config.basedir>${basedir}/pmd-core</config.basedir>
         <pmd.dogfood.ruleset>${config.basedir}/src/main/resources/rulesets/internal/dogfood.xml</pmd.dogfood.ruleset>
         <checkstyle.configLocation>${config.basedir}/etc/checkstyle-config.xml</checkstyle.configLocation>
         <checkstyle.suppressionsFile>${config.basedir}/etc/checkstyle-suppressions.xml</checkstyle.suppressionsFile>
