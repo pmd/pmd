@@ -144,7 +144,8 @@ public class ClassScope extends AbstractJavaScope {
 
                     if (!mnd.isVarargs()
                             && occurrence.getArgumentCount() == mnd.getParameterCount()
-                            && parameterTypes.equals(argumentTypes)) {
+                            && (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath()
+                                    || parameterTypes.equals(argumentTypes))) {
                         return mnd;
                     } else if (mnd.isVarargs()) {
                         int varArgIndex = parameterTypes.size() - 1;
@@ -153,8 +154,14 @@ public class ClassScope extends AbstractJavaScope {
                         // first parameter is varArg, calling method might have 0 or more arguments
                         // or the calling method has enough arguments to fill in the parameters before the vararg
                         if ((varArgIndex == 0 || argumentTypes.size() >= varArgIndex)
-                            && parameterTypes.subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex))) {
+                            && (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath()
+                                    || parameterTypes.subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex)))) {
                             boolean sameType = true;
+
+                            if (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath()) {
+                                return mnd;
+                            }
+
                             for (int i = varArgIndex; i < argumentTypes.size(); i++) {
                                 if (!varArgType.equals(argumentTypes.get(i))) {
                                     sameType = false;

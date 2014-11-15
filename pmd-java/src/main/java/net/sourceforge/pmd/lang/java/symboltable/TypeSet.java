@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+import net.sourceforge.pmd.util.ClasspathClassLoader;
 
 /**
  * Keeps track of the types encountered in a ASTCompilationUnit
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 public class TypeSet {
 
     private final PMDASMClassLoader pmdClassLoader;
+    private boolean hasAuxclasspath;
 
     /**
      * The {@link TypeSet} provides type resolution for the symbol facade.
@@ -35,7 +37,16 @@ public class TypeSet {
         if (cl == null) {
             cl = TypeSet.class.getClassLoader();
         }
+        hasAuxclasspath = cl instanceof ClasspathClassLoader;
         pmdClassLoader = PMDASMClassLoader.getInstance(cl);
+    }
+
+    /**
+     * Whether the classloader is using the auxclasspath or not.
+     * @return <code>true</code> if the classloader is using the auxclasspath feature
+     */
+    public boolean hasAuxclasspath() {
+        return hasAuxclasspath;
     }
 
     /**

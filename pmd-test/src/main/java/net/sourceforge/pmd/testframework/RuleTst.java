@@ -200,17 +200,22 @@ public abstract class RuleTst {
     /**
      * Run the rule on the given code and put the violations in the report.
      */
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) throws PMDException {
-        PMD p = new PMD();
-        p.getConfiguration().setDefaultLanguageVersion(languageVersion);
-        RuleContext ctx = new RuleContext();
-        ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
-        ctx.setLanguageVersion(languageVersion);
-        ctx.setIgnoreExceptions(false);
-        RuleSet rules = new RuleSet();
-        rules.addRule(rule);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
+        try {
+            PMD p = new PMD();
+            p.getConfiguration().setDefaultLanguageVersion(languageVersion);
+            p.getConfiguration().prependClasspath("."); // configure the "auxclasspath" option for unit testing
+            RuleContext ctx = new RuleContext();
+            ctx.setReport(report);
+            ctx.setSourceCodeFilename("n/a");
+            ctx.setLanguageVersion(languageVersion);
+            ctx.setIgnoreExceptions(false);
+            RuleSet rules = new RuleSet();
+            rules.addRule(rule);
+            p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
