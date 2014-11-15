@@ -13,7 +13,7 @@ import java.util.ServiceLoader;
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class LanguageRegistry {
+public final class LanguageRegistry {
 
     private static LanguageRegistry instance;
 
@@ -58,8 +58,8 @@ public class LanguageRegistry {
     public static LanguageVersion findLanguageVersionByTerseName(String terseName) {
         String version = null;
         if(terseName.contains(" ")) {
-            version = terseName.substring(terseName.lastIndexOf(" ") + 1);
-            terseName = terseName.substring(0, terseName.lastIndexOf(" "));
+            version = terseName.substring(terseName.lastIndexOf(' ') + 1);
+            terseName = terseName.substring(0, terseName.lastIndexOf(' '));
         }
         Language language = findLanguageByTerseName(terseName);
         if(language != null) {

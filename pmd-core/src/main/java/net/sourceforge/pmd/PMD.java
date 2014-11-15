@@ -80,7 +80,9 @@ public class PMD {
                 try {
                     dataSources.add(new ReaderDataSource(dbmsMetadata.getSourceCode(sourceObject), falseFilePath));
                 } catch (SQLException ex) {
-                    LOG.log(Level.WARNING, "Cannot get SourceCode for " + falseFilePath + "  - skipping ...", ex);
+                    if (LOG.isLoggable(Level.WARNING)) {
+                        LOG.log(Level.WARNING, "Cannot get SourceCode for " + falseFilePath + "  - skipping ...", ex);
+                    }
                 }
             }
         } catch (URISyntaxException e) {
@@ -115,8 +117,9 @@ public class PMD {
         // TODO Handle Rules having different parser options.
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
         ParserOptions options = languageVersionHandler.getDefaultParserOptions();
-        if (configuration != null)
+        if (configuration != null) {
             options.setSuppressMarker(configuration.getSuppressMarker());
+        }
         return languageVersionHandler.getParser(options);
     }
 
@@ -155,8 +158,10 @@ public class PMD {
         ruleSets.removeDysfunctionalRules(brokenRules);
 
         for (Rule rule : brokenRules) {
-            LOG.log(Level.WARNING,
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.log(Level.WARNING,
                     "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());
+            }
         }
 
         return brokenRules;
@@ -210,8 +215,9 @@ public class PMD {
         // Load the RuleSets
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration);
         RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
-        if (ruleSets == null)
+        if (ruleSets == null) {
             return;
+        }
 
         Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
         List<DataSource> files = getApplicableFiles(configuration, languages);
@@ -388,12 +394,15 @@ public class PMD {
 
         for (Rule rule : ruleSets.getAllRules()) {
             Language language = rule.getLanguage();
-            if (languages.contains(language))
+            if (languages.contains(language)) {
                 continue;
+            }
             LanguageVersion version = discoverer.getDefaultLanguageVersion(language);
             if (RuleSet.applies(rule, version)) {
                 languages.add(language);
-                LOG.fine("Using " + language.getShortName() + " version: " + version.getShortName());
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.fine("Using " + language.getShortName() + " version: " + version.getShortName());
+                }
             }
         }
         return languages;

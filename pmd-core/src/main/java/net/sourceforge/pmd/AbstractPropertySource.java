@@ -27,13 +27,6 @@ public abstract class AbstractPropertySource implements PropertySource {
     protected Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<PropertyDescriptor<?>, Object>();
 
     /**
-     * Creates a new empty property source.
-     */
-    public AbstractPropertySource() {
-        super();
-    }
-
-    /**
      * Creates a copied list of the property descriptors and returns it.
      * 
      * @return a copy of the property descriptors.

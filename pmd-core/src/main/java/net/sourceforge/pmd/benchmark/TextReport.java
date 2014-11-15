@@ -25,10 +25,6 @@ public class TextReport implements BenchmarkReport {
 	private static final int NAME_COLUMN_WIDTH	 = 50;
 	private static final int VALUE_COLUMN_WIDTH	 =  8;
 
-	public TextReport() {
-
-	}
-
 	/**
 	 *
 	 * @param stressResults Set<Result>

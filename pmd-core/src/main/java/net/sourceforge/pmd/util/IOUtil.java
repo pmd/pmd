@@ -11,13 +11,11 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 
-import net.sourceforge.pmd.lang.ast.ParseException;
-
 /**
  * 
  * @author Brian Remedios
  */
-public class IOUtil {
+public final class IOUtil {
 
     private IOUtil() {
     }

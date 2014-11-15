@@ -17,11 +17,15 @@ public class ImportWrapper {
     }
 
     public boolean equals(Object other) {
-    	if (other == null) return false;
-    	if (other == this) return true;
+    	if (other == null) {
+    	    return false;
+    	}
+    	if (other == this) {
+    	    return true;
+    	}
     	if (other instanceof ImportWrapper) {
 	        ImportWrapper i = (ImportWrapper) other;
-	        if(name == null && i.getName() == null){
+	        if (name == null && i.getName() == null) {
 	            return i.getFullName().equals(fullname);
 	        }
 	        return i.getName().equals(name);

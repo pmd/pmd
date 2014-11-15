@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
-public class LanguageFactory {
+public final class LanguageFactory {
 
     public static final String EXTENSION = "extension";
     public static final String BY_EXTENSION = "by_extension";

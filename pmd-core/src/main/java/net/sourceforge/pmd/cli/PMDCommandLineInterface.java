@@ -56,8 +56,9 @@ public class PMDCommandLineInterface {
 
 		String allCommandsDescription = null;
 		if ( jcommander != null && jcommander.getCommands() != null ) {
-			for ( String command : jcommander.getCommands().keySet() )
+			for ( String command : jcommander.getCommands().keySet() ) {
 				allCommandsDescription += jcommander.getCommandDescription(command) + PMD.EOL;
+			}
 		}
 
 		// TODO: Externalize that to a file available within the classpath ? - with a poor's man templating ?
@@ -150,7 +151,9 @@ public class PMDCommandLineInterface {
 			    buf.append("        ").append(property.name()).append(" - ");
 			    buf.append(property.description());
 			    Object deflt = property.defaultValue();
-			    if (deflt != null) buf.append("   default: ").append(deflt);
+			    if (deflt != null) {
+			        buf.append("   default: ").append(deflt);
+			    }
 			    buf.append(PMD.EOL);
                         }
 
@@ -164,10 +167,11 @@ public class PMDCommandLineInterface {
     }
 
 	public static void setStatusCodeOrExit(int status) {
-		if ( isExitAfterRunSet() )
+		if ( isExitAfterRunSet() ) {
 			System.exit(status);
-		else
+		} else {
 			setStatusCode(status);
+		}
 	}
 
     private static boolean isExitAfterRunSet() {

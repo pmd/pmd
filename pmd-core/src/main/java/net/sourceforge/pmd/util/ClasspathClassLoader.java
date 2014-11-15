@@ -87,10 +87,10 @@ public class ClasspathClassLoader extends URLClassLoader {
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         sb.append("[[");
-        StringUtil.asStringOn(sb, getURLs(), ":");       
-        sb.append("] parent: ");
-        sb.append(getParent());
-        sb.append(']');
+        StringUtil.asStringOn(sb, getURLs(), ":");
+        sb.append("] parent: ")
+          .append(getParent())
+          .append(']');
 
         return sb.toString();
     }

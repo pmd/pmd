@@ -351,7 +351,9 @@ public abstract class AbstractNode implements Node {
      */
     public final boolean hasDecendantOfAnyType(Class<?>... types) {
     	for (Class<?> type : types) {
-    		if (hasDescendantOfType(type)) return true;
+    		if (hasDescendantOfType(type)) {
+    		    return true;
+    		}
     	}
     	return false;
     }

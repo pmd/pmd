@@ -122,12 +122,15 @@ public class CPDConfiguration extends AbstractConfiguration {
             if (!getEncoding().equals(System.getProperty("file.encoding")))
                 System.setProperty("file.encoding", getEncoding());
         }
-		if ( this.getLanguage() == null )
+		if ( this.getLanguage() == null ) {
 			this.setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
-		if (this.getRendererName() == null )
+		}
+		if (this.getRendererName() == null ) {
 		    this.setRendererName(DEFAULT_RENDERER);
-		if ( this.getRenderer() == null )
+		}
+		if ( this.getRenderer() == null ) {
 			this.setRenderer(getRendererFromString(getRendererName()));
+		}
 	}
 
 	public static Renderer getRendererFromString(String name /* , String encoding */) {
@@ -211,14 +214,16 @@ public class CPDConfiguration extends AbstractConfiguration {
 	}
 
 	public Tokenizer tokenizer() {
-		if ( language == null )
+		if ( language == null ) {
 			throw new IllegalStateException("Language is null.");
+		}
 		return language.getTokenizer();
 	}
 
     public FilenameFilter filenameFilter() {
-        if (language == null)
+        if (language == null) {
             throw new IllegalStateException("Language is null.");
+        }
 
         final FilenameFilter languageFilter = language.getFileFilter();
         final Set<String> exclusions = new HashSet<String>();

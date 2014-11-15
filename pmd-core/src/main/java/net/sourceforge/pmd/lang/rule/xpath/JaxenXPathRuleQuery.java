@@ -101,9 +101,11 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 	if (initializationStatus == InitializationStatus.FULL) {
 	    return;
 	} else if (initializationStatus == InitializationStatus.PARTIAL && navigator == null) {
+	    if (LOG.isLoggable(Level.SEVERE)) {
 	    LOG.severe("XPathRule is not initialized because no navigator was provided. "
 	            + "Please make sure to implement getXPathHandler in the handler of the language. "
 	            + "See also AbstractLanguageVersionHandler.");
+	    }
 	    return;
 	}
 

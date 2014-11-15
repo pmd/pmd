@@ -48,7 +48,9 @@ public final class CollectionUtil {
 		int added = 0;
 		
 		for (String item : source) {
-			if (target.contains(item)) continue;
+			if (target.contains(item)) {
+			    continue;
+			}
 			target.add(item);
 			added++;
 		}
@@ -253,10 +255,14 @@ public final class CollectionUtil {
         if (a == null) { return isEmpty(b); }
         if (b == null) { return isEmpty(a); }
         
-        if (a.length != b.length) return false;
+        if (a.length != b.length) {
+            return false;
+        }
         
         for (int i=0; i<a.length; i++) {
-        	if (!areEqual(a[i], b[i])) return false;
+        	if (!areEqual(a[i], b[i])) {
+        	    return false;
+        	}
         }
         
         return true;

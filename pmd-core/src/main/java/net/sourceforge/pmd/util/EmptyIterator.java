@@ -12,14 +12,14 @@ import java.util.Iterator;
  *
  * @param <T>
  */
-public class EmptyIterator<T extends Object> implements Iterator<T> {
+public final class EmptyIterator<T extends Object> implements Iterator<T> {
 
     	@SuppressWarnings("rawtypes")
-	public static final Iterator instance = new EmptyIterator();
+	public static final Iterator INSTANCE = new EmptyIterator();
     	
     	@SuppressWarnings("unchecked")
 	public static final <T extends Object> Iterator<T> instance() {
-    	    return instance;
+    	    return INSTANCE;
     	}
 	
 	private EmptyIterator() {}

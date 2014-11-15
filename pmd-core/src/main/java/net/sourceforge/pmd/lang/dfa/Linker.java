@@ -45,15 +45,19 @@ public class Linker {
                      );
 		}
 	    if (sc.getFirstIndex() < 0 || sc.getLastIndex() < 0) {
+	        if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.severe("Sequence Checker problem: getFirstIndex()==" 
                               + sc.getFirstIndex() + ", getLastIndex()==" + sc.getLastIndex() 
                              );
+	        }
 		throw new SequenceException("computePaths(): return index <  0");
 	    }
 
 	    StackObject firstStackObject = braceStack.get(sc.getFirstIndex());
 
+	    if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Checking first braceStack element of type=="+ NodeType.stringFromType(firstStackObject.getType()) );
+	    }
 	    switch (firstStackObject.getType()) {
 	    case NodeType.IF_EXPR:
                 LOGGER.finest("IF_EXPR");
@@ -93,12 +97,18 @@ public class Linker {
 	    default:
 	    }
 
+	    if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("Removing braces from Last to first: " + sc.getLastIndex()  + " to " + sc.getFirstIndex());
+	    }
 	    for (int y = sc.getLastIndex(); y >= sc.getFirstIndex(); y--) {
+	        if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest("Removing brace : " + y );
+	        }
 		braceStack.remove(y);
               }
+	    if (LOGGER.isLoggable(Level.FINE)) {
           LOGGER.fine("Completed Sequence checking loop" + braceStack  );
+	    }
 	}
         if (LOGGER.isLoggable(Level.FINER))
         {
@@ -324,20 +334,24 @@ public class Linker {
 	DataFlowNode sEnd = this.braceStack.get(lastIndex).getDataFlowNode();
 	DataFlowNode end = sEnd.getChildren().get(0);
 
+	if (LOGGER.isLoggable(Level.FINE)) {
         LOGGER.fine(
                      "Stack(sStart)=>" + sStart
                      +",Stack(sEnd)=>" + sEnd
                      +",end=>" + end
                    );
+	}
 
 	for (int i = 0; i < diff - 2; i++) {
 	    StackObject so = this.braceStack.get(firstIndex + 2 + i);
 	    DataFlowNode node = so.getDataFlowNode();
 
+	    if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine( "so(" + (firstIndex + 2 + i) + ")=>" + so 
                          +" has  dfn=>" + node 
                          +" with first child =>" + node.getChildren().get(0)
                        );
+	    }
 	    sStart.addPathToChild(node.getChildren().get(0));
 
 	    if (so.getType() == NodeType.SWITCH_LAST_DEFAULT_STATEMENT) {

@@ -26,9 +26,9 @@ import org.apache.commons.io.IOUtils;
 public class ReportHTMLPrintVisitor extends ReportVisitor {
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
-    private StringBuilder packageBuf = new StringBuilder();
+    private StringBuilder packageBuf = new StringBuilder(30);
     @SuppressWarnings("PMD.AvoidStringBufferField")
-    private StringBuilder classBuf = new StringBuilder();
+    private StringBuilder classBuf = new StringBuilder(60);
     private int length;
     private String baseDir;
 

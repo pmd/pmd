@@ -126,7 +126,9 @@ public class DBMSMetadata
     mergedProperties.put("password", password) ;
 
     connection = DriverManager.getConnection(urlString, mergedProperties );
-    LOGGER.fine("we have a connection="+connection);
+    if (LOGGER.isLoggable(Level.FINE)) {
+        LOGGER.fine("we have a connection="+connection);
+    }
   } 
 
 
@@ -148,9 +150,13 @@ public class DBMSMetadata
     mergedProperties.putAll(dbURIParameters) ;
     mergedProperties.putAll(properties) ;
 
-    LOGGER.fine("Retrieving connection for urlString"+urlString);
+    if (LOGGER.isLoggable(Level.FINE)) {
+        LOGGER.fine("Retrieving connection for urlString"+urlString);
+    }
     connection = DriverManager.getConnection(urlString ,mergedProperties);
-    LOGGER.fine("Secured Connection for DBURI"+dbURI);
+    if (LOGGER.isLoggable(Level.FINE)) {
+        LOGGER.fine("Secured Connection for DBURI"+dbURI);
+    }
   } 
 
   /**
@@ -186,13 +192,19 @@ public class DBMSMetadata
       this.returnSourceCodeObjectsStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_OBJECTS_STATEMENT);
       this.returnSourceCodeStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_CODE_STATEMENT);
       this.returnType =  dbURI.getSourceCodeType();
-      LOGGER.fine("returnSourceCodeStatement="+returnSourceCodeStatement +", returnType="+returnType);
+      if (LOGGER.isLoggable(Level.FINE)) {
+          LOGGER.fine("returnSourceCodeStatement="+returnSourceCodeStatement +", returnType="+returnType);
+      }
 
       String driverClass = dbURI.getDriverClass();
       String urlString = dbURI.getURL().toString();
-      LOGGER.fine("driverClass="+driverClass+", urlString="+urlString);
+      if (LOGGER.isLoggable(Level.FINE)) {
+          LOGGER.fine("driverClass="+driverClass+", urlString="+urlString);
+      }
       Class.forName(driverClass);
-      LOGGER.fine("Located class for driverClass="+driverClass);
+      if (LOGGER.isLoggable(Level.FINE)) {
+          LOGGER.fine("Located class for driverClass="+driverClass);
+      }
       return urlString;
   }
 
@@ -232,8 +244,10 @@ public class DBMSMetadata
     /* Only define callableStatement once and reuse it for subsequent calls to getSourceCode()*/ 
     if (null == callableStatement)
     {
+        if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("getSourceCode: returnSourceCodeStatement=\""+returnSourceCodeStatement+"\"");
             LOGGER.finest("getSourceCode: returnType=\""+returnType+"\"");
+        }
 	    callableStatement = getConnection().prepareCall(returnSourceCodeStatement);
 	    callableStatement.registerOutParameter(1, returnType);
     }

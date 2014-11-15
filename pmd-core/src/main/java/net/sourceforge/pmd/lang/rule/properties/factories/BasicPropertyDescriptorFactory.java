@@ -33,14 +33,14 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 	private final Class<?> valueType;
 	private final Map<String, Boolean> fieldTypesByKey;
 
-	protected static final Map<String, Boolean> coreFieldTypesByKey = CollectionUtil.mapFrom(
+	protected static final Map<String, Boolean> CORE_FIELD_TYPES_BY_KEY = CollectionUtil.mapFrom(
 			new String[]  { NAME, 		DESC, 	DEFAULT_VALUE}, 
 			new Boolean[] { Boolean.TRUE,  Boolean.TRUE, Boolean.TRUE}
 			);
 	
 	public BasicPropertyDescriptorFactory(Class<?> theValueType) {
 		valueType = theValueType;
-		fieldTypesByKey = Collections.unmodifiableMap(coreFieldTypesByKey);
+		fieldTypesByKey = Collections.unmodifiableMap(CORE_FIELD_TYPES_BY_KEY);
 	}
 	
 //	public interface WrapperBuilder<T> {
@@ -56,8 +56,8 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 	public BasicPropertyDescriptorFactory(Class<?> theValueType, Map<String, Boolean> additionalFieldTypesByKey) {
 		
 		valueType = theValueType;
-		Map<String, Boolean> temp = new HashMap<String, Boolean>(coreFieldTypesByKey.size() + additionalFieldTypesByKey.size());
-		temp.putAll(coreFieldTypesByKey);
+		Map<String, Boolean> temp = new HashMap<String, Boolean>(CORE_FIELD_TYPES_BY_KEY.size() + additionalFieldTypesByKey.size());
+		temp.putAll(CORE_FIELD_TYPES_BY_KEY);
 		temp.putAll(additionalFieldTypesByKey);
 		
 		fieldTypesByKey = Collections.unmodifiableMap(temp);
@@ -210,8 +210,8 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 	}
 	
 	public static Map<String, Boolean> expectedFieldTypesWith(String[] otherKeys, Boolean[] otherValues) {
-		Map<String, Boolean> largerMap = new HashMap<String, Boolean>(otherKeys.length + coreFieldTypesByKey.size());
-		largerMap.putAll(coreFieldTypesByKey);
+		Map<String, Boolean> largerMap = new HashMap<String, Boolean>(otherKeys.length + CORE_FIELD_TYPES_BY_KEY.size());
+		largerMap.putAll(CORE_FIELD_TYPES_BY_KEY);
 		for (int i=0; i<otherKeys.length; i++) {
 			largerMap.put(otherKeys[i], otherValues[i]);
 		}

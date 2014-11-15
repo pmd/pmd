@@ -30,7 +30,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     private static final String ARRAY_FLAG = "[]";
     private static final Map<Class<?>, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 
-	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<MethodProperty>(Method.class, packagedFieldTypesByKey) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<MethodProperty>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
 		public MethodProperty createWith(Map<String, String> valuesById) {
 			return new MethodProperty(

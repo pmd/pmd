@@ -45,42 +45,42 @@ public class NodeType {
     public static final int THROW_STATEMENT = 70;
 
     //Poor Man's Enum until we convert the class to real enum
-    private static final Map<Integer, String> typeMap = new HashMap<Integer, String>();
+    private static final Map<Integer, String> TYPE_MAP = new HashMap<Integer, String>();
     static {
-            typeMap.put(NodeType.IF_EXPR, "IF_EXPR");
-	    typeMap.put(NodeType.IF_LAST_STATEMENT, "IF_LAST_STATEMENT");
-	    typeMap.put(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, "IF_LAST_STATEMENT_WITHOUT_ELSE");
-	    typeMap.put(NodeType.ELSE_LAST_STATEMENT, "ELSE_LAST_STATEMENT");
-	    typeMap.put(NodeType.WHILE_LAST_STATEMENT, "WHILE_LAST_STATEMENT");
-	    typeMap.put(NodeType.WHILE_EXPR, "WHILE_EXPR");
-	    typeMap.put(NodeType.SWITCH_START, "SWITCH_START");
-	    typeMap.put(NodeType.CASE_LAST_STATEMENT, "CASE_LAST_STATEMENT");
-	    typeMap.put(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, "SWITCH_LAST_DEFAULT_STATEMENT");
-	    typeMap.put(NodeType.SWITCH_END, "SWITCH_END");
-	    typeMap.put(NodeType.FOR_INIT, "FOR_INIT");
-	    typeMap.put(NodeType.FOR_EXPR, "FOR_EXPR");
-	    typeMap.put(NodeType.FOR_UPDATE, "FOR_UPDATE");
-	    typeMap.put(NodeType.FOR_BEFORE_FIRST_STATEMENT, "FOR_BEFORE_FIRST_STATEMENT");
-	    typeMap.put(NodeType.FOR_END, "FOR_END");
-	    typeMap.put(NodeType.DO_BEFORE_FIRST_STATEMENT, "DO_BEFORE_FIRST_STATEMENT");
-	    typeMap.put(NodeType.DO_EXPR, "DO_EXPR");
-	    typeMap.put(NodeType.RETURN_STATEMENT, "RETURN_STATEMENT");
-	    typeMap.put(NodeType.BREAK_STATEMENT, "BREAK_STATEMENT");
-	    typeMap.put(NodeType.CONTINUE_STATEMENT, "CONTINUE_STATEMENT");
-	    typeMap.put(NodeType.LABEL_STATEMENT, "LABEL_STATEMENT");
-	    typeMap.put(NodeType.LABEL_LAST_STATEMENT, "LABEL_END");
-	    typeMap.put(NodeType.THROW_STATEMENT, "THROW_STATEMENT");
+            TYPE_MAP.put(NodeType.IF_EXPR, "IF_EXPR");
+	    TYPE_MAP.put(NodeType.IF_LAST_STATEMENT, "IF_LAST_STATEMENT");
+	    TYPE_MAP.put(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, "IF_LAST_STATEMENT_WITHOUT_ELSE");
+	    TYPE_MAP.put(NodeType.ELSE_LAST_STATEMENT, "ELSE_LAST_STATEMENT");
+	    TYPE_MAP.put(NodeType.WHILE_LAST_STATEMENT, "WHILE_LAST_STATEMENT");
+	    TYPE_MAP.put(NodeType.WHILE_EXPR, "WHILE_EXPR");
+	    TYPE_MAP.put(NodeType.SWITCH_START, "SWITCH_START");
+	    TYPE_MAP.put(NodeType.CASE_LAST_STATEMENT, "CASE_LAST_STATEMENT");
+	    TYPE_MAP.put(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, "SWITCH_LAST_DEFAULT_STATEMENT");
+	    TYPE_MAP.put(NodeType.SWITCH_END, "SWITCH_END");
+	    TYPE_MAP.put(NodeType.FOR_INIT, "FOR_INIT");
+	    TYPE_MAP.put(NodeType.FOR_EXPR, "FOR_EXPR");
+	    TYPE_MAP.put(NodeType.FOR_UPDATE, "FOR_UPDATE");
+	    TYPE_MAP.put(NodeType.FOR_BEFORE_FIRST_STATEMENT, "FOR_BEFORE_FIRST_STATEMENT");
+	    TYPE_MAP.put(NodeType.FOR_END, "FOR_END");
+	    TYPE_MAP.put(NodeType.DO_BEFORE_FIRST_STATEMENT, "DO_BEFORE_FIRST_STATEMENT");
+	    TYPE_MAP.put(NodeType.DO_EXPR, "DO_EXPR");
+	    TYPE_MAP.put(NodeType.RETURN_STATEMENT, "RETURN_STATEMENT");
+	    TYPE_MAP.put(NodeType.BREAK_STATEMENT, "BREAK_STATEMENT");
+	    TYPE_MAP.put(NodeType.CONTINUE_STATEMENT, "CONTINUE_STATEMENT");
+	    TYPE_MAP.put(NodeType.LABEL_STATEMENT, "LABEL_STATEMENT");
+	    TYPE_MAP.put(NodeType.LABEL_LAST_STATEMENT, "LABEL_END");
+	    TYPE_MAP.put(NodeType.THROW_STATEMENT, "THROW_STATEMENT");
     }
 
 
     public static Map<Integer, String> getTypeMap() {
-	return typeMap;
+	return TYPE_MAP;
     } 
     public static String stringFromType(int intype) {
         if(-1 == intype) { return "<ROOT>" ; }
-	if (!typeMap.containsKey(intype) ) {
+	if (!TYPE_MAP.containsKey(intype) ) {
 	    throw new RuntimeException("Couldn't find NodeType type id " + intype);
 	}
-	return typeMap.get(intype);
+	return TYPE_MAP.get(intype);
     } 
 }

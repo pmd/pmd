@@ -61,7 +61,9 @@ public class XPathCLI {
 
         for (Iterator<RuleViolation> i = ctx.getReport().iterator(); i.hasNext();) {
             RuleViolation rv = i.next();
-            StringBuilder sb = new StringBuilder("Match at line " + rv.getBeginLine() + " column " + rv.getBeginColumn());
+            StringBuilder sb = new StringBuilder(60)
+                .append("Match at line ").append(rv.getBeginLine())
+                .append(" column ").append(rv.getBeginColumn());
             if (StringUtil.isNotEmpty(rv.getPackageName())) {
                 sb.append("; package name '" + rv.getPackageName() + "'");
             }

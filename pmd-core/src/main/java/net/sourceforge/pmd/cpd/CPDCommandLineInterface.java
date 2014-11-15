@@ -22,13 +22,14 @@ public class CPDCommandLineInterface {
 	public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
 	public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
-	private static final String progName = "cpd";
+	private static final String PROGRAM_NAME = "cpd";
 
 	public static void setStatusCodeOrExit(int status) {
-		if (isExitAfterRunSet())
+		if (isExitAfterRunSet()) {
 			System.exit(status);
-		else
+		} else {
 			setStatusCode(status);
+		}
 	}
 
 	private static boolean isExitAfterRunSet() {
@@ -46,7 +47,7 @@ public class CPDCommandLineInterface {
 	public static void main(String[] args) {
 		CPDConfiguration arguments = new CPDConfiguration();
 		JCommander jcommander = new JCommander(arguments);
-		jcommander.setProgramName(progName);
+		jcommander.setProgramName(PROGRAM_NAME);
 
 		try {
 			jcommander.parse(args);
@@ -91,10 +92,11 @@ public class CPDCommandLineInterface {
 	private static void addSourcesFilesToCPD(List<String> files, CPD cpd, boolean recursive) {
 		try {
 			for (String file : files)
-				if (recursive)
+				if (recursive) {
 					cpd.addRecursively(file);
-				else
+				} else {
 					cpd.addAllInDirectory(file);
+				}
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

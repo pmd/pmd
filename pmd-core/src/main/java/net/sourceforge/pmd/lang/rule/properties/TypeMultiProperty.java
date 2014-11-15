@@ -19,7 +19,7 @@ import net.sourceforge.pmd.util.StringUtil;
 public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
 
-	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeMultiProperty>(Class[].class, packagedFieldTypesByKey) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeMultiProperty>(Class[].class, PACKAGED_FIELD_TYPES_BY_KEY) {
 		
 		public TypeMultiProperty createWith(Map<String, String> valuesById) {
 			return new TypeMultiProperty(

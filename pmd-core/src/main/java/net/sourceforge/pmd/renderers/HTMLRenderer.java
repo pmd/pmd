@@ -137,7 +137,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     private void glomProcessingErrors(Writer writer, List<Report.ProcessingError> errors) throws IOException {
 	
-    	if (errors.isEmpty()) return;
+    	if (errors.isEmpty()) {
+    	    return;
+    	}
     	
 	    writer.write("<hr/>");
 	    writer.write("<center><h3>Processing errors</h3></center>");
@@ -163,7 +165,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     }
 
     private void glomSuppressions(Writer writer, List<Report.SuppressedViolation> suppressed) throws IOException {
-		if (suppressed.isEmpty())  return;
+		if (suppressed.isEmpty()) {
+		    return;
+		}
 
 		writer.write("<hr/>");
 		writer.write("<center><h3>Suppressed warnings</h3></center>");

@@ -309,13 +309,15 @@ public class RuleSet {
                     Benchmarker.mark(Benchmark.Rule, rule.getName(), end - start, 1);
                     start = end;
                 }
-            } catch (ThreadDeath td) {
-                throw td;
             } catch (Throwable t) {
-                if (ctx.isIgnoreExceptions()) {
-                    LOG.log(Level.WARNING, "Exception applying rule " + rule.getName()
+                if (t instanceof ThreadDeath) {
+                    throw (ThreadDeath)t;
+                } else if (ctx.isIgnoreExceptions()) {
+                    if (LOG.isLoggable(Level.WARNING)) {
+                        LOG.log(Level.WARNING, "Exception applying rule " + rule.getName()
                             + " on file " + ctx.getSourceCodeFilename() + ", continuing with next rule",
                             t);
+                    }
                 } else {
                     throw new RuntimeException(t);
                 }
@@ -415,8 +417,9 @@ public class RuleSet {
      * @param aPattern the pattern
      */
     public void addExcludePattern(String aPattern) {
-        if (excludePatterns.contains(aPattern))
+        if (excludePatterns.contains(aPattern)) {
             return;
+        }
 
         excludePatterns.add(aPattern);
         patternsChanged();
@@ -429,8 +432,9 @@ public class RuleSet {
      */
     public void addExcludePatterns(Collection<String> someExcludePatterns) {
         int added = CollectionUtil.addWithoutDuplicates(someExcludePatterns, excludePatterns);
-        if (added > 0)
+        if (added > 0) {
             patternsChanged();
+        }
     }
 
     /**
@@ -439,8 +443,9 @@ public class RuleSet {
      * @param theExcludePatterns the new patterns
      */
     public void setExcludePatterns(Collection<String> theExcludePatterns) {
-        if (excludePatterns.equals(theExcludePatterns))
+        if (excludePatterns.equals(theExcludePatterns)) {
             return;
+        }
 
         excludePatterns.clear();
         CollectionUtil.addWithoutDuplicates(theExcludePatterns, excludePatterns);
@@ -457,9 +462,9 @@ public class RuleSet {
      * @param aPattern the pattern
      */
     public void addIncludePattern(String aPattern) {
-
-        if (includePatterns.contains(aPattern))
+        if (includePatterns.contains(aPattern)) {
             return;
+        }
 
         includePatterns.add(aPattern);
         patternsChanged();
@@ -471,10 +476,10 @@ public class RuleSet {
      * @param someIncludePatterns the patterns
      */
     public void addIncludePatterns(Collection<String> someIncludePatterns) {
-
         int added = CollectionUtil.addWithoutDuplicates(someIncludePatterns, includePatterns);
-        if (added > 0)
+        if (added > 0) {
             patternsChanged();
+        }
     }
 
     /**
@@ -483,9 +488,9 @@ public class RuleSet {
      * @param theIncludePatterns the new patterns
      */
     public void setIncludePatterns(Collection<String> theIncludePatterns) {
-
-        if (includePatterns.equals(theIncludePatterns))
+        if (includePatterns.equals(theIncludePatterns)) {
             return;
+        }
 
         includePatterns.clear();
         CollectionUtil.addWithoutDuplicates(theIncludePatterns, includePatterns);
@@ -521,7 +526,6 @@ public class RuleSet {
      * @param collector the removed rules will be added to this collection
      */
     public void removeDysfunctionalRules(Collection<Rule> collector) {
-
         Iterator<Rule> iter = rules.iterator();
 
         while (iter.hasNext()) {

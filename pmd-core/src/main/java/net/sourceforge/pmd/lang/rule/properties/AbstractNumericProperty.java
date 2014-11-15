@@ -23,7 +23,7 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
 	private Number lowerLimit;
 	private Number upperLimit;
 	
-	public static final Map<String, Boolean> numberFieldTypesByKey = BasicPropertyDescriptorFactory.expectedFieldTypesWith(
+	public static final Map<String, Boolean> NUMBER_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory.expectedFieldTypesWith(
 			new String[]  { MIN,  	  MAX}, 
 			new Boolean[] { Boolean.TRUE, Boolean.TRUE}
 			);
@@ -78,10 +78,10 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
 	 * @return String
 	 */
 	public String rangeString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append('(').append(lowerLimit);
-		sb.append(" -> ").append(upperLimit);
-		sb.append(')');
+		StringBuilder sb = new StringBuilder()
+		  .append('(').append(lowerLimit)
+		  .append(" -> ").append(upperLimit)
+		  .append(')');
 		return sb.toString();
 	}
 	

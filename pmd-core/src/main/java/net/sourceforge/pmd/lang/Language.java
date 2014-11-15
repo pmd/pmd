@@ -27,7 +27,7 @@ import java.util.List;
  */
 public interface Language {
 
-    static final String LANGUAGE_MODULES_CLASS_NAMES_PROPERTY = "languageModulesClassNames";
+    String LANGUAGE_MODULES_CLASS_NAMES_PROPERTY = "languageModulesClassNames";
 
     /**
      * Get the full name of this Language.  This is generally the name of this

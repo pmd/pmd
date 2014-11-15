@@ -26,7 +26,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
 	private static final char PACKAGE_NAME_DELIMITER = ' ';
 	
-	protected static final Map<String, Boolean> packagedFieldTypesByKey = BasicPropertyDescriptorFactory.expectedFieldTypesWith(
+	protected static final Map<String, Boolean> PACKAGED_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory.expectedFieldTypesWith(
 			new String[]  { LEGAL_PACKAGES}, 
 			new Boolean[] { Boolean.FALSE}
 			);

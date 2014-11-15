@@ -7,7 +7,7 @@ package net.sourceforge.pmd.util;
  * 
  * @author Brian Remedios
  */
-public class DateTimeUtil {
+public final class DateTimeUtil {
 
 	private DateTimeUtil() {}
 	
@@ -18,7 +18,9 @@ public class DateTimeUtil {
 	 */
 	public static String asHoursMinutesSeconds(long milliseconds) {
 		
-		if (milliseconds < 0) throw new IllegalArgumentException();
+		if (milliseconds < 0) {
+		    throw new IllegalArgumentException();
+		}
 		
 		long seconds = 0;
         long minutes = 0;

@@ -64,7 +64,9 @@ public class CSVWriter<T extends Object>  {
     }
 
     private void quote(StringBuilder buffer, String s) {
-    	if (s == null) return;
+    	if (s == null) {
+    	    return;
+    	}
     	buffer.append('"').append(s).append('"');
     }
 

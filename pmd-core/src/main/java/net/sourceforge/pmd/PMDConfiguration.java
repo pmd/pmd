@@ -364,8 +364,9 @@ public class PMDConfiguration extends AbstractConfiguration {
     public Renderer createRenderer(boolean withReportWriter) {
         Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
-        if (withReportWriter)
+        if (withReportWriter) {
             renderer.setWriter(IOUtil.createWriter(reportFile));
+        }
         return renderer;
     }
 

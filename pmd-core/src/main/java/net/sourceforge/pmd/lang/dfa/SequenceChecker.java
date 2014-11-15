@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -188,15 +189,16 @@ public class SequenceChecker {
         int maximumIterations = this.bracesList.size() * this.bracesList.size() ;
 	for (int i = 0, l = 0; i < this.bracesList.size(); l++, i++) {
 	    StackObject so = bracesList.get(i);
+	    if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("Processing bracesList(l,i)=("+l+","+i+") of Type "
                           + NodeType.stringFromType(so.getType()) + " with State (aktStatus) = " 
                           + aktStatus
                          );
-
             //LOGGER.finest("StackObject of Type="+so.getType());
             LOGGER.finest("DataFlowNode @ line "+ so.getDataFlowNode().getLine() + " and index=" 
                            + so.getDataFlowNode().getIndex()
                          );
+	    }
 
             //Attempt to get to this StackObject's NodeType from the current State
 	    aktStatus = this.aktStatus.step(so.getType());
@@ -212,7 +214,9 @@ public class SequenceChecker {
                 //Cope with incorrect bracesList contents
                 else if (l >  maximumIterations )
                 {
-                  LOGGER.severe("aktStatus is NULL: maximum Iterations exceeded, abort "+i);
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.severe("aktStatus is NULL: maximum Iterations exceeded, abort "+i);
+                    }
                   LOGGER.exiting(this.getClass().getCanonicalName(),"run", false);
                   return false;
                 }
@@ -220,13 +224,17 @@ public class SequenceChecker {
                   this.aktStatus = root;
                   this.firstIndex = i;
                   i--;
-                  LOGGER.finest("aktStatus is NULL: Restarting search continue i==" +i + ", firstIndex=" + this.firstIndex );
+                  if (LOGGER.isLoggable(Level.FINEST)) {
+                      LOGGER.finest("aktStatus is NULL: Restarting search continue i==" +i + ", firstIndex=" + this.firstIndex );
+                  }
                   continue;
                 }
 	    } else { // This NodeType _is_ a valid transition from the previous State
 		if (aktStatus.isLastStep() && !aktStatus.hasMoreSteps()) { //Terminal State
 		    this.lastIndex = i;
+		    if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.finest("aktStatus is NOT NULL: lastStep reached and no moreSteps - firstIndex=" + firstIndex + ", lastIndex=" + lastIndex);
+		    }
                     LOGGER.exiting(this.getClass().getCanonicalName(),"run", false);
 		    return false;
 		} else if (aktStatus.isLastStep() && aktStatus.hasMoreSteps()) {
@@ -236,7 +244,9 @@ public class SequenceChecker {
 		}
 	    }
 	}
+	if (LOGGER.isLoggable(Level.FINEST)) {
         LOGGER.finer("Completed search: firstIndex=" + firstIndex + ", lastIndex=" + lastIndex);
+	}
         LOGGER.exiting(this.getClass().getCanonicalName(),"run", this.firstIndex == this.lastIndex);
 	return this.firstIndex == this.lastIndex;
     }

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  */
 public class TypeProperty extends AbstractPackagedProperty<Class> {
 
-	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeProperty>(Class.class, packagedFieldTypesByKey) {
+	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeProperty>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
 		public TypeProperty createWith(Map<String, String> valuesById) {
 			return new TypeProperty(

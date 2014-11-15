@@ -121,8 +121,9 @@ public final class FileUtil {
     	FileIterable it = new FileIterable(file);
     	for ( String line : it ){
     		matcher.reset( line ); //reset the input
-    		if ( matcher.find() )
+    		if ( matcher.find() ) {
     			return true;
+    		}
     	}
     	return false;
     }

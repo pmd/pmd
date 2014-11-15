@@ -34,12 +34,14 @@ public class FileIterable implements Iterable<String> {
 
 	protected void finalize() throws Throwable {
 		try {
-			if (lineReader!= null)
+			if (lineReader!= null) {
 				lineReader.close();
+			}
 		}
 		catch (IOException e) {
     		throw new IllegalStateException(e);
 		}
+		super.finalize();
 	}
 
 	public Iterator<String> iterator() {

@@ -42,10 +42,19 @@ public class DBType
      RETURN_TYPE("returnType", "int equivalent of java.sql.Types return type of getSourceCodeStatement");
 
      private String name;
+     private String description;
 
      private property(String name, String description)
      {
-      this.name = name; 
+      this.name = name;
+      this.description = description;
+     }
+
+     public String getPropertyName() {
+         return name;
+     }
+     public String getDescription() {
+         return description;
      }
   } 
 
@@ -93,7 +102,9 @@ public class DBType
   public DBType(String subProtocol, String subnamePrefix) throws IOException
   {
 
-     LOGGER.fine("subProtocol="+subProtocol+", subnamePrefix="+subnamePrefix);
+      if (LOGGER.isLoggable(Level.FINE)) {
+          LOGGER.fine("subProtocol="+subProtocol+", subnamePrefix="+subnamePrefix);
+      }
      
      if (null == subProtocol &&  null == subnamePrefix)
      {
@@ -109,11 +120,11 @@ public class DBType
           && null != (properties = loadDBProperties(subnamePrefix)) 
           )
        {
-          LOGGER.log(Level.FINE, "DBType found using subnamePrefix={0}", subnamePrefix); 
+           LOGGER.log(Level.FINE, "DBType found using subnamePrefix={0}", subnamePrefix);
        }
        else if (null != (properties = loadDBProperties(subProtocol) ) )
        {
-          LOGGER.log(Level.FINE, "DBType found using subProtocol={0}", subProtocol); 
+           LOGGER.log(Level.FINE, "DBType found using subProtocol={0}", subProtocol);
        }
        else
        { 
@@ -146,7 +157,9 @@ public class DBType
         //Locale locale = Control.g;
         ResourceBundle resourceBundle = null;
 
-        LOGGER.finest("class_path+"+System.getProperty("java.class.path"));
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("class_path+"+System.getProperty("java.class.path"));
+        }
 
         /*
          * Attempt to match properties files in this order:-
@@ -158,28 +171,36 @@ public class DBType
          */
         try {
             File propertiesFile = new File(matchString);
-            LOGGER.finest("Attempting File no file suffix: " + matchString);
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest("Attempting File no file suffix: " + matchString);
+            }
             resourceBundle = new PropertyResourceBundle(new FileInputStream(propertiesFile));
             propertiesSource = propertiesFile.getAbsolutePath();
             LOGGER.finest("FileSystemWithoutExtension");
         } catch (FileNotFoundException notFoundOnFilesystemWithoutExtension) {
-            LOGGER.finest("notFoundOnFilesystemWithoutExtension");
-            LOGGER.finest("Attempting File with added file suffix: " 
-                                + matchString + ".properties");
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest("notFoundOnFilesystemWithoutExtension");
+                LOGGER.finest("Attempting File with added file suffix: " 
+                                    + matchString + ".properties");
+            }
             try {
                 File propertiesFile = new File(matchString + ".properties");
                 resourceBundle = new PropertyResourceBundle(new FileInputStream(propertiesFile));
                 propertiesSource = propertiesFile.getAbsolutePath();
                 LOGGER.finest("FileSystemWithExtension");
             } catch (FileNotFoundException notFoundOnFilesystemWithExtensionTackedOn) {
-                LOGGER.finest("Attempting JARWithoutClassPrefix: " + matchString);
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.finest("Attempting JARWithoutClassPrefix: " + matchString);
+                }
                 try {
                     resourceBundle = ResourceBundle.getBundle(matchString);
                     propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator 
                                         + matchString + ".properties";
                     LOGGER.finest("InJarWithoutPath");
                 } catch (Exception notInJarWithoutPath) {
-                  LOGGER.finest("Attempting JARWithClass prefix: " + DBType.CLASS_NAME + "." + matchString);
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                        LOGGER.finest("Attempting JARWithClass prefix: " + DBType.CLASS_NAME + "." + matchString);
+                    }
                   try {
                       resourceBundle = ResourceBundle.getBundle(DBType.CLASS_NAME + "." + matchString);
                       propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator 
@@ -247,21 +268,65 @@ public class DBType
         return properties;
     }
 
-    public boolean equals(DBType other)
-    {
-     
-      return 
-      this.getPropertiesSource().equals(other.getPropertiesSource()) &&
-      this.getProperties().equals(other.getProperties())  &&
-      this.getDriverClass().equals(other.getDriverClass())  &&
-      this.getCharacterSet().equals(other.getCharacterSet()) &&
-      this.getSourceCodeTypes().equals(other.getSourceCodeTypes()) &&
-      this.getLanguages().equals(other.getLanguages()) &&
-      this.getSourceCodeReturnType() == other.getSourceCodeReturnType()
-      ; 
+  @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((characterSet == null) ? 0 : characterSet.hashCode());
+        result = prime * result + ((driverClass == null) ? 0 : driverClass.hashCode());
+        result = prime * result + ((languages == null) ? 0 : languages.hashCode());
+        result = prime * result + ((properties == null) ? 0 : properties.hashCode());
+        result = prime * result + ((propertiesSource == null) ? 0 : propertiesSource.hashCode());
+        result = prime * result + sourceCodeReturnType;
+        result = prime * result + ((sourceCodeTypes == null) ? 0 : sourceCodeTypes.hashCode());
+        return result;
     }
 
-  /**
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        DBType other = (DBType) obj;
+        if (characterSet == null) {
+            if (other.characterSet != null)
+                return false;
+        } else if (!characterSet.equals(other.characterSet))
+            return false;
+        if (driverClass == null) {
+            if (other.driverClass != null)
+                return false;
+        } else if (!driverClass.equals(other.driverClass))
+            return false;
+        if (languages == null) {
+            if (other.languages != null)
+                return false;
+        } else if (!languages.equals(other.languages))
+            return false;
+        if (properties == null) {
+            if (other.properties != null)
+                return false;
+        } else if (!properties.equals(other.properties))
+            return false;
+        if (propertiesSource == null) {
+            if (other.propertiesSource != null)
+                return false;
+        } else if (!propertiesSource.equals(other.propertiesSource))
+            return false;
+        if (sourceCodeReturnType != other.sourceCodeReturnType)
+            return false;
+        if (sourceCodeTypes == null) {
+            if (other.sourceCodeTypes != null)
+                return false;
+        } else if (!sourceCodeTypes.equals(other.sourceCodeTypes))
+            return false;
+        return true;
+    }
+
+/**
    * @return the driverClass
    */
   public String getDriverClass() {

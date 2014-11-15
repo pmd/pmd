@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Stack;
 
@@ -69,16 +70,20 @@ public class Structure {
 		|| type == NodeType.CONTINUE_STATEMENT || type == NodeType.THROW_STATEMENT) {
 	    // ugly solution - stores the type information in two ways
 	    continueBreakReturnStack.push(obj);
+	    if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("continueBreakReturnStack: line " + node.getNode().getBeginLine() 
                           + ", column " + node.getNode().getBeginColumn() 
                           +" - " + node.toString()
                          );
+	    }
 	} else {
 	    braceStack.push(obj);
+	    if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("braceStack: line " + node.getNode().getBeginLine() 
                           + ", column " + node.getNode().getBeginColumn() 
                           +" - " + node.toString()
                          );
+	    }
 	}
 	node.setType(type);
     }
@@ -96,9 +101,9 @@ public class Structure {
      * @return formatted dump of the DFA Structure's  
      */
     public String dump() {
-      StringBuilder stringDump = new StringBuilder() ; 
-      stringDump.append ("Data Flow Analysis Structure:\n");
-      stringDump.append ("    Edge Nodes (ContinueBraceReturn) :");
+      StringBuilder stringDump = new StringBuilder(120)
+        .append ("Data Flow Analysis Structure:\n")
+        .append ("    Edge Nodes (ContinueBraceReturn) :");
       for (StackObject stackObject  : continueBreakReturnStack )
       {
 	stringDump.append("\nCBR => ").append(stackObject.toString());

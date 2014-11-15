@@ -185,7 +185,7 @@ public class Benchmarker {
         }
     }
 
-    private static final Map<String, BenchmarkResult> BenchmarksByName = new HashMap<String, BenchmarkResult>();
+    private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<String, BenchmarkResult>();
 
     /**
      * @param type Benchmark
@@ -212,16 +212,16 @@ public class Benchmarker {
         } else if (typeName == null) {
             typeName = name;
         }
-        BenchmarkResult benchmarkResult = BenchmarksByName.get(typeName);
+        BenchmarkResult benchmarkResult = BENCHMARKS_BY_NAME.get(typeName);
         if (benchmarkResult == null) {
             benchmarkResult = new BenchmarkResult(type, typeName);
-            BenchmarksByName.put(typeName, benchmarkResult);
+            BENCHMARKS_BY_NAME.put(typeName, benchmarkResult);
         }
         benchmarkResult.update(time, count);
     }
 
     public static void reset() {
-        BenchmarksByName.clear();
+        BENCHMARKS_BY_NAME.clear();
     }
 
     /**
@@ -229,6 +229,6 @@ public class Benchmarker {
      * @return Map<String,BenchmarkResult>
      */
     public static Map<String, BenchmarkResult> values() {
-    	return BenchmarksByName;
+    	return BENCHMARKS_BY_NAME;
     }
 }

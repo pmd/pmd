@@ -322,8 +322,9 @@ public class Report implements Iterable<RuleViolation> {
      * @param error the error to add
      */
     public void addConfigError(RuleConfigurationError error) {
-        if (configErrors == null)
+        if (configErrors == null) {
             configErrors = new ArrayList<RuleConfigurationError>();
+        }
         configErrors.add(error);
     }
 
@@ -333,8 +334,9 @@ public class Report implements Iterable<RuleViolation> {
      * @param error the error to add
      */
     public void addError(ProcessingError error) {
-        if (errors == null)
+        if (errors == null) {
             errors = new ArrayList<ProcessingError>();
+        }
         errors.add(error);
     }
 

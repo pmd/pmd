@@ -301,7 +301,9 @@ public class RuleReference extends AbstractDelegateRule {
 		// not sure if we should go all the way through to the real thing?
 				getRule().useDefaultValueFor(desc);
 
-				if (propertyValues == null) return;
+				if (propertyValues == null) {
+				    return;
+				}
 
 				propertyValues.remove(desc);
 

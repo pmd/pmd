@@ -29,14 +29,14 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     private CSVWriter<RuleViolation> csvWriter;
 
-    private static final String DefaultSeparator = ",";
+    private static final String DEFAULT_SEPARATOR = ",";
 
-    private static final Map<String, BooleanProperty> propertyDescriptorsById = new HashMap<String, BooleanProperty>();
+    private static final Map<String, BooleanProperty> PROPERTY_DESCRIPTORS_BY_ID = new HashMap<String, BooleanProperty>();
 
     public static final String NAME = "csv";
 
     @SuppressWarnings("unchecked")
-	private static final ColumnDescriptor<RuleViolation>[] AllColumns = new ColumnDescriptor[] {
+	private static final ColumnDescriptor<RuleViolation>[] ALL_COLUMNS = new ColumnDescriptor[] {
     	new ColumnDescriptor<RuleViolation>("problem", 	"Problem", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return Integer.toString(idx); }} ),
     	new ColumnDescriptor<RuleViolation>("package",	"Package", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getPackageName(); }} ),
     	new ColumnDescriptor<RuleViolation>("file",		"File", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getFilename(); }} ),
@@ -50,11 +50,13 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     private static BooleanProperty booleanPropertyFor(String id, String label) {
 
-    	BooleanProperty prop = propertyDescriptorsById.get(id);
-    	if (prop != null) return prop;
+    	BooleanProperty prop = PROPERTY_DESCRIPTORS_BY_ID.get(id);
+    	if (prop != null) {
+    	    return prop;
+    	}
 
     	prop = new BooleanProperty(id, "Include " + label + " column", true, 1.0f);
-    	propertyDescriptorsById.put(id, prop);
+    	PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
     	return prop;
     }
 
@@ -73,7 +75,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     	List<ColumnDescriptor<RuleViolation>> actives = new ArrayList<ColumnDescriptor<RuleViolation>>();
 
-     	for (ColumnDescriptor<RuleViolation> desc : AllColumns) {
+     	for (ColumnDescriptor<RuleViolation> desc : ALL_COLUMNS) {
     		BooleanProperty prop = booleanPropertyFor(desc.id, null);
     		if (getProperty(prop)) {
     			actives.add(desc);
@@ -85,14 +87,16 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     }
 
     private CSVWriter<RuleViolation> csvWriter() {
-    	if (csvWriter != null) return csvWriter;
+    	if (csvWriter != null) {
+    	    return csvWriter;
+    	}
 
     	csvWriter = new CSVWriter<RuleViolation>(activeColumns(), separator, cr);
     	return csvWriter;
     }
 
     public CSVRenderer() {
-    	this( AllColumns, DefaultSeparator, PMD.EOL);
+    	this( ALL_COLUMNS, DEFAULT_SEPARATOR, PMD.EOL);
     }
 
     /**

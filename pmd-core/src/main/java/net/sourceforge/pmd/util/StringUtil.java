@@ -46,7 +46,9 @@ public final class StringUtil {
     public static boolean isAnyOf(String text, String... tests) {
 
     	for (String test : tests) {
-    		if (text.equals(test)) return true;
+    		if (text.equals(test)) {
+    		    return true;
+    		}
     	}
 
     	return false;

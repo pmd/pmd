@@ -36,13 +36,13 @@ import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
  */
 public class PropertyDescriptorUtil {
 						
-	public static final Comparator<PropertyDescriptor<?>> ComparatorByOrder = new Comparator<PropertyDescriptor<?>>() {
+	public static final Comparator<PropertyDescriptor<?>> COMPARATOR_BY_ORDER = new Comparator<PropertyDescriptor<?>>() {
 		public int compare(PropertyDescriptor<?> pd1, PropertyDescriptor<?> pd2) {
 			return  pd2.uiOrder() > pd1.uiOrder() ? -1 : 1;
 		}
 	};
 	
-    private static final Map<String, PropertyDescriptorFactory> descriptorFactoriesByType;
+    private static final Map<String, PropertyDescriptorFactory> DESCRIPTOR_FACTORIES_BY_TYPE;
     static {
     	Map<String, PropertyDescriptorFactory> temp = new HashMap<String, PropertyDescriptorFactory>(18);
     	
@@ -72,17 +72,17 @@ public class PropertyDescriptorUtil {
     	
     	temp.put("File", 		FileProperty.FACTORY);
 
-    	descriptorFactoriesByType = Collections.unmodifiableMap(temp);
+    	DESCRIPTOR_FACTORIES_BY_TYPE = Collections.unmodifiableMap(temp);
     	}
     
     public static PropertyDescriptorFactory factoryFor(String typeId) {
-    	return descriptorFactoriesByType.get(typeId);
+    	return DESCRIPTOR_FACTORIES_BY_TYPE.get(typeId);
     }
     
     public static String typeIdFor(Class<?> valueType) {
     	
     	// a reverse lookup, not very efficient but fine for now
-    	for (Map.Entry<String, PropertyDescriptorFactory> entry : descriptorFactoriesByType.entrySet()) {
+    	for (Map.Entry<String, PropertyDescriptorFactory> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
     		if (entry.getValue().valueType() == valueType) {
     			return entry.getKey();
     		}

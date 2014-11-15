@@ -8,5 +8,5 @@ import java.util.List;
 import net.sourceforge.pmd.Rule;
 
 public interface DFAGraphRule extends Rule {
-    public List<DFAGraphMethod> getMethods();
+    List<DFAGraphMethod> getMethods();
 }

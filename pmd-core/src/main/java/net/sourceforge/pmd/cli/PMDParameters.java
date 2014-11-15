@@ -78,14 +78,15 @@ public class PMDParameters {
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
-        private static final char separator = '=';
+        private static final char SEPARATOR = '=';
 
         public Properties convert(String value) {
             Properties properties = new Properties();
-            int indexOfSeparator = value.indexOf(separator);
-            if (indexOfSeparator < 0)
+            int indexOfSeparator = value.indexOf(SEPARATOR);
+            if (indexOfSeparator < 0) {
                 throw new ParameterException(
                         "Property name must be separated with an = sign from it value: name=value.");
+            }
             String propertyName = value.substring(0, indexOfSeparator);
             String propertyValue = value.substring(indexOfSeparator + 1);
             properties.put(propertyName, propertyValue);
@@ -98,9 +99,10 @@ public class PMDParameters {
 
         public int validate(String value) throws ParameterException {
             int minPriorityValue = Integer.parseInt(value);
-            if (minPriorityValue < 0 || minPriorityValue > 5)
+            if (minPriorityValue < 0 || minPriorityValue > 5) {
                 throw new ParameterException("Priority values can only be integer value, between 0 and 5," + value
                         + " is not valid");
+            }
             return minPriorityValue;
         }
 

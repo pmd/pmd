@@ -121,26 +121,27 @@ public class SourceObject {
   public String getSuffixFromType()
   {
     LOG.entering(CLASS_NAME, "getSuffixFromType", this);//.entering("type="+type.toUpperCase());
-    if (null == type || type.isEmpty())
+    if (null == type || type.isEmpty()) {
       return "";
-    else if (type.toUpperCase().indexOf("JAVA") >= 0)
+    } else if (type.toUpperCase().indexOf("JAVA") >= 0) {
       return ".java";
-    else if (type.toUpperCase().indexOf("TRIGGER") >= 0)
+    } else if (type.toUpperCase().indexOf("TRIGGER") >= 0) {
       return ".trg";
-    else if (type.toUpperCase().indexOf("FUNCTION") >= 0)
+    } else if (type.toUpperCase().indexOf("FUNCTION") >= 0) {
       return ".fnc";
-    else if (type.toUpperCase().indexOf("PROCEDURE") >= 0)
+    } else if (type.toUpperCase().indexOf("PROCEDURE") >= 0) {
       return ".prc";
-    else if (type.toUpperCase().indexOf("PACKAGE_BODY") >= 0)
+    } else if (type.toUpperCase().indexOf("PACKAGE_BODY") >= 0) {
       return ".pkb";
-    else if (type.toUpperCase().indexOf("PACKAGE") >= 0)
+    } else if (type.toUpperCase().indexOf("PACKAGE") >= 0) {
       return ".pks";
-    else if (type.toUpperCase().indexOf("TYPE_BODY") >= 0)
+    } else if (type.toUpperCase().indexOf("TYPE_BODY") >= 0) {
       return ".tpb";
-    else if (type.toUpperCase().indexOf("TYPE") >= 0)
+    } else if (type.toUpperCase().indexOf("TYPE") >= 0) {
       return ".tps";
-    else 
+    } else { 
       return "";
+    }
   }
 
     /**

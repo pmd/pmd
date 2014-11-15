@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -78,9 +79,11 @@ public class RendererFactory {
 	}
 	// Warn about legacy report format usages
 	if (REPORT_FORMAT_TO_RENDERER.containsKey(reportFormat) && !reportFormat.equals(renderer.getName())) {
+	    if (LOG.isLoggable(Level.WARNING)) {
 	    LOG.warning("Report format '" + reportFormat + "' is deprecated, and has been replaced with '"
 		    + renderer.getName()
 		    + "'. Future versions of PMD will remove support for this deprecated Report format usage.");
+	    }
 	}
 	return renderer;
     }

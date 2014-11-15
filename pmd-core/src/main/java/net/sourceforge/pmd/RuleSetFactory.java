@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -341,8 +342,9 @@ public class RuleSetFactory {
 		}
 
 		String attribute = ruleElement.getAttribute("class");
-		if ( attribute == null || "".equals(attribute))
+		if ( attribute == null || "".equals(attribute)) {
 			throw new IllegalArgumentException("The 'class' field of rule can't be null, nor empty.");
+		}
 		Rule rule = (Rule) classLoader.loadClass(attribute).newInstance();
 		rule.setName(ruleElement.getAttribute("name"));
 
@@ -474,17 +476,23 @@ public class RuleSetFactory {
 		if (warnDeprecated && referencedRule.isDeprecated()) {
 			if (referencedRule instanceof RuleReference) {
 				RuleReference ruleReference = (RuleReference) referencedRule;
-				LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + "/"
+				if (LOG.isLoggable(Level.WARNING)) {
+				    LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + "/"
 						+ ruleReference.getName() + " instead of the deprecated Rule name " + otherRuleSetReferenceId
 						+ ". Future versions of PMD will remove support for this deprecated Rule name usage.");
+				}
 			} else if (referencedRule instanceof MockRule) {
-				LOG.warning("Discontinue using Rule name " + otherRuleSetReferenceId
+                if (LOG.isLoggable(Level.WARNING)) {
+                    LOG.warning("Discontinue using Rule name " + otherRuleSetReferenceId
 						+ " as it has been removed from PMD and no longer functions."
 						+ " Future versions of PMD will remove support for this Rule.");
+                }
 			} else {
-				LOG.warning("Discontinue using Rule name " + otherRuleSetReferenceId
+                if (LOG.isLoggable(Level.WARNING)) {
+                    LOG.warning("Discontinue using Rule name " + otherRuleSetReferenceId
 						+ " as it is scheduled for removal from PMD."
 						+ " Future versions of PMD will remove support for this Rule.");
+                }
 			}
 		}
 
