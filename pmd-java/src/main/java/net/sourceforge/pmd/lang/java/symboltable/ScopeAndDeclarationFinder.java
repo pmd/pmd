@@ -165,6 +165,8 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
 	createClassScope(node);
+    Scope s = ((JavaNode)node.jjtGetParent()).getScope();
+    s.addDeclaration(new ClassNameDeclaration(node));
 	cont(node);
 	return data;
     }

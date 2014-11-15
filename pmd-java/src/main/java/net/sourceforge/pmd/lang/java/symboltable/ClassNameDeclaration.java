@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class ClassNameDeclaration extends AbstractNameDeclaration implements TypedNameDeclaration {
@@ -13,8 +14,20 @@ public class ClassNameDeclaration extends AbstractNameDeclaration implements Typ
         super(node);
     }
 
+    public ClassNameDeclaration(ASTEnumDeclaration node) {
+        super(node);
+    }
+
     public String toString() {
-        return "Class " + node.getImage();
+        if (node instanceof ASTClassOrInterfaceDeclaration) {
+            if (((ASTClassOrInterfaceDeclaration) node).isInterface()) {
+                return "Interface " + node.getImage();
+            } else {
+                return "Class " + node.getImage();
+            }
+        } else {
+            return "Enum " + node.getImage();
+        }
     }
 
     public Node getAccessNodeParent() {

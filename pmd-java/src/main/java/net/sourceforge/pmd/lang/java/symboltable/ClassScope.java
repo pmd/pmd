@@ -221,13 +221,31 @@ public class ClassScope extends AbstractJavaScope {
         List<TypedNameDeclaration> parameterTypes = new ArrayList<TypedNameDeclaration>();
         List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode().findDescendantsOfType(ASTFormalParameter.class);
         for (ASTFormalParameter p : parameters) {
-            Class<?> resolvedType = this.getEnclosingScope(SourceFileScope.class).resolveType(p.getTypeNode().getTypeImage());
+            String typeImage = p.getTypeNode().getTypeImage();
+            // typeImage might be qualified/unqualified. If it refers to a type, defined in the same toplevel class,
+            // we should normalize the name here.
+            typeImage = qualifyTypeName(typeImage);
+            Class<?> resolvedType = this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage);
             if (resolvedType == null) {
-                resolvedType = resolveGenericType(p, p.getTypeNode().getTypeImage());
+                resolvedType = resolveGenericType(p, typeImage);
             }
-            parameterTypes.add(new SimpleTypedNameDeclaration(p.getTypeNode().getTypeImage(), resolvedType));
+            parameterTypes.add(new SimpleTypedNameDeclaration(typeImage, resolvedType));
         }
         return parameterTypes;
+    }
+
+    private String qualifyTypeName(String typeImage) {
+        String result = typeImage;
+        for (String qualified : this.getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames()) {
+            int fullLength = qualified.length();
+            int nameLength = typeImage.length();
+            if (qualified.endsWith(typeImage)
+                 && (fullLength == nameLength || qualified.substring(0, fullLength - nameLength).endsWith("."))) {
+                result = qualified;
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -274,8 +292,10 @@ public class ClassScope extends AbstractJavaScope {
                         Map<VariableNameDeclaration, List<NameOccurrence>> vars = s.getDeclarations(VariableNameDeclaration.class);
                         for (VariableNameDeclaration d : vars.keySet()) {
                             if (d.getImage().equals(name.getImage())) {
-                                type = new SimpleTypedNameDeclaration(d.getTypeImage(),
-                                        this.getEnclosingScope(SourceFileScope.class).resolveType(d.getTypeImage()));
+                                String typeName = d.getTypeImage();
+                                typeName = qualifyTypeName(typeName);
+                                type = new SimpleTypedNameDeclaration(typeName,
+                                        this.getEnclosingScope(SourceFileScope.class).resolveType(typeName));
                                 break;
                             }
                         }
@@ -298,6 +318,7 @@ public class ClassScope extends AbstractJavaScope {
                 } else if (child instanceof ASTAllocationExpression && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType)child.jjtGetChild(0);
                     String typeImage = classInterface.getImage();
+                    typeImage = qualifyTypeName(typeImage);
                     type = new SimpleTypedNameDeclaration(typeImage,
                             this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage));
                 }

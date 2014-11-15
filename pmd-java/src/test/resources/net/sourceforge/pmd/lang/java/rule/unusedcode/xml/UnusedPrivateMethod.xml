@@ -1245,4 +1245,31 @@ public class TestPrivate {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1276 False positive in UnusedPrivateMethod when method arg is Object and not called with plain Object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Parent {
+    enum A {
+        someEnum;
+    }
+
+    public void doSomethingUnqualified(A a) {
+        doSomethingPrivateWithQualified(a);
+    }
+
+    private void doSomethingPrivateWithQualified(Parent.A a) {
+        // PMD error because it doesn't equate Parent.A as the same type as A.
+    }
+
+    public void doSomethingQualified(Parent.A a) {
+        doSomethingPrivateUnqualified(a);
+    }
+
+    private void doSomethingPrivateUnqualified(A a) {
+        // PMD error because it doesn't equate Parent.A as the same type as A.
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
