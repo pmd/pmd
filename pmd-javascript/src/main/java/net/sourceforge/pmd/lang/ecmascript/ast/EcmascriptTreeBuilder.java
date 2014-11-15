@@ -132,14 +132,14 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 	}
     }
 
-    protected List<ParseProblem> parseProblems;
-    protected Map<ParseProblem, TrailingCommaNode> parseProblemToNode = new HashMap<ParseProblem, TrailingCommaNode>();
+    private List<ParseProblem> parseProblems;
+    private Map<ParseProblem, TrailingCommaNode> parseProblemToNode = new HashMap<ParseProblem, TrailingCommaNode>();
 
     // The nodes having children built.
-    protected Stack<Node> nodes = new Stack<Node>();
+    private Stack<Node> nodes = new Stack<Node>();
 
     // The Rhino nodes with children to build.
-    protected Stack<AstNode> parents = new Stack<AstNode>();
+    private Stack<AstNode> parents = new Stack<AstNode>();
 
     private final SourceCodePositioner sourceCodePositioner;
 

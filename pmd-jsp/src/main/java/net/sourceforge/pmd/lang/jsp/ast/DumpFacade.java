@@ -17,7 +17,7 @@ public class DumpFacade extends JspParserVisitorAdapter {
 	private boolean recurse;
 
 	public void initializeWith(Writer writer, String prefix, boolean recurse, JspNode node) {
-		this.writer = (writer instanceof PrintWriter) ? (PrintWriter) writer : new PrintWriter(writer);
+		this.writer = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
 		this.recurse = recurse;
 		this.visit(node, prefix);
 		try {

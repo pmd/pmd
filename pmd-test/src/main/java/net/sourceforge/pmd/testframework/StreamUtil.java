@@ -9,13 +9,13 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 
 
-public class StreamUtil {
+public final class StreamUtil {
+
+    private StreamUtil() {
+        // utility class
+    }
 
 	public static String toString(InputStream in) {
-		if (in == null) {
-			throw new NullPointerException("no input stream given");
-		}
-
 		StringBuilder sb = new StringBuilder();
 		int c;
 		try {

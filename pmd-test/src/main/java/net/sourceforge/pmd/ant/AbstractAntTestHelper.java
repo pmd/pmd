@@ -45,8 +45,8 @@ public abstract class AbstractAntTestHelper extends BuildFileTest {
 	private void validatePostConstruct() {
 		if ( pathToTestScript == null || "".equals(pathToTestScript) ||
 			 antTestScriptFilename == null || "".equals(antTestScriptFilename) ||
-			 mvnWorkaround == null || "".equals(mvnWorkaround) )
+			 mvnWorkaround == null || "".equals(mvnWorkaround) ) {
 			throw new IllegalStateException("Unit tests for Ant script badly initialized");
-
+		}
 	}
 }

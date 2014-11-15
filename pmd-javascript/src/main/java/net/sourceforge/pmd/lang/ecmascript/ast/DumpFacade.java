@@ -17,7 +17,7 @@ public class DumpFacade {
 	private boolean recurse;
 
 	public void initializeWith(Writer writer, String prefix, boolean recurse, EcmascriptNode<?> node) {
-		this.writer = (writer instanceof PrintWriter) ? (PrintWriter) writer : new PrintWriter(writer);
+		this.writer = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
 		this.recurse = recurse;
 		this.dump(node, prefix);
 		try {

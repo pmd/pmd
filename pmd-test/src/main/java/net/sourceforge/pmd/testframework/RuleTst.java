@@ -84,12 +84,12 @@ public abstract class RuleTst {
                 if (test.getProperties() != null) {
                     for (Map.Entry<Object, Object> entry : test.getProperties().entrySet()) {
                 	String propertyName = (String)entry.getKey();
-                	String strValue = (String)entry.getValue();
                 	PropertyDescriptor propertyDescriptor = rule.getPropertyDescriptor(propertyName);
                 	if (propertyDescriptor == null) {
                             throw new IllegalArgumentException("No such property '" + propertyName + "' on Rule " + rule.getName());
                 	}
-                	Object value = propertyDescriptor.valueFrom(strValue);
+
+                	Object value = propertyDescriptor.valueFrom((String)entry.getValue());
                 	rule.setProperty(propertyDescriptor, value);
                     }
                 }
@@ -314,7 +314,6 @@ public abstract class RuleTst {
                 String propertyName = ruleProperty.getAttributes().getNamedItem("name").getNodeValue();
                 properties.setProperty(propertyName, parseTextNode(ruleProperty));
             }
-            int expectedProblems = Integer.parseInt(getNodeValue(testCode, "expected-problems", true));
 
             NodeList expectedMessagesNodes = testCode.getElementsByTagName("expected-messages");
             List<String> messages = new ArrayList<String>();
@@ -336,7 +335,6 @@ public abstract class RuleTst {
                 }
             }
 
-            String description = getNodeValue(testCode, "description", true);
             String code = getNodeValue(testCode, "code", false);
             if (code == null) {
                 //Should have a coderef
@@ -358,6 +356,9 @@ public abstract class RuleTst {
                     throw new RuntimeException("No matching code fragment found for coderef");
                 }
             }
+
+            String description = getNodeValue(testCode, "description", true);
+            int expectedProblems = Integer.parseInt(getNodeValue(testCode, "expected-problems", true));
 
             String languageVersionString = getNodeValue(testCode, "source-type", false);
             if (languageVersionString == null) {

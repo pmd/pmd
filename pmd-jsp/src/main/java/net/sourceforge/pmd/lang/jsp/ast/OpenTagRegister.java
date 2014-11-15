@@ -23,9 +23,10 @@ public class OpenTagRegister {
 	private List<ASTElement> tagList = new ArrayList<ASTElement>();
 
 	public void openTag(ASTElement elm) {
-		if (elm == null || StringUtil.isEmpty(elm.getName()))
+		if (elm == null || StringUtil.isEmpty(elm.getName())) {
 			throw new IllegalStateException(
 					"Tried to open a tag with empty name");
+		}
 
 		tagList.add(elm);
 	}
@@ -37,9 +38,10 @@ public class OpenTagRegister {
 	 * was ever opened ( or registered )
 	 */
 	public boolean closeTag(String closingTagName) {
-		if (StringUtil.isEmpty(closingTagName))
+		if (StringUtil.isEmpty(closingTagName)) {
 			throw new IllegalStateException(
 					"Tried to close a tag with empty name");
+		}
 
 		int lastRegisteredTagIdx = tagList.size() - 1;
 		/*

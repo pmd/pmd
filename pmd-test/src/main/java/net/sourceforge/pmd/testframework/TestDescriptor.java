@@ -123,7 +123,6 @@ public class TestDescriptor {
 		inRegressionMode = Boolean.parseBoolean(property);
 	    }
 	} catch (IllegalArgumentException e) {
-	} catch (NullPointerException e) {
 	}
 	
         return inRegressionMode;

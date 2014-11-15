@@ -21,7 +21,8 @@ public class CsTokenizer implements Tokenizer {
         BufferedReader reader = new BufferedReader(new CharArrayReader(sourceCode.getCodeBuffer().toString()
                 .toCharArray()));
         try {
-            int ic = reader.read(), line = 1;
+            int ic = reader.read();
+            int line = 1;
             char c;
             StringBuilder b;
             while (ic != -1) {
@@ -50,16 +51,16 @@ public class CsTokenizer implements Tokenizer {
                 case '>':
                     ic = reader.read();
                     if (ic == '=') {
-                        tokenEntries.add(new TokenEntry(String.valueOf(c) + "=", sourceCode.getFileName(), line));
+                        tokenEntries.add(new TokenEntry(c + "=", sourceCode.getFileName(), line));
                         ic = reader.read();
                     } else if (ic == c) {
                         ic = reader.read();
                         if (ic == '=') {
-                            tokenEntries.add(new TokenEntry(String.valueOf(c) + String.valueOf(c) + "=", sourceCode
+                            tokenEntries.add(new TokenEntry("" + c + c + "=", sourceCode
                                     .getFileName(), line));
                             ic = reader.read();
                         } else {
-                            tokenEntries.add(new TokenEntry(String.valueOf(c) + String.valueOf(c), sourceCode
+                            tokenEntries.add(new TokenEntry("" + c + c, sourceCode
                                     .getFileName(), line));
                         }
                     } else {
@@ -75,7 +76,7 @@ public class CsTokenizer implements Tokenizer {
                 case '-':
                     ic = reader.read();
                     if (ic == '=' || ic == c) {
-                        tokenEntries.add(new TokenEntry(String.valueOf(c) + String.valueOf((char) ic), sourceCode
+                        tokenEntries.add(new TokenEntry("" + c + ((char) ic), sourceCode
                                 .getFileName(), line));
                         ic = reader.read();
                     } else {
@@ -91,7 +92,7 @@ public class CsTokenizer implements Tokenizer {
                 case '~':
                     ic = reader.read();
                     if (ic == '=') {
-                        tokenEntries.add(new TokenEntry(String.valueOf(c) + "=", sourceCode.getFileName(), line));
+                        tokenEntries.add(new TokenEntry(c + "=", sourceCode.getFileName(), line));
                         ic = reader.read();
                     } else {
                         tokenEntries.add(new TokenEntry(String.valueOf(c), sourceCode.getFileName(), line));
@@ -104,17 +105,20 @@ public class CsTokenizer implements Tokenizer {
                     b = new StringBuilder();
                     b.append(c);
                     while ((ic = reader.read()) != c) {
-                        if (ic == -1)
+                        if (ic == -1) {
                             break;
+                        }
                         b.append((char) ic);
                         if (ic == '\\') {
                             int next = reader.read();
-                            if (next != -1)
+                            if (next != -1) {
                                 b.append((char) next);
+                            }
                         }
                     }
-                    if (ic != -1)
+                    if (ic != -1) {
                         b.append((char) ic);
+                    }
                     tokenEntries.add(new TokenEntry(b.toString(), sourceCode.getFileName(), line));
                     ic = reader.read();
                     break;
@@ -132,8 +136,9 @@ public class CsTokenizer implements Tokenizer {
                             b.append(c);
 
                             if (state == 1) {
-                                if (c == '*')
+                                if (c == '*') {
                                     state = 2;
+                                }
                             } else {
                                 if (c == '/') {
                                     ic = reader.read();
@@ -152,8 +157,9 @@ public class CsTokenizer implements Tokenizer {
                         b = new StringBuilder();
                         b.append("//");
                         while ((ic = reader.read()) != '\n') {
-                            if (ic == -1)
+                            if (ic == -1) {
                                 break;
+                            }
                             b.append((char) ic);
                         }
                         // ignore the // comment
@@ -189,8 +195,9 @@ public class CsTokenizer implements Tokenizer {
                             b.append(c);
                             if (c == 'e' || c == 'E') {
                                 c = (char) (ic = reader.read());
-                                if ("1234567890-".indexOf(c) == -1)
+                                if ("1234567890-".indexOf(c) == -1) {
                                     break;
+                                }
                                 b.append(c);
                             }
                             c = (char) (ic = reader.read());

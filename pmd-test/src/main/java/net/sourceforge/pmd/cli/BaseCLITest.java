@@ -84,8 +84,9 @@ public abstract class BaseCLITest {
 
     protected void checkStatusCode() {
         int statusCode = getStatusCode();
-        if (statusCode > 0)
+        if (statusCode > 0) {
             fail("PMD failed with status code:" + statusCode);
+        }
     }
 
     protected int getStatusCode() {

@@ -459,12 +459,8 @@ public abstract class AbstractRuleSetFactoryTest {
                     .getPropertyDescriptors();
             List<PropertyDescriptor<?>> propertyDescriptors2 = rule2
                     .getPropertyDescriptors();
-            try {
-                assertEquals(message + ", Rule property descriptor ",
-                        propertyDescriptors1, propertyDescriptors2);
-            } catch (Error e) {
-                throw e;
-            }
+            assertEquals(message + ", Rule property descriptor ",
+                    propertyDescriptors1, propertyDescriptors2);
             for (int j = 0; j < propertyDescriptors1.size(); j++) {
                 assertEquals(message + ", Rule property value " + j, rule1
                         .getProperty(propertyDescriptors1.get(j)), rule2
