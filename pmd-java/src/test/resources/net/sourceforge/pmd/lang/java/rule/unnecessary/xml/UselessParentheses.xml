@@ -227,4 +227,20 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1282 False Positive with implicit String.valuesOf() (Java)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.mycompany.mavenproject1;
+
+import java.io.IOException;
+
+public class NewClass {
+
+    public void falsePositive(Boolean b) throws IOException {
+        System.out.write(( "" + b ).getBytes());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
