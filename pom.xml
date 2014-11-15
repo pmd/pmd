@@ -529,6 +529,9 @@
                     <rulesets>
                         <ruleset>${pmd.dogfood.ruleset}</ruleset>
                     </rulesets>
+                    <excludeRoots>
+                        <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                    </excludeRoots>
                 </configuration>
             </plugin>
 
@@ -810,6 +813,7 @@
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>pmd</goal>
+                                    <goal>cpd</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -819,6 +823,9 @@
                             <rulesets>
                                 <ruleset>${pmd.dogfood.ruleset}</ruleset>
                             </rulesets>
+                            <excludeRoots>
+                                <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                            </excludeRoots>
                         </configuration>
                     </plugin>
                     <plugin>
