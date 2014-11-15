@@ -4,11 +4,12 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -112,19 +113,19 @@ public class SourceFileScope extends AbstractJavaScope {
      * This includes all top-level types and nested types.
      * @return set of all types in this source file.
      */
-    public Set<String> getQualifiedTypeNames() {
+    public Map<String, Node> getQualifiedTypeNames() {
         return getSubTypes(null, this);
     }
 
-    private Set<String> getSubTypes(String qualifyingName, Scope subType) {
-        Set<String> types = new HashSet<String>();
+    private Map<String, Node> getSubTypes(String qualifyingName, Scope subType) {
+        Map<String, Node> types = new HashMap<String, Node>();
         for (ClassNameDeclaration c : subType.getDeclarations(ClassNameDeclaration.class).keySet()) {
             String typeName = c.getName();
             if (qualifyingName != null) {
                 typeName = qualifyingName + "." + typeName;
             }
-            types.add(typeName);
-            types.addAll(getSubTypes(typeName, c.getScope()));
+            types.put(typeName, c.getNode());
+            types.putAll(getSubTypes(typeName, c.getScope()));
         }
         return types;
     }

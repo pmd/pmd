@@ -1272,4 +1272,37 @@ public class Parent {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1281 UnusedPrivateMethod incorrectly flagged for methods nested private classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NestedClassPrivateMethods {
+    public void doPublic() {
+        doPrivate(new B());
+        doPrivate2(new C());
+    }
+
+    public void doPublic(C c) {
+        doPrivate3(c);
+    }
+
+    // incorrectly UnusedPrivateMethod
+    private void doPrivate(I i) {}
+    private void doPrivate2(I i) {}
+    private void doPrivate3(I i) {}
+
+    private interface I {
+        void visit();
+    }
+
+    private class B implements I {
+        public void visit() {
+        }
+    }
+
+    private class C extends B {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

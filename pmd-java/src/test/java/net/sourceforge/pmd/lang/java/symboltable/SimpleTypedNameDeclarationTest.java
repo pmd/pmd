@@ -61,6 +61,9 @@ public class SimpleTypedNameDeclarationTest {
 
         // should always equal to Object
         Assert.assertEquals(by(Object.class, "Object"), by(null, "Something"));
+
+        Assert.assertEquals(withNext(byName("Foo.I"), "Foo.B"), byName("Foo.I"));
+        Assert.assertEquals(byName("Foo.I"), withNext(byName("Foo.I"), "Foo.B"));
     }
 
     private static SimpleTypedNameDeclaration byClass(Class<?> c) {
@@ -71,5 +74,10 @@ public class SimpleTypedNameDeclarationTest {
     }
     private static SimpleTypedNameDeclaration by(Class<?> c, String n) {
         return new SimpleTypedNameDeclaration(n, c);
+    }
+    private static SimpleTypedNameDeclaration withNext(SimpleTypedNameDeclaration next, String n) {
+        SimpleTypedNameDeclaration t = new SimpleTypedNameDeclaration(n, null);
+        t.addNext(next);
+        return t;
     }
 }

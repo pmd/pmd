@@ -14,7 +14,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -225,18 +227,19 @@ public class ClassScope extends AbstractJavaScope {
             // typeImage might be qualified/unqualified. If it refers to a type, defined in the same toplevel class,
             // we should normalize the name here.
             typeImage = qualifyTypeName(typeImage);
+            Node declaringNode = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().get(typeImage);
             Class<?> resolvedType = this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage);
             if (resolvedType == null) {
                 resolvedType = resolveGenericType(p, typeImage);
             }
-            parameterTypes.add(new SimpleTypedNameDeclaration(typeImage, resolvedType));
+            parameterTypes.add(new SimpleTypedNameDeclaration(typeImage, resolvedType, determineSuper(declaringNode)));
         }
         return parameterTypes;
     }
 
     private String qualifyTypeName(String typeImage) {
         String result = typeImage;
-        for (String qualified : this.getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames()) {
+        for (String qualified : this.getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().keySet()) {
             int fullLength = qualified.length();
             int nameLength = typeImage.length();
             if (qualified.endsWith(typeImage)
@@ -259,6 +262,7 @@ public class ClassScope extends AbstractJavaScope {
      */
     private List<TypedNameDeclaration> determineArgumentTypes(JavaNameOccurrence occurrence, List<TypedNameDeclaration> parameterTypes) {
         List<TypedNameDeclaration> argumentTypes = new ArrayList<TypedNameDeclaration>();
+        Map<String, Node> qualifiedTypeNames = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames();
         ASTArgumentList arguments = null;
         Node nextSibling = null;
         if (occurrence.getLocation() instanceof ASTPrimarySuffix) {
@@ -294,8 +298,9 @@ public class ClassScope extends AbstractJavaScope {
                             if (d.getImage().equals(name.getImage())) {
                                 String typeName = d.getTypeImage();
                                 typeName = qualifyTypeName(typeName);
+                                Node declaringNode = qualifiedTypeNames.get(typeName);
                                 type = new SimpleTypedNameDeclaration(typeName,
-                                        this.getEnclosingScope(SourceFileScope.class).resolveType(typeName));
+                                        this.getEnclosingScope(SourceFileScope.class).resolveType(typeName), determineSuper(declaringNode));
                                 break;
                             }
                         }
@@ -317,10 +322,7 @@ public class ClassScope extends AbstractJavaScope {
                     }
                 } else if (child instanceof ASTAllocationExpression && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType)child.jjtGetChild(0);
-                    String typeImage = classInterface.getImage();
-                    typeImage = qualifyTypeName(typeImage);
-                    type = new SimpleTypedNameDeclaration(typeImage,
-                            this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage));
+                    type = convertToSimpleType(classInterface);
                 }
                 if (type == null && parameterTypes.size() > i) {
                     // replace the unknown type with the correct parameter type of the method.
@@ -341,6 +343,49 @@ public class ClassScope extends AbstractJavaScope {
         return argumentTypes;
     }
 
+    private SimpleTypedNameDeclaration determineSuper(Node declaringNode) {
+        SimpleTypedNameDeclaration result = null;
+        if (declaringNode instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceDeclaration classDeclaration = (ASTClassOrInterfaceDeclaration)declaringNode;
+            ASTImplementsList implementsList = classDeclaration.getFirstChildOfType(ASTImplementsList.class);
+            if (implementsList != null) {
+                List<ASTClassOrInterfaceType> types = implementsList.findChildrenOfType(ASTClassOrInterfaceType.class);
+                SimpleTypedNameDeclaration type = convertToSimpleType(types);
+                result = type;
+            }
+            ASTExtendsList extendsList = classDeclaration.getFirstChildOfType(ASTExtendsList.class);
+            if (extendsList != null) {
+                List<ASTClassOrInterfaceType> types = extendsList.findChildrenOfType(ASTClassOrInterfaceType.class);
+                SimpleTypedNameDeclaration type = convertToSimpleType(types);
+                if (result == null) {
+                    result = type;
+                } else {
+                    result.addNext(type);
+                }
+            }
+        }
+        return result;
+    }
+
+    private SimpleTypedNameDeclaration convertToSimpleType(List<ASTClassOrInterfaceType> types) {
+        SimpleTypedNameDeclaration result = null;
+        for (ASTClassOrInterfaceType t : types) {
+            SimpleTypedNameDeclaration type = convertToSimpleType(t);
+            if (result == null) {
+                result = type;
+            } else {
+                result.addNext(type);
+            }
+        }
+        return result;
+    }
+    private SimpleTypedNameDeclaration convertToSimpleType(ASTClassOrInterfaceType t) {
+        String typeImage = t.getImage();
+        typeImage = qualifyTypeName(typeImage);
+        Node declaringNode = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().get(typeImage);
+        return new SimpleTypedNameDeclaration(typeImage,
+                this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage), determineSuper(declaringNode));
+    }
     /**
      * Tries to resolve a given typeImage as a generic Type. If the Generic Type is found,
      * any defined ClassOrInterfaceType below this type declaration is used (this is typically

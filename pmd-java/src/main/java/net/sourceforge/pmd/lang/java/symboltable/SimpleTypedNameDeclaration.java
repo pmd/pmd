@@ -14,6 +14,7 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
 
     final private String typeImage;
     final private Class<?> type;
+    private SimpleTypedNameDeclaration next;
 
     /**
      * Creates a new {@link SimpleTypedNameDeclaration} with the given type
@@ -23,6 +24,24 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
     public SimpleTypedNameDeclaration(String typeImage, Class<?> type) {
         this.typeImage = typeImage;
         this.type = type;
+    }
+
+    public SimpleTypedNameDeclaration(String typeImage, Class<?> type, SimpleTypedNameDeclaration next) {
+        this.typeImage = typeImage;
+        this.type = type;
+        this.next = next;
+    }
+
+    public void addNext(SimpleTypedNameDeclaration next) {
+        if (next == null) {
+            return;
+        }
+
+        if (this.next == null) {
+            this.next = next;
+        } else {
+            this.next.addNext(next);
+        }
     }
 
     @Override
@@ -37,7 +56,8 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
 
     @Override
     public String toString() {
-        return "SimpleType:" + type + "/" + typeImage;
+        String nextString = next != null ? "(next: " + String.valueOf(next) + ")" : "";
+        return "SimpleType:" + type + "/" + typeImage + nextString;
     }
 
     @Override
@@ -58,6 +78,23 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
      */
     @Override
     public boolean equals(Object obj) {
+        return internalEquals(obj) || internalEqualsNext(obj);
+    }
+
+    private boolean internalEqualsNext(Object obj) {
+        if (next != null) {
+            return next.equals(obj);
+        }
+        if (obj instanceof SimpleTypedNameDeclaration) {
+            SimpleTypedNameDeclaration otherNext = ((SimpleTypedNameDeclaration)obj).next;
+            if (otherNext != null) {
+                return otherNext.equals(this);
+            }
+        }
+        return false;
+    }
+
+    private boolean internalEquals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
