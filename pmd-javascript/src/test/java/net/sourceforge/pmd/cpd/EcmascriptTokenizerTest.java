@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,15 +41,20 @@ public class EcmascriptTokenizerTest {
     public void parseStringNotAsMultiline() throws IOException {
         Tokenizer t = new EcmascriptTokenizer();
         SourceCode sourceCode = new SourceCode( new SourceCode.StringCodeLoader(
-                  "var s = \"a string\\\n"
+                  "var s = \"a string \\\n"
                 + "continues\";\n"
-                + "var s = \"a string\\\n"
+                + "var s = \"a string \\\n"
                 + "continues2\";\n") );
         Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens);
-        assertEquals(13, tokens.size());
+        assertEquals(9, tokens.size());
         List<TokenEntry> list = tokens.getTokens();
-        assertEquals("\"a string", list.get(3).getIdentifier(), list.get(9).getIdentifier());
+        assertEquals("var", list.get(0).getIdentifier(), list.get(4).getIdentifier());
+        assertEquals("s", list.get(1).getIdentifier(), list.get(5).getIdentifier());
+        assertEquals("=", list.get(2).getIdentifier(), list.get(6).getIdentifier());
+        assertEquals("\"a string continues\"", list.get(3).toString());
+        assertEquals("\"a string continues2\"", list.get(7).toString());
+        assertFalse(list.get(3).getIdentifier() == list.get(7).getIdentifier());
     }
 
     // no semi-colons

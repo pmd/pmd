@@ -45,7 +45,7 @@ convert_cygwin_vars() {
 }
 
 java_heapsize_settings() {
-    local heapsize=${HEAPSIZE:-512m}
+    local heapsize=${HEAPSIZE}
     case "${heapsize}" in
         [1-9]*[mgMG])
             readonly HEAPSIZE="-Xmx${heapsize}"
@@ -53,7 +53,7 @@ java_heapsize_settings() {
         '')
             ;;
         *)
-            echo "HEAPSIZE '${HEAPSIZE}' unknown (try: 512m)"
+            echo "HEAPSIZE '${HEAPSIZE}' unknown (try: 1024m)"
             exit 1
     esac
 }
@@ -123,4 +123,4 @@ cygwin_paths
 
 java_heapsize_settings
 
-java "${HEAPSIZE}" -cp "${classpath}" "${CLASSNAME}" ${@}
+java ${HEAPSIZE} -cp "${classpath}" "${CLASSNAME}" ${@}

@@ -25,6 +25,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
 	private String currentLine;
 
 	protected boolean spanMultipleLinesString = true;	// Most languages do, so default is true
+	protected Character spanMultipleLinesLineContinuationCharacter = null;
 
 	private boolean downcaseString = true;
 
@@ -111,10 +112,15 @@ public abstract class AbstractTokenizer implements Tokenizer {
         		spanMultipleLinesString && // ... the language allow multiple line span Strings
         		lineNumber < code.size() - 1 // ... there is still more lines to parse
         	) {
+            // removes last character, if it is the line continuation (e.g. backslash) character
+            if (spanMultipleLinesLineContinuationCharacter != null && token.length() > 0
+                    && token.charAt(token.length() - 1) == spanMultipleLinesLineContinuationCharacter.charValue()) {
+                token.deleteCharAt(token.length() - 1);
+            }
         	// parsing new line
         	currentLine = code.get(++lineNumber);
         	// Warning : recursive call !
-        	loc = parseString(token, loc, stringDelimiter);
+        	loc = parseString(token, 0, stringDelimiter);
         }
         return loc + 1;
     }
