@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 import org.junit.Test;
 
@@ -184,12 +186,16 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
         assertTrue(dfn.isType(NodeType.LABEL_STATEMENT));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testOnlyWorksForMethodsAndConstructors() {
         StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
-        sbf.buildDataFlowFor(new ASTMethodDeclaration(1));
+        PLSQLNode node = new ASTMethodDeclaration(1);
+        ((AbstractNode)node).testingOnly__setBeginColumn(1);
+        sbf.buildDataFlowFor(node);
         //sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
-        sbf.buildDataFlowFor(new ASTProgramUnit(1));
+        node = new ASTProgramUnit(1);
+        ((AbstractNode)node).testingOnly__setBeginColumn(1);
+        sbf.buildDataFlowFor(node);
     }
 
     private static final String TEST1 =
