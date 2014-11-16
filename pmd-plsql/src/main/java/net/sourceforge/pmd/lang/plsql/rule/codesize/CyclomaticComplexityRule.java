@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -27,7 +28,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
-
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
@@ -224,10 +224,12 @@ public Object visit(ASTPackageBody node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     Entry classEntry = entryStack.pop();
+    if (LOGGER.isLoggable(Level.FINEST)) {
     LOGGER.finest("ASTPackageBody: ComplexityAverage==" + classEntry.getComplexityAverage() 
                    +", highestDecisionPoint=" 
                    + classEntry.highestDecisionPoints
                  );
+    }
     if ( showClassesComplexity ) {
 	    if ( classEntry.getComplexityAverage() >= reportLevel
 	        || classEntry.highestDecisionPoints >= reportLevel ) {
@@ -249,10 +251,12 @@ public Object visit(ASTTriggerUnit node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     Entry classEntry = entryStack.pop();
+    if (LOGGER.isLoggable(Level.FINEST)) {
     LOGGER.finest("ASTTriggerUnit: ComplexityAverage==" + classEntry.getComplexityAverage() 
                    +", highestDecisionPoint=" 
                    + classEntry.highestDecisionPoints
                  );
+    }
     if ( showClassesComplexity ) {
 	    if ( classEntry.getComplexityAverage() >= reportLevel
 	        || classEntry.highestDecisionPoints >= reportLevel ) {
@@ -273,10 +277,12 @@ public Object visit(ASTProgramUnit node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     Entry methodEntry = entryStack.pop();
+    if (LOGGER.isLoggable(Level.FINEST)) {
     LOGGER.finest("ASTProgramUnit: ComplexityAverage==" + methodEntry.getComplexityAverage() 
                    +", highestDecisionPoint=" 
                    + methodEntry.highestDecisionPoints
                  );
+    }
     if ( showMethodsComplexity ) {
 	    //Entry methodEntry = entryStack.pop();
 	    int methodDecisionPoints = methodEntry.decisionPoints;
@@ -329,10 +335,12 @@ public Object visit(ASTTypeMethod node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     Entry methodEntry = entryStack.pop();
+    if (LOGGER.isLoggable(Level.FINEST)) {
     LOGGER.finest("ASTProgramUnit: ComplexityAverage==" + methodEntry.getComplexityAverage() 
                    +", highestDecisionPoint=" 
                    + methodEntry.highestDecisionPoints
                  );
+    }
     if ( showMethodsComplexity ) {
 	    //Entry methodEntry = entryStack.pop();
 	    int methodDecisionPoints = methodEntry.decisionPoints;
@@ -379,10 +387,12 @@ public Object visit(ASTTriggerTimingPointSection node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     Entry methodEntry = entryStack.pop();
+    if (LOGGER.isLoggable(Level.FINE)) {
     LOGGER.fine("ASTTriggerTimingPointSection: ComplexityAverage==" + methodEntry.getComplexityAverage() 
                    +", highestDecisionPoint=" 
                    + methodEntry.highestDecisionPoints
                  );
+    }
     if ( showMethodsComplexity ) {
 	    int methodDecisionPoints = methodEntry.decisionPoints;
 	    Entry classEntry = entryStack.peek();

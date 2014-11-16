@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.plsql.rule;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.Rule;
@@ -39,12 +40,14 @@ public class PLSQLRuleChainVisitor extends AbstractRuleChainVisitor {
 
 	protected void visit(Rule rule, Node node, RuleContext ctx) {
                 LOGGER.entering(CLASS_NAME,"visit");
-		// Rule better either be a PLSQLParserVisitor, or a XPathRule
+		// Rule better either be a PLSQLParserVisitor, or a XPathRule#
+                if (LOGGER.isLoggable(Level.FINE)) {
 		LOGGER.fine("Rule="+rule);
 		LOGGER.fine("Node="+node);
 		LOGGER.fine("RuleContext="+ctx);
 		LOGGER.fine("Rule Classname="+rule.getClass().getCanonicalName());
 		LOGGER.fine("Rule Name="+rule.getName());
+                }
 		if (rule instanceof XPathRule) {
 			((XPathRule)rule).evaluate(node, ctx);
 		} else {

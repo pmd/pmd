@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
@@ -23,10 +24,12 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	}
 	catch (Exception e)
 	{
+	    if (LOGGER.isLoggable(Level.FINEST)) {
 	  LOGGER.finest("This Node does not have an enclosing Class: "
 		              + node.getBeginLine() + "/" + node.getBeginColumn()
 		              + " => " + this.getImage()
 		             );
+	    }
           return null; //@TODO SRT a cop-out 
 	}
     }
@@ -49,10 +52,12 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	catch (Exception e)
 	{
 		e.printStackTrace(System.err);
+		if (LOGGER.isLoggable(Level.FINEST)) {
 		LOGGER.finest("n.node="+n.node);
 		LOGGER.finest("n.getImage="+n.getImage());
 		LOGGER.finest("node="+node);
 		LOGGER.finest("this.getImage="+this.getImage());
+		}
 		return false;
 	}
     }
@@ -65,12 +70,14 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 	}
 	catch(Exception e)
 	{
+	    if (LOGGER.isLoggable(Level.FINEST)) {
 		LOGGER.finest("VariableNameDeclaration: node="
 			           +node
 			);
 		LOGGER.finest("VariableNameDeclaration: node,getImage="
 			           +this.getImage()
 			);
+	    }
 		return 0;
 	}
     }

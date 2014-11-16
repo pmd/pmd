@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTBlock;
@@ -285,25 +286,31 @@ public Object visit(ASTTypeMethod node, Object data) {
 	}
 	catch (Exception e)
 	{
-	  //@TODO possibly add to a pseudo-ClassScope equivalent to the Schema name 
+	  //@TODO possibly add to a pseudo-ClassScope equivalent to the Schema name
+	    if (LOGGER.isLoggable(Level.FINEST)) {
 	  LOGGER.finest("ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
+	    }
 	  if("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage()))
 	  {
+	      if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" 
 		               + node.getMethodName()
 		               + "; Image=" + node.getImage()
 		              );
+	      }
 	   
 	    //A File-level/Schema-level object may have a Schema-name explicitly specified in the declaration 
 	    ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
 	    if( 1 < on.jjtGetNumChildren())
 	    {
               ASTID schemaName = on.getFirstChildOfType(ASTID.class);
+              if (LOGGER.isLoggable(Level.FINEST)) {
 	      LOGGER.finest("SchemaName for Schema-level method: methodName=" 
 				 + node.getMethodName()
 				 + "; Image=" + node.getImage()
 				 + "is " + schemaName.getImage()
 				);
+              }
 	     
 	    }
 	  }
@@ -324,24 +331,30 @@ public Object visit(ASTTypeMethod node, Object data) {
 	catch (Exception e)
 	{
 	  //@TODO possibly add to a pseudo-ClassScope equivalent to the Schema name 
+	    if (LOGGER.isLoggable(Level.FINEST)) {
 	  LOGGER.finest("ProgramUnit getEnclosingClassScope Exception string=\""+e.getMessage()+"\"");
+	    }
 	  if("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage()))
 	  {
+	      if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" 
 		               + node.getMethodName()
 		               + "; Image=" + node.getImage()
 		              );
+	      }
 	   
 	    //A File-level/Schema-level object may have a Schema-name explicitly specified in the declaration 
 	    ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
 	    if( 1 < on.jjtGetNumChildren())
 	    {
               ASTID schemaName = on.getFirstChildOfType(ASTID.class);
+              if (LOGGER.isLoggable(Level.FINEST)) {
 	      LOGGER.finest("SchemaName for Schema-level method: methodName=" 
 				 + node.getMethodName()
 				 + "; Image=" + node.getImage()
 				 + "is " + schemaName.getImage()
 				);
+              }
 	     
 	    }
 	  }

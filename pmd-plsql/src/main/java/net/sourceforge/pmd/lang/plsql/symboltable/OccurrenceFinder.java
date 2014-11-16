@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
@@ -39,10 +40,12 @@ public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
                 Scope scope = decl.getScope();
                 if (null == scope) 
                 {
+                    if (LOGGER.isLoggable(Level.FINEST)) {
                   LOGGER.finest("NameOccurrence has no Scope:" 
                                       + decl.getClass().getCanonicalName() 
                                       +"=>"+decl.getImage()
                                     );
+                    }
                   break;
                 }
                 search.execute(scope);

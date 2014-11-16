@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTFieldDeclaration;
@@ -70,7 +71,9 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
 	    point.setScore(1.0 * numNodes);
 	    point.setMessage(getMessage());
 	    addDataPoint(point);
+	    if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Running score is " +  point.getScore());
+	    }
 	}
 
 	return Integer.valueOf(numNodes);
@@ -85,7 +88,9 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
     @Override
     public Object[] getViolationParameters(DataPoint point) {
         LOGGER.entering(CLASS_NAME,"visit(getViolationParameters)");
+        if (LOGGER.isLoggable(Level.FINE)) {
         LOGGER.fine("Node Count ==" + point.getScore() );
+        }
 	return new String[] { String.valueOf((int) point.getScore()) };
     }
 

@@ -86,10 +86,11 @@ public class XmlParserOptions extends ParserOptions {
      * it would normally force the XML parser to use its own resolver
      */
     public EntityResolver getEntityResolver(){
-    	if (!lookupDescriptorDoc)
+    	if (!lookupDescriptorDoc) {
     		return SILENT_ENTITY_RESOLVER;
-    	else 
+    	} else {
     		return null;
+    	}
     }
 
     public boolean isLookupDescriptorDoc() {

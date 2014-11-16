@@ -15,7 +15,7 @@ public class DumpFacade extends PLSQLParserVisitorAdapter {
 	private boolean recurse;
 
 	public void initializeWith(Writer writer, String prefix, boolean recurse, PLSQLNode node) {
-		this.writer = (writer instanceof PrintWriter) ? (PrintWriter) writer : new PrintWriter(writer);
+		this.writer = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
 		this.recurse = recurse;
 		this.visit(node, prefix);
 		try {
@@ -60,7 +60,6 @@ public class DumpFacade extends PLSQLParserVisitorAdapter {
 		if (node instanceof ASTBooleanLiteral) {
 			image = node.getImage();
 		} else if (node instanceof ASTPrimaryPrefix) {
-			ASTPrimaryPrefix primaryPrefix = (ASTPrimaryPrefix) node;
 			String result = null;
 			/*
 			if (primaryPrefix.usesSuperModifier()) {

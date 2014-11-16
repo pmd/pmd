@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.plsql.symboltable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -150,10 +151,12 @@ public class ClassScope extends AbstractScope {
         images.add(occurrence.getImage());
 
 	if (null==occurrence.getImage()) {
+	    if (LOGGER.isLoggable(Level.FINEST)) {
 		LOGGER.finest("occurrence==" +occurrence.toString() 
 			+ "with Argumanet Count == "+occurrence.getArgumentCount()
 			+ " for className="+className
 			) ;
+	    }
 	}
 
 	

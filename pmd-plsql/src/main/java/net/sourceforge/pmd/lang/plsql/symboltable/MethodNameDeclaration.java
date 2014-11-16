@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -144,10 +145,12 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 	}
 	catch (Exception e)
 	{
+	    if (LOGGER.isLoggable(Level.FINEST)) {
 	  LOGGER.finest("MethodNameDeclaration problem for " + node
 			 +" of class " + node.getClass().getCanonicalName()
 		         +" => "+ node.getBeginLine()+"/"+node.getBeginColumn()
 			);	
+	    }
 	  //@TODO SRT restore the thrown exception - throw e;
 	  return 0; 
 	}

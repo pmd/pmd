@@ -3,12 +3,9 @@
  */
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
-
-import net.sourceforge.pmd.lang.plsql.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-
 
 public class SourceFileScope extends AbstractScope {
 

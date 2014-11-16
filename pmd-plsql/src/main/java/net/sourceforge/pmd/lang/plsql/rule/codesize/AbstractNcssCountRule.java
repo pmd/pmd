@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -44,7 +45,9 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
      */
     protected AbstractNcssCountRule(Class<?> nodeClass) {
 	this.nodeClass = nodeClass;
+	if (LOGGER.isLoggable(Level.FINE)) {
         LOGGER.fine("Counting for " + nodeClass.getCanonicalName());
+	}
     }
 
     @Override
@@ -57,15 +60,19 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 	    numNodes += treeSize.intValue();
 	}
 
+	if (LOGGER.isLoggable(Level.FINER)) {
         LOGGER.finer("Checking candidate " + node.getClass().getCanonicalName() 
                     + " against target class " + nodeClass.getCanonicalName() 
                     + " with " + numNodes + " nodes"
                    );
+	}
 
 	if (this.nodeClass.isInstance(node)) {
+	    if (LOGGER.isLoggable(Level.FINE)) {
           LOGGER.fine("Matched candidate " + node.getClass().getCanonicalName() 
                         + " against target class " + nodeClass.getCanonicalName() 
                        );
+	    }
 	    // Add 1 to account for base node
 	    numNodes++;
 	    DataPoint point = new DataPoint();
@@ -73,7 +80,9 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 	    point.setScore(1.0 * numNodes);
 	    point.setMessage(getMessage());
 	    addDataPoint(point);
+	    if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Running score is " +  point.getScore());
+	    }
 	}
 
 	return Integer.valueOf(numNodes);
@@ -198,7 +207,9 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
+        if (LOGGER.isLoggable(Level.FINE)) {
         LOGGER.fine("Point score is " + point.getScore());
+        }
 	return new String[] { String.valueOf((int) point.getScore()) };
     }
 }

@@ -10,10 +10,10 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 public interface PLSQLNode extends Node, ScopedNode {
 
 	/** Accept the visitor. **/
-	public abstract Object jjtAccept(PLSQLParserVisitor visitor, Object data);
+	Object jjtAccept(PLSQLParserVisitor visitor, Object data);
 
 	/** Accept the visitor. **/
-	public abstract Object childrenAccept(PLSQLParserVisitor visitor, Object data);
+	Object childrenAccept(PLSQLParserVisitor visitor, Object data);
 	
 	Scope getScope();
 	

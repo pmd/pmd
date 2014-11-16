@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
@@ -30,22 +31,28 @@ public class ExcessiveLengthRule extends AbstractStatisticalPLSQLRule {
     @Override
     public Object visit(PLSQLNode node, Object data) {
         //LOGGER.entering(CLASS_PATH,"visit(SimpleNode)");
+        if (LOGGER.isLoggable(Level.FINEST)) {
         LOGGER.finest("SimpleNode: line " + node.getBeginLine() +", column " + node.getBeginColumn()
                       + " - is node " + node.getClass().getCanonicalName()
                       + " instanceof " + this.nodeClass.getClass().getCanonicalName()
                      );
+        }
 	if (nodeClass.isInstance(node)) {
+	    if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("SimpleNode: YES node " + node.getClass().getCanonicalName()
                           + " IS instanceof " + this.nodeClass.getClass().getCanonicalName()
                           + " with  length == (" + node.getEndLine() + " - " + node.getBeginLine()
                           + " == "  + (node.getEndLine() - node.getBeginLine())
                          );
+	    }
 	    DataPoint point = new DataPoint();
 	    point.setNode(node);
 	    point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
 	    point.setMessage(getMessage());
 	    addDataPoint(point);
-            LOGGER.fine("SimpleNode: Score " + point.getScore() + " for " +  this.nodeClass.getCanonicalName() ) ; 
+	    if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("SimpleNode: Score " + point.getScore() + " for " +  this.nodeClass.getCanonicalName() ) ;
+	    }
 	}
 
         //LOGGER.exiting(CLASS_PATH,"visit(SimpleNode)");

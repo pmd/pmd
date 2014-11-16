@@ -19,12 +19,6 @@ import net.sourceforge.pmd.util.IOUtil;
  * Adapter for the PLSQLParser.
  */
 public class PLSQLParser extends AbstractParser {
-
-    /*
-     * Wrapped PLSQL AST parser
-     */
-    private net.sourceforge.pmd.lang.plsql.ast.PLSQLParser parser;
-
     public PLSQLParser(ParserOptions parserOptions) {
         super(parserOptions);
     }
@@ -39,7 +33,8 @@ public class PLSQLParser extends AbstractParser {
      */
     protected net.sourceforge.pmd.lang.plsql.ast.PLSQLParser createPLSQLParser(Reader source) throws ParseException {
         Reader in = IOUtil.skipBOM(source);
-        parser = new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser(in);
+        // Wrapped PLSQL AST Parser
+        net.sourceforge.pmd.lang.plsql.ast.PLSQLParser parser = new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser(in);
         return parser;
     }
 

@@ -5,6 +5,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
@@ -53,11 +54,14 @@ public class PLSQLTokenizer implements Tokenizer{
          */
 	public void tokenize (SourceCode sourceCode, Tokens tokenEntries )
 	{
-        long encounteredTokens = 0, addedTokens = 0;
+        long encounteredTokens = 0;
+        long addedTokens = 0;
 
-		LOGGER.fine("PLSQLTokenizer: ignoreComments=="+ignoreComments);
-		LOGGER.fine("PLSQLTokenizer: ignoreIdentifiers=="+ignoreIdentifiers);
-		LOGGER.fine("PLSQLTokenizer: ignoreLiterals=="+ignoreLiterals);
+        if (LOGGER.isLoggable(Level.FINE)) {
+    		LOGGER.fine("PLSQLTokenizer: ignoreComments=="+ignoreComments);
+    		LOGGER.fine("PLSQLTokenizer: ignoreIdentifiers=="+ignoreIdentifiers);
+    		LOGGER.fine("PLSQLTokenizer: ignoreLiterals=="+ignoreLiterals);
+        }
 
 		String fileName = sourceCode.getFileName();
 		StringBuilder sb = sourceCode.getCodeBuffer();
@@ -82,8 +86,7 @@ public class PLSQLTokenizer implements Tokenizer{
 			}
 
 			if (ignoreIdentifiers && 
-			    (currentToken.kind == PLSQLParserConstants.IDENTIFIER
-				)
+			    currentToken.kind == PLSQLParserConstants.IDENTIFIER
 				) {
 				image = String.valueOf(currentToken.kind);
 			}
@@ -106,10 +109,12 @@ public class PLSQLTokenizer implements Tokenizer{
 			currentToken = tokenMgr.getNextToken();
 		}
 		tokenEntries.add(TokenEntry.getEOF() );
+		if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine(sourceCode.getFileName() 
                         + ": encountered " + encounteredTokens + " tokens;"
                         + " added " + addedTokens + " tokens"
                        );
+		}
 	}
 
 
