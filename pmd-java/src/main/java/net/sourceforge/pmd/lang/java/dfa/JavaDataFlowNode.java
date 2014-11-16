@@ -20,7 +20,7 @@ public class JavaDataFlowNode extends AbstractDataFlowNode {
     public String toString() {
 	String res = "DataFlowNode: line " + this.getLine() + ", ";
 	if (node instanceof ASTMethodDeclaration || node instanceof ASTConstructorDeclaration) {
-	    res += (node instanceof ASTMethodDeclaration) ? "(method)" : "(constructor)";
+	    res += node instanceof ASTMethodDeclaration ? "(method)" : "(constructor)";
 	} else {
 	    res = super.toString();
 	}

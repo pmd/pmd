@@ -7,7 +7,11 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.util.UnaryFunction;
 
-public class Applier {
+public final class Applier {
+
+    private Applier() {
+        // utility class
+    }
 
     public static <E> void apply(UnaryFunction<E> f, Iterator<? extends E> i) {
         while (i.hasNext()) {

@@ -55,8 +55,8 @@ public final class CommentUtil {
 		return null;
 	}
 
-	private static Pattern JAVADOC_TAG = Pattern.compile("@[A-Za-z0-9]+");
-	private static Map<String, String> JAVADOC_CACHE = new HashMap<String, String>();
+	private static final Pattern JAVADOC_TAG = Pattern.compile("@[A-Za-z0-9]+");
+	private static final Map<String, String> JAVADOC_CACHE = new HashMap<String, String>();
 
 	public static Map<String, Integer> javadocTagsIn(String comment) {
 		Matcher m = JAVADOC_TAG.matcher(comment);

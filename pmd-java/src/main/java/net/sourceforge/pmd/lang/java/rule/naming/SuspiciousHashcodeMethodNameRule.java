@@ -26,7 +26,7 @@ public class SuspiciousHashcodeMethodNameRule extends AbstractJavaRule {
         ASTResultType type = node.getResultType();
         ASTMethodDeclarator decl = node.getFirstChildOfType(ASTMethodDeclarator.class);
         String name = decl.getImage();
-        if (name.equalsIgnoreCase("hashcode") && !name.equals("hashCode")
+        if ("hashcode".equalsIgnoreCase(name) && !"hashCode".equals(name)
                 && decl.jjtGetChild(0).jjtGetNumChildren() == 0
                 && type.jjtGetNumChildren() != 0) {
             Node t = type.jjtGetChild(0).jjtGetChild(0);

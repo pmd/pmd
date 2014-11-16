@@ -105,8 +105,8 @@ public class GodClassRule extends AbstractJavaRule {
             && tcc < ONE_THIRD_THRESHOLD) {
 
             StringBuilder sb = new StringBuilder();
-            sb.append(getMessage());
-            sb.append(" (")
+            sb.append(getMessage())
+              .append(" (")
                 .append("WMC=").append(wmcCounter).append(", ")
                 .append("ATFD=").append(atfdCounter).append(", ")
                 .append("TCC=").append(tcc).append(')');

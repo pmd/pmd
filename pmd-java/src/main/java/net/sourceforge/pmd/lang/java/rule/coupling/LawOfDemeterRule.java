@@ -270,7 +270,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 baseScope = SCOPE_CLASS;
             }
             
-            if (var != null && var instanceof TypedNameDeclaration) {
+            if (var instanceof TypedNameDeclaration) {
                 baseTypeName = ((TypedNameDeclaration)var).getTypeImage();
                 baseType = ((TypedNameDeclaration)var).getType();
             } else if (METHOD_CALL_CHAIN.equals(baseName)) {

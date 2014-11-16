@@ -187,7 +187,6 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
             String className = node.getImage();
             int formerID = getClassID();
             setClassID(classDataList.size());
-            ClassData newClassData = new ClassData(className);
             // TODO
             // this is a hack to bail out here
             // but I'm not sure why this is happening
@@ -197,6 +196,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
             }
             //store the names of any outer classes of this class in the classQualifyingName List
             ClassData formerClassData = classDataList.get(formerID);
+            ClassData newClassData = new ClassData(className);
             newClassData.addClassQualifyingName(formerClassData.getClassName());
             classDataList.add(getClassID(), newClassData);
             Object o = super.visit(node, data);
@@ -252,7 +252,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
                 ASTConstructorDeclaration cd = constructors.next();
 
                 for (ClassData innerDataSet : classDataList) {
-                    if (outerDataSet == innerDataSet) {
+                    if (outerDataSet.equals(innerDataSet)) {
                         continue;
                     }
                     for (Iterator<AllocData> allocations = innerDataSet.getInstantiationIterator(); allocations.hasNext();) {

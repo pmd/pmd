@@ -56,7 +56,7 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
 
     @Override
     public String toString() {
-        String nextString = next != null ? "(next: " + String.valueOf(next) + ")" : "";
+        String nextString = next != null ? "(next: " + next + ")" : "";
         return "SimpleType:" + type + "/" + typeImage + nextString;
     }
 

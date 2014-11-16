@@ -10,7 +10,11 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 
-public class TypeHelper {
+public final class TypeHelper {
+
+    private TypeHelper() {
+        // utility class
+    }
 
 	public static boolean isA(TypeNode n, Class<?> clazz) {
 		return subclasses(n, clazz);

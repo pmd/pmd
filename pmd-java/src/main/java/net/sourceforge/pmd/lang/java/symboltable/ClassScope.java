@@ -158,12 +158,12 @@ public class ClassScope extends AbstractJavaScope {
                         if ((varArgIndex == 0 || argumentTypes.size() >= varArgIndex)
                             && (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath()
                                     || parameterTypes.subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex)))) {
-                            boolean sameType = true;
 
                             if (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath()) {
                                 return mnd;
                             }
 
+                            boolean sameType = true;
                             for (int i = varArgIndex; i < argumentTypes.size(); i++) {
                                 if (!varArgType.equals(argumentTypes.get(i))) {
                                     sameType = false;

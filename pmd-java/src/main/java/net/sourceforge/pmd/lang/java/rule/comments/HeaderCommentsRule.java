@@ -15,14 +15,14 @@ import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
  */
 public class HeaderCommentsRule extends AbstractCommentRule {
 	
-	private static final String[] requiredWords = new String[] { "copyright" };
-	private static final String[] requiredTags = new String[] { "author", "version" };
+	private static final String[] REQUIRED_WORKDS = new String[] { "copyright" };
+	private static final String[] REQUIRED_TAGS = new String[] { "author", "version" };
 	
 	public static final StringMultiProperty REQUIRED_TERMS_DESCRIPTOR = new StringMultiProperty("requiredTerms",
-	    	"Expected terms or phrases in the code header", requiredWords, 1.0f, '|');
+	    	"Expected terms or phrases in the code header", REQUIRED_WORKDS, 1.0f, '|');
 	   
 	public static final StringMultiProperty REQUIRED_TAGS_DESCRIPTOR = new StringMultiProperty("requiredTags",
-    		"Expected tags in the header", requiredTags, 2.0f, '|');
+    		"Expected tags in the header", REQUIRED_TAGS, 2.0f, '|');
    
 	enum RequiredHeaderPlacement {
 		BeforePackageDeclaration("Before package"), 

@@ -40,7 +40,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
     	
     	// is it part of a for-loop declaration?
-    	if (node.jjtGetParent().getClass().equals(ASTForInit.class)) {
+    	if (node.jjtGetParent() instanceof ASTForInit) {
     	   return visit((AbstractJavaNode) node, data);	// yes, those don't count
     	}
     	

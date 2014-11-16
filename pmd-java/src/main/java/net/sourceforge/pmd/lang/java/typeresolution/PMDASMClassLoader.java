@@ -28,7 +28,7 @@ import org.objectweb.asm.ClassReader;
  * as they are using the same (parent) class loader, e.g. if the class foo.Bar cannot be loaded,
  * then the resource foo/Bar.class will not exist, too.
  */
-public class PMDASMClassLoader extends ClassLoader {
+public final class PMDASMClassLoader extends ClassLoader {
     
     private static PMDASMClassLoader cachedPMDASMClassLoader;
     private static ClassLoader cachedClassLoader;

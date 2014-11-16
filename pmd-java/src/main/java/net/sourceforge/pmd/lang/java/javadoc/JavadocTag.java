@@ -12,7 +12,7 @@ public final class JavadocTag {
 	public final String label;
 	public final String description;
 	
-	private static final Map<String, JavadocTag> tagsById = new HashMap<String, JavadocTag>();
+	private static final Map<String, JavadocTag> TAGS_BY_ID = new HashMap<String, JavadocTag>();
 	
 	public static final JavadocTag AUTHOR  		= new JavadocTag("author", 	"Authors of the source code, in chronological order");
 	public static final JavadocTag SINCE		= new JavadocTag("since", 	"Version of the source code that this item was introduced, can be a number or a date");
@@ -39,18 +39,18 @@ public final class JavadocTag {
 		label = theLabel;
 		description = theDescription;
 		
-		if (tagsById.containsKey(theLabel)) {
+		if (TAGS_BY_ID.containsKey(theLabel)) {
 			throw new IllegalArgumentException("pre-existing tag!");
 		}
 		
-		tagsById.put(theLabel, this);
+		TAGS_BY_ID.put(theLabel, this);
 	}
 	
 	public static JavadocTag tagFor(String id) {
-		return tagsById.get(id);
+		return TAGS_BY_ID.get(id);
 	}
 	
 	public static Set<String> allTagIds() {
-		return tagsById.keySet();
+		return TAGS_BY_ID.keySet();
 	}
 }

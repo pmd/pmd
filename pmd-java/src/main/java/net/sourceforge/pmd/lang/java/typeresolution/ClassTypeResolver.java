@@ -153,9 +153,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 				populateClassName(node, className);
 			}
 		} catch (ClassNotFoundException e) {
-			LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e.getClass().getName() + ": " + e.getMessage());
+		    if (LOG.isLoggable(Level.FINE)) {
+		        LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e.getClass().getName() + ": " + e.getMessage());
+		    }
 		} catch (LinkageError e) {
-			LOG.log(Level.WARNING, "Could not find class " + className + ", due to: " + e.getClass().getName() + ": " + e.getMessage());
+		    if (LOG.isLoggable(Level.WARNING)) {
+		        LOG.log(Level.WARNING, "Could not find class " + className + ", due to: " + e.getClass().getName() + ": " + e.getMessage());
+		    }
 		} finally {
 			populateImports(node);
 		}

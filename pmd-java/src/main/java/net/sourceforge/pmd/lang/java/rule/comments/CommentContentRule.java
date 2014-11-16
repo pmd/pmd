@@ -34,7 +34,7 @@ public class CommentContentRule extends AbstractCommentRule {
 	private String[] originalBadWords;
 	private String[] currentBadWords;
 
-	private static final String[] badWords = new String[] { "idiot", "jerk" };	// FIXME need some better defaults (or none?)
+	private static final String[] BAD_WORDS = new String[] { "idiot", "jerk" };	// FIXME need some better defaults (or none?)
 
 	public static final BooleanProperty WORDS_ARE_REGEX_DESCRIPTOR = new BooleanProperty("wordsAreRegex",
     		"Use regular expressions", false, 1.0f);
@@ -44,12 +44,12 @@ public class CommentContentRule extends AbstractCommentRule {
     		"Case sensitive", false, 2.0f);
 
     public static final StringMultiProperty DISSALLOWED_TERMS_DESCRIPTOR = new StringMultiProperty("disallowedTerms",
-    		"Illegal terms or phrases", badWords, 3.0f, '|');
+    		"Illegal terms or phrases", BAD_WORDS, 3.0f, '|');
 
-    private static final Set<PropertyDescriptor<?>> NonRegexProperties;
+    private static final Set<PropertyDescriptor<?>> NON_REGEX_PROPERTIES;
     static {
-    	NonRegexProperties = new HashSet<PropertyDescriptor<?>>(1);
-    	NonRegexProperties.add(CASE_SENSITIVE_DESCRIPTOR);
+    	NON_REGEX_PROPERTIES = new HashSet<PropertyDescriptor<?>>(1);
+    	NON_REGEX_PROPERTIES.add(CASE_SENSITIVE_DESCRIPTOR);
     }
 
 	public CommentContentRule() {
@@ -79,7 +79,7 @@ public class CommentContentRule extends AbstractCommentRule {
 	 @Override
 	 public Set<PropertyDescriptor<?>> ignoredProperties() {
 		 return getProperty(WORDS_ARE_REGEX_DESCRIPTOR) ?
-				NonRegexProperties :
+				NON_REGEX_PROPERTIES :
 				Collections.EMPTY_SET;
 	 }
 

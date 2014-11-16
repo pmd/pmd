@@ -41,7 +41,7 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements
 	protected Map<String, String> guardStmtByLogLevel = new HashMap<String, String>(
 			5);
 
-    private static final String xpathExpression = "//PrimaryPrefix[ends-with(Name/@Image, 'LOG_LEVEL')]"
+    private static final String XPATH_EXPRESSION = "//PrimaryPrefix[ends-with(Name/@Image, 'LOG_LEVEL')]"
             + "[count(../descendant::AdditiveExpression) > 0]"
             + "[count(ancestor::IfStatement/Expression/descendant::PrimaryExpression["
                 + "ends-with(descendant::PrimaryPrefix/Name/@Image,'GUARD')]) = 0]";
@@ -54,7 +54,7 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements
 	@Override
 	public Object visit(ASTCompilationUnit unit, Object data) {
 		extractProperties();
-		findViolationForEachLogStatement(unit, data, xpathExpression);
+		findViolationForEachLogStatement(unit, data, XPATH_EXPRESSION);
 		return super.visit(unit, data);
 	}
 

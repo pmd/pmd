@@ -88,9 +88,6 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
         // (npath of if + npath of else (or 1) + bool_comp of if) * npath of
         // next
 
-        int boolCompIf = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        int complexity = 0;
 
         List<JavaNode> statementChildren = new ArrayList<JavaNode>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
@@ -105,6 +102,7 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
         }
 
         // add path for not taking if
+        int complexity = 0;
         if (!node.hasElse()) {
             complexity++;
         }
@@ -113,6 +111,7 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
             complexity += (Integer) element.jjtAccept(this, data);
         }
 
+        int boolCompIf = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         return Integer.valueOf(boolCompIf + complexity);
     }
 

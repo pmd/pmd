@@ -179,21 +179,13 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
         if (n1 == null || n2 == null) {
             return true;
         }
-        if ((n1.getEndLine() < n2.getEndLine())
-                || (n1.getEndLine() == n2.getEndLine() && n1.getEndColumn() < n2.getEndColumn())) {
-            return false;
-        } else {
-            return true;
-        }
+        return !((n1.getEndLine() < n2.getEndLine())
+                || (n1.getEndLine() == n2.getEndLine() && n1.getEndColumn() < n2.getEndColumn()));
     }
 
     private boolean isCommentBefore(FormalComment n1, Node n2) {
-        if ((n1.getEndLine() < n2.getBeginLine())
-                || (n1.getEndLine() == n2.getBeginLine() && n1.getEndColumn() < n2.getBeginColumn())) {
-            return true;
-        } else {
-            return false;
-        }
+        return ((n1.getEndLine() < n2.getBeginLine())
+                || (n1.getEndLine() == n2.getBeginLine() && n1.getEndColumn() < n2.getBeginColumn()));
 	}
 
     protected SortedMap<Integer, Node> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
