@@ -1,18 +1,25 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.ruby;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
- * Created by christoferdutz on 20.09.14.
+ * Language module for Ruby.
  */
 public class RubyLanguageModule extends BaseLanguageModule {
 
+    /** The name. */
     public static final String NAME = "Ruby";
+    /** The terse name. */
     public static final String TERSE_NAME = "ruby";
 
+    /**
+     * Creates a new Ruby Language Module instance.
+     */
     public RubyLanguageModule() {
         super(NAME, null, TERSE_NAME, null, "rb", "cgi", "class");
         addVersion("", null, true);
     }
-
 }

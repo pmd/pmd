@@ -1,5 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd;
-
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,9 +19,8 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     }
 
     @Parameters
-    public static Collection data() {
-        return Arrays.asList(new Object[][] {
-                { RubyLanguageModule.NAME, RubyLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(RubyLanguageModule.NAME).getDefaultVersion() }
-            });
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] { { RubyLanguageModule.NAME, RubyLanguageModule.TERSE_NAME, "",
+                LanguageRegistry.getLanguage(RubyLanguageModule.NAME).getDefaultVersion() } });
     }
 }
