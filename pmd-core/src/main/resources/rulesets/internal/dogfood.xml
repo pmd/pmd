@@ -65,6 +65,7 @@
 	<rule ref="rulesets/java/coupling.xml">
 		<exclude name="CouplingBetweenObjects"/>
 		<exclude name="ExcessiveImports"/>
+        <exclude name="LawOfDemeter"/>
 	</rule>
 
 	<rule ref="rulesets/java/design.xml">
