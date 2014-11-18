@@ -56,7 +56,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
             "@see\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*\\(([\\w\\s,]*)\\))?");
 
     private static final Pattern LINK_PATTERNS = Pattern.compile(
-            "\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*\\(([\\w\\s,]*)\\))?[\\s\\}]");
+            "\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*\\(([.\\w\\s,]*)\\))?[\\s\\}]");
 
     private static final Pattern VALUE_PATTERN = Pattern.compile(
             "\\{@value\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#\\}]");

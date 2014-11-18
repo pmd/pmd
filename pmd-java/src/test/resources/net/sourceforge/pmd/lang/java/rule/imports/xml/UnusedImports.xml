@@ -264,7 +264,7 @@ import some.pack.SomeUtility;
 
 public class Foo {
     /**
-     * The {@link SomeUtility#someHelperMethod(String, SomeObject)} method does something.
+     * The {@link SomeUtility#someHelperMethod(String, test.SomeObject)} method does something.
      */
     public void someMethod() {
     }
