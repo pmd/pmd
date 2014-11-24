@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 import junit.framework.Assert;
 
@@ -23,11 +24,11 @@ public class CPDCommandLineInterfaceTest {
     private PrintStream originalStderr;
 
     @Before
-    public void setup() {
+    public void setup() throws UnsupportedEncodingException {
         originalStdout = System.out;
         originalStderr = System.err;
         bufferStdout = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(bufferStdout));
+        System.setOut(new PrintStream(bufferStdout, false, "UTF-8"));
         System.setErr(System.out);
     }
 
