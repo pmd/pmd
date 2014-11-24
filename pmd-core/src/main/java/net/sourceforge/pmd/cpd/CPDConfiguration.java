@@ -48,7 +48,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 	 */
 	private Renderer renderer;
 
-	@Parameter(names = "--encoding", description = "Characterset to use when processing files", required = false)
 	private String encoding;
 
 	@Parameter(names = "--ignore-literals", description = "Ignore number values and string contents when comparing text", required = false)
@@ -103,8 +102,10 @@ public class CPDConfiguration extends AbstractConfiguration {
 	}
 
 
+	@Parameter(names = "--encoding", description = "Characterset to use when processing files", required = false)
 	public void setEncoding(String encoding) {
 	    this.encoding = encoding;
+	    setSourceEncoding(encoding);
 	}
 
 	public SourceCode sourceCodeFor(File file) {
@@ -117,11 +118,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 	}
 
 	public void postContruct() {
-        if (getEncoding() != null) {
-            super.setSourceEncoding(getEncoding());
-            if (!getEncoding().equals(System.getProperty("file.encoding")))
-                System.setProperty("file.encoding", getEncoding());
-        }
 		if ( this.getLanguage() == null ) {
 			this.setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
 		}
@@ -129,15 +125,15 @@ public class CPDConfiguration extends AbstractConfiguration {
 		    this.setRendererName(DEFAULT_RENDERER);
 		}
 		if ( this.getRenderer() == null ) {
-			this.setRenderer(getRendererFromString(getRendererName()));
+			this.setRenderer(getRendererFromString(getRendererName(), this.getEncoding()));
 		}
 	}
 
-	public static Renderer getRendererFromString(String name /* , String encoding */) {
+	public static Renderer getRendererFromString(String name, String encoding) {
 		if (name.equalsIgnoreCase(DEFAULT_RENDERER) || name.equals("")) {
 			return new SimpleRenderer();
 		} else if ("xml".equals(name)) {
-			return new XMLRenderer();
+			return new XMLRenderer(encoding);
 		} else if ("csv".equals(name)) {
 			return new CSVRenderer();
 		} else if ("vs".equals(name)) {
@@ -157,7 +153,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 	}
 
 	public static void setSystemProperties(CPDConfiguration configuration) {
-		Properties properties = System.getProperties();
+		Properties properties = new Properties();
 		if (configuration.isIgnoreLiterals()) {
 			properties.setProperty(Tokenizer.IGNORE_LITERALS, "true");
 		} else {
@@ -173,7 +169,6 @@ public class CPDConfiguration extends AbstractConfiguration {
         } else {
             properties.remove(Tokenizer.IGNORE_ANNOTATIONS);
 		}
-		System.setProperties(properties);
 		configuration.getLanguage().setProperties(properties);
 	}
 

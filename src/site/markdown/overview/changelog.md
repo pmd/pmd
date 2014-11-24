@@ -15,3 +15,4 @@
 * [#1280](https://sourceforge.net/p/pmd/bugs/1280/): False Positive in UnusedImports when import used in javadoc
 * [#1281](https://sourceforge.net/p/pmd/bugs/1281/): UnusedPrivateMethod incorrectly flagged for methods nested private classes
 * [#1282](https://sourceforge.net/p/pmd/bugs/1282/): False Positive with implicit String.valuesOf() (Java)
+* [#1285](https://sourceforge.net/p/pmd/bugs/1285/): Prevent to modify the System environment
