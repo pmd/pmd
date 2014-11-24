@@ -129,6 +129,17 @@ public class CPDConfiguration extends AbstractConfiguration {
 		}
 	}
 
+    /**
+     * Gets a renderer with the platform's default encoding.
+     * @param name renderer name
+     * @return a fresh renderer instance
+     * @deprecated use {@link #getRendererFromString(String, String)} instead
+     */
+    @Deprecated
+    public static Renderer getRendererFromString(String name) {
+        return getRendererFromString(name, System.getProperty("file.encoding"));
+    }
+
 	public static Renderer getRendererFromString(String name, String encoding) {
 		if (name.equalsIgnoreCase(DEFAULT_RENDERER) || name.equals("")) {
 			return new SimpleRenderer();
