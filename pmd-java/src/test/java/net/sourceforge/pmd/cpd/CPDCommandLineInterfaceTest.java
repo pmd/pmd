@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
@@ -85,7 +86,7 @@ public class CPDCommandLineInterfaceTest {
 
         String out = bufferStdout.toString("UTF-8");
         Assert.assertTrue(out.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-        Assert.assertTrue(out.contains("System.out.println(i + \"ä\");"));
+        Assert.assertTrue(Pattern.compile("System\\.out\\.println\\([ij] \\+ \"ä\"\\);").matcher(out).find());
     }
 
     /**
