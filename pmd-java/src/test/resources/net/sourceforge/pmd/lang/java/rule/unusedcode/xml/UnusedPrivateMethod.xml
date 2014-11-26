@@ -1305,4 +1305,26 @@ public class NestedClassPrivateMethods {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1287 UnusedPrivateMethod returns false positives for Superclass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SuperClassFalsePositive {
+
+    public void myPublicMethod() {
+        throw convertToUnchecked(new MyException("Something Bad Happened"));
+    }
+
+    private IllegalArgumentException convertToUnchecked(Exception e) {
+        return new IllegalArgumentException(e);
+    }
+
+    private static class MyException extends Exception {
+        public MyException(String message) {
+            super(message);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
