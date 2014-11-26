@@ -324,12 +324,18 @@ public class ClassScope extends AbstractJavaScope {
                     ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType)child.jjtGetChild(0);
                     type = convertToSimpleType(classInterface);
                 }
-                if (type == null && parameterTypes.size() > i) {
+                if (type == null && !parameterTypes.isEmpty()) {
                     // replace the unknown type with the correct parameter type of the method.
                     // in case the argument is itself a method call, we can't determine the result type of the called
                     // method. Therefore the parameter type is used.
                     // This might cause confusion, if method overloading is used.
-                    type = parameterTypes.get(i);
+
+                    // the method might be vararg, so, there might be more arguments than parameterTypes
+                    if (parameterTypes.size() > i) {
+                        type = parameterTypes.get(i);
+                    } else {
+                        type = parameterTypes.get(parameterTypes.size() - 1); // last parameter is the vararg type
+                    }
                 }
                 if (type != null && type.getType() == null) {
                     Class<?> typeBound = resolveGenericType(argument, type.getTypeImage());
