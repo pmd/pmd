@@ -8,6 +8,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -50,6 +52,11 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
             return data;
         }
 
+        // skip if either is part of a qualified name
+        if (isPartOfQualifiedName(node.jjtGetChild(0)) || isPartOfQualifiedName(node.jjtGetChild(1))) {
+            return data;
+        }
+
         // skip static initializers... missing some cases here
         if (!node.getParentsOfType(ASTInitializer.class).isEmpty()) {
             return data;
@@ -82,5 +89,17 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
         }
 
         return data;
+    }
+
+    /**
+     * Checks whether the given node contains a qualified name, consisting of one
+     * ASTPrimaryPrefix and one or more ASTPrimarySuffix nodes.
+     * 
+     * @param node the node
+     * @return <code>true</code> if it is a qualified name
+     */
+    private boolean isPartOfQualifiedName(Node node) {
+        return node.jjtGetChild(0) instanceof ASTPrimaryPrefix
+                && !node.findChildrenOfType(ASTPrimarySuffix.class).isEmpty();
     }
 }
