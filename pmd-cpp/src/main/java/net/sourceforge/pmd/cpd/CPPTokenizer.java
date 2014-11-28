@@ -3,8 +3,12 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
+import java.util.Properties;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.TokenManager;
@@ -19,6 +23,30 @@ import org.apache.commons.io.IOUtils;
  */
 public class CPPTokenizer implements Tokenizer {
 
+    private boolean skipBlocks = true;
+    private String skipBlocksStart;
+    private String skipBlocksEnd;
+
+    /**
+     * Sets the possible options for the C++ tokenizer.
+     * @param properties the properties
+     * @see #OPTION_SKIP_BLOCKS
+     * @see #OPTION_SKIP_BLOCKS_PATTERN
+     */
+    public void setProperties(Properties properties) {
+        skipBlocks = Boolean.parseBoolean(properties.getProperty(OPTION_SKIP_BLOCKS, Boolean.TRUE.toString()));
+        if (skipBlocks) {
+            String skipBlocksPattern = properties.getProperty(OPTION_SKIP_BLOCKS_PATTERN, DEFAULT_SKIP_BLOCKS_PATTERN);
+            String[] split = skipBlocksPattern.split("\\|", 2);
+            skipBlocksStart = split[0];
+            if (split.length == 1) {
+                skipBlocksEnd = split[0];
+            } else {
+                skipBlocksEnd = split[1];
+            }
+        }
+    }
+
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
@@ -26,7 +54,7 @@ public class CPPTokenizer implements Tokenizer {
         try {
             LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(CppLanguageModule.NAME)
                     .getDefaultVersion().getLanguageVersionHandler();
-            reader = new StringReader(buffer.toString());
+            reader = new StringReader(maybeSkipBlocks(buffer.toString()));
             TokenManager tokenManager = languageVersionHandler.getParser(
                     languageVersionHandler.getDefaultParserOptions()).getTokenManager(sourceCode.getFileName(), reader);
             Token currentToken = (Token) tokenManager.getNextToken();
@@ -40,8 +68,35 @@ public class CPPTokenizer implements Tokenizer {
             err.printStackTrace();
             System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
             tokenEntries.add(TokenEntry.getEOF());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
+            tokenEntries.add(TokenEntry.getEOF());
         } finally {
             IOUtils.closeQuietly(reader);
         }
+    }
+
+    private String maybeSkipBlocks(String test) throws IOException {
+        if (!skipBlocks) {
+            return test;
+        }
+
+        BufferedReader reader = new BufferedReader(new StringReader(test));
+        StringBuilder filtered = new StringBuilder(test.length());
+        String line;
+        boolean skip = false;
+        while ((line = reader.readLine()) != null) {
+            if (skipBlocksStart.equalsIgnoreCase(line.trim())) {
+                skip = true;
+            } else if (skip && skipBlocksEnd.equalsIgnoreCase(line.trim())) {
+                skip = false;
+            }
+            if (!skip) {
+                filtered.append(line);
+            }
+            filtered.append(PMD.EOL); // always add a new line to keep the line-numbering
+        }
+        return filtered.toString();
     }
 }

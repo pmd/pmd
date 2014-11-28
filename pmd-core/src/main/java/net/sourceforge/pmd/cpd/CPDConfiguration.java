@@ -62,6 +62,13 @@ public class CPDConfiguration extends AbstractConfiguration {
 	@Parameter(names = "--skip-lexical-errors", description = "Skip files which can't be tokenized due to invalid characters instead of aborting CPD", required = false)
 	private boolean skipLexicalErrors = false;
 
+	@Parameter(names = "--no-skip-blocks", description = "Do not skip code blocks marked with --skip-blocks-pattern (e.g. #if 0 until #endif)", required = false)
+	private boolean noSkipBlocks = false;
+
+	@Parameter(names = "--skip-blocks-pattern", description = "Pattern to find the blocks to skip. Start and End pattern separated by |. "
+	        + "Default is \"" + Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN + "\".", required = false)
+	private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
+
 	@Parameter(names = "--files", variableArity = true, description = "List of files and directories to process", required = false)
 	private List<String> files;
 
@@ -180,6 +187,8 @@ public class CPDConfiguration extends AbstractConfiguration {
         } else {
             properties.remove(Tokenizer.IGNORE_ANNOTATIONS);
 		}
+	    properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
+	    properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
 		configuration.getLanguage().setProperties(properties);
 	}
 
@@ -341,4 +350,20 @@ public class CPDConfiguration extends AbstractConfiguration {
 	public String getEncoding() {
 		return encoding;
 	}
+
+    public boolean isNoSkipBlocks() {
+        return noSkipBlocks;
+    }
+
+    public void setNoSkipBlocks(boolean noSkipBlocks) {
+        this.noSkipBlocks = noSkipBlocks;
+    }
+
+    public String getSkipBlocksPattern() {
+        return skipBlocksPattern;
+    }
+
+    public void setSkipBlocksPattern(String skipBlocksPattern) {
+        this.skipBlocksPattern = skipBlocksPattern;
+    }
 }

@@ -49,6 +49,8 @@ public class CPDTask extends Task {
     private boolean ignoreAnnotations;
     private boolean skipLexicalErrors;
     private boolean skipDuplicateFiles;
+    private boolean skipBlocks = true;
+    private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
     private File outputFile;
     private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<FileSet>();
@@ -102,6 +104,8 @@ public class CPDTask extends Task {
         if (ignoreAnnotations) {
             p.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
         }
+        p.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
+        p.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, skipBlocksPattern);
         return LanguageFactory.createLanguage(language, p);
     }
 
@@ -206,6 +210,14 @@ public class CPDTask extends Task {
 
     public void setEncoding(String encoding) {
         this.encoding = encoding;
+    }
+
+    public void setSkipBlocks(boolean skipBlocks) {
+        this.skipBlocks = skipBlocks;
+    }
+
+    public void setSkipBlocksPattern(String skipBlocksPattern) {
+        this.skipBlocksPattern = skipBlocksPattern;
     }
 
     public static class FormatAttribute extends EnumeratedAttribute {

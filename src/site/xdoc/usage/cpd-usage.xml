@@ -49,16 +49,19 @@
   <tr>
     <td valign="top"><b>Attribute</b></td>
     <td valign="top"><b>Description</b></td>
+    <td valign="top"><b>Applies for language</b></td>
     <td align="center" valign="top"><b>Required</b></td>
   </tr>
   <tr>
     <td valign="top">encoding</td>
     <td valign="top">The character set encoding (e.g., UTF-8) to use when reading the source code files, but also when producing the report. A piece of warning, even if you set properly the encoding value, let's say to UTF-8, but you are running CPD encoded with CP1252, you may end up with not UTF-8 file. Indeed, CPD copy piece of source code in its report directly, therefore, the source files keep their encoding.<br>If not specified, CPD uses the system default encoding.</br></td>
+    <td valign="top"></td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
     <td valign="top">format</td>
     <td valign="top">The format of the report (e.g. <code>csv</code>, <code>text</code>, <code>xml</code>); defaults to <code>text</code>.</td>
+    <td valign="top"></td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
@@ -67,27 +70,46 @@
  value differences when evaluating a duplicate block.  This means that <code>foo=42;</code> and <code>foo=43;</code>
  will be seen as equivalent.  You may want to run PMD with this option off to start with and
            then switch it on to see what it turns up; defaults to <code>false</code>.</td>
+    <td valign="top">java</td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
     <td valign="top">ignoreIdentifiers</td>
     <td valign="top">Similar to <code>ignoreLiterals</code> but for identifiers; i.e., variable names, methods names, and so forth; defaults to <code>false</code>.</td>
+    <td valign="top">java</td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
     <td valign="top">ignoreAnnotations</td>
     <td valign="top">Ignore annotations. More and more modern frameworks use annotations on classes and methods, which can be very redundant and trigger CPD matches. With J2EE (CDI, Transaction Handling, etc) and Spring (everything) annotations become very redundant. Often classes or methods have the same 5-6 lines of annotations. This causes false positives; defaults to <code>false</code>.</td>
+    <td valign="top">java</td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
     <td valign="top">skipDuplicateFiles</td>
     <td valign="top">Ignore multiple copies of files of the same name and length in comparison; defaults to <code>false</code>.</td>
+    <td valign="top"></td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
     <td valign="top">skipLexicalErrors</td>
     <td valign="top">Skip files which can't be tokenized due to invalid characters instead of aborting CPD; defaults to <code>false</code>.</td>
+    <td valign="top"></td>
     <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">skipBlocks</td>
+    <td valign="top">Enables or disabled skipping of blocks like a pre-processor; defaults to <code>true</code>. See also option skipBlocksPattern.</td>
+    <td valign="top">cpp</td>
+    <td valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">skipBlocksPattern</td>
+    <td valign="top">Configures the pattern, to find the blocks to skip. It is a string property and contains of two parts, separated by <code>|</code>.
+        The first part is the start pattern, the second part is the ending pattern.
+        The default value is <code>#if 0|#endif</code>.</td>
+    <td valign="top">cpp</td>
+    <td valign="top">no</td>
   </tr>
   <tr>
     <td valign="top">language</td>
@@ -97,16 +119,19 @@
         <code>ecmascript</code>, and <code>plsql</code>);
         defaults to <code>java</code>.
     </td>
+    <td valign="top"></td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
     <td valign="top">minimumtokencount</td>
     <td valign="top">A positive integer indicating the minimum duplicate size.</td>
+    <td valign="top"></td>
     <td valign="top" align="center">Yes</td>
   </tr>
   <tr>
     <td valign="top">outputfile</td>
     <td valign="top">The destination file for the report. If not specified the console will be used instead.</td>
+    <td valign="top"></td>
     <td valign="top" align="center">No</td>
   </tr>
 </table>

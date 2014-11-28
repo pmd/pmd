@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.util.Properties;
+
 /**
  * Defines the Language module for C/C++
  */
@@ -13,5 +15,14 @@ public class CPPLanguage extends AbstractLanguage {
      */
     public CPPLanguage() {
         super("C++", "cpp", new CPPTokenizer(), ".h", ".hpp", ".hxx", ".c", ".cpp", ".cxx", ".cc", ".C");
+    }
+    
+    /* (non-Javadoc)
+     * @see net.sourceforge.pmd.cpd.AbstractLanguage#setProperties(java.util.Properties)
+     */
+    @Override
+    public void setProperties(Properties properties) {
+        super.setProperties(properties);
+        ((CPPTokenizer)getTokenizer()).setProperties(properties);
     }
 }

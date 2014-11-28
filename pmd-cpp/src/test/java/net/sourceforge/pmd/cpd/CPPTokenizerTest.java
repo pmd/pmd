@@ -5,8 +5,12 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Properties;
+
 import net.sourceforge.pmd.PMD;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 public class CPPTokenizerTest {
@@ -51,8 +55,43 @@ public class CPPTokenizerTest {
     	assertEquals(17, tokens.size());
     }
 
+    @Test
+    public void testTokenizerWithSkipBlocks() throws Exception {
+        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"));
+        Tokens tokens = parse(test, true);
+        assertEquals(19, tokens.size());
+    }
+
+    @Test
+    public void testTokenizerWithSkipBlocksPattern() throws Exception {
+        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"));
+        Tokens tokens = parse(test, true, "#if debug|#endif");
+        assertEquals(31, tokens.size());
+    }
+
+    @Test
+    public void testTokenizerWithoutSkipBlocks() throws Exception {
+        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"));
+        Tokens tokens = parse(test, false);
+        assertEquals(37, tokens.size());
+    }
+
     private Tokens parse(String snippet) {
+        return parse(snippet, false);
+    }
+    private Tokens parse(String snippet, boolean skipBlocks) {
+        return parse(snippet, skipBlocks, null);
+    }
+    private Tokens parse(String snippet, boolean skipBlocks, String skipPattern) {
+        Properties properties = new Properties();
+        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
+        if (skipPattern != null) {
+            properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, skipPattern);
+        }
+
         CPPTokenizer tokenizer = new CPPTokenizer();
+        tokenizer.setProperties(properties);
+
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(snippet));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
