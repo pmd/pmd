@@ -66,10 +66,11 @@
 		<exclude name="CouplingBetweenObjects"/>
 		<exclude name="ExcessiveImports"/>
         <exclude name="LawOfDemeter"/>
+        <exclude name="LoosePackageCoupling"/>
 	</rule>
 
 	<rule ref="rulesets/java/design.xml">
-		<exclude name="UseSingleton"/>
+		<exclude name="UseUtilityClass"/>
 		<exclude name="AvoidDeeplyNestedIfStmts"/>
 		<exclude name="AvoidReassigningParameters"/>
 		<exclude name="SwitchDensity"/>
