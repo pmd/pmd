@@ -106,7 +106,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
 
     /**
-     * Get the suppress marker. This the source level marker used to indicate a
+     * Get the suppress marker. This is the source level marker used to indicate a
      * RuleViolation should be suppressed.
      * 
      * @return The suppress marker.
