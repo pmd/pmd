@@ -262,7 +262,7 @@
         <surefire.version>2.17</surefire.version>
         <checkstyle.version>2.13</checkstyle.version>
         <clover.version>2.5.1</clover.version>
-        <pmd.plugin.version>3.2</pmd.plugin.version>
+        <pmd.plugin.version>3.3</pmd.plugin.version>
         <java.version>1.6</java.version>
         <ant.version>1.9.4</ant.version>
         <javadoc.plugin.version>2.10.1</javadoc.plugin.version>
