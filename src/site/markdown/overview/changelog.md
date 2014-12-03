@@ -1,12 +1,6 @@
 # Changelog
 
-## ????? - 5.2.2:
-
-**Pull requests:**
-
-**Feature Requests and Improvements:**
-
-**New/Modified Rules:**
+## December 3, 2014 - 5.2.2:
 
 **New Parameters for CPD:**
 
