@@ -16,63 +16,82 @@ public class RuleSetReferenceIdTest {
     private static void assertRuleSetReferenceId(final boolean expectedExternal, final String expectedRuleSetFileName,
 	    final boolean expectedAllRules, final String expectedRuleName, final String expectedToString,
 	    final RuleSetReferenceId reference) {
-	assertEquals("Wrong external", expectedExternal, reference.isExternal());
-	assertEquals("Wrong RuleSet file name", expectedRuleSetFileName, reference.getRuleSetFileName());
-	assertEquals("Wrong all Rule reference", expectedAllRules, reference.isAllRules());
-	assertEquals("Wrong Rule name", expectedRuleName, reference.getRuleName());
-	assertEquals("Wrong toString()", expectedToString, reference.toString());
+    	
+		assertEquals("Wrong external", expectedExternal, reference.isExternal());
+		assertEquals("Wrong RuleSet file name", expectedRuleSetFileName, reference.getRuleSetFileName());
+		assertEquals("Wrong all Rule reference", expectedAllRules, reference.isAllRules());
+		assertEquals("Wrong Rule name", expectedRuleName, reference.getRuleName());
+		assertEquals("Wrong toString()", expectedToString, reference.toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCommaInSingleId() {
-	new RuleSetReferenceId("bad,id");
+    	
+    	new RuleSetReferenceId("bad,id");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInternalWithInternal() {
-	new RuleSetReferenceId("SomeRule", new RuleSetReferenceId("SomeOtherRule"));
+    	
+    	new RuleSetReferenceId("SomeRule", new RuleSetReferenceId("SomeOtherRule"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testExternalWithExternal() {
-	new RuleSetReferenceId("someruleset.xml/SomeRule", new RuleSetReferenceId("someruleset.xml/SomeOtherRule"));
+    	
+    	new RuleSetReferenceId("someruleset.xml/SomeRule", new RuleSetReferenceId("someruleset.xml/SomeOtherRule"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testExternalWithInternal() {
-	new RuleSetReferenceId("someruleset.xml/SomeRule", new RuleSetReferenceId("SomeOtherRule"));
+    	
+    	new RuleSetReferenceId("someruleset.xml/SomeRule", new RuleSetReferenceId("SomeOtherRule"));
     }
 
     @Test
     public void testInteralWithExternal() {
-	// This is okay
-	new RuleSetReferenceId("SomeRule", new RuleSetReferenceId("someruleset.xml/SomeOtherRule"));
+    	
+		// This is okay
+		new RuleSetReferenceId("SomeRule", new RuleSetReferenceId("someruleset.xml/SomeOtherRule"));
     }
 
     @Test
     public void testEmptyRuleSet() {
-	// This is representative of how the Test framework creates RuleSetReferenceId from static RuleSet XMLs
-	RuleSetReferenceId reference = new RuleSetReferenceId(null);
-	assertRuleSetReferenceId(true, null, true, null, "anonymous all Rule", reference);
+    	
+		// This is representative of how the Test framework creates RuleSetReferenceId from static RuleSet XMLs
+		RuleSetReferenceId reference = new RuleSetReferenceId(null);
+		assertRuleSetReferenceId(true, null, true, null, "anonymous all Rule", reference);
     }
 
     @Test
     public void testInternalWithExternalRuleSet() {
-	// This is representative of how the RuleSetFactory temporarily pairs an internal reference
-	// with an external reference.
-	RuleSetReferenceId internalRuleSetReferenceId = new RuleSetReferenceId("MockRuleName");
-	assertRuleSetReferenceId(false, null, false, "MockRuleName", "MockRuleName", internalRuleSetReferenceId);
-	RuleSetReferenceId externalRuleSetReferenceId = new RuleSetReferenceId("rulesets/java/basic.xml");
-	assertRuleSetReferenceId(true, "rulesets/java/basic.xml", true, null, "rulesets/java/basic.xml",
-		externalRuleSetReferenceId);
+    	
+		// This is representative of how the RuleSetFactory temporarily pairs an internal reference
+		// with an external reference.
+		RuleSetReferenceId internalRuleSetReferenceId = new RuleSetReferenceId("MockRuleName");
+		assertRuleSetReferenceId(false, null, false, "MockRuleName", "MockRuleName", internalRuleSetReferenceId);
+		RuleSetReferenceId externalRuleSetReferenceId = new RuleSetReferenceId("rulesets/java/basic.xml");
+		assertRuleSetReferenceId(true, "rulesets/java/basic.xml", true, null, "rulesets/java/basic.xml",
+			externalRuleSetReferenceId);
+	
+		RuleSetReferenceId pairRuleSetReferenceId = new RuleSetReferenceId("MockRuleName", externalRuleSetReferenceId);
+		assertRuleSetReferenceId(true, "rulesets/java/basic.xml", false, "MockRuleName",
+			"rulesets/java/basic.xml/MockRuleName", pairRuleSetReferenceId);
+    }
+    
+    @Test
+    public void constructor_GivenHttpUrlId_SucceedsAndProcessesIdCorrectly() {
 
-	RuleSetReferenceId pairRuleSetReferenceId = new RuleSetReferenceId("MockRuleName", externalRuleSetReferenceId);
-	assertRuleSetReferenceId(true, "rulesets/java/basic.xml", false, "MockRuleName",
-		"rulesets/java/basic.xml/MockRuleName", pairRuleSetReferenceId);
+        final String sonarRulesetUrlId =
+    		"  http://localhost:9000/profiles/export?format=pmd&language=java&name=Sonar%2520way  ";
+        
+        RuleSetReferenceId ruleSetReferenceId = new RuleSetReferenceId(sonarRulesetUrlId);
+        assertRuleSetReferenceId(true, sonarRulesetUrlId, true, null, sonarRulesetUrlId, ruleSetReferenceId);
     }
 
     @Test
     public void testOneSimpleRuleSet() {
+    	
 	List<RuleSetReferenceId> references = RuleSetReferenceId.parse("dummy-basic");
 	assertEquals(1, references.size());
 	assertRuleSetReferenceId(true, "rulesets/dummy/basic.xml", true, null, "rulesets/dummy/basic.xml", references

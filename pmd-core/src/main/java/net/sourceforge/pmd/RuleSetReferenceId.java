@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
@@ -88,7 +89,8 @@ public class RuleSetReferenceId {
      * @throws IllegalArgumentException If the ID contains a comma character.
      */
     public RuleSetReferenceId(final String id) {
-	this(id, null);
+    	
+    	this(id, null);
     }
 
     /**
@@ -104,18 +106,20 @@ public class RuleSetReferenceId {
      * @throws IllegalArgumentException If the ID is not Rule reference when there is an external RuleSetReferenceId.
      */
     public RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
-        if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
+        
+    	if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
             throw new IllegalArgumentException("Cannot pair with non-external <" + externalRuleSetReferenceId + ">.");
         }
+    	
         if (id != null && id.indexOf(',') >= 0) {
             throw new IllegalArgumentException("A single RuleSetReferenceId cannot contain ',' (comma) characters: "
                     + id);
         }
-
+        
         // Damn this parsing sucks, but my brain is just not working to let me
         // write a simpler scheme.
 
-        if (isFullRuleSetName(id)) {
+        if (isHttpUrl(id) || isFullRuleSetName(id)) {
             // A full RuleSet name
             external = true;
             ruleSetFileName = id;
@@ -239,7 +243,22 @@ public class RuleSetReferenceId {
         return result;
     }
 
+    private static boolean isHttpUrl(String name) {
+    	
+    	if (name == null) {
+    		return false;
+    	}
+    	
+    	name = StringUtils.strip(name);
+    	if (name.startsWith("http://") || name.startsWith("https://")) {
+    		return true;
+    	}
+    	
+    	return false;
+    }
+    
     private static boolean isFullRuleSetName(String name) {
+    	
         return name != null && name.endsWith(".xml");
     }
 
