@@ -82,37 +82,37 @@ public class XmlParserTest {
         Node document = parser.parse(null, new StringReader(XML_TEST));
 
         assertNode(document, "document", 2);
-        assertLineNumbers(document, 1, 1, 19, 15);
+        assertLineNumbers(document, 1, 1, 19, 14);
         Node dtdElement = document.jjtGetChild(0);
         assertNode(dtdElement, "rootElement", 0);
-        assertLineNumbers(dtdElement, 3, 1, 10, 1);
+        assertLineNumbers(dtdElement, 2, 1, 11, 1);
         Node rootElement = document.jjtGetChild(1);
         assertNode(rootElement, "rootElement", 7);
-        assertLineNumbers(rootElement, 12, 14, 19, 15);
+        assertLineNumbers(rootElement, 12, 1, 19, 14);
         assertTextNode(rootElement.jjtGetChild(0), "\\n    ");
-        assertLineNumbers(rootElement.jjtGetChild(0), 13, 5, 13, 30);
+        assertLineNumbers(rootElement.jjtGetChild(0), 12, 14, 13, 4);
         assertNode(rootElement.jjtGetChild(1), "comment", 0);
-        assertLineNumbers(rootElement.jjtGetChild(1), 13, 30, 13, 30);
+        assertLineNumbers(rootElement.jjtGetChild(1), 13, 5, 13, 29);
         assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
-        assertLineNumbers(rootElement.jjtGetChild(2), 14, 5, 14, 22);
+        assertLineNumbers(rootElement.jjtGetChild(2), 13, 30, 14, 4);
         Node child1 = rootElement.jjtGetChild(3);
         assertNode(child1, "child1", 1, "test", "1");
-        assertLineNumbers(child1, 14, 22, 15, 14);
+        assertLineNumbers(child1, 14, 5, 15, 13);
         assertTextNode(child1.jjtGetChild(0), "entity: Copyright: PMD\\n    ");
-        assertLineNumbers(child1.jjtGetChild(0), 14, 30, 15, 14);
+        assertLineNumbers(child1.jjtGetChild(0), 14, 22, 15, 4);
         assertTextNode(rootElement.jjtGetChild(4), "\\n    ");
-        assertLineNumbers(rootElement.jjtGetChild(4), 16, 5, 16, 13);
+        assertLineNumbers(rootElement.jjtGetChild(4), 15, 14, 16, 4);
         Node child2 = rootElement.jjtGetChild(5);
         assertNode(child2, "child2", 3);
-        assertLineNumbers(child2, 16, 13, 18, 14);
+        assertLineNumbers(child2, 16, 5, 18, 13);
         assertTextNode(child2.jjtGetChild(0), "\\n      ");
-        assertLineNumbers(child2.jjtGetChild(0), 17, 7, 17, 16);
+        assertLineNumbers(child2.jjtGetChild(0), 16, 13, 17, 6);
         assertTextNode(child2.jjtGetChild(1), " cdata section ", "cdata-section");
-        assertLineNumbers(child2.jjtGetChild(1), 17, 33, 17, 34);
+        assertLineNumbers(child2.jjtGetChild(1), 17, 7, 17, 33);
         assertTextNode(child2.jjtGetChild(2), "\\n    ");
-        assertLineNumbers(child2.jjtGetChild(2), 18, 5, 18, 14);
+        assertLineNumbers(child2.jjtGetChild(2), 17, 34, 18, 4);
         assertTextNode(rootElement.jjtGetChild(6), "\\n");
-        assertLineNumbers(rootElement.jjtGetChild(6), 19, 1, 19, 15);
+        assertLineNumbers(rootElement.jjtGetChild(6), 18, 14, 18, 14);
     }
 
     /**
