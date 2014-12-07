@@ -77,10 +77,8 @@ public class AbstractDomXmlRuleTest {
 		// assertEquals(0, visited.size());
 
 		visited = rule.visitedNodes.get("EntityReference");
-		assertEquals(3, visited.size());
-		assertEquals("gt", ((EntityReference) visited.get(0)).getNodeName());
-        assertEquals("entity", ((EntityReference) visited.get(1)).getNodeName());
-        assertEquals("lt", ((EntityReference) visited.get(2)).getNodeName());
+		assertEquals(1, visited.size());
+        assertEquals("entity", ((EntityReference) visited.get(0)).getNodeName());
 
 		// TODO Figure out how to trigger this.
 		// visited = rule.visitedNodes.get("Notation");
@@ -92,9 +90,11 @@ public class AbstractDomXmlRuleTest {
 				((ProcessingInstruction) visited.get(0)).getTarget());
 
 		visited = rule.visitedNodes.get("Text");
-		assertEquals(2, visited.size());
+		assertEquals(4, visited.size());
 		assertEquals("TEXT", ((Text) visited.get(0)).getData());
-		assertEquals("e", ((Text) visited.get(1)).getData());
+        assertEquals(">", ((Text) visited.get(1)).getData());
+        assertEquals("e", ((Text) visited.get(2)).getData());
+        assertEquals("<", ((Text) visited.get(3)).getData());
 	}
 
 	@Test

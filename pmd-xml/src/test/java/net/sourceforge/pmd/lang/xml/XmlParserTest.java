@@ -12,6 +12,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
@@ -274,7 +275,7 @@ public class XmlParserTest {
 
         assertNode(document, "document", 1);
         Node rootElement = document.jjtGetChild(0);
-        assertNode(rootElement, "pmd:rootElement", 7);
+        assertNode(rootElement, "pmd:rootElement", 7, "xmlns:pmd", "http://pmd.sf.net");
         Assert.assertEquals("http://pmd.sf.net", ((XmlNode)rootElement).getNode().getNamespaceURI());
         Assert.assertEquals("pmd", ((XmlNode)rootElement).getNode().getPrefix());
         Assert.assertEquals("rootElement", ((XmlNode)rootElement).getNode().getLocalName());
@@ -351,6 +352,19 @@ public class XmlParserTest {
         } finally {
             System.setErr(oldErr);
         }
+    }
+
+    @Test
+    public void testWithProcessingInstructions() {
+        String xml = "<?xml version=\"1.0\"?><?mypi?><!DOCTYPE testDoc [<!ENTITY myentity \"e\">]><!--Comment--><foo abc=\"abc\"><bar>TEXT</bar><![CDATA[cdata!]]>&gt;&myentity;&lt;</foo>";
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        XmlParserOptions options = (XmlParserOptions)xmlVersionHandler.getDefaultParserOptions();
+        options.setExpandEntityReferences(false);
+        Parser parser = xmlVersionHandler.getParser(options);
+        Node document = parser.parse(null, new StringReader(xml));
+        Assert.assertNotNull(document);
+        assertNode(document.jjtGetChild(0), "mypi", 0);
+        assertLineNumbers(document.jjtGetChild(0), 1, 22, 1, 29);
     }
 
     /**

@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.xml.ast;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,19 +13,19 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 
 public class XmlParser {
     protected final XmlParserOptions parserOptions;
@@ -37,23 +38,24 @@ public class XmlParser {
     protected Document parseDocument(Reader reader) throws ParseException {
         nodeCache.clear();
         try {
-            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-            saxParserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            saxParserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            saxParserFactory.setNamespaceAware(parserOptions.isNamespaceAware());
-            saxParserFactory.setValidating(parserOptions.isValidating());
-            saxParserFactory.setXIncludeAware(parserOptions.isXincludeAware());
-            SAXParser saxParser = saxParserFactory.newSAXParser();
+            String xmlData = IOUtils.toString(reader);
 
-            LineNumberAwareSaxHandler handler = new LineNumberAwareSaxHandler(parserOptions);
-            XMLReader xmlReader = saxParser.getXMLReader();
-            xmlReader.setContentHandler(handler);
-            xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-            xmlReader.setProperty("http://xml.org/sax/properties/declaration-handler", handler);
-            xmlReader.setEntityResolver(parserOptions.getEntityResolver());
-
-            xmlReader.parse(new InputSource(reader));
-            return handler.getDocument();
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(parserOptions.isNamespaceAware());
+            dbf.setValidating(parserOptions.isValidating());
+            dbf.setIgnoringComments(parserOptions.isIgnoringComments());
+            dbf.setIgnoringElementContentWhitespace(parserOptions.isIgnoringElementContentWhitespace());
+            dbf.setExpandEntityReferences(parserOptions.isExpandEntityReferences());
+            dbf.setCoalescing(parserOptions.isCoalescing());
+            dbf.setXIncludeAware(parserOptions.isXincludeAware());
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+            documentBuilder.setEntityResolver(parserOptions.getEntityResolver());
+            Document document = documentBuilder.parse(new InputSource(new StringReader(xmlData)));
+            DOMLineNumbers lineNumbers = new DOMLineNumbers(document, xmlData);
+            lineNumbers.determine();
+            return document;
         } catch (ParserConfigurationException e) {
             throw new ParseException(e);
         } catch (SAXException e) {
