@@ -89,11 +89,6 @@
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
         </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <type>jar</type>
-        </dependency>
 
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>

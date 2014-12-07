@@ -142,11 +142,6 @@
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
         </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <type>jar</type>
-        </dependency>
 
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>

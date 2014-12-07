@@ -684,12 +684,6 @@
                 <version>4.11</version>
             </dependency>
             <dependency>
-                <groupId>xerces</groupId>
-                <artifactId>xercesImpl</artifactId>
-                <version>2.11.0</version>
-                <type>jar</type>
-            </dependency>
-            <dependency>
                 <groupId>net.java.dev.javacc</groupId>
                 <artifactId>javacc</artifactId>
                 <version>${javacc.version}</version>
