@@ -8,5 +8,8 @@
 
 **Pull requests:**
 
+* [#45](https://github.com/pmd/pmd/pull/45): #1290 RuleSetReferenceId does not process HTTP(S) correctly.
+
 **Bugfixes:**
 
+* [#1290](https://sourceforge.net/p/pmd/bugs/1290/): RuleSetReferenceId does not process HTTP(S) correctly.
