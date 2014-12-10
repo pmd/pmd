@@ -4,15 +4,19 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class is used to parse a RuleSet reference value.  Most commonly used for specifying a
@@ -119,7 +123,13 @@ public class RuleSetReferenceId {
         // Damn this parsing sucks, but my brain is just not working to let me
         // write a simpler scheme.
 
-        if (isHttpUrl(id) || isFullRuleSetName(id)) {
+        if (isValidUrl(id)) {
+            // A full RuleSet name
+            external = true;
+            ruleSetFileName = StringUtils.strip(id);
+            allRules = true;
+            ruleName = null;
+        } else if (isFullRuleSetName(id)) {
             // A full RuleSet name
             external = true;
             ruleSetFileName = id;
@@ -130,7 +140,20 @@ public class RuleSetReferenceId {
             String tempRuleSetFileName = tempRuleName != null && id != null ?
                     id.substring(0, id.length() - tempRuleName.length() - 1) : id;
 
-            if (isFullRuleSetName(tempRuleSetFileName)) {
+            if (isValidUrl(tempRuleSetFileName)) {
+                // remaining part is a xml ruleset file, so the tempRuleName is probably a real rule name
+                external = true;
+                ruleSetFileName = StringUtils.strip(tempRuleSetFileName);
+                ruleName = StringUtils.strip(tempRuleName);
+                allRules = tempRuleName == null;
+            } else if (isHttpUrl(id)) {
+                // it's a url, we can't determine whether it's a full ruleset or a single rule - so falling back to
+                // a full RuleSet name
+                external = true;
+                ruleSetFileName = StringUtils.strip(id);
+                allRules = true;
+                ruleName = null;
+            } else if (isFullRuleSetName(tempRuleSetFileName)) {
                 // remaining part is a xml ruleset file, so the tempRuleName is probably a real rule name
                 external = true;
                 ruleSetFileName = tempRuleSetFileName;
@@ -255,6 +278,25 @@ public class RuleSetReferenceId {
     	}
     	
     	return false;
+    }
+
+    private static boolean isValidUrl(String name) {
+        if (isHttpUrl(name)) {
+            String url = StringUtils.strip(name);
+            try {
+                HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
+                connection.setRequestMethod("HEAD");
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 200) {
+                    return true;
+                }
+            } catch (IOException e) {
+                return false;
+            }
+        }
+        return false;
     }
     
     private static boolean isFullRuleSetName(String name) {

@@ -3,13 +3,27 @@
  */
 package net.sourceforge.pmd;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.head;
+import static com.github.tomakehurst.wiremock.client.WireMock.headRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class RuleSetReferenceIdTest {
 
@@ -83,10 +97,61 @@ public class RuleSetReferenceIdTest {
     public void constructor_GivenHttpUrlId_SucceedsAndProcessesIdCorrectly() {
 
         final String sonarRulesetUrlId =
-    		"  http://localhost:9000/profiles/export?format=pmd&language=java&name=Sonar%2520way  ";
+    		"http://localhost:54321/profiles/export?format=pmd&language=java&name=Sonar%2520way";
         
-        RuleSetReferenceId ruleSetReferenceId = new RuleSetReferenceId(sonarRulesetUrlId);
+        RuleSetReferenceId ruleSetReferenceId = new RuleSetReferenceId("  " + sonarRulesetUrlId + "  ");
         assertRuleSetReferenceId(true, sonarRulesetUrlId, true, null, sonarRulesetUrlId, ruleSetReferenceId);
+    }
+
+    @org.junit.Rule
+    public WireMockRule wireMockRule = new WireMockRule(0);
+
+    @Test
+    public void constructor_GivenHttpUrl_InputStream() throws Exception {
+        String path = "/profiles/export?format=pmd&language=java&name=Sonar%2520way";
+        String rulesetUrl = "http://localhost:" + wireMockRule.port() + path;
+        stubFor(head(urlEqualTo(path)).willReturn(aResponse().withStatus(200)));
+        stubFor(get(urlEqualTo(path)).willReturn(aResponse().withStatus(200).withHeader("Content-type", "text/xml").withBody("xyz")));
+
+        RuleSetReferenceId ruleSetReferenceId = new RuleSetReferenceId("  " + rulesetUrl + "  ");
+        assertRuleSetReferenceId(true, rulesetUrl, true, null, rulesetUrl, ruleSetReferenceId);
+
+        InputStream inputStream = ruleSetReferenceId.getInputStream(RuleSetReferenceIdTest.class.getClassLoader());
+        String loaded = IOUtils.toString(inputStream, "UTF-8");
+        assertEquals("xyz", loaded);
+
+        verify(1, headRequestedFor(urlEqualTo(path)));
+        verify(0, headRequestedFor(urlEqualTo("/profiles")));
+        verify(1, getRequestedFor(urlEqualTo(path)));
+        assertEquals(1, findAll(headRequestedFor(urlMatching(".*"))).size());
+        assertEquals(1, findAll(getRequestedFor(urlMatching(".*"))).size());
+    }
+
+    @Test
+    public void constructor_GivenHttpUrl_SingleRule_InputStream() throws Exception {
+        String path = "/profiles/export?format=pmd&language=java&name=Sonar%2520way";
+        String completePath = path + "/DummyBasicMockRule";
+        String hostpart = "http://localhost:" + wireMockRule.port();
+        String basicRuleSet = IOUtils.toString(RuleSetReferenceId.class.getResourceAsStream("/rulesets/dummy/basic.xml"));
+
+        stubFor(head(urlEqualTo(completePath)).willReturn(aResponse().withStatus(404)));
+        stubFor(head(urlEqualTo(path)).willReturn(aResponse().withStatus(200).withHeader("Content-type", "text/xml")));
+        stubFor(get(urlEqualTo(path)).willReturn(aResponse().withStatus(200).withHeader("Content-type", "text/xml").withBody(basicRuleSet)));
+
+
+        RuleSetReferenceId ruleSetReferenceId = new RuleSetReferenceId("  " + hostpart + completePath + "  ");
+        assertRuleSetReferenceId(true, hostpart + path, false, "DummyBasicMockRule", hostpart + completePath, ruleSetReferenceId);
+
+        InputStream inputStream = ruleSetReferenceId.getInputStream(RuleSetReferenceIdTest.class.getClassLoader());
+        String loaded = IOUtils.toString(inputStream, "UTF-8");
+        assertEquals(basicRuleSet, loaded);
+
+        verify(1, headRequestedFor(urlEqualTo(completePath)));
+        verify(1, headRequestedFor(urlEqualTo(path)));
+        verify(1, getRequestedFor(urlEqualTo(path)));
+        verify(0, getRequestedFor(urlEqualTo(completePath)));
+        assertEquals(2, findAll(headRequestedFor(urlMatching(".*"))).size());
+        assertEquals(1, findAll(getRequestedFor(urlMatching(".*"))).size());
     }
 
     @Test
