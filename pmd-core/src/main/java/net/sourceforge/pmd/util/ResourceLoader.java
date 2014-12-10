@@ -9,11 +9,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
  */
 public final class ResourceLoader {
+
+    public static final int TIMEOUT;
+    static {
+        int timeoutProperty = 5000;
+        try {
+            timeoutProperty = Integer.parseInt(System.getProperty("net.sourceforge.pmd.http.timeout", "5000"));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        TIMEOUT = timeoutProperty;
+    }
 
     // Only static methods, so we shouldn't allow an instance to be created
     /**
@@ -56,7 +68,10 @@ public final class ResourceLoader {
             }
         } else {
             try {
-                return new URL(name).openConnection().getInputStream();
+                HttpURLConnection connection = (HttpURLConnection)new URL(name).openConnection();
+                connection.setConnectTimeout(TIMEOUT);
+                connection.setReadTimeout(TIMEOUT);
+                return connection.getInputStream();
             } catch (Exception e) {
                 return loader.getResourceAsStream(name);
             }

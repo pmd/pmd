@@ -286,8 +286,8 @@ public class RuleSetReferenceId {
             try {
                 HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
                 connection.setRequestMethod("HEAD");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
+                connection.setConnectTimeout(ResourceLoader.TIMEOUT);
+                connection.setReadTimeout(ResourceLoader.TIMEOUT);
                 int responseCode = connection.getResponseCode();
                 if (responseCode == 200) {
                     return true;
