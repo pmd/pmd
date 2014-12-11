@@ -1767,7 +1767,7 @@ having to deal with the creation of an array.
         <properties>
             <property name="xpath">
             	<value><![CDATA[
-//FormalParameters/FormalParameter[position()=last() and @Array='true' and @Varargs='false' and not (./Type/ReferenceType/PrimitiveType[@Image='byte'])]
+//FormalParameters/FormalParameter[position()=last() and @Array='true' and @Varargs='false' and not (./Type/ReferenceType/PrimitiveType[@Image='byte']) and not (./Type/PrimitiveType[@Image='byte'])]
 					]]></value>
             </property>
         </properties>
