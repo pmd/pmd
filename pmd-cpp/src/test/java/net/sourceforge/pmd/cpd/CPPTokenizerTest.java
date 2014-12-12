@@ -23,6 +23,25 @@ public class CPPTokenizerTest {
     }
 
     @Test
+    public void testUnicodeSupport() {
+        String code = "\ufeff" +
+                "#include <iostream>\n" +
+                "#include <string>\n" +
+                "\n" +
+                "// example\n" +
+                "\n" +
+                "int main()\n" +
+                "{\n" +
+                "    std::string text(\"ąęćśźńó\");\n" +
+                "    std::cout << text;\n" +
+                "    return 0;\n" +
+                "}\n";
+        Tokens tokens = parse(code);
+        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertEquals(24, tokens.size());
+    }
+
+    @Test
     public void testMultiLineMacros() throws Throwable {
         Tokens tokens = parse(TEST1);
         assertEquals(7, tokens.size());
