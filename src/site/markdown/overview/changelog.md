@@ -6,9 +6,12 @@
 
 **New/Modified Rules:**
 
+* [Java / Design / UseVarargs](http://pmd.sourceforge.net/pmd-java/rules/java/design.html#UseVarargs): if `byte[]` is used as the last argument, it is ignored and no violation will be reported.
+
 **Pull requests:**
 
 * [#45](https://github.com/pmd/pmd/pull/45): #1290 RuleSetReferenceId does not process HTTP(S) correctly.
+* [#46](https://github.com/pmd/pmd/pull/46): Allow byte[] as no-vargars last argument
 
 **Bugfixes:**
 

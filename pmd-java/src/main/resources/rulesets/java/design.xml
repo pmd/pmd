@@ -1766,9 +1766,13 @@ having to deal with the creation of an array.
         <priority>4</priority>
         <properties>
             <property name="xpath">
-            	<value><![CDATA[
-//FormalParameters/FormalParameter[position()=last() and @Array='true' and @Varargs='false' and not (./Type/ReferenceType/PrimitiveType[@Image='byte']) and not (./Type/PrimitiveType[@Image='byte'])]
-					]]></value>
+                <value><![CDATA[
+//FormalParameters/FormalParameter
+    [position()=last()]
+    [@Array='true']
+    [@Varargs='false']
+    [not (./Type/ReferenceType[@Array='true'][PrimitiveType[@Image='byte']] or ./Type/ReferenceType[@Array='true'][ClassOrInterfaceType[@Image='Byte']])]
+            ]]></value>
             </property>
         </properties>
         <example><![CDATA[

@@ -63,7 +63,7 @@ public class Foo implements InvocationHandler {
     
     <test-code>
         <description><![CDATA[
-method, do not varargs, allow byte[] as not vargars
+method, do not varargs, allow byte[] as not varargs
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -72,5 +72,15 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    
+    <test-code>
+        <description><![CDATA[
+method, do not varargs, allow Byte[] as not varargs
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(File file, Byte[] data) { }
+}
+     ]]></code>
+    </test-code>
 </test-data>
