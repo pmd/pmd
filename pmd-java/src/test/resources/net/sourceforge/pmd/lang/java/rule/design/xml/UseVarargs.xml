@@ -69,6 +69,7 @@ method, do not varargs, allow byte[] as not varargs
         <code><![CDATA[
 public class Foo {
  public void bar(File file, byte[] data) { }
+ public void bar2(File file, byte data[]) { }
 }
      ]]></code>
     </test-code>
@@ -80,6 +81,7 @@ method, do not varargs, allow Byte[] as not varargs
         <code><![CDATA[
 public class Foo {
  public void bar(File file, Byte[] data) { }
+  public void bar(File file, Byte data[]) { }
 }
      ]]></code>
     </test-code>
