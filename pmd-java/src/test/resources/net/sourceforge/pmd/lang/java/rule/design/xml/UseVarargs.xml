@@ -60,4 +60,17 @@ public class Foo implements InvocationHandler {
 }
      ]]></code>
     </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+method, do not varargs, allow byte[] as not vargars
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(File file, byte[] data) { }
+}
+     ]]></code>
+    </test-code>
+    
 </test-data>
