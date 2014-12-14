@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,10 @@ public class SourceFileScope extends AbstractJavaScope {
                 types.addImport(i.getImportedName());
             }
         }
+    }
+
+    public Set<String> getExplicitImports() {
+        return types != null ? types.getExplicitImports() : Collections.<String> emptySet();
     }
 
     /**

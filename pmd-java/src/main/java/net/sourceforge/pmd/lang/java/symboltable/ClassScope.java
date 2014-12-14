@@ -226,6 +226,7 @@ public class ClassScope extends AbstractJavaScope {
             String typeImage = p.getTypeNode().getTypeImage();
             // typeImage might be qualified/unqualified. If it refers to a type, defined in the same toplevel class,
             // we should normalize the name here.
+            // It might also refer to a type, that is imported.
             typeImage = qualifyTypeName(typeImage);
             Node declaringNode = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().get(typeImage);
             Class<?> resolvedType = this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage);
@@ -238,17 +239,20 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     private String qualifyTypeName(String typeImage) {
-        String result = typeImage;
         for (String qualified : this.getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().keySet()) {
             int fullLength = qualified.length();
             int nameLength = typeImage.length();
             if (qualified.endsWith(typeImage)
                  && (fullLength == nameLength || qualified.substring(0, fullLength - nameLength).endsWith("."))) {
-                result = qualified;
-                break;
+                return qualified;
             }
         }
-        return result;
+        for (String qualified : this.getEnclosingScope(SourceFileScope.class).getExplicitImports()) {
+            if (qualified.endsWith(typeImage)) {
+                return qualified;
+            }
+        }
+        return typeImage;
     }
 
     /**

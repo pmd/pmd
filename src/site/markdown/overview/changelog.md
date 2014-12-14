@@ -18,3 +18,4 @@
 
 * [#1252](https://sourceforge.net/p/pmd/bugs/1252/): net.sourceforge.pmd.lang.ast.TokenMgrError: Lexical error in file xxx.cpp
 * [#1290](https://sourceforge.net/p/pmd/bugs/1290/): RuleSetReferenceId does not process HTTP(S) correctly.
+* [#1294](https://sourceforge.net/p/pmd/bugs/1294/): False positive UnusedPrivateMethod with public inner enum from another class

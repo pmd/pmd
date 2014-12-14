@@ -258,6 +258,10 @@ public class TypeSet {
         return imports.size();
     }
 
+    public Set<String> getExplicitImports() {
+        return imports;
+    }
+
     /**
      * Resolves a class by its name using all known resolvers.
      * @param name the name of the class, can be a simple name or a fully qualified name.
