@@ -12,6 +12,7 @@
 
 * [#45](https://github.com/pmd/pmd/pull/45): #1290 RuleSetReferenceId does not process HTTP(S) correctly.
 * [#46](https://github.com/pmd/pmd/pull/46): Allow byte[] as no-vargars last argument
+* [#47](https://github.com/pmd/pmd/pull/47): Allow byte[] data and byte data[] as no-varargs last argument
 
 **Bugfixes:**
 
