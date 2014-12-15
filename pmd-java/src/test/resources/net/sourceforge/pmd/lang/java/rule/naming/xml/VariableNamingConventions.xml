@@ -310,4 +310,14 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1293 VariableNamingConventions False positive for native methods</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="checkParameters">false</rule-property>
+        <code><![CDATA[
+public class X {
+    private native void stream_dip_set_data(long stream, long dip_x, long dip_z);
+}
+        ]]></code>
+    </test-code>
 </test-data>
