@@ -3,17 +3,37 @@
  */
 package net.sourceforge.pmd.lang.java.rule.naming;
 
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 public class MethodNamingConventionsRule extends AbstractJavaRule {
 
+    private boolean checkNativeMethods;
+
+    private static final BooleanProperty CHECK_NATIVE_METHODS_DESCRIPTOR = new BooleanProperty("checkNativeMethods",
+            "Check native methods", true, 1.0f);
+
+    public MethodNamingConventionsRule() {
+        definePropertyDescriptor(CHECK_NATIVE_METHODS_DESCRIPTOR);
+    }
+
+    public Object visit(ASTCompilationUnit node, Object data) {
+        checkNativeMethods = getProperty(CHECK_NATIVE_METHODS_DESCRIPTOR);
+        return super.visit(node, data);
+    }
+
     public Object visit(ASTMethodDeclarator node, Object data) {
-    	
-    	String methodName = node.getImage();
-    	
+        if (!checkNativeMethods && node.getFirstParentOfType(ASTMethodDeclaration.class).isNative()) {
+            return data;
+        }
+
+        String methodName = node.getImage();
+
         if (Character.isUpperCase(methodName.charAt(0))) {
-        	addViolationWithMessage(data, node, "Method names should not start with capital letters");
+            addViolationWithMessage(data, node, "Method names should not start with capital letters");
         }
         if (methodName.indexOf('_') >= 0) {
             addViolationWithMessage(data, node, "Method names should not contain underscores");

@@ -4,11 +4,13 @@
 
 **Feature Requests and Improvements:**
 
+* [#1288](https://sourceforge.net/p/pmd/bugs/1288/): MethodNamingConventions for native should be deactivated
 * [#1293](https://sourceforge.net/p/pmd/bugs/1293/): Disable VariableNamingConventions for native methods
 
 **New/Modified Rules:**
 
 * [Java / Design / UseVarargs](http://pmd.sourceforge.net/pmd-java/rules/java/design.html#UseVarargs): if `byte[]` is used as the last argument, it is ignored and no violation will be reported.
+* [Java / Naming / MethodNamingConventions](http://pmd.sourceforge.net/pmd-java/rules/java/naming.html#MethodNamingConventions): New property `checkNativeMethods`
 * [Java / Naming / VariableNamingConventions](http://pmd.sourceforge.net/pmd-java/rules/java/naming.html#VariableNamingConventions): New property `checkNativeMethodParameters`
 
 **Pull requests:**
