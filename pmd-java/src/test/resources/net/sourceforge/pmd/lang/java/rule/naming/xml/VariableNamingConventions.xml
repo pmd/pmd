@@ -311,12 +311,25 @@ public class Test {
         ]]></code>
     </test-code>
     <test-code>
-        <description>#1293 VariableNamingConventions False positive for native methods</description>
+        <description>#1293 Disable VariableNamingConventions for native methods</description>
         <expected-problems>0</expected-problems>
-        <rule-property name="checkParameters">false</rule-property>
+        <rule-property name="checkNativeMethodParameters">false</rule-property>
         <code><![CDATA[
 public class X {
-    private native void stream_dip_set_data(long stream, long dip_x, long dip_z);
+    private native void stream_dip_set_data(long stream, long dip_x,
+        long dip_z);
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1293 Disable VariableNamingConventions for native methods - prevent false negative</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <rule-property name="checkNativeMethodParameters">true</rule-property>
+        <code><![CDATA[
+public class X {
+    private native void stream_dip_set_data(long stream, long dip_x,
+        long dip_z);
 }
         ]]></code>
     </test-code>

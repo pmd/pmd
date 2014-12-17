@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -23,6 +24,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
     private boolean checkMembers;
     private boolean checkLocals;
     private boolean checkParameters;
+    private boolean checkNativeMethodParameters;
     private String[] staticPrefixes;
     private String[] staticSuffixes;
     private String[] memberPrefixes;
@@ -40,6 +42,9 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 
     private static final BooleanProperty CHECK_PARAMETERS_DESCRIPTOR = new BooleanProperty("checkParameters",
 	    "Check constructor and method parameter variables", true, 3.0f);
+
+    private static final BooleanProperty CHECK_NATIVE_METHOD_PARAMETERS_DESCRIPTOR = new BooleanProperty("checkNativeMethodParameters",
+        "Check method parameter of native methods", true, 3.5f);
 
     private static final StringMultiProperty STATIC_PREFIXES_DESCRIPTOR = new StringMultiProperty("staticPrefix",
 	    "Static variable prefixes", new String[] { "" }, 4.0f, ',');
@@ -69,6 +74,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 	definePropertyDescriptor(CHECK_MEMBERS_DESCRIPTOR);
 	definePropertyDescriptor(CHECK_LOCALS_DESCRIPTOR);
 	definePropertyDescriptor(CHECK_PARAMETERS_DESCRIPTOR);
+	definePropertyDescriptor(CHECK_NATIVE_METHOD_PARAMETERS_DESCRIPTOR);
 	definePropertyDescriptor(STATIC_PREFIXES_DESCRIPTOR);
 	definePropertyDescriptor(STATIC_SUFFIXES_DESCRIPTOR);
 	definePropertyDescriptor(MEMBER_PREFIXES_DESCRIPTOR);
@@ -88,6 +94,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 	checkMembers = getProperty(CHECK_MEMBERS_DESCRIPTOR);
 	checkLocals = getProperty(CHECK_LOCALS_DESCRIPTOR);
 	checkParameters = getProperty(CHECK_PARAMETERS_DESCRIPTOR);
+	checkNativeMethodParameters = getProperty(CHECK_NATIVE_METHOD_PARAMETERS_DESCRIPTOR);
 	staticPrefixes = getProperty(STATIC_PREFIXES_DESCRIPTOR);
 	staticSuffixes = getProperty(STATIC_SUFFIXES_DESCRIPTOR);
 	memberPrefixes = getProperty(MEMBER_PREFIXES_DESCRIPTOR);
@@ -125,6 +132,11 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 	if (!checkParameters) {
 	    return data;
 	}
+	ASTMethodDeclaration methodDeclaration = node.getFirstParentOfType(ASTMethodDeclaration.class);
+	if (!checkNativeMethodParameters && methodDeclaration.isNative()) {
+	    return data;
+	}
+
 	for (ASTFormalParameter formalParameter : node.findChildrenOfType(ASTFormalParameter.class)) {
 	    for (ASTVariableDeclaratorId variableDeclaratorId : formalParameter
 		    .findChildrenOfType(ASTVariableDeclaratorId.class)) {
