@@ -11,6 +11,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -161,7 +162,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 				AbstractJavaAccessNode node = (AbstractJavaAccessNode) value;
 
 				// maybe the last comment is within the last node
-				if (lastComment != null && isCommentNotWithin(lastComment, lastNode) && isCommentBefore(lastComment, node)) {
+				if (lastComment != null && isCommentNotWithin(lastComment, lastNode, node) && isCommentBefore(lastComment, node)) {
 				    node.comment(lastComment);
 				    lastComment = null;
 				}
@@ -175,12 +176,14 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 		}	
 	}
 
-    private boolean isCommentNotWithin(FormalComment n1, Node n2) {
-        if (n1 == null || n2 == null) {
+    private boolean isCommentNotWithin(FormalComment n1, Node n2, Node node) {
+        if (n1 == null || n2 == null || node == null) {
             return true;
         }
-        return !((n1.getEndLine() < n2.getEndLine())
+        boolean isNotWithinNode2 = !((n1.getEndLine() < n2.getEndLine())
                 || (n1.getEndLine() == n2.getEndLine() && n1.getEndColumn() < n2.getEndColumn()));
+        boolean isNotSameClass = node.getFirstParentOfType(ASTClassOrInterfaceBody.class) != n2.getFirstParentOfType(ASTClassOrInterfaceBody.class);
+        return isNotWithinNode2 || isNotSameClass;
     }
 
     private boolean isCommentBefore(FormalComment n1, Node n2) {

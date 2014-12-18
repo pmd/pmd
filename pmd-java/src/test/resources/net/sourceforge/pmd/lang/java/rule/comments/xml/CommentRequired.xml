@@ -94,5 +94,29 @@ public class Test {
 /** Test class */ public class Test { public void method1() { /** comment here */ } public void method2() { } }
         ]]></code>
     </test-code>
- 
+
+    <test-code>
+        <description>#1289 CommentRequired not ignored if javadoc {@inheritDoc} anon inner classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * Comment required test class.
+ */
+public class CommentRequired {
+    /**
+     * Creates a new instance of comment required.
+     */
+    public CommentRequired() {
+        Object o = new Object() {
+            /**
+             * {@inheritDoc}
+             */
+            public String toString() {
+                return "Inner Class";
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
