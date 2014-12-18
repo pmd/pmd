@@ -1391,4 +1391,20 @@ public class UnusedPrivateMethodWithEnum {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1296 PMD UnusedPrivateMethod invalid detection of 'private void method(int,boolean,Integer...)'</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedPrivateMethod {
+    public void deleteAllAssetsWithExceptionsNoPurge(int galleryId, Integer... exceptionList) throws MediaServiceException
+    {
+        deleteAllAssetsWithExceptions(galleryId, false, exceptionList);
+    }
+
+    private void deleteAllAssetsWithExceptions(int galleryId, boolean purge, Integer... exceptionList) throws MediaServiceException
+    {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
