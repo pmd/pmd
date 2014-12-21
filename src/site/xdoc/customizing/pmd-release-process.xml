@@ -51,7 +51,7 @@ cd ..; cd ../..
 
 <p>Check in all (version) changes to branch master:</p>
 <source>
-$ git commit -a -m "pmd: Prepare pmd release &lt;version&gt;"
+$ git commit -a -m "Prepare pmd release &lt;version&gt;"
 </source>
 </subsection>
 
@@ -146,21 +146,11 @@ eventually available through <a href="http://repo.maven.apache.org/maven2/net/so
 
 <subsection name="Publish the release site on sourceforge">
 <p>Build it again - you can reuse the cleanly checked out local repository from maven-release-plugin.</p>
-<p>In order to be able to upload the site to sourceforge,
-you need to have a interactive shell opened before.</p>
-<p>
-Upload command below will create and upload maven site.
-Login info for 'pmd-site' must be defined in ~/.m2/settings.xml
-(see the file available in
-<a href="https://github.com/pmd/pmd/blob/master/maven-plugin-pmd-build/config/m2.settings.xml">maven-plugin-pmd-build/config/m2.settings.xml</a>):</p>
+<p>Upload command below will first create the maven site and then upload it:</p>
 
 <source>
-$ ssh your_sf_login,pmd@shell.sourceforge.net create
-...
 $ cd target/checkout/
-$ mvn clean install site-deploy site:stage -Psf-release   # it's import to execute install, so that all pmd-*.jars are created and included in the zip packages
-...
-$ ssh your_sf_login@shell.sourceforge.net "shutdown"
+$ mvn clean install site site:stage   # it's import to execute install, so that all pmd-*.jars are created and included in the zip packages
 </source>
 
 <ul>
@@ -173,7 +163,8 @@ $ ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f html -R 
 $ cd ..; cd ../..
 </source>
 </li>
-<li>While the site has been deployed to sourceforge, it's still usefull, to have it downloadable at once:
+
+<li>While the site will be deployed to sourceforge, it's still usefull, to have it downloadable at once:
 <source>
 $ cd target
 $ mv staging pmd-doc-&lt;version&gt;
@@ -181,7 +172,12 @@ $ zip -r pmd-doc-&lt;version&gt;.zip pmd-doc-&lt;version&gt;/
 $ cd ..
 </source>
 </li>
-<li>Upload the files to sourceforge's file section:
+<li>Upload the site to sourceforge:
+<source>
+$ rsync -avhP target/pmd-doc-&lt;version&gt;/ your_sf_login@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-&lt;version&gt;/
+</source>
+</li>
+<li>Upload the zip-files to sourceforge's file section:
 <source>
 $ rsync -avhP pmd-dist/target/pmd-*-&lt;version&gt;.zip target/pmd-doc-&lt;version&gt;.zip your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/
 $ rsync -avhP src/site/markdown/overview/changelog.md your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/&lt;version&gt;/ReadMe.md
