@@ -174,7 +174,7 @@ $ cd ..
 </li>
 <li>Upload the site to sourceforge:
 <source>
-$ rsync -avhP target/pmd-doc-&lt;version&gt;/ your_sf_login@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-&lt;version&gt;/
+$ rsync -avhzP target/pmd-doc-&lt;version&gt;/ your_sf_login@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-&lt;version&gt;/
 </source>
 </li>
 <li>Upload the zip-files to sourceforge's file section:
