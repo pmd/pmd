@@ -864,6 +864,7 @@
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
+        <module>pmd-matlab</module>
         <module>pmd-php</module>
         <module>pmd-plsql</module>
         <module>pmd-ruby</module>
