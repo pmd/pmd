@@ -286,6 +286,7 @@ TOKEN :
 | < TRUETOK: "true" >
 | < FALSETOK: "false" >
 | < THROW: "throw" >
+| < AT: "@" >
 }
 
 TOKEN [IGNORE_CASE] :
