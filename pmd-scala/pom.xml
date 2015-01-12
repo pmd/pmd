@@ -39,6 +39,11 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Dscalac.patmat.analysisBudget=off</jvmArg>
+                    </jvmArgs>
+                </configuration>
                 <executions>
                     <execution>
                         <id>scala-compile-first</id>
