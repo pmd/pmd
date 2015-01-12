@@ -102,6 +102,11 @@ public class CPPTokenizerTest {
         assertEquals(22, tokens.size());
     }
 
+    @Test
+    public void testEOLCommentInPreprocessingDirective() {
+        parse("#define LSTFVLES_CPP  //*" + PMD.EOL);
+    }
+
     private Tokens parse(String snippet) {
         return parse(snippet, false);
     }
