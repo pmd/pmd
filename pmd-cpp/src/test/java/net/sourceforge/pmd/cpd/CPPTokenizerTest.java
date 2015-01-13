@@ -113,6 +113,18 @@ public class CPPTokenizerTest {
         assertEquals(15, tokens.size());
     }
 
+    @Test
+    public void testHexCharacter() {
+        Tokens tokens = parse("if (*pbuf == '\\0x05')" + PMD.EOL);
+        assertEquals(8, tokens.size());
+    }
+
+    @Test
+    public void testWhiteSpaceEscape() {
+        Tokens tokens = parse("szPath = m_sdcacheDir + _T(\"\\    oMedia\");" + PMD.EOL);
+        assertEquals(10, tokens.size());
+    }
+
     private Tokens parse(String snippet) {
         return parse(snippet, false);
     }
