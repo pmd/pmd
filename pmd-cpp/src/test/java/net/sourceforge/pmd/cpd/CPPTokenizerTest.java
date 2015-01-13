@@ -107,6 +107,12 @@ public class CPPTokenizerTest {
         parse("#define LSTFVLES_CPP  //*" + PMD.EOL);
     }
 
+    @Test
+    public void testEmptyCharacter() {
+        Tokens tokens = parse("std::wstring wsMessage( sMessage.length(), L'');" + PMD.EOL);
+        assertEquals(15, tokens.size());
+    }
+
     private Tokens parse(String snippet) {
         return parse(snippet, false);
     }
