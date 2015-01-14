@@ -53,11 +53,11 @@ public class CPD {
         return matchAlgorithm.matches();
     }
 
-    public void addAllInDirectory(String dir) throws IOException {
+    public void addAllInDirectory(File dir) throws IOException {
         addDirectory(dir, false);
     }
 
-    public void addRecursively(String dir) throws IOException {
+    public void addRecursively(File dir) throws IOException {
         addDirectory(dir, true);
     }
 
@@ -67,8 +67,8 @@ public class CPD {
         }
     }
 
-    private void addDirectory(String dir, boolean recurse) throws IOException {
-        if (!(new File(dir)).exists()) {
+    private void addDirectory(File dir, boolean recurse) throws IOException {
+        if (!dir.exists()) {
             throw new FileNotFoundException("Couldn't find directory " + dir);
         }
         FileFinder finder = new FileFinder();

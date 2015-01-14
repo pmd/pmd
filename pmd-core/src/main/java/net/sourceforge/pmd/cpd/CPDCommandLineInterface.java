@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -73,7 +76,7 @@ public class CPDCommandLineInterface {
                 //Add files 
                 if ( null != arguments.getFiles() && ! arguments.getFiles().isEmpty() )
                 {
-                  addSourcesFilesToCPD(arguments.getFiles(),cpd, !arguments.isNonRecursive());
+                  addSourcesFilesToCPD(arguments.getFiles(), arguments.filenameFilter(), cpd, !arguments.isNonRecursive());
                 }
 
                 //Add Database URIS
@@ -89,14 +92,27 @@ public class CPDCommandLineInterface {
 		}
 	}
 
-	private static void addSourcesFilesToCPD(List<String> files, CPD cpd, boolean recursive) {
+	private static void addSourcesFilesToCPD(List<File> files, FilenameFilter filter, CPD cpd, boolean recursive) {
 		try {
-			for (String file : files)
-				if (recursive) {
-					cpd.addRecursively(file);
+			for (File file : files) {
+				if (!file.exists()) {
+					throw new FileNotFoundException("Couldn't find directory/file '" + file + "'");
+				} else if (file.isDirectory()) {
+					if (recursive) {
+						cpd.addRecursively(file);
+					} else {
+						cpd.addAllInDirectory(file);
+					}
 				} else {
-					cpd.addAllInDirectory(file);
+					//Add a single file if it is accepted by the file filter
+					File directory = file.getAbsoluteFile().getParentFile();
+					String filename = file.getName();
+
+					if (filter.accept(directory, filename)) {
+						cpd.add(file);
+					}
 				}
+			}
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

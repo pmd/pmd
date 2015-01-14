@@ -97,7 +97,7 @@ public final class FileUtil {
 		    .getDirectoryFilter(), Filters.toNormalizedFileFilter(Filters.buildRegexFilterExcludeOverInclude(
 		    null, Collections.singletonList("SCCS")))));
 	    FileFinder finder = new FileFinder();
-	    List<File> files = finder.findFilesFrom(file.getAbsolutePath(), Filters.toFilenameFilter(filter), true);
+	    List<File> files = finder.findFilesFrom(file, Filters.toFilenameFilter(filter), true);
 	    for (File f : files) {
 		dataSources.add(new FileDataSource(f));
 	    }
