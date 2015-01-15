@@ -25,6 +25,7 @@ import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 import org.sonar.plugins.scala.compiler.Lexer;
 import org.sonar.plugins.scala.compiler.Token;
@@ -36,20 +37,28 @@ import org.sonar.plugins.scala.compiler.Token;
  */
 public final class ScalaTokenizer implements Tokenizer {
 
-  public void tokenize(SourceCode source, Tokens cpdTokens) {
-    String filename = source.getFileName();
+    public void tokenize(SourceCode source, Tokens cpdTokens) {
+        String filename = source.getFileName();
 
-    Lexer lexer = new Lexer();
-    List<Token> tokens =  lexer.getTokensOfFile(filename);
-    for (Token token : tokens) {
-      String tokenVal =
-        token.tokenVal() != null ? token.tokenVal()  : Integer.toString(token.tokenType());
+        try {
+            Lexer lexer = new Lexer();
+            List<Token> tokens =  lexer.getTokensOfFile(filename);
+            for (Token token : tokens) {
+                String tokenVal =
+                    token.tokenVal() != null ? token.tokenVal()  : Integer.toString(token.tokenType());
 
-      TokenEntry cpdToken = new TokenEntry(tokenVal, filename, token.line());
-      cpdTokens.add(cpdToken);
+                TokenEntry cpdToken = new TokenEntry(tokenVal, filename, token.line());
+                cpdTokens.add(cpdToken);
+            }
+            cpdTokens.add(TokenEntry.getEOF());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            // Wrap exceptions of the Scala tokenizer in a TokenMgrError, so they are correctly handled
+            // when CPD is executed with the '--skipLexicalErrors' command line option
+            throw new TokenMgrError(
+                "Lexical error in file " + filename + ". The scala tokenizer exited with error: " + e.getMessage(),
+                TokenMgrError.LEXICAL_ERROR);
+        }
     }
-
-    cpdTokens.add(TokenEntry.getEOF());
-  }
 
 }
