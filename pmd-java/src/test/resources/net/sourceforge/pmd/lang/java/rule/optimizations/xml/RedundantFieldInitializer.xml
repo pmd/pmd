@@ -1258,4 +1258,14 @@ public class Foo {
 }
      ]]></code>
 	</test-code>
+
+    <test-code>
+        <description>#1298 Member variable int type with value 0xff000000 causes processing error</description>
+        <expected-problems>0</expected-problems>
+        <code>
+public class LinePoint {
+    private int mColor = 0xFF000000;
+}
+        </code>
+    </test-code>
 </test-data>

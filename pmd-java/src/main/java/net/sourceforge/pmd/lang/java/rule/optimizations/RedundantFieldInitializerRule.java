@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
+import java.math.BigInteger;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -74,26 +76,26 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
 			    } else if (literal.jjtGetNumChildren() == 0) {
 				// numeric type
 				// Note: Not catching NumberFormatException, as it shouldn't be happening on valid source code.
-				double value = -1;
+				Number value = -1;
 				if (literal.isIntLiteral()) {
-				    value = Integer.decode(literal.getImage()).doubleValue();
+				    value = parseInteger(literal.getImage());
 				} else if (literal.isLongLiteral()) {
 				    String s = literal.getImage();
 				    // remove the ending "l" or "L" for long values
 					s = s.substring(0, s.length() - 1);
-				    value = Long.decode(s).doubleValue();
+					value = parseInteger(s);
 				} else if (literal.isFloatLiteral()) {
                     String s = literal.getImage();
                     // remove the ending "f" or "F" for float values
                     s = s.substring(0, s.length() - 1);
-				    value = Float.parseFloat(literal.getImage());
+                    value = Float.valueOf(s);
 				} else if (literal.isDoubleLiteral()) {
-				    value = Double.parseDouble(literal.getImage());
+				    value = Double.valueOf(literal.getImage());
 				} else if (literal.isCharLiteral()) {
-				    value = literal.getImage().charAt(1);
+				    value = (int) literal.getImage().charAt(1);
 				}
 
-				if (value == 0) {
+				if (value.intValue() == 0) {
 				    addViolation(data, variableDeclarator);
 				}
 			    }
@@ -128,5 +130,26 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
 
     private void addViolation(Object data, ASTVariableDeclarator variableDeclarator) {
 	super.addViolation(data, variableDeclarator, variableDeclarator.jjtGetChild(0).getImage());
+    }
+
+    private Number parseInteger(String s) {
+        boolean negative = false;
+        String number = s;
+        if (number.charAt(0) == '-') {
+            negative = true;
+            number = number.substring(1);
+        }
+        BigInteger result;
+        if (number.startsWith("0x") || number.startsWith("0X")) {
+            result = new BigInteger(number.substring(2), 16);
+        } else if (s.startsWith("0") && s.length() > 1) {
+            result = new BigInteger(number.substring(1), 8);
+        } else {
+            result = new BigInteger(number);
+        }
+        if (negative) {
+            result = result.negate();
+        }
+        return result;
     }
 }
