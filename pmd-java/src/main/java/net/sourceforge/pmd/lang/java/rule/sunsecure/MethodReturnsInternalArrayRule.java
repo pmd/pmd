@@ -8,6 +8,8 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
@@ -48,6 +50,9 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
             if (ret.hasDescendantOfType(ASTAllocationExpression.class)) {
                 continue;
             }
+            if (hasArraysCopyOf(ret)) {
+                continue;
+            }
             if (!isLocalVariable(vn, method)) {
                 addViolation(data, ret, vn);
             } else {
@@ -64,5 +69,15 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
         return data;
     }
 
-
+    private boolean hasArraysCopyOf(ASTReturnStatement ret) {
+        List<ASTPrimaryExpression> expressions = ret.findDescendantsOfType(ASTPrimaryExpression.class);
+        for (ASTPrimaryExpression e : expressions) {
+            if (e.jjtGetNumChildren() == 2 && e.jjtGetChild(0) instanceof ASTPrimaryPrefix
+                    && e.jjtGetChild(0).jjtGetNumChildren() == 1 && e.jjtGetChild(0).jjtGetChild(0) instanceof ASTName
+                    && ((ASTName)e.jjtGetChild(0).jjtGetChild(0)).getImage().endsWith("Arrays.copyOf")) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -149,4 +149,16 @@ public class Test {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1299 MethodReturnsInternalArray false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class WebServiceResponseMessage {
+    private Object[] responseObjects;
+    public Object[] getResponseObjects() {
+        return responseObjects == null ? null : Arrays.copyOf(responseObjects, responseObjects.length);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
