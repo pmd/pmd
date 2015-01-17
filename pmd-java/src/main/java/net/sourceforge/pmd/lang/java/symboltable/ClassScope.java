@@ -10,6 +10,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -323,6 +324,8 @@ public class ClassScope extends AbstractJavaScope {
                         type = new SimpleTypedNameDeclaration("int", literal.getType());
                     } else if (literal.isLongLiteral()) {
                         type = new SimpleTypedNameDeclaration("long", literal.getType());
+                    } else if (literal.jjtGetNumChildren() == 1 && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                        type = new SimpleTypedNameDeclaration("boolean", Boolean.TYPE);
                     }
                 } else if (child instanceof ASTAllocationExpression && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType)child.jjtGetChild(0);
