@@ -141,11 +141,13 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
         }
         BigInteger result;
         if (number.startsWith("0x") || number.startsWith("0X")) {
-            result = new BigInteger(number.substring(2), 16);
-        } else if (s.startsWith("0") && s.length() > 1) {
-            result = new BigInteger(number.substring(1), 8);
+            result = new BigInteger(number.substring(2).replaceAll("_", ""), 16);
+        } else if (number.startsWith("0b") || number.startsWith("0B")) {
+            result = new BigInteger(number.substring(2).replaceAll("_", ""), 8);
+        } else if (number.startsWith("0") && number.length() > 1) {
+            result = new BigInteger(number.substring(1).replaceAll("_", ""), 8);
         } else {
-            result = new BigInteger(number);
+            result = new BigInteger(number.replaceAll("_", ""));
         }
         if (negative) {
             result = result.negate();
