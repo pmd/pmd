@@ -19,6 +19,7 @@
 * [#12](https://github.com/adangel/pmd/pull/12): Added support for Matlab to CPD.
 * [#13](https://github.com/adangel/pmd/pull/13): Added support for Objective-C to CPD.
 * [#14](https://github.com/adangel/pmd/pull/14): Added support for Scala to CPD.
+* [#15](https://github.com/adangel/pmd/pull/15): (pmd-cs) Fixed incorrect line numbers after mutiline comments and verbatim strings.
 
 **Bugfixes:**
 
