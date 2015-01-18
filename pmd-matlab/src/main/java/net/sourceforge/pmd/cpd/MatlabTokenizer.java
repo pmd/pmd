@@ -16,8 +16,12 @@ import net.sourceforge.pmd.util.IOUtil;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * The Matlab Tokenizer.
+ */
 public class MatlabTokenizer implements Tokenizer {
 
+    @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         Reader reader = null;
