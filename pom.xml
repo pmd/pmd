@@ -870,6 +870,7 @@
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
+        <module>pmd-scala</module>
         <module>pmd-test</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>

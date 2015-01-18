@@ -38,7 +38,7 @@ public class CPDCommandLineInterfaceTest {
         System.setOut(originalStdout);
         System.setErr(originalStderr);
     }
-    
+
     /**
      * Test ignore identifiers argument.
      */
@@ -101,7 +101,7 @@ public class CPDCommandLineInterfaceTest {
                "--format", "text",
                "--skip-lexical-errors");
         String out = bufferStdout.toString("UTF-8");
-        Assert.assertTrue(out.contains("Skipping Lexical error in file"));
+        Assert.assertTrue(Pattern.compile("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file").matcher(out).find());
         Assert.assertTrue(out.contains("Found a 5 line (13 tokens) duplication"));
     }
 

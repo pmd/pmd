@@ -151,7 +151,7 @@ public class CPD {
         try {
             addAndThrowLexicalError(sourceCode);
         } catch (TokenMgrError e) {
-            System.err.println("Skipping " + e.getMessage());
+            System.err.println("Skipping " + sourceCode.getFileName() + ". Reason: " + e.getMessage());
             tokens.getTokens().clear();
             tokens.getTokens().addAll(savedTokenEntry.restore());
         }
