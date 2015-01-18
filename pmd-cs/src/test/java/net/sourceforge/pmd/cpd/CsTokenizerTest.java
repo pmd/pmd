@@ -105,6 +105,39 @@ public class CsTokenizerTest {
 	assertEquals(50, tokens.size());
     }
 
+    @Test
+    public void testLineNumberAfterMultilineComment() {
+	tokenizer.tokenize(toSourceCode(
+		"/* This is a multiline comment \n"
+			+ " * \n"
+			+ " * Lorem ipsum dolor sit amet, \n"
+			+ " * consectetur adipiscing elit \n"
+			+ " */\n"
+			+ "\n"
+			+ "class Foo {\n"
+			+ "\n"
+			+ "}"
+		), tokens);
+	assertEquals(5, tokens.size());
+	assertEquals(7, tokens.getTokens().get(0).getBeginLine());
+    }
+
+    @Test
+    public void testLineNumberAfterMultilineString() {
+	tokenizer.tokenize(toSourceCode(
+		"class Foo {\n"
+			+ "  void bar() {\n"
+			+ "    String query = \n"
+			+ "      @\"SELECT foo, bar\n"
+			+ "         FROM table \n"
+			+ "         WHERE id = 42\"; \n"
+			+ "  }\n"
+			+ "}"
+		), tokens);
+	assertEquals(16, tokens.size());
+	assertEquals(8, tokens.getTokens().get(14).getBeginLine());
+    }
+
     private SourceCode toSourceCode(String source) {
 	return new SourceCode(new SourceCode.StringCodeLoader(source));
     }

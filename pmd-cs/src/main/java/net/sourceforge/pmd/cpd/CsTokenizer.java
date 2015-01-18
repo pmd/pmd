@@ -102,6 +102,7 @@ public class CsTokenizer implements Tokenizer {
                 // strings & chars
                 case '"':
                 case '\'':
+                    int beginLine = line;
                     b = new StringBuilder();
                     b.append(c);
                     while ((ic = reader.read()) != c) {
@@ -113,13 +114,19 @@ public class CsTokenizer implements Tokenizer {
                             int next = reader.read();
                             if (next != -1) {
                                 b.append((char) next);
+
+                                if (next == '\n') {
+                                    line++;
+                                }
                             }
+                        } else if (ic == '\n') {
+                            line++;
                         }
                     }
                     if (ic != -1) {
                         b.append((char) ic);
                     }
-                    tokenEntries.add(new TokenEntry(b.toString(), sourceCode.getFileName(), line));
+                    tokenEntries.add(new TokenEntry(b.toString(), sourceCode.getFileName(), beginLine));
                     ic = reader.read();
                     break;
 
@@ -127,6 +134,7 @@ public class CsTokenizer implements Tokenizer {
                 case '/':
                     switch (c = (char) (ic = reader.read())) {
                     case '*':
+                        //int beginLine = line;
                         int state = 1;
                         b = new StringBuilder();
                         b.append("/*");
@@ -134,6 +142,10 @@ public class CsTokenizer implements Tokenizer {
                         while ((ic = reader.read()) != -1) {
                             c = (char) ic;
                             b.append(c);
+
+                            if (c == '\n') {
+                                line++;
+                            }
 
                             if (state == 1) {
                                 if (c == '*') {
@@ -150,7 +162,7 @@ public class CsTokenizer implements Tokenizer {
                         }
                         // ignore the /* comment
                         // tokenEntries.add(new TokenEntry(b.toString(),
-                        // sourceCode.getFileName(), line));
+                        // sourceCode.getFileName(), beginLine));
                         break;
 
                     case '/':
