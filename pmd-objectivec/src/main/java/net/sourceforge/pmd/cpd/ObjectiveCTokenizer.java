@@ -15,8 +15,12 @@ import net.sourceforge.pmd.lang.objectivec.ast.Token;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * The Objective-C Tokenizer
+ */
 public class ObjectiveCTokenizer implements Tokenizer {
 
+    @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         Reader reader = null;

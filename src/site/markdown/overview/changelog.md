@@ -5,6 +5,7 @@
 **New Supported Languages:**
 
 * Matlab (CPD)
+* Objective-C (CPD)
 * Python (CPD)
 
 **Feature Requests and Improvements:**
@@ -15,6 +16,7 @@
 
 * [#11](https://github.com/adangel/pmd/pull/11): Added support for Python to CPD.
 * [#12](https://github.com/adangel/pmd/pull/12): Added support for Matlab to CPD.
+* [#13](https://github.com/adangel/pmd/pull/13): Added support for Objective-C to CPD.
 
 **Bugfixes:**
 
