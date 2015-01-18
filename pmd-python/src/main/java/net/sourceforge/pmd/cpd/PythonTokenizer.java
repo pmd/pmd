@@ -16,8 +16,12 @@ import net.sourceforge.pmd.util.IOUtil;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * The Python tokenizer.
+ */
 public class PythonTokenizer implements Tokenizer {
 
+    @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         Reader reader = null;

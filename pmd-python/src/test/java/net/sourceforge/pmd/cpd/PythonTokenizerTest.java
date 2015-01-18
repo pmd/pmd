@@ -33,8 +33,4 @@ public class PythonTokenizerTest extends AbstractTokenizerTest {
         this.expectedTokenCount = 1218;
         super.tokenizeTest();
     }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(PythonTokenizerTest.class);
-    }
 }

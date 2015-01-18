@@ -1,10 +1,12 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -18,15 +20,11 @@ public class LanguageVersionDiscovererTest {
      * Test on Python file with default version
      */
     @Test
-    public void testPlsql() {
+    public void testPython() {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
-        File plsqlFile = new File("/path/to/MY_PACKAGE.py");
+        File pythonFile = new File("/path/to/MY_PACKAGE.py");
 
-        LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(plsqlFile);
+        LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(pythonFile);
         assertEquals("LanguageVersion must be Python!", LanguageRegistry.getLanguage(PythonLanguageModule.NAME).getDefaultVersion(), languageVersion);
-    }
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(LanguageVersionDiscovererTest.class);
     }
 }

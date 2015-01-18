@@ -2,11 +2,17 @@
 
 ## ???? - 5.2.4
 
+**New Supported Languages:**
+
+* Python (CPD)
+
 **Feature Requests and Improvements:**
 
 **New/Modified Rules:**
 
 **Pull Requests:**
+
+* [#11](https://github.com/adangel/pmd/pull/11): Added support for Python to CPD.
 
 **Bugfixes:**
 
