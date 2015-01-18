@@ -116,7 +116,7 @@ public class DCD {
 		for (int i = 0; i < directories.size(); i++) {
 			File directory = directories.get(i);
 			FilenameFilter filter = filters.get(i);
-			List<File> files = new FileFinder().findFilesFrom(directory.getPath(), filter, true);
+			List<File> files = new FileFinder().findFilesFrom(directory, filter, true);
 			for (File file : files) {
 				String name = file.getPath();
 

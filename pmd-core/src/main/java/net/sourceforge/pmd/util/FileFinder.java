@@ -16,10 +16,10 @@ public class FileFinder {
     private FilenameFilter filter;
     private static final String FILE_SEP = System.getProperty("file.separator");
 
-    public List<File> findFilesFrom(String dir, FilenameFilter filter, boolean recurse) {
+    public List<File> findFilesFrom(File dir, FilenameFilter filter, boolean recurse) {
         this.filter = filter;
         List<File> files = new ArrayList<File>();
-        scanDirectory(new File(dir), files, recurse);
+        scanDirectory(dir, files, recurse);
         return files;
     }
 

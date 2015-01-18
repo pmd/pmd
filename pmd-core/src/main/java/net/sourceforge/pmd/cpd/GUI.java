@@ -572,9 +572,9 @@ public class GUI implements CPDListener {
     }
 
     private void go() {
-    	String dirPath = rootDirectoryField.getText();
         try {
-            if (!(new File(dirPath)).exists()) {
+            File dirPath = new File(rootDirectoryField.getText());
+            if (!dirPath.exists()) {
                 JOptionPane.showMessageDialog(frame,
                         "Can't read from that root source directory",
                         "Error", JOptionPane.ERROR_MESSAGE);
@@ -602,8 +602,8 @@ public class GUI implements CPDListener {
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
             phaseLabel.setText("");
-            if (isLegalPath(dirPath, conf)) {	// should use the language file filter instead?
-            	cpd.add(new File(dirPath));
+            if (isLegalPath(dirPath.getPath(), conf)) {	// should use the language file filter instead?
+            	cpd.add(dirPath);
             } else {
                 if (recurseCheckbox.isSelected()) {
                     cpd.addRecursively(dirPath);

@@ -16,6 +16,7 @@ import net.sourceforge.pmd.util.FileFinder;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.converters.FileConverter;
 
 /**
  *
@@ -69,11 +70,11 @@ public class CPDConfiguration extends AbstractConfiguration {
 	        + "Default is \"" + Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN + "\".", required = false)
 	private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
 
-	@Parameter(names = "--files", variableArity = true, description = "List of files and directories to process", required = false)
-	private List<String> files;
+	@Parameter(names = "--files", variableArity = true, description = "List of files and directories to process", required = false, converter = FileConverter.class)
+	private List<File> files;
 
-	@Parameter(names = "--exclude", variableArity = true, description = "Files to be excluded from CPD check", required = false)
-	private List<String> excludes;
+	@Parameter(names = "--exclude", variableArity = true, description = "Files to be excluded from CPD check", required = false, converter = FileConverter.class)
+	private List<File> excludes;
 
 	@Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
         private boolean nonRecursive;
@@ -245,15 +246,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
         if (excludes != null) {
             FileFinder finder = new FileFinder();
-            for (String excludedFile : excludes) {
-                File exFile = new File(excludedFile);
-                if (exFile.isDirectory()) {
+            for (File excludedFile : excludes) {
+                if (excludedFile.isDirectory()) {
                     List<File> files = finder.findFilesFrom(excludedFile, languageFilter, true);
                     for (File f : files) {
                         exclusions.add(f.getAbsolutePath());
                     }
                 } else {
-                    exclusions.add(exFile.getAbsolutePath());
+                    exclusions.add(excludedFile.getAbsolutePath());
                 }
             }
         }
@@ -307,11 +307,11 @@ public class CPDConfiguration extends AbstractConfiguration {
 	    this.skipLexicalErrors = skipLexicalErrors;
 	}
 
-	public List<String> getFiles() {
+	public List<File> getFiles() {
 		return files;
 	}
 
-	public void setFiles(List<String> files) {
+	public void setFiles(List<File> files) {
 		this.files = files;
 	}
 
@@ -323,11 +323,11 @@ public class CPDConfiguration extends AbstractConfiguration {
 		this.uri = uri;
 	}
 
-	public List<String> getExcludes() {
+	public List<File> getExcludes() {
 	    return excludes;
 	}
 
-	public void setExcludes(List<String> excludes) {
+	public void setExcludes(List<File> excludes) {
 	    this.excludes = excludes;
 	}
 
