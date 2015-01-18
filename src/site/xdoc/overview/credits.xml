@@ -340,6 +340,7 @@
             <li>Stuart Turton - for PLSQL support. See also <a href="http://pldoc.sourceforge.net/">http://pldoc.sourceforge.net/</a></li>
             <li>Andrey Utis - for adding Apache Velocity as a new language and writing up a <a href="new-language.html">howto for adding new languages</a>.</li>
             <li>Alan Hohn - for adding Standard and modified cyclomatic complexity rules</li>
+            <li>Jan van Nunen - for adding CPD support for Matlab, Objective-C, Python, Scala and various bug fixes</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

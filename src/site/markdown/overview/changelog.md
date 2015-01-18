@@ -21,6 +21,7 @@
 * [#14](https://github.com/adangel/pmd/pull/14): Added support for Scala to CPD.
 * [#15](https://github.com/adangel/pmd/pull/15): (pmd-cs) Fixed incorrect line numbers after mutiline comments and verbatim strings.
 * [#16](https://github.com/adangel/pmd/pull/16): Fixed several C++ lexical / tokenize errors.
+* [#17](https://github.com/adangel/pmd/pull/17): Fixed '--files' command line option of CPD, so it also works for files and not only for directories.
 
 **Bugfixes:**
 
