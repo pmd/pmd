@@ -95,6 +95,36 @@ public class CPPTokenizerTest {
         assertEquals(37, tokens.size());
     }
 
+    @Test
+    //ASM code containing the '@' character
+    public void testAsmWithAtSign() {
+        Tokens tokens = parse(TEST7);
+        assertEquals(22, tokens.size());
+    }
+
+    @Test
+    public void testEOLCommentInPreprocessingDirective() {
+        parse("#define LSTFVLES_CPP  //*" + PMD.EOL);
+    }
+
+    @Test
+    public void testEmptyCharacter() {
+        Tokens tokens = parse("std::wstring wsMessage( sMessage.length(), L'');" + PMD.EOL);
+        assertEquals(15, tokens.size());
+    }
+
+    @Test
+    public void testHexCharacter() {
+        Tokens tokens = parse("if (*pbuf == '\\0x05')" + PMD.EOL);
+        assertEquals(8, tokens.size());
+    }
+
+    @Test
+    public void testWhiteSpaceEscape() {
+        Tokens tokens = parse("szPath = m_sdcacheDir + _T(\"\\    oMedia\");" + PMD.EOL);
+        assertEquals(10, tokens.size());
+    }
+
     private Tokens parse(String snippet) {
         return parse(snippet, false);
     }
@@ -161,6 +191,14 @@ public class CPPTokenizerTest {
             "   std::cout << \"Hello, \" \\" + PMD.EOL +
             "                \"world!\\n\";" + PMD.EOL +
             "   return 0;" + PMD.EOL +
+            "}";
+
+    private static final String TEST7 =
+            "asm void eSPI_boot()" + PMD.EOL +
+            "{" + PMD.EOL +
+            "  // setup stack pointer" + PMD.EOL +
+            "  lis r1, _stack_addr@h" + PMD.EOL +
+            "  ori r1, r1, _stack_addr@l"  + PMD.EOL +
             "}";
 
     public static junit.framework.Test suite() {
