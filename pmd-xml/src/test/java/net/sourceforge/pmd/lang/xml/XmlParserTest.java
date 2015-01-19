@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
+import java.util.Locale;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -196,9 +197,8 @@ public class XmlParserTest {
         Node child1 = rootElement.jjtGetChild(3);
         assertNode(child1, "child1", 3, "test", "1");
         assertTextNode(child1.jjtGetChild(0), "entity: ");
-        assertNode(child1.jjtGetChild(1), "pmd", 1);
-        assertTextNode(child1.jjtGetChild(1).jjtGetChild(0), "Copyright: PMD");
-        assertTextNode(child1.jjtGetChild(2), "\\n    ");
+        assertNode(child1.jjtGetChild(1), "pmd", 0);
+        assertTextNode(child1.jjtGetChild(2), "Copyright: PMD\\n    ");
         assertTextNode(rootElement.jjtGetChild(4), "\\n    ");
         Node child2 = rootElement.jjtGetChild(5);
         assertNode(child2, "child2", 3);
@@ -339,9 +339,11 @@ public class XmlParserTest {
         parserOptions.setValidating(true);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
         PrintStream oldErr = System.err;
+        Locale oldLocale = Locale.getDefault();
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             System.setErr(new PrintStream(bos));
+            Locale.setDefault(Locale.ENGLISH);
             Node document = parser.parse(null, new StringReader(XML_INVALID_WITH_DTD));
             Assert.assertNotNull(document);
             String output = bos.toString("UTF-8");
@@ -351,6 +353,7 @@ public class XmlParserTest {
             Assert.assertEquals("invalidChild", String.valueOf(document.jjtGetChild(1).jjtGetChild(1)));
         } finally {
             System.setErr(oldErr);
+            Locale.setDefault(oldLocale);
         }
     }
 

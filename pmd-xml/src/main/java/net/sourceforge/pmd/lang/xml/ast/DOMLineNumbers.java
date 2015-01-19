@@ -6,10 +6,12 @@ package net.sourceforge.pmd.lang.xml.ast;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
+import org.w3c.dom.Entity;
 import org.w3c.dom.EntityReference;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -51,8 +53,6 @@ class DOMLineNumbers {
             int newIndex = xmlString.indexOf(te, nextIndex);
             if (newIndex > 0) {
                 nextIndex = newIndex;
-            } else {
-                System.out.println("Still not found: " + n.getNodeValue());
             }
         } else if (n.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
             nextIndex = xmlString.indexOf("&" + n.getNodeName() + ";", nextIndex);
@@ -103,11 +103,23 @@ class DOMLineNumbers {
 
         if (doctype != null) {
             NamedNodeMap entities = doctype.getEntities();
+            String internalSubset = doctype.getInternalSubset();
+            if (internalSubset == null) {
+                internalSubset = "";
+            }
             for (int i = 0; i < entities.getLength(); i++) {
                 Node item = entities.item(i);
-                result = result.replaceAll(Matcher.quoteReplacement(item.getFirstChild().getNodeValue()), "&" + item.getNodeName() + ";");
+                String entityName = item.getNodeName();
+                Node firstChild = item.getFirstChild();
+                if (firstChild != null) {
+                    result = result.replaceAll(Matcher.quoteReplacement(firstChild.getNodeValue()), "&" + entityName + ";");
+                } else {
+                    Matcher m = Pattern.compile(Matcher.quoteReplacement("<!ENTITY " + entityName + " ") + "[']([^']*)[']>").matcher(internalSubset);
+                    if (m.find()) {
+                        result = result.replaceAll(Matcher.quoteReplacement(m.group(1)), "&" + entityName + ";");
+                    }
+                }
             }
-
         }
         return result;
     }
@@ -148,7 +160,11 @@ class DOMLineNumbers {
     }
     private int toColumn(int index) {
         int line = toLine(index);
-        int column = index - lines.get(line);
+        Integer lineStart = lines.get(line);
+        if (lineStart == null) {
+            lineStart = lines.get(lines.size() - 1);
+        }
+        int column = index - lineStart;
         return column + 1;
     }
 

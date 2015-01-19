@@ -90,11 +90,10 @@ public class AbstractDomXmlRuleTest {
 				((ProcessingInstruction) visited.get(0)).getTarget());
 
 		visited = rule.visitedNodes.get("Text");
-		assertEquals(4, visited.size());
+		assertEquals(3, visited.size());
 		assertEquals("TEXT", ((Text) visited.get(0)).getData());
         assertEquals(">", ((Text) visited.get(1)).getData());
-        assertEquals("e", ((Text) visited.get(2)).getData());
-        assertEquals("<", ((Text) visited.get(3)).getData());
+        assertEquals("e<", ((Text) visited.get(2)).getData());
 	}
 
 	@Test
