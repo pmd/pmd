@@ -11,6 +11,8 @@
 
 **Feature Requests and Improvements:**
 
+* XML: Line numbers for XML documents are more accurate. This is a further improvement of [#1054](https://sourceforge.net/p/pmd/bugs/1054/).
+
 **New/Modified Rules:**
 
 **Pull Requests:**
