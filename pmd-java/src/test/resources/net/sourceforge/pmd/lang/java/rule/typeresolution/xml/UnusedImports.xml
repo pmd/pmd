@@ -193,4 +193,26 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#914 False +ve from UnusedImports with wildcard static imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.Assert.*;
+import org.junit.Test;
+import static java.lang.Math.*;
+
+public class FooTest {
+    @Test
+    public void testStuff() {
+        assertEquals( "a", "a" );
+        assertFalse( false );
+        assertTrue( true );
+        assertNull( null );
+    }
+    public static void main(String[] args) {
+        System.out.println(PI);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
