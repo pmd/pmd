@@ -13,9 +13,7 @@ import java.util.TreeSet;
 public class Match implements Comparable<Match> {
 
     private int tokenCount;
-    private int lineCount;
-    private Set<TokenEntry> markSet = new TreeSet<TokenEntry>();    
-    private String code;    
+    private Set<Mark> markSet = new TreeSet<Mark>();    
     private String label;
     
     public static final Comparator<Match> MATCHES_COMPARATOR = new Comparator<Match>() {
@@ -48,22 +46,22 @@ public class Match implements Comparable<Match> {
         }
     };
 
-    public Match(int tokenCount, TokenEntry first, TokenEntry second) {
+    public Match(int tokenCount, Mark first, Mark second) {
         markSet.add(first);
         markSet.add(second);
         this.tokenCount = tokenCount;
+    }
+
+    public Match(int tokenCount, TokenEntry first, TokenEntry second) {
+        this(tokenCount, new Mark(first), new Mark(second));
     }
 
     public int getMarkCount() {
         return markSet.size();
     }
 
-    public void setLineCount(int lineCount) {
-        this.lineCount = lineCount;
-    }
-
     public int getLineCount() {
-        return this.lineCount;
+        return getMark(0).getLineCount();
     }
 
     public int getTokenCount() {
@@ -71,14 +69,10 @@ public class Match implements Comparable<Match> {
     }
 
     public String getSourceCodeSlice() {
-        return this.code;
+        return this.getMark(0).getSourceCodeSlice();
     }
 
-    public void setSourceCodeSlice(String code) {
-        this.code = code;
-    }
-
-    public Iterator<TokenEntry> iterator() {
+    public Iterator<Mark> iterator() {
         return markSet.iterator();
     }
 
@@ -87,14 +81,14 @@ public class Match implements Comparable<Match> {
         if (diff != 0) {
             return diff;
         }
-        return getFirstMark().getIndex() - other.getFirstMark().getIndex();
+        return getFirstMark().compareTo(other.getFirstMark());
     }
 
-    public TokenEntry getFirstMark() {
+    public Mark getFirstMark() {
         return getMark(0);
     }
 
-    public TokenEntry getSecondMark() {
+    public Mark getSecondMark() {
         return getMark(1);
     }
 
@@ -102,15 +96,15 @@ public class Match implements Comparable<Match> {
         return "Match: " + PMD.EOL + "tokenCount = " + tokenCount + PMD.EOL + "marks = " + markSet.size();
     }
 
-    public Set<TokenEntry> getMarkSet() {
+    public Set<Mark> getMarkSet() {
         return markSet;
     }
 
     public int getEndIndex() {
-        return getMark(0).getIndex() + getTokenCount() - 1;
+        return getMark(0).getToken().getIndex() + getTokenCount() - 1;
     }
 
-    public void setMarkSet(Set<TokenEntry> markSet) {
+    public void setMarkSet(Set<Mark> markSet) {
         this.markSet = markSet;
     }
 
@@ -123,13 +117,13 @@ public class Match implements Comparable<Match> {
     }
     
     public void addTokenEntry(TokenEntry entry){
-        markSet.add(entry);                
+        markSet.add(new Mark(entry));                
     }
     
-    private TokenEntry getMark(int index) {
-        TokenEntry result = null;
+    private Mark getMark(int index) {
+        Mark result = null;
         int i = 0;
-        for (Iterator<TokenEntry> it = markSet.iterator(); it.hasNext() && i < index + 1; ){            
+        for (Iterator<Mark> it = markSet.iterator(); it.hasNext() && i < index + 1; ){            
             result = it.next();
             i++;
         }

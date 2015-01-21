@@ -32,9 +32,9 @@ public class SimpleRenderer implements Renderer {
 		
           rpt.append("Found a ").append(match.getLineCount()).append(" line (").append(match.getTokenCount()).append(" tokens) duplication in the following files: ").append(PMD.EOL);
           
-          for (Iterator<TokenEntry> occurrences = match.iterator(); occurrences.hasNext();) {
-              TokenEntry mark = occurrences.next();
-              rpt.append("Starting at line ").append(mark.getBeginLine()).append(" of ").append(mark.getTokenSrcID()).append(PMD.EOL);
+          for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
+              Mark mark = occurrences.next();
+              rpt.append("Starting at line ").append(mark.getBeginLine()).append(" of ").append(mark.getFilename()).append(PMD.EOL);
           }
           
           rpt.append(PMD.EOL);	// add a line to separate the source from the desc above

@@ -548,8 +548,8 @@ public class GUI implements CPDListener {
     private String setLabelFor(Match match) {
 
     	Set<String> sourceIDs = new HashSet<String>(match.getMarkCount());
-    	for (Iterator<TokenEntry> occurrences = match.iterator(); occurrences.hasNext();) {
-             sourceIDs.add(occurrences.next().getTokenSrcID());
+    	for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
+             sourceIDs.add(occurrences.next().getFilename());
           }
     	String label;
 
