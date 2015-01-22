@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.java.rule.imports;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,10 +56,21 @@ public class DuplicateImportsRule extends AbstractJavaRule {
     private boolean isDisambiguationImport(ASTCompilationUnit node, String singleTypePkg, String singleTypeName) {
     	for (ImportWrapper thisImportOnDemand : importOnDemandImports) {	//Loop over .* imports
     		if (!thisImportOnDemand.getName().equals(singleTypePkg)) {		//Skip same package
-    			String fullyQualifiedClassName = thisImportOnDemand.getName() + "." + singleTypeName;
-    			if (node.getClassTypeResolver().classNameExists(fullyQualifiedClassName)) {
-    				return true;	//Class exists in another imported package
-    			}
+    		    if (!thisImportOnDemand.isStaticOnDemand()) {
+        			String fullyQualifiedClassName = thisImportOnDemand.getName() + "." + singleTypeName;
+        			if (node.getClassTypeResolver().classNameExists(fullyQualifiedClassName)) {
+        				return true;	//Class exists in another imported package
+        			}
+    		    } else {
+    		        Class<?> importClass = node.getClassTypeResolver().loadClass(thisImportOnDemand.getName());
+    		        if (importClass != null) {
+    		            for (Method m : importClass.getMethods()) {
+    		                if (Modifier.isStatic(m.getModifiers()) && m.getName().equals(singleTypeName)) {
+    		                    return true; // static method in another imported class
+    		                }
+    		            }
+    		        }
+    		    }
     		}
     	}
     	
@@ -70,7 +83,8 @@ public class DuplicateImportsRule extends AbstractJavaRule {
 	}
 
 	public Object visit(ASTImportDeclaration node, Object data) {
-        ImportWrapper wrapper = new ImportWrapper(node.getImportedName(), node.getImportedName(), node.getImportedNameNode());
+        ImportWrapper wrapper = new ImportWrapper(node.getImportedName(), node.getImportedName(), node.getImportedNameNode(),
+                node.isStatic() && node.isImportOnDemand());
 
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
         if (node.isImportOnDemand()) {

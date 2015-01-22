@@ -78,4 +78,33 @@ class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1306 False positive on duplicate when using static imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+//import static org.hamcrest.Matchers.*;
+//import static org.mockito.Matchers.any; // original problem - this is needed for disambiguation
+//import static org.mockito.Matchers.*;
+
+import static org.junit.Assert.*;
+import static net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.*;
+import static org.junit.Assert.assertTrue; // this import is neeeded for disambiguation - as ImportsRulesTest
+                                           // defines assertTrue with the same signature, too.
+
+public class DuplicateImports {
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>negative case - static on-demand imports</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
+public class DuplicateImports {
+}
+        ]]></code>
+    </test-code>
 </test-data>

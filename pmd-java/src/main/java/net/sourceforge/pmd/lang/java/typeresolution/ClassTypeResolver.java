@@ -681,6 +681,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		}
 	}
 
+	public Class<?> loadClass(String fullyQualifiedClassName) {
+	    try {
+            return pmdClassLoader.loadClass(fullyQualifiedClassName);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+	}
+
 	private Class<?> processOnDemand(String qualifiedName) {
 		for (String entry : importedOnDemand) {
 			try {

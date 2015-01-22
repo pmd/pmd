@@ -18,4 +18,16 @@ public class ImportsRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UnnecessaryFullyQualifiedName");
         addRule(RULESET, "UnusedImports");
     }
+
+    /**
+     * This is just for testing DuplicateImports for static imports and disambiguation.
+     */
+    // Do not delete this method, its needed for a test case
+    // see: /pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/rule/imports/xml/DuplicateImports.xml
+    // #1306 False positive on duplicate when using static imports
+    public static void assertTrue(String message, boolean condition) {
+        if (!condition) {
+            System.out.println(message);
+        }
+    }
 }

@@ -92,6 +92,10 @@ public class ImportWrapper {
         return node;
     }
 
+    public boolean isStaticOnDemand() {
+        return isStaticDemand;
+    }
+
     @Override
     public String toString() {
         return "Import[name=" + name + ",fullname=" + fullname + ",static*=" + isStaticDemand + "]";
