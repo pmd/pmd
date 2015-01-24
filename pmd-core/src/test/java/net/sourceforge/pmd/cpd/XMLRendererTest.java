@@ -49,9 +49,12 @@ public class XMLRendererTest {
     public void testWithOneDuplication() {
         Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
-        Match match = new Match(75, new TokenEntry("public", "/var/Foo.java", 48), new TokenEntry("stuff", "/var/Foo.java", 73));
-        match.setLineCount(6);
-        match.setSourceCodeSlice("code\nfragment");
+        int lineCount = 6;
+        String codeFragment = "code\nfragment";
+        Mark mark1 = createMark("public", "/var/Foo.java", 48, lineCount, codeFragment);
+        Mark mark2 = createMark("stuff", "/var/Foo.java", 73, lineCount, codeFragment);
+        Match match = new Match(75, mark1, mark2);
+
         list.add(match);
         String report = renderer.render(list.iterator());
         try {
@@ -72,7 +75,7 @@ public class XMLRendererTest {
             }
             if (file != null) assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
             assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
-            assertEquals("code\nfragment", doc.getElementsByTagName("codefragment").item(0).getTextContent());
+            assertEquals(codeFragment, doc.getElementsByTagName("codefragment").item(0).getTextContent());
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -83,12 +86,18 @@ public class XMLRendererTest {
     public void testRenderWithMultipleMatch() {
         Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
-        Match match1 = new Match(75, new TokenEntry("public", "/var/Foo.java", 48), new TokenEntry("void", "/var/Foo.java", 73));
-        match1.setLineCount(6);
-        match1.setSourceCodeSlice("code fragment");
-        Match match2 = new Match(76, new TokenEntry("void", "/var/Foo2.java", 49), new TokenEntry("stuff", "/var/Foo2.java", 74));
-        match2.setLineCount(7);
-        match2.setSourceCodeSlice("code fragment 2");
+        int lineCount1 = 6;
+        String codeFragment1 = "code fragment";
+        Mark mark1 = createMark("public", "/var/Foo.java", 48, lineCount1, codeFragment1);
+        Mark mark2 = createMark("void", "/var/Foo.java", 73, lineCount1, codeFragment1);
+        Match match1 = new Match(75, mark1, mark2);
+
+        int lineCount2 = 7;
+        String codeFragment2 = "code fragment 2";
+        Mark mark3 = createMark("void", "/var/Foo2.java", 49, lineCount2, codeFragment2);
+        Mark mark4 = createMark("stuff", "/var/Foo2.java", 74, lineCount2, codeFragment2);
+        Match match2 = new Match(76, mark3, mark4);
+
         list.add(match1);
         list.add(match2);
         String report = renderer.render(list.iterator());
@@ -107,14 +116,22 @@ public class XMLRendererTest {
         Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
         final String espaceChar = "&lt;";
-        Match match1 = new Match(75, new TokenEntry("public", "/var/F" + '<' + "oo.java", 48), new TokenEntry("void", "/var/F<oo.java", 73));
-        match1.setLineCount(6);
-        match1.setSourceCodeSlice("code fragment");
+        Mark mark1 = createMark("public", "/var/F" + '<' + "oo.java", 48, 6, "code fragment");
+        Mark mark2 = createMark("void", "/var/F<oo.java", 73, 6, "code fragment");
+        Match match1 = new Match(75, mark1, mark2);
         list.add(match1);
         String report = renderer.render(list.iterator());
         assertTrue(report.contains(espaceChar));
     } 
-    
+
+    private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount, String code) {
+        Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine));
+
+        result.setLineCount(lineCount);
+        result.setSoureCodeSlice(code);
+        return result;
+    }
+
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(XMLRendererTest.class);
     }

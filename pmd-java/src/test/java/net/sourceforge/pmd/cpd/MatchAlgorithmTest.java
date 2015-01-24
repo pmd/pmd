@@ -55,15 +55,18 @@ public class MatchAlgorithmTest {
         Match match = matches.next();
         assertFalse(matches.hasNext());
 
-        Iterator<TokenEntry> marks = match.iterator();
-        TokenEntry mark1 = marks.next();
-        TokenEntry mark2 = marks.next();
+        Iterator<Mark> marks = match.iterator();
+        Mark mark1 = marks.next();
+        Mark mark2 = marks.next();
         assertFalse(marks.hasNext());
 
         assertEquals(3, mark1.getBeginLine());
+        assertEquals("Foo.java", mark1.getFilename());
+        assertEquals(LINE_3, mark1.getSourceCodeSlice());
+
         assertEquals(4, mark2.getBeginLine());
-        assertTrue("Foo.java" == mark1.getTokenSrcID() && "Foo.java" == mark2.getTokenSrcID());
-        assertEquals(LINE_3, match.getSourceCodeSlice());
+        assertEquals("Foo.java", mark2.getFilename());
+        assertEquals(LINE_4, mark2.getSourceCodeSlice());
     }
 
     @Test
@@ -84,7 +87,7 @@ public class MatchAlgorithmTest {
         Match match = matches.next();
         assertFalse(matches.hasNext());
 
-        Iterator<TokenEntry> marks = match.iterator();
+        Iterator<Mark> marks = match.iterator();
         marks.next();
         marks.next();
         marks.next();

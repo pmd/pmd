@@ -73,14 +73,16 @@ public class MatchAlgorithm {
         matches = matchCollector.getMatches();
         matchCollector = null;
         for (Match match : matches) {
-            Iterator<TokenEntry> occurrences = match.iterator();
-            if (occurrences.hasNext()) {
-                TokenEntry mark = occurrences.next();
-                match.setLineCount(tokens.getLineCount(mark, match));
-                int start = mark.getBeginLine();
-                int end = start + match.getLineCount() - 1;
-                SourceCode sourceCode = source.get(mark.getTokenSrcID());
-                match.setSourceCodeSlice(sourceCode.getSlice(start, end));
+        	for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
+                Mark mark = occurrences.next();
+                TokenEntry token = mark.getToken();
+                int lineCount = tokens.getLineCount(token, match);
+
+                mark.setLineCount(lineCount);
+                SourceCode sourceCode = source.get(token.getTokenSrcID());
+                String code = sourceCode.getSlice(mark.getBeginLine(), mark.getEndLine());
+
+                mark.setSoureCodeSlice(code);
             }
         }
         cpdListener.phaseUpdate(CPDListener.DONE);

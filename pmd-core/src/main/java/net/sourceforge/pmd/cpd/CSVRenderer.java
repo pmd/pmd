@@ -11,39 +11,60 @@ import java.util.Iterator;
 public class CSVRenderer implements Renderer {
 
 	private char separator;
-	
+	private boolean lineCountPerFile;
+
 	public static final char DEFAULT_SEPARATOR = ',';
-	
+	public static final boolean DEFAULT_LINECOUNTPERFILE = false;
+
 	public CSVRenderer() {
-		this(DEFAULT_SEPARATOR);
+		this(DEFAULT_SEPARATOR, DEFAULT_LINECOUNTPERFILE);
+	}
+
+	public CSVRenderer(boolean lineCountPerFile) {
+		this(DEFAULT_SEPARATOR, lineCountPerFile);
+	}
+
+	public CSVRenderer(char separatorChar) {
+		this(separatorChar, DEFAULT_LINECOUNTPERFILE);
 	}
 	
-	public CSVRenderer(char separatorChar) {
-		separator = separatorChar;
+	public CSVRenderer(char separatorChar, boolean lineCountPerFile) {
+		this.separator = separatorChar;
+		this.lineCountPerFile = lineCountPerFile;
 	}
 	
     public String render(Iterator<Match> matches) {
-        StringBuilder rpt = new StringBuilder(1000)
-          .append("lines").append(separator)
-          .append("tokens").append(separator)
-          .append("occurrences")
-          .append(PMD.EOL);
-        
+        StringBuilder csv = new StringBuilder(1000);
+
+        if (!lineCountPerFile) {
+            csv.append("lines").append(separator);
+        }
+        csv.append("tokens").append(separator)
+           .append("occurrences")
+           .append(PMD.EOL);
+
         while (matches.hasNext()) {
             Match match = matches.next();
-            rpt.append(match.getLineCount()).append(separator)
-               .append(match.getTokenCount()).append(separator)
+
+            if (!lineCountPerFile) {
+                csv.append(match.getLineCount()).append(separator);
+            }
+            csv.append(match.getTokenCount()).append(separator)
                .append(match.getMarkCount()).append(separator);
-            for (Iterator<TokenEntry> marks = match.iterator(); marks.hasNext();) {
-                TokenEntry mark = marks.next();
-                rpt.append(mark.getBeginLine()).append(separator)
-                   .append(mark.getTokenSrcID());
+            for (Iterator<Mark> marks = match.iterator(); marks.hasNext();) {
+                Mark mark = marks.next();
+
+                csv.append(mark.getBeginLine()).append(separator);
+                if (lineCountPerFile) {
+                    csv.append(mark.getLineCount()).append(separator);
+                }
+                csv.append(mark.getFilename());
                 if (marks.hasNext()) {
-                    rpt.append(separator);
+                    csv.append(separator);
                 }
             }
-            rpt.append(PMD.EOL);
+            csv.append(PMD.EOL);
         }
-        return rpt.toString();
+        return csv.toString();
     }
 }

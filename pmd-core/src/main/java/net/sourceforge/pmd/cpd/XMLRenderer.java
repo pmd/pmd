@@ -83,12 +83,12 @@ public final class XMLRenderer implements Renderer {
     }
     
     private Element addFilesToDuplicationElement(Document doc, Element duplication, Match match) {
-    	TokenEntry mark;
-        for (Iterator<TokenEntry> iterator = match.iterator(); iterator.hasNext();) {
+    	Mark mark;
+        for (Iterator<Mark> iterator = match.iterator(); iterator.hasNext();) {
             mark = iterator.next();
             Element file = doc.createElement("file");
             file.setAttribute("line", String.valueOf(mark.getBeginLine()));
-            file.setAttribute("path", mark.getTokenSrcID());
+            file.setAttribute("path", mark.getFilename());
             duplication.appendChild(file);
         }
         return duplication;

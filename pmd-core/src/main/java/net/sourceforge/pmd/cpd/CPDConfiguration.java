@@ -155,6 +155,8 @@ public class CPDConfiguration extends AbstractConfiguration {
 			return new XMLRenderer(encoding);
 		} else if ("csv".equals(name)) {
 			return new CSVRenderer();
+		} else if ("csv_with_linecount_per_file".equals(name)) {
+			return new CSVRenderer(true);
 		} else if ("vs".equals(name)) {
 			return new VSRenderer();
 		}
