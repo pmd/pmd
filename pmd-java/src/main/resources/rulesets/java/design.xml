@@ -1805,10 +1805,16 @@ Fields should be declared at the top of the class, before any method declaration
         <value>
           <![CDATA[
 //ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
- [not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
- [count(../preceding-sibling::ClassOrInterfaceBodyDeclaration/child::*[1]
-   [name() != 'FieldDeclaration' and name() != 'Annotation' and
-       (name() != 'EnumDeclaration' or $ignoreEnumDeclarations = 'false')]) > 0]
+[not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
+[../preceding-sibling::ClassOrInterfaceBodyDeclaration
+    [
+        count(child::*)
+        - count(FieldDeclaration)
+        - count(Annotation)
+        - count(EnumDeclaration[$ignoreEnumDeclarations = 'true'])
+        > 0
+    ]
+]
           ]]>
         </value>
       </property>
