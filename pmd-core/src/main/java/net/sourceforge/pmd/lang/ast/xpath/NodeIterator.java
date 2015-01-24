@@ -43,7 +43,7 @@ public abstract class NodeIterator implements Iterator<Node> {
     protected Node getPreviousSibling(Node contextNode) {
         Node parentNode = contextNode.jjtGetParent();
         if (parentNode != null) {
-            int prevPosition = getPositionFromParent(contextNode) - 1;
+            int prevPosition = contextNode.jjtGetChildIndex() - 1;
             if (prevPosition >= 0) {
                 return parentNode.jjtGetChild(prevPosition);
             }
@@ -51,20 +51,10 @@ public abstract class NodeIterator implements Iterator<Node> {
         return null;
     }
 
-    private int getPositionFromParent(Node contextNode) {
-        Node parentNode = contextNode.jjtGetParent();
-        for (int i = 0; i < parentNode.jjtGetNumChildren(); i++) {
-            if (parentNode.jjtGetChild(i) == contextNode) {
-                return i;
-            }
-        }
-        throw new RuntimeException("Node was not a child of it's parent ???");
-    }
-
     protected Node getNextSibling(Node contextNode) {
         Node parentNode = contextNode.jjtGetParent();
         if (parentNode != null) {
-            int nextPosition = getPositionFromParent(contextNode) + 1;
+            int nextPosition = contextNode.jjtGetChildIndex() + 1;
             if (nextPosition < parentNode.jjtGetNumChildren()) {
                 return parentNode.jjtGetChild(nextPosition);
             }

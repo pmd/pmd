@@ -24,6 +24,7 @@ public abstract class AbstractNode implements Node {
 
     protected Node parent;
     protected Node[] children;
+    protected int childIndex;
     protected int id;
 
     private String image;
@@ -76,6 +77,13 @@ public abstract class AbstractNode implements Node {
 		    children = newChildren;
 		}
 		children[index] = child;
+		child.jjtSetChildIndex(index);
+    }
+    public void jjtSetChildIndex(int index) {
+        childIndex = index;
+    }
+    public int jjtGetChildIndex() {
+        return childIndex;
     }
 
     public Node jjtGetChild(int index) {

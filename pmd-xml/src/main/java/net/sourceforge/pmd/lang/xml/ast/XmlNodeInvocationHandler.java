@@ -21,6 +21,7 @@ import net.sourceforge.pmd.util.CompoundIterator;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 public class XmlNodeInvocationHandler implements InvocationHandler {
@@ -41,6 +42,15 @@ public class XmlNodeInvocationHandler implements InvocationHandler {
                 return node.hasChildNodes() ? node.getChildNodes().getLength() : 0;
             } else if ("jjtGetChild".equals(method.getName())) {
                 return parser.createProxy(node.getChildNodes().item(((Integer) args[0]).intValue()));
+            } else if ("jjtGetChildIndex".equals(method.getName())) {
+                Node parent = node.getParentNode();
+                NodeList childNodes = parent.getChildNodes();
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    if (node == childNodes.item(i)) {
+                        return i;
+                    }
+                }
+                throw new IllegalStateException("This node is not a child of its parent: " + node);
             } else if ("getImage".equals(method.getName())) {
                 if (node instanceof Text) {
                     return ((Text) node).getData();

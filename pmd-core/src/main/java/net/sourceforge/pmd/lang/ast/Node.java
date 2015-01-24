@@ -45,6 +45,16 @@ public interface Node {
     void jjtAddChild(Node child, int index);
 
     /**
+     * Sets the index of this node from the perspective of its parent.
+     * This means: this.jjtGetParent().jjtGetChild(index) == this.
+     * 
+     * @param index the child index
+     */
+    void jjtSetChildIndex(int index);
+
+    int jjtGetChildIndex();
+
+    /**
      * This method returns a child node.  The children are numbered
      * from zero, left to right.
      *

@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,9 @@ import java.util.Map;
 public abstract class AbstractScope implements Scope {
 
     private Scope parent;
-    private Map<NameDeclaration, List<NameOccurrence>> nameDeclarations = new LinkedHashMap<NameDeclaration, List<NameOccurrence>>();
+    /** Stores the name declaration already sorted by class. */
+    private Map<Class<? extends NameDeclaration>, Map<NameDeclaration, List<NameOccurrence>>> nameDeclarations =
+            new LinkedHashMap<Class<? extends NameDeclaration>, Map<NameDeclaration,List<NameOccurrence>>>();
 
     @Override
     public Scope getParent() {
@@ -29,25 +32,26 @@ public abstract class AbstractScope implements Scope {
 
     @Override
     public Map<NameDeclaration, List<NameOccurrence>> getDeclarations() {
-        return nameDeclarations;
+        Map<NameDeclaration, List<NameOccurrence>> result = new LinkedHashMap<NameDeclaration, List<NameOccurrence>>();
+        for (Map<NameDeclaration, List<NameOccurrence>> e : nameDeclarations.values()) {
+            result.putAll(e);
+        }
+        return result;
     }
 
     @Override
     public <T extends NameDeclaration> Map<T, List<NameOccurrence>> getDeclarations(Class<T> clazz) {
-        Map<T, List<NameOccurrence>> result = new LinkedHashMap<T, List<NameOccurrence>>();
-        for (Map.Entry<NameDeclaration, List<NameOccurrence>> e : nameDeclarations.entrySet()) {
-            if (clazz.isAssignableFrom(e.getKey().getClass())) {
-                @SuppressWarnings("unchecked") // it's assignable from, so should be ok
-                T cast = (T)e.getKey();
-                result.put(cast, e.getValue());
-            }
+        @SuppressWarnings("unchecked")
+        Map<T, List<NameOccurrence>> result = (Map<T, List<NameOccurrence>>)nameDeclarations.get(clazz);
+        if (result == null) {
+            result = new LinkedHashMap<T, List<NameOccurrence>>();
         }
         return result;
     }
 
     @Override
     public boolean contains(NameOccurrence occ) {
-        for (NameDeclaration d : nameDeclarations.keySet()) {
+        for (NameDeclaration d : getDeclarations().keySet()) {
             if (d.getImage().equals(occ.getImage())) {
                 return true;
             }
@@ -57,7 +61,12 @@ public abstract class AbstractScope implements Scope {
 
     @Override
     public void addDeclaration(NameDeclaration declaration) {
-        nameDeclarations.put(declaration, new ArrayList<NameOccurrence>());
+        Map<NameDeclaration, List<NameOccurrence>> declarationsPerClass = nameDeclarations.get(declaration.getClass());
+        if (declarationsPerClass == null) {
+            declarationsPerClass = new HashMap<NameDeclaration, List<NameOccurrence>>();
+            nameDeclarations.put(declaration.getClass(), declarationsPerClass);
+        }
+        declarationsPerClass.put(declaration, new ArrayList<NameOccurrence>());
     }
 
     @Override
@@ -78,7 +87,7 @@ public abstract class AbstractScope implements Scope {
     @Override
     public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
         NameDeclaration result = null;
-        for (Map.Entry<NameDeclaration, List<NameOccurrence>> e : nameDeclarations.entrySet()) {
+        for (Map.Entry<NameDeclaration, List<NameOccurrence>> e : getDeclarations().entrySet()) {
             if (e.getKey().getImage().equals(occurrence.getImage())) {
                 result = e.getKey();
                 e.getValue().add(occurrence);
