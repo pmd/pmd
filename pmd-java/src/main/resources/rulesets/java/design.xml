@@ -1807,12 +1807,11 @@ Fields should be declared at the top of the class, before any method declaration
 //ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
 [../preceding-sibling::ClassOrInterfaceBodyDeclaration
-    [
-        count(child::*)
-        - count(FieldDeclaration)
-        - count(Annotation)
-        - count(EnumDeclaration[$ignoreEnumDeclarations = 'true'])
-        > 0
+    [  count(ClassOrInterfaceDeclaration) > 0
+    or count(ConstructorDeclaration) > 0
+    or count(MethodDeclaration) > 0
+    or count(AnnotationTypeDeclaration) > 0
+    or ($ignoreEnumDeclarations = 'false' and count(EnumDeclaration) > 0)
     ]
 ]
           ]]>
