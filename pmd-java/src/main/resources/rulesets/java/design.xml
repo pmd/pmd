@@ -1794,33 +1794,12 @@ public class Foo {
       language="java"
       since="5.0"
       message="Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes."
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      class="net.sourceforge.pmd.lang.java.rule.design.FieldDeclarationsShouldBeAtStartOfClassRule"
       externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#FieldDeclarationsShouldBeAtStartOfClass">
     <description>
 Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
     </description>
     <priority>3</priority>
-    <properties>
-      <property name="xpath">
-        <value>
-          <![CDATA[
-//ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-[not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
-[../preceding-sibling::ClassOrInterfaceBodyDeclaration
-    [
-        count(child::*)
-        - count(FieldDeclaration)
-        - count(Annotation)
-        - count(EnumDeclaration[$ignoreEnumDeclarations = 'true'])
-        > 0
-    ]
-]
-          ]]>
-        </value>
-      </property>
-      <property name="ignoreEnumDeclarations" description="Ignore Enum Declarations that precede fields." type="Boolean" value="true"/>
-      <property name="ignoreAnonymousClassDeclarations" description="Ignore Field Declarations, that are initialized with anonymous class declarations" type="Boolean" value="true"/>
-    </properties>
     <example>
       <![CDATA[
 public class HelloWorldBean {
