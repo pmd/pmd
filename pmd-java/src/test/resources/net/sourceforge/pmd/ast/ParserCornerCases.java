@@ -217,5 +217,8 @@ class ClazzPropertyOfPrimitiveTypes {
         if ("a".equals((int.class).getName())) {
             
         }
+
+        if ((Integer.class.equals(clazz)) || (int.class.equals(clazz))) {
+        }
     }
 }
