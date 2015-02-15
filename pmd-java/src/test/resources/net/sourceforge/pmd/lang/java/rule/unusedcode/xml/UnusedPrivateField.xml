@@ -391,4 +391,38 @@ public enum Operation
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+private field in inner class accessed as method call
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class InnerPrivateFieldCall {
+    int method() {
+        return Inner.FIELD.length();
+    }
+    static class Inner {
+        private static final String FIELD = "";
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private field in inner class accessed by another inner class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class InnerPrivateFieldInAnotherInner {
+    static class InnerUsing {
+        int method() {
+            return InnerDeclaring.INNER_FIELD;
+        }
+    }
+    static class InnerDeclaring {
+        private static int INNER_FIELD;
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>

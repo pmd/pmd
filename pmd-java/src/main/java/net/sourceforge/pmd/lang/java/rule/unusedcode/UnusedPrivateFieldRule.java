@@ -80,26 +80,22 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
         nodes.addAll(enumConstants);
 
         for (JavaNode node : nodes) {
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                if (node.jjtGetChild(i) instanceof ASTClassOrInterfaceDeclaration) {
-                    continue; // Skip other inner classes
+            List<ASTPrimarySuffix> primarySuffixes = node.findDescendantsOfType(ASTPrimarySuffix.class);
+            for (ASTPrimarySuffix primarySuffix : primarySuffixes) {
+                if (decl.getImage().equals(primarySuffix.getImage())) {
+                    return true; // No violation
                 }
+            }
 
-                List<ASTPrimarySuffix> primarySuffixes = node
-                        .findDescendantsOfType(ASTPrimarySuffix.class);
-                for (ASTPrimarySuffix primarySuffix : primarySuffixes) {
-                    if (decl.getImage().equals(primarySuffix.getImage())) {
-                        return true; // No violation
-                    }
-                }
+            List<ASTPrimaryPrefix> primaryPrefixes = node.findDescendantsOfType(ASTPrimaryPrefix.class);
+            for (ASTPrimaryPrefix primaryPrefix : primaryPrefixes) {
+                ASTName name = primaryPrefix.getFirstDescendantOfType(ASTName.class);
 
-                List<ASTPrimaryPrefix> primaryPrefixes = node
-                        .findDescendantsOfType(ASTPrimaryPrefix.class);
-                for (ASTPrimaryPrefix primaryPrefix : primaryPrefixes) {
-                    ASTName name = primaryPrefix.getFirstDescendantOfType(ASTName.class);
-
-                    if (name != null && name.getImage().endsWith(decl.getImage())) {
-                        return true; // No violation
+                if (name != null) {
+                    for (String id : name.getImage().split("\\.")) {
+                        if (id.equals(decl.getImage())) {
+                            return true; // No violation
+                        }
                     }
                 }
             }
