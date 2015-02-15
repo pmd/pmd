@@ -168,6 +168,7 @@ public class TypeSet {
                         String importPkg = importStmt.substring(0, importStmt.indexOf('*') - 1);
                         return pmdClassLoader.loadClass(importPkg + '.' + name);
                     } catch (ClassNotFoundException cnfe) {
+                    } catch (NoClassDefFoundError ignored) {
                     }
                 }
             }
@@ -279,6 +280,7 @@ public class TypeSet {
             try {
                 return resolver.resolve(name);
             } catch (ClassNotFoundException cnfe) {
+            } catch (NoClassDefFoundError ignored) {
             }
         }
 

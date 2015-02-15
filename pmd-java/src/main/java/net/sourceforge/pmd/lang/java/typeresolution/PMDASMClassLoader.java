@@ -55,15 +55,18 @@ public final class PMDASMClassLoader extends ClassLoader {
 
     @Override
     public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {
-	if (dontBother.contains(name)) {
-	    throw new ClassNotFoundException(name);
-	}
-	try {
-	    return super.loadClass(name);
-	} catch (ClassNotFoundException e) {
-	    dontBother.add(name);
-	    throw e;
-	}
+        if (dontBother.contains(name)) {
+            throw new ClassNotFoundException(name);
+        }
+        try {
+            return super.loadClass(name);
+        } catch (ClassNotFoundException e) {
+            dontBother.add(name);
+            throw e;
+        } catch (NoClassDefFoundError e) {
+            dontBother.add(name);
+            throw e;
+        }
     }
 
     public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
