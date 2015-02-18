@@ -26,12 +26,16 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
     private List<AssertionCall> checks = new ArrayList<AssertionCall>();
 
     public JUnitAssertionsShouldIncludeMessageRule() {
+        checks.add(new AssertionCall(2, "assertArrayEquals"));
         checks.add(new AssertionCall(2, "assertEquals"));
-        checks.add(new AssertionCall(1, "assertTrue"));
+        checks.add(new AssertionCall(1, "assertFalse"));
+        checks.add(new AssertionCall(1, "assertNotNull"));
+        checks.add(new AssertionCall(2, "assertNotSame"));
         checks.add(new AssertionCall(1, "assertNull"));
         checks.add(new AssertionCall(2, "assertSame"));
-        checks.add(new AssertionCall(1, "assertNotNull"));
-        checks.add(new AssertionCall(1, "assertFalse"));
+        checks.add(new AssertionCall(2, "assertThat"));
+        checks.add(new AssertionCall(1, "assertTrue"));
+        checks.add(new AssertionCall(0, "fail"));
     }
 
     public Object visit(ASTArguments node, Object data) {

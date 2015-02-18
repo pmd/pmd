@@ -2,6 +2,34 @@
 <test-data>
     <test-code>
         <description><![CDATA[
+assertArrayEquals ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertArrayEquals("[1] != [1]", new int[] {1}, new int[] {1});
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertArrayEquals bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertArrayEquals(new int[] {1}, new int[] {1});
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 assertEquals ok
      ]]></description>
         <expected-problems>0</expected-problems>
@@ -9,7 +37,7 @@ assertEquals ok
 import junit.framework.TestCase;
 public class Foo extends TestCase {
  public void test1() {
-  assertEquals("1 == 1", 1, 1);
+  assertEquals("1 != 1", 1, 1);
  }
 }
      ]]></code>
@@ -30,28 +58,84 @@ public class Foo extends TestCase {
     </test-code>
     <test-code>
         <description><![CDATA[
-assertTrue ok
+assertFalse ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertTrue("foo", "foo".equals("foo"));
+ public void testBar() {
+  assertFalse("foo!", "foo".equals("foo"));
  }
 }
      ]]></code>
     </test-code>
     <test-code>
         <description><![CDATA[
-assertTrue bad
+assertFalse bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void testBar() {
+  assertFalse("foo".equals("foo"));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertNotNull OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertNotNull("foo", null);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertNotNull bad
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
  public void test1() {
-  assertTrue("foo".equals("foo"));
+  assertNotNull(null);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertNotSame ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertNotSame("1 == 2", 1, 2);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertNotSame bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertNotSame(1, 2);
  }
 }
      ]]></code>
@@ -100,7 +184,7 @@ public class Foo extends TestCase {
     </test-code>
     <test-code>
         <description><![CDATA[
-assertSame badd
+assertSame bad
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -114,28 +198,84 @@ public class Foo extends TestCase {
     </test-code>
     <test-code>
         <description><![CDATA[
-assertNotNull OK
+assertThat ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
  public void test1() {
-  assertNotNull("foo", null);
+  assertThat("Zero is one", 0, is(not(1)));
  }
 }
      ]]></code>
     </test-code>
     <test-code>
         <description><![CDATA[
-assertNotNull bad
+assertThat bad
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
  public void test1() {
-  assertNotNull(null);
+  assertThat(0, is(not(1)));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertTrue ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertTrue("foo", "foo".equals("foo"));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertTrue bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertTrue("foo".equals("foo"));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+fail ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  fail("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+fail bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  fail();
  }
 }
      ]]></code>
@@ -150,34 +290,6 @@ import junit.framework.TestCase;
 public class Foo extends TestCase {
  public void test1() {
   this.test1("foo");
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-assertFalse ok
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import junit.framework.TestCase;
-public class Foo extends TestCase {
- public void testBar() {
-  assertFalse("foo!", "foo".equals("foo"));
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-assertFalse bad
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-import junit.framework.TestCase;
-public class Foo extends TestCase {
- public void testBar() {
-  assertFalse("foo".equals("foo"));
  }
 }
      ]]></code>
