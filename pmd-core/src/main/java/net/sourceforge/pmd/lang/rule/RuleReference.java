@@ -115,8 +115,15 @@ public class RuleReference extends AbstractDelegateRule {
 		// Only override if different than current value, or if already overridden.
 		if (!isSame(name, super.getName()) || this.name != null) {
 			this.name = name;
-			super.setName(name);
 		}
+	}
+
+	@Override
+	public String getName() {
+	    if (this.name != null) {
+	        return this.name;
+	    }
+	    return super.getName();
 	}
 
 	public String getOverriddenMessage() {

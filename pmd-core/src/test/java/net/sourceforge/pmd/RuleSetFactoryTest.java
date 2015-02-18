@@ -498,6 +498,34 @@ public class RuleSetFactoryTest {
     }
 
     /**
+     * Unit test for #1248
+     * see https://sourceforge.net/p/pmd/bugs/1248/
+     * @throws Exception any error
+     */
+    @Test
+    public void testRuleReferenceWithNameOverridden() throws Exception {
+        RuleSetReferenceId ref = createRuleSetReferenceId("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<ruleset xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" + 
+                "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
+                "         name=\"pmd-eclipse\"\n" + 
+                "         xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
+                "   <description>PMD Plugin preferences rule set</description>\n" + 
+                "\n" + 
+                "<rule name=\"OverriddenDummyBasicMockRule\"\n" + 
+                "    ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\">\n" + 
+                "</rule>\n" + 
+                "\n" + 
+                "</ruleset>");
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSet rs = ruleSetFactory.createRuleSet(ref);
+
+        Rule r = rs.getRules().toArray(new Rule[1])[0];
+        assertEquals("OverriddenDummyBasicMockRule", r.getName());
+        RuleReference ruleRef = (RuleReference)r;
+        assertEquals("DummyBasicMockRule", ruleRef.getRule().getName());
+    }
+
+    /**
      * See https://sourceforge.net/p/pmd/bugs/1231/
      * @throws Exception any error
      */

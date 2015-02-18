@@ -35,6 +35,7 @@
 * [#1299](https://sourceforge.net/p/pmd/bugs/1299/): MethodReturnsInternalArray false positive
 * [#1306](https://sourceforge.net/p/pmd/bugs/1306/): False positive on duplicate when using static imports
 * [#1308](https://sourceforge.net/p/pmd/bugs/1308/): PMD runs endlessly on some generated files
+* [#1312](https://sourceforge.net/p/pmd/bugs/1312/): Rule reference must not override rule name of referenced rule
 
 **API Changes:**
 
