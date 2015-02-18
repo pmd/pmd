@@ -44,6 +44,35 @@ public class Foo extends TestCase {
     </test-code>
     <test-code>
         <description><![CDATA[
+assertEquals with string variable as message ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  String s = "1 != 1";
+  assertEquals(s, 1, 1);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertEquals with delta ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertEquals("foo", 1, 2, 3);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 assertEquals bad
      ]]></description>
         <expected-problems>1</expected-problems>
@@ -52,6 +81,35 @@ import junit.framework.TestCase;
 public class Foo extends TestCase {
  public void test1() {
   assertEquals(1, 1);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertEquals with delta bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertEquals(1, 2, 3);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertEquals with delta but missing assertion message not ok
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  double d = 1;
+  assertEquals(d, 1, 1);
  }
 }
      ]]></code>
