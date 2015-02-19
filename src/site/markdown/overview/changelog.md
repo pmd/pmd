@@ -26,6 +26,7 @@
 * [#16](https://github.com/adangel/pmd/pull/16): Fixed several C++ lexical / tokenize errors.
 * [#17](https://github.com/adangel/pmd/pull/17): Fixed '--files' command line option of CPD, so it also works for files and not only for directories.
 * [#18](https://github.com/adangel/pmd/pull/18): Created extra CSV output format `csv_with_linecount_per_file` which outputs the correct line count per file.
+* [#48](https://github.com/pmd/pmd/pull/48): Handle NoClassDefFoundError along ClassNotFoundException
 
 **Bugfixes:**
 
