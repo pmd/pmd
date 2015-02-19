@@ -498,8 +498,8 @@ public class RuleSetFactoryTest {
     }
 
     /**
-     * Unit test for #1248
-     * see https://sourceforge.net/p/pmd/bugs/1248/
+     * Unit test for #1312
+     * see https://sourceforge.net/p/pmd/bugs/1312/
      * @throws Exception any error
      */
     @Test

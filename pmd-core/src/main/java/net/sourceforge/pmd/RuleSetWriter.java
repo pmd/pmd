@@ -167,7 +167,7 @@ public class RuleSetWriter {
 			LanguageVersion maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
 			Boolean deprecated = ruleReference.isOverriddenDeprecated();
 			String name = ruleReference.getOverriddenName();
-			String ref = ruleReference.getRuleSetReference().getRuleSetFileName() + "/" + ruleReference.getName();
+			String ref = ruleReference.getRuleSetReference().getRuleSetFileName() + "/" + ruleReference.getRule().getName();
 			String message = ruleReference.getOverriddenMessage();
 			String externalInfoUrl = ruleReference.getOverriddenExternalInfoUrl();
 			String description = ruleReference.getOverriddenDescription();
