@@ -30,6 +30,8 @@ public class ClassLoaderUtil {
 	    return ClassLoaderUtil.class.getClassLoader().loadClass(name);
 	} catch (ClassNotFoundException e) {
 	    throw new RuntimeException(e);
+	} catch (NoClassDefFoundError e) {
+	    throw new RuntimeException(e);
 	}
     }
 

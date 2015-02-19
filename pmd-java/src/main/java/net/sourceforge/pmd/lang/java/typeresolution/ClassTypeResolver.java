@@ -153,13 +153,17 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 				populateClassName(node, className);
 			}
 		} catch (ClassNotFoundException e) {
-		    if (LOG.isLoggable(Level.FINE)) {
-		        LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e.getClass().getName() + ": " + e.getMessage());
-		    }
+			if (LOG.isLoggable(Level.FINE)) {
+				LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e);
+			}
+		} catch (NoClassDefFoundError e) {
+			if (LOG.isLoggable(Level.FINE)) {
+ 				LOG.log(Level.FINE, "Could not find class " + className + ", due to: " + e);
+ 			}
 		} catch (LinkageError e) {
-		    if (LOG.isLoggable(Level.WARNING)) {
-		        LOG.log(Level.WARNING, "Could not find class " + className + ", due to: " + e.getClass().getName() + ": " + e.getMessage());
-		    }
+			if (LOG.isLoggable(Level.WARNING)) {
+				LOG.log(Level.WARNING, "Could not find class " + className + ", due to: " + e);
+			}
 		} finally {
 			populateImports(node);
 		}
@@ -651,6 +655,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 					myType = pmdClassLoader.loadClass(qualifiedName);
 				} catch (ClassNotFoundException e) {
 					myType = processOnDemand(qualifiedName);
+				} catch (NoClassDefFoundError e) {
+					myType = processOnDemand(qualifiedName);
 				} catch (LinkageError e) {
 					myType = processOnDemand(qualifiedName);
 				}
@@ -677,6 +683,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 			pmdClassLoader.loadClass(fullyQualifiedClassName);
 			return true; //Class found
 		} catch (ClassNotFoundException e) {
+			return false;
+		} catch (NoClassDefFoundError e) {
 			return false;
 		}
 	}
