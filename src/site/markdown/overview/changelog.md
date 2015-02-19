@@ -28,6 +28,7 @@
 * [#18](https://github.com/adangel/pmd/pull/18): Created extra CSV output format `csv_with_linecount_per_file` which outputs the correct line count per file.
 * [#48](https://github.com/pmd/pmd/pull/48): Handle NoClassDefFoundError along ClassNotFoundException
 * [#49](https://github.com/pmd/pmd/pull/49): Fix some false positives in UnusedPrivateField
+* [#50](https://github.com/pmd/pmd/pull/50): Add missing assertions in JUnitAssertionsShouldIncludeMessage test
 
 **Bugfixes:**
 
