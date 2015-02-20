@@ -65,4 +65,26 @@ public class Bar {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1305 variable declaration inside switch causes ClassCastException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PrematureDeclarationClassCastException {
+    public void bar() {
+        int switchvar = 0;
+        switch (switchvar) {
+            case 1:
+                boolean localvar;
+                break;
+            case 2:
+                localvar = false;
+                if (localvar) {
+                    //
+                }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

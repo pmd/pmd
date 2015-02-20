@@ -48,21 +48,16 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
     	
     	AbstractJavaNode grandparent = (AbstractJavaNode)node.jjtGetParent().jjtGetParent();
    	
-       	List<Node> nextBlocks = blocksAfter(grandparent, node);
+       	List<ASTBlockStatement> nextBlocks = blocksAfter(grandparent, node);
        	
-       	ASTBlockStatement statement;
-       	
-       	for (Node block : nextBlocks) {
+       	for (ASTBlockStatement block : nextBlocks) {
+       		if (hasReferencesIn(block, varName)) break;
        		
-       		statement = (ASTBlockStatement)block;
-       		
-       		if (hasReferencesIn(statement, varName)) break;
-       		
-       		if (hasExit(statement)) {
+       		if (hasExit(block)) {
        			addViolation(data, node, varName);
        			break;
        		}
-       	}       	
+       	}
        	
         return visit((AbstractJavaNode) node, data);
     }
@@ -184,15 +179,18 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
      * @param node SimpleNode
      * @return List
      */
-    private static List<Node> blocksAfter(AbstractJavaNode block, AbstractJavaNode node) {
+    private static List<ASTBlockStatement> blocksAfter(AbstractJavaNode block, AbstractJavaNode node) {
     	
     	int count = block.jjtGetNumChildren();
     	int start = indexOf(block, node.jjtGetParent()) + 1;
     	    	
-    	List<Node> nextBlocks = new ArrayList<Node>(count);
+    	List<ASTBlockStatement> nextBlocks = new ArrayList<ASTBlockStatement>(count);
     	
     	for (int i=start; i<count; i++) {
-    		nextBlocks.add(block.jjtGetChild(i));
+    		Node maybeBlock = block.jjtGetChild(i);
+    		if (maybeBlock instanceof ASTBlockStatement) {
+    		    nextBlocks.add((ASTBlockStatement)maybeBlock);
+    		}
     	}
     	
     	return nextBlocks;
