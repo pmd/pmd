@@ -130,11 +130,6 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-scala</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-vm</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -144,4 +139,24 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>jdk9-disabled</id>
+            <activation>
+                <jdk>!1.9</jdk>
+            </activation>
+            <dependencies>
+                <!--
+                    https://issues.scala-lang.org/browse/SI-9103
+                    https://sourceforge.net/p/pmd/bugs/1314/
+                 -->
+                <dependency>
+                    <groupId>net.sourceforge.pmd</groupId>
+                    <artifactId>pmd-scala</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

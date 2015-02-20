@@ -846,6 +846,20 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>jdk9-disabled</id>
+            <activation>
+                <jdk>!1.9</jdk>
+            </activation>
+            <modules>
+                <!--
+                    https://issues.scala-lang.org/browse/SI-9103
+                    https://sourceforge.net/p/pmd/bugs/1314/
+                 -->
+                <module>pmd-scala</module>
+            </modules>
+        </profile>
     </profiles>
 
     <modules>
@@ -864,7 +878,6 @@
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
-        <module>pmd-scala</module>
         <module>pmd-test</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
