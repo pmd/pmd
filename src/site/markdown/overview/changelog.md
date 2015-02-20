@@ -29,6 +29,7 @@
 * [#48](https://github.com/pmd/pmd/pull/48): Handle NoClassDefFoundError along ClassNotFoundException
 * [#49](https://github.com/pmd/pmd/pull/49): Fix some false positives in UnusedPrivateField
 * [#50](https://github.com/pmd/pmd/pull/50): Add missing assertions in JUnitAssertionsShouldIncludeMessage test
+* [#51](https://github.com/pmd/pmd/pull/51): [JUnit] Check assertion message present in assertEquals with delta
 
 **Bugfixes:**
 
@@ -39,6 +40,7 @@
 * [#1306](https://sourceforge.net/p/pmd/bugs/1306/): False positive on duplicate when using static imports
 * [#1308](https://sourceforge.net/p/pmd/bugs/1308/): PMD runs endlessly on some generated files
 * [#1312](https://sourceforge.net/p/pmd/bugs/1312/): Rule reference must not override rule name of referenced rule
+* [#1313](https://sourceforge.net/p/pmd/bugs/1313/): Missing assertion message in assertEquals with delta not detected
 
 **API Changes:**
 
