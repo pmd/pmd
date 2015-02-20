@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +62,7 @@ public abstract class AbstractScope implements Scope {
     public void addDeclaration(NameDeclaration declaration) {
         Map<NameDeclaration, List<NameOccurrence>> declarationsPerClass = nameDeclarations.get(declaration.getClass());
         if (declarationsPerClass == null) {
-            declarationsPerClass = new HashMap<NameDeclaration, List<NameOccurrence>>();
+            declarationsPerClass = new LinkedHashMap<NameDeclaration, List<NameOccurrence>>();
             nameDeclarations.put(declaration.getClass(), declarationsPerClass);
         }
         declarationsPerClass.put(declaration, new ArrayList<NameOccurrence>());
