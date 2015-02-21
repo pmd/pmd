@@ -38,6 +38,7 @@
 * [#1298](https://sourceforge.net/p/pmd/bugs/1298/): Member variable int type with value 0xff000000 causes processing error
 * [#1299](https://sourceforge.net/p/pmd/bugs/1299/): MethodReturnsInternalArray false positive
 * [#1303](https://sourceforge.net/p/pmd/bugs/1303/): OverrideBothEqualsAndHashcodeRule does not work on class implements resolvable interfaces
+* [#1304](https://sourceforge.net/p/pmd/bugs/1304/): UseCollectionIsEmpty false positive comparing to 1
 * [#1305](https://sourceforge.net/p/pmd/bugs/1305/): variable declaration inside switch causes ClassCastException
 * [#1306](https://sourceforge.net/p/pmd/bugs/1306/): False positive on duplicate when using static imports
 * [#1308](https://sourceforge.net/p/pmd/bugs/1308/): PMD runs endlessly on some generated files

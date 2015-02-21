@@ -58,7 +58,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
         rules.put("==", Arrays.asList("0"));
         rules.put("!=", Arrays.asList("0"));
         rules.put(">=", Arrays.asList("0", "1"));
-        rules.put("<=", Arrays.asList("0", "1"));
+        rules.put("<=", Arrays.asList("0"));
         return rules;
     }
 

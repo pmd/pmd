@@ -222,8 +222,8 @@ public class TestIsEmpty {
     </test-code>
     <test-code>
         <description>#1230 UseCollectionIsEmpty gets false positives</description>
-        <expected-problems>6</expected-problems>
-        <expected-linenumbers>8,11,16,19,24,27</expected-linenumbers>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,11,24,27</expected-linenumbers>
         <code><![CDATA[
 import java.util.ArrayList;
 
@@ -273,6 +273,22 @@ public class IsEmptyTest {
         }
         if (1 == testObject.size()) { // line 47
             System.out.println("List is not empty, but not all non-empty lists will trigger this");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1304 UseCollectionIsEmpty false positive comparing to 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PMDIsEmptyFalsePositive {
+    public void falsePositive() {
+        Collection<String> c = new ArrayList<String>();
+
+        if (c.size() <= 1) // false positive
+        {
+            // do something
         }
     }
 }
