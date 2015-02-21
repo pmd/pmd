@@ -47,7 +47,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
             if (node.jjtGetChild(ix) instanceof ASTClassOrInterfaceType) {
                 ASTClassOrInterfaceType cit = (ASTClassOrInterfaceType) node.jjtGetChild(ix);
                 Class<?> clazz = cit.getType();
-                if (clazz != null || node.jjtGetChild(ix).hasImageEqualTo("Comparable")) {
+                if (clazz != null && node.jjtGetChild(ix).hasImageEqualTo("Comparable")) {
                     implementsComparable = true;
                     return data;
                 }

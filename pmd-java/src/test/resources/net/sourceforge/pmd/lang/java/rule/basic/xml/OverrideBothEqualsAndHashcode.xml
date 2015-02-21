@@ -164,11 +164,21 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-implements interface other than Comparable
+implements interface other than Comparable, not resolvable
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo implements C {
+ public boolean equals(Object other) { return false; }
+ public int compareTo(Object other) { return 42; }
+}
+     ]]></code>
+    </test-code>
+   <test-code>
+        <description>implements interface other than Comparable, resolvable (#1303 OverrideBothEqualsAndHashcodeRule does not work on class implements resolvable interfaces)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo implements Runnable {
  public boolean equals(Object other) { return false; }
  public int compareTo(Object other) { return 42; }
 }
