@@ -4,10 +4,13 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class OccurrenceFinder extends JavaParserVisitorAdapter {
 
@@ -33,7 +36,19 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
                 }
             } else {
                 // now we've got a scope we're starting with, so work from there
-                search.execute(decl.getScope());
+                Scope startingScope = decl.getScope();
+                // in case the previous found declaration is a class reference for a class inside the same source file
+                // we need to search this class
+                // e.g. the list of name occurrence could come from
+                // outerClassRef.member. See also bug #1302
+                if (decl instanceof VariableNameDeclaration) {
+                    String typeImage = ((VariableNameDeclaration)decl).getTypeImage();
+                    ClassNameDeclaration clazzDeclaration = startingScope.getEnclosingScope(SourceFileScope.class).findClassNameDeclaration(typeImage);
+                    if (clazzDeclaration != null) {
+                        startingScope = clazzDeclaration.getScope();
+                    }
+                }
+                search.execute(startingScope);
                 decl = search.getResult();
 
                 if (decl == null) {

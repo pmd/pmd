@@ -107,6 +107,12 @@ public class SourceFileScope extends AbstractJavaScope {
         return "SourceFileScope: " + glomNames(getClassDeclarations().keySet());
     }
 
+    public ClassNameDeclaration findClassNameDeclaration(String name) {
+        ImageFinderFunction finder = new ImageFinderFunction(name);
+        Applier.apply(finder, getClassDeclarations().keySet().iterator());
+        return (ClassNameDeclaration)finder.getDecl();
+    }
+
     protected NameDeclaration findVariableHere(JavaNameOccurrence occ) {
         ImageFinderFunction finder = new ImageFinderFunction(occ.getImage());
         Applier.apply(finder, getDeclarations().keySet().iterator());
