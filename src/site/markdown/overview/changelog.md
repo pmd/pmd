@@ -45,6 +45,7 @@
 * [#1308](https://sourceforge.net/p/pmd/bugs/1308/): PMD runs endlessly on some generated files
 * [#1312](https://sourceforge.net/p/pmd/bugs/1312/): Rule reference must not override rule name of referenced rule
 * [#1313](https://sourceforge.net/p/pmd/bugs/1313/): Missing assertion message in assertEquals with delta not detected
+* [#1316](https://sourceforge.net/p/pmd/bugs/1316/): Multi Rule Properties with delimiter not possible
 
 **API Changes:**
 

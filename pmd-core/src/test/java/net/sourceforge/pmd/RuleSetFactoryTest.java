@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 import org.junit.Assert;
@@ -162,6 +163,50 @@ public class RuleSetFactoryTest {
 		assertNull(r.getPropertyDescriptor("BuggleFish"));
 		assertNotSame(r.getDescription().indexOf("testdesc2"), -1);
 	}
+
+    @Test
+    public void testStringMultiPropertyDefaultDelimiter() throws Exception {
+        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<ruleset>\n" +
+                "     <rule name=\"myRule\" message=\"Do not place to this package. Move to \n" + 
+                "{0} package/s instead.\" \n" + 
+                "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" " +
+                "language=\"dummy\">\n" + 
+                "         <description>Please move your class to the right folder(rest \n" + 
+                "folder)</description>\n" + 
+                "         <priority>2</priority>\n" + 
+                "         <properties>\n" + 
+                "             <property name=\"packageRegEx\" value=\"com.aptsssss|com.abc\" \n" + 
+                "type=\"String[]\" description=\"valid packages\"/>\n" + 
+                "         </properties>"
+                + "</rule>"
+                + "</ruleset>");
+        PropertyDescriptor<?> prop = r.getPropertyDescriptor("packageRegEx");
+        String[] values = (String[])r.getProperty(prop);
+        Assert.assertArrayEquals(new String[]{"com.aptsssss", "com.abc"}, values);
+    }
+
+    @Test
+    public void testStringMultiPropertyDelimiter() throws Exception {
+        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<ruleset>\n" +
+                "     <rule name=\"myRule\" message=\"Do not place to this package. Move to \n" + 
+                "{0} package/s instead.\" \n" + 
+                "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" " +
+                "language=\"dummy\">\n" + 
+                "         <description>Please move your class to the right folder(rest \n" + 
+                "folder)</description>\n" + 
+                "         <priority>2</priority>\n" + 
+                "         <properties>\n" + 
+                "             <property name=\"packageRegEx\" value=\"com.aptsssss,com.abc\" \n" + 
+                "type=\"String[]\" delimiter=\",\" description=\"valid packages\"/>\n" + 
+                "         </properties>"
+                + "</rule>"
+                + "</ruleset>");
+        PropertyDescriptor<?> prop = r.getPropertyDescriptor("packageRegEx");
+        String[] values = (String[])r.getProperty(prop);
+        Assert.assertArrayEquals(new String[]{"com.aptsssss", "com.abc"}, values);
+    }
 
 	@Test
 	@SuppressWarnings("unchecked")

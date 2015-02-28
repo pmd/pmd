@@ -34,8 +34,8 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 	private final Map<String, Boolean> fieldTypesByKey;
 
 	protected static final Map<String, Boolean> CORE_FIELD_TYPES_BY_KEY = CollectionUtil.mapFrom(
-			new String[]  { NAME, 		DESC, 	DEFAULT_VALUE}, 
-			new Boolean[] { Boolean.TRUE,  Boolean.TRUE, Boolean.TRUE}
+			new String[]  { NAME, 		DESC, 	DEFAULT_VALUE, DELIMITER},
+			new Boolean[] { Boolean.TRUE,  Boolean.TRUE, Boolean.TRUE, Boolean.FALSE}
 			);
 	
 	public BasicPropertyDescriptorFactory(Class<?> theValueType) {
@@ -187,8 +187,14 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 		return null;	// TODO
 	}	
 
-	protected static char delimiterIn(Map<String, String> valuesById) {
-		String characterStr = valuesById.get(DELIMITER).trim();
+	protected static char delimiterIn(Map<String, String> valuesById, char defaultDelimiter) {
+	    String characterStr = "";
+	    if (valuesById.containsKey(DELIMITER)) {
+	        characterStr = valuesById.get(DELIMITER).trim();
+	    }
+	    if (characterStr.isEmpty()) {
+	        return defaultDelimiter;
+	    }
 		return characterStr.charAt(0);
 	}
 	

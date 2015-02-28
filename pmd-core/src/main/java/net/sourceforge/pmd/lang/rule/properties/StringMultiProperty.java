@@ -22,7 +22,7 @@ public class StringMultiProperty extends AbstractDelimitedProperty<String[]> {
 	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringMultiProperty>(String[].class) {
 
 		public StringMultiProperty createWith(Map<String, String> valuesById) {
-			final char delimiter = delimiterIn(valuesById);
+			final char delimiter = delimiterIn(valuesById, DEFAULT_DELIMITER);
 			return new StringMultiProperty(
 					nameIn(valuesById),
 					descriptionIn(valuesById),
