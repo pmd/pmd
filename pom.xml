@@ -848,6 +848,16 @@
         </profile>
 
         <profile>
+            <id>jdk8-integration</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <modules>
+                <module>pmd-java8</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>jdk9-disabled</id>
             <activation>
                 <jdk>!1.9</jdk>
