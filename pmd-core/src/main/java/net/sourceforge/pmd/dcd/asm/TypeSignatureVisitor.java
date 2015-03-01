@@ -51,13 +51,13 @@ public class TypeSignatureVisitor extends SignatureVisitor {
     }
 
     public TypeSignatureVisitor() {
-        super(Opcodes.ASM4);
+        super(Opcodes.ASM5);
         p = new PrintVisitor();
         init();
     }
 
     public TypeSignatureVisitor(PrintVisitor parent) {
-        super(Opcodes.ASM4);
+        super(Opcodes.ASM5);
         p = new PrintVisitor(parent);
         init();
     }

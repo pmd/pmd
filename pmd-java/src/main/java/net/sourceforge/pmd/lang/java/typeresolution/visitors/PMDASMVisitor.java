@@ -21,7 +21,7 @@ import org.objectweb.asm.signature.SignatureVisitor;
 public class PMDASMVisitor extends ClassVisitor {
 
     public PMDASMVisitor() {
-        super(Opcodes.ASM4);
+        super(Opcodes.ASM5);
     }
 
     private Map<String, String> packages = new HashMap<String, String>();
@@ -173,7 +173,7 @@ public class PMDASMVisitor extends ClassVisitor {
         private PMDASMVisitor parent;
 
         public PMDFieldVisitor(PMDASMVisitor visitor) {
-            super(Opcodes.ASM4);
+            super(Opcodes.ASM5);
             parent = visitor;
         }
 
@@ -193,7 +193,7 @@ public class PMDASMVisitor extends ClassVisitor {
         private PMDASMVisitor parent;
 
         public PMDAnnotationVisitor(PMDASMVisitor visitor) {
-            super(Opcodes.ASM4);
+            super(Opcodes.ASM5);
             parent = visitor;
         }
 
@@ -224,7 +224,7 @@ public class PMDASMVisitor extends ClassVisitor {
         private PMDASMVisitor parent;
 
         public PMDSignatureVisitor(PMDASMVisitor visitor) {
-            super(Opcodes.ASM4);
+            super(Opcodes.ASM5);
             this.parent = visitor;
         }
 
@@ -292,7 +292,7 @@ public class PMDASMVisitor extends ClassVisitor {
         private PMDASMVisitor parent;
 
         public PMDMethodVisitor(PMDASMVisitor visitor) {
-            super(Opcodes.ASM4);
+            super(Opcodes.ASM5);
             parent = visitor;
         }
 
@@ -319,7 +319,7 @@ public class PMDASMVisitor extends ClassVisitor {
             parent.addType(Type.getType(desc));
         }
 
-        public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
             parent.parseClassName(owner);
             parent.addMethodDesc(desc);
         }

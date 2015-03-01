@@ -80,7 +80,7 @@ public class UsageGraphBuilder {
         }
 
         public MyClassVisitor() {
-            super(Opcodes.ASM4);
+            super(Opcodes.ASM5);
             p = new PrintVisitor();
         }
 
@@ -206,7 +206,7 @@ public class UsageGraphBuilder {
         private final MemberNode usingMemberNode;
 
         public MyMethodVisitor(PrintVisitor parent, MemberNode usingMemberNode) {
-            super(Opcodes.ASM4);
+            super(Opcodes.ASM5);
             p = parent;
             this.usingMemberNode = usingMemberNode;
         }
@@ -353,13 +353,14 @@ public class UsageGraphBuilder {
             }
         }
 
-        public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
             if (TRACE) {
                 println("visitMethodInsn:");
                 printlnIndent("opcode: " + opcode);
                 printlnIndent("owner: " + owner);
                 printlnIndent("name: " + name);
                 printlnIndent("desc: " + desc);
+                printlnIndent("itf: " + itf);
             }
             if (INDEX) {
                 String className = getClassName(owner);
