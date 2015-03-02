@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.StringUtil;
 /**
@@ -354,7 +355,13 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	/**
 	 * @return String
 	 */
-	protected abstract String defaultAsString();
+	protected String defaultAsString() {
+        if (isMultiValue()) {
+            return asDelimitedString(defaultValue(), multiValueDelimiter());
+        } else {
+            return defaultValue().toString();
+        }
+	}
 
 	/**
 	 * @param value Object
@@ -393,6 +400,9 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 		attributes.put(NAME, name);
 		attributes.put(DESCRIPTION, description);
 		attributes.put(DEFAULT_VALUE, defaultAsString());
+		if (isMultiValue()) {
+		    attributes.put(PropertyDescriptorFields.DELIMITER, Character.toString(multiValueDelimiter()));
+		}
 	}
 
 }

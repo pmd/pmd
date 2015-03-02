@@ -14,16 +14,18 @@ import net.sourceforge.pmd.util.StringUtil;
  * 
  * @author Brian Remedios
  */
-public class CharacterMultiProperty extends AbstractDelimitedProperty<Character[]> {
+public class CharacterMultiProperty extends AbstractProperty<Character[]> {
 	
 	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterMultiProperty>(Character[].class) {
 
 		public CharacterMultiProperty createWith(Map<String, String> valuesById) {
+		    char delimiter = delimiterIn(valuesById, AbstractProperty.DEFAULT_DELIMITER);
 			return new CharacterMultiProperty(
 					nameIn(valuesById),
 					descriptionIn(valuesById),
-					defaultValueIn(valuesById),
-					valuesById
+					charsIn(defaultValueIn(valuesById), delimiter),
+					0.0f,
+					delimiter
 					);
 		}
 	};
@@ -38,7 +40,7 @@ public class CharacterMultiProperty extends AbstractDelimitedProperty<Character[
 	 * @throws IllegalArgumentException
 	 */
 	public CharacterMultiProperty(String theName, String theDescription, Character[] theDefaults, float theUIOrder, char delimiter) {
-		super(theName, theDescription, theDefaults, delimiter, theUIOrder);
+		super(theName, theDescription, theDefaults, theUIOrder, delimiter);
 		
 		if (theDefaults != null) {
 			for (int i=0; i<theDefaults.length; i++) {
@@ -48,19 +50,7 @@ public class CharacterMultiProperty extends AbstractDelimitedProperty<Character[
 			}
 		}
 	}
-	
-	/**
-	 * Constructor for CharacterProperty that accepts additional params from a map.
-	 * 
-	 * @param theName
-	 * @param theDescription
-	 * @param theDefaults
-	 * @param otherParams
-	 */
-	public CharacterMultiProperty(String theName, String theDescription, String theDefaults, Map<String, String> otherParams) {
-	    this(theName, theDescription, charsIn(theDefaults, delimiterIn(otherParams)), 0.0f, delimiterIn(otherParams));
-	}
-	
+
 	private static Character[] charsIn(String charString, char delimiter) {
 	    
 	    String[] values = StringUtil.substringsOf(charString, delimiter);
@@ -98,4 +88,12 @@ public class CharacterMultiProperty extends AbstractDelimitedProperty<Character[
 		}
 		return chars;
 	}
+    /**
+     * @return boolean
+     * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+     */
+    @Override
+    public boolean isMultiValue() {
+        return true;
+    }
 }

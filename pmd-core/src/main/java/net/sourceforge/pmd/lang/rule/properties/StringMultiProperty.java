@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -18,19 +17,16 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class StringMultiProperty extends AbstractProperty<String[]> {
 		
-	public static final char DEFAULT_DELIMITER = '|';
-		
 	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringMultiProperty>(String[].class) {
 
 		public StringMultiProperty createWith(Map<String, String> valuesById) {
-			final char delimiter = delimiterIn(valuesById, DEFAULT_DELIMITER);
-			return new StringMultiProperty(
-					nameIn(valuesById),
-					descriptionIn(valuesById),
-					StringUtil.substringsOf(defaultValueIn(valuesById), delimiter),
-					0f,
-					delimiter
-					);
+            char delimiter = delimiterIn(valuesById, AbstractProperty.DEFAULT_DELIMITER);
+            return new StringMultiProperty(
+                    nameIn(valuesById),
+                    descriptionIn(valuesById),
+                    StringUtil.substringsOf(defaultValueIn(valuesById), delimiter),
+                    0.0f,
+                    delimiter);
 		}
 	};
 	
@@ -48,21 +44,7 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
 
 		checkDefaults(theDefaults, delimiter);
 	}
-	
-	/**
-     * Constructor for CharacterProperty that accepts additional params from a map.
-     * 
-	 * @param theName
-	 * @param theDescription
-	 * @param theDefaults
-	 * @param otherParams
-	 */
-	public StringMultiProperty(String theName, String theDescription, String theDefaults, Map<String, String> otherParams) {
-	    this(theName, theDescription,
-	            StringUtil.substringsOf(theDefaults,AbstractDelimitedProperty.delimiterIn(otherParams)), 0.0f,
-	            AbstractDelimitedProperty.delimiterIn(otherParams));
-	}
-	
+
 	/**
 	 * @param defaultValue
 	 * @param delim
@@ -138,19 +120,4 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
     public boolean isMultiValue() {
         return true;
     }
-
-    /**
-     * @return String
-     */
-    protected String defaultAsString() {
-        return asDelimitedString(defaultValue(), multiValueDelimiter());
-    }
-    /**
-     * @param attributes Map<String,String>
-     */
-    protected void addAttributesTo(Map<String, String> attributes) {
-        super.addAttributesTo(attributes);
-        attributes.put(PropertyDescriptorFields.DELIMITER, Character.toString(multiValueDelimiter()));
-    }
-
 }
