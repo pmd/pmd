@@ -10,7 +10,8 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Defines a property that supports multiple class types, even for primitive values!
+ * Defines a property that supports multiple class types, even for primitive
+ * values!
  * 
  * TODO - untested for array types
  *
@@ -18,21 +19,18 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeMultiProperty>(
+            Class[].class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
-	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeMultiProperty>(Class[].class, PACKAGED_FIELD_TYPES_BY_KEY) {
-		
-		public TypeMultiProperty createWith(Map<String, String> valuesById) {
-			return new TypeMultiProperty(
-					nameIn(valuesById),
-					descriptionIn(valuesById),
-					defaultValueIn(valuesById),
-					legalPackageNamesIn(valuesById),
-					0f);
-		}
-	};
-	
+        public TypeMultiProperty createWith(Map<String, String> valuesById) {
+            return new TypeMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
+                    legalPackageNamesIn(valuesById), 0f);
+        }
+    };
+
     /**
      * Constructor for TypeProperty.
+     * 
      * @param theName String
      * @param theDescription String
      * @param theDefaults Class[]
@@ -40,13 +38,15 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
      * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames, float theUIOrder) {
+    public TypeMultiProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames,
+            float theUIOrder) {
         super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
 
     }
 
     /**
      * Constructor for TypeProperty.
+     * 
      * @param theName String
      * @param theDescription String
      * @param theTypeDefaults String
@@ -54,13 +54,15 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
      * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, String[] legalPackageNames, float theUIOrder) {
+    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, String[] legalPackageNames,
+            float theUIOrder) {
         this(theName, theDescription, typesFrom(theTypeDefaults), legalPackageNames, theUIOrder);
 
     }
-    
+
     /**
      * Constructor for TypeProperty.
+     * 
      * @param theName String
      * @param theDescription String
      * @param theTypeDefaults String
@@ -68,10 +70,11 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
      * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, Map<String, String> otherParams, float theUIOrder) {
+    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
+            Map<String, String> otherParams, float theUIOrder) {
         this(theName, theDescription, typesFrom(theTypeDefaults), packageNamesIn(otherParams), theUIOrder);
-    }    
-    
+    }
+
     /**
      * @param classesStr String
      * @return Class[]
@@ -85,7 +88,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
         }
         return classes;
     }
-    
+
     /**
      * @param item Object
      * @return String
@@ -94,7 +97,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     protected String packageNameOf(Object item) {
         return ((Class<?>) item).getName();
     }
-    
+
     /**
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()

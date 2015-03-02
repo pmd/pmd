@@ -15,32 +15,30 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class BooleanProperty extends AbstractScalarProperty<Boolean> {
 
-	
-	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<BooleanProperty>(Boolean.class) {
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<BooleanProperty>(
+            Boolean.class) {
 
-		public BooleanProperty createWith(Map<String, String> valuesById) {
-			return new BooleanProperty(
-					nameIn(valuesById),
-					descriptionIn(valuesById),
-					Boolean.valueOf(defaultValueIn(valuesById)),
-					0f);
-		}
-	};
-	/**
-	 * Constructor for BooleanProperty limited to a single value.
-	 * 
-	 * @param theName String
-	 * @param theDescription String
-	 * @param defaultValue boolean
-	 * @param theUIOrder float
-	 */
-	public BooleanProperty(String theName, String theDescription, Boolean defaultValue, float theUIOrder) {
-		super(theName, theDescription, Boolean.valueOf(defaultValue), theUIOrder);
-	}
-	
+        public BooleanProperty createWith(Map<String, String> valuesById) {
+            return new BooleanProperty(nameIn(valuesById), descriptionIn(valuesById),
+                    Boolean.valueOf(defaultValueIn(valuesById)), 0f);
+        }
+    };
+
     /**
      * Constructor for BooleanProperty limited to a single value.
-     * Converts default argument string into a boolean.
+     * 
+     * @param theName String
+     * @param theDescription String
+     * @param defaultValue boolean
+     * @param theUIOrder float
+     */
+    public BooleanProperty(String theName, String theDescription, Boolean defaultValue, float theUIOrder) {
+        super(theName, theDescription, Boolean.valueOf(defaultValue), theUIOrder);
+    }
+
+    /**
+     * Constructor for BooleanProperty limited to a single value. Converts
+     * default argument string into a boolean.
      * 
      * @param theName String
      * @param theDescription String
@@ -58,14 +56,14 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
     private static Boolean boolFrom(String boolStr) {
         return Boolean.valueOf(boolStr);
     }
-    
-	/**
-	 * @return Class
-	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
-	 */
-	public Class<Boolean> type() {
-		return Boolean.class;
-	}
+
+    /**
+     * @return Class
+     * @see net.sourceforge.pmd.PropertyDescriptor#type()
+     */
+    public Class<Boolean> type() {
+        return Boolean.class;
+    }
 
     /**
      * @return String
@@ -73,14 +71,14 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
     protected String defaultAsString() {
         return Boolean.toString(defaultValue());
     }
-	
-	/**
-	 * Creates and returns a Boolean instance from a raw string
-	 * 
-	 * @param value String
-	 * @return Object
-	 */
-	protected Object createFrom(String value) {
-		return boolFrom(value);
-	}
+
+    /**
+     * Creates and returns a Boolean instance from a raw string
+     * 
+     * @param value String
+     * @return Object
+     */
+    protected Object createFrom(String value) {
+        return boolFrom(value);
+    }
 }

@@ -13,11 +13,12 @@ import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Defines a property type that can specify a single method to use as part of a rule.
+ * Defines a property type that can specify a single method to use as part of a
+ * rule.
  *
- * Rule developers can limit the rules to those within designated packages per the
- * 'legalPackages' argument in the constructor which can be an array of partial
- * package names, i.e., ["java.lang", "com.mycompany" ].
+ * Rule developers can limit the rules to those within designated packages per
+ * the 'legalPackages' argument in the constructor which can be an array of
+ * partial package names, i.e., ["java.lang", "com.mycompany" ].
  *
  * @author Brian Remedios
  */
@@ -30,18 +31,15 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     private static final String ARRAY_FLAG = "[]";
     private static final Map<Class<?>, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 
-	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<MethodProperty>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<MethodProperty>(
+            Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
-		public MethodProperty createWith(Map<String, String> valuesById) {
-			return new MethodProperty(
-					nameIn(valuesById),
-					descriptionIn(valuesById),
-					defaultValueIn(valuesById),
-					legalPackageNamesIn(valuesById),
-					0f);
-		}
-	};
-    
+        public MethodProperty createWith(Map<String, String> valuesById) {
+            return new MethodProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
+                    legalPackageNamesIn(valuesById), 0f);
+        }
+    };
+
     /**
      * @param cls Class<?>
      * @return String
@@ -70,6 +68,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     protected String defaultAsString() {
         return asStringFor(defaultValue());
     }
+
     /**
      * @param type Class<?>
      * @param sb StringBuilder
@@ -125,7 +124,9 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         if (typeName.endsWith(ARRAY_FLAG)) {
             String arrayTypeName = typeName.substring(0, typeName.length() - ARRAY_FLAG.length());
             type = typeFor(arrayTypeName); // recurse
-            return Array.newInstance(type, 0).getClass(); // TODO is there a better way to get an array type?
+            return Array.newInstance(type, 0).getClass(); // TODO is there a
+                                                          // better way to get
+                                                          // an array type?
         }
 
         type = ClassUtil.getTypeFor(typeName); // try shortcut first
@@ -141,21 +142,20 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * Returns the method specified within the string argument after parsing out its source class and
-     * any optional arguments. Callers need to specify the delimiters expected between the various
-     * elements.  I.e.:
+     * Returns the method specified within the string argument after parsing out
+     * its source class and any optional arguments. Callers need to specify the
+     * delimiters expected between the various elements. I.e.:
      *
-     * 	"String#isEmpty()"
-     *  "String#indexOf(int)"
-     *  "String#substring(int,int)"
+     * "String#isEmpty()" "String#indexOf(int)" "String#substring(int,int)"
      *
-     *  If a method isn't part of the specified class we will walk up any superclasses to Object to try
-     *  and find it.
+     * If a method isn't part of the specified class we will walk up any
+     * superclasses to Object to try and find it.
      *
-     *  If the classes are listed in the ClassUtil class within in Typemaps then you likely can avoid
-     *  specifying fully-qualified class names per the above example.
+     * If the classes are listed in the ClassUtil class within in Typemaps then
+     * you likely can avoid specifying fully-qualified class names per the above
+     * example.
      *
-     *  Returns null if a matching method cannot be found.
+     * Returns null if a matching method cannot be found.
      *
      * @param methodNameAndArgTypes
      * @param classMethodDelimiter
@@ -165,7 +165,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     public static Method methodFrom(String methodNameAndArgTypes, char classMethodDelimiter, char methodArgDelimiter) {
 
         // classname#methodname(arg1,arg2)
-        //          0          1         2
+        // 0 1 2
 
         int delimPos0 = -1;
         if (methodNameAndArgTypes != null) {
@@ -219,51 +219,54 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
      * @return Method
      */
     public static Method methodFrom(String methodStr) {
-    	return methodFrom(methodStr, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
+        return methodFrom(methodStr, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
     }
-    
+
     /**
      * Constructor for MethodProperty.
      *
-     * @param theName        String
+     * @param theName String
      * @param theDescription String
-     * @param theDefault     Method
+     * @param theDefault Method
      * @param legalPackageNames String[]
-     * @param theUIOrder     float
+     * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames, float theUIOrder) {
+    public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
+            float theUIOrder) {
         super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
     }
 
     /**
      * Constructor for MethodProperty.
      *
-     * @param theName        String
+     * @param theName String
      * @param theDescription String
      * @param defaultMethodStr String
      * @param legalPackageNames String[]
-     * @param theUIOrder     float
+     * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames, float theUIOrder) {
+    public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames,
+            float theUIOrder) {
         super(theName, theDescription, methodFrom(defaultMethodStr), legalPackageNames, theUIOrder);
     }
-    
+
     /**
      * Constructor for MethodProperty.
      *
-     * @param theName        String
+     * @param theName String
      * @param theDescription String
      * @param defaultMethodStr String
      * @param otherParams Map<String, String>
-     * @param theUIOrder     float
+     * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public MethodProperty(String theName, String theDescription, String defaultMethodStr, Map<String, String> otherParams, float theUIOrder) {
+    public MethodProperty(String theName, String theDescription, String defaultMethodStr,
+            Map<String, String> otherParams, float theUIOrder) {
         this(theName, theDescription, methodFrom(defaultMethodStr), packageNamesIn(otherParams), theUIOrder);
     }
-    
+
     /**
      * Return the value as a string that can be easily recognized and parsed
      * when we see it again.
@@ -304,12 +307,12 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * @param valueString  String
+     * @param valueString String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
     public Method valueFrom(String valueString) throws IllegalArgumentException {
-       return methodFrom(valueString);
+        return methodFrom(valueString);
     }
 }

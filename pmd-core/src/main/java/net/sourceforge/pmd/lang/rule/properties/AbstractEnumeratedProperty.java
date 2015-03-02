@@ -30,7 +30,8 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
      * @throws IllegalArgumentException
      */
     @SuppressWarnings("unchecked")
-    public AbstractEnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices, int[] choiceIndices, float theUIOrder, boolean isMulti) {
+    public AbstractEnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
+            int[] choiceIndices, float theUIOrder, boolean isMulti) {
         super(theName, theDescription, (T) selectionsIn(theLabels, choiceIndices, isMulti), theUIOrder);
 
         choicesByLabel = CollectionUtil.mapFrom(theLabels, theChoices);
@@ -40,6 +41,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
 
     /**
      * Method selectionsIn.
+     * 
      * @param items String[]
      * @param selectionIndices int[]
      * @param isMulti boolean
@@ -61,14 +63,13 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
      * @return String
      */
     protected String defaultAsString() {
-        
-        return isMultiValue() ? 
-                (String)defaultValue() :
-                asDelimitedString(defaultValue(), '|');
+
+        return isMultiValue() ? (String) defaultValue() : asDelimitedString(defaultValue(), '|');
     }
-    
+
     /**
      * Method nonLegalValueMsgFor.
+     * 
      * @param value Object
      * @return String
      */
@@ -78,6 +79,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
 
     /**
      * Method choiceFrom.
+     * 
      * @param label String
      * @return E
      */
@@ -97,9 +99,9 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
         if (choices != null) {
             return choices;
         }
-    
+
         choices = new Object[orderedLabels.length][2];
-    
+
         for (int i = 0; i < choices.length; i++) {
             choices[i][0] = orderedLabels[i];
             choices[i][1] = choicesByLabel.get(orderedLabels[i]);

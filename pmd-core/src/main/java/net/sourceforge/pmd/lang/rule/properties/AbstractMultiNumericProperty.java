@@ -12,6 +12,7 @@ public abstract class AbstractMultiNumericProperty<T> extends AbstractNumericPro
 
     /**
      * Constructor for AbstractMultiNumericProperty.
+     * 
      * @param theName String
      * @param theDescription String
      * @param lower Number
@@ -19,7 +20,8 @@ public abstract class AbstractMultiNumericProperty<T> extends AbstractNumericPro
      * @param theDefault T
      * @param theUIOrder float
      */
-    protected AbstractMultiNumericProperty(String theName, String theDescription, Number lower, Number upper, T theDefault, float theUIOrder) {
+    protected AbstractMultiNumericProperty(String theName, String theDescription, Number lower, Number upper,
+            T theDefault, float theUIOrder) {
         super(theName, theDescription, lower, upper, theDefault, theUIOrder);
     }
 
@@ -31,7 +33,7 @@ public abstract class AbstractMultiNumericProperty<T> extends AbstractNumericPro
     public boolean isMultiValue() {
         return true;
     }
-    
+
     /**
      * @return String
      */

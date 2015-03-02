@@ -11,7 +11,8 @@ import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Defines a property that supports single class types, even for primitive values!
+ * Defines a property that supports single class types, even for primitive
+ * values!
  * 
  * TODO - untested for array types
  *
@@ -19,20 +20,18 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class TypeProperty extends AbstractPackagedProperty<Class> {
 
-	public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeProperty>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeProperty>(
+            Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
-		public TypeProperty createWith(Map<String, String> valuesById) {
-			return new TypeProperty(
-					nameIn(valuesById),
-					descriptionIn(valuesById),
-					defaultValueIn(valuesById),
-					legalPackageNamesIn(valuesById),
-					0f);
-		}
-	};
-	
+        public TypeProperty createWith(Map<String, String> valuesById) {
+            return new TypeProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
+                    legalPackageNamesIn(valuesById), 0f);
+        }
+    };
+
     /**
      * Constructor for TypeProperty.
+     * 
      * @param theName String
      * @param theDescription String
      * @param theDefault Class
@@ -40,7 +39,8 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
      * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames, float theUIOrder) {
+    public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
+            float theUIOrder) {
         super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
     }
 
@@ -53,10 +53,11 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
      * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public TypeProperty(String theName, String theDescription, String defaultTypeStr, String[] legalPackageNames, float theUIOrder) {
+    public TypeProperty(String theName, String theDescription, String defaultTypeStr, String[] legalPackageNames,
+            float theUIOrder) {
         this(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder);
     }
-    
+
     /**
      * 
      * @param theName String
@@ -66,19 +67,21 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
      * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<String, String> otherParams, float theUIOrder) {
+    public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<String, String> otherParams,
+            float theUIOrder) {
         this(theName, theDescription, classFrom(defaultTypeStr), packageNamesIn(otherParams), theUIOrder);
     }
-    
+
     /**
      * @return String
      */
     protected String defaultAsString() {
         return asString(defaultValue());
     }
-    
+
     /**
      * Method packageNameOf.
+     * 
      * @param item Object
      * @return String
      */
