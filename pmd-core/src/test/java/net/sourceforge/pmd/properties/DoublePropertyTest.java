@@ -18,7 +18,7 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 	private static final double SHIFT = 5.0;
 	
 	public DoublePropertyTest() {
-		super();
+		super("Double");
 	}
 
 	/**
@@ -80,8 +80,4 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 			new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX, new Double[] {MIN-SHIFT,MIN,MIN+SHIFT,MAX+SHIFT}, 1.0f) :
 			new DoubleProperty("testDouble", "Test double property", MAX, MIN, 9.0, 1.0f) ;				
 		}
-	
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(DoublePropertyTest.class);
-    }
 }

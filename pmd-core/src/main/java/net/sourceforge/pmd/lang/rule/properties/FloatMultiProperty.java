@@ -19,7 +19,7 @@ public class FloatMultiProperty extends AbstractMultiNumericProperty<Float[]> {
 
 		public FloatMultiProperty createWith(Map<String, String> valuesById) {
 			final String[] minMax = minMaxFrom(valuesById);
-			Float[] defaultValues = floatsIn(defaultValueIn(valuesById));
+			Float[] defaultValues = floatsIn(numericDefaultValueIn(valuesById));
 			return new FloatMultiProperty(
 					nameIn(valuesById),
 					descriptionIn(valuesById),

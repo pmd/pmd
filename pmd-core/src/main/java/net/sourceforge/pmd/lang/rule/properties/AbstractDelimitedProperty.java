@@ -5,6 +5,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertyDescriptorFields;
+
 /**
  * Concrete subclasses represent properties whose values when serialized onto a string can 
  * be problematic without specifying a unique delimiter that won't appear in the value set.
@@ -16,8 +18,9 @@ public abstract class AbstractDelimitedProperty<T> extends AbstractProperty<T> {
 
     private char multiValueDelimiter;
     
-    private static final String DELIM_ID = "delimiter";
-    
+    private static final String DELIM_ID = PropertyDescriptorFields.DELIMITER;
+    public static final char DEFAULT_DELIMITER = '|';
+
     /**
      * Constructor for AbstractDelimitedProperty.
      * @param theName String
@@ -34,7 +37,7 @@ public abstract class AbstractDelimitedProperty<T> extends AbstractProperty<T> {
 
     protected static char delimiterIn(Map<String, String> parameters) {
         if (!parameters.containsKey(DELIM_ID)) {
-            throw new IllegalArgumentException("missing delimiter value");
+            return DEFAULT_DELIMITER;
         }
         
         return parameters.get(DELIM_ID).charAt(0);

@@ -12,7 +12,7 @@ import org.junit.Test;
 public class BooleanPropertyTest extends AbstractPropertyDescriptorTester {
 
 	public BooleanPropertyTest() {
-		super();
+		super("Boolean");
 	}
 
 	/**
@@ -61,8 +61,4 @@ public class BooleanPropertyTest extends AbstractPropertyDescriptorTester {
 			new BooleanMultiProperty("", "Test boolean property", new Boolean[] {false, true, true}, 1.0f) :
 			new BooleanProperty("testBoolean", "", false, 1.0f);
 	}
-	
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(BooleanPropertyTest.class);
-    }
 }

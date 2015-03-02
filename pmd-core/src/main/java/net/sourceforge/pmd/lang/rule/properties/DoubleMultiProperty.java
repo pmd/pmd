@@ -20,7 +20,7 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
 
 		public DoubleMultiProperty createWith(Map<String, String> valuesById) {
 			final String[] minMax = minMaxFrom(valuesById);
-			Double[] defaultValues = doublesIn(defaultValueIn(valuesById));
+			Double[] defaultValues = doublesIn(numericDefaultValueIn(valuesById));
 			return new DoubleMultiProperty(
 					nameIn(valuesById),
 					descriptionIn(valuesById),

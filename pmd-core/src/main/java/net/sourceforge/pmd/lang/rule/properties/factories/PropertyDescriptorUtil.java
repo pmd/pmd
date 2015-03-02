@@ -10,6 +10,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.BooleanMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.CharacterMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
@@ -47,6 +48,7 @@ public class PropertyDescriptorUtil {
     	Map<String, PropertyDescriptorFactory> temp = new HashMap<String, PropertyDescriptorFactory>(18);
     	
     	temp.put("Boolean", 	BooleanProperty.FACTORY);
+    	temp.put("Boolean[]",   BooleanMultiProperty.FACTORY);
     	
     	temp.put("String", 		StringProperty.FACTORY);
     	temp.put("String[]", 	StringMultiProperty.FACTORY);

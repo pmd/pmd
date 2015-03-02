@@ -167,7 +167,13 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         // classname#methodname(arg1,arg2)
         //          0          1         2
 
-        int delimPos0 = methodNameAndArgTypes.indexOf(classMethodDelimiter);
+        int delimPos0 = -1;
+        if (methodNameAndArgTypes != null) {
+            delimPos0 = methodNameAndArgTypes.indexOf(classMethodDelimiter);
+        } else {
+            return null;
+        }
+
         if (delimPos0 < 0) {
             return null;
         }

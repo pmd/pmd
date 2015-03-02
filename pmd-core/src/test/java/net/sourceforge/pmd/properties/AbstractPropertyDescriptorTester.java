@@ -3,10 +3,19 @@ package net.sourceforge.pmd.properties;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import junit.framework.Assert;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorFields;
+import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 
 /**
@@ -17,6 +26,12 @@ import org.junit.Test;
  */
 public abstract class AbstractPropertyDescriptorTester {
 
+    public AbstractPropertyDescriptorTester(String typeName) {
+        this.typeName = typeName;
+    }
+
+    protected final String typeName;
+    
 	private static final int multiValueCount = 10;
 	
 	public static final String punctuationChars  = "!@#$%^&*()_-+=[]{}\\|;:'\",.<>/?`~";
@@ -26,7 +41,6 @@ public abstract class AbstractPropertyDescriptorTester {
 	public static final String alphaNumericChars = digitChars + alphaChars;
 	public static final String allChars			 = punctuationChars + whitespaceChars + alphaNumericChars;
 
-	
 	/**
 	 * Return a legal value(s) per the general scope of the descriptor.
 	 * 
@@ -59,7 +73,57 @@ public abstract class AbstractPropertyDescriptorTester {
 	 * @return PropertyDescriptor
 	 */
 	protected abstract PropertyDescriptor createBadProperty(boolean multiValue);
-	
+
+	protected final PropertyDescriptorFactory getSingleFactory() {
+	    return PropertyDescriptorUtil.factoryFor(typeName);
+	}
+	protected final PropertyDescriptorFactory getMultiFactory() {
+	    return PropertyDescriptorUtil.factoryFor(typeName + "[]");
+	}
+
+	private Map<String, String> getPropertyDescriptorValues() {
+	    Map<String, String> valuesById = new HashMap<String, String>();
+	    valuesById.put(PropertyDescriptorFields.NAME, "test");
+	    valuesById.put(PropertyDescriptorFields.DESCRIPTION, "desc");
+	    valuesById.put(PropertyDescriptorFields.MIN, "0");
+	    valuesById.put(PropertyDescriptorFields.MAX, "10");
+	    return valuesById;
+	}
+	@Test
+	public void testFactorySingleValue() {
+	    PropertyDescriptor prop = getSingleFactory().createWith(getPropertyDescriptorValues());
+	    Object originalValue = createValue(1);
+        Object value = prop.valueFrom(originalValue instanceof Class ? ((Class)originalValue).getName() : String.valueOf(originalValue));
+	    String asDelimitedString = prop.asDelimitedString(value);
+	    Object value2 = prop.valueFrom(asDelimitedString);
+	    Assert.assertEquals(value, value2);
+	}
+
+	@Test
+	public void testFactoryMultiValueDefaultDelimiter() {
+        PropertyDescriptorFactory multiFactory = getMultiFactory();
+        PropertyDescriptor prop = multiFactory.createWith(getPropertyDescriptorValues());
+	    Object originalValue = createValue(multiValueCount);
+	    String asDelimitedString = prop.asDelimitedString(originalValue);
+	    Object value2 = prop.valueFrom(asDelimitedString);
+	    Assert.assertArrayEquals((Object[])originalValue, (Object[])value2);
+	}
+
+   @Test
+    public void testFactoryMultiValueCustomDelimiter() {
+        PropertyDescriptorFactory multiFactory = getMultiFactory();
+        Map<String, String> valuesById = getPropertyDescriptorValues();
+        String customDelimiter = "ä";
+        Assert.assertFalse(allChars.contains(customDelimiter));
+        valuesById.put(PropertyDescriptorFields.DELIMITER, customDelimiter);
+        PropertyDescriptor prop = multiFactory.createWith(valuesById);
+        Object originalValue = createValue(multiValueCount);
+        String asDelimitedString = prop.asDelimitedString(originalValue);
+        Object value2 = prop.valueFrom(asDelimitedString);
+        Assert.assertEquals(Arrays.toString((Object[])originalValue), Arrays.toString((Object[])value2));
+        Assert.assertArrayEquals((Object[])originalValue, (Object[])value2);
+    }
+
 	@Test
 	public void testConstructors() {
 		

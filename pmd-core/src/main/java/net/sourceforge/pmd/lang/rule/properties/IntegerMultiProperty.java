@@ -19,7 +19,7 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
 
 		public IntegerMultiProperty createWith(Map<String, String> valuesById) {
 			final String[] minMax = minMaxFrom(valuesById);
-			Integer[] defaultValues = integersIn(defaultValueIn(valuesById));
+			Integer[] defaultValues = integersIn(numericDefaultValueIn(valuesById));
 			return new IntegerMultiProperty(
 					nameIn(valuesById),
 					descriptionIn(valuesById),

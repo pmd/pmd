@@ -26,7 +26,7 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
 	private static final Class[] javaUtilTypes = new Class[] { HashMap.class, Map.class, Comparator.class, Set.class, Observer.class };
 	
 	public TypePropertyTest() {
-		super();
+		super("Class");
 	}
 
 	/**
@@ -81,7 +81,4 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
 			new TypeProperty("testType", "Test type property", javaLangClasses[0], new String[] { "java.util" }, 1.0f);
 			}
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TypePropertyTest.class);
-    }
 }

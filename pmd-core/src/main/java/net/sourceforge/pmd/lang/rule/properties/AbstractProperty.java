@@ -26,7 +26,12 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	private final boolean 	isRequired;
 	private final float		uiOrder;
 
-	private static final char DELIMITER = '|';
+	public static final char DEFAULT_DELIMITER = '|';
+	private char multiValueDelimiter = DEFAULT_DELIMITER;
+
+	protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
+	    this(theName, theDescription, theDefault, theUIOrder, DEFAULT_DELIMITER);
+	}
 
 	/**
 	 * Constructor for AbstractPMDProperty.
@@ -36,12 +41,13 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	 * @param theUIOrder float
 	 * @throws IllegalArgumentException
 	 */
-	protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
+	protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder, char delimiter) {
 		name = checkNotEmpty(theName, NAME);
 		description = checkNotEmpty(theDescription, DESCRIPTION);
 		defaultValue = theDefault;
 		isRequired = false;	// TODO - do we need this?
 		uiOrder = checkPositive(theUIOrder, "UI order");
+		multiValueDelimiter = delimiter;
 	}
 
 	/**
@@ -76,7 +82,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
          * {@inheritDoc}
 	 */
 	public char multiValueDelimiter() {
-		return DELIMITER;
+		return multiValueDelimiter;
 	}
 
 	/**

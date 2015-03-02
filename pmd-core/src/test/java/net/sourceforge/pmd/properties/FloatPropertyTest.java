@@ -28,7 +28,7 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	}
 	
 	public FloatPropertyTest() {
-		super();
+		super("Float");
 	}
 
 	/**
@@ -87,8 +87,4 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 			new FloatMultiProperty("testFloat", "Test float property", 0f, 5f, new Float[] {-1f,0f,1f,2f}, 1.0f) :
 			new FloatProperty("testFloat", "Test float property", 5f, 4f, 9.0f, 1.0f) ;
 		}
-	
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(FloatPropertyTest.class);
-    }
 }

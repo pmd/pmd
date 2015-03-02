@@ -88,11 +88,14 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 	 * @throws IllegalArgumentException
 	 */
 	private void checkValidPackages(Object item, String[] legalNamePrefixes) {
-	    Object[] items;
-	    if (item.getClass().isArray()) {
-		items = (Object[])item;
-	    } else{
-		items = new Object[]{item};
+	    Object[] items = new Object[0];
+	
+	    if (item != null) {
+    	    if (item.getClass().isArray()) {
+    		items = (Object[])item;
+    	    } else{
+    		items = new Object[]{item};
+    	    }
 	    }
 		
 		String[] names = new String[items.length];

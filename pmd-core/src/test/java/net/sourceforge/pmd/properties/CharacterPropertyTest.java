@@ -18,7 +18,7 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 	private static final char[] charSet = filter(allChars.toCharArray(), delimiter);
 	
 	public CharacterPropertyTest() {
-		super();
+		super("Character");
 	}
 
 	/**
@@ -78,8 +78,4 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 			new CharacterMultiProperty("testCharacter", "Test character property", new Character[] {'a', 'b', 'c'}, 1.0f, delimiter) :
 			new CharacterProperty("", "Test character property", 'a', 1.0f);
 	}
-	
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(CharacterPropertyTest.class);
-    }
 }

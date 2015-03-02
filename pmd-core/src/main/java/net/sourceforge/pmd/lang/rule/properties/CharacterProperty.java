@@ -22,7 +22,7 @@ public class CharacterProperty extends AbstractProperty<Character> {
 			return new CharacterProperty(
 					nameIn(valuesById),
 					descriptionIn(valuesById),
-					new Character(defaultValueIn(valuesById).charAt(0)),
+					defaultValueIn(valuesById) != null ? new Character(defaultValueIn(valuesById).charAt(0)) : null,
 					0f);
 		}
 	};

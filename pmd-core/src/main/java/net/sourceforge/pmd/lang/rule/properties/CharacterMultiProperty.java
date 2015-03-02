@@ -23,7 +23,7 @@ public class CharacterMultiProperty extends AbstractDelimitedProperty<Character[
 					nameIn(valuesById),
 					descriptionIn(valuesById),
 					defaultValueIn(valuesById),
-					null
+					valuesById
 					);
 		}
 	};

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -15,7 +16,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * 
  * @author Brian Remedios
  */
-public class StringMultiProperty extends AbstractDelimitedProperty<String[]> {
+public class StringMultiProperty extends AbstractProperty<String[]> {
 		
 	public static final char DEFAULT_DELIMITER = '|';
 		
@@ -43,7 +44,7 @@ public class StringMultiProperty extends AbstractDelimitedProperty<String[]> {
 	 * @throws IllegalArgumentException
 	 */
 	public StringMultiProperty(String theName, String theDescription, String[] theDefaults, float theUIOrder, char delimiter) {
-		super(theName, theDescription, theDefaults, delimiter, theUIOrder);
+		super(theName, theDescription, theDefaults, theUIOrder, delimiter);
 
 		checkDefaults(theDefaults, delimiter);
 	}
@@ -57,7 +58,9 @@ public class StringMultiProperty extends AbstractDelimitedProperty<String[]> {
 	 * @param otherParams
 	 */
 	public StringMultiProperty(String theName, String theDescription, String theDefaults, Map<String, String> otherParams) {
-	    this(theName, theDescription, StringUtil.substringsOf(theDefaults, delimiterIn(otherParams)), 0.0f, delimiterIn(otherParams));
+	    this(theName, theDescription,
+	            StringUtil.substringsOf(theDefaults,AbstractDelimitedProperty.delimiterIn(otherParams)), 0.0f,
+	            AbstractDelimitedProperty.delimiterIn(otherParams));
 	}
 	
 	/**
@@ -126,4 +129,28 @@ public class StringMultiProperty extends AbstractDelimitedProperty<String[]> {
 		
 		return null;		
 	}
+
+	/**
+     * @return boolean
+     * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+     */
+    @Override
+    public boolean isMultiValue() {
+        return true;
+    }
+
+    /**
+     * @return String
+     */
+    protected String defaultAsString() {
+        return asDelimitedString(defaultValue(), multiValueDelimiter());
+    }
+    /**
+     * @param attributes Map<String,String>
+     */
+    protected void addAttributesTo(Map<String, String> attributes) {
+        super.addAttributesTo(attributes);
+        attributes.put(PropertyDescriptorFields.DELIMITER, Character.toString(multiValueDelimiter()));
+    }
+
 }

@@ -19,6 +19,10 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 	private static final int MAX = 12;
 	private static final int SHIFT = 3;
 
+    public IntegerPropertyTest() {
+        super("Integer");
+    }
+
 	/**
 	 * Method createValue.
 	 * @param count int
@@ -78,8 +82,4 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 			new IntegerMultiProperty("testInteger", "", MIN, MAX, new Integer[] {MIN-1, MAX}, 1.0f) :
 			new IntegerProperty("", "Test integer property", MIN, MAX, MAX+1, 1.0f); 
 		}
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(IntegerPropertyTest.class);
-    }
 }

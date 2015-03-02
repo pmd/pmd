@@ -687,16 +687,12 @@ public class RuleSetFactory {
 			}
 			values.put(entry.getKey(), valueStr);
 		}
-		try {
-			PropertyDescriptor<?> desc = pdFactory.createWith(values);
-			PropertyDescriptorWrapper<?> wrapper = new PropertyDescriptorWrapper(desc);
 
-			rule.definePropertyDescriptor(wrapper);
-			setValue(rule, desc, strValue);
+		PropertyDescriptor<?> desc = pdFactory.createWith(values);
+		PropertyDescriptorWrapper<?> wrapper = new PropertyDescriptorWrapper(desc);
 
-		} catch (Exception ex) {
-			System.out.println("oops");		// debug pt  TODO
-		}
+		rule.definePropertyDescriptor(wrapper);
+		setValue(rule, desc, strValue);
 	}
 
 	/**

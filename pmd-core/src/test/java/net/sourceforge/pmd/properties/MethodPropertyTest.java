@@ -35,6 +35,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 		};	
 	
 	public MethodPropertyTest() {
+	    super("Method");
 	}
 
 	@Test
@@ -130,8 +131,4 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 		
 		return methods;
 	}
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MethodPropertyTest.class);
-    }
 }

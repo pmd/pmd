@@ -18,9 +18,9 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
 	private static final char[] charSet = filter(allChars.toCharArray(), delimiter);
 	
 	public StringPropertyTest() {
-		super();
+		super("String");
 	}
-	
+
 	/**
 	 * Method createValue.
 	 * @param count int
@@ -92,8 +92,4 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
 			new StringMultiProperty("testString", "Test string property", new String[] {"hello", "world", "a"+delimiter+"b"}, 1.0f, delimiter) :
 			new StringProperty("", "Test string property", "brian", 1.0f);			
 		}
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(StringPropertyTest.class);
-    }
 }

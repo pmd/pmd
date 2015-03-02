@@ -8,6 +8,7 @@ import java.util.Map;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.ClassUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a property that supports single class types, even for primitive values!
@@ -117,6 +118,9 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
      * @throws IllegalArgumentException
      */
     static Class<?> classFrom(String className) {
+        if (StringUtil.isEmpty(className)) {
+            return null;
+        }
 
         Class<?> cls = ClassUtil.getTypeFor(className);
         if (cls != null) {
