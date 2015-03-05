@@ -439,7 +439,7 @@ public class PMD {
         } catch (Exception e) {
             System.out.println(PMDCommandLineInterface.buildUsageText());
             System.out.println();
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             status = PMDCommandLineInterface.ERROR_STATUS;
         } finally {
             logHandlerManager.close();

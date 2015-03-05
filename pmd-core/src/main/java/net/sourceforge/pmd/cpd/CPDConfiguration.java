@@ -163,7 +163,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 		try {
 			return (Renderer) Class.forName(name).newInstance();
 		} catch (Exception e) {
-			System.out.println("Can't find class '" + name
+			System.err.println("Can't find class '" + name
 					+ "', defaulting to SimpleRenderer.");
 		}
 		return new SimpleRenderer();

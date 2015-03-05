@@ -63,7 +63,7 @@ public class CPDCommandLineInterface {
 		} catch (ParameterException e) {
 			jcommander.usage();
 			System.out.println(buildUsageText());
-			System.out.println(e.getMessage());
+			System.err.println(e.getMessage());
 			setStatusCodeOrExit(1);
 			return;
 		}

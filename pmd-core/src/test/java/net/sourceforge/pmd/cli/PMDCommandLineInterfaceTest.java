@@ -4,12 +4,27 @@
 package net.sourceforge.pmd.cli;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 
 /**
  * Unit test for {@link PMDCommandLineInterface}
  */
 public class PMDCommandLineInterfaceTest {
+    @Rule
+    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+
+    @Rule //Restores system properties after test
+    public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
+
+    @Before
+    public void clearSystemProperties () {
+        System.clearProperty(PMDCommandLineInterface.NO_EXIT_AFTER_RUN);
+        System.clearProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY);
+    }
 
     @Test
     public void testProperties() {
@@ -19,5 +34,20 @@ public class PMDCommandLineInterfaceTest {
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
         Assert.assertEquals("output_folder", params.getProperties().getProperty("outputDir"));
+    }
+    
+    @Test
+    public void testSetStatusCodeOrExit_DoExit() {
+        exit.expectSystemExitWithStatus(0);
+
+        PMDCommandLineInterface.setStatusCodeOrExit(0);
+    }
+
+    @Test
+    public void testSetStatusCodeOrExit_SetStatus() {
+        System.setProperty(PMDCommandLineInterface.NO_EXIT_AFTER_RUN, "1");
+
+        PMDCommandLineInterface.setStatusCodeOrExit(0);
+        Assert.assertEquals(System.getProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY), "0");
     }
 }
