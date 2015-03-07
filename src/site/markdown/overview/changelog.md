@@ -30,6 +30,7 @@
 * [#49](https://github.com/pmd/pmd/pull/49): Fix some false positives in UnusedPrivateField
 * [#50](https://github.com/pmd/pmd/pull/50): Add missing assertions in JUnitAssertionsShouldIncludeMessage test
 * [#51](https://github.com/pmd/pmd/pull/51): [JUnit] Check assertion message present in assertEquals with delta
+* [#52](https://github.com/pmd/pmd/pull/52): Improves JDK8 support for default methods and static methods in interfaces
 
 **Bugfixes:**
 
