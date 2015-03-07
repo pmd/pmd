@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
@@ -264,6 +265,13 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 	node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(md));
 	cont(node);
 	return data;
+    }
+
+    @Override
+    public Object visit(ASTLambdaExpression node, Object data) {
+        createLocalScope(node);
+        cont(node);
+        return data;
     }
 
     @Override

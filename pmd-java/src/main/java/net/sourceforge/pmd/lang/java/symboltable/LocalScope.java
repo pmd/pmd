@@ -40,14 +40,7 @@ public class LocalScope extends AbstractJavaScope {
             throw new IllegalArgumentException("A LocalScope can contain only VariableNameDeclarations or ClassNameDeclarations. "
                     + "Tried to add " + nameDecl.getClass() + "(" + nameDecl + ")");
         }
-        if (nameDecl.getNode().jjtGetParent() instanceof ASTLambdaExpression
-            || nameDecl.getNode().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTLambdaExpression) {
-            // don't add the variable declaration, but verify, that there is no other local variable declaration
-            // with the same name - this would be a compiler error
-            checkForDuplicatedNameDeclaration(nameDecl);
-        } else {
-            super.addDeclaration(nameDecl);
-        }
+        super.addDeclaration(nameDecl);
     }
 
     public NameDeclaration findVariableHere(JavaNameOccurrence occurrence) {

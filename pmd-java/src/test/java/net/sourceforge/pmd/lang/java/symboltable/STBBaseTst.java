@@ -15,7 +15,7 @@ public abstract class STBBaseTst {
     protected SymbolFacade stb;
 
     protected void parseCode(String code) {
-        parseCode(code, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"));
+        parseCode(code, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
     }
 
     protected void parseCode15(String code) {
@@ -23,7 +23,7 @@ public abstract class STBBaseTst {
     }
 
     protected void parseCode(String code, LanguageVersion languageVersion) {
-   	  LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+   	  LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	acu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
         stb = new SymbolFacade();
         stb.initializeWith(acu);
