@@ -1,7 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.bugs;
-
-//import java.util.stream.IntStream;
-//import static java.util.stream.Collectors.toList;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
