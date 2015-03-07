@@ -20,11 +20,12 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
             Integer[].class, NUMBER_FIELD_TYPES_BY_KEY) {
 
         public IntegerMultiProperty createWith(Map<String, String> valuesById) {
-            final String[] minMax = minMaxFrom(valuesById);
-            Integer[] defaultValues = integersIn(numericDefaultValueIn(valuesById));
+            String[] minMax = minMaxFrom(valuesById);
+            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+            Integer[] defaultValues = integersIn(numericDefaultValueIn(valuesById), delimiter);
             return new IntegerMultiProperty(nameIn(valuesById), descriptionIn(valuesById), Integer.parseInt(minMax[0]),
                     Integer.parseInt(minMax[1]), defaultValues, 0f);
-        };
+        }
     };
 
     /**

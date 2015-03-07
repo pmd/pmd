@@ -28,7 +28,16 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     private final boolean isRequired;
     private final float uiOrder;
 
+    /**
+     * Default delimiter for multi properties.
+     * Note: Numeric properties usual use the {@value #DEFAULT_NUMERIC_DELIMITER}.
+     */
     public static final char DEFAULT_DELIMITER = '|';
+    /**
+     * Default delimiter for numeric properties.
+     */
+    public static final char DEFAULT_NUMERIC_DELIMITER = ',';
+
     private char multiValueDelimiter = DEFAULT_DELIMITER;
 
     protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder) {

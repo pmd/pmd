@@ -19,6 +19,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.AbstractProperty;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -118,8 +119,30 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     // return items.toArray(builder.newArray(items.size()));
     // }
 
-    protected static Integer[] integersIn(String numberString) {
-        String[] values = numberString.split(","); // TODO
+    protected static Boolean[] booleanValuesIn(String booleanString, char delimiter) {
+        String[] values = StringUtil.substringsOf(booleanString, delimiter);
+        Boolean[] result = new Boolean[values.length];
+        for (int i = 0; i < values.length; i++) {
+            result[i] = Boolean.valueOf(values[i]);
+        }
+        return result;
+    }
+
+    protected static Character[] charsIn(String charString, char delimiter) {
+        String[] values = StringUtil.substringsOf(charString, delimiter);
+        Character[] chars = new Character[values.length];
+
+        for (int i = 0; i < values.length; i++) {
+            if (values.length != 1) {
+                throw new IllegalArgumentException("missing/ambiguous character value");
+            }
+            chars[i] = values[i].charAt(0);
+        }
+        return chars;
+    }
+
+    protected static Integer[] integersIn(String numberString, char delimiter) {
+        String[] values = StringUtil.substringsOf(numberString, delimiter);
         List<Integer> ints = new ArrayList<Integer>(values.length);
         for (String value : values) {
             try {
@@ -132,8 +155,8 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         return ints.toArray(new Integer[ints.size()]);
     }
 
-    protected static Long[] longsIn(String numberString) {
-        String[] values = numberString.split(","); // TODO
+    protected static Long[] longsIn(String numberString, char delimiter) {
+        String[] values = StringUtil.substringsOf(numberString, delimiter);
         List<Long> longs = new ArrayList<Long>(values.length);
         for (String value : values) {
             try {
@@ -146,8 +169,8 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         return longs.toArray(new Long[longs.size()]);
     }
 
-    protected static Float[] floatsIn(String numberString) {
-        String[] values = numberString.split(","); // TODO
+    protected static Float[] floatsIn(String numberString, char delimiter) {
+        String[] values = StringUtil.substringsOf(numberString, delimiter);
         List<Float> floats = new ArrayList<Float>(values.length);
         for (String value : values) {
             try {
@@ -160,8 +183,8 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         return floats.toArray(new Float[floats.size()]);
     }
 
-    protected static Double[] doublesIn(String numberString) {
-        String[] values = numberString.split(","); // TODO
+    protected static Double[] doublesIn(String numberString, char delimiter) {
+        String[] values = StringUtil.substringsOf(numberString, delimiter);
         List<Double> doubles = new ArrayList<Double>(values.length);
         for (String value : values) {
             try {
@@ -190,6 +213,10 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         return null; // TODO
     }
 
+    protected static char delimiterIn(Map<String, String> valuesById) {
+        return delimiterIn(valuesById, AbstractProperty.DEFAULT_DELIMITER);
+    }
+
     protected static char delimiterIn(Map<String, String> valuesById, char defaultDelimiter) {
         String characterStr = "";
         if (valuesById.containsKey(DELIMITER)) {
@@ -210,12 +237,12 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         return new String[] { min, max };
     }
 
-    protected static String[] legalPackageNamesIn(Map<String, String> valuesById) {
+    protected static String[] legalPackageNamesIn(Map<String, String> valuesById, char delimiter) {
         String names = valuesById.get(LEGAL_PACKAGES);
         if (StringUtil.isEmpty(names)) {
             return null;
         }
-        return StringUtil.substringsOf(names, '|'); // TODO - get const
+        return StringUtil.substringsOf(names, delimiter);
     }
 
     public static Map<String, Boolean> expectedFieldTypesWith(String[] otherKeys, Boolean[] otherValues) {

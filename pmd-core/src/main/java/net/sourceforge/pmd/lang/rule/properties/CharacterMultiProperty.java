@@ -20,7 +20,7 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
             Character[].class) {
 
         public CharacterMultiProperty createWith(Map<String, String> valuesById) {
-            char delimiter = delimiterIn(valuesById, AbstractProperty.DEFAULT_DELIMITER);
+            char delimiter = delimiterIn(valuesById);
             return new CharacterMultiProperty(nameIn(valuesById), descriptionIn(valuesById), charsIn(
                     defaultValueIn(valuesById), delimiter), 0.0f, delimiter);
         }
@@ -47,20 +47,6 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
                 }
             }
         }
-    }
-
-    private static Character[] charsIn(String charString, char delimiter) {
-
-        String[] values = StringUtil.substringsOf(charString, delimiter);
-        Character[] chars = new Character[values.length];
-
-        for (int i = 0; i < values.length; i++) {
-            if (values.length != 1) {
-                throw new IllegalArgumentException("missing/ambiguous character value");
-            }
-            chars[i] = values[i].charAt(0);
-        }
-        return chars;
     }
 
     /**

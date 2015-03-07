@@ -15,27 +15,14 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
 
-    public static final char DEFAULT_DELIMITER = '|';
-
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringMultiProperty>(
             String[].class) {
         public BooleanMultiProperty createWith(Map<String, String> valuesById) {
+            char delimiter = delimiterIn(valuesById);
             return new BooleanMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    convert(defaultValueIn(valuesById)), 0f);
+                    booleanValuesIn(defaultValueIn(valuesById), delimiter), 0f);
         }
     };
-
-    private static Boolean[] convert(String values) {
-        if (values == null) {
-            return null;
-        }
-        String[] split = values.split(String.valueOf(DEFAULT_DELIMITER));
-        Boolean[] result = new Boolean[split.length];
-        for (int i = 0; i < split.length; i++) {
-            result[i] = Boolean.valueOf(split[i]);
-        }
-        return result;
-    }
 
     /**
      * Constructor for BooleanMultiProperty that allows for multiple values.

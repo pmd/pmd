@@ -20,11 +20,12 @@ public class FloatMultiProperty extends AbstractMultiNumericProperty<Float[]> {
             Float[].class, NUMBER_FIELD_TYPES_BY_KEY) {
 
         public FloatMultiProperty createWith(Map<String, String> valuesById) {
-            final String[] minMax = minMaxFrom(valuesById);
-            Float[] defaultValues = floatsIn(numericDefaultValueIn(valuesById));
+            String[] minMax = minMaxFrom(valuesById);
+            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+            Float[] defaultValues = floatsIn(numericDefaultValueIn(valuesById), delimiter);
             return new FloatMultiProperty(nameIn(valuesById), descriptionIn(valuesById), Float.parseFloat(minMax[0]),
                     Float.parseFloat(minMax[1]), defaultValues, 0f);
-        };
+        }
     };
 
     /**

@@ -20,11 +20,12 @@ public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
             Long[].class, NUMBER_FIELD_TYPES_BY_KEY) {
 
         public LongMultiProperty createWith(Map<String, String> valuesById) {
-            final String[] minMax = minMaxFrom(valuesById);
-            Long[] defaultValues = longsIn(defaultValueIn(valuesById));
+            String[] minMax = minMaxFrom(valuesById);
+            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+            Long[] defaultValues = longsIn(defaultValueIn(valuesById), delimiter);
             return new LongMultiProperty(nameIn(valuesById), descriptionIn(valuesById), Long.parseLong(minMax[0]),
                     Long.parseLong(minMax[1]), defaultValues, 0f);
-        };
+        }
     };
 
     /**

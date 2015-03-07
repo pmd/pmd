@@ -20,11 +20,12 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
             Double[].class, NUMBER_FIELD_TYPES_BY_KEY) {
 
         public DoubleMultiProperty createWith(Map<String, String> valuesById) {
-            final String[] minMax = minMaxFrom(valuesById);
-            Double[] defaultValues = doublesIn(numericDefaultValueIn(valuesById));
+            String[] minMax = minMaxFrom(valuesById);
+            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+            Double[] defaultValues = doublesIn(numericDefaultValueIn(valuesById), delimiter);
             return new DoubleMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
                     Double.parseDouble(minMax[0]), Double.parseDouble(minMax[1]), defaultValues, 0f);
-        };
+        }
     };
 
     /**

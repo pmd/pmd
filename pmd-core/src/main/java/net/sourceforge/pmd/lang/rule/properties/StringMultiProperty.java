@@ -21,7 +21,7 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
             String[].class) {
 
         public StringMultiProperty createWith(Map<String, String> valuesById) {
-            char delimiter = delimiterIn(valuesById, AbstractProperty.DEFAULT_DELIMITER);
+            char delimiter = delimiterIn(valuesById);
             return new StringMultiProperty(nameIn(valuesById), descriptionIn(valuesById), StringUtil.substringsOf(
                     defaultValueIn(valuesById), delimiter), 0.0f, delimiter);
         }

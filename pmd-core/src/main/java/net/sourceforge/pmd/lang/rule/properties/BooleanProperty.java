@@ -46,15 +46,7 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
      * @param theUIOrder float
      */
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
-        this(theName, theDescription, boolFrom(defaultBoolStr), theUIOrder);
-    }
-
-    /**
-     * @param boolStr String
-     * @return Boolean
-     */
-    private static Boolean boolFrom(String boolStr) {
-        return Boolean.valueOf(boolStr);
+        this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder);
     }
 
     /**
@@ -79,6 +71,6 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
      * @return Object
      */
     protected Object createFrom(String value) {
-        return boolFrom(value);
+        return Boolean.valueOf(value);
     }
 }

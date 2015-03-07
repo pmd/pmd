@@ -35,8 +35,9 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
             Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
         public MethodProperty createWith(Map<String, String> valuesById) {
+            char delimiter = delimiterIn(valuesById);
             return new MethodProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
-                    legalPackageNamesIn(valuesById), 0f);
+                    legalPackageNamesIn(valuesById, delimiter), 0f);
         }
     };
 
