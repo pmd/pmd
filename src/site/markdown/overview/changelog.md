@@ -30,6 +30,10 @@ The following rules are marked as **deprecated** and will be removed with the ne
   UnnecessaryConversionTemporary, UnnecessaryReturn, UnnecessaryFinalModifier, UselessOverridingMethod,
   UselessOperationOnImmutable, UnusedNullCheckInEquals, UselessParentheses.
 
+* Language Java, ruleset design.xml: The rule "UncommentedEmptyMethod" *has been renamed* to "UncommentedEmptyMethodBody".
+  See also bug [#1283](https://sourceforge.net/p/pmd/bugs/1283/).
+
+
 **Pull Requests:**
 
 * [#11](https://github.com/adangel/pmd/pull/11): Added support for Python to CPD.
@@ -49,6 +53,7 @@ The following rules are marked as **deprecated** and will be removed with the ne
 **Bugfixes:**
 
 * [#914](https://sourceforge.net/p/pmd/bugs/914/): False +ve from UnusedImports with wildcard static imports
+* [#1283](https://sourceforge.net/p/pmd/bugs/1283/): Rename UncommentedEmptyMethod to UncommentedEmptyMethodBody
 * [#1296](https://sourceforge.net/p/pmd/bugs/1296/): PMD UnusedPrivateMethod invalid detection of 'private void method(int,boolean,Integer...)'
 * [#1298](https://sourceforge.net/p/pmd/bugs/1298/): Member variable int type with value 0xff000000 causes processing error
 * [#1299](https://sourceforge.net/p/pmd/bugs/1299/): MethodReturnsInternalArray false positive

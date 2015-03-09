@@ -63,7 +63,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "TooFewBranchesForASwitchStatement");
         // addRule(RULESET, "TooManyHttpFilter"); This rule does not yet exist
         addRule(RULESET, "UncommentedEmptyConstructor");
-        addRule(RULESET, "UncommentedEmptyMethod");
+        addRule(RULESET, "UncommentedEmptyMethodBody");
         addRule(RULESET, "UnnecessaryLocalBeforeReturn");
         addRule(RULESET, "UnsynchronizedStaticDateFormatter");
         addRule(RULESET, "UseCollectionIsEmpty");
