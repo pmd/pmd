@@ -17,4 +17,6 @@ Just for test
  ]]>
      </example>
     </rule>
+
+    <rule deprecated="true" name="OldNameOfDummyBasicMockRule" ref="DummyBasicMockRule"/>
 </ruleset>

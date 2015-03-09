@@ -110,6 +110,10 @@ public class RuleReference extends AbstractDelegateRule {
 		return name;
 	}
 
+	public String getOriginalName() {
+	    return super.getName();
+	}
+
 	@Override
 	public void setName(String name) {
 		// Only override if different than current value, or if already overridden.

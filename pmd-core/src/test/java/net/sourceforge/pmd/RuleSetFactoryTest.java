@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 import org.junit.Assert;
@@ -206,6 +205,44 @@ public class RuleSetFactoryTest {
         PropertyDescriptor<?> prop = r.getPropertyDescriptor("packageRegEx");
         String[] values = (String[])r.getProperty(prop);
         Assert.assertArrayEquals(new String[]{"com.aptsssss", "com.abc"}, values);
+    }
+
+    @Test
+    public void testRuleSetWithDeprecatedRule() throws Exception {
+        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<ruleset>\n" +
+                "     <rule deprecated=\"true\" ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\"/>"
+                + "</ruleset>");
+        Assert.assertEquals(1, rs.getRules().size());
+        Rule rule = rs.getRuleByName("DummyBasicMockRule");
+        Assert.assertNotNull(rule);
+    }
+
+    @Test
+    public void testRuleSetWithDeprecatedButRenamedRule() throws Exception {
+        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<ruleset>\n" +
+                "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>" +
+                "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">" +
+                "         <description>d</description>\n" + 
+                "         <priority>2</priority>\n" + 
+                "     </rule>"
+                + "</ruleset>");
+        Assert.assertEquals(1, rs.getRules().size());
+        Rule rule = rs.getRuleByName("NewName");
+        Assert.assertNotNull(rule);
+        Assert.assertNull(rs.getRuleByName("OldName"));
+    }
+
+    @Test
+    public void testRuleSetReferencesADeprecatedRenamedRule() throws Exception {
+        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<ruleset>\n" +
+                "     <rule ref=\"rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule\"/>"
+                + "</ruleset>");
+        Assert.assertEquals(1, rs.getRules().size());
+        Rule rule = rs.getRuleByName("OldNameOfDummyBasicMockRule");
+        Assert.assertNotNull(rule);
     }
 
 	@Test
