@@ -14,7 +14,21 @@
 * XML: Line numbers for XML documents are more accurate. This is a further improvement of [#1054](https://sourceforge.net/p/pmd/bugs/1054/).
 * CPD: New output format 'csv_with_linecount_per_file'
 
-**New/Modified Rules:**
+**New/Modified/Deprecated Rules:**
+
+The following rules are marked as **deprecated** and will be removed with the next release of PMD.
+
+* Language Java, ruleset basic.xml: The following rules have been *moved into the `empty.xml` ruleset*. You'll need
+  to enable the "empty" ruleset explicitly from now on, if you want to have these rules executed:
+
+  EmptyCatchBlock, EmptyIfStatement, EmptyWhileStmt, EmptyTryBlock, EmptyFinallyBlock, EmptySwitchStatements,
+  EmptySynchronizedBlock, EmptyStatementNotInLoop, EmptyInitializer, EmptyStatementBlock, EmptyStaticInitializer.
+
+* Language Java, ruleset basic.xml: The following rules have been *moved into the `unnecessary.xml` ruleset*. You'll need
+  to enable the "unnecessary" ruleset explicitly from now on, if you want to have these rules executed:
+
+  UnnecessaryConversionTemporary, UnnecessaryReturn, UnnecessaryFinalModifier, UselessOverridingMethod,
+  UselessOperationOnImmutable, UnusedNullCheckInEquals, UselessParentheses.
 
 **Pull Requests:**
 
