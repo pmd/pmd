@@ -102,24 +102,31 @@ public class PmdBuildTask extends Task {
 
     private PmdBuildTools validate(RuleSetToDocs tool) throws BuildException {
         // Mandatory attributes
-        if (this.target == null || "".equals(target))
+        if (this.target == null || "".equals(target)) {
             throw new BuildException("Attribute targetDirectory is not optional");
-        if (this.rulesDirectory == null || "".equals(this.rulesDirectory))
+        }
+        if (this.rulesDirectory == null || "".equals(this.rulesDirectory)) {
             throw new BuildException("Attribute rulesDirectory is not optional");
-        if (this.siteXml == null || "".equals(siteXml))
+        }
+        if (this.siteXml == null || "".equals(siteXml)) {
             throw new BuildException("Attribute siteXml is not optional");
+        }
         if (this.runtimeClasspath == null || "".equals(runtimeClasspath)) {
             throw new BuildException("Attribute pmdClasspath is not optional");
         }
         // Optional Attributes
-        if (this.mergedRulesetFilename != null && !"".equals(this.mergedRulesetFilename))
+        if (this.mergedRulesetFilename != null && !"".equals(this.mergedRulesetFilename)) {
             tool.setMergedRuleSetFilename(this.mergedRulesetFilename);
-        if (this.rulesIndex != null && !"".equals(this.rulesIndex))
+        }
+        if (this.rulesIndex != null && !"".equals(this.rulesIndex)) {
             tool.getXmlFileTemplater().setGenerateIndexXsl(this.rulesIndex);
-        if (this.rulesetToDocs != null && !"".equals(this.rulesetToDocs))
+        }
+        if (this.rulesetToDocs != null && !"".equals(this.rulesetToDocs)) {
             tool.getXmlFileTemplater().setRulesetToDocsXsl(this.rulesetToDocs);
-        if (this.mergeRuleset != null && !"".equals(this.mergeRuleset))
+        }
+        if (this.mergeRuleset != null && !"".equals(this.mergeRuleset)) {
             tool.getXmlFileTemplater().setMergeRulesetXsl(this.mergeRuleset);
+        }
         return tool;
     }
 

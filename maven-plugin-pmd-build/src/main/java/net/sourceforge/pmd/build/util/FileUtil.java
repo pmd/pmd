@@ -41,8 +41,9 @@ public final class FileUtil {
         List<File> filteredFiles = new LinkedList<File>();
         if (dir != null) {
             File[] files = dir.listFiles(filter);
-            if (files != null && files.length > 0)
+            if (files != null && files.length > 0) {
                 filteredFiles.addAll(Arrays.asList(files));
+            }
         }
         Collections.sort(filteredFiles);
         return filteredFiles;
@@ -50,7 +51,7 @@ public final class FileUtil {
 
     public static File existAndIsADirectory(String dirname) {
         File rulesDir = new File(dirname);
-        return (rulesDir.exists() && rulesDir.isDirectory()) ? rulesDir : null;
+        return rulesDir.exists() && rulesDir.isDirectory() ? rulesDir : null;
     }
 
     public static void copy(File src, File dst) throws IOException {
@@ -58,23 +59,26 @@ public final class FileUtil {
         OutputStream out = new FileOutputStream(dst);
         byte[] buf = new byte[1024];
         int len;
-        while ((len = in.read(buf)) > 0)
+        while ((len = in.read(buf)) > 0) {
             out.write(buf, 0, len);
+        }
         in.close();
         out.close();
     }
 
     public static void ensureTargetDirectoryExist(File filename) throws PmdBuildException {
         File parentDir = filename.getParentFile();
-        if (parentDir == null)
+        if (parentDir == null) {
             throw new PmdBuildException("No parent directory for " + filename.getAbsolutePath());
-        if (!parentDir.exists())
+        }
+        if (!parentDir.exists()) {
             parentDir.mkdirs();
+        }
     }
 
     public static File createDirIfMissing(String dirname) {
         File dir = new File(dirname);
-        if ((!dir.exists() && !dir.mkdirs())) {// no directory, creating it
+        if (!dir.exists() && !dir.mkdirs()) {// no directory, creating it
             throw new IllegalStateException("Target directory '" + dir.getAbsolutePath()
                     + "' does not exist and can't be created");
         } else if (dir.exists() && dir.isFile()) {
@@ -89,8 +93,9 @@ public final class FileUtil {
             file.delete();
         } else {
             File[] files = file.listFiles();
-            for (int nbFile = 0; nbFile < files.length; nbFile++)
+            for (int nbFile = 0; nbFile < files.length; nbFile++) {
                 FileUtil.deleteFile(files[nbFile]);
+            }
             file.delete();
         }
     }
@@ -134,11 +139,13 @@ public final class FileUtil {
     public static File move(File source, File target) {
         // Ensuring target file is deleted - if any
         if (target.exists()) {
-            if (!target.canWrite())
+            if (!target.canWrite()) {
                 throw new IllegalArgumentException("Can't write on existing file " + target.getAbsolutePath());
+            }
         } else {
-            if (target.delete())
+            if (target.delete()) {
                 throw new IllegalStateException("Can't delete file" + target.getAbsolutePath());
+            }
         }
         // copy file
         try {
@@ -152,11 +159,13 @@ public final class FileUtil {
     }
 
     public static InputStream createInputStream(String filepath) {
-        if (filepath == null || "".equals(filepath))
+        if (filepath == null || "".equals(filepath)) {
             return null;
+        }
         File file = new File(filepath);
-        if (!file.exists())
+        if (!file.exists()) {
             return null;
+        }
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {

@@ -25,10 +25,11 @@ public class RulesetFilenameFilter implements FilenameFilter {
     );
 
     public boolean accept(File file, String name) {
-        if (doesNotMatchExcludeNames(name))
-            return (name.endsWith(".xml"));
-        else
+        if (doesNotMatchExcludeNames(name)) {
+            return name.endsWith(".xml");
+        } else {
             return false;
+        }
     }
 
     private boolean doesNotMatchExcludeNames(String name) {

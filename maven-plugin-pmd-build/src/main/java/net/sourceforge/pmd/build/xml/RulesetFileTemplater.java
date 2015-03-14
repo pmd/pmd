@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.transform.Transformer;
@@ -33,7 +34,7 @@ import org.w3c.dom.Element;
  */
 public class RulesetFileTemplater implements XmlFileTemplater {
 
-    private static Logger logger = Logger.getLogger(PmdBuildException.class.toString());
+    private static final Logger LOGGER = Logger.getLogger(PmdBuildException.class.toString());
 
     private String rulesetToDocsXsl = ConfigUtil.getString("pmd.build.config.xsl.rulesetToDocs");
     private String mergeRulesetXsl = ConfigUtil.getString("pmd.build.config.xsl.mergeRuleset");
@@ -89,20 +90,24 @@ public class RulesetFileTemplater implements XmlFileTemplater {
 
     @Override
     public Document doTemplate(Document doc, Element root) {
+        Document result = doc;
         for (File dir : FileUtil.filterFilesFrom(FileUtil.existAndIsADirectory(rulesDirectory),
                 new DirectoryFileFilter())) {
-            logger.fine("Adding directory:" + dir.getAbsolutePath());
-            doc = addRulesetForEachLanguage(doc, root, dir);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("Adding directory:" + dir.getAbsolutePath());
+            }
+            result = addRulesetForEachLanguage(result, root, dir);
         }
-        return doc;
+        return result;
     }
 
     private Document addRulesetForEachLanguage(Document doc, Element root, File directory) {
         Element language = doc.createElement("language");
         language.setAttribute("name", directory.getName());
         language = addEachRuleset(doc, language, directory);
-        if (language.hasChildNodes())
+        if (language.hasChildNodes()) {
             root.appendChild(language);
+        }
         return doc;
     }
 
@@ -131,8 +136,9 @@ public class RulesetFileTemplater implements XmlFileTemplater {
     public void transform(DOMSource source, File result, String xsl, Map<String, String> parameters) {
         try {
             Transformer transformer = XmlUtil.createTransformer(xsl);
-            for (Entry<String, String> entry : parameters.entrySet())
+            for (Entry<String, String> entry : parameters.entrySet()) {
                 transformer.setParameter(entry.getKey(), entry.getValue());
+            }
             transformer.transform(source, new StreamResult(result));
         } catch (TransformerException e) {
             throw new IllegalStateException(e);

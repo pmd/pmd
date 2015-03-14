@@ -19,8 +19,6 @@ import org.w3c.dom.NodeList;
 public class RuntimeRulePropertiesAnalyzer {
     private static final String XPATH_RULE_CLASSNAME = "net.sourceforge.pmd.lang.rule.XPathRule";
     private ClassLoader cl;
-    private Class<?> propertySource;
-    private Class<?> propertyDesc;
     private Method nameMethod;
     private Method descMethod;
     private Method defaultValueMethod;
@@ -34,8 +32,8 @@ public class RuntimeRulePropertiesAnalyzer {
     private void init(URL[] runtimeClasspath) {
         try {
             cl = new URLClassLoader(runtimeClasspath);
-            propertySource = cl.loadClass("net.sourceforge.pmd.AbstractPropertySource");
-            propertyDesc = cl.loadClass("net.sourceforge.pmd.PropertyDescriptor");
+            Class<?> propertySource = cl.loadClass("net.sourceforge.pmd.AbstractPropertySource");
+            Class<?> propertyDesc = cl.loadClass("net.sourceforge.pmd.PropertyDescriptor");
             nameMethod = propertyDesc.getDeclaredMethod("name");
             descMethod = propertyDesc.getDeclaredMethod("description");
             defaultValueMethod = propertyDesc.getDeclaredMethod("defaultValue");
