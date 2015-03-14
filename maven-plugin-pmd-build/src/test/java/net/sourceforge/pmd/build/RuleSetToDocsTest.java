@@ -34,8 +34,14 @@ public class RuleSetToDocsTest extends TestBase {
         builder.convertRulesets();
 
         String codeSizeRuleset = IOUtils.toString(new File(TEST_DIR + "target/java/codesize.xml").toURI());
+        assertTrue(codeSizeRuleset.contains("<section name=\"Code Size\">"));
         assertTrue(codeSizeRuleset.contains("minimum"));
         assertTrue(codeSizeRuleset.contains("Priority: 3"));
+
+        assertTrue(codeSizeRuleset.contains("OldNameOfNPathComplexity"));
+        assertTrue(codeSizeRuleset.contains("<a href=\"#NPathComplexity\">NPathComplexity</a>"));
+        assertTrue(codeSizeRuleset.contains("JumbledIncrementer"));
+        assertTrue(codeSizeRuleset.contains("<a href=\"basic.html#JumbledIncrementer\">JumbledIncrementer</a>"));
     }
 
     @Test

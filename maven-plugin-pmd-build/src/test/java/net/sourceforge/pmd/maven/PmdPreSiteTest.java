@@ -39,7 +39,7 @@ public class PmdPreSiteTest extends AbstractMojoTestCase {
 
         String basicRuleset = IOUtils.toString(new File(
                 "target/unit/sample-pmd/target/generated-xdocs/rules/java/basic.xml").toURI());
-        assertEquals(1, StringUtils.countMatches(basicRuleset, "<subsection"));
+        assertEquals(2, StringUtils.countMatches(basicRuleset, "<subsection"));
 
         String indexPage = IOUtils.toString(new File("target/unit/sample-pmd/target/generated-xdocs/rules/index.xml")
                 .toURI());

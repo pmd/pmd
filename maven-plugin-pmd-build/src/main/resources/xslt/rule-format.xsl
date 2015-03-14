@@ -34,7 +34,7 @@
         </document>
     </xsl:template>
 
-    <xsl:template match="rule[@name]">
+    <xsl:template match="rule[@name][not(@deprecated) or @deprecated='false']">
         <xsl:variable name="rulename" select="@name" />
         <xsl:variable name="classname" select="@class" />
 
@@ -118,6 +118,65 @@
             </xsl:choose>
 
         </subsection>
+    </xsl:template>
+
+    <xsl:template match="rule[@name][@deprecated='true'][@ref][not(contains(@ref, '.xml'))]">
+        <subsection>
+            <xsl:attribute name="name">
+                <xsl:value-of select="@name" />
+            </xsl:attribute>
+            <p style="border-radius: 3px; border-style: solid; border-width: 1px 1px 1px 5px; margin: 20px 0px; padding: 20px; border-color: #eee; border-left-color: #ce4844">
+                <strong>Deprecated</strong><br />
+                This rule has been renamed. Use instead:
+                    <a>
+                        <xsl:attribute name="href">#<xsl:value-of select="@ref" /></xsl:attribute>
+                        <xsl:value-of select="@ref"/>
+                    </a>
+            </p>
+        </subsection>
+    </xsl:template>
+
+    <xsl:template match="rule[@deprecated='true'][@ref][contains(@ref, '.xml')][not(@name)]">
+        <xsl:variable name="rulename">
+            <xsl:call-template name="last-token-after-last-slash">
+                <xsl:with-param name="ref" select="@ref"/>
+            </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="full-url" select="substring(@ref, 1, string-length(@ref) - string-length($rulename) - 1)"/>
+        <xsl:variable name="ruleset-with-extension">
+            <xsl:call-template name="last-token-after-last-slash">
+                <xsl:with-param name="ref" select="$full-url"/>
+            </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="ruleset" select="substring($ruleset-with-extension, 1, string-length($ruleset-with-extension) - 4)"/>
+
+        <subsection>
+            <xsl:attribute name="name">
+                <xsl:value-of select="$rulename" />
+            </xsl:attribute>
+            <p style="border-radius: 3px; border-style: solid; border-width: 1px 1px 1px 5px; margin: 20px 0px; padding: 20px; border-color: #eee; border-left-color: #ce4844">
+                <strong>Deprecated</strong><br />
+                This rule has been moved to another ruleset. Use instead:
+                    <a>
+                        <xsl:attribute name="href"><xsl:value-of select="concat($ruleset, '.html#', $rulename)" /></xsl:attribute>
+                        <xsl:value-of select="$rulename"/>
+                    </a>
+            </p>
+        </subsection>
+    </xsl:template>
+
+    <xsl:template name="last-token-after-last-slash">
+        <xsl:param name="ref" />
+        <xsl:choose>
+            <xsl:when test="contains($ref, '/')">
+                <xsl:call-template name="last-token-after-last-slash">
+                    <xsl:with-param name="ref" select="substring-after($ref, '/')" />
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$ref" />
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <!-- Watch out, recursing function... -->
