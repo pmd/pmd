@@ -1,25 +1,18 @@
-<?xml version="1.0"?>
-
-<document>
-  <properties>
+<!--
     <author>Tom Copeland</author>
-    <title>License</title>
-  </properties>
+-->
 
-  <body>
+# License
 
-  <section name="License">
-      <p>
-        This product is licensed under a "BSD-style" license; see below for the full text.
-      </p>
-      <p>
-        Part of this product (mostly the package net.sourceforge.pmd.lang.vm)
-        is licensed under the Apache License, Version 2.0;
-        see below for the full text.
-      </p>
+This product is licensed under a "BSD-style" license; see below for the full text.
 
-      <subsection name="BSD-style license">
-        <pre>
+Part of this product (mostly the package net.sourceforge.pmd.lang.vm)
+is licensed under the Apache License, Version 2.0;
+see below for the full text.
+
+## BSD-style license
+
+<pre>
 Copyright (c) 2002-2009, InfoEther, Inc
 All rights reserved.
 
@@ -28,17 +21,17 @@ modification, are permitted provided that the following conditions are
 met:
 
     * Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
+      notice, this list of conditions and the following disclaimer.
     * Redistributions in binary form must reproduce the above copyright
-notice, this list of conditions and the following disclaimer in the
-documentation and/or other materials provided with the distribution.
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
     * The end-user documentation included with the redistribution, if
-any, must include the following acknowledgement:
+      any, must include the following acknowledgement:
       "This product includes software developed in part by support from
-the Defense Advanced Research Project Agency (DARPA)"
+      the Defense Advanced Research Project Agency (DARPA)"
     * Neither the name of InfoEther, LLC nor the names of its
-contributors may be used to endorse or promote products derived from
-this software without specific prior written permission.
+      contributors may be used to endorse or promote products derived from
+      this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
@@ -51,11 +44,11 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-            </pre>
-          </subsection>
+</pre>
 
-          <subsection name="Apache License, Version 2.0">
-            <pre>
+## Apache License, Version 2.0
+
+<pre>
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -257,9 +250,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-            </pre>
-          </subsection>
-  </section>
-
-</body>
-</document>
+</pre>
