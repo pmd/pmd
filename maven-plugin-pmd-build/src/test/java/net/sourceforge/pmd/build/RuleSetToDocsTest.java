@@ -35,6 +35,7 @@ public class RuleSetToDocsTest extends TestBase {
 
         String codeSizeRuleset = IOUtils.toString(new File(TEST_DIR + "target/java/codesize.xml").toURI());
         assertTrue(codeSizeRuleset.contains("minimum"));
+        assertTrue(codeSizeRuleset.contains("Priority: 3"));
     }
 
     @Test

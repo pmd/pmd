@@ -5,6 +5,7 @@
 
     <!-- FUTURE: Externalising text to allow i18n generation -->
     <xsl:variable name="Since" select="'Since: PMD '" />
+    <xsl:variable name="Priority" select="'Priority'" />
     <xsl:variable name="definedByJavaClass" select="'This rule is defined by the following Java class'" />
     <xsl:variable name="ExampleLabel" select="'Example(s)'" />
     <xsl:variable name="PropertiesLabel" select="'This rule has the following properties'" />
@@ -44,6 +45,9 @@
             <p>
                 <xsl:value-of select="$Since" />
                 <xsl:value-of select="@since" />
+            </p>
+            <p>
+                <xsl:value-of select="$Priority" />: <xsl:value-of select="priority" />
             </p>
             <p>
                 <xsl:value-of select="description" />
