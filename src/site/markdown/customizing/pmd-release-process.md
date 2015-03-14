@@ -23,6 +23,7 @@ Make sure code is up to date and everything is committed and pushed with git:
 *   Update **../pmd.sourceforge.net/.htaccess** of our website, to redirect to the new version
 *   Update **../pmd.sourceforge.net/index.html** to mention the new release
 
+
     $ mvn clean install
 
 Unzip and test manually (just to be on the safe side of the road):
@@ -43,7 +44,7 @@ Let's have maven create a release branch for us (<em>note - this is of course no
 needed if you are already on a release/maintenance branch</em>). Maven will automatically
 increase the version in branch master.
 
-    $ mvn release:branch -DbranchName=pmd/&lt;version&gt;.x
+    $ mvn release:branch -DbranchName=pmd/<version>.x
 
 <em>In case you create a alpha/preview release and you want to stay with the current
 version in master, use these additional properties:</em>
@@ -67,7 +68,7 @@ Now let maven create a release tag.
     $ mvn release:prepare
 
 Note: For the tag/label name we currently use this naming pattern:
-pmd_releases/<major-version>.<minor-version>.<micro-version>
+pmd_releases/&lt;major-version>.&lt;minor-version>.&lt;micro-version>
 
 The next command will checkout PMD from the tag just created and will build
 and deploy it to sonatype OSS repositories:
@@ -79,7 +80,7 @@ and deploy it to sonatype OSS repositories:
 If everything is fine, you can push your local changes.
 
     $ git push origin master
-    $ git push origin pmd/<version<.x
+    $ git push origin pmd/<version>.x
     $ git push origin tag pmd_releases/<version>
 
 ### Rollback
@@ -97,7 +98,7 @@ start again with release:clean release:prepare):
 ## Create new milestone
 
 Under <https://sourceforge.net/p/pmd/bugs/> rename
-the bug milestone "PMD-next" to "PMD-<version>" and create a new "PMD-next" milestone.
+the bug milestone "PMD-next" to "PMD-&lt;version>" and create a new "PMD-next" milestone.
 
 ## Publish artifacts
 
@@ -147,12 +148,12 @@ Upload command below will first create the maven site and then upload it:
         $ rsync -avhP pmd-dist/target/pmd-*-<version>.zip target/pmd-doc-<version>.zip your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/<version>/
         $ rsync -avhP src/site/markdown/overview/changelog.md your_sf_login@web.sourceforge.net:/home/frs/project/pmd/pmd/<version>/ReadMe.md
 
-*   Verify the MD5 sums on <a href="https://sourceforge.net/projects/pmd/files/pmd/">Files</a> and locally:
+*   Verify the MD5 sums on [Files](https://sourceforge.net/projects/pmd/files/pmd/) and locally:
 
         $ md5sum pmd-dist/target/pmd-*-<version>.zip target/pmd-doc-<version>.zip
 
-*   Go to [Files](https://sourceforge.net/projects/pmd/files/pmd/), to folder "pmd/<version>",
-    and make the new binary pmd zip file the default download for all platforms.</li>
+*   Go to [Files](https://sourceforge.net/projects/pmd/files/pmd/), to folder "pmd/&lt;version>",
+    and make the new binary pmd zip file the default download for all platforms.
 
 **Upload changes to pmd.sourceforge.net**
 
@@ -171,12 +172,12 @@ Upload command below will first create the maven site and then upload it:
 *   Submit news to SF on the [PMD Project News](https://sourceforge.net/p/pmd/news/) page. You can use
     the following template:
 
-    PMD <version> released
-    
-    * minor version with lots of bug fixes
-    * Changelog: http://pmd.sourceforge.net/pmd-<version>/overview/changelog.html
-    * Download: https://sourceforge.net/projects/pmd/files/pmd/<version>/
-    * Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-<version>/
-    * Documentation: http://pmd.sourceforge.net/pmd-<version>/
+        PMD <version> released
+        
+        * minor version with lots of bug fixes
+        * Changelog: http://pmd.sourceforge.net/pmd-<version>/overview/changelog.html
+        * Download: https://sourceforge.net/projects/pmd/files/pmd/<version>/
+        * Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-<version>/
+        * Documentation: http://pmd.sourceforge.net/pmd-<version>/
 
 *   Facebook, Google+, Twitter, LinkedIn and Xing (add whatever you feel is missing here...)

@@ -436,13 +436,13 @@
 
 <table>
     <tr>
-        <td><center><img src="images/credits/ae-logo.gif"/></center></td>
+        <td><center><img src="../images/credits/ae-logo.gif"/></center></td>
         <td>
             <a href="http://www.ae.be/">AE</a> for the JSP integration and especially for writing the JSP grammar.
         </td>
     </tr>
     <tr>
-        <td><center><img src="images/credits/darpa.jpg"/></center></td>
+        <td><center><img src="../images/credits/darpa.jpg"/></center></td>
         <td>
             <a href="http://www.darpa.mil/">DARPA</a> for funding
             the Ultra*Log and <a href="http://cougaar.org/">Cougaar</a>
@@ -456,7 +456,7 @@
         </td>
     </tr>
     <tr>
-        <td><center><img src="images/credits/refactorit_logo.gif"/></center></td>
+        <td><center><img src="../images/credits/refactorit_logo.gif"/></center></td>
         <td>
             <a href="http://www.refactorit.com/">RefactorIT</a> for letting
             their software be used free-of-charge on PMD code
@@ -465,7 +465,7 @@
         </td>
     </tr>
     <tr>
-        <td><center><img src="images/credits/qasystems_logo.jpg"/></center></td>
+        <td><center><img src="../images/credits/qasystems_logo.jpg"/></center></td>
         <td>
             <a href="http://www.qa-systems.com/products/qstudioforjava/">QA-Systems</a> for sending in some
             handy utilities for PMD and shipping PMD inside their QStudio product
@@ -479,14 +479,14 @@
         </td>
     </tr>
     <tr>
-        <td><center><img src="images/credits/atlassian-cenqua-logo.png"/></center></td>
+        <td><center><img src="../images/credits/atlassian-cenqua-logo.png"/></center></td>
         <td>
             <a href="http://www.cenqua.com/">Cenqua</a> for
             giving us a free Clover license and doing a nice <a href="http://fisheye3.atlassian.com/browse/pmd">FishEye</a> run.
         </td>
     </tr>
     <tr>
-        <td><center><img src="images/credits/yjp.gif"/></center></td>
+        <td><center><img src="../images/credits/yjp.gif"/></center></td>
         <td>
             YourKit is kindly supporting open source projects with its full-featured Java Profiler.
             YourKit, LLC is creator of innovative and intelligent tools for profiling
@@ -496,7 +496,7 @@
         </td>
     </tr>
     <tr>
-        <td><center><img src="images/credits/bb-pmd.png"/></center></td>
+        <td><center><img src="../images/credits/bb-pmd.png"/></center></td>
         <td>
             <a href="http://www.bijzonderbezig.nl/">Bijzonder Bezig</a> for giving the PMD logo a modern look.
         </td>

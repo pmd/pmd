@@ -18,20 +18,20 @@
 
 The following rules are marked as **deprecated** and will be removed with the next release of PMD.
 
-* Language Java, ruleset basic.xml: The following rules have been *moved into the `empty.xml` ruleset*. You'll need
-  to enable the "empty" ruleset explicitly from now on, if you want to have these rules executed:
+*   Language Java, ruleset basic.xml: The following rules have been *moved into the `empty.xml` ruleset*. You'll need
+    to enable the "empty" ruleset explicitly from now on, if you want to have these rules executed:
 
-  EmptyCatchBlock, EmptyIfStatement, EmptyWhileStmt, EmptyTryBlock, EmptyFinallyBlock, EmptySwitchStatements,
-  EmptySynchronizedBlock, EmptyStatementNotInLoop, EmptyInitializer, EmptyStatementBlock, EmptyStaticInitializer.
+    EmptyCatchBlock, EmptyIfStatement, EmptyWhileStmt, EmptyTryBlock, EmptyFinallyBlock, EmptySwitchStatements,
+    EmptySynchronizedBlock, EmptyStatementNotInLoop, EmptyInitializer, EmptyStatementBlock, EmptyStaticInitializer.
 
-* Language Java, ruleset basic.xml: The following rules have been *moved into the `unnecessary.xml` ruleset*. You'll need
-  to enable the "unnecessary" ruleset explicitly from now on, if you want to have these rules executed:
+*   Language Java, ruleset basic.xml: The following rules have been *moved into the `unnecessary.xml` ruleset*. You'll need
+    to enable the "unnecessary" ruleset explicitly from now on, if you want to have these rules executed:
 
-  UnnecessaryConversionTemporary, UnnecessaryReturn, UnnecessaryFinalModifier, UselessOverridingMethod,
-  UselessOperationOnImmutable, UnusedNullCheckInEquals, UselessParentheses.
+    UnnecessaryConversionTemporary, UnnecessaryReturn, UnnecessaryFinalModifier, UselessOverridingMethod,
+    UselessOperationOnImmutable, UnusedNullCheckInEquals, UselessParentheses.
 
-* Language Java, ruleset design.xml: The rule "UncommentedEmptyMethod" *has been renamed* to "UncommentedEmptyMethodBody".
-  See also bug [#1283](https://sourceforge.net/p/pmd/bugs/1283/).
+*   Language Java, ruleset design.xml: The rule "UncommentedEmptyMethod" *has been renamed* to "UncommentedEmptyMethodBody".
+    See also bug [#1283](https://sourceforge.net/p/pmd/bugs/1283/).
 
 
 **Pull Requests:**
@@ -70,8 +70,8 @@ The following rules are marked as **deprecated** and will be removed with the ne
 
 **API Changes:**
 
-* `net.sourceforge.pmd.cpd.Match.iterator()` now returns an iterator of the new type `net.sourceforge.pmd.cpd.Mark` instead
-  of TokenEntry. A `Mark` contains all the informations about each single duplication, including the TokenEntry via `Mark.getToken()`.
-  This Mark is useful for reporting the correct line count for each duplication. Previously only one line count was available.
-  As for some languages CPD can be instructed to ignore comments, the line count could be different in the different files
-  for the same duplication.
+*   `net.sourceforge.pmd.cpd.Match.iterator()` now returns an iterator of the new type `net.sourceforge.pmd.cpd.Mark` instead
+    of TokenEntry. A `Mark` contains all the informations about each single duplication, including the TokenEntry via `Mark.getToken()`.
+    This Mark is useful for reporting the correct line count for each duplication. Previously only one line count was available.
+    As for some languages CPD can be instructed to ignore comments, the line count could be different in the different files
+    for the same duplication.

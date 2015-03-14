@@ -22,7 +22,7 @@
 
 *   <a href="http://javacentral.compuware.com/products/optimaladvisor/">Compuware's OptimalAdvisor [link broken]</a>
     <a href="http://www.componentsource.com/beasv/products/compuware-optimaladvisor/index.html">OptimalAdvisor from ComponentSource</a> -
-    static code analysis and refactoring tool</li>
+    static code analysis and refactoring tool
 
 ## Books that mention PMD
 

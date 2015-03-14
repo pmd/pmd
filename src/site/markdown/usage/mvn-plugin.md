@@ -43,22 +43,22 @@ The PMD plugin writes the report in XML which will then be formatted into more r
 To specify a ruleset, simply edit the previous configuration:
 
 
-<reporting>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <configuration>
-                <rulesets>
-                    <ruleset>/rulesets/java/braces.xml</ruleset>
-                    <ruleset>/rulesets/java/naming.xml</ruleset>
-                    <ruleset>d:\rulesets\strings.xml</ruleset>
-                    <ruleset>http://localhost/design.xml</ruleset>
-                </rulesets>
-            </configuration>
-        </plugin>
-    </plugins>
-</reporting>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <rulesets>
+                        <ruleset>/rulesets/java/braces.xml</ruleset>
+                        <ruleset>/rulesets/java/naming.xml</ruleset>
+                        <ruleset>d:\rulesets\strings.xml</ruleset>
+                        <ruleset>http://localhost/design.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
 The value of the 'ruleset' value can either be a relative address, an absolute address or even an url.
 

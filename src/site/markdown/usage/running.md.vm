@@ -2,9 +2,11 @@
     <author email="tom@infoether.com">Tom Copeland</author>
 -->
 
-# Running PMD via command line
+Running PMD via command line
+============================
 
-## On Linux and other UNIX based operating system...
+On Linux and other UNIX based operating system...
+-------------------------------------------------
 
 PMD comes with several command line utilities. Previously, each of them had its own start up script, but this has been
 greatly simplified since PMD 5.0... at least for Unix systems. There is now only one script, called "run.sh", inside
@@ -33,7 +35,8 @@ specific to the utility used.
     
     /home/user/tmp/pmd-bin-${project.version}/pmd/bin>
 
-## Basic usage for Windows
+Basic usage for Windows
+-----------------------
 
 *   Type "pmd -d [filename|jar or zip file containing source code|directory] -f [report format] -R [ruleset file]", i.e:
 
@@ -63,11 +66,13 @@ to load it out of the PMD jar file.  And the same applies to the example below.
                          -R rulesets/java/imports.xml
 
 
-## Other options
+Other options
+-------------
 
 The tool comes with a rather extensive help text, simply running with `--help`!
 
-## Renderers
+Renderers
+---------
 
 PMD comes with four different renderer types:
 

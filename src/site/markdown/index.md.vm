@@ -2,7 +2,8 @@
     <author email="jjensen@apache.org">Jeff Jensen</author>
 -->
 
-# Welcome to PMD
+Welcome to PMD
+==============
 
 PMD scans Java source code and looks for potential problems like:
 
@@ -12,7 +13,8 @@ PMD scans Java source code and looks for potential problems like:
 *   Overcomplicated expressions - unnecessary if statements, for loops that could be while loops
 *   Duplicate code - copied/pasted code means copied/pasted bugs
 
-## Download
+Download
+--------
 
 You can **[download everything from here][1]**, and you can get an overview of all the rules for
 e.g. Java at the [rulesets index][2] page.
@@ -20,12 +22,14 @@ e.g. Java at the [rulesets index][2] page.
 PMD is [integrated][3] with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide,
 NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.
 
-## Changelog
+Changelog
+---------
 
 *   See [What's new in PMD ${project.version}][4]
 *   Older versions: [Old Changelogs][5]
 
-## Future releases
+Future releases
+---------------
 
 The next version of PMD will be developed in parallel with this release. We will release additional bugfix
 versions as needed.

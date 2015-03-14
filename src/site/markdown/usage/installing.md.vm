@@ -3,9 +3,11 @@
     <author email="xlv@users.sourceforge.net">Xavier Le Vourch</author>
 -->
 
-# How to install PMD (and CPD)
+How to install PMD (and CPD)
+============================
 
-## Windows
+Windows
+-------
 
 Requirements:
 
@@ -16,7 +18,8 @@ Download the latest binary distribution - i.e., pmd-bin-x.xx.zip
 
 Unzip it into any directory, i.e., c:\pmd\
 
-## Unix
+Unix
+----
 
 Requirements:
 
