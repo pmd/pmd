@@ -12,6 +12,6 @@ import net.sourceforge.pmd.AbstractPropertySource;
 public class NPathComplexityRule extends AbstractPropertySource {
 
     public NPathComplexityRule() {
-	defineProperty("minimum", "The minimum threshold property.", 200.0d);
+        defineProperty("minimum", "The minimum threshold property.", 200.0d);
     }
 }

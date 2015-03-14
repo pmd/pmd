@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.maven.stubs;
 
 import java.io.File;
@@ -15,53 +18,48 @@ public class ProjectStub extends MavenProjectStub {
     /**
      * Default constructor
      */
-    public ProjectStub()
-    {
+    public ProjectStub() {
         MavenXpp3Reader pomReader = new MavenXpp3Reader();
         Model model;
-        try
-        {
-            model = pomReader.read( ReaderFactory.newXmlReader( new File( getBasedir(), "pom.xml" ) ) );
-            setModel( model );
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
+        try {
+            model = pomReader.read(ReaderFactory.newXmlReader(new File(getBasedir(), "pom.xml")));
+            setModel(model);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        setGroupId( model.getGroupId() );
-        setArtifactId( model.getArtifactId() );
-        setVersion( model.getVersion() );
-        setName( model.getName() );
-        setUrl( model.getUrl() );
-        setPackaging( model.getPackaging() );
+        setGroupId(model.getGroupId());
+        setArtifactId(model.getArtifactId());
+        setVersion(model.getVersion());
+        setName(model.getName());
+        setUrl(model.getUrl());
+        setPackaging(model.getPackaging());
 
         Build build = new Build();
-        build.setFinalName( model.getArtifactId() );
-        build.setDirectory( getBasedir() + "/target" );
-        build.setSourceDirectory( getBasedir() + "/src/main/java" );
-        build.setOutputDirectory( getBasedir() + "/target/classes" );
-        build.setTestSourceDirectory( getBasedir() + "/src/test/java" );
-        build.setTestOutputDirectory( getBasedir() + "/target/test-classes" );
-        setBuild( build );
+        build.setFinalName(model.getArtifactId());
+        build.setDirectory(getBasedir() + "/target");
+        build.setSourceDirectory(getBasedir() + "/src/main/java");
+        build.setOutputDirectory(getBasedir() + "/target/classes");
+        build.setTestSourceDirectory(getBasedir() + "/src/test/java");
+        build.setTestOutputDirectory(getBasedir() + "/target/test-classes");
+        setBuild(build);
 
         List<String> compileSourceRoots = new ArrayList<String>();
-        compileSourceRoots.add( getBasedir() + "/src/main/java" );
-        setCompileSourceRoots( compileSourceRoots );
+        compileSourceRoots.add(getBasedir() + "/src/main/java");
+        setCompileSourceRoots(compileSourceRoots);
 
         List<String> testCompileSourceRoots = new ArrayList<String>();
-        testCompileSourceRoots.add( getBasedir() + "/src/test/java" );
-        setTestCompileSourceRoots( testCompileSourceRoots );
+        testCompileSourceRoots.add(getBasedir() + "/src/test/java");
+        setTestCompileSourceRoots(testCompileSourceRoots);
     }
 
     /** {@inheritDoc} */
-    public File getBasedir()
-    {
-        return new File( super.getBasedir() + "/target/unit/sample-pmd/" );
+    public File getBasedir() {
+        return new File(super.getBasedir() + "/target/unit/sample-pmd/");
     }
-    
+
     @Override
     public List<Artifact> getRuntimeArtifacts() {
-	return new ArrayList<Artifact>();
+        return new ArrayList<Artifact>();
     }
 }

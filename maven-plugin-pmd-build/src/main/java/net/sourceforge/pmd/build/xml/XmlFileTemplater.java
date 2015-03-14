@@ -13,13 +13,13 @@ import org.w3c.dom.Element;
 
 public interface XmlFileTemplater {
 
-	Document doTemplate(Document doc, Element root);	
-	
-	void transform(File source, File result, String xsl);
-	
-	void transform(File source, File result, String xsl, Map<String, String> parameters);
-	
-	void transform(DOMSource source, File result, String xsl);
-	
-	void transform(DOMSource source, File result, String xsl, Map<String, String> parameters);
+    Document doTemplate(Document doc, Element root);
+
+    void transform(File source, File result, String xsl);
+
+    void transform(File source, File result, String xsl, Map<String, String> parameters);
+
+    void transform(DOMSource source, File result, String xsl);
+
+    void transform(DOMSource source, File result, String xsl, Map<String, String> parameters);
 }

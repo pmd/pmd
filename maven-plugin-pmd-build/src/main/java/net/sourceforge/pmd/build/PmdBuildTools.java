@@ -1,7 +1,9 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.build;
 
 import java.net.URL;
-
 
 public interface PmdBuildTools {
 
@@ -11,7 +13,8 @@ public interface PmdBuildTools {
     public abstract String getRulesDirectory();
 
     /**
-     * @param rulesDirectory the rulesDirectory to set
+     * @param rulesDirectory
+     *            the rulesDirectory to set
      */
     public abstract void setRulesDirectory(String rulesDirectory);
 
@@ -29,7 +32,8 @@ public interface PmdBuildTools {
     public abstract String getTargetDirectory();
 
     /**
-     * @param targetDirectory the targetDirectory to set
+     * @param targetDirectory
+     *            the targetDirectory to set
      */
     public abstract void setTargetDirectory(String targetDirectory);
 
@@ -47,6 +51,7 @@ public interface PmdBuildTools {
 
     /**
      * Configures the classpath to use to analyze the properties of rules.
+     * 
      * @param runtimeClasspath
      * @see RuntimeRulePropertiesAnalyzer
      */

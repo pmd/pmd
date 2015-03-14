@@ -15,23 +15,23 @@ import java.util.regex.Pattern;
 
 public class RulesetFilenameFilter implements FilenameFilter {
 
-	// FUTURE: Make this somehow configurable ? Turn into an array passed by constructor ?
-	private static final Pattern EXCLUDE = Pattern.compile(
-		"(^[0-9][0-9].*\\.xml)" +
-		"|(^.*dogfood.*\\.xml)" +
-		"|(^all-.*\\.xml)" +
-		"|(^migrating_.*\\.xml)" +
-		"|(^pmdspecific.xml)"
-	);
-	
-	public boolean accept(File file, String name) {
-	    if ( doesNotMatchExcludeNames(name) ) 
-	    	return (name.endsWith(".xml"));
-	    else
-	    	return false;
-	}
-	
-	private boolean doesNotMatchExcludeNames(String name) {
-	    return !EXCLUDE.matcher(name).matches();
-	}
+    // FUTURE: Make this somehow configurable ? Turn into an array passed by constructor ?
+    private static final Pattern EXCLUDE = Pattern.compile(
+        "(^[0-9][0-9].*\\.xml)" +
+        "|(^.*dogfood.*\\.xml)" +
+        "|(^all-.*\\.xml)" +
+        "|(^migrating_.*\\.xml)" +
+        "|(^pmdspecific.xml)"
+    );
+
+    public boolean accept(File file, String name) {
+        if (doesNotMatchExcludeNames(name))
+            return (name.endsWith(".xml"));
+        else
+            return false;
+    }
+
+    private boolean doesNotMatchExcludeNames(String name) {
+        return !EXCLUDE.matcher(name).matches();
+    }
 }

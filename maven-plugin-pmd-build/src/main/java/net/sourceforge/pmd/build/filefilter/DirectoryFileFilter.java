@@ -14,8 +14,8 @@ import java.io.FilenameFilter;
 
 public class DirectoryFileFilter implements FilenameFilter {
 
-	public boolean accept(File dir, String name) {
-		return ( dir.exists() && dir.isDirectory() ) ? true : false; 			
-	}
+    public boolean accept(File dir, String name) {
+        return (dir.exists() && dir.isDirectory()) ? true : false;
+    }
 
 }

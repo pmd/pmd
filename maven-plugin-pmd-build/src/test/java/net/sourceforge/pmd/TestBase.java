@@ -10,6 +10,7 @@ import org.junit.Before;
 
 /**
  * Base test class which sets up the environment for the tests.
+ * 
  * @author Andreas Dangel
  *
  */
@@ -23,7 +24,7 @@ public abstract class TestBase {
      */
     @Before
     public void setUp() throws Exception {
-	FileUtils.deleteDirectory(testDir);
-	FileUtils.copyDirectoryStructure(new File("src/test/resources/sample-pmd"), testDir);
+        FileUtils.deleteDirectory(testDir);
+        FileUtils.copyDirectoryStructure(new File("src/test/resources/sample-pmd"), testDir);
     }
 }

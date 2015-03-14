@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.maven;
 
 import java.io.File;
@@ -32,63 +35,62 @@ public class PmdPreSite extends AbstractMojo {
     /**
      * Path to the existing site descriptor
      */
-    @Parameter(property = "pmd.siteXml.target", defaultValue="src/site/site.xml")
+    @Parameter(property = "pmd.siteXml.target", defaultValue = "src/site/site.xml")
     private String siteXmlTarget;
 
     /**
      * Path to the existing site descriptor
      */
-    @Parameter(property = "pmd.siteTarget", defaultValue="${project.build.directory}/generated-xdocs/rules")
+    @Parameter(property = "pmd.siteTarget", defaultValue = "${project.build.directory}/generated-xdocs/rules")
     private String target;
 
     /**
      * Path to the existing site descriptor
      */
-    @Parameter(property = "pmd.rulesets", defaultValue="src/main/resources/rulesets/")
+    @Parameter(property = "pmd.rulesets", defaultValue = "src/main/resources/rulesets/")
     private String rulesetsDirectory;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
     public void execute() throws MojoExecutionException {
-	List<URL> runtimeClasspath = determineRuntimeClasspath();
+        List<URL> runtimeClasspath = determineRuntimeClasspath();
 
-	getLog().info("PMD: site generation preparation");
-	getLog().debug("- target:" + target);
-	getLog().debug("- siteXml:" + siteXml);
-	getLog().debug("- rulesets:" + rulesetsDirectory);
-	getLog().debug(" -siteXmlTarget" + siteXmlTarget);
-	
-	PmdBuildTools tool = new RuleSetToDocs();
-	tool.setTargetDirectory(target);
-	tool.setSiteXml(siteXml);
-	tool.setRulesDirectory(rulesetsDirectory);
-	tool.setSiteXmlTarget(siteXmlTarget);
-	tool.setRuntimeClasspath(runtimeClasspath.toArray(new URL[runtimeClasspath.size()]));
+        getLog().info("PMD: site generation preparation");
+        getLog().debug("- target:" + target);
+        getLog().debug("- siteXml:" + siteXml);
+        getLog().debug("- rulesets:" + rulesetsDirectory);
+        getLog().debug(" -siteXmlTarget" + siteXmlTarget);
 
-	try {
-	    tool.convertRulesets();
-	    tool.preSiteGeneration();
-	}
-	catch ( PmdBuildException e) {
-	    throw new MojoExecutionException(e.getMessage());
-	}
+        PmdBuildTools tool = new RuleSetToDocs();
+        tool.setTargetDirectory(target);
+        tool.setSiteXml(siteXml);
+        tool.setRulesDirectory(rulesetsDirectory);
+        tool.setSiteXmlTarget(siteXmlTarget);
+        tool.setRuntimeClasspath(runtimeClasspath.toArray(new URL[runtimeClasspath.size()]));
+
+        try {
+            tool.convertRulesets();
+            tool.preSiteGeneration();
+        } catch (PmdBuildException e) {
+            throw new MojoExecutionException(e.getMessage());
+        }
     }
 
     private List<URL> determineRuntimeClasspath() {
-	List<URL> runtimeClasspath;
-	try {
-	    runtimeClasspath = new ArrayList<URL>();
-	    runtimeClasspath.add(new File(project.getBuild().getOutputDirectory()).toURI().toURL());
-	    Set<Artifact> runtimeArtifacts = project.getArtifacts();
-	    for (Artifact a : runtimeArtifacts) {
-		if (Artifact.SCOPE_COMPILE.equals(a.getScope()) || Artifact.SCOPE_RUNTIME.equals(a.getScope()) ) {
-		    runtimeClasspath.add(a.getFile().toURI().toURL());
-		}
-	    }
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
-	return runtimeClasspath;
+        List<URL> runtimeClasspath;
+        try {
+            runtimeClasspath = new ArrayList<URL>();
+            runtimeClasspath.add(new File(project.getBuild().getOutputDirectory()).toURI().toURL());
+            Set<Artifact> runtimeArtifacts = project.getArtifacts();
+            for (Artifact a : runtimeArtifacts) {
+                if (Artifact.SCOPE_COMPILE.equals(a.getScope()) || Artifact.SCOPE_RUNTIME.equals(a.getScope())) {
+                    runtimeClasspath.add(a.getFile().toURI().toURL());
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return runtimeClasspath;
     }
 }

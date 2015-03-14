@@ -10,6 +10,8 @@ package net.sourceforge.pmd;
 public interface PropertyDescriptor {
 
     String name();
+
     String description();
+
     Object defaultValue();
 }

@@ -32,70 +32,64 @@ import org.xml.sax.SAXException;
  */
 public final class XmlUtil {
 
-	private XmlUtil() {
-	};
+    private static InputStream loadXsl(String xsl) {
+        InputStream xslAsStream = FileUtil.createInputStream(xsl);
+        if (xslAsStream == null) {
+            xslAsStream = XmlUtil.class.getResourceAsStream("/" + xsl);
+        }
+        return xslAsStream;
+    }
 
-	private static InputStream loadXsl(String xsl) {
-		InputStream xslAsStream = FileUtil.createInputStream(xsl);
-		if (xslAsStream == null) {
-			xslAsStream = XmlUtil.class.getResourceAsStream("/" + xsl);
-		}
-		return xslAsStream;
-	}
+    public static Transformer createTransformer(String xsl) throws PmdBuildException {
+        try {
+            TransformerFactory factory = TransformerFactory.newInstance();
+            StreamSource src = new StreamSource(loadXsl(xsl));
+            return factory.newTransformer(src);
+        } catch (TransformerConfigurationException e) {
+            throw new PmdBuildException(e);
+        }
+    }
 
-	public static Transformer createTransformer(String xsl)
-			throws PmdBuildException {
-		try {
-			TransformerFactory factory = TransformerFactory.newInstance();
-			StreamSource src = new StreamSource(loadXsl(xsl));
-			return factory.newTransformer(src);
-		} catch (TransformerConfigurationException e) {
-			throw new PmdBuildException(e);
-		}
-	}
+    public static DOMSource createDomSourceFrom(InputStream inputStream) {
+        try {
+            return new DOMSource(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream));
+        } catch (SAXException e) {
+            throw new IllegalStateException(e);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	public static DOMSource createDomSourceFrom(InputStream inputStream) {
-		try {
-			return new DOMSource(DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().parse(inputStream));
-		} catch (SAXException e) {
-			throw new IllegalStateException(e);
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		} catch (ParserConfigurationException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+    public static DOMSource createXmlBackbone(XmlFileTemplater templater) {
+        Document doc = null;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder parser = factory.newDocumentBuilder();
+            doc = parser.newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException(e);
+        }
+        Element root = doc.createElement("root");
+        doc = templater.doTemplate(doc, root);
+        doc.appendChild(root);
+        return new DOMSource(doc);
+    }
 
-	public static DOMSource createXmlBackbone(XmlFileTemplater templater) {
-		Document doc = null;
-		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory
-					.newInstance();
-			DocumentBuilder parser = factory.newDocumentBuilder();
-			doc = parser.newDocument();
-		} catch (ParserConfigurationException e) {
-			throw new IllegalStateException(e);
-		}
-		Element root = doc.createElement("root");
-		doc = templater.doTemplate(doc, root);
-		doc.appendChild(root);
-		return new DOMSource(doc);
-	}
+    public static String transformDOMToString(DOMSource source) {
+        try {
+            // Use a Transformer for output
+            TransformerFactory tFactory = TransformerFactory.newInstance();
+            Transformer transformer = tFactory.newTransformer();
+            ByteArrayOutputStream sos = new ByteArrayOutputStream();
+            StreamResult result = new StreamResult(sos);
+            transformer.transform(source, result);
+            return sos.toString();
+        } catch (TransformerException e) {
+            throw new IllegalArgumentException(e);
+        }
 
-	public static String transformDOMToString(DOMSource source) {
-		try {
-			// Use a Transformer for output
-			TransformerFactory tFactory = TransformerFactory.newInstance();
-			Transformer transformer = tFactory.newTransformer();
-			ByteArrayOutputStream sos = new ByteArrayOutputStream();
-			StreamResult result = new StreamResult(sos);
-			transformer.transform(source, result);
-			return sos.toString();
-		} catch (TransformerException e) {
-			throw new IllegalArgumentException(e);
-		}
-
-	}
+    }
 
 }

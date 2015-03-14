@@ -16,26 +16,26 @@ public class AbstractPropertySource {
 
     protected List<PropertyDescriptor> propertyDescriptors = new ArrayList<PropertyDescriptor>();
     protected Map<PropertyDescriptor, Object> propertyValuesByDescriptor = new HashMap<PropertyDescriptor, Object>();
-    
-    protected void defineProperty(final String name, final String description, final Object defaultValue) {
-	net.sourceforge.pmd.PropertyDescriptor descriptor = new net.sourceforge.pmd.PropertyDescriptor() {
-	    
-	    @Override
-	    public String name() {
-		return name;
-	    }
-	    
-	    @Override
-	    public String description() {
-		return description;
-	    }
 
-	    @Override
-	    public Object defaultValue() {
-	        return defaultValue;
-	    }
-	};
-	propertyDescriptors.add(descriptor);
-	propertyValuesByDescriptor.put(descriptor, defaultValue);
+    protected void defineProperty(final String name, final String description, final Object defaultValue) {
+        net.sourceforge.pmd.PropertyDescriptor descriptor = new net.sourceforge.pmd.PropertyDescriptor() {
+
+            @Override
+            public String name() {
+                return name;
+            }
+
+            @Override
+            public String description() {
+                return description;
+            }
+
+            @Override
+            public Object defaultValue() {
+                return defaultValue;
+            }
+        };
+        propertyDescriptors.add(descriptor);
+        propertyValuesByDescriptor.put(descriptor, defaultValue);
     }
 }

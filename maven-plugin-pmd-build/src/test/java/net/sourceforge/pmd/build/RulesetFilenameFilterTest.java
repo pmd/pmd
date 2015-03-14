@@ -16,14 +16,14 @@ public class RulesetFilenameFilterTest {
 
     @Test
     public void testAccept() {
-	RulesetFilenameFilter filter = new RulesetFilenameFilter();
-	File directory = new File(".");
+        RulesetFilenameFilter filter = new RulesetFilenameFilter();
+        File directory = new File(".");
 
-	assertTrue(filter.accept(directory, "codesize.xml"));
-	
-	assertFalse(filter.accept(directory, "some-text-file.txt"));
-	assertFalse(filter.accept(directory, "all-java.xml"));
-	assertFalse(filter.accept(directory, "dogfood.xml"));
+        assertTrue(filter.accept(directory, "codesize.xml"));
+
+        assertFalse(filter.accept(directory, "some-text-file.txt"));
+        assertFalse(filter.accept(directory, "all-java.xml"));
+        assertFalse(filter.accept(directory, "dogfood.xml"));
     }
 
 }
