@@ -90,6 +90,7 @@
         <item href="/customizing/pmd-developer.html" name="PMD developers information"/>
         <item href="/customizing/pmd-release-process.html" name="PMD Release Process"/>
         <item href="/customizing/new-language.html" name="New Language"/>
+        <item href="/customizing/cpd-parser-howto.html" name="New CPD Language"/>
     </menu>
     <menu name="For example">
       <item href="../scoreboard.html" name="Run PMD on a Sourceforge project"/>

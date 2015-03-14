@@ -1,0 +1,37 @@
+<!--
+    <author>Tom Copeland</author>
+    <author email="xlv@users.sourceforge.net">Xavier Le Vourch</author>
+-->
+
+# How to install PMD (and CPD)
+
+## Windows
+
+Requirements:
+
+*   Java JRE 1.6 or higher
+*   [Winzip](http://winzip.com) or the free [7-zip](http://www.7-zip.org/)
+
+Download the latest binary distribution - i.e., pmd-bin-x.xx.zip
+
+Unzip it into any directory, i.e., c:\pmd\
+
+## Unix
+
+Requirements:
+
+*   Java JRE 1.6 or higher
+*   The Unix "zip" utility [InfoZip](http://www.info-zip.org/pub/infozip/)
+
+Download the latest binary distribution - i.e., pmd-bin-x.xx.zip
+
+Unzip it into any directory:
+
+    [tom@hal tmp]$ unzip -q pmd-bin-${project.version}.zip
+    [tom@hal tmp]$ ls -l
+    total 4640
+    drwxrwxr-x    5 tom      tom          4096 Apr 17 16:38 pmd-bin-${project.version}
+    -rw-rw-r--    1 tom      tom       4733312 Jun  9 15:44 pmd-bin-${project.version}.zip
+    [tom@hal tmp]$
+
+Note that the PMD jar file contains the [CPD](cpd-usage.html) utility as well.
