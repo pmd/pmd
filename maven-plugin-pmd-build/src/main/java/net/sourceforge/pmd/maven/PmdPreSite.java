@@ -13,50 +13,43 @@ import net.sourceforge.pmd.build.RuleSetToDocs;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 /**
- * Says "Hi" to the user.
- * @goal pmd-pre-site
- * @requiresDependencyResolution runtime
+ * Generates xdoc sites for each ruleset.
  */
-public class PmdPreSite extends AbstractMojo
-{
+@Mojo( name = "pmd-pre-site", requiresDependencyResolution = ResolutionScope.RUNTIME )
+public class PmdPreSite extends AbstractMojo {
     /**
      * Path to the existing site descriptor
-     *
-     * @parameter expression="${pmd.siteXml}" default-value="src/site/site.pre.xml"
      */
+    @Parameter(property = "pmd.siteXml", defaultValue = "src/site/site.pre.xml")
     private String siteXml;
 
     /**
      * Path to the existing site descriptor
-     *
-     * @parameter expression="${pmd.siteXml.target}" default-value="src/site/site.xml"
      */
+    @Parameter(property = "pmd.siteXml.target", defaultValue="src/site/site.xml")
     private String siteXmlTarget;
-    
+
     /**
      * Path to the existing site descriptor
-     *
-     * @parameter expression="${pmd.siteTarget}" default-value="${project.build.directory}/generated-xdocs/rules"
      */
+    @Parameter(property = "pmd.siteTarget", defaultValue="${project.build.directory}/generated-xdocs/rules")
     private String target;
 
     /**
      * Path to the existing site descriptor
-     *
-     * @parameter expression="${pmd.rulesets}" default-value="src/main/resources/rulesets/"
      */
+    @Parameter(property = "pmd.rulesets", defaultValue="src/main/resources/rulesets/")
     private String rulesetsDirectory;
 
-    /**
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
-     */
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
-    
+
     public void execute() throws MojoExecutionException {
 	List<URL> runtimeClasspath = determineRuntimeClasspath();
 

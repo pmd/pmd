@@ -73,7 +73,7 @@ only if you modify the java code.
            <target>1.6</target>
          </configuration>
        </plugin>
-       
+
        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
@@ -83,6 +83,12 @@ only if you modify the java code.
             <pushChanges>false</pushChanges>
             <localCheckout>true</localCheckout>
           </configuration>
+       </plugin>
+
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-site-plugin</artifactId>
+         <version>3.4</version>
        </plugin>
     </plugins>
   </build>
@@ -117,6 +123,13 @@ only if you modify the java code.
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
       <version>${mavenVersion}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>3.3</version>
       <scope>provided</scope>
     </dependency>
 
