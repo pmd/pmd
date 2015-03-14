@@ -38,10 +38,9 @@
                     </xsl:variable>
 
                     <xsl:for-each select="language">
-                        <xsl:variable name="language">
-                            <xsl:value-of select="@name" />
-                        </xsl:variable>
+                        <xsl:variable name="language" select="@name" />
                         <xsl:for-each select="ruleset">
+                            <xsl:variable name="rulesetname" select="translate(@name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ ', 'abcdefghijklmnopqrstuvwxyz_')" />
                             <xsl:element name="a">
                                 <xsl:attribute name="name">
                                     <xsl:value-of select="translate(normalize-space(@name),' ','_')" />
@@ -51,13 +50,34 @@
                                 <xsl:attribute name="name"><xsl:value-of select="@name" /> (<xsl:value-of
                                     select="$language" />)</xsl:attribute>
                                 <ul>
-                                    <xsl:for-each select="./rule[@name]">
+                                    <xsl:for-each select="./rule">
                                         <li>
-                                            <a>
-                                                <xsl:attribute name="href"><xsl:value-of
-                                                    select="substring(@externalInfoUrl,$urlPrefixLength + 1)" /></xsl:attribute>
-                                                <xsl:value-of select="@name" />
-                                            </a>: <xsl:value-of select="description" />
+                                            <xsl:choose>
+                                                <xsl:when test="@name and (not(@deprecated) or @deprecated='false')">
+                                                    <a>
+                                                        <xsl:attribute name="href"><xsl:value-of
+                                                            select="substring(@externalInfoUrl,$urlPrefixLength + 1)" /></xsl:attribute>
+                                                        <xsl:value-of select="@name" />
+                                                    </a>: <xsl:value-of select="description" />
+                                                </xsl:when>
+                                                <xsl:when test="@name and @deprecated='true' and @ref and not(contains(@ref, '.xml'))">
+                                                    <a>
+                                                        <xsl:attribute name="href"><xsl:value-of select="concat($language, '/', $rulesetname, '.html#', @name)" /></xsl:attribute>
+                                                        <xsl:value-of select="@name" />
+                                                    </a>: Deprecated rule.
+                                                </xsl:when>
+                                                <xsl:when test="not(@name) and @deprecated='true' and contains(@ref, '.xml')">
+                                                    <xsl:variable name="rulename">
+                                                        <xsl:call-template name="last-token-after-last-slash">
+                                                            <xsl:with-param name="ref" select="@ref"/>
+                                                        </xsl:call-template>
+                                                    </xsl:variable>
+                                                    <a>
+                                                        <xsl:attribute name="href"><xsl:value-of select="concat($language, '/', $rulesetname, '.html#', $rulename)" /></xsl:attribute>
+                                                        <xsl:value-of select="$rulename"/>
+                                                    </a>: Deprecated rule.
+                                                </xsl:when>
+                                            </xsl:choose>
                                         </li>
                                     </xsl:for-each>
                                 </ul>
@@ -67,5 +87,19 @@
                 </section>
             </body>
         </document>
+    </xsl:template>
+
+    <xsl:template name="last-token-after-last-slash">
+        <xsl:param name="ref" />
+        <xsl:choose>
+            <xsl:when test="contains($ref, '/')">
+                <xsl:call-template name="last-token-after-last-slash">
+                    <xsl:with-param name="ref" select="substring-after($ref, '/')" />
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$ref" />
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>
