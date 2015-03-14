@@ -58,4 +58,9 @@ void bar() {	// this is something more complex than it needs to be,
     <rule deprecated="true" name="OldNameOfNPathComplexity" ref="NPathComplexity"/>
 
     <rule deprecated="true" ref="rulesets/java/basic.xml/JumbledIncrementer" />
+
+    <rule deprecated="true" name="SoonToBeRemoved" language="java" since="1.0" message="Foo">
+        <description>This rule will be removed with the next version.</description>
+        <priority>3</priority>
+    </rule>
 </ruleset>

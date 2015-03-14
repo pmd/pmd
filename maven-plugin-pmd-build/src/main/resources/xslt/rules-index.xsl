@@ -53,12 +53,18 @@
                                     <xsl:for-each select="./rule">
                                         <li>
                                             <xsl:choose>
-                                                <xsl:when test="@name and (not(@deprecated) or @deprecated='false')">
+                                                <xsl:when test="@name and not(@ref)">
                                                     <a>
                                                         <xsl:attribute name="href"><xsl:value-of
                                                             select="substring(@externalInfoUrl,$urlPrefixLength + 1)" /></xsl:attribute>
                                                         <xsl:value-of select="@name" />
-                                                    </a>: <xsl:value-of select="description" />
+                                                    </a>: 
+                                                    <xsl:choose>
+                                                        <xsl:when test="@deprecated='true'">
+                                                            Deprecated rule.
+                                                        </xsl:when>
+                                                    </xsl:choose>
+                                                    <xsl:value-of select="description" />
                                                 </xsl:when>
                                                 <xsl:when test="@name and @deprecated='true' and @ref and not(contains(@ref, '.xml'))">
                                                     <a>

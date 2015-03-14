@@ -42,6 +42,8 @@ public class RuleSetToDocsTest extends TestBase {
         assertTrue(codeSizeRuleset.contains("<a href=\"#NPathComplexity\">NPathComplexity</a>"));
         assertTrue(codeSizeRuleset.contains("JumbledIncrementer"));
         assertTrue(codeSizeRuleset.contains("<a href=\"basic.html#JumbledIncrementer\">JumbledIncrementer</a>"));
+
+        assertTrue(codeSizeRuleset.contains("SoonToBeRemoved"));
     }
 
     @Test

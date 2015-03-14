@@ -34,7 +34,7 @@
         </document>
     </xsl:template>
 
-    <xsl:template match="rule[@name][not(@deprecated) or @deprecated='false']">
+    <xsl:template match="rule[@name][not(@ref)]">
         <xsl:variable name="rulename" select="@name" />
         <xsl:variable name="classname" select="@class" />
 
@@ -50,6 +50,12 @@
                 <xsl:value-of select="$Priority" />: <xsl:value-of select="priority" />
             </p>
             <p>
+                <xsl:choose>
+                    <xsl:when test="@deprecated='true'">
+                        <xsl:attribute name="style">border-radius: 3px; border-style: solid; border-width: 1px 1px 1px 5px; margin: 20px 0px; padding: 20px; border-color: #eee; border-left-color: #ce4844</xsl:attribute>
+                        <strong>Deprecated</strong><br/>
+                    </xsl:when>
+                </xsl:choose>
                 <xsl:value-of select="description" />
             </p>
             <xsl:choose>
