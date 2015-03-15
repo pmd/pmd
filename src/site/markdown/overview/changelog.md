@@ -11,12 +11,22 @@
 
 **Feature Requests and Improvements:**
 
-* XML: Line numbers for XML documents are more accurate. This is a further improvement of [#1054](https://sourceforge.net/p/pmd/bugs/1054/).
-* CPD: New output format 'csv_with_linecount_per_file'
+*   XML: Line numbers for XML documents are more accurate. This is a further improvement of [#1054](https://sourceforge.net/p/pmd/bugs/1054/).
+*   CPD: New output format 'csv_with_linecount_per_file'
+*   [#1320](https://sourceforge.net/p/pmd/bugs/1320/): Enhance SimplifyBooleanReturns checks
 
 **New/Modified/Deprecated Rules:**
 
-The following rules are marked as **deprecated** and will be removed with the next release of PMD.
+The following rules have been
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #5CB85C; font-size: 75%;">enhanced</span>
+:
+
+*   Language Java, ruleset design.xml: The rule "SimplifyBooleanReturns" now also marks methods where the else case is omitted and just a return.
+    See also feature [#1320](https://sourceforge.net/p/pmd/bugs/1320/).
+
+The following rules are marked as
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">deprecated</span>
+and will be removed with the next release of PMD.
 
 *   Language Java, ruleset basic.xml: The following rules have been *moved into the `empty.xml` ruleset*. You'll need
     to enable the "empty" ruleset explicitly from now on, if you want to have these rules executed:
@@ -35,7 +45,6 @@ The following rules are marked as **deprecated** and will be removed with the ne
 
 *   Language Java, ruleset controversial.xml: The rule "BooleanInversion" is deprecated and *will be removed* with
     the next release. See [#1277](https://sourceforge.net/p/pmd/bugs/1277/) for more details.
-
 
 **Pull Requests:**
 

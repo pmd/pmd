@@ -66,4 +66,32 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1320 Enhance SimplifyBooleanReturns checks</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SimplifyBooleanReturns {
+    public boolean exists(Object obj) {
+        if (myObjectList.contains(obj)) {
+            return true;
+        }
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1320 Enhance SimplifyBooleanReturns checks - case 2 without block</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SimplifyBooleanReturns {
+    public boolean exists(Object obj) {
+        if (myObjectList.contains(obj))
+            return true;
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
