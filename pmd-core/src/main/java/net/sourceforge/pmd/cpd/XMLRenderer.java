@@ -32,15 +32,19 @@ public final class XMLRenderer implements Renderer {
 	 * Creates a XML Renderer with the default (platform dependent) encoding.
 	 */
 	public XMLRenderer() {
-		this(System.getProperty("file.encoding"));
+		this(null);
 	}
 
 	/**
 	 * Creates a XML Renderer with a specific output encoding.
-	 * @param encoding the encoding to use
+	 * @param encoding the encoding to use or null. If null, default (platform dependent) encoding is used.
 	 */
 	public XMLRenderer(String encoding) {
-		this.encoding = encoding;
+	    if (encoding != null) {
+	        this.encoding = encoding;
+	    } else {
+	        this.encoding = System.getProperty("file.encoding");
+	    }
 	}
 
 	private Document createDocument() {

@@ -9,9 +9,8 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
 
-import junit.framework.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -103,6 +102,16 @@ public class CPDCommandLineInterfaceTest {
         String out = bufferStdout.toString("UTF-8");
         Assert.assertTrue(Pattern.compile("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file").matcher(out).find());
         Assert.assertTrue(out.contains("Found a 5 line (13 tokens) duplication"));
+    }
+
+    @Test
+    public void testFormatXmlWithoutEncoding() throws Exception {
+        runCPD("--minimum-tokens", "10",
+               "--language", "java",
+               "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/",
+               "--format", "xml");
+        String out = bufferStdout.toString("UTF-8");
+        Assert.assertTrue(out.contains("<duplication lines=\"3\" tokens=\"10\">"));
     }
 
     private void runCPD(String... args) {
