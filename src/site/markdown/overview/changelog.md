@@ -33,6 +33,9 @@ The following rules are marked as **deprecated** and will be removed with the ne
 *   Language Java, ruleset design.xml: The rule "UncommentedEmptyMethod" *has been renamed* to "UncommentedEmptyMethodBody".
     See also bug [#1283](https://sourceforge.net/p/pmd/bugs/1283/).
 
+*   Language Java, ruleset controversial.xml: The rule "BooleanInversion" is deprecated and *will be removed* with
+    the next release. See [#1277](https://sourceforge.net/p/pmd/bugs/1277/) for more details.
+
 
 **Pull Requests:**
 
@@ -53,6 +56,7 @@ The following rules are marked as **deprecated** and will be removed with the ne
 **Bugfixes:**
 
 * [#914](https://sourceforge.net/p/pmd/bugs/914/): False +ve from UnusedImports with wildcard static imports
+* [#1277](https://sourceforge.net/p/pmd/bugs/1277/): Delete BooleanInversion as it makes no sense
 * [#1283](https://sourceforge.net/p/pmd/bugs/1283/): Rename UncommentedEmptyMethod to UncommentedEmptyMethodBody
 * [#1296](https://sourceforge.net/p/pmd/bugs/1296/): PMD UnusedPrivateMethod invalid detection of 'private void method(int,boolean,Integer...)'
 * [#1298](https://sourceforge.net/p/pmd/bugs/1298/): Member variable int type with value 0xff000000 causes processing error
