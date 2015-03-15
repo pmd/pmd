@@ -91,7 +91,7 @@ response.setHeader("Pragma", "No-cache");
 		class="net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoInlineStyleInformation">
 		<description><![CDATA[ 
-Style information should be put in CSS files, not in JSPs. Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'". ]]>
+Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT> tags, or attributes like "align='center'". ]]>
 		</description>
 		<priority>3</priority>
 		<example>
@@ -267,10 +267,8 @@ and
         message="Avoiding inlining HTML script content"
         externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoInlineScript">
         <description>
-            <![CDATA[
-Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the <script> element.
+Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the "script" element.
 Externalized script could be reused between pages.  Browsers can also cache the script, reducing overall download bandwidth.
-            ]]>
         </description>
         <priority>3</priority>
         <properties>

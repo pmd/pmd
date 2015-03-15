@@ -9,11 +9,6 @@ bin/
 *.iml
 .idea
 *.patch
-pmd-java/src/site/site.xml
-pmd-javascript/src/site/site.xml
-pmd-jsp/src/site/site.xml
-pmd-plsql/src/site/site.xml
-pmd-vm/src/site/site.xml
-pmd-xml/src/site/site.xml
-*/src/site/xdoc/rules
-*/src/site/xdoc/mergedruleset.xml
+*/src/site/site.xml
+*/src/site/markdown/rules
+*/src/site/markdown/mergedruleset.xml

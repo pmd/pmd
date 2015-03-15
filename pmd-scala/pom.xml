@@ -56,15 +56,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <xdocDirectory>${project.build.directory}/generated-xdocs</xdocDirectory>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 

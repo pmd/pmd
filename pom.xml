@@ -398,7 +398,14 @@
                 <plugin>
                     <groupId>net.sourceforge.pmd</groupId>
                     <artifactId>pmd-build</artifactId>
-                    <version>0.8</version>
+                    <version>0.9-SNAPSHOT</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>pmd-pre-site</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

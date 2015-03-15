@@ -68,10 +68,10 @@
                         <phase>clean</phase>
                         <configuration>
                             <target>
-                                <echo>PMD specific tasks: cleaning generated xdocs</echo>
+                                <echo>PMD specific tasks: cleaning generated markdown</echo>
                                 <delete quiet="true">
-                                    <fileset dir="${basedir}/src/site/xdoc/rules/" includes="**/*.xml" />
-                                    <fileset dir="${basedir}/src/site/xdoc/" includes="mergedruleset.xml" />
+                                    <fileset dir="${basedir}/src/site/markdown/rules/" includes="**/*.md" />
+                                    <fileset dir="${basedir}/src/site/markdown/" includes="mergedruleset.xml" />
                                     <fileset dir="${basedir}/src/site/" includes="site.xml" />
                                 </delete>
                             </target>
@@ -104,20 +104,6 @@
             <plugin>
                 <groupId>net.sourceforge.pmd</groupId>
                 <artifactId>pmd-build</artifactId>
-                <configuration>
-                    <rulesetsDirectory>${basedir}/src/main/resources/rulesets</rulesetsDirectory>
-                    <siteXml>${basedir}/src/site/site.pre.xml</siteXml>
-                    <siteXmlTarget>${basedir}/src/site/site.xml</siteXmlTarget>
-                    <target>${basedir}/src/site/xdoc/rules</target>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>pmd-pre-site</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
