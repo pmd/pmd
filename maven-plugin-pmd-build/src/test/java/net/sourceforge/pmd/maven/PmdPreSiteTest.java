@@ -34,14 +34,14 @@ public class PmdPreSiteTest extends AbstractMojoTestCase {
         myMojo.execute();
 
         String codeSizeRuleset = IOUtils.toString(new File(
-                "target/unit/sample-pmd/target/generated-xdocs/rules/java/codesize.xml").toURI());
+                "target/unit/sample-pmd/target/generated-xdocs/rules/java/codesize.md").toURI());
         assertTrue(codeSizeRuleset.contains("minimum"));
 
         String basicRuleset = IOUtils.toString(new File(
-                "target/unit/sample-pmd/target/generated-xdocs/rules/java/basic.xml").toURI());
-        assertEquals(2, StringUtils.countMatches(basicRuleset, "<subsection"));
+                "target/unit/sample-pmd/target/generated-xdocs/rules/java/basic.md").toURI());
+        assertEquals(2, StringUtils.countMatches(basicRuleset, "## "));
 
-        String indexPage = IOUtils.toString(new File("target/unit/sample-pmd/target/generated-xdocs/rules/index.xml")
+        String indexPage = IOUtils.toString(new File("target/unit/sample-pmd/target/generated-xdocs/rules/index.md")
                 .toURI());
         assertFalse(indexPage.contains("<li>: </li>"));
 

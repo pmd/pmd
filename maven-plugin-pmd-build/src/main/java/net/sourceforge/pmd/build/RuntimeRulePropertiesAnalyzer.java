@@ -64,7 +64,7 @@ public class RuntimeRulePropertiesAnalyzer {
         }
         String classAtt = classAttribute.getTextContent();
         if (XPATH_RULE_CLASSNAME.equals(classAtt)) {
-            // xpath rules are ignored - they have there properties defined
+            // xpath rules are ignored - they have their properties defined
             // already in the rule definition xml
             return;
         }

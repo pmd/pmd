@@ -16,38 +16,39 @@ import net.sourceforge.pmd.build.RuleSetToDocs;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 /**
- * Generates xdoc sites for each ruleset.
+ * Generates markdown sites for each ruleset.
  */
-@Mojo( name = "pmd-pre-site", requiresDependencyResolution = ResolutionScope.RUNTIME )
+@Mojo( name = "pmd-pre-site", requiresDependencyResolution = ResolutionScope.RUNTIME, defaultPhase = LifecyclePhase.PRE_SITE )
 public class PmdPreSite extends AbstractMojo {
     /**
      * Path to the existing site descriptor
      */
-    @Parameter(property = "pmd.siteXml", defaultValue = "src/site/site.pre.xml")
+    @Parameter(property = "pmd.siteXml", defaultValue = "${basedir}/src/site/site.pre.xml")
     private String siteXml;
 
     /**
      * Path to the existing site descriptor
      */
-    @Parameter(property = "pmd.siteXml.target", defaultValue = "src/site/site.xml")
+    @Parameter(property = "pmd.siteXml.target", defaultValue = "${basedir}/src/site/site.xml")
     private String siteXmlTarget;
 
     /**
      * Path to the existing site descriptor
      */
-    @Parameter(property = "pmd.siteTarget", defaultValue = "${project.build.directory}/generated-xdocs/rules")
+    @Parameter(property = "pmd.siteTarget", defaultValue = "${basedir}/src/site/markdown/rules")
     private String target;
 
     /**
      * Path to the existing site descriptor
      */
-    @Parameter(property = "pmd.rulesets", defaultValue = "src/main/resources/rulesets/")
+    @Parameter(property = "pmd.rulesets", defaultValue = "${basedir}/src/main/resources/rulesets")
     private String rulesetsDirectory;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)

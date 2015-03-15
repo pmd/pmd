@@ -16,6 +16,7 @@ The Code Size ruleset contains rules that find problems related to code size or 
       externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NPathComplexity">
    <description>
 The NPath complexity of a method is the number of acyclic execution paths through that method.
+
 A threshold of 200 is generally considered the point where measures should be taken to reduce 
 complexity and increase readability.
    </description>
@@ -60,7 +61,12 @@ void bar() {	// this is something more complex than it needs to be,
     <rule deprecated="true" ref="rulesets/java/basic.xml/JumbledIncrementer" />
 
     <rule deprecated="true" name="SoonToBeRemoved" language="java" since="1.0" message="Foo">
-        <description>This rule will be removed with the next version.</description>
+        <description>
+<![CDATA[
+This rule will be removed with the next version.
+
+You can use **markdown** here!
+]]></description>
         <priority>3</priority>
     </rule>
 </ruleset>

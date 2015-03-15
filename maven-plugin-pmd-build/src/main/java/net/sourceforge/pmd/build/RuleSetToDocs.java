@@ -10,7 +10,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +26,9 @@ import net.sourceforge.pmd.build.util.FileUtil;
 import net.sourceforge.pmd.build.util.XmlUtil;
 import net.sourceforge.pmd.build.xml.RulesetFileTemplater;
 
+import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -153,7 +158,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 
     private File buildTransformedRulesetDirectory(File ruleset) {
         return new File(this.targetDirectory + File.separator + ruleset.getParentFile().getName() + File.separator
-                + ruleset.getName());
+                + FilenameUtils.getBaseName(ruleset.getName()) + ".md");
     }
 
     private void processXDocFile(File ruleset) throws PmdBuildException {
@@ -173,12 +178,49 @@ public class RuleSetToDocs implements PmdBuildTools {
             for (int i = 0; i < rules.getLength(); i++) {
                 Node rule = rules.item(i);
                 ruleAnalyzer.analyze(document, rule);
+
+                escapeTextContent(findChildren(rule, "example"));
+                List<Node> properties = findChildren(rule, "properties");
+                for (Node prop : properties) {
+                    List<Node> property = findChildren(prop, "property");
+                    for (Node n : property) {
+                        if (((Element)n).getAttribute("name").equals("xpath")) {
+                            escapeTextContent(findChildren(n, "value"));
+                        }
+                    }
+                }
             }
 
             xmlFileTemplater.transform(dom, target, xmlFileTemplater.getRulesetToDocsXsl());
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private static List<Node> findChildren(Node parent, String childName) {
+        List<Node> result = new ArrayList<Node>();
+        NodeList children = parent.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (isElement(child, childName)) {
+                result.add(child);
+            }
+        }
+        return result;
+    }
+    private static boolean isElement(Node node, String name) {
+        return node.getNodeType() == Node.ELEMENT_NODE && name.equals(node.getNodeName());
+    }
+    private static void escapeTextContent(Collection<Node> nodes) {
+        for (Node node : nodes) {
+            escapeTextContent(node);
+        }
+    }
+    private static void escapeTextContent(Node node) {
+        String content = node.getTextContent();
+        content = content.replaceAll("&", "&amp;");
+        content = content.replaceAll("<", "&lt;");
+        node.setTextContent(content);
     }
 
     private void addRulesetsToSiteXml(DOMSource backbone) {
