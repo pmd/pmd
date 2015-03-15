@@ -34,6 +34,8 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 	    c = Class.forName("org.junit.Test");
 	} catch (ClassNotFoundException t) {
 	    c = null;
+	} catch (NoClassDefFoundError t) {
+	    c = null;
 	}
 	JUNIT4_CLASS = c;
 
@@ -41,6 +43,8 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 	    c = Class.forName("junit.framework.TestCase");
 	} catch (ClassNotFoundException t) {
 	    c = null;
+    } catch (NoClassDefFoundError t) {
+        c = null;
 	}
 	JUNIT3_CLASS = c;
     }

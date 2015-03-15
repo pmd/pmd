@@ -80,6 +80,7 @@ and will be removed with the next release of PMD.
 * [#1313](https://sourceforge.net/p/pmd/bugs/1313/): Missing assertion message in assertEquals with delta not detected
 * [#1316](https://sourceforge.net/p/pmd/bugs/1316/): Multi Rule Properties with delimiter not possible
 * [#1317](https://sourceforge.net/p/pmd/bugs/1317/): RuntimeException when parsing class with multiple lambdas
+* [#1319](https://sourceforge.net/p/pmd/bugs/1319/): PMD stops with NoClassDefFoundError (typeresolution)
 
 **API Changes:**
 

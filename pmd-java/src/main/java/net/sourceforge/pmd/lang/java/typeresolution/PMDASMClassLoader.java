@@ -65,7 +65,9 @@ public final class PMDASMClassLoader extends ClassLoader {
             throw e;
         } catch (NoClassDefFoundError e) {
             dontBother.add(name);
-            throw e;
+            // rethrow as ClassNotFoundException, as the remaining part just deals with that
+            // see also: https://sourceforge.net/p/pmd/bugs/1319/
+            throw new ClassNotFoundException(name, e);
         }
     }
 
