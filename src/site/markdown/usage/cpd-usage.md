@@ -4,7 +4,13 @@
 
 # Finding duplicated code
 
-Or - Finding copied and pasted code
+Or how to find copied and pasted code
+
+* [Overview](#Overview)
+* [Ant task](#Ant_task)
+* [Command line usage](#Command_line_usage)
+* [Suppression](#Suppression)
+
 
 ## Overview
 
@@ -24,7 +30,7 @@ CPD has been through three major incarnations:
 Each rewrite made it much faster, and now it can process the JDK 1.4 java.* packages in about 4 seconds
 (on my workstation, at least).
 
-Here's a [screenshot](images/screenshot_cpd.png) of CPD after running on the JDK java.lang package.
+Here's a [screenshot](../images/screenshot_cpd.png) of CPD after running on the JDK java.lang package.
 
 Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code. Your own language is missing?
 See how to add it [here](../customizing/cpd-parser-howto.html).
@@ -37,6 +43,218 @@ you can [run CPD by clicking here](http://pmd.sourceforge.net/cpd.jnlp).
 
 [Here](./cpp_cpdresults.txt) are the duplicates CPD found in the APACHE_2_0_BRANCH branch of Apache
 (just the `httpd-2.0/server/` directory).
+
+
+## Command line usage
+
+### Windows
+
+CPD comes with its own starter batch file: `cpd.bat`. It's located in the `bin` subdirectory in the PMD
+binary distribution zip-file. Let's assume, you are in this directory, then you can start CPD this way:
+
+    cpd.bat --minimum-tokens 100 --files c:\temp\src\java
+
+The options "minimum-tokens" and "files" are the two required options; there are more options, see below.
+
+
+### Linux
+
+For Linux, there is since PMD 5.0 a combined start script for all command line tools. This includes CPD.
+The start script is called `run.sh` and is located in the `bin` subdirectory in the PMD binary distribution
+zip-file. Let's assume, you are in this directory, then you can start CPD this way:
+
+    ./run.sh cpd --minimum-tokens 100 --files c:\temp\src\java
+
+The options "minimum-tokens" and "files" are the two required options; there are more options, see below.
+
+### Options
+
+<table>
+    <tr>
+        <th>Option</th>
+        <th>Description</th>
+        <th>Required</th>
+        <th>Applies for language</th>
+    </tr>
+    <tr>
+        <td>--minimum-tokens</td>
+        <td>The minimum token length which should be reported as a duplicate.</td>
+        <td>yes</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--files</td>
+        <td>List of files and directories to process</td>
+        <td>yes</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--language</td>
+        <td>Sources code language. Default value is `java`</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--encoding</td>
+        <td>Character encoding to use when processing files</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--skip-duplicate-files</td>
+        <td>Ignore multiple copies of files of the same name and length in comparison.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--exclude</td>
+        <td>Files to be excluded from CPD check</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--non-recursive</td>
+        <td>Don't scan subdirectiories</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--skip-lexical-errors</td>
+        <td>Skip files which can't be tokenized due to invalid characters instead of aborting CPD</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--format</td>
+        <td>Report format. Default value is `text`.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--ignore-literals</td>
+        <td>Ignore number values and string contents when comparing text</td>
+        <td>no</td>
+        <td>java</td>
+    </tr>
+    <tr>
+        <td>--ignore-identifiers</td>
+        <td>Ignore constant and variable names when comparing text</td>
+        <td>no</td>
+        <td>java</td>
+    </tr>
+    <tr>
+        <td>--ignore-annotations</td>
+        <td>Ignore language annotations when comparing text</td>
+        <td>no</td>
+        <td>java</td>
+    </tr>
+    <tr>
+        <td>--no-skip-blocks</td>
+        <td>Do not skip code blocks marked with --skip-blocks-pattern (e.g. #if 0 until #endif)</td>
+        <td>no</td>
+        <td>cpp</td>
+    </tr>
+    <tr>
+        <td>--skip-blocks-pattern</td>
+        <td>
+            Pattern to find the blocks to skip. Start and End pattern separated by |.
+            Default is `#if 0|#endif`.
+        </td>
+        <td>no</td>
+        <td>cpp</td>
+    </tr>
+    <tr>
+        <td>--uri</td>
+        <td>URI to process</td>
+        <td>no</td>
+        <td>plsql</td>
+    </tr>
+    <tr>
+        <td>--help / -h</td>
+        <td>Print help text</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+</table>
+
+### Examples
+
+_Note:_ The following example use the Linux start script. For Windows, just replace "./run.sh cpd" by "cpd.bat".
+
+
+Minimum required options: Just give it the minimum duplicate size and the source directory:
+
+    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
+
+You can also specify the language:
+
+    $ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp
+
+You may wish to check sources that are stored in different directories:
+
+    $ ./run.sh cpd --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
+
+<em>There should be no limit to the number of '--files', you may add... But if you stumble one, please tell us !</em>
+
+And if you're checking a C source tree with duplicate files in different architecture directories
+you can skip those using --skip-duplicate-files:
+
+    $ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
+
+You can also specify the encoding to use when parsing files:
+
+    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --encoding utf-16le
+
+You can also specify a report format - here we're using the XML report:
+
+    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --format xml
+
+The default format is a text report, and there's also a `csv` report.
+
+Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:
+
+    $ export HEAPSIZE=512m
+    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
+
+In order to change the heap size under Windows, you'll need to edit the batch file `cpd.bat` set the "OPTS"
+variable to `-Xmx512m`.
+
+
+If you specify a source directory but don't want to scan the sub-directories, you can use the non-recursive option:
+
+    $ ./run.sh cpd --minimum-tokens 100 --non-recursive --files /usr/local/java/src/java
+
+### Exit status
+
+Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0).
+This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
+
+### Supported Languages
+
+* cs
+* cpp
+* ecmascript (JavaScript)
+* fortran
+* go
+* java
+* jsp
+* matlab
+* objectivec
+* php
+* plsql
+* python
+* ruby
+* scala
+
+
+### Available formats
+
+* text : Default format
+* xml
+* csv
+* csv_with_linecount_per_file
+* vs
+
 
 ## Ant task
 
@@ -174,48 +392,6 @@ Also, you can get an HTML report from CPD by using the XSLT script in pmd/etc/xs
 the CPD task as usual and right after it invoke the Ant XSLT script like this:
 
     <xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
-
-## Command line usage
-
-To run CPD from the command line, just give it the minimum duplicate size and the source directory:
-
-    $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java
-
-You can also specify the language:
-
-    $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/source --language cpp
-
-You may wish to check sources that are stored in different directories:
-
-    $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
-
-<em>There should be no limit to the number of '--files', you may add... But if you stumble one, please tell us !</em>
-
-And if you're checking a C source tree with duplicate files in different architecture directories
-you can skip those using --skip-duplicate-files:
-
-    $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
-
-You can also the encoding to use when parsing files:
-
-    $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java --encoding utf-16le
-
-You can also specify a report format - here we're using the XML report:
-
-    $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java --format net.sourceforge.pmd.cpd.XMLRenderer
-
-The default format is a text report, and there's also a `net.sourceforge.pmd.cpd.CSVRenderer` report.
-
-Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:
-
-    $ java -Xmx512m net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java
-
-If you specify a source directory but don't want to scan the sub-directories, you can use the non-recursive option:
-
-    $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --non-recursive --files /usr/local/java/src/java
-
-Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0).
-This behavior has been introduced to ease CPD integration into scrips or hook, such as SVN hooks.
 
 ## Suppression
 
