@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
  */
 public final class XMLRenderer implements Renderer {
 
-	private final String encoding;
+	private String encoding;
 
 	/**
 	 * Creates a XML Renderer with the default (platform dependent) encoding.
@@ -40,12 +40,19 @@ public final class XMLRenderer implements Renderer {
 	 * @param encoding the encoding to use or null. If null, default (platform dependent) encoding is used.
 	 */
 	public XMLRenderer(String encoding) {
-	    if (encoding != null) {
-	        this.encoding = encoding;
-	    } else {
-	        this.encoding = System.getProperty("file.encoding");
-	    }
+	    setEncoding(encoding);
 	}
+
+    public final void setEncoding(String encoding) {
+        if (encoding != null) {
+            this.encoding = encoding;
+        } else {
+            this.encoding = System.getProperty("file.encoding");
+        }
+    }
+    public final String getEncoding() {
+        return this.encoding;
+    }
 
 	private Document createDocument() {
     	try {

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.database.DBURI;
 
 import com.beust.jcommander.JCommander;
@@ -63,7 +64,7 @@ public class CPDCommandLineInterface {
 		} catch (ParameterException e) {
 			jcommander.usage();
 			System.out.println(buildUsageText());
-			System.out.println(e.getMessage());
+			System.out.println(" " + e.getMessage());
 			setStatusCodeOrExit(1);
 			return;
 		}
@@ -141,24 +142,21 @@ public class CPDCommandLineInterface {
               }
 	}
 
-	private static final char EOL = '\n';
-	public static String buildUsageText() {
-		String helpText = "Usage:";
+    public static String buildUsageText() {
+        String helpText = " For example on Windows:" + PMD.EOL;
 
-		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv|vs)] [--skip-duplicate-files] [--non-recursive]" + EOL;
-		helpText += "i.e: " + EOL;
+        helpText += " C:\\>" + "pmd-bin-" + PMD.VERSION + "\\bin\\cpd.bat"
+                + " --minimum-tokens 100 --files c:\\jdk18\\src\\java" + PMD.EOL;
+        helpText += PMD.EOL;
 
-		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files c:\\jdk14\\src\\java " + EOL;
-		helpText += "or: " + EOL;
+        helpText += " For example on *nix:" + PMD.EOL;
+        helpText += " $ " + "pmd-bin-" + PMD.VERSION + "/bin/run.sh cpd"
+                + " --minimum-tokens 100 --files /path/to/java/code" + PMD.EOL;
+        helpText += PMD.EOL;
 
-		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/code --language c " + EOL;
-		helpText += "or: " + EOL;
-
-		helpText += " java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --encoding UTF-16LE --files /path/to/java/code --format xml" + EOL;
-		helpText += EOL;
-
-		helpText += EOL + " Supported languages: " + Arrays.toString(LanguageFactory.supportedLanguages) + EOL;
-		return helpText;
-	}
+        helpText += " Supported languages: " + Arrays.toString(LanguageFactory.supportedLanguages) + PMD.EOL;
+        helpText += " Formats: " + Arrays.toString(CPDConfiguration.getRenderers()) + PMD.EOL;
+        return helpText;
+    }
 
 }

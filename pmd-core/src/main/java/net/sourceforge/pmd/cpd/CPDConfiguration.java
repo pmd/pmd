@@ -3,11 +3,17 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.Reader;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -148,25 +154,46 @@ public class CPDConfiguration extends AbstractConfiguration {
         return getRendererFromString(name, System.getProperty("file.encoding"));
     }
 
+    private static final Map<String, Class<? extends Renderer>> renderers = new HashMap<String, Class<? extends Renderer>>();
+    static {
+        renderers.put(DEFAULT_RENDERER, SimpleRenderer.class);
+        renderers.put("xml", XMLRenderer.class);
+        renderers.put("csv", CSVRenderer.class);
+        renderers.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
+        renderers.put("vs", VSRenderer.class);
+    }
 	public static Renderer getRendererFromString(String name, String encoding) {
-		if (name.equalsIgnoreCase(DEFAULT_RENDERER) || name.equals("")) {
-			return new SimpleRenderer();
-		} else if ("xml".equals(name)) {
-			return new XMLRenderer(encoding);
-		} else if ("csv".equals(name)) {
-			return new CSVRenderer();
-		} else if ("csv_with_linecount_per_file".equals(name)) {
-			return new CSVRenderer(true);
-		} else if ("vs".equals(name)) {
-			return new VSRenderer();
-		}
-		try {
-			return (Renderer) Class.forName(name).newInstance();
-		} catch (Exception e) {
-			System.out.println("Can't find class '" + name
-					+ "', defaulting to SimpleRenderer.");
-		}
-		return new SimpleRenderer();
+	    String clazzname = name;
+	    if (clazzname == null || "".equals(clazzname)) {
+	        clazzname = DEFAULT_RENDERER;
+	    }
+	    Class<? extends Renderer> clazz = renderers.get(clazzname.toLowerCase(Locale.ROOT));
+	    if (clazz == null) {
+	        try {
+	            clazz = Class.forName(clazzname).asSubclass(Renderer.class);
+	        } catch (ClassNotFoundException e) {
+	            System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
+	            clazz = SimpleRenderer.class;
+	        }
+	    }
+        try {
+            Renderer renderer = clazz.getDeclaredConstructor().newInstance();
+
+            PropertyDescriptor encodingProperty = new PropertyDescriptor("encoding", clazz);
+            Method method = encodingProperty.getWriteMethod();
+            if (method != null) {
+                method.invoke(renderer, encoding);
+            }
+            return renderer;
+	    } catch (Exception e) {
+	        System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
+	        return new SimpleRenderer();
+	    }
+	}
+	public static String[] getRenderers() {
+	    String[] result = renderers.keySet().toArray(new String[renderers.size()]);
+	    Arrays.sort(result);
+	    return result;
 	}
 
 	public static Language getLanguageFromString(String languageString) {
