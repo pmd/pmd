@@ -11,7 +11,8 @@ Having to sort through a thousand line report to find the few you're really inte
 all the fun out of things.
 
 Instead, start with some of the obvious rulesets - just run [unusedcode][1] and fix any unused locals and fields.
-Then, run [basic][2] and fix all the empty `if` statements and such-like.
+Then, run [empty][8] and fix all the empty `if` statements and such-like. After that, take [unnecessary][9]
+and fix these violations. Then, run [basic][2] and fix the remaining violations.
 Then peruse the [design][3] and [controversial][4] rulesets and use the ones
 you like [via a custom ruleset][5].
 
@@ -36,3 +37,6 @@ Suggestions?  Comments?  Post them [here][7]. Thanks!
 [5]: ../usage/howtomakearuleset.html
 [6]: ../usage/suppressing.html
 [7]: http://sourceforge.net/p/pmd/discussion/188192
+[8]: rules/java/empty.html
+[9]: rules/java/unnecessary.html
+
