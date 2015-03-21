@@ -16,9 +16,9 @@ Runs a set of static code analysis rules on some Java source code files and gene
 
 <table>
   <tr>
-    <th>Attribute</td>
-    <th>Description</td>
-    <th>Required</td>
+    <th>Attribute</th>
+    <th>Description</th>
+    <th>Required</th>
   </tr>
   <tr>
     <td>rulesetfiles</td>
