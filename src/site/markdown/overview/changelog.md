@@ -14,6 +14,8 @@
 *   XML: Line numbers for XML documents are more accurate. This is a further improvement of [#1054](https://sourceforge.net/p/pmd/bugs/1054/).
 *   CPD: New output format 'csv_with_linecount_per_file'
 *   [#1320](https://sourceforge.net/p/pmd/bugs/1320/): Enhance SimplifyBooleanReturns checks
+*   PMD exits with status `4` if any violations have been found. This behavior has been introduced to ease PMD
+    integration into scripts or hooks, such as SVN hooks.
 
 **New/Modified/Deprecated Rules:**
 

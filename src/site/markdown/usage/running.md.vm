@@ -193,6 +193,13 @@ The tool comes with a rather extensive help text, simply running with `-help`!
 </table>
 
 
+Exit Status
+-----------
+
+Please note that if PMD detects any violations, it will exit with status 4 (since 5.3).
+This behavior has been introduced to ease PMD integration into scripts or hooks, such as SVN hooks.
+
+
 Supported Languages
 -------------------
 

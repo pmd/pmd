@@ -20,29 +20,42 @@ import org.junit.Test;
 public class CLITest extends BaseCLITest {
     @Test
     public void minimalArgs() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-basic,java-design" };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-unnecessary,java-design" };
         runTest(args, "minimalArgs");
     }
 
     @Test
     public void minimumPriority() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-basic,java-design", "-min", "1"};
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design", "-min", "1"};
         runTest(args,"minimumPriority");
     }
 
     @Test
     public void usingDebug() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-basic,java-design", "-debug" };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design", "-debug" };
         runTest(args, "minimalArgsWithDebug");
     }
 
     @Test
     public void changeJavaVersion() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-basic,java-design", "-version", "1.5",
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design", "-version", "1.5",
                 "-language", "java", "-debug" };
         String resultFilename = runTest(args, "chgJavaVersion");
         assertTrue("Invalid Java version",
                 FileUtil.findPatternInFile(new File(resultFilename), "Using Java version: Java 1.5"));
+    }
+
+    @Test
+    public void exitStatusNoViolations() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design" };
+        runTest(args, "exitStatusNoViolations");
+    }
+
+    @Test
+    public void exitStatusWithViolations() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-empty" };
+        String resultFilename = runTest(args, "exitStatusWithViolations", 4);
+        assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
     }
 
     /**

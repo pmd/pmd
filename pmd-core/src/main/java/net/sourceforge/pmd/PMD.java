@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.*;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.SystemUtils;
@@ -209,14 +211,15 @@ public class PMD {
      * This method is the main entry point for command line usage.
      * 
      * @param configuration the configure to use
+     * @return number of violations found.
      */
-    public static void doPMD(PMDConfiguration configuration) {
+    public static int doPMD(PMDConfiguration configuration) {
 
         // Load the RuleSets
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration);
         RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
-            return;
+            return 0;
         }
 
         Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
@@ -234,12 +237,23 @@ public class PMD {
             Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
 
             RuleContext ctx = new RuleContext();
+            final AtomicInteger violations = new AtomicInteger(0);
+            ctx.getReport().addListener(new ReportListener() {
+                @Override
+                public void ruleViolationAdded(RuleViolation ruleViolation) {
+                    violations.incrementAndGet();
+                }
+                @Override
+                public void metricAdded(Metric metric) {
+                }
+            });
 
             processFiles(configuration, ruleSetFactory, files, ctx, renderers);
 
             reportStart = System.nanoTime();
             renderer.end();
             renderer.flush();
+            return violations.get();
         } catch (Exception e) {
             String message = e.getMessage();
             if (message != null) {
@@ -249,6 +263,7 @@ public class PMD {
             }
             LOG.log(Level.FINE, "Exception during processing", e);
             LOG.info(PMDCommandLineInterface.buildUsageText());
+            return 0;
         } finally {
             Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
         }
@@ -420,7 +435,8 @@ public class PMD {
     /**
      * Parses the command line arguments and executes PMD.
      * @param args command line arguments
-     * @return the exit code, where <code>0</code> means successful execution.
+     * @return the exit code, where <code>0</code> means successful execution, <code>1</code> means error,
+     * <code>4</code> means there have been violations found.
      */
     public static int run(String[] args) {
         int status = 0;
@@ -435,7 +451,12 @@ public class PMD {
         LOG.setLevel(logLevel); // Need to do this, since the static logger has
                                 // already been initialized at this point
         try {
-            PMD.doPMD(configuration);
+            int violations = PMD.doPMD(configuration);
+            if (violations > 0) {
+                status = PMDCommandLineInterface.VIOLATIONS_FOUND;
+            } else {
+                status = 0;
+            }
         } catch (Exception e) {
             System.out.println(PMDCommandLineInterface.buildUsageText());
             System.out.println();

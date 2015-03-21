@@ -25,12 +25,12 @@ public abstract class BaseCLITest {
 
     protected static final String TEST_OUPUT_DIRECTORY = "target/cli-tests/";
 
-    // Points toward a folder without any source files, to avoid actually PMD
+    // Points toward a folder with not many source files, to avoid actually PMD
     // and slowing down tests
-    protected static final String SOURCE_FOLDER = "src/main/resources";
+    protected static final String SOURCE_FOLDER = "src/test/resources/net/sourceforge/pmd/cli";
 
-    private PrintStream originalOut;
-    private PrintStream originalErr;
+    protected PrintStream originalOut;
+    protected PrintStream originalErr;
 
     /**
      * @throws java.lang.Exception
@@ -68,12 +68,15 @@ public abstract class BaseCLITest {
     }
 
     protected String runTest(String[] args, String testname) {
+        return runTest(args, testname, 0);
+    }
+    protected String runTest(String[] args, String testname, int expectedExitCode) {
         String filename = TEST_OUPUT_DIRECTORY + testname + ".txt";
         long start = System.currentTimeMillis();
         createTestOutputFile(filename);
         System.out.println("Start running test " + testname);
         runPMDWith(args);
-        checkStatusCode();
+        checkStatusCode(expectedExitCode);
         System.out.println("Test finished successfully after " + (System.currentTimeMillis() - start) + "ms.");
         return filename;
     }
@@ -82,9 +85,9 @@ public abstract class BaseCLITest {
         PMD.main(args);
     }
 
-    protected void checkStatusCode() {
+    protected void checkStatusCode(int expectedExitCode) {
         int statusCode = getStatusCode();
-        if (statusCode > 0) {
+        if (statusCode != expectedExitCode) {
             fail("PMD failed with status code:" + statusCode);
         }
     }
