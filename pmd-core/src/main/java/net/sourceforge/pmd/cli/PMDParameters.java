@@ -18,61 +18,61 @@ import com.beust.jcommander.validators.PositiveInteger;
 
 public class PMDParameters {
 
-    @Parameter(names = { "-rulesets", "-R" }, description = "comma separated list of rulesets name to use", required = true)
+    @Parameter(names = { "-rulesets", "-R" }, description = "Comma separated list of ruleset names to use.", required = true)
     private String rulesets;
 
-    @Parameter(names = { "-uri", "-u" }, description = "Database URI for sources", required = false)
+    @Parameter(names = { "-uri", "-u" }, description = "Database URI for sources.", required = false)
     private String uri;
 
-    @Parameter(names = { "-dir", "-d" }, description = "root directory for sources", required = false)
+    @Parameter(names = { "-dir", "-d" }, description = "Root directory for sources.", required = false)
     private String sourceDir;
 
-    @Parameter(names = { "-format", "-f" }, description = "report format type")
+    @Parameter(names = { "-format", "-f" }, description = "Report format type.")
     private String format = "text"; // Enhance to support other usage
 
-    @Parameter(names = { "-debug", "-verbose", "-D", "-V" }, description = "Debug mode")
+    @Parameter(names = { "-debug", "-verbose", "-D", "-V" }, description = "Debug mode.")
     private boolean debug = false;
 
-    @Parameter(names = { "-help", "-h", "-H" }, description = "Display help on usage", help = true)
+    @Parameter(names = { "-help", "-h", "-H" }, description = "Display help on usage.", help = true)
     private boolean help = false;
 
-    @Parameter(names = { "-encoding", "-e" }, description = "specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)")
+    @Parameter(names = { "-encoding", "-e" }, description = "Specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8).")
     private String encoding = "UTF-8";
 
-    @Parameter(names = { "-threads", "-t" }, description = "set the number of threads used by PMD", validateWith = PositiveInteger.class)
+    @Parameter(names = { "-threads", "-t" }, description = "Sets the number of threads used by PMD.", validateWith = PositiveInteger.class)
     private Integer threads = 1;
 
-    @Parameter(names = { "-benchmark", "-b" }, description = "Benchmark mode - output a benchmark report upon completion; default to System.err")
+    @Parameter(names = { "-benchmark", "-b" }, description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
     private boolean benchmark = false;
 
-    @Parameter(names = { "-stress", "-S" }, description = "performs a stress test")
+    @Parameter(names = { "-stress", "-S" }, description = "Performs a stress test.")
     private boolean stress = false;
 
-    @Parameter(names = "-shortnames", description = "prints shortened filenames in the report")
+    @Parameter(names = "-shortnames", description = "Prints shortened filenames in the report.")
     private boolean shortnames = false;
 
-    @Parameter(names = "-showsuppressed", description = "report should show suppressed rule violations")
+    @Parameter(names = "-showsuppressed", description = "Report should show suppressed rule violations.")
     private boolean showsuppressed = false;
 
-    @Parameter(names = "-suppressmarker", description = "specifies the String that marks the a line which PMD should ignore; default is NOPMD")
+    @Parameter(names = "-suppressmarker", description = "Specifies the string that marks the a line which PMD should ignore; default is NOPMD.")
     private String suppressmarker = "NOPMD";
 
-    @Parameter(names = { "-minimumpriority", "-min" }, description = "rule priority threshold; rules with lower priority than they will not be used", converter = RulePriorityConverter.class)
+    @Parameter(names = { "-minimumpriority", "-min" }, description = "Rule priority threshold; rules with lower priority than configured here won't be used. Default is '5' which is the lowest priority.", converter = RulePriorityConverter.class)
     private RulePriority minimumPriority = RulePriority.LOW;
 
-    @Parameter(names = { "-property", "-P" }, description = "{name}={value}: define a property for the report", converter = PropertyConverter.class)
+    @Parameter(names = { "-property", "-P" }, description = "{name}={value}: Define a property for the report format.", converter = PropertyConverter.class)
     private Properties properties = new Properties();
 
-    @Parameter(names = { "-reportfile", "-r" }, description = "send report output to a file; default to System.out")
+    @Parameter(names = { "-reportfile", "-r" }, description = "Sends report output to a file; default to System.out.")
     private String reportfile = null;
 
-    @Parameter(names = { "-version", "-v" }, description = "specify version of a language PMD should use")
+    @Parameter(names = { "-version", "-v" }, description = "Specify version of a language PMD should use.")
     private String version = null;
 
-    @Parameter(names = { "-language", "-l" }, description = "specify a language PMD should use")
+    @Parameter(names = { "-language", "-l" }, description = "Specify a language PMD should use.")
     private String language = null;
 
-    @Parameter(names = "-auxclasspath", description = "specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
+    @Parameter(names = "-auxclasspath", description = "Specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
     private String auxclasspath;
 
     // this has to be a public static class, so that JCommander can use it!
@@ -99,8 +99,8 @@ public class PMDParameters {
 
         public int validate(String value) throws ParameterException {
             int minPriorityValue = Integer.parseInt(value);
-            if (minPriorityValue < 0 || minPriorityValue > 5) {
-                throw new ParameterException("Priority values can only be integer value, between 0 and 5," + value
+            if (minPriorityValue < 1 || minPriorityValue > 5) {
+                throw new ParameterException("Priority values can only be integer value, between 1 and 5," + value
                         + " is not valid");
             }
             return minPriorityValue;

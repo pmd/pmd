@@ -69,13 +69,13 @@
     </menu>
     <menu name="Usage">
       <item href="/usage/installing.html" name="Installation"/>
-      <item href="/usage/running.html" name="Command line usage"/>
-      <item href="/usage/ant-task.html" name="Ant task usage"/>
-      <item href="/usage/maven-plugin.html" name="Maven plugin usage"/>
-      <item href="/usage/mvn-plugin.html" name="Mvn plugin usage"/>
+      <item href="/usage/running.html" name="PMD: Command line usage"/>
+      <item href="/usage/ant-task.html" name="PMD: Ant task usage"/>
+      <item href="/usage/suppressing.html" name="PMD: Suppressing warnings"/>
+      <item href="/usage/cpd-usage.html" name="CPD: Finding duplicated code"/>
+      <item href="/usage/maven-plugin.html" name="Maven 1 plugin usage"/>
+      <item href="/usage/mvn-plugin.html" name="Mvn 2/3 plugin usage"/>
       <item href="/usage/integrations.html" name="IDE plugin usage"/>
-      <item href="/usage/suppressing.html" name="Suppressing warnings"/>
-      <item href="/usage/cpd-usage.html" name="Finding duplicated code"/>
       <item href="/usage/jspsupport.html" name="JSP support"/>
       <item href="/usage/ci-plugins.html" name="CI Plugins"/>
       <item href="/usage/faq.html" name="FAQ"/>

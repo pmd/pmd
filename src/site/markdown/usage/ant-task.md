@@ -14,62 +14,62 @@ Runs a set of static code analysis rules on some Java source code files and gene
 
 ### Parameters
 
-<table border="1" cellpadding="2" cellspacing="0">
+<table>
   <tr>
-    <td valign="top"><b>Attribute</b></td>
-    <td valign="top"><b>Description</b></td>
-    <td align="center" valign="top"><b>Required</b></td>
+    <th>Attribute</td>
+    <th>Description</td>
+    <th>Required</td>
   </tr>
   <tr>
-    <td valign="top">rulesetfiles</td>
-    <td valign="top">
+    <td>rulesetfiles</td>
+    <td>
         A comma delimited list of ruleset files ('rulesets/java/basic.xml,rulesets/java/design.xml').
         If you write your own ruleset files, you can put them on the classpath and plug them in here.
     </td>
-    <td valign="top" align="center">Yes, unless the ruleset nested element is used</td>
+    <td>Yes, unless the ruleset nested element is used</td>
   </tr>
   <tr>
-    <td valign="top">failonerror</td>
-    <td valign="top">Whether or not to fail the build if any errors occur while processing the files</td>
-    <td valign="top" align="center">No</td>
+    <td>failonerror</td>
+    <td>Whether or not to fail the build if any errors occur while processing the files</td>
+    <td>No</td>
   </tr>
     <tr>
-      <td valign="top">failOnRuleViolation</td>
-      <td valign="top">Whether or not to fail the build if PMD finds any problems</td>
-      <td valign="top" align="center">No</td>
+      <td>failOnRuleViolation</td>
+      <td>Whether or not to fail the build if PMD finds any problems</td>
+      <td>No</td>
     </tr>
     <tr>
-      <td valign="top">minimumPriority</td>
-      <td valign="top">The rule priority threshold; rules with lower priority than they will not be used</td>
-      <td valign="top" align="center">No</td>
+      <td>minimumPriority</td>
+      <td>The rule priority threshold; rules with lower priority than they will not be used</td>
+      <td>No</td>
     </tr>
     <tr>
-      <td valign="top">shortFilenames</td>
-      <td valign="top">Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.</td>
-      <td valign="top" align="center">No</td>
+      <td>shortFilenames</td>
+      <td>Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.</td>
+      <td>No</td>
     </tr>
     <tr>
-      <td valign="top">failuresPropertyName</td>
-      <td valign="top">A property name to plug the number of rule violations into when the task finishes</td>
-      <td valign="top" align="center">No</td>
+      <td>failuresPropertyName</td>
+      <td>A property name to plug the number of rule violations into when the task finishes</td>
+      <td>No</td>
     </tr>
     <tr>
-      <td valign="top">encoding</td>
-      <td valign="top">The character set encoding (e.g. UTF-8) to use when reading the source code files</td>
-      <td valign="top" align="center">No</td>
+      <td>encoding</td>
+      <td>The character set encoding (e.g. UTF-8) to use when reading the source code files</td>
+      <td>No</td>
     </tr>
     <tr>
-      <td valign="top">suppressMarker</td>
-      <td valign="top">The series of characters to use to tell PMD to skip lines - the default is NOPMD.</td>
-      <td valign="top" align="center">No</td>
+      <td>suppressMarker</td>
+      <td>The series of characters to use to tell PMD to skip lines - the default is NOPMD.</td>
+      <td>No</td>
     </tr>
     <tr>
-      <td valign="top">maxRuleViolations</td>
-      <td valign="top">
+      <td>maxRuleViolations</td>
+      <td>
         Whether or not to fail the build if PMD finds more than the value of this attribute.
         Note that setting this attribute does not require to set the failOnRuleViolation to true.
       </td>
-      <td valign="top" align="center">No</td>
+      <td>No</td>
     </tr>
 </table>
 
