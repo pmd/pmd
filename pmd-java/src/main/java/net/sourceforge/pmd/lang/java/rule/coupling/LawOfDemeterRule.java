@@ -340,8 +340,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         
         private boolean isIterator() {
             boolean iterator = false;
-            if ((baseType != null && baseType == Iterator.class)
-                    || (baseTypeName != null && baseTypeName.endsWith("Iterator"))) {
+            if (baseType != null && baseType == Iterator.class
+                    || baseTypeName != null && baseTypeName.endsWith("Iterator")) {
                 iterator = true;
             }
             return iterator;

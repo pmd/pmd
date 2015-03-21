@@ -32,164 +32,167 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  */
 public abstract class AbstractCommentRule extends AbstractJavaRule {
-	
-	protected AbstractCommentRule() {
-		
-	}
 
-	protected List<Integer> tagsIndicesIn(String comments) {
+    protected AbstractCommentRule() {
+    }
 
-		int atPos = comments.indexOf('@');
-		if (atPos < 0)
-			return Collections.emptyList();
+    protected List<Integer> tagsIndicesIn(String comments) {
 
-		List<Integer> ints = new ArrayList<Integer>();
-		ints.add(atPos);
+        int atPos = comments.indexOf('@');
+        if (atPos < 0) {
+            return Collections.emptyList();
+        }
 
-		atPos = comments.indexOf('@', atPos + 1);
-		while (atPos >= 0) {
-			ints.add(atPos);
-			atPos = comments.indexOf('@', atPos + 1);
-		}
+        List<Integer> ints = new ArrayList<Integer>();
+        ints.add(atPos);
 
-		return ints;
-	}
+        atPos = comments.indexOf('@', atPos + 1);
+        while (atPos >= 0) {
+            ints.add(atPos);
+            atPos = comments.indexOf('@', atPos + 1);
+        }
 
-	protected String filteredCommentIn(Comment comment) {
+        return ints;
+    }
 
-		String trimmed = comment.getImage().trim();
+    protected String filteredCommentIn(Comment comment) {
 
-		if (comment instanceof SingleLineComment) {
-			return singleLineIn(trimmed);
-		}
-		if (comment instanceof MultiLineComment) {
-			return multiLinesIn(trimmed);
-		}
-		if (comment instanceof FormalComment) {
-			return formalLinesIn(trimmed);
-		}
+        String trimmed = comment.getImage().trim();
 
-		return trimmed; // should never reach here
-	}
+        if (comment instanceof SingleLineComment) {
+            return singleLineIn(trimmed);
+        }
+        if (comment instanceof MultiLineComment) {
+            return multiLinesIn(trimmed);
+        }
+        if (comment instanceof FormalComment) {
+            return formalLinesIn(trimmed);
+        }
 
-	private String singleLineIn(String comment) {
+        return trimmed; // should never reach here
+    }
 
-		if (comment.startsWith("//"))
-			return comment.substring(2);
+    private String singleLineIn(String comment) {
 
-		return comment;
-	}
+        if (comment.startsWith("//")) {
+            return comment.substring(2);
+        }
 
-	private static String asSingleString(List<String> lines) {
+        return comment;
+    }
 
-		StringBuilder sb = new StringBuilder();
-		for (String line : lines) {
-			if (StringUtil.isEmpty(line))
-				continue;
-			sb.append(line).append('\n');
-		}
+    private static String asSingleString(List<String> lines) {
 
-		return sb.toString().trim();
-	}
+        StringBuilder sb = new StringBuilder();
+        for (String line : lines) {
+            if (StringUtil.isEmpty(line)) {
+                continue;
+            }
+            sb.append(line).append('\n');
+        }
 
-	private static String multiLinesIn(String comment) {
+        return sb.toString().trim();
+    }
 
-		String[] lines = comment.split("\n");
-		List<String> filteredLines = new ArrayList<String>(lines.length);
+    private static String multiLinesIn(String comment) {
 
-		for (String rawLine : lines) {
-			String line = rawLine.trim();
+        String[] lines = comment.split("\n");
+        List<String> filteredLines = new ArrayList<String>(lines.length);
 
-			if (line.endsWith("*/")) {
-				int end = line.length() - 2;
-				int start = line.startsWith("/*") ? 2 : 0;
-				filteredLines.add(line.substring(start, end));
-				continue;
-			}
+        for (String rawLine : lines) {
+            String line = rawLine.trim();
 
-			if (line.length() > 0 && line.charAt(0) == '*') {
-				filteredLines.add(line.substring(1));
-				continue;
-			}
+            if (line.endsWith("*/")) {
+                int end = line.length() - 2;
+                int start = line.startsWith("/*") ? 2 : 0;
+                filteredLines.add(line.substring(start, end));
+                continue;
+            }
 
-			if (line.startsWith("/*")) {
-				filteredLines.add(line.substring(2));
-				continue;
-			}
+            if (line.length() > 0 && line.charAt(0) == '*') {
+                filteredLines.add(line.substring(1));
+                continue;
+            }
 
-		}
+            if (line.startsWith("/*")) {
+                filteredLines.add(line.substring(2));
+                continue;
+            }
 
-		return asSingleString(filteredLines);
-	}
+        }
 
-	private String formalLinesIn(String comment) {
+        return asSingleString(filteredLines);
+    }
 
-		String[] lines = comment.split("\n");
-		List<String> filteredLines = new ArrayList<String>(lines.length);
+    private String formalLinesIn(String comment) {
 
-		for (String line : lines) {
-			line = line.trim();
+        String[] lines = comment.split("\n");
+        List<String> filteredLines = new ArrayList<String>(lines.length);
 
-			if (line.endsWith("*/")) {
-				filteredLines.add(line.substring(0, line.length() - 2));
-				continue;
-			}
+        for (String line : lines) {
+            line = line.trim();
 
-			if (line.length() > 0 && line.charAt(0) == '*') {
-				filteredLines.add(line.substring(1));
-				continue;
-			}
-			if (line.startsWith("/**")) {
-				filteredLines.add(line.substring(3));
-				continue;
-			}
+            if (line.endsWith("*/")) {
+                filteredLines.add(line.substring(0, line.length() - 2));
+                continue;
+            }
 
-		}
+            if (line.length() > 0 && line.charAt(0) == '*') {
+                filteredLines.add(line.substring(1));
+                continue;
+            }
+            if (line.startsWith("/**")) {
+                filteredLines.add(line.substring(3));
+                continue;
+            }
 
-		return asSingleString(filteredLines);
-	}
+        }
 
-	protected void assignCommentsToDeclarations(ASTCompilationUnit cUnit) {
-				
-		SortedMap<Integer, Node> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
-		FormalComment lastComment = null;
-		AbstractJavaAccessNode lastNode = null;
+        return asSingleString(filteredLines);
+    }
 
-		for (Entry<Integer, Node> entry : itemsByLineNumber.entrySet()) {
-			Node value = entry.getValue();
+    protected void assignCommentsToDeclarations(ASTCompilationUnit cUnit) {
 
-			if (value instanceof AbstractJavaAccessNode) {
-				AbstractJavaAccessNode node = (AbstractJavaAccessNode) value;
+        SortedMap<Integer, Node> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
+        FormalComment lastComment = null;
+        AbstractJavaAccessNode lastNode = null;
 
-				// maybe the last comment is within the last node
-				if (lastComment != null && isCommentNotWithin(lastComment, lastNode, node) && isCommentBefore(lastComment, node)) {
-				    node.comment(lastComment);
-				    lastComment = null;
-				}
-				if (!(node instanceof AbstractJavaAccessTypeNode)) {
-				    lastNode = node;
-				}
-			} else
-			if (value instanceof FormalComment) {
-				lastComment = (FormalComment) value;
-			}				
-		}	
-	}
+        for (Entry<Integer, Node> entry : itemsByLineNumber.entrySet()) {
+            Node value = entry.getValue();
+
+            if (value instanceof AbstractJavaAccessNode) {
+                AbstractJavaAccessNode node = (AbstractJavaAccessNode) value;
+
+                // maybe the last comment is within the last node
+                if (lastComment != null && isCommentNotWithin(lastComment, lastNode, node)
+                        && isCommentBefore(lastComment, node)) {
+                    node.comment(lastComment);
+                    lastComment = null;
+                }
+                if (!(node instanceof AbstractJavaAccessTypeNode)) {
+                    lastNode = node;
+                }
+            } else if (value instanceof FormalComment) {
+                lastComment = (FormalComment) value;
+            }
+        }
+    }
 
     private boolean isCommentNotWithin(FormalComment n1, Node n2, Node node) {
         if (n1 == null || n2 == null || node == null) {
             return true;
         }
-        boolean isNotWithinNode2 = !((n1.getEndLine() < n2.getEndLine())
-                || (n1.getEndLine() == n2.getEndLine() && n1.getEndColumn() < n2.getEndColumn()));
-        boolean isNotSameClass = node.getFirstParentOfType(ASTClassOrInterfaceBody.class) != n2.getFirstParentOfType(ASTClassOrInterfaceBody.class);
+        boolean isNotWithinNode2 = !((n1.getEndLine() < n2.getEndLine()) || (n1.getEndLine() == n2.getEndLine() && n1
+                .getEndColumn() < n2.getEndColumn()));
+        boolean isNotSameClass = node.getFirstParentOfType(ASTClassOrInterfaceBody.class) != n2
+                .getFirstParentOfType(ASTClassOrInterfaceBody.class);
         return isNotWithinNode2 || isNotSameClass;
     }
 
     private boolean isCommentBefore(FormalComment n1, Node n2) {
-        return ((n1.getEndLine() < n2.getBeginLine())
-                || (n1.getEndLine() == n2.getBeginLine() && n1.getEndColumn() < n2.getBeginColumn()));
-	}
+        return ((n1.getEndLine() < n2.getBeginLine()) || (n1.getEndLine() == n2.getBeginLine() && n1.getEndColumn() < n2
+                .getBeginColumn()));
+    }
 
     protected SortedMap<Integer, Node> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
 
@@ -209,7 +212,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 
         List<ASTConstructorDeclaration> constructors = cUnit.findDescendantsOfType(ASTConstructorDeclaration.class);
         addDeclarations(itemsByLineNumber, constructors);
-        
+
         List<ASTEnumDeclaration> enumDecl = cUnit.findDescendantsOfType(ASTEnumDeclaration.class);
         addDeclarations(itemsByLineNumber, enumDecl);
 

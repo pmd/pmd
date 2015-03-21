@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 public abstract class Comment extends AbstractNode {
 
     protected Comment(Token t) {
-    	super(-1, t.beginLine, t.endLine, t.beginColumn, t.endColumn);
+        super(-1, t.beginLine, t.endLine, t.beginColumn, t.endColumn);
 
         setImage(t.image);
         if (t.image.startsWith("/**")) {
@@ -23,26 +23,24 @@ public abstract class Comment extends AbstractNode {
     }
 
     public String toString() {
-    	return getImage();
+        return getImage();
     }
 
     private void findJavadocs(String commentText) {
 
-    	Collection<JavadocElement> kids = new ArrayList<JavadocElement>();
+        Collection<JavadocElement> kids = new ArrayList<JavadocElement>();
 
-    	Map<String, Integer> tags = CommentUtil.javadocTagsIn(commentText);
-    	for (Map.Entry<String, Integer> entry : tags.entrySet()) {
-    		JavadocTag tag = JavadocTag.tagFor(entry.getKey());
-    		if (tag == null) continue;
-    		kids.add(
-    			new JavadocElement(
-    				getBeginLine(), getBeginLine(),	// TODO valid?
-    				entry.getValue() + 1, entry.getValue() + tag.label.length() + 1 ,tag
-    				)
-    			);
-    	}
+        Map<String, Integer> tags = CommentUtil.javadocTagsIn(commentText);
+        for (Map.Entry<String, Integer> entry : tags.entrySet()) {
+            JavadocTag tag = JavadocTag.tagFor(entry.getKey());
+            if (tag == null) {
+                continue;
+            }
+            kids.add(new JavadocElement(getBeginLine(), getBeginLine(), // TODO valid?
+                    entry.getValue() + 1, entry.getValue() + tag.label.length() + 1, tag));
+        }
 
-    	children = kids.toArray(new Node[kids.size()]);
+        children = kids.toArray(new Node[kids.size()]);
     }
 
 }

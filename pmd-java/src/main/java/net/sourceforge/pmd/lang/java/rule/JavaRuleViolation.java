@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
@@ -35,37 +34,37 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  */
 public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
-	public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message, int beginLine, int endLine) {
-		this(rule, ctx, node, message);
+    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message, int beginLine, int endLine) {
+        this(rule, ctx, node, message);
 
-		setLines(beginLine, endLine);
-	}
+        setLines(beginLine, endLine);
+    }
 
-	public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message) {
-		super(rule, ctx, node, message);
+    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message) {
+        super(rule, ctx, node, message);
 
-		if (node != null) {
-			final Scope scope = node.getScope();
-			final SourceFileScope sourceFileScope = scope.getEnclosingScope(SourceFileScope.class);
+        if (node != null) {
+            final Scope scope = node.getScope();
+            final SourceFileScope sourceFileScope = scope.getEnclosingScope(SourceFileScope.class);
 
-			// Package name is on SourceFileScope
-			packageName = sourceFileScope.getPackageName() == null ? ""	: sourceFileScope.getPackageName();
+            // Package name is on SourceFileScope
+            packageName = sourceFileScope.getPackageName() == null ? "" : sourceFileScope.getPackageName();
 
-			// Class name is built from enclosing ClassScopes
-			setClassNameFrom(node);
-			
-			// Method name comes from 1st enclosing MethodScope
-			if (scope.getEnclosingScope(MethodScope.class) != null) {
-				methodName = scope.getEnclosingScope(MethodScope.class).getName();
-			}
-			// Variable name node specific
-			setVariableNameIfExists(node);
+            // Class name is built from enclosing ClassScopes
+            setClassNameFrom(node);
 
-			if (!suppressed) {
-			    suppressed = isSupressed(node, getRule());
-			}
-		}
-	}
+            // Method name comes from 1st enclosing MethodScope
+            if (scope.getEnclosingScope(MethodScope.class) != null) {
+                methodName = scope.getEnclosingScope(MethodScope.class).getName();
+            }
+            // Variable name node specific
+            setVariableNameIfExists(node);
+
+            if (!suppressed) {
+                suppressed = isSupressed(node, getRule());
+            }
+        }
+    }
 
     /**
      * Check for suppression on this node, on parents, and on contained types
@@ -91,41 +90,40 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         return result;
     }
 
-	private void setClassNameFrom(JavaNode node) {
-		
-		String qualifiedName = null;
-		for (ASTClassOrInterfaceDeclaration parent : node.getParentsOfType(ASTClassOrInterfaceDeclaration.class)) {
-			String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
-			if (qualifiedName == null) {
-				qualifiedName = clsName;
-			} else {
-				qualifiedName = clsName + '$' + qualifiedName;
-			}
-		}
-		if (qualifiedName != null) {
-			className = qualifiedName;
-		}
-	}
+    private void setClassNameFrom(JavaNode node) {
 
-	private static boolean suppresses(final Node node, Rule rule) {
-		return node instanceof CanSuppressWarnings
-				&& ((CanSuppressWarnings) node).hasSuppressWarningsAnnotationFor(rule);
-	}
+        String qualifiedName = null;
+        for (ASTClassOrInterfaceDeclaration parent : node.getParentsOfType(ASTClassOrInterfaceDeclaration.class)) {
+            String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
+            if (qualifiedName == null) {
+                qualifiedName = clsName;
+            } else {
+                qualifiedName = clsName + '$' + qualifiedName;
+            }
+        }
+        if (qualifiedName != null) {
+            className = qualifiedName;
+        }
+    }
 
-	private void setVariableNameIfExists(Node node) {
-		if (node instanceof ASTFieldDeclaration) {
-			variableName = ((ASTFieldDeclaration) node).getVariableName();
-		} else if (node instanceof ASTLocalVariableDeclaration) {
-			variableName = ((ASTLocalVariableDeclaration) node)
-					.getVariableName();
-		} else if (node instanceof ASTVariableDeclarator) {
-			variableName = node.jjtGetChild(0).getImage();
-		} else if (node instanceof ASTVariableDeclaratorId) {
-			variableName = node.getImage();
-		} else if (node instanceof ASTFormalParameter) {
-		    setVariableNameIfExists(node.getFirstChildOfType(ASTVariableDeclaratorId.class));
-		} else {
-		    variableName = "";
-		}
-	}
+    private static boolean suppresses(final Node node, Rule rule) {
+        return node instanceof CanSuppressWarnings
+                && ((CanSuppressWarnings) node).hasSuppressWarningsAnnotationFor(rule);
+    }
+
+    private void setVariableNameIfExists(Node node) {
+        if (node instanceof ASTFieldDeclaration) {
+            variableName = ((ASTFieldDeclaration) node).getVariableName();
+        } else if (node instanceof ASTLocalVariableDeclaration) {
+            variableName = ((ASTLocalVariableDeclaration) node).getVariableName();
+        } else if (node instanceof ASTVariableDeclarator) {
+            variableName = node.jjtGetChild(0).getImage();
+        } else if (node instanceof ASTVariableDeclaratorId) {
+            variableName = node.getImage();
+        } else if (node instanceof ASTFormalParameter) {
+            setVariableNameIfExists(node.getFirstChildOfType(ASTVariableDeclaratorId.class));
+        } else {
+            variableName = "";
+        }
+    }
 }

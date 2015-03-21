@@ -29,132 +29,137 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class CommentContentRule extends AbstractCommentRule {
 
-	private boolean caseSensitive;
-	private boolean wordsAreRegex;
-	private String[] originalBadWords;
-	private String[] currentBadWords;
+    private boolean caseSensitive;
+    private boolean wordsAreRegex;
+    private String[] originalBadWords;
+    private String[] currentBadWords;
 
-	private static final String[] BAD_WORDS = new String[] { "idiot", "jerk" };	// FIXME need some better defaults (or none?)
+    // FIXME need some better defaults (or none?)
+    private static final String[] BAD_WORDS = new String[] { "idiot", "jerk" };
 
-	public static final BooleanProperty WORDS_ARE_REGEX_DESCRIPTOR = new BooleanProperty("wordsAreRegex",
-    		"Use regular expressions", false, 1.0f);
+    public static final BooleanProperty WORDS_ARE_REGEX_DESCRIPTOR = new BooleanProperty("wordsAreRegex",
+            "Use regular expressions", false, 1.0f);
 
-	// ignored when property above == True
-	public static final BooleanProperty CASE_SENSITIVE_DESCRIPTOR = new BooleanProperty("caseSensitive",
-    		"Case sensitive", false, 2.0f);
+    // ignored when property above == True
+    public static final BooleanProperty CASE_SENSITIVE_DESCRIPTOR = new BooleanProperty("caseSensitive",
+            "Case sensitive", false, 2.0f);
 
     public static final StringMultiProperty DISSALLOWED_TERMS_DESCRIPTOR = new StringMultiProperty("disallowedTerms",
-    		"Illegal terms or phrases", BAD_WORDS, 3.0f, '|');
+            "Illegal terms or phrases", BAD_WORDS, 3.0f, '|');
 
     private static final Set<PropertyDescriptor<?>> NON_REGEX_PROPERTIES;
     static {
-    	NON_REGEX_PROPERTIES = new HashSet<PropertyDescriptor<?>>(1);
-    	NON_REGEX_PROPERTIES.add(CASE_SENSITIVE_DESCRIPTOR);
+        NON_REGEX_PROPERTIES = new HashSet<PropertyDescriptor<?>>(1);
+        NON_REGEX_PROPERTIES.add(CASE_SENSITIVE_DESCRIPTOR);
     }
 
-	public CommentContentRule() {
-		definePropertyDescriptor(WORDS_ARE_REGEX_DESCRIPTOR);
-		definePropertyDescriptor(CASE_SENSITIVE_DESCRIPTOR);
-		definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
-	}
+    public CommentContentRule() {
+        definePropertyDescriptor(WORDS_ARE_REGEX_DESCRIPTOR);
+        definePropertyDescriptor(CASE_SENSITIVE_DESCRIPTOR);
+        definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
+    }
 
-	 /**
-	  * Capture values and perform all the case-conversions once per run
-	  */
-	 @Override
-	public void start(RuleContext ctx) {
-		 wordsAreRegex = getProperty(WORDS_ARE_REGEX_DESCRIPTOR);
-		 originalBadWords = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
-		 caseSensitive = getProperty(CASE_SENSITIVE_DESCRIPTOR);
-		 if (caseSensitive) {
-			 currentBadWords = originalBadWords;
-		 	} else {
-		 		currentBadWords = new String[originalBadWords.length];
-		 		 for (int i=0; i<currentBadWords.length; i++) {
-					 currentBadWords[i] = originalBadWords[i].toUpperCase();
-				 	}
-		 	}
-	 }
+    /**
+     * Capture values and perform all the case-conversions once per run
+     */
+    @Override
+    public void start(RuleContext ctx) {
+        wordsAreRegex = getProperty(WORDS_ARE_REGEX_DESCRIPTOR);
+        originalBadWords = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
+        caseSensitive = getProperty(CASE_SENSITIVE_DESCRIPTOR);
+        if (caseSensitive) {
+            currentBadWords = originalBadWords;
+        } else {
+            currentBadWords = new String[originalBadWords.length];
+            for (int i = 0; i < currentBadWords.length; i++) {
+                currentBadWords[i] = originalBadWords[i].toUpperCase();
+            }
+        }
+    }
 
-	 @Override
-	 public Set<PropertyDescriptor<?>> ignoredProperties() {
-		 return getProperty(WORDS_ARE_REGEX_DESCRIPTOR) ?
-				NON_REGEX_PROPERTIES :
-				Collections.EMPTY_SET;
-	 }
+    @Override
+    public Set<PropertyDescriptor<?>> ignoredProperties() {
+        return getProperty(WORDS_ARE_REGEX_DESCRIPTOR) ? NON_REGEX_PROPERTIES : Collections.EMPTY_SET;
+    }
 
-	 /**
-	  * @see Rule#end(RuleContext)
-	  */
-	 @Override
-	public void end(RuleContext ctx) {
-		 // Override as needed
-	 }
+    /**
+     * @see Rule#end(RuleContext)
+     */
+    @Override
+    public void end(RuleContext ctx) {
+        // Override as needed
+    }
 
-	private List<String> illegalTermsIn(Comment comment) {
+    private List<String> illegalTermsIn(Comment comment) {
 
-		if (currentBadWords.length == 0) return Collections.emptyList();
+        if (currentBadWords.length == 0) {
+            return Collections.emptyList();
+        }
 
-		String commentText = filteredCommentIn(comment);
-		if (StringUtil.isEmpty(commentText)) return Collections.emptyList();
+        String commentText = filteredCommentIn(comment);
+        if (StringUtil.isEmpty(commentText)) {
+            return Collections.emptyList();
+        }
 
-		if (!caseSensitive) commentText = commentText.toUpperCase();
+        if (!caseSensitive)
+            commentText = commentText.toUpperCase();
 
-		List<String> foundWords = new ArrayList<String>();
+        List<String> foundWords = new ArrayList<String>();
 
-		for (int i=0; i<currentBadWords.length; i++) {
-			if (commentText.indexOf(currentBadWords[i]) >= 0) {
-				foundWords.add(originalBadWords[i]);
-			}
-		}
+        for (int i = 0; i < currentBadWords.length; i++) {
+            if (commentText.indexOf(currentBadWords[i]) >= 0) {
+                foundWords.add(originalBadWords[i]);
+            }
+        }
 
-		return foundWords;
-	}
+        return foundWords;
+    }
 
-	private String errorMsgFor(List<String> badWords) {
-	    StringBuilder msg = new StringBuilder(this.getMessage()).append(": ");
-	    if (badWords.size() == 1 ) {
-		msg.append("Invalid term: '").append(badWords.get(0)).append('\'');
-	    } else {
-		msg.append("Invalid terms: '");
-		msg.append(badWords.get(0));
-		for (int i=1; i<badWords.size(); i++) {
-		    msg.append("', '").append(badWords.get(i));
-		}
-		msg.append('\'');
-	    }
-	    return msg.toString();
-	}
+    private String errorMsgFor(List<String> badWords) {
+        StringBuilder msg = new StringBuilder(this.getMessage()).append(": ");
+        if (badWords.size() == 1) {
+            msg.append("Invalid term: '").append(badWords.get(0)).append('\'');
+        } else {
+            msg.append("Invalid terms: '");
+            msg.append(badWords.get(0));
+            for (int i = 1; i < badWords.size(); i++) {
+                msg.append("', '").append(badWords.get(i));
+            }
+            msg.append('\'');
+        }
+        return msg.toString();
+    }
 
-	@Override
+    @Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
 
-		// NPE patch: Eclipse plugin doesn't call start() at onset?
-		if (currentBadWords == null) start(null);
+        // NPE patch: Eclipse plugin doesn't call start() at onset?
+        if (currentBadWords == null) {
+            start(null);
+        }
 
-		for (Comment comment : cUnit.getComments()) {
-			List<String> badWords = illegalTermsIn(comment);
-			if (badWords.isEmpty()) continue;
+        for (Comment comment : cUnit.getComments()) {
+            List<String> badWords = illegalTermsIn(comment);
+            if (badWords.isEmpty()) {
+                continue;
+            }
 
-			addViolationWithMessage(data, cUnit, errorMsgFor(badWords), comment.getBeginLine(), comment.getEndLine());
-		}
+            addViolationWithMessage(data, cUnit, errorMsgFor(badWords), comment.getBeginLine(), comment.getEndLine());
+        }
 
         return super.visit(cUnit, data);
     }
 
-	public boolean hasDissallowedTerms() {
-		String[] terms = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
-		return CollectionUtil.isNotEmpty(terms);
-	}
+    public boolean hasDissallowedTerms() {
+        String[] terms = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
+        return CollectionUtil.isNotEmpty(terms);
+    }
 
-	/**
-	 * @see PropertySource#dysfunctionReason()
-	 */
-	@Override
-	public String dysfunctionReason() {
-
-		return hasDissallowedTerms() ?
-				null :
-				"No disallowed terms specified";
-	}
+    /**
+     * @see PropertySource#dysfunctionReason()
+     */
+    @Override
+    public String dysfunctionReason() {
+        return hasDissallowedTerms() ? null : "No disallowed terms specified";
+    }
 }

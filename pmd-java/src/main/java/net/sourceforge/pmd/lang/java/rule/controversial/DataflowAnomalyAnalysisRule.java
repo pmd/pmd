@@ -35,12 +35,12 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     private int currentRuleViolationCount;
 
     private static final IntegerProperty MAX_PATH_DESCRIPTOR = new IntegerProperty(
-            "maxPaths", "Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.", 100, 8000, 1000, 1.0f
-            );
+            "maxPaths",
+            "Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.",
+            100, 8000, 1000, 1.0f);
 
-    private static final IntegerProperty MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty(
-            "maxViolations", "Maximum number of anomalies per class", 1, 2000, 100, 2.0f
-            );
+    private static final IntegerProperty MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty("maxViolations",
+            "Maximum number of anomalies per class", 1, 2000, 100, 2.0f);
 
     private static class Usage {
         public int accessType;
@@ -55,10 +55,10 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
             return "accessType = " + accessType + ", line = " + node.getLine();
         }
     }
-    
+
     public DataflowAnomalyAnalysisRule() {
-	definePropertyDescriptor(MAX_PATH_DESCRIPTOR);
-	definePropertyDescriptor(MAX_VIOLATIONS_DESCRIPTOR);
+        definePropertyDescriptor(MAX_PATH_DESCRIPTOR);
+        definePropertyDescriptor(MAX_VIOLATIONS_DESCRIPTOR);
     }
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -81,8 +81,10 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     }
 
     public void execute(CurrentPath path) {
-    	
-        if (maxNumberOfViolationsReached()) return;
+
+        if (maxNumberOfViolationsReached()) {
+            return;
+        }
 
         Map<String, Usage> usagesByVarName = new HashMap<String, Usage>();
 
@@ -117,7 +119,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
         Node lastNode = inode.getNode();
         Node firstNode = u.node.getNode();
 
-        if (va.accessTypeMatches(u.accessType) && va.isDefinition() ) { // DD
+        if (va.accessTypeMatches(u.accessType) && va.isDefinition()) { // DD
             addDaaViolation(rc, lastNode, "DD", va.getVariableName(), startLine, endLine);
         } else if (u.accessType == VariableAccess.UNDEFINITION && va.isReference()) { // UR
             addDaaViolation(rc, lastNode, "UR", va.getVariableName(), startLine, endLine);
@@ -130,9 +132,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
      * Adds a daa violation to the report.
      */
     private final void addDaaViolation(Object data, Node node, String type, String var, int startLine, int endLine) {
-        if (!maxNumberOfViolationsReached()
-                && !violationAlreadyExists(type, var, startLine, endLine)
-                && node != null) {
+        if (!maxNumberOfViolationsReached() && !violationAlreadyExists(type, var, startLine, endLine) && node != null) {
             RuleContext ctx = (RuleContext) data;
             String msg = type;
             if (getMessage() != null) {
@@ -142,21 +142,23 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
             ctx.getReport().addRuleViolation(violation);
             daaRuleViolations.add(violation);
             currentRuleViolationCount++;
-      }
+        }
     }
 
     /**
      * Maximum number of violations was already reached?
-     * @return <code>true</code> if the maximum number of violations was reached,
-     * <code>false</code> otherwise.
+     * 
+     * @return <code>true</code> if the maximum number of violations was
+     *         reached, <code>false</code> otherwise.
      */
     private boolean maxNumberOfViolationsReached() {
         return currentRuleViolationCount >= maxRuleViolations;
     }
 
     /**
-     * Checks if a violation already exists.
-     * This is needed because on the different paths same anomalies can occur.
+     * Checks if a violation already exists. This is needed because on the
+     * different paths same anomalies can occur.
+     * 
      * @param type
      * @param var
      * @param startLine
@@ -164,11 +166,9 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
      * @return true if the violation already was added to the report
      */
     private boolean violationAlreadyExists(String type, String var, int startLine, int endLine) {
-        for(DaaRuleViolation violation: daaRuleViolations) {
-            if ((violation.getBeginLine() == startLine)
-                    && (violation.getEndLine() == endLine)
-                    && violation.getType().equals(type)
-                    && violation.getVariableName().equals(var)) {
+        for (DaaRuleViolation violation : daaRuleViolations) {
+            if (violation.getBeginLine() == startLine && violation.getEndLine() == endLine
+                    && violation.getType().equals(type) && violation.getVariableName().equals(var)) {
                 return true;
             }
         }
