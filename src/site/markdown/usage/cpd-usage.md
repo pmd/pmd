@@ -7,8 +7,9 @@
 Or how to find copied and pasted code
 
 * [Overview](#Overview)
-* [Ant task](#Ant_task)
 * [Command line usage](#Command_line_usage)
+* [Ant task](#Ant_task)
+* [GUI](#GUI)
 * [Suppression](#Suppression)
 
 
@@ -29,8 +30,6 @@ CPD has been through three major incarnations:
 
 Each rewrite made it much faster, and now it can process the JDK 1.4 java.* packages in about 4 seconds
 (on my workstation, at least).
-
-Here's a [screenshot](../images/screenshot_cpd.png) of CPD after running on the JDK java.lang package.
 
 Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code. Your own language is missing?
 See how to add it [here](../customizing/cpd-parser-howto.html).
@@ -392,6 +391,23 @@ Also, you can get an HTML report from CPD by using the XSLT script in pmd/etc/xs
 the CPD task as usual and right after it invoke the Ant XSLT script like this:
 
     <xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
+
+## GUI
+
+CPD also comes with a simple GUI. You can start it via some scripts in the `bin` folder:
+
+For Windows:
+
+    cpdgui.bat
+
+For Linux:
+
+    ./run.sh cpdgui
+
+Here's a [screenshot](../images/screenshot_cpd.png) of CPD after running on the JDK 8 java.lang package:
+
+![CPD Screenshot after running on the JDK 8 java.lang package](../images/screenshot_cpd.png)
+
 
 ## Suppression
 
