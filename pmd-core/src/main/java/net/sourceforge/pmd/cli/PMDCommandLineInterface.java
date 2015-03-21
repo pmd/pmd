@@ -41,7 +41,7 @@ public class PMDCommandLineInterface {
 		} catch (ParameterException e) {
 			jcommander.usage();
 			System.out.println(buildUsageText(jcommander));
-			System.out.println(e.getMessage());
+			System.err.println(e.getMessage());
 			setStatusCodeOrExit(ERROR_STATUS);
 		}
 		return arguments;
@@ -174,9 +174,13 @@ public class PMDCommandLineInterface {
 		}
 	}
 
-    private static boolean isExitAfterRunSet() {
-    	return (System.getenv(NO_EXIT_AFTER_RUN) == null ? false : true);
-    }
+	private static boolean isExitAfterRunSet() {
+		String noExit = System.getenv(NO_EXIT_AFTER_RUN);
+		if (noExit == null) {
+			noExit = System.getProperty(NO_EXIT_AFTER_RUN);
+		}
+		return (noExit == null ? true : false);
+	}
 
     private static void setStatusCode(int statusCode) {
     	System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
