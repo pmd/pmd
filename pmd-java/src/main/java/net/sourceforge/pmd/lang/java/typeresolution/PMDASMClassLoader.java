@@ -29,25 +29,28 @@ import org.objectweb.asm.ClassReader;
  * then the resource foo/Bar.class will not exist, too.
  */
 public final class PMDASMClassLoader extends ClassLoader {
-    
+
     private static PMDASMClassLoader cachedPMDASMClassLoader;
     private static ClassLoader cachedClassLoader;
-    
+
     /**
-     * A new PMDASMClassLoader is created for each compilation unit, this method allows to reuse the same
-     * PMDASMClassLoader across all the compilation units.
+     * A new PMDASMClassLoader is created for each compilation unit, this method
+     * allows to reuse the same PMDASMClassLoader across all the compilation
+     * units.
      */
     public static synchronized PMDASMClassLoader getInstance(ClassLoader parent) {
-        if (parent == cachedClassLoader) return cachedPMDASMClassLoader;
+        if (parent == cachedClassLoader) {
+            return cachedPMDASMClassLoader;
+        }
         cachedClassLoader = parent;
         cachedPMDASMClassLoader = new PMDASMClassLoader(parent);
         return cachedPMDASMClassLoader;
     }
-    
+
     //
 
     private PMDASMClassLoader(ClassLoader parent) {
-    	super(parent);
+        super(parent);
     }
 
     /** Caches the names of the classes that we can't load or that don't exist. */
@@ -65,7 +68,8 @@ public final class PMDASMClassLoader extends ClassLoader {
             throw e;
         } catch (NoClassDefFoundError e) {
             dontBother.add(name);
-            // rethrow as ClassNotFoundException, as the remaining part just deals with that
+            // rethrow as ClassNotFoundException, as the remaining part just
+            // deals with that
             // see also: https://sourceforge.net/p/pmd/bugs/1319/
             throw new ClassNotFoundException(name, e);
         }
@@ -83,8 +87,9 @@ public final class PMDASMClassLoader extends ClassLoader {
 
             List<String> inner = asmVisitor.getInnerClasses();
             if (inner != null && !inner.isEmpty()) {
-                inner = new ArrayList<String>(inner); // to avoid ConcurrentModificationException
-                for (String str: inner) {
+                inner = new ArrayList<String>(inner); // to avoid
+                                                      // ConcurrentModificationException
+                for (String str : inner) {
                     reader = new ClassReader(getResourceAsStream(str.replace('.', '/') + ".class"));
                     reader.accept(asmVisitor, 0);
                 }

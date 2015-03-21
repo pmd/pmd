@@ -56,11 +56,11 @@ public class CsTokenizer implements Tokenizer {
                     } else if (ic == c) {
                         ic = reader.read();
                         if (ic == '=') {
-                            tokenEntries.add(new TokenEntry("" + c + c + "=", sourceCode
+                            tokenEntries.add(new TokenEntry(String.valueOf(c) + String.valueOf(c) + "=", sourceCode
                                     .getFileName(), line));
                             ic = reader.read();
                         } else {
-                            tokenEntries.add(new TokenEntry("" + c + c, sourceCode
+                            tokenEntries.add(new TokenEntry(String.valueOf(c) + String.valueOf(c), sourceCode
                                     .getFileName(), line));
                         }
                     } else {
@@ -76,7 +76,7 @@ public class CsTokenizer implements Tokenizer {
                 case '-':
                     ic = reader.read();
                     if (ic == '=' || ic == c) {
-                        tokenEntries.add(new TokenEntry("" + c + ((char) ic), sourceCode
+                        tokenEntries.add(new TokenEntry(String.valueOf(c) + String.valueOf((char) ic), sourceCode
                                 .getFileName(), line));
                         ic = reader.read();
                     } else {

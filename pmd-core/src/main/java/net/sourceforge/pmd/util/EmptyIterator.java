@@ -14,21 +14,26 @@ import java.util.Iterator;
  */
 public final class EmptyIterator<T extends Object> implements Iterator<T> {
 
-    	@SuppressWarnings("rawtypes")
-	public static final Iterator INSTANCE = new EmptyIterator();
-    	
-    	@SuppressWarnings("unchecked")
-	public static final <T extends Object> Iterator<T> instance() {
-    	    return INSTANCE;
-    	}
-	
-	private EmptyIterator() {}
-	
-	public boolean hasNext() { return false; }
+    @SuppressWarnings("rawtypes")
+    public static final Iterator INSTANCE = new EmptyIterator();
 
-	public T next() { return null;	}
+    @SuppressWarnings("unchecked")
+    public static <T extends Object> Iterator<T> instance() {
+        return INSTANCE;
+    }
 
-	public void remove() {	
-		throw new UnsupportedOperationException();
-	}
+    private EmptyIterator() {
+    }
+
+    public boolean hasNext() {
+        return false;
+    }
+
+    public T next() {
+        return null;
+    }
+
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

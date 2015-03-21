@@ -3,11 +3,10 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
-
 public interface TypedNameDeclaration {
 
-    public String getTypeImage();
+    String getTypeImage();
 
-    public Class<?> getType();
+    Class<?> getType();
 
 }

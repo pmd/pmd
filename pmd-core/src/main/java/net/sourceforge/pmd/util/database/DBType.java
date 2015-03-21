@@ -13,161 +13,157 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Encapsulate the settings needed to access database source code.
+/**
+ * Encapsulate the settings needed to access database source code.
  * 
  * 
  * @author sturton
  */
-public class DBType 
-{
-  private final static String CLASS_NAME = DBType.class.getCanonicalName();
+public class DBType {
+    private final static String CLASS_NAME = DBType.class.getCanonicalName();
 
-  private final static Logger LOGGER = Logger.getLogger(DBType.class.getPackage().getName()); 
+    private final static Logger LOGGER = Logger.getLogger(DBType.class.getPackage().getName());
 
-  private final static String INTERNAL_SETTINGS = "[Internal Settings]"; 
+    private final static String INTERNAL_SETTINGS = "[Internal Settings]";
 
-  /**
-   * The names of the properties 
-   */
-  public enum property {
-     USER("user", "Name of the connecting database user"),
-     PASSWORD("password", "The connecting database user's password"),
-     DRIVER("driver", "JDBC driver classname"),
-     CHARACTERSET("characterset","Reader character set"),
-     LANGUAGES("languages", "Comma-separated list of PMD-supported languages"),
-     SCHEMAS("schemas","SchemaSpy compatible regular expression for schemas to be processed"), 
-     SOURCE_TYPES("sourcecodetypes","Comma-separated list of supported source types"),
-     SOURCE_NAMES("sourcecodenames", "Default comma-separated list of source code names to validate"),
-     GET_SOURCE_CODE_STATEMENT("getSourceCodeStatement","SQL92 or Oracle embedded SQL statement to retrieve  code source from the database catalogue"),
-     RETURN_TYPE("returnType", "int equivalent of java.sql.Types return type of getSourceCodeStatement");
+    /**
+     * The names of the properties
+     */
+    public enum property {
+        USER("user", "Name of the connecting database user"), PASSWORD("password",
+                "The connecting database user's password"), DRIVER("driver", "JDBC driver classname"), CHARACTERSET(
+                "characterset", "Reader character set"), LANGUAGES("languages",
+                "Comma-separated list of PMD-supported languages"), SCHEMAS("schemas",
+                "SchemaSpy compatible regular expression for schemas to be processed"), SOURCE_TYPES("sourcecodetypes",
+                "Comma-separated list of supported source types"), SOURCE_NAMES("sourcecodenames",
+                "Default comma-separated list of source code names to validate"), GET_SOURCE_CODE_STATEMENT(
+                "getSourceCodeStatement",
+                "SQL92 or Oracle embedded SQL statement to retrieve  code source from the database catalogue"), RETURN_TYPE(
+                "returnType", "int equivalent of java.sql.Types return type of getSourceCodeStatement");
 
-     private String name;
-     private String description;
+        private String name;
+        private String description;
 
-     private property(String name, String description)
-     {
-      this.name = name;
-      this.description = description;
-     }
+        private property(String name, String description) {
+            this.name = name;
+            this.description = description;
+        }
 
-     public String getPropertyName() {
-         return name;
-     }
-     public String getDescription() {
-         return description;
-     }
-  } 
+        public String getPropertyName() {
+            return name;
+        }
 
+        public String getDescription() {
+            return description;
+        }
+    }
 
-  /**
-   * Where the properties were taken from
-   */
-  private String propertiesSource;
+    /**
+     * Where the properties were taken from
+     */
+    private String propertiesSource;
 
-  /**
-   * Parameters from Properties
-   */
-  private  Properties properties ;
+    /**
+     * Parameters from Properties
+     */
+    private Properties properties;
 
-  //Driver Class 
-  private String driverClass ;
+    // Driver Class
+    private String driverClass;
 
-  //Database CharacterSet
-  private String characterSet;
+    // Database CharacterSet
+    private String characterSet;
 
-  //String to get objects 
-  private String sourceCodeTypes;
+    // String to get objects
+    private String sourceCodeTypes;
 
-  //Languages to process 
-  private String languages;
+    // Languages to process
+    private String languages;
 
-  //Return class for source code 
-  private int sourceCodeReturnType; 
-  
-  /**
-   * 
-   * @param dbType 
-   */
-  public DBType(String dbType) throws Exception 
-  {
-   properties = loadDBProperties(dbType);
-  }
+    // Return class for source code
+    private int sourceCodeReturnType;
 
-  /**
-   * Load the most specific dbType for the protocol
-   * @param subProtocol 
-   * @param subnamePrefix 
- * @throws IOException 
-   */
-  public DBType(String subProtocol, String subnamePrefix) throws IOException
-  {
+    /**
+     * 
+     * @param dbType
+     */
+    public DBType(String dbType) throws Exception {
+        properties = loadDBProperties(dbType);
+    }
 
-      if (LOGGER.isLoggable(Level.FINE)) {
-          LOGGER.fine("subProtocol="+subProtocol+", subnamePrefix="+subnamePrefix);
-      }
-     
-     if (null == subProtocol &&  null == subnamePrefix)
-     {
-       throw new RuntimeException("subProtocol and subnamePrefix cannot both be null");
-     }
-     else
-     {
+    /**
+     * Load the most specific dbType for the protocol
+     * 
+     * @param subProtocol
+     * @param subnamePrefix
+     * @throws IOException
+     */
+    public DBType(String subProtocol, String subnamePrefix) throws IOException {
 
-       properties = null;
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("subProtocol=" + subProtocol + ", subnamePrefix=" + subnamePrefix);
+        }
 
-       //Attempt subnamePrefix before subProtocol
-       if (null != subnamePrefix 
-          && null != (properties = loadDBProperties(subnamePrefix)) 
-          )
-       {
-           LOGGER.log(Level.FINE, "DBType found using subnamePrefix={0}", subnamePrefix);
-       }
-       else if (null != (properties = loadDBProperties(subProtocol) ) )
-       {
-           LOGGER.log(Level.FINE, "DBType found using subProtocol={0}", subProtocol);
-       }
-       else
-       { 
-         throw new RuntimeException(String.format("Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s"
-                             ,subProtocol
-                             ,subnamePrefix
-                             )
-                             );
-       }
-              
-     }
-  }
+        if (null == subProtocol && null == subnamePrefix) {
+            throw new RuntimeException("subProtocol and subnamePrefix cannot both be null");
+        } else {
 
-  public Properties getProperties () {
+            properties = null;
 
-    return properties;  
-  }
+            // Attempt subnamePrefix before subProtocol
+            if (subnamePrefix != null) {
+                properties = loadDBProperties(subnamePrefix);
+            }
+            if (properties == null && subProtocol != null) {
+                properties = loadDBProperties(subProtocol);
+            }
 
-     /**
+            if (subnamePrefix != null && properties != null) {
+                LOGGER.log(Level.FINE, "DBType found using subnamePrefix={0}", subnamePrefix);
+            } else if (subProtocol != null && properties != null) {
+                LOGGER.log(Level.FINE, "DBType found using subProtocol={0}", subProtocol);
+            } else {
+                throw new RuntimeException(String.format(
+                        "Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s", subProtocol,
+                        subnamePrefix));
+            }
+
+        }
+    }
+
+    public Properties getProperties() {
+
+        return properties;
+    }
+
+    /**
      * Load properties from one or more files or resources.
      * 
-     *<p>This method recursively finds property files or JAR resources matching {@matchstring}. </p>.
-     *<p>The method is intended to be able to use , so any   
+     * <p>
+     * This method recursively finds property files or JAR resources matching
+     * {@matchstring}.
+     * </p>
+     * .
+     * <p>
+     * The method is intended to be able to use , so any
      *
      * @param matchString
-     * @return "current" set of properties (from one or more resources/property files)
+     * @return "current" set of properties (from one or more resources/property
+     *         files)
      */
     private Properties loadDBProperties(String matchString) throws IOException {
         LOGGER.entering(CLASS_NAME, matchString);
-        //Locale locale = Control.g;
+        // Locale locale = Control.g;
         ResourceBundle resourceBundle = null;
 
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("class_path+"+System.getProperty("java.class.path"));
+            LOGGER.finest("class_path+" + System.getProperty("java.class.path"));
         }
 
         /*
-         * Attempt to match properties files in this order:-
-         * File path with properties suffix
-         * File path without properties suffix
-         * Resource without class prefix  
-         * Resource with class prefix  
-         * 
+         * Attempt to match properties files in this order:- File path with
+         * properties suffix File path without properties suffix Resource
+         * without class prefix Resource with class prefix
          */
         try {
             File propertiesFile = new File(matchString);
@@ -180,8 +176,7 @@ public class DBType
         } catch (FileNotFoundException notFoundOnFilesystemWithoutExtension) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest("notFoundOnFilesystemWithoutExtension");
-                LOGGER.finest("Attempting File with added file suffix: " 
-                                    + matchString + ".properties");
+                LOGGER.finest("Attempting File with added file suffix: " + matchString + ".properties");
             }
             try {
                 File propertiesFile = new File(matchString + ".properties");
@@ -194,81 +189,80 @@ public class DBType
                 }
                 try {
                     resourceBundle = ResourceBundle.getBundle(matchString);
-                    propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator 
-                                        + matchString + ".properties";
+                    propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator + matchString + ".properties";
                     LOGGER.finest("InJarWithoutPath");
                 } catch (Exception notInJarWithoutPath) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
                         LOGGER.finest("Attempting JARWithClass prefix: " + DBType.CLASS_NAME + "." + matchString);
                     }
-                  try {
-                      resourceBundle = ResourceBundle.getBundle(DBType.CLASS_NAME + "." + matchString);
-                      propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator 
-                                          + matchString + ".properties";
-                      LOGGER.finest("found InJarWithPath");
-                  } catch (Exception notInJarWithPath) {
-                      notInJarWithPath.printStackTrace();
-                      notFoundOnFilesystemWithExtensionTackedOn.printStackTrace();
-                      throw new RuntimeException (" Could not locate DBTYpe settings : "+matchString,notInJarWithPath);
-                  }
+                    try {
+                        resourceBundle = ResourceBundle.getBundle(DBType.CLASS_NAME + "." + matchString);
+                        propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator + matchString + ".properties";
+                        LOGGER.finest("found InJarWithPath");
+                    } catch (Exception notInJarWithPath) {
+                        notInJarWithPath.printStackTrace();
+                        notFoundOnFilesystemWithExtensionTackedOn.printStackTrace();
+                        throw new RuntimeException(" Could not locate DBTYpe settings : " + matchString,
+                                notInJarWithPath);
+                    }
                 }
             }
         }
 
-        //Properties in this matched resource
+        // Properties in this matched resource
         Properties matchedProperties = getResourceBundleAsProperties(resourceBundle);
         resourceBundle = null;
-        String saveLoadedFrom = getPropertiesSource(); 
-
+        String saveLoadedFrom = getPropertiesSource();
 
         /*
-         * If the matched properties contain the "extends" key,
-         * use the value as a matchstring, to recursively set the properties 
-         * before overwriting any previous properties with the matched properties.
+         * If the matched properties contain the "extends" key, use the value as
+         * a matchstring, to recursively set the properties before overwriting
+         * any previous properties with the matched properties.
          */
-        String extendedPropertyFile = (String)matchedProperties.remove("extends"); 
-        if (null != extendedPropertyFile && !"".equals(extendedPropertyFile.trim()) ) {
+        String extendedPropertyFile = (String) matchedProperties.remove("extends");
+        if (null != extendedPropertyFile && !"".equals(extendedPropertyFile.trim())) {
             Properties extendedProperties = loadDBProperties(extendedPropertyFile.trim());
 
-            // Overwrite extended properties with properties in the matched resource
+            // Overwrite extended properties with properties in the matched
+            // resource
             extendedProperties.putAll(matchedProperties);
             matchedProperties = extendedProperties;
         }
 
         /*
-         * Record the location of the original matched resource/property file, and the current
-         * set of properties secured. 
+         * Record the location of the original matched resource/property file,
+         * and the current set of properties secured.
          */
         propertiesSource = saveLoadedFrom;
         setProperties(matchedProperties);
 
-        return matchedProperties; 
+        return matchedProperties;
     }
 
     /**
-     * Options that are specific to a type of database.  E.g. things like <code>host</code>,
-     * <code>port</code> or <code>db</code>, but <b>don't</b> have a setter in this class.
+     * Options that are specific to a type of database. E.g. things like
+     * <code>host</code>, <code>port</code> or <code>db</code>, but <b>don't</b>
+     * have a setter in this class.
      *
      * @param dbSpecificOptions
      */
 
     /**
-     * Convert <code>resourceBundle</code> to usable {@Properties}. 
+     * Convert <code>resourceBundle</code> to usable {@Properties}.
      *
      * @param resourceBundle ResourceBundle
      * @return Properties
      */
     public static Properties getResourceBundleAsProperties(ResourceBundle resourceBundle) {
         Properties properties = new Properties();
-        for (String key : resourceBundle.keySet() )
-        {
+        for (String key : resourceBundle.keySet()) {
             properties.put(key, resourceBundle.getObject(key));
         }
 
         return properties;
     }
 
-  @Override
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -284,131 +278,141 @@ public class DBType
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         DBType other = (DBType) obj;
         if (characterSet == null) {
-            if (other.characterSet != null)
+            if (other.characterSet != null) {
                 return false;
-        } else if (!characterSet.equals(other.characterSet))
+            }
+        } else if (!characterSet.equals(other.characterSet)) {
             return false;
+        }
         if (driverClass == null) {
-            if (other.driverClass != null)
+            if (other.driverClass != null) {
                 return false;
-        } else if (!driverClass.equals(other.driverClass))
+            }
+        } else if (!driverClass.equals(other.driverClass)) {
             return false;
+        }
         if (languages == null) {
-            if (other.languages != null)
+            if (other.languages != null) {
                 return false;
-        } else if (!languages.equals(other.languages))
+            }
+        } else if (!languages.equals(other.languages)) {
             return false;
+        }
         if (properties == null) {
-            if (other.properties != null)
+            if (other.properties != null) {
                 return false;
-        } else if (!properties.equals(other.properties))
+            }
+        } else if (!properties.equals(other.properties)) {
             return false;
+        }
         if (propertiesSource == null) {
-            if (other.propertiesSource != null)
+            if (other.propertiesSource != null) {
                 return false;
-        } else if (!propertiesSource.equals(other.propertiesSource))
+            }
+        } else if (!propertiesSource.equals(other.propertiesSource)) {
             return false;
-        if (sourceCodeReturnType != other.sourceCodeReturnType)
+        }
+        if (sourceCodeReturnType != other.sourceCodeReturnType) {
             return false;
+        }
         if (sourceCodeTypes == null) {
-            if (other.sourceCodeTypes != null)
+            if (other.sourceCodeTypes != null) {
                 return false;
-        } else if (!sourceCodeTypes.equals(other.sourceCodeTypes))
+            }
+        } else if (!sourceCodeTypes.equals(other.sourceCodeTypes)) {
             return false;
+        }
         return true;
     }
 
-/**
-   * @return the driverClass
-   */
-  public String getDriverClass() {
-    return driverClass;
-  }
-
-  /**
-   * @return the characterSet
-   */
-  public String getCharacterSet() {
-    return characterSet;
-  }
-
-  /**
-   * @return the sourceCodeTypes
-   */
-  public String getSourceCodeTypes() {
-    return sourceCodeTypes;
-  }
-
-  /**
-   * @return the languages
-   */
-  public String getLanguages() {
-    return languages;
-  }
-
-  /**
-   * @return the sourceCodeReturnType
-   */
-  public int getSourceCodeReturnType() {
-    return sourceCodeReturnType;
-  }
-
-  /**
-   * @return the propertiesSource
-   */
-  public String getPropertiesSource() {
-    return propertiesSource;
-  }
-
-  /**
-   * @param properties the properties to set
-   */
-  public void setProperties(Properties properties) {
-    this.properties = properties;
-
-    //Driver Class 
-    if (null != this.properties.getProperty("driver"))
-    {
-      this.driverClass = this.properties.getProperty("driver");
+    /**
+     * @return the driverClass
+     */
+    public String getDriverClass() {
+        return driverClass;
     }
 
-    //Database CharacterSet
-    if (null != this.properties.getProperty("characterset"))
-    {
-      this.characterSet = this.properties.getProperty("characterset");
+    /**
+     * @return the characterSet
+     */
+    public String getCharacterSet() {
+        return characterSet;
     }
 
-    //String to get objects 
-    if (null != this.properties.getProperty("sourcecodetypes"))
-    {
-      this.sourceCodeTypes = this.properties.getProperty("sourcecodetypes");
+    /**
+     * @return the sourceCodeTypes
+     */
+    public String getSourceCodeTypes() {
+        return sourceCodeTypes;
     }
 
-    //Languages to process 
-    if (null != this.properties.getProperty("languages"))
-    {
-      this.languages = this.properties.getProperty("languages");
+    /**
+     * @return the languages
+     */
+    public String getLanguages() {
+        return languages;
     }
 
-    //Return class for source code 
-    if (null != this.properties.getProperty("returnType"))
-    {
-      LOGGER.finest("returnType" + this.properties.getProperty("returnType")  );
-      this.sourceCodeReturnType  = Integer.parseInt(this.properties.getProperty("returnType"));
+    /**
+     * @return the sourceCodeReturnType
+     */
+    public int getSourceCodeReturnType() {
+        return sourceCodeReturnType;
     }
 
-  }
+    /**
+     * @return the propertiesSource
+     */
+    public String getPropertiesSource() {
+        return propertiesSource;
+    }
 
- public String toString()
- {
-   return CLASS_NAME+"@"+propertiesSource;
- }
+    /**
+     * @param properties the properties to set
+     */
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+
+        // Driver Class
+        if (null != this.properties.getProperty("driver")) {
+            this.driverClass = this.properties.getProperty("driver");
+        }
+
+        // Database CharacterSet
+        if (null != this.properties.getProperty("characterset")) {
+            this.characterSet = this.properties.getProperty("characterset");
+        }
+
+        // String to get objects
+        if (null != this.properties.getProperty("sourcecodetypes")) {
+            this.sourceCodeTypes = this.properties.getProperty("sourcecodetypes");
+        }
+
+        // Languages to process
+        if (null != this.properties.getProperty("languages")) {
+            this.languages = this.properties.getProperty("languages");
+        }
+
+        // Return class for source code
+        if (null != this.properties.getProperty("returnType")) {
+            LOGGER.finest("returnType" + this.properties.getProperty("returnType"));
+            this.sourceCodeReturnType = Integer.parseInt(this.properties.getProperty("returnType"));
+        }
+
+    }
+
+    public String toString() {
+        return CLASS_NAME + "@" + propertiesSource;
+    }
 }

@@ -18,12 +18,12 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 public class VariableNameDeclaration extends AbstractNameDeclaration implements TypedNameDeclaration {
 
     public VariableNameDeclaration(ASTVariableDeclaratorId node) {
-	super(node);
+        super(node);
     }
 
     @Override
     public Scope getScope() {
-	return node.getScope().getEnclosingScope(ClassScope.class);
+        return node.getScope().getEnclosingScope(ClassScope.class);
     }
 
     public boolean isArray() {
@@ -37,7 +37,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isExceptionBlockParameter() {
-	return ((ASTVariableDeclaratorId) node).isExceptionBlockParameter();
+        return ((ASTVariableDeclaratorId) node).isExceptionBlockParameter();
     }
 
     public boolean isLambdaTypelessParameter() {
@@ -45,13 +45,15 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isPrimitiveType() {
-        return !isLambdaTypelessParameter() && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
+        return !isLambdaTypelessParameter()
+                && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
     }
 
     public String getTypeImage() {
         TypeNode typeNode = getTypeNode();
-        if (typeNode != null)
+        if (typeNode != null) {
             return typeNode.getImage();
+        }
         return null;
     }
 
@@ -59,35 +61,36 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
      * Note that an array of primitive types (int[]) is a reference type.
      */
     public boolean isReferenceType() {
-        return !isLambdaTypelessParameter() && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTReferenceType;
+        return !isLambdaTypelessParameter()
+                && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTReferenceType;
     }
 
     public AccessNode getAccessNodeParent() {
-	if (node.jjtGetParent() instanceof ASTFormalParameter
-        || node.jjtGetParent() instanceof ASTLambdaExpression) {
-	    return (AccessNode)node.jjtGetParent();
-	}
-	return (AccessNode)node.jjtGetParent().jjtGetParent();
+        if (node.jjtGetParent() instanceof ASTFormalParameter || node.jjtGetParent() instanceof ASTLambdaExpression) {
+            return (AccessNode) node.jjtGetParent();
+        }
+        return (AccessNode) node.jjtGetParent().jjtGetParent();
     }
 
     public ASTVariableDeclaratorId getDeclaratorId() {
-	return (ASTVariableDeclaratorId) node;
+        return (ASTVariableDeclaratorId) node;
     }
 
     private TypeNode getTypeNode() {
         if (isPrimitiveType()) {
-            return (TypeNode)getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
+            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
         }
         if (!isLambdaTypelessParameter()) {
-            return (TypeNode)getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
+            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
         }
         return null;
     }
 
     public Class<?> getType() {
         TypeNode typeNode = getTypeNode();
-        if (typeNode != null)
+        if (typeNode != null) {
             return typeNode.getType();
+        }
         return null;
     }
 
@@ -96,17 +99,17 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         if (!(o instanceof VariableNameDeclaration)) {
             return false;
         }
-	VariableNameDeclaration n = (VariableNameDeclaration) o;
-	return n.node.getImage().equals(node.getImage());
+        VariableNameDeclaration n = (VariableNameDeclaration) o;
+        return n.node.getImage().equals(node.getImage());
     }
 
     @Override
     public int hashCode() {
-	return node.getImage().hashCode();
+        return node.getImage().hashCode();
     }
 
     @Override
     public String toString() {
-	return "Variable: image = '" + node.getImage() + "', line = " + node.getBeginLine();
+        return "Variable: image = '" + node.getImage() + "', line = " + node.getBeginLine();
     }
 }

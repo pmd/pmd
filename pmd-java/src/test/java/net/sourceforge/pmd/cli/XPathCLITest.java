@@ -6,8 +6,7 @@ package net.sourceforge.pmd.cli;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 public class XPathCLITest {

@@ -101,7 +101,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
     }
 
     private LineNumberReader getLineReader() throws FileNotFoundException {
-    	return new LineNumberReader(new BufferedReader(new FileReader(getProperty(EXCEPTION_FILE_DESCRIPTOR))));
+        return new LineNumberReader(new BufferedReader(new FileReader(getProperty(EXCEPTION_FILE_DESCRIPTOR))));
     }
 
     @Override
@@ -128,32 +128,27 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         }
 
         minLength = 2 + getProperty(MINIMUM_LENGTH_DESCRIPTOR);
-        
+
         super.visit(node, data);
 
         processResults(data);
 
         return data;
     }
-       
 
+    private void processResults(Object data) {
 
-	private void processResults(Object data) {
-
-		int threshold = getProperty(THRESHOLD_DESCRIPTOR);
+        int threshold = getProperty(THRESHOLD_DESCRIPTOR);
 
         for (Map.Entry<String, List<ASTLiteral>> entry : literals.entrySet()) {
             List<ASTLiteral> occurrences = entry.getValue();
             if (occurrences.size() >= threshold) {
-                Object[] args = new Object[] {
-                		entry.getKey(),
-                		Integer.valueOf(occurrences.size()),
-                        Integer.valueOf(occurrences.get(0).getBeginLine())
-                        };
+                Object[] args = new Object[] { entry.getKey(), Integer.valueOf(occurrences.size()),
+                        Integer.valueOf(occurrences.get(0).getBeginLine()) };
                 addViolation(data, occurrences.get(0), args);
             }
         }
-	}
+    }
 
     @Override
     public Object visit(ASTLiteral node, Object data) {
@@ -162,7 +157,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         }
         String image = node.getImage();
 
-        // just catching strings of 'minLength' chars or more (including the enclosing quotes)
+        // just catching strings of 'minLength' chars or more (including the
+        // enclosing quotes)
         if (image.length() < minLength) {
             return data;
         }
@@ -191,30 +187,38 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     private static String checkFile(File file) {
 
-		if (!file.exists()) return "File '" + file.getName() + "' does not exist";
-		if (!file.canRead()) return "File '" + file.getName() + "' cannot be read";
-		if (file.length() == 0) return "File '" + file.getName() + "' is empty";
+        if (!file.exists()) {
+            return "File '" + file.getName() + "' does not exist";
+        }
+        if (!file.canRead()) {
+            return "File '" + file.getName() + "' cannot be read";
+        }
+        if (file.length() == 0) {
+            return "File '" + file.getName() + "' is empty";
+        }
 
-		return null;
+        return null;
     }
 
-	 /**
-	  * @see PropertySource#dysfunctionReason()
-	  */
-	 @Override
-	public String dysfunctionReason() {
+    /**
+     * @see PropertySource#dysfunctionReason()
+     */
+    @Override
+    public String dysfunctionReason() {
 
-		 File file = getProperty(EXCEPTION_FILE_DESCRIPTOR);
-		 if (file != null) {
-			 String issue = checkFile(file);
-			 if (issue != null) return issue;
+        File file = getProperty(EXCEPTION_FILE_DESCRIPTOR);
+        if (file != null) {
+            String issue = checkFile(file);
+            if (issue != null) {
+                return issue;
+            }
 
-			 String ignores = getProperty(EXCEPTION_LIST_DESCRIPTOR);
-			 if (StringUtil.isNotEmpty(ignores)) {
-				 return "Cannot reference external file AND local values";
-			 }
-		 }
+            String ignores = getProperty(EXCEPTION_LIST_DESCRIPTOR);
+            if (StringUtil.isNotEmpty(ignores)) {
+                return "Cannot reference external file AND local values";
+            }
+        }
 
-		 return null;
-	 }
+        return null;
+    }
 }
