@@ -10,5 +10,3 @@ bin/
 .idea
 *.patch
 */src/site/site.xml
-*/src/site/markdown/rules
-*/src/site/markdown/mergedruleset.xml
