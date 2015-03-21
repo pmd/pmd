@@ -42,7 +42,7 @@ public class PmdPreSite extends AbstractMojo {
     /**
      * Path to the existing site descriptor
      */
-    @Parameter(property = "pmd.siteTarget", defaultValue = "${basedir}/src/site/markdown/rules")
+    @Parameter(property = "pmd.siteTarget", defaultValue = "${project.build.directory}/generated-site/markdown/rules")
     private String target;
 
     /**
