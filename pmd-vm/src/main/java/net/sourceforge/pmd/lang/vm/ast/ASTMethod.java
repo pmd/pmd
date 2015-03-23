@@ -39,8 +39,6 @@ import org.apache.commons.lang3.StringUtils;
  * @version $Id: ASTMethod.java 720228 2008-11-24 16:58:33Z nbubna $
  */
 public class ASTMethod extends AbstractVmNode {
-    private final String methodName = "";
-
     /**
      * @param id
      */
@@ -139,7 +137,7 @@ public class ASTMethod extends AbstractVmNode {
      * @since 1.5
      */
     public String getMethodName() {
-        return methodName;
+        return "";
     }
 
 }

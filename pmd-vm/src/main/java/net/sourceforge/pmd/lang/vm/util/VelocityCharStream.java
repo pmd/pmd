@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 public final class VelocityCharStream
 implements CharStream
 {
-    public static final boolean staticFlag = false;
+    public static final boolean STATIC_FLAG = false;
     int bufsize;
     private int nextBufExpand;
     int available;
@@ -62,7 +62,7 @@ implements CharStream
     private int maxNextCharInd = 0;
     private int inBuf = 0;
 
-    private final void ExpandBuff(boolean wrapAround)
+    private void ExpandBuff(boolean wrapAround)
     {
         char[] newbuffer = new char[bufsize + nextBufExpand];
         int newbufline[] = new int[bufsize + nextBufExpand];
@@ -85,7 +85,7 @@ implements CharStream
                 System.arraycopy(bufcolumn, 0, newbufcolumn, bufsize - tokenBegin, bufpos);
                 bufcolumn = newbufcolumn;
 
-                maxNextCharInd = (bufpos += (bufsize - tokenBegin));
+                maxNextCharInd = (bufpos += bufsize - tokenBegin);
             }
             else
             {
@@ -113,7 +113,7 @@ implements CharStream
         tokenBegin = 0;
     }
 
-    private final void FillBuff() throws java.io.IOException
+    private void FillBuff() throws java.io.IOException
     {
         if (maxNextCharInd == available)
         {
@@ -150,8 +150,8 @@ implements CharStream
         int i;
         try 
         {
-            if ((i = inputStream.read(buffer, maxNextCharInd,
-                    available - maxNextCharInd)) == -1)
+            i = inputStream.read(buffer, maxNextCharInd, available - maxNextCharInd);
+            if (i == -1)
             {
                 inputStream.close();
                 throw new java.io.IOException();
@@ -177,7 +177,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#BeginToken()
      */
-    public final char BeginToken() throws java.io.IOException
+    public char BeginToken() throws java.io.IOException
     {
         tokenBegin = -1;
         char c = readChar();
@@ -186,7 +186,7 @@ implements CharStream
         return c;
     }
 
-    private final void UpdateLineColumn(char c)
+    private void UpdateLineColumn(char c)
     {
         column++;
 
@@ -218,7 +218,7 @@ implements CharStream
             break;
         case '\t' :
             column--;
-            column += (8 - (column & 07));
+            column += 8 - (column & 07);
             break;
         default :
             break;
@@ -231,7 +231,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#readChar()
      */
-    public final char readChar() throws java.io.IOException
+    public char readChar() throws java.io.IOException
     {
         if (inBuf > 0)
         {
@@ -243,7 +243,8 @@ implements CharStream
             return  buffer[(bufpos == bufsize - 1) ? (bufpos = 0) : ++bufpos];
         }
 
-        if (++bufpos >= maxNextCharInd)
+        bufpos++;
+        if (bufpos >= maxNextCharInd)
         {
             FillBuff();
         }
@@ -254,14 +255,14 @@ implements CharStream
         char c = buffer[bufpos];
 
         UpdateLineColumn(c);
-        return (c);
+        return c;
     }
 
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#getColumn()
      * @deprecated
      */
-    public final int getColumn() 
+    public int getColumn() 
     {
         return bufcolumn[bufpos];
     }
@@ -270,7 +271,7 @@ implements CharStream
      * @see org.apache.velocity.runtime.parser.CharStream#getLine()
      * @deprecated
      */
-    public final int getLine() 
+    public int getLine() 
     {
         return bufline[bufpos];
     }
@@ -278,7 +279,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#getEndColumn()
      */
-    public final int getEndColumn() 
+    public int getEndColumn() 
     {
         return bufcolumn[bufpos];
     }
@@ -286,7 +287,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#getEndLine()
      */
-    public final int getEndLine() 
+    public int getEndLine() 
     {
         return bufline[bufpos];
     }
@@ -294,7 +295,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#getBeginColumn()
      */
-    public final int getBeginColumn() 
+    public int getBeginColumn() 
     {
         return bufcolumn[tokenBegin];
     }
@@ -302,7 +303,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#getBeginLine()
      */
-    public final int getBeginLine() 
+    public int getBeginLine() 
     {
         return bufline[tokenBegin];
     }
@@ -310,12 +311,14 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#backup(int)
      */
-    public final void backup(int amount) 
+    public void backup(int amount) 
     {
 
         inBuf += amount;
-        if ((bufpos -= amount) < 0)
+        bufpos -= amount;
+        if (bufpos < 0) {
             bufpos += bufsize;
+        }
     }
 
     /**
@@ -429,7 +432,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#GetImage()
      */
-    public final String GetImage()
+    public String GetImage()
     {
         if (bufpos >= tokenBegin)
         {
@@ -445,7 +448,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#GetSuffix(int)
      */
-    public final char[] GetSuffix(int len)
+    public char[] GetSuffix(int len)
     {
         char[] ret = new char[len];
 
@@ -492,8 +495,11 @@ implements CharStream
             len = bufsize - tokenBegin + bufpos + 1 + inBuf;
         }
 
-        int i = 0, j = 0, k = 0;
-        int nextColDiff = 0, columnDiff = 0;
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        int nextColDiff = 0;
+        int columnDiff = 0;
 
         while (i < len &&
                 bufline[j = start % bufsize] == bufline[k = ++start % bufsize])
@@ -512,10 +518,13 @@ implements CharStream
 
             while (i++ < len)
             {
-                if (bufline[j = start % bufsize] != bufline[++start % bufsize])
+                j = start % bufsize;
+                start++;
+                if (bufline[j] != bufline[start % bufsize]) {
                     bufline[j] = newLine++;
-                else
+                } else {
                     bufline[j] = newLine;
+                }
             }
         }
 

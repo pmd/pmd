@@ -162,7 +162,7 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
      * @param prefix
      */
     public void dump(final String prefix, final boolean recurse, final Writer writer) {
-        final PrintWriter printWriter = (writer instanceof PrintWriter) ? (PrintWriter) writer
+        final PrintWriter printWriter = writer instanceof PrintWriter ? (PrintWriter) writer
                 : new PrintWriter(writer);
         printWriter.println(toString(prefix));
         if (children != null && recurse) {
@@ -183,13 +183,13 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
     public String literal() {
         // if we have only one string, just return it and avoid
         // buffer allocation. VELOCITY-606
-        if (first == last) {
+        if (first != null && first.equals(last)) {
             return NodeUtils.tokenLiteral(first);
         }
 
         Token t = first;
         final StrBuilder sb = new StrBuilder(NodeUtils.tokenLiteral(t));
-        while (t != last) {
+        while (t != null && !t.equals(last)) {
             t = t.next;
             sb.append(NodeUtils.tokenLiteral(t));
         }

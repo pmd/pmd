@@ -26,8 +26,14 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author Nathan Bubna
  * @version $Id: Directive.java 778045 2009-05-23 22:17:46Z nbubna $
  */
-public abstract class Directive implements DirectiveConstants, Cloneable
+public abstract class Directive implements Cloneable
 {
+    /** Block directive indicator */
+    public static final int BLOCK = 1;
+
+    /** Line directive indicator */
+    public static final int LINE = 2;
+
     private int line = 0;
     private int column = 0;
     private boolean provideScope = false;

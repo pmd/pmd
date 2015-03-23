@@ -380,6 +380,13 @@ public class PMD {
      */
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
         long startFiles = System.nanoTime();
+        List<DataSource> files = internalGetApplicableFiles(configuration, languages);
+        long endFiles = System.nanoTime();
+        Benchmarker.mark(Benchmark.CollectFiles, endFiles - startFiles, 0);
+        return files;
+    }
+
+    private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
         LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
         List<DataSource> files = new ArrayList<DataSource>();
 
@@ -398,8 +405,6 @@ public class PMD {
                 throw new RuntimeException("Problem with DBURI: " + uriString, ex);
             }
         }
-        long endFiles = System.nanoTime();
-        Benchmarker.mark(Benchmark.CollectFiles, endFiles - startFiles, 0);
         return files;
     }
 

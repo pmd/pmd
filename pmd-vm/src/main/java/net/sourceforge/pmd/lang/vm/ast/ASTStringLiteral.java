@@ -28,9 +28,6 @@ import org.apache.commons.lang3.text.StrBuilder;
  * @version $Id: ASTStringLiteral.java 705297 2008-10-16 17:59:24Z nbubna $
  */
 public class ASTStringLiteral extends AbstractVmNode {
-    /* cache the value of the interpolation switch */
-    private final boolean interpolate = true;
-
     /**
      * @param id
      */
@@ -59,11 +56,13 @@ public class ASTStringLiteral extends AbstractVmNode {
             // If tok is on the first line, then the actual column is
             // offset by the template column.
 
-            if (tok.beginLine == 1)
+            if (tok.beginLine == 1) {
                 tok.beginColumn += getColumn();
+            }
 
-            if (tok.endLine == 1)
+            if (tok.endLine == 1) {
                 tok.endColumn += getColumn();
+            }
 
             tok.beginLine += getLine() - 1;
             tok.endLine += getLine() - 1;
@@ -76,8 +75,9 @@ public class ASTStringLiteral extends AbstractVmNode {
      */
     public static String unescape(final String string) {
         int u = string.indexOf("\\u");
-        if (u < 0)
+        if (u < 0) {
             return string;
+        }
 
         final StrBuilder result = new StrBuilder();
 
@@ -118,7 +118,7 @@ public class ASTStringLiteral extends AbstractVmNode {
      * @since 1.6
      */
     public boolean isConstant() {
-        return !interpolate;
+        return false;
     }
 
 }

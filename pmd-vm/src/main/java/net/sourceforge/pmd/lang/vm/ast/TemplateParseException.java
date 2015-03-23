@@ -109,7 +109,7 @@ public class TemplateParseException extends ParseException {
      * @return The line number where this exception occured.
      */
     public int getLineNumber() {
-        if ((currentToken != null) && (currentToken.next != null)) {
+        if (currentToken != null && currentToken.next != null) {
             return currentToken.next.beginLine;
         }
         else {
@@ -123,7 +123,7 @@ public class TemplateParseException extends ParseException {
      * @return The column number where this exception occured.
      */
     public int getColumnNumber() {
-        if ((currentToken != null) && (currentToken.next != null)) {
+        if (currentToken != null && currentToken.next != null) {
             return currentToken.next.beginColumn;
         }
         else {
@@ -158,7 +158,7 @@ public class TemplateParseException extends ParseException {
             }
 
             for (int j = 0; j < expectedTokenSequences[i].length; j++) {
-                expected.append(tokenImage[expectedTokenSequences[i][j]]).append(" ");
+                expected.append(tokenImage[expectedTokenSequences[i][j]]).append(' ');
             }
 
             if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
@@ -173,7 +173,7 @@ public class TemplateParseException extends ParseException {
 
         for (int i = 0; i < maxSize; i++) {
             if (i != 0) {
-                retval.append(" ");
+                retval.append(' ');
             }
 
             if (tok.kind == 0) {

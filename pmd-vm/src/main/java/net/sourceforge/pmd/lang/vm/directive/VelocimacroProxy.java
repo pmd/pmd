@@ -30,8 +30,6 @@ package net.sourceforge.pmd.lang.vm.directive;
 public class VelocimacroProxy extends Directive
 {
     private String macroName;
-    private String[] argArray = null;
-    private String[] literalArgArray = null;
     private int numMacroArgs = 0;
 
     /**
@@ -69,22 +67,11 @@ public class VelocimacroProxy extends Directive
      */
     public void setArgArray(String[] arr)
     {
-        argArray = arr;
-        
-        // for performance reasons we precache these strings - they are needed in
-        // "render literal if null" functionality
-        literalArgArray = new String[arr.length];
-        for(int i = 0; i < arr.length; i++)
-        {
-            literalArgArray[i] = ".literal.$" + argArray[i];
-        }
-
         /*
          * get the arg count from the arg array. remember that the arg array has the macro name as
          * it's 0th element
          */
-
-        numMacroArgs = argArray.length - 1;
+        numMacroArgs = arr.length - 1;
     }
 
    /**

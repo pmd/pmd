@@ -66,7 +66,7 @@ public class MacroParseException extends ParseException {
      * @since 1.5
      */
     public int getLineNumber() {
-        if ((currentToken != null) && (currentToken.next != null)) {
+        if (currentToken != null && currentToken.next != null) {
             return currentToken.next.beginLine;
         }
         else if (currentToken != null) {
@@ -84,7 +84,7 @@ public class MacroParseException extends ParseException {
      * @since 1.5
      */
     public int getColumnNumber() {
-        if ((currentToken != null) && (currentToken.next != null)) {
+        if (currentToken != null && currentToken.next != null) {
             return currentToken.next.beginColumn;
         }
         else if (currentToken != null) {

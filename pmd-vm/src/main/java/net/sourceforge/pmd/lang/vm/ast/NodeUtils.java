@@ -42,16 +42,16 @@ public class NodeUtils {
     private static StrBuilder getSpecialText(final Token t) {
         final StrBuilder sb = new StrBuilder();
 
-        Token tmp_t = t.specialToken;
+        Token tmpToken = t.specialToken;
 
-        while (tmp_t.specialToken != null) {
-            tmp_t = tmp_t.specialToken;
+        while (tmpToken.specialToken != null) {
+            tmpToken = tmpToken.specialToken;
         }
 
-        while (tmp_t != null) {
-            final String st = tmp_t.image;
+        while (tmpToken != null) {
+            final String st = tmpToken.image;
 
-            for (int i = 0, is = st.length(); i < is; i++) {
+            for (int i = 0; i < st.length(); i++) {
                 final char c = st.charAt(i);
 
                 if (c == '#' || c == '$') {
@@ -69,7 +69,7 @@ public class NodeUtils {
                     boolean term = false;
 
                     int j = i;
-                    for (ok = true; ok && j < is; j++) {
+                    for (ok = true; ok && j < st.length(); j++) {
                         final char cc = st.charAt(j);
 
                         if (cc == '\\') {
@@ -101,7 +101,7 @@ public class NodeUtils {
                 }
             }
 
-            tmp_t = tmp_t.next;
+            tmpToken = tmpToken.next;
         }
         return sb;
     }

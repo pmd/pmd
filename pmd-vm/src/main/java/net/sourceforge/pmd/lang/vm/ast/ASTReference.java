@@ -94,8 +94,9 @@ public class ASTReference extends AbstractVmNode {
          * do only once
          */
 
-        if (this.literal == null)
+        if (this.literal == null) {
             this.literal = literal;
+        }
     }
 
     /**
@@ -106,8 +107,9 @@ public class ASTReference extends AbstractVmNode {
      */
     @Override
     public String literal() {
-        if (literal != null)
+        if (literal != null) {
             return literal;
+        }
 
         // this value could be cached in this.literal but it increases memory usage
         return super.literal();

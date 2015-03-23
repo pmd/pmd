@@ -28,5 +28,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  */
 public abstract class InputBase extends Directive
 {
-
+    /**
+     * Return name of this directive.
+     * @return The name of this directive.
+     */
+    public abstract String getName();
 }

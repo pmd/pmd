@@ -309,17 +309,15 @@ public class RuleSet {
                     Benchmarker.mark(Benchmark.Rule, rule.getName(), end - start, 1);
                     start = end;
                 }
-            } catch (Throwable t) {
-                if (t instanceof ThreadDeath) {
-                    throw (ThreadDeath)t;
-                } else if (ctx.isIgnoreExceptions()) {
+            } catch (RuntimeException e) {
+                if (ctx.isIgnoreExceptions()) {
                     if (LOG.isLoggable(Level.WARNING)) {
                         LOG.log(Level.WARNING, "Exception applying rule " + rule.getName()
                             + " on file " + ctx.getSourceCodeFilename() + ", continuing with next rule",
-                            t);
+                            e);
                     }
                 } else {
-                    throw new RuntimeException(t);
+                    throw e;
                 }
             }
         }
