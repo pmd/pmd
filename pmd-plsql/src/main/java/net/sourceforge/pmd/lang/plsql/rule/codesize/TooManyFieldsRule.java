@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.util.NumericConstants;
 
-
 public class TooManyFieldsRule extends AbstractPLSQLRule {
 
     private static final int DEFAULT_MAXFIELDS = 15;
@@ -25,18 +24,15 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     private Map<String, Integer> stats;
     private Map<String, PLSQLNode> nodes;
 
-    private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty(
-    		"maxfields", "Max allowable fields",
-    		1, 300, DEFAULT_MAXFIELDS, 1.0f
-    		);
-    
+    private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty("maxfields",
+            "Max allowable fields", 1, 300, DEFAULT_MAXFIELDS, 1.0f);
+
     public TooManyFieldsRule() {
-	definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
+        definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
     }
 
     @Override
     public Object visit(ASTInput node, Object data) {
-
 
         stats = new HashMap<String, Integer>(5);
         nodes = new HashMap<String, PLSQLNode>(5);
@@ -48,11 +44,11 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     public Object visit(ASTPackageSpecification node, Object data) {
 
         int maxFields = getProperty(MAX_FIELDS_DESCRIPTOR);
-        
+
         List<ASTVariableOrConstantDeclaration> l = node.findDescendantsOfType(ASTVariableOrConstantDeclaration.class);
 
-        for (ASTVariableOrConstantDeclaration fd: l) {
-          bumpCounterFor(node);
+        for (ASTVariableOrConstantDeclaration fd : l) {
+            bumpCounterFor(fd);
         }
         for (String k : stats.keySet()) {
             int val = stats.get(k);
@@ -68,11 +64,11 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     public Object visit(ASTTypeSpecification node, Object data) {
 
         int maxFields = getProperty(MAX_FIELDS_DESCRIPTOR);
-        
+
         List<ASTVariableOrConstantDeclaration> l = node.findDescendantsOfType(ASTVariableOrConstantDeclaration.class);
 
-        for (ASTVariableOrConstantDeclaration fd: l) {
-          bumpCounterFor(node);
+        for (ASTVariableOrConstantDeclaration fd : l) {
+            bumpCounterFor(fd);
         }
         for (String k : stats.keySet()) {
             int val = stats.get(k);

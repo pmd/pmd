@@ -41,8 +41,6 @@ public final class StringUtils {
       while ((line = reader.readLine()) != null) {
         lines.add(line);
       }
-    } catch (IOException ioe) {
-      throw ioe;
     } finally {
       IOUtils.closeQuietly(reader);
     }

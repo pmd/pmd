@@ -93,3 +93,5 @@ and will be removed with the next release of PMD.
     This Mark is useful for reporting the correct line count for each duplication. Previously only one line count was available.
     As for some languages CPD can be instructed to ignore comments, the line count could be different in the different files
     for the same duplication.
+
+*   pmd-test: The utility class `StreamUtil` is deprecated. Just use Apache Commons IO Utils instead.

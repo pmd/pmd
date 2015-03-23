@@ -6,8 +6,8 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 
 import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
-import net.sourceforge.pmd.testframework.StreamUtil;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,23 +18,19 @@ public class MatlabTokenizerTest extends AbstractTokenizerTest {
 
     @Before
     @Override
-    public void buildTokenizer() {
+    public void buildTokenizer() throws IOException {
         this.tokenizer = new MatlabTokenizer();
         this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), FILENAME));
     }
 
     @Override
-    public String getSampleCode() {
-         return StreamUtil.toString(MatlabTokenizer.class.getResourceAsStream(FILENAME));
+    public String getSampleCode() throws IOException {
+         return IOUtils.toString(MatlabTokenizer.class.getResourceAsStream(FILENAME));
      }
 
     @Test
     public void tokenizeTest() throws IOException {
         this.expectedTokenCount = 3925;
         super.tokenizeTest();
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MatlabTokenizerTest.class);
     }
 }
