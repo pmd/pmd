@@ -12,7 +12,7 @@
   <groupId>net.sourceforge.pmd</groupId>
   <artifactId>pmd-build</artifactId>
   <name>PMD Build Plugin</name>
-  <version>0.9</version>
+  <version>0.10-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <description>
     <![CDATA[
@@ -42,7 +42,7 @@ only if you modify the java code.
     <connection>scm:git:git://github.com/pmd/pmd.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
     <url>https://github.com/pmd/pmd</url>
-    <tag>pmd-build/0.9</tag>
+    <tag>HEAD</tag>
   </scm>
   
   <developers>
